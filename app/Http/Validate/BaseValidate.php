@@ -54,4 +54,17 @@ class BaseValidate
         $model = $query->where($attribute, '=', $value)->first();
         return empty($model) ? true : false;
     }
+
+    /**
+     * 订单明细 验证
+     * @param $attribute
+     * @param $value
+     * @param $parameters
+     * @param Validator $validator
+     * @return bool
+     */
+    public function orderItems($attribute, $value, $parameters, $validator)
+    {
+
+    }
 }
