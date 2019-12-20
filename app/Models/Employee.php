@@ -1,15 +1,17 @@
 <?php
 
 namespace App\Models;
+
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
 /**
  * 员工表
  * Class Employee
  * @package App\Models
  */
-class Employee extends BaseModel
+class Employee extends Authenticatable implements JWTSubject
 {
     /**
-     * 司机实际取件导航
      * The table associated with the model.
      *
      * @var string
@@ -71,4 +73,26 @@ class Employee extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [
+            'role' => 'employee',
+        ];
+    }
 }
