@@ -14,5 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::namespace('Api\Admin')->group(function () {
+    Route::post('login', 'AuthController@login');
+    Route::post('register', 'RegisterController@store');
 
+
+    //认证后
+    Route::middleware(['auth:admin',])->group(function () {
+
+    });
 });

@@ -2,18 +2,18 @@
 
 namespace App\Models;
 /**
- * 司机表
+ * 公司表
  * Class Employee
  * @package App\Models
  */
-class Driver extends BaseModel
+class Company extends BaseModel
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'driver';
+    protected $table = 'company';
 
     /**
      * The primary key for the model.
@@ -42,33 +42,13 @@ class Driver extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'company_id',
+        'company_code',
         'email',
-        'encrypt',
-        'password',
-        'last_name',
-        'first_name',
-        'gender',
-        'birthday',
+        'name',
+        'contacter',
         'phone',
-        'duty_paragraph',
-        'post_code',
-        'door_no',
-        'street',
-        'city',
         'country',
-        'lisence_number',
-        'lisence_valid_date',
-        'lisence_type',
-        'lisence_material',
-        'government_material',
-        'avatar',
-        'bank_name',
-        'iban',
-        'bic',
-        'is_locked',
-        'created_at',
-        'updated_at',
+        'address',
     ];
 
     /**
@@ -76,9 +56,7 @@ class Driver extends BaseModel
      *
      * @var array
      */
-    protected $hidden = [
-        'password',
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be mutated to dates.

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::namespace('Api\Driver')->group(function () {
     //测试接口
-    Route::prefix('test')->group(function () {
+   /* Route::prefix('test')->group(function () {
         //测试
         Route::get('/', 'TestController@index');
         //获取详情
@@ -26,5 +26,5 @@ Route::namespace('Api\Driver')->group(function () {
         Route::put('/{id}', 'TestController@update');
         //删除
         Route::put('/', 'TestController@update');
-    });
+    });*/
 });
