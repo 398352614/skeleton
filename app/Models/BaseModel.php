@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Schema;
 
 class BaseModel extends Model
 {
+
     protected static function boot()
     {
         parent::boot();
@@ -31,5 +32,11 @@ class BaseModel extends Model
                 }
             }
         };
+    }
+
+
+    public static function translateName($list, $name)
+    {
+        return $list[$name]['name'];
     }
 }
