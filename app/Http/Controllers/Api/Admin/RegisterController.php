@@ -36,11 +36,11 @@ class RegisterController extends Controller
                 'code'      => 'required|string|digits_between:6,6'
         ]);
 
-        /*if ($data['code'] !== $this->getVerifyCode($data['email'])) {
+        if ($data['code'] !== $this->getVerifyCode($data['email'])) {
             throw new BusinessLogicException('验证码错误');
-        }*/
+        }
 
-        //$this->deleteVerifyCode($data['email']);
+        $this->deleteVerifyCode($data['email']);
 
         throw_if(
             Employee::where('email', $data['email'])->count(),
