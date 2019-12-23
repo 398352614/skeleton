@@ -31,5 +31,25 @@ class BaseConstService
     const ORDER_EXCEPTION_TYPE_3 = 3;
     const ORDER_EXCEPTION_TYPE_4 = 4;
 
+    //tour 在途状态  1-配送中 2-已完成 3-异常
+    const TOUR_STATUS_DELIVERYING   = 1;
+    const TOUR_STATUS_COMPLETED     = 2;
+    const TOUR_STATUS_ERROR         = 3;
 
+    //tour_log 在途动作常量  1-初始化线路 2-更新司机位置 3-更新线路
+    const TOUR_LOG_INIT                 = 1;
+    const TOUR_LOG_UPDATE_DRIVER        = 2;
+    const TOUR_LOG_UPDATE_LINE          = 3;
+
+    //tour_log 在途日志状态  1-处理中 2-已完成 3-异常
+    const TOUR_LOG_PENDING              = 1;
+    const TOUR_LOG_COMPLETE             = 2;
+    const TOUR_LOG_ERROR                = 3;
+
+    //batch 批次站点的状态 状态：1-未取派2-已分配3-取派中4-已签收5-异常
+    const BATCH_WAIT_ASSIGN          = 1;
+    const BATCH_ASSIGNED             = 2;
+    const BATCH_DELIVERING           = 3;
+    const BATCH_CHECKOUT             = 4;
+    const BATCH_ERROR                = 5;
 }

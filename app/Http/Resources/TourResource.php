@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Http\Resources;
+
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class TourResource extends JsonResource
+{
+    public function toArray($request)
+    {
+        return [
+            'id' => $this->id,
+            'company_id' => $this->id,
+            'tour_no' => $this->tour_no,
+            'line_id' => $this->line_id,
+            'line_name' => $this->line_name,
+            'execution_date' => $this->execution_date,
+            'driver_id' => $this->driver_id,
+            'driver_name' => $this->driver_name,
+            'driver_rest_time' => $this->driver_rest_time,
+            'driver_avt_id' => $this->driver_avt_id,
+            'car_id' => $this->car_id,
+            'car_no' => $this->car_no,
+            'warehouse_id' => $this->warehouse_id,
+            'warehouse_name' => $this->warehouse_name,
+            'warehouse_phone' => $this->warehouse_phone,
+            'warehouse_post_code' => $this->warehouse_post_code,
+            'warehouse_city' => $this->warehouse_city,
+            'warehouse_address' => $this->warehouse_address,
+            'warehouse_lon' => $this->warehouse_lon,
+            'warehouse_lat' => $this->warehouse_lat,
+            'status' => $this->status,
+            'begin_signature' => $this->begin_signature,
+            'begin_signature_remark' => $this->begin_signature_remark,
+            'begin_signature_first_pic' => $this->begin_signature_first_pic,
+            'begin_signature_second_pic' => $this->begin_signature_second_pic,
+            'begin_signature_third_pic' => $this->begin_signature_third_pic,
+            'end_signature' => $this->end_signature,
+            'end_signature_remark' => $this->end_signature_remark,
+            'expect_distance' => $this->expect_distance,
+            'actual_distance' => $this->actual_distance,
+            'expect_pickup_quantity' => $this->expect_pickup_quantity,
+            'actual_pickup_quantity' => $this->actual_pickup_quantity,
+            'expect_pie_quantity' => $this->expect_pie_quantity,
+            'actual_pie_quantity' => $this->actual_pie_quantity,
+            'order_amount' => $this->order_amount,
+            'replace_amount' => $this->replace_amount,
+            'remark' => $this->remark,
+            'created_at' => (string)$this->created_at,
+            'updated_at' => (string)$this->updated_at,
+        ];
+    }
+}
