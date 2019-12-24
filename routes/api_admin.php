@@ -42,4 +42,18 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //删除
         Route::delete('/', 'OrderController@destroy');
     });
+
+    //线路管理
+    Route::prefix('line')->group(function () {
+        //列表查询
+        Route::get('/', 'LineController@index');
+        //获取详情
+        Route::get('/{id}', 'LineController@show');
+        //新增
+        Route::post('/', 'LineController@store');
+        //修改
+        Route::put('/{id}', 'LineController@update');
+        //删除
+        Route::delete('/{id}', 'LineController@destroy');
+    });
 });

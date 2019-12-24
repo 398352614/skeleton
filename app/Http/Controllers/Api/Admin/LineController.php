@@ -28,9 +28,15 @@ class LineController extends BaseController
         return $this->service->getPageList();
     }
 
+    /**
+     * 获取详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws \App\Exceptions\BusinessLogicException
+     */
     public function show($id)
     {
-        return $this->service->getInfo(['id' => $id], ['*'], true);
+        return $this->service->show($id);
     }
 
     /**
@@ -40,5 +46,25 @@ class LineController extends BaseController
     public function store()
     {
         return $this->service->store($this->data);
+    }
+
+    /**
+     * @param $id
+     * @return bool|int|void
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function update($id)
+    {
+        return $this->service->updateById($id, $this->data);
+    }
+
+    /**
+     * 删除
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        return $this->service->destroy($id);
     }
 }

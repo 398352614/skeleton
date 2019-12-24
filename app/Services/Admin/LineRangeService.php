@@ -40,4 +40,26 @@ class LineRangeService extends BaseService
         }
         return $newList;
     }
+
+    /**
+     * 检查邮编规则是否存在
+     * @param $postcode
+     * @param $country
+     * @param $workDayList
+     * @param null $id
+     * @return bool
+     */
+    public function checkIfPostcodeExisted($postcode, $country, $workDayList, $id = null)
+    {
+        return $id === null ? parent::count([
+                    'post_code_start' => $postcode,
+                    'country' => $country,
+                    'schedule' => ['in', $workDayList]]
+            ) > 0 : parent::count([
+                    'line_id' => ['<>', $id],
+                    'post_code_start' => $postcode,
+                    'country' => $country,
+                    'schedule' => ['in', $workDayList]]
+            ) > 0;
+    }
 }

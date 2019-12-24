@@ -26,8 +26,8 @@ class LineValidate extends BaseValidate
         'country' => 'required|string|max:50',
         'warehouse_id' => 'required|integer',
         'order_max_count' => 'required|integer',
-        'remark' => 'required|string|max:250',
-        'work_days_list' => 'required|string'
+        'remark' => 'string|max:250',
+        'work_day_list' => 'required|string'
     ];
 
     public $item_rules = [
