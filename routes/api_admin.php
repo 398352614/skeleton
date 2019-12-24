@@ -58,4 +58,21 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/{id}', 'DriverController@show')->name('driver.show');//司机详情
         Route::delete('/{id}', 'DriverController@destroy')->name('driver.destroy');//删除司机
     });
+
+    Route::prefix('car')->group(function() {
+        Route::post('/lock', 'CarController@lock')->name('car.lock');
+        Route::get('/brands', 'CarController@getBrands')->name('car.brands');       // 获取品牌列表
+        Route::post('/addbrand', 'CarController@addBrand')->name('car.addbrand');   // 添加品牌
+        Route::get('/models', 'CarController@getModels')->name('car.models');       // 获取型号列表
+        Route::post('/addmodel', 'CarController@addModel')->name('car.addmodel');   // 添加模型
+
+        //rest api 放在最后
+        Route::post('/', 'CarController@index')->name('car.index');
+        Route::post('/', 'CarController@store')->name('car.store');
+        Route::get('/{id}', 'CarController@show')->name('car.show');//车辆详情
+        Route::put('/{id}', 'CarController@update')->name('car.update');//车辆修改
+        Route::delete('/{id}', 'CarController@destroy')->name('car.destroy');//车辆删除
+
+        // $router->post('car/lock', 'CarInfoController@lock'); //车辆锁定操作
+    });
 });

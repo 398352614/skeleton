@@ -24,7 +24,7 @@ class DriverController extends BaseController
     /**
      * @api {GET}  api/admin/driver 管理员端:司机列表
      * @apiName index
-     * @apiGroup admin
+     * @apiGroup admin-driver
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 查询司机
@@ -44,7 +44,7 @@ class DriverController extends BaseController
     /**
      * @api {GET}  api/admin/driver/{driver} 管理员端:查询司机
      * @apiName show
-     * @apiGroup admin
+     * @apiGroup admin-driver
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 查询司机
@@ -64,7 +64,7 @@ class DriverController extends BaseController
     /**
      * @api {DELETE}  api/admin/driver/{driver} 管理员端:删除司机
      * @apiName destroy
-     * @apiGroup admin
+     * @apiGroup admin-driver
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 删除司机
@@ -84,7 +84,7 @@ class DriverController extends BaseController
     /**
      * @api {POST}  api/admin/driver/driver-register 管理员端:司机添加
      * @apiName driver-register
-     * @apiGroup admin
+     * @apiGroup admin-driver
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 司机添加
@@ -128,7 +128,7 @@ class DriverController extends BaseController
     /**
      * @api {GET}  api/admin/driver/driver-status 管理员端:司机状态
      * @apiName driver-status
-     * @apiGroup admin
+     * @apiGroup admin-driver
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 司机状态
@@ -148,7 +148,7 @@ class DriverController extends BaseController
     /**
      * @api {POST}  api/admin/driver/lock-driver 管理员端:锁定司机
      * @apiName lock-driver
-     * @apiGroup admin
+     * @apiGroup admin-driver
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 锁定司机
@@ -177,7 +177,7 @@ class DriverController extends BaseController
     /**
      * @api {GET}  api/admin/driver/crop-type 管理员端:合作类型
      * @apiName crop-type
-     * @apiGroup admin
+     * @apiGroup admin-driver-driver
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 合作类型

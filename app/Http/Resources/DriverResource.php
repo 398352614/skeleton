@@ -14,6 +14,30 @@ class DriverResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'email'                         => $this->email,
+            'last_name'                     => $this->last_name,
+            'first_name'                    => $this->first_name,
+            'gender'                        => $this->gender,
+            'birthday'                      => $this->birthday,
+            'phone'                         => $this->phone,
+            'duty_paragraph'                => $this->duty_paragraph,
+            'post_code'                     => $this->post_code,
+            'door_no'                       => $this->door_no,
+            'street'                        => $this->street,
+            'city'                          => $this->city,
+            'country'                       => $this->country,
+            'lisence_number'                => $this->lisence_number,
+            'lisence_valid_date'            => $this->lisence_valid_date,
+            'lisence_type'                  => $this->lisence_type,
+            'lisence_material'              => $this->lisence_material,
+            'government_material'           => $this->government_material,
+            'avatar'                        => $this->avatar,
+            'bank_name'                     => $this->bank_name,
+            'iban'                          => $this->iban,
+            'bic'                           => $this->bic,
+            'crop_type'                     => $this->crop_type,
+            'is_locked'                     => $this->is_locked,
+        ];
     }
 }
