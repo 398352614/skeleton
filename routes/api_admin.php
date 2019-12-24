@@ -67,12 +67,18 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/addmodel', 'CarController@addModel')->name('car.addmodel');   // 添加模型
 
         //rest api 放在最后
-        Route::post('/', 'CarController@index')->name('car.index');
+        Route::get('/', 'CarController@index')->name('car.index');
         Route::post('/', 'CarController@store')->name('car.store');
         Route::get('/{id}', 'CarController@show')->name('car.show');//车辆详情
         Route::put('/{id}', 'CarController@update')->name('car.update');//车辆修改
         Route::delete('/{id}', 'CarController@destroy')->name('car.destroy');//车辆删除
 
         // $router->post('car/lock', 'CarInfoController@lock'); //车辆锁定操作
+    });
+
+    Route::prefix('batch')->group(function() {
+        //rest api 放在最后
+        Route::get('/', 'BatchController@index')->name('batch.index');
+        Route::get('/{id}', 'BatchController@show')->name('batch.show');//批次详情
     });
 });

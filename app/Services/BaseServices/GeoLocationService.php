@@ -2,6 +2,7 @@
 
 namespace App\Services\BaseServices;
 
+use App\Exceptions\BusinessLogicException;
 use App\Services\CurlClient;
 
 /**
@@ -50,7 +51,7 @@ class GeoLocationService
         }
 
         if (count($res['features']) > 3) {
-            eRet('地址不够精确,请检查');
+            throw new BusinessLogicException('地址不够精确,请检查');
         }
         
         return self::dealEuApiRet($res['features'][0]);

@@ -31,6 +31,15 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_EXCEPTION_TYPE_4 => '装货异常',
     ];
 
+    //batch 批次状态 1-未取派2-已分配3-取派中4-已签收5-异常
+    public static $batchStatusList = [
+        BaseConstService::BATCH_WAIT_ASSIGN     =>  '待分配',
+        BaseConstService::BATCH_ASSIGNED        =>  '已分配',
+        BaseConstService::BATCH_DELIVERING      =>  '取派中',
+        BaseConstService::BATCH_CHECKOUT        =>  '已签收',
+        BaseConstService::BATCH_ERROR           =>  '异常',
+    ];
+
     //在途类型-
     public static $tourStatusList = [
         BaseConstService::TOUR_STATUS_DELIVERYING   => '配送中',

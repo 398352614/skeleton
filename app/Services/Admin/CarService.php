@@ -11,7 +11,6 @@ class CarService extends BaseService
 {
     public $filterRules = [
         'status' => ['=', 'status'],
-        'order_no,out_order_no' => ['like', 'keyword']
     ];
 
     public function __construct(Car $car)
