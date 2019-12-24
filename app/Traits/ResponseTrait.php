@@ -32,4 +32,19 @@ trait ResponseTrait
         }
         return response()->json($this->responseFormat($code, $data, $msg));
     }
+
+    /**
+     * @param int $code
+     * @param mixed $data
+     * @param string $msg
+     * @return array
+     */
+    public static function response($code = 10000, $data = [], $msg = 'failed')
+    {
+        return [
+            'code' => $code,
+            'data' => $data,
+            'msg' => __($msg)
+        ];
+    }
 }
