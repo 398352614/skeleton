@@ -12,3 +12,20 @@ if (!function_exists('isJson')) {
         return (json_last_error() == JSON_ERROR_NONE);
     }
 }
+
+if (!function_exists('array_create_group_index')) {
+    /**
+     * 根据$field，数组列表进行分组并创建索引
+     * @param $arr
+     * @param $field
+     * @return array
+     */
+    function array_create_group_index($arr, $field)
+    {
+        $newArray = [];
+        foreach ($arr as $val) {
+            $newArray[$val[$field]][] = $val;
+        }
+        return $newArray;
+    }
+}

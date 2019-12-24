@@ -44,19 +44,37 @@ class Validate
             if (!class_exists($validateClass) || !property_exists($validateClass, 'rules') || !property_exists($validateClass, 'scene')) {
                 return $next($request);
             }
+            /************************************验证规则获取 start****************************************************/
             //获取验证规则
             $this->validate = new $validateClass();
             //若验证规则或场景为空,也不验证
             if (empty($this->validate->rules) || empty($this->validate->scene[$method])) {
                 return $next($request);
             }
-            //验证
-            $rules = $this->getRules($this->validate->rules, $this->validate->scene[$method]);
-            $validator = Validator::make($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message),$this->validate->customAttributes);
-            if ($validator->fails()) {
-                $messageList = Arr::flatten($validator->errors()->getMessages());
-                throw new BusinessLogicException(implode(';', $messageList), 3001);
+            //若存在明细,则获取明细规则
+            $item_rules = [];
+            $sceneRules = $this->validate->scene[$method];
+            if (!empty($sceneRules['item_list'])) {
+                $item_rules = $this->getRules($this->validate->item_rules, $sceneRules['item_list']);
+                unset($sceneRules['item_list']);
             }
+            //获取主表规则
+            $rules = $this->getRules($this->validate->rules, $sceneRules);
+            /************************************验证规则获取 end******************************************************/
+            /********************************************数据验证 start************************************************/
+            //主表验证
+            $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), $this->validate->customAttributes);
+            //明细验证
+            if (!empty($item_rules)) {
+                $itemList = json_decode($data['item_list'], true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    throw new BusinessLogicException('明细数据格式不正确', 3001);
+                }
+                foreach ($itemList as $item) {
+                    $this->validate($item, $item_rules, array_merge(BaseValidate::$baseMessage, $this->validate->item_message), $this->validate->itemCustomAttributes);
+                }
+            }
+            /*********************************************数据验证 end*************************************************/
         } catch (\Exception $ex) {
             throw new BusinessLogicException($ex->getMessage(), $ex->getCode());
         }
@@ -73,6 +91,23 @@ class Validate
     public function getRules($rules, $scene)
     {
         return Arr::only($rules, $scene);
+    }
+
+    /**
+     * 验证
+     * @param $data
+     * @param $rules
+     * @param $message
+     * @param $customAttributes
+     * @throws BusinessLogicException
+     */
+    private function validate($data, $rules, $message, $customAttributes)
+    {
+        $validator = Validator::make($data, $rules, $message, $customAttributes);
+        if ($validator->fails()) {
+            $messageList = Arr::flatten($validator->errors()->getMessages());
+            throw new BusinessLogicException(implode(';', $messageList), 3001);
+        }
     }
 
 }

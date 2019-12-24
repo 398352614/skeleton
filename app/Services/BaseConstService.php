@@ -17,6 +17,16 @@ class BaseConstService
     //取件线路编号类型
     const TOUR_NO_TYPE = 'tour';
 
+    //星期定义
+    const MONDAY = 1;
+    const TUESDAY = 2;
+    const WEDNESDAY = 3;
+    const THURSDAY = 4;
+    const FRIDAY = 5;
+    const SATURDAY = 6;
+    const SUNDAY = 0;
+
+
     //订单状态1-未取派2-已分配3-取派中4-已签收5-异常6-收回站
     const ORDER_STATUS_1 = 1;
     const ORDER_STATUS_2 = 2;

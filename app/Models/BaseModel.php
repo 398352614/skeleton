@@ -22,6 +22,27 @@ class BaseModel extends Model
         static::creating(self::fillCompanyId());
     }
 
+
+    public function insertAll($data)
+    {
+        $companyId = null;
+        if (in_array('company_id', Schema::getColumnListing($this->getTable()))) {
+            $companyId = auth()->user()->company_id;
+        }
+        //填充company_id
+        if (!empty($companyId)) {
+            foreach ($data as &$item) {
+                $item['company_id'] = $companyId;
+            }
+        }
+        //填充创建时间和修改时间
+        foreach ($data as &$item) {
+            $item['created_at'] = $item['updated_at'] = now();
+        }
+        return $this->newQuery()->insert($data);
+    }
+
+
     public static function fillCompanyId()
     {
         return function ($model) {

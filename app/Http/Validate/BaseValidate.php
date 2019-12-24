@@ -29,11 +29,17 @@ class BaseValidate
 
     public $customAttributes = [];
 
+    public $itemCustomAttributes = [];
+
     public $rules = [];
+
+    public $item_rules = [];
 
     public $scene = [];
 
     public $message = [];
+
+    public $item_message = [];
 
     /**
      * 唯一验证
@@ -53,18 +59,5 @@ class BaseValidate
         }
         $model = $query->where($attribute, '=', $value)->first();
         return empty($model) ? true : false;
-    }
-
-    /**
-     * 订单明细 验证
-     * @param $attribute
-     * @param $value
-     * @param $parameters
-     * @param Validator $validator
-     * @return bool
-     */
-    public function orderItems($attribute, $value, $parameters, $validator)
-    {
-
     }
 }

@@ -224,6 +224,11 @@ class BaseService
         return $this->query->create($data);
     }
 
+    public function insertAll($data)
+    {
+        return $this->model->insertAll($data);
+    }
+
 
     public function insertGetId($data)
     {
