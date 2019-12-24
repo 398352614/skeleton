@@ -38,3 +38,20 @@ if (!function_exists('success')) {
         return \App\Traits\ResponseTrait::response(200, $data, $message);
     }
 }
+
+if (!function_exists('create_unique')) {
+    /**
+     * 创建唯一标识
+     * @param $str
+     * @return bool
+     */
+    if (!function_exists('create_unique')) {
+        function create_unique(string $pre='') {
+            $data = time() . rand();
+            if (isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['REMOTE_ADDR'])) {
+                $data = $_SERVER['HTTP_USER_AGENT']. $_SERVER['REMOTE_ADDR'] . $data;
+            }
+            return $pre . sha1($data);
+        }
+    }
+}

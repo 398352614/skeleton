@@ -44,4 +44,18 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //删除
         Route::delete('/', 'OrderController@destroy');
     });
+
+    Route::prefix('driver')->group(function () {
+        Route::post('/driverRegister', 'DriverController@driverRegister');
+        Route::get('/driverWork', 'DriverController@driverWork');//获取司机工作日driverWork?driver_id=105
+        Route::post('assginDriverWork', 'DriverController@assginDriverWork');//给司机分配工作信息（也就是产品图上的审核）
+        Route::get('cropType', 'DriverController@cropType');//获取合作方式
+        Route::get('driverStatus', 'DriverController@driverStatus');//获取状态
+        Route::post('lockDriver', 'DriverController@lockDriver');//锁定或解锁司机
+
+        //rest api 放在最后
+        Route::get('/', 'DriverController@index')->name('driver.index');//司机列表?page=1&page_size=10&status=&crop_type=&keywords=
+        Route::get('/{id}', 'DriverController@show')->name('driver.show');//司机详情
+        Route::delete('/{id}', 'DriverController@destroy')->name('driver.destroy');//删除司机
+    });
 });

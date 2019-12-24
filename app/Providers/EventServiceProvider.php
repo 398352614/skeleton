@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Events\AfterDriverLocationUpdated;
+use App\Events\AfterTourInit;
+use App\Events\AfterTourUpdated;
+use App\Listeners\CountTourTimeAndDistance;
+use App\Listeners\UpdateDriverCountTime;
+use App\Listeners\UpdateLineCountTime;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -17,6 +23,18 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         Registered::class => [
             SendEmailVerificationNotification::class,
+        ],
+        //司机位置更新事件
+        AfterDriverLocationUpdated::class => [
+            UpdateDriverCountTime::class,
+        ],
+        //
+        AfterTourInit::class    =>  [
+            CountTourTimeAndDistance::class,
+        ],
+        //更新线路触发事件
+        AfterTourUpdated::class => [
+            UpdateLineCountTime::class,
         ],
     ];
 

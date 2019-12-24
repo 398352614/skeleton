@@ -30,4 +30,11 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_EXCEPTION_TYPE_3 => '在途异常',
         BaseConstService::ORDER_EXCEPTION_TYPE_4 => '装货异常',
     ];
+
+    //在途类型-
+    public static $tourStatusList = [
+        BaseConstService::TOUR_STATUS_DELIVERYING   => '配送中',
+        BaseConstService::TOUR_STATUS_COMPLETED     => '配送中',
+        BaseConstService::TOUR_STATUS_ERROR         => '配送中',
+    ];
 }
