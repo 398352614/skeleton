@@ -52,4 +52,13 @@ class BaseConstService
     const BATCH_DELIVERING           = 3;
     const BATCH_CHECKOUT             = 4;
     const BATCH_ERROR                = 5;
+
+    //driver 司机合作类型
+    const DRIVER_HIRE               =   1;
+    const DRIVER_CONTRACTOR         =   2;
+
+    //driver 司机状态
+    const DRIVER_TO_AUDIT               =   1;
+    const DRIVER_TO_LOCK                =   2;
+    const DRIVER_TO_NORMAL              =   3;
 }

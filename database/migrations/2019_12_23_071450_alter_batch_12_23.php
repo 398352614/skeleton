@@ -28,8 +28,8 @@ class AlterBatch1223 extends Migration
     public function down()
     {
         Schema::table('batch', function (Blueprint $table) {
-            $table->integer('expect_distance', 16, 2)->change();
-            $table->integer('actual_distance', 16, 2)->change();
+            $table->decimal('expect_distance', 16, 2)->change();
+            $table->decimal('actual_distance', 16, 2)->change();
         });
     }
 }

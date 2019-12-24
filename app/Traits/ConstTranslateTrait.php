@@ -37,4 +37,17 @@ trait ConstTranslateTrait
         BaseConstService::TOUR_STATUS_COMPLETED     => '配送中',
         BaseConstService::TOUR_STATUS_ERROR         => '配送中',
     ];
+
+    //司机合作类型
+    public static $driverTypeList = [
+        BaseConstService::DRIVER_HIRE               => '雇佣',
+        BaseConstService::DRIVER_CONTRACTOR         => '包线',
+    ];
+
+    //司机合作类型
+    public static $driverStatusList = [
+        BaseConstService::DRIVER_TO_AUDIT               => '待审核',
+        BaseConstService::DRIVER_TO_LOCK                => '锁定',
+        BaseConstService::DRIVER_TO_NORMAL              => '正常',
+    ];
 }
