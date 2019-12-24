@@ -1,19 +1,23 @@
 <?php
 
 namespace App\Models;
+
+use App\Traits\ConstTranslateTrait;
+
 /**
- * 单号规则表
- * Class Employee
+ * tour_log 表对应的模型,相当于司机的一趟任务
+ * Class Tour
  * @package App\Models
  */
-class OrderNoRule extends BaseModel
+class TourLog extends BaseModel
 {
     /**
+     * 在途日志
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'order_no_rule';
+    protected $table = 'tour_log';
 
     /**
      * The primary key for the model.
@@ -43,10 +47,9 @@ class OrderNoRule extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'type',
-        'prefix',
-        'start_index',
-        'length',
+        'tour_no',
+        'action',
+        'status',
         'created_at',
         'updated_at',
     ];
@@ -56,7 +59,9 @@ class OrderNoRule extends BaseModel
      *
      * @var array
      */
-    protected $hidden = [];
+    protected $hidden = [
+
+    ];
 
     /**
      * The attributes that should be mutated to dates.
@@ -64,4 +69,11 @@ class OrderNoRule extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+
+    // public function getStatusNameAttribute()
+    // {
+    //     return ConstTranslateTrait::$tourStatusList[$this->status];
+    // }
+
 }
