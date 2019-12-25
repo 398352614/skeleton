@@ -77,38 +77,62 @@ class TourService extends BaseService
         //若不存在取件线路或者超过最大订单量,则新建取件线路
         $this->query->where(DB::raw('expect_pickup_quantity+expect_pie_quantity'), '<', $line['order_max_count']);
         $tour = parent::getInfo(['line_id' => $line['id'], 'status' => BaseConstService::TOUR_STATUS_1], ['*'], false);
-        if (!empty($tour)) {
-            $tour = $tour->toArray();
-            $data = ($type === 1) ? ['expect_pickup_quantity' => intval($tour['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($tour['expect_pie_quantity']) + 1];
-            $rowCount = parent::updateById($tour['id'], $data);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('站点加入取件线路失败,请重新操作!');
-            }
-        } else {
-            //获取仓库信息
-            $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
-            if (empty($warehouse)) {
-                throw new BusinessLogicException('仓库不存在!');
-            }
-            $warehouse = $warehouse->toArray();
-            $quantity = ($type === 1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
-            $tour = parent::create(array_merge([
-                    'tour_no' => $this->getOrderNoRuleService()->createTourNo(),
-                    'line_id' => $line['id'],
-                    'line_name' => $line['name'],
-                    'execution_date' => $batch['execution_date'],
-                    'warehouse_id' => $warehouse['id'],
-                    'warehouse_name' => $warehouse['name'],
-                    'warehouse_phone' => $warehouse['phone'],
-                    'warehouse_post_code' => $warehouse['post_code'],
-                    'warehouse_city' => $warehouse['city'],
-                    'warehouse_address' => $warehouse['address'],
-                ], $quantity)
-            );
-            if ($tour === false) {
-                throw new BusinessLogicException('站点加入取件线路失败,请重新操作!');
-            }
-            $tour = $tour->getOriginal();
+        //加入取件线路
+        $tour = !empty($tour) ? $this->joinExistTour($tour->toArray(), $type) : $this->joinNewTour($batch, $line, $type);
+        return $tour;
+    }
+
+    /**
+     * 加入新的取件线路
+     * @param $line
+     * @param $batch
+     * @param $orderType
+     * @return BaseService|array|\Illuminate\Database\Eloquent\Model|mixed
+     * @throws BusinessLogicException
+     */
+    private function joinNewTour($batch, $line, $orderType)
+    {
+        //获取仓库信息
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        if (empty($warehouse)) {
+            throw new BusinessLogicException('仓库不存在!');
+        }
+        $warehouse = $warehouse->toArray();
+        $quantity = (intval($orderType) === 1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
+        $tour = parent::create(array_merge([
+                'tour_no' => $this->getOrderNoRuleService()->createTourNo(),
+                'line_id' => $line['id'],
+                'line_name' => $line['name'],
+                'execution_date' => $batch['execution_date'],
+                'warehouse_id' => $warehouse['id'],
+                'warehouse_name' => $warehouse['name'],
+                'warehouse_phone' => $warehouse['phone'],
+                'warehouse_post_code' => $warehouse['post_code'],
+                'warehouse_city' => $warehouse['city'],
+                'warehouse_address' => $warehouse['address'],
+            ], $quantity)
+        );
+        if ($tour === false) {
+            throw new BusinessLogicException('站点加入取件线路失败,请重新操作!');
+        }
+        $tour = $tour->getOriginal();
+        return $tour;
+    }
+
+
+    /**
+     * 加入已存在取件线路
+     * @param $tour
+     * @param $orderType
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function joinExistTour($tour, $orderType)
+    {
+        $data = (intval($orderType) === 1) ? ['expect_pickup_quantity' => intval($tour['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($tour['expect_pie_quantity']) + 1];
+        $rowCount = parent::updateById($tour['id'], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('站点加入取件线路失败,请重新操作!');
         }
         return $tour;
     }

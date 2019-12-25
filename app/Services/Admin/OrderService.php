@@ -10,6 +10,7 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Services\BaseConstService;
@@ -31,6 +32,7 @@ class OrderService extends BaseService
         $this->model = $order;
         $this->query = $this->model::query();
         $this->resource = OrderResource::class;
+        $this->infoResource = OrderInfoResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
         $this->setFilterRules();
@@ -80,6 +82,22 @@ class OrderService extends BaseService
         $takingCount = parent::count(['status' => BaseConstService::ORDER_STATUS_3]);
         $signedCount = parent::count(['status' => BaseConstService::ORDER_STATUS_4]);
         return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'taking' => $takingCount, 'singed' => $signedCount];
+    }
+
+    /**
+     * 获取详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], true);
+        if (empty($info)) {
+            throw new BusinessLogicException('订单不存在!');
+        }
+        $info['item_list'] = $this->getOrderItemService()->getList(['order_no' =>  $info['order_no']], ['*'], false);
+        return $info;
     }
 
     /**
