@@ -14,7 +14,7 @@ class AlterOrderAlterColumnStatus extends Migration
     public function up()
     {
         Schema::table('order', function (Blueprint $table) {
-            $table->tinyInteger('status')->default(1)->nullable()->after('delivery')->comment('状态')->change();
+            $table->smallInteger('status')->default(1)->nullable()->after('delivery')->comment('状态')->change();
         });
     }
 

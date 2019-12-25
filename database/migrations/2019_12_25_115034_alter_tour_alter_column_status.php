@@ -14,7 +14,7 @@ class AlterTourAlterColumnStatus extends Migration
     public function up()
     {
         Schema::table('tour', function (Blueprint $table) {
-            $table->tinyInteger('status')->default(1)->nullable()->after('warehouse_lat')->comment('状态')->change();
+            $table->smallInteger('status')->default(1)->nullable()->after('warehouse_lat')->comment('状态')->change();
         });
     }
 
