@@ -91,25 +91,30 @@ class BatchService extends BaseService
             'receiver_house_number' => $order['receiver_house_number'],
             'receiver_post_code' => $order['receiver_post_code'],
             'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
-        ]);
+        ], ['*'], false);
         //若存在相同相同站点,则直接加入站点,否则新建站点
         if (!empty($batch)) {
+            $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
+            if (empty($line)) {
+                throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
+            }
+            $line = $line->toArray();
             $batch = $batch->toArray();
             $data = (intval($order['type']) === 1) ? ['expect_pickup_quantity' => intval($batch['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($batch['expect_pie_quantity']) + 1];
             $rowCount = parent::updateById($batch['id'], $data);
             if ($rowCount === false) {
                 throw new BusinessLogicException('订单加入站点失败!');
             }
-            $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
-            if (empty($line)) {
-                throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
-            }
-            $line = $line->toArray();
         } else {
             //todo 验证邮编是否存在经纬度
             list($lon, $lat) = $this->getLocation();
             $postCode = explode_post_code($order['receiver_post_code']);
-            $line = $this->getLineService()->getInfo(['post_code_start' => ['<=', $postCode], 'post_code_end' => ['>=', $postCode], 'schedule' => Carbon::parse($order['execution_date'])->dayOfWeek], ['*'], false);
+            $lineRange = $this->getLineRangeService()->getInfo(['post_code_start' => ['<=', $postCode], 'post_code_end' => ['>=', $postCode], 'schedule' => Carbon::parse($order['execution_date'])->dayOfWeek], ['*'], false);
+            if (empty($lineRange)) {
+                throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
+            }
+            $lineRange = $lineRange->toArray();
+            $line = $this->getLineService()->getInfo(['id' => $lineRange['line_id']], ['*'], false);
             if (empty($line)) {
                 throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
             }
@@ -122,9 +127,9 @@ class BatchService extends BaseService
             $batch = $batch->getOriginal();
         }
         /**************************************站点加入取件线路********************************************************/
-        $tour = $this->getTourService()->join($batch, $line, intval($order['type']));
+        $tour = $this->getTourService()->join($batch, $line, $order['type']);
         //填充取件线路编号
-        $rowCount = parent::updateById($batch['id'], $tour['tour_no']);
+        $rowCount = parent::updateById($batch['id'], ['tour_no' => $tour['tour_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败,请重新操作');
         }
@@ -147,7 +152,6 @@ class BatchService extends BaseService
             'line_id' => $line['id'],
             'line_name' => $line['name'],
             'execution_date' => $order['execution_date'],
-            'expect_pickup_quantity' => $order['expect_pickup_quantity'],
             'receiver' => $order['receiver'],
             'receiver_phone' => $order['receiver_phone'],
             'receiver_country' => $order['receiver_country'],

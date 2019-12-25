@@ -10,6 +10,9 @@ namespace App\Services;
 class BaseConstService
 {
     const TMS = 'TMS';
+    const BATCH = 'BATCH';
+    const TOUR = 'TOUR';
+
     //订单号编号类型
     const ORDER_NO_TYPE = 'order';
     //取派批次编号类型

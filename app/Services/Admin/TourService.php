@@ -76,7 +76,7 @@ class TourService extends BaseService
     {
         //若不存在取件线路或者超过最大订单量,则新建取件线路
         $this->query->where(DB::raw('expect_pickup_quantity+expect_pie_quantity'), '<', $line['order_max_count']);
-        $tour = parent::getInfo(['line_id' => $line['id'], ['status' => BaseConstService::TOUR_STATUS_1]], ['*'], false);
+        $tour = parent::getInfo(['line_id' => $line['id'], 'status' => BaseConstService::TOUR_STATUS_1], ['*'], false);
         if (!empty($tour)) {
             $tour = $tour->toArray();
             $data = ($type === 1) ? ['expect_pickup_quantity' => intval($tour['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($tour['expect_pie_quantity']) + 1];
@@ -86,7 +86,7 @@ class TourService extends BaseService
             }
         } else {
             //获取仓库信息
-            $warehouse = $this->getWareHouseService()->getInfo(['id' => $batch['warehouse_id']], ['*'], false);
+            $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
             if (empty($warehouse)) {
                 throw new BusinessLogicException('仓库不存在!');
             }
@@ -97,7 +97,7 @@ class TourService extends BaseService
                     'line_id' => $line['id'],
                     'line_name' => $line['name'],
                     'execution_date' => $batch['execution_date'],
-                    'warehouse_id' => $warehouse['warehouse_id'],
+                    'warehouse_id' => $warehouse['id'],
                     'warehouse_name' => $warehouse['name'],
                     'warehouse_phone' => $warehouse['phone'],
                     'warehouse_post_code' => $warehouse['post_code'],
@@ -168,7 +168,7 @@ class TourService extends BaseService
     {
         throw_unless(
             self::getTourLock($this->formData['tour_no']) == 1,
-            new BusinessLogicException('不存在的动作'),
+            new BusinessLogicException('不存在的动作')
         );
 
         $tourLog = TourLog::where('tour_no', $this->formData['tour_no'])->where('status', BaseConstService::TOUR_LOG_PENDING)->where('action', $this->formData['type'])->first();

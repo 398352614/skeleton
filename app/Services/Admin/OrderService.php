@@ -93,7 +93,7 @@ class OrderService extends BaseService
         /*************************************************订单新增************************************************/
         //生成单号
         $params['order_no'] = $this->getOrderNoRuleService()->createOrderNo();
-        $order = parent::create(Arr::only($params, $this->model->getAttributes()));
+        $order = parent::create($params);
         if ($order === false) {
             throw new BusinessLogicException('订单新增失败');
         }
@@ -107,8 +107,8 @@ class OrderService extends BaseService
         /**************************************新增订单货物明细********************************************************/
         $itemList = collect(json_decode($params['item_list'], true))->map(function ($item, $key) use ($params) {
             $collectItem = collect($item)->only(['name', 'quantity', 'weight', 'volume', 'price']);
-            return $collectItem->put('order_no', $params['order_no'])->toArray();
-        });
+            return $collectItem->put('order_no', $params['order_no']);
+        })->toArray();
         $rowCount = $this->getOrderItemService()->insertAll($itemList);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单货物明细新增失败!');
@@ -123,17 +123,17 @@ class OrderService extends BaseService
     private function check($params)
     {
         //验证快递单号是否重复,由于外面已经对应验证过了,所以这里只需要验证快递单号1是否和快递单号2重复,快递单号1和快递单号2重复
-        $info = parent::getInfo(['express_first_no' => $params['express_second_no']]);
+        $info = parent::getInfo(['express_first_no' => $params['express_second_no']], ['*'], false);
         if (!empty($info)) {
             throw new BusinessLogicException('快递单号1已存在');
         }
-        $info = parent::getInfo(['express_second_no' => $params['express_first_no']]);
+        $info = parent::getInfo(['express_second_no' => $params['express_first_no']], ['*'], false);
         if (!empty($info)) {
             throw new BusinessLogicException('快递单号2已存在');
         }
         //验证货物名称是否重复
         $nameList = array_column(json_decode($params['item_list'], true), 'name');
-        if (count(array_unique($nameList)) === $this->count($nameList)) {
+        if (count(array_unique($nameList)) !== count($nameList)) {
             throw new BusinessLogicException('货物名称有重复!不能添加订单');
         }
     }

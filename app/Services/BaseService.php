@@ -210,7 +210,10 @@ class BaseService
     {
         SearchTrait::buildQuery($this->query, $where);
         $data = $this->query->first($selectFields);
-        if (empty($data)) return [];
+        if (empty($data)) {
+            $this->query = $this->model::query();
+            return [];
+        };
         if ($isResource) {
             $data = $this->infoResource::make($data)->toArray(request());
         }
@@ -221,7 +224,7 @@ class BaseService
     public function create($data)
     {
         $this->query = $this->model::query();
-        return $this->query->create($data);
+        return $this->query->create(Arr::only($data, Schema::getColumnListing($this->model->getTable())));
     }
 
     public function insertAll($data)
