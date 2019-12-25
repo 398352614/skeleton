@@ -10,12 +10,25 @@ namespace App\Services;
 class BaseConstService
 {
     const TMS = 'TMS';
+    const BATCH = 'BATCH';
+    const TOUR = 'TOUR';
+
     //订单号编号类型
     const ORDER_NO_TYPE = 'order';
     //取派批次编号类型
     const BATCH_NO_TYPE = 'batch';
     //取件线路编号类型
     const TOUR_NO_TYPE = 'tour';
+
+    //星期定义
+    const MONDAY = 1;
+    const TUESDAY = 2;
+    const WEDNESDAY = 3;
+    const THURSDAY = 4;
+    const FRIDAY = 5;
+    const SATURDAY = 6;
+    const SUNDAY = 0;
+
 
     //订单状态1-未取派2-已分配3-取派中4-已签收5-异常6-收回站
     const ORDER_STATUS_1 = 1;
@@ -31,20 +44,25 @@ class BaseConstService
     const ORDER_EXCEPTION_TYPE_3 = 3;
     const ORDER_EXCEPTION_TYPE_4 = 4;
 
+    //取件线路状态状态：1-未取派2-取派中3-取派完成
+    const TOUR_STATUS_1 = 1;
+    const TOUR_STATUS_2 = 2;
+    const TOUR_STATUS_3 = 3;
+
     //tour 在途状态  1-配送中 2-已完成 3-异常
-    const TOUR_STATUS_DELIVERYING   = 1;
-    const TOUR_STATUS_COMPLETED     = 2;
-    const TOUR_STATUS_ERROR         = 3;
+    const TOUR_STATUS_DELIVERYING = 1;
+    const TOUR_STATUS_COMPLETED = 2;
+    const TOUR_STATUS_ERROR = 3;
 
     //tour_log 在途动作常量  1-初始化线路 2-更新司机位置 3-更新线路
-    const TOUR_LOG_INIT                 = 1;
-    const TOUR_LOG_UPDATE_DRIVER        = 2;
-    const TOUR_LOG_UPDATE_LINE          = 3;
+    const TOUR_LOG_INIT = 1;
+    const TOUR_LOG_UPDATE_DRIVER = 2;
+    const TOUR_LOG_UPDATE_LINE = 3;
 
     //tour_log 在途日志状态  1-处理中 2-已完成 3-异常
-    const TOUR_LOG_PENDING              = 1;
-    const TOUR_LOG_COMPLETE             = 2;
-    const TOUR_LOG_ERROR                = 3;
+    const TOUR_LOG_PENDING = 1;
+    const TOUR_LOG_COMPLETE = 2;
+    const TOUR_LOG_ERROR = 3;
 
     //batch 批次站点的状态 状态：1-未取派2-已分配3-取派中4-已签收5-异常
     const BATCH_WAIT_ASSIGN          = 1;
@@ -61,4 +79,5 @@ class BaseConstService
     const DRIVER_TO_AUDIT               =   1;
     const DRIVER_TO_LOCK                =   2;
     const DRIVER_TO_NORMAL              =   3;
+
 }

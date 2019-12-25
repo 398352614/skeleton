@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Events\AfterTourInit;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourResource;
@@ -11,6 +12,8 @@ use App\Models\TourLog;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\GoogleApiService;
+use App\Services\OrderNoRuleService;
+use Illuminate\Support\Facades\DB;
 
 class TourService extends BaseService
 {
@@ -36,10 +39,78 @@ class TourService extends BaseService
         $this->apiClient = $client;
     }
 
+    /**
+     * 仓库 服务
+     * @return WareHouseService
+     */
+    private function getWareHouseService()
+    {
+        return self::getInstance(WareHouseService::class);
+    }
+
+    /**
+     * 单号规则 服务
+     * @return OrderNoRuleService
+     */
+    private function getOrderNoRuleService()
+    {
+        return self::getInstance(OrderNoRuleService::class);
+    }
+
     //新增
     public function store($params)
     {
 
+    }
+
+
+    /**
+     * 站点加入取件线路
+     * @param $batch
+     * @param $line
+     * @param $type
+     * @return BaseService|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function join($batch, $line, $type)
+    {
+        //若不存在取件线路或者超过最大订单量,则新建取件线路
+        $this->query->where(DB::raw('expect_pickup_quantity+expect_pie_quantity'), '<', $line['order_max_count']);
+        $tour = parent::getInfo(['line_id' => $line['id'], 'status' => BaseConstService::TOUR_STATUS_1], ['*'], false);
+        if (!empty($tour)) {
+            $tour = $tour->toArray();
+            $data = ($type === 1) ? ['expect_pickup_quantity' => intval($tour['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($tour['expect_pie_quantity']) + 1];
+            $rowCount = parent::updateById($tour['id'], $data);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('站点加入取件线路失败,请重新操作!');
+            }
+        } else {
+            //获取仓库信息
+            $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+            if (empty($warehouse)) {
+                throw new BusinessLogicException('仓库不存在!');
+            }
+            $warehouse = $warehouse->toArray();
+            $quantity = ($type === 1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
+            $tour = parent::create(array_merge([
+                    'tour_no' => $this->getOrderNoRuleService()->createTourNo(),
+                    'line_id' => $line['id'],
+                    'line_name' => $line['name'],
+                    'execution_date' => $batch['execution_date'],
+                    'warehouse_id' => $warehouse['id'],
+                    'warehouse_name' => $warehouse['name'],
+                    'warehouse_phone' => $warehouse['phone'],
+                    'warehouse_post_code' => $warehouse['post_code'],
+                    'warehouse_city' => $warehouse['city'],
+                    'warehouse_address' => $warehouse['address'],
+                ], $quantity)
+            );
+            if ($tour === false) {
+                throw new BusinessLogicException('站点加入取件线路失败,请重新操作!');
+            }
+            $tour = $tour->getOriginal();
+        }
+        return $tour;
     }
 
     public function getNextBatch($batchIds): Batch
@@ -70,9 +141,9 @@ class TourService extends BaseService
         $nextBatch = $this->getNextBatch($this->formData['batch_ids']);
 
         TourLog::create([
-            'tour_no'       => $this->formData['tour_no'],
-            'action'        => BaseConstService::TOUR_LOG_UPDATE_DRIVER,
-            'status'        =>  BaseConstService::TOUR_LOG_PENDING,
+            'tour_no' => $this->formData['tour_no'],
+            'action' => BaseConstService::TOUR_LOG_UPDATE_DRIVER,
+            'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
 
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
@@ -97,14 +168,14 @@ class TourService extends BaseService
     {
         throw_unless(
             self::getTourLock($this->formData['tour_no']) == 1,
-            new BusinessLogicException('不存在的动作'),
+            new BusinessLogicException('不存在的动作')
         );
 
         $tourLog = TourLog::where('tour_no', $this->formData['tour_no'])->where('status', BaseConstService::TOUR_LOG_PENDING)->where('action', $this->formData['type'])->first();
         // app('log')->info('日志的时间戳为:' . $lineLog->timestamp . '当天开始的时间戳为:' . strtotime(date("Y-m-d")));
-        if (time()- $tourLog->created_at > 3600*24 || $tourLog->created_at < strtotime(date("Y-m-d"))) { // 标记为异常日志
-            app('log')->info('异常的线路日志为:'. $this->formData['tour_no']);
-            $tourLog->update(['status'=>BaseConstService::TOUR_LOG_ERROR]);
+        if (time() - $tourLog->created_at > 3600 * 24 || $tourLog->created_at < strtotime(date("Y-m-d"))) { // 标记为异常日志
+            app('log')->info('异常的线路日志为:' . $this->formData['tour_no']);
+            $tourLog->update(['status' => BaseConstService::TOUR_LOG_ERROR]);
             throw new BusinessLogicException('更新时间已超时');
         }
 
@@ -119,7 +190,7 @@ class TourService extends BaseService
         app('log')->info('开始更新线路,线路标识为:' . $this->formData['tour_no']);
         app('log')->info('api返回的结果为:', $info);
 
-        TourLog::where('line_code', $this->formData['tour_no'])->where('action', $this->formData['type'])->update(['status'=>BaseConstService::TOUR_LOG_COMPLETE]); // 日志标记为已完成
+        TourLog::where('line_code', $this->formData['tour_no'])->where('action', $this->formData['type'])->update(['status' => BaseConstService::TOUR_LOG_COMPLETE]); // 日志标记为已完成
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->first();
         $max_time = 0;
         $max_distance = 0;

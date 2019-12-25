@@ -16,10 +16,8 @@ use Illuminate\Support\Facades\Route;
 //公共接口
 Route::namespace('Api\Admin')->group(function () {
     Route::post('login', 'AuthController@login');
-
     Route::post('register', 'RegisterController@store');
     Route::post('register/apply', 'RegisterController@applyOfRegister');
-
     Route::post('password-reset', 'RegisterController@resetPassword');
     Route::post('password-reset/apply', 'RegisterController@applyOfReset');
 });
@@ -45,6 +43,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::delete('/', 'OrderController@destroy');
     });
 
+
     Route::prefix('driver')->group(function () {
         Route::post('/driver-register', 'DriverController@driverRegister');
         Route::get('/driver-work', 'DriverController@driverWork');//获取司机工作日driverWork?driver_id=105
@@ -59,7 +58,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::delete('/{id}', 'DriverController@destroy')->name('driver.destroy');//删除司机
     });
 
-    Route::prefix('car')->group(function() {
+    Route::prefix('car')->group(function () {
         Route::post('/lock', 'CarController@lock')->name('car.lock');
         Route::get('/brands', 'CarController@getBrands')->name('car.brands');       // 获取品牌列表
         Route::post('/addbrand', 'CarController@addBrand')->name('car.addbrand');   // 添加品牌
@@ -76,9 +75,24 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         // $router->post('car/lock', 'CarInfoController@lock'); //车辆锁定操作
     });
 
-    Route::prefix('batch')->group(function() {
+    Route::prefix('batch')->group(function () {
         //rest api 放在最后
         Route::get('/', 'BatchController@index')->name('batch.index');
         Route::get('/{id}', 'BatchController@show')->name('batch.show');//批次详情
+
+        //线路管理
+        Route::prefix('line')->group(function () {
+            //列表查询
+            Route::get('/', 'LineController@index');
+            //获取详情
+            Route::get('/{id}', 'LineController@show');
+            //新增
+            Route::post('/', 'LineController@store');
+            //修改
+            Route::put('/{id}', 'LineController@update');
+            //删除
+            Route::delete('/{id}', 'LineController@destroy');
+
+        });
     });
 });

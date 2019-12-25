@@ -41,17 +41,45 @@ class OrderNoRuleService extends BaseService
         return $orderNo;
     }
 
-    //创建取派批次编号
+    /**
+     * 创建取派批次编号
+     * @return string
+     * @throws BusinessLogicException
+     */
     public function createBatchNo()
     {
-
+        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::BATCH_NO_TYPE], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('单号规则不存在,请先添加单号规则');
+        }
+        $info = $info->toArray();
+        $orderNo = BaseConstService::TMS . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
+        $rowCount = parent::incrementById($info['id'], 'start_index', ['start_index' => 1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('单号生成失败,请重新操作');
+        }
+        return $orderNo;
     }
 
 
-    //创建取件线路编号
+    /**
+     * 创建取件线路编号
+     * @return string
+     * @throws BusinessLogicException
+     */
     public function createTourNo()
     {
-
+        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::TOUR_NO_TYPE], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('单号规则不存在,请先添加单号规则');
+        }
+        $info = $info->toArray();
+        $orderNo = BaseConstService::TMS . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
+        $rowCount = parent::incrementById($info['id'], 'start_index', ['start_index' => 1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('单号生成失败,请重新操作');
+        }
+        return $orderNo;
     }
 
 }
