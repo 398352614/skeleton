@@ -45,7 +45,7 @@ class Company extends BaseModel
         'company_code',
         'email',
         'name',
-        'contacter',
+        'contacts',
         'phone',
         'country',
         'address',

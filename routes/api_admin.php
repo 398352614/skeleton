@@ -95,4 +95,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
         });
     });
+
+    //公司信息
+    Route::prefix('company-info')->group(function () {
+        Route::get('/', 'CompanyController@index');
+        Route::put('/', 'CompanyController@update');
+    });
 });
