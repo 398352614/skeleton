@@ -76,7 +76,7 @@ class TourService extends BaseService
     {
         //若不存在取件线路或者超过最大订单量,则新建取件线路
         $this->query->where(DB::raw('expect_pickup_quantity+expect_pie_quantity'), '<', $line['order_max_count']);
-        $tour = parent::getInfo(['line_id' => $line['id'], 'status' => BaseConstService::TOUR_STATUS_1], ['*'], false);
+        $tour = parent::getInfo(['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => BaseConstService::TOUR_STATUS_1], ['*'], false);
         //加入取件线路
         $tour = !empty($tour) ? $this->joinExistTour($tour->toArray(), $type) : $this->joinNewTour($batch, $line, $type);
         return $tour;

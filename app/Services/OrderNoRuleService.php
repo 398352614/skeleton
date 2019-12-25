@@ -34,7 +34,7 @@ class OrderNoRuleService extends BaseService
         }
         $info = $info->toArray();
         $orderNo = BaseConstService::TMS . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
-        $rowCount = parent::incrementById($info['id'], 'start_index', ['start_index' => 1]);
+        $rowCount = parent::updateById($info['id'], ['start_index' => $info['start_index'] + 1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('单号生成失败,请重新操作');
         }
@@ -54,7 +54,7 @@ class OrderNoRuleService extends BaseService
         }
         $info = $info->toArray();
         $orderNo = BaseConstService::BATCH . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
-        $rowCount = parent::incrementById($info['id'], 'start_index', ['start_index' => 1]);
+        $rowCount = parent::updateById($info['id'], ['start_index' => $info['start_index'] + 1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('单号生成失败,请重新操作');
         }
@@ -75,7 +75,7 @@ class OrderNoRuleService extends BaseService
         }
         $info = $info->toArray();
         $orderNo = BaseConstService::TOUR . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
-        $rowCount = parent::incrementById($info['id'], 'start_index', ['start_index' => 1]);
+        $rowCount = parent::updateById($info['id'], ['start_index' => $info['start_index'] + 1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('单号生成失败,请重新操作');
         }

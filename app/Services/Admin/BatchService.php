@@ -86,6 +86,7 @@ class BatchService extends BaseService
     public function join($order)
     {
         $batch = parent::getInfo([
+            'execution_date' => $order['execution_date'],
             'receiver' => $order['receiver'],
             'receiver_phone' => $order['receiver_phone'],
             'receiver_country' => $order['receiver_country'],
