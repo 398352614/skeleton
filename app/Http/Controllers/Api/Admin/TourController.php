@@ -24,6 +24,41 @@ class TourController extends BaseController
         // parent::__construct($service);
     }
 
+    /**
+     * @api {GET}  api/admin/tour 管理员端:查询任务列表
+     * @apiName index
+     * @apiGroup admin-tour
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 查询任务列表
+     * @apiSuccessExample {json}  返回示例
+     * HTTP/1.1 200 OK
+     * {
+     *  "ret":1,
+     *  "msg":"查询任务列表",
+     *  "data":{}
+     * }
+     */
+    public function index()
+    {
+        return $this->service->getPageList();
+    }
+
+    /**
+     * @api {GET}  api/admin/tour/{tour} 管理员端:查看具体任务
+     * @apiName show
+     * @apiGroup admin-tour
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 查看具体任务
+     * @apiSuccessExample {json}  返回示例
+     * HTTP/1.1 200 OK
+     * {
+     *  "ret":1,
+     *  "msg":"查看具体任务",
+     *  "data":{}
+     * }
+     */
     public function show($id)
     {
         return $this->service->getInfo(['id' => $id], ['*'], true);
