@@ -53,7 +53,7 @@ class OrderNoRuleService extends BaseService
             throw new BusinessLogicException('单号规则不存在,请先添加单号规则');
         }
         $info = $info->toArray();
-        $orderNo = BaseConstService::TMS . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
+        $orderNo = BaseConstService::BATCH . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
         $rowCount = parent::incrementById($info['id'], 'start_index', ['start_index' => 1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('单号生成失败,请重新操作');
@@ -74,7 +74,7 @@ class OrderNoRuleService extends BaseService
             throw new BusinessLogicException('单号规则不存在,请先添加单号规则');
         }
         $info = $info->toArray();
-        $orderNo = BaseConstService::TMS . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
+        $orderNo = BaseConstService::TOUR . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
         $rowCount = parent::incrementById($info['id'], 'start_index', ['start_index' => 1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('单号生成失败,请重新操作');
