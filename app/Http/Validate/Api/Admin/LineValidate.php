@@ -14,11 +14,17 @@ use App\Http\Validate\BaseValidate;
 class LineValidate extends BaseValidate
 {
     public $customAttributes = [
-
+        'name' => '名称',
+        'country' => '国家',
+        'warehouse_id' => '仓库ID',
+        'order_max_count' => '最大订单量',
+        'remark' => '备注',
+        'work_day_list' => '工作日'
     ];
 
     public $itemCustomAttributes = [
-
+        'post_code_start' => '起始邮编',
+        'post_code_end' => '结束邮编'
     ];
 
     public $rules = [
@@ -37,6 +43,10 @@ class LineValidate extends BaseValidate
 
     public $scene = [
         'store' => [
+            'name', 'country', 'warehouse_id', 'order_max_count', 'remark', 'work_days_list',
+            'item_list' => ['post_code_start', 'post_code_end']
+        ],
+        'update' => [
             'name', 'country', 'warehouse_id', 'order_max_count', 'remark', 'work_days_list',
             'item_list' => ['post_code_start', 'post_code_end']
         ],

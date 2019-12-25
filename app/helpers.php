@@ -36,12 +36,29 @@ if (!function_exists('create_unique')) {
      * @return bool
      */
     if (!function_exists('create_unique')) {
-        function create_unique(string $pre='') {
+        function create_unique(string $pre = '')
+        {
             $data = time() . rand();
             if (isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['REMOTE_ADDR'])) {
-                $data = $_SERVER['HTTP_USER_AGENT']. $_SERVER['REMOTE_ADDR'] . $data;
+                $data = $_SERVER['HTTP_USER_AGENT'] . $_SERVER['REMOTE_ADDR'] . $data;
             }
             return $pre . sha1($data);
         }
+    }
+}
+
+if (!function_exists('explode_post_code')) {
+    /**
+     * 提取邮编数字部分与字母部分
+     * @param $postcode
+     * @param bool $letter
+     * @return mixed
+     */
+    function explode_post_code($postcode, $letter = false)
+    {
+        preg_match('/^(\d+)(\D+)?$/', $postcode, $value);
+        if ($letter)
+            return $value[2] ?? '';
+        return (int)$value[1];
     }
 }
