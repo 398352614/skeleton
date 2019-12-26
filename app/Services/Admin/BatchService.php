@@ -125,8 +125,10 @@ class BatchService extends BaseService
             $line = $line->toArray();
             //获取取件线路信息
             $tour = $this->getTourService()->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
-            //若已超过最大订单量,则新建站点
+            //若未超过最大订单量,则加入已有站点
             if ((intval($tour['expect_pickup_quantity']) + intval($tour['expect_pie_quantity'])) < intval($line['order_max_count'])) {
+                //锁定当前站点
+                $batch = parent::getInfoLock(['id' => $batch['id']], ['*'], false)->toArray();
                 return [$batch, $line];
             }
         }
