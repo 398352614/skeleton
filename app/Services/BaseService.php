@@ -253,7 +253,7 @@ class BaseService
     {
         $this->query = $this->model::query();
         SearchTrait::buildQuery($this->query, $where);
-        return $this->query->update($data);
+        return $this->query->update(Arr::only($data, Schema::getColumnListing($this->model->getTable())));
     }
 
     /**
@@ -266,7 +266,7 @@ class BaseService
     {
         $this->query = $this->model::query();
         $query = $this->query->findOrFail($id);
-        return $query->update($data);
+        return $query->update(Arr::only($data, Schema::getColumnListing($this->model->getTable())));
     }
 
     /**

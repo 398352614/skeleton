@@ -29,6 +29,13 @@ class BaseConstService
     const SATURDAY = 6;
     const SUNDAY = 0;
 
+    //订单类型1-取2-派
+    const ORDER_TYPE_1 = 1;
+    const ORDER_TYPE_2 = 2;
+
+    //订单结算方式1-寄付2-到付
+    const ORDER_SETTLEMENT_TYPE_1 = 1;
+    const ORDER_SETTLEMENT_TYPE_2 = 2;
 
     //订单状态1-未取派2-已分配3-取派中4-已签收5-异常6-收回站
     const ORDER_STATUS_1 = 1;
@@ -43,6 +50,13 @@ class BaseConstService
     const ORDER_EXCEPTION_TYPE_2 = 2;
     const ORDER_EXCEPTION_TYPE_3 = 3;
     const ORDER_EXCEPTION_TYPE_4 = 4;
+
+    //订单性质1-包裹2-材料3-文件4-增值服务5-其他
+    const ORDER_NATURE_1 = 1;
+    const ORDER_NATURE_2 = 2;
+    const ORDER_NATURE_3 = 3;
+    const ORDER_NATURE_4 = 4;
+    const ORDER_NATURE_5 = 5;
 
     //取件线路状态状态：1-未取派2-取派中3-取派完成
     const TOUR_STATUS_1 = 1;
@@ -65,19 +79,19 @@ class BaseConstService
     const TOUR_LOG_ERROR = 3;
 
     //batch 批次站点的状态 状态：1-未取派2-已分配3-取派中4-已签收5-异常
-    const BATCH_WAIT_ASSIGN          = 1;
-    const BATCH_ASSIGNED             = 2;
-    const BATCH_DELIVERING           = 3;
-    const BATCH_CHECKOUT             = 4;
-    const BATCH_ERROR                = 5;
+    const BATCH_WAIT_ASSIGN = 1;
+    const BATCH_ASSIGNED = 2;
+    const BATCH_DELIVERING = 3;
+    const BATCH_CHECKOUT = 4;
+    const BATCH_ERROR = 5;
 
     //driver 司机合作类型
-    const DRIVER_HIRE               =   1;
-    const DRIVER_CONTRACTOR         =   2;
+    const DRIVER_HIRE = 1;
+    const DRIVER_CONTRACTOR = 2;
 
     //driver 司机状态
-    const DRIVER_TO_AUDIT               =   1;
-    const DRIVER_TO_LOCK                =   2;
-    const DRIVER_TO_NORMAL              =   3;
+    const DRIVER_TO_AUDIT = 1;
+    const DRIVER_TO_LOCK = 2;
+    const DRIVER_TO_NORMAL = 3;
 
 }

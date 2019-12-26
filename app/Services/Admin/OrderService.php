@@ -16,6 +16,7 @@ use App\Models\Order;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Arr;
 
 class OrderService extends BaseService
@@ -96,8 +97,23 @@ class OrderService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('订单不存在!');
         }
-        $info['item_list'] = $this->getOrderItemService()->getList(['order_no' =>  $info['order_no']], ['*'], false);
+        $info['item_list'] = $this->getOrderItemService()->getList(['order_no' => $info['order_no']], ['*'], false);
         return $info;
+    }
+
+    public function initStore()
+    {
+        $data = [];
+        $data['nature_list'] = array_values(collect(ConstTranslateTrait::$orderNatureList)->map(function ($value, $key) {
+            return collect(['id' => $key, 'name' => $value]);
+        })->toArray());
+        $data['settlement_type_list'] = array_values(collect(ConstTranslateTrait::$orderSettlementTypeList)->map(function ($value, $key) {
+            return collect(['id' => $key, 'name' => $value]);
+        })->toArray());
+        $data['type'] = array_values(collect(ConstTranslateTrait::$orderTypeList)->map(function ($value, $key) {
+            return collect(['id' => $key, 'name' => $value]);
+        })->toArray());
+        return $data;
     }
 
     /**

@@ -35,6 +35,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/', 'OrderController@index');
         //获取详情
         Route::get('/{id}', 'OrderController@show');
+        //新增初始化
+        Route::get('/initStore', 'OrderController@initStore');
         //新增
         Route::post('/', 'OrderController@store');
         //修改
@@ -79,20 +81,41 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //rest api 放在最后
         Route::get('/', 'BatchController@index')->name('batch.index');
         Route::get('/{id}', 'BatchController@show')->name('batch.show');//批次详情
+    });
 
-        //线路管理
-        Route::prefix('line')->group(function () {
-            //列表查询
-            Route::get('/', 'LineController@index');
-            //获取详情
-            Route::get('/{id}', 'LineController@show');
-            //新增
-            Route::post('/', 'LineController@store');
-            //修改
-            Route::put('/{id}', 'LineController@update');
-            //删除
-            Route::delete('/{id}', 'LineController@destroy');
+    //任务报告
+    Route::prefix('report')->group(function () {
+        //列表查询
+        Route::get('/', 'ReportController@index');
+        //获取详情
+        Route::get('/{id}', 'ReportController@show');
+    });
 
-        });
+    //线路管理
+    Route::prefix('line')->group(function () {
+        //列表查询
+        Route::get('/', 'LineController@index');
+        //获取详情
+        Route::get('/{id}', 'LineController@show');
+        //新增
+        Route::post('/', 'LineController@store');
+        //修改
+        Route::put('/{id}', 'LineController@update');
+        //删除
+        Route::delete('/{id}', 'LineController@destroy');
+    });
+
+    //仓库管理
+    Route::prefix('warehouse')->group(function () {
+        //列表查询
+        Route::get('/', 'WareHouseController@index');
+        //获取详情
+        Route::get('/{id}', 'WareHouseController@show');
+        //新增
+        Route::post('/', 'WareHouseController@store');
+        //修改
+        Route::put('/{id}', 'WareHouseController@update');
+        //删除
+        Route::delete('/{id}', 'WareHouseController@destroy');
     });
 });

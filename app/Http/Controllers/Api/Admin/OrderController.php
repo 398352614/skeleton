@@ -46,6 +46,11 @@ class OrderController extends BaseController
         return $this->service->initIndex();
     }
 
+    public function initStore()
+    {
+        return $this->service->initStore();
+    }
+
     /**
      * 新增
      * @throws \App\Exceptions\BusinessLogicException
