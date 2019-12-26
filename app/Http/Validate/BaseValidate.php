@@ -57,6 +57,9 @@ class BaseValidate
         if ($id = request()->route($primaryKey)) {
             $query->where($primaryKey, '<>', $id);
         }
+        if (in_array('company_id', $parameters)) {
+            $query->where('company_id', '=', auth()->user()->company_id);
+        }
         $model = $query->where($attribute, '=', $value)->first();
         return empty($model) ? true : false;
     }

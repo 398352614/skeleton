@@ -124,4 +124,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/', 'CompanyController@index');
         Route::put('/', 'CompanyController@update');
     });
+
+    //国家管理
+    Route::prefix('country')->group(function () {
+        Route::get('/', 'CountryController@index');
+        Route::post('/', 'CountryController@store');
+    });
 });
