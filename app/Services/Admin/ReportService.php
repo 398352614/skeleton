@@ -121,7 +121,7 @@ class ReportService extends BaseService
                 $order['status_name'] = ConstTranslateTrait::$orderStatusList[BaseConstService::ORDER_STATUS_1];
                 return $order;
             })->filter(function ($order, $key) {
-                return intval($order['type'] == BaseConstService::ORDER_TYPE_2);
+                return (intval($order['type']) === BaseConstService::ORDER_TYPE_2) && (in_array(intval($order['status']), [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]));
             });
         return $outWarehouseInfo;
     }
@@ -143,7 +143,7 @@ class ReportService extends BaseService
                 $order['status_name'] = ConstTranslateTrait::$orderStatusList[BaseConstService::ORDER_STATUS_4];
                 return $order;
             })->filter(function ($order, $key) {
-                return intval($order['type'] == BaseConstService::ORDER_TYPE_1);
+                return (intval($order['type']) === BaseConstService::ORDER_TYPE_1) && (in_array(intval($order['status']), [BaseConstService::ORDER_STATUS_4, BaseConstService::ORDER_STATUS_5]));
             });
         return $outWarehouseInfo;
     }
