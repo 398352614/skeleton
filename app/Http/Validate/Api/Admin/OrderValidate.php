@@ -62,7 +62,7 @@ class OrderValidate extends BaseValidate
         'source' => 'required|string|max:50',
         'type' => 'required|integer|in:1,2',
         'out_user_id' => 'required|integer',
-        'nature' => 'required|integer|in:1,2,3,4',
+        'nature' => 'required|integer|in:1,2,3,4,5',
         'settlement_type' => 'required|in:1,2',
         'settlement_amount' => 'required_if:settlement_type,1|numeric',
         'replace_amount' => 'numeric',
