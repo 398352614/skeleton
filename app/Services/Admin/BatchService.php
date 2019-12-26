@@ -85,17 +85,9 @@ class BatchService extends BaseService
      */
     public function join($order)
     {
-        $batch = parent::getInfo([
-            'execution_date' => $order['execution_date'],
-            'receiver' => $order['receiver'],
-            'receiver_phone' => $order['receiver_phone'],
-            'receiver_country' => $order['receiver_country'],
-            'receiver_house_number' => $order['receiver_house_number'],
-            'receiver_post_code' => $order['receiver_post_code'],
-            'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
-        ], ['*'], false);
+        list($batch, $line) = $this->hasSameBatch($order);
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
-        list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch->toArray()) : $this->joinNewBatch($order);
+        list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order);
         /**************************************站点加入取件线路********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $order['type']);
         /***********************************************填充取件线路编号************************************************/
@@ -104,6 +96,40 @@ class BatchService extends BaseService
             throw new BusinessLogicException('站点加入取件线路失败,请重新操作');
         }
         return [$batch, $tour];
+    }
+
+    /**
+     * 判断是否存在相同站点
+     * @param $order
+     * @return array
+     * @throws BusinessLogicException
+     */
+    private function hasSameBatch($order)
+    {
+        $batch = parent::getInfoLock([
+            'execution_date' => $order['execution_date'],
+            'receiver' => $order['receiver'],
+            'receiver_phone' => $order['receiver_phone'],
+            'receiver_country' => $order['receiver_country'],
+            'receiver_house_number' => $order['receiver_house_number'],
+            'receiver_post_code' => $order['receiver_post_code'],
+            'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
+        ], ['*'], false);
+        if (empty($batch)) return [[], []];
+        $batch = $batch->toArray();
+        //获取线路信息
+        $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
+        }
+        $line = $line->toArray();
+        //获取取件线路信息
+        $tour = $this->getTourService()->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
+        //若已超过最大订单量,则新建站点
+        if ((intval($tour['expect_pickup_quantity']) + intval($tour['expect_pie_quantity'])) >= intval($line['order_max_count'])) {
+            return [[], []];
+        }
+        return [$batch, $line];
     }
 
 
@@ -148,13 +174,8 @@ class BatchService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    private function joinExistBatch($order, $batch)
+    private function joinExistBatch($order, $batch, $line)
     {
-        $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
-        if (empty($line)) {
-            throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
-        }
-        $line = $line->toArray();
         $data = (intval($order['type']) === 1) ? ['expect_pickup_quantity' => intval($batch['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($batch['expect_pie_quantity']) + 1];
         $rowCount = parent::updateById($batch['id'], $data);
         if ($rowCount === false) {
