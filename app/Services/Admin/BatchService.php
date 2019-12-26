@@ -114,8 +114,8 @@ class BatchService extends BaseService
             'receiver_house_number' => $order['receiver_house_number'],
             'receiver_post_code' => $order['receiver_post_code'],
             'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
-        ], ['*'], false)->toArray();
-        if (empty($batchList)) return [[], []];
+        ], ['*'], false, [], [])->toArray();
+        if (empty($batchList)) return [[], ['created_at' => 'desc']];
         foreach ($batchList as $batch) {
             //获取线路信息
             $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
