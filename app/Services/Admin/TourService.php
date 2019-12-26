@@ -79,7 +79,7 @@ class TourService extends BaseService
         $tour = parent::getInfo(['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => BaseConstService::TOUR_STATUS_1], ['*'], false);
         //加入取件线路
         $tour = !empty($tour) ? $this->joinExistTour($tour->toArray(), $type) : $this->joinNewTour($batch, $line, $type);
-        return $tour->getOriginal();
+        return $tour;
     }
 
     /**
@@ -117,7 +117,7 @@ class TourService extends BaseService
         if ($tour === false) {
             throw new BusinessLogicException('站点加入取件线路失败,请重新操作!');
         }
-        return $tour;
+        return $tour->getOriginal();
     }
 
 
@@ -135,7 +135,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败,请重新操作!');
         }
-        return $this->model;
+        return $tour;
     }
 
     public function getNextBatch($batchIds): Batch

@@ -115,6 +115,7 @@ class ReportService extends BaseService
     {
         $outWarehouseInfo = $warehouseInfo;
         $outWarehouseInfo['expect_quantity'] = $tour['expect_pie_quantity'];
+        $outWarehouseInfo['signature'] = $tour['begin_signature'];
         $outWarehouseInfo['order_list'] = collect($orderList)
             ->map(function ($order, $key) {
                 $order['type_name'] = ConstTranslateTrait::$orderTypeList[$order['type']];
@@ -137,6 +138,7 @@ class ReportService extends BaseService
     {
         $outWarehouseInfo = $warehouseInfo;
         $outWarehouseInfo['expect_quantity'] = $tour['expect_pickup_quantity'];
+        $outWarehouseInfo['signature'] = $tour['end_signature'];
         $outWarehouseInfo['order_list'] = collect($orderList)
             ->map(function ($order, $key) {
                 $order['type_name'] = ConstTranslateTrait::$orderTypeList[$order['type']];
@@ -171,7 +173,8 @@ class ReportService extends BaseService
                 'post_code' => $batch['receiver_post_code'],
                 'city' => $batch['receiver_city'],
                 'address' => $batch['receiver_address'],
-                'expect_quantity' => $batch['expect_pickup_quantity'] + $batch['expect_pie_quantity']
+                'expect_quantity' => $batch['expect_pickup_quantity'] + $batch['expect_pie_quantity'],
+                'signature' => $batch['signature']
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
         }
