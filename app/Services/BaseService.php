@@ -266,7 +266,7 @@ class BaseService
     {
         $this->query = $this->model::query();
         $query = $this->query->findOrFail($id);
-        return $query->update(Arr::only($data, Arr::except(Schema::getColumnListing($this->model->getTable()), [['company_id', 'order_no', 'batch_no', 'tour_no']])));
+        return $query->update(Arr::only($data, Arr::except(Schema::getColumnListing($this->model->getTable()), ['company_id', 'order_no', 'batch_no', 'tour_no'])));
     }
 
     /**
