@@ -52,12 +52,14 @@ class LineRangeService extends BaseService
     public function checkIfPostcodeExisted($postcode, $country, $workDayList, $id = null)
     {
         return $id === null ? parent::count([
-                    'post_code_start' => $postcode,
+                    'post_code_start' => ['>=', $postcode],
+                    'post_code_end' => ['<=', $postcode],
                     'country' => $country,
                     'schedule' => ['in', $workDayList]]
             ) > 0 : parent::count([
                     'line_id' => ['<>', $id],
-                    'post_code_start' => $postcode,
+                    'post_code_start' => ['>=', $postcode],
+                    'post_code_end' => ['<=', $postcode],
                     'country' => $country,
                     'schedule' => ['in', $workDayList]]
             ) > 0;
