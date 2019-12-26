@@ -10,6 +10,7 @@ namespace App\Services\Driver;
 
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\MemorandumResource;
 use App\Models\Memorandum;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
@@ -21,14 +22,62 @@ class MemorandumService extends BaseService
         $this->request = request();
         $this->model = $memorandum;
         $this->query = $this->model::query();
+        $this->resource = MemorandumResource::class;
     }
 
+    /**
+     * 获取详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $info;
+    }
 
+    /**
+     * 新增
+     * @param $params
+     * @throws BusinessLogicException
+     */
     public function store($params)
     {
-        $rowCount = parent::create(array_push($params, ['driver_id' => auth()->id()]));
+        $rowCount = parent::create($params);
         if ($rowCount === false) {
-            throw new BusinessLogicException('备忘录新增失败!');
+            throw new BusinessLogicException('备忘录新增失败');
+        }
+    }
+
+    /**
+     * 修改
+     * @param $id
+     * @param $data
+     * @return bool|int|void
+     * @throws BusinessLogicException
+     */
+    public function updateById($id, $data)
+    {
+        $rowCount = parent::update($id, $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('备忘录修改失败');
+        }
+    }
+
+    /**
+     * 删除
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        $rowCount = parent::delete(['id' => $id]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('备忘录删除失败');
         }
     }
 
