@@ -106,7 +106,7 @@ class BatchService extends BaseService
      */
     private function hasSameBatch($order)
     {
-        $batch = parent::getInfoLock([
+        $batchList = parent::getList([
             'execution_date' => $order['execution_date'],
             'receiver' => $order['receiver'],
             'receiver_phone' => $order['receiver_phone'],
@@ -114,22 +114,23 @@ class BatchService extends BaseService
             'receiver_house_number' => $order['receiver_house_number'],
             'receiver_post_code' => $order['receiver_post_code'],
             'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
-        ], ['*'], false);
-        if (empty($batch)) return [[], []];
-        $batch = $batch->toArray();
-        //获取线路信息
-        $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
-        if (empty($line)) {
-            throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
+        ], ['*'], false)->toArray();
+        if (empty($batchList)) return [[], []];
+        foreach ($batchList as $batch) {
+            //获取线路信息
+            $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
+            if (empty($line)) {
+                throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
+            }
+            $line = $line->toArray();
+            //获取取件线路信息
+            $tour = $this->getTourService()->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
+            //若已超过最大订单量,则新建站点
+            if ((intval($tour['expect_pickup_quantity']) + intval($tour['expect_pie_quantity'])) < intval($line['order_max_count'])) {
+                return [$batch, $line];
+            }
         }
-        $line = $line->toArray();
-        //获取取件线路信息
-        $tour = $this->getTourService()->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
-        //若已超过最大订单量,则新建站点
-        if ((intval($tour['expect_pickup_quantity']) + intval($tour['expect_pie_quantity'])) >= intval($line['order_max_count'])) {
-            return [[], []];
-        }
-        return [$batch, $line];
+        return [[], []];
     }
 
 
