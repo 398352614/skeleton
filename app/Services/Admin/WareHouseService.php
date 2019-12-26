@@ -26,6 +26,21 @@ class WareHouseService extends BaseService
     }
 
     /**
+     * 获取详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], true);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $info;
+    }
+
+    /**
      * 新增
      * @param $params
      * @throws BusinessLogicException

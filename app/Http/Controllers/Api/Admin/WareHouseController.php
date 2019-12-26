@@ -31,9 +31,15 @@ class WareHouseController extends BaseController
         return $this->service->getPageList();
     }
 
+    /**
+     * 获取详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
     public function show($id)
     {
-        return $this->service->getInfo(['id' => $id], ['*'], true);
+        return $this->service->show($id);
     }
 
 
