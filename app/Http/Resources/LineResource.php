@@ -18,7 +18,7 @@ class LineResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'company_id' => $this->id,
+            'company_id' => $this->company_id,
             'name' => $this->name,
             'country' => $this->country,
             'line_range' => $this->line_range,

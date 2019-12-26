@@ -9,7 +9,7 @@ class TestResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'company_id' => $this->id,
+            'company_id' => $this->company_id,
             'name' => $this->name,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
