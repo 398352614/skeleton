@@ -15,6 +15,7 @@ class CreateCarModelTable extends Migration
     {
         Schema::create('car_model', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('company_id')->comment('公司标识');
             $table->bigInteger('brand_id')->comment('汽车型号对应的品牌 id');
             $table->string('cn_name')->comment('品牌名');
             $table->string('en_name')->default('')->nullable()->comment('品牌英文名');

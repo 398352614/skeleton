@@ -153,7 +153,7 @@ class RegisterController extends Controller
     /**
      * 重置密码
      * @param  Request  $request
-     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     * @return array
      * @throws BusinessLogicException
      */
     public function resetPassword(Request $request)
@@ -178,12 +178,12 @@ class RegisterController extends Controller
         ]);
 
         if ($res === false) {
-            return response([]);
+            return failed();
         }
 
         auth('admin')->logout();
 
-        throw new BusinessLogicException('failed');
+        return success();
     }
 
     /**
