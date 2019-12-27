@@ -112,4 +112,9 @@ class Batch extends BaseModel
         return ConstTranslateTrait::$tourStatusList[$this->status];
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'batch_no', 'batch_no');
+    }
+
 }

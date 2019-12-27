@@ -7,6 +7,7 @@ use App\Http\Resources\CarModelResource;
 use App\Http\Resources\CarResource;
 use App\Models\Car;
 use App\Models\CarBrand;
+use App\Models\CarModel;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 
@@ -16,7 +17,7 @@ class CarModelService extends BaseService
         'brand_id' => ['=', 'brand_id'],
     ];
 
-    public function __construct(CarBrand $carBrand)
+    public function __construct(CarModel $carBrand)
     {
         $this->model = $carBrand;
         $this->query = $this->model::query();

@@ -32,7 +32,7 @@ class TourService extends BaseService
     {
         $this->model = $tour;
         $this->query = $this->model::query();
-        $this->resource = TourResource::class;
+        $this->infoResource = TourResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
         $this->setFilterRules();

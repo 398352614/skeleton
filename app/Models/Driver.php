@@ -67,6 +67,7 @@ class Driver extends BaseModel
         'iban',
         'bic',
         'is_locked',
+        'crop_type',
         'created_at',
         'updated_at',
     ];

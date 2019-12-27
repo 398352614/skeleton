@@ -83,6 +83,12 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/{id}', 'BatchController@show')->name('batch.show');//批次详情
     });
 
+    Route::prefix('tour')->group(function () {
+        //rest api 放在最后
+        Route::get('/', 'TourController@index')->name('tour.index');
+        Route::get('/{id}', 'TourController@show')->name('tour.show');//
+    });
+
     //任务报告
     Route::prefix('report')->group(function () {
         //列表查询

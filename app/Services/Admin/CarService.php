@@ -17,7 +17,7 @@ class CarService extends BaseService
     {
         $this->model = $car;
         $this->query = $this->model::query();
-        $this->resource = CarResource::class;
+        $this->infoResource = CarResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
         $this->setFilterRules();
@@ -25,7 +25,7 @@ class CarService extends BaseService
 
     //新增
     public function store()
-    {
+    {        
         return $this->create([
             'car_no'            =>   $this->formData['car_no'],
             'outgoing_time'         =>   $this->formData['outgoing_time'],
@@ -38,13 +38,13 @@ class CarService extends BaseService
             'current_miles'         =>   $this->formData['current_miles'],
             'annual_inspection_data'            =>   $this->formData['annual_inspection_data'],
             'ownership_type'            =>   $this->formData['ownership_type'],
-            'received_data'         =>   $this->formData['received_data'],
+            'received_date'         =>   $this->formData['received_date'],
             'month_road_tax'            =>   $this->formData['month_road_tax'],
             'insurance_company'         =>   $this->formData['insurance_company'],
             'insurance_type'            =>   $this->formData['insurance_type'],
             'month_insurance'           =>   $this->formData['month_insurance'],
-            'rent_start_data'           =>   $this->formData['rent_start_data'],
-            'rent_end_data'         =>   $this->formData['rent_end_data'],
+            'rent_start_date'           =>   $this->formData['rent_start_date'],
+            'rent_end_date'         =>   $this->formData['rent_end_date'],
             'rent_month_fee'            =>   $this->formData['rent_month_fee'],
             'repair'            =>   $this->formData['repair'],
             'remark'            =>   $this->formData['remark'],
@@ -66,13 +66,13 @@ class CarService extends BaseService
             'current_miles'         =>   $this->formData['current_miles'],
             'annual_inspection_data'            =>   $this->formData['annual_inspection_data'],
             'ownership_type'            =>   $this->formData['ownership_type'],
-            'received_data'         =>   $this->formData['received_data'],
+            'received_date'         =>   $this->formData['received_date'],
             'month_road_tax'            =>   $this->formData['month_road_tax'],
             'insurance_company'         =>   $this->formData['insurance_company'],
             'insurance_type'            =>   $this->formData['insurance_type'],
             'month_insurance'           =>   $this->formData['month_insurance'],
-            'rent_start_data'           =>   $this->formData['rent_start_data'],
-            'rent_end_data'         =>   $this->formData['rent_end_data'],
+            'rent_start_date'           =>   $this->formData['rent_start_date'],
+            'rent_end_date'         =>   $this->formData['rent_end_date'],
             'rent_month_fee'            =>   $this->formData['rent_month_fee'],
             'repair'            =>   $this->formData['repair'],
             'remark'            =>   $this->formData['remark'],

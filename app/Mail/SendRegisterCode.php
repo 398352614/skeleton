@@ -21,6 +21,7 @@ class SendRegisterCode extends Mailable
     public function __construct(string $code)
     {
         $this->code = $code;
+        app('log')->debug('注册发送的验证码为:' . $code);
     }
 
     /**

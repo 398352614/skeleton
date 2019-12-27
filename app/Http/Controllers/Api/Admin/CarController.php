@@ -230,7 +230,7 @@ class CarController extends BaseController
      */
     public function addModel(Request $request)
     {
-        return $this->brandService->create($request->all());
+        return $this->modelService->create($request->all());
     }
 
 }

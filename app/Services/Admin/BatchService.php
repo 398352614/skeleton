@@ -28,7 +28,7 @@ class BatchService extends BaseService
     {
         $this->model = $batch;
         $this->query = $this->model::query();
-        $this->resource = BatchResource::class;
+        $this->infoResource = BatchResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
         $this->setFilterRules();

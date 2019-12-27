@@ -49,6 +49,7 @@ class BatchResource extends JsonResource
             'replace_amount' => $this->replace_amount,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
+            'orders'    => OrderResource::collection($this->orders),
         ];
     }
     
