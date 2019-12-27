@@ -8,6 +8,7 @@ namespace App\Models;
 
 use App\Models\Scope\CompanyScope;
 use Illuminate\Foundation\Auth\User as BaseUser;
+use Illuminate\Support\Facades\Schema;
 
 class Authenticatable extends BaseUser
 {
@@ -16,5 +17,18 @@ class Authenticatable extends BaseUser
         parent::boot();
 
         static::addGlobalScope(new CompanyScope);
+        static::creating(self::fillCompanyId());
+    }
+
+    public static function fillCompanyId()
+    {
+        return function ($model) {
+            /**@var \Illuminate\Database\Eloquent\Model $model */
+            if (in_array('company_id', Schema::getColumnListing($model->getTable()))) {
+                if (!isset($model->company_id) || $model->company_id === null) {
+                    $model->company_id = auth()->user()->company_id;
+                }
+            }
+        };
     }
 }

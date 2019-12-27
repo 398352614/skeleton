@@ -111,6 +111,7 @@ class DriverController extends BaseController
      * @apiParam {String}   iban                    在途编号
      * @apiParam {String}   bic                    在途编号
      * @apiParam {String}   crop_type                    合作类型
+     * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
      * {

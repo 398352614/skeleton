@@ -18,13 +18,13 @@ class DriverValidate extends BaseValidate
     ];
 
     public $rules = [
-        'email'                         => ['required'],
+        'email'                         => ['required','uniqueIgnore:driver,id'],
         'password'                      => ['required'],
         'last_name'                     => ['required'],
         'first_name'                    => ['required'],
         'gender'                        => ['required'],
         'birthday'                      => ['required'],
-        'phone'                         => ['required'],
+        'phone'                         => ['required','uniqueIgnore:driver,id'],
         'duty_paragraph'                => ['required'],
         'post_code'                     => ['required'],
         'door_no'                       => ['required'],

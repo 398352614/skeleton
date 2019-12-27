@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\DriverResource;
 use App\Http\Resources\TourResource;
 use App\Models\Driver;
@@ -34,8 +35,10 @@ class DriverService extends BaseService
 
     }
 
+
     /**
      * 添加司机
+     * @throws BusinessLogicException
      */
     public function driverRegister()
     {
@@ -63,9 +66,12 @@ class DriverService extends BaseService
             'iban'                  => $this->formData['iban'],
             'bic'                   => $this->formData['bic'],
             'crop_type'             => $this->formData['crop_type'],
-            'is_locked'             => 0,
+            'is_locked'             => BaseConstService::DRIVER_TO_NORMAL,
         ];
-        return Driver::create($driver);
+        $rowCount =  parent::create($driver);
+        if($rowCount === false){
+            throw new BusinessLogicException('新增司机失败');
+        }
     }
 
 
