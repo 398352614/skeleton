@@ -63,7 +63,7 @@ class Validate
             /************************************验证规则获取 end******************************************************/
             /********************************************数据验证 start************************************************/
             //主表验证
-            $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), $this->validate->customAttributes);
+            $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), $this->validate->customAttributes);          
             //明细验证
             if (!empty($item_rules)) {
                 $itemList = json_decode($data['item_list'], true);
@@ -108,6 +108,7 @@ class Validate
             $messageList = Arr::flatten($validator->errors()->getMessages());
             throw new BusinessLogicException(implode(';', $messageList), 3001);
         }
+        request()->validated = $validator->validated(); // 控制器先被初始化,然后才进入的中间件!!!
     }
 
 }
