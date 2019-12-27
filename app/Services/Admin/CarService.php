@@ -17,6 +17,7 @@ class CarService extends BaseService
     {
         $this->model = $car;
         $this->query = $this->model::query();
+        $this->resource = CarResource::class;
         $this->infoResource = CarResource::class;
         $this->request = request();
         $this->formData = $this->request->all();

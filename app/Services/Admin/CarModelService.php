@@ -22,6 +22,7 @@ class CarModelService extends BaseService
         $this->model = $carBrand;
         $this->query = $this->model::query();
         $this->resource = CarModelResource::class;
+        $this->infoResource = CarModelResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
         $this->setFilterRules();

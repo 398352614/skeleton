@@ -22,6 +22,7 @@ class DriverService extends BaseService
         $this->model = $driver;
         $this->query = $this->model::query();
         $this->resource = DriverResource::class;
+        $this->infoResource = DriverResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
         $this->setFilterRules();
