@@ -13,6 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\WareHouseResource;
 use App\Models\Warehouse;
 use App\Services\BaseService;
+use App\Traits\LocationTrait;
 
 class WareHouseService extends BaseService
 {

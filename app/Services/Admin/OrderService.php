@@ -17,12 +17,14 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 
 class OrderService extends BaseService
 {
 
     public $filterRules = [
+        'type' => ['=', 'type'],
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'order_no,out_order_no' => ['like', 'keyword']
@@ -75,13 +77,29 @@ class OrderService extends BaseService
         return self::getInstance(TourService::class);
     }
 
-
-    public function initIndex()
+    /**
+     * 取件列初始化
+     * @return array
+     */
+    public function initPickupIndex()
     {
-        $noTakeCount = parent::count(['status' => BaseConstService::ORDER_STATUS_1]);
-        $assignCount = parent::count(['status' => BaseConstService::ORDER_STATUS_2]);
-        $takingCount = parent::count(['status' => BaseConstService::ORDER_STATUS_3]);
-        $signedCount = parent::count(['status' => BaseConstService::ORDER_STATUS_4]);
+        $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_1]);
+        $assignCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_2]);
+        $takingCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_3]);
+        $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_4]);
+        return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'taking' => $takingCount, 'singed' => $signedCount];
+    }
+
+    /**
+     * 派件列表初始化
+     * @return array
+     */
+    public function initPieIndex()
+    {
+        $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_1]);
+        $assignCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_2]);
+        $takingCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_3]);
+        $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_4]);
         return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'taking' => $takingCount, 'singed' => $signedCount];
     }
 
@@ -154,7 +172,7 @@ class OrderService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    private function check($params)
+    private function check(&$params)
     {
         //验证快递单号是否重复,由于外面已经对应验证过了,所以这里只需要验证快递单号1是否和快递单号2重复,快递单号1和快递单号2重复
         $info = parent::getInfo(['express_first_no' => $params['express_second_no']], ['*'], false);

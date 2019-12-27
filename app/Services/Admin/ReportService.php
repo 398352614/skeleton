@@ -90,7 +90,7 @@ class ReportService extends BaseService
         //获取当前取件线路上的所有订单
         $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'exception_remark'], false)->toArray();
         //获取所有的站点
-        $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+        $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
         /**********************************************获取出库信息****************************************************/
         $outWarehouseInfo = $this->getOutWarehouseInfo($info, $warehouseInfo, $orderList);
         /**********************************************获取入库信息****************************************************/

@@ -44,6 +44,8 @@ class OrderValidate extends BaseValidate
         'receiver_address' => '收件人详细地址',
         'special_remark' => '特殊事项',
         'remark' => '其余备注',
+        'lon' => '经度',
+        'lat' => '纬度'
     ];
 
     public $itemCustomAttributes = [
@@ -55,7 +57,7 @@ class OrderValidate extends BaseValidate
     ];
 
     public $rules = [
-        'execution_date' => 'required|date',
+        'execution_date' => 'required|date|after_or_equal:today',
         'out_order_no' => 'required|string|max:50|uniqueIgnore:order,id',
         'express_first_no' => 'required|string|max:50|uniqueIgnore:order,id',
         'express_second_no' => 'required|string|max:50|uniqueIgnore:order,id',
@@ -83,19 +85,27 @@ class OrderValidate extends BaseValidate
         'receiver_city' => 'required|string|max:50',
         'receiver_street' => 'required|string|max:50',
         'receiver_address' => 'required|string|max:250',
+        'lon' => 'required|string|max:50',
+        'lat' => 'required|string|max:50',
         'special_remark' => 'string|max:250',
         'remark' => 'string|max:250',
+
     ];
 
     public $item_rules = [
         'name' => 'required|string|max:50',
-        'quantity' => 'required|integer',
+        'quantity' => 'required|integer|between:1,10',
         'weight' => 'required|numeric',
         'volume' => 'required|numeric',
         'price' => 'required|numeric',
     ];
 
     public $scene = [
+
+        'getLocation' => [
+            'receiver_country', 'receiver_post_code', 'receiver_house_number',
+            'receiver_city', 'receiver_street'
+        ],
         'store' => [
             'execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source',
             'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
@@ -106,7 +116,7 @@ class OrderValidate extends BaseValidate
             'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address',
             //备注
-            'special_remark', 'remark',
+            'special_remark', 'remark', 'lon', 'lat',
             //明细
             'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
         ],

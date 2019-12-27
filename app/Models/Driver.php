@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Models;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
 /**
  * 司机表
  * Class Employee
  * @package App\Models
  */
-class Driver extends BaseModel
+class Driver extends Authenticatable implements JWTSubject
 {
     /**
      * The table associated with the model.
@@ -87,4 +89,30 @@ class Driver extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    /**
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [
+            'role' => 'driver',
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullNameAttribute()
+    {
+        return $this->last_name. ' ' . $this->first_name;
+    }
 }

@@ -13,7 +13,27 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::namespace('Api\Driver')->group(function () {
+
+/*
+|--------------------------------------------------------------------------
+| 公共接口
+|--------------------------------------------------------------------------
+*/
+Route::namespace('Api\Driver')->middleware([])->group(function () {
+    Route::post('login', 'AuthController@login');
+    //Route::post('password-reset', 'RegisterController@resetPassword');
+    //Route::post('password-reset/apply', 'RegisterController@applyOfReset');
+});
+
+/*
+|--------------------------------------------------------------------------
+| 认证接口
+|--------------------------------------------------------------------------
+*/
+
+Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
+    Route::post('logout', 'AuthController@logout');
+    Route::get('me', 'AuthController@me');
 
     //备忘录管理
     Route::prefix('memorandum')->group(function () {

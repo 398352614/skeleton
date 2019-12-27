@@ -144,8 +144,6 @@ class BatchService extends BaseService
      */
     private function joinNewBatch($order)
     {
-        //todo 验证邮编是否存在经纬度
-        list($lon, $lat) = $this->getLocation();
         //获取邮编数字部分
         $postCode = explode_post_code($order['receiver_post_code']);
         //获取线路范围
@@ -162,7 +160,7 @@ class BatchService extends BaseService
         $line = $line->toArray();
         //站点新增
         $batchNo = $this->getOrderNoRuleService()->createBatchNo();
-        $batch = parent::create($this->fillData($order, $line, $batchNo, $lon, $lat));
+        $batch = parent::create($this->fillData($order, $line, $batchNo));
         if ($batch === false) {
             throw new BusinessLogicException('订单加入站点失败!');
         }
@@ -196,7 +194,7 @@ class BatchService extends BaseService
      * @param $lat
      * @return array
      */
-    private function fillData($order, $line, $batchNo, $lon, $lat)
+    private function fillData($order, $line, $batchNo)
     {
         $data = [
             'batch_no' => $batchNo,
@@ -211,8 +209,8 @@ class BatchService extends BaseService
             'receiver_city' => $order['receiver_city'],
             'receiver_street' => $order['receiver_street'],
             'receiver_address' => $order['receiver_address'],
-            'receiver_lon' => $lon,
-            'receiver_lat' => $lat,
+            'receiver_lon' => $order['lon'],
+            'receiver_lat' => $order['lat'],
         ];
         if (intval($order['type']) === 1) {
             $data['expect_pickup_quantity'] = 1;
@@ -221,12 +219,5 @@ class BatchService extends BaseService
         }
         return $data;
     }
-
-
-    public function getLocation()
-    {
-        return ['3.14', '3.14'];
-    }
-
 
 }

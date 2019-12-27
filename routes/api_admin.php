@@ -29,8 +29,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //订单管理
     Route::prefix('order')->group(function () {
-        //列表查询初始化
-        Route::get('/initIndex', 'OrderController@initIndex');
+        //取件列表查询初始化
+        Route::get('/initPickupIndex', 'OrderController@initPickupIndex');
+        //派件列表查询初始化
+        Route::get('/initPieIndex', 'OrderController@initPieIndex');
         //列表查询
         Route::get('/', 'OrderController@index');
         //获取详情
@@ -135,5 +137,11 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('country')->group(function () {
         Route::get('/', 'CountryController@index');
         Route::post('/', 'CountryController@store');
+    });
+
+    //公共接口
+    Route::prefix('common')->group(function () {
+        //获取具体地址经纬度
+        Route::get('getLocation', 'CommonController@getLocation');
     });
 });

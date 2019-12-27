@@ -25,6 +25,8 @@ class BaseValidate
         '*.min' => ':attribute字段不能小于:min个字符',
         '*.max' => ':attribute字段不能超过:max个字符',
         '*.unique_ignore' => ':attribute已存在',
+        '*.between' => ':attribute范围必须在:min-:max之间',
+        '*.after_or_equal' => ':attribute必须在当前日期及之后'
     ];
 
     public $customAttributes = [];

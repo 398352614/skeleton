@@ -24,6 +24,8 @@ class WareHouseResource extends JsonResource
             'city' => $this->city,
             'street' => $this->street,
             'address' => $this->address,
+            'lon' => $this->lon,
+            'lat' => $this->lat,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
