@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\Car;
@@ -22,7 +23,7 @@ class CarController extends BaseController
         CarService $service,
         CarBrandService $brandService,
         CarModelService $modelService
-        )
+    )
     {
         $this->service = $service;
         $this->brandService = $brandService;
@@ -116,6 +117,7 @@ class CarController extends BaseController
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 车辆删除
+     * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
      * {
@@ -126,7 +128,7 @@ class CarController extends BaseController
      */
     public function destroy(Request $request, $id)
     {
-        return $this->model->where('id', $id)->destroy();
+        return $this->service->destroy($id);
     }
 
     /**
@@ -150,7 +152,7 @@ class CarController extends BaseController
             'car_id' => 'required|integer|min:1',
             'is_locked' => 'required|boolean',
         ]);
-        return Car::where('id', $payload['car_id'])->update(['is_locked'=>$payload['is_locked']]);
+        return Car::where('id', $payload['car_id'])->update(['is_locked' => $payload['is_locked']]);
     }
 
     /**

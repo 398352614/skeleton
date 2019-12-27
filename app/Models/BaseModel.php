@@ -20,6 +20,9 @@ class BaseModel extends Model
         parent::boot();
         static::addGlobalScope(new CompanyScope);
         static::creating(self::fillCompanyId());
+        if (auth()->user() instanceof Driver) {
+            static::creating(self::fillDriverId());
+        }
     }
 
 
@@ -50,6 +53,18 @@ class BaseModel extends Model
             if (in_array('company_id', Schema::getColumnListing($model->getTable()))) {
                 if (!isset($model->company_id) || $model->company_id === null) {
                     $model->company_id = auth()->user()->company_id;
+                }
+            }
+        };
+    }
+
+    public static function fillDriverId()
+    {
+        return function ($model) {
+            /**@var \Illuminate\Database\Eloquent\Model $model */
+            if (in_array('driver_id', Schema::getColumnListing($model->getTable()))) {
+                if (!isset($model->driver_id) || $model->driver_id === null) {
+                    $model->driver_id = auth()->user()->id;
                 }
             }
         };

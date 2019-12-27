@@ -19,7 +19,6 @@ class TourController extends BaseController
 
     public function __construct(TourService $service)
     {
-
         //事务包裹和数据传入
         parent::__construct($service);
     }
