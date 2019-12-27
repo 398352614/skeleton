@@ -37,6 +37,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/{id}', 'OrderController@show');
         //新增初始化
         Route::get('/initStore', 'OrderController@initStore');
+        //获取具体地址经纬度
+        Route::get('getLocation', 'OrderController@getLocation');
         //新增
         Route::post('/', 'OrderController@store');
         //修改

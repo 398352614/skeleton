@@ -27,11 +27,11 @@ trait LocationTrait
         try {
             $client = new \GuzzleHttp\Client();
             $result = $client->request('GET', $url, ['http_errors' => false]);
+            $featureList = json_decode((string)($result->getBody()), TRUE)['features'];
         } catch (\Exception $ex) {
             throw new \Exception('可能由于网络问题，无法根据邮编和门牌号码获取具体信息，请稍后再尝试');
         }
-        $featureList = json_decode((string)($result->getBody()), TRUE);
-        $count = count($featureList['features']);
+        $count = count($featureList);
         if (($count == 0) || ($count > 1)) {
             throw new \App\Exceptions\BusinessLogicException('邮编和门牌号码不正确，请仔细检查输入或联系客服');
         }
