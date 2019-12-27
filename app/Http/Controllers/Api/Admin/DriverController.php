@@ -62,6 +62,26 @@ class DriverController extends BaseController
     }
 
     /**
+     * @api {PUT}  api/admin/driver/{driver} 管理员端:修改司机
+     * @apiName update
+     * @apiGroup admin-driver
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 修改司机
+     * @apiSuccessExample {json}  返回示例
+     * HTTP/1.1 200 OK
+     * {
+     *  "ret":1,
+     *  "msg":"修改司机",
+     *  "data":{}
+     * }
+     */
+    public function update(Request $request,$id)
+    {
+        return $this->service->update(['id' => $id], $request->validated);
+    }
+
+    /**
      * @api {DELETE}  api/admin/driver/{driver} 管理员端:删除司机
      * @apiName destroy
      * @apiGroup admin-driver
@@ -123,7 +143,6 @@ class DriverController extends BaseController
     public function driverRegister(Request $request)
     {
         return $this->service->driverRegister();
-        
     }
 
     /**

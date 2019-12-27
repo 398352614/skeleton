@@ -70,6 +70,9 @@ class DriverValidate extends BaseValidate
             'bic',
             'crop_type',
         ],
+        'update'             => [
+            'crop_type',
+        ],
     ];
 }
 
