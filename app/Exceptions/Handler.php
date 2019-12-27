@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Traits\ResponseTrait;
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
@@ -17,6 +18,7 @@ class Handler extends ExceptionHandler
      */
     protected $dontReport = [
         ModelNotFoundException::class,
+        AuthenticationException::class
     ];
 
     /**
@@ -53,6 +55,11 @@ class Handler extends ExceptionHandler
         if ($exception instanceof ModelNotFoundException) {
             return response()->json($this->responseFormat(1000, '', '数据不存在'));
         }
+
+        if ($exception instanceof AuthenticationException) {
+            return response()->json($this->responseFormat(1000, '', '用户认证失败'));
+        }
+
         return parent::render($request, $exception);
     }
 }
