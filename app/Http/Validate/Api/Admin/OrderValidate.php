@@ -55,7 +55,7 @@ class OrderValidate extends BaseValidate
     ];
 
     public $rules = [
-        'execution_date' => 'required|date',
+        'execution_date' => 'required|date|after_or_equal:today',
         'out_order_no' => 'required|string|max:50|uniqueIgnore:order,id',
         'express_first_no' => 'required|string|max:50|uniqueIgnore:order,id',
         'express_second_no' => 'required|string|max:50|uniqueIgnore:order,id',
@@ -89,7 +89,7 @@ class OrderValidate extends BaseValidate
 
     public $item_rules = [
         'name' => 'required|string|max:50',
-        'quantity' => 'required|integer|between:0,10',
+        'quantity' => 'required|integer|between:1,10',
         'weight' => 'required|numeric',
         'volume' => 'required|numeric',
         'price' => 'required|numeric',
