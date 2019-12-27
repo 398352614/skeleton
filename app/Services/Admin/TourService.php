@@ -41,6 +41,24 @@ class TourService extends BaseService
     }
 
     /**
+     * 站点 服务
+     * @return BatchService
+     */
+    private function getBatchService()
+    {
+        return self::getInstance(BatchService::class);
+    }
+
+    /**
+     * 订单服务
+     * @return OrderService
+     */
+    private function getOrderService()
+    {
+        return self::getInstance(OrderService::class);
+    }
+
+    /**
      * 司机 服务
      * @return DriverService
      */
@@ -105,13 +123,11 @@ class TourService extends BaseService
         if (empty($driver)) {
             throw new BusinessLogicException('司机不存在或已被锁定');
         }
-        //分配
         $driver = $driver->toArray();
-        $rowCount = parent::updateById($tour['id'], ['driver_id' => $driver['id'], 'driver_name' => $driver['last_name'] . $driver['first_name']]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('分配司机失败,请重新操作');
-        }
+        //取件线路分配
+        $this->assignAll($tour, ['driver_id' => $driver['id'], 'driver_name' => $driver['last_name'] . $driver['first_name']]);
     }
+
 
     /**
      * 分配车辆
@@ -138,9 +154,30 @@ class TourService extends BaseService
         }
         //分配
         $car = $car->toArray();
-        $rowCount = parent::updateById($tour['id'], ['car_id' => $car['id'], 'car_no' => $car['car_no']]);
+        $this->assignAll($tour, ['car_id' => $car['id'], 'car_no' => $car['car_no']]);
+    }
+
+    /**
+     * 分配司机或车辆到取件线路-站点-订单
+     * @param $tour
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    private function assignAll($tour, $data)
+    {
+        $rowCount = parent::updateById($tour['id'], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('分配车辆失败,请重新操作');
+            throw new BusinessLogicException('取件线路分配失败,请重新操作');
+        }
+        //站点分配
+        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no']], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('站点分配失败,请重新操作');
+        }
+        //订单分配
+        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('订单分配失败,请重新操作');
         }
     }
 
