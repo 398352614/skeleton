@@ -118,6 +118,17 @@ class OrderService extends BaseService
     }
 
     /**
+     * 获取地址经纬度
+     * @param $params
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getLocation($params)
+    {
+        return LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
+    }
+
+    /**
      * 新增
      * @param $params
      * @throws BusinessLogicException
@@ -171,7 +182,5 @@ class OrderService extends BaseService
         if (count(array_unique($nameList)) !== count($nameList)) {
             throw new BusinessLogicException('货物名称有重复!不能添加订单');
         }
-        //获取经纬度
-        list($params['lon'], $params['lat']) = LocationTrait::getLocation($params['receiver_post_code'], $params['receiver_house_number']);
     }
 }
