@@ -14,8 +14,6 @@ class AlterTourAddIndex extends Migration
     public function up()
     {
         Schema::table('tour', function (Blueprint $table) {
-            $table->index('execution_date', 'execution_date');
-            $table->index('driver_id', 'driver_id');
             $table->index('car_id', 'car_id');
         });
     }
