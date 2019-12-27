@@ -18,7 +18,7 @@ class CarValidate extends BaseValidate
     ];
 
     public $rules = [
-        'car_no' => 'required|string|unique:car',
+        'car_no' => 'required|string|uniqueIgnore:car,id',
         'outgoing_time' => 'required|date_format:Y-m-d',
         'car_brand_id' => 'required|integer',
         'car_model_id' => 'required|integer',
@@ -48,6 +48,30 @@ class CarValidate extends BaseValidate
     public $scene = [
         //保存
         'store'             => [
+            'car_no',
+            'outgoing_time',
+            'car_brand_id',
+            'car_model_id',
+            'frame_number',
+            'engine_number',
+            'transmission',
+            'fuel_type',
+            'current_miles',
+            'annual_inspection_data',
+            'ownership_type',
+            'received_date',
+            'month_road_tax',
+            'insurance_company',
+            'insurance_type',
+            'month_insurance',
+            'rent_start_date',
+            'rent_end_date',
+            'rent_month_fee',
+            'repair',
+            'remark',
+            'relate_material',
+        ],
+        'update'             => [
             'car_no',
             'outgoing_time',
             'car_brand_id',

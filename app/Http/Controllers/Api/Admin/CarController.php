@@ -97,6 +97,7 @@ class CarController extends BaseController
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 车辆编辑
+     * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
      * {
