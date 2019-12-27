@@ -37,8 +37,8 @@ class LineValidate extends BaseValidate
     ];
 
     public $item_rules = [
-        'post_code_start' => 'required|integer',
-        'post_code_end' => 'required|integer',
+        'post_code_start' => 'required|integer|between:1000,9999',
+        'post_code_end' => 'required|integer|between:1000,9999',
     ];
 
     public $scene = [

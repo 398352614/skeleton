@@ -17,6 +17,7 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 
 class OrderService extends BaseService
@@ -154,7 +155,7 @@ class OrderService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    private function check($params)
+    private function check(&$params)
     {
         //验证快递单号是否重复,由于外面已经对应验证过了,所以这里只需要验证快递单号1是否和快递单号2重复,快递单号1和快递单号2重复
         $info = parent::getInfo(['express_first_no' => $params['express_second_no']], ['*'], false);
@@ -170,5 +171,7 @@ class OrderService extends BaseService
         if (count(array_unique($nameList)) !== count($nameList)) {
             throw new BusinessLogicException('货物名称有重复!不能添加订单');
         }
+        //获取经纬度
+        list($params['lon'], $params['lat']) = LocationTrait::getLocation($params['receiver_post_code'], $params['receiver_house_number']);
     }
 }

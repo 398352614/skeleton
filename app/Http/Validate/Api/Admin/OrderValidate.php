@@ -89,7 +89,7 @@ class OrderValidate extends BaseValidate
 
     public $item_rules = [
         'name' => 'required|string|max:50',
-        'quantity' => 'required|integer',
+        'quantity' => 'required|integer|between:0,10',
         'weight' => 'required|numeric',
         'volume' => 'required|numeric',
         'price' => 'required|numeric',
