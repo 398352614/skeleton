@@ -15,11 +15,14 @@ class WareHouseValidate extends BaseValidate
 {
     public $customAttributes = [
         'name' => '名称',
+        'contacter' => '联系人',
+        'phone' => '手机号',
         'country' => '国家',
-        'warehouse_id' => '仓库ID',
-        'order_max_count' => '最大订单量',
-        'remark' => '备注',
-        'work_day_list' => '工作日',
+        'post_code' => '邮编',
+        'house_number' => '门牌号',
+        'city' => '城市',
+        'street' => '街道',
+        'address' => '地址',
         'lon' => '经度',
         'lat' => '纬度'
     ];
@@ -40,7 +43,6 @@ class WareHouseValidate extends BaseValidate
     ];
 
     public $scene = [
-        'getLocation' => ['country', 'post_code', 'house_number', 'city', 'street'],
         'store' => ['name', 'contacter', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat'],
         'update' => ['name', 'contacter', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat']
     ];

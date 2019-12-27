@@ -52,16 +52,6 @@ class OrderController extends BaseController
     }
 
     /**
-     * 获取地址经纬度
-     * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function getLocation()
-    {
-        return $this->service->getLocation($this->data);
-    }
-
-    /**
      * 新增
      * @throws \App\Exceptions\BusinessLogicException
      */

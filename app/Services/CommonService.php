@@ -9,10 +9,19 @@
 namespace App\Services;
 
 
+use App\Exceptions\BusinessLogicException;
+use App\Traits\LocationTrait;
+
 class CommonService
 {
-    public function getCountryList()
+    /**
+     * 获取地址经纬度
+     * @param $params
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getLocation($params)
     {
-
+        return LocationTrait::getLocation($params['country'], $params['city'], $params['street'], $params['house_number'], $params['post_code']);
     }
 }

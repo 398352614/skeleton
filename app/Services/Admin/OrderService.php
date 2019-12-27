@@ -24,6 +24,7 @@ class OrderService extends BaseService
 {
 
     public $filterRules = [
+        'type' => ['=', 'type'],
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'order_no,out_order_no' => ['like', 'keyword']
@@ -77,12 +78,21 @@ class OrderService extends BaseService
     }
 
 
-    public function initIndex()
+    public function initPickupIndex()
     {
-        $noTakeCount = parent::count(['status' => BaseConstService::ORDER_STATUS_1]);
-        $assignCount = parent::count(['status' => BaseConstService::ORDER_STATUS_2]);
-        $takingCount = parent::count(['status' => BaseConstService::ORDER_STATUS_3]);
-        $signedCount = parent::count(['status' => BaseConstService::ORDER_STATUS_4]);
+        $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_1]);
+        $assignCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_2]);
+        $takingCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_3]);
+        $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_4]);
+        return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'taking' => $takingCount, 'singed' => $signedCount];
+    }
+
+    public function initPieIndex()
+    {
+        $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_1]);
+        $assignCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_2]);
+        $takingCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_3]);
+        $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_4]);
         return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'taking' => $takingCount, 'singed' => $signedCount];
     }
 
@@ -115,17 +125,6 @@ class OrderService extends BaseService
             return collect(['id' => $key, 'name' => $value]);
         })->toArray());
         return $data;
-    }
-
-    /**
-     * 获取地址经纬度
-     * @param $params
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getLocation($params)
-    {
-        return LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
     }
 
     /**
