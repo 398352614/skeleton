@@ -19,9 +19,9 @@ class TourController extends BaseController
 
     public function __construct(TourService $service)
     {
-        $this->service = $service;
+
         //事务包裹和数据传入
-        // parent::__construct($service);
+        parent::__construct($service);
     }
 
     /**
@@ -107,5 +107,25 @@ class TourController extends BaseController
     public function callback()
     {
         return $this->service->dealCallback();
+    }
+
+    /**
+     * 分配司机
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function assignDriver($id)
+    {
+        return $this->service->assignDriver($id, $this->data);
+    }
+
+    /**
+     * 分配车辆
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function assignCar($id)
+    {
+        return $this->service->assignCar($id, $this->data);
     }
 }

@@ -47,7 +47,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::delete('/', 'OrderController@destroy');
     });
 
-
+    //司机管理
     Route::prefix('driver')->group(function () {
         Route::post('/driver-register', 'DriverController@driverRegister');
         Route::get('/driver-work', 'DriverController@driverWork');//获取司机工作日driverWork?driver_id=105
@@ -62,6 +62,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::delete('/{id}', 'DriverController@destroy')->name('driver.destroy');//删除司机
     });
 
+    //车辆管理
     Route::prefix('car')->group(function () {
         Route::post('/lock', 'CarController@lock')->name('car.lock');
         Route::get('/brands', 'CarController@getBrands')->name('car.brands');       // 获取品牌列表
@@ -79,16 +80,20 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         // $router->post('car/lock', 'CarInfoController@lock'); //车辆锁定操作
     });
 
+    //站点管理
     Route::prefix('batch')->group(function () {
         //rest api 放在最后
         Route::get('/', 'BatchController@index')->name('batch.index');
         Route::get('/{id}', 'BatchController@show')->name('batch.show');//批次详情
     });
 
+    //线路任务管理
     Route::prefix('tour')->group(function () {
         //rest api 放在最后
         Route::get('/', 'TourController@index')->name('tour.index');
-        Route::get('/{id}', 'TourController@show')->name('tour.show');//
+        Route::get('/{id}', 'TourController@show')->name('tour.show');
+        Route::post('/{id}/assignDriver', 'TourController@assignDriver');   //分配司机
+        Route::post('/{id}/assignCar', 'TourController@assignCar');         //分配车辆
     });
 
     //任务报告

@@ -40,6 +40,15 @@ class TourService extends BaseService
     }
 
     /**
+     * 司机 服务
+     * @return DriverService
+     */
+    private function getDriverService()
+    {
+        return self::getInstance(DriverService::class);
+    }
+
+    /**
      * 仓库 服务
      * @return WareHouseService
      */
@@ -61,6 +70,68 @@ class TourService extends BaseService
     public function store($params)
     {
 
+    }
+
+    /**
+     * 分配司机
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function assignDriver($id, $params)
+    {
+        $tour = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('取件线路不存在');
+        }
+        $tour = $tour->toArray();
+        //查看当前司机是否已被分配给其他取件线路
+        $otherTour = parent::getInfo(['id' => ['<>', $id], 'driver_id' => $params['driver_id'], 'execution_date' => $tour['execution_date']], ['*'], false);
+        if (!empty($otherTour)) {
+            throw new BusinessLogicException('当前司机已被分配,请选择其他司机');
+        }
+        //获取司机
+        $driver = $this->getDriverService()->getInfo(['id' => $params['driver_id'], 'is_locked' => BaseConstService::DRIVER_TO_NORMAL], ['*'], false);
+        if (empty($driver)) {
+            throw new BusinessLogicException('司机不存在或已被锁定');
+        }
+        //分配
+        $driver = $driver->toArray();
+        $rowCount = parent::updateById($tour['id'], ['driver_id' => $driver['id'], ['driver_name' => $driver['name']]]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('分配司机失败,请重新操作');
+        }
+    }
+
+    /**
+     * 分配车辆
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function assignCar($id, $params)
+    {
+        $tour = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('取件线路不存在');
+        }
+        $tour = $tour->toArray();
+        //查看当前司机是否已被分配给其他取件线路
+        $otherTour = parent::getInfo(['id' => ['<>', $id], 'car_id' => $params['car_id'], 'execution_date' => $tour['execution_date']], ['*'], false);
+        if (!empty($otherTour)) {
+            throw new BusinessLogicException('当前车辆已被分配,请选择其他车辆');
+        }
+        //获取车辆
+        $car = $this->getDriverService()->getInfo(['id' => $params['car_id'], 'is_locked' => BaseConstService::CAR_TO_NORMAL], ['*'], false);
+        if (empty($car)) {
+            throw new BusinessLogicException('车辆不存在或已被锁定');
+        }
+        //分配
+        $car = $car->toArray();
+        $rowCount = parent::updateById($tour['id'], ['car_id' => $car['id'], ['car_no' => $car['car_no']]]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('分配车辆失败,请重新操作');
+        }
     }
 
 

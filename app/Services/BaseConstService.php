@@ -90,8 +90,11 @@ class BaseConstService
     const DRIVER_CONTRACTOR = 2;
 
     //driver 司机状态
-    const DRIVER_TO_AUDIT = 1;
+    const DRIVER_TO_NORMAL = 1;
     const DRIVER_TO_LOCK = 2;
-    const DRIVER_TO_NORMAL = 3;
+
+    //车辆状态
+    const CAR_TO_NORMAL = 1;
+    const CAR_TO_LOCK = 2;
 
 }

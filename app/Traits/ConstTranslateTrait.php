@@ -87,8 +87,7 @@ trait ConstTranslateTrait
 
     //司机合作类型
     public static $driverStatusList = [
-        BaseConstService::DRIVER_TO_AUDIT               => '待审核',
-        BaseConstService::DRIVER_TO_LOCK                => '锁定',
         BaseConstService::DRIVER_TO_NORMAL              => '正常',
+        BaseConstService::DRIVER_TO_LOCK                => '锁定',
     ];
 }
