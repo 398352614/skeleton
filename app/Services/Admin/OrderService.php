@@ -77,7 +77,10 @@ class OrderService extends BaseService
         return self::getInstance(TourService::class);
     }
 
-
+    /**
+     * 取件列初始化
+     * @return array
+     */
     public function initPickupIndex()
     {
         $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_1]);
@@ -87,6 +90,10 @@ class OrderService extends BaseService
         return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'taking' => $takingCount, 'singed' => $signedCount];
     }
 
+    /**
+     * 派件列表初始化
+     * @return array
+     */
     public function initPieIndex()
     {
         $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_1]);

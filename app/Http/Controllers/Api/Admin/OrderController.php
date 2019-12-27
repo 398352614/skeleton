@@ -40,15 +40,22 @@ class OrderController extends BaseController
         return $this->service->show($id);
     }
 
-
-    public function initIndex()
+    /**
+     * 取件列表初始化
+     * @return array
+     */
+    public function initPickupIndex()
     {
-        return $this->service->initIndex();
+        return $this->service->initPickupIndex();
     }
 
-    public function initStore()
+    /**
+     * 派件列表初始化
+     * @return array
+     */
+    public function initPieIndex()
     {
-        return $this->service->initStore();
+        return $this->service->initPieIndex();
     }
 
     /**
