@@ -113,6 +113,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/', 'WareHouseController@index');
         //获取详情
         Route::get('/{id}', 'WareHouseController@show');
+        //获取具体地址经纬度
+        Route::get('getLocation', 'WareHouseController@getLocation');
         //新增
         Route::post('/', 'WareHouseController@store');
         //修改

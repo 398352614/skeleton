@@ -42,6 +42,16 @@ class WareHouseController extends BaseController
         return $this->service->show($id);
     }
 
+    /**
+     * 获取地址经纬度
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getLocation()
+    {
+        return $this->service->getLocation($this->data);
+    }
+
 
     /**
      * 新增

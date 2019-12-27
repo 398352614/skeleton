@@ -13,6 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\WareHouseResource;
 use App\Models\Warehouse;
 use App\Services\BaseService;
+use App\Traits\LocationTrait;
 
 class WareHouseService extends BaseService
 {
@@ -38,6 +39,17 @@ class WareHouseService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         return $info;
+    }
+
+    /**
+     * 获取具体地址经纬度
+     * @param $params
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getLocation($params)
+    {
+        return LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
     }
 
     /**

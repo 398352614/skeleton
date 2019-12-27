@@ -1,6 +1,6 @@
 <?php
 /**
- * 仓库 验证类
+ * 国家 验证类
  * Created by PhpStorm
  * User: long
  * Date: 2019/12/16
@@ -15,11 +15,6 @@ class CountryValidate extends BaseValidate
 {
     public $customAttributes = [
         'name' => '名称',
-        'country' => '国家',
-        'warehouse_id' => '仓库ID',
-        'order_max_count' => '最大订单量',
-        'remark' => '备注',
-        'work_day_list' => '工作日'
     ];
 
 

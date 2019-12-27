@@ -19,7 +19,9 @@ class WareHouseValidate extends BaseValidate
         'warehouse_id' => '仓库ID',
         'order_max_count' => '最大订单量',
         'remark' => '备注',
-        'work_day_list' => '工作日'
+        'work_day_list' => '工作日',
+        'lon' => '经度',
+        'lat' => '纬度'
     ];
 
 
@@ -33,11 +35,14 @@ class WareHouseValidate extends BaseValidate
         'city' => 'required|string|max:50',
         'street' => 'required|string|max:50',
         'address' => 'required|string|max:250',
+        'lon' => 'required|string|max:50',
+        'lat' => 'required|string|max:50',
     ];
 
     public $scene = [
-        'store' => ['name', 'contacter', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address'],
-        'update' => ['name', 'contacter', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address']
+        'getLocation' => ['country', 'post_code', 'house_number', 'city', 'street'],
+        'store' => ['name', 'contacter', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat'],
+        'update' => ['name', 'contacter', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat']
     ];
 }
 

@@ -44,6 +44,8 @@ class OrderValidate extends BaseValidate
         'receiver_address' => '收件人详细地址',
         'special_remark' => '特殊事项',
         'remark' => '其余备注',
+        'lon' => '经度',
+        'lat' => '纬度'
     ];
 
     public $itemCustomAttributes = [
