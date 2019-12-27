@@ -50,6 +50,15 @@ class TourService extends BaseService
     }
 
     /**
+     * 车辆 服务
+     * @return CarService
+     */
+    private function getCarService()
+    {
+        return self::getInstance(CarService::class);
+    }
+
+    /**
      * 仓库 服务
      * @return WareHouseService
      */
@@ -98,7 +107,7 @@ class TourService extends BaseService
         }
         //分配
         $driver = $driver->toArray();
-        $rowCount = parent::updateById($tour['id'], ['driver_id' => $driver['id'], ['driver_name' => $driver['name']]]);
+        $rowCount = parent::updateById($tour['id'], ['driver_id' => $driver['id'], 'driver_name' => $driver['last_name'] . $driver['first_name']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('分配司机失败,请重新操作');
         }
@@ -123,13 +132,13 @@ class TourService extends BaseService
             throw new BusinessLogicException('当前车辆已被分配,请选择其他车辆');
         }
         //获取车辆
-        $car = $this->getDriverService()->getInfo(['id' => $params['car_id'], 'is_locked' => BaseConstService::CAR_TO_NORMAL], ['*'], false);
+        $car = $this->getCarService()->getInfo(['id' => $params['car_id'], 'is_locked' => BaseConstService::CAR_TO_NORMAL], ['*'], false);
         if (empty($car)) {
             throw new BusinessLogicException('车辆不存在或已被锁定');
         }
         //分配
         $car = $car->toArray();
-        $rowCount = parent::updateById($tour['id'], ['car_id' => $car['id'], ['car_no' => $car['car_no']]]);
+        $rowCount = parent::updateById($tour['id'], ['car_id' => $car['id'], 'car_no' => $car['car_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('分配车辆失败,请重新操作');
         }
