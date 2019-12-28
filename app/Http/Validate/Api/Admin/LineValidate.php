@@ -28,7 +28,7 @@ class LineValidate extends BaseValidate
     ];
 
     public $rules = [
-        'name' => 'required|string|max:50',
+        'name' => 'required|string|max:50|uniqueIgnore:line,id',
         'country' => 'required|string|max:50',
         'warehouse_id' => 'required|integer',
         'order_max_count' => 'required|integer',

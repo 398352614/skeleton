@@ -152,4 +152,16 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //获取具体地址经纬度
         Route::get('getLocation', 'CommonController@getLocation');
     });
+
+    //上传接口
+    Route::prefix('upload')->group(function () {
+        //获取可上传的图片目录列表
+        Route::get('getImageDirList', 'UploadController@getImageDirList');
+        //图片上传
+        Route::post('imageUpload', 'UploadController@imageUpload');
+        //获取可上传的文件目录列表
+        Route::get('getFileDirList', 'UploadController@getFileDirList');
+        //文件上传
+        Route::post('fileUpload', 'UploadController@fileUpload');
+    });
 });

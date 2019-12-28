@@ -90,4 +90,16 @@ trait ConstTranslateTrait
         BaseConstService::DRIVER_TO_NORMAL              => '正常',
         BaseConstService::DRIVER_TO_LOCK                => '锁定',
     ];
+
+
+    //管理员端 图片目录
+    public static $adminImageDirList = [
+        BaseConstService::ADMIN_IMAGE_DRIVER_DIR  => '司机图片目录',
+    ];
+
+    //管理员端 文件目录
+    public static $adminFileDirList = [
+        BaseConstService::ADMIN_FILE_DRIVER_DIR  => '司机文件目录',
+        BaseConstService::ADMIN_FILE_CAR_DIR => '车辆文件目录'
+    ];
 }

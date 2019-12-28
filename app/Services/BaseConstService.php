@@ -103,4 +103,13 @@ class BaseConstService
     const CAR_TO_NORMAL = 1;
     const CAR_TO_LOCK = 2;
 
+
+    //管理员端 图片目录
+    const ADMIN_IMAGE_DRIVER_DIR = 'driver';
+
+
+    //管理员端 文件目录
+    const ADMIN_FILE_DRIVER_DIR = 'driver';
+    const ADMIN_FILE_CAR_DIR = 'car';
+
 }
