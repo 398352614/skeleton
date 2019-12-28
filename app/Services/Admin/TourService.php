@@ -25,7 +25,7 @@ class TourService extends BaseService
     public $filterRules = [
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'order_no,out_order_no' => ['like', 'keyword']
+        'driver_id' => ['=','driver_id']
     ];
 
     public function __construct(Tour $tour, GoogleApiService $client)

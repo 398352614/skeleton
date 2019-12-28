@@ -87,7 +87,11 @@ class CarController extends BaseController
      */
     public function show($id)
     {
-        return $this->service->getInfo(['id' => $id], ['*'], true);
+        $info = $this->service->getInfo(['id' => $id], ['*'], true);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $info;
     }
 
     /**
