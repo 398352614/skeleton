@@ -24,11 +24,11 @@ class CarValidate extends BaseValidate
         'car_model_id' => 'required|integer',
         'frame_number' => 'string',
         'engine_number' => 'string',
-        'transmission' => 'required|boolean',
-        'fuel_type' => 'required|integer|min:0|max:3',
+        'transmission' => 'required|integer|in:1,2',
+        'fuel_type' => 'required|integer|min:1|max:4',
         'current_miles' => 'numeric',
         'annual_inspection_data' => 'required|date_format:Y-m-d',
-        'ownership_type' => 'required|integer|between:0,2',
+        'ownership_type' => 'required|integer|between:1,3',
         'received_date' => 'required|date_format:Y-m-d',
         'month_road_tax' => 'required|numeric',
         'insurance_company' => 'required|string',
@@ -37,9 +37,10 @@ class CarValidate extends BaseValidate
         'rent_start_date' => 'nullable|required_if:ownership_type,0|date_format:Y-m-d',
         'rent_end_date' => 'nullable|required_if:ownership_type,0|date_format:Y-m-d',
         'rent_month_fee' => 'nullable|required_if:ownership_type,0',
-        'repair' => 'nullable|required_if:ownership_type,0|integer',
-        'remark' => 'string',
-        'relate_material' => 'required',
+        'repair' => 'nullable|required_if:ownership_type,0|integer|in:1,2',
+        'remark' => 'nullable|string',
+        'relate_material' => 'required|string',
+        'is_locked' => 'required|integer|in:1,2',
 
         'cn_name'      =>  ['required'],
         'en_name'       =>  ['nullable'],
@@ -101,6 +102,10 @@ class CarValidate extends BaseValidate
         'addModel'      => [
             'cn_name', 'en_name', 'brand_id'
         ],
+
+        'lock' =>[
+            'is_locked',
+        ]
     ];
 }
 

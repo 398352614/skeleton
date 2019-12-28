@@ -23,7 +23,7 @@ class DriverValidate extends BaseValidate
         'last_name'                     => ['required'],
         'first_name'                    => ['required'],
         'gender'                        => ['required'],
-        'birthday'                      => ['required'],
+        'birthday'                      => ['required','date_format:Y-m-d'],
         'phone'                         => ['required','uniqueIgnore:driver,id'],
         'duty_paragraph'                => ['required'],
         'post_code'                     => ['required'],
@@ -40,8 +40,8 @@ class DriverValidate extends BaseValidate
         'bank_name'                     => ['required'],
         'iban'                          => ['required'],
         'bic'                           => ['required'],
-        'crop_type'                     =>  ['required'],
-        // 'is_locked'                     => 0,
+        'crop_type'                     => ['required'],
+        'is_locked'                     => ['required','integer','in:1,2'],
     ];
     public $scene = [
         //注册
@@ -73,6 +73,7 @@ class DriverValidate extends BaseValidate
         'update'             => [
             'crop_type',
         ],
+        'lockDriver'=>['is_locked']
     ];
 }
 
