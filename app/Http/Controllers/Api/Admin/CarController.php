@@ -97,6 +97,7 @@ class CarController extends BaseController
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 车辆编辑
+     * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
      * {
@@ -148,11 +149,7 @@ class CarController extends BaseController
      */
     public function lock(Request $request)
     {
-        $payload = $this->validate($request, [
-            'car_id' => 'required|integer|min:1',
-            'is_locked' => 'required|boolean',
-        ]);
-        return Car::where('id', $payload['car_id'])->update(['is_locked' => $payload['is_locked']]);
+        return Car::where('id', $request['car_id'])->update(['is_locked' =>$request['is_locked']]);
     }
 
     /**

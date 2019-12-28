@@ -54,9 +54,14 @@ class CarService extends BaseService
         ]);
     }
 
+    /**
+     * 修改
+     * @param $id
+     * @throws BusinessLogicException
+     */
     public function updateCar($id)
     {
-        return $this->updateById($id, [
+        $rowCount = $this->updateById($id, [
             'car_no' => $this->formData['car_no'],
             'outgoing_time' => $this->formData['outgoing_time'],
             'car_brand_id' => $this->formData['car_brand_id'],
@@ -80,6 +85,9 @@ class CarService extends BaseService
             'remark' => $this->formData['remark'],
             'relate_material' => $this->formData['relate_material'],
         ]);
+        if($rowCount === false){
+            throw new BusinessLogicException('修改车辆失败');
+        }
     }
 
     /**
