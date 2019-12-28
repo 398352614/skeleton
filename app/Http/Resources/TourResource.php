@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Services\BaseConstService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TourResource extends JsonResource
@@ -17,10 +18,12 @@ class TourResource extends JsonResource
             'execution_date' => $this->execution_date,
             'driver_id' => $this->driver_id,
             'driver_name' => $this->driver_name,
+            'driver_assign_status' => (!empty($this->driver_id) && !empty($this->driver_name)) ? BaseConstService::TOUR_STATUS_2 : BaseConstService::TOUR_STATUS_1,
             'driver_rest_time' => $this->driver_rest_time,
             'driver_avt_id' => $this->driver_avt_id,
             'car_id' => $this->car_id,
             'car_no' => $this->car_no,
+            'car_assign_status' => (!empty($this->car_id) && !empty($this->car_no)) ? BaseConstService::TOUR_STATUS_2 : BaseConstService::TOUR_STATUS_1,
             'warehouse_id' => $this->warehouse_id,
             'warehouse_name' => $this->warehouse_name,
             'warehouse_phone' => $this->warehouse_phone,

@@ -119,10 +119,10 @@ class ReportService extends BaseService
         $outWarehouseInfo['order_list'] = collect($orderList)
             ->map(function ($order, $key) {
                 $order['type_name'] = ConstTranslateTrait::$orderTypeList[$order['type']];
-                $order['status_name'] = ConstTranslateTrait::$orderStatusList[BaseConstService::ORDER_STATUS_1];
+                $order['status_name'] = ConstTranslateTrait::$orderStatusList[$order['status']];
                 return $order;
             })->filter(function ($order, $key) {
-                return (intval($order['type']) === BaseConstService::ORDER_TYPE_2) && (in_array(intval($order['status']), [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]));
+                return (intval($order['type']) === BaseConstService::ORDER_TYPE_2);
             });
         return $outWarehouseInfo;
     }
@@ -142,10 +142,10 @@ class ReportService extends BaseService
         $outWarehouseInfo['order_list'] = collect($orderList)
             ->map(function ($order, $key) {
                 $order['type_name'] = ConstTranslateTrait::$orderTypeList[$order['type']];
-                $order['status_name'] = ConstTranslateTrait::$orderStatusList[BaseConstService::ORDER_STATUS_4];
+                $order['status_name'] = ConstTranslateTrait::$orderStatusList[$order['status']];
                 return $order;
             })->filter(function ($order, $key) {
-                return (intval($order['type']) === BaseConstService::ORDER_TYPE_1) && (in_array(intval($order['status']), [BaseConstService::ORDER_STATUS_4, BaseConstService::ORDER_STATUS_5]));
+                return (intval($order['type']) === BaseConstService::ORDER_TYPE_1);
             });
         return $outWarehouseInfo;
     }

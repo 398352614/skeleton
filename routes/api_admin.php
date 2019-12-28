@@ -93,8 +93,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //rest api 放在最后
         Route::get('/', 'TourController@index')->name('tour.index');
         Route::get('/{id}', 'TourController@show')->name('tour.show');
-        Route::post('/{id}/assignDriver', 'TourController@assignDriver');   //分配司机
-        Route::post('/{id}/assignCar', 'TourController@assignCar');         //分配车辆
+        Route::put('/{id}/assignDriver', 'TourController@assignDriver');               //分配司机
+        Route::put('/{id}/cancelAssignDriver', 'TourController@cancelAssignDriver');   //取消分配司机
+        Route::put('/{id}/assignCar', 'TourController@assignCar');                     //分配车辆
+        Route::put('/{id}/cancelAssignCar', 'TourController@cancelAssignCar');         //取消分配车辆
     });
 
     //任务报告
