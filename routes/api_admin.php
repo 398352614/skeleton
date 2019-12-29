@@ -54,7 +54,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('assgin-driverWork', 'DriverController@assginDriverWork');//给司机分配工作信息（也就是产品图上的审核）
         Route::get('/crop-type', 'DriverController@cropType');//获取合作方式
         Route::get('/driver-status', 'DriverController@driverStatus');//获取状态
-        Route::post('/lock-driver', 'DriverController@lockDriver');//锁定或解锁司机
+        Route::post('/{id}/lock-driver', 'DriverController@lockDriver');//锁定或解锁司机
 
         //rest api 放在最后
         Route::get('/', 'DriverController@index')->name('driver.index');//司机列表?page=1&page_size=10&status=&crop_type=&keywords=
@@ -65,7 +65,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //车辆管理
     Route::prefix('car')->group(function () {
-        Route::post('/lock', 'CarController@lock')->name('car.lock');
+        Route::put('/{id}/lock', 'CarController@lock')->name('car.lock');
         Route::get('/brands', 'CarController@getBrands')->name('car.brands');       // 获取品牌列表
         Route::post('/addbrand', 'CarController@addBrand')->name('car.addbrand');   // 添加品牌
         Route::get('/models', 'CarController@getModels')->name('car.models');       // 获取型号列表

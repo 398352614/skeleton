@@ -25,7 +25,7 @@ class TourService extends BaseService
     public $filterRules = [
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'driver_id' => ['=','driver_id']
+        'driver_id' => ['=', 'driver_id']
     ];
 
     public function __construct(Tour $tour, GoogleApiService $client)
@@ -187,11 +187,12 @@ class TourService extends BaseService
      */
     public function cancelAssignCar($id)
     {
-        $tour = parent::getInfo(['id' => $id, 'status' => ['in', BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]], ['*'], false);
+        $tour = parent::getInfo(['id' => $id, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在或当前状态不能分配车辆');
         }
-        $rowCount = $this->assignOrCancelAssignAll($tour->toArray(), ['car_id' => null, 'car_no' => null]);
+        $tour = $tour->toArray();
+        $rowCount = $this->assignOrCancelAssignAll($tour, ['car_id' => null, 'car_no' => null]);
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆取消分配失败,请重新操作');
         }

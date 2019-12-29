@@ -95,12 +95,6 @@ class CarController extends BaseController
     }
 
     /**
-     * @api {PUT}  api/admin/car/{car} 管理员端:车辆编辑
-     * @apiName update
-     * @apiGroup admin-car
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 车辆编辑
      * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
@@ -109,6 +103,12 @@ class CarController extends BaseController
      *  "msg":"车辆编辑",
      *  "data":{}
      * }
+     * @api {PUT}  api/admin/car/{car} 管理员端:车辆编辑
+     * @apiName update
+     * @apiGroup admin-car
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 车辆编辑
      */
     public function update(Request $request, $id)
     {
@@ -116,12 +116,6 @@ class CarController extends BaseController
     }
 
     /**
-     * @api {DELETE}  api/admin/car/{car} 管理员端:车辆删除
-     * @apiName destroy
-     * @apiGroup admin-car
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 车辆删除
      * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
@@ -130,6 +124,12 @@ class CarController extends BaseController
      *  "msg":"车辆编辑",
      *  "data":{}
      * }
+     * @api {DELETE}  api/admin/car/{car} 管理员端:车辆删除
+     * @apiName destroy
+     * @apiGroup admin-car
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 车辆删除
      */
     public function destroy(Request $request, $id)
     {
@@ -143,6 +143,7 @@ class CarController extends BaseController
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 车辆锁定
+     * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
      * {
@@ -151,9 +152,9 @@ class CarController extends BaseController
      *  "data":{}
      * }
      */
-    public function lock(Request $request)
+    public function lock(Request $request, $id)
     {
-        return Car::where('id', $request['car_id'])->update(['is_locked' =>$request['is_locked']]);
+        return $this->service->lock($id, $request->input('is_locked'));
     }
 
     /**

@@ -62,7 +62,7 @@ class MemorandumService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $rowCount = parent::update($id, $data);
+        $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('备忘录修改失败');
         }

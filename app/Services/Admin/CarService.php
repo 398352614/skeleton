@@ -85,8 +85,22 @@ class CarService extends BaseService
             'remark' => $this->formData['remark'],
             'relate_material' => $this->formData['relate_material'],
         ]);
-        if($rowCount === false){
+        if ($rowCount === false) {
             throw new BusinessLogicException('修改车辆失败');
+        }
+    }
+
+    /**
+     * 锁定与解锁
+     * @param $id
+     * @param $isLocked
+     * @throws BusinessLogicException
+     */
+    public function lock($id, $isLocked)
+    {
+        $rowCount = parent::updateById($id, ['is_locked' => $isLocked]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
         }
     }
 
@@ -98,7 +112,7 @@ class CarService extends BaseService
     public function destroy($id)
     {
         $rowCount = parent::delete(['id' => $id]);
-        if($rowCount === false){
+        if ($rowCount === false) {
             throw new BusinessLogicException('车辆删除失败');
         }
     }

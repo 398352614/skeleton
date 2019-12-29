@@ -43,7 +43,7 @@ class Memorandum extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'dirver_id',
+        'driver_id',
         'content',
         'created_at',
         'updated_at',
