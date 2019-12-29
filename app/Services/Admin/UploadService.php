@@ -46,7 +46,7 @@ class UploadService
         if (!array_key_exists($dir, ConstTranslateTrait::$adminImageDirList)) {
             throw new BusinessLogicException('没有对应目录');
         }
-        return $dir;
+        return auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
     }
 
     /**
@@ -60,7 +60,7 @@ class UploadService
         if (!array_key_exists($dir, ConstTranslateTrait::$adminFileDirList)) {
             throw new BusinessLogicException('没有对应目录');
         }
-        return $dir;
+        return auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
     }
 
 

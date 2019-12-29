@@ -25,7 +25,7 @@ class UploadValidate extends BaseValidate
         'image' => 'required|array',
         'image.file' => 'required|image|mimes:jpeg,bmp,png',
         'file' => 'required|array',
-        'file.file' => 'required|file|mimes:txt,excel,word',
+        'file.file' => 'required|file|mimes:txt,excel,word,jpeg,bmp,png',
     ];
 
     public $scene = [
@@ -37,7 +37,7 @@ class UploadValidate extends BaseValidate
         'image.file.image' => '必须是图片',
         'image.file.mimes' => ':attribute类型必须是jpeg,bmp,png类型',
         'file.file.file' => '必须是文件',
-        'file.file.mimes' => ':attribute类型必须是txt,excel,word类型',
+        'file.file.mimes' => ':attribute类型必须是txt,excel,word,jpeg,bmp,png类型',
 
     ];
 }
