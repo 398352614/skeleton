@@ -110,4 +110,12 @@ class Tour extends BaseModel
         return ConstTranslateTrait::$tourStatusList[$this->status];
     }
 
+    /**
+     * 一个线路任务存在多个批次(站点)
+     */
+    public function batchs()
+    {
+        return $this->hasMany(Batch::class, 'tour_no', 'tour_no');
+    }
+
 }

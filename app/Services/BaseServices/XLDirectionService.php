@@ -42,7 +42,7 @@ class XLDirectionService
         $locSeq = [];
         foreach ($data as $key => $loc) {
             $temp = [];
-            $temp['name'] = $loc['code'];
+            $temp['name'] = $loc['batch_no'];
             $temp['lat'] = $loc['latitude'];
             $temp['lng'] = $loc['longitude'];
             $locSeq[] = $temp;

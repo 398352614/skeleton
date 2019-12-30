@@ -11,6 +11,7 @@ use App\Models\Tour;
 use App\Models\TourLog;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Services\BaseServices\XLDirectionService;
 use App\Services\GoogleApiService;
 use App\Services\OrderNoRuleService;
 use Illuminate\Support\Facades\DB;
@@ -22,13 +23,18 @@ class TourService extends BaseService
      */
     public $apiClient;
 
+    /**
+     * @var XLDirectionService
+     */
+    public $directionClient;
+
     public $filterRules = [
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'order_no,out_order_no' => ['like', 'keyword']
     ];
 
-    public function __construct(Tour $tour, GoogleApiService $client)
+    public function __construct(Tour $tour, GoogleApiService $client, XLDirectionService $directionClient)
     {
         $this->model = $tour;
         $this->query = $this->model::query();
@@ -38,6 +44,7 @@ class TourService extends BaseService
         $this->formData = $this->request->all();
         $this->setFilterRules();
         $this->apiClient = $client;
+        $this->directionClient = $directionClient;
     }
 
     /**
@@ -219,14 +226,25 @@ class TourService extends BaseService
         return $tour;
     }
 
-    public function getNextBatch($batchIds): Batch
+    /**
+     * 此处要求batchIds 为有序,并且已完成或者异常的 batch 在前方,未完成的 batch 在后方
+     */
+    public function getNextBatchAndUpdateIndex($batchIds): Batch
     {
+        $first = false;
         foreach ($batchIds as $key => $batchId) {
-            $batch = Batch::where('id', $batchId)->where('status', BaseConstService::BATCH_DELIVERING)->first();
-            if ($batch) {
-                return $batch;
+            if (!$first) {
+                $batch = Batch::where('id', $batchId)->whereIn('status', [BaseConstService::BATCH_DELIVERING, BaseConstService::BATCH_ASSIGNED])->first();              
+                if ($batch) {
+                    $first = true; // 找到了下一个目的地
+                }
             }
+
         }
+        if ($batch) {
+            return $batch;
+        }
+        
         throw new BusinessLogicException('未查找到下一个目的地');
     }
 
@@ -242,13 +260,19 @@ class TourService extends BaseService
 
         app('log')->info('更新线路传入的参数为:', $this->formData);
 
-        $tour = Tour::where('code', $this->formData['tour_no'])->firstOrFail();
+        $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
 
-        $nextBatch = $this->getNextBatch($this->formData['batch_ids']);
+        throw_if(
+            $tour->batchs->count() != $this->formData['batch_ids'],
+            new BusinessLogicException('线路')
+        );
+
+        //此处的所有 batchids 应该经过验证!
+        $nextBatch = $this->getNextBatchAndUpdateIndex($this->formData['batch_ids']);
 
         TourLog::create([
             'tour_no' => $this->formData['tour_no'],
-            'action' => BaseConstService::TOUR_LOG_UPDATE_DRIVER,
+            'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
 
@@ -264,7 +288,78 @@ class TourService extends BaseService
 
         }
         app('log')->error('进入此处代表修改线路失败');
+        self::setTourLock($this->formData['tour_no'], 0); // 取消锁
         throw new BusinessLogicException('修改线路失败');
+    }
+
+    /**
+     * 自动优化线路任务
+     */
+    public function autoOpTour()
+    {
+        set_time_limit(240);
+        self::setTourLock($this->formData['tour_no'], 1); // 加锁
+        
+        $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
+        $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
+
+        if (!$nextBatch) {
+            self::setTourLock($this->formData['tour_no'], 0);
+            throw new BusinessLogicException('没有找到下一个目的地');
+        }
+
+        TourLog::create([
+            'tour_no' => $this->formData['tour_no'],
+            'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
+            'status' => BaseConstService::TOUR_LOG_PENDING,
+        ]);
+
+        event(new AfterTourUpdated($tour, $nextBatch->batch_no));
+
+        //0.5s执行一次
+        while (time_nanosleep(0, 500000000) === true) {
+            app('log')->info('每 0.5 秒查询一次修改是否完成');
+            //锁不存在代表更新完成
+            if (!$this->getTourLock($tour->tour_no)) {
+                return '修改线路成功';
+            }
+
+        }
+        app('log')->error('进入此处代表修改线路失败');
+        self::setTourLock($this->formData['tour_no'], 0); // 取消锁
+        throw new BusinessLogicException('修改线路失败');
+    }
+
+    public function autoOpIndex(Tour $tour)
+    {
+        $key = 1;
+        if ($tour->status == BaseConstService::TOUR_STATUS_1) { // 未取派的情况下,所有 batch 都是未取派的
+            $batchs = $tour->batchs;
+        } else {
+            $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->sortBy('sort_id', 'asc')->get(); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
+            foreach ($preBatchs as $preBatch) {
+                $preBatch->update(['sort_id'=>$key]);
+                $key++;
+            }
+            $batchs = $tour->batchs()->where('status', BaseConstService::BATCH_DELIVERING)->get();
+        }
+        $batchNos = $this->directionClient->GetRoute($batchs->toArray());
+
+        throw_unless(
+            $batchNos,
+            new BusinessLogicException('优化线路失败')
+        );
+
+        $nextBatch = null;
+
+        foreach ($batchNos as $k => $batchNo) {
+            Batch::where('batch_no', $batchNo)->update(['sort_id'=>$key+$k]);
+            if (!$nextBatch) {
+                $nextBatch = Batch::where('batch_no', $batchNo)->first();
+            }
+        }
+
+        return $nextBatch;
     }
 
     /**

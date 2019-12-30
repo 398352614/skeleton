@@ -109,7 +109,7 @@ class GoogleApiService
         $driver_location['code'] = create_unique($tour->company_id);
         $batchs = [$driver_location]; // 将司机位置放在序列中的第一位
 
-        $orderBatchs = Batch::where('tour_no', $tour->tour_no)->orderBy('index', 'asc')->get();
+        $orderBatchs = Batch::where('tour_no', $tour->tour_no)->orderBy('sort_id', 'asc')->get();
 
         foreach ($orderBatchs as $key => $batch) {
             $batchs[] = [
