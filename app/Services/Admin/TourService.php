@@ -157,9 +157,9 @@ class TourService extends BaseService
      */
     public function assignCar($id, $params)
     {
-        $tour = parent::getInfo(['id' => $id], ['*'], false);
+        $tour = parent::getInfo(['id' => $id, 'status' => ['in', BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]], ['*'], false);
         if (empty($tour)) {
-            throw new BusinessLogicException('取件线路不存在');
+            throw new BusinessLogicException('取件线路不存在或当前状态不允许分配车辆');
         }
         $tour = $tour->toArray();
         //查看当前车辆是否已被分配给其他取件线路
