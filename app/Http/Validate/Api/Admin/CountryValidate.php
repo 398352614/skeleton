@@ -14,16 +14,18 @@ use App\Http\Validate\BaseValidate;
 class CountryValidate extends BaseValidate
 {
     public $customAttributes = [
-        'name' => '名称',
+        'cn_name' => '中文名称',
+        'en_name' => '英文名称',
     ];
 
 
     public $rules = [
-        'name' => 'required|string|max:50|uniqueIgnore:country,id,company_id',
+        'en_name' => 'required|string|max:50|uniqueIgnore:country,id,company_id',
+        'cn_name' => 'required|string|max:50|uniqueIgnore:country,id,company_id',
     ];
 
     public $scene = [
-        'store' => ['name']
+        'store' => ['en_name', 'cn_name']
     ];
 }
 

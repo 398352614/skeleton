@@ -19,7 +19,7 @@ class BaseModel extends Model
     {
         parent::boot();
         static::addGlobalScope(new CompanyScope);
-        static::creating(self::fillCompanyId());
+        static::creating(self::fillId());
     }
 
 
@@ -43,7 +43,7 @@ class BaseModel extends Model
     }
 
 
-    public static function fillCompanyId()
+    public static function fillId()
     {
         return function ($model) {
             /**@var \Illuminate\Database\Eloquent\Model $model */
@@ -52,9 +52,17 @@ class BaseModel extends Model
                     $model->company_id = auth()->user()->company_id;
                 }
             }
+            //若是司机端 则添加司机ID
+            if (auth()->user() instanceof Driver) {
+                /**@var \Illuminate\Database\Eloquent\Model $model */
+                if (in_array('driver_id', Schema::getColumnListing($model->getTable()))) {
+                    if (!isset($model->driver_id) || $model->driver_id === null) {
+                        $model->driver_id = auth()->user()->id;
+                    }
+                }
+            }
         };
     }
-
 
     public static function translateName($list, $name)
     {

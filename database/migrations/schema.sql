@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `car_fee` (
 CREATE TABLE IF NOT EXISTS `company` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `company_code` varchar(10) DEFAULT '' COMMENT '公司代码',
-  `email` varchar(20) CHARACTER SET latin1 DEFAULT NULL COMMENT 'email',
+  `email` varchar(20) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT 'email',
   `name` varchar(50) DEFAULT '' COMMENT '公司名称',
   `contacter` varchar(50) DEFAULT '' COMMENT '公司联系人',
   `phone` varchar(20) DEFAULT '' COMMENT '公司电话',
@@ -276,7 +276,7 @@ CREATE TABLE IF NOT EXISTS `memorandum` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
   `dirver_id` int(11) DEFAULT NULL COMMENT '司机ID',
-  `content` varchar(250) CHARACTER SET latin1 DEFAULT NULL COMMENT '内容',
+  `content` varchar(250) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '内容',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
@@ -379,8 +379,8 @@ CREATE TABLE IF NOT EXISTS `order_items` (
 CREATE TABLE IF NOT EXISTS `order_no_rule` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `type` varchar(10) CHARACTER SET latin1 DEFAULT NULL COMMENT '类型',
-  `prefix` varchar(10) CHARACTER SET latin1 DEFAULT NULL COMMENT '前缀',
+  `type` varchar(10) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '类型',
+  `prefix` varchar(10) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT '前缀',
   `start_index` int(11) DEFAULT NULL COMMENT '开始索引',
   `length` int(8) DEFAULT NULL COMMENT '长度',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',

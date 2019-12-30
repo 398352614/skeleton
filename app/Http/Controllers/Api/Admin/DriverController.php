@@ -76,7 +76,7 @@ class DriverController extends BaseController
      *  "data":{}
      * }
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         return $this->service->update(['id' => $id], $request->validated);
     }
@@ -102,6 +102,14 @@ class DriverController extends BaseController
     }
 
     /**
+     * @throws BusinessLogicException
+     * @apiSuccessExample {json}  返回示例
+     * HTTP/1.1 200 OK
+     * {
+     *  "ret":1,
+     *  "msg":"添加线路",
+     *  "data":{}
+     * }
      * @api {POST}  api/admin/driver/driver-register 管理员端:司机添加
      * @apiName driver-register
      * @apiGroup admin-driver
@@ -131,14 +139,6 @@ class DriverController extends BaseController
      * @apiParam {String}   iban                    在途编号
      * @apiParam {String}   bic                    在途编号
      * @apiParam {String}   crop_type                    合作类型
-     * @throws BusinessLogicException
-     * @apiSuccessExample {json}  返回示例
-     * HTTP/1.1 200 OK
-     * {
-     *  "ret":1,
-     *  "msg":"添加线路",
-     *  "data":{}
-     * }
      */
     public function driverRegister(Request $request)
     {
@@ -162,7 +162,10 @@ class DriverController extends BaseController
      */
     public function driverStatus()
     {
-        return self::$driverStatusList;
+        $data = array_values(collect(self::$driverStatusList)->map(function ($value, $key) {
+            return collect(['id' => $key, 'name' => $value]);
+        })->toArray());
+        return $data;
     }
 
     /**
@@ -172,6 +175,7 @@ class DriverController extends BaseController
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 锁定司机
+     * @throws
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
      * {
@@ -180,18 +184,22 @@ class DriverController extends BaseController
      *  "data":{}
      * }
      */
-    public function lockDriver(Request $request)
+    public function lockDriver(Request $request,$id)
     {
         $data = [
             'is_locked' => $request->is_locked
         ];
 
         throw_unless(
-            $this->service->count(['id'=>$request->id]),
+            $this->service->count(['id' => $id]),
             new BusinessLogicException('司机不存在或者不属于当前公司')
         );
 
-        return $this->service->updateById($request->id, $data) ? 'true' : 'false';
+        $rowCount = $this->service->updateById($id, $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        return;
     }
 
     /**
@@ -211,6 +219,9 @@ class DriverController extends BaseController
      */
     public function cropType()
     {
-        return self::$driverTypeList;
+        $data = array_values(collect(self::$driverTypeList)->map(function ($value, $key) {
+            return collect(['id' => $key, 'name' => $value]);
+        })->toArray());
+        return $data;
     }
 }

@@ -43,7 +43,8 @@ class Country extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'name',
+        'cn_name',
+        'en_name',
         'create_at',
         'updated_at'
     ];

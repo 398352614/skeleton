@@ -16,6 +16,8 @@ class DriverService extends BaseService
 
     public $filterRules = [
         'status' => ['=', 'status'],
+        'email' => ['=','email'],
+        'phone' =>['=','phone']
     ];
 
     public function __construct(Driver $driver)
@@ -66,7 +68,6 @@ class DriverService extends BaseService
             'iban'                  => $this->formData['iban'],
             'bic'                   => $this->formData['bic'],
             'crop_type'             => $this->formData['crop_type'],
-            'is_locked'             => BaseConstService::DRIVER_TO_NORMAL,
         ];
         $rowCount =  parent::create($driver);
         if($rowCount === false){

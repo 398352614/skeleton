@@ -115,17 +115,21 @@ class BatchService extends BaseService
             'receiver_house_number' => $order['receiver_house_number'],
             'receiver_post_code' => $order['receiver_post_code'],
             'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
-        ], ['*'], false, [], [])->toArray();
-        if (empty($batchList)) return [[], ['created_at' => 'desc']];
+        ], ['*'], false, [], ['created_at' => 'desc'])->toArray();
+        if (empty($batchList)) return [[], []];
         foreach ($batchList as $batch) {
             //获取线路信息
             $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
             if (empty($line)) {
-                throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
+                continue;
             }
             $line = $line->toArray();
             //获取取件线路信息
             $tour = $this->getTourService()->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
+            //若取件线路不是待分配或已分配状态,则需要新建站点
+            if (in_array(intval($tour['status']), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2])) {
+                continue;
+            }
             //若未超过最大订单量,则加入已有站点
             if ((intval($tour['expect_pickup_quantity']) + intval($tour['expect_pie_quantity'])) < intval($line['order_max_count'])) {
                 //锁定当前站点

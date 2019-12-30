@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Models\Car;
@@ -22,7 +23,7 @@ class CarController extends BaseController
         CarService $service,
         CarBrandService $brandService,
         CarModelService $modelService
-        )
+    )
     {
         $this->service = $service;
         $this->brandService = $brandService;
@@ -86,16 +87,15 @@ class CarController extends BaseController
      */
     public function show($id)
     {
-        return $this->service->getInfo(['id' => $id], ['*'], true);
+        $info = $this->service->getInfo(['id' => $id], ['*'], true);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $info;
     }
 
     /**
-     * @api {PUT}  api/admin/car/{car} 管理员端:车辆编辑
-     * @apiName update
-     * @apiGroup admin-car
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 车辆编辑
+     * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
      * {
@@ -103,6 +103,12 @@ class CarController extends BaseController
      *  "msg":"车辆编辑",
      *  "data":{}
      * }
+     * @api {PUT}  api/admin/car/{car} 管理员端:车辆编辑
+     * @apiName update
+     * @apiGroup admin-car
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 车辆编辑
      */
     public function update(Request $request, $id)
     {
@@ -110,12 +116,7 @@ class CarController extends BaseController
     }
 
     /**
-     * @api {DELETE}  api/admin/car/{car} 管理员端:车辆删除
-     * @apiName destroy
-     * @apiGroup admin-car
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 车辆删除
+     * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
      * {
@@ -123,10 +124,16 @@ class CarController extends BaseController
      *  "msg":"车辆编辑",
      *  "data":{}
      * }
+     * @api {DELETE}  api/admin/car/{car} 管理员端:车辆删除
+     * @apiName destroy
+     * @apiGroup admin-car
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 车辆删除
      */
     public function destroy(Request $request, $id)
     {
-        return $this->model->where('id', $id)->destroy();
+        return $this->service->destroy($id);
     }
 
     /**
@@ -136,6 +143,7 @@ class CarController extends BaseController
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 车辆锁定
+     * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
      * {
@@ -144,13 +152,9 @@ class CarController extends BaseController
      *  "data":{}
      * }
      */
-    public function lock(Request $request)
+    public function lock(Request $request, $id)
     {
-        $payload = $this->validate($request, [
-            'car_id' => 'required|integer|min:1',
-            'is_locked' => 'required|boolean',
-        ]);
-        return Car::where('id', $payload['car_id'])->update(['is_locked'=>$payload['is_locked']]);
+        return $this->service->lock($id, $request->input('is_locked'));
     }
 
     /**

@@ -54,18 +54,18 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('assgin-driverWork', 'DriverController@assginDriverWork');//给司机分配工作信息（也就是产品图上的审核）
         Route::get('/crop-type', 'DriverController@cropType');//获取合作方式
         Route::get('/driver-status', 'DriverController@driverStatus');//获取状态
-        Route::post('/lock-driver', 'DriverController@lockDriver');//锁定或解锁司机
+        Route::post('/{id}/lock-driver', 'DriverController@lockDriver');//锁定或解锁司机
 
         //rest api 放在最后
         Route::get('/', 'DriverController@index')->name('driver.index');//司机列表?page=1&page_size=10&status=&crop_type=&keywords=
         Route::get('/{id}', 'DriverController@show')->name('driver.show');//司机详情
-        Route::put('/{id}', 'DriverController@update')->name('driver.update');//司机详情
+        Route::put('/{id}', 'DriverController@update')->name('driver.update');//司机修改
         Route::delete('/{id}', 'DriverController@destroy')->name('driver.destroy');//删除司机
     });
 
     //车辆管理
     Route::prefix('car')->group(function () {
-        Route::post('/lock', 'CarController@lock')->name('car.lock');
+        Route::put('/{id}/lock', 'CarController@lock')->name('car.lock');
         Route::get('/brands', 'CarController@getBrands')->name('car.brands');       // 获取品牌列表
         Route::post('/addbrand', 'CarController@addBrand')->name('car.addbrand');   // 添加品牌
         Route::get('/models', 'CarController@getModels')->name('car.models');       // 获取型号列表
@@ -96,8 +96,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //rest api 放在最后
         Route::get('/', 'TourController@index')->name('tour.index');
         Route::get('/{id}', 'TourController@show')->name('tour.show');
-        Route::post('/{id}/assignDriver', 'TourController@assignDriver');   //分配司机
-        Route::post('/{id}/assignCar', 'TourController@assignCar');         //分配车辆
+        Route::put('/{id}/assignDriver', 'TourController@assignDriver');               //分配司机
+        Route::put('/{id}/cancelAssignDriver', 'TourController@cancelAssignDriver');   //取消分配司机
+        Route::put('/{id}/assignCar', 'TourController@assignCar');                     //分配车辆
+        Route::put('/{id}/cancelAssignCar', 'TourController@cancelAssignCar');         //取消分配车辆
     });
 
     //任务报告
@@ -152,5 +154,17 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('common')->group(function () {
         //获取具体地址经纬度
         Route::get('getLocation', 'CommonController@getLocation');
+    });
+
+    //上传接口
+    Route::prefix('upload')->group(function () {
+        //获取可上传的图片目录列表
+        Route::get('getImageDirList', 'UploadController@getImageDirList');
+        //图片上传
+        Route::post('imageUpload', 'UploadController@imageUpload');
+        //获取可上传的文件目录列表
+        Route::get('getFileDirList', 'UploadController@getFileDirList');
+        //文件上传
+        Route::post('fileUpload', 'UploadController@fileUpload');
     });
 });

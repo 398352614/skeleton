@@ -20,6 +20,10 @@ class BaseConstService
     //取件线路编号类型
     const TOUR_NO_TYPE = 'tour';
 
+    //分配状态1-分配,2-取消分配
+    const ASSIGN_YES = 1;
+    const ASSIGN_CANCEL = 2;
+
     //星期定义
     const MONDAY = 1;
     const TUESDAY = 2;
@@ -58,10 +62,12 @@ class BaseConstService
     const ORDER_NATURE_4 = 4;
     const ORDER_NATURE_5 = 5;
 
-    //取件线路状态状态：1-未取派2-取派中3-取派完成
+    //取件线路状态状态：1-待分配2-已分配-3-待出库4-取派中5-取派完成
     const TOUR_STATUS_1 = 1;
     const TOUR_STATUS_2 = 2;
     const TOUR_STATUS_3 = 3;
+    const TOUR_STATUS_4 = 4;
+    const TOUR_STATUS_5 = 5;
 
     //tour 在途状态  1-配送中 2-已完成 3-异常
     const TOUR_STATUS_DELIVERYING = 1;
@@ -78,7 +84,7 @@ class BaseConstService
     const TOUR_LOG_COMPLETE = 2;
     const TOUR_LOG_ERROR = 3;
 
-    //batch 批次站点的状态 状态：1-未取派2-已分配3-取派中4-已签收5-异常
+    //batch 批次站点的状态 状态：1-待分配2-已分配3-取派中4-已签收5-异常
     const BATCH_WAIT_ASSIGN = 1;
     const BATCH_ASSIGNED = 2;
     const BATCH_DELIVERING = 3;
@@ -96,5 +102,14 @@ class BaseConstService
     //车辆状态
     const CAR_TO_NORMAL = 1;
     const CAR_TO_LOCK = 2;
+
+
+    //管理员端 图片目录
+    const ADMIN_IMAGE_DRIVER_DIR = 'driver';
+
+
+    //管理员端 文件目录
+    const ADMIN_FILE_DRIVER_DIR = 'driver';
+    const ADMIN_FILE_CAR_DIR = 'car';
 
 }

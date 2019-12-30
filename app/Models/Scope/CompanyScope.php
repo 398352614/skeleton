@@ -36,6 +36,7 @@ class CompanyScope implements Scope
         //如果是司机端
         if ($user instanceof Driver) {
             $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
+            $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
         }
     }
 }

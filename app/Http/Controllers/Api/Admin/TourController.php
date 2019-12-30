@@ -8,7 +8,7 @@ use App\Services\Admin\TourService;
 use Illuminate\Http\Request;
 
 /**
- * 在途的相关操作,目前设想是采用 redis 进行加锁.日志只是记录操作,不进行是否已完成标记
+ *
  */
 class TourController extends BaseController
 {
@@ -19,7 +19,6 @@ class TourController extends BaseController
 
     public function __construct(TourService $service)
     {
-
         //事务包裹和数据传入
         parent::__construct($service);
     }
@@ -140,6 +139,16 @@ class TourController extends BaseController
     }
 
     /**
+     * 取消司机分配
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function cancelAssignDriver($id)
+    {
+        return $this->service->cancelAssignDriver($id);
+    }
+
+    /**
      * 分配车辆
      * @param $id
      * @throws \App\Exceptions\BusinessLogicException
@@ -147,5 +156,15 @@ class TourController extends BaseController
     public function assignCar($id)
     {
         return $this->service->assignCar($id, $this->data);
+    }
+
+    /**
+     * 取消车辆分配
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function cancelAssignCar($id)
+    {
+        return $this->service->cancelAssignCar($id);
     }
 }

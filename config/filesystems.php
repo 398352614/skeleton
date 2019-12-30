@@ -55,6 +55,38 @@ return [
             'visibility' => 'public',
         ],
 
+        //管理员端-图片
+        'admin_image_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/admin/images'),
+            'url' => env('APP_URL').'/storage/admin/images',
+            'visibility' => 'public',
+        ],
+
+        //管理员端-文件
+        'admin_file_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/admin/file'),
+            'url' => env('APP_URL').'/storage/admin/file',
+            'visibility' => 'public',
+        ],
+
+        //司机端-图片
+        'driver_image_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/driver/images'),
+            'url' => env('APP_URL').'/storage/driver/images',
+            'visibility' => 'public',
+        ],
+
+        //司机端-文件
+        'driver_file_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/driver/images'),
+            'url' => env('APP_URL').'/storage/driver/images',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
