@@ -118,4 +118,15 @@ class Tour extends BaseModel
         return $this->hasMany(Batch::class, 'tour_no', 'tour_no');
     }
 
+    /**
+     * 获取司机位置属性
+     */
+    public function getDriverLocationAttribute()
+    {
+        return [
+            'latitude'  => $this->warehouse_lat,
+            'longitude'  => $this->warehouse_lon,
+        ];
+    }
+
 }

@@ -373,6 +373,7 @@ class TourService extends BaseService
      */
     public function autoOpTour()
     {
+        //需要先判断当前 tour 是否被锁定状态!!! 中间件或者 validate 验证规则???
         set_time_limit(240);
         self::setTourLock($this->formData['tour_no'], 1); // 加锁
         
@@ -409,22 +410,33 @@ class TourService extends BaseService
     public function autoOpIndex(Tour $tour)
     {
         $key = 1;
-        if ($tour->status == BaseConstService::TOUR_STATUS_1) { // 未取派的情况下,所有 batch 都是未取派的
+        if ($tour->status != BaseConstService::TOUR_STATUS_4) { // 未取派的情况下,所有 batch 都是未取派的
             $batchs = $tour->batchs;
         } else {
-            $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->sortBy('sort_id', 'asc')->get(); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
+            $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->get()->sortByDesc('sort_id'); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
             foreach ($preBatchs as $preBatch) {
                 $preBatch->update(['sort_id'=>$key]);
                 $key++;
             }
             $batchs = $tour->batchs()->where('status', BaseConstService::BATCH_DELIVERING)->get();
         }
-        $batchNos = $this->directionClient->GetRoute($batchs->toArray());
 
-        throw_unless(
-            $batchNos,
-            new BusinessLogicException('优化线路失败')
-        );
+        $batchNos = [];
+
+        if (count($batchs) !== 0) {
+            $driverLoc = [
+                'batch_no'  => 'driver_location',
+                'receiver_lat' => $tour->driver_location['latitude'],
+                'receiver_lon' => $tour->driver_location['longitude'],
+            ];
+
+            $batchNos = $this->directionClient->GetRoute([$driverLoc] + $batchs->toArray());
+
+            throw_unless(
+                $batchNos,
+                new BusinessLogicException('优化线路失败')
+            );
+        }
 
         $nextBatch = null;
 
