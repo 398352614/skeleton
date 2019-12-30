@@ -64,7 +64,7 @@ class GoogleApiService
 
         app('log')->info('初始化线路传送给 api 端的参数为:', $params);
 
-        $res = $this->client->post($this->url . $api . $this->makeSign(time()), $params);
+        $res = $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
 
         return $res;
     }
@@ -97,7 +97,7 @@ class GoogleApiService
         // ];
         $api = '/api/update-driver';
 
-        $res = $this->client->post($this->url . $api . $this->makeSign(time()), $data);
+        $res = $this->client->postJson($this->url . $api . $this->makeSign(time()), $data);
 
         return $res;
     }
@@ -115,7 +115,8 @@ class GoogleApiService
             $batchs[] = [
                 "latitude"      =>  $batch->receiver_lat,
                 "longitude"     =>  $batch->receiver_lon,
-                "code"          =>  $batch->batch_no
+                "code"          =>  $batch->batch_no,
+                "gather_sn"     =>  ['a'],
             ];
         }
 
@@ -129,7 +130,7 @@ class GoogleApiService
 
         app('log')->info('更新线路传送给 api 端的参数为:', $params);
 
-        $res = $this->client->post($this->url . $api . $this->makeSign(time()), $params);
+        $res = $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
 
         return $res;
     }

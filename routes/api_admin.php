@@ -21,7 +21,7 @@ Route::namespace('Api\Admin')->group(function () {
     Route::post('password-reset', 'RegisterController@resetPassword');
     Route::post('password-reset/apply', 'RegisterController@applyOfReset');
 
-    Route::post('/tour/callback', 'TourController@callback');         //自动优化线路
+    Route::get('/tour/callback', 'TourController@callback');         //自动优化线路
 });
 
 //认证

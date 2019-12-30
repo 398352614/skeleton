@@ -87,6 +87,40 @@ class CurlClient
         }
     }
 
+    public function postJson($url, $params, $next=0, $auth=null)
+    {
+        try {
+            if ($auth) {
+                $response = $this->http->post($url, ['auth'=> $auth, 'json' => $params]);
+            } else {
+                $response = $this->http->post($url, ['json' => $params]);
+            }
+            
+        } catch (\Exception $e) {
+            if ($next >= 2) {
+                app('log')->info('多次请求出错，不再请求');
+                return null;
+            }
+            $next++;
+            app('log')->info('请求地址'.$url.'出错，重新推送,参数', $params);
+            app("log")->error($e->getMessage());
+            app("log")->error($e->getTraceAsString());
+            return $this->post($url, $params, $next);
+        }
+        if ($response->getStatusCode() == 200) {
+            $bodyData = $response->getBody();
+            $responseData = json_decode((string) $bodyData, true);
+            if (!$responseData) {
+                app('log')->info('请求地址'.$url.'返回不是json数组'.$bodyData.',参数', $params);
+                return null;
+            }
+            return $responseData;
+        } else {
+            app('log')->info('请求地址'.$url.'失败', $params);
+            return null;
+        }
+    }
+
     public function get($url)
     {
         try {
