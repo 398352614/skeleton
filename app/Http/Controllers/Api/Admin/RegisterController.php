@@ -28,13 +28,14 @@ class RegisterController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required|string|between:8,20',
-                'confirm_password' =>'required|string|same:password',
-                //'phone'     => 'required|string|phone:CN',
-                'code'      => 'required|string|digits_between:6,6'
-        ]);
+//        $data = $request->validate([
+//                'email' => 'required|email',
+//                'password' => 'required|string|between:8,20',
+//                'confirm_password' =>'required|string|same:password',
+//                //'phone'     => 'required|string|phone:CN',
+//                'code'      => 'required|string|digits_between:6,6'
+//        ]);
+        $data = $request->all();
 
         if ($data['code'] !== $this->getVerifyCode($data['email'])) {
             throw new BusinessLogicException('验证码错误');
@@ -122,9 +123,9 @@ class RegisterController extends Controller
      */
     public function applyOfRegister(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
+//        $request->validate([
+//            'email' => 'required|email',
+//        ]);
 
         throw_if(
             Employee::where('email', $request->get('email'))->count(),
@@ -143,9 +144,9 @@ class RegisterController extends Controller
      */
     public function applyOfReset(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
+//        $request->validate([
+//            'email' => 'required|email',
+//        ]);
 
         return $this->sendCode($request->input('email'), 'RESET');
     }
@@ -158,12 +159,13 @@ class RegisterController extends Controller
      */
     public function resetPassword(Request $request)
     {
-        $data = $request->validate([
-            'new_password' => 'required|string|between:8,20',
-            'confirm_new_password' =>'required|string|same:new_password',
-            'email' => 'required|email',
-            'code'  => 'required|string|digits_between:6,6'
-        ]);
+//        $data = $request->validate([
+//            'new_password' => 'required|string|between:8,20',
+//            'confirm_new_password' =>'required|string|same:new_password',
+//            'email' => 'required|email',
+//            'code'  => 'required|string|digits_between:6,6'
+//        ]);
+        $data = $request->all();
 
         if ($data['code'] !== $this->getVerifyCode($data['email'], 'RESET')) {
             throw new BusinessLogicException('验证码错误');
