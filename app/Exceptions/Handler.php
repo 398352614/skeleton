@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof AuthenticationException) {
-            return response()->json($this->responseFormat(1000, '', '用户认证失败'));
+            return response()->json($this->responseFormat(10000, '', '用户认证失败'));
         }
 
         return parent::render($request, $exception);
