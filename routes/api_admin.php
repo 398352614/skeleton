@@ -27,7 +27,7 @@ Route::namespace('Api\Admin')->group(function () {
 //认证
 Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::get('me', 'AuthController@me');
-    Route::post('logout', 'AuthController@loginout');
+    Route::post('logout', 'AuthController@logout');
 
     //订单管理
     Route::prefix('order')->group(function () {
