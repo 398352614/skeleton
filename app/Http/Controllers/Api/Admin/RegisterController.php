@@ -49,7 +49,7 @@ class RegisterController extends Controller
         );
 
         return DB::transaction(function () use ($data) {
-            $lastCompany = Company::lockForUpdate()->first();
+            $lastCompany = Company::lockForUpdate()->orderBy('created_at','desc')->first();
 
             $company = Company::create([
                 'company_code' => self::makeNewCompanyCode($lastCompany),
