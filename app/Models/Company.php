@@ -49,6 +49,8 @@ class Company extends BaseModel
         'phone',
         'country',
         'address',
+        'created_at',
+        'updated_at'
     ];
 
     /**
