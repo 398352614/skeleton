@@ -20,6 +20,8 @@ Route::namespace('Api\Admin')->group(function () {
     Route::post('register/apply', 'RegisterController@applyOfRegister');
     Route::post('password-reset', 'RegisterController@resetPassword');
     Route::post('password-reset/apply', 'RegisterController@applyOfReset');
+
+    Route::get('/tour/callback', 'TourController@callback');         //自动优化线路
 });
 
 //认证

@@ -43,8 +43,8 @@ class XLDirectionService
         foreach ($data as $key => $loc) {
             $temp = [];
             $temp['name'] = $loc['batch_no'];
-            $temp['lat'] = $loc['latitude'];
-            $temp['lng'] = $loc['longitude'];
+            $temp['lat'] = $loc['receiver_lat'];
+            $temp['lng'] = $loc['receiver_lon'];
             $locSeq[] = $temp;
         }
         return $this->getTour($locSeq);
@@ -52,7 +52,6 @@ class XLDirectionService
 
     public function getTour(array $locSeq): array
     {
-    
         $resp = $this->curl->post(self::BASE_URL . 'tour/', ['locations'=>$locSeq], 0);
         if(!$resp || !$resp['feasible']) {
             app('log')->info('线路规划失败或者不可靠');

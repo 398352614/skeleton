@@ -14,6 +14,7 @@ use App\Services\BaseService;
 use App\Services\BaseServices\XLDirectionService;
 use App\Services\GoogleApiService;
 use App\Services\OrderNoRuleService;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class TourService extends BaseService
@@ -373,6 +374,7 @@ class TourService extends BaseService
      */
     public function autoOpTour()
     {
+        //需要先判断当前 tour 是否被锁定状态!!! 中间件或者 validate 验证规则???
         set_time_limit(240);
         self::setTourLock($this->formData['tour_no'], 1); // 加锁
         
@@ -409,22 +411,33 @@ class TourService extends BaseService
     public function autoOpIndex(Tour $tour)
     {
         $key = 1;
-        if ($tour->status == BaseConstService::TOUR_STATUS_1) { // 未取派的情况下,所有 batch 都是未取派的
+        if ($tour->status != BaseConstService::TOUR_STATUS_4) { // 未取派的情况下,所有 batch 都是未取派的
             $batchs = $tour->batchs;
         } else {
-            $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->sortBy('sort_id', 'asc')->get(); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
+            $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->get()->sortByDesc('sort_id'); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
             foreach ($preBatchs as $preBatch) {
                 $preBatch->update(['sort_id'=>$key]);
                 $key++;
             }
             $batchs = $tour->batchs()->where('status', BaseConstService::BATCH_DELIVERING)->get();
         }
-        $batchNos = $this->directionClient->GetRoute($batchs->toArray());
 
-        throw_unless(
-            $batchNos,
-            new BusinessLogicException('优化线路失败')
-        );
+        $batchNos = [];
+
+        if (count($batchs) !== 0) {
+            $driverLoc = [
+                'batch_no'  => 'driver_location',
+                'receiver_lat' => $tour->driver_location['latitude'],
+                'receiver_lon' => $tour->driver_location['longitude'],
+            ];
+
+            $batchNos = $this->directionClient->GetRoute([$driverLoc] + $batchs->toArray());
+
+            throw_unless(
+                $batchNos,
+                new BusinessLogicException('优化线路失败')
+            );
+        }
 
         $nextBatch = null;
 
@@ -444,36 +457,36 @@ class TourService extends BaseService
     public function dealCallback()
     {
         throw_unless(
-            self::getTourLock($this->formData['tour_no']) == 1,
+            self::getTourLock($this->formData['line_code']) == 1,
             new BusinessLogicException('不存在的动作')
         );
 
-        $tourLog = TourLog::where('tour_no', $this->formData['tour_no'])->where('status', BaseConstService::TOUR_LOG_PENDING)->where('action', $this->formData['type'])->first();
+        $tourLog = TourLog::where('tour_no', $this->formData['line_code'])->where('status', BaseConstService::TOUR_LOG_PENDING)->where('action', $this->formData['type'])->first();
         // app('log')->info('日志的时间戳为:' . $lineLog->timestamp . '当天开始的时间戳为:' . strtotime(date("Y-m-d")));
-        if (time() - $tourLog->created_at > 3600 * 24 || $tourLog->created_at < strtotime(date("Y-m-d"))) { // 标记为异常日志
-            app('log')->info('异常的线路日志为:' . $this->formData['tour_no']);
+        if (time() - $tourLog->created_at->timestamp > 3600 * 24 || $tourLog->created_at->timestamp < strtotime(date("Y-m-d"))) { // 标记为异常日志
+            app('log')->info('异常的线路日志为:' . $this->formData['line_code']);
             $tourLog->update(['status' => BaseConstService::TOUR_LOG_ERROR]);
             throw new BusinessLogicException('更新时间已超时');
         }
 
-        $info = $this->apiClient->LineInfo($this->formData['tour_no']);
+        $info = $this->apiClient->LineInfo($this->formData['line_code']);
         if (!$info || $info['ret'] == 0) { // 返回错误的情况下直接返回
             app('log')->info('更新动作失败,错误信息为:' . $info['msg']);
-            self::setTourLock($this->formData['tour_no'], 0);
+            self::setTourLock($this->formData['line_code'], 0);
             return '已知道该次更新失败';
         }
         $data = $info['data'];
 
-        app('log')->info('开始更新线路,线路标识为:' . $this->formData['tour_no']);
+        app('log')->info('开始更新线路,线路标识为:' . $this->formData['line_code']);
         app('log')->info('api返回的结果为:', $info);
 
-        TourLog::where('line_code', $this->formData['tour_no'])->where('action', $this->formData['type'])->update(['status' => BaseConstService::TOUR_LOG_COMPLETE]); // 日志标记为已完成
-        $tour = Tour::where('tour_no', $this->formData['tour_no'])->first();
+        TourLog::where('tour_no', $this->formData['line_code'])->where('action', $this->formData['type'])->update(['status' => BaseConstService::TOUR_LOG_COMPLETE]); // 日志标记为已完成
+        $tour = Tour::where('tour_no', $this->formData['line_code'])->first();
         $max_time = 0;
         $max_distance = 0;
 
         foreach ($data['loc_res'] as $key => $res) {
-            $tourBatch = Batch::where('batch_no', $key)->where('tour_no', $this->formData['tour_no'])->first();
+            $tourBatch = Batch::where('batch_no', $key)->where('tour_no', $this->formData['line_code'])->first();
             $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', $data['timestamp'] + $res['time']);
             $tourBatch->expect_distance = $res['distance'];
             $tourBatch->save();
@@ -481,16 +494,16 @@ class TourService extends BaseService
             $max_distance = max($max_distance, $res['distance']);
         }
 
-        if ($tour->expected_time == 0) { // 只有未更新过的线路需要更新期望时间和距离
-            $tour->expected_time = $max_time;
-            $tour->expected_distance = $max_distance;
+        if ($tour->expect_time == 0) { // 只有未更新过的线路需要更新期望时间和距离
+            $tour->expect_time = $max_time;
+            $tour->expect_distance = $max_distance;
             $tour->save();
         }
         $tour->lave_distance = $max_distance;
 
-        app('log')->info('更新线路完成,线路标识为:' . $this->formData['tour_no']);
+        app('log')->info('更新线路完成,线路标识为:' . $this->formData['line_code']);
         //取消锁
-        self::setTourLock($this->formData['tour_no'], 0);
+        self::setTourLock($this->formData['line_code'], 0);
         return '更新完成';
     }
 

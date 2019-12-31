@@ -21,7 +21,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $this->validateLogin($request);
+        //$this->validateLogin($request);
 
         $credentials = [
             $this->username() => $request['username'],

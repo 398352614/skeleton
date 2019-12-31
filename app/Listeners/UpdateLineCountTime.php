@@ -7,7 +7,7 @@ use App\Services\GoogleApiService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class UpdateLineCountTime implements ShouldQueue
+class UpdateLineCountTime 
 {
     /**
      * @var GoogleApiService
