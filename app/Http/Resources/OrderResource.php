@@ -20,7 +20,6 @@ class OrderResource extends JsonResource
             'company_id' => $this->company_id,
             'order_no' => $this->order_no,
             'status_name' => $this->status_name,
-            'exception_type_name' => $this->exception_type_name,
             'execution_date' => $this->execution_date,
             'batch_no' => $this->batch_no,
             'tour_no' => $this->tour_no,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Validate\Api\Admin;
+namespace App\Http\Validate\Api\Driver;
 
 use App\Http\Validate\BaseValidate;
 

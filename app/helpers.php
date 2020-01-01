@@ -17,8 +17,8 @@ if (!function_exists('isJson')) {
 if (!function_exists('failed')) {
     /**
      * 判断字符串是否是json
-     * @param  string  $message
-     * @param  array  $data
+     * @param string $message
+     * @param array $data
      * @return array
      */
     function failed(string $message = 'failed', array $data = [])
@@ -30,8 +30,8 @@ if (!function_exists('failed')) {
 if (!function_exists('success')) {
     /**
      * 判断字符串是否是json
-     * @param  string  $message
-     * @param  array  $data
+     * @param string $message
+     * @param array $data
      * @return array
      */
     function success(string $message = 'success', array $data = [])
@@ -54,9 +54,28 @@ if (!function_exists('array_create_group_index')) {
         foreach ($arr as $val) {
             $newArray[$val[$field]][] = $val;
         }
+        unset($arr);
         return $newArray;
     }
 }
+if (!function_exists('array_create_index')) {
+    /**
+     * 根据$field，数组列表创建索引
+     * @param $arr
+     * @param string $field 属性名称，必须是唯一键
+     * @return array
+     */
+    function array_create_index($arr, $field)
+    {
+        $newArr = [];
+        foreach ($arr as $key => $val) {
+            $newArr[$val[$field]] = $val;
+        }
+        unset($arr);
+        return $newArr;
+    }
+}
+
 
 if (!function_exists('create_unique')) {
     /**

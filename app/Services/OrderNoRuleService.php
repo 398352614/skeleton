@@ -82,4 +82,24 @@ class OrderNoRuleService extends BaseService
         return $orderNo;
     }
 
+    /**
+     * 创建站点异常编号
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function createBatchExceptionNo()
+    {
+        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::BATCH_EXCEPTION_NO_TYPE], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('单号规则不存在,请先添加单号规则');
+        }
+        $info = $info->toArray();
+        $orderNo = BaseConstService::BATCH_EXCEPTION . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
+        $rowCount = parent::updateById($info['id'], ['start_index' => $info['start_index'] + 1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('单号生成失败,请重新操作');
+        }
+        return $orderNo;
+    }
+
 }

@@ -63,9 +63,9 @@ class Order extends BaseModel
         'replace_amount',
         'delivery',
         'status',
-        'exception_type',
-        'exception_remark',
-        'exception_picture',
+        'cancel_type',
+        'cancel_remark',
+        'cancel_picture',
         'sender',
         'sender_phone',
         'sender_country',
@@ -110,13 +110,6 @@ class Order extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return ConstTranslateTrait::$orderStatusList[$this->status];
+        return ConstTranslateTrait::$batchExceptionStatusList[$this->status];
     }
-
-    public function getExceptionTypeNameAttribute()
-    {
-        return ConstTranslateTrait::$orderExceptionTypeList[$this->exception_type];
-    }
-
-
 }

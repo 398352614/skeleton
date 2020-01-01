@@ -6,6 +6,7 @@
 
 namespace App\Models\Scope;
 
+use App\Models\Car;
 use App\Models\Driver;
 use App\Models\Employee;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,7 +37,10 @@ class CompanyScope implements Scope
         //如果是司机端
         if ($user instanceof Driver) {
             $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
-            $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
+            //车辆模型和司机无关
+            if (!($model instanceof Car)) {
+                $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
+            }
         }
     }
 }

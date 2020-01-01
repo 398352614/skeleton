@@ -204,9 +204,10 @@ class BaseService
      * @param $where
      * @param $selectFields
      * @param bool $isResource
+     * @param array $orderFields
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
-    public function getInfo($where, $selectFields = ['*'], $isResource = true)
+    public function getInfo($where, $selectFields = ['*'], $isResource = true,$orderFields = [])
     {
         SearchTrait::buildQuery($this->query, $where);
         $data = $this->query->first($selectFields);
@@ -216,6 +217,12 @@ class BaseService
         };
         if ($isResource) {
             $data = $this->infoResource::make($data)->toArray(request());
+        }
+        if (!empty($orderFields)) {
+            $keyArr = array_keys($orderFields);
+            foreach ($keyArr as $key) {
+                $this->query->orderBy($key, $orderFields[$key]);
+            }
         }
         $this->query = $this->model::query();
         return $data;

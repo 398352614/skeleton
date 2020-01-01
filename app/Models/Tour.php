@@ -83,6 +83,7 @@ class Tour extends BaseModel
         'actual_pie_quantity',
         'order_amount',
         'replace_amount',
+        'settlement_amount',
         'remark',
         'created_at',
         'updated_at',

@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 订单表
+ * 站点异常表
  * Class Employee
  * @package App\Models
  */
-class OrderItem extends BaseModel
+class BatchException extends BaseModel
 {
     /**
      * 司机实际取件导航
@@ -17,7 +18,7 @@ class OrderItem extends BaseModel
      *
      * @var string
      */
-    protected $table = 'order_items';
+    protected $table = 'batch_exception';
 
     /**
      * The primary key for the model.
@@ -47,12 +48,21 @@ class OrderItem extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'order_no',
-        'name',
-        'quantity',
-        'weight',
-        'volume',
-        'price',
+        'batch_exception_no',
+        'batch_no',
+        'receiver',
+        'status',
+        'source',
+        'stage',
+        'type',
+        'remark',
+        'picture',
+        'deal_remark',
+        'deal_id',
+        'deal_name',
+        'deal_time',
+        'driver_id',
+        'driver_name',
         'created_at',
         'updated_at',
     ];
@@ -78,4 +88,19 @@ class OrderItem extends BaseModel
     {
         return ConstTranslateTrait::$orderStatusList[$this->status];
     }
+
+    public function getStageNameAttribute()
+    {
+        return ConstTranslateTrait::$batchExceptionStatusList[$this->stage];
+    }
+
+    public function getTypeNameAttribute()
+    {
+        if (intval($this->stage) == BaseConstService::BATCH_EXCEPTION_STAGE_1) {
+            return ConstTranslateTrait::$batchExceptionFirstStageTypeList[$this->type];
+        }
+        return ConstTranslateTrait::$batchExceptionSecondStageTypeList[$this->type];
+    }
+
+
 }

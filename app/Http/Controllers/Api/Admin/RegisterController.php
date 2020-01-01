@@ -76,6 +76,7 @@ class RegisterController extends Controller
             BaseConstService::BATCH_NO_TYPE,
             BaseConstService::ORDER_NO_TYPE,
             BaseConstService::TOUR_NO_TYPE,
+            BaseConstService::BATCH_EXCEPTION_NO_TYPE,
         ];
 
         $rules = array_map(function ($value) use ($company) {

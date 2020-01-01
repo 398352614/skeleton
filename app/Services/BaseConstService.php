@@ -12,13 +12,16 @@ class BaseConstService
     const TMS = 'TMS';
     const BATCH = 'BATCH';
     const TOUR = 'TOUR';
+    const BATCH_EXCEPTION = 'BE';
 
     //订单号编号类型
     const ORDER_NO_TYPE = 'order';
-    //取派批次编号类型
+    //站点编号类型
     const BATCH_NO_TYPE = 'batch';
     //取件线路编号类型
     const TOUR_NO_TYPE = 'tour';
+    //站点编号类型
+    const BATCH_EXCEPTION_NO_TYPE = 'batch_exception';
 
     //分配状态1-分配,2-取消分配
     const ASSIGN_YES = 1;
@@ -41,19 +44,20 @@ class BaseConstService
     const ORDER_SETTLEMENT_TYPE_1 = 1;
     const ORDER_SETTLEMENT_TYPE_2 = 2;
 
-    //订单状态1-未取派2-已分配3-取派中4-已签收5-异常6-收回站
+    //订单状态1-未取派2-已分配3-待出库4-取派中5-已签收6-异常7-取消取派8-收回站
     const ORDER_STATUS_1 = 1;
     const ORDER_STATUS_2 = 2;
     const ORDER_STATUS_3 = 3;
     const ORDER_STATUS_4 = 4;
     const ORDER_STATUS_5 = 5;
     const ORDER_STATUS_6 = 6;
+    const ORDER_STATUS_7 = 7;
+    const ORDER_STATUS_8 = 8;
 
-    //订单异常状态1-正常2-签收异常3-在途异常4-装货异常
+    //订单异常状态1-正常2-在途异常3-装货异常
     const ORDER_EXCEPTION_TYPE_1 = 1;
     const ORDER_EXCEPTION_TYPE_2 = 2;
     const ORDER_EXCEPTION_TYPE_3 = 3;
-    const ORDER_EXCEPTION_TYPE_4 = 4;
 
     //订单性质1-包裹2-材料3-文件4-增值服务5-其他
     const ORDER_NATURE_1 = 1;
@@ -84,12 +88,36 @@ class BaseConstService
     const TOUR_LOG_COMPLETE = 2;
     const TOUR_LOG_ERROR = 3;
 
-    //batch 批次站点的状态 状态：1-待分配2-已分配3-取派中4-已签收5-异常
+    //batch 批次站点的状态 状态：1-待分配2-已分配3-待出库4-取派中5-已签收6-异常7-取消取派
     const BATCH_WAIT_ASSIGN = 1;
     const BATCH_ASSIGNED = 2;
-    const BATCH_DELIVERING = 3;
-    const BATCH_CHECKOUT = 4;
-    const BATCH_ERROR = 5;
+    const BATCH_WAIT_OUT = 3;
+    const BATCH_DELIVERING = 4;
+    const BATCH_CHECKOUT = 5;
+    const BATCH_ERROR = 6;
+    const BATCH_CANCEL = 7;
+
+    //batch exception状态1-未处理2-已处理
+    const BATCH_EXCEPTION_1 = 1;
+    const BATCH_EXCEPTION_2 = 2;
+
+    //batch exception 异常阶段 1-在途异常2-装货异常
+    const BATCH_EXCEPTION_STAGE_1 = 1;
+    const BATCH_EXCEPTION_STAGE_2 = 2;
+
+    //异常阶段1-在途阶段 异常类型1-道路2-车辆异常3-其他
+    const BATCH_EXCEPTION_STAGE_1_TYPE_1 = 1;
+    const BATCH_EXCEPTION_STAGE_1_TYPE_2 = 2;
+    const BATCH_EXCEPTION_STAGE_1_TYPE_3 = 3;
+
+    //异常阶段2-装货异常 异常类型1-少货2-货损3-其他
+    const BATCH_EXCEPTION_STAGE_2_TYPE_1 = 1;
+    const BATCH_EXCEPTION_STAGE_2_TYPE_2 = 2;
+    const BATCH_EXCEPTION_STAGE_2_TYPE_3 = 3;
+
+    //站点支付类型1-现金支付2-银行支付
+    const BATCH_PAY_TYPE_1 = 1;
+    const BATCH_PAY_TYPE_2 = 2;
 
     //driver 司机合作类型
     const DRIVER_HIRE = 1;
