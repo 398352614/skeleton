@@ -20,7 +20,8 @@ class TourController extends BaseController
     public function __construct(TourService $service)
     {
         //事务包裹和数据传入
-        parent::__construct($service);
+        // parent::__construct($service);
+        $this->service = $service;
     }
 
     /**
@@ -71,7 +72,6 @@ class TourController extends BaseController
      * @apiVersion 1.0.0
      * @apiDescription 更新批次的派送顺序
      * @apiParam {String}   batch_ids                  有序的批次数组
-     * @apiParam {String}   driver_location            司机当前位置
      * @apiParam {String}   tour_no                    在途编号
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
@@ -83,7 +83,28 @@ class TourController extends BaseController
      */
     public function updateBatchIndex()
     {
-        return $this->service->dealCallback();
+        return $this->service->updateBatchIndex();
+    }
+
+    /**
+     * @api {POST}  api/admin/tour/auto-op-tour 管理员端:自动优化线路任务
+     * @apiName auto-op-tour
+     * @apiGroup admin
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 自动优化线路任务
+     * @apiParam {String}   tour_no                    在途编号
+     * @apiSuccessExample {json}  返回示例
+     * HTTP/1.1 200 OK
+     * {
+     *  "ret":1,
+     *  "msg":"添加线路",
+     *  "data":{}
+     * }
+     */
+    public function autoOpTour()
+    {
+        return $this->service->autoOpTour();
     }
 
     /**

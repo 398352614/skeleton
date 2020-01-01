@@ -47,6 +47,7 @@ class CarModel extends BaseModel
         'brand_id',
         'created_at',
         'updated_at',
+        'company_id'
     ];
 
     /**

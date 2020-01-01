@@ -58,6 +58,8 @@ class Warehouse extends BaseModel
         'address',
         'created_at',
         'updated_at',
+        'lat',
+        'lon'
     ];
 
     /**

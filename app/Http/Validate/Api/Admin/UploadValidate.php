@@ -25,7 +25,7 @@ class UploadValidate extends BaseValidate
         'image' => 'required|array',
         'image.file' => 'required|image|mimes:jpeg,bmp,png',
         'file' => 'required|array',
-        'file.file' => 'required|file|mimes:txt,excel,word,jpeg,bmp,png',
+        'file.file' => 'required|file|mimes:txt,xls,xlsx,doc,docx,jpeg,bmp,png',
     ];
 
     public $scene = [

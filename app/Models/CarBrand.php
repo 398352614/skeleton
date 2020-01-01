@@ -46,6 +46,7 @@ class CarBrand extends BaseModel
         'en_name',
         'created_at',
         'updated_at',
+        'company_id'
     ];
 
     /**

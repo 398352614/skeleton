@@ -20,12 +20,14 @@ Route::namespace('Api\Admin')->group(function () {
     Route::post('register/apply', 'RegisterController@applyOfRegister');
     Route::post('password-reset', 'RegisterController@resetPassword');
     Route::post('password-reset/apply', 'RegisterController@applyOfReset');
+
+    Route::get('/tour/callback', 'TourController@callback');         //自动优化线路
 });
 
 //认证
 Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::get('me', 'AuthController@me');
-    Route::post('logout', 'AuthController@loginout');
+    Route::post('logout', 'AuthController@logout');
 
     //订单管理
     Route::prefix('order')->group(function () {
@@ -90,6 +92,9 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //线路任务管理
     Route::prefix('tour')->group(function () {
+        Route::post('/update-batch-index', 'TourController@updateBatchIndex');         //更改线路任务顺序 -- 手动优化
+        Route::post('/auto-op-tour', 'TourController@autoOpTour');         //自动优化线路
+
         //rest api 放在最后
         Route::get('/', 'TourController@index')->name('tour.index');
         Route::get('/{id}', 'TourController@show')->name('tour.show');
