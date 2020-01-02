@@ -127,9 +127,19 @@ trait ConstTranslateTrait
         BaseConstService::ADMIN_IMAGE_DRIVER_DIR => '司机图片目录',
     ];
 
+    //司机端 图片目录
+    public static $driverImageDirList = [
+        BaseConstService::DRIVER_IMAGE_TOUR_DIR => '取件线路图片目录'
+    ];
+
     //管理员端 文件目录
     public static $adminFileDirList = [
         BaseConstService::ADMIN_FILE_DRIVER_DIR => '司机文件目录',
         BaseConstService::ADMIN_FILE_CAR_DIR => '车辆文件目录'
+    ];
+
+    //司机端 文件目录
+    public static $driverFileDirList = [
+        BaseConstService::DRIVER_FILE_TOUR_DIR => '取件线路文件目录'
     ];
 }

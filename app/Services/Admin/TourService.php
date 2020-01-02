@@ -165,7 +165,7 @@ class TourService extends BaseService
      */
     public function assignCar($id, $params)
     {
-        $tour = parent::getInfo(['id' => $id, 'status' => ['in', BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]], ['*'], false);
+        $tour = parent::getInfo(['id' => $id, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]]], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在或当前状态不允许分配车辆');
         }
@@ -311,7 +311,7 @@ class TourService extends BaseService
         $first = false;
         foreach ($batchIds as $key => $batchId) {
             if (!$first) {
-                $batch = Batch::where('id', $batchId)->whereIn('status', [BaseConstService::BATCH_DELIVERING, BaseConstService::BATCH_ASSIGNED])->first();              
+                $batch = Batch::where('id', $batchId)->whereIn('status', [BaseConstService::BATCH_DELIVERING, BaseConstService::BATCH_ASSIGNED])->first();
                 if ($batch) {
                     $first = true; // 找到了下一个目的地
                 }
@@ -321,7 +321,7 @@ class TourService extends BaseService
         if ($batch) {
             return $batch;
         }
-        
+
         throw new BusinessLogicException('未查找到下一个目的地');
     }
 
@@ -377,7 +377,7 @@ class TourService extends BaseService
         //需要先判断当前 tour 是否被锁定状态!!! 中间件或者 validate 验证规则???
         set_time_limit(240);
         self::setTourLock($this->formData['tour_no'], 1); // 加锁
-        
+
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
         $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
 
@@ -416,7 +416,7 @@ class TourService extends BaseService
         } else {
             $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->get()->sortByDesc('sort_id'); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
             foreach ($preBatchs as $preBatch) {
-                $preBatch->update(['sort_id'=>$key]);
+                $preBatch->update(['sort_id' => $key]);
                 $key++;
             }
             $batchs = $tour->batchs()->where('status', BaseConstService::BATCH_DELIVERING)->get();
@@ -426,7 +426,7 @@ class TourService extends BaseService
 
         if (count($batchs) !== 0) {
             $driverLoc = [
-                'batch_no'  => 'driver_location',
+                'batch_no' => 'driver_location',
                 'receiver_lat' => $tour->driver_location['latitude'],
                 'receiver_lon' => $tour->driver_location['longitude'],
             ];
@@ -442,7 +442,7 @@ class TourService extends BaseService
         $nextBatch = null;
 
         foreach ($batchNos as $k => $batchNo) {
-            Batch::where('batch_no', $batchNo)->update(['sort_id'=>$key+$k]);
+            Batch::where('batch_no', $batchNo)->update(['sort_id' => $key + $k]);
             if (!$nextBatch) {
                 $nextBatch = Batch::where('batch_no', $batchNo)->first();
             }

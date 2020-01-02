@@ -105,4 +105,16 @@ Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
         //司机入库
         Route::put('/{id}/inWarehouse', 'TourController@inWarehouse');
     });
+
+    //上传接口
+    Route::prefix('upload')->group(function () {
+        //获取可上传的图片目录列表
+        Route::get('getImageDirList', 'UploadController@getImageDirList');
+        //图片上传
+        Route::post('imageUpload', 'UploadController@imageUpload');
+        //获取可上传的文件目录列表
+        Route::get('getFileDirList', 'UploadController@getFileDirList');
+        //文件上传
+        Route::post('fileUpload', 'UploadController@fileUpload');
+    });
 });
