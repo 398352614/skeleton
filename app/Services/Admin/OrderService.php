@@ -155,10 +155,10 @@ class OrderService extends BaseService
         $rowCount = parent::updateById($order->getOriginal('id'), [
             'batch_no' => $batch['batch_no'],
             'tour_no' => $tour['tour_no'],
-            'driver_id' => $batch['driver_id'],
-            'driver_name' => $batch['driver_name'],
-            'car_id' => $batch['car_id'],
-            'car_no' => $batch['car_no']
+            'driver_id' => $tour['driver_id'] ?? null,
+            'driver_name' => $tour['driver_name'] ?? '',
+            'car_id' => $tour['car_id'] ?? null,
+            'car_no' => $tour['car_no'] ?? ''
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单新增失败');

@@ -92,7 +92,13 @@ class BatchService extends BaseService
         /**************************************站点加入取件线路********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $order['type']);
         /***********************************************填充取件线路编号************************************************/
-        $rowCount = parent::updateById($batch['id'], ['tour_no' => $tour['tour_no']]);
+        $rowCount = parent::updateById($batch['id'], [
+            'tour_no' => $tour['tour_no'],
+            'driver_id' => $tour['driver_id'] ?? null,
+            'driver_name' => $tour['driver_name'] ?? '',
+            'car_id' => $tour['car_id'] ?? null,
+            'car_no' => $tour['car_no'] ?? ''
+        ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败,请重新操作');
         }
