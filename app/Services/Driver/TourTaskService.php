@@ -89,7 +89,7 @@ class TourTaskService extends BaseService
         //获取所有站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['id', 'batch_no', 'status'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
         //获取所有订单列表
-        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'exception_remark'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status'], false)->toArray();
         //订单列表根据站点编号 分组
         $orderList = array_create_group_index($orderList, 'batch_no');
         //数据组合填充
