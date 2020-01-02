@@ -116,6 +116,6 @@ class Order extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return ConstTranslateTrait::$orderStatusList[$this->status];
+        return empty($this->status) ? null : ConstTranslateTrait::$orderStatusList[$this->status];
     }
 }

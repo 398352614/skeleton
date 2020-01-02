@@ -122,7 +122,7 @@ class TourService extends BaseService
         }
         $tour = $tour->toArray();
         //查看当前司机是否已被分配给其他取件线路
-        $otherTour = parent::getInfo(['driver_id' => $params['driver_id'], 'execution_date' => $tour['execution_date']], ['*'], false);
+        $otherTour = parent::getInfo(['driver_id' => $params['driver_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
         if (!empty($otherTour)) {
             throw new BusinessLogicException('当前司机已被分配,请选择其他司机');
         }

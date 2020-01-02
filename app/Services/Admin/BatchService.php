@@ -97,7 +97,8 @@ class BatchService extends BaseService
             'driver_id' => $tour['driver_id'] ?? null,
             'driver_name' => $tour['driver_name'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
-            'car_no' => $tour['car_no'] ?? ''
+            'car_no' => $tour['car_no'] ?? '',
+            'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败,请重新操作');
@@ -133,7 +134,7 @@ class BatchService extends BaseService
             //获取取件线路信息
             $tour = $this->getTourService()->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
             //若取件线路不是待分配或已分配状态,则需要新建站点
-            if (in_array(intval($tour['status']), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2])) {
+            if (!in_array(intval($tour['status']), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2])) {
                 continue;
             }
             //若未超过最大订单量,则加入已有站点

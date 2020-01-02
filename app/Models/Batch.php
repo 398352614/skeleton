@@ -116,7 +116,7 @@ class Batch extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return ConstTranslateTrait::$batchStatusList[$this->status];
+        return empty($this->status) ? null : ConstTranslateTrait::$batchStatusList[$this->status];
     }
 
     public function orders()

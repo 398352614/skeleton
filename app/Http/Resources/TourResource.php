@@ -33,6 +33,7 @@ class TourResource extends JsonResource
             'warehouse_lon' => $this->warehouse_lon,
             'warehouse_lat' => $this->warehouse_lat,
             'status' => $this->status,
+            'status_name' => $this->status_name,
             'begin_signature' => $this->begin_signature,
             'begin_signature_remark' => $this->begin_signature_remark,
             'begin_signature_first_pic' => $this->begin_signature_first_pic,
