@@ -87,6 +87,8 @@ class Order extends BaseModel
         'unique_code',
         'driver_id',
         'driver_name',
+        'car_id',
+        'car_no',
         'created_at',
         'updated_at',
     ];
