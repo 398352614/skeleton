@@ -8,20 +8,16 @@ use App\Services\Admin\TourService;
 use Illuminate\Http\Request;
 
 /**
- *
+ * Class TourController
+ * @package App\Http\Controllers\Api\Admin
+ * @property TourService $service
  */
 class TourController extends BaseController
 {
-    /**
-     * @var TourService
-     */
-    protected $service;
-
     public function __construct(TourService $service)
     {
         //事务包裹和数据传入
-        // parent::__construct($service);
-        $this->service = $service;
+         parent::__construct($service);
     }
 
     /**
