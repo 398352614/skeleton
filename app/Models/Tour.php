@@ -99,6 +99,10 @@ class Tour extends BaseModel
 
     ];
 
+    protected $appends = [
+        'status_name'
+    ];
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -126,8 +130,8 @@ class Tour extends BaseModel
     public function getDriverLocationAttribute()
     {
         return [
-            'latitude'  => $this->warehouse_lat,
-            'longitude'  => $this->warehouse_lon,
+            'latitude' => $this->warehouse_lat,
+            'longitude' => $this->warehouse_lon,
         ];
     }
 

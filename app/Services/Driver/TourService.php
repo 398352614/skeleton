@@ -274,11 +274,7 @@ class TourService extends BaseService
             'id', 'batch_no', 'tour_no', 'status',
             'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity'];
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], $batchFields, false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
-        $batchList = collect($batchList)->map(function ($batch, $key) {
-            /**@var Batch $batch */
-            return collect(Arr::add($batch->toArray(), 'status_name', $batch->status_name));
-        });
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], $batchFields, false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
         $tour['batch_count'] = count($batchList);
         $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT]);
         $tour['batch_list'] = $batchList;
@@ -481,16 +477,12 @@ class TourService extends BaseService
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }
-        $statusName = $tour->status_name;
         $tour = $tour->toArray();
-        $tour['status_name'] = $statusName;
         $batch = $this->getBatchService()->getInfo(['id' => $params['batch_id']], ['*'], false);
         if (empty($batch)) {
             throw new BusinessLogicException('站点不存在');
         }
-        $statusName = $batch->status_name;
         $batch = $batch->toArray();
-        $batch['status_name'] = $statusName;
         if ($batch['tour_no'] != $tour['tour_no']) {
             throw new BusinessLogicException('当前站点不属于当前取件线路');
         }

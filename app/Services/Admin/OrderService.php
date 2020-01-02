@@ -158,7 +158,8 @@ class OrderService extends BaseService
             'driver_id' => $tour['driver_id'] ?? null,
             'driver_name' => $tour['driver_name'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
-            'car_no' => $tour['car_no'] ?? ''
+            'car_no' => $tour['car_no'] ?? '',
+            'status' => $tour['status'] ?? BaseConstService::ORDER_STATUS_1
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单新增失败');
