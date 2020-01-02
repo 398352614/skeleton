@@ -10,6 +10,8 @@ namespace App\Services\Driver;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourBatchResource;
+use App\Models\Batch;
+use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
@@ -246,7 +248,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路不存在');
         }
         $tour = $tour->toArray();
-        if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_2) {
+        if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_3) {
             throw new BusinessLogicException('取件线路当前状态不允许出库');
         }
         if (empty($tour['car_id']) || empty($tour['car_no'])) {
@@ -264,7 +266,7 @@ class TourService extends BaseService
      */
     public function getBatchList($id)
     {
-        $tour = parent::getInfoLock(['id' => $id], ['*'], false);
+        $tour = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }
@@ -273,10 +275,14 @@ class TourService extends BaseService
             'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity'];
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], $batchFields, false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
+        $batchList = collect($batchList)->map(function ($batch, $key) {
+            /**@var Batch $batch */
+            return collect(Arr::add($batch->toArray(), 'status_name', $batch->status_name));
+        });
         $tour['batch_count'] = count($batchList);
         $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT]);
         $tour['batch_list'] = $batchList;
-        return TourBatchResource::collection($tour);
+        return TourBatchResource::make($tour)->toArray(request());
     }
 
     /**
@@ -289,10 +295,10 @@ class TourService extends BaseService
     public function getBatchOrderList($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'batch_no', 'order_no', 'status'], false);
+        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'type', 'batch_no', 'order_no', 'status'], false)->toArray();
         $orderList = array_create_group_index($orderList, 'type');
         $batch['order_list'] = $orderList;
-        return $batch;
+        return $orderList;
     }
 
 
@@ -313,7 +319,11 @@ class TourService extends BaseService
     public function getBatchInfo($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'type', 'batch_no'])->toArray();
+        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'type', 'batch_no','status'], false);
+        $orderList = collect($orderList)->map(function ($order, $key) {
+            /**@var Order $order */
+            return collect(Arr::add($order->toArray(), 'status_name', $order->status_name));
+        });
         $orderList = array_create_group_index($orderList, 'type');
         $batch['order_list'] = $orderList;
         return $batch;
@@ -422,7 +432,7 @@ class TourService extends BaseService
                 } else {
                     $pieCount += 1;
                 }
-                $status = BaseConstService::ORDER_STATUS_4;
+                $status = BaseConstService::ORDER_STATUS_5;
             }
             $rowCount = $this->getOrderService()->updateById($dbOrder['id'], ['status' => $status]);
             if ($rowCount === false) {
@@ -439,7 +449,7 @@ class TourService extends BaseService
             'pay_type' => $params['pay_type'],
             'pay_picture' => $params['pay_picture']
         ];
-        $rowCount = $this->getBatchService()->updateById($id, $batchData);
+        $rowCount = $this->getBatchService()->updateById($batch['id'], $batchData);
         if ($rowCount === false) {
             throw new BusinessLogicException('签收失败');
         }
@@ -471,15 +481,20 @@ class TourService extends BaseService
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }
+        $statusName = $tour->status_name;
         $tour = $tour->toArray();
+        $tour['status_name'] = $statusName;
         $batch = $this->getBatchService()->getInfo(['id' => $params['batch_id']], ['*'], false);
         if (empty($batch)) {
             throw new BusinessLogicException('站点不存在');
         }
+        $statusName = $batch->status_name;
         $batch = $batch->toArray();
+        $batch['status_name'] = $statusName;
         if ($batch['tour_no'] != $tour['tour_no']) {
             throw new BusinessLogicException('当前站点不属于当前取件线路');
         }
+
         return [$tour, $batch];
     }
 
@@ -524,7 +539,7 @@ class TourService extends BaseService
         if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_4) {
             throw new BusinessLogicException('取件线路当前状态不允许回仓库');
         }
-        $batchCount = $this->getBatchService()->count(['tour_no' => $params['tour_no'], 'status' => ['in', [BaseConstService::BATCH_DELIVERING, BaseConstService::BATCH_ERROR]]]);
+        $batchCount = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['not in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         if ($batchCount !== 0) {
             throw new BusinessLogicException('当前取件线路还有未完成站点,请先处理');
         }

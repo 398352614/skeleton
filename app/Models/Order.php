@@ -112,6 +112,6 @@ class Order extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return ConstTranslateTrait::$batchExceptionStatusList[$this->status];
+        return ConstTranslateTrait::$orderStatusList[$this->status];
     }
 }

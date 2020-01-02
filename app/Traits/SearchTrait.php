@@ -27,6 +27,11 @@ trait SearchTrait
                 $query->whereIn($k, $value);
                 continue;
             }
+            //not in
+            if ($type === 'not in' && is_array($value)) {
+                $query->whereNotIn($k, $value);
+                continue;
+            }
             //如果是between， 按时间过滤
             if ($type === 'between' && is_array($value)) {
                 if (empty($value[0]) || empty($value[1])) continue;
