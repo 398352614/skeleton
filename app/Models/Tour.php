@@ -87,6 +87,7 @@ class Tour extends BaseModel
         'remark',
         'created_at',
         'updated_at',
+        'lave_distance',
     ];
 
     /**
