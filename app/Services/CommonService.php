@@ -8,9 +8,11 @@
 
 namespace App\Services;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Traits\LocationTrait;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
+
 
 class CommonService
 {
@@ -23,5 +25,18 @@ class CommonService
     public function getLocation($params)
     {
         return LocationTrait::getLocation($params['country'], $params['city'], $params['street'], $params['house_number'], $params['post_code']);
+    }
+
+    /**
+     * 获取国家列表
+     * @return mixed
+     */
+    public function getCountryList()
+    {
+        $countryList = Cache::rememberForever('country', function () {
+            $country = Storage::disk('public')->get('country.json');
+            return $country;
+        });
+        return $countryList;
     }
 }

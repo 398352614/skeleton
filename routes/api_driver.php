@@ -82,6 +82,8 @@ Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
     Route::prefix('tour')->group(function () {
         //锁定-开始装货
         Route::put('/{id}/lock', 'TourController@lock');
+        //锁定-开始装货
+        Route::put('/{id}/unlock', 'TourController@unlock');
         //备注
         Route::put('/{id}/remark', 'TourController@remark');
         //更换车辆

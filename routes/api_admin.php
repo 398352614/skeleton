@@ -156,6 +156,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('common')->group(function () {
         //获取具体地址经纬度
         Route::get('getLocation', 'CommonController@getLocation');
+        //获取所有国家列表
+        Route::get('getCountryList', 'CommonController@getCountryList');
     });
 
     //上传接口

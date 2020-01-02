@@ -94,16 +94,49 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路锁定失败,请重新操作');
         }
         //站点 处理
-        $rowCount = parent::update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::BATCH_WAIT_OUT]);
+        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::BATCH_WAIT_OUT]);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点锁定失败,请重新操作');
         }
         //订单 处理
-        $rowCount = parent::update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::ORDER_STATUS_3]);
+        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::ORDER_STATUS_3]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单锁定失败,请重新操作');
         }
     }
+
+    /**
+     * 取消锁定-将状态改为已分配
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function unlock($id)
+    {
+        $tour = parent::getInfoLock(['id' => $id], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $tour = $tour->toArray();
+        if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_3) {
+            throw new BusinessLogicException('取件线路当前状态不允许取消锁定');
+        }
+        //取件线路 处理
+        $rowCount = parent::updateById($id, ['status' => BaseConstService::TOUR_STATUS_2]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取件线路取消锁定失败,请重新操作');
+        }
+        //站点 处理
+        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::BATCH_ASSIGNED]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('站点取消锁定失败,请重新操作');
+        }
+        //订单 处理
+        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::ORDER_STATUS_2]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('订单取消锁定失败,请重新操作');
+        }
+    }
+
 
     /**
      * 备注

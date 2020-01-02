@@ -35,6 +35,16 @@ class TourController extends BaseController
     }
 
     /**
+     * 解锁
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function unlock($id)
+    {
+        return $this->service->unlock($id);
+    }
+
+    /**
      * 备注
      * @param $id
      * @throws \App\Exceptions\BusinessLogicException
