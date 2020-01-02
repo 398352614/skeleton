@@ -152,7 +152,14 @@ class OrderService extends BaseService
         /*****************************************订单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($params);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
-        $rowCount = parent::updateById($order->getOriginal('id'), ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+        $rowCount = parent::updateById($order->getOriginal('id'), [
+            'batch_no' => $batch['batch_no'],
+            'tour_no' => $tour['tour_no'],
+            'driver_id' => $batch['driver_id'],
+            'driver_name' => $batch['driver_name'],
+            'car_id' => $batch['car_id'],
+            'car_no' => $batch['car_no']
+        ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单新增失败');
         }

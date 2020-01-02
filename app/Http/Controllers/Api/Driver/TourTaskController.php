@@ -53,20 +53,22 @@ class TourTaskController extends BaseController
 
     /**
      * 获取站点特殊事项列表
+     * @param $id
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function getBatchSpecialRemarkList()
+    public function getBatchSpecialRemarkList($id)
     {
         return $this->service->getBatchSpecialRemarkList($this->data['batch_id']);
     }
 
     /**
      * 获取特殊事项
+     * @param $id
      * @return mixed
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function getSpecialRemark()
+    public function getSpecialRemark($id)
     {
         return $this->service->getSpecialRemark($this->data['order_id']);
     }

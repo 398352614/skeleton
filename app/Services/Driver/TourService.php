@@ -127,7 +127,7 @@ class TourService extends BaseService
      */
     public function changeCar($id, $params)
     {
-        $tour = parent::getInfo(['id' => $id, 'status' => ['in', BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]], ['*'], false);
+        $tour = parent::getInfo(['id' => $id, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]]], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在或当前状态不允许分配车辆');
         }

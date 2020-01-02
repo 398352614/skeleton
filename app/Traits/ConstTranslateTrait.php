@@ -102,11 +102,13 @@ trait ConstTranslateTrait
     ];
 
 
-    //在途类型-
+    //在途类型1-待分配-2-已分配3-待出库4-取派中5-取派完成
     public static $tourStatusList = [
-        BaseConstService::TOUR_STATUS_DELIVERYING => '配送中',
-        BaseConstService::TOUR_STATUS_COMPLETED => '配送中',
-        BaseConstService::TOUR_STATUS_ERROR => '配送中',
+        BaseConstService::TOUR_STATUS_1 => '待分配',
+        BaseConstService::TOUR_STATUS_2 => '已分配',
+        BaseConstService::TOUR_STATUS_3 => '待出库',
+        BaseConstService::TOUR_STATUS_4 => '取派中',
+        BaseConstService::TOUR_STATUS_5 => '取派完成',
     ];
 
     //司机合作类型

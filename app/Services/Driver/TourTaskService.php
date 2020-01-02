@@ -66,7 +66,7 @@ class TourTaskService extends BaseService
             //获取站点数量
             $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
             //获取最后一个站点的收件人信息
-            $tour['last_receiver'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, ['sort_id' => 'desc', 'created_at' => 'desc']);
+            $tour['last_receiver'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'desc', 'created_at' => 'desc']);
         }
         return $list;
     }
@@ -113,7 +113,7 @@ class TourTaskService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $tour->toArray();
-        $orderList = $this->getOrderService()->getList(['tour_no' => $tour, 'special_remark' => ['<>', null]], ['id', 'order_no', 'special_remark'], false);
+        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'special_remark'], false);
         return $orderList;
     }
 

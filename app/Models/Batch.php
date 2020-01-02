@@ -112,7 +112,7 @@ class Batch extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return ConstTranslateTrait::$tourStatusList[$this->status];
+        return ConstTranslateTrait::$batchStatusList[$this->status];
     }
 
     public function orders()

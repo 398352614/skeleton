@@ -56,11 +56,11 @@ Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
         //获取详情
         Route::get('/{id}', 'TourTaskController@show');
         //获取所有的订单特殊事项列表
-        Route::get('/getSpecialRemarkList', 'TourTaskController@getSpecialRemarkList');
+        Route::get('/{id}/getSpecialRemarkList', 'TourTaskController@getSpecialRemarkList');
         //获取站点的订单特殊事项列表
-        Route::get('/getBatchSpecialRemarkList', 'TourTaskController@getBatchSpecialRemarkList');
+        Route::get('/{id}/getBatchSpecialRemarkList', 'TourTaskController@getBatchSpecialRemarkList');
         //获取订单特殊事项
-        Route::get('/getSpecialRemark', 'TourTaskController@getSpecialRemark');
+        Route::get('/{id}/getSpecialRemark', 'TourTaskController@getSpecialRemark');
     });
 
     //车辆管理
