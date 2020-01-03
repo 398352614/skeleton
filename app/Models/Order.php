@@ -104,7 +104,8 @@ class Order extends BaseModel
     ];
 
     protected $appends = [
-        'status_name'
+        'status_name',
+        'exception_label_name'
     ];
 
     /**
@@ -118,5 +119,10 @@ class Order extends BaseModel
     public function getStatusNameAttribute()
     {
         return empty($this->status) ? null : ConstTranslateTrait::$orderStatusList[$this->status];
+    }
+
+    public function getExceptionLabelNameAttribute()
+    {
+        return empty($this->exception_label) ? null : ConstTranslateTrait::$orderExceptionLabelList[$this->exception_label];
     }
 }

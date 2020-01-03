@@ -55,10 +55,6 @@ class BaseConstService
     const ORDER_STATUS_6 = 6;
     const ORDER_STATUS_7 = 7;
 
-    //订单异常状态1-正常2-在途异常3-装货异常
-    const ORDER_EXCEPTION_TYPE_1 = 1;
-    const ORDER_EXCEPTION_TYPE_2 = 2;
-    const ORDER_EXCEPTION_TYPE_3 = 3;
 
     //订单异常标签1-正常2-异常
     const ORDER_EXCEPTION_LABEL_1 = 1;

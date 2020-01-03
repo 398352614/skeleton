@@ -64,6 +64,15 @@ class OrderService extends BaseService
     }
 
     /**
+     * 站点异常 服务
+     * @return BatchExceptionService
+     */
+    private function getBatchExceptionService()
+    {
+        return self::getInstance(BatchExceptionService::class);
+    }
+
+    /**
      * 站点(取件批次) 服务
      * @return BatchService
      */
@@ -109,6 +118,23 @@ class OrderService extends BaseService
         $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_5]);
         $cancelCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_6]);
         return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'wait_out' => $waitOutCount, 'taking' => $takingCount, 'singed' => $signedCount, 'cancel_count' => $cancelCount];
+    }
+
+
+    public function getPageList()
+    {
+        $list = parent::getPageList();
+        if (empty($this->filters['exception_label']) || (intval($this->filters['exception_label'][1]) !== BaseConstService::ORDER_EXCEPTION_LABEL_2)) {
+            return $list;
+        }
+        //若是异常订单,则需要添加最新的异常备注
+        foreach ($list as &$order) {
+            $batchException = $this->getBatchExceptionService()->getInfo(['batch_no' => $order['batch_no']], ['id', 'batch_no', 'stage'], false, ['created_at' => 'desc']);
+            if (!empty($batchException)) {
+                $order['exception_stage_name'] = ConstTranslateTrait::$batchExceptionStageList[$batchException['stage']];
+            }
+        }
+        return $list;
     }
 
     /**

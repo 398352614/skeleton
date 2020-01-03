@@ -48,11 +48,11 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_STATUS_7 => '收回站',
     ];
 
-    //订单异常状态1-正常2-签收异常3-在途异常4-装货异常
-    public static $orderExceptionTypeList = [
-        BaseConstService::ORDER_EXCEPTION_TYPE_1 => '正常',
-        BaseConstService::ORDER_EXCEPTION_TYPE_2 => '在途异常',
-        BaseConstService::ORDER_EXCEPTION_TYPE_3 => '装货异常',
+
+    //订单异常标签1-正常2-异常
+    public static $orderExceptionLabelList = [
+        BaseConstService::ORDER_EXCEPTION_LABEL_1 => '正常',
+        BaseConstService::ORDER_EXCEPTION_LABEL_2 => '异常'
     ];
 
     //订单性质1-包裹2-材料3-文件4-增值服务5-其他
@@ -62,6 +62,12 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_NATURE_3 => '文件',
         BaseConstService::ORDER_NATURE_4 => '增值服务',
         BaseConstService::ORDER_NATURE_5 => '其他'
+    ];
+
+    //站点异常标签1-正常2-异常
+    public static $batchExceptionLabelList = [
+        BaseConstService::BATCH_EXCEPTION_LABEL_1 => '正常',
+        BaseConstService::BATCH_EXCEPTION_LABEL_2 => '异常',
     ];
 
     //batch 批次状态 1-未取派2-已分配3-取派中4-已签收5-异常
