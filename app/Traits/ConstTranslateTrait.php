@@ -44,9 +44,8 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_STATUS_3 => '待出库',
         BaseConstService::ORDER_STATUS_4 => '取派中',
         BaseConstService::ORDER_STATUS_5 => '已完成',
-        BaseConstService::ORDER_STATUS_6 => '异常',
-        BaseConstService::ORDER_STATUS_7 => '取消取派',
-        BaseConstService::ORDER_STATUS_8 => '收回站',
+        BaseConstService::ORDER_STATUS_6 => '取消取派',
+        BaseConstService::ORDER_STATUS_7 => '收回站',
     ];
 
     //订单异常状态1-正常2-签收异常3-在途异常4-装货异常
@@ -72,7 +71,6 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_WAIT_OUT => '待出库',
         BaseConstService::BATCH_DELIVERING => '取派中',
         BaseConstService::BATCH_CHECKOUT => '已签收',
-        BaseConstService::BATCH_ERROR => '异常',
         BaseConstService::BATCH_CANCEL => '取消取派',
     ];
 

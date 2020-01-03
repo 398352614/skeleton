@@ -189,7 +189,13 @@ class BatchService extends BaseService
      */
     private function joinExistBatch($order, $batch, $line)
     {
-        $data = (intval($order['type']) === 1) ? ['expect_pickup_quantity' => intval($batch['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($batch['expect_pie_quantity']) + 1];
+        $replaceAmount = empty($order['replace_amount']) ? 0.00 : $order['replace_amount'];
+        $settlementAmount = empty($order['settlement_amount']) ? 0.00 : $order['settlement_amount'];
+        $data = (intval($order['type']) === 1) ? [
+            'expect_pickup_quantity' => intval($batch['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($batch['expect_pie_quantity']) + 1,
+            'replace_amount' => $batch['replace_amount'] + $replaceAmount,
+            'settlement_amount' => $batch['settlement_amount'] + $settlementAmount
+        ];
         $rowCount = parent::updateById($batch['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单加入站点失败!');
@@ -223,6 +229,8 @@ class BatchService extends BaseService
             'receiver_address' => $order['receiver_address'],
             'receiver_lon' => $order['lon'],
             'receiver_lat' => $order['lat'],
+            'replace_amount' => empty($order['replace_amount']) ? 0.00 : $order['replace_amount'],
+            'settlement_amount' => empty($order['settlement_amount']) ? 0.00 : $order['settlement_amount']
         ];
         if (intval($order['type']) === 1) {
             $data['expect_pickup_quantity'] = 1;

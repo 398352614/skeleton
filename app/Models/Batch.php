@@ -53,6 +53,7 @@ class Batch extends BaseModel
         'line_name',
         'execution_date',
         'status',
+        'exception_label',
         'cancel_type',
         'cancel_remark',
         'cancel_picture',

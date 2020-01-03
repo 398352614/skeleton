@@ -63,6 +63,7 @@ class Order extends BaseModel
         'replace_amount',
         'delivery',
         'status',
+        'exception_label',
         'cancel_type',
         'cancel_remark',
         'cancel_picture',
