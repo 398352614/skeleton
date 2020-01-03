@@ -87,8 +87,8 @@ class OrderValidate extends BaseValidate
         'receiver_address' => 'required|string|max:250',
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
-        'special_remark' => 'string|max:250',
-        'remark' => 'string|max:250',
+        'special_remark' => 'nullable|string|max:250',
+        'remark' => 'nullable|string|max:250',
 
     ];
 
