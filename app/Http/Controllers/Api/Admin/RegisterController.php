@@ -37,11 +37,11 @@ class RegisterController extends Controller
 //        ]);
         $data = $request->all();
 
-        if ($data['code'] !== $this->getVerifyCode($data['email'])) {
+        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
             throw new BusinessLogicException('验证码错误');
         }
 
-        $this->deleteVerifyCode($data['email']);
+        RegisterController::deleteVerifyCode($data['email']);
 
         throw_if(
             Employee::where('email', $data['email'])->count(),
@@ -124,16 +124,16 @@ class RegisterController extends Controller
      */
     public function applyOfRegister(Request $request)
     {
-//        $request->validate([
-//            'email' => 'required|email',
-//        ]);
+        $request->validate([
+            'email' => 'required|email',
+        ]);
 
         throw_if(
             Employee::where('email', $request->get('email'))->count(),
             new BusinessLogicException('该邮箱已注册，请直接登录')
         );
 
-        return $this->sendCode($request->get('email'));
+        return RegisterController::sendCode($request->get('email'));
     }
 
     /**
@@ -145,11 +145,11 @@ class RegisterController extends Controller
      */
     public function applyOfReset(Request $request)
     {
-//        $request->validate([
-//            'email' => 'required|email',
-//        ]);
+        $request->validate([
+            'email' => 'required|email',
+        ]);
 
-        return $this->sendCode($request->input('email'), 'RESET');
+        return RegisterController::sendCode($request->input('email'), 'RESET');
     }
 
     /**
@@ -160,19 +160,18 @@ class RegisterController extends Controller
      */
     public function resetPassword(Request $request)
     {
-//        $data = $request->validate([
-//            'new_password' => 'required|string|between:8,20',
-//            'confirm_new_password' =>'required|string|same:new_password',
-//            'email' => 'required|email',
-//            'code'  => 'required|string|digits_between:6,6'
-//        ]);
-        $data = $request->all();
+        $data = $request->validate([
+            'new_password' => 'required|string|between:8,20',
+            'confirm_new_password' =>'required|string|same:new_password',
+            'email' => 'required|email',
+            'code'  => 'required|string|digits_between:6,6'
+        ]);
 
-        if ($data['code'] !== $this->getVerifyCode($data['email'], 'RESET')) {
+        if ($data['code'] !== RegisterController::getVerifyCode($data['email'], 'RESET')) {
             throw new BusinessLogicException('验证码错误');
         }
 
-        $this->deleteVerifyCode($data['email'], 'RESET');
+        RegisterController::deleteVerifyCode($data['email'], 'RESET');
 
         $admin = Employee::where('email', $data['email'])->firstOrFail();
 
@@ -195,7 +194,7 @@ class RegisterController extends Controller
      * @param  string  $use
      * @return string
      */
-    protected function makeVerifyCode(string $mail, string $use = 'REGISTER'): string
+    protected static function makeVerifyCode(string $mail, string $use = 'REGISTER'): string
     {
         $verifyCode = mt_rand(100000, 999999);
 
@@ -211,7 +210,7 @@ class RegisterController extends Controller
      * @return string
      * @package string $use
      */
-    protected function getVerifyCode(string $mail, string $use = 'REGISTER'): ?string
+    public static function getVerifyCode(string $mail, string $use = 'REGISTER'): ?string
     {
         return Cache::get('VERIFY_CODE:'.$use.':'.$mail);
     }
@@ -222,7 +221,7 @@ class RegisterController extends Controller
      * @param  string  $use
      * @return bool
      */
-    protected function deleteVerifyCode(string $mail, string $use = 'REGISTER'): bool
+    public static function deleteVerifyCode(string $mail, string $use = 'REGISTER'): bool
     {
         return Cache::forget('VERIFY_CODE:'.$use.':'.$mail);
     }
@@ -234,16 +233,16 @@ class RegisterController extends Controller
      * @return string
      * @throws BusinessLogicException
      */
-    protected function sendCode(string $email, string $use = 'REGISTER')
+    public static function sendCode(string $email, string $use = 'REGISTER')
     {
         try {
             if ($use == 'REGISTER') {
-                Mail::to($email)->send(new SendRegisterCode($this->makeVerifyCode($email, $use)));
+                Mail::to($email)->send(new SendRegisterCode(RegisterController::makeVerifyCode($email, $use)));
             } elseif ($use == 'RESET') {
-                Mail::to($email)->send(new SendResetCode($this->makeVerifyCode($email, $use)));
+                Mail::to($email)->send(new SendResetCode(RegisterController::makeVerifyCode($email, $use)));
             }
         } catch (\Exception $exception) {
-            info('注册邮件发送失败：', ['message' => $exception->getMessage()]);
+            info('用户认证邮件发送失败：', ['message' => $exception->getMessage()]);
             throw new BusinessLogicException('验证码发送失败');
         }
 

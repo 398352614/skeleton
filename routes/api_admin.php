@@ -18,7 +18,7 @@ Route::namespace('Api\Admin')->group(function () {
     Route::post('login', 'AuthController@login');
     Route::post('register', 'RegisterController@store');
     Route::post('register/apply', 'RegisterController@applyOfRegister');
-    Route::post('password-reset', 'RegisterController@resetPassword');
+    Route::put('password-reset', 'RegisterController@resetPassword');
     Route::post('password-reset/apply', 'RegisterController@applyOfReset');
 
     Route::get('/tour/callback', 'TourController@callback');         //自动优化线路
@@ -28,6 +28,7 @@ Route::namespace('Api\Admin')->group(function () {
 Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::get('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
+    Route::put('my-password', 'AuthController@updatePassword');
 
     //订单管理
     Route::prefix('order')->group(function () {
