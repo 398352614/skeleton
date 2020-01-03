@@ -97,6 +97,16 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/', 'OrderTrailController@index')->name('order-trail.index');
     });
 
+    //站点 异常管理
+    Route::prefix('batch-exception')->group(function () {
+        //列表查询
+        Route::get('/', 'BatchExceptionController@index');
+        //获取详情
+        Route::get('/{id}', 'BatchExceptionController@show');
+        //处理
+        Route::put('/{id}/deal', 'BatchExceptionController@deal');
+    });
+
     //线路任务管理
     Route::prefix('tour')->group(function () {
         Route::post('/update-batch-index', 'TourController@updateBatchIndex');         //更改线路任务顺序 -- 手动优化

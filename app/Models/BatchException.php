@@ -76,6 +76,12 @@ class BatchException extends BaseModel
 
     ];
 
+    protected $appends = [
+        'status_name',
+        'stage_name',
+        'type_name'
+    ];
+
     /**
      * The attributes that should be mutated to dates.
      *
