@@ -19,7 +19,7 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use Illuminate\Support\Arr;
-use OrderTrailService;
+use App\Services\OrderTrailService;
 
 /**
  * Class TourService

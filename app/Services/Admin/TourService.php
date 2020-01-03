@@ -17,7 +17,7 @@ use App\Services\GoogleApiService;
 use App\Services\OrderNoRuleService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use OrderTrailService;
+use App\Services\OrderTrailService;
 
 class TourService extends BaseService
 {

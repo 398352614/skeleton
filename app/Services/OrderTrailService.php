@@ -1,5 +1,8 @@
 <?php
 
+namespace App\Services;
+
+use App\Http\Resources\OrderTrailResource;
 use App\Models\Order;
 use App\Models\OrderTrail;
 use App\Services\BaseConstService;
@@ -8,9 +11,19 @@ use Illuminate\Database\Eloquent\Collection;
 
 class OrderTrailService extends BaseService
 {
+    public $filterRules = [
+        'order_no' => ['=', 'order_no'],
+    ];
+
     public function __construct(OrderTrail $orderTrail)
     {
         $this->model = $orderTrail;
+        $this->query = $this->model::query();
+        $this->resource = OrderTrailResource::class;
+        $this->infoResource = OrderTrailResource::class;
+        $this->request = request();
+        $this->formData = $this->request->all();
+        $this->setFilterRules();
     }
 
     public static function OrderStatusChangeUseOrderIDs(array $orderIds, int $action)

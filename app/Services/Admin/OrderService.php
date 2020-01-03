@@ -21,7 +21,7 @@ use App\Services\OrderNoRuleService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
-use OrderTrailService;
+use App\Services\OrderTrailService;
 
 class OrderService extends BaseService
 {

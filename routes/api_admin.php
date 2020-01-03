@@ -52,17 +52,17 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     //司机管理
     Route::prefix('driver')->group(function () {
         Route::post('/driver-register', 'DriverController@driverRegister');
-        Route::get('/driver-work', 'DriverController@driverWork');//获取司机工作日driverWork?driver_id=105
-        Route::post('assgin-driverWork', 'DriverController@assginDriverWork');//给司机分配工作信息（也就是产品图上的审核）
-        Route::get('/crop-type', 'DriverController@cropType');//获取合作方式
-        Route::get('/driver-status', 'DriverController@driverStatus');//获取状态
-        Route::post('/{id}/lock-driver', 'DriverController@lockDriver');//锁定或解锁司机
+        Route::get('/driver-work', 'DriverController@driverWork'); //获取司机工作日driverWork?driver_id=105
+        Route::post('assgin-driverWork', 'DriverController@assginDriverWork'); //给司机分配工作信息（也就是产品图上的审核）
+        Route::get('/crop-type', 'DriverController@cropType'); //获取合作方式
+        Route::get('/driver-status', 'DriverController@driverStatus'); //获取状态
+        Route::post('/{id}/lock-driver', 'DriverController@lockDriver'); //锁定或解锁司机
 
         //rest api 放在最后
-        Route::get('/', 'DriverController@index')->name('driver.index');//司机列表?page=1&page_size=10&status=&crop_type=&keywords=
-        Route::get('/{id}', 'DriverController@show')->name('driver.show');//司机详情
-        Route::put('/{id}', 'DriverController@update')->name('driver.update');//司机修改
-        Route::delete('/{id}', 'DriverController@destroy')->name('driver.destroy');//删除司机
+        Route::get('/', 'DriverController@index')->name('driver.index'); //司机列表?page=1&page_size=10&status=&crop_type=&keywords=
+        Route::get('/{id}', 'DriverController@show')->name('driver.show'); //司机详情
+        Route::put('/{id}', 'DriverController@update')->name('driver.update'); //司机修改
+        Route::delete('/{id}', 'DriverController@destroy')->name('driver.destroy'); //删除司机
     });
 
     //车辆管理
@@ -76,9 +76,9 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //rest api 放在最后
         Route::get('/', 'CarController@index')->name('car.index');
         Route::post('/', 'CarController@store')->name('car.store');
-        Route::get('/{id}', 'CarController@show')->name('car.show');//车辆详情
-        Route::put('/{id}', 'CarController@update')->name('car.update');//车辆修改
-        Route::delete('/{id}', 'CarController@destroy')->name('car.destroy');//车辆删除
+        Route::get('/{id}', 'CarController@show')->name('car.show'); //车辆详情
+        Route::put('/{id}', 'CarController@update')->name('car.update'); //车辆修改
+        Route::delete('/{id}', 'CarController@destroy')->name('car.destroy'); //车辆删除
 
         // $router->post('car/lock', 'CarInfoController@lock'); //车辆锁定操作
     });
@@ -87,7 +87,13 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('batch')->group(function () {
         //rest api 放在最后
         Route::get('/', 'BatchController@index')->name('batch.index');
-        Route::get('/{id}', 'BatchController@show')->name('batch.show');//批次详情
+        Route::get('/{id}', 'BatchController@show')->name('batch.show'); //批次详情
+    });
+
+    //物流状态管理
+    Route::prefix('order-trail')->group(function () {
+        //rest api 放在最后
+        Route::get('/', 'OrderTrailController@index')->name('order-trail.index');
     });
 
     //线路任务管理
