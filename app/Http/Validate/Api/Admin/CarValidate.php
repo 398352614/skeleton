@@ -14,7 +14,33 @@ use App\Http\Validate\BaseValidate;
 class CarValidate extends BaseValidate
 {
     public $customAttributes = [
+        'car_no' => '车牌号',
+        'outgoing_time' => '出厂日期',
+        'car_brand_id' => '车辆品牌ID',
+        'car_model_id' => '汽车型号id',
+        'frame_number' => '车架号',
+        'engine_number' => '发动机编号',
+        'transmission' => '车型',
+        'fuel_type' => '燃料类型',
+        'current_miles' => '当前里程数',
+        'annual_inspection_data' => '下次年检日期',
+        'ownership_type' => '类型',
+        'received_date' => '接收车辆日期',
+        'month_road_tax' => '每月路税',
+        'insurance_company' => '保险公司',
+        'insurance_type' => '保险类型',
+        'month_insurance' => '每月保险',
+        'rent_start_date' => '起租时间',
+        'rent_end_date' => '到期时间',
+        'rent_month_fee' => '月租金',
+        'repair' => '维修自理',
+        'remark' => '备注',
+        'relate_material' => '文件',
+        'is_locked' => '是否锁定1-正常2-锁定',
 
+        'cn_name' =>'中文名称',
+        'en_name' =>'英文名称',
+        'brand_id'      =>  ['品牌ID'],
     ];
 
     public $rules = [
