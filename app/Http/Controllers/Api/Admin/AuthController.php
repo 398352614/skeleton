@@ -22,7 +22,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        //$this->validateLogin($request);
+        $this->validateLogin($request);
 
         $credentials = [
             $this->username() => $request['username'],
@@ -33,11 +33,11 @@ class AuthController extends Controller
             throw new BusinessLogicException('用户名或密码错误！');
         }
 
-        /*if (auth('admin')->user()->forbid_login === true) {
+        if (auth('admin')->user()->forbid_login === 1) {
             auth('admin')->logout();
 
             eRet('暂时无法登录，请联系管理员！', 401);
-        }*/
+        }
 
         return $this->respondWithToken($token);
     }
