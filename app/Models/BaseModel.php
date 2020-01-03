@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Schema;
 class BaseModel extends Model
 {
 
+    protected $perPage = 10;
+
     protected static function boot()
     {
         parent::boot();
