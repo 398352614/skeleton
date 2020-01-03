@@ -372,7 +372,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('上报异常失败,请重新操作');
         }
         //站点异常
-        $rowCount = $this->getBatchService()->updateById($batch['id'], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_2]);
+        $rowCount = $this->getBatchService()->updateById($batch['id'], ['exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('上报异常失败,请重新操作');
         }
