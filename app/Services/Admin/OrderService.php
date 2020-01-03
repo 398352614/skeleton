@@ -159,7 +159,7 @@ class OrderService extends BaseService
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
         /*****************************************订单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($params);
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $rowCount = parent::updateById($order->getOriginal('id'), [
             'batch_no' => $batch['batch_no'],
