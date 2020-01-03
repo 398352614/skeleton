@@ -187,7 +187,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆分配失败,请重新操作');
         }
-        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour->tour_no)->get(), BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
+        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
     }
 
     /**
