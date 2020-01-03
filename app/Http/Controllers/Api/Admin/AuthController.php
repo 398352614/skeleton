@@ -22,7 +22,7 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $this->validateLogin($request);
+        //$this->validateLogin($request);
 
         $credentials = [
             $this->username() => $request['username'],
@@ -134,11 +134,13 @@ class AuthController extends Controller
      */
     public function updatePassword(Request $request)
     {
-        $data = $request->validate([
-            'origin_password' => 'required|string|between:8,20',
-            'new_password' => 'required|string|between:8,20|different:origin_password',
-            'new_confirm_password' => 'required|same:new_password',
-        ]);
+//        $data = $request->validate([
+//            'origin_password' => 'required|string|between:8,20',
+//            'new_password' => 'required|string|between:8,20|different:origin_password',
+//            'new_confirm_password' => 'required|same:new_password',
+//        ]);
+
+        $data = $request->all();
 
         /** @var Employee $employee */
         $employee = \auth('admin')->user();
