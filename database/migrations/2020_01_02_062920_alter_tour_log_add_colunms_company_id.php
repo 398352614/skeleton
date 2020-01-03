@@ -15,7 +15,7 @@ class AlterTourLogAddColunmsCompanyId extends Migration
     {
         Schema::table('tour_log', function (Blueprint $table) {
             $table->integer('company_id')->default(null)->after('id')->nullable()->comment('公司ID');
-            $table->unique('company_id');
+            $table->index('company_id', 'company_id');
         });
     }
 
@@ -29,7 +29,6 @@ class AlterTourLogAddColunmsCompanyId extends Migration
         Schema::table('tour_log', function (Blueprint $table) {
             $table->dropIndex('company_id');
             $table->dropColumn('company_id');
-            //
         });
     }
 }

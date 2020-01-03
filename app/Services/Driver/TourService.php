@@ -55,6 +55,15 @@ class TourService extends BaseService
     }
 
     /**
+     * 站点异常 服务
+     * @return BatchExceptionService
+     */
+    private function getBatchExceptionService()
+    {
+        return self::getInstance(BatchExceptionService::class);
+    }
+
+    /**
      * 订单 服务
      * @return OrderService
      */
@@ -315,7 +324,7 @@ class TourService extends BaseService
     public function getBatchInfo($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'type', 'batch_no','status'], false);
+        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'type', 'batch_no', 'status'], false);
         $orderList = collect($orderList)->map(function ($order, $key) {
             /**@var Order $order */
             return collect(Arr::add($order->toArray(), 'status_name', $order->status_name));
@@ -353,7 +362,7 @@ class TourService extends BaseService
             'picture' => $params['picture'],
             'driver_name' => auth()->user()->last_name . auth()->user()->first_name
         ];
-        $rowCount = parent::create($data);
+        $rowCount = $this->getBatchExceptionService()->create($data);
         if ($rowCount === false) {
             throw new BusinessLogicException('上报异常失败,请重新操作');
         }

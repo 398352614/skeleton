@@ -51,7 +51,7 @@ class TourValidate extends BaseValidate
         'getBatchOrderList' => ['batch_id'],
         'batchArrive' => ['batch_id'],
         'getBatchInfo' => ['batch_id'],
-        'batchException' => ['batch_id', 'stage', 'type', 'remark', 'picture'],
+        'batchException' => ['batch_id', 'stage', 'type', 'exception_remark', 'picture'],
         'batchCancel' => ['batch_id', 'cancel_type', 'cancel_remark', 'cancel_picture'],
         'batchSign' => ['batch_id', 'cancel_order_id_list', 'order_amount', 'signature', 'pay_type', 'pay_picture'],
         'inWarehouse' => ['end_signature', 'end_signature_remark']
