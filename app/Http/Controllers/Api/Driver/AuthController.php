@@ -7,7 +7,9 @@
 namespace App\Http\Controllers\Api\Driver;
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Controllers\Api\Admin\RegisterController;
 use App\Http\Controllers\Controller;
+use App\Models\Driver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -120,5 +122,92 @@ class AuthController extends Controller
     protected function guard()
     {
         return Auth::guard('driver');
+    }
+
+    /**
+     * 重置密码
+     * @param  Request  $request
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function resetPassword(Request $request)
+    {
+        $data = $request->validate([
+            'new_password' => 'required|string|between:8,20',
+            'confirm_new_password' =>'required|string|same:new_password',
+            'email' => 'required|email',
+            'code'  => 'required|string|digits_between:6,6'
+        ]);
+
+        if ($data['code'] !== RegisterController::getVerifyCode($data['email'], 'RESET')) {
+            throw new BusinessLogicException('验证码错误');
+        }
+
+        RegisterController::deleteVerifyCode($data['email'], 'RESET');
+
+        $driver = Driver::where('email', $data['email'])->firstOrFail();
+
+        $res = $driver->update([
+            'password' => bcrypt($data['new_password']),
+        ]);
+
+        if ($res === false) {
+            return failed();
+        }
+
+        auth('driver')->logout();
+
+        return success();
+    }
+
+    /**
+     * 重置密码验证码
+     *
+     * @param  Request  $request
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function applyOfReset(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        return RegisterController::sendCode($request->input('email'), 'RESET');
+    }
+
+    /**
+     * 更新自己的密码
+     *
+     * @param  Request  $request
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updatePassword(Request $request)
+    {
+        $data = $request->validate([
+                'origin_password' => 'required|string|between:8,20',
+                'new_password' => 'required|string|between:8,20|different:origin_password',
+                'new_confirm_password' => 'required|same:new_password',
+            ]);
+
+        /** @var Driver $driver */
+        $driver = \auth('driver')->user();
+
+        if (!password_verify($data['origin_password'], $driver->password)) {
+            throw new BusinessLogicException('原密码不正确');
+        }
+
+        $res = $driver->update(
+            [
+                'password' => bcrypt($data['new_password'])
+            ]
+        );
+
+        if ($res) {
+            auth('driver')->logout();
+        }
+
+        return success();
     }
 }

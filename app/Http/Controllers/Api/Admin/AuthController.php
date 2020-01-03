@@ -8,6 +8,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -124,4 +125,38 @@ class AuthController extends Controller
         return Auth::guard('admin');
     }
 
+    /**
+     * 更新自己的密码
+     *
+     * @param  Request  $request
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updatePassword(Request $request)
+    {
+        $data = $request->validate([
+            'origin_password' => 'required|string|between:8,20',
+            'new_password' => 'required|string|between:8,20|different:origin_password',
+            'new_confirm_password' => 'required|same:new_password',
+        ]);
+
+        /** @var Employee $employee */
+        $employee = \auth('admin')->user();
+
+        if (!password_verify($data['origin_password'], $employee->password)) {
+            throw new BusinessLogicException('原密码不正确');
+        }
+
+        $res = $employee->update(
+            [
+                'password' => bcrypt($data['new_password'])
+            ]
+        );
+
+        if ($res) {
+            auth('admin')->logout();
+        }
+
+        return success();
+    }
 }
