@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 订单服务
  * Created by PhpStorm
@@ -9,6 +10,7 @@
 
 namespace App\Services\Admin;
 
+use App\Events\Order\OrderCreated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
@@ -19,6 +21,7 @@ use App\Services\OrderNoRuleService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
+use App\Services\OrderTrailService;
 
 class OrderService extends BaseService
 {
@@ -153,8 +156,10 @@ class OrderService extends BaseService
         if ($order === false) {
             throw new BusinessLogicException('订单新增失败');
         }
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
         /*****************************************订单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($params);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $rowCount = parent::updateById($order->getOriginal('id'), [
             'batch_no' => $batch['batch_no'],

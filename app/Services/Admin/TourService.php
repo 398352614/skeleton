@@ -7,6 +7,7 @@ use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourResource;
 use App\Models\Batch;
+use App\Models\Order;
 use App\Models\Tour;
 use App\Models\TourLog;
 use App\Services\BaseConstService;
@@ -16,6 +17,7 @@ use App\Services\GoogleApiService;
 use App\Services\OrderNoRuleService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Services\OrderTrailService;
 
 class TourService extends BaseService
 {
@@ -105,7 +107,6 @@ class TourService extends BaseService
     //新增
     public function store($params)
     {
-
     }
 
     /**
@@ -186,6 +187,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆分配失败,请重新操作');
         }
+        OrderTrailService::OrderStatusChangeUseOrderIDs(Order::where('tour_no', $tour->tour_no)->pluck('id'), BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
     }
 
     /**
@@ -224,6 +226,8 @@ class TourService extends BaseService
         //订单
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], $data);
         if ($rowCount === false) return false;
+
+
 
         return true;
     }
@@ -264,7 +268,8 @@ class TourService extends BaseService
         }
         $warehouse = $warehouse->toArray();
         $quantity = (intval($orderType) === 1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
-        $tour = parent::create(array_merge([
+        $tour = parent::create(
+            array_merge([
                 'tour_no' => $this->getOrderNoRuleService()->createTourNo(),
                 'line_id' => $line['id'],
                 'line_name' => $line['name'],
@@ -316,7 +321,6 @@ class TourService extends BaseService
                     $first = true; // 找到了下一个目的地
                 }
             }
-
         }
         if ($batch) {
             return $batch;
@@ -362,7 +366,6 @@ class TourService extends BaseService
             if (!$this->getTourLock($tour->tour_no)) {
                 return '修改线路成功';
             }
-
         }
         app('log')->error('进入此处代表修改线路失败');
         self::setTourLock($this->formData['tour_no'], 0); // 取消锁
@@ -401,7 +404,6 @@ class TourService extends BaseService
             if (!$this->getTourLock($tour->tour_no)) {
                 return '修改线路成功';
             }
-
         }
         app('log')->error('进入此处代表修改线路失败');
         self::setTourLock($this->formData['tour_no'], 0); // 取消锁
@@ -523,5 +525,4 @@ class TourService extends BaseService
     {
         return app('reis')->put('tourUpdateOpration' . $tourNo, $value);
     }
-
 }

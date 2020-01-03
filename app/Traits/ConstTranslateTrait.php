@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 常量翻译 服务
  * Created by PhpStorm
