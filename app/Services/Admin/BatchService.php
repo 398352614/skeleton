@@ -74,7 +74,6 @@ class BatchService extends BaseService
     //新增
     public function store($params)
     {
-
     }
 
 
@@ -103,6 +102,7 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败,请重新操作');
         }
+
         return [$batch, $tour];
     }
 
@@ -231,5 +231,4 @@ class BatchService extends BaseService
         }
         return $data;
     }
-
 }

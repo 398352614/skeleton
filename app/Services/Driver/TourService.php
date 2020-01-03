@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 取件线路 服务
  * User: long
@@ -8,6 +9,7 @@
 
 namespace App\Services\Driver;
 
+use App\Events\Order\Delivered;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourBatchResource;
 use App\Models\Batch;
@@ -17,6 +19,7 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use Illuminate\Support\Arr;
+use OrderTrailService;
 
 /**
  * Class TourService
@@ -114,6 +117,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('订单锁定失败,请重新操作');
         }
+        OrderTrailService::OrderStatusChangeUseOrderIDs(Order::where('tour_no', $tour->tour_no)->pluck('id'), BaseConstService::ORDER_TRAIL_LOCK);
     }
 
     /**
@@ -242,6 +246,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
+        OrderTrailService::OrderStatusChangeUseOrderIDs(Order::where('tour_no', $tour->tour_no)->pluck('id'), BaseConstService::ORDER_TRAIL_DELIVERING);
     }
 
     /**
@@ -282,7 +287,8 @@ class TourService extends BaseService
         $batchFields = [
             'id', 'batch_no', 'tour_no', 'status',
             'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
-            'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity'];
+            'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity'
+        ];
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], $batchFields, false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
         $tour['batch_count'] = count($batchList);
         $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT]);
@@ -310,7 +316,6 @@ class TourService extends BaseService
     //站点到达 主要处理到达时间和里程
     public function batchArrive($id, $params)
     {
-
     }
 
 
@@ -406,6 +411,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败,请重新操作');
         }
+        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('batch_no', $batch['batch_no'])->get(), BaseConstService::ORDER_TRAIL_CANNEL_DELIVER);
     }
 
     /**
@@ -426,7 +432,9 @@ class TourService extends BaseService
         }
         //获取当前站点下的所有订单
         $pickupCount = $pieCount = 0;
-        $dbOrderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'batch_no', 'type'], false)->toArray();
+        $dbOrderCollection = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'batch_no', 'type'], false);
+        $dbOrderList = $dbOrderCollection->toArray();
+        OrderTrailService::OrderStatusChangeUseOrderCollection($dbOrderCollection, BaseConstService::ORDER_TRAIL_DELIVERED);
         $cancelOrderIdList = array_unique(explode(',', $params['cancel_order_id_list']));
         foreach ($dbOrderList as $dbOrder) {
             if (in_array(intval($dbOrder['id']), $cancelOrderIdList)) {
