@@ -21,8 +21,8 @@ use Illuminate\Support\Facades\Route;
 */
 Route::namespace('Api\Driver')->middleware([])->group(function () {
     Route::post('login', 'AuthController@login');
-    //Route::post('password-reset', 'RegisterController@resetPassword');
-    //Route::post('password-reset/apply', 'RegisterController@applyOfReset');
+    Route::put('password-reset', 'AuthController@resetPassword');
+    Route::post('password-reset/apply', 'AuthController@applyOfReset');
 });
 
 /*
@@ -34,6 +34,7 @@ Route::namespace('Api\Driver')->middleware([])->group(function () {
 Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
     Route::post('logout', 'AuthController@logout');
     Route::get('me', 'AuthController@me');
+    Route::put('my-password', 'AuthController@updatePassword');
 
     //备忘录管理
     Route::prefix('memorandum')->group(function () {
