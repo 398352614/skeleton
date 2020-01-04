@@ -97,7 +97,7 @@ class BatchException extends BaseModel
 
     public function getStageNameAttribute()
     {
-        return ConstTranslateTrait::$batchExceptionStatusList[$this->stage];
+        return ConstTranslateTrait::$batchExceptionStageList[$this->stage];
     }
 
     public function getTypeNameAttribute()
