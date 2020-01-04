@@ -28,6 +28,14 @@ class TourTaskResource extends JsonResource
             'status_name' => $this->status_name,
             'batch_count' => $this->batch_count,
             'last_receiver' => $this->last_receiver,
+            'warehouse_id' => $this->warehouse_id,
+            'warehouse_name' => $this->warehouse_name,
+            'warehouse_phone' => $this->warehouse_phone,
+            'warehouse_post_code' => $this->warehouse_post_code,
+            'warehouse_city' => $this->warehouse_city,
+            'warehouse_address' => $this->warehouse_address,
+            'warehouse_lon' => $this->warehouse_lon,
+            'warehouse_lat' => $this->warehouse_lat,
         ];
     }
 }
