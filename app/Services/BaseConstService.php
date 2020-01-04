@@ -149,7 +149,7 @@ class BaseConstService
 
     //司机端 文件目录
     const DRIVER_FILE_TOUR_DIR = 'tour';
-    
+
 
     //order_trail 订单轨迹常量  1-订单创建 2-加入线路 3-已分配司机 4-已收入网点 5-待出库 6-配送中 7-已签收 8-取消取派
     const ORDER_TRAIL_CREATED = 1;
