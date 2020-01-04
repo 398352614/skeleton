@@ -56,6 +56,8 @@ class Employee extends Authenticatable implements JWTSubject
         'remark',
         'created_at',
         'updated_at',
+        'username',
+        'forbid_login',
     ];
 
     /**
@@ -73,6 +75,13 @@ class Employee extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $dates = [];
+
+    /**
+     * @var array
+     */
+    protected $casts = [
+        'forbid_login' => 'bool',
+    ];
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

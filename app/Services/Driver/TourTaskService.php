@@ -12,6 +12,7 @@ namespace App\Services\Driver;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourTaskResource;
 use App\Models\Tour;
+use App\Services\BaseConstService;
 use App\Services\BaseService;
 
 class TourTaskService extends BaseService
@@ -59,6 +60,10 @@ class TourTaskService extends BaseService
      */
     public function getPageList()
     {
+        //若状态为1000,则表示当前任务
+        if (!empty($this->filters['status'][1]) && (intval($this->filters['status'][1]) === 1000)) {
+            $this->filters['status'] = ['<>', BaseConstService::TOUR_STATUS_5];
+        }
         $list = parent::getPageList();
         if (empty($list)) return $list;
         $batchFields = ['id', 'batch_no', 'receiver', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address'];
