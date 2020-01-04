@@ -318,19 +318,21 @@ class TourService extends BaseService
     {
         $first = false;
         foreach ($batchIds as $key => $batchId) {
-            if (!$first) {
-                $batch = Batch::where('id', $batchId)->whereIn('status', [
-                    BaseConstService::BATCH_WAIT_ASSIGN,
-                    BaseConstService::BATCH_WAIT_OUT,
-                    BaseConstService::BATCH_DELIVERING,
-                    BaseConstService::BATCH_ASSIGNED
-                ])->first();
-                if ($batch) {
+            $tempbatch = Batch::where('id', $batchId)->first();
+            if (!$first && in_array($tempbatch->status, [
+                BaseConstService::BATCH_WAIT_ASSIGN,
+                BaseConstService::BATCH_WAIT_OUT,
+                BaseConstService::BATCH_DELIVERING,
+                BaseConstService::BATCH_ASSIGNED
+            ])) {
+                if ($tempbatch) {
+                    $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地
                 }
             }
+            $tempbatch->update(['sort_id' => $key + 1]);
         }
-        if ($batch) {
+        if ($batch ?? null) {
             return $batch;
         }
 
