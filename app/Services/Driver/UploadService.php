@@ -91,9 +91,9 @@ class UploadService
     public function imageUpload($params)
     {
         $subPath = $this->getImageDir($params['dir']);
-        $params['name'] = $this->makeRuleName($params['image']['file']);
+        $params['name'] = $this->makeRuleName($params['image']);
         try {
-            $rowCount = $this->imageDisk->putFileAs($subPath, $params['image']['file'], $params['name']);
+            $rowCount = $this->imageDisk->putFileAs($subPath, $params['image'], $params['name']);
         } catch (\Exception $ex) {
             throw new BusinessLogicException('图片上传失败,请重新操作');
         }
@@ -129,9 +129,9 @@ class UploadService
     public function fileUpload($params)
     {
         $subPath = $this->getFileDir($params['dir']);
-        $params['name'] = $this->makeRuleName($params['file']['file']);
+        $params['name'] = $this->makeRuleName($params['file']);
         try {
-            $rowCount = $this->fileDisk->putFileAs($subPath, $params['file']['file'], $params['name']);
+            $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);
         } catch (\Exception $ex) {
             throw new BusinessLogicException('文件上传失败,请重新操作');
         }
