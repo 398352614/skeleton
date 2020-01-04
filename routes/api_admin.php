@@ -109,8 +109,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //线路任务管理
     Route::prefix('tour')->group(function () {
-        Route::post('/update-batch-index', 'TourController@updateBatchIndex');         //更改线路任务顺序 -- 手动优化
-        Route::post('/auto-op-tour', 'TourController@autoOpTour');         //自动优化线路
+        Route::post('/update-batch-index', 'TourController@updateBatchIndex')->middleware('checktourredislock');         //更改线路任务顺序 -- 手动优化
+        Route::post('/auto-op-tour', 'TourController@autoOpTour')->middleware('checktourredislock');         //自动优化线路
 
         //rest api 放在最后
         Route::get('/', 'TourController@index')->name('tour.index');

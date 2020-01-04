@@ -18,9 +18,12 @@ use App\Services\OrderNoRuleService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
+use App\Services\Traits\TourRedisLockTrait;
 
 class TourService extends BaseService
 {
+    use TourRedisLockTrait;
+
     /**
      * @var GoogleApiService
      */
@@ -363,7 +366,7 @@ class TourService extends BaseService
         while (time_nanosleep(0, 500000000) === true) {
             app('log')->info('每 0.5 秒查询一次修改是否完成');
             //锁不存在代表更新完成
-            if (!$this->getTourLock($tour->tour_no)) {
+            if (!self::getTourLock($tour->tour_no)) {
                 return '修改线路成功';
             }
         }
@@ -507,22 +510,5 @@ class TourService extends BaseService
         //取消锁
         self::setTourLock($this->formData['line_code'], 0);
         return '更新完成';
-    }
-
-    /**
-     * 在途锁,更新操作同时只能存在一个!!!
-     */
-    public static function getTourLock(string $tourNo): int
-    {
-        $lock = app('reis')->get('tourUpdateOpration' . $tourNo);
-        if ($lock === null) {
-            return 0;
-        }
-        return $lock;
-    }
-
-    public static function setTourLock(string $tourNo, int $value)
-    {
-        return app('reis')->put('tourUpdateOpration' . $tourNo, $value);
     }
 }
