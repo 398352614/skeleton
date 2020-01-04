@@ -69,7 +69,7 @@ class OrderTrailService extends BaseService
             case BaseConstService::ORDER_TRAIL_DELIVERED: // 订单已投递
                 $content = '派件成功';
                 break;
-            case BaseConstService::ORDER_TRAIL_CANNEL_DELIVER: // 订单已取消取派
+            case BaseConstService::ORDER_TRAIL_CANCEL_DELIVER: // 订单已取消取派
                 $content = '取消派件';
                 break;
 
