@@ -10,6 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\BatchExceptionResource;
 use App\Http\Resources\BatchResource;
 use App\Models\BatchException;
 use App\Services\BaseConstService;
@@ -28,7 +29,7 @@ class BatchExceptionService extends BaseService
         $this->request = request();
         $this->model = $batchException;
         $this->query = $this->model::query();
-        $this->resource = BatchResource::class;
+        $this->resource = BatchExceptionResource::class;
         $this->formData = $this->request->all();
         $this->setFilterRules();
     }
@@ -96,7 +97,7 @@ class BatchExceptionService extends BaseService
         if (!empty($dbInfo)) return;
 
         //更新站点异常状态(异常->正常)
-        $rowCount = parent::update(['batch_no' => $info['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_1]);
+        $rowCount = $this->getBatchService()->update(['batch_no' => $info['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('处理失败,请重新操作');
         }
