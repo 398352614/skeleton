@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 取件线路 操作
  * User: long
@@ -157,4 +158,25 @@ class TourController extends BaseController
         return $this->service->inWarehouse($id, $this->data);
     }
 
+    /**
+     * @api {POST}  api/admin/tour/update-batch-index 管理员端:更新批次的派送顺序
+     * @apiName update-batch-index
+     * @apiGroup admin
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 更新批次的派送顺序
+     * @apiParam {String}   batch_ids                  有序的批次数组
+     * @apiParam {String}   tour_no                    在途编号
+     * @apiSuccessExample {json}  返回示例
+     * HTTP/1.1 200 OK
+     * {
+     *  "ret":1,
+     *  "msg":"添加线路",
+     *  "data":{}
+     * }
+     */
+    public function updateBatchIndex()
+    {
+        return $this->service->updateBatchIndex();
+    }
 }

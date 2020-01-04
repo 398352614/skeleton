@@ -9,17 +9,20 @@
 
 namespace App\Services\Driver;
 
+use App\Events\AfterTourUpdated;
 use App\Events\Order\Delivered;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourBatchResource;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
+use App\Models\TourLog;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
+use App\Services\Traits\TourRedisLockTrait;
 
 /**
  * Class TourService
@@ -32,6 +35,8 @@ use App\Services\OrderTrailService;
  */
 class TourService extends BaseService
 {
+    use TourRedisLockTrait;
+
     public function __construct(Tour $tour)
     {
         $this->request = request();
@@ -557,5 +562,69 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败,请重新操作');
         }
+    }
+
+    /**
+     * 更新批次配送顺序
+     */
+    public function updateBatchIndex()
+    {
+        // * @apiParam {String}   batch_ids                  有序的批次数组
+        // * @apiParam {String}   tour_no                    在途编号
+        set_time_limit(240);
+        self::setTourLock($this->formData['tour_no'], 1); // 加锁
+
+        app('log')->info('更新线路传入的参数为:', $this->formData);
+
+        $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
+
+        throw_if(
+            $tour->batchs->count() != $this->formData['batch_ids'],
+            new BusinessLogicException('线路')
+        );
+
+        //此处的所有 batchids 应该经过验证!
+        $nextBatch = $this->getNextBatchAndUpdateIndex($this->formData['batch_ids']);
+
+        TourLog::create([
+            'tour_no' => $this->formData['tour_no'],
+            'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
+            'status' => BaseConstService::TOUR_LOG_PENDING,
+        ]);
+
+        event(new AfterTourUpdated($tour, $nextBatch->batch_no));
+
+        //0.5s执行一次
+        while (time_nanosleep(0, 500000000) === true) {
+            app('log')->info('每 0.5 秒查询一次修改是否完成');
+            //锁不存在代表更新完成
+            if (!$this->getTourLock($tour->tour_no)) {
+                return '修改线路成功';
+            }
+        }
+        app('log')->error('进入此处代表修改线路失败');
+        self::setTourLock($this->formData['tour_no'], 0); // 取消锁
+        throw new BusinessLogicException('修改线路失败');
+    }
+
+    /**
+     * 此处要求batchIds 为有序,并且已完成或者异常的 batch 在前方,未完成的 batch 在后方
+     */
+    public function getNextBatchAndUpdateIndex($batchIds): Batch
+    {
+        $first = false;
+        foreach ($batchIds as $key => $batchId) {
+            if (!$first) {
+                $batch = Batch::where('id', $batchId)->whereIn('status', [BaseConstService::BATCH_DELIVERING, BaseConstService::BATCH_ASSIGNED])->first();
+                if ($batch) {
+                    $first = true; // 找到了下一个目的地
+                }
+            }
+        }
+        if ($batch) {
+            return $batch;
+        }
+
+        throw new BusinessLogicException('未查找到下一个目的地');
     }
 }
