@@ -22,7 +22,7 @@ class TourController extends BaseController
 {
     public function __construct(TourService $service)
     {
-        parent::__construct($service);
+        parent::__construct($service, ['updateBatchIndex']);
     }
 
     /**
@@ -159,9 +159,9 @@ class TourController extends BaseController
     }
 
     /**
-     * @api {POST}  api/admin/tour/update-batch-index 管理员端:更新批次的派送顺序
+     * @api {POST}  api/driver/tour/update-batch-index 管理员端:更新批次的派送顺序
      * @apiName update-batch-index
-     * @apiGroup admin
+     * @apiGroup driver
      * @apiPermission api
      * @apiVersion 1.0.0
      * @apiDescription 更新批次的派送顺序
