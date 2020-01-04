@@ -91,7 +91,7 @@ class DriverValidate extends BaseValidate
             'bank_name',
             'iban',
             'bic',
-            'crop_type',
+            //'crop_type',
         ],
         'update'             => [
             'crop_type',
