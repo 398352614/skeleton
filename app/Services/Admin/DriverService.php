@@ -16,8 +16,8 @@ class DriverService extends BaseService
 
     public $filterRules = [
         'status' => ['=', 'status'],
-        'email' => ['=','email'],
-        'phone' =>['=','phone']
+        'email' => ['=', 'email'],
+        'phone' => ['=', 'phone']
     ];
 
     public function __construct(Driver $driver)
@@ -34,7 +34,6 @@ class DriverService extends BaseService
     //新增
     public function store($params)
     {
-
     }
 
 
@@ -67,13 +66,11 @@ class DriverService extends BaseService
             'bank_name'             => $this->formData['bank_name'],
             'iban'                  => $this->formData['iban'],
             'bic'                   => $this->formData['bic'],
-            'crop_type'             => $this->formData['crop_type'],
+            // 'crop_type'             => $this->formData['crop_type'],
         ];
         $rowCount =  parent::create($driver);
-        if($rowCount === false){
+        if ($rowCount === false) {
             throw new BusinessLogicException('新增司机失败');
         }
     }
-
-
 }
