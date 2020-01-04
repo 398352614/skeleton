@@ -26,7 +26,7 @@ class CheckTourRedisLock
             throw new BusinessLogicException('当前 tour 已锁定,请稍后操作');
         }
         $response = $next($request);
-        if ($response->getData()->code != 200) {
+        if (method_exists($response, 'getData') && $response->getData()->code != 200) {
             self::setTourLock($request->tour_no, 0);
         }
         return $response;
