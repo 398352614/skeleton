@@ -105,7 +105,8 @@ class Batch extends BaseModel
 
     protected $appends = [
         'status_name',
-        'exception_label_name'
+        'exception_label_name',
+        'pay_type_name'
     ];
 
     /**
@@ -119,6 +120,11 @@ class Batch extends BaseModel
     public function getStatusNameAttribute()
     {
         return empty($this->status) ? null : ConstTranslateTrait::$batchStatusList[$this->status];
+    }
+
+    public function getPayTypeNameAttribute()
+    {
+        return empty($this->pay_type) ? null : ConstTranslateTrait::$batchPayTypeList[$this->pay_type];
     }
 
     public function getExceptionLabelNameAttribute()

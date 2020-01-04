@@ -64,6 +64,12 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_NATURE_5 => '其他'
     ];
 
+    //支付方式1-现金支付2-银行卡支付
+    public static $batchPayTypeList = [
+        BaseConstService::BATCH_PAY_TYPE_1 => '现金支付',
+        BaseConstService::BATCH_PAY_TYPE_2 => '银行卡支付'
+    ];
+
     //站点异常标签1-正常2-异常
     public static $batchExceptionLabelList = [
         BaseConstService::BATCH_EXCEPTION_LABEL_1 => '正常',
