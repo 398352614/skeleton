@@ -33,11 +33,11 @@ class AuthController extends Controller
             throw new BusinessLogicException('用户名或密码错误！');
         }
 
-        /*if (auth('admin')->user()->forbid_login === true) {
+        if (auth('admin')->user()->forbid_login === 1) {
             auth('admin')->logout();
 
             eRet('暂时无法登录，请联系管理员！', 401);
-        }*/
+        }
 
         return $this->respondWithToken($token);
     }
@@ -134,11 +134,13 @@ class AuthController extends Controller
      */
     public function updatePassword(Request $request)
     {
-        $data = $request->validate([
-            'origin_password' => 'required|string|between:8,20',
-            'new_password' => 'required|string|between:8,20|different:origin_password',
-            'new_confirm_password' => 'required|same:new_password',
-        ]);
+//        $data = $request->validate([
+//            'origin_password' => 'required|string|between:8,20',
+//            'new_password' => 'required|string|between:8,20|different:origin_password',
+//            'new_confirm_password' => 'required|same:new_password',
+//        ]);
+
+        $data = $request->all();
 
         /** @var Employee $employee */
         $employee = \auth('admin')->user();

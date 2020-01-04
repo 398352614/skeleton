@@ -23,9 +23,9 @@ class BaseController extends Controller
 
     protected $data;
 
-    public function __construct(BaseService $service)
+    public function __construct(BaseService $service, $exceptMethods = [])
     {
-        $this->service = new TransactionService($service);
+        $this->service = new TransactionService($service, $exceptMethods);
         $this->data = Request::all();
     }
 }

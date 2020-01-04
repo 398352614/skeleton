@@ -53,6 +53,7 @@ class Batch extends BaseModel
         'line_name',
         'execution_date',
         'status',
+        'exception_label',
         'cancel_type',
         'cancel_remark',
         'cancel_picture',
@@ -103,7 +104,8 @@ class Batch extends BaseModel
     ];
 
     protected $appends = [
-        'status_name'
+        'status_name',
+        'exception_label_name'
     ];
 
     /**
@@ -117,6 +119,11 @@ class Batch extends BaseModel
     public function getStatusNameAttribute()
     {
         return empty($this->status) ? null : ConstTranslateTrait::$batchStatusList[$this->status];
+    }
+
+    public function getExceptionLabelNameAttribute()
+    {
+        return empty($this->exception_label) ? null : ConstTranslateTrait::$batchExceptionLabelList[$this->exception_label];
     }
 
     public function orders()

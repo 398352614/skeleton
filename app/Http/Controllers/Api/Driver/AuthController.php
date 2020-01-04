@@ -23,14 +23,14 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $this->validateLogin($request);
+        //$this->validateLogin($request);
 
         $credentials = [
             $this->username() => $request['username'],
-            'password'        => $request['password'],
+            'password' => $request['password'],
         ];
 
-        if (! $token = $this->guard()->attempt($credentials)) {
+        if (!$token = $this->guard()->attempt($credentials)) {
             throw new BusinessLogicException('用户名或密码错误');
         }
 
@@ -88,7 +88,7 @@ class AuthController extends Controller
     /**
      * Validate the user login request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     protected function validateLogin(Request $request)
@@ -114,6 +114,7 @@ class AuthController extends Controller
             return 'phone';
         }
     }
+
     /**
      * Get the guard to be used during authentication.
      *
@@ -126,18 +127,19 @@ class AuthController extends Controller
 
     /**
      * 重置密码
-     * @param  Request  $request
+     * @param Request $request
      * @return array
      * @throws BusinessLogicException
      */
     public function resetPassword(Request $request)
     {
-        $data = $request->validate([
-            'new_password' => 'required|string|between:8,20',
-            'confirm_new_password' =>'required|string|same:new_password',
-            'email' => 'required|email',
-            'code'  => 'required|string|digits_between:6,6'
-        ]);
+//        $data = $request->validate([
+//            'new_password' => 'required|string|between:8,20',
+//            'confirm_new_password' =>'required|string|same:new_password',
+//            'email' => 'required|email',
+//            'code'  => 'required|string|digits_between:6,6'
+//        ]);
+        $data = $request->all();
 
         if ($data['code'] !== RegisterController::getVerifyCode($data['email'], 'RESET')) {
             throw new BusinessLogicException('验证码错误');
@@ -163,15 +165,15 @@ class AuthController extends Controller
     /**
      * 重置密码验证码
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return string
      * @throws BusinessLogicException
      */
     public function applyOfReset(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
+//        $request->validate([
+//            'email' => 'required|email',
+//        ]);
 
         return RegisterController::sendCode($request->input('email'), 'RESET');
     }
@@ -179,17 +181,18 @@ class AuthController extends Controller
     /**
      * 更新自己的密码
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return array
      * @throws BusinessLogicException
      */
     public function updatePassword(Request $request)
     {
-        $data = $request->validate([
-                'origin_password' => 'required|string|between:8,20',
-                'new_password' => 'required|string|between:8,20|different:origin_password',
-                'new_confirm_password' => 'required|same:new_password',
-            ]);
+//        $data = $request->validate([
+//            'origin_password' => 'required|string|between:8,20',
+//            'new_password' => 'required|string|between:8,20|different:origin_password',
+//            'new_confirm_password' => 'required|same:new_password',
+//        ]);
+        $data = $request->all();
 
         /** @var Driver $driver */
         $driver = \auth('driver')->user();

@@ -122,7 +122,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('订单锁定失败,请重新操作');
         }
-        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour->tour_no)->get(), BaseConstService::ORDER_TRAIL_LOCK);
+        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_LOCK);
     }
 
     /**
@@ -251,7 +251,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
-        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour->tour_no)->get(), BaseConstService::ORDER_TRAIL_DELIVERING);
+        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_DELIVERING);
     }
 
     /**
@@ -377,12 +377,12 @@ class TourService extends BaseService
             throw new BusinessLogicException('上报异常失败,请重新操作');
         }
         //站点异常
-        $rowCount = $this->getBatchService()->updateById($batch['id'], ['status' => BaseConstService::BATCH_ERROR]);
+        $rowCount = $this->getBatchService()->updateById($batch['id'], ['exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('上报异常失败,请重新操作');
         }
         //订单异常
-        $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no']], ['status' => BaseConstService::ORDER_STATUS_6]);
+        $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('上报异常失败,请重新操作');
         }
@@ -402,7 +402,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路当前状态不允许站点取消取派');
         }
         //异常站点和取派中的站点都可以取消取派
-        if (!in_array(intval($batch['status']), [BaseConstService::BATCH_DELIVERING, BaseConstService::BATCH_ERROR])) {
+        if (intval($batch['status']) !== BaseConstService::BATCH_DELIVERING) {
             throw new BusinessLogicException('站点当前状态不能取消取派');
         }
         //站点取消取派
@@ -412,7 +412,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取消取派失败,请重新操作');
         }
         //订单取消取派
-        $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no']], Arr::add($data, 'status', BaseConstService::ORDER_STATUS_7));
+        $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no']], Arr::add($data, 'status', BaseConstService::ORDER_STATUS_6));
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败,请重新操作');
         }
@@ -432,7 +432,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路当前状态不允许站点签收');
         }
         //异常站点和取派中的站点都可以签收
-        if (!in_array(intval($batch['status']), [BaseConstService::BATCH_DELIVERING, BaseConstService::BATCH_ERROR])) {
+        if (intval($batch['status'] !== BaseConstService::BATCH_DELIVERING)) {
             throw new BusinessLogicException('站点当前状态不能签收');
         }
         //获取当前站点下的所有订单
@@ -443,7 +443,7 @@ class TourService extends BaseService
         $cancelOrderIdList = array_unique(explode(',', $params['cancel_order_id_list']));
         foreach ($dbOrderList as $dbOrder) {
             if (in_array(intval($dbOrder['id']), $cancelOrderIdList)) {
-                $status = BaseConstService::ORDER_STATUS_7;
+                $status = BaseConstService::ORDER_STATUS_6;
             } else {
                 if (intval($dbOrder['type']) === BaseConstService::ORDER_TYPE_1) {
                     $pickupCount += 1;

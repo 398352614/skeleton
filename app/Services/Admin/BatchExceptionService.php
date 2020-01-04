@@ -17,7 +17,6 @@ use App\Services\BaseService;
 
 class BatchExceptionService extends BaseService
 {
-
     public $filterRules = [
         'status' => ['=', 'status'],
         'batch_exception_no' => ['like', 'keyword'],
@@ -32,6 +31,24 @@ class BatchExceptionService extends BaseService
         $this->resource = BatchResource::class;
         $this->formData = $this->request->all();
         $this->setFilterRules();
+    }
+
+    /**
+     * 站点管理 管理
+     * @return BatchService
+     */
+    private function getBatchService()
+    {
+        return self::getInstance(BatchService::class);
+    }
+
+    /**
+     * 订单管理 服务
+     * @return OrderService
+     */
+    private function getOrderService()
+    {
+        return self::getInstance(OrderService::class);
     }
 
     /**
@@ -68,11 +85,26 @@ class BatchExceptionService extends BaseService
         $rowCount = parent::updateById($id, [
             'deal_id' => auth()->id(),
             'deal_name' => auth()->user()->username,
-            'deal_remark' => $params['deal_remark']
+            'deal_remark' => $params['deal_remark'],
+            'status' => BaseConstService::BATCH_EXCEPTION_2
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('处理失败,请重新操作');
         }
-    }
+        //获取是否还有相同站点存在异常未处理的情况,若不存在,则更新站点异常标签和更新订单异常标签
+        $dbInfo = parent::getInfo(['batch_no' => $info['batch_no'], 'status' => BaseConstService::BATCH_EXCEPTION_1], ['id'], false);
+        if (!empty($dbInfo)) return;
 
+        //更新站点异常状态(异常->正常)
+        $rowCount = parent::update(['batch_no' => $info['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('处理失败,请重新操作');
+        }
+
+        //更新订单异常状态(异常->正常)
+        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('处理失败,请重新操作');
+        }
+    }
 }
