@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 司机 验证类
  * Created by PhpStorm
@@ -41,13 +42,13 @@ class DriverValidate extends BaseValidate
     ];
 
     public $rules = [
-        'email'                         => ['required','uniqueIgnore:driver,id'],
+        'email'                         => ['required', 'uniqueIgnore:driver,id'],
         'password'                      => ['required'],
         'last_name'                     => ['required'],
         'first_name'                    => ['required'],
         'gender'                        => ['required'],
-        'birthday'                      => ['required','date_format:Y-m-d'],
-        'phone'                         => ['required','uniqueIgnore:driver,id'],
+        'birthday'                      => ['required', 'date_format:Y-m-d'],
+        'phone'                         => ['required', 'uniqueIgnore:driver,id'],
         'duty_paragraph'                => ['required'],
         'post_code'                     => ['required'],
         'door_no'                       => ['required'],
@@ -64,7 +65,7 @@ class DriverValidate extends BaseValidate
         'iban'                          => ['required'],
         'bic'                           => ['required'],
         'crop_type'                     => ['required'],
-        'is_locked'                     => ['required','integer','in:1,2'],
+        'is_locked'                     => ['required', 'integer', 'in:1,2'],
     ];
     public $scene = [
         //注册
@@ -91,12 +92,11 @@ class DriverValidate extends BaseValidate
             'bank_name',
             'iban',
             'bic',
-            //'crop_type',
+            // 'crop_type',
         ],
         'update'             => [
             'crop_type',
         ],
-        'lockDriver'=>['is_locked']
+        'lockDriver' => ['is_locked']
     ];
 }
-
