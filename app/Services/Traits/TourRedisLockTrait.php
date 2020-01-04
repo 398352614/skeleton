@@ -13,7 +13,7 @@ trait TourRedisLockTrait
         if ($lock === null) {
             return 0;
         }
-        return $lock;
+        return (int) $lock;
     }
 
     public static function setTourLock(string $tourNo, int $value)

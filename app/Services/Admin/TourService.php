@@ -319,7 +319,12 @@ class TourService extends BaseService
         $first = false;
         foreach ($batchIds as $key => $batchId) {
             if (!$first) {
-                $batch = Batch::where('id', $batchId)->whereIn('status', [BaseConstService::BATCH_DELIVERING, BaseConstService::BATCH_ASSIGNED])->first();
+                $batch = Batch::where('id', $batchId)->whereIn('status', [
+                    BaseConstService::BATCH_WAIT_ASSIGN,
+                    BaseConstService::BATCH_WAIT_OUT,
+                    BaseConstService::BATCH_DELIVERING,
+                    BaseConstService::BATCH_ASSIGNED
+                ])->first();
                 if ($batch) {
                     $first = true; // 找到了下一个目的地
                 }
@@ -347,7 +352,7 @@ class TourService extends BaseService
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
 
         throw_if(
-            $tour->batchs->count() != $this->formData['batch_ids'],
+            $tour->batchs->count() != count($this->formData['batch_ids']),
             new BusinessLogicException('线路')
         );
 
@@ -371,7 +376,7 @@ class TourService extends BaseService
             }
         }
         app('log')->error('进入此处代表修改线路失败');
-        self::setTourLock($this->formData['tour_no'], 0); // 取消锁
+        // self::setTourLock($this->formData['tour_no'], 0); // 取消锁 -- 放在中间件中
         throw new BusinessLogicException('修改线路失败');
     }
 
@@ -388,7 +393,7 @@ class TourService extends BaseService
         $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
 
         if (!$nextBatch) {
-            self::setTourLock($this->formData['tour_no'], 0);
+            // self::setTourLock($this->formData['tour_no'], 0);
             throw new BusinessLogicException('没有找到下一个目的地');
         }
 
@@ -409,7 +414,7 @@ class TourService extends BaseService
             }
         }
         app('log')->error('进入此处代表修改线路失败');
-        self::setTourLock($this->formData['tour_no'], 0); // 取消锁
+        // self::setTourLock($this->formData['tour_no'], 0); // 取消锁 -- 放在中间件中
         throw new BusinessLogicException('修改线路失败');
     }
 

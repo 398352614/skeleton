@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Exceptions\BusinessLogicException;
 use App\Services\Traits\TourRedisLockTrait;
 use Closure;
+use Exception;
 
 class CheckTourRedisLock
 {
@@ -24,6 +25,10 @@ class CheckTourRedisLock
         if (self::getTourLock($request->tour_no)) {
             throw new BusinessLogicException('当前 tour 已锁定,请稍后操作');
         }
-        return $next($request);
+        $response = $next($request);
+        if ($response->getData()->code != 200) {
+            self::setTourLock($request->tour_no, 0);
+        }
+        return $response;
     }
 }
