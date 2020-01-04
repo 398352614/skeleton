@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+
 /**
  * 汽车表
  * Class Car
@@ -75,8 +76,7 @@ class Car extends BaseModel
      *
      * @var array
      */
-    protected $hidden = [
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be mutated to dates.
@@ -84,4 +84,9 @@ class Car extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    public function brand()
+    {
+        return $this->belongsTo(CarBrand::class, 'car_brand_id', 'id');
+    }
 }
