@@ -18,6 +18,10 @@ class AlterEmployeeAddForbidLogin extends Migration
                 ->default(0)
                 ->after('remark')
                 ->comment('禁止登录标志');
+
+            $table->string('username')
+                ->after('email')
+                ->comment('用户名');
         });
     }
 
@@ -30,6 +34,7 @@ class AlterEmployeeAddForbidLogin extends Migration
     {
         Schema::table('employee', function (Blueprint $table) {
             $table->dropColumn('forbid_login');
+            $table->dropColumn('username');
         });
     }
 }

@@ -34,7 +34,7 @@ if (!function_exists('success')) {
      * @param array $data
      * @return array
      */
-    function success(string $message = 'success', array $data = [])
+    function success(string $message = 'successful', array $data = [])
     {
         return \App\Traits\ResponseTrait::response(200, $data, $message);
     }
