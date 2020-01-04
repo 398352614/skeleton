@@ -85,8 +85,20 @@ class Car extends BaseModel
      */
     protected $dates = [];
 
+    protected $appends = [
+        'brand_name'
+    ];
+
     public function brand()
     {
         return $this->belongsTo(CarBrand::class, 'car_brand_id', 'id');
+    }
+
+    public function getBrandNameAttribute()
+    {
+        if ($this->brand) {
+            return $this->brand->cn_name;
+        }
+        return '';
     }
 }
