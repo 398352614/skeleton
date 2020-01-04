@@ -183,8 +183,6 @@ class RegisterController extends Controller
             return failed();
         }
 
-        auth('admin')->logout();
-
         return success();
     }
 

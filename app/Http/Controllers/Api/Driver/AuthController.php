@@ -207,8 +207,8 @@ class AuthController extends Controller
             ]
         );
 
-        if ($res) {
-            auth('driver')->logout();
+        if (!$res) {
+            return failed();
         }
 
         return success();
