@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+
+use App\Traits\ConstTranslateTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -90,6 +92,10 @@ class Driver extends Authenticatable implements JWTSubject
      */
     protected $dates = [];
 
+    protected $appends = [
+        'is_locked_name'
+    ];
+
     /**
      * @return mixed
      */
@@ -108,11 +114,16 @@ class Driver extends Authenticatable implements JWTSubject
         ];
     }
 
+    public function getIsLockedNameNameAttribute()
+    {
+        return empty($this->is_locked) ? null : ConstTranslateTrait::$driverStatusList[$this->is_locked];
+    }
+
     /**
      * @return string
      */
     public function getFullNameAttribute()
     {
-        return $this->last_name. ' ' . $this->first_name;
+        return $this->last_name . ' ' . $this->first_name;
     }
 }
