@@ -67,7 +67,7 @@ class DriverService extends BaseService
             'bank_name'             => $this->formData['bank_name'],
             'iban'                  => $this->formData['iban'],
             'bic'                   => $this->formData['bic'],
-            'crop_type'             => $this->formData['crop_type'],
+            'crop_type'             => BaseConstService::DRIVER_HIRE,
         ];
         $rowCount =  parent::create($driver);
         if($rowCount === false){
