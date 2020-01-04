@@ -40,6 +40,7 @@ class TourService extends BaseService
     public function __construct(Tour $tour)
     {
         $this->request = request();
+        $this->formData = request()->all();
         $this->model = $tour;
         $this->query = $this->model::query();
     }
