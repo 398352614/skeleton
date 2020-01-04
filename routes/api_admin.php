@@ -163,6 +163,16 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/', 'CompanyController@update');
     });
 
+    //员工管理
+    Route::prefix('employees')->group(function () {
+        Route::get('/', 'EmployeeController@index');
+        Route::get('/{id}', 'EmployeeController@show');
+        Route::put('/{id}', 'EmployeeController@update');
+        Route::post('/', 'EmployeeController@store');
+        Route::delete('/{id}', 'EmployeeController@destroy');
+        Route::put('/{id}/forbid-login/{enabled}', 'EmployeeController@setLogin');
+    });
+
     //国家管理
     Route::prefix('country')->group(function () {
         Route::get('/', 'CountryController@index');

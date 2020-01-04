@@ -116,6 +116,4 @@ class CarService extends BaseService
             throw new BusinessLogicException('车辆删除失败');
         }
     }
-
-
 }
