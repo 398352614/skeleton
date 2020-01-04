@@ -55,7 +55,6 @@ class RegisterController extends Controller
                 'company_code' => self::makeNewCompanyCode($lastCompany),
                 'email' => $data['email'],
                 'name' => $data['email'],
-                'username'=>$data['email']
                 //'phone' => $data['phone'],
             ]);
 
@@ -114,6 +113,7 @@ class RegisterController extends Controller
             'institution_id'   => 1,
             'fullname'  => $data['email'],
             'company_id'    => $company->id,
+            'username'=>$data['email']
         ]);
     }
 
