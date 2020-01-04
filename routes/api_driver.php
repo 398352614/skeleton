@@ -83,7 +83,7 @@ Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
     //取件线路 管理
     Route::prefix('tour')->group(function () {
         //更改线路任务顺序 -- 手动优化
-        Route::post('/update-batch-index', 'TourController@updateBatchIndex');
+        Route::post('/update-batch-index', 'TourController@updateBatchIndex')->middleware('checktourredislock');
         //锁定-开始装货
         Route::put('/{id}/lock', 'TourController@lock');
         //锁定-开始装货
