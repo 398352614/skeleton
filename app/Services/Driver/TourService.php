@@ -329,7 +329,9 @@ class TourService extends BaseService
     public function batchArrive($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => now()]);
+        $now = now();
+        $actualTime = strtotime($now) - strtotime($tour['begin_time']);
+        $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => $now, 'actual_time' => $actualTime]);
         if ($rowCount === false) {
             throw new BusinessLogicException('更新到达时间失败,请重新操作');
         }
