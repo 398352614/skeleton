@@ -27,7 +27,8 @@ class BaseValidate
         '*.unique_ignore' => ':attribute已存在',
         '*.between' => ':attribute范围必须在:min-:max之间',
         '*.after_or_equal' => ':attribute必须在当前日期及之后',
-        '*.array' => ':attribute必须是数组'
+        '*.array' => ':attribute必须是数组',
+        '*.digits_between'=>':attribute必须在:min位-:max位之间'
     ];
 
     public $customAttributes = [];
