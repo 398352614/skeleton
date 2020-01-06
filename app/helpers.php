@@ -77,21 +77,40 @@ if (!function_exists('array_create_index')) {
 }
 
 
+if (!function_exists('multi_array_unique')) {
+    /**
+     * 根据多维数组字段去重
+     * @param $arrList array 多维数组
+     * @param $field string 比较的字段
+     * @return array
+     */
+    function multi_array_unique($arrList, $field)
+    {
+        $newArrList = [];
+        foreach ($arrList as $arr) {
+            $fieldArr = array_column($newArrList, $field);
+            if (!in_array($arr[$field], $fieldArr)) {
+                $newArrList[] = $arr;
+            }
+        }
+        return $newArrList;
+    }
+}
+
+
 if (!function_exists('create_unique')) {
     /**
      * 创建唯一标识
      * @param $str
      * @return bool
      */
-    if (!function_exists('create_unique')) {
-        function create_unique(string $pre = '')
-        {
-            $data = time() . rand();
-            if (isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['REMOTE_ADDR'])) {
-                $data = $_SERVER['HTTP_USER_AGENT'] . $_SERVER['REMOTE_ADDR'] . $data;
-            }
-            return $pre . sha1($data);
+    function create_unique(string $pre = '')
+    {
+        $data = time() . rand();
+        if (isset($_SERVER['HTTP_USER_AGENT']) && isset($_SERVER['REMOTE_ADDR'])) {
+            $data = $_SERVER['HTTP_USER_AGENT'] . $_SERVER['REMOTE_ADDR'] . $data;
         }
+        return $pre . sha1($data);
     }
 }
 

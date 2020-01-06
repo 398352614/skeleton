@@ -27,7 +27,7 @@ class LineRangeService extends BaseService
      */
     public function getAllLineRange($lineIdList)
     {
-        $list = parent::getList(['line_id' => ['in', $lineIdList]], ['*'], false);
+        $list = parent::getList(['line_id' => ['in', $lineIdList]], ['*'], false)->toArray();
         if (empty($list)) return [];
         foreach ($list as $key => $line) {
             $list[$key]['range'] = $line['post_code_start'] . '-' . $line['post_code_end'];
@@ -35,7 +35,7 @@ class LineRangeService extends BaseService
         $newList = [];
         $list = array_create_group_index($list, 'line_id');
         foreach ($list as $key => $lineList) {
-            $newList[$key]['line_range'] = implode(';', array_column($lineList, 'range'));
+            $newList[$key]['line_range'] = implode(';', array_column(multi_array_unique($lineList,'range'), 'range'));
             $newList[$key]['work_day_list'] = array_column($lineList, 'schedule');
         }
         return $newList;
