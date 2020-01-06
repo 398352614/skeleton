@@ -37,4 +37,14 @@ class CountryController extends BaseController
     {
         return $this->service->store($this->data);
     }
+
+    /**
+     * 删除
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        return $this->service->destroy($id);
+    }
 }

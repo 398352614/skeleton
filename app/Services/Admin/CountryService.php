@@ -36,4 +36,17 @@ class CountryService extends BaseService
             throw new BusinessLogicException('国家新增失败');
         }
     }
+
+    /**
+     * 删除
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        $rowCount = parent::delete(['id' => $id]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('删除失败,请重新操作');
+        }
+    }
 }

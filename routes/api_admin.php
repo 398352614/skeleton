@@ -177,6 +177,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('country')->group(function () {
         Route::get('/', 'CountryController@index');
         Route::post('/', 'CountryController@store');
+        Route::delete('/', 'CountryController@destroy');
     });
 
     //公共接口
