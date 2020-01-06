@@ -7,7 +7,7 @@
  * Time: 15:06
  */
 
-namespace App\Http\Validate\Api\Admin;
+namespace App\Http\Validate\Api\Driver;
 
 use App\Http\Validate\BaseValidate;
 

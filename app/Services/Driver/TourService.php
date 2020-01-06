@@ -319,9 +319,20 @@ class TourService extends BaseService
     }
 
 
-    //站点到达 主要处理到达时间和里程
+    /**
+     * 站点到达 主要处理到达时间和里程
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
     public function batchArrive($id, $params)
     {
+        list($tour, $batch) = $this->checkBatch($id, $params);
+        $now = date('Y-m-d H:i:s');
+        $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => $now]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('更新到达时间失败,请重新操作');
+        }
     }
 
 
