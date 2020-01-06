@@ -36,6 +36,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(GoogleApiService::class, function($app){
             return new GoogleApiService($app);
         });
+
+        if ($this->app->isLocal()) {
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 
     /**
