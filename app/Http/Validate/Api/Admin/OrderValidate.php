@@ -60,7 +60,7 @@ class OrderValidate extends BaseValidate
         'execution_date' => 'required|date|after_or_equal:today',
         'out_order_no' => 'required|string|max:50|uniqueIgnore:order,id',
         'express_first_no' => 'required|string|max:50|uniqueIgnore:order,id',
-        'express_second_no' => 'required|string|max:50|uniqueIgnore:order,id',
+        'express_second_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
         'source' => 'required|string|max:50',
         'type' => 'required|integer|in:1,2',
         'out_user_id' => 'required|integer',
