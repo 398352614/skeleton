@@ -52,7 +52,7 @@ class OrderTrailService extends BaseService
                 $content = '订单已创建';
                 break;
             case BaseConstService::ORDER_TRAIL_JOIN_BATCH:  // 加入站点
-                $content = '已加入批次';
+                $content = '已加入站点';
                 break;
             case BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER:  // 已分配司机
                 $content = '已分配司机';
