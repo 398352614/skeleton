@@ -44,21 +44,7 @@ class Employee extends Authenticatable implements JWTSubject
      *
      * @var array
      */
-    protected $fillable = [
-        'company_id',
-        'email',
-        'phone',
-        'encrypt',
-        'password',
-        'fullname',
-        'auth_group_id',
-        'institution_id',
-        'remark',
-        'created_at',
-        'updated_at',
-        'username',
-        'forbid_login',
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -103,5 +89,10 @@ class Employee extends Authenticatable implements JWTSubject
         return [
             'role' => 'employee',
         ];
+    }
+
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class);
     }
 }

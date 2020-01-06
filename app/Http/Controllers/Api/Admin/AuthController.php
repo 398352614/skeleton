@@ -36,7 +36,7 @@ class AuthController extends Controller
         if (auth('admin')->user()->forbid_login === 1) {
             auth('admin')->logout();
 
-            eRet('暂时无法登录，请联系管理员！', 401);
+            throw new BusinessLogicException('暂时无法登录，请联系管理员！');
         }
 
         return $this->respondWithToken($token);

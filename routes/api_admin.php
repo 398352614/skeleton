@@ -173,6 +173,17 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/forbid-login/{enabled}', 'EmployeeController@setLogin');
     });
 
+    //组织管理
+    Route::prefix('institutions')->group(function () {
+        Route::get('/', 'InstitutionController@index');
+        Route::get('/{id}', 'InstitutionController@show');
+        Route::get('/{id}/employees', 'InstitutionController@indexOfEmployees');
+        Route::put('/{id}/move-to/{parentId}', 'InstitutionController@move');
+        Route::put('/{id}', 'InstitutionController@update');
+        Route::post('/', 'InstitutionController@store');
+        Route::delete('/{id}', 'InstitutionController@destroy');
+    });
+
     //国家管理
     Route::prefix('country')->group(function () {
         Route::get('/', 'CountryController@index');
