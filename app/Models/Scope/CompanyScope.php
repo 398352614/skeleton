@@ -7,6 +7,8 @@
 namespace App\Models\Scope;
 
 use App\Models\Car;
+use App\Models\CarBrand;
+use App\Models\CarModel;
 use App\Models\Driver;
 use App\Models\Employee;
 use App\Models\OrderNoRule;
@@ -39,7 +41,7 @@ class CompanyScope implements Scope
         if ($user instanceof Driver) {
             $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
             //车辆模型和司机无关
-            if ((!($model instanceof Car)) && (!($model instanceof OrderNoRule))) {
+            if ((!($model instanceof Car)) && (!($model instanceof OrderNoRule)) && (!($model instanceof CarBrand)) && (!($model instanceof CarModel))) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
             }
         }

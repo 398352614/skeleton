@@ -237,6 +237,7 @@ class TourService extends BaseService
         $tour = $this->checkOutWarehouse($id);
         $params = Arr::only($params, ['begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic']);
         $params = Arr::add($params, 'status', BaseConstService::TOUR_STATUS_4);
+        $params = Arr::add($params, 'begin_time', now());
         //取件线路更换状态
         $rowCount = parent::updateById($id, $params);
         if ($rowCount === false) {
@@ -328,8 +329,7 @@ class TourService extends BaseService
     public function batchArrive($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $now = date('Y-m-d H:i:s');
-        $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => $now]);
+        $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => now()]);
         if ($rowCount === false) {
             throw new BusinessLogicException('更新到达时间失败,请重新操作');
         }
@@ -570,6 +570,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('当前取件线路还有未完成站点,请先处理');
         }
         $data = Arr::only($params, ['end_signature', 'end_signature_remark']);
+        $data = Arr::add($data, 'end_time', now());
         $rowCount = parent::updateById($tour['id'], Arr::add($data, 'status', BaseConstService::TOUR_STATUS_5));
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败,请重新操作');
