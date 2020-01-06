@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
             return new GoogleApiService($app);
         });
 
-        if ($this->app->isLocal()) {
+        if ($this->app->isLocal() || $this->app->environment() === 'development') {
             $this->app->register(TelescopeServiceProvider::class);
         }
     }
