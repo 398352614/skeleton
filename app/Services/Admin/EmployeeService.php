@@ -30,6 +30,17 @@ class EmployeeService extends BaseService
     }
 
     /**
+     * @param  int  $institution
+     * @return mixed
+     */
+    public function indexOfInstitution(int $institution)
+    {
+         $this->query->where('institution_id', $institution);
+
+         return parent::getPaginate();
+    }
+
+    /**
      *
      *
      * @param  array  $data
@@ -51,7 +62,7 @@ class EmployeeService extends BaseService
         );
 
         if ($res === false) {
-            throw new BusinessLogicException('修改员工失败');
+            throw new BusinessLogicException('新建员工失败');
         }
     }
 
