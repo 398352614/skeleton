@@ -63,7 +63,7 @@ class CarValidate extends BaseValidate
         'rent_start_date' => 'nullable|required_unless:ownership_type,2|date_format:Y-m-d',
         'rent_end_date' => 'nullable|required_unless:ownership_type,2|date_format:Y-m-d',
         'rent_month_fee' => 'nullable|required_unless:ownership_type,2',
-        'repair' => 'nullable|required_if:ownership_type,2|integer|in:1,2',
+        'repair' => 'nullable|required_unless:ownership_type,2|integer|in:1,2',
         'remark' => 'nullable|string',
         'relate_material' => 'required|string',
         'is_locked' => 'required|integer|in:1,2',
