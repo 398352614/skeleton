@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `car_fee` (
 CREATE TABLE IF NOT EXISTS `company` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `company_code` varchar(10) DEFAULT '' COMMENT '公司代码',
-  `email` varchar(20) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT 'email',
+  `email` varchar(50) CHARACTER SET utf8mb4 DEFAULT NULL COMMENT 'email',
   `name` varchar(50) DEFAULT '' COMMENT '公司名称',
   `contacter` varchar(50) DEFAULT '' COMMENT '公司联系人',
   `phone` varchar(20) DEFAULT '' COMMENT '公司电话',
