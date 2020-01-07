@@ -58,7 +58,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/crop-type', 'DriverController@cropType'); //获取合作方式
         Route::get('/driver-status', 'DriverController@driverStatus'); //获取状态
         Route::post('/{id}/lock-driver', 'DriverController@lockDriver'); //锁定或解锁司机
-        Route::post('/{id}/reset-password', 'DriverController@resetPassword')->name('driver.reset-password'); //司机修改密码
+        Route::put('/{id}/reset-password', 'DriverController@resetPassword')->name('driver.reset-password'); //司机修改密码
 
         //rest api 放在最后
         Route::get('/', 'DriverController@index')->name('driver.index'); //司机列表?page=1&page_size=10&status=&crop_type=&keywords=
