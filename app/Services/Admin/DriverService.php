@@ -74,4 +74,12 @@ class DriverService extends BaseService
             throw new BusinessLogicException('新增司机失败');
         }
     }
+
+    public function resetPassword($id, $password)
+    {
+        Driver::where('id', $id)->update([
+            'password'  =>  Hash::make($password),
+        ]);
+        return;
+    }
 }

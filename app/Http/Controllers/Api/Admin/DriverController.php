@@ -82,6 +82,27 @@ class DriverController extends BaseController
     }
 
     /**
+     * @api {POST}  api/admin/driver/{driver}/reset-password 管理员端:重置密码
+     * @apiName reset-password
+     * @apiGroup admin-driver
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 重置密码
+     * @apiParam {String}   password                    密码
+     * @apiSuccessExample {json}  返回示例
+     * HTTP/1.1 200 OK
+     * {
+     *  "ret":1,
+     *  "msg":"修改司机",
+     *  "data":{}
+     * }
+     */
+    public function resetPassword(Request $request, $id)
+    {
+        return $this->service->resetPassword($id, $request->validated);
+    }
+
+    /**
      * @api {DELETE}  api/admin/driver/{driver} 管理员端:删除司机
      * @apiName destroy
      * @apiGroup admin-driver
@@ -184,7 +205,7 @@ class DriverController extends BaseController
      *  "data":{}
      * }
      */
-    public function lockDriver(Request $request,$id)
+    public function lockDriver(Request $request, $id)
     {
         $data = [
             'is_locked' => $request->is_locked

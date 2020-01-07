@@ -63,6 +63,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/', 'DriverController@index')->name('driver.index'); //司机列表?page=1&page_size=10&status=&crop_type=&keywords=
         Route::get('/{id}', 'DriverController@show')->name('driver.show'); //司机详情
         Route::put('/{id}', 'DriverController@update')->name('driver.update'); //司机修改
+        Route::post('/{id}/reset-password', 'DriverController@resetPassword')->name('driver.reset-password'); //司机修改密码
         Route::delete('/{id}', 'DriverController@destroy')->name('driver.destroy'); //删除司机
     });
 
