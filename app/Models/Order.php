@@ -120,7 +120,7 @@ class Order extends BaseModel
 
     public function getTypeNameAttribute()
     {
-        return empty($this->type) ? null : ConstTranslateTrait::$orderTypeList[$this->type_name];
+        return empty($this->type) ? null : ConstTranslateTrait::$orderTypeList[$this->type];
     }
 
     public function getStatusNameAttribute()
