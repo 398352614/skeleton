@@ -82,7 +82,7 @@ class BatchService extends BaseService
 
     public function getPageList()
     {
-        if (!empty($this->filters['status'][1]) && (intval($this->filters['status'][1]) === 0)) {
+        if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
             unset($this->filters['status']);
         }
         return parent::getPageList();
