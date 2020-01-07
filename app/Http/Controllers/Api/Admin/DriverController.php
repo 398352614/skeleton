@@ -99,7 +99,7 @@ class DriverController extends BaseController
      */
     public function resetPassword(Request $request, $id)
     {
-        return $this->service->resetPassword($id, $request->validated);
+        return $this->service->resetPassword($id, $request->validated['password']);
     }
 
     /**
