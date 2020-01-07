@@ -105,7 +105,8 @@ class Order extends BaseModel
 
     protected $appends = [
         'status_name',
-        'exception_label_name'
+        'exception_label_name',
+        'type_name'
     ];
 
     /**
@@ -115,6 +116,12 @@ class Order extends BaseModel
      */
     protected $dates = [];
 
+
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::$orderTypeList[$this->type_name];
+    }
 
     public function getStatusNameAttribute()
     {
