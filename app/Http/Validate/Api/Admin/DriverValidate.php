@@ -117,6 +117,7 @@ class DriverValidate extends BaseValidate
             'bic',
             // 'crop_type',
         ],
+        'resetPassword' => ['password'],
         'lockDriver' => ['is_locked']
     ];
 }
