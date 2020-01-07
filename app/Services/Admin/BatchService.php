@@ -71,6 +71,15 @@ class BatchService extends BaseService
         return self::getInstance(TourService::class);
     }
 
+    /**
+     * 订单 服务
+     * @return OrderService
+     */
+    private function getOrderService()
+    {
+        return self::getInstance(OrderService::class);
+    }
+
     //新增
     public function store($params)
     {
@@ -239,4 +248,22 @@ class BatchService extends BaseService
         }
         return $data;
     }
+
+
+    /**
+     * 获取详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $info = parent::getInfo(['id'=>$id], ['*'], true);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info['order_count'] = $this->getOrderService()->count(['batch_no' => $info['batch_no']]);
+        return $info;
+    }
+
 }

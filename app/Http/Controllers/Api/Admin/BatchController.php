@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\BatchService;
 use Illuminate\Http\Request;
 
+/**
+ * Class BatchController
+ * @package App\Http\Controllers\Api\Admin
+ * @property BatchService $service
+ */
 class BatchController extends Controller
 {
     public $service;
@@ -43,6 +49,7 @@ class BatchController extends Controller
      * @apiVersion 1.0.0
      * @apiDescription 查询批次详情
      * @apiSuccessExample {json}  返回示例
+     * @throws BusinessLogicException
      * HTTP/1.1 200 OK
      * {
      *  "ret":1,
@@ -52,6 +59,6 @@ class BatchController extends Controller
      */
     public function show($id)
     {
-        return $this->service->getInfo(['id' => $id], ['*'], true);
+        return $this->service->show($id);
     }
 }
