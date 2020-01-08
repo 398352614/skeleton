@@ -17,6 +17,11 @@ use Illuminate\Support\Arr;
 
 class LineService extends BaseService
 {
+
+    public $filterRules = [
+        'name' => ['like', 'name']
+    ];
+
     public function __construct(Line $line)
     {
         $this->model = $line;
