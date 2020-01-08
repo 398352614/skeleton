@@ -28,6 +28,8 @@ class LineService extends BaseService
         $this->query = $this->model::query();
         $this->resource = LineResource::class;
         $this->request = request();
+        $this->formData = $this->request->all();
+        $this->setFilterRules();
     }
 
     /**
