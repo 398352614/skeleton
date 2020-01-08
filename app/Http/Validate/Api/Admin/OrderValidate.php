@@ -58,7 +58,7 @@ class OrderValidate extends BaseValidate
 
     public $rules = [
         'execution_date' => 'required|date|after_or_equal:today',
-        'out_order_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
+        'out_order_no' => 'required|string|max:50|uniqueIgnore:order,id',
         'express_first_no' => 'required|string|max:50|uniqueIgnore:order,id',
         'express_second_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
         'source' => 'required|string|max:50',
@@ -67,7 +67,7 @@ class OrderValidate extends BaseValidate
         'nature' => 'nullable|integer|in:1,2,3,4,5',
         'settlement_type' => 'required|in:1,2',
         'settlement_amount' => 'required_if:settlement_type,2|numeric',
-        'replace_amount' => 'numeric',
+        'replace_amount' => 'nullable|numeric',
         'delivery' => 'required|integer|in:1,2',
         'sender' => 'required|string|max:50',
         'sender_phone' => 'required|string|max:20',
@@ -120,6 +120,9 @@ class OrderValidate extends BaseValidate
             //明细
             'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
         ],
+    ];
+    public $message =[
+        'settlement_amount.required_if'=>'当结算方式为到付时,:attribute字段必填'
     ];
 }
 
