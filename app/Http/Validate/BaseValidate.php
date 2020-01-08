@@ -28,6 +28,7 @@ class BaseValidate
         '*.between' => ':attribute范围必须在:min-:max之间',
         '*.after_or_equal' => ':attribute必须在当前日期及之后',
         '*.array' => ':attribute必须是数组',
+        'code.digits_between'=>'验证码必须为6位数',
         '*.digits_between'=>':attribute必须在:min位-:max位之间'
     ];
 
