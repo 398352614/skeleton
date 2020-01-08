@@ -218,19 +218,23 @@ class OrderService extends BaseService
      */
     private function check(&$params)
     {
-        //验证快递单号是否重复,由于外面已经对应验证过了,所以这里只需要验证快递单号1是否和快递单号2重复,快递单号1和快递单号2重复
-        $info = parent::getInfo(['express_first_no' => $params['express_second_no']], ['*'], false);
-        if (!empty($info)) {
-            throw new BusinessLogicException('快递单号1已存在');
+        if($params['express_second_no']) {
+            //验证快递单号是否重复,由于外面已经对应验证过了,所以这里只需要验证快递单号1是否和快递单号2重复,快递单号1和快递单号2重复
+            $info = parent::getInfo(['express_first_no' => $params['express_second_no']], ['*'], false);
+            if (!empty($info)) {
+                throw new BusinessLogicException('快递单号2已存在');
+            }
         }
         $info = parent::getInfo(['express_second_no' => $params['express_first_no']], ['*'], false);
         if (!empty($info)) {
-            throw new BusinessLogicException('快递单号2已存在');
+            throw new BusinessLogicException('快递单号1已存在');
         }
         //验证货物名称是否重复
         $nameList = array_column(json_decode($params['item_list'], true), 'name');
         if (count(array_unique($nameList)) !== count($nameList)) {
             throw new BusinessLogicException('货物名称有重复!不能添加订单');
         }
+
+
     }
 }
