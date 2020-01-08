@@ -35,4 +35,5 @@ class RegisterValidate extends BaseValidate
         'applyOfReset' => ['email'],
         'resetPassword' => ['new_password', 'confirm_new_password', 'code', 'email'],
     ];
+
 }
