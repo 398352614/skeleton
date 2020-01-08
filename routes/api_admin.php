@@ -20,7 +20,7 @@ Route::namespace('Api\Admin')->group(function () {
     Route::post('register/apply', 'RegisterController@applyOfRegister');
     Route::put('password-reset', 'RegisterController@resetPassword');
     Route::post('password-reset/apply', 'RegisterController@applyOfReset');
-    Route::put('password-reset/verify', 'RegisterController@VerifyResetCode');
+    Route::put('password-reset/verify', 'RegisterController@verifyResetCode');
     Route::get('/tour/callback', 'TourController@callback');         //自动优化线路
 });
 

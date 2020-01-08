@@ -193,7 +193,7 @@ class RegisterController extends Controller
      * @return array
      * @throws BusinessLogicException
      */
-    public function VerifyResetCode(Request $request)
+    public function verifyResetCode(Request $request)
     {
         $data = $request->validate([
             'email' => 'required|email',
