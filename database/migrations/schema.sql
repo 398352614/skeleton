@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS `company` (
   `contacter` varchar(50) DEFAULT '' COMMENT '公司联系人',
   `phone` varchar(20) DEFAULT '' COMMENT '公司电话',
   `country` varchar(20) DEFAULT '' COMMENT '所在国家',
-  `address` varchar(20) DEFAULT '' COMMENT '公司地址',
+  `address` varchar(250) DEFAULT '' COMMENT '公司地址',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
