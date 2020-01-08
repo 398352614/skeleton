@@ -54,7 +54,7 @@ class RegisterController extends Controller
             $company = Company::create([
                 'company_code' => self::makeNewCompanyCode($lastCompany),
                 'email' => $data['email'],
-                'name' => $data['email'],
+                'name' => $data['name'],
                 //'phone' => $data['phone'],
             ]);
 
