@@ -81,6 +81,14 @@ class BatchService extends BaseService
         return self::getInstance(OrderService::class);
     }
 
+    public function getPageList()
+    {
+        if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
+            unset($this->filters['status']);
+        }
+        return parent::getPageList();
+    }
+
     //新增
     public function store($params)
     {
@@ -259,7 +267,7 @@ class BatchService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id'=>$id], ['*'], true);
+        $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
