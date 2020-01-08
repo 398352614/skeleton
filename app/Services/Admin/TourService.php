@@ -37,7 +37,8 @@ class TourService extends BaseService
     public $filterRules = [
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'driver_id' => ['=', 'driver_id']
+        'driver_id' => ['=', 'driver_id'],
+        'line_name' => ['=', 'line_name']
     ];
 
     public function __construct(Tour $tour, GoogleApiService $client, XLDirectionService $directionClient)
@@ -239,7 +240,6 @@ class TourService extends BaseService
         if ($rowCount === false) return false;
 
 
-
         return true;
     }
 
@@ -328,11 +328,11 @@ class TourService extends BaseService
         foreach ($batchIds as $key => $batchId) {
             $tempbatch = Batch::where('id', $batchId)->first();
             if (!$first && in_array($tempbatch->status, [
-                BaseConstService::BATCH_WAIT_ASSIGN,
-                BaseConstService::BATCH_WAIT_OUT,
-                BaseConstService::BATCH_DELIVERING,
-                BaseConstService::BATCH_ASSIGNED
-            ])) {
+                    BaseConstService::BATCH_WAIT_ASSIGN,
+                    BaseConstService::BATCH_WAIT_OUT,
+                    BaseConstService::BATCH_DELIVERING,
+                    BaseConstService::BATCH_ASSIGNED
+                ])) {
                 if ($tempbatch) {
                     $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地
