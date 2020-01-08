@@ -38,7 +38,7 @@ class TourValidate extends BaseValidate
         'order_amount' => 'nullable|numeric',
         'signature' => 'required|string|max:250',
         'pay_type' => 'required|integer|in:1,2',
-        'pay_picture' => 'required_if:pay_type,2|string|max:250',
+        'pay_picture' => 'nullable|required_if:pay_type,2|string|max:250',
         //入库
         'end_signature' => 'required|string|max:250',
         'end_signature_remark' => 'nullable|string|max:250',
