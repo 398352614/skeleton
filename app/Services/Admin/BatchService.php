@@ -4,6 +4,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\BatchResource;
+use App\Http\Resources\BatchInfoResource;
 use App\Http\Resources\TourResource;
 use App\Models\Batch;
 use App\Models\Tour;
@@ -29,7 +30,7 @@ class BatchService extends BaseService
         $this->model = $batch;
         $this->query = $this->model::query();
         $this->resource = BatchResource::class;
-        $this->infoResource = BatchResource::class;
+        $this->infoResource = BatchInfoResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
         $this->setFilterRules();

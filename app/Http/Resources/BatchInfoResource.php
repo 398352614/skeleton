@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BatchResource extends JsonResource
+class BatchInfoResource extends JsonResource
 {
     public function toArray($request)
     {
@@ -46,6 +46,8 @@ class BatchResource extends JsonResource
             'replace_amount' => $this->replace_amount,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
+            'order_count' => $this->order_count ?? null,
+            'orders' => OrderResource::collection($this->orders)
 
         ];
     }
