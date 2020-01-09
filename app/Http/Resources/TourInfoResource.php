@@ -2,13 +2,19 @@
 
 namespace App\Http\Resources;
 
-use App\Services\BaseConstService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TourResource extends JsonResource
+class TourInfoResource extends JsonResource
 {
+    /**
+     * Transform the resource into an array.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
     public function toArray($request)
     {
+
         return [
             'id' => $this->id,
             'company_id' => $this->company_id,
@@ -50,6 +56,7 @@ class TourResource extends JsonResource
             'order_amount' => $this->order_amount,
             'replace_amount' => $this->replace_amount,
             'remark' => $this->remark,
+            'batchs'    => BatchResource::collection($this->batchs),
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at,
         ];

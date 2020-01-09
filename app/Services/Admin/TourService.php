@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Events\AfterTourInit;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\TourInfoResource;
 use App\Http\Resources\TourResource;
 use App\Models\Batch;
 use App\Models\Order;
@@ -46,7 +47,7 @@ class TourService extends BaseService
         $this->model = $tour;
         $this->query = $this->model::query();
         $this->resource = TourResource::class;
-        $this->infoResource = TourResource::class;
+        $this->infoResource = TourInfoResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
         $this->setFilterRules();
@@ -328,11 +329,11 @@ class TourService extends BaseService
         foreach ($batchIds as $key => $batchId) {
             $tempbatch = Batch::where('id', $batchId)->first();
             if (!$first && in_array($tempbatch->status, [
-                    BaseConstService::BATCH_WAIT_ASSIGN,
-                    BaseConstService::BATCH_WAIT_OUT,
-                    BaseConstService::BATCH_DELIVERING,
-                    BaseConstService::BATCH_ASSIGNED
-                ])) {
+                BaseConstService::BATCH_WAIT_ASSIGN,
+                BaseConstService::BATCH_WAIT_OUT,
+                BaseConstService::BATCH_DELIVERING,
+                BaseConstService::BATCH_ASSIGNED
+            ])) {
                 if ($tempbatch) {
                     $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地

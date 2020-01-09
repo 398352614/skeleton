@@ -97,9 +97,7 @@ class Tour extends BaseModel
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
+    protected $hidden = [];
 
     protected $appends = [
         'status_name'
@@ -136,5 +134,4 @@ class Tour extends BaseModel
             'longitude' => $this->warehouse_lon,
         ];
     }
-
 }
