@@ -231,10 +231,13 @@ class OrderService extends BaseService
             throw new BusinessLogicException('快递单号1已存在');
         }
         //验证货物名称是否重复
-        $nameList = array_column(json_decode($params['item_list'], true), 'name');
-        if (count(array_unique($nameList)) !== count($nameList)) {
-            throw new BusinessLogicException('货物名称有重复!不能添加订单');
+        if(!empty($data['item_list'])){
+            $nameList = array_column(json_decode($params['item_list'], true), 'name');
+            if (count(array_unique($nameList)) !== count($nameList)) {
+                throw new BusinessLogicException('货物名称有重复!不能添加订单');
+            }
         }
+
 
 
     }
