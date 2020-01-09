@@ -201,6 +201,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('订单新增失败');
         }
         /**************************************新增订单货物明细********************************************************/
+        if (empty($params['item_list'])) return;
         $itemList = collect(json_decode($params['item_list'], true))->map(function ($item, $key) use ($params) {
             $collectItem = collect($item)->only(['name', 'quantity', 'weight', 'volume', 'price']);
             return $collectItem->put('order_no', $params['order_no']);
@@ -218,7 +219,7 @@ class OrderService extends BaseService
      */
     private function check(&$params)
     {
-        if($params['express_second_no']) {
+        if ($params['express_second_no']) {
             //验证快递单号是否重复,由于外面已经对应验证过了,所以这里只需要验证快递单号1是否和快递单号2重复,快递单号1和快递单号2重复
             $info = parent::getInfo(['express_first_no' => $params['express_second_no']], ['*'], false);
             if (!empty($info)) {

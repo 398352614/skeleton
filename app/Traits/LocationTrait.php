@@ -29,11 +29,11 @@ trait LocationTrait
             $result = $client->request('GET', $url, ['http_errors' => false]);
             $featureList = json_decode((string)($result->getBody()), TRUE)['features'];
         } catch (\Exception $ex) {
-            throw new \Exception('可能由于网络问题，无法根据邮编和门牌号码获取具体信息，请稍后再尝试');
+            throw new \Exception('可能由于网络问题，无法获取具体信息，请稍后再尝试');
         }
         $count = count($featureList);
         if (($count == 0) || ($count > 1)) {
-            throw new \App\Exceptions\BusinessLogicException('邮编和门牌号码不正确，请仔细检查输入或联系客服');
+            throw new \App\Exceptions\BusinessLogicException('国家,城市,街道,门牌号或邮编不正确，请仔细检查输入或联系客服');
         }
         return ['lon' => $featureList[0]['geometry']['coordinates'][0], 'lat' => $featureList[0]['geometry']['coordinates'][1]];
     }

@@ -65,7 +65,7 @@ class Validate
             //主表验证
             $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), $this->validate->customAttributes);          
             //明细验证
-            if (!empty($item_rules)) {
+            if (!empty($item_rules) && !empty($data['item_list'])) {
                 $itemList = json_decode($data['item_list'], true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     throw new BusinessLogicException('明细数据格式不正确', 3001);

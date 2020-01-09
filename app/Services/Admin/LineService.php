@@ -214,6 +214,9 @@ class LineService extends BaseService
      */
     public function checkRange($params, $id = null)
     {
+        if (empty($params['item_list'])) {
+            throw new BusinessLogicException('邮编范围不能为空');
+        }
         $itemList = json_decode($params['item_list'], true);
         foreach ($itemList as $item) {
             if (intval($item['post_code_end']) < intval($item['post_code_start'])) {
