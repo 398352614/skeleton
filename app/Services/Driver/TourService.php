@@ -354,6 +354,9 @@ class TourService extends BaseService
             return collect(Arr::add($order->toArray(), 'status_name', $order->status_name));
         });
         $orderList = array_create_group_index($orderList, 'type');
+        $orderList['pickup'] = $orderList['1'] ?? [];
+        $orderList['pie'] = $orderList['2'] ?? [];
+        unset($orderList['1'], $orderList['2']);
         $batch['order_list'] = $orderList;
         return $batch;
     }
