@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Services\BaseConstService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TourInfoResource extends JsonResource
@@ -14,7 +15,6 @@ class TourInfoResource extends JsonResource
      */
     public function toArray($request)
     {
-
         return [
             'id' => $this->id,
             'company_id' => $this->company_id,
