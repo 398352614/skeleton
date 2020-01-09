@@ -188,6 +188,26 @@ class RegisterController extends Controller
     }
 
     /**
+     * 重置密码验证码验证
+     * @param  Request  $request
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function verifyResetCode(Request $request)
+    {
+        $data = $request->validate([
+            'email' => 'required|email',
+            'code'  => 'required|string|digits_between:6,6'
+        ]);
+
+        if ($data['code'] !== RegisterController::getVerifyCode($data['email'], 'RESET')) {
+            throw new BusinessLogicException('验证码错误');
+        }
+
+        return success();
+    }
+
+    /**
      * 获取验证码
      * @param  string  $mail
      * @param  string  $use
