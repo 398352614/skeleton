@@ -237,8 +237,5 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('货物名称有重复!不能添加订单');
             }
         }
-
-
-
     }
 }
