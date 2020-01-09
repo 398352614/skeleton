@@ -137,6 +137,8 @@ class BatchService extends BaseService
             'receiver' => $order['receiver'],
             'receiver_phone' => $order['receiver_phone'],
             'receiver_country' => $order['receiver_country'],
+            'receiver_city' => $order['receiver_city'],
+            'receiver_street' => $order['receiver_street'],
             'receiver_house_number' => $order['receiver_house_number'],
             'receiver_post_code' => $order['receiver_post_code'],
             'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
