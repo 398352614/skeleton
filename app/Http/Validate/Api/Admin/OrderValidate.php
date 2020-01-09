@@ -76,7 +76,7 @@ class OrderValidate extends BaseValidate
         'sender_house_number' => 'required|string|max:50',
         'sender_city' => 'required|string|max:50',
         'sender_street' => 'required|string|max:50',
-        'sender_address' => 'required|string|max:250',
+        'sender_address' => 'nullable|string|max:250',
         'receiver' => 'required|string|max:50',
         'receiver_phone' => 'required|string|max:20',
         'receiver_country' => 'required|string|max:20',
@@ -84,12 +84,11 @@ class OrderValidate extends BaseValidate
         'receiver_house_number' => 'required|string|max:50',
         'receiver_city' => 'required|string|max:50',
         'receiver_street' => 'required|string|max:50',
-        'receiver_address' => 'required|string|max:250',
+        'receiver_address' => 'nullable|string|max:250',
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
         'special_remark' => 'nullable|string|max:250',
-        'remark' => 'nullable|string|max:250',
-
+        'remark' => 'nullable|string|max:250'
     ];
 
     public $item_rules = [

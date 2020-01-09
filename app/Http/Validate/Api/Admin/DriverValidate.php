@@ -61,9 +61,9 @@ class DriverValidate extends BaseValidate
         'lisence_material'              => ['required'],
         'government_material'           => ['required'],
         'avatar'                        => ['required'],
-        'bank_name'                     => ['required'],
-        'iban'                          => ['required'],
-        'bic'                           => ['required'],
+        'bank_name'                     => ['nullable'],
+        'iban'                          => ['nullable'],
+        'bic'                           => ['nullable'],
         'crop_type'                     => ['required'],
         'is_locked'                     => ['required', 'integer', 'in:1,2'],
     ];
