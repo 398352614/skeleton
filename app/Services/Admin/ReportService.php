@@ -100,7 +100,8 @@ class ReportService extends BaseService
 
         array_unshift($detailList, $outWarehouseInfo);
         array_push($detailList, $inWarehouseInfo);
-        return $detailList;
+        $info['detail_list']  = $detailList;
+        return $info;
     }
 
 
