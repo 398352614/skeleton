@@ -17,6 +17,7 @@ class TourInfoResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'driver_location'   => $this->driver_location,
             'company_id' => $this->company_id,
             'tour_no' => $this->tour_no,
             'line_id' => $this->line_id,
