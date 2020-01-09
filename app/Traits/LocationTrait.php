@@ -26,7 +26,7 @@ trait LocationTrait
         $url = sprintf('%s?%s', config('thirdParty.location_api'), http_build_query(['q' => $country . '+' . $city . '+' . $street . '+' . $houseNumber . '+' . $postCode]));
         try {
             $client = new \GuzzleHttp\Client();
-            $result = $client->request('GET', $url, ['http_errors' => false]);
+            $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 3]);
             $featureList = json_decode((string)($result->getBody()), TRUE)['features'];
         } catch (\Exception $ex) {
             throw new \Exception('可能由于网络问题，无法获取具体信息，请稍后再尝试');
