@@ -29,10 +29,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::get('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
     Route::put('my-password', 'AuthController@updatePassword');
-    Route::get('home','HomeController@home');
-    Route::get('weekcount','HomeController@weekCount');
-    Route::get('monthcount','HomeController@monthCount');
-    Route::get('yearcount','HomeController@yearCount');
+    Route::get('home', 'HomeController@home');
+    Route::get('weekcount', 'HomeController@weekCount');
+    Route::get('monthcount', 'HomeController@monthCount');
+    Route::get('yearcount', 'HomeController@yearCount');
 
 
     //订单管理
@@ -190,6 +190,20 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}', 'InstitutionController@update');
         Route::post('/', 'InstitutionController@store');
         Route::delete('/{id}', 'InstitutionController@destroy');
+    });
+
+    //客户管理 - 收货方管理
+    Route::prefix('receiver-address')->group(function () {
+        //列表查询
+        Route::get('/', 'ReceiverAddressController@index');
+        //获取详情
+        Route::get('/{id}', 'ReceiverAddressController@show');
+        //新增
+        Route::post('/', 'ReceiverAddressController@store');
+        //修改
+        Route::put('/{id}', 'ReceiverAddressController@update');
+        //删除
+        Route::delete('/{id}', 'ReceiverAddressController@destroy');
     });
 
     //国家管理
