@@ -175,7 +175,13 @@ class ReportService extends BaseService
                 'city' => $batch['receiver_city'],
                 'address' => $batch['receiver_address'],
                 'expect_quantity' => $batch['expect_pickup_quantity'] + $batch['expect_pie_quantity'],
-                'signature' => $batch['signature']
+                'signature' => $batch['signature'],
+                'expect_arrive_time' => $batch['expect_arrive_time'],
+                'actual_arrive_time' => $batch['actual_arrive_time'],
+                'expect_distance' => $batch['expect_distance'],
+                'actual_distance' => $batch['actual_distance'],
+                'expect_time' => $batch['expect_time'],
+                'actual_time' => $batch['actual_time'],
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
         }
