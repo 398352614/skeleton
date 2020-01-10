@@ -213,6 +213,15 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::delete('/{id}', 'CountryController@destroy');
     });
 
+    //发件人地址管理
+    Route::prefix('sender-address')->group(function () {
+        Route::get('/', 'SenderAddressController@index');//发件人地址查询
+        Route::get('/{id}', 'SenderAddressController@show');//发件人地址详情
+        Route::post('/', 'SenderAddressController@store');//发件人地址新增
+        Route::put('/{id}', 'SenderAddressController@update');//发件人地址修改
+        Route::delete('/{id}', 'SenderAddressController@destroy');//发件人地址删除
+    });
+
     //公共接口
     Route::prefix('common')->group(function () {
         //获取具体地址经纬度
