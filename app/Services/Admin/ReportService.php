@@ -88,7 +88,7 @@ class ReportService extends BaseService
             'address' => $info['warehouse_address'],
         ];
         //获取当前取件线路上的所有订单
-        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark'], false)->toArray();
         //获取所有的站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
         /**********************************************获取出库信息****************************************************/
@@ -100,7 +100,7 @@ class ReportService extends BaseService
 
         array_unshift($detailList, $outWarehouseInfo);
         array_push($detailList, $inWarehouseInfo);
-        $info['detail_list']  = $detailList;
+        $info['detail_list'] = $detailList;
         return $info;
     }
 
@@ -117,14 +117,14 @@ class ReportService extends BaseService
         $outWarehouseInfo = $warehouseInfo;
         $outWarehouseInfo['expect_quantity'] = $tour['expect_pie_quantity'];
         $outWarehouseInfo['signature'] = $tour['begin_signature'];
-        $outWarehouseInfo['order_list'] = collect($orderList)
+        $outWarehouseInfo['order_list'] = array_values(collect($orderList)
             ->map(function ($order, $key) {
                 $order['type_name'] = ConstTranslateTrait::$orderTypeList[$order['type']];
                 $order['status_name'] = ConstTranslateTrait::$orderStatusList[$order['status']];
                 return $order;
             })->filter(function ($order, $key) {
                 return (intval($order['type']) === BaseConstService::ORDER_TYPE_2);
-            });
+            })->toArray());
         return $outWarehouseInfo;
     }
 
@@ -140,14 +140,14 @@ class ReportService extends BaseService
         $outWarehouseInfo = $warehouseInfo;
         $outWarehouseInfo['expect_quantity'] = $tour['expect_pickup_quantity'];
         $outWarehouseInfo['signature'] = $tour['end_signature'];
-        $outWarehouseInfo['order_list'] = collect($orderList)
+        $outWarehouseInfo['order_list'] = array_values(collect($orderList)
             ->map(function ($order, $key) {
                 $order['type_name'] = ConstTranslateTrait::$orderTypeList[$order['type']];
                 $order['status_name'] = ConstTranslateTrait::$orderStatusList[$order['status']];
                 return $order;
             })->filter(function ($order, $key) {
                 return (intval($order['type']) === BaseConstService::ORDER_TYPE_1);
-            });
+            })->toArray());
         return $outWarehouseInfo;
     }
 
