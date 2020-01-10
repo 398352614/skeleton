@@ -77,7 +77,7 @@ class HomeService extends BaseService
         }
         for($i=$week_no;$i>=1;$i--){
             $ordercount=$this->getOrderService()->count(['execution_date'=>$day]);
-            $weekinfo[$day->dayOfWeek]=$ordercount;
+            $weekinfo[$day->format('Y-m-d')]=$ordercount;
             $day =$day->subDay();
         }
         return $weekinfo;
@@ -86,31 +86,25 @@ class HomeService extends BaseService
     //月订单统计30
     public function monthCount(){
         $monthinfo =[];
-        //$sum=0;
         $day=Carbon::today();
         $month_no=$day->day;
         for($i=$month_no;$i>=1;$i--){
             $ordercount=$this->getOrderService()->count(['execution_date'=>$day]);
-            $monthinfo[$day->day]=$ordercount;
-        //    $sum =$sum+$monthinfo[$day->day];
+            $monthinfo[$day->format('Y-m-d')]=$ordercount;
             $day =$day->subDay();
         }
-        //$monthinfo['0'] =date('t');
         return $monthinfo;
     }
 
     //年订单统计12
     public function yearCount(){
         $yearinfo =[];
-        for($j=1;$j<=12;$j++){
-            $yearinfo[$j]=0;
-        }
         $day=Carbon::today();
-        $year_no=$day->month;
-        for($i=$year_no;$i>=1;$i--){
-            $ordercount=DB::table('order')->whereMonth('execution_date',$day->month)->count();
-            $yearinfo[$year_no]=$ordercount;
-            $year_no =$year_no-1;
+        for($i=$day->month;$i>=1;$i--){
+            $month=$day->format('Y-m');
+            $ordercount=$this->getOrderService()->count(['execution_date'=>['like',$month]]);
+            $yearinfo[$month]=$ordercount;
+            $day =$day->subMonth();
         }
         return $yearinfo;
     }
