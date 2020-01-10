@@ -125,6 +125,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/cancelAssignDriver', 'TourController@cancelAssignDriver');   //取消分配司机
         Route::put('/{id}/assignCar', 'TourController@assignCar');                     //分配车辆
         Route::put('/{id}/cancelAssignCar', 'TourController@cancelAssignCar');         //取消分配车辆
+        Route::put('/{id}/unlock', 'TourController@unlock');         //取消分配车辆
+
     });
 
     //任务报告

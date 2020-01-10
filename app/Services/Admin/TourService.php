@@ -244,6 +244,38 @@ class TourService extends BaseService
         return true;
     }
 
+    /**
+     * 取消锁定-将状态改为已分配
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function unlock($id)
+    {
+        $tour = parent::getInfoLock(['id' => $id], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $tour = $tour->toArray();
+        if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_3) {
+            throw new BusinessLogicException('取件线路当前状态不允许取消锁定');
+        }
+        //取件线路 处理
+        $rowCount = parent::updateById($id, ['status' => BaseConstService::TOUR_STATUS_2]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取件线路取消锁定失败,请重新操作');
+        }
+        //站点 处理
+        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_WAIT_OUT], ['status' => BaseConstService::BATCH_ASSIGNED]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('站点取消锁定失败,请重新操作');
+        }
+        //订单 处理
+        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_2]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('订单取消锁定失败,请重新操作');
+        }
+    }
+
 
     /**
      * 站点加入取件线路
@@ -329,11 +361,11 @@ class TourService extends BaseService
         foreach ($batchIds as $key => $batchId) {
             $tempbatch = Batch::where('id', $batchId)->first();
             if (!$first && in_array($tempbatch->status, [
-                BaseConstService::BATCH_WAIT_ASSIGN,
-                BaseConstService::BATCH_WAIT_OUT,
-                BaseConstService::BATCH_DELIVERING,
-                BaseConstService::BATCH_ASSIGNED
-            ])) {
+                    BaseConstService::BATCH_WAIT_ASSIGN,
+                    BaseConstService::BATCH_WAIT_OUT,
+                    BaseConstService::BATCH_DELIVERING,
+                    BaseConstService::BATCH_ASSIGNED
+                ])) {
                 if ($tempbatch) {
                     $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地

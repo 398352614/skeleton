@@ -164,4 +164,14 @@ class TourController extends BaseController
     {
         return $this->service->cancelAssignCar($id);
     }
+
+    /**
+     * 取消锁定
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function unlock($id)
+    {
+        return $this->service->unlock($id);
+    }
 }
