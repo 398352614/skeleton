@@ -64,6 +64,7 @@ class HomeService extends BaseService
         $info['car_wait_out']=$this->getTourService()->count(['status'=>BaseConstService::TOUR_STATUS_3 ]);
         $info['car_taking']=$this->getTourService()->count(['status'=>BaseConstService::TOUR_STATUS_4 ]);
         $info['car_signed']=$this->getTourService()->count(['status'=>BaseConstService::TOUR_STATUS_5 ]);
+        $info['graph']=$this->weekCount();
         return $info;
     }
 
