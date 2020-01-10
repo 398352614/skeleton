@@ -68,8 +68,8 @@ class CarValidate extends BaseValidate
         'relate_material' => 'required|string',
         'is_locked' => 'required|integer|in:1,2',
 
-        'cn_name' =>'required|string|uniqueIgnore:car_brand,id|uniqueIgnore:car_model,id',
-        'en_name' =>'required|string|uniqueIgnore:car_brand,id|uniqueIgnore:car_model,id',
+        'cn_name' =>'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
+        'en_name' =>'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
         'brand_id'      =>  ['required'],
     ];
     public $scene = [

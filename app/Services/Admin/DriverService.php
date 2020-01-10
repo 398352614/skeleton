@@ -9,6 +9,7 @@ use App\Models\Driver;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
 class DriverService extends BaseService
@@ -36,6 +37,20 @@ class DriverService extends BaseService
     {
     }
 
+    /**
+     * @param $id
+     * @param $data
+     * @return bool|int|void
+     * @throws BusinessLogicException
+     */
+    public function updateById($id, $data)
+    {
+        $data=Arr::except($data,'password');
+        $rowCount = parent::updateById($id, $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败,请重新操作');
+        }
+    }
 
     /**
      * 添加司机
