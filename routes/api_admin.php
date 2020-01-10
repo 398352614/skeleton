@@ -206,13 +206,6 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::delete('/{id}', 'ReceiverAddressController@destroy');
     });
 
-    //国家管理
-    Route::prefix('country')->group(function () {
-        Route::get('/', 'CountryController@index');
-        Route::post('/', 'CountryController@store');
-        Route::delete('/{id}', 'CountryController@destroy');
-    });
-
     //发件人地址管理
     Route::prefix('sender-address')->group(function () {
         Route::get('/', 'SenderAddressController@index');//发件人地址查询
@@ -220,6 +213,14 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/', 'SenderAddressController@store');//发件人地址新增
         Route::put('/{id}', 'SenderAddressController@update');//发件人地址修改
         Route::delete('/{id}', 'SenderAddressController@destroy');//发件人地址删除
+    });
+
+
+    //国家管理
+    Route::prefix('country')->group(function () {
+        Route::get('/', 'CountryController@index');
+        Route::post('/', 'CountryController@store');
+        Route::delete('/{id}', 'CountryController@destroy');
     });
 
     //公共接口
