@@ -21,15 +21,23 @@ class HomeController extends BaseController
         return $this->service->home();
     }
 
-    public function weekCount(){
-        return $this->service->weekCount();
+    public function thisWeekCount(){
+        return $this->service->thisWeekCount();
     }
 
-    public function monthCount(){
-        return $this->service->monthCount();
+    public function lastWeekCount(){
+        return $this->service->lastWeekCount();
     }
 
-    public function yearCount(){
-        return $this->service->yearCount();
+    public function thisMonthCount(){
+        return $this->service->thisMonthCount();
+    }
+
+    public function lastMonthCount(){
+        return $this->service->lastMonthCount();
+    }
+
+    public function periodCount(){
+        return $this->service->periodCount($this->data);
     }
 }

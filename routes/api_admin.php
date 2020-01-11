@@ -34,9 +34,12 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     //主页统计
     Route::prefix('home')->group(function () {
         Route::get('/', 'HomeController@home');
-        Route::get('/weekcount', 'HomeController@weekCount');
-        Route::get('/monthcount', 'HomeController@monthCount');
-        Route::get('/yearcount', 'HomeController@yearCount');
+        Route::get('/this-week-count', 'HomeController@thisWeekcount');
+        Route::get('/last-week-count', 'HomeController@lastWeekcount');
+        Route::get('/this-month-count', 'HomeController@thisMonthcount');
+        Route::get('/last-month-count', 'HomeController@lastMonthcount');
+        Route::get('/period-count', 'HomeController@periodCount');
+
     });
 
 
