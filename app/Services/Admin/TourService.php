@@ -39,7 +39,8 @@ class TourService extends BaseService
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_id' => ['=', 'driver_id'],
-        'line_name' => ['like', 'line_name']
+        'line_name' => ['like', 'line_name'],
+        'tour_no'=>['like','tour_no']
     ];
 
     public function __construct(Tour $tour, GoogleApiService $client, XLDirectionService $directionClient)

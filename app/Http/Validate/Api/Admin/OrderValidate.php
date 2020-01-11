@@ -121,7 +121,8 @@ class OrderValidate extends BaseValidate
         ],
     ];
     public $message =[
-        'settlement_amount.required_if'=>'当结算方式为到付时,:attribute字段必填'
+        'settlement_amount.required_if'=>'当结算方式为到付时,:attribute字段必填',
+
     ];
 }
 

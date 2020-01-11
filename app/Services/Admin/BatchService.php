@@ -23,6 +23,7 @@ class BatchService extends BaseService
         'driver_id' => ['=', 'driver_id'],
         'line_id,line_name' => ['like', 'line_keyword'],
         'receiver' => ['=', 'receiver'],
+        'batch_no'=>['like','batch_no']
     ];
 
     public function __construct(Batch $batch)
