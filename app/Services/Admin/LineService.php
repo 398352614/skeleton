@@ -82,11 +82,10 @@ class LineService extends BaseService
         if ($lineRangeList->isEmpty()) {
             $info['line_range'] = [];
             $info['work_day_list'] = '';
-
         } else {
             $info['line_range'] = $lineRangeList->map(function ($lineRange, $key) {
                 return collect($lineRange)->only(['post_code_start', 'post_code_end']);
-            })->toArray();
+            })->toArray()[0];
             $info['work_day_list'] = implode(',', array_values(array_unique(array_column($lineRangeList->toArray(), 'schedule'))));
         };
         return $info;
