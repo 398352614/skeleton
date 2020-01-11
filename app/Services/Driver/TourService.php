@@ -455,7 +455,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('站点当前状态不能签收');
         }
         //获取客户取派订单列表
-        if (!empty($params['item_list'])) {
+        if (empty($params['item_list'])) {
             throw new BusinessLogicException('单号信息不能为空');
         }
         $orderList = collect(json_decode($params['item_list'], true))->unique('order_id')->keyBy('order_id')->toArray();
