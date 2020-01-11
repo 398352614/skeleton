@@ -6,6 +6,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Controllers\BaseController;
 use App\Mail\SendRegisterCode;
 use App\Mail\SendResetCode;
 use App\Models\Company;
@@ -14,12 +15,11 @@ use App\Models\OrderNoRule;
 use App\Services\BaseConstService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
-class RegisterController extends Controller
+class RegisterController extends BaseController
 {
     /**
      * @param  Request  $request
@@ -125,9 +125,9 @@ class RegisterController extends Controller
      */
     public function applyOfRegister(Request $request)
     {
-        $request->validate([
+        /*$request->validate([
             'email' => 'required|email',
-        ]);
+        ]);*/
 
         throw_if(
             Employee::where('email', $request->get('email'))->count(),
@@ -146,9 +146,9 @@ class RegisterController extends Controller
      */
     public function applyOfReset(Request $request)
     {
-        $request->validate([
+        /*$request->validate([
             'email' => 'required|email',
-        ]);
+        ]);*/
 
         return RegisterController::sendCode($request->input('email'), 'RESET');
     }
@@ -161,12 +161,13 @@ class RegisterController extends Controller
      */
     public function resetPassword(Request $request)
     {
-        $data = $request->validate([
+        /*$data = $request->validate([
             'new_password' => 'required|string|between:8,20',
             'confirm_new_password' =>'required|string|same:new_password',
             'email' => 'required|email',
             'code'  => 'required|string|digits_between:6,6'
-        ]);
+        ]);*/
+        $data = $this->data;
 
         if ($data['code'] !== RegisterController::getVerifyCode($data['email'], 'RESET')) {
             throw new BusinessLogicException('验证码错误');
@@ -195,10 +196,10 @@ class RegisterController extends Controller
      */
     public function verifyResetCode(Request $request)
     {
-        $data = $request->validate([
+        $data = $this->data; /*= $request->validate([
             'email' => 'required|email',
             'code'  => 'required|string|digits_between:6,6'
-        ]);
+        ]);*/
 
         if ($data['code'] !== RegisterController::getVerifyCode($data['email'], 'RESET')) {
             throw new BusinessLogicException('验证码错误');
