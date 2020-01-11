@@ -35,7 +35,6 @@ class TourValidate extends BaseValidate
         'cancel_picture' => 'nullable|string|max:250',
         //签收
         'cancel_order_id_list' => 'nullable|string',
-        'order_amount' => 'nullable|numeric',
         'signature' => 'required|string|max:250',
         'pay_type' => 'required|integer|in:1,2',
         'pay_picture' => 'nullable|required_if:pay_type,2|string|max:250',
@@ -43,6 +42,13 @@ class TourValidate extends BaseValidate
         'end_signature' => 'required|string|max:250',
         'end_signature_remark' => 'nullable|string|max:250',
     ];
+
+    public $item_rules = [
+        'order_id' => 'required|integer',
+        'type' => 'required|integer|in:1,2',
+        'sticker_no' => 'nullable|required_id:type,1'
+    ];
+
 
     public $scene = [
         'remark' => ['remark'],
@@ -53,7 +59,7 @@ class TourValidate extends BaseValidate
         'getBatchInfo' => ['batch_id'],
         'batchException' => ['batch_id', 'stage', 'type', 'exception_remark', 'picture'],
         'batchCancel' => ['batch_id', 'cancel_type', 'cancel_remark', 'cancel_picture'],
-        'batchSign' => ['batch_id', 'cancel_order_id_list', 'order_amount', 'signature', 'pay_type', 'pay_picture'],
+        'batchSign' => ['batch_id', 'cancel_order_id_list', 'signature', 'pay_type', 'pay_picture'],
         'inWarehouse' => ['end_signature', 'end_signature_remark']
     ];
 }

@@ -25,6 +25,9 @@ class BaseConstService
     //站点编号类型
     const BATCH_EXCEPTION_NO_TYPE = 'batch_exception';
 
+    //贴单费用
+    const STICKER_AMOUNT = 7.00;
+
     //分配状态1-分配,2-取消分配
     const ASSIGN_YES = 1;
     const ASSIGN_CANCEL = 2;
