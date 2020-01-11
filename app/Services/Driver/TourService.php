@@ -358,6 +358,8 @@ class TourService extends BaseService
         $orderList['pie'] = $orderList['2'] ?? [];
         unset($orderList['1'], $orderList['2']);
         $batch['order_list'] = $orderList;
+        $batch['sticker_amount'] = BaseConstService::STICKER_AMOUNT;
+        $batch['tour_id'] = $tour['id'];
         return $batch;
     }
 
@@ -452,24 +454,35 @@ class TourService extends BaseService
         if (intval($batch['status'] !== BaseConstService::BATCH_DELIVERING)) {
             throw new BusinessLogicException('站点当前状态不能签收');
         }
+        //获取客户取派订单列表
+        if (empty($params['item_list'])) {
+            throw new BusinessLogicException('单号信息不能为空');
+        }
+        $orderList = collect(json_decode($params['item_list'], true))->unique('order_id')->keyBy('order_id')->toArray();
+        $orderIdList = array_keys($orderList);
         //获取当前站点下的所有订单
         $pickupCount = $pieCount = 0;
+        $totalStickerAmount = 0.00;
         $dbOrderCollection = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'batch_no', 'type'], false);
         $dbOrderList = $dbOrderCollection->toArray();
         OrderTrailService::OrderStatusChangeUseOrderCollection($dbOrderCollection, BaseConstService::ORDER_TRAIL_DELIVERED);
-        $cancelOrderIdList = array_unique(explode(',', $params['cancel_order_id_list']));
         foreach ($dbOrderList as $dbOrder) {
-            if (in_array(intval($dbOrder['id']), $cancelOrderIdList)) {
-                $status = BaseConstService::ORDER_STATUS_6;
-            } else {
+            $stickerAmount = 0.00;
+            //判断是否签收
+            if (in_array(intval($dbOrder['id']), $orderIdList)) {
+                $status = BaseConstService::ORDER_STATUS_5;
+                //判断取件或派件
                 if (intval($dbOrder['type']) === BaseConstService::ORDER_TYPE_1) {
                     $pickupCount += 1;
+                    $totalStickerAmount += BaseConstService::STICKER_AMOUNT;
+                    $stickerAmount = BaseConstService::STICKER_AMOUNT;
                 } else {
                     $pieCount += 1;
                 }
-                $status = BaseConstService::ORDER_STATUS_5;
+            } else {
+                $status = BaseConstService::ORDER_STATUS_6;
             }
-            $rowCount = $this->getOrderService()->updateById($dbOrder['id'], ['status' => $status]);
+            $rowCount = $this->getOrderService()->updateById($dbOrder['id'], ['status' => $status, 'sticker_no' => $orderList[$dbOrder['id']]['sticker_no'] ?? '', 'sticker_amount' => $stickerAmount]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('签收失败');
             }
@@ -479,7 +492,7 @@ class TourService extends BaseService
             'status' => BaseConstService::BATCH_CHECKOUT,
             'actual_pickup_quantity' => $pickupCount,
             'actual_pie_quantity' => $pieCount,
-            'order_amount' => $params['order_amount'],
+            'sticker_amount' => $totalStickerAmount,
             'signature' => $params['signature'],
             'pay_type' => $params['pay_type'],
             'pay_picture' => $params['pay_picture']
@@ -492,7 +505,7 @@ class TourService extends BaseService
         $tourData = [
             'actual_pickup_quantity' => intval($tour['actual_pickup_quantity']) + $pickupCount,
             'actual_pie_quantity' => intval($tour['actual_pie_quantity']) + $pieCount,
-            'order_amount' => $tour['order_amount'] + $params['order_amount'],
+            'sticker_amount' => $tour['sticker_amount'] + $totalStickerAmount,
             'replace_amount' => $tour['replace_amount'] + $batch['replace_amount'],
             'settlement_amount' => $tour['settlement_amount'] + $batch['replace_amount'],
         ];

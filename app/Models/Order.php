@@ -90,6 +90,8 @@ class Order extends BaseModel
         'driver_name',
         'car_id',
         'car_no',
+        'sticker_no',
+        'sticker_amount',
         'created_at',
         'updated_at',
     ];
@@ -115,7 +117,6 @@ class Order extends BaseModel
      * @var array
      */
     protected $dates = [];
-
 
 
     public function getTypeNameAttribute()
