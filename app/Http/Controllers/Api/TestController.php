@@ -59,4 +59,9 @@ class TestController extends BaseController
     {
         return $this->service->delete(['id' => $id]);
     }
+
+    public function calDate()
+    {
+        return $this->service->calDate();
+    }
 }

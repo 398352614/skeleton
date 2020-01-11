@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
-use App\Models\Driver;
 use App\Services\Admin\DriverService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Http\Request;
@@ -18,7 +16,7 @@ class DriverController extends BaseController
 
     public function __construct(DriverService $service)
     {
-        $this->service = $service;
+        parent::__construct($service);
     }
 
     /**
@@ -76,9 +74,9 @@ class DriverController extends BaseController
      *  "data":{}
      * }
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
-        return $this->service->update(['id' => $id], $request->validated);
+        return $this->service->updateById($id, $this->data);
     }
 
     /**

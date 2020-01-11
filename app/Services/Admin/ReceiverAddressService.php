@@ -19,6 +19,7 @@ class ReceiverAddressService extends BaseService
 {
     public function __construct(ReceiverAddress $receiverAddress)
     {
+        $this->request = request();
         $this->model = $receiverAddress;
         $this->query = $this->model::query();
         $this->resource = ReceiverAddressResource::class;

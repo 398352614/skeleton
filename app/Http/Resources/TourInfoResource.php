@@ -54,7 +54,7 @@ class TourInfoResource extends JsonResource
             'actual_pickup_quantity' => $this->actual_pickup_quantity,
             'expect_pie_quantity' => $this->expect_pie_quantity,
             'actual_pie_quantity' => $this->actual_pie_quantity,
-            'order_amount' => $this->order_amount,
+            'sticker_amount' => $this->sticker_amount,
             'replace_amount' => $this->replace_amount,
             'remark' => $this->remark,
             'batchs'    => BatchResource::collection($this->batchs)->sortBy('sort_id')->values(),

@@ -28,7 +28,7 @@ class ReceiverAddressValidate extends BaseValidate
         'receiver_house_number' => 'required|string|max:50',
         'receiver_city' => 'required|string|max:50',
         'receiver_street' => 'required|string|max:50',
-        'receiver_address' => 'required|string|max:250',
+        'receiver_address' => 'nullable|string|max:250',
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
     ];

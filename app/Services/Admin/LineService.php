@@ -82,10 +82,11 @@ class LineService extends BaseService
         if ($lineRangeList->isEmpty()) {
             $info['line_range'] = [];
             $info['work_day_list'] = '';
-
         } else {
             $info['line_range'] = $lineRangeList->map(function ($lineRange, $key) {
                 return collect($lineRange)->only(['post_code_start', 'post_code_end']);
+            })->unique(function ($item) {
+                return $item['post_code_start'] . $item['post_code_end'];
             })->toArray();
             $info['work_day_list'] = implode(',', array_values(array_unique(array_column($lineRangeList->toArray(), 'schedule'))));
         };
@@ -221,9 +222,6 @@ class LineService extends BaseService
         foreach ($itemList as $item) {
             if (intval($item['post_code_end']) < intval($item['post_code_start'])) {
                 throw new BusinessLogicException('结束邮编必须大于开始邮编');
-            }
-            if (intval($item['post_code_end']) - intval($item['post_code_start']) > 700) {
-                throw new BusinessLogicException('邮编范围区间不能超过700');
             }
         }
         $length = count($itemList);

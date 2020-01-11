@@ -11,7 +11,6 @@ class SenderAddressService extends BaseService
     public function __construct(SenderAddress $senderaddress)
     {
         $this->request = request();
-        $this->formData = $this->request->all();
         $this->model = $senderaddress;
         $this->query = $this->model::query();
         $this->resource = SenderAddressResource::class;
@@ -66,6 +65,7 @@ class SenderAddressService extends BaseService
      */
     public function updateById($id, $data){
         $info= parent::getInfo([
+            'id'=>['<>', $id],
             'sender'=> $data['sender'],
             'sender_phone'=> $data['sender_phone'],
             'sender_country'=> $data['sender_country'],
@@ -75,7 +75,7 @@ class SenderAddressService extends BaseService
             'sender_street'=> $data['sender_street'],
         ],['*'],true);
         if(!empty($info)){
-            throw new BusinessLogicException('地址修改失败，已有重复地址');
+            throw new BusinessLogicException('发货方地址已存在,不能重复添加');
         }
         $rowCount=parent::updateById($id, $data);
         if (empty($rowCount)){

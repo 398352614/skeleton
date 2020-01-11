@@ -29,10 +29,18 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::get('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
     Route::put('my-password', 'AuthController@updatePassword');
-    Route::get('home', 'HomeController@home');
-    Route::get('weekcount', 'HomeController@weekCount');
-    Route::get('monthcount', 'HomeController@monthCount');
-    Route::get('yearcount', 'HomeController@yearCount');
+
+
+    //主页统计
+    Route::prefix('home')->group(function () {
+        Route::get('/', 'HomeController@home');
+        Route::get('/this-week-count', 'HomeController@thisWeekcount');
+        Route::get('/last-week-count', 'HomeController@lastWeekcount');
+        Route::get('/this-month-count', 'HomeController@thisMonthcount');
+        Route::get('/last-month-count', 'HomeController@lastMonthcount');
+        Route::get('/period-count', 'HomeController@periodCount');
+
+    });
 
 
     //订单管理
@@ -206,13 +214,6 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::delete('/{id}', 'ReceiverAddressController@destroy');
     });
 
-    //国家管理
-    Route::prefix('country')->group(function () {
-        Route::get('/', 'CountryController@index');
-        Route::post('/', 'CountryController@store');
-        Route::delete('/{id}', 'CountryController@destroy');
-    });
-
     //发件人地址管理
     Route::prefix('sender-address')->group(function () {
         Route::get('/', 'SenderAddressController@index');//发件人地址查询
@@ -220,6 +221,14 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/', 'SenderAddressController@store');//发件人地址新增
         Route::put('/{id}', 'SenderAddressController@update');//发件人地址修改
         Route::delete('/{id}', 'SenderAddressController@destroy');//发件人地址删除
+    });
+
+
+    //国家管理
+    Route::prefix('country')->group(function () {
+        Route::get('/', 'CountryController@index');
+        Route::post('/', 'CountryController@store');
+        Route::delete('/{id}', 'CountryController@destroy');
     });
 
     //公共接口
