@@ -13,6 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TestInfoResource;
 use App\Http\Resources\TestResource;
 use App\Models\Test;
+use Carbon\Carbon;
 
 
 class TestService extends BaseService
@@ -65,6 +66,17 @@ class TestService extends BaseService
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('测试数据修改失败');
+        }
+    }
+
+    public function calDate()
+    {
+        $startDate = '2019-12-30';
+        $endDate = Carbon::parse(date('Y-m-d'));
+        $startDate = Carbon::parse($startDate);
+        for ($i = 1; $startDate->lte($endDate); $i++) {
+            $startDate = $startDate->modify("+1 days");
+            $startDate = $startDate->format('Y-m-d');
         }
     }
 
