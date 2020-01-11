@@ -99,9 +99,7 @@ class Batch extends BaseModel
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
+    protected $hidden = [];
 
     protected $appends = [
         'status_name',
@@ -137,4 +135,13 @@ class Batch extends BaseModel
         return $this->hasMany(Order::class, 'batch_no', 'batch_no');
     }
 
+    public function getExpectDistanceAttribute($value)
+    {
+        return round($value / 1000, 2);
+    }
+
+    public function getExpectTimeAttribute($value)
+    {
+        return (int) ($value / 60);
+    }
 }

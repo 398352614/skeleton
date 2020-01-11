@@ -134,4 +134,14 @@ class Tour extends BaseModel
             'longitude' => $this->warehouse_lon,
         ];
     }
+
+    public function getExpectDistanceAttribute($value)
+    {
+        return round($value / 1000, 2);
+    }
+
+    public function getExpectTimeAttribute($value)
+    {
+        return (int) ($value / 60);
+    }
 }
