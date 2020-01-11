@@ -45,8 +45,7 @@ class TourValidate extends BaseValidate
 
     public $item_rules = [
         'order_id' => 'required|integer',
-        'type' => 'required|integer|in:1,2',
-        'sticker_no' => 'nullable|required_id:type,1'
+        'sticker_no' => 'nullable|string|max:50'
     ];
 
 
