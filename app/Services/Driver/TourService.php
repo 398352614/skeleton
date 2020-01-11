@@ -359,6 +359,7 @@ class TourService extends BaseService
         unset($orderList['1'], $orderList['2']);
         $batch['order_list'] = $orderList;
         $batch['sticker_amount'] = BaseConstService::STICKER_AMOUNT;
+        $batch['tour_id'] = $tour['id'];
         return $batch;
     }
 
