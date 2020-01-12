@@ -99,6 +99,7 @@ class CarValidate extends BaseValidate
             'repair',
             'remark',
             'relate_material',
+            'relate_material_name'
         ],
         'update'             => [
             'car_no',
@@ -123,6 +124,8 @@ class CarValidate extends BaseValidate
             'repair',
             'remark',
             'relate_material',
+            'relate_material_name'
+
         ],
         'addBrand'      => [
             'cn_name', 'en_name'

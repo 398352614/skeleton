@@ -50,8 +50,8 @@ class CarService extends BaseService
             'rent_month_fee' => $this->formData['rent_month_fee'],
             'repair' => $this->formData['repair'],
             'remark' => $this->formData['remark']??'',
-            'relate_material' => $this->formData['relate_material']??'',
-            'relate_material_name' => $this->formData['relate_material_name']??'',
+            'relate_material' => $this->formData['relate_material'],
+            'relate_material_name' => $this->formData['relate_material_name'],
         ]);
     }
 
