@@ -85,6 +85,7 @@ class CarService extends BaseService
             'repair' => $this->formData['repair'],
             'remark' => $this->formData['remark'],
             'relate_material' => $this->formData['relate_material'],
+            'relate_material_name' => $this->formData['relate_material_name'],
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改车辆失败');
