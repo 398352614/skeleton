@@ -84,6 +84,8 @@ class ReportService extends BaseService
             'name' => $info['warehouse_name'],
             'phone' => $info['warehouse_phone'],
             'post_code' => $info['warehouse_post_code'],
+            'house_number'=>$info['warehouse_house_number'],
+            'street'=>$info['warehouse_street'],
             'city' => $info['warehouse_city'],
             'address' => $info['warehouse_address'],
         ];

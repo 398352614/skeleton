@@ -324,6 +324,8 @@ class TourService extends BaseService
                 'warehouse_phone' => $warehouse['phone'],
                 'warehouse_post_code' => $warehouse['post_code'],
                 'warehouse_city' => $warehouse['city'],
+                'warehouse_street'=>$warehouse['street'],
+                'warehouse_house_number'=>$warehouse['house_number'],
                 'warehouse_address' => $warehouse['address'],
                 'warehouse_lon' => $warehouse['lon'],
                 'warehouse_lat' => $warehouse['lat']
