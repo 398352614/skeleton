@@ -37,7 +37,7 @@ class CarService extends BaseService
             'engine_number' => $this->formData['engine_number']??'',
             'transmission' => $this->formData['transmission'],
             'fuel_type' => $this->formData['fuel_type'] ?? "1",
-            'current_miles' => $this->formData['current_miles']??'',
+            'current_miles' => $this->formData['current_miles']??0.00,
             'annual_inspection_date' => $this->formData['annual_inspection_date'],
             'ownership_type' => $this->formData['ownership_type'],
             'received_date' => $this->formData['received_date'],
