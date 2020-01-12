@@ -66,6 +66,7 @@ class Car extends BaseModel
         'repair',
         'remark',
         'relate_material',
+        'relate_material_name',
         'is_locked',
         'created_at',
         'updated_at',

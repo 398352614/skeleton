@@ -51,6 +51,7 @@ class CarService extends BaseService
             'repair' => $this->formData['repair'],
             'remark' => $this->formData['remark']??'',
             'relate_material' => $this->formData['relate_material']??'',
+            'relate_material_name' => $this->formData['relate_material_name']??'',
         ]);
     }
 
