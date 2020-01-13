@@ -117,8 +117,8 @@ class HomeService extends BaseService
             $countInfo[$i]=['date'=>$date,'ordercount'=>$ordercount];
             $day =$day->subDay();
         }
-        return array_values($countInfo);
-}
+        $countInfo = collect(array_values($countInfo))->sortBy('date')->toArray();
+        return $countInfo;}
 
 
     //时间段订单统计
