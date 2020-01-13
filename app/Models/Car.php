@@ -87,7 +87,8 @@ class Car extends BaseModel
     protected $dates = [];
 
     protected $appends = [
-        'brand_name'
+        'brand_name',
+        'model_name'
     ];
 
     public function brand()
