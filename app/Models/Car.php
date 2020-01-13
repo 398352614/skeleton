@@ -95,10 +95,23 @@ class Car extends BaseModel
         return $this->belongsTo(CarBrand::class, 'car_brand_id', 'id');
     }
 
+    public function model()
+    {
+        return $this->belongsTo(CarModel::class, 'car_model_id', 'id');
+    }
+
     public function getBrandNameAttribute()
     {
         if ($this->brand) {
             return $this->brand->cn_name;
+        }
+        return '';
+    }
+
+    public function getModelNameAttribute()
+    {
+        if ($this->model) {
+            return $this->model->cn_name;
         }
         return '';
     }
