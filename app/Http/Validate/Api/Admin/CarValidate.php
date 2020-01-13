@@ -23,7 +23,7 @@ class CarValidate extends BaseValidate
         'transmission' => '车型',
         'fuel_type' => '燃料类型',
         'current_miles' => '当前里程数',
-        'annual_inspection_data' => '下次年检日期',
+        'annual_inspection_date' => '下次年检日期',
         'ownership_type' => '类型',
         'received_date' => '接收车辆日期',
         'month_road_tax' => '每月路税',
