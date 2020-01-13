@@ -82,7 +82,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //车辆管理
     Route::prefix('car')->group(function () {
-        Route::put('/{id}/lock', 'CarController@lock')->name('car.lock');
+        Route::put('/{id}/lock', 'CarController@lock')->name('car.lock');//车辆锁定操作
         Route::get('/brands', 'CarController@getBrands')->name('car.brands');       // 获取品牌列表
         Route::post('/addbrand', 'CarController@addBrand')->name('car.addbrand');   // 添加品牌
         Route::get('/models', 'CarController@getModels')->name('car.models');       // 获取型号列表
@@ -95,7 +95,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}', 'CarController@update')->name('car.update'); //车辆修改
         Route::delete('/{id}', 'CarController@destroy')->name('car.destroy'); //车辆删除
 
-        // $router->post('car/lock', 'CarInfoController@lock'); //车辆锁定操作
+        // $router->post('car/lock', 'CarInfoController@lock');
     });
 
     //站点管理
