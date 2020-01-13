@@ -122,6 +122,13 @@ trait ConstTranslateTrait
         BaseConstService::TOUR_STATUS_5 => '取派完成',
     ];
 
+    //车辆车型1自动档-2手动挡
+    public static $carTransmissionList = [
+        BaseConstService::CAR_TRANSMISSION_1 => '自动挡',
+        BaseConstService::CAR_TRANSMISSION_2 => '手动挡'
+    ];
+
+
     //司机合作类型
     public static $driverTypeList = [
         BaseConstService::DRIVER_HIRE => '雇佣',

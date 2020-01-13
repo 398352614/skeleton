@@ -23,7 +23,7 @@ class BatchService extends BaseService
         'driver_id' => ['=', 'driver_id'],
         'line_id,line_name' => ['like', 'line_keyword'],
         'receiver' => ['=', 'receiver'],
-        'batch_no'=>['like','batch_no']
+        'batch_no' => ['like', 'batch_no']
     ];
 
     public function __construct(Batch $batch)
@@ -180,7 +180,7 @@ class BatchService extends BaseService
         //获取邮编数字部分
         $postCode = explode_post_code($order['receiver_post_code']);
         //获取线路范围
-        $lineRange = $this->getLineRangeService()->getInfo(['post_code_start' => ['<=', $postCode], 'post_code_end' => ['>=', $postCode], 'schedule' => Carbon::parse($order['execution_date'])->dayOfWeek], ['*'], false);
+        $lineRange = $this->getLineRangeService()->getInfo(['post_code_start' => ['<=', $postCode], 'post_code_end' => ['>=', $postCode], 'schedule' => Carbon::parse($order['execution_date'])->dayOfWeek, 'country' => $order['receiver_country']], ['*'], false);
         if (empty($lineRange)) {
             throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
         }

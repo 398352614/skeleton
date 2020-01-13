@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 汽车表
  * Class Car
@@ -88,7 +90,8 @@ class Car extends BaseModel
 
     protected $appends = [
         'brand_name',
-        'model_name'
+        'model_name',
+        'transmission_name',
     ];
 
     public function brand()
@@ -115,5 +118,10 @@ class Car extends BaseModel
             return $this->model->cn_name;
         }
         return '';
+    }
+
+    public function getTransmissionNameAttribute()
+    {
+        return empty($this->transmission) ? null : ConstTranslateTrait::$carTransmissionList[$this->transmission];
     }
 }
