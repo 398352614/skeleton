@@ -23,6 +23,6 @@ trait AlphaTrait
         if ($ord < 65 || $ord > 90) {
             throw new \App\Exceptions\BusinessLogicException('字母规则不正确');
         }
-        return ($ord === 90) ? 'A' : chr($alpha + 1);
+        return ($ord === 90) ? 'A' : chr($ord + 1);
     }
 }
