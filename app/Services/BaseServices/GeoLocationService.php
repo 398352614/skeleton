@@ -45,15 +45,15 @@ class GeoLocationService
         $res = $this->curl->get(self::EU_BASE_URL . $key);
 
         app('log')->debug('查询地址返回的结果为:', $res ?? []);
-        
+
         if (!$res || count($res['features']) === 0) {
-            return null;    
+            return null;
         }
 
-        if (count($res['features']) > 3) {
+        if (count($res['features']) > 1) {
             throw new BusinessLogicException('地址不够精确,请检查');
         }
-        
+
         return self::dealEuApiRet($res['features'][0]);
     }
 
