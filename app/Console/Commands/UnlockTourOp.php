@@ -2,10 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Services\Traits\TourRedisLockTrait;
 use Illuminate\Console\Command;
 
 class UnlockTourOp extends Command
 {
+    use TourRedisLockTrait;
     /**
      * The name and signature of the console command.
      *
