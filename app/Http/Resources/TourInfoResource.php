@@ -59,6 +59,7 @@ class TourInfoResource extends JsonResource
             'sticker_amount' => $this->sticker_amount,
             'replace_amount' => $this->replace_amount,
             'remark' => $this->remark,
+            'batch_count'=>$this->batch_count,
             'batchs'    => BatchResource::collection($this->batchs)->sortBy('sort_id')->values(),
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at,

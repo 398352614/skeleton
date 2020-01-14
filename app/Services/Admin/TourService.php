@@ -562,4 +562,10 @@ class TourService extends BaseService
         self::setTourLock($this->formData['line_code'], 0);
         return '更新完成';
     }
+    public function getBatchCountInfo($id)
+    {
+        $info= parent::getInfo(['id' => $id], ['*'], true);
+        $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
+        return $info;
+    }
 }
