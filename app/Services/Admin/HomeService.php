@@ -124,6 +124,11 @@ class HomeService extends BaseService
 
 
     //时间段订单统计
+    /**
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
     public function periodCount($params){
         $periodInfo =[];
         if(empty($params['begin_date'])){
