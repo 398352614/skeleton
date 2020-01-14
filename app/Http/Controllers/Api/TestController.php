@@ -41,6 +41,7 @@ class TestController extends BaseController
      */
     public function store()
     {
+
         return $this->service->create($this->data);
     }
 
