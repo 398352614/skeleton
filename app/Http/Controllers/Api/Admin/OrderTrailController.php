@@ -37,6 +37,6 @@ class OrderTrailController extends BaseController
      */
     public function index()
     {
-        return $this->service->getList();
+        return $this->service->getNoPageList();
     }
 }
