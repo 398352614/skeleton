@@ -26,6 +26,8 @@ class BatchService extends BaseService
         'batch_no' => ['like', 'batch_no']
     ];
 
+    public $orderBy = ['created_at' => 'desc'];
+
     public function __construct(Batch $batch)
     {
         $this->model = $batch;
