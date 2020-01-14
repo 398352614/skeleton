@@ -40,8 +40,10 @@ class TourService extends BaseService
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_id' => ['=', 'driver_id'],
         'line_name' => ['like', 'line_name'],
-        'tour_no'=>['like','tour_no']
+        'tour_no' => ['like', 'tour_no']
     ];
+
+    public $orderBy = ['created_at' => 'desc'];
 
     public function __construct(Tour $tour, GoogleApiService $client, XLDirectionService $directionClient)
     {
@@ -364,11 +366,11 @@ class TourService extends BaseService
         foreach ($batchIds as $key => $batchId) {
             $tempbatch = Batch::where('id', $batchId)->first();
             if (!$first && in_array($tempbatch->status, [
-                    BaseConstService::BATCH_WAIT_ASSIGN,
-                    BaseConstService::BATCH_WAIT_OUT,
-                    BaseConstService::BATCH_DELIVERING,
-                    BaseConstService::BATCH_ASSIGNED
-                ])) {
+                BaseConstService::BATCH_WAIT_ASSIGN,
+                BaseConstService::BATCH_WAIT_OUT,
+                BaseConstService::BATCH_DELIVERING,
+                BaseConstService::BATCH_ASSIGNED
+            ])) {
                 if ($tempbatch) {
                     $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地
@@ -390,7 +392,7 @@ class TourService extends BaseService
     {
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
-        set_time_limit(240);
+        // set_time_limit(240);
         self::setTourLock($this->formData['tour_no'], 1); // 加锁
 
         app('log')->info('更新线路传入的参数为:', $this->formData);
@@ -414,7 +416,10 @@ class TourService extends BaseService
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
 
         //0.5s执行一次
-        while (time_nanosleep(0, 500000000) === true) {
+        //执行 120s
+        $index = 0;
+        while ($index++ != 240) {
+            time_nanosleep(0, 500000000);
             app('log')->info('每 0.5 秒查询一次修改是否完成');
             //锁不存在代表更新完成
             if (!self::getTourLock($tour->tour_no)) {
@@ -432,7 +437,7 @@ class TourService extends BaseService
     public function autoOpTour()
     {
         //需要先判断当前 tour 是否被锁定状态!!! 中间件或者 validate 验证规则???
-        set_time_limit(240);
+        // set_time_limit(240);
         self::setTourLock($this->formData['tour_no'], 1); // 加锁
 
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
@@ -452,7 +457,9 @@ class TourService extends BaseService
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
 
         //0.5s执行一次
-        while (time_nanosleep(0, 500000000) === true) {
+        $index = 0;
+        while ($index++ != 240) {
+            time_nanosleep(0, 500000000);
             app('log')->info('每 0.5 秒查询一次修改是否完成');
             //锁不存在代表更新完成
             if (!$this->getTourLock($tour->tour_no)) {

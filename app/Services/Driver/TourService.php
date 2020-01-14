@@ -626,7 +626,9 @@ class TourService extends BaseService
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
 
         //0.5s执行一次
-        while (time_nanosleep(0, 500000000) === true) {
+        $index = 0;
+        while ($index++ != 240) {
+            time_nanosleep(0, 500000000);
             app('log')->info('每 0.5 秒查询一次修改是否完成');
             //锁不存在代表更新完成
             if (!$this->getTourLock($tour->tour_no)) {
