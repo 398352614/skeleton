@@ -222,6 +222,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆取消分配失败,请重新操作');
         }
+        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER);
     }
 
 
@@ -326,8 +327,8 @@ class TourService extends BaseService
                 'warehouse_phone' => $warehouse['phone'],
                 'warehouse_post_code' => $warehouse['post_code'],
                 'warehouse_city' => $warehouse['city'],
-                'warehouse_street'=>$warehouse['street'],
-                'warehouse_house_number'=>$warehouse['house_number'],
+                'warehouse_street' => $warehouse['street'],
+                'warehouse_house_number' => $warehouse['house_number'],
                 'warehouse_address' => $warehouse['address'],
                 'warehouse_lon' => $warehouse['lon'],
                 'warehouse_lat' => $warehouse['lat']
@@ -571,7 +572,7 @@ class TourService extends BaseService
     }
     public function getBatchCountInfo($id)
     {
-        $info= parent::getInfo(['id' => $id], ['*'], true);
+        $info = parent::getInfo(['id' => $id], ['*'], true);
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         return $info;
     }

@@ -58,6 +58,9 @@ class OrderTrailService extends BaseService
             case BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER:  // 已分配司机
                 $content = '已分配司机';
                 break;
+            case BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER:  // 已分配司机
+                $content = '取消分配司机';
+                break;
             case BaseConstService::ORDER_TRAIL_REVENUE_OUTLETS:  // 加入网点
                 $content = '包裹已收入网点';
                 break;
@@ -86,9 +89,8 @@ class OrderTrailService extends BaseService
         ]);
     }
 
-    public function getNoPageList(){
-        return parent::getList(['order_no'=>$this->formData['order_no']]);
+    public function getNoPageList()
+    {
+        return parent::getList(['order_no' => $this->formData['order_no']]);
     }
-
-
 }
