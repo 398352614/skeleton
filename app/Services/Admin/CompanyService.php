@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Models\Company;
 use App\Models\Scope\CompanyScope;
 use App\Services\BaseService;
@@ -26,6 +27,14 @@ class CompanyService extends BaseService
      */
     public function createInfo(array $data): bool
     {
+        $where = ['name'=>$data['name']];
+        if(!empty(auth()->user()->company_id)){
+            $where['id'] = ['<>',auth()->user()->company_id];
+        }
+        $info = parent::getInfo($where,['*'],false);
+        if(!empty($info)){
+            throw new BusinessLogicException('公司名称已存在');
+        }
         return $this->query->updateOrCreate(
             [
                 'id' => auth()->user()->company_id,

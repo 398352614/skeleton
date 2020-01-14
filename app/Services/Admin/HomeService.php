@@ -4,6 +4,7 @@
 namespace App\Services\Admin;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
@@ -117,13 +118,20 @@ class HomeService extends BaseService
             $countInfo[$i]=['date'=>$date,'ordercount'=>$ordercount];
             $day =$day->subDay();
         }
-        $countInfo = collect(array_values($countInfo))->sortBy('date')->toArray();
-        return $countInfo;}
+        $countInfo = array_values(collect(array_values($countInfo))->sortBy('date')->toArray());
+        return $countInfo;
+    }
 
 
     //时间段订单统计
     public function periodCount($params){
         $periodInfo =[];
+        if(empty($params['begin_date'])){
+            throw new BusinessLogicException('请选择开始时间');
+        }
+        if(empty($params['end_date'])){
+            throw new BusinessLogicException('请选择结束时间');
+        }
         $day=Carbon::create($params['begin_date']);
         $endDay=Carbon::create($params['end_date']);
         for($i=1;$day->lte($endDay);$i++){

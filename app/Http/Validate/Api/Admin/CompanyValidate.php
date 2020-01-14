@@ -16,7 +16,7 @@ class CompanyValidate extends BaseValidate
 
 
     public $rules = [
-        'name' => 'sometimes|nullable|string|max:50|uniqueIgnore:company,id',
+        'name' => 'sometimes|nullable|string|max:50',
         'country' => 'sometimes|nullable|string|max:50',
         'contacts' => 'sometimes|nullable|string|max:50',
         'phone' => 'sometimes|nullable|string|max:50',
