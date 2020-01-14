@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use Carbon\CarbonInterval;
 
 /**
  * tour 表对应的模型,相当于司机的一趟任务
@@ -92,6 +93,8 @@ class Tour extends BaseModel
         'created_at',
         'updated_at',
         'lave_distance',
+        'expect_time_human',
+        'actual_time_human',
     ];
 
     /**
@@ -102,7 +105,9 @@ class Tour extends BaseModel
     protected $hidden = [];
 
     protected $appends = [
-        'status_name'
+        'status_name',
+        'expect_time_human',
+        'actual_time_human'
     ];
 
     /**
@@ -116,6 +121,16 @@ class Tour extends BaseModel
     public function getStatusNameAttribute()
     {
         return empty($this->status) ? null : ConstTranslateTrait::$tourStatusList[$this->status];
+    }
+
+    public function getExpectTimeHumanAttribute()
+    {
+        return empty($this->expect_time) ? null : CarbonInterval::second($this->expect_time)->cascade()->forHumans();
+    }
+
+    public function getActualTimeHumanAttribute()
+    {
+        return empty($this->actual_time) ? null : CarbonInterval::second($this->actual_time)->cascade()->forHumans();
     }
 
     /**
@@ -142,8 +157,8 @@ class Tour extends BaseModel
         return round($value / 1000, 2);
     }
 
-    public function getExpectTimeAttribute($value)
+/*    public function getExpectTimeAttribute($value)
     {
         return (int) ($value / 60);
-    }
+    }*/
 }
