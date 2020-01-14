@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\OrderNoRule;
+use App\Traits\AlphaTrait;
 
 class OrderNoRuleService extends BaseService
 {
@@ -56,7 +57,7 @@ class OrderNoRuleService extends BaseService
         //获取开始索引
         $index = ($info['end_alpha'] === 'Z') ? $info['start_index'] + 1 : $info['start_index'];
         //获取尾号字母
-        $endAlpha = \AlphaTrait::getNextUpAlpha($info['end_alpha']);
+        $endAlpha = AlphaTrait::getNextUpAlpha($info['end_alpha']);
         //生成单号
         $orderNo = BaseConstService::BATCH . $info['prefix'] . sprintf("%0{$info['length']}s%s", $index, $endAlpha);
         $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'end_alpha' => $endAlpha]);
@@ -81,7 +82,7 @@ class OrderNoRuleService extends BaseService
         //获取开始索引
         $index = ($info['end_alpha'] === 'Z') ? $info['start_index'] + 1 : $info['start_index'];
         //获取尾号字母
-        $endAlpha = \AlphaTrait::getNextUpAlpha($info['end_alpha']);
+        $endAlpha = AlphaTrait::getNextUpAlpha($info['end_alpha']);
         //生成单号
         $orderNo = BaseConstService::TOUR . $info['prefix'] . sprintf("%0{$info['length']}s%s", $index, $endAlpha);
         $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'end_alpha' => $endAlpha]);

@@ -6,6 +6,9 @@
  * Date: 2020/1/14
  * Time: 13:42
  */
+
+namespace App\Traits;
+
 trait AlphaTrait
 {
     /**
