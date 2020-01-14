@@ -53,8 +53,13 @@ class OrderNoRuleService extends BaseService
             throw new BusinessLogicException('单号规则不存在,请先添加单号规则');
         }
         $info = $info->toArray();
-        $orderNo = BaseConstService::BATCH . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
-        $rowCount = parent::updateById($info['id'], ['start_index' => $info['start_index'] + 1]);
+        //获取开始索引
+        $index = ($info['end_alpha'] === 'Z') ? $info['start_index'] + 1 : $info['start_index'];
+        //获取尾号字母
+        $endAlpha = \AlphaTrait::getNextUpAlpha($info['end_alpha']);
+        //生成单号
+        $orderNo = BaseConstService::BATCH . $info['prefix'] . sprintf("%0{$info['length']}s%s", $index, $endAlpha);
+        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'end_alpha' => $endAlpha]);
         if ($rowCount === false) {
             throw new BusinessLogicException('单号生成失败,请重新操作');
         }
@@ -73,9 +78,13 @@ class OrderNoRuleService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('单号规则不存在,请先添加单号规则');
         }
-        $info = $info->toArray();
-        $orderNo = BaseConstService::TOUR . $info['prefix'] . sprintf("%0{$info['length']}s", $info['start_index']);
-        $rowCount = parent::updateById($info['id'], ['start_index' => $info['start_index'] + 1]);
+        //获取开始索引
+        $index = ($info['end_alpha'] === 'Z') ? $info['start_index'] + 1 : $info['start_index'];
+        //获取尾号字母
+        $endAlpha = \AlphaTrait::getNextUpAlpha($info['end_alpha']);
+        //生成单号
+        $orderNo = BaseConstService::TOUR . $info['prefix'] . sprintf("%0{$info['length']}s%s", $index, $endAlpha);
+        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'end_alpha' => $endAlpha]);
         if ($rowCount === false) {
             throw new BusinessLogicException('单号生成失败,请重新操作');
         }
