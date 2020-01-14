@@ -65,7 +65,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //司机管理
     Route::prefix('driver')->group(function () {
-        Route::post('/driver-register', 'DriverController@driverRegister');
+        Route::post('/driver-register', 'DriverController@driverRegister');//司机新增
         Route::get('/driver-work', 'DriverController@driverWork'); //获取司机工作日driverWork?driver_id=105
         Route::post('assgin-driverWork', 'DriverController@assginDriverWork'); //给司机分配工作信息（也就是产品图上的审核）
         Route::get('/crop-type', 'DriverController@cropType'); //获取合作方式
