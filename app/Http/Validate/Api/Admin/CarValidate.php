@@ -23,7 +23,7 @@ class CarValidate extends BaseValidate
         'transmission' => '车型',
         'fuel_type' => '燃料类型',
         'current_miles' => '当前里程数',
-        'annual_inspection_data' => '下次年检日期',
+        'annual_inspection_date' => '下次年检日期',
         'ownership_type' => '类型',
         'received_date' => '接收车辆日期',
         'month_road_tax' => '每月路税',
@@ -36,6 +36,7 @@ class CarValidate extends BaseValidate
         'repair' => '维修自理',
         'remark' => '备注',
         'relate_material' => '文件',
+        'relate_material_name' => '相关文件名',
         'is_locked' => '是否锁定1-正常2-锁定',
 
         'cn_name' =>'中文名称',
@@ -66,6 +67,7 @@ class CarValidate extends BaseValidate
         'repair' => 'nullable|required_unless:ownership_type,2|integer|in:1,2',
         'remark' => 'nullable|string',
         'relate_material' => 'nullable|string',
+        'relate_material_name'=> 'nullable|string',
         'is_locked' => 'required|integer|in:1,2',
 
         'cn_name' =>'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
@@ -97,6 +99,7 @@ class CarValidate extends BaseValidate
             'repair',
             'remark',
             'relate_material',
+            'relate_material_name'
         ],
         'update'             => [
             'car_no',
@@ -121,6 +124,8 @@ class CarValidate extends BaseValidate
             'repair',
             'remark',
             'relate_material',
+            'relate_material_name'
+
         ],
         'addBrand'      => [
             'cn_name', 'en_name'

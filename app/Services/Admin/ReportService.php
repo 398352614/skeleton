@@ -84,6 +84,8 @@ class ReportService extends BaseService
             'name' => $info['warehouse_name'],
             'phone' => $info['warehouse_phone'],
             'post_code' => $info['warehouse_post_code'],
+            'street'=>$info['warehouse_street'],
+            'house_number'=>$info['warehouse_house_number'],
             'city' => $info['warehouse_city'],
             'address' => $info['warehouse_address'],
         ];
@@ -173,6 +175,8 @@ class ReportService extends BaseService
                 'phone' => $batch['receiver_phone'],
                 'post_code' => $batch['receiver_post_code'],
                 'city' => $batch['receiver_city'],
+                'street'=>$batch['receiver_street'],
+                'house_number'=>$batch['receiver_house_number'],
                 'address' => $batch['receiver_address'],
                 'expect_quantity' => $batch['expect_pickup_quantity'] + $batch['expect_pie_quantity'],
                 'signature' => $batch['signature'],

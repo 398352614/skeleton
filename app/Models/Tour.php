@@ -62,6 +62,8 @@ class Tour extends BaseModel
         'warehouse_phone',
         'warehouse_post_code',
         'warehouse_city',
+        'warehouse_street',
+        'warehouse_house_number',
         'warehouse_address',
         'warehouse_lon',
         'warehouse_lat',

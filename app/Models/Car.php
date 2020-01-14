@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 汽车表
  * Class Car
@@ -66,6 +68,7 @@ class Car extends BaseModel
         'repair',
         'remark',
         'relate_material',
+        'relate_material_name',
         'is_locked',
         'created_at',
         'updated_at',
@@ -86,12 +89,19 @@ class Car extends BaseModel
     protected $dates = [];
 
     protected $appends = [
-        'brand_name'
+        'brand_name',
+        'model_name',
+        'transmission_name',
     ];
 
     public function brand()
     {
         return $this->belongsTo(CarBrand::class, 'car_brand_id', 'id');
+    }
+
+    public function model()
+    {
+        return $this->belongsTo(CarModel::class, 'car_model_id', 'id');
     }
 
     public function getBrandNameAttribute()
@@ -100,5 +110,18 @@ class Car extends BaseModel
             return $this->brand->cn_name;
         }
         return '';
+    }
+
+    public function getModelNameAttribute()
+    {
+        if ($this->model) {
+            return $this->model->cn_name;
+        }
+        return '';
+    }
+
+    public function getTransmissionNameAttribute()
+    {
+        return empty($this->transmission) ? null : ConstTranslateTrait::$carTransmissionList[$this->transmission];
     }
 }

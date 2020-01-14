@@ -8,6 +8,7 @@ use App\Models\OrderTrail;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Collection;
+use phpDocumentor\Reflection\Types\Parent_;
 
 class OrderTrailService extends BaseService
 {
@@ -84,4 +85,10 @@ class OrderTrailService extends BaseService
             'content'    =>  $content,
         ]);
     }
+
+    public function getNoPageList(){
+        return parent::getList(['order_no'=>$this->formData['order_no']]);
+    }
+
+
 }

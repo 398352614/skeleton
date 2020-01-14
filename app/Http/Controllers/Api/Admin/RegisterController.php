@@ -55,6 +55,7 @@ class RegisterController extends BaseController
                 'company_code' => self::makeNewCompanyCode($lastCompany),
                 'email' => $data['email'],
                 'name' => $data['name'],
+                'contacts' =>$data['email'],
                 //'phone' => $data['phone'],
             ]);
 
@@ -86,7 +87,7 @@ class RegisterController extends BaseController
                 'type' => $value,
                 'prefix' => substr('000'.$company->id, -4, 4),
                 'start_index' => 1,
-                'length' => 13,
+                'length' => ($value == BaseConstService::ORDER_NO_TYPE) ? 13 : 4,
             ];
         }, $rules);
 

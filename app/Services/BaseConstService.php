@@ -138,6 +138,9 @@ class BaseConstService
     const CAR_TO_NORMAL = 1;
     const CAR_TO_LOCK = 2;
 
+    //车辆车型1自动档-2手动挡
+    const CAR_TRANSMISSION_1 = 1;
+    const CAR_TRANSMISSION_2 = 2;
 
     //管理员端 图片目录
     const ADMIN_IMAGE_DRIVER_DIR = 'driver';

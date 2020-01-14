@@ -9,6 +9,7 @@ namespace App\Models\Scope;
 use App\Models\Car;
 use App\Models\CarBrand;
 use App\Models\CarModel;
+use App\Models\Company;
 use App\Models\Driver;
 use App\Models\Employee;
 use App\Models\OrderNoRule;
@@ -34,7 +35,9 @@ class CompanyScope implements Scope
 
         //如果是员工端
         if ($user instanceof Employee) {
-            $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
+            if(!($model instanceof Company)){
+                $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
+            }
         }
 
         //如果是司机端
