@@ -20,10 +20,10 @@ class CheckTourRedisLock
     public function handle($request, Closure $next)
     {
         if (!$request->tour_no) {
-            throw new BusinessLogicException('未传入 tour_no');
+            throw new BusinessLogicException('未传入取件线路编号');
         }
         if (self::getTourLock($request->tour_no)) {
-            throw new BusinessLogicException('当前 tour 已锁定,请稍后操作');
+            throw new BusinessLogicException('当前取件线路已锁定,请稍后操作');
         }
         $response = $next($request);
         if (method_exists($response, 'getData') && isset($response->getData()->code) && $response->getData()->code != 200) {
