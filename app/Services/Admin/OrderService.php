@@ -181,6 +181,9 @@ class OrderService extends BaseService
         /*************************************************订单新增************************************************/
         //生成单号
         $params['order_no'] = $this->getOrderNoRuleService()->createOrderNo();
+        if(empty($params['receiver_address'])){
+            $params['receiver_address']='';
+        }
         $order = parent::create($params);
         if ($order === false) {
             throw new BusinessLogicException('订单新增失败');
