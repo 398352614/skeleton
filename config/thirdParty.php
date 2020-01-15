@@ -7,5 +7,7 @@
  */
 return [
     //位置api
-    'location_api'=>env('LOCATION_API','http://photon.komoot.de/api/')
+    'location_api' => env('LOCATION_API', 'https://api.postcode.nl/rest'),
+    'location_api_key' => env('LOCATION_API_KEY'),
+    'location_api_secret' => env('LOCATION_API_SECRET'),
 ];
