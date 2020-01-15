@@ -389,7 +389,7 @@ class TourService extends BaseService
             'type' => $params['type'],
             'remark' => $params['exception_remark'],
             'picture' => $params['picture'],
-            'driver_name' => auth()->user()->last_name . auth()->user()->first_name
+            'driver_name' => auth()->user()->first_name . auth()->user()->last_name
         ];
         $rowCount = $this->getBatchExceptionService()->create($data);
         if ($rowCount === false) {

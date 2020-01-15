@@ -126,6 +126,6 @@ class Driver extends Authenticatable implements JWTSubject
      */
     public function getFullNameAttribute()
     {
-        return $this->last_name . ' ' . $this->first_name;
+        return $this->first_name .$this->last_name;
     }
 }
