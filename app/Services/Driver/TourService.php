@@ -313,7 +313,7 @@ class TourService extends BaseService
     public function getBatchOrderList($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'type', 'batch_no', 'order_no', 'status'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id','execution_date', 'type', 'batch_no', 'order_no', 'status'], false)->toArray();
         $orderList = array_create_group_index($orderList, 'type');
         $batch['order_list'] = $orderList;
         return $orderList;
