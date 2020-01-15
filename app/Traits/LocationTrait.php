@@ -86,6 +86,9 @@ trait LocationTrait
             if ((Str::lower($arrayBody['city']) !== Str::lower($city)) || (Str::lower($arrayBody['street']) !== Str::lower($street))) {
                 throw new BusinessLogicException('城市或街道不正确');
             }
+            if (empty($arrayBody['latitude']) || empty($arrayBody['longitude'])) {
+                throw new BusinessLogicException('邮编或门牌号码不正确，请仔细检查输入或联系客服');
+            }
             return [
                 'province' => $arrayBody['province'],
                 'city' => $arrayBody['city'],
