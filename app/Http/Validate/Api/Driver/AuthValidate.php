@@ -11,7 +11,10 @@ class AuthValidate extends BaseValidate
         'password' => '密码',
         'new_password' => '新密码',
         'confirm_new_password' => '新密码确认',
-        'code' => '验证码'
+        'code' => '验证码',
+        'origin_password' => '原密码',
+        'new_confirm_password' => '新密码确认',
+        'email' => '用户邮箱',
     ];
 
 
