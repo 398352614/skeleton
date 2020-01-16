@@ -32,6 +32,7 @@ class BaseValidate
         '*.array' => ':attribute必须是数组',
         'code.digits_between'=>'验证码必须为6位数',
         '*.digits_between'=>':attribute必须在:min位-:max位之间',
+        '*.date_format'=>':attribute必须是年-月-日格式'
 
     ];
 
