@@ -58,7 +58,7 @@ class DriverValidate extends BaseValidate
         'city'                          => ['required'],
         'country'                       => ['required'],
         'lisence_number'                => ['required'],
-        'lisence_valid_date'            => ['required'],
+        'lisence_valid_date'            => ['required','date_format:Y-m-d'],
         'lisence_type'                  => ['required'],
         'lisence_material'              => ['required'],
         'lisence_material_name'         => ['nullable'],
