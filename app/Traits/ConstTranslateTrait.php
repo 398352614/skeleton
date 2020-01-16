@@ -128,6 +128,26 @@ trait ConstTranslateTrait
         BaseConstService::CAR_TRANSMISSION_2 => '手动挡'
     ];
 
+    //燃料类型1-柴油2-汽油3-混合动力4-电动
+    public static $carFuelTypeList = [
+        BaseConstService::CAR_FUEL_TYPE_1 => '柴油',
+        BaseConstService::CAR_FUEL_TYPE_2 => '汽油',
+        BaseConstService::CAR_FUEL_TYPE_3 => '混合动力',
+        BaseConstService::CAR_FUEL_TYPE_4 => '电动'
+    ];
+
+    //租赁类型1-租赁（到期转私）2-私有3-租赁（到期转待定）
+    public static $carOwnerShipTypeList = [
+        BaseConstService::CAR_OWNER_SHIP_TYPE_1 => '租赁（到期转私）',
+        BaseConstService::CAR_OWNER_SHIP_TYPE_2 => '私有',
+        BaseConstService::CAR_OWNER_SHIP_TYPE_3 => '租赁（到期转待定）',
+    ];
+
+    //维修自理1-是2-否
+    public static $carRepairList = [
+        BaseConstService::CAR_REPAIR_1 => '是',
+        BaseConstService::CAR_REPAIR_2 => '否',
+    ];
 
     //司机合作类型
     public static $driverTypeList = [
@@ -135,7 +155,7 @@ trait ConstTranslateTrait
         BaseConstService::DRIVER_CONTRACTOR => '包线',
     ];
 
-    //司机合作类型
+    //司机锁定状态
     public static $driverStatusList = [
         BaseConstService::DRIVER_TO_NORMAL => '正常',
         BaseConstService::DRIVER_TO_LOCK => '锁定',

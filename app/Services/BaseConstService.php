@@ -142,6 +142,21 @@ class BaseConstService
     const CAR_TRANSMISSION_1 = 1;
     const CAR_TRANSMISSION_2 = 2;
 
+    //燃料类型1-柴油2-汽油3-混合动力4-电动
+    const CAR_FUEL_TYPE_1 =1;
+    const CAR_FUEL_TYPE_2 =2;
+    const CAR_FUEL_TYPE_3 =3;
+    const CAR_FUEL_TYPE_4 =4;
+
+    //租赁类型1-租赁（到期转私）2-私有3-租赁（到期转待定）
+    const CAR_OWNER_SHIP_TYPE_1 =1;
+    const CAR_OWNER_SHIP_TYPE_2 =2;
+    const CAR_OWNER_SHIP_TYPE_3 =3;
+
+    //修理自理1-是2-否
+    const CAR_REPAIR_1=1;
+    const CAR_REPAIR_2=2;
+
     //管理员端 图片目录
     const ADMIN_IMAGE_DRIVER_DIR = 'driver';
 
