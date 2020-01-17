@@ -80,7 +80,9 @@ class ReceiverAddressService extends BaseService
     public function check($data, $id = null)
     {
         $where = Arr::only($data, ['receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address']);
-        !empty($id) && Arr::add($where, 'id', ['<>', $id]);
+        if (!empty($id)) {
+            $where = Arr::add($where, 'id', ['<>', $id]);
+        }
         $otherAddress = parent::getInfo($where, ['*'], false);
         if (!empty($otherAddress)) {
             throw new BusinessLogicException('收货方地址已存在,不能重复添加');
