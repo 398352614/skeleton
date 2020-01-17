@@ -12,6 +12,7 @@ use App\Mail\SendResetCode;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\OrderNoRule;
+use App\Models\Warehouse;
 use App\Services\BaseConstService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -60,7 +61,7 @@ class RegisterController extends BaseController
             ]);
 
             $this->addEmployeeForCompany($company, $data);
-
+            $this->addWarehouse($company,$data);
             $this->initCompanyOrderCodeRules($company);
 
            return 'true';
@@ -118,6 +119,19 @@ class RegisterController extends BaseController
         ]);
     }
 
+    protected function addWarehouse(Company $company, array $data)
+    {
+        return Warehouse::create([
+            'name'=>$data['name'],
+            'contacter'=>$data['email'],
+            'company_id'=> $company->id,
+            'country'=>'荷兰',
+            'post_code'=>'2153PJ',
+            'house_number'=>'20',
+            'city'=>'Nieuw-Vennep',
+            'street'=>'Pesetaweg',
+        ]);
+    }
     /**
      * 注册验证码
      * @param  Request  $request
