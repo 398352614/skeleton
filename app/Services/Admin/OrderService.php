@@ -128,15 +128,9 @@ class OrderService extends BaseService
     public function getPageList()
     {
         $list = parent::getPageList();
-        if (empty($this->filters['exception_label']) || (intval($this->filters['exception_label'][1]) !== BaseConstService::ORDER_EXCEPTION_LABEL_2)) {
-            return $list;
-        }
-        //若是异常订单,则需要添加最新的异常备注
         foreach ($list as &$order) {
             $batchException = $this->getBatchExceptionService()->getInfo(['batch_no' => $order['batch_no']], ['id', 'batch_no', 'stage'], false, ['created_at' => 'desc']);
-            if (!empty($batchException)) {
-                $order['exception_stage_name'] = ConstTranslateTrait::$batchExceptionStageList[$batchException['stage']];
-            }
+            $order['exception_stage_name'] = !empty($batchException) ? ConstTranslateTrait::$batchExceptionStageList[$batchException['stage']] : __('正常');
         }
         return $list;
     }
