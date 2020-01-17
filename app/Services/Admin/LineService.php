@@ -19,7 +19,8 @@ class LineService extends BaseService
 {
 
     public $filterRules = [
-        'name' => ['like', 'name']
+        'name' => ['like', 'name'],
+        'country'=>['=','country'],
     ];
 
     public function __construct(Line $line)
@@ -52,7 +53,21 @@ class LineService extends BaseService
 
     public function getPageList()
     {
-        $list = parent::getPageList();
+        //如果存在post_code查询
+        if(!empty($this->formData['post_code'])){
+            $list=$this->query->join('line_range' ,'line_range.line_id','=','line.id')
+                ->where('line_range.post_code_start','<=',$this->formData['post_code'])
+                ->where('line_range.post_code_end','>=',$this->formData['post_code']);
+            if(!empty($this->formData['name'])){
+                $list=$list->where('line.name','like',$this->formData['name']);
+            }
+            if(!empty($this->formData['country'])){
+                $list=$list->where('line.country','=',$this->formData['country']);
+            }
+            return $list->paginate();
+        }else{
+            $list = parent::getPageList();
+        }
         $lineIdList = array_column($list->all(), 'id');
         if (empty($lineIdList)) return $list;
         //获取线路范围列表
