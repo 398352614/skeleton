@@ -89,6 +89,7 @@ class TourTaskService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $tour->toArray();
+        $tour['car_no'] = $tour['car_no'] ?? '';
         //获取站点数量
         $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
         //获取所有站点
