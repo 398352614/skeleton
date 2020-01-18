@@ -31,7 +31,8 @@ class OrderService extends BaseService
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'order_no,out_order_no' => ['like', 'keyword'],
-        'exception_label' => ['=', 'exception_label']
+        'exception_label' => ['=', 'exception_label'],
+        'source' => ['=','source']
     ];
 
     public $orderBy = ['created_at' => 'desc'];
