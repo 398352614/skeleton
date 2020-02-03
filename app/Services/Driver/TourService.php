@@ -106,7 +106,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路当前状态不允许装货');
         }
         if (empty($tour['car_id']) || empty($tour['car_no'])) {
-            throw new BusinessLogicException('取件线路未分配车辆,请先分配车辆');
+            throw new BusinessLogicException('取件线路待分配车辆,请先分配车辆');
         }
         //取件线路 处理
         $rowCount = parent::updateById($id, ['status' => BaseConstService::TOUR_STATUS_3]);
@@ -273,7 +273,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路当前状态不允许出库');
         }
         if (empty($tour['car_id']) || empty($tour['car_no'])) {
-            throw new BusinessLogicException('当前未分配车辆,请先分配车辆');
+            throw new BusinessLogicException('当前待分配车辆,请先分配车辆');
         }
         return $tour;
     }
