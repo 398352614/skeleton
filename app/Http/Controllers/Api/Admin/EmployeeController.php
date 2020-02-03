@@ -51,16 +51,13 @@ class EmployeeController extends Controller
     /**
      * 删除
      *
-     * @param  int  $id
+     * @param int $id
      * @return array
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function destroy(int $id)
     {
-        if ($this->service->delete($id)) {
-            return success();
-        }
-
-        return failed();
+        return $this->service->destroy($id);
     }
 
     /**
