@@ -188,7 +188,7 @@ trait ConstTranslateTrait
      */
     public static function __callStatic($name, $args)
     {
-        $arr = null;
+        $arr = [];
         if (isset(self::$$name)) {
             $arr = self::$$name;
             foreach ($arr as $key => $value) {
