@@ -135,7 +135,7 @@ class TourService extends BaseService
     {
         $tour = parent::getInfo(['id' => $id, 'status' => BaseConstService::TOUR_STATUS_1], ['*'], false);
         if (empty($tour)) {
-            throw new BusinessLogicException('取件线路不存在或当前状态不是未分配状态');
+            throw new BusinessLogicException('取件线路不存在或当前状态不是待分配状态');
         }
         $tour = $tour->toArray();
         //查看当前司机是否已被分配给其他取件线路

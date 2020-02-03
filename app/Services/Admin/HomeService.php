@@ -43,7 +43,7 @@ class HomeService extends BaseService
     public function home(){
         $date =Carbon::today()->addDay();
         //当日订单
-        $noTakeOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_1]);//未分配
+        $noTakeOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_1]);//待分配
         $assignOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_2]);//已分配
         $waitOutOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_3]);//待出库
         $takingOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_4]);//取派中

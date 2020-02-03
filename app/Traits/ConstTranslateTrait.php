@@ -37,9 +37,9 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_SETTLEMENT_TYPE_2 => '到付',
     ];
 
-    //订单状态类型1-未分配2-已分配3-取派中4-已签收5-异常6-收回站
+    //订单状态类型1-待分配2-已分配3-取派中4-已签收5-异常6-收回站
     public static $orderStatusList = [
-        BaseConstService::ORDER_STATUS_1 => '未分配',
+        BaseConstService::ORDER_STATUS_1 => '待分配',
         BaseConstService::ORDER_STATUS_2 => '已分配',
         BaseConstService::ORDER_STATUS_3 => '待出库',
         BaseConstService::ORDER_STATUS_4 => '取派中',
@@ -76,7 +76,7 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_EXCEPTION_LABEL_2 => '异常',
     ];
 
-    //batch 批次状态 1-未分配2-已分配3-取派中4-已签收5-异常
+    //batch 批次状态 1-待分配2-已分配3-取派中4-已签收5-异常
     public static $batchStatusList = [
         BaseConstService::BATCH_WAIT_ASSIGN => '待分配',
         BaseConstService::BATCH_ASSIGNED => '已分配',
