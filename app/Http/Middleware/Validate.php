@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 验证中间件
  * User: long
@@ -63,7 +64,7 @@ class Validate
             /************************************验证规则获取 end******************************************************/
             /********************************************数据验证 start************************************************/
             //主表验证
-            $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), $this->validate->customAttributes);          
+            $this->validate($data, $rules, array_merge(BaseValidate::baseMessage(), $this->validate::message()), $this->validate::customAttributes());
             //明细验证
             if (!empty($item_rules) && !empty($data['item_list'])) {
                 $itemList = json_decode($data['item_list'], true);
@@ -71,7 +72,7 @@ class Validate
                     throw new BusinessLogicException('明细数据格式不正确', 3001);
                 }
                 foreach ($itemList as $item) {
-                    $this->validate($item, $item_rules, array_merge(BaseValidate::$baseMessage, $this->validate->item_message), $this->validate->itemCustomAttributes);
+                    $this->validate($item, $item_rules, array_merge(BaseValidate::baseMessage(), $this->validate::item_message()), $this->validate::itemCustomAttributes());
                 }
             }
             /*********************************************数据验证 end*************************************************/
@@ -110,5 +111,4 @@ class Validate
         }
         request()->validated = $validator->validated(); // 控制器先被初始化,然后才进入的中间件!!!
     }
-
 }

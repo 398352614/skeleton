@@ -182,4 +182,20 @@ trait ConstTranslateTrait
     public static $driverFileDirList = [
         BaseConstService::DRIVER_FILE_TOUR_DIR => '取件线路文件目录'
     ];
+
+    /**
+     * 此函数用于访问静态变量的同时对其进行翻译
+     */
+    public static function __callStatic($name, $args)
+    {
+        $arr = [];
+        if (isset(self::$$name)) {
+            $arr = self::$$name;
+            foreach ($arr as $key => $value) {
+                $msg = (strpos(__('msg.' . $value), 'msg.') === false) ? __('msg.' . $value) : $value;
+                $arr[$key] = $msg; // 翻译
+            }
+        }
+        return $arr;
+    }
 }

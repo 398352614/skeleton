@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BaseValidate
  * User: long
@@ -20,8 +21,8 @@ use tests\Mockery\Adapter\Phpunit\EmptyTestCase;
 class BaseValidate
 {
     public static $baseMessage = [
-        'lon.required'=>'收货方地址不正确，请确认正确地址',
-        'lat.required'=>'',
+        'lon.required' => '收货方地址不正确，请确认正确地址',
+        'lat.required' => '',
         '*.required' => ':attribute字段必填',
         '*.string' => ':attribute字段必须是字符串',
         '*.min' => ':attribute字段不能小于:min个字符',
@@ -30,10 +31,10 @@ class BaseValidate
         '*.between' => ':attribute范围必须在:min-:max之间',
         '*.after_or_equal' => ':attribute必须在当前日期及之后',
         '*.array' => ':attribute必须是数组',
-        'code.digits_between'=>'验证码必须为6位数',
-        '*.digits_between'=>':attribute必须在:min位-:max位之间',
-        '*.date_format'=>':attribute必须是年-月-日格式',
-        '*.integer'=>':attribute必须是整数'
+        'code.digits_between' => '验证码必须为6位数',
+        '*.digits_between' => ':attribute必须在:min位-:max位之间',
+        '*.date_format' => ':attribute必须是年-月-日格式',
+        '*.integer' => ':attribute必须是整数'
 
     ];
 
@@ -72,5 +73,18 @@ class BaseValidate
         }
         $model = $query->where($attribute, '=', $value)->first();
         return empty($model) ? true : false;
+    }
+
+    public static function __callStatic($name, $arguments)
+    {
+        $arr = [];
+        if (isset(self::$$name)) {
+            $arr = self::$$name;
+            foreach ($arr as $key => $value) {
+                $msg = (strpos(__('msg.' . $value), 'msg.') === false) ? __('msg.' . $value) : $value;
+                $arr[$key] = $msg; // 翻译
+            }
+        }
+        return $arr;
     }
 }
