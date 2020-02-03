@@ -100,6 +100,9 @@ class EmployeeService extends BaseService
      */
     public function destroy($id)
     {
+        if(auth()->user()->id === $id){
+            throw new BusinessLogicException('无法删除自己');
+        }
         $rowCount = parent::delete(['id' => $id]);
 
         if ($rowCount === false) {
