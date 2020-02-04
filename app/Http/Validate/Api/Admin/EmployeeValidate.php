@@ -24,7 +24,7 @@ class EmployeeValidate extends BaseValidate
         'email' => 'required|email|max:50|uniqueIgnore:employee,id,company_id',
         'phone' => 'sometimes|nullable|string|max:20',
         'remark' => 'sometimes|nullable|string|max:250',
-        'group_id' => 'required|integer',
+        'group_id' => 'nullable|integer',
         'institution_id' => 'sometimes|integer',
     ];
 

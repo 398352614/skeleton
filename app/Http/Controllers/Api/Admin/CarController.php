@@ -174,7 +174,7 @@ class CarController extends BaseController
      */
     public function getBrands()
     {
-        return $this->brandService->getPageList();
+        return $this->brandService->getList();
     }
 
     /**
@@ -214,7 +214,7 @@ class CarController extends BaseController
      */
     public function getModels()
     {
-        return $this->modelService->getPageList();
+        return $this->modelService->getList();
     }
 
     /**

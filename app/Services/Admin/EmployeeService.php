@@ -55,7 +55,7 @@ class EmployeeService extends BaseService
                 'email' => $data['email'],
                 'phone' => $data['phone'] ?? '',
                 'remark' => $data['remark'] ?? '',
-                'auth_group_id' => $data['group_id'],
+                'auth_group_id' => $data['group_id']??1,
                 'institution_id' => $data['institution_id'] ?? null,
                 'password' => bcrypt($data['password']),
             ]
@@ -84,7 +84,7 @@ class EmployeeService extends BaseService
                 'email' => $data['email'],
                 'phone' => $data['phone'] ?? '',
                 'remark' => $data['remark'] ?? '',
-                'auth_group_id' => $data['group_id'],
+                'auth_group_id' => $data['group_id']??'',
                 'institution_id' => $data['institution_id'] ?? null,
         ]);
 
