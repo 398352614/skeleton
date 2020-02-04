@@ -95,6 +95,9 @@ class InstitutionService extends BaseService
         ]);
     }
 
+    public function getCompanyService(){
+        return self::getInstance(CompanyService::class);
+    }
     /**
      * 获得树
      *
@@ -102,6 +105,17 @@ class InstitutionService extends BaseService
      */
     public function getTree(): array
     {
+        if(empty(Institution::getRoots()->first())){
+            $info =$this->getCompanyService()->getInfo(['id' => auth()->user()->company_id], ['*'], false);
+            $this->createNode(0,[
+                'name'=>$info['name'],
+                'phone'=>$info['phone']??'',
+                'country'=> $info['id']??'',
+                'address'=>$info['address']??'',
+                'contacts'=>$info['contacts']??'',
+                'parent'=>0,
+                  ]);
+        }
         return Institution::getRoots()->first()->getTree()[0]['children']??[];
     }
 
