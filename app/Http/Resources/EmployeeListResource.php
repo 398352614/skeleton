@@ -14,7 +14,7 @@ class EmployeeListResource extends JsonResource
             'fullname' => $this->fullname,
             'username' => $this->username,
             'phone' => $this->phone ?? '',
-            'remark' => $this->country ?? '',
+            'remark' => $this->remark ?? '',
             'group' => $this->group ?? '',
             'institution' => EmployeeInstitutionListResource::make($this->institution),
             'forbid_login' => $this->forbid_login,
