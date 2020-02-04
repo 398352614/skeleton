@@ -102,7 +102,7 @@ class InstitutionService extends BaseService
      */
     public function getTree(): array
     {
-        return Institution::getRoots()->first()->getTree()[0]['children'];
+        return Institution::getRoots()->first()->getTree()[0]['children']??[];
     }
 
     /**
