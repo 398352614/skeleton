@@ -93,6 +93,11 @@ class OrderService extends BaseService
         return self::getInstance(TourService::class);
     }
 
+    public function getSourceSerice()
+    {
+        return self::getInstance(SourceService::class);
+    }
+
     /**
      * 取件列初始化
      * @return array
@@ -184,6 +189,9 @@ class OrderService extends BaseService
         $order = parent::create($params);
         if ($order === false) {
             throw new BusinessLogicException('订单新增失败');
+        }
+        if(empty($this->getSourceSerice()->getInfo(['company_id'=>auth()->user()->company_id,'source_name'=>$params['source']],['*'],false))){
+            $this->getSourceSerice()->create(['company_id'=>auth()->user()->company_id,'source_name'=>$params['source']]);
         }
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
         /*****************************************订单加入站点*********************************************************/
