@@ -15,7 +15,7 @@ class SourceController extends BaseController
 
     public function index()
     {
-        return $this->service->getPageList();
+        return $this->service->getList();
     }
 
     public function store(){
