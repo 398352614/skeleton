@@ -94,6 +94,30 @@ class EmployeeService extends BaseService
     }
 
     /**
+     * 修改密码
+     *
+     * @param  int  $id
+     * @param  array  $data
+     * @return bool
+     * @throws BusinessLogicException
+     */
+    public function resetPassword(int $id, array $data)
+    {
+        /** @var Employee $employee */
+        $employee = $this->model::findOrFail($id);
+
+        $res = $employee->update([
+            'password' => password_hash($data['password'], PASSWORD_BCRYPT),
+        ]);
+
+        if ($res === false) {
+            throw new BusinessLogicException('修改员工密码失败');
+        }
+
+        return $res;
+    }
+
+    /**
      * 删除
      * @param $id
      * @throws BusinessLogicException
