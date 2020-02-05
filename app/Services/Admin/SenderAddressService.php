@@ -35,11 +35,13 @@ class SenderAddressService extends BaseService
     }
 
     /**
+     * 联合唯一检验
      * @param $params
      * @throws BusinessLogicException
      */
-    public function store($params){
+    public function Check($params,$id = 0){
         $info= parent::getInfo([
+            'id'=>['<>', $id],
             'sender'=> $params['sender'],
             'sender_phone'=> $params['sender_phone'],
             'sender_country'=> $params['sender_country'],
@@ -48,8 +50,15 @@ class SenderAddressService extends BaseService
             'sender_city'=> $params['sender_city'],
             'sender_street'=> $params['sender_street'],
         ],['*'],true);
-        if(!empty($info)){
-          throw new BusinessLogicException('地址新增失败，已有重复地址');
+        return $info;
+    }
+    /**
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function store($params){
+        if(!empty($this->Check($params))){
+            throw new BusinessLogicException('地址新增失败，已有重复地址');
         }
         $rowCount=parent::create($params);
         if (empty($rowCount)){
@@ -64,16 +73,7 @@ class SenderAddressService extends BaseService
      * @throws BusinessLogicException
      */
     public function updateById($id, $data){
-        $info= parent::getInfo([
-            'id'=>['<>', $id],
-            'sender'=> $data['sender'],
-            'sender_phone'=> $data['sender_phone'],
-            'sender_country'=> $data['sender_country'],
-            'sender_post_code'=> $data['sender_post_code'],
-            'sender_house_number'=> $data['sender_house_number'],
-            'sender_city'=> $data['sender_city'],
-            'sender_street'=> $data['sender_street'],
-        ],['*'],true);
+        $this->Check($data,$id);
         if(!empty($info)){
             throw new BusinessLogicException('发货方地址已存在,不能重复添加');
         }

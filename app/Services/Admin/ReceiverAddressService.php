@@ -48,7 +48,9 @@ class ReceiverAddressService extends BaseService
      */
     public function store($params)
     {
-        $this->check($params);
+        if (!empty($this->check($params))) {
+            throw new BusinessLogicException('收货方地址已存在,不能重复添加');
+        }
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
@@ -64,7 +66,9 @@ class ReceiverAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $this->check($data, $id);
+        if (!empty($this->check($data, $id))) {
+            throw new BusinessLogicException('收货方地址已存在,不能重复添加');
+        }
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
@@ -83,10 +87,7 @@ class ReceiverAddressService extends BaseService
         if (!empty($id)) {
             $where = Arr::add($where, 'id', ['<>', $id]);
         }
-        $otherAddress = parent::getInfo($where, ['*'], false);
-        if (!empty($otherAddress)) {
-            throw new BusinessLogicException('收货方地址已存在,不能重复添加');
-        }
+        return parent::getInfo($where, ['*'], false);
     }
 
     /**

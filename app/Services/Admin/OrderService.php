@@ -15,6 +15,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
+use App\Models\ReceiverAddress;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
@@ -93,11 +94,32 @@ class OrderService extends BaseService
         return self::getInstance(TourService::class);
     }
 
+    /**
+     * 来源 服务
+     * @return mixed
+     */
     public function getSourceSerice()
     {
         return self::getInstance(SourceService::class);
     }
 
+    /**
+     * 发件人地址 服务
+     * @return mixed
+     */
+    public function getSenderAddressService()
+    {
+        return self::getInstance(SenderAddressService::class);
+    }
+
+    /**
+     * 收人地址 服务
+     * @return mixed
+     */
+    public function getReceiverAddressService()
+    {
+        return self::getInstance(ReceiverAddressService::class);
+    }
     /**
      * 取件列初始化
      * @return array
@@ -190,8 +212,19 @@ class OrderService extends BaseService
         if ($order === false) {
             throw new BusinessLogicException('订单新增失败');
         }
+        //记录来源
         if(empty($this->getSourceSerice()->getInfo(['company_id'=>auth()->user()->company_id,'source_name'=>$params['source']],['*'],false))){
             $this->getSourceSerice()->create(['company_id'=>auth()->user()->company_id,'source_name'=>$params['source']]);
+        }
+        //记录发件人地址
+        $info= $this->getSenderAddressService()->Check($params);
+        if(empty($info)){
+            $this->getSenderAddressService()->create($params);
+        }
+        //记录收件人地址
+        $info= $this->getReceiverAddressService()->Check($params);
+        if(empty($info)){
+            $this->getReceiverAddressService()->create($params);
         }
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
         /*****************************************订单加入站点*********************************************************/
