@@ -53,18 +53,23 @@ class LineService extends BaseService
 
     public function getPageList()
     {
+        $list=[];
         //如果存在post_code查询
         if(!empty($this->formData['post_code'])){
-            $list=$this->query->join('line_range' ,'line_range.line_id','=','line.id')
+            $line_range=$this->getLineRangeService()->query
+                ->where('post_code_start','<=',$this->formData['post_code'])
+                ->where('post_code_end','>=',$this->formData['post_code'])->distinct()->pluck('line_id');
+            $list=$this->query->whereIn('id',$line_range);
+/*            $list=$this->query->leftJoin('line_range' ,'line_range.line_id','=','line.id')
                 ->where('line_range.post_code_start','<=',$this->formData['post_code'])
-                ->where('line_range.post_code_end','>=',$this->formData['post_code']);
+                ->where('line_range.post_code_end','>=',$this->formData['post_code']);*/
             if(!empty($this->formData['name'])){
-                $list=$list->where('line.name','like',$this->formData['name']);
+                $list=$list->where('name','like',"%{$this->formData['name']}%");
             }
             if(!empty($this->formData['country'])){
-                $list=$list->where('line.country','=',$this->formData['country']);
+                $list=$list->where('country','=',$this->formData['country']);
             }
-            return $list->paginate();
+            $list = $this->resource::collection($list->paginate());
         }else{
             $list = parent::getPageList();
         }
