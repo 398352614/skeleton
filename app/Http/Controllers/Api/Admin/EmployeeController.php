@@ -75,4 +75,18 @@ class EmployeeController extends Controller
 
         return failed();
     }
+
+    /**
+     * @param  int  $id
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function resetPassword(int $id)
+    {
+        if ($this->service->resetPassword($id, \request()->all())) {
+            return success();
+        }
+
+        return failed();
+    }
 }

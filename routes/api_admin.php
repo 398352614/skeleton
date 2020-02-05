@@ -187,6 +187,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/', 'EmployeeController@store');
         Route::delete('/{id}', 'EmployeeController@destroy');
         Route::put('/{id}/forbid-login/{enabled}', 'EmployeeController@setLogin');
+        Route::put('{id}/password', 'EmployeeController@resetPassword');
     });
 
     //组织管理

@@ -13,7 +13,8 @@ class EmployeeValidate extends BaseValidate
         'remark' => '备注',
         'group_id' => '用户组',
         'institution_id' => '组织机构',
-        'password' => '密码'
+        'password' => '密码',
+        'confirm_password' => '确认密码',
     ];
 
 
@@ -26,6 +27,7 @@ class EmployeeValidate extends BaseValidate
         'remark' => 'sometimes|nullable|string|max:250',
         'group_id' => 'nullable|integer',
         'institution_id' => 'sometimes|integer',
+        'confirm_password' => 'required|same:password',
     ];
 
     public $scene = [
@@ -47,6 +49,10 @@ class EmployeeValidate extends BaseValidate
             'remark',
             'group_id',
             'institution_id',
+        ],
+        'resetPassword' => [
+            'password',
+            'confirm_password',
         ]
     ];
 }
