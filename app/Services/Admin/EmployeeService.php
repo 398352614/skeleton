@@ -98,6 +98,7 @@ class EmployeeService extends BaseService
      *
      * @param  int  $id
      * @param  array  $data
+     * @return bool
      * @throws BusinessLogicException
      */
     public function resetPassword(int $id, array $data)
@@ -112,6 +113,8 @@ class EmployeeService extends BaseService
         if ($res === false) {
             throw new BusinessLogicException('修改员工密码失败');
         }
+
+        return $res;
     }
 
     /**
