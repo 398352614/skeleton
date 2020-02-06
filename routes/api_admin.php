@@ -58,9 +58,19 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //新增
         Route::post('/', 'OrderController@store');
         //修改
-        Route::put('/', 'OrderController@update');
+        Route::put('/{id}', 'OrderController@update');
+        //获取可分配的站点列表
+        Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
+        //分配至站点
+        Route::put('/{id}/assignToBatch', 'OrderController@assignToBatch');
+        //从站点移除
+        Route::delete('/{id}/removeFromBatch', 'OrderController@removeFromBatch');
         //删除
-        Route::delete('/', 'OrderController@destroy');
+        Route::delete('/{id}', 'OrderController@destroy');
+        //恢复
+        Route::put('/{id}/recovery', 'OrderController@recovery');
+        //彻底删除
+        Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
     });
 
     //司机管理

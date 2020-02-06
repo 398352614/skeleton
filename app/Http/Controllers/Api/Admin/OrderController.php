@@ -71,4 +71,79 @@ class OrderController extends BaseController
     {
         return $this->service->store($this->data);
     }
+
+    /**
+     * 修改
+     * @param $id
+     * @return bool|int|void
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function update($id)
+    {
+        return $this->service->updateById($id, $this->data);
+    }
+
+
+    /**
+     * 通过订单,获取可分配的站点列表
+     * @param $id
+     * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function getBatchPageListByOrder($id)
+    {
+        return $this->service->getBatchPageListByOrder($id, $this->data);
+    }
+
+
+    /**
+     * 分配至站点
+     * 参数存在站点编号(batchNo),为指定站点;否则为新建站点
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function assignToBatch($id)
+    {
+        return $this->service->assignToBatch($id, $this->data);
+    }
+
+    /**
+     * 从站点中移除订单
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function removeFromBatch($id)
+    {
+        return $this->service->removeFromBatch($id);
+    }
+
+    /**
+     * 删除订单
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        return $this->service->destroy($id);
+    }
+
+    /**
+     * 恢复
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function recovery($id)
+    {
+        return $this->service->recovery($id, $this->data);
+    }
+
+    /**
+     * 彻底删除
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function actualDestroy($id)
+    {
+        return $this->service->actualDestroy($id);
+    }
 }

@@ -359,6 +359,79 @@ class TourService extends BaseService
     }
 
     /**
+     * 通过订单,修改订单相关数据
+     * @param $dbOrder
+     * @param $order
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    public function updateAboutOrderByOrder($dbOrder, $order)
+    {
+        $info = parent::getInfoLock(['tour_no' => $dbOrder['tour_no']], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info = $info->toArray();
+        if (intval($info['status']) !== BaseConstService::TOUR_STATUS_1) {
+            throw new BusinessLogicException('当前取件线路状态不能更新订单相关信息');
+        }
+        //若订单类型改变,则站点统计数量改变
+        $data = [];
+        if (intval($dbOrder['type']) !== intval($order['type'])) {
+            if (intval($order['type']) === BaseConstService::ORDER_TYPE_1) {
+                $data['expect_pickup_quantity'] = $info['expect_pickup_quantity'] + 1;
+                $data['expect_pie_quantity'] = $info['expect_pie_quantity'] - 1;
+            } else {
+                $data['expect_pickup_quantity'] = $info['expect_pickup_quantity'] - 1;
+                $data['expect_pie_quantity'] = $info['expect_pie_quantity'] + 1;
+            }
+        }
+        //代收款费用
+        $diffReplaceAmount = $order['replace_amount'] - $dbOrder['replace_amount'];
+        $diffSettlementAmount = $order['settlement_amount'] - $dbOrder['settlement_amount'];
+        $rowCount = parent::updateById($info['id'], array_merge($data, [
+            'replace_amount' => $info['replace_amount'] + $diffReplaceAmount,
+            'settlement_amount' => $info['settlement_amount'] + $diffSettlementAmount
+        ]));
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败');
+        }
+    }
+
+
+    /**
+     * 移除站点订单
+     * @param $order
+     * @param $batch
+     * @throws BusinessLogicException
+     */
+    public function removeBatchOrder($order, $batch)
+    {
+        $info = parent::getInfoLock(['tour_no' => $order['tour_no']], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info = $info->toArray();
+        if (intval($info['status']) !== BaseConstService::TOUR_STATUS_1) {
+            throw new BusinessLogicException('当前取件线路状态不能移除订单');
+        }
+        $quantity = $info['expect_pickup_quantity'] + $info['expect_pie_quantity'];
+        //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
+        if ($quantity - 1 <= 0) {
+            $rowCount = parent::delete(['id' => $info['id']]);
+        } else {
+            $data = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
+            $data['settlement_amount'] = $info['settlement_amount'] - $order['settlement_amount'];
+            $data['replace_amount'] = $info['replace_amount'] - $order['replace_amount'];
+            $rowCount = parent::updateById($info['id'], $data);
+        }
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取件移除订单失败,请重新操作');
+        }
+    }
+
+
+    /**
      * 此处要求batchIds 为有序,并且已完成或者异常的 batch 在前方,未完成的 batch 在后方
      */
     public function getNextBatchAndUpdateIndex($batchIds): Batch
@@ -367,11 +440,11 @@ class TourService extends BaseService
         foreach ($batchIds as $key => $batchId) {
             $tempbatch = Batch::where('id', $batchId)->first();
             if (!$first && in_array($tempbatch->status, [
-                BaseConstService::BATCH_WAIT_ASSIGN,
-                BaseConstService::BATCH_WAIT_OUT,
-                BaseConstService::BATCH_DELIVERING,
-                BaseConstService::BATCH_ASSIGNED
-            ])) {
+                    BaseConstService::BATCH_WAIT_ASSIGN,
+                    BaseConstService::BATCH_WAIT_OUT,
+                    BaseConstService::BATCH_DELIVERING,
+                    BaseConstService::BATCH_ASSIGNED
+                ])) {
                 if ($tempbatch) {
                     $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地
@@ -570,6 +643,7 @@ class TourService extends BaseService
         self::setTourLock($this->formData['line_code'], 0);
         return '更新完成';
     }
+
     public function getBatchCountInfo($id)
     {
         $info = parent::getInfo(['id' => $id], ['*'], true);

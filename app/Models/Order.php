@@ -83,6 +83,8 @@ class Order extends BaseModel
         'receiver_city',
         'receiver_street',
         'receiver_address',
+        'lon',
+        'lat',
         'special_remark',
         'remark',
         'unique_code',

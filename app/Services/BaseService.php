@@ -207,7 +207,7 @@ class BaseService
      * @param array $orderFields
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
-    public function getInfo($where, $selectFields = ['*'], $isResource = true,$orderFields = [])
+    public function getInfo($where, $selectFields = ['*'], $isResource = true, $orderFields = [])
     {
         SearchTrait::buildQuery($this->query, $where);
         $data = $this->query->first($selectFields);
@@ -288,6 +288,20 @@ class BaseService
         $this->query = $this->model::query();
         $query = $this->query->findOrFail($id);
         return $query->increment($field, $data[$field], Arr::except($data, $data[$field]));
+    }
+
+    /**
+     * 指定字段自增
+     * @param $where
+     * @param $field
+     * @param $data
+     * @return int
+     */
+    public function increment($where, $field, $data)
+    {
+        $this->query = $this->model::query();
+        SearchTrait::buildQuery($this->query, $where);
+        return $this->query->increment($field, $data[$field], Arr::except($data, $data[$field]));
     }
 
     public function delete($where)

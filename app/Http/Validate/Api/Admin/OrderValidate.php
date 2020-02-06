@@ -14,6 +14,7 @@ use App\Http\Validate\BaseValidate;
 class OrderValidate extends BaseValidate
 {
     public $customAttributes = [
+        'batch_no' => '站点编号',
         'execution_date' => '取派日期',
         'out_order_no' => '外部订单号',
         'express_first_no' => '快递单号1',
@@ -57,6 +58,7 @@ class OrderValidate extends BaseValidate
     ];
 
     public $rules = [
+        'batch_no' => 'nullable|string|max:50',
         'execution_date' => 'required|date|after_or_equal:today',
         'out_order_no' => 'required|string|max:50|uniqueIgnore:order,id',
         'express_first_no' => 'required|string|max:50|uniqueIgnore:order,id',
@@ -119,10 +121,25 @@ class OrderValidate extends BaseValidate
             //明细
             'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
         ],
+        'update' => [
+            'execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source',
+            'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
+            //发货人信息
+            'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
+            'sender_city', 'sender_street', 'sender_address',
+            //收货人信息
+            'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
+            'receiver_city', 'receiver_street', 'receiver_address',
+            //备注
+            'special_remark', 'remark', 'lon', 'lat',
+            //明细
+            'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
+        ],
+        'assignToBatch' => ['execution_date', 'batch_no'],
+        'recovery' => ['execution_date'],
     ];
-    public $message =[
-        'settlement_amount.required_if'=>'当结算方式为到付时,:attribute字段必填',
-
+    public $message = [
+        'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
     ];
 }
 
