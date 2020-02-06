@@ -344,8 +344,9 @@ class BatchService extends BaseService
      */
     public function getPageListByOrder($order)
     {
-        $fields = ['execution_date', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
+        $fields = ['receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
         $this->formData = array_merge($this->formData, Arr::only($order, $fields));
+        $this->filters['execution_date'] = ['=', $order['execution_date']];
         return parent::getPageList();
     }
 
