@@ -250,22 +250,24 @@ class OrderService extends BaseService
      * 自动记录
      * @param $params
      */
-    public function record($params){
+    public function record($params)
+    {
         //记录来源
-        if(empty($this->getSourceSerice()->getInfo(['source_name'=>$params['source']],['*'],false))){
-            $this->getSourceSerice()->create(['source_name'=>$params['source']]);
+        if (empty($this->getSourceSerice()->getInfo(['source_name' => $params['source']], ['*'], false))) {
+            $this->getSourceSerice()->create(['source_name' => $params['source']]);
         }
         //记录发件人地址
-        $info= $this->getSenderAddressService()->check($params);
-        if(empty($info)){
+        $info = $this->getSenderAddressService()->check($params);
+        if (empty($info)) {
             $this->getSenderAddressService()->create($params);
         }
         //记录收件人地址
-        $info= $this->getReceiverAddressService()->check($params);
-        if(empty($info)){
+        $info = $this->getReceiverAddressService()->check($params);
+        if (empty($info)) {
             $this->getReceiverAddressService()->create($params);
         }
     }
+
     /**
      * 验证
      * @param $params
@@ -476,7 +478,9 @@ class OrderService extends BaseService
             throw new BusinessLogicException('订单删除失败,请重新操作');
         }
         //站点移除订单
-        $this->getBatchService()->removeOrder($info);
+        if (!empty($info['batch_no'])) {
+            $this->getBatchService()->removeOrder($info);
+        }
     }
 
 
