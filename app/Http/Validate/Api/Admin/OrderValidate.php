@@ -135,6 +135,7 @@ class OrderValidate extends BaseValidate
             //明细
             'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
         ],
+        'getBatchPageListByOrder' => ['execution_date'],
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
     ];
