@@ -19,11 +19,12 @@ class SourceController extends BaseController
     }
 
     public function store(){
-        $this->service->create($this->data);
+        $this->service->store($this->data);
     }
 
     public function destroy($id)
     {
         return $this->service->destroy($id);
     }
+
 }

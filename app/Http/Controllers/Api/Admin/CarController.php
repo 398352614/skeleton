@@ -78,6 +78,7 @@ class CarController extends BaseController
      * @apiVersion 1.0.0
      * @apiDescription 查询车辆详情
      * @apiSuccessExample {json}  返回示例
+     * @throws
      * HTTP/1.1 200 OK
      * {
      *  "ret":1,
