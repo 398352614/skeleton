@@ -22,7 +22,7 @@ class EmployeeValidate extends BaseValidate
         'fullname' => 'required|string|max:50',
         'username' => 'required|string|max:50|uniqueIgnore:employee,id,company_id',
         'password' => 'required|string|between:8,20',
-        'email' => 'required|email|max:50|uniqueIgnore:employee,id,company_id',
+        'email' => 'required|email|max:50|uniqueIgnore:employee,id',
         'phone' => 'sometimes|nullable|string|max:20',
         'remark' => 'sometimes|nullable|string|max:250',
         'group_id' => 'nullable|integer',
