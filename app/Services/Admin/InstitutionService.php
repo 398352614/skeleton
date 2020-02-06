@@ -105,8 +105,8 @@ class InstitutionService extends BaseService
      */
     public function getTree(): array
     {
-        if(empty(Institution::getRoots()->first())){
             $info =$this->getCompanyService()->getInfo(['id' => auth()->user()->company_id], ['*'], false);
+        if(!$this->query->where(['company_id'=>auth()->user()->company_id,'country'=>['<>',null]])->exists()){
             $this->createNode(0,[
                 'name'=>$info['name'],
                 'phone'=>$info['phone']??'',
