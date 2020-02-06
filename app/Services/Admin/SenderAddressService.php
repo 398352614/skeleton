@@ -39,7 +39,7 @@ class SenderAddressService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    public function Check($params,$id = 0){
+    public function check($params,$id = 0){
         $info= parent::getInfo([
             'id'=>['<>', $id],
             'sender'=> $params['sender'],

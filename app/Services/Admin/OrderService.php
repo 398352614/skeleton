@@ -212,20 +212,8 @@ class OrderService extends BaseService
         if ($order === false) {
             throw new BusinessLogicException('订单新增失败');
         }
-        //记录来源
-        if(empty($this->getSourceSerice()->getInfo(['company_id'=>auth()->user()->company_id,'source_name'=>$params['source']],['*'],false))){
-            $this->getSourceSerice()->create(['company_id'=>auth()->user()->company_id,'source_name'=>$params['source']]);
-        }
-        //记录发件人地址
-        $info= $this->getSenderAddressService()->Check($params);
-        if(empty($info)){
-            $this->getSenderAddressService()->create($params);
-        }
-        //记录收件人地址
-        $info= $this->getReceiverAddressService()->Check($params);
-        if(empty($info)){
-            $this->getReceiverAddressService()->create($params);
-        }
+        //自动记录
+        $this->record($params);
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
         /*****************************************订单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($params);
@@ -255,6 +243,26 @@ class OrderService extends BaseService
         }
     }
 
+    /**
+     * 自动记录
+     * @param $params
+     */
+    public function record($params){
+        //记录来源
+        if(empty($this->getSourceSerice()->getInfo(['company_id'=>auth()->user()->company_id,'source_name'=>$params['source']],['*'],false))){
+            $this->getSourceSerice()->create(['company_id'=>auth()->user()->company_id,'source_name'=>$params['source']]);
+        }
+        //记录发件人地址
+        $info= $this->getSenderAddressService()->check($params);
+        if(empty($info)){
+            $this->getSenderAddressService()->create($params);
+        }
+        //记录收件人地址
+        $info= $this->getReceiverAddressService()->check($params);
+        if(empty($info)){
+            $this->getReceiverAddressService()->create($params);
+        }
+    }
     /**
      * 验证
      * @param $params
