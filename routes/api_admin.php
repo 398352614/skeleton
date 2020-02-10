@@ -81,7 +81,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/crop-type', 'DriverController@cropType'); //获取合作方式
         Route::get('/driver-status', 'DriverController@driverStatus'); //获取状态
         Route::post('/{id}/lock-driver', 'DriverController@lockDriver'); //锁定或解锁司机
-        Route::put('/{id}/reset-password', 'DriverController@resetPassword')->name('driver.reset-password'); //司机修改密码
+        Route::put('/{id}/reset-password', 'DriverController@resetPassword')->name('driver.reset-password'); //修改司机密码
 
         //rest api 放在最后
         Route::get('/', 'DriverController@index')->name('driver.index'); //司机列表?page=1&page_size=10&status=&crop_type=&keywords=
@@ -144,6 +144,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/assignCar', 'TourController@assignCar');                     //分配车辆
         Route::put('/{id}/cancelAssignCar', 'TourController@cancelAssignCar');         //取消分配车辆
         Route::put('/{id}/unlock', 'TourController@unlock');         //取消分配车辆
+        Route::get('/{id}/excel','TourController@batchExcel');//导出excel
+        Route::get('/{id}/txt','TourController@cityTxt');//导出txt
 
     });
 
@@ -197,7 +199,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/', 'EmployeeController@store');
         Route::delete('/{id}', 'EmployeeController@destroy');
         Route::put('/{id}/forbid-login/{enabled}', 'EmployeeController@setLogin');
-        Route::put('{id}/password', 'EmployeeController@resetPassword');
+        Route::put('/{id}/password', 'EmployeeController@resetPassword');//修改员工密码
     });
 
     //组织管理

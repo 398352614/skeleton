@@ -163,6 +163,11 @@ class BaseConstService
     //司机端 图片目录
     const DRIVER_IMAGE_TOUR_DIR = 'tour';
 
+    //管理员端 表格目录
+    const ADMIN_EXCEL_TOUR_DIR = 'tour';
+
+    //管理员端 文档目录
+    const ADMIN_TXT_TOUR_DIR = 'tour';
 
     //管理员端 文件目录
     const ADMIN_FILE_DRIVER_DIR = 'driver';

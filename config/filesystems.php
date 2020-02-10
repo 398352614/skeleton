@@ -71,6 +71,22 @@ return [
             'visibility' => 'public',
         ],
 
+        //管理员端-表格
+        'admin_excel_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/admin/excel'),
+            'url' => env('APP_URL').'/storage/admin/excel',
+            'visibility' => 'public',
+        ],
+
+        //管理员端-文档
+        'admin_txt_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/admin/txt'),
+            'url' => env('APP_URL').'/storage/admin/txt',
+            'visibility' => 'public',
+        ],
+
         //司机端-图片
         'driver_image_public' => [
             'driver' => 'local',

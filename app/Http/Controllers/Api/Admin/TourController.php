@@ -174,4 +174,25 @@ class TourController extends BaseController
     {
         return $this->service->unlock($id);
     }
+
+    /**
+     * 导出投递列表
+     * @param $id
+     * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function batchExcel($id)
+    {
+        return $this->service->batchExcel($id);
+    }
+
+    /**
+     * 导出城市线路
+     * @param $id
+     * @return mixed
+     */
+    public function cityTxt($id)
+    {
+        return $this->service->cityTxt($id);
+    }
 }

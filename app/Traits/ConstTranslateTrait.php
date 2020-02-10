@@ -178,6 +178,16 @@ trait ConstTranslateTrait
         BaseConstService::ADMIN_FILE_CAR_DIR => '车辆文件目录'
     ];
 
+    //管理员端 表格目录
+    public static $adminExcelDirList = [
+        BaseConstService::ADMIN_EXCEL_TOUR_DIR => '取件线路表格目录',
+    ];
+
+    //管理员端 文档目录
+    public static $adminTxtDirList = [
+        BaseConstService::ADMIN_TXT_TOUR_DIR => '取件线路文档目录',
+    ];
+
     //司机端 文件目录
     public static $driverFileDirList = [
         BaseConstService::DRIVER_FILE_TOUR_DIR => '取件线路文件目录'

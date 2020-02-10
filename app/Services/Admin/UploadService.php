@@ -10,11 +10,13 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
+use App\Exports\BatchListExport;
 use App\Models\Driver;
 use App\Models\Employee;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -29,10 +31,15 @@ class UploadService
 
     protected $fileDisk;
 
+    protected $excelDisk;
+
     public function __construct()
     {
         $this->imageDisk = Storage::disk('admin_image_public');
         $this->fileDisk = Storage::disk('admin_file_public');
+        $this->excelDisk = Storage::disk('admin_excel_public');
+        $this->txtDisk =Storage::disk('admin_txt_public');
+
     }
 
     /**
@@ -65,6 +72,34 @@ class UploadService
 
 
     /**
+     * 获取文件目录
+     * @param $dir
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    private function getExcelDir($dir)
+    {
+        if (!array_key_exists($dir, ConstTranslateTrait::$adminExcelDirList)) {
+            throw new BusinessLogicException('没有对应目录');
+        }
+        return auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
+    }
+
+    /**
+     * 获取文档目录
+     * @param $dir
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    private function getTxtDir($dir)
+    {
+        if (!array_key_exists($dir, ConstTranslateTrait::$adminTxtDirList)) {
+            throw new BusinessLogicException('没有对应目录');
+        }
+        return auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
+    }
+
+    /**
      * 获取唯一名称
      * @param $file
      * @return string
@@ -84,6 +119,51 @@ class UploadService
         return str_replace(config('app.url'), '', $url);
     }
 
+    /**
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function txtUpload($params){
+        $subPath = $this->getTxtDir($params['dir']);
+        $params['name'] = date('Ymd') . $params['name'];
+        try {
+            $rowCount = $this->txtDisk->put($subPath.DIRECTORY_SEPARATOR.$params['name'].'.txt',$params['txt']);
+        } catch (\Exception $ex) {
+            throw new BusinessLogicException('文档上传失败,请重新操作');
+        }
+        if ($rowCount === false) {
+            throw new BusinessLogicException('文档上传失败,请重新操作');
+        }
+        return [
+            'name' => $params['name'].'.txt',
+            'path' => $this->txtDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name'].'.txt')
+        ];
+    }
+    /**
+     * 表格上传
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function excelUpload($params)
+    {
+        $subPath = $this->getExcelDir($params['dir']);
+        $params['name'] = date('Ymd') . $params['name'];
+        $path ='public\\admin\\excel\\'.$subPath . DIRECTORY_SEPARATOR . $params['name'].'.xlsx';
+        try {
+            $rowCount=Excel::store(new BatchListExport($params['name'],$params['excel']),$path);
+        } catch (\Exception $ex) {
+            throw new BusinessLogicException('表格上传失败,请重新操作');
+        }
+        if ($rowCount === false) {
+            throw new BusinessLogicException('表格上传失败,请重新操作');
+        }
+        return [
+            'name' => $params['name'].'.xlsx',
+            'path' => $this->excelDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name'].'.xlsx')
+        ];
+    }
 
     /**
      * 图片上传
