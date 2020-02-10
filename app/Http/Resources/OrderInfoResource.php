@@ -55,6 +55,7 @@ class OrderInfoResource extends JsonResource
             'unique_code' => $this->unique_code,
             'driver_id' => $this->driver_id,
             'driver_name' => $this->driver_name,
+            'driver_phone' => $this->driver_phone,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
             'item_list' => $this->item_list

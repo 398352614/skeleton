@@ -119,6 +119,12 @@ class RegisterController extends BaseController
         ]);
     }
 
+    /**
+     * 添加初始仓库
+     * @param Company $company
+     * @param array $data
+     * @return mixed
+     */
     protected function addWarehouse(Company $company, array $data)
     {
         return Warehouse::create([

@@ -18,6 +18,7 @@ class TourResource extends JsonResource
             'execution_date' => $this->execution_date,
             'driver_id' => $this->driver_id,
             'driver_name' => $this->driver_name,
+            'driver_phone' => $this->driver_phone,
             'driver_assign_status' => (!empty($this->driver_id) && !empty($this->driver_name)) ? BaseConstService::TOUR_STATUS_2 : BaseConstService::TOUR_STATUS_1,
             'driver_rest_time' => $this->driver_rest_time,
             'driver_avt_id' => $this->driver_avt_id,

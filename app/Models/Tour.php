@@ -54,6 +54,7 @@ class Tour extends BaseModel
         'execution_date',
         'driver_id',
         'driver_name',
+        'driver_phone',
         'driver_rest_time',
         'driver_avt_id',
         'car_id',

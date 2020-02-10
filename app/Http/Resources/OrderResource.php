@@ -35,6 +35,7 @@ class OrderResource extends JsonResource
             'exception_stage_name' => $this->exception_stage_name ?? '',
             'receiver_house_number' => $this->receiver_house_number,
             'driver_name' => $this->driver_name,
+            'driver_phone' => $this->driver_phone,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
