@@ -123,4 +123,10 @@ Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
         //文件上传
         Route::post('fileUpload', 'UploadController@fileUpload');
     });
+
+    //线路追踪
+    Route::prefix('route-tracking')->group(function () {
+        //用户采集地址
+        Route::post('collect', 'RouteTrackingController@collect');
+    });
 });
