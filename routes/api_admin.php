@@ -39,7 +39,6 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/this-month-count', 'HomeController@thisMonthcount');
         Route::get('/last-month-count', 'HomeController@lastMonthcount');
         Route::get('/period-count', 'HomeController@periodCount');
-
     });
 
 
@@ -75,7 +74,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //司机管理
     Route::prefix('driver')->group(function () {
-        Route::post('/driver-register', 'DriverController@driverRegister');//司机新增
+        Route::post('/driver-register', 'DriverController@driverRegister'); //司机新增
         Route::get('/driver-work', 'DriverController@driverWork'); //获取司机工作日driverWork?driver_id=105
         Route::post('assgin-driverWork', 'DriverController@assginDriverWork'); //给司机分配工作信息（也就是产品图上的审核）
         Route::get('/crop-type', 'DriverController@cropType'); //获取合作方式
@@ -92,7 +91,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //车辆管理
     Route::prefix('car')->group(function () {
-        Route::put('/{id}/lock', 'CarController@lock')->name('car.lock');//车辆锁定操作
+        Route::put('/{id}/lock', 'CarController@lock')->name('car.lock'); //车辆锁定操作
         Route::get('/brands', 'CarController@getBrands')->name('car.brands');       // 获取品牌列表
         Route::post('/addbrand', 'CarController@addBrand')->name('car.addbrand');   // 添加品牌
         Route::get('/models', 'CarController@getModels')->name('car.models');       // 获取型号列表
@@ -229,11 +228,11 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //发件人地址管理
     Route::prefix('sender-address')->group(function () {
-        Route::get('/', 'SenderAddressController@index');//发件人地址查询
-        Route::get('/{id}', 'SenderAddressController@show');//发件人地址详情
-        Route::post('/', 'SenderAddressController@store');//发件人地址新增
-        Route::put('/{id}', 'SenderAddressController@update');//发件人地址修改
-        Route::delete('/{id}', 'SenderAddressController@destroy');//发件人地址删除
+        Route::get('/', 'SenderAddressController@index'); //发件人地址查询
+        Route::get('/{id}', 'SenderAddressController@show'); //发件人地址详情
+        Route::post('/', 'SenderAddressController@store'); //发件人地址新增
+        Route::put('/{id}', 'SenderAddressController@update'); //发件人地址修改
+        Route::delete('/{id}', 'SenderAddressController@destroy'); //发件人地址删除
     });
 
 
@@ -269,5 +268,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('getFileDirList', 'UploadController@getFileDirList');
         //文件上传
         Route::post('fileUpload', 'UploadController@fileUpload');
+    });
+
+    //路线追踪相关
+    Route::prefix('route-tracking')->group(function () {
+        Route::get('route', 'RouteTrackingController@route')->name('route-tracking.route');
     });
 });

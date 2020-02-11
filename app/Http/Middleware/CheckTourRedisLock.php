@@ -25,7 +25,12 @@ class CheckTourRedisLock
         if (self::getTourLock($request->tour_no)) {
             throw new BusinessLogicException('当前取件线路已锁定,请稍后操作');
         }
-        $response = $next($request);
+        try {
+            $response = $next($request);
+        } catch (\Exception $e) {
+            self::setTourLock($request->tour_no, 0);
+            throw $e;
+        }
         if (method_exists($response, 'getData') && isset($response->getData()->code) && $response->getData()->code != 200) {
             self::setTourLock($request->tour_no, 0);
         }
