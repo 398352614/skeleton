@@ -24,7 +24,7 @@ Route::namespace('Api\Admin')->group(function () {
     Route::get('/tour/callback', 'TourController@callback');         //自动优化线路
 
     Route::prefix('tour')->group(function () {
-        Route::post('unlock-redis', 'TourController@unlockRedis'); // 取消 redis 锁
+        Route::get('unlock-redis', 'TourController@unlockRedis'); // 取消 redis 锁
     });
 });
 

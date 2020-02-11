@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\TourService;
+use App\Services\Traits\TourRedisLockTrait;
 use Illuminate\Http\Request;
 
 /**
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
  */
 class TourController extends BaseController
 {
+    use TourRedisLockTrait;
+
     public function __construct(TourService $service)
     {
         //事务包裹和数据传入
@@ -193,6 +196,6 @@ class TourController extends BaseController
      */
     public function unlockRedis(Request $request)
     {
-        return $this->service::setTourLock($request->tour_no, 0);
+        return self::setTourLock($request->tour_no, 0);
     }
 }
