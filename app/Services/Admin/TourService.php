@@ -561,7 +561,8 @@ class TourService extends BaseService
 
         $batchNos = [];
 
-        if (count($batchs) !== 0) {
+        //必须大于等于 2 才调用优化接口
+        if (count($batchs) >= 2) {
             $driverLoc = [
                 'batch_no' => 'driver_location',
                 'receiver_lat' => $tour->driver_location['latitude'],
