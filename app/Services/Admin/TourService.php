@@ -150,7 +150,7 @@ class TourService extends BaseService
         }
         $driver = $driver->toArray();
         //取件线路分配 由于取件线路,站点,订单的已分配状态都为2,所以只需取一个状态即可(ORDER_STATUS_2,BATCH_ASSIGNED,TOUR_STATUS_2)
-        $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => $driver['id'], 'driver_name' => $driver['first_name'] . $driver['last_name'],'driver_phone'=>$driver['phone'], 'status' => BaseConstService::ORDER_STATUS_2]);
+        $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => $driver['id'], 'driver_name' => $driver['first_name'] . $driver['last_name'], 'driver_phone' => $driver['phone'], 'status' => BaseConstService::ORDER_STATUS_2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('司机分配失败,请重新操作');
         }
@@ -167,7 +167,7 @@ class TourService extends BaseService
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在或当前状态不是已分配状态');
         }
-        $rowCount = $this->assignOrCancelAssignAll($tour->toArray(), ['driver_id' => null, 'driver_name' => null,'driver_phone'=>null, 'status' => BaseConstService::ORDER_STATUS_1]);
+        $rowCount = $this->assignOrCancelAssignAll($tour->toArray(), ['driver_id' => null, 'driver_name' => null, 'driver_phone' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('司机取消分配失败,请重新操作');
         }
@@ -440,11 +440,11 @@ class TourService extends BaseService
         foreach ($batchIds as $key => $batchId) {
             $tempbatch = Batch::where('id', $batchId)->first();
             if (!$first && in_array($tempbatch->status, [
-                    BaseConstService::BATCH_WAIT_ASSIGN,
-                    BaseConstService::BATCH_WAIT_OUT,
-                    BaseConstService::BATCH_DELIVERING,
-                    BaseConstService::BATCH_ASSIGNED
-                ])) {
+                BaseConstService::BATCH_WAIT_ASSIGN,
+                BaseConstService::BATCH_WAIT_OUT,
+                BaseConstService::BATCH_DELIVERING,
+                BaseConstService::BATCH_ASSIGNED
+            ])) {
                 if ($tempbatch) {
                     $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地
@@ -623,7 +623,7 @@ class TourService extends BaseService
         $max_distance = 0;
 
         foreach ($data['loc_res'] as $key => $res) {
-            $tourBatch = Batch::where('batch_no', $key)->where('tour_no', $this->formData['line_code'])->first();
+            $tourBatch = Batch::where('batch_no', str_replace($this->formData['line_code'], '', $key))->where('tour_no', $this->formData['line_code'])->first();
             $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', $data['timestamp'] + $res['time']);
             $tourBatch->expect_distance = $res['distance'];
             $tourBatch->save();
