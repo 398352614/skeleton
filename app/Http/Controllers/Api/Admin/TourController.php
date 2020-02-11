@@ -176,23 +176,23 @@ class TourController extends BaseController
     }
 
     /**
-     * 导出投递列表
-     * @param $id
-     * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
+     * @api {GET}  api/admin/tour/unlock-redis 管理员端:取消 redis 锁
+     * @apiName unlock-redis
+     * @apiGroup admin
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 取消 redis 锁
+     * @apiParam {String}   tour_no                    在途编号
+     * @apiSuccessExample {json}  返回示例
+     * HTTP/1.1 200 OK
+     * {
+     *  "ret":1,
+     *  "msg":"添加线路",
+     *  "data":{}
+     * }
      */
-    public function batchExcel($id)
+    public function unlockRedis(Request $request)
     {
-        return $this->service->batchExcel($id);
-    }
-
-    /**
-     * 导出城市线路
-     * @param $id
-     * @return mixed
-     */
-    public function cityTxt($id)
-    {
-        return $this->service->cityTxt($id);
+        return $this->service::setTourLock($request->tour_no, 0);
     }
 }

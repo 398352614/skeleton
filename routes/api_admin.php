@@ -22,6 +22,10 @@ Route::namespace('Api\Admin')->group(function () {
     Route::post('password-reset/apply', 'RegisterController@applyOfReset');
     Route::put('password-reset/verify', 'RegisterController@verifyResetCode');
     Route::get('/tour/callback', 'TourController@callback');         //自动优化线路
+
+    Route::prefix('tour')->group(function () {
+        Route::post('unlock-redis', 'TourController@unlockRedis'); // 取消 redis 锁
+    });
 });
 
 //认证
