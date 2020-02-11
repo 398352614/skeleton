@@ -568,6 +568,8 @@ class TourService extends BaseService
                 'receiver_lat' => $tour->driver_location['latitude'],
                 'receiver_lon' => $tour->driver_location['longitude'],
             ];
+            app('log')->debug('查看当前 batch 总数为:' . count($batchs) . '当前的 batch 为:', $batchs->toArray());
+            app('log')->debug('整合后的数据为:', [$driverLoc] + $batchs->toArray());
 
             $batchNos = $this->directionClient->GetRoute([$driverLoc] + $batchs->toArray());
 
