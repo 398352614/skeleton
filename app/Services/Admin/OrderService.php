@@ -333,6 +333,7 @@ class OrderService extends BaseService
             'tour_no' => $tour['tour_no'],
             'driver_id' => $tour['driver_id'] ?? null,
             'driver_name' => $tour['driver_name'] ?? '',
+            'driver_phone' => $tour['driver_phone'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
             'car_no' => $tour['car_no'] ?? '',
             'status' => $tour['status'] ?? BaseConstService::ORDER_STATUS_1,
@@ -457,7 +458,7 @@ class OrderService extends BaseService
         if (empty($info['batch_no'])) {
             throw new BusinessLogicException('已从站点移除!');
         }
-        $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null]);
+        $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '','driver_phone'=>'','car_id' => null, 'car_no' => null]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }

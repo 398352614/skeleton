@@ -150,7 +150,7 @@ class TourService extends BaseService
         }
         $driver = $driver->toArray();
         //取件线路分配 由于取件线路,站点,订单的已分配状态都为2,所以只需取一个状态即可(ORDER_STATUS_2,BATCH_ASSIGNED,TOUR_STATUS_2)
-        $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => $driver['id'], 'driver_name' => $driver['first_name'] . $driver['last_name'], 'status' => BaseConstService::ORDER_STATUS_2]);
+        $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => $driver['id'], 'driver_name' => $driver['first_name'] . $driver['last_name'],'driver_phone'=>$driver['phone'], 'status' => BaseConstService::ORDER_STATUS_2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('司机分配失败,请重新操作');
         }
@@ -167,7 +167,7 @@ class TourService extends BaseService
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在或当前状态不是已分配状态');
         }
-        $rowCount = $this->assignOrCancelAssignAll($tour->toArray(), ['driver_id' => null, 'driver_name' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
+        $rowCount = $this->assignOrCancelAssignAll($tour->toArray(), ['driver_id' => null, 'driver_name' => null,'driver_phone'=>null, 'status' => BaseConstService::ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('司机取消分配失败,请重新操作');
         }

@@ -123,6 +123,7 @@ class BatchService extends BaseService
             'tour_no' => $tour['tour_no'],
             'driver_id' => $tour['driver_id'] ?? null,
             'driver_name' => $tour['driver_name'] ?? '',
+            'driver_phone' => $tour['driver_phone']??'',
             'car_id' => $tour['car_id'] ?? null,
             'car_no' => $tour['car_no'] ?? '',
             'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN
@@ -379,6 +380,7 @@ class BatchService extends BaseService
             'tour_no' => $tour['tour_no'],
             'driver_id' => $tour['driver_id'] ?? null,
             'driver_name' => $tour['driver_name'] ?? '',
+            'driver_phone' => $tour['driver_phone'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
             'car_no' => $tour['car_no'] ?? '',
             'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN
