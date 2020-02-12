@@ -5,7 +5,6 @@ namespace App\Services\Admin;
 use App\Events\AfterTourInit;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Exports\BatchListExport;
 use App\Http\Resources\TourInfoResource;
 use App\Http\Resources\TourResource;
 use App\Models\Batch;
