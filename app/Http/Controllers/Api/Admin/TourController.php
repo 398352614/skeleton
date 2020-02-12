@@ -222,4 +222,14 @@ class TourController extends BaseController
     {
         return $this->service->cityTxt($id);
     }
+
+    /**
+     * 导出站点地图
+     * @param $id
+     * @return mixed
+     */
+    public function batchPng($id){
+        return $this->service->batchPng($id);
+    }
+
 }

@@ -736,6 +736,6 @@ class TourService extends BaseService
        $params['txt']=$tourInfo['line_name'].' '.$tourInfo['driver_name'].':'.$tourInfo['driver_phone'].' '.$cityList;
        $params['name']=$tourInfo['tour_no'];
        $params['dir']='tour';
-       return $params['txt'];
+       return $params;
     }
 }

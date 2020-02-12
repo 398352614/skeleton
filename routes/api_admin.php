@@ -147,9 +147,9 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/assignCar', 'TourController@assignCar');                     //分配车辆
         Route::put('/{id}/cancelAssignCar', 'TourController@cancelAssignCar');         //取消分配车辆
         Route::put('/{id}/unlock', 'TourController@unlock');         //取消分配车辆
-        Route::get('/{id}/excel','TourController@batchExcel');//导出excel
-        Route::get('/{id}/txt','TourController@cityTxt');//导出txt
-
+        Route::get('/{id}/excel','TourController@batchExcel');//导出投递站点excel
+        Route::get('/{id}/txt','TourController@cityTxt');//导出投递城市txt
+        Route::get('/{id}/png','TourController@batchPng');//导出站点地图png
     });
 
     //任务报告
