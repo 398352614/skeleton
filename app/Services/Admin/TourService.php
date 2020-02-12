@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Events\AfterTourInit;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
+use App\Exports\BatchListExport;
 use App\Http\Resources\TourInfoResource;
 use App\Http\Resources\TourResource;
 use App\Models\Batch;
@@ -20,6 +21,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
 use App\Services\Traits\TourRedisLockTrait;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TourService extends BaseService
 {
@@ -654,5 +657,86 @@ class TourService extends BaseService
         $info = parent::getInfo(['id' => $id], ['*'], true);
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         return $info;
+    }
+
+
+    public function getUploadService(){
+        return self::getInstance(UploadService::class);
+
+    }
+
+    public function export($tour_no,$data)
+    {
+        $params['dir'] ='tour';
+        $params['name'] =$tour_no;
+        $params['excel'] =$data;
+        return $this->getUploadService()->excelUpload($params);
+    }
+
+    /**
+     * 导出站点表格
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function batchExcel($id){
+        //取出数据
+        $cellData=[];
+        $tour_no =$this->query->where('id','=',$id)->value('tour_no');
+        if(empty($tour_no)){
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info = $this->getBatchService()->getList(['tour_no'=>$tour_no],
+            ['receiver','receiver_phone','receiver_post_code','receiver_street','receiver_house_number','receiver_city','expect_pickup_quantity','expect_pie_quantity','batch_no'],
+            false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+
+        //整理结构
+        for($i=1;$i<=count($info);$i++) {
+            $cellData[$i][0] = $i;
+            $cellData[$i][1] = $info[$i-1]['receiver'];
+            $cellData[$i][2] = $info[$i-1]['receiver_phone'];
+            $cellData[$i][3] = $this->getOrderService()->getInfo(['batch_no'=>$info[$i-1]['batch_no']],['*'],false)['out_user_id']??'';
+            $cellData[$i][4] = $info[$i-1]['receiver_street'].' '.$info[$i-1]['receiver_house_number'];
+            $cellData[$i][5] = $info[$i-1]['receiver_post_code'];
+            $cellData[$i][6] = $info[$i-1]['receiver_city'];
+            $cellData[$i][7] = $this->getOrderService()->getInfo(['batch_no'=>$info[$i-1]['batch_no']],['*'],false)['source'];;
+            $cellData[$i][8] = $info[$i-1]['expect_pickup_quantity'];
+            $cellData[$i][9] = $info[$i-1]['expect_pie_quantity'];
+            $cellData[$i][10] = $this->getOrderService()->getList(['batch_no'=>$info[$i-1]['batch_no']],['*'],false)[0]['express_first_no'];
+            $cellData[$i][11] = $this->getOrderService()->getList(['batch_no'=>$info[$i-1]['batch_no']],['*'],false)[1]['express_first_no']??'';
+        }
+        $cellData[0] = array('No','Name','Phone','Acc','Address','Postcode','City','SYS','取件数量','派件数量','Barcode 1','Barcode 2');
+        for($i=0;$i<count($cellData);$i++){
+            $cellData[$i] = array_values($cellData[$i]);
+        }
+        $cellData =array_reverse($cellData);
+        return $this->export($tour_no,$cellData);
+    }
+
+    /**
+     * 导出城市线路
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function cityTxt($id)
+    {
+        $tourInfo =$this->getInfo(['id'=>$id],['*'],false);
+        if(empty($tourInfo)){
+            throw new BusinessLogicException('数据不存在');
+        }
+/*        if($tourInfo['status'] < BaseConstService::ORDER_STATUS_1){
+            throw new BusinessLogicException('当前状态无法导出取派城市');
+        }*/
+        $info = $this->getBatchService()->getList(['tour_no'=>$tourInfo['tour_no']],['receiver_city'],false,[],['sort_id' => 'asc'])->toArray();
+        $cityList ='';
+       for($i=0;$i<count($info);$i++){
+           $cityList = $cityList.$info[$i]['receiver_city'].'-';
+       }
+       $cityList =rtrim($cityList, "-");
+       $params['txt']=$tourInfo['line_name'].' '.$tourInfo['driver_name'].':'.$tourInfo['driver_phone'].' '.$cityList;
+       $params['name']=$tourInfo['tour_no'];
+       $params['dir']='tour';
+       return $this->getUploadService()->txtUpload($params);
     }
 }

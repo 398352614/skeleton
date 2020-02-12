@@ -199,4 +199,27 @@ class TourController extends BaseController
         self::setTourLock($request->tour_no, 0);
         return '1';
     }
+
+
+    /**
+     * 导出投递列表
+     * @param $id
+     * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function batchExcel($id)
+    {
+        return $this->service->batchExcel($id);
+    }
+
+    /**
+     * 导出城市线路
+     * @param $id
+     * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function cityTxt($id)
+    {
+        return $this->service->cityTxt($id);
+    }
 }
