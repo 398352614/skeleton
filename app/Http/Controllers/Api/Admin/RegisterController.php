@@ -136,6 +136,8 @@ class RegisterController extends BaseController
             'house_number'=>'20',
             'city'=>'Nieuw-Vennep',
             'street'=>'Pesetaweg',
+            'lon'=>'52.25347699',
+            'lat'=>'4.62897256',
         ]);
     }
     /**
