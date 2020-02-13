@@ -31,7 +31,7 @@ class CompanyConfigController extends BaseController
      */
     public function show()
     {
-        $info = $this->service->getInfo(['id' => auth()->user()->company_id], ['*'], false);
+        $info = $this->service->getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
         return empty($info) ? [] : $info->toArray();
     }
 
