@@ -16,6 +16,7 @@ use App\Services\BaseService;
 use App\Services\BaseServices\XLDirectionService;
 use App\Services\GoogleApiService;
 use App\Services\OrderNoRuleService;
+use App\Traits\LocationTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -740,9 +741,7 @@ class TourService extends BaseService
         if(empty($tour_no)){
             throw new BusinessLogicException('数据不存在');
         }
-        $info = $this->getBatchService()->getList(['tour_no'=>$tour_no],
-            ['receiver','receiver_phone','receiver_post_code','receiver_street','receiver_house_number','receiver_city','expect_pickup_quantity','expect_pie_quantity','batch_no'],
-            false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        $info = $this->getBatchService()->getList(['tour_no'=>$tour_no], [],false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
 
         //整理结构
         for($i=1;$i<=count($info);$i++) {
@@ -782,7 +781,7 @@ class TourService extends BaseService
 /*        if($tourInfo['status'] < BaseConstService::ORDER_STATUS_1){
             throw new BusinessLogicException('当前状态无法导出取派城市');
         }*/
-        $info = $this->getBatchService()->getList(['tour_no'=>$tourInfo['tour_no']],['receiver_city'],false,[],['sort_id' => 'asc'])->toArray();
+        $info = $this->getBatchService()->getList(['tour_no'=>$tourInfo['tour_no']],['*'],false,[],['sort_id' => 'asc'])->toArray();
         $cityList ='';
        for($i=0;$i<count($info);$i++){
            $cityList = $cityList.$info[$i]['receiver_city'].'-';
@@ -793,4 +792,25 @@ class TourService extends BaseService
        $params['dir']='tour';
        return $params;
     }
+
+    /**
+     * 导出站点地图
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function batchPng($id){
+        $tourInfo =$this->getInfo(['id'=>$id],['*'],false);
+        if(empty($tourInfo)){
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info = $this->getBatchService()->getList(['tour_no'=>$tourInfo['tour_no']],['*'],false,[],['sort_id' => 'asc'])->toArray();
+        $params[0]['lon']=$tourInfo['warehouse_lon'];
+        $params[0]['lat']=$tourInfo['warehouse_lat'];
+        for($i=1;$i<=count($info);$i++){
+            $params[$i]['lon']=$info[$i-1]['receiver_lon'];
+            $params[$i]['lat']=$info[$i-1]['receiver_lat'];
+        }
+        return LocationTrait::getBatchMap($params);
+    }
+
 }

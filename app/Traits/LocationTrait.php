@@ -63,7 +63,7 @@ trait LocationTrait
         return function () use ($country, $city, $street, $houseNumber, $postCode, $houseNumberAddition) {
             try {
                 $client = new \GuzzleHttp\Client();
-                $url = $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
+                $url = $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.logvcation_api'), $postCode, $houseNumber, $houseNumberAddition);
                 $res = $client->request('GET', $url, [
                         'auth' =>
                             [
@@ -99,5 +99,31 @@ trait LocationTrait
                 'lon' => $arrayBody['longitude'],
             ];
         };
+    }
+
+    /**
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public static function getBatchMap($params)
+    {
+        //https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap
+        //&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318
+        //&markers=color:red%7Clabel:C%7C40.718217,-73.998284
+        //&key=YOUR_API_KEY
+                $client = new \GuzzleHttp\Client();
+                $markers ='&markers=color:blue%7Clabel:A%7C'.$params[0]['lat'].','.$params[0]['lon'];
+                for($i=1;$i<count($params);$i++){
+                    $markers=$markers.'&markers=color:red%7Clabel:'.$i.'%7C'.$params[$i]['lat'].','.$params[$i]['lon'];
+                }
+                $url =  config('tms.map_url').'staticmap?size=640x640&maptype=roadmap'.$markers.'&key='.config('tms.map_key');
+        try {
+            $res = $client->request('GET', $url);
+            } catch (\Exception $ex) {
+                throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
+            }
+            $body = $res->getBody();
+        return $body;
+        ;
     }
 }
