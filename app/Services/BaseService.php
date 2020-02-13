@@ -260,7 +260,9 @@ class BaseService
     {
         $this->query = $this->model::query();
         SearchTrait::buildQuery($this->query, $where);
-        return $this->query->update(Arr::only($data, Schema::getColumnListing($this->model->getTable())));
+        $rowCount = $this->query->update(Arr::only($data, Schema::getColumnListing($this->model->getTable())));
+        $this->query = $this->model::query();
+        return $rowCount;
     }
 
     /**
@@ -273,7 +275,9 @@ class BaseService
     {
         $this->query = $this->model::query();
         $query = $this->query->findOrFail($id);
-        return $query->update(Arr::only($data, Arr::except(Schema::getColumnListing($this->model->getTable()), ['company_id', 'order_no', 'batch_no', 'tour_no'])));
+        $rowCount = $query->update(Arr::only($data, Arr::except(Schema::getColumnListing($this->model->getTable()), ['company_id', 'order_no', 'batch_no', 'tour_no'])));
+        $this->query = $this->model::query();
+        return $rowCount;
     }
 
     /**
@@ -287,7 +291,9 @@ class BaseService
     {
         $this->query = $this->model::query();
         $query = $this->query->findOrFail($id);
-        return $query->increment($field, $data[$field], Arr::except($data, $data[$field]));
+        $rowCount = $query->increment($field, $data[$field], Arr::except($data, $data[$field]));
+        $this->query = $this->model::query();
+        return $rowCount;
     }
 
     /**
@@ -301,14 +307,18 @@ class BaseService
     {
         $this->query = $this->model::query();
         SearchTrait::buildQuery($this->query, $where);
-        return $this->query->increment($field, $data[$field], Arr::except($data, $data[$field]));
+        $rowCount = $this->query->increment($field, $data[$field], Arr::except($data, $data[$field]));
+        $this->query = $this->model::query();
+        return $rowCount;
     }
 
     public function delete($where)
     {
         $this->query = $this->model::query();
         SearchTrait::buildQuery($this->query, $where);
-        return $this->query->delete();
+        $rowCount = $this->query->delete();
+        $this->query = $this->model::query();
+        return $rowCount;
     }
 
 
@@ -326,7 +336,9 @@ class BaseService
         if (empty($idList)) {
             return false;
         }
-        return $this->delete(['id' => ['in', $idList]]);
+        $rowCount = $this->delete(['id' => ['in', $idList]]);
+        $this->query = $this->model::query();
+        return $rowCount;
     }
 
 

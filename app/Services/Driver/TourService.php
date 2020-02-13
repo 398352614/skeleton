@@ -244,12 +244,12 @@ class TourService extends BaseService
             throw new BusinessLogicException('出库失败');
         }
         //站点更换状态
-        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::BATCH_DELIVERING]);
+        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_WAIT_OUT], ['status' => BaseConstService::BATCH_DELIVERING]);
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
         //订单更换状态
-        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::ORDER_STATUS_4]);
+        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
@@ -294,7 +294,7 @@ class TourService extends BaseService
         $batchFields = [
             'id', 'batch_no', 'tour_no', 'status',
             'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
-            'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity','receiver_lon','receiver_lat'
+            'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], $batchFields, false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
         $tour['batch_count'] = count($batchList);
@@ -313,7 +313,7 @@ class TourService extends BaseService
     public function getBatchOrderList($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id','execution_date', 'type', 'batch_no', 'order_no', 'status'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'execution_date', 'type', 'batch_no', 'order_no', 'status'], false)->toArray();
         $orderList = array_create_group_index($orderList, 'type');
         $batch['order_list'] = $orderList;
         return $orderList;

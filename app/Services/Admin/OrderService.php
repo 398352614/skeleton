@@ -195,22 +195,22 @@ class OrderService extends BaseService
         return $data;
     }
 
-
     /**
      * 获取待分配订单信息
      * @param $id
      * @param $isToArray
      * @param $status
+     * @param $isLock
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    private function getInfoOfStatus($id, $isToArray = true, $status = BaseConstService::ORDER_STATUS_1)
+    private function getInfoOfStatus($where, $isToArray = true, $status = BaseConstService::ORDER_STATUS_1, $isLock = true)
     {
-        $info = parent::getInfoLock(['id' => $id], ['*'], false);
+        $info = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        if (intval($info['status']) !== $status) {
+        if (!in_array(intval($info['status']), Arr::wrap($status))) {
             throw new BusinessLogicException('当前订单状态不能操作');
         }
         return $isToArray ? $info->toArray() : $info;
@@ -325,7 +325,7 @@ class OrderService extends BaseService
      * @param $tour
      * @throws BusinessLogicException
      */
-    private function fillBatchTourInfo($id, $batch, $tour)
+    public function fillBatchTourInfo($id, $batch, $tour)
     {
         $rowCount = parent::updateById($id, [
             'execution_date' => $batch['execution_date'],
@@ -357,7 +357,7 @@ class OrderService extends BaseService
         //验证
         $this->check($data, $id);
         //获取信息
-        $dbInfo = $this->getInfoOfStatus($id);
+        $dbInfo = $this->getInfoOfStatus(['id' => $id]);
         //修改
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
@@ -437,7 +437,7 @@ class OrderService extends BaseService
      */
     public function assignToBatch($id, $params)
     {
-        $info = $this->getInfoOfStatus($id);
+        $info = $this->getInfoOfStatus(['id' => $id]);
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
             throw new BusinessLogicException('当前订单已存在分配的站点中!');
         }
@@ -454,7 +454,7 @@ class OrderService extends BaseService
      */
     public function removeFromBatch($id)
     {
-        $info = $this->getInfoOfStatus($id);
+        $info = $this->getInfoOfStatus(['id' => $id]);
         if (empty($info['batch_no'])) {
             throw new BusinessLogicException('已从站点移除!');
         }
@@ -473,7 +473,7 @@ class OrderService extends BaseService
      */
     public function destroy($id)
     {
-        $info = $this->getInfoOfStatus($id);
+        $info = $this->getInfoOfStatus(['id' => $id]);
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_7, 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单删除失败,请重新操作');
@@ -493,7 +493,7 @@ class OrderService extends BaseService
      */
     public function recovery($id, $params)
     {
-        $order = $this->getInfoOfStatus($id, false, BaseConstService::ORDER_STATUS_7);
+        $order = $this->getInfoOfStatus(['id' => $id], false, BaseConstService::ORDER_STATUS_7);
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => $params['execution_date']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单恢复失败');
@@ -515,7 +515,7 @@ class OrderService extends BaseService
      */
     public function actualDestroy($id)
     {
-        $info = $this->getInfoOfStatus($id, true, BaseConstService::ORDER_STATUS_7);
+        $info = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::ORDER_STATUS_7);
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('彻底删除失败,请重新操作');

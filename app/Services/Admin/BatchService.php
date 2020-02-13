@@ -7,10 +7,12 @@ use App\Http\Resources\BatchResource;
 use App\Http\Resources\BatchInfoResource;
 use App\Http\Resources\TourResource;
 use App\Models\Batch;
+use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
+use App\Services\OrderTrailService;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Bus;
@@ -99,6 +101,28 @@ class BatchService extends BaseService
         return parent::getPageList();
     }
 
+    /**
+     * 获取待分配订单信息
+     * @param $id
+     * @param $isToArray
+     * @param $status
+     * @param $isLock
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    private function getInfoOfStatus($where, $isToArray = true, $status = BaseConstService::BATCH_WAIT_ASSIGN, $isLock = true)
+    {
+        $info = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if (!in_array(intval($info['status']), Arr::wrap($status))) {
+            throw new BusinessLogicException('当前站点状态不能操作');
+        }
+        return $isToArray ? $info->toArray() : $info;
+    }
+
+
     //新增
     public function store($params)
     {
@@ -119,18 +143,7 @@ class BatchService extends BaseService
         /**************************************站点加入取件线路********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $order['type']);
         /***********************************************填充取件线路编号************************************************/
-        $rowCount = parent::updateById($batch['id'], [
-            'tour_no' => $tour['tour_no'],
-            'driver_id' => $tour['driver_id'] ?? null,
-            'driver_name' => $tour['driver_name'] ?? '',
-            'driver_phone' => $tour['driver_phone']??'',
-            'car_id' => $tour['car_id'] ?? null,
-            'car_no' => $tour['car_no'] ?? '',
-            'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN
-        ]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('站点加入取件线路失败,请重新操作');
-        }
+        $this->fillTourInfo($batch, $tour);
 
         return [$batch, $tour];
     }
@@ -142,7 +155,7 @@ class BatchService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function hasSameBatch($order, $batchNo = null)
+    private function hasSameBatch($order, $batchNo = null)
     {
         $where = [
             'execution_date' => $order['execution_date'],
@@ -304,14 +317,7 @@ class BatchService extends BaseService
      */
     public function updateAboutOrderByOrder($dbOrder, $order)
     {
-        $info = parent::getInfoLock(['batch_no' => $dbOrder['batch_no']], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $info = $info->toArray();
-        if (intval($info['status']) !== BaseConstService::BATCH_WAIT_ASSIGN) {
-            throw new BusinessLogicException('当前站点状态不能更新订单相关信息');
-        }
+        $info = $this->getInfoOfStatus(['batch_no' => $dbOrder['batch_no']], true, BaseConstService::BATCH_WAIT_ASSIGN, true);
         //若订单类型改变,则站点统计数量改变
         $data = [];
         if (intval($dbOrder['type']) !== intval($order['type'])) {
@@ -369,25 +375,14 @@ class BatchService extends BaseService
         $batchNo = !empty($params['batch_no']) ? $params['batch_no'] : null;
         list($batch, $line) = $this->hasSameBatch($order, $batchNo);
         if (!empty($batchNo) && empty($batch)) {
-            throw new BusinessLogicException('订单分配至站点失败,请重新操作');
+            throw new BusinessLogicException('当前指定站点不符合当前订单');
         }
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
         list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order);
         /**************************************站点加入取件线路********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $order['type']);
         /***********************************************填充取件线路编号************************************************/
-        $rowCount = parent::updateById($batch['id'], [
-            'tour_no' => $tour['tour_no'],
-            'driver_id' => $tour['driver_id'] ?? null,
-            'driver_name' => $tour['driver_name'] ?? '',
-            'driver_phone' => $tour['driver_phone'] ?? '',
-            'car_id' => $tour['car_id'] ?? null,
-            'car_no' => $tour['car_no'] ?? '',
-            'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN
-        ]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('站点加入取件线路失败,请重新操作');
-        }
+        $this->fillTourInfo($batch, $tour);
         return [$batch, $tour];
     }
 
@@ -399,14 +394,7 @@ class BatchService extends BaseService
      */
     public function removeOrder($order)
     {
-        $info = parent::getInfoLock(['batch_no' => $order['batch_no']], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $info = $info->toArray();
-        if (intval($info['status']) !== BaseConstService::BATCH_WAIT_ASSIGN) {
-            throw new BusinessLogicException('当前站点状态不能移除订单');
-        }
+        $info = $this->getInfoOfStatus(['batch_no' => $order['batch_no']], true, BaseConstService::BATCH_WAIT_ASSIGN, true);
         $quantity = $info['expect_pickup_quantity'] + $info['expect_pie_quantity'];
         //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
         if ($quantity - 1 <= 0) {
@@ -424,4 +412,125 @@ class BatchService extends BaseService
         $this->getTourService()->removeBatchOrder($order, $info);
     }
 
+    /**
+     * 取消取派
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function cancel($id, $params)
+    {
+        $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
+        //站点取消取派
+        $data = Arr::only($params, ['cancel_type', 'cancel_remark', 'cancel_picture']);
+        $rowCount = parent::updateById($info['id'], Arr::add($data, 'status', BaseConstService::BATCH_CANCEL));
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取消取派失败,请重新操作');
+        }
+        //订单取消取派
+        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], Arr::add($data, 'status', BaseConstService::ORDER_STATUS_6));
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取消取派失败,请重新操作');
+        }
+        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('batch_no', $info['batch_no'])->get(), BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+    }
+
+    /**
+     * 获取取件线路
+     * @param $id
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getTourListByBatch($id, $params)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info = $info->toArray();
+        $line = $this->getLineService()->getInfo(['id' => $info['line_id']], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('路线不存在');
+        }
+        $line = $line->toArray();
+        $info['execution_date'] = $params['execution_date'];
+        return $this->getTourService()->getListByBatch($info, $line);
+    }
+
+
+    /**
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function assignToTour($id, $params)
+    {
+        $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
+        $line = $this->getLineService()->getInfo(['id' => $info['line_id']], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('路线不存在');
+        }
+        $line = $line->toArray();
+        if (!empty($params['tour_no']) && ($info['tour_no'] == $params['tour_no'])) {
+            throw new BusinessLogicException('当前站点已分配至当前指定取件线路');
+        }
+        $info['execution_date'] = $params['execution_date'];
+        $tour = $this->getTourService()->assignBatchToTour($info, $line, $params);
+        /***********************************************填充取件线路编号************************************************/
+        $this->fillTourInfo($info, $tour);
+        /***********************************************修改订单************************************************/
+        $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
+        foreach ($orderList as $order) {
+            $this->getOrderService()->fillBatchTourInfo($order['id'], $info, $tour);
+        }
+    }
+
+    /**
+     * 填充站点信息和取件线路信息
+     * @param $id
+     * @param $batch
+     * @param $tour
+     * @throws BusinessLogicException
+     */
+    private function fillTourInfo($batch, $tour)
+    {
+        $rowCount = parent::updateById($batch['id'], [
+            'execution_date' => $tour['execution_date'],
+            'tour_no' => $tour['tour_no'],
+            'driver_id' => $tour['driver_id'] ?? null,
+            'driver_name' => $tour['driver_name'] ?? '',
+            'car_id' => $tour['car_id'] ?? null,
+            'car_no' => $tour['car_no'] ?? '',
+            'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN
+        ]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('站点加入取件线路失败,请重新操作');
+        }
+    }
+
+    /**
+     * 从取件线路移除站点
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function removeFromTour($id)
+    {
+        $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
+        if (empty($info['tour_no'])) {
+            throw new BusinessLogicException('当前站点已经移除,不能重复操作');
+        }
+        //修改站点
+        $rowCount = parent::updateById($id, ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        //修改订单
+        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        //将站点从取件线路移除
+        $this->getTourService()->removeBatch($info);
+    }
 }

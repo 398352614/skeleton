@@ -115,7 +115,11 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('batch')->group(function () {
         //rest api 放在最后
         Route::get('/', 'BatchController@index')->name('batch.index');
-        Route::get('/{id}', 'BatchController@show')->name('batch.show'); //批次详情
+        Route::get('/{id}', 'BatchController@show')->name('batch.show');       //批次详情
+        Route::put('/{id}/cancel', 'BatchController@cancel');                        //取消取派
+        Route::get('/{id}/getTourList', 'BatchController@getTourList');              //获取取件线路列表
+        Route::put('/{id}/assignToTour', 'BatchController@assignToTour');            //分配站点至取件线路
+        Route::delete('/{id}/removeFromTour', 'BatchController@removeFromTour');     //移除站点
     });
 
     //物流状态管理
@@ -146,7 +150,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/cancelAssignDriver', 'TourController@cancelAssignDriver');   //取消分配司机
         Route::put('/{id}/assignCar', 'TourController@assignCar');                     //分配车辆
         Route::put('/{id}/cancelAssignCar', 'TourController@cancelAssignCar');         //取消分配车辆
-        Route::put('/{id}/unlock', 'TourController@unlock');         //取消分配车辆
+        Route::put('/{id}/unlock', 'TourController@unlock');         //取消待出库
         Route::get('/{id}/excel','TourController@batchExcel');//导出投递站点excel
         Route::get('/{id}/txt','TourController@cityTxt');//导出投递城市txt
         Route::get('/{id}/png','TourController@batchPng');//导出站点地图png
@@ -192,6 +196,15 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('company-info')->group(function () {
         Route::get('/', 'CompanyController@index');
         Route::put('/', 'CompanyController@update');
+    });
+
+    //公司配置
+    Route::prefix('company-config')->group(function () {
+        //获取详情
+        Route::get('/show', 'CompanyConfigController@show');
+        //修改
+        Route::put('/update', 'CompanyConfigController@update');
+
     });
 
     //员工管理

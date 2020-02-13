@@ -8,7 +8,7 @@ use App\Services\Admin\CompanyService;
 use Illuminate\Http\Request;
 
 /**
- * 公司配置
+ * 公司管理
  * Class OrderController
  * @package App\Http\Controllers\Api\Admin
  * @property CompanyService $service
