@@ -142,11 +142,23 @@ class Tour extends BaseModel
         return $this->hasMany(Batch::class, 'tour_no', 'tour_no');
     }
 
+    public function routeTracking()
+    {
+        return $this->hasMany(RouteTracking::class, 'tour_no', 'tour_no');
+    }
+
     /**
      * 获取司机位置属性
      */
     public function getDriverLocationAttribute()
     {
+        if ($this->routeTracking) {
+            $sorted = $this->routeTracking->sortByDesc('created_at');
+            return [
+                'latitude' => $sorted[0]->lat,
+                'longitude' => $sorted[0]->lon,
+            ];
+        }
         return [
             'latitude' => $this->warehouse_lat,
             'longitude' => $this->warehouse_lon,
@@ -158,7 +170,7 @@ class Tour extends BaseModel
         return round($value / 1000, 2);
     }
 
-/*    public function getExpectTimeAttribute($value)
+    /*    public function getExpectTimeAttribute($value)
     {
         return (int) ($value / 60);
     }*/
