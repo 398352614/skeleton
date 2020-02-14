@@ -9,6 +9,7 @@
 namespace App\Traits;
 
 use App\Exceptions\BusinessLogicException;
+use App\Services\Admin\UploadService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -105,7 +106,7 @@ trait LocationTrait
      * @param $params
      * @throws BusinessLogicException
      */
-    public static function getBatchMap($params)
+    public static function getBatchMap($params,$name)
     {
         //https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap
         //&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318
@@ -116,14 +117,14 @@ trait LocationTrait
                 for($i=1;$i<count($params);$i++){
                     $markers=$markers.'&markers=color:red%7Clabel:'.$i.'%7C'.$params[$i]['lat'].','.$params[$i]['lon'];
                 }
-                $url =  config('tms.map_url').'staticmap?size=640x640&maptype=roadmap'.$markers.'&key='.config('tms.map_key');
+                $url = config('tms.map_url').'staticmap?size=640x640&maptype=roadmap'.$markers.'&key='.config('tms.map_key');
         try {
-            $res = $client->request('GET', $url);
+            $map['image'] =file_get_contents($url);
             } catch (\Exception $ex) {
                 throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
             }
-            $body = $res->getBody();
-        return $body;
-        ;
+        $map['dir'] ='tour';
+        $map['name'] = $name;
+        return (new \App\Services\Admin\UploadService)->imageDownload($map);
     }
 }

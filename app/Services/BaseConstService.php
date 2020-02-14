@@ -160,6 +160,7 @@ class BaseConstService
 
     //管理员端 图片目录
     const ADMIN_IMAGE_DRIVER_DIR = 'driver';
+    const ADMIN_IMAGE_TOUR_DIR ='tour';
 
     //司机端 图片目录
     const DRIVER_IMAGE_TOUR_DIR = 'tour';

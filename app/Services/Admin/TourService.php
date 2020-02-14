@@ -741,7 +741,7 @@ class TourService extends BaseService
         if(empty($tour_no)){
             throw new BusinessLogicException('数据不存在');
         }
-        $info = $this->getBatchService()->getList(['tour_no'=>$tour_no], [],false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        $info = $this->getBatchService()->getList(['tour_no'=>$tour_no], ['*'],false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
 
         //整理结构
         for($i=1;$i<=count($info);$i++) {
@@ -810,7 +810,8 @@ class TourService extends BaseService
             $params[$i]['lon']=$info[$i-1]['receiver_lon'];
             $params[$i]['lat']=$info[$i-1]['receiver_lat'];
         }
-        return LocationTrait::getBatchMap($params);
+        $name = $tourInfo['tour_no'];
+        return LocationTrait::getBatchMap($params,$name);
     }
 
 }

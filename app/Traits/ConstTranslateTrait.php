@@ -76,7 +76,7 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_EXCEPTION_LABEL_2 => '异常',
     ];
 
-    //batch 批次状态 1-待分配2-已分配3-取派中4-已签收5-异常
+    //batch 批次状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派
     public static $batchStatusList = [
         BaseConstService::BATCH_WAIT_ASSIGN => '待分配',
         BaseConstService::BATCH_ASSIGNED => '已分配',
@@ -165,6 +165,7 @@ trait ConstTranslateTrait
     //管理员端 图片目录
     public static $adminImageDirList = [
         BaseConstService::ADMIN_IMAGE_DRIVER_DIR => '司机图片目录',
+        BaseConstService::ADMIN_IMAGE_TOUR_DIR => '取件线路图片目录',
     ];
 
     //司机端 图片目录

@@ -72,7 +72,7 @@ class UploadService
 
 
     /**
-     * 获取文件目录
+     * 获取表格目录
      * @param $dir
      * @return mixed
      * @throws BusinessLogicException
@@ -190,6 +190,29 @@ class UploadService
         ];
     }
 
+    /**
+     * 图片下载
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function imageDownload($params)
+    {
+        $subPath = $this->getImageDir($params['dir']);
+        $params['name'] = date('Ymd') . $params['name'].'.png';
+        try {
+            $rowCount = $this->imageDisk->put($subPath.DIRECTORY_SEPARATOR.$params['name'].'.png',$params['image']);
+        } catch (\Exception $ex) {
+            throw new BusinessLogicException('图片获取失败,请重新操作');
+        }
+        if ($rowCount === false) {
+            throw new BusinessLogicException('图片获取失败,请重新操作');
+        }
+        return [
+            'name' => $params['name'],
+            'path' => $this->imageDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name'])
+        ];
+    }
 
     /**
      * 获取图片目录列表
