@@ -127,9 +127,9 @@ class UploadService
      */
     public function txtUpload($params){
         $subPath = $this->getTxtDir($params['dir']);
-        $params['name'] = date('Ymd') . $params['name'];
+        $params['name'] = date('Ymd') . $params['name'].'.txt';
         try {
-            $rowCount = $this->txtDisk->put($subPath.DIRECTORY_SEPARATOR.$params['name'].'.txt',$params['txt']);
+            $rowCount = $this->txtDisk->put($subPath.DIRECTORY_SEPARATOR.$params['name'],$params['txt']);
         } catch (\Exception $ex) {
             throw new BusinessLogicException('文档上传失败,请重新操作');
         }
@@ -137,8 +137,8 @@ class UploadService
             throw new BusinessLogicException('文档上传失败,请重新操作');
         }
         return [
-            'name' => $params['name'].'.txt',
-            'path' => $this->txtDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name'].'.txt')
+            'name' => $params['name'],
+            'path' => $this->txtDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name'])
         ];
     }
     /**
@@ -201,7 +201,7 @@ class UploadService
         $subPath = $this->getImageDir($params['dir']);
         $params['name'] = date('Ymd') . $params['name'].'.png';
         try {
-            $rowCount = $this->imageDisk->put($subPath.DIRECTORY_SEPARATOR.$params['name'].'.png',$params['image']);
+            $rowCount = $this->imageDisk->put($subPath.DIRECTORY_SEPARATOR.$params['name'],$params['image']);
         } catch (\Exception $ex) {
             throw new BusinessLogicException('图片获取失败,请重新操作');
         }

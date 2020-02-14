@@ -117,7 +117,7 @@ trait LocationTrait
                 for($i=1;$i<count($params);$i++){
                     $markers=$markers.'&markers=color:red%7Clabel:'.$i.'%7C'.$params[$i]['lat'].','.$params[$i]['lon'];
                 }
-                $url = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1581677683124&di=84b0c95e1bbcbbf1c8a11684190431fd&imgtype=0&src=http%3A%2F%2Ft8.baidu.com%2Fit%2Fu%3D2247852322%2C986532796%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D1280%26h%3D853';
+                $url = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1581677935355&di=0b1c131bce2bb2e5377700185d5ef446&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fdesign%2F00%2F23%2F31%2F57%2F591be2a6807c3.png';
         //config('tms.map_url').'staticmap?size=640x640&maptype=roadmap'.$markers.'&key='.config('tms.map_key');
         try {
             $map['image'] =file_get_contents($url);
