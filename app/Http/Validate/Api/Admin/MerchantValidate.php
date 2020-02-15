@@ -31,8 +31,8 @@ class MerchantValidate extends BaseValidate
 
     public $rules = [
         'type' => 'required|integer|in:1,2',
-        'name' => 'required|string|max:100',
-        'email' => 'required|string|max:50',
+        'name' => 'required|string|max:100|uniqueIgnore:merchant,id,company_id',
+        'email' => 'required|string|max:50|uniqueIgnore:merchant,id',
         'settlement_type' => 'required|integer|in:1,2,3',
         'merchant_group_id' => 'required|integer',
         'contacter' => 'required|string|max:50',

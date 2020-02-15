@@ -26,9 +26,11 @@ class CreateMerchantTable extends Migration
             $table->string('phone', 20)->default('')->nullable()->comment('电话');
             $table->string('address', 250)->default('')->nullable()->comment('联系地址');
             $table->string('avatar', 250)->default('')->nullable()->comment('头像');
-            $table->tinyInteger('status')->default(1)->nullable()->comment('类型1-启用2-禁用');
+            $table->tinyInteger('status')->default(1)->nullable()->comment('状态1-启用2-禁用');
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
+
+            $table->unique(['company_id', 'name'], 'compnay_id_name');
         });
     }
 
