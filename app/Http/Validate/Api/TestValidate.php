@@ -22,7 +22,7 @@ class TestValidate extends BaseValidate
     ];
     public $scene = [
         'store' => ['name'],
-        'update' => ['name']
+        'update' => ['name'],
     ];
 }
 
