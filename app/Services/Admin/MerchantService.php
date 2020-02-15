@@ -17,6 +17,7 @@ use App\Services\BaseService;
 use Illuminate\Hashing\Argon2IdHasher;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Vinkla\Hashids\Facades\Hashids;
 
 class MerchantService extends BaseService
 {
@@ -57,8 +58,8 @@ class MerchantService extends BaseService
         $id = $merchant->getAttribute('id');
         $merchantApi = $this->getMerchantApiService()->create([
             'merchant_id' => $id,
-            'key' => bin2hex(random_bytes(5) . time() . $id),
-            'secret' => bin2hex(random_bytes(10) . time() . $id)
+            'key' => Hashids::encode(time() . $id),
+            'secret' => Hashids::connection('alternative')->encode(time() . $id)
         ]);
         if ($merchantApi === false) {
             throw new BusinessLogicException('新增失败,请重新操作');

@@ -14,6 +14,7 @@ use App\Http\Resources\TestInfoResource;
 use App\Http\Resources\TestResource;
 use App\Models\Test;
 use Carbon\Carbon;
+use Vinkla\Hashids\Facades\Hashids;
 
 
 class TestService extends BaseService
