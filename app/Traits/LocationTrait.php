@@ -119,6 +119,7 @@ trait LocationTrait
                 }
                 //$url = 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=127689096,1321755151&fm=15&gp=0.jpg';
         $url =config('tms.map_url').'staticmap?size=640x640&maptype=roadmap'.$markers.'&key='.config('tms.map_key');
+                return $url;
         try {
             $client = new \GuzzleHttp\Client();
             $res = $client->request('GET', $url, [
