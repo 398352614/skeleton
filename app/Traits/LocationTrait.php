@@ -125,6 +125,7 @@ trait LocationTrait
                 'proxy' => [
                     'http'  => env('HTTP_PROXY'), // Use this proxy with "http"
                     'https' => env('HTTPS_PROXY'), // Use this proxy with "https",
+                    'no' => ['.mit.edu', 'foo.com']    // Don't use a proxy with these
                 ]]);
             } catch (\Exception $ex) {
                 throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
