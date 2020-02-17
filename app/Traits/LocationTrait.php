@@ -11,6 +11,7 @@ namespace App\Traits;
 use App\Exceptions\BusinessLogicException;
 use App\Services\Admin\UploadService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 trait LocationTrait
@@ -64,7 +65,7 @@ trait LocationTrait
         return function () use ($country, $city, $street, $houseNumber, $postCode, $houseNumberAddition) {
             try {
                 $client = new \GuzzleHttp\Client();
-                $url = $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
+                $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
                 $res = $client->request('GET', $url, [
                         'auth' =>
                             [
@@ -75,6 +76,8 @@ trait LocationTrait
                     ]
                 );
             } catch (\Exception $ex) {
+                Log::info($url);
+                Log::info($ex->getMessage());
                 throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法根据邮编和门牌号码获取城市和地址信息，请稍后再尝试');
             }
             $body = $res->getBody();
