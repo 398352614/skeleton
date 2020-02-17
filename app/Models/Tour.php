@@ -154,10 +154,13 @@ class Tour extends BaseModel
     {
         if ($this->routeTracking) {
             $sorted = $this->routeTracking->sortByDesc('created_at')->toArray();
+            if(!empty($sorted)){
                 return [
                     'latitude' => $sorted[0]->lat,
                     'longitude' => $sorted[0]->lon,
                 ];
+            }
+
         }
         return [
             'latitude' => $this->warehouse_lat,
