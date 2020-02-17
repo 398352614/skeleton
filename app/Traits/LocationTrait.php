@@ -76,8 +76,6 @@ trait LocationTrait
                     ]
                 );
             } catch (\Exception $ex) {
-                Log::info($url);
-                Log::info($ex->getMessage());
                 throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法根据邮编和门牌号码获取城市和地址信息，请稍后再尝试');
             }
             $body = $res->getBody();
