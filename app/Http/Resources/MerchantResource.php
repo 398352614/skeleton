@@ -17,7 +17,20 @@ class MerchantResource extends JsonResource
     public function toArray($request)
     {
         return [
-
+            'id' => $this->id,
+            'company_id' => $this->company_id,
+            'type' => $this->type,
+            'name' => $this->name,
+            'email' => $this->email,
+            'settlement_type' => $this->settlement_type,
+            'merchant_group_id' => $this->merchant_group_id,
+            'contacter' => $this->contacter,
+            'phone' => $this->phone,
+            'address' => $this->address,
+            'avatar' => $this->avatar,
+            'status' => $this->status,
+            'created_at' => (string)$this->created_at,
+            'updated_at' => (string)$this->updated_at,
         ];
     }
 

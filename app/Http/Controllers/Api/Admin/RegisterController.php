@@ -88,7 +88,7 @@ class RegisterController extends BaseController
                 'type' => $value,
                 'prefix' => substr('000'.$company->id, -4, 4),
                 'start_index' => 1,
-                'length' => ($value == BaseConstService::ORDER_NO_TYPE) ? 13 : 4,
+                'length' => ($value == BaseConstService::ORDER_NO_TYPE) ? 8 : 4,
             ];
         }, $rules);
 

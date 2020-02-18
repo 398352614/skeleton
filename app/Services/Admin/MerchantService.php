@@ -39,6 +39,15 @@ class MerchantService extends BaseService
         return parent::getInstance(MerchantApiService::class);
     }
 
+    /**
+     * 商户组管理 服务
+     * @return MerchantGroupService
+     */
+    private function getMerchantGroupService()
+    {
+        return self::getInstance(MerchantGroupService::class);
+    }
+
 
     /**
      * 新增
@@ -49,6 +58,7 @@ class MerchantService extends BaseService
      */
     public function store($params)
     {
+        $this->check($params);
         $params['password'] = Hash::make(BaseConstService::INITIAL_PASSWORD);
         $merchant = parent::create($params);
         if ($merchant === false) {
@@ -76,9 +86,23 @@ class MerchantService extends BaseService
      */
     public function updateById($id, $data)
     {
+        $this->check($data);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
+        }
+    }
+
+    /**
+     * 验证
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function check(&$params)
+    {
+        $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $params['merchant_group_id']], ['*'], false);
+        if (empty($merchantGroup)) {
+            throw new BusinessLogicException('商户组不存在');
         }
     }
 

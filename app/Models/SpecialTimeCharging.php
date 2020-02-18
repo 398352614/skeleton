@@ -5,19 +5,19 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 商户api表
+ * 特殊时段计费表
  * Class Employee
  * @package App\Models
  */
-class MerchantApi extends BaseModel
+class SpecialTimeCharging extends BaseModel
 {
     /**
-     * 司机实际取件导航
+     * 特殊时段计费表
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'merchant_api';
+    protected $table = 'special_time_charging';
 
     /**
      * The primary key for the model.
@@ -47,12 +47,10 @@ class MerchantApi extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'merchant_id',
-        'key',
-        'secret',
-        'url',
-        'white_ip_list',
-        'status',
+        'transport_price_id',
+        'start',
+        'end',
+        'price',
         'created_at',
         'updated_at'
     ];
@@ -63,7 +61,7 @@ class MerchantApi extends BaseModel
      * @var array
      */
     protected $hidden = [
-        'password'
+
     ];
 
     /**
@@ -74,4 +72,8 @@ class MerchantApi extends BaseModel
     protected $dates = [];
 
 
+    public function getStatusNameAttribute()
+    {
+        return ConstTranslateTrait::$orderStatusList[$this->status];
+    }
 }

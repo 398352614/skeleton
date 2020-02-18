@@ -32,6 +32,10 @@ class BaseConstService
     //贴单费用
     const STICKER_AMOUNT = 7.00;
 
+    //1-启用2-禁用
+    const ON = 1;
+    const OFF = 2;
+
     //分配状态1-分配,2-取消分配
     const ASSIGN_YES = 1;
     const ASSIGN_CANCEL = 2;

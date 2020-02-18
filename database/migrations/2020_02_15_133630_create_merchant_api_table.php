@@ -25,7 +25,7 @@ class CreateMerchantApiTable extends Migration
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
 
-            $table->unique(['company_id', 'merchant_id'], 'compnay_merchant');
+            $table->unique(['company_id', 'merchant_id'], 'company_merchant');
             $table->unique('key', 'key');
             $table->unique('secret', 'secret');
         });

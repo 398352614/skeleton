@@ -1,34 +1,30 @@
 <?php
-/**
- * 商户列表
- * User: long
- * Date: 2020/1/3
- * Time: 16:26
- */
 
 namespace App\Http\Controllers\Api\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\MerchantService;
+use App\Services\Admin\MerchantGroupService;
 
 /**
- * Class BatchExceptionController
+ * 商户组 列表
+ * Class OrderController
  * @package App\Http\Controllers\Api\Admin
- * @property MerchantService $service
+ * @property MerchantGroupService $service
  */
-class MerchantController extends BaseController
+class MerchantGroupController extends BaseController
 {
-    public function __construct(MerchantService $service)
+    public function __construct(MerchantGroupService $service)
     {
         parent::__construct($service);
     }
+
 
     public function index()
     {
         return $this->service->getPageList();
     }
+
 
     /**
      * 获取详情
@@ -42,15 +38,13 @@ class MerchantController extends BaseController
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info = $info->toArray();
-        unset($info['password']);
-        return $info;
+        return $info->toArray();
     }
+
 
     /**
      * 新增
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
-     * @throws BusinessLogicException
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function store()
     {
@@ -69,22 +63,13 @@ class MerchantController extends BaseController
     }
 
     /**
-     * 修改密码
+     * 删除
      * @param $id
      * @throws BusinessLogicException
      */
-    public function updatePassword($id)
+    public function destroy($id)
     {
-        return $this->service->updatePassword($id, $this->data);
+        return $this->service->destroy($id);
     }
 
-    /**
-     * 状态-启用/禁用
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function status($id)
-    {
-        return $this->service->status($id, $this->data);
-    }
 }

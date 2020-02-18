@@ -151,9 +151,9 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/assignCar', 'TourController@assignCar');                     //分配车辆
         Route::put('/{id}/cancelAssignCar', 'TourController@cancelAssignCar');         //取消分配车辆
         Route::put('/{id}/unlock', 'TourController@unlock');         //取消待出库
-        Route::get('/{id}/excel','TourController@batchExcel');//导出投递站点excel
-        Route::get('/{id}/txt','TourController@cityTxt');//导出投递城市txt
-        Route::get('/{id}/png','TourController@batchPng');//导出站点地图png
+        Route::get('/{id}/excel', 'TourController@batchExcel');//导出投递站点excel
+        Route::get('/{id}/txt', 'TourController@cityTxt');//导出投递城市txt
+        Route::get('/{id}/png', 'TourController@batchPng');//导出站点地图png
     });
 
     //任务报告
@@ -290,5 +290,61 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     //路线追踪相关
     Route::prefix('route-tracking')->group(function () {
         Route::get('route', 'RouteTrackingController@route')->name('route-tracking.route');
+    });
+
+    //商户管理
+    Route::prefix('merchant')->group(function () {
+        //列表查询
+        Route::get('/', 'MerchantController@index');
+        //获取详情
+        Route::get('/{id}', 'MerchantController@show');
+        //新增
+        Route::post('/', 'MerchantController@store');
+        //修改
+        Route::put('/{id}', 'MerchantController@update');
+        //修改密码
+        Route::put('/{id}/updatePassword', 'MerchantController@updatePassword');
+        //启用/禁用
+        Route::put('/{id}/status', 'MerchantController@status');
+    });
+    
+    //商户授权API管理
+    Route::prefix('merchant-api')->group(function () {
+        //获取详情
+        Route::get('/{merchant_id}', 'MerchantApiController@show');
+        //修改
+        Route::put('/{merchant_id}', 'MerchantApiController@update');
+
+    });
+
+
+    //商户组管理
+    Route::prefix('merchant-group')->group(function () {
+        //列表查询
+        Route::get('/', 'MerchantGroupController@index');
+        //获取详情
+        Route::get('/{id}', 'MerchantGroupController@show');
+        //新增
+        Route::post('/', 'MerchantGroupController@store');
+        //修改
+        Route::put('/{id}', 'MerchantGroupController@update');
+        //删除
+        Route::delete('/{id}', 'MerchantGroupController@destroy');
+    });
+
+    //运价管理
+    Route::prefix('transport-price')->group(function () {
+        //列表查询
+        Route::get('/', 'TransportPriceController@index');
+        //获取详情
+        Route::get('/{id}', 'TransportPriceController@show');
+        //新增
+        Route::post('/', 'TransportPriceController@store');
+        //修改
+        Route::put('/{id}', 'TransportPriceController@update');
+        //启用/禁用
+        Route::put('/{id}/status', 'TransportPriceController@status');
+        //价格测试
+        Route::get('/{id}/getPriceResult', 'TransportPriceController@getPriceResult');
     });
 });

@@ -5,19 +5,19 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 商户api表
+ * 运价表
  * Class Employee
  * @package App\Models
  */
-class MerchantApi extends BaseModel
+class TransportPrice extends BaseModel
 {
     /**
-     * 司机实际取件导航
+     * 运价表
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'merchant_api';
+    protected $table = 'transport_price';
 
     /**
      * The primary key for the model.
@@ -47,11 +47,9 @@ class MerchantApi extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'merchant_id',
-        'key',
-        'secret',
-        'url',
-        'white_ip_list',
+        'name',
+        'starting_price',
+        'remark',
         'status',
         'created_at',
         'updated_at'
@@ -63,7 +61,7 @@ class MerchantApi extends BaseModel
      * @var array
      */
     protected $hidden = [
-        'password'
+
     ];
 
     /**
