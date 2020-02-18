@@ -177,7 +177,7 @@ return [
         //App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Vinkla\Hashids\HashidsServiceProvider::class
+        //Vinkla\Hashids\HashidsServiceProvider::class
 
     ],
 
@@ -230,7 +230,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        'Hashids' => Vinkla\Hashids\Facades\Hashids::class
+        //'Hashids' => Vinkla\Hashids\Facades\Hashids::class
     ],
 
 ];
