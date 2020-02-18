@@ -53,6 +53,10 @@ return [
         'driver' => [
             'driver' => 'jwt',
             'provider' => 'drivers',
+        ],
+        'merchant' => [
+            'driver' => 'jwt',
+            'provider' => 'merchants',
         ]
     ],
 
@@ -85,6 +89,10 @@ return [
         'drivers' => [
             'driver' => 'eloquent',
             'model' => \App\Models\Driver::class,
+        ],
+        'merchants' => [
+            'driver' => 'eloquent',
+            'model' => \App\Models\Merchant::class,
         ],
     ],
 

@@ -67,9 +67,7 @@ class Merchant extends BaseModel
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be mutated to dates.
@@ -79,4 +77,21 @@ class Merchant extends BaseModel
     protected $dates = [];
 
 
+    /**
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [
+            'role' => 'merchant',
+        ];
+    }
 }
