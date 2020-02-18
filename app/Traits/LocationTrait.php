@@ -11,6 +11,7 @@ namespace App\Traits;
 use App\Exceptions\BusinessLogicException;
 use App\Services\Admin\UploadService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 trait LocationTrait
@@ -64,7 +65,7 @@ trait LocationTrait
         return function () use ($country, $city, $street, $houseNumber, $postCode, $houseNumberAddition) {
             try {
                 $client = new \GuzzleHttp\Client();
-                $url = $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.logvcation_api'), $postCode, $houseNumber, $houseNumberAddition);
+                $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
                 $res = $client->request('GET', $url, [
                         'auth' =>
                             [
@@ -117,13 +118,20 @@ trait LocationTrait
                 for($i=1;$i<count($params);$i++){
                     $markers=$markers.'&markers=color:red%7Clabel:'.$i.'%7C'.$params[$i]['lat'].','.$params[$i]['lon'];
                 }
-                $url = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1581677935355&di=0b1c131bce2bb2e5377700185d5ef446&imgtype=0&src=http%3A%2F%2Fpic.90sjimg.com%2Fdesign%2F00%2F23%2F31%2F57%2F591be2a6807c3.png';
-        //config('tms.map_url').'staticmap?size=640x640&maptype=roadmap'.$markers.'&key='.config('tms.map_key');
+                //$url = 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=127689096,1321755151&fm=15&gp=0.jpg';
+        $url =config('tms.map_url').'staticmap?size=640x640&maptype=roadmap'.$markers.'&key='.config('tms.map_key');
         try {
-            $map['image'] =file_get_contents($url);
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('GET', $url, [
+                'proxy' => [
+                    'http'  => env('HTTP_PROXY'), // Use this proxy with "http"
+                    'https' => env('HTTPS_PROXY'), // Use this proxy with "https",
+                    'no' => ['.mit.edu', 'foo.com']    // Don't use a proxy with these
+                ]]);
             } catch (\Exception $ex) {
                 throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
             }
+        $map['image'] = $res->getBody();
         $map['dir'] ='tour';
         $map['name'] = $name;
         return (new \App\Services\Admin\UploadService)->imageDownload($map);
