@@ -30,7 +30,7 @@ class CreateMerchantTable extends Migration
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
 
-            $table->unique(['company_id', 'name'], 'compnay_id_name');
+            $table->unique(['company_id', 'name'], 'company_id_name');
         });
     }
 

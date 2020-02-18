@@ -22,6 +22,7 @@ class CreateKilometresChargingTable extends Migration
             $table->decimal('price', 8, 2)->default(0.00)->nullable()->comment('加价');
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
+
         });
     }
 
