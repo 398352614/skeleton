@@ -17,9 +17,24 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     /**
-     * @param Request $request
-     * @return array
-     * @throws BusinessLogicException
+     * @api {POST}  api/merchant/login 商家端:登录
+     * @apiName register
+     * @apiGroup user-register
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 注册
+     * @apiParam {String}   username                  账号
+     * @apiParam {String}   password                  密码
+     * @apiParam {String}   password                 密码
+     * @apiParam {String}   confirm_password         确认密码
+     * @apiParam {String}   code                     注册验证码 -- 暂时不需
+     * @apiSuccessExample {json}  返回示例
+     * HTTP/1.1 200 OK
+     * {
+     *  "code":200,
+     *  "msg":"注册成功",
+     *  "data":{}
+     * }
      */
     public function login(Request $request)
     {
@@ -113,7 +128,7 @@ class AuthController extends Controller
         } elseif (filter_var($username, FILTER_VALIDATE_EMAIL)) {
             return 'email';
         } else {
-            return 'fullname';
+            return 'name';
         }
     }
     /**

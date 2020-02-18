@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * 商户表
  * Class Employee
  * @package App\Models
  */
-class Merchant extends BaseModel
+class Merchant extends Authenticatable implements JWTSubject
 {
     /**
      * 司机实际取件导航

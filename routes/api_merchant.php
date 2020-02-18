@@ -24,7 +24,7 @@ Route::namespace('Api\Merchant')->group(function () {
 });
 
 //认证
-Route::namespace('Api\Merchant')->middleware(['auth:admin'])->group(function () {
+Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function () {
     Route::get('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
     Route::put('my-password', 'AuthController@updatePassword');

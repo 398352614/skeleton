@@ -1,4 +1,5 @@
 <?php
+
 /**
  * BaseModel
  * User: long
@@ -9,11 +10,13 @@
 namespace App\Models;
 
 use App\Models\Scope\CompanyScope;
+use App\Models\Scope\HasCompanyId;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 
 class BaseModel extends Model
 {
+    use HasCompanyId;
 
     protected $perPage = 10;
 
@@ -28,7 +31,10 @@ class BaseModel extends Model
     public function insertAll($data)
     {
         $companyId = null;
-        if (in_array('company_id', Schema::getColumnListing($this->getTable()))) {
+        if (!auth()->user()) {
+            //未授权用户的情况下
+            $companyId = self::getCompanyId();
+        } elseif (in_array('company_id', Schema::getColumnListing($this->getTable()))) {
             $companyId = auth()->user()->company_id;
         }
         //填充company_id
@@ -51,7 +57,7 @@ class BaseModel extends Model
             /**@var \Illuminate\Database\Eloquent\Model $model */
             if (in_array('company_id', Schema::getColumnListing($model->getTable()))) {
                 if (!isset($model->company_id) || $model->company_id === null) {
-                    $model->company_id = auth()->user()->company_id;
+                    $model->company_id = auth()->user() ? auth()->user()->company_id : self::getCompanyId();
                 }
             }
             //若是司机端 则添加司机ID
