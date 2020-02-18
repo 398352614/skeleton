@@ -13,6 +13,8 @@ use App\Models\Driver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use RongCloud\RongCloud;
 
 class AuthController extends Controller
 {
@@ -39,8 +41,35 @@ class AuthController extends Controller
 
             throw new BusinessLogicException('账户已被锁定，暂时无法登陆');
         }*/
+        $params['messager_token'] =auth('driver')->user()->messager;
+        if(empty($params['messager_token'])){
+            $params['messager_token']=$this->getMessagerToken();
+        }
+        $params['token']=$token;
+        return $this->respondWithToken($params);
+    }
 
-        return $this->respondWithToken($token);
+    /**
+     * 获取messager_token并保存
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getMessagerToken()
+    {
+        $rcloudApi = new RongCloud(config('tms.messager_key'), config('tms.messager_secret'));
+        $user_id = auth('driver')->user()->id;;//用户的id
+        $name = auth('driver')->user()->fullname;//用户名称
+        $portrait_uri = auth('driver')->user()->avatar;     //用户的头像
+        $messagerToken=$rcloudApi->getUser()->register($User =['id'=>$user_id,'name'=>$name,'portrait'=>$portrait_uri])['token'];
+        if ($messagerToken === false) {
+            throw new BusinessLogicException('无法获取通讯ID，请稍候再试');
+        }
+        //messager_token写入数据库
+        $rowCount = Driver::where('email', auth('driver')->user()->email)->update(['messager' => $messagerToken]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('通讯ID存储失败,请重新操作');
+        }
+        return $messagerToken;
     }
 
     /**
@@ -57,6 +86,7 @@ class AuthController extends Controller
      */
     public function logout()
     {
+        DB::table('driver')->where('email','=',auth('driver')->user()->email)->update(['messager'=>'']);
         auth('driver')->logout();
 
         return '注销成功！';
@@ -74,12 +104,13 @@ class AuthController extends Controller
      * @param $token
      * @return array
      */
-    protected function respondWithToken($token)
+    protected function respondWithToken($params)
     {
         return [
             'username' => auth('driver')->user()->fullName,
             'company_id' => auth('driver')->user()->company_id,
-            'access_token' => $token,
+            'access_token' => $params['token'],
+            'messager_token' =>$params['messager_token'],
             'token_type' => 'bearer',
             'expires_in' => auth('driver')->factory()->getTTL() * 60
         ];

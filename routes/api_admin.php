@@ -307,7 +307,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //启用/禁用
         Route::put('/{id}/status', 'MerchantController@status');
     });
-    
+
     //商户授权API管理
     Route::prefix('merchant-api')->group(function () {
         //获取详情

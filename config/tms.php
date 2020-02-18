@@ -6,4 +6,6 @@ return [
     'api_secret' => env('API_SECRET'),
     'map_url' =>env('MAP_URL'),
     'map_key' =>env('MAP_KEY'),
+    'messager_key'=>env('MESSAGER_KEY'),
+    'messager_secret'=>env('MESSAGER_SECRET'),
 ];
