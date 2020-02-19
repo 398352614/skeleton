@@ -43,6 +43,8 @@ class RouteServiceProvider extends ServiceProvider
         $this->mapDriverApiRoute();
         //商家端
         $this->mapMerchantApiRoute();
+        //商家API授权
+        $this->mapMerchantApiApiRoute();
     }
 
     /**
@@ -88,6 +90,14 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api_merchant.php'));
+    }
+
+    public function mapMerchantApiApiRoute()
+    {
+        Route::prefix('api/merchant_api')
+            ->middleware('api')
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api_merchant_api.php'));
     }
 
     public function mapDriverApiRoute()

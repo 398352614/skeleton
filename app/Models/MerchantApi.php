@@ -9,7 +9,7 @@ use App\Traits\ConstTranslateTrait;
  * Class Employee
  * @package App\Models
  */
-class MerchantApi extends BaseModel
+class MerchantApi extends Authenticatable
 {
     /**
      * 司机实际取件导航
@@ -63,7 +63,7 @@ class MerchantApi extends BaseModel
      * @var array
      */
     protected $hidden = [
-        'password'
+
     ];
 
     /**
@@ -72,6 +72,16 @@ class MerchantApi extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    /**
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->secret;
+    }
 
 
 }
