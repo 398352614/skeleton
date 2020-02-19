@@ -147,6 +147,16 @@ class Tour extends BaseModel
         return $this->hasMany(RouteTracking::class, 'tour_no', 'tour_no');
     }
 
+    public function tourDriverEvent()
+    {
+        return $this->hasMany(TourDriverEvent::class, 'tour_no', 'tour_no');
+    }
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'driver_id', 'id');
+    }
+
     /**
      * 获取司机位置属性
      */
@@ -154,11 +164,11 @@ class Tour extends BaseModel
     {
         if ($this->routeTracking->count()) {
             $sorted = $this->routeTracking->sortByDesc('created_at');
-                return [
-                    'latitude' => $sorted[0]->lat,
-                    'longitude' => $sorted[0]->lon,
-                ];
-            }
+            return [
+                'latitude' => $sorted[0]->lat,
+                'longitude' => $sorted[0]->lon,
+            ];
+        }
         return [
             'latitude' => $this->warehouse_lat,
             'longitude' => $this->warehouse_lon,

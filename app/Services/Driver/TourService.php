@@ -9,7 +9,9 @@
 
 namespace App\Services\Driver;
 
+use App\Events\AfterTourBatchAssign;
 use App\Events\AfterTourUpdated;
+use App\Events\DriverArriveBatch;
 use App\Events\Order\Delivered;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourBatchResource;
@@ -316,6 +318,7 @@ class TourService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'execution_date', 'type', 'batch_no', 'order_no', 'status'], false)->toArray();
         $orderList = array_create_group_index($orderList, 'type');
         $batch['order_list'] = $orderList;
+        event(new DriverArriveBatch($batch['batch_no']));
         return $orderList;
     }
 
@@ -513,6 +516,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('签收失败');
         }
+        event(new AfterTourBatchAssign($batch['batch_no']));
     }
 
 

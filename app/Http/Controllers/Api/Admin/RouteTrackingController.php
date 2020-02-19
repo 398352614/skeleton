@@ -37,10 +37,28 @@ class RouteTrackingController extends BaseController
      */
     public function route(Request $request)
     {
-        $request->validate([
+        $payload = $request->validate([
             'driver_id' => ['nullable'],
             'tour_no'   => ['required_without:driver_id'], // 两字段必须存在一个
         ]);
-        return $this->service->getPageList();
+        $tour = null;
+        if ($payload['driver_id'] ?? null) {
+            $tour = Tour::where('driver_id', $payload['driver_id'])->first();
+        } else {
+            $tour = Tour::where('tour_no', $payload['tour_no'])->first();
+        }
+        if (!$tour) {
+            throw new BusinessLogicException('没找到相关线路');
+        }
+
+        $routeTracking = $tour->routeTracking->sortBy('created_at');
+
+        return success('', [
+            'driver'                => $tour->driver,
+            'route_tracking'        =>  $routeTracking,
+            'time_consuming'        =>  '',
+            'distance_consuming'    =>  '',
+            'tour_event'            =>  $tour->tourDriverEvent,
+        ]);
     }
 }

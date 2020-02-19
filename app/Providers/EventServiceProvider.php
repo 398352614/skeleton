@@ -3,9 +3,12 @@
 namespace App\Providers;
 
 use App\Events\AfterDriverLocationUpdated;
+use App\Events\AfterTourBatchAssign;
 use App\Events\AfterTourInit;
 use App\Events\AfterTourUpdated;
+use App\Events\DriverArriveBatch;
 use App\Listeners\CountTourTimeAndDistance;
+use App\Listeners\CreateTourDriverEvent;
 use App\Listeners\UpdateDriverCountTime;
 use App\Listeners\UpdateLineCountTime;
 use Illuminate\Auth\Events\Registered;
@@ -35,6 +38,12 @@ class EventServiceProvider extends ServiceProvider
         //更新线路触发事件
         AfterTourUpdated::class => [
             UpdateLineCountTime::class,
+        ],
+        DriverArriveBatch::class => [
+            CreateTourDriverEvent::class,
+        ],
+        AfterTourBatchAssign::class => [
+            CreateTourDriverEvent::class,
         ],
     ];
 
