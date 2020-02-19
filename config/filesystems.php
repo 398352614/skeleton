@@ -98,8 +98,8 @@ return [
         //司机端-文件
         'driver_file_public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/driver/images'),
-            'url' => env('APP_URL').'/storage/driver/images',
+            'root' => storage_path('app/public/driver/flie'),
+            'url' => env('APP_URL').'/storage/driver/flie',
             'visibility' => 'public',
         ],
 
