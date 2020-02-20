@@ -104,6 +104,7 @@ trait LocationTrait
     }
 
     /**
+     * 获取站点地图
      * @param $params
      * @throws BusinessLogicException
      */
