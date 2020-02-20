@@ -22,7 +22,7 @@ class UploadValidate extends BaseValidate
 
     public $rules = [
         'image' => 'required|image|mimes:jpeg,bmp,png',
-        'file' => 'required|file|mimes:txt,xls,xlsx,doc,docx,jpeg,bmp,png,pdf',
+        'file' => 'required|file|mimes:txt,xls,xlsx,doc,docx,jpeg,bmp,png,pdf,apk',
         'dir' => 'required|string|max:20'
     ];
 

@@ -145,6 +145,30 @@ class UploadService
     }
 
     /**
+     * 安装包上传
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function apkUpload($params)
+    {
+        $subPath = 'package';
+        $params['name'] = $this->makeRuleName($params['file']);
+        try {
+            $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);
+        } catch (\Exception $ex) {
+            throw new BusinessLogicException($ex->getMessage());
+        }
+        if ($rowCount === false) {
+            throw new BusinessLogicException('文件上传失败,请重新操作');
+        }
+        return [
+            'name' => $params['name'],
+            'path' => $this->fileDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name'])
+        ];
+    }
+
+    /**
      * 获取文件目录列表
      * @return array
      */
