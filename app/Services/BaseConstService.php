@@ -196,4 +196,11 @@ class BaseConstService
     const ORDER_TRAIL_DELIVERED = 7;
     const ORDER_TRAIL_CANCEL_DELIVER = 8;
     const ORDER_TRAIL_CANCEL_ASSIGN_DRIVER = 9;
+
+    //订阅及通知常量
+    const OUT_WAREHOUSE             = 1; // 出库
+    const PICKUP_FAILED             = 2; // 取件失败
+    const PICKUP_SUCCESS            = 3; // 取件成功
+    const EXPECTED_ARRIVE_TIME      = 4; // 预计到达时间
+    const BACK_WAREHOUSE            = 5; // 回到仓库
 }
