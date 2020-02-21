@@ -120,20 +120,23 @@ class TransportPriceService extends BaseService
             throw new BusinessLogicException('修改失败,请重新操作');
         }
         //删除公里计费，重量计费，特殊时段计费列表
-        $rowCount = $this->kilometresChargingModel->newQuery()->where('merchant_price_id', '=', $id);
+        $rowCount = $this->kilometresChargingModel->newQuery()->where('transport_price_id', '=', $id)->delete();
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $rowCount = $this->weightChargingModel->newQuery()->where('merchant_price_id', '=', $id);
+        $rowCount = $this->weightChargingModel->newQuery()->where('transport_price_id', '=', $id)->delete();
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $rowCount = $this->specialTimeChargingModel->newQuery()->where('merchant_price_id', '=', $id);
+        $rowCount = $this->specialTimeChargingModel->newQuery()->where('transport_price_id', '=', $id)->delete();
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
+        $data['km_list']=json_decode($data['km_list'],true);
+        $data['weight_list']=json_decode($data['weight_list'],true);
+        $data['special_time_list']=json_decode($data['special_time_list'],true);
         //新增公里计费，重量计费，特殊时段计费列表
-        $this->insertDetailsAll($id, $params);
+        $this->insertDetailsAll($id, $data);
     }
 
     /**
