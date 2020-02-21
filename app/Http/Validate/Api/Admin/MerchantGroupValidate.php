@@ -21,7 +21,7 @@ class MerchantGroupValidate extends BaseValidate
 
 
     public $rules = [
-        'name' => 'required|string|max:50',
+        'name' => 'required|string|max:50|uniqueIgnore:merchant_group,id,company_id',
         'transport_price_id' => 'required|integer',
         'is_default' => 'required|integer|in:1,2',
     ];

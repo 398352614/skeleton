@@ -74,7 +74,6 @@ class MerchantService extends BaseService
         if ($merchantApi === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
         }
-        return $merchant;
     }
 
     /**
