@@ -41,8 +41,7 @@ class VersionController extends Controller
      * @throws BusinessLogicException
      */
     protected function store(Request $request){
-        $request['dir']='apk';
-        $url=(new UploadService)->apkUpload($request);
+        $url=(new UploadService)->apkUpload($request->all());
         Version::query()->create([
             'name'=>$request['name']??'TMS',
             'url'=>$url['path'],
