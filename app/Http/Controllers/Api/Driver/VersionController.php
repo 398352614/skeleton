@@ -42,9 +42,10 @@ class VersionController extends Controller
      */
     protected function store(Request $request){
         $request['dir']='apk';
+        $url=(new UploadService)->apkUpload($request);
         Version::query()->create([
             'name'=>$request['name']??'TMS',
-            'url'=>(new \App\Services\Driver\UploadService)->apkUpload($request)['path'],
+            'url'=>$url['path'],
             'version'=>$request['version'],
             'change_log'=>$request['change_log']??'',
             'status'=>$request['status']??1,
