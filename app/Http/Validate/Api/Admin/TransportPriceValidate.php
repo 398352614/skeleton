@@ -23,7 +23,7 @@ class TransportPriceValidate extends BaseValidate
 
     public $rules = [
         'name' => 'required|string|max:50',
-        'starting_price' => 'required|integer',
+        'starting_price' => 'required|numeric',
         'remark' => 'nullable|string|max:250',
         'status' => 'required|integer|in:1,2',
     ];
