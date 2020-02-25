@@ -139,7 +139,7 @@ class UploadService
         try {
             $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('文件上传失败,请重新操作');
+            throw new BusinessLogicException('文件上传失败,请重新操作'.$ex->getMessage());
         }
         if ($rowCount === false) {
             throw new BusinessLogicException('文件上传失败,请重新操作');
