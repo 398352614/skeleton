@@ -12,6 +12,7 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\MerchantResource;
 use App\Models\Merchant;
+use App\Models\MerchantGroup;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use Illuminate\Hashing\Argon2IdHasher;
@@ -74,6 +75,7 @@ class MerchantService extends BaseService
         if ($merchantApi === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
         }
+        MerchantGroup::query()->where('id',$params['merchant_group_id'])->increment('count');
     }
 
     /**
@@ -86,10 +88,13 @@ class MerchantService extends BaseService
     public function updateById($id, $data)
     {
         $this->check($data);
+        $info=$this->getInfo(['id'=>$id],['merchant_group_id'],false);
+        MerchantGroup::query()->where('id',$info['merchant_group_id'])->decrement('count');
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
         }
+        MerchantGroup::query()->where('id',$data['merchant_group_id'])->increment('count');
     }
 
     /**

@@ -12,6 +12,7 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\MerchantGroupResource;
 use App\Models\MerchantGroup;
+use App\Models\TransportPrice;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
@@ -54,6 +55,7 @@ class MerchantGroupService extends BaseService
     public function store($params)
     {
         $this->check($params);
+        $params['transport_price_name']=TransportPrice::query()->where('id',$params['transport_price_id'])->value('name');
         $merchantGroup = parent::create($params);
         if ($merchantGroup === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
@@ -70,6 +72,7 @@ class MerchantGroupService extends BaseService
     public function updateById($id, $data)
     {
         $this->check($data, $id);
+        $data['transport_price_name']=TransportPrice::query()->where('id',$data['transport_price_id'])->value('name');
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');

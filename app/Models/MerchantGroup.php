@@ -48,6 +48,8 @@ class MerchantGroup extends BaseModel
     protected $fillable = [
         'company_id',
         'transport_price_id',
+        'transport_price_name',
+        'count',
         'name',
         'is_default'
     ];

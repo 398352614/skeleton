@@ -19,7 +19,9 @@ class MerchantGroupResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'count'=>$this->count,
             'transport_price_id' => $this->transport_price_id,
+            'transport_price_name' => $this->transport_price_name,
             'is_default' => $this->is_default,
             'created_at' => (string)$this->created_at,
         ];

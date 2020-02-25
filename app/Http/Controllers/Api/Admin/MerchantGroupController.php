@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
+use App\Models\Merchant;
 use App\Services\Admin\MerchantGroupService;
 
 /**
