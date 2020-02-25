@@ -133,6 +133,9 @@ class UploadService
     {
         $subPath = $this->getFileDir($params['dir']);
         $params['name'] = $this->makeRuleName($params['file']);
+        if($params['dir']==='package') {
+            $params['name'] =date('YmdHis') . '.apk';
+        }
         try {
             $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);
         } catch (\Exception $ex) {
