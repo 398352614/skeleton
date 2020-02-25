@@ -60,6 +60,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/initStore', 'OrderController@initStore');
         //新增
         Route::post('/', 'OrderController@store');
+        //批量导入
+        Route::post('/import','OrderController@orderImport');
+        //批量新增
+        Route::post('/storeByList','OrderController@storeByList');
         //修改
         Route::put('/{id}', 'OrderController@update');
         //获取可分配的站点列表
@@ -74,6 +78,14 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/recovery', 'OrderController@recovery');
         //彻底删除
         Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
+    });
+
+    //订单导入记录管理
+    Route::prefix('order-import-log')->group(function () {
+        //列表查询
+        Route::get('/', 'OrderImportLogController@index');
+        //记录详情
+        Route::get('/{id}', 'OrderImportLogController@show');
     });
 
     //司机管理
@@ -346,5 +358,13 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/status', 'TransportPriceController@status');
         //价格测试
         Route::get('/{id}/getPriceResult', 'TransportPriceController@getPriceResult');
+    });
+
+    Route::prefix('version')->group(function () {
+        //版本管理
+        Route::get('/', 'VersionController@index');//版本列表
+        Route::post('/', 'VersionController@store');//版本新增
+        Route::put('/{id}', 'VersionController@update');//版本修改
+        Route::delete('/{id}', 'VersionController@delete');//版本删除
     });
 });

@@ -4,15 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class version extends Model
+/**
+ * 订单导入表
+ * Class OrderImport
+ * @package App\Models
+ */
+class OrderImportLog extends BaseModel
 {
     /**
-     * 版本
+     * 司机实际取件导航
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'version';
+    protected $table = 'order_import_log';
 
     /**
      * The primary key for the model.
@@ -42,13 +47,11 @@ class version extends Model
      */
     protected $fillable = [
         'company_id',
-        'uploader_email',
-        'name',
-        'platform',
-        'version',
         'url',
         'status',
-        'change_log',
+        'log',
+        'success_order',
+        'fail_order',
         'created_at',
         'updated_at',
     ];
@@ -58,9 +61,7 @@ class version extends Model
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be mutated to dates.
@@ -68,5 +69,4 @@ class version extends Model
      * @var array
      */
     protected $dates = [];
-
 }

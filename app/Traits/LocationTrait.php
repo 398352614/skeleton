@@ -110,15 +110,10 @@ trait LocationTrait
      */
     public static function getBatchMap($params,$name)
     {
-        //https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap
-        //&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318
-        //&markers=color:red%7Clabel:C%7C40.718217,-73.998284
-        //&key=YOUR_API_KEY
-                $client = new \GuzzleHttp\Client();
-                $markers ='&markers=color:blue%7Clabel:A%7C'.$params[0]['lat'].','.$params[0]['lon'];
-                for($i=1;$i<count($params);$i++){
-                    $markers=$markers.'&markers=color:red%7Clabel:'.$i.'%7C'.$params[$i]['lat'].','.$params[$i]['lon'];
-                }
+        $markers ='&markers=color:blue%7Clabel:A%7C'.$params[0]['lat'].','.$params[0]['lon'];
+        for($i=1;$i<count($params);$i++){
+            $markers=$markers.'&markers=color:red%7Clabel:'.$i.'%7C'.$params[$i]['lat'].','.$params[$i]['lon'];
+        }
                 //$url = 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=127689096,1321755151&fm=15&gp=0.jpg';
         $url =config('tms.map_url').'staticmap?size=640x640&maptype=roadmap'.$markers.'&key='.config('tms.map_key');
         try {
@@ -127,7 +122,6 @@ trait LocationTrait
                 'proxy' => [
                     'http'  => env('HTTP_PROXY'), // Use this proxy with "http"
                     'https' => env('HTTPS_PROXY'), // Use this proxy with "https",
-                    'no' => ['.mit.edu', 'foo.com']    // Don't use a proxy with these
                 ]]);
             } catch (\Exception $ex) {
                 throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
@@ -135,6 +129,6 @@ trait LocationTrait
         $map['image'] = $res->getBody();
         $map['dir'] ='tour';
         $map['name'] = $name;
-        return (new \App\Services\Admin\UploadService)->imageDownload($map);
+        return (new \App\Services\Admin\DownloadloadService)->imageDownload($map);
     }
 }

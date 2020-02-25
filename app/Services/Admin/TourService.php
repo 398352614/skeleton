@@ -16,18 +16,16 @@ use App\Services\BaseService;
 use App\Services\BaseServices\XLDirectionService;
 use App\Services\GoogleApiService;
 use App\Services\OrderNoRuleService;
+use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
-use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
 use App\Services\Traits\TourRedisLockTrait;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 
 class TourService extends BaseService
 {
-    use TourRedisLockTrait;
+    use TourRedisLockTrait,ExportTrait;
 
     /**
      * @var GoogleApiService
@@ -720,12 +718,9 @@ class TourService extends BaseService
 
     }
 
-    public function export($tour_no,$data)
+    protected function getRelativeUrl(string $url): string
     {
-        $params['dir'] ='tour';
-        $params['name'] =$tour_no;
-        $params['excel'] =$data;
-        return $this->getUploadService()->excelUpload($params);
+        return str_replace(config('app.url'), '', $url);
     }
 
     /**
@@ -763,7 +758,8 @@ class TourService extends BaseService
             $cellData[$i] = array_values($cellData[$i]);
         }
         $cellData =array_reverse($cellData);
-        return $this->export($tour_no,$cellData);
+        $dir ='tour';
+        return $this->excelExport($tour_no,$cellData,$dir);
     }
 
     /**
@@ -778,18 +774,16 @@ class TourService extends BaseService
         if(empty($tourInfo)){
             throw new BusinessLogicException('数据不存在');
         }
-/*        if($tourInfo['status'] < BaseConstService::ORDER_STATUS_1){
-            throw new BusinessLogicException('当前状态无法导出取派城市');
-        }*/
         $info = $this->getBatchService()->getList(['tour_no'=>$tourInfo['tour_no']],['*'],false,[],['sort_id' => 'asc'])->toArray();
         $cityList ='';
        for($i=0;$i<count($info);$i++){
            $cityList = $cityList.$info[$i]['receiver_city'].'-';
        }
        $cityList =rtrim($cityList, "-");
-       $params['txt']=$tourInfo['line_name'].' '.$tourInfo['driver_name'].':'.$tourInfo['driver_phone'].' '.$cityList;
        $params['name']=$tourInfo['tour_no'];
+       $params['txt']=$tourInfo['line_name'].' '.$tourInfo['driver_name'].':'.$tourInfo['driver_phone'].' '.$cityList;
        $params['dir']='tour';
+       //return $this->txtExport($params['name'],$params['txt'],$params['dir']);
        return $params;
     }
 

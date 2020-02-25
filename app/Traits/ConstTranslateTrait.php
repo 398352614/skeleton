@@ -177,7 +177,9 @@ trait ConstTranslateTrait
     //管理员端 文件目录
     public static $adminFileDirList = [
         BaseConstService::ADMIN_FILE_DRIVER_DIR => '司机文件目录',
-        BaseConstService::ADMIN_FILE_CAR_DIR => '车辆文件目录'
+        BaseConstService::ADMIN_FILE_CAR_DIR => '车辆文件目录',
+        BaseConstService::ADMIN_FILE_ORDER_DIR => '订单文件目录',
+        BaseConstService::ADMIN_FILE_APK_DIR => '安装包目录'
     ];
 
     //管理员端 表格目录
@@ -187,7 +189,7 @@ trait ConstTranslateTrait
 
     //管理员端 文档目录
     public static $adminTxtDirList = [
-        BaseConstService::ADMIN_TXT_TOUR_DIR => '取件线路文档目录',
+        BaseConstService::ADMIN_TXT_TOUR_DIR => '取件线路文件目录',
     ];
 
     //司机端 文件目录

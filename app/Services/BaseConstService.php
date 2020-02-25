@@ -176,12 +176,12 @@ class BaseConstService
     //管理员端 表格目录
     const ADMIN_EXCEL_TOUR_DIR = 'tour';
 
-    //管理员端 文档目录
-    const ADMIN_TXT_TOUR_DIR = 'tour';
-
     //管理员端 文件目录
     const ADMIN_FILE_DRIVER_DIR = 'driver';
     const ADMIN_FILE_CAR_DIR = 'car';
+    const ADMIN_TXT_TOUR_DIR = 'tour';
+    const ADMIN_FILE_ORDER_DIR = 'order';
+    const ADMIN_FILE_APK_DIR = 'package';
 
     //司机端 文件目录
     const DRIVER_FILE_TOUR_DIR = 'tour';

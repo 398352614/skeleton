@@ -9,6 +9,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\OrderService;
 
@@ -70,6 +71,26 @@ class OrderController extends BaseController
     public function store()
     {
         return $this->service->store($this->data);
+    }
+
+    /**
+     * 订单批量导入
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function orderImport()
+    {
+            return $this->service->orderImport($this->data);
+    }
+
+    /**
+     * 批量新增
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function storeByList()
+    {
+        return $this->service->CreateByList($this->data);
     }
 
     /**

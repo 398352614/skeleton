@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2",
         "ext-json": "*",
+        "aws/aws-sdk-php": "~3.0",
         "doctrine/dbal": "2.*",
         "fideloper/proxy": "^4.0",
         "firebase/php-jwt": "^3.0",
@@ -17,12 +18,13 @@
         "jiaxincui/closure-table": "^2.1",
         "laravel/framework": "^6.2",
         "laravel/tinker": "^1.0",
+        "maatwebsite/excel": "^3.1",
+        "pda/pheanstalk": "~4.0",
         "php-http/guzzle6-adapter": "^2.0",
         "predis/predis": "^1.1",
         "rongcloud/php-sdk": "^3.0",
         "tymon/jwt-auth": "^1.0.0-rc.5",
-        "vinkla/hashids": "^7.0",
-        "maatwebsite/excel": "^3.1"
+        "vinkla/hashids": "^7.0"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

@@ -14,18 +14,23 @@ use App\Events\Order\OrderCreated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
+use App\Http\Validate\Api\Admin\OrderValidate;
 use App\Models\Order;
+use App\Models\OrderImportLog;
 use App\Models\ReceiverAddress;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
+use Illuminate\Support\Facades\DB;
 
 class OrderService extends BaseService
 {
+    use ImportTrait, LocationTrait;
 
     public $filterRules = [
         'type' => ['=', 'type'],
@@ -120,6 +125,16 @@ class OrderService extends BaseService
     {
         return self::getInstance(ReceiverAddressService::class);
     }
+
+    /**
+     * 上传 服务
+     * @return mixed
+     */
+    public function getUploadService()
+    {
+        return self::getInstance(UploadService::class);
+    }
+
 
     /**
      * 取件列初始化
@@ -245,6 +260,133 @@ class OrderService extends BaseService
         /**************************************新增订单货物明细********************************************************/
         $this->addAllItemList($params);
     }
+
+    /**
+     * 订单批量新增
+     * @param $list
+     * @param $name
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function createByList($params)
+    {
+        $list=json_decode($params['list'],true);
+        $successCount = 0;
+        $failCount = 0;
+        $validatorList = [];
+        $log = [];
+        $validate = new OrderValidate;
+        $rules = $validate->rules;
+        $message = $validate->message;
+        $item_rules = $validate->item_rules;
+        $itemCustomAttributes = $validate->itemCustomAttributes;
+        for ($i = 0; $i < count($list); $i++) {
+            //处理格式
+            $list[$i]['execution_date'] = date('Y-m-d', ($list[$i]['execution_date'] - 25569) * 24 * 3600);
+            $list[$i] = array_map('strval', $list[$i]);
+            //获取经纬度
+            $info = $this->getReceiverAddressService()->check($list[$i]);
+            if (empty($info)) {
+                $info = $this->getLocation($list[$i]['receiver_country'], $list[$i]['receiver_city'], $list[$i]['receiver_street'], $list[$i]['receiver_house_number'], $list[$i]['receiver_post_code']);
+            }
+            $list[$i]['lon'] = $info['lon'];
+            $list[$i]['lat'] = $info['lat'];
+            //订单新增验证
+            $validator[$i] = \Illuminate\Support\Facades\Validator::make($list[$i], $rules, ['*.unique_ignore' => ':attribute已存在','settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
+            ]);
+            if ($validator[$i]->fails()) {
+                $log[$i + 1] = array_values($validator[$i]->errors()->getMessages())[0];
+                $failCount = $failCount + 1;
+            }else{if (!empty($list[$i]['item_list'])) {
+                $itemList = json_decode($list[$i]['item_list'], true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $log[$i + 1] = (new BusinessLogicException('明细数据格式不正确', 3001))->getMessage();
+                } else {
+                    foreach ($itemList as $item) {
+                        $validatorList[$i] = \Illuminate\Support\Facades\Validator::make($item, $item_rules);
+                    }
+                    if ($validatorList[$i]->fails()) {
+                        $log[$i + 1] = array_values($validatorList[$i]->errors()->getMessages())[0];
+                        $failCount = $failCount + 1;
+                    } else {
+                        //订单新增事务
+                        try {
+                            DB::beginTransaction();
+                            $this->store($list[$i]);
+                            $log[$i + 1] = 'success';
+                            $successCount = $successCount + 1;
+                            DB::commit();
+                        } catch (BusinessLogicException $e) {
+                            DB::rollBack();
+                            $log[$i + 1] = $e->getMessage();
+                        } catch (\Exception $e) {
+                            DB::rollBack();
+                            $log[$i + 1] = $e->getMessage();
+                        }
+                    }
+                }
+            }}
+
+        }
+        $data['log'] = $log;
+        $data['success'] = $successCount;
+        $data['fail'] = $failCount;
+        OrderImportLog::query()->where('id', $params['id'])->update([
+            'success_order' => $data['success'],
+            'fail_order' => $data['fail'],
+            'log' => json_encode($data['log']),
+            'status'=>2
+        ]);
+    }
+
+    /**
+     * 订单导入
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function orderImport($params)
+    {
+        $this->orderImportValidate($params);
+        $params['dir'] = 'order';
+        $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
+        $params['path'] = str_replace('tms-api.test/storage/', 'public//', $params['path']);
+        $heading = ['execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'special_remark', 'remark', 'item_list'];
+        $this->headingCheck($params['path'], $heading);//表头验证
+        $row = $this->excelImport($params['path'])[0];
+        $id =$this->orderImportLog($params);
+        return ['row'=>$row,'id'=>$id];
+    }
+
+    public function orderImportLog($params){
+        $orderImport =[
+            'company_id'=>auth()->user()->company_id,
+            'name'=>$params['name'],
+            'url'=>$params['path'],
+            'status'=>1,
+            'success_order'=>0,//$info['success'],
+            'fail_order'=>0,//$info['fail'],
+            'log'=>''//json_encode($info['log']),
+        ];
+        return OrderImportLog::query()->create($orderImport)->id;
+    }
+
+    /**
+     * 验证传入参数
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function orderImportValidate($params){
+        //验证$params
+        $checkfile=\Illuminate\Support\Facades\Validator::make($params,
+            ['file' => 'required|file|mimes:txt,xls,xlsx','name'=>'required|unique:order_import_log'],
+            ['file.file' => '必须是文件', 'file.mimes' => ':attribute类型必须是excel,word,jpeg,bmp,png,pdf类型']);
+        if($checkfile->fails()){
+            $error = array_values($checkfile->errors()->getMessages())[0][0];
+            throw new BusinessLogicException($error,301);
+        }
+    }
+
+
 
     /**
      * 自动记录

@@ -24,15 +24,8 @@ Route::namespace('Api\Driver')->middleware([])->group(function () {
     Route::post('login', 'AuthController@login');
     Route::put('password-reset', 'AuthController@resetPassword');
     Route::post('password-reset/apply', 'AuthController@applyOfReset');
+    Route::get('/version', 'VersionController@check');//版本检查
 
-    Route::prefix('version')->group(function () {
-        //版本管理
-        Route::get('/check', 'VersionController@check');//版本检查
-        Route::get('/', 'VersionController@index');//版本列表
-        Route::post('/', 'VersionController@store');//版本新增
-        Route::put('/{id}', 'VersionController@update');//版本修改
-        Route::delete('/{id}', 'VersionController@delete');//版本删除
-    });
 });
 /*
 |--------------------------------------------------------------------------

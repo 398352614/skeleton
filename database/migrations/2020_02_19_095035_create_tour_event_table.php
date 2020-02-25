@@ -38,6 +38,6 @@ class CreateTourEventTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tour_event');
+        Schema::dropIfExists('tour_driver_event');
     }
 }
