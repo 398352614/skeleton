@@ -29,6 +29,9 @@ use Illuminate\Support\Arr;
  */
 class TransportPriceService extends BaseService
 {
+    public $filterRules = [
+        'name' => ['like', 'name']];
+
     public function __construct(
         TransportPrice $transportPrice,
         KilometresCharging $kilometresCharging,
@@ -40,6 +43,7 @@ class TransportPriceService extends BaseService
         $this->resource = TransportPriceResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
+        $this->setFilterRules();
         //子模型
         $this->kilometresChargingModel = $kilometresCharging;
         $this->weightChargingModel = $weightCharging;
