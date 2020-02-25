@@ -195,7 +195,9 @@ class TransportPriceService extends BaseService
             $specialTime = $specialTime->toArray();
             $price += $specialTime['price'];
         }
-        return $price;
+        $info=$this->show($id);
+        $info['price']=$price;
+        return $info;
     }
 
 
