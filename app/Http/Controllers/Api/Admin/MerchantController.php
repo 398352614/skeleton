@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
+use App\Models\MerchantGroup;
 use App\Services\Admin\MerchantService;
 
 /**
@@ -43,6 +44,7 @@ class MerchantController extends BaseController
             throw new BusinessLogicException('数据不存在');
         }
         $info = $info->toArray();
+        $info['merchant_group_name']=MerchantGroup::query()->where('id',$info['merchant_group_id'])->value('name');
         unset($info['password']);
         return $info;
     }

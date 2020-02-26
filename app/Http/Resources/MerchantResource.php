@@ -9,6 +9,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\MerchantGroup;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,6 +25,7 @@ class MerchantResource extends JsonResource
             'email' => $this->email,
             'settlement_type' => $this->settlement_type,
             'merchant_group_id' => $this->merchant_group_id,
+            'merchant_group_name' => MerchantGroup::query()->where('id',$this->merchant_group_id)->value('name'),
             'contacter' => $this->contacter,
             'phone' => $this->phone,
             'address' => $this->address,
