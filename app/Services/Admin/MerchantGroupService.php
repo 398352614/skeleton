@@ -59,7 +59,6 @@ class MerchantGroupService extends BaseService
     public function store($params)
     {
         $this->check($params);
-        $params['transport_price_name']=TransportPrice::query()->where('id',$params['transport_price_id'])->value('name');
         $merchantGroup = parent::create($params);
         if ($merchantGroup === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
@@ -76,7 +75,6 @@ class MerchantGroupService extends BaseService
     public function updateById($id, $data)
     {
         $this->check($data, $id);
-        $data['transport_price_name']=TransportPrice::query()->where('id',$data['transport_price_id'])->value('name');
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
@@ -123,8 +121,29 @@ class MerchantGroupService extends BaseService
         }
     }
 
+    /**
+     * 成员信息
+     * @param int $id
+     * @return mixed
+     */
     public function indexOfMerchant(int $id)
     {
         return $this->getMerchantService()->indexOfMerchant($id);
+    }
+
+
+    /**
+     * 批量设置运价
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    public function updatePrice($data){
+        $ids=json_decode ($data['ids'], true);
+        for($i=0;$i<count($ids);$i++){
+          $info=$this->update(['id'=>$ids[$i]],['transport_price_id'=>$data['transport_price_id']]);
+            if(empty($info)){
+                throw new BusinessLogicException('批量设置运价失败');
+            }
+        }
     }
 }

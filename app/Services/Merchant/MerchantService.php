@@ -34,7 +34,7 @@ class MerchantService extends BaseService
      * 商户api 服务
      * @return MerchantApiService
      */
-    private function getMerchantApiService()
+    public function getMerchantApiService()
     {
         return parent::getInstance(MerchantApiService::class);
     }

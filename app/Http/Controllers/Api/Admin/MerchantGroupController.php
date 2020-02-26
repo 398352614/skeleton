@@ -73,8 +73,21 @@ class MerchantGroupController extends BaseController
         return $this->service->destroy($id);
     }
 
+    /**
+     * 成员信息
+     * @param $id
+     * @return mixed
+     */
     public function indexOfMerchant($id){
         return $this->service->indexOfMerchant($id);
     }
 
+
+    /**
+     * 批量设置运价
+     * @throws BusinessLogicException
+     */
+    public function updatePrice(){
+        return $this->service->updatePrice($this->data);
+    }
 }

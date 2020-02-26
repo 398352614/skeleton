@@ -346,6 +346,9 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::delete('/{id}', 'MerchantGroupController@destroy');
         //组内成员
         Route::get('/{id}/indexOfMerchant', 'MerchantGroupController@indexOfMerchant');
+        //批量修改运价方案
+        Route::put('/transportPrice','MerchantGroupController@updatePrice');
+
     });
 
     //运价管理

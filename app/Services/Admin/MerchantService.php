@@ -142,6 +142,11 @@ class MerchantService extends BaseService
         }
     }
 
+    /**
+     * 组内商家
+     * @param $group_id
+     * @return mixed
+     */
     public function indexOfMerchant($group_id)
     {
         $this->query->where('merchant_group_id', $group_id);

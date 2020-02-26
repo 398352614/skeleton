@@ -9,6 +9,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\TransportPrice;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,7 +22,7 @@ class MerchantGroupResource extends JsonResource
             'name' => $this->name,
             'count'=>$this->count,
             'transport_price_id' => $this->transport_price_id,
-            'transport_price_name' => $this->transport_price_name,
+            'transport_price_name' => TransportPrice::query()->where('id',$this->transport_price_id)->value('name'),
             'is_default' => $this->is_default,
             'created_at' => (string)$this->created_at,
         ];
