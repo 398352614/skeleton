@@ -22,6 +22,9 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class MerchantService extends BaseService
 {
+    public $filterRules = [
+        'name' => ['like', 'name']];
+
     public function __construct(Merchant $merchant)
     {
         $this->model = $merchant;
@@ -29,6 +32,7 @@ class MerchantService extends BaseService
         $this->request = request();
         $this->formData = $this->request->all();
         $this->resource = MerchantResource::class;
+        $this->setFilterRules();
     }
 
     /**
