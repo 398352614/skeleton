@@ -73,4 +73,8 @@ class MerchantGroupController extends BaseController
         return $this->service->destroy($id);
     }
 
+    public function indexOfMerchant($id){
+        return $this->service->indexOfMerchant($id);
+    }
+
 }

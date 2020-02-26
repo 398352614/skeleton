@@ -68,7 +68,9 @@ class Merchant extends Authenticatable implements JWTSubject
      *
      * @var array
      */
-    protected $hidden = [];
+    protected $hidden = [
+        'password',
+    ];
 
     /**
      * The attributes that should be mutated to dates.

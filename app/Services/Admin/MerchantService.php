@@ -138,4 +138,10 @@ class MerchantService extends BaseService
         }
     }
 
+    public function indexOfMerchant($group_id)
+    {
+        $this->query->where('merchant_group_id', $group_id);
+        return parent::getPaginate();
+    }
+
 }

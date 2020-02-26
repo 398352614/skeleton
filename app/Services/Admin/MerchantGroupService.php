@@ -11,6 +11,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\MerchantGroupResource;
+use App\Models\Merchant;
 use App\Models\MerchantGroup;
 use App\Models\TransportPrice;
 use App\Services\BaseConstService;
@@ -117,5 +118,10 @@ class MerchantGroupService extends BaseService
                 throw new BusinessLogicException('操作失败');
             }
         }
+    }
+
+    public function indexOfMerchant(int $id)
+    {
+        return $this->getMerchantService()->indexOfMerchant($id);
     }
 }
