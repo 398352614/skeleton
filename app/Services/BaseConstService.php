@@ -169,6 +169,7 @@ class BaseConstService
     const ADMIN_IMAGE_DRIVER_DIR = 'driver';
     const ADMIN_IMAGE_TOUR_DIR = 'tour';
     const ADMIN_IMAGE_CANCEL_DIR = 'cancel';
+    const ADMIN_IMAGE_MERCHANT_DIR = 'merchant';
 
     //司机端 图片目录
     const DRIVER_IMAGE_TOUR_DIR = 'tour';

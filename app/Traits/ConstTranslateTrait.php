@@ -167,6 +167,7 @@ trait ConstTranslateTrait
         BaseConstService::ADMIN_IMAGE_DRIVER_DIR => '司机图片目录',
         BaseConstService::ADMIN_IMAGE_TOUR_DIR => '取件线路图片目录',
         BaseConstService::ADMIN_IMAGE_CANCEL_DIR => '取消取派图片目录',
+        BaseConstService::ADMIN_IMAGE_MERCHANT_DIR => '商户图片目录',
     ];
 
     //司机端 图片目录
