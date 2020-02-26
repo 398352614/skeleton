@@ -60,10 +60,6 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/initStore', 'OrderController@initStore');
         //新增
         Route::post('/', 'OrderController@store');
-        //批量导入
-        Route::post('/import','OrderController@orderImport');
-        //批量新增
-        Route::post('/storeByList','OrderController@storeByList');
         //修改
         Route::put('/{id}', 'OrderController@update');
         //获取可分配的站点列表
@@ -81,11 +77,17 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     });
 
     //订单导入记录管理
-    Route::prefix('order-import-log')->group(function () {
+    Route::prefix('order-import')->group(function () {
+        //获取模板
+        Route::get('/template','OrderImportController@template');
+        //批量导入
+        Route::post('/import','OrderController@orderImport');
+        //批量新增
+        Route::post('/storeByList','OrderController@storeByList');
         //列表查询
-        Route::get('/', 'OrderImportLogController@index');
+        Route::get('/log', 'OrderImportController@index');
         //记录详情
-        Route::get('/{id}', 'OrderImportLogController@show');
+        Route::get('/log/{id}', 'OrderImportController@show');
     });
 
     //司机管理
@@ -342,6 +344,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}', 'MerchantGroupController@update');
         //删除
         Route::delete('/{id}', 'MerchantGroupController@destroy');
+        //组内成员
+        Route::get('/{id}/indexOfMerchant', 'MerchantGroupController@indexOfMerchant');
     });
 
     //运价管理
