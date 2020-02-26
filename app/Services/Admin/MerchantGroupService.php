@@ -11,7 +11,6 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\MerchantGroupResource;
-use App\Models\Merchant;
 use App\Models\MerchantGroup;
 use App\Models\TransportPrice;
 use App\Services\BaseConstService;
@@ -20,6 +19,9 @@ use Illuminate\Support\Arr;
 
 class MerchantGroupService extends BaseService
 {
+    public $filterRules = [
+        'name' => ['like', 'name']];
+
     public function __construct(MerchantGroup $merchantGroup)
     {
         $this->model = $merchantGroup;
@@ -27,6 +29,7 @@ class MerchantGroupService extends BaseService
         $this->resource = MerchantGroupResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
+        $this->setFilterRules();
     }
 
     /**
