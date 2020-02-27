@@ -12,7 +12,9 @@ use App\Models\CarModel;
 use App\Models\Company;
 use App\Models\Driver;
 use App\Models\Employee;
+use App\Models\Material;
 use App\Models\OrderNoRule;
+use App\Models\TourMaterial;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -44,7 +46,13 @@ class CompanyScope implements Scope
         if ($user instanceof Driver) {
             $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
             //车辆模型和司机无关
-            if ((!($model instanceof Car)) && (!($model instanceof OrderNoRule)) && (!($model instanceof CarBrand)) && (!($model instanceof CarModel))) {
+            if ((!($model instanceof Car))
+                && (!($model instanceof OrderNoRule))
+                && (!($model instanceof CarBrand))
+                && (!($model instanceof CarModel))
+                && (!($model instanceof Material))
+                && (!($model instanceof TourMaterial))
+            ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
             }
         }

@@ -482,7 +482,7 @@ class BatchService extends BaseService
         /***********************************************修改订单************************************************/
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
-            $this->getOrderService()->fillBatchTourInfo($order['id'], $info, $tour);
+            $this->getOrderService()->fillBatchTourInfo($order, $info, $tour);
         }
     }
 

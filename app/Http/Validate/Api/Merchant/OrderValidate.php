@@ -108,7 +108,8 @@ class OrderValidate extends BaseValidate
             'receiver_city', 'receiver_street'
         ],
         'store' => [
-            'execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source',
+            //'out_order_no', 'express_first_no', 'express_second_no',
+            'execution_date', 'source',
             'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
@@ -119,10 +120,11 @@ class OrderValidate extends BaseValidate
             //备注
             'special_remark', 'remark', 'lon', 'lat',
             //明细
-            'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
+            //'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
         ],
         'update' => [
-            'execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source',
+            // 'out_order_no', 'express_first_no', 'express_second_no',
+            'execution_date', 'source',
             'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
@@ -133,7 +135,7 @@ class OrderValidate extends BaseValidate
             //备注
             'special_remark', 'remark', 'lon', 'lat',
             //明细
-            'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
+            //'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
         ],
         'getBatchPageListByOrder' => ['execution_date'],
         'assignToBatch' => ['execution_date', 'batch_no'],

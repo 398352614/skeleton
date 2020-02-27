@@ -12,9 +12,16 @@ namespace App\Services\Driver;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourTaskResource;
 use App\Models\Tour;
+use App\Models\TourMaterial;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use Illuminate\Support\Facades\DB;
 
+/**
+ * Class TourTaskService
+ * @package App\Services\Driver
+ * @property TourMaterial $tourMaterialModel
+ */
 class TourTaskService extends BaseService
 {
     public $filterRules = [
@@ -26,7 +33,9 @@ class TourTaskService extends BaseService
         'execution_date' => 'desc'
     ];
 
-    public function __construct(Tour $tour)
+    private $tourMaterialModel;
+
+    public function __construct(Tour $tour, TourMaterial $tourMaterial)
     {
         $this->request = request();
         $this->model = $tour;
@@ -34,6 +43,7 @@ class TourTaskService extends BaseService
         $this->resource = TourTaskResource::class;
         $this->formData = $this->request->all();
         $this->setFilterRules();
+        $this->tourMaterialModel = $tourMaterial;
     }
 
     /**
@@ -52,6 +62,15 @@ class TourTaskService extends BaseService
     private function getOrderService()
     {
         return self::getInstance(OrderService::class);
+    }
+
+    /**
+     * 材料 服务
+     * @return MaterialService
+     */
+    private function getMaterialService()
+    {
+        return self::getInstance(MaterialService::class);
     }
 
     /**
@@ -98,12 +117,36 @@ class TourTaskService extends BaseService
         $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status'], false)->toArray();
         //订单列表根据站点编号 分组
         $orderList = array_create_group_index($orderList, 'batch_no');
+        //获取所有材料列表
+        $materialList = $this->getTourMaterialList($tour);
         //数据组合填充
         foreach ($batchList as &$batch) {
             $batch['order_list'] = $orderList[$batch['batch_no']];
         }
         $tour['batch_list'] = $batchList;
+        $tour['material_list'] = $materialList;
         return $tour;
+    }
+
+    /**
+     * 获取材料
+     * @param $tour
+     * @param $materialList
+     * @return array
+     */
+    private function getTourMaterialList($tour)
+    {
+        if (in_array(intval($tour['status']), [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5])) {
+            $materialList = $this->tourMaterialModel->newQuery()->where('tour_no', '=', $tour['tour_no'])->get()->toArray();
+        } else {
+            $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], [
+                'name',
+                'code',
+                DB::raw('SUM(quantity) as expect_quantity'),
+                DB::raw('0 as actual_quantity'),
+            ], false, ['code'])->toArray();
+        }
+        return $materialList;
     }
 
     /**

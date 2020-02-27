@@ -19,16 +19,19 @@ use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
 use App\Models\TourLog;
+use App\Models\TourMaterial;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use App\Services\Traits\TourRedisLockTrait;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class TourService
  * @package App\Services\Driver
+ * @property  TourMaterial $tourMaterialModel
  * 取件线路流程
  * 1.开始装货 取件线路状态 已分配-待出库
  * 2.出仓库   取件线路状态 待出库-取派中
@@ -39,12 +42,15 @@ class TourService extends BaseService
 {
     use TourRedisLockTrait;
 
-    public function __construct(Tour $tour)
+    private $tourMaterialModel;
+
+    public function __construct(Tour $tour, TourMaterial $tourMaterial)
     {
         $this->request = request();
         $this->formData = request()->all();
         $this->model = $tour;
         $this->query = $this->model::query();
+        $this->tourMaterialModel = $tourMaterial;
     }
 
     /**
@@ -81,6 +87,15 @@ class TourService extends BaseService
     private function getOrderService()
     {
         return self::getInstance(OrderService::class);
+    }
+
+    /**
+     * 材料 服务
+     * @return MaterialService
+     */
+    private function getMaterialService()
+    {
+        return self::getInstance(MaterialService::class);
     }
 
     /**
@@ -255,8 +270,31 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
+        //插入取件线路材料
+        !empty($params['material_list']) && $this->insertMaterialList($tour, $params['material_list']);
+
         OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_DELIVERING);
     }
+
+    /**
+     * 批量新增取件材料
+     * @param $tour
+     * @param $materialList
+     * @throws BusinessLogicException
+     */
+    private function insertMaterialList($tour, $materialList)
+    {
+        $materialList = collect($materialList)->map(function ($material, $key) use ($tour) {
+            $material = Arr::only($material, ['actual_quantity', 'code', 'name']);
+            $material = Arr::add($material, 'tour_no', $tour['tour_no']);
+            return $material;
+        })->toArray();
+        $rowCount = $this->tourMaterialModel->newQuery()->insert($materialList);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('材料新增失败');
+        }
+    }
+
 
     /**
      * 验证-出库
@@ -360,7 +398,10 @@ class TourService extends BaseService
         $orderList['pickup'] = $orderList['1'] ?? [];
         $orderList['pie'] = $orderList['2'] ?? [];
         unset($orderList['1'], $orderList['2']);
+        //获取站点中过所有材料
+        $materialList = $this->getMaterialService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
         $batch['order_list'] = $orderList;
+        $batch['materialList'] = $materialList;
         $batch['sticker_amount'] = BaseConstService::STICKER_AMOUNT;
         $batch['tour_id'] = $tour['id'];
         return $batch;
@@ -516,7 +557,40 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('签收失败');
         }
+
+        //处理材料
+        !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list']);
+
+
         event(new AfterTourBatchAssign($batch['batch_no']));
+    }
+
+    /**
+     * 处理签收时的材料
+     * @param $tour
+     * @param $materialList
+     * @throws BusinessLogicException
+     */
+    private function dealMaterialList($tour, $materialList)
+    {
+        $materialList = json_decode($materialList, true);
+        foreach ($materialList as $material) {
+            $rowCount = $this->getMaterialService()->update(['order_no' => $material['order_no'], 'code' => $material['code']], ['actual_quantity' => $material['actual_quantity']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('材料处理失败');
+            }
+        }
+        $materialList = collect($materialList)->groupBy('code')->toArray();
+        foreach ($materialList as $materialItemList) {
+            $quantity = collect($materialItemList)->sum('actual_quantity');
+            $rowCount = $this->tourMaterialModel->newQuery()
+                ->where('tour_no', '=', $tour['tour_no'])
+                ->where('code', '=', $materialItemList[0]['code'])
+                ->update(['finish_quantity' => DB::raw("finish_quantity+$quantity"), 'surplus_quantity' => DB::raw("surplus_quantity-$quantity")]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('材料处理失败');
+            }
+        }
     }
 
 
