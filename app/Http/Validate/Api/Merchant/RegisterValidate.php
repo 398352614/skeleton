@@ -27,7 +27,7 @@ class RegisterValidate extends BaseValidate
         'new_password' => 'required|string|between:8,20',
         'confirm_new_password' => 'required|string|same:new_password',
         'name' => 'required|string|max:50|uniqueIgnore:company,id',
-        'company_code'=>'required|integer'
+        'company_code'=>'required|string'
     ];
 
     public $scene = [
