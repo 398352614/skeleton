@@ -241,7 +241,7 @@ class ReportService extends BaseService
                 'actual_time' => $batch['actual_time'],
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
-            $newBatchList[$key]['material_list'] = array_values($materialList[$batch['batch_no']]);
+            $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
         }
         return $newBatchList;
     }
