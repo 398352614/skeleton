@@ -144,11 +144,6 @@ class TourService extends BaseService
         return parent::getPageList();
     }
 
-    //新增
-    public function store($params)
-    {
-    }
-
     /**
      * 分配司机
      * @param $id

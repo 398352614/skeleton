@@ -62,6 +62,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/', 'OrderController@store');
         //修改
         Route::put('/{id}', 'OrderController@update');
+        //获取可分配路线日期
+        Route::get('/{id}/getTourDate','OrderController@getTourDate');
         //获取可分配的站点列表
         Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
         //分配至站点

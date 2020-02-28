@@ -143,6 +143,15 @@ class OrderService extends BaseService
     }
 
     /**
+     * 线路 服务
+     * @return mixed
+     */
+    public function getLineRangeService()
+    {
+        return self::getInstance(LineRangeService::class);
+    }
+
+    /**
      * 上传 服务
      * @return mixed
      */
@@ -673,6 +682,12 @@ class OrderService extends BaseService
         return [$batch, $tour];
     }
 
+    public function getTourDate($id){
+        $info = parent::getInfo(['id' => $id], ['*'], true);
+        return $this->getLineRangeService()->query
+            ->where('post_code_start','<=',$info['receiver_post_code'])
+            ->where('post_code_end','>=',$info['receiver_post_code'])->distinct()->pluck('schedule');
+    }
     /**
      * 获取可分配的站点列表
      * @param $id

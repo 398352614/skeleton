@@ -51,15 +51,19 @@ class LineService extends BaseService
         return self::getInstance(WareHouseService::class);
     }
 
+    public function postQuery($postCode){
+        $line_range=$this->getLineRangeService()->query
+            ->where('post_code_start','<=',$postCode)
+            ->where('post_code_end','>=',$postCode)->distinct()->pluck('line_id');
+        return $this->query->whereIn('id',$line_range);
+    }
+
     public function getPageList()
     {
         $list=[];
         //如果存在post_code查询
         if(!empty($this->formData['post_code'])){
-            $line_range=$this->getLineRangeService()->query
-                ->where('post_code_start','<=',$this->formData['post_code'])
-                ->where('post_code_end','>=',$this->formData['post_code'])->distinct()->pluck('line_id');
-            $list=$this->query->whereIn('id',$line_range);
+            $list =$this->postQuery($this->formData['post_code']);
 /*            $list=$this->query->leftJoin('line_range' ,'line_range.line_id','=','line.id')
                 ->where('line_range.post_code_start','<=',$this->formData['post_code'])
                 ->where('line_range.post_code_end','>=',$this->formData['post_code']);*/

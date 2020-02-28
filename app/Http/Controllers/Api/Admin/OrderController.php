@@ -106,6 +106,14 @@ class OrderController extends BaseController
 
 
     /**
+     * 通过订单，获取可分配的线路的取派日期
+     * @param $id
+     */
+    public function getTourDate($id){
+        return $this->service->getTourDate($id);
+    }
+
+    /**
      * 通过订单,获取可分配的站点列表
      * @param $id
      * @return mixed
