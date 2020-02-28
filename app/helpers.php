@@ -129,3 +129,16 @@ if (!function_exists('explode_post_code')) {
         return (int)$value[1];
     }
 }
+
+if (!function_exists('is_include_chinese')) {
+
+    /**
+     * 字符串是否包含中文
+     * @param $str
+     * @return bool
+     */
+    function is_include_chinese($str)
+    {
+        return (preg_match('/[\x{4e00}-\x{9fa5}]/u', $str) === 1) ? true : false;
+    }
+}

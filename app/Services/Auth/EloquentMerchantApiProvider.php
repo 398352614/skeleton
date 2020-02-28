@@ -73,8 +73,8 @@ class EloquentMerchantApiProvider extends EloquentUserProvider
     public function validateCredentials(UserContract $user, array $credentials)
     {
         $sign = $credentials['sign'];
-        unset($credentials['sign']);
-        if ($this->hasher->check($user->getAuthPassword(), $sign, $credentials)) {
+        $data = $credentials['data'];
+        if ($this->hasher->check($user->getAuthPassword(), $sign, $data)) {
             return true;
         }
         return false;

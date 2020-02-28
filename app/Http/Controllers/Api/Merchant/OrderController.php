@@ -10,7 +10,7 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\OrderService;
+use App\Services\Merchant\OrderService;
 
 /**
  * Class OrderController
@@ -69,7 +69,7 @@ class OrderController extends BaseController
      */
     public function store()
     {
-        return $this->service->store($this->data);
+        return $this->service->store(request()->all());
     }
 
     /**
@@ -80,7 +80,7 @@ class OrderController extends BaseController
      */
     public function update($id)
     {
-        return $this->service->updateById($id, $this->data);
+        return $this->service->updateById($id, request()->all());
     }
 
 
@@ -92,7 +92,7 @@ class OrderController extends BaseController
      */
     public function getBatchPageListByOrder($id)
     {
-        return $this->service->getBatchPageListByOrder($id, $this->data);
+        return $this->service->getBatchPageListByOrder($id, request()->all());
     }
 
 
@@ -104,7 +104,7 @@ class OrderController extends BaseController
      */
     public function assignToBatch($id)
     {
-        return $this->service->assignToBatch($id, $this->data);
+        return $this->service->assignToBatch($id, request()->all());
     }
 
     /**
@@ -134,7 +134,7 @@ class OrderController extends BaseController
      */
     public function recovery($id)
     {
-        return $this->service->recovery($id, $this->data);
+        return $this->service->recovery($id, request()->all());
     }
 
     /**
