@@ -57,7 +57,7 @@ class SenderAddress extends BaseModel
      */
     protected $fillable = [
         'company_id',
-
+        'merchant_id',
         'sender',
         'sender_phone',
         'sender_country',

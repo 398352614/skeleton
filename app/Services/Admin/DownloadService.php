@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
  * Class DownloadloadService
  * @package App\Services\Admin
  */
-class DownloadloadService
+class DownloadService
 {
     protected $imageDisk;
 

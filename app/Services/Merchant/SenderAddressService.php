@@ -18,8 +18,13 @@ class SenderAddressService extends BaseService
         $this->setFilterRules();
     }
 
+    /**
+     *列表查询
+     * @return mixed
+     */
     public function index(){
-        return parent::getpagelist();
+        $this->query->where('merchant_id',auth()->user()->id);
+        return parent::getPaginate();
     }
 
     /**
@@ -27,7 +32,7 @@ class SenderAddressService extends BaseService
      * @throws BusinessLogicException
      */
     public function show($id){
-        $info= parent::getInfo(['id'=>$id],['*'],true);
+        $info= parent::getInfo(['id'=>$id,'merchant_id'=>auth()->user()->id],['*'],true);
         if (empty($info)){
             throw new BusinessLogicException('数据不存在');
         }
@@ -60,6 +65,7 @@ class SenderAddressService extends BaseService
         if(!empty($this->Check($params))){
             throw new BusinessLogicException('地址新增失败，已有重复地址');
         }
+        $params['merchant_id']=auth()->user()->id;
         $rowCount=parent::create($params);
         if (empty($rowCount)){
             throw new BusinessLogicException('地址新增失败');
@@ -77,7 +83,7 @@ class SenderAddressService extends BaseService
         if(!empty($info)){
             throw new BusinessLogicException('发货方地址已存在,不能重复添加');
         }
-        $rowCount=parent::updateById($id, $data);
+        $rowCount=parent::update(['id'=>$id,'merchant_id'=>auth()->user()->id],$data);
         if (empty($rowCount)){
             throw new BusinessLogicException('地址修改失败');
         }
@@ -88,7 +94,7 @@ class SenderAddressService extends BaseService
      * @throws BusinessLogicException
      */
     public function destroy($id){
-        $rowCount = parent::delete(['id' => $id]);
+        $rowCount = parent::delete(['id' => $id,'merchant_id'=>auth()->user()->id]);
         if(empty($rowCount)){
             throw new BusinessLogicException('地址删除失败');
         }

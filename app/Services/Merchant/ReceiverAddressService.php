@@ -23,8 +23,18 @@ class ReceiverAddressService extends BaseService
         $this->model = $receiverAddress;
         $this->query = $this->model::query();
         $this->resource = ReceiverAddressResource::class;
+        $this->infoResource =ReceiverAddressResource::class;
+
     }
 
+    /**
+     *列表查询
+     * @return mixed
+     */
+    public function index(){
+        $this->query->where('merchant_id',auth()->user()->id);
+        return parent::getPaginate();
+    }
 
     /**
      * 获取详情
@@ -34,7 +44,7 @@ class ReceiverAddressService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], false);
+        $info= parent::getInfo(['id'=>$id,'merchant_id'=>auth()->user()->id],['*'],true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -51,6 +61,7 @@ class ReceiverAddressService extends BaseService
         if (!empty($this->check($params))) {
             throw new BusinessLogicException('收货方地址已存在,不能重复添加');
         }
+        $params['merchant_id']=auth()->user()->id;
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
@@ -69,7 +80,7 @@ class ReceiverAddressService extends BaseService
         if (!empty($this->check($data, $id))) {
             throw new BusinessLogicException('收货方地址已存在,不能重复添加');
         }
-        $rowCount = parent::updateById($id, $data);
+        $rowCount=parent::update(['id'=>$id,'merchant_id'=>auth()->user()->id],$data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
         }
@@ -97,7 +108,7 @@ class ReceiverAddressService extends BaseService
      */
     public function destroy($id)
     {
-        $rowCount = parent::delete(['id' => $id]);
+        $rowCount = parent::delete(['id' => $id,'merchant_id'=>auth()->user()->id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('删除失败,请重新操作');
         }

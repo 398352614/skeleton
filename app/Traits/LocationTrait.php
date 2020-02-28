@@ -61,7 +61,7 @@ trait LocationTrait
      * @return \Closure
      */
     private static function getLocationDetail($country, $city, $street, $houseNumber, $postCode, $houseNumberAddition)
-    {
+    {                $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
         return function () use ($country, $city, $street, $houseNumber, $postCode, $houseNumberAddition) {
             try {
                 $client = new \GuzzleHttp\Client();

@@ -13,18 +13,20 @@ use App\Mail\SendResetCode;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Merchant;
-use App\Models\OrderNoRule;
-use App\Models\Warehouse;
-use App\Services\BaseConstService;
-use Illuminate\Http\JsonResponse;
+use App\Services\Merchant\MerchantService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Vinkla\Hashids\Facades\Hashids;
 
 class RegisterController extends BaseController
 {
+    public function __construct(MerchantService $service)
+    {
+        $this->service = $service;
+    }
     /**
      * @api {POST}  api/merchant/register 商家端:注册
      * @apiName register
@@ -67,15 +69,26 @@ class RegisterController extends BaseController
             Merchant::where('email', $data['email'])->count(),
             new BusinessLogicException('账号已注册，请直接登录')
         );
-
+        throw_if(
+            Merchant::where('name', $request->get('name'))->count(),
+            new BusinessLogicException('该名称已注册，请直接登录')
+        );
         return DB::transaction(function () use ($data) {
-            Merchant::create([
+            $merchant=Merchant::create([
+                'company_id'=>Company::query()->where('company_code',$data['company_code'])->value('id'),
                 'name'  => $data['name'],
                 'email'  => $data['email'],
                 'password'  => Hash::make($data['password']),
             ]);
-
-            return 'true';
+            $id = $merchant->id;
+            $merchantApi=$this->service->getMerchantApiService()->create([
+                'merchant_id' => $id,
+                'key' => Hashids::encode(time() . $id),
+                'secret' => Hashids::connection('alternative')->encode(time() . $id)
+            ]);
+            if ($merchantApi === false) {
+                throw new BusinessLogicException('新增失败,请重新操作');
+            }
         });
     }
 

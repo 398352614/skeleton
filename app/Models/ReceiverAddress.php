@@ -48,6 +48,7 @@ class ReceiverAddress extends BaseModel
     protected $fillable = [
         'company_id',
         'receiver',
+        'merchant_id',
         'receiver_phone',
         'receiver_country',
         'receiver_post_code',
