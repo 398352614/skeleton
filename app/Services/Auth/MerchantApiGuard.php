@@ -57,11 +57,14 @@ class MerchantApiGuard implements Guard
     {
         $credentials = $this->request->all();
         if (!$this->validate($credentials)) {
-            throw new BusinessLogicException('缺少参数key,sign或timestamp');
+            throw new BusinessLogicException('缺少参数key,sign,timestamp或data');
         }
         $merchantApi = $this->provider->retrieveByCredentials($credentials);
         if ($this->hasValidCredentials($merchantApi, $credentials)) {
             $this->user = $merchantApi;
+            $data = request()->input('data');
+            request()->offsetUnset('data');
+            request()->merge($data);
             return true;
         }
         return false;
@@ -86,7 +89,12 @@ class MerchantApiGuard implements Guard
      */
     public function validate(array $credentials = [])
     {
-        if (empty($credentials['key']) || empty($credentials['sign']) || empty($credentials['timestamp'])) {
+        if (
+            empty($credentials['key'])
+            || empty($credentials['sign'])
+            || empty($credentials['timestamp'])
+            || empty($credentials['data'])
+        ) {
             return false;
         }
         return true;

@@ -32,7 +32,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 
-
 class OrderService extends BaseService
 {
     use ImportTrait, LocationTrait;
@@ -296,7 +295,7 @@ class OrderService extends BaseService
      */
     public function createByList($params)
     {
-        $list=json_decode($params['list'],true);
+        $list = json_decode($params['list'], true);
         $successCount = 0;
         $failCount = 0;
         $validatorList = [];
@@ -318,40 +317,42 @@ class OrderService extends BaseService
             $list[$i]['lon'] = $info['lon'];
             $list[$i]['lat'] = $info['lat'];
             //订单新增验证
-            $validator[$i] = \Illuminate\Support\Facades\Validator::make($list[$i], $rules, ['*.unique_ignore' => ':attribute已存在','settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
+            $validator[$i] = \Illuminate\Support\Facades\Validator::make($list[$i], $rules, ['*.unique_ignore' => ':attribute已存在', 'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
             ]);
             if ($validator[$i]->fails()) {
                 $log[$i + 1] = array_values($validator[$i]->errors()->getMessages())[0];
                 $failCount = $failCount + 1;
-            }else{if (!empty($list[$i]['item_list'])) {
-                $itemList = json_decode($list[$i]['item_list'], true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    $log[$i + 1] = (new BusinessLogicException('明细数据格式不正确', 3001))->getMessage();
-                } else {
-                    foreach ($itemList as $item) {
-                        $validatorList[$i] = \Illuminate\Support\Facades\Validator::make($item, $item_rules);
-                    }
-                    if ($validatorList[$i]->fails()) {
-                        $log[$i + 1] = array_values($validatorList[$i]->errors()->getMessages())[0];
-                        $failCount = $failCount + 1;
+            } else {
+                if (!empty($list[$i]['item_list'])) {
+                    $itemList = json_decode($list[$i]['item_list'], true);
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        $log[$i + 1] = (new BusinessLogicException('明细数据格式不正确', 3001))->getMessage();
                     } else {
-                        //订单新增事务
-                        try {
-                            DB::beginTransaction();
-                            $this->store($list[$i]);
-                            $log[$i + 1] = 'success';
-                            $successCount = $successCount + 1;
-                            DB::commit();
-                        } catch (BusinessLogicException $e) {
-                            DB::rollBack();
-                            $log[$i + 1] = $e->getMessage();
-                        } catch (\Exception $e) {
-                            DB::rollBack();
-                            $log[$i + 1] = $e->getMessage();
+                        foreach ($itemList as $item) {
+                            $validatorList[$i] = \Illuminate\Support\Facades\Validator::make($item, $item_rules);
+                        }
+                        if ($validatorList[$i]->fails()) {
+                            $log[$i + 1] = array_values($validatorList[$i]->errors()->getMessages())[0];
+                            $failCount = $failCount + 1;
+                        } else {
+                            //订单新增事务
+                            try {
+                                DB::beginTransaction();
+                                $this->store($list[$i]);
+                                $log[$i + 1] = 'success';
+                                $successCount = $successCount + 1;
+                                DB::commit();
+                            } catch (BusinessLogicException $e) {
+                                DB::rollBack();
+                                $log[$i + 1] = $e->getMessage();
+                            } catch (\Exception $e) {
+                                DB::rollBack();
+                                $log[$i + 1] = $e->getMessage();
+                            }
                         }
                     }
                 }
-            }}
+            }
 
         }
         $data['log'] = $log;
@@ -361,7 +362,7 @@ class OrderService extends BaseService
             'success_order' => $data['success'],
             'fail_order' => $data['fail'],
             'log' => json_encode($data['log']),
-            'status'=>2
+            'status' => 2
         ]);
     }
 
@@ -379,19 +380,20 @@ class OrderService extends BaseService
         $heading = ['execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'special_remark', 'remark', 'item_list'];
         $this->headingCheck($params['path'], $heading);//表头验证
         $row = $this->excelImport($params['path'])[0];
-        $id =$this->orderImportLog($params);
-        return ['row'=>$row,'id'=>$id];
+        $id = $this->orderImportLog($params);
+        return ['row' => $row, 'id' => $id];
     }
 
-    public function orderImportLog($params){
-        $orderImport =[
-            'company_id'=>auth()->user()->company_id,
-            'name'=>$params['name'],
-            'url'=>$params['path'],
-            'status'=>1,
-            'success_order'=>0,//$info['success'],
-            'fail_order'=>0,//$info['fail'],
-            'log'=>''//json_encode($info['log']),
+    public function orderImportLog($params)
+    {
+        $orderImport = [
+            'company_id' => auth()->user()->company_id,
+            'name' => $params['name'],
+            'url' => $params['path'],
+            'status' => 1,
+            'success_order' => 0,//$info['success'],
+            'fail_order' => 0,//$info['fail'],
+            'log' => ''//json_encode($info['log']),
         ];
         return OrderImportLog::query()->create($orderImport)->id;
     }
@@ -401,17 +403,17 @@ class OrderService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    public function orderImportValidate($params){
+    public function orderImportValidate($params)
+    {
         //验证$params
-        $checkfile=\Illuminate\Support\Facades\Validator::make($params,
-            ['file' => 'required|file|mimes:txt,xls,xlsx','name'=>'required|unique:order_import_log'],
+        $checkfile = \Illuminate\Support\Facades\Validator::make($params,
+            ['file' => 'required|file|mimes:txt,xls,xlsx', 'name' => 'required|unique:order_import_log'],
             ['file.file' => '必须是文件', 'file.mimes' => ':attribute类型必须是excel,word,jpeg,bmp,png,pdf类型']);
-        if($checkfile->fails()){
+        if ($checkfile->fails()) {
             $error = array_values($checkfile->errors()->getMessages())[0][0];
-            throw new BusinessLogicException($error,301);
+            throw new BusinessLogicException($error, 301);
         }
     }
-
 
 
     /**
@@ -496,12 +498,12 @@ class OrderService extends BaseService
             $packageList = json_decode($params['package_list'], true);
             $rules = [
                 'name' => 'required|string|max:50',
-                'out_order_no' => 'nullable|string|max:50',
                 'weight' => 'required|numeric',
                 'quantity' => 'required|integer',
-                'express_first_no' => 'required|string|max:50',
-                'express_second_no' => 'nullable|string|max:50',
                 'remark' => 'nullable|string|max:250',
+                'out_order_no' => 'required|string|max:50|uniqueIgnore:package,id',
+                'express_first_no' => 'required|string|max:50|uniqueIgnore:package,id',
+                'express_second_no' => 'nullable|string|max:50|uniqueIgnore:package,id',
             ];
             foreach ($packageList as $package) {
                 $validator = Validator::make($package, $rules);
@@ -517,7 +519,7 @@ class OrderService extends BaseService
             $rules = [
                 'name' => 'required|string|max:50',
                 'code' => 'required|string|max:50',
-                'out_order_no' => 'nullable|string|max:50',
+                'out_order_no' => 'required|string|max:50|uniqueIgnore:material,id',
                 'expect_quantity' => 'required|integer',
                 'remark' => 'nullable|string|max:250',
             ];
