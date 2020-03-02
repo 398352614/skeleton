@@ -136,6 +136,9 @@ class UploadService
         if($params['dir']==='package') {
             $params['name'] =date('YmdHis') . '.apk';
         }
+        if($params['dir']==='template') {
+            $params['name'] ='order_import_template.xlsx';
+        }
         try {
             $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);
         } catch (\Exception $ex) {

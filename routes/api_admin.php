@@ -80,8 +80,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //订单导入记录管理
     Route::prefix('order-import')->group(function () {
+        //上传模板
+        Route::post('/uploadTemplate','OrderImportController@uploadTemplate');
         //获取模板
-        Route::get('/template','OrderImportController@template');
+        Route::get('/getTemplate','OrderImportController@getTemplate');
         //批量导入
         Route::post('/import','OrderController@orderImport');
         //批量新增
@@ -322,6 +324,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/updatePassword', 'MerchantController@updatePassword');
         //启用/禁用
         Route::put('/{id}/status', 'MerchantController@status');
+        //批量启用禁用
+        Route::put('/statusByList', 'MerchantController@statusByList');
     });
 
     //商户授权API管理

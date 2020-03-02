@@ -14,11 +14,18 @@ class OrderImportController extends BaseController
     }
 
     /**
+     * 上传导入模板
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function uploadTemplate(){
+        return $this->service->uploadTemplate();
+    }
+    /**
      * 获取导入模板
      * @return mixed
      */
-    public function template(){
-        return $this->service->template();
+    public function getTemplate(){
+        return $this->service->getTemplate();
     }
 
     /**
