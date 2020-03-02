@@ -10,6 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\OrderImportInfoResource;
 use App\Http\Resources\OrderImportResource;
 use App\Models\OrderImportLog;
 use App\Services\BaseService;
@@ -24,6 +25,8 @@ class OrderImportService extends BaseService
         $this->resource = OrderImportResource::class;
         $this->request = request();
         $this->formData = $this->request->all();
+        $this->infoResource = OrderImportInfoResource::class;
+
         $this->setFilterRules();
     }
 
@@ -49,9 +52,4 @@ class OrderImportService extends BaseService
         return Storage::disk('admin_file_public')->url(auth()->user()->company_id . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'order_import_template.xlsx');
     }
 
-
-    public function showDetail($id){
-        $info =$this->query->where('id',$id)->value('log');
-        return $info;
-    }
 }

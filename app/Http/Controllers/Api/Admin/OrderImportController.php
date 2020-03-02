@@ -43,7 +43,7 @@ class OrderImportController extends BaseController
      * @return mixed
      */
     public function show($id){
-        return $this->service->showDetail($id);
+        return $this->service->getInfo(['id'=>$id],['*'],true);
     }
 
 }

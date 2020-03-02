@@ -23,7 +23,8 @@ use Vinkla\Hashids\Facades\Hashids;
 class MerchantService extends BaseService
 {
     public $filterRules = [
-        'name' => ['like', 'name']];
+        'name' => ['like', 'name'],
+        'merchant_group_id'=>['=','merchant_group_id']];
 
     public function __construct(Merchant $merchant)
     {
@@ -158,6 +159,17 @@ class MerchantService extends BaseService
         }
     }
 
+    /**
+     * 获取用户组ID
+     * @return mixed
+     */
+    public function getGroup(){
+        $groupId= $this->query->whereNotNull('merchant_group_id')->distinct()->pluck('merchant_group_id');
+        for($i=0;$i<count($groupId);$i++){
+            $data[$i]['merchant_group_id']=$groupId[$i];
+            $data[$i]['merchant_group_name']=$this->getMerchantGroupService()->getInfo(['id'=>$groupId[$i]],['name'],false)['name'];}
+        return $data;
+    }
 
     /**
      * 组内商家
