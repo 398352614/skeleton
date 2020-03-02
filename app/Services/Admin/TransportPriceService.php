@@ -90,6 +90,9 @@ class TransportPriceService extends BaseService
         $info['km_list'] = $this->kilometresChargingModel->newQuery()->where('transport_price_id', '=', $id)->get()->toArray();
         $info['weight_list'] = $this->weightChargingModel->newQuery()->where('transport_price_id', '=', $id)->get()->toArray();
         $info['special_time_list'] = $this->specialTimeChargingModel->newQuery()->where('transport_price_id', '=', $id)->get()->toArray();
+        for($i=0;$i<count($info['special_time_list']);$i++){
+            $info['special_time_list'][$i]['period']=[$info['special_time_list'][$i]['start'],$info['special_time_list'][$i]['end']];
+        }
         return $info;
     }
 
