@@ -89,4 +89,13 @@ class MerchantController extends BaseController
     {
         return $this->service->status($id, $this->data);
     }
+
+    /**
+     * 状态批量启用禁用
+     * @throws BusinessLogicException
+     */
+    public function statusByList()
+    {
+        return $this->service->statusByList($this->data);
+    }
 }

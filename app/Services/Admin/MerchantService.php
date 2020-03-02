@@ -143,6 +143,23 @@ class MerchantService extends BaseService
     }
 
     /**
+     * 批量启用禁用
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    public function statusByList($data)
+    {
+        $ids=json_decode ($data['ids'], true);
+        for($i=0;$i<count($ids);$i++){
+            $rowCount[$i] = parent::updateById($ids[$i], ['status' => $data['status']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('修改失败,请重新操作');
+            }
+        }
+    }
+
+
+    /**
      * 组内商家
      * @param $group_id
      * @return mixed

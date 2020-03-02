@@ -9,6 +9,7 @@
 namespace App\Services\Admin;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderImportResource;
 use App\Models\OrderImportLog;
 use App\Services\BaseService;
@@ -26,8 +27,26 @@ class OrderImportService extends BaseService
         $this->setFilterRules();
     }
 
-    public function template(){
-        return Storage::disk('admin_file_public')->url();
+    /**
+     * 上传模板
+     * @param $data
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function uploadTemplate()
+    {
+        $data=$this->formData;
+            $data['dir']='template';
+            if(empty((new UploadService())->fileUpload($data))){
+                throw new BusinessLogicException('上传失败');
+            };
+    }
+
+    /**
+     *下载模板
+     * @return mixed
+     */
+    public function getTemplate(){
+        return Storage::disk('admin_file_public')->url(auth()->user()->company_id . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'order_import_template.xlsx');
     }
 
 

@@ -90,7 +90,7 @@ class OrderController extends BaseController
      */
     public function storeByList()
     {
-        return $this->service->CreateByList($this->data);
+        return $this->service->createByList($this->data);
     }
 
     /**

@@ -27,7 +27,7 @@ Trait ImportTrait
     public function headingCheck($path,$heading){
         $validate= (new HeadingRowImport())->toArray($path)[0][0];
         if($validate !== $heading){
-            throw new BusinessLogicException('表格格式不正确，请使用模板表格导入');
+            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
     }
 
