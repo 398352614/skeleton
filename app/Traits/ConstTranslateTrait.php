@@ -199,6 +199,26 @@ trait ConstTranslateTrait
         BaseConstService::DRIVER_FILE_TOUR_DIR => '取件线路文件目录'
     ];
 
+    //商户类型
+    public static $merchantTypeList = [
+        BaseConstService::MERCHANT_TYPE_1 => '个人',
+        BaseConstService::MERCHANT_TYPE_2 => '商户',
+    ];
+
+    //商户支付方式
+    public static $merchantSettlementTypeLsit =[
+        BaseConstService::MERCHANT_SETTLEMENT_TYPE_1 => '票结',
+        BaseConstService::MERCHANT_SETTLEMENT_TYPE_2 => '日结',
+        BaseConstService::MERCHANT_SETTLEMENT_TYPE_3 => '月结',
+
+    ];
+
+    //商户状态
+    public static $merchantStatusList = [
+        BaseConstService::MERCHANT_STATUS_1 => '启用',
+        BaseConstService::MERCHANT_STATUS_2 => '禁用',
+    ];
+
     /**
      * 此函数用于访问静态变量的同时对其进行翻译
      */

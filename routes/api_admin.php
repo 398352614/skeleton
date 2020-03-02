@@ -326,6 +326,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/status', 'MerchantController@status');
         //批量启用禁用
         Route::put('/statusByList', 'MerchantController@statusByList');
+        //商户导出
+        Route::get('/excel','MerchantController@excel');
     });
 
     //商户授权API管理

@@ -98,4 +98,10 @@ class MerchantController extends BaseController
     {
         return $this->service->statusByList($this->data);
     }
+
+    public function excel()
+    {
+        return $this->service->merchantExcel();
+    }
+
 }

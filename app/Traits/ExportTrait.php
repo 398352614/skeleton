@@ -7,6 +7,8 @@ namespace App\Traits;
 
 use App\Exceptions\BusinessLogicException;
 use App\Exports\BatchListExport;
+use App\Exports\MerchantExport;
+use App\Models\Merchant;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Facades\Storage;
@@ -34,7 +36,12 @@ trait ExportTrait
         $name = date('Ymd') . $name;
         $path ='public\\admin\\excel\\'.$subPath . DIRECTORY_SEPARATOR . $name.'.xlsx';
         try {
-            $rowCount=Excel::store(new BatchListExport($name,$params),$path);
+            if($dir==='tour'){
+                $rowCount=Excel::store(new BatchListExport($name,$params),$path);
+            }
+            if($dir==='merchant'){
+                $rowCount=Excel::store(new MerchantExport($params),$path);
+            }
         } catch (\Exception $ex) {
             throw new BusinessLogicException('表格上传失败,请重新操作');
         }

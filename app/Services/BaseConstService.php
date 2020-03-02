@@ -206,4 +206,18 @@ class BaseConstService
     const PICKUP_SUCCESS            = 3; // 取件成功
     const EXPECTED_ARRIVE_TIME      = 4; // 预计到达时间
     const BACK_WAREHOUSE            = 5; // 回到仓库
+
+    //商户类型
+    const MERCHANT_TYPE_1 =1;
+    const MERCHANT_TYPE_2 =2;
+
+    //商户支付方式
+    const MERCHANT_SETTLEMENT_TYPE_1 =1;
+    const MERCHANT_SETTLEMENT_TYPE_2 =2;
+    const MERCHANT_SETTLEMENT_TYPE_3 =3;
+
+    //商户状态
+    const MERCHANT_STATUS_1 =1;
+    const MERCHANT_STATUS_2 =2;
+
 }

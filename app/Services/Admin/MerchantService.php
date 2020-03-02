@@ -15,6 +15,8 @@ use App\Models\Merchant;
 use App\Models\MerchantGroup;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Traits\ConstTranslateTrait;
+use App\Traits\ExportTrait;
 use Illuminate\Hashing\Argon2IdHasher;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -22,6 +24,7 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class MerchantService extends BaseService
 {
+    use ExportTrait;
     public $filterRules = [
         'name' => ['like', 'name'],
         'merchant_group_id'=>['=','merchant_group_id']];
@@ -168,6 +171,26 @@ class MerchantService extends BaseService
     {
         $this->query->where('merchant_group_id', $group_id);
         return parent::getPaginate();
+    }
+
+    /**
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function merchantExcel()
+    {
+        $cellData=[];
+        $info =$this->getList([],['type', 'name', 'email' , 'settlement_type' , 'merchant_group_id', 'contacter' , 'phone' , 'address' ,  'status' ],false)->toArray();
+        for($i=0;$i<count($info);$i++) {
+            $info[$i]['merchant_group_id']=$this->getMerchantGroupService()->getInfo(['id'=>$info[$i]['merchant_group_id']],['name'],false)->toArray()['name'];
+            $info[$i]['type']=empty($info[$i]['type']) ? null : ConstTranslateTrait::$merchantTypeList[$info[$i]['type']];
+            $info[$i]['settlement_type']=empty($info[$i]['settlement_type']) ? null : ConstTranslateTrait::$merchantSettlementTypeLsit[$info[$i]['settlement_type']];
+            $info[$i]['status']=empty($info[$i]['status']) ? null : ConstTranslateTrait::$merchantStatusList[$info[$i]['status']];
+            for($j=0;$j<count($info[$i]);$j++){
+               $cellData[$i][$j]=array_values($info[$i])[$j];
+           }
+        }
+        return $this->excelExport('merchant',$cellData,'merchant');
     }
 
 }
