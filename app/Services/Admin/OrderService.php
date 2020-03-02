@@ -159,6 +159,15 @@ class OrderService extends BaseService
         return self::getInstance(UploadService::class);
     }
 
+    /**
+     * 商户 服务
+     * @return MerchantService
+     */
+    private function getMerchantService()
+    {
+        return self::getInstance(MerchantService::class);
+    }
+
 
     /**
      * 取件列初始化
@@ -446,6 +455,10 @@ class OrderService extends BaseService
      */
     private function check(&$params, $id = null)
     {
+//        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
+//        if (empty($merchant)) {
+//            throw new BusinessLogicException('商户不存在');
+//        }
         if (empty($params['package_list']) || empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
@@ -501,9 +514,9 @@ class OrderService extends BaseService
                 'weight' => 'required|numeric',
                 'quantity' => 'required|integer',
                 'remark' => 'nullable|string|max:250',
-                'out_order_no' => 'required|string|max:50|uniqueIgnore:package,id',
-                'express_first_no' => 'required|string|max:50|uniqueIgnore:package,id',
-                'express_second_no' => 'nullable|string|max:50|uniqueIgnore:package,id',
+                'out_order_no' => 'required|string|max:50|unique:package',
+                'express_first_no' => 'required|string|max:50|unique:package',
+                'express_second_no' => 'nullable|string|max:50|unique:package',
             ];
             foreach ($packageList as $package) {
                 $validator = Validator::make($package, $rules);
@@ -519,7 +532,7 @@ class OrderService extends BaseService
             $rules = [
                 'name' => 'required|string|max:50',
                 'code' => 'required|string|max:50',
-                'out_order_no' => 'required|string|max:50|uniqueIgnore:material,id',
+                'out_order_no' => 'required|string|max:50|unique:material',
                 'expect_quantity' => 'required|integer',
                 'remark' => 'nullable|string|max:250',
             ];
@@ -684,12 +697,14 @@ class OrderService extends BaseService
         return [$batch, $tour];
     }
 
-    public function getTourDate($id){
+    public function getTourDate($id)
+    {
         $info = parent::getInfo(['id' => $id], ['*'], true);
         return $this->getLineRangeService()->query
-            ->where('post_code_start','<=',$info['receiver_post_code'])
-            ->where('post_code_end','>=',$info['receiver_post_code'])->distinct()->pluck('schedule');
+            ->where('post_code_start', '<=', $info['receiver_post_code'])
+            ->where('post_code_end', '>=', $info['receiver_post_code'])->distinct()->pluck('schedule');
     }
+
     /**
      * 获取可分配的站点列表
      * @param $id

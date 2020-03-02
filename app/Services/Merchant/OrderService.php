@@ -505,9 +505,9 @@ class OrderService extends BaseService
                 'weight' => 'required|numeric',
                 'quantity' => 'required|integer',
                 'remark' => 'nullable|string|max:250',
-                'out_order_no' => 'required|string|max:50|uniqueIgnore:package,id',
-                'express_first_no' => 'required|string|max:50|uniqueIgnore:package,id',
-                'express_second_no' => 'nullable|string|max:50|uniqueIgnore:package,id',
+                'out_order_no' => 'required|string|max:50|unique:package',
+                'express_first_no' => 'required|string|max:50|unique:package',
+                'express_second_no' => 'nullable|string|max:50|unique:package',
             ];
             foreach ($packageList as $package) {
                 $validator = Validator::make($package, $rules);
@@ -523,7 +523,7 @@ class OrderService extends BaseService
             $rules = [
                 'name' => 'required|string|max:50',
                 'code' => 'required|string|max:50',
-                'out_order_no' => 'required|string|max:50|uniqueIgnore:material,id',
+                'out_order_no' => 'required|string|max:50|unique:material',
                 'expect_quantity' => 'required|integer',
                 'remark' => 'nullable|string|max:250',
             ];
