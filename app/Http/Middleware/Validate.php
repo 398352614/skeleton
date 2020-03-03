@@ -102,9 +102,9 @@ class Validate
      * @param $customAttributes
      * @throws BusinessLogicException
      */
-    private function validate($data, $rules, $message, $customAttributes)
+    private function validate($data, $rules)
     {
-        $validator = Validator::make($data, $rules, $message, $customAttributes);
+        $validator = Validator::make($data, $rules);
         if ($validator->fails()) {
             $messageList = Arr::flatten($validator->errors()->getMessages());
             throw new BusinessLogicException(implode(';', $messageList), 3001);
