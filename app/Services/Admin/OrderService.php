@@ -669,9 +669,18 @@ class OrderService extends BaseService
         return [$batch, $tour];
     }
 
+    /**
+     * 获取可分配星期
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
     public function getTourDate($id)
     {
         $info = parent::getInfo(['id' => $id], ['*'], true);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
         return $this->getLineRangeService()->query
             ->where('post_code_start', '<=', $info['receiver_post_code'])
             ->where('post_code_end', '>=', $info['receiver_post_code'])->distinct()->pluck('schedule');

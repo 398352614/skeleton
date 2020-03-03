@@ -103,4 +103,8 @@ class BatchController extends BaseController
     {
         return $this->service->removeFromTour($id);
     }
+
+    public function getTourDate($id){
+        return $this->service->getTourDate($id);
+    }
 }
