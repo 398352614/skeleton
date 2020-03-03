@@ -16,6 +16,7 @@ use App\Http\Middleware\Validate;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
 use App\Http\Validate\Api\Admin\OrderValidate;
+use App\Models\Merchant;
 use App\Models\Order;
 use App\Models\OrderImportLog;
 use App\Models\ReceiverAddress;
@@ -427,6 +428,9 @@ class OrderService extends BaseService
      */
     private function check(&$params, $id = null)
     {
+        if(empty(Merchant::query()->where('id',$params['merchant_id'])->first())){
+            throw new BusinessLogicException('商户不存在，请重新选择商户');
+        }
 //        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
 //        if (empty($merchant)) {
 //            throw new BusinessLogicException('商户不存在');

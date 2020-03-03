@@ -43,6 +43,7 @@ class SenderAddressService extends BaseService
     public function check($params,$id = 0){
         $info= parent::getInfo([
             'id'=>['<>', $id],
+            'merchant_id'=>$params['merchant_id'],
             'sender'=> $params['sender'],
             'sender_phone'=> $params['sender_phone'],
             'sender_country'=> $params['sender_country'],
