@@ -2,6 +2,7 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
+use App\Models\Merchant;
 use App\Models\SenderAddress;
 use App\Services\BaseService;
 use App\Http\Resources\SenderAddressResource;
@@ -57,6 +58,9 @@ class SenderAddressService extends BaseService
      * @throws BusinessLogicException
      */
     public function store($params){
+        if(empty(Merchant::query()->where('id',$params['merchant_id'])->first())){
+            throw new BusinessLogicException('商户不存在，请重新选择商户');
+        }
         if(!empty($this->Check($params))){
             throw new BusinessLogicException('地址新增失败，已有重复地址');
         }
@@ -73,6 +77,9 @@ class SenderAddressService extends BaseService
      * @throws BusinessLogicException
      */
     public function updateById($id, $data){
+        if(empty(Merchant::query()->where('id',$data['merchant_id']))){
+            throw new BusinessLogicException('商户不存在，请重新选择商户');
+        }
         $this->Check($data,$id);
         if(!empty($info)){
             throw new BusinessLogicException('发货方地址已存在,不能重复添加');

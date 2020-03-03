@@ -15,6 +15,7 @@ class SenderAddressValidate extends BaseValidate
         'sender_city' => '发件人城市',
         'sender_street' => '发件人街道',
         'sender_address' => '发件人详细地址',
+        'merchant_id'=>'商户',
         'lon' => '经度',
         'lat' => '纬度'
     ];
@@ -31,13 +32,14 @@ class SenderAddressValidate extends BaseValidate
         'sender_address' => 'nullable|string|max:250',
         'lon' => 'nullable|string|max:50',
         'lat' => 'nullable|string|max:50',
+        'merchant_id'=>'required|integer',
     ];
 
     public $scene = [
         'store' => ['sender', 'sender_phone', 'sender_country', 'sender_post_code',
-            'sender_house_number', 'sender_city', 'sender_street', 'sender_address','lon','lat' ],
+            'sender_house_number', 'sender_city', 'sender_street', 'sender_address','lon','lat','merchant_id' ],
         'update' => ['sender', 'sender_phone', 'sender_country', 'sender_post_code',
-            'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'lon','lat'],
+            'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'lon','lat','merchant_id'],
     ];
 }
 

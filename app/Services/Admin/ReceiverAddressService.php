@@ -11,6 +11,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\ReceiverAddressResource;
+use App\Models\Merchant;
 use App\Models\ReceiverAddress;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
@@ -23,6 +24,8 @@ class ReceiverAddressService extends BaseService
         $this->model = $receiverAddress;
         $this->query = $this->model::query();
         $this->resource = ReceiverAddressResource::class;
+        $this->infoResource =ReceiverAddressResource::class;
+
     }
 
 
@@ -48,6 +51,9 @@ class ReceiverAddressService extends BaseService
      */
     public function store($params)
     {
+        if(empty(Merchant::query()->where('id',$params['merchant_id'])->first())){
+            throw new BusinessLogicException('商户不存在，请重新选择商户');
+        }
         if (!empty($this->check($params))) {
             throw new BusinessLogicException('收货方地址已存在,不能重复添加');
         }
@@ -66,6 +72,9 @@ class ReceiverAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
+        if(empty(Merchant::query()->where('id',$data['merchant_id'])->first())){
+            throw new BusinessLogicException('商户不存在，请重新选择商户');
+        }
         if (!empty($this->check($data, $id))) {
             throw new BusinessLogicException('收货方地址已存在,不能重复添加');
         }
