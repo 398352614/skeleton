@@ -271,6 +271,8 @@ return [
         'transport_price_id' => '运价ID',
         'is_default' => '是否默认',
         'starting_price' => '起步价',
-        'permission'=>'权限'
+        'permission'=>'权限',
+        'package_list'=>'包裹列表',
+        'material_list'=>'材料列表',
     ],
 ];
