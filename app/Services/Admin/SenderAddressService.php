@@ -64,7 +64,7 @@ class SenderAddressService extends BaseService
         if (!empty($id)) {
             $data['id'] = ['<>', $id];
         }
-        $info = parent::getInfo([$data], ['*'], true);
+        $info = parent::getInfo($data, ['*'], true);
 
         return $info;
     }
