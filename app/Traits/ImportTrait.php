@@ -14,7 +14,7 @@ use Maatwebsite\Excel\HeadingRowImport;
 
 Trait ImportTrait
 {
-    public function excelImport($path){
+    public function orderExcelImport($path){
         return Excel::toArray(new OrderImport, $path);
     }
 

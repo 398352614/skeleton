@@ -124,7 +124,7 @@ return [
         'email' => '邮箱',
         'remark' => '备注',
         'password' => '密码',
-        'name' => '机构名称',
+        'name' => '名称',
         'contacts' => '负责人',
         'address' => '详细地址',
         'receiver' => '收件人姓名',
@@ -271,6 +271,6 @@ return [
         'transport_price_id' => '运价ID',
         'is_default' => '是否默认',
         'starting_price' => '起步价',
-
+        'permission'=>'权限'
     ],
 ];
