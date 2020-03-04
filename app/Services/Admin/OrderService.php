@@ -482,8 +482,8 @@ class OrderService extends BaseService
                 $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'weight', 'quantity', 'remark']);
                 return $collectItem->put('order_no', $params['order_no'])->put('batch_no', $batch['batch_no'])->put('tour_no', $tour['tour_no']);
             })->toArray();
-            data_fill($packageList, 'status', $status);
-            data_fill($packageList, 'type', $params['type']);
+            data_set($packageList, '*.status', $status);
+            data_set($packageList, '*.type', $params['type']);
             $rowCount = $this->getPackageService()->insertAll($packageList);
             if ($rowCount === false) {
                 throw new BusinessLogicException('订单包裹新增失败!');
@@ -495,8 +495,6 @@ class OrderService extends BaseService
                 $collectItem = collect($item)->only(['name', 'code', 'out_order_no', 'expect_quantity', 'remark']);
                 return $collectItem->put('order_no', $params['order_no'])->put('batch_no', $batch['batch_no'])->put('tour_no', $tour['tour_no']);
             })->toArray();
-            data_fill($materialList, 'status', $status);
-            data_fill($materialList, 'type', $params['type']);
             $rowCount = $this->getMaterialService()->insertAll($materialList);
             if ($rowCount === false) {
                 throw new BusinessLogicException('订单材料新增失败!');
