@@ -15,6 +15,7 @@ use App\Models\Employee;
 use App\Models\Material;
 use App\Models\Merchant;
 use App\Models\OrderNoRule;
+use App\Models\Package;
 use App\Models\TourMaterial;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -52,6 +53,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof CarBrand))
                 && (!($model instanceof CarModel))
                 && (!($model instanceof Material))
+                && (!($model instanceof Package))
                 && (!($model instanceof TourMaterial))
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
