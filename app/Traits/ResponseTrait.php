@@ -19,12 +19,12 @@ trait ResponseTrait
      */
     public function responseFormat($code = 200, $data = null, $msg = 'successful')
     {
-        $msg = (strpos(__('msg.' . $msg), 'msg.') === false) ? __('msg.' . $msg) : $msg; // 对 msg 返回翻译
 
+        $msg = (strpos(__('msg.' . $msg), 'msg.') === false) ? __('msg.' . $msg) : $msg; // 对 msg 返回翻译
         return [
             'code' => $code,
             'data' => $data,
-            'msg' => __($msg)
+            'msg' => $msg
         ];
     }
 

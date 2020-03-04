@@ -21,20 +21,6 @@ use tests\Mockery\Adapter\Phpunit\EmptyTestCase;
 class BaseValidate
 {
     public static $baseMessage = [
-        'lon.required' => '收货方地址不正确，请确认正确地址',
-        'lat.required' => '',
-        '*.required' => ':attribute字段必填',
-        '*.string' => ':attribute字段必须是字符串',
-        '*.min' => ':attribute字段不能小于:min个字符',
-        '*.max' => ':attribute字段不能超过:max个字符',
-        '*.unique_ignore' => ':attribute已存在',
-        '*.between' => ':attribute范围必须在:min-:max之间',
-        '*.after_or_equal' => ':attribute必须在当前日期及之后',
-        '*.array' => ':attribute必须是数组',
-        'code.digits_between' => '验证码必须为6位数',
-        '*.digits_between' => ':attribute必须在:min位-:max位之间',
-        '*.date_format' => ':attribute必须是年-月-日格式',
-        '*.integer' => ':attribute必须是整数'
 
     ];
 
