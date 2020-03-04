@@ -56,8 +56,6 @@ class TourValidate extends BaseValidate
         'cancel_remark' => 'required|string|max:250',
         'cancel_picture' => 'nullable|string|max:250',
         //签收
-        'package_list' => 'required|json',
-        'material_list' => 'nullable|json',
         'signature' => 'required|string|max:250',
         'pay_type' => 'required|integer|in:1,2',
         'pay_picture' => 'nullable|required_if:pay_type,2|string|max:250',
