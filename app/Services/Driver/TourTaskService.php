@@ -135,7 +135,7 @@ class TourTaskService extends BaseService
 //            $batch['order_list'] = $orderList[$batch['batch_no']];
 //        }
         $tour['batch_list'] = $batchList;
-        $tour['order_status'] = $orderList;
+        $tour['order_list'] = $orderList;
         $tour['material_list'] = $materialList;
         $tour['package_list'] = $packageList;
         return $tour;
