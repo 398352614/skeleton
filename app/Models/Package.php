@@ -50,12 +50,16 @@ class Package extends BaseModel
         'tour_no',
         'batch_no',
         'order_no',
+        'type',
         'name',
         'express_first_no',
         'express_second_no',
         'out_order_no',
         'weight',
         'quantity',
+        'status',
+        'sticker_no',
+        'sticker_amount',
         'remark',
         'created_at',
         'updated_at'
@@ -70,6 +74,10 @@ class Package extends BaseModel
 
     ];
 
+    protected $appends = [
+        'status_name',
+    ];
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -80,6 +88,6 @@ class Package extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return ConstTranslateTrait::$orderStatusList[$this->status];
+        return empty($this->status) ? null : ConstTranslateTrait::$packageStatusList[$this->status];
     }
 }

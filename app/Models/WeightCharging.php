@@ -70,10 +70,4 @@ class WeightCharging extends BaseModel
      * @var array
      */
     protected $dates = [];
-
-
-    public function getStatusNameAttribute()
-    {
-        return ConstTranslateTrait::$orderStatusList[$this->status];
-    }
 }

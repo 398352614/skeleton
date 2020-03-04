@@ -37,7 +37,7 @@ class CompanyScope implements Scope
 
         //如果是员工端
         if ($user instanceof Employee) {
-            if(!($model instanceof Company)){
+            if (!($model instanceof Company)) {
                 $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
             }
         }

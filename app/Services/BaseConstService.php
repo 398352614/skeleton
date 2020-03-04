@@ -67,6 +67,16 @@ class BaseConstService
     const ORDER_STATUS_7 = 7;
 
 
+    //包裹列表-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
+    const PACKAGE_STATUS_1 = 1;
+    const PACKAGE_STATUS_2 = 2;
+    const PACKAGE_STATUS_3 = 3;
+    const PACKAGE_STATUS_4 = 4;
+    const PACKAGE_STATUS_5 = 5;
+    const PACKAGE_STATUS_6 = 6;
+    const PACKAGE_STATUS_7 = 7;
+
+
     //订单异常标签1-正常2-异常
     const ORDER_EXCEPTION_LABEL_1 = 1;
     const ORDER_EXCEPTION_LABEL_2 = 2;
@@ -201,23 +211,23 @@ class BaseConstService
     const ORDER_TRAIL_CANCEL_ASSIGN_DRIVER = 9;
 
     //订阅及通知常量
-    const OUT_WAREHOUSE             = 1; // 出库
-    const PICKUP_FAILED             = 2; // 取件失败
-    const PICKUP_SUCCESS            = 3; // 取件成功
-    const EXPECTED_ARRIVE_TIME      = 4; // 预计到达时间
-    const BACK_WAREHOUSE            = 5; // 回到仓库
+    const OUT_WAREHOUSE = 1; // 出库
+    const PICKUP_FAILED = 2; // 取件失败
+    const PICKUP_SUCCESS = 3; // 取件成功
+    const EXPECTED_ARRIVE_TIME = 4; // 预计到达时间
+    const BACK_WAREHOUSE = 5; // 回到仓库
 
     //商户类型
-    const MERCHANT_TYPE_1 =1;
-    const MERCHANT_TYPE_2 =2;
+    const MERCHANT_TYPE_1 = 1;
+    const MERCHANT_TYPE_2 = 2;
 
     //商户支付方式
-    const MERCHANT_SETTLEMENT_TYPE_1 =1;
-    const MERCHANT_SETTLEMENT_TYPE_2 =2;
-    const MERCHANT_SETTLEMENT_TYPE_3 =3;
+    const MERCHANT_SETTLEMENT_TYPE_1 = 1;
+    const MERCHANT_SETTLEMENT_TYPE_2 = 2;
+    const MERCHANT_SETTLEMENT_TYPE_3 = 3;
 
     //商户状态
-    const MERCHANT_STATUS_1 =1;
-    const MERCHANT_STATUS_2 =2;
+    const MERCHANT_STATUS_1 = 1;
+    const MERCHANT_STATUS_2 = 2;
 
 }

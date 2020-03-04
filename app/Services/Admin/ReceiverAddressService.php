@@ -24,7 +24,7 @@ class ReceiverAddressService extends BaseService
         $this->model = $receiverAddress;
         $this->query = $this->model::query();
         $this->resource = ReceiverAddressResource::class;
-        $this->infoResource =ReceiverAddressResource::class;
+        $this->infoResource = ReceiverAddressResource::class;
 
     }
 
@@ -51,7 +51,7 @@ class ReceiverAddressService extends BaseService
      */
     public function store($params)
     {
-        if(empty(Merchant::query()->where('id',$params['merchant_id'])->first())){
+        if (empty(Merchant::query()->where('id', $params['merchant_id'])->first())) {
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }
         if (!empty($this->check($params))) {
@@ -72,7 +72,7 @@ class ReceiverAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
-        if(empty(Merchant::query()->where('id',$data['merchant_id'])->first())){
+        if (empty(Merchant::query()->where('id', $data['merchant_id'])->first())) {
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }
         if (!empty($this->check($data, $id))) {
@@ -88,11 +88,11 @@ class ReceiverAddressService extends BaseService
      * 验证
      * @param $data
      * @param null $id
-     * @throws BusinessLogicException
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
     public function check($data, $id = null)
     {
-        $where = Arr::only($data, ['receiver','merchant_id', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address']);
+        $where = Arr::only($data, ['receiver', 'merchant_id', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address']);
         if (!empty($id)) {
             $where = Arr::add($where, 'id', ['<>', $id]);
         }

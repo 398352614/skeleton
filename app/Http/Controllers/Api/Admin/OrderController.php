@@ -80,7 +80,7 @@ class OrderController extends BaseController
      */
     public function orderImport()
     {
-            return $this->service->orderImport($this->data);
+        return $this->service->orderImport($this->data);
     }
 
     /**
@@ -108,8 +108,11 @@ class OrderController extends BaseController
     /**
      * 通过订单，获取可分配的线路的取派日期
      * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
      */
-    public function getTourDate($id){
+    public function getTourDate($id)
+    {
         return $this->service->getTourDate($id);
     }
 

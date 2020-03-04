@@ -65,6 +65,15 @@ class TourTaskService extends BaseService
     }
 
     /**
+     * 包裹 服务
+     * @return PackageService
+     */
+    private function getPackageService()
+    {
+        return self::getInstance(PackageService::class);
+    }
+
+    /**
      * 材料 服务
      * @return MaterialService
      */
@@ -116,15 +125,19 @@ class TourTaskService extends BaseService
         //获取所有订单列表
         $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status'], false)->toArray();
         //订单列表根据站点编号 分组
-        $orderList = array_create_group_index($orderList, 'batch_no');
+        //$orderList = array_create_group_index($orderList, 'batch_no');
         //获取所有材料列表
         $materialList = $this->getTourMaterialList($tour);
+        //获取所有包裹列表
+        $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         //数据组合填充
-        foreach ($batchList as &$batch) {
-            $batch['order_list'] = $orderList[$batch['batch_no']];
-        }
+//        foreach ($batchList as &$batch) {
+//            $batch['order_list'] = $orderList[$batch['batch_no']];
+//        }
         $tour['batch_list'] = $batchList;
+        $tour['order_status'] = $orderList;
         $tour['material_list'] = $materialList;
+        $tour['package_list'] = $packageList;
         return $tour;
     }
 

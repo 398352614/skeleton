@@ -25,7 +25,7 @@ use App\Services\Traits\TourRedisLockTrait;
 
 class TourService extends BaseService
 {
-    use TourRedisLockTrait,ExportTrait;
+    use TourRedisLockTrait, ExportTrait;
 
     /**
      * @var GoogleApiService
@@ -76,6 +76,15 @@ class TourService extends BaseService
     private function getOrderService()
     {
         return self::getInstance(OrderService::class);
+    }
+
+    /**
+     * 包裹 服务
+     * @return PackageService
+     */
+    private function getPackageService()
+    {
+        return self::getInstance(PackageService::class);
     }
 
     /**
@@ -247,8 +256,9 @@ class TourService extends BaseService
         //订单
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], $data);
         if ($rowCount === false) return false;
-
-
+        //包裹
+        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no']], $data);
+        if ($rowCount === false) return false;
         return true;
     }
 
@@ -274,6 +284,11 @@ class TourService extends BaseService
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单取消锁定失败,请重新操作');
+        }
+        //包裹 处理
+        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_2]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('包裹取消锁定失败,请重新操作');
         }
     }
 
@@ -491,11 +506,11 @@ class TourService extends BaseService
         foreach ($batchIds as $key => $batchId) {
             $tempbatch = Batch::where('id', $batchId)->first();
             if (!$first && in_array($tempbatch->status, [
-                BaseConstService::BATCH_WAIT_ASSIGN,
-                BaseConstService::BATCH_WAIT_OUT,
-                BaseConstService::BATCH_DELIVERING,
-                BaseConstService::BATCH_ASSIGNED
-            ])) {
+                    BaseConstService::BATCH_WAIT_ASSIGN,
+                    BaseConstService::BATCH_WAIT_OUT,
+                    BaseConstService::BATCH_DELIVERING,
+                    BaseConstService::BATCH_ASSIGNED
+                ])) {
                 if ($tempbatch) {
                     $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地
@@ -708,7 +723,8 @@ class TourService extends BaseService
     }
 
 
-    public function getUploadService(){
+    public function getUploadService()
+    {
         return self::getInstance(UploadService::class);
 
     }
@@ -724,37 +740,38 @@ class TourService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function batchExcel($id){
+    public function batchExcel($id)
+    {
         //取出数据
-        $cellData=[];
-        $tour_no =$this->query->where('id','=',$id)->value('tour_no');
-        if(empty($tour_no)){
+        $cellData = [];
+        $tour_no = $this->query->where('id', '=', $id)->value('tour_no');
+        if (empty($tour_no)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info = $this->getBatchService()->getList(['tour_no'=>$tour_no], ['*'],false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        $info = $this->getBatchService()->getList(['tour_no' => $tour_no], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
 
         //整理结构
-        for($i=1;$i<=count($info);$i++) {
+        for ($i = 1; $i <= count($info); $i++) {
             $cellData[$i][0] = $i;
-            $cellData[$i][1] = $info[$i-1]['receiver'];
-            $cellData[$i][2] = $info[$i-1]['receiver_phone'];
-            $cellData[$i][3] = $this->getOrderService()->getInfo(['batch_no'=>$info[$i-1]['batch_no']],['*'],false)['out_user_id']??'';
-            $cellData[$i][4] = $info[$i-1]['receiver_street'].' '.$info[$i-1]['receiver_house_number'];
-            $cellData[$i][5] = $info[$i-1]['receiver_post_code'];
-            $cellData[$i][6] = $info[$i-1]['receiver_city'];
-            $cellData[$i][7] = $this->getOrderService()->getInfo(['batch_no'=>$info[$i-1]['batch_no']],['*'],false)['source'];;
-            $cellData[$i][8] = $info[$i-1]['expect_pickup_quantity'];
-            $cellData[$i][9] = $info[$i-1]['expect_pie_quantity'];
-            $cellData[$i][10] = $this->getOrderService()->getList(['batch_no'=>$info[$i-1]['batch_no']],['*'],false)[0]['express_first_no'];
-            $cellData[$i][11] = $this->getOrderService()->getList(['batch_no'=>$info[$i-1]['batch_no']],['*'],false)[1]['express_first_no']??'';
+            $cellData[$i][1] = $info[$i - 1]['receiver'];
+            $cellData[$i][2] = $info[$i - 1]['receiver_phone'];
+            $cellData[$i][3] = $this->getOrderService()->getInfo(['batch_no' => $info[$i - 1]['batch_no']], ['*'], false)['out_user_id'] ?? '';
+            $cellData[$i][4] = $info[$i - 1]['receiver_street'] . ' ' . $info[$i - 1]['receiver_house_number'];
+            $cellData[$i][5] = $info[$i - 1]['receiver_post_code'];
+            $cellData[$i][6] = $info[$i - 1]['receiver_city'];
+            $cellData[$i][7] = $this->getOrderService()->getInfo(['batch_no' => $info[$i - 1]['batch_no']], ['*'], false)['source'];;
+            $cellData[$i][8] = $info[$i - 1]['expect_pickup_quantity'];
+            $cellData[$i][9] = $info[$i - 1]['expect_pie_quantity'];
+            $cellData[$i][10] = $this->getOrderService()->getList(['batch_no' => $info[$i - 1]['batch_no']], ['*'], false)[0]['express_first_no'];
+            $cellData[$i][11] = $this->getOrderService()->getList(['batch_no' => $info[$i - 1]['batch_no']], ['*'], false)[1]['express_first_no'] ?? '';
         }
-        $cellData[0] = array('No','Name','Phone','Acc','Address','Postcode','City','SYS','取件数量','派件数量','Barcode 1','Barcode 2');
-        for($i=0;$i<count($cellData);$i++){
+        $cellData[0] = array('No', 'Name', 'Phone', 'Acc', 'Address', 'Postcode', 'City', 'SYS', '取件数量', '派件数量', 'Barcode 1', 'Barcode 2');
+        for ($i = 0; $i < count($cellData); $i++) {
             $cellData[$i] = array_values($cellData[$i]);
         }
-        $cellData =array_reverse($cellData);
-        $dir ='tour';
-        return $this->excelExport($tour_no,$cellData,$dir);
+        $cellData = array_reverse($cellData);
+        $dir = 'tour';
+        return $this->excelExport($tour_no, $cellData, $dir);
     }
 
     /**
@@ -765,21 +782,21 @@ class TourService extends BaseService
      */
     public function cityTxt($id)
     {
-        $tourInfo =$this->getInfo(['id'=>$id],['*'],false);
-        if(empty($tourInfo)){
+        $tourInfo = $this->getInfo(['id' => $id], ['*'], false);
+        if (empty($tourInfo)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info = $this->getBatchService()->getList(['tour_no'=>$tourInfo['tour_no']],['*'],false,[],['sort_id' => 'asc'])->toArray();
-        $cityList ='';
-       for($i=0;$i<count($info);$i++){
-           $cityList = $cityList.$info[$i]['receiver_city'].'-';
-       }
-       $cityList =rtrim($cityList, "-");
-       $params['name']=$tourInfo['tour_no'];
-       $params['txt']=$tourInfo['line_name'].' '.$tourInfo['driver_name'].':'.$tourInfo['driver_phone'].' '.$cityList;
-       $params['dir']='tour';
-       //return $this->txtExport($params['name'],$params['txt'],$params['dir']);
-       return $params;
+        $info = $this->getBatchService()->getList(['tour_no' => $tourInfo['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
+        $cityList = '';
+        for ($i = 0; $i < count($info); $i++) {
+            $cityList = $cityList . $info[$i]['receiver_city'] . '-';
+        }
+        $cityList = rtrim($cityList, "-");
+        $params['name'] = $tourInfo['tour_no'];
+        $params['txt'] = $tourInfo['line_name'] . ' ' . $tourInfo['driver_name'] . ':' . $tourInfo['driver_phone'] . ' ' . $cityList;
+        $params['dir'] = 'tour';
+        //return $this->txtExport($params['name'],$params['txt'],$params['dir']);
+        return $params;
     }
 
     /**
@@ -787,20 +804,21 @@ class TourService extends BaseService
      * @param $id
      * @throws BusinessLogicException
      */
-    public function batchPng($id){
-        $tourInfo =$this->getInfo(['id'=>$id],['*'],false);
-        if(empty($tourInfo)){
+    public function batchPng($id)
+    {
+        $tourInfo = $this->getInfo(['id' => $id], ['*'], false);
+        if (empty($tourInfo)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info = $this->getBatchService()->getList(['tour_no'=>$tourInfo['tour_no']],['*'],false,[],['sort_id' => 'asc'])->toArray();
-        $params[0]['lon']=$tourInfo['warehouse_lon'];
-        $params[0]['lat']=$tourInfo['warehouse_lat'];
-        for($i=1;$i<=count($info);$i++){
-            $params[$i]['lon']=$info[$i-1]['receiver_lon'];
-            $params[$i]['lat']=$info[$i-1]['receiver_lat'];
+        $info = $this->getBatchService()->getList(['tour_no' => $tourInfo['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
+        $params[0]['lon'] = $tourInfo['warehouse_lon'];
+        $params[0]['lat'] = $tourInfo['warehouse_lat'];
+        for ($i = 1; $i <= count($info); $i++) {
+            $params[$i]['lon'] = $info[$i - 1]['receiver_lon'];
+            $params[$i]['lat'] = $info[$i - 1]['receiver_lat'];
         }
         $name = $tourInfo['tour_no'];
-        return LocationTrait::getBatchMap($params,$name);
+        return LocationTrait::getBatchMap($params, $name);
     }
 
 }

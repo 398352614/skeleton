@@ -37,8 +37,19 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_SETTLEMENT_TYPE_2 => '到付',
     ];
 
-    //订单状态类型1-待分配2-已分配3-取派中4-已签收5-异常6-收回站
+    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
     public static $orderStatusList = [
+        BaseConstService::ORDER_STATUS_1 => '待分配',
+        BaseConstService::ORDER_STATUS_2 => '已分配',
+        BaseConstService::ORDER_STATUS_3 => '待出库',
+        BaseConstService::ORDER_STATUS_4 => '取派中',
+        BaseConstService::ORDER_STATUS_5 => '已完成',
+        BaseConstService::ORDER_STATUS_6 => '取消取派',
+        BaseConstService::ORDER_STATUS_7 => '收回站',
+    ];
+
+    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
+    public static $packageStatusList = [
         BaseConstService::ORDER_STATUS_1 => '待分配',
         BaseConstService::ORDER_STATUS_2 => '已分配',
         BaseConstService::ORDER_STATUS_3 => '待出库',
@@ -206,7 +217,7 @@ trait ConstTranslateTrait
     ];
 
     //商户支付方式
-    public static $merchantSettlementTypeLsit =[
+    public static $merchantSettlementTypeLsit = [
         BaseConstService::MERCHANT_SETTLEMENT_TYPE_1 => '票结',
         BaseConstService::MERCHANT_SETTLEMENT_TYPE_2 => '日结',
         BaseConstService::MERCHANT_SETTLEMENT_TYPE_3 => '月结',
