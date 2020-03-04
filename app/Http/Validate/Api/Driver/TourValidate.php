@@ -75,13 +75,13 @@ class TourValidate extends BaseValidate
     public $scene = [
         'remark' => ['remark'],
         'changeCar' => ['car_id'],
-        'outWarehouse' => ['begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic'],
+        'outWarehouse' => ['cancel_package_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic'],
         'getBatchOrderList' => ['batch_id'],
         'batchArrive' => ['batch_id'],
         'getBatchInfo' => ['batch_id'],
         'batchException' => ['batch_id', 'stage', 'type', 'exception_remark', 'picture'],
         'batchCancel' => ['batch_id', 'cancel_type', 'cancel_remark', 'cancel_picture'],
-        'batchSign' => ['batch_id', 'cancel_order_id_list', 'signature', 'pay_type', 'pay_picture'],
+        'batchSign' => ['batch_id', 'package_list', 'material_list', 'signature', 'pay_type', 'pay_picture'],
         'inWarehouse' => ['end_signature', 'end_signature_remark']
     ];
 }
