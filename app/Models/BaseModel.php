@@ -55,17 +55,33 @@ class BaseModel extends Model
     {
         return function ($model) {
             /**@var \Illuminate\Database\Eloquent\Model $model */
-            if (in_array('company_id', Schema::getColumnListing($model->getTable()))) {
+            $columns = Schema::getColumnListing($model->getTable());
+            if (in_array('company_id', $columns)) {
                 if (!isset($model->company_id) || $model->company_id === null) {
                     $model->company_id = auth()->user() ? auth()->user()->company_id : self::getCompanyId();
                 }
             }
             //若是司机端 则添加司机ID
             if (auth()->user() instanceof Driver) {
-                /**@var \Illuminate\Database\Eloquent\Model $model */
-                if (in_array('driver_id', Schema::getColumnListing($model->getTable()))) {
+                if (in_array('driver_id', $columns)) {
                     if (!isset($model->driver_id) || $model->driver_id === null) {
                         $model->driver_id = auth()->user()->id;
+                    }
+                }
+            }
+            //若是商户端,则添加商户ID
+            if (auth()->user() instanceof Merchant) {
+                if (in_array('merchant_id', $columns)) {
+                    if (!isset($model->merchant_id) || $model->merchant_id === null) {
+                        $model->merchant_id = auth()->user()->id;
+                    }
+                }
+            }
+            //若是商户授权端,则添加商户ID
+            if (auth()->user() instanceof MerchantApi) {
+                if (in_array('merchant_id', $columns)) {
+                    if (!isset($model->merchant_id) || $model->merchant_id === null) {
+                        $model->merchant_id = auth()->user()->merchant_id;
                     }
                 }
             }

@@ -19,12 +19,9 @@ class LineValidate extends BaseValidate
         'warehouse_id' => '仓库ID',
         'order_max_count' => '最大订单量',
         'remark' => '备注',
-        'work_day_list' => '工作日'
-    ];
-
-    public $itemCustomAttributes = [
-        'post_code_start' => '起始邮编',
-        'post_code_end' => '结束邮编'
+        'work_day_list' => '工作日',
+        //'item_list.*.post_code_start' => '起始邮编',
+        //'item_list.*.post_code_end' => '结束邮编',
     ];
 
     public $rules = [
@@ -33,22 +30,20 @@ class LineValidate extends BaseValidate
         'warehouse_id' => 'required|integer',
         'order_max_count' => 'required|integer',
         'remark' => 'nullable|string|max:250',
-        'work_day_list' => 'required|string'
-    ];
-
-    public $item_rules = [
-        'post_code_start' => 'required|integer|between:1000,9999',
-        'post_code_end' => 'required|integer|between:1000,9999',
+        'work_day_list' => 'required|string',
+        //邮编列表
+        'item_list.*.post_code_start' => 'required|integer|between:1000,9999',
+        'item_list.*.post_code_end' => 'required|integer|between:1000,9999',
     ];
 
     public $scene = [
         'store' => [
             'name', 'country', 'warehouse_id', 'order_max_count', 'remark', 'work_days_list',
-            'item_list' => ['post_code_start', 'post_code_end']
+            'item_list.*.post_code_start', 'item_list.*.post_code_end'
         ],
         'update' => [
             'name', 'country', 'warehouse_id', 'order_max_count', 'remark', 'work_days_list',
-            'item_list' => ['post_code_start', 'post_code_end']
+            'item_list.*.post_code_start', 'item_list.*.post_code_end'
         ],
     ];
 }

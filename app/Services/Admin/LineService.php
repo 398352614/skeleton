@@ -20,7 +20,7 @@ class LineService extends BaseService
 
     public $filterRules = [
         'name' => ['like', 'name'],
-        'country'=>['=','country'],
+        'country' => ['=', 'country'],
     ];
 
     public function __construct(Line $line)
@@ -51,30 +51,31 @@ class LineService extends BaseService
         return self::getInstance(WareHouseService::class);
     }
 
-    public function postQuery($postCode){
-        $line_range=$this->getLineRangeService()->query
-            ->where('post_code_start','<=',$postCode)
-            ->where('post_code_end','>=',$postCode)->distinct()->pluck('line_id');
-        return $this->query->whereIn('id',$line_range);
+    public function postQuery($postCode)
+    {
+        $line_range = $this->getLineRangeService()->query
+            ->where('post_code_start', '<=', $postCode)
+            ->where('post_code_end', '>=', $postCode)->distinct()->pluck('line_id');
+        return $this->query->whereIn('id', $line_range);
     }
 
     public function getPageList()
     {
-        $list=[];
+        $list = [];
         //如果存在post_code查询
-        if(!empty($this->formData['post_code'])){
-            $list =$this->postQuery($this->formData['post_code']);
-/*            $list=$this->query->leftJoin('line_range' ,'line_range.line_id','=','line.id')
-                ->where('line_range.post_code_start','<=',$this->formData['post_code'])
-                ->where('line_range.post_code_end','>=',$this->formData['post_code']);*/
-            if(!empty($this->formData['name'])){
-                $list=$list->where('name','like',"%{$this->formData['name']}%");
+        if (!empty($this->formData['post_code'])) {
+            $list = $this->postQuery($this->formData['post_code']);
+            /*            $list=$this->query->leftJoin('line_range' ,'line_range.line_id','=','line.id')
+                            ->where('line_range.post_code_start','<=',$this->formData['post_code'])
+                            ->where('line_range.post_code_end','>=',$this->formData['post_code']);*/
+            if (!empty($this->formData['name'])) {
+                $list = $list->where('name', 'like', "%{$this->formData['name']}%");
             }
-            if(!empty($this->formData['country'])){
-                $list=$list->where('country','=',$this->formData['country']);
+            if (!empty($this->formData['country'])) {
+                $list = $list->where('country', '=', $this->formData['country']);
             }
             $list = $this->resource::collection($list->paginate());
-        }else{
+        } else {
             $list = parent::getPageList();
         }
         $lineIdList = array_column($list->all(), 'id');
@@ -135,7 +136,7 @@ class LineService extends BaseService
         //线路范围新增
         $newItemList = [];
         $index = 0;
-        $itemList = json_decode($params['item_list'], true);
+        $itemList = $params['item_list'];
         foreach ($params['work_day_list'] as $workDay) {
             foreach ($itemList as $key => $item) {
                 $newItemList[$index]['line_id'] = $lineId;
@@ -174,7 +175,7 @@ class LineService extends BaseService
         //线路范围新增
         $newItemList = [];
         $index = 0;
-        $itemList = json_decode($data['item_list'], true);
+        $itemList = $data['item_list'];
         foreach ($data['work_day_list'] as $workDay) {
             foreach ($itemList as $key => $item) {
                 $newItemList[$index]['line_id'] = $id;
@@ -242,7 +243,7 @@ class LineService extends BaseService
         if (empty($params['item_list'])) {
             throw new BusinessLogicException('邮编范围不能为空');
         }
-        $itemList = json_decode($params['item_list'], true);
+        $itemList = $params['item_list'];
         foreach ($itemList as $item) {
             if (intval($item['post_code_end']) < intval($item['post_code_start'])) {
                 throw new BusinessLogicException('结束邮编必须大于开始邮编');

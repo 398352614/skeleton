@@ -28,4 +28,22 @@ class BaseController extends Controller
         $this->service = new TransactionService($service, $exceptMethods);
         $this->data = Request::all();
     }
+
+    /**
+     * Execute an action on the controller.
+     *
+     * @param string $method
+     * @param array $parameters
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function callAction($method, $parameters)
+    {
+        $this->beforeAction($parameters);
+        return call_user_func_array([$this, $method], $parameters);
+    }
+
+    public function beforeAction($parameters)
+    {
+        $this->data = Request::all();
+    }
 }

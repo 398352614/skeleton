@@ -139,9 +139,9 @@ class TransportPriceService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $data['km_list']=json_decode($data['km_list'],true);
-        $data['weight_list']=json_decode($data['weight_list'],true);
-        $data['special_time_list']=json_decode($data['special_time_list'],true);
+        $data['km_list'] = json_decode($data['km_list'], true);
+        $data['weight_list'] = json_decode($data['weight_list'], true);
+        $data['special_time_list'] = json_decode($data['special_time_list'], true);
         //新增公里计费，重量计费，特殊时段计费列表
         $this->insertDetailsAll($id, $data);
     }
@@ -202,8 +202,8 @@ class TransportPriceService extends BaseService
             $specialTime = $specialTime->toArray();
             $price += $specialTime['price'];
         }
-        $info=$this->show($id);
-        $info['price']=$price;
+        $info = $this->show($id);
+        $info['price'] = $price;
         return $info;
     }
 
@@ -217,13 +217,7 @@ class TransportPriceService extends BaseService
     {
         //公里计费
         if (!empty($params['km_list'])) {
-            $params['km_list'] = json_decode($params['km_list'], true);
             $kmList = $params['km_list'];
-            foreach ($kmList as $item) {
-                if (intval($item['end']) <= intval($item['start'])) {
-                    throw new BusinessLogicException('起始值不能大于等于截止值');
-                }
-            }
             $length = count($kmList);
             for ($i = 0; $i <= $length - 1; $i++) {
                 for ($j = $i + 1; $j <= $length - 1; $j++) {
@@ -235,13 +229,7 @@ class TransportPriceService extends BaseService
         }
         //重量计费
         if (!empty($params['weight_list'])) {
-            $params['weight_list'] = json_decode($params['weight_list'], true);
             $weightList = $params['weight_list'];
-            foreach ($weightList as $item) {
-                if (intval($item['end']) <= intval($item['start'])) {
-                    throw new BusinessLogicException('起始值不能大于等于截止值');
-                }
-            }
             $length = count($weightList);
             for ($i = 0; $i <= $length - 1; $i++) {
                 for ($j = $i + 1; $j <= $length - 1; $j++) {
@@ -253,13 +241,7 @@ class TransportPriceService extends BaseService
         }
         //时段计费
         if (!empty($params['special_time_list'])) {
-            $params['special_time_list'] = json_decode($params['special_time_list'], true);
             $specialTimeList = $params['special_time_list'];
-            foreach ($specialTimeList as $item) {
-                if (intval($item['end']) <= intval($item['start'])) {
-                    throw new BusinessLogicException('起始值不能大于等于截止值');
-                }
-            }
             $length = count($specialTimeList);
             for ($i = 0; $i <= $length - 1; $i++) {
                 for ($j = $i + 1; $j <= $length - 1; $j++) {

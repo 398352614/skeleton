@@ -12,6 +12,11 @@ namespace App\Traits;
 
 use App\Services\BaseConstService;
 
+/**
+ * Trait ConstTranslateTrait
+ * @package App\Traits
+ *
+ */
 trait ConstTranslateTrait
 {
     //星期

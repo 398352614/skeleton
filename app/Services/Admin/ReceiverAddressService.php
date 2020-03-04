@@ -84,6 +84,7 @@ class ReceiverAddressService extends BaseService
         }
     }
 
+
     /**
      * 验证
      * @param $data

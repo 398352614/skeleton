@@ -555,7 +555,7 @@ class TourService extends BaseService
         /*******************************************1.处理站点下的材料*************************************************/
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list']);
         /***************************************2.处理站点下的所有包裹*************************************************/
-        $packageList = collect(json_decode($params['package_list'], true))->unique('id')->keyBy('id')->toArray();
+        $packageList = collect($params['package_list'])->unique('id')->keyBy('id')->toArray();
         $packageIdList = array_keys($packageList);
         $totalStickerAmount = 0.00;
         $dbPackageList = $this->getPackageService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::PACKAGE_STATUS_4], ['id', 'order_no', 'batch_no', 'type'], false)->toArray();
@@ -630,7 +630,6 @@ class TourService extends BaseService
      */
     private function dealMaterialList($tour, $materialList)
     {
-        $materialList = json_decode($materialList, true);
         foreach ($materialList as $material) {
             $rowCount = $this->getMaterialService()->update(['order_no' => $material['order_no'], 'code' => $material['code']], ['actual_quantity' => $material['actual_quantity']]);
             if ($rowCount === false) {

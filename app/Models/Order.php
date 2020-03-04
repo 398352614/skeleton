@@ -47,6 +47,7 @@ class Order extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'merchant_id',
         'order_no',
         'execution_date',
         'batch_no',

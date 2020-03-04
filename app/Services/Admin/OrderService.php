@@ -436,10 +436,9 @@ class OrderService extends BaseService
         if (empty($params['package_list']) || empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
-        $this->validateFields($params);
         //验证包裹列表
         if (!empty($params['package_list'])) {
-            $packageList = json_decode($params['package_list'], true);
+            $packageList = $params['package_list'];
             $nameList = array_column($packageList, 'name');
             if (count(array_unique($nameList)) !== count($nameList)) {
                 throw new BusinessLogicException('包裹名称有重复!不能添加订单');
@@ -449,10 +448,9 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('包裹外部标识有重复!不能添加订单');
             }
         }
-
         //验证材料列表
         if (!empty($params['material_list'])) {
-            $materialList = json_decode($params['material_list'], true);
+            $materialList = $params['material_list'];
             $nameList = array_column($materialList, 'name');
             if (count(array_unique($nameList)) !== count($nameList)) {
                 throw new BusinessLogicException('材料名称有重复!不能添加订单');
@@ -469,53 +467,6 @@ class OrderService extends BaseService
     }
 
     /**
-     * 字段验证
-     * @param $params
-     * @throws BusinessLogicException
-     */
-    private function validateFields(&$params)
-    {
-        //验证包裹字段
-        if (!empty($params['package_list'])) {
-            $packageList = json_decode($params['package_list'], true);
-            $rules = [
-                'name' => 'required|string|max:50',
-                'weight' => 'required|numeric',
-                'quantity' => 'required|integer',
-                'remark' => 'nullable|string|max:250',
-                'out_order_no' => 'required|string|max:50|unique:package',
-                'express_first_no' => 'required|string|max:50|unique:package',
-                'express_second_no' => 'nullable|string|max:50|unique:package',
-            ];
-            foreach ($packageList as $package) {
-                $validator = Validator::make($package, $rules);
-                if ($validator->fails()) {
-                    $messageList = Arr::flatten($validator->errors()->getMessages());
-                    throw new BusinessLogicException(implode(';', $messageList), 3001);
-                }
-            }
-        }
-        //验证材料字段
-        if (!empty($params['material_list'])) {
-            $materialList = json_decode($params['material_list'], true);
-            $rules = [
-                'name' => 'required|string|max:50',
-                'code' => 'required|string|max:50',
-                'out_order_no' => 'required|string|max:50|unique:material',
-                'expect_quantity' => 'required|integer',
-                'remark' => 'nullable|string|max:250',
-            ];
-            foreach ($materialList as $material) {
-                $validator = Validator::make($material, $rules);
-                if ($validator->fails()) {
-                    $messageList = Arr::flatten($validator->errors()->getMessages());
-                    throw new BusinessLogicException(implode(';', $messageList), 3001);
-                }
-            }
-        }
-    }
-
-    /**
      * 添加货物列表
      * @param $params
      * @param $batch
@@ -527,7 +478,7 @@ class OrderService extends BaseService
         $status = $params['status'] ?? BaseConstService::PACKAGE_STATUS_1;
         //若存在包裹列表,则新增包裹列表
         if (!empty($params['package_list'])) {
-            $packageList = collect(json_decode($params['package_list'], true))->map(function ($item, $key) use ($params, $batch, $tour) {
+            $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
                 $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'weight', 'quantity', 'remark']);
                 return $collectItem->put('order_no', $params['order_no'])->put('batch_no', $batch['batch_no'])->put('tour_no', $tour['tour_no']);
             })->toArray();
@@ -540,7 +491,7 @@ class OrderService extends BaseService
         }
         //若材料存在,则新增材料列表
         if (!empty($params['material_list'])) {
-            $materialList = collect(json_decode($params['material_list'], true))->map(function ($item, $key) use ($params, $batch, $tour) {
+            $materialList = collect($params['material_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
                 $collectItem = collect($item)->only(['name', 'code', 'out_order_no', 'expect_quantity', 'remark']);
                 return $collectItem->put('order_no', $params['order_no'])->put('batch_no', $batch['batch_no'])->put('tour_no', $tour['tour_no']);
             })->toArray();

@@ -14,6 +14,7 @@ use App\Http\Validate\BaseValidate;
 class OrderValidate extends BaseValidate
 {
     public $customAttributes = [
+        'merchant_id' => '商户ID',
         'batch_no' => '站点编号',
         'execution_date' => '取派日期',
         'out_order_no' => '外部订单号',
@@ -49,20 +50,10 @@ class OrderValidate extends BaseValidate
         'lat' => '纬度'
     ];
 
-    public $itemCustomAttributes = [
-        'name' => '货物名称',
-        'quantity' => '货物数量',
-        'weight' => '货物重量',
-        'volume' => '货物体积',
-        'price' => '货物单价',
-    ];
-
     public $rules = [
+        'merchant_id' => 'required|integer',
         'batch_no' => 'nullable|string|max:50',
         'execution_date' => 'required|date|after_or_equal:today',
-        'out_order_no' => 'required|string|max:50|uniqueIgnore:order,id',
-        'express_first_no' => 'required|string|max:50|uniqueIgnore:order,id',
-        'express_second_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
         'source' => 'required|string|max:50',
         'type' => 'nullable|integer|in:1,2',
         'out_user_id' => 'nullable|integer',
@@ -90,26 +81,30 @@ class OrderValidate extends BaseValidate
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
         'special_remark' => 'nullable|string|max:250',
-        'remark' => 'nullable|string|max:250'
-    ];
-
-    public $item_rules = [
-        'name' => 'required|string|max:50',
-        'quantity' => 'required|integer|between:1,10',
-        'weight' => 'required|numeric',
-        'volume' => 'required|numeric',
-        'price' => 'required|numeric',
+        'remark' => 'nullable|string|max:250',
+        //包裹列表
+        'package_list.*.name' => 'required|string|max:50',
+        'package_list.*.weight' => 'required|numeric',
+        'package_list.*.quantity' => 'required|integer',
+        'package_list.*.remark' => 'nullable|string|max:250',
+        'package_list.*.out_order_no' => 'required|string|max:50',
+        'package_list.*.express_first_no' => 'required|string|max:50',
+        'package_list.*.express_second_no' => 'nullable|string|max:50',
+        //材料列表
+        'material_list.*.name' => 'required|string|max:50',
+        'material_list.*.code' => 'required|string|max:50',
+        'material_list.*.out_order_no' => 'required|string|max:50|unique:material',
+        'material_list.*.expect_quantity' => 'required|integer',
+        'material_list.*.remark' => 'nullable|string|max:250',
     ];
 
     public $scene = [
-
         'getLocation' => [
             'receiver_country', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street'
         ],
         'store' => [
-            // 'out_order_no', 'express_first_no', 'express_second_no',
-            'execution_date', 'source',
+            'merchant_id', 'execution_date', 'source',
             'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
@@ -119,12 +114,9 @@ class OrderValidate extends BaseValidate
             'receiver_city', 'receiver_street', 'receiver_address',
             //备注
             'special_remark', 'remark', 'lon', 'lat',
-            //明细
-            'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
         ],
         'update' => [
-            //'out_order_no', 'express_first_no', 'express_second_no',
-            'execution_date', 'source',
+            'merchant_id', 'execution_date', 'source',
             'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
@@ -134,8 +126,6 @@ class OrderValidate extends BaseValidate
             'receiver_city', 'receiver_street', 'receiver_address',
             //备注
             'special_remark', 'remark', 'lon', 'lat',
-            //明细
-            'item_list' => ['name', 'quantity', 'weight', 'volume', 'price']
         ],
         'getBatchPageListByOrder' => ['execution_date'],
         'assignToBatch' => ['execution_date', 'batch_no'],

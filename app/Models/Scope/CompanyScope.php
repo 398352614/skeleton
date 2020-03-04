@@ -13,6 +13,7 @@ use App\Models\Company;
 use App\Models\Driver;
 use App\Models\Employee;
 use App\Models\Material;
+use App\Models\Merchant;
 use App\Models\OrderNoRule;
 use App\Models\TourMaterial;
 use Illuminate\Database\Eloquent\Builder;
@@ -55,6 +56,12 @@ class CompanyScope implements Scope
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
             }
+        }
+
+        //如果是商家端
+        if ($user instanceof Merchant) {
+            $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
+            //$builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->merchant_id);
         }
     }
 }

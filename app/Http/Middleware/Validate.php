@@ -10,9 +10,11 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\BusinessLogicException;
+use function foo\func;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Validate\BaseValidate;
+use Illuminate\Support\Str;
 
 class Validate
 {
@@ -52,29 +54,12 @@ class Validate
             if (empty($this->validate->rules) || empty($this->validate->scene[$method])) {
                 return $next($request);
             }
-            //若存在明细,则获取明细规则
-            $item_rules = [];
-            $sceneRules = $this->validate->scene[$method];
-            if (!empty($sceneRules['item_list'])) {
-                $item_rules = $this->getRules($this->validate->item_rules, $sceneRules['item_list']);
-                unset($sceneRules['item_list']);
-            }
-            //获取主表规则
-            $rules = $this->getRules($this->validate->rules, $sceneRules);
+            //获取验证规则
+            $rules = $this->getRules($this->validate->rules, $this->validate->scene[$method]);
             /************************************验证规则获取 end******************************************************/
             /********************************************数据验证 start************************************************/
-            //主表验证
-            $this->validate($data, $rules, array_merge(BaseValidate::baseMessage(), $this->validate::message()), $this->validate::customAttributes());
-            //明细验证
-            if (!empty($item_rules) && !empty($data['item_list'])) {
-                $itemList = json_decode($data['item_list'], true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new BusinessLogicException('明细数据格式不正确', 3001);
-                }
-                foreach ($itemList as $item) {
-                    $this->validate($item, $item_rules, array_merge(BaseValidate::baseMessage(), $this->validate::item_message()), $this->validate::itemCustomAttributes());
-                }
-            }
+            //验证
+            $this->validate($data, $rules, array_merge(BaseValidate::baseMessage(), $this->validate::message()), $this->validate::customAttributes(), $request);
             /*********************************************数据验证 end*************************************************/
         } catch (\Exception $ex) {
             throw new BusinessLogicException($ex->getMessage(), $ex->getCode());
@@ -100,11 +85,20 @@ class Validate
      * @param $rules
      * @param $message
      * @param $customAttributes
+     * @param \Illuminate\Http\Request $request
      * @throws BusinessLogicException
      */
-    private function validate($data, $rules)
+    private function validate($data, $rules, $message, $customAttributes, $request)
     {
-        $validator = Validator::make($data, $rules);
+        //处理json数组
+        foreach ($data as $key => $value) {
+            if (is_string($value) && Str::contains($key, '_list') && isJson($value)) {
+                $value = json_decode($value, true);
+                $request->offsetSet($key, $value);
+                $data[$key] = $value;
+            }
+        }
+        $validator = Validator::make($data, $rules, $message, $customAttributes);
         if ($validator->fails()) {
             $messageList = Arr::flatten($validator->errors()->getMessages());
             throw new BusinessLogicException(implode(';', $messageList), 3001);

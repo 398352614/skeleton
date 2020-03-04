@@ -25,8 +25,11 @@ class SenderAddressService extends BaseService
         return parent::getpagelist();
     }
 
+
     /**
+     * 获取详情
      * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
     public function show($id)
@@ -45,6 +48,7 @@ class SenderAddressService extends BaseService
      * @param int $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
+
     public function check($params, $id = null)
     {
         $data = [
@@ -61,6 +65,7 @@ class SenderAddressService extends BaseService
             $data['id'] = ['<>', $id];
         }
         $info = parent::getInfo([$data], ['*'], true);
+
         return $info;
     }
 
@@ -70,10 +75,7 @@ class SenderAddressService extends BaseService
      */
     public function store($params)
     {
-        if (empty(Merchant::query()->where('id', $params['merchant_id'])->first())) {
-            throw new BusinessLogicException('商户不存在，请重新选择商户');
-        }
-        if (!empty($this->check($params))) {
+        if (!empty($this->Check($params))) {
             throw new BusinessLogicException('地址新增失败，已有重复地址');
         }
         $rowCount = parent::create($params);
@@ -90,10 +92,7 @@ class SenderAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
-        if (empty(Merchant::query()->where('id', $data['merchant_id']))) {
-            throw new BusinessLogicException('商户不存在，请重新选择商户');
-        }
-        $this->check($data, $id);
+        $this->Check($data, $id);
         if (!empty($info)) {
             throw new BusinessLogicException('发货方地址已存在,不能重复添加');
         }
