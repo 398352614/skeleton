@@ -36,7 +36,7 @@ class TransportPriceValidate extends BaseValidate
         'weight_list.*.price' => 'required_with:weight_list|numeric',
         //特殊时段计费列表
         'special_time_list.*.start' => 'required_with:special_time_list|date_format:H:i:s',
-        'special_time_list.*.end' => 'required_with:special_time_list|date_format:H:i:s|gt:special_time_list.*.start',
+        'special_time_list.*.end' => 'required_with:special_time_list|date_format:H:i:s|after:special_time_list.*.start',
         'special_time_list.*.price' => 'required_with:special_time_list|numeric',
     ];
 
