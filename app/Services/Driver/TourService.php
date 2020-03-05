@@ -292,7 +292,7 @@ class TourService extends BaseService
         //包裹更换状态
         $where = ['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3];
         if (!empty($params['cancel_package_id_list'])) {
-            $where['id'] = ['not in', $params['cancel_package_id_list']];
+            $where['id'] = ['not in', explode(',', $params['cancel_package_id_list'])];
         }
         $rowCount = $this->getPackageService()->update($where, ['status' => BaseConstService::PACKAGE_STATUS_4]);
         if ($rowCount === false) {
@@ -300,7 +300,7 @@ class TourService extends BaseService
         }
         //处理未出库的包裹,将未出库的包裹取消取派
         if (!empty($params['cancel_package_id_list'])) {
-            $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], ['id' => ['in', $params['cancel_package_id_list']]]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
+            $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], ['id' => ['in', explode(',', $params['cancel_package_id_list'])]]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('未扫描包裹取消取派失败');
             }
