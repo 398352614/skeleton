@@ -50,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        /*
         if (env('APP_ENV') === 'local') {
             DB::listen(
                 function ($sql) {
@@ -78,6 +79,7 @@ class AppServiceProvider extends ServiceProvider
                 }
             );
         }
+        */
 
         //验证类扩展
         Validator::extend('uniqueIgnore', 'App\\Http\\Validate\\BaseValidate@uniqueIgnore');
