@@ -190,7 +190,7 @@ class TourService extends BaseService
         //包裹 处理
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('订单取消锁定失败,请重新操作');
+            throw new BusinessLogicException('包裹取消锁定失败,请重新操作');
         }
     }
 
@@ -547,10 +547,6 @@ class TourService extends BaseService
         //异常站点和取派中的站点都可以签收
         if (intval($batch['status'] !== BaseConstService::BATCH_DELIVERING)) {
             throw new BusinessLogicException('站点当前状态不能签收');
-        }
-        //获取客户取派包裹列表
-        if (empty($params['package_list'])) {
-            throw new BusinessLogicException('包裹信息不能为空');
         }
         /*******************************************1.处理站点下的材料*************************************************/
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list']);
