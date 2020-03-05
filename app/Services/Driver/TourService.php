@@ -271,7 +271,7 @@ class TourService extends BaseService
     public function outWarehouse($id, $params)
     {
         $tour = $this->checkOutWarehouse($id);
-        $params = Arr::only($params, ['begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic']);
+        $params = Arr::only($params, ['cancel_package_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic']);
         $params = Arr::add($params, 'status', BaseConstService::TOUR_STATUS_4);
         $params = Arr::add($params, 'begin_time', now());
         //取件线路更换状态
@@ -300,7 +300,7 @@ class TourService extends BaseService
         }
         //处理未出库的包裹,将未出库的包裹取消取派
         if (!empty($params['cancel_package_id_list'])) {
-            $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], ['id' => ['in', explode(',', $params['cancel_package_id_list'])]]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
+            $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'id' => ['in', explode(',', $params['cancel_package_id_list'])]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('未扫描包裹取消取派失败');
             }
