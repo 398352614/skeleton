@@ -447,6 +447,10 @@ class OrderService extends BaseService
             if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
                 throw new BusinessLogicException('包裹外部标识有重复!不能添加订单');
             }
+//            //验证外部标识/快递单号1/快递单号2
+//            foreach ($packageList as $package) {
+//                $info = $this->getPackageService()->getInfo([''], ['id'], false);
+//            }
         }
         //验证材料列表
         if (!empty($params['material_list'])) {

@@ -155,7 +155,7 @@ class TourTaskService extends BaseService
             $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], [
                 'name',
                 'code',
-                DB::raw('SUM(quantity) as expect_quantity'),
+                DB::raw('SUM(expect_quantity) as expect_quantity'),
                 DB::raw('0 as actual_quantity'),
             ], false, ['code'])->toArray();
         }
