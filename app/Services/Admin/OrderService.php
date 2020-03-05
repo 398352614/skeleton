@@ -424,10 +424,10 @@ class OrderService extends BaseService
     /**
      * 验证
      * @param $params
-     * @param $id
+     * @param $orderNo
      * @throws BusinessLogicException
      */
-    private function check(&$params, $id = null)
+    private function check(&$params, $orderNo = null)
     {
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
         if (empty($merchant)) {
@@ -447,10 +447,8 @@ class OrderService extends BaseService
             if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
                 throw new BusinessLogicException('包裹外部标识有重复!不能添加订单');
             }
-//            //验证外部标识/快递单号1/快递单号2
-//            foreach ($packageList as $package) {
-//                $info = $this->getPackageService()->getInfo([''], ['id'], false);
-//            }
+            //验证外部标识/快递单号1/快递单号2
+            $this->getPackageService()->checkAllUnique($packageList, $orderNo);
         }
         //验证材料列表
         if (!empty($params['material_list'])) {
@@ -464,8 +462,12 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('材料代码有重复!不能添加订单');
             }
             $outOrderNoList = array_column($materialList, 'out_order_no');
-            if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
-                throw new BusinessLogicException('材料外部标识有重复!不能添加订单');
+            if (!empty($outOrderNoList)) {
+                if (count(array_unique($outOrderNoList)) !== count($outOrderNoList)) {
+                    throw new BusinessLogicException('材料外部标识有重复!不能添加订单');
+                }
+                //验证唯一性
+                $this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $orderNo);
             }
         }
     }
@@ -558,10 +560,10 @@ class OrderService extends BaseService
     {
         unset($data['order_no'], $data['tour_no'], $data['batch_no']);
         /*************************************************订单修改******************************************************/
-        //验证
-        $this->check($data, $id);
         //获取信息
         $dbInfo = $this->getInfoOfStatus(['id' => $id]);
+        //验证
+        $this->check($data, $dbInfo['order_no']);
         //修改
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
@@ -747,6 +749,20 @@ class OrderService extends BaseService
     public function recovery($id, $params)
     {
         $order = $this->getInfoOfStatus(['id' => $id], false, BaseConstService::ORDER_STATUS_7);
+        /********************************************恢复之前验证包裹**************************************************/
+        $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']])->toArray();
+        if (!empty($packageList)) {
+            $this->getPackageService()->checkAllUnique($packageList, $order['order_no']);
+        }
+        /********************************************恢复之前验证材料**************************************************/
+        $materialList = $this->getMaterialService()->getList(['order_no' => $order['order_no']])->toArray();
+        if (!empty($materialList)) {
+            $outOrderNoList = array_column($materialList, 'out_order_no');
+            if (!empty($outOrderNoList)) {
+                $this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $order['order_no']);
+            }
+        }
+        /**********************************************订单回复********************************************************/
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => $params['execution_date']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单恢复失败');
@@ -757,7 +773,6 @@ class OrderService extends BaseService
         list($batch, $tour) = $this->getBatchService()->join($order);
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
-        //todo 恢复之前查看包裹快递单号是否已存在
         $this->fillBatchTourInfo($order, $batch, $tour);
     }
 
