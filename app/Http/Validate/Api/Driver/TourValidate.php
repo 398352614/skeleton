@@ -45,7 +45,7 @@ class TourValidate extends BaseValidate
         'begin_signature_first_pic' => 'nullable|string|max:250',
         'begin_signature_second_pic' => 'nullable|string|max:250',
         'begin_signature_third_pic' => 'nullable|string|max:250',
-        'cancel_package_id_list' => 'nullable|string',
+        'cancel_package_id_list' => 'nullable|string|max:1000',
         //异常上报
         'stage' => 'required|integer|in:1,2',
         'type' => 'required|integer|in:1,2,3',
