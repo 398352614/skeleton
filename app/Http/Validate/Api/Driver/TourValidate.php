@@ -59,14 +59,20 @@ class TourValidate extends BaseValidate
         'signature' => 'required|string|max:250',
         'pay_type' => 'required|integer|in:1,2',
         'pay_picture' => 'nullable|required_if:pay_type,2|string|max:250',
-        'material_list.*.order_no' => 'required_with:material_list|string|max:50',
-        'material_list.*.code' => 'required_with:material_list|string|max:50',
-        'material_list.*.actual_quantity' => 'required_with:material_list|integer',
-        'package_list.*.id' => 'required_with:package_list|string|max:50',
-        'package_list.*.sticker_no' => 'nullable|string|max:50',
         //入库
         'end_signature' => 'required|string|max:250',
         'end_signature_remark' => 'nullable|string|max:250',
+
+        //材料列表
+        'material_list.*.order_no' => 'required_with:material_list|string|max:50',
+        'material_list.*.name' => 'required_with:material_list|string|max:50',
+        'material_list.*.code' => 'required_with:material_list|string|max:50',
+        'material_list.*.expect_quantity' => 'required_with:material_list|integer',
+        'material_list.*.actual_quantity' => 'required_with:material_list|integer',
+
+        //包裹列表
+        'package_list.*.id' => 'required_with:package_list|string|max:50',
+        'package_list.*.sticker_no' => 'nullable|string|max:50',
     ];
 
     public $item_rules = [
@@ -78,7 +84,11 @@ class TourValidate extends BaseValidate
     public $scene = [
         'remark' => ['remark'],
         'changeCar' => ['car_id'],
-        'outWarehouse' => ['cancel_package_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic'],
+        'outWarehouse' => [
+            //材料列表
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.expect_quantity', 'material_list.*.actual_quantity',
+            'cancel_package_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic'
+        ],
         'getBatchOrderList' => ['batch_id'],
         'batchArrive' => ['batch_id'],
         'getBatchInfo' => ['batch_id'],
