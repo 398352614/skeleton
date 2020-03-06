@@ -92,7 +92,7 @@ class Validate
     {
         //处理json数组
         foreach ($data as $key => $value) {
-            if (is_string($value) && Str::contains($key, '_list') && isJson($value)) {
+            if (is_string($value) && Str::contains($key, '_list') && !Str::contains($key, 'id_list') && isJson($value)) {
                 $value = json_decode($value, true);
                 $request->offsetSet($key, $value);
                 $data[$key] = $value;

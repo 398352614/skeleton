@@ -45,7 +45,7 @@ class TourValidate extends BaseValidate
         'begin_signature_first_pic' => 'nullable|string|max:250',
         'begin_signature_second_pic' => 'nullable|string|max:250',
         'begin_signature_third_pic' => 'nullable|string|max:250',
-        'cancel_package_id_list' => 'nullable',
+        'cancel_package_id_list' => 'nullable|string',
         //异常上报
         'stage' => 'required|integer|in:1,2',
         'type' => 'required|integer|in:1,2,3',
@@ -59,6 +59,11 @@ class TourValidate extends BaseValidate
         'signature' => 'required|string|max:250',
         'pay_type' => 'required|integer|in:1,2',
         'pay_picture' => 'nullable|required_if:pay_type,2|string|max:250',
+        'material_list.*.order_no' => 'required_with:material_list|string|max:50',
+        'material_list.*.code' => 'required_with:material_list|string|max:50',
+        'material_list.*.actual_quantity' => 'required_with:material_list|integer',
+        'package_list.*.id' => 'required_with:package_list|string|max:50',
+        'package_list.*.sticker_no' => 'nullable|string|max:50',
         //入库
         'end_signature' => 'required|string|max:250',
         'end_signature_remark' => 'nullable|string|max:250',
