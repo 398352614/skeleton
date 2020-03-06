@@ -322,7 +322,7 @@ class TourService extends BaseService
         $materialList = collect($materialList)->map(function ($material, $key) use ($tour) {
             $material = Arr::only($material, ['expect_quantity', 'actual_quantity', 'code', 'name']);
             $material = Arr::add($material, 'tour_no', $tour['tour_no']);
-            return $material;
+            return collect($material);
         })->toArray();
         $rowCount = $this->tourMaterialModel->newQuery()->insert($materialList);
         if ($rowCount === false) {

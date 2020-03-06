@@ -71,7 +71,7 @@ class TourValidate extends BaseValidate
         'material_list.*.actual_quantity' => 'required_with:material_list|integer',
 
         //包裹列表
-        'package_list.*.id' => 'required_with:package_list|string|max:50',
+        'package_list.*.id' => 'required_with:package_list|integer',
         'package_list.*.sticker_no' => 'nullable|string|max:50',
     ];
 
