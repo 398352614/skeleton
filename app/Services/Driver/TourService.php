@@ -271,7 +271,7 @@ class TourService extends BaseService
     public function outWarehouse($id, $params)
     {
         $tour = $this->checkOutWarehouse($id);
-        $params = Arr::only($params, ['cancel_package_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic']);
+        $params = Arr::only($params, ['material_list', 'cancel_package_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic']);
         $params = Arr::add($params, 'status', BaseConstService::TOUR_STATUS_4);
         $params = Arr::add($params, 'begin_time', now());
         //取件线路更换状态
