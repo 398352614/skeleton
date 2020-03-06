@@ -433,7 +433,7 @@ class OrderService extends BaseService
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在');
         }
-        if (empty($params['package_list']) || empty($params['material_list'])) {
+        if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
         //验证包裹列表

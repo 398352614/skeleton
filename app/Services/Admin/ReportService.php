@@ -211,16 +211,7 @@ class ReportService extends BaseService
         })->toArray();
         $orderList = array_create_group_index($orderList, 'batch_no');
         //材料处理
-        $materialList = collect($materialList)->groupBy('batch_no')->map(function ($materialItemList, $key) {
-            return collect($materialItemList)->groupBy('code')->map(function ($materialItemList1, $key1) {
-                $expectQuantity = $materialItemList1->sum('expect_quantity');
-                $actualQuantity = $materialItemList1->sum('actual_quantity');
-                $materialItemList1 = $materialItemList1->toArray();
-                $materialItemList1[0]['expect_quantity'] = $expectQuantity;
-                $materialItemList1[0]['actual_quantity'] = $actualQuantity;
-                return collect($materialItemList1[0]);
-            });
-        })->toArray();
+        $materialList = collect($materialList)->groupBy('batch_no')->toArray();
         foreach ($batchList as $key => $batch) {
             $newBatchList[$key] = [
                 'id' => $batch['id'],
