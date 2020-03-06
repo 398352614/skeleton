@@ -324,7 +324,7 @@ class TourService extends BaseService
             $material = Arr::add($material, 'tour_no', $tour['tour_no']);
             return collect($material);
         })->toArray();
-        $rowCount = $this->tourMaterialModel->newQuery()->insert($materialList);
+        $rowCount = $this->tourMaterialModel->insertAll($materialList);
         if ($rowCount === false) {
             throw new BusinessLogicException('材料新增失败');
         }
