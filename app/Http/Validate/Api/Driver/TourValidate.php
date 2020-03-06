@@ -84,7 +84,13 @@ class TourValidate extends BaseValidate
         'getBatchInfo' => ['batch_id'],
         'batchException' => ['batch_id', 'stage', 'type', 'exception_remark', 'picture'],
         'batchCancel' => ['batch_id', 'cancel_type', 'cancel_remark', 'cancel_picture'],
-        'batchSign' => ['batch_id', 'package_list', 'material_list', 'signature', 'pay_type', 'pay_picture'],
+        'batchSign' => [
+            'batch_id', 'package_list', 'material_list', 'signature', 'pay_type', 'pay_picture',
+            //包裹列表
+            'package_list.*.id', 'package_list.*.sticker_no',
+            //材料列表
+            'material_list.*.order_no', 'material_list.*.code', 'material_list.*.actual_quantity'
+        ],
         'inWarehouse' => ['end_signature', 'end_signature_remark']
     ];
 }
