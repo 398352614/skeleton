@@ -322,6 +322,7 @@ class TourService extends BaseService
         $materialList = collect($materialList)->map(function ($material, $key) use ($tour) {
             $material = Arr::only($material, ['expect_quantity', 'actual_quantity', 'code', 'name']);
             $material = Arr::add($material, 'tour_no', $tour['tour_no']);
+            $material = Arr::add($material, 'surplus_quantity', $material['actual_quantity']);
             return collect($material);
         })->toArray();
         $rowCount = $this->tourMaterialModel->insertAll($materialList);
@@ -638,7 +639,7 @@ class TourService extends BaseService
             $rowCount = $this->tourMaterialModel->newQuery()
                 ->where('tour_no', '=', $tour['tour_no'])
                 ->where('code', '=', $materialItemList[0]['code'])
-                ->update(['finish_quantity' => DB::raw("finish_quantity+$quantity"), 'surplus_quantity' => DB::raw("surplus_quantity-$quantity")]);
+                ->update(['finish_quantity' => DB::raw("finish_quantity+$quantity"), 'surplus_quantity' => DB::raw("surplus_quantity+$quantity")]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('材料处理失败');
             }
