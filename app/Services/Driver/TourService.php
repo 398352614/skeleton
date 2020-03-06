@@ -639,7 +639,7 @@ class TourService extends BaseService
             $rowCount = $this->tourMaterialModel->newQuery()
                 ->where('tour_no', '=', $tour['tour_no'])
                 ->where('code', '=', $materialItemList[0]['code'])
-                ->update(['finish_quantity' => DB::raw("finish_quantity+$quantity"), 'surplus_quantity' => DB::raw("surplus_quantity+$quantity")]);
+                ->update(['finish_quantity' => DB::raw("finish_quantity+$quantity"), 'surplus_quantity' => DB::raw("surplus_quantity-$quantity")]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('材料处理失败');
             }
