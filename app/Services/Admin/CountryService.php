@@ -45,7 +45,7 @@ class CountryService extends BaseService
     {
         $data = [];
         $countryList = array_values(CountryTrait::getCountryList());
-        $data['country_list'] = $countryList;
+        $data['country_list'] = $this->locateCountryList($countryList);;
         return $data;
     }
 
