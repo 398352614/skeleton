@@ -31,7 +31,7 @@ class CountryService extends BaseService
      */
     public function store($params)
     {
-        $rowCount = parent::create(['en_name' => $params['en_name'], 'cn_name' => $params['cn_name']]);
+        $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('国家新增失败');
         }

@@ -82,6 +82,7 @@ return [
     'timezone' => ':attribute 必须是个有效的时区.',
     'unique' => ':attribute 已存在',
     'url' => ':attribute 无效的格式',
+    'unique_ignore'=>':attribute 已存在',
 
     /*
     |--------------------------------------------------------------------------

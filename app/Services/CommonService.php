@@ -9,13 +9,16 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
+use App\Models\Country;
 use App\Traits\LocationTrait;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 
 class CommonService
 {
+
     /**
      * 获取地址经纬度
      * @param $params
@@ -33,10 +36,19 @@ class CommonService
      */
     public function getCountryList()
     {
-        $countryList = Cache::rememberForever('country', function () {
-            $country = Storage::disk('public')->get('country.json');
+        $countryList = Country::query()->get(['id', 'short', 'cn_name', 'en_name', 'tel'])->toArray();
+        if (empty($countryList)) return [];
+        //获取语言
+        $locate = (App::getLocale() !== 'cn') ? 'en' : 'cn';
+        //获取字段
+        $columnName = $locate . '_name';
+        $delColumnName = ($columnName === 'en_name') ? 'en_name' : 'en_name';
+        //字段处理
+        $countryList = array_map(function ($country) use ($columnName, $delColumnName) {
+            $country['name'] = $country[$columnName];
+            unset($country[$columnName], $country[$delColumnName]);
             return $country;
-        });
+        }, $countryList);
         return $countryList;
     }
 }

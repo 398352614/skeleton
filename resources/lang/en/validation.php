@@ -117,7 +117,7 @@ return [
     'uploaded' => 'The :attribute failed to upload.',
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
-    'unique_ignore' => 'The :attribute field is unique.',
+    'unique_ignore' => 'The :attribute field must be unique.',
 
     /*
     |--------------------------------------------------------------------------

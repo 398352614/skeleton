@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\CountryTrait;
+
 /**
  * 发件人地址 表
  * Class Source
@@ -66,7 +68,6 @@ class SenderAddress extends BaseModel
         'sender_city',
         'sender_street',
         'sender_address',
-
         'created_at',
         'updated_at',
     ];
