@@ -29,6 +29,18 @@ class MerchantService extends BaseService
         'name' => ['like', 'name'],
         'merchant_group_id'=>['=','merchant_group_id']];
 
+    protected $headings= [
+    'type',
+    'name',
+    'email' ,
+    'settlement_type' ,
+    'merchant_group_id',
+    'contacter',
+    'phone' ,
+    'address',
+    'status'
+    ];
+
     public function __construct(Merchant $merchant)
     {
         $this->model = $merchant;
@@ -180,7 +192,7 @@ class MerchantService extends BaseService
     public function merchantExcel()
     {
         $cellData=[];
-        $info =$this->getList([],['type', 'name', 'email' , 'settlement_type' , 'merchant_group_id', 'contacter' , 'phone' , 'address' ,  'status' ],false)->toArray();
+        $info =$this->getList([],$this->headings,false)->toArray();
         for($i=0;$i<count($info);$i++) {
             $info[$i]['merchant_group_id']=$this->getMerchantGroupService()->getInfo(['id'=>$info[$i]['merchant_group_id']],['name'],false)->toArray()['name'];
             $info[$i]['type']=empty($info[$i]['type']) ? null : ConstTranslateTrait::$merchantTypeList[$info[$i]['type']];
@@ -190,7 +202,7 @@ class MerchantService extends BaseService
                $cellData[$i][$j]=array_values($info[$i])[$j];
            }
         }
-        return $this->excelExport('merchant',$cellData,'merchant');
+        return $this->excelExport('merchant',$this->headings,$cellData,'merchant');
     }
 
 }
