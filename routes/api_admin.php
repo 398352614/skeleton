@@ -63,7 +63,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //修改
         Route::put('/{id}', 'OrderController@update');
         //获取可分配路线日期
-        Route::get('/{id}/getTourDate','OrderController@getTourDate');
+        Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
         //获取可分配的站点列表
         Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
         //分配至站点
@@ -81,13 +81,13 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     //订单导入记录管理
     Route::prefix('order-import')->group(function () {
         //上传模板
-        Route::post('/uploadTemplate','OrderImportController@uploadTemplate');
+        Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
         //获取模板
-        Route::get('/getTemplate','OrderImportController@getTemplate');
+        Route::get('/getTemplate', 'OrderImportController@getTemplate');
         //批量导入
-        Route::post('/import','OrderController@orderImport');
+        Route::post('/import', 'OrderController@orderImport');
         //批量新增
-        Route::post('/storeByList','OrderController@storeByList');
+        Route::post('/storeByList', 'OrderController@storeByList');
         //列表查询
         Route::get('/log', 'OrderImportController@index');
         //记录详情
@@ -136,7 +136,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/{id}', 'BatchController@show')->name('batch.show');       //批次详情
         Route::put('/{id}/cancel', 'BatchController@cancel');                        //取消取派
         Route::get('/{id}/getTourList', 'BatchController@getTourList');              //获取取件线路列表
-        Route::get('/{id}/getTourDate','BatchController@getTourDate');//获取可分配路线日期
+        Route::get('/{id}/getTourDate', 'BatchController@getTourDate');//获取可分配路线日期
         Route::put('/{id}/assignToTour', 'BatchController@assignToTour');            //分配站点至取件线路
         Route::delete('/{id}/removeFromTour', 'BatchController@removeFromTour');     //移除站点
     });
@@ -275,6 +275,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     //国家管理
     Route::prefix('country')->group(function () {
         Route::get('/', 'CountryController@index');
+        Route::get('/initStore', 'CountryController@initStore');
         Route::post('/', 'CountryController@store');
         Route::delete('/{id}', 'CountryController@destroy');
     });
@@ -328,7 +329,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //批量启用禁用
         Route::put('/statusByList', 'MerchantController@statusByList');
         //商户导出
-        Route::get('/excel','MerchantController@excel');
+        Route::get('/excel', 'MerchantController@excel');
     });
 
     //商户授权API管理
@@ -356,7 +357,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //组内成员
         Route::get('/{id}/indexOfMerchant', 'MerchantGroupController@indexOfMerchant');
         //批量修改运价方案
-        Route::put('/transportPrice','MerchantGroupController@updatePrice');
+        Route::put('/transportPrice', 'MerchantGroupController@updatePrice');
 
     });
 
