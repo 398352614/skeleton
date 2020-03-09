@@ -26,8 +26,15 @@ class CountryController extends BaseController
 
     public function index()
     {
-        return $this->service->getPageList();
+        return $this->service->index();
     }
+
+
+    public function initStore()
+    {
+        return $this->service->initStore();
+    }
+
 
     /**
      * 新增

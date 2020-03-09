@@ -23,8 +23,21 @@ trait CountryTrait
         return json_decode($countryList, true);
     }
 
+
     /**
      * 通过简称,获取单个国家信息
+     * @param $short
+     * @return array
+     */
+    public static function getCountry($short)
+    {
+        $countryList = self::getCountryList();
+        return $countryList[$short] ?? [];
+    }
+
+
+    /**
+     * 通过简称,获取国家名称
      * @param $short
      * @return string
      */
