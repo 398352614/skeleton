@@ -23,6 +23,12 @@ trait ExportTrait
         $this->txtDisk = Storage::disk('admin_image_public');
     }
 
+    public function translate($headings){
+        for($i=0;$i<count($headings);$i++){
+            $headings[$i]=__('excel.'.$headings[$i]);
+        };
+        return $headings;
+    }
     /**
      * 表格导出
      * @param $name
@@ -30,17 +36,18 @@ trait ExportTrait
      * @return array
      * @throws BusinessLogicException
      */
-    public function excelExport($name,$params,$dir)
+    public function excelExport($name,$headings,$params,$dir)
     {
+        $headings=$this->translate($headings);
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
-        $name = date('Ymd') . $name;
+        $name = date('Ymd') .$name. auth()->user()->company_id;
         $path ='public\\admin\\excel\\'.$subPath . DIRECTORY_SEPARATOR . $name.'.xlsx';
         try {
             if($dir==='tour'){
-                $rowCount=Excel::store(new BatchListExport($name,$params),$path);
+                $rowCount=Excel::store(new BatchListExport($name,$params,$headings),$path);
             }
             if($dir==='merchant'){
-                $rowCount=Excel::store(new MerchantExport($params),$path);
+                $rowCount=Excel::store(new MerchantExport($params,$headings),$path);
             }
         } catch (\Exception $ex) {
             throw new BusinessLogicException('表格上传失败,请重新操作');

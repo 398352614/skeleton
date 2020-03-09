@@ -45,6 +45,21 @@ class TourService extends BaseService
         'tour_no' => ['like', 'tour_no']
     ];
 
+    protected $headings=[
+        'id',
+        'receiver',
+        'receiver_phone',
+        'out_user_id',
+        'receiver_address',
+        'receiver_post_code',
+        'receiver_city',
+        'source',
+        'expect_pickup_quantity',
+        'expect_pie_quantity',
+        'express_first_no_one',
+        'express_first_no_two',
+    ];
+
     public $orderBy = ['created_at' => 'desc'];
 
     public function __construct(Tour $tour, GoogleApiService $client, XLDirectionService $directionClient)
@@ -751,27 +766,27 @@ class TourService extends BaseService
         $info = $this->getBatchService()->getList(['tour_no' => $tour_no], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
 
         //整理结构
-        for ($i = 1; $i <= count($info); $i++) {
+        for ($i = 0; $i < count($info); $i++) {
+            $orderInfo=$this->getOrderService()->getList(['batch_no' => $info[$i]['batch_no']], ['*'], false);
             $cellData[$i][0] = $i;
-            $cellData[$i][1] = $info[$i - 1]['receiver'];
-            $cellData[$i][2] = $info[$i - 1]['receiver_phone'];
-            $cellData[$i][3] = $this->getOrderService()->getInfo(['batch_no' => $info[$i - 1]['batch_no']], ['*'], false)['out_user_id'] ?? '';
-            $cellData[$i][4] = $info[$i - 1]['receiver_street'] . ' ' . $info[$i - 1]['receiver_house_number'];
-            $cellData[$i][5] = $info[$i - 1]['receiver_post_code'];
-            $cellData[$i][6] = $info[$i - 1]['receiver_city'];
-            $cellData[$i][7] = $this->getOrderService()->getInfo(['batch_no' => $info[$i - 1]['batch_no']], ['*'], false)['source'];;
-            $cellData[$i][8] = $info[$i - 1]['expect_pickup_quantity'];
-            $cellData[$i][9] = $info[$i - 1]['expect_pie_quantity'];
-            $cellData[$i][10] = $this->getOrderService()->getList(['batch_no' => $info[$i - 1]['batch_no']], ['*'], false)[0]['express_first_no'];
-            $cellData[$i][11] = $this->getOrderService()->getList(['batch_no' => $info[$i - 1]['batch_no']], ['*'], false)[1]['express_first_no'] ?? '';
+            $cellData[$i][1] = $info[$i]['receiver'];
+            $cellData[$i][2] = $info[$i]['receiver_phone'];
+            $cellData[$i][3] = $orderInfo[0]['out_user_id'] ?? '';
+            $cellData[$i][4] = $info[$i]['receiver_street'] . ' ' . $info[$i]['receiver_house_number'];
+            $cellData[$i][5] = $info[$i]['receiver_post_code'];
+            $cellData[$i][6] = $info[$i]['receiver_city'];
+            $cellData[$i][7] = $orderInfo[0]['source'];;
+            $cellData[$i][8] = $info[$i]['expect_pickup_quantity'];
+            $cellData[$i][9] = $info[$i]['expect_pie_quantity'];
+            $cellData[$i][10] = $orderInfo[0]['express_first_no'];
+            $cellData[$i][11] = $orderInfo[1]['express_first_no'] ?? '';
         }
-        $cellData[0] = array('No', 'Name', 'Phone', 'Acc', 'Address', 'Postcode', 'City', 'SYS', '取件数量', '派件数量', 'Barcode 1', 'Barcode 2');
         for ($i = 0; $i < count($cellData); $i++) {
             $cellData[$i] = array_values($cellData[$i]);
         }
         $cellData = array_reverse($cellData);
         $dir = 'tour';
-        return $this->excelExport($tour_no, $cellData, $dir);
+        return $this->excelExport($tour_no,$this->headings, $cellData, $dir);
     }
 
     /**
