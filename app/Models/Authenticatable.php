@@ -9,6 +9,7 @@ namespace App\Models;
 
 use App\Models\Scope\CompanyScope;
 use App\Models\Scope\HasCompanyId;
+use App\Traits\CountryTrait;
 use Illuminate\Foundation\Auth\User as BaseUser;
 use Illuminate\Support\Facades\Schema;
 
@@ -35,4 +36,21 @@ class Authenticatable extends BaseUser
             }
         };
     }
+
+    public function getSenderCountryAttribute($senderCountry)
+    {
+        return empty($senderCountry) ? null : CountryTrait::getCountryName($senderCountry);
+    }
+
+    public function getReceiverCountryAttribute($receiveCountry)
+    {
+        return empty($receiveCountry) ? null : CountryTrait::getCountryName($receiveCountry);
+    }
+
+    public function getCountryAttribute($country)
+    {
+        return empty($country) ? null : CountryTrait::getCountryName($country);
+    }
+
+
 }

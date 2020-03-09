@@ -82,7 +82,7 @@ return [
     'timezone' => ':attribute 必须是个有效的时区.',
     'unique' => ':attribute 已存在',
     'url' => ':attribute 无效的格式',
-    'unique_ignore'=>':attribute 已存在',
+    'unique_ignore' => ':attribute 已存在',
 
     /*
     |--------------------------------------------------------------------------
@@ -99,6 +99,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'package_list.*.name' => [
+            'required_with' => '包裹列表名称是必须的',
+        ]
     ],
 
     /*
@@ -256,7 +259,7 @@ return [
         'begin_signature_third_pic' => '出库图片1',
         'stage' => '状态',
         'exception_remark' => '异常内容',
-        'picture'=>'图片',
+        'picture' => '图片',
         'cancel_type' => '取消取派类型',
         'cancel_remark' => '取消取派内容',
         'cancel_picture' => '取消取派图片',
@@ -272,8 +275,8 @@ return [
         'transport_price_id' => '运价ID',
         'is_default' => '是否默认',
         'starting_price' => '起步价',
-        'permission'=>'权限',
-        'package_list'=>'包裹列表',
-        'material_list'=>'材料列表',
+        'permission' => '权限',
+        'package_list' => '包裹列表',
+        'material_list' => '材料列表',
     ],
 ];
