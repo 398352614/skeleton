@@ -99,9 +99,77 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        //包裹列表
+        'package_list.*.id' => [
+            'required_with' => '包裹ID是必须的',
+            'integer' => '包裹ID必须是整数'
+        ],
         'package_list.*.name' => [
-            'required_with' => '包裹列表名称是必须的',
-        ]
+            'required_with' => '包裹名称是必须的',
+            'max' => '包裹名称字段必须在 :max 个字符之内',
+            'string' => '包裹名称必须是字符串'
+        ],
+        'package_list.*.weight' => [
+            'required_with' => '包裹重量是必须的',
+            'numeric' => '包裹重量必须是数字'
+        ],
+        'package_list.*.quantity' => [
+            'required_with' => '包裹数量是必须的',
+            'integer' => '包裹数量必须是整数'
+        ],
+        'package_list.*.remark' => [
+            'max' => '包裹名称字段必须在 :max 个字符之内',
+            'string' => '包裹名称备注是字符串'
+        ],
+        'package_list.*.out_order_no' => [
+            'max' => '包裹名称字段必须在 :max 个字符之内',
+            'string' => '包裹外部标识必须是字符串'
+        ],
+        'package_list.*.express_first_no' => [
+            'required_with' => '包裹快递单号1是必须的',
+            'max' => "包裹快递单号1字段必须在 :max 个字符之内",
+            'string' => '包裹名称必须是字符串'
+        ],
+        'package_list.*.express_second_no' => [
+            'max' => '包裹名称字段必须在 :max 个字符之内',
+            'string' => '包裹名称必须是字符串'
+        ],
+        'package_list.*.sticker_no' => [
+            'max' => '包裹贴单号字段必须在 :max 个字符之内',
+            'string' => '包裹贴单号必须是字符串'
+        ],
+        //材料列表
+        'material_list.*.order_no' => [
+            'required_with' => '材料所属订单号是必须的',
+            'string' => '材料所属订单号必须是字符串',
+            'max' => '材料外部标识字段必须在 :max 个字符之内',
+        ],
+        'material_list.*.name' => [
+            'required_with' => '材料名称是必须的',
+            'string' => '材料名称必须是字符串',
+            'max' => '材料名称字段必须在 :max 个字符之内',
+        ],
+        'material_list.*.code' => [
+            'required_with' => '材料代码是必须的',
+            'string' => '材料代码必须是字符串',
+            'max' => '材料代码字段必须在 :max 个字符之内',
+        ],
+        'material_list.*.out_order_no' => [
+            'string' => '材料外部标识必须是字符串',
+            'max' => '材料外部标识字段必须在 :max 个字符之内',
+        ],
+        'material_list.*.expect_quantity' => [
+            'required_with' => '材料数量是必须的',
+            'integer' => '材料数量必须是整数',
+        ],
+        'material_list.*.actual_quantity' => [
+            'required_with' => '材料实际数量是必须的',
+            'integer' => '材料实际数量必须是整数',
+        ],
+        'material_list.*.remark' => [
+            'string' => '材料备注必须是字符串',
+            'max' => '材料备注字段必须在 :max 个字符之内',
+        ],
     ],
 
     /*
