@@ -80,6 +80,8 @@ return [
     "取件线路当前状态不允许回仓库"  => "The current status of the pickup line is not allowed to return to the warehouse",
     "当前取件线路还有未完成站点,请先处理"  => "There are unfinished stops for the current pickup line, please handle first",
     "司机入库失败,请重新操作"  => "The driver failed to enter the warehouse, please try again",
+    "无法删除根组织" =>"The original institution cannot be deleted",
+    "该节点存在子机构，请先删除子机构"=>"This institution has child institution,please delete the child institution first",
 
     "星期一"  => "Monday",
     "星期二"  => "Tuesday",

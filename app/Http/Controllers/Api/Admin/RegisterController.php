@@ -11,14 +11,24 @@ use App\Mail\SendRegisterCode;
 use App\Mail\SendResetCode;
 use App\Models\Company;
 use App\Models\Employee;
+use App\Models\Institution;
+use App\Models\KilometresCharging;
+use App\Models\Merchant;
+use App\Models\MerchantApi;
+use App\Models\MerchantGroup;
 use App\Models\OrderNoRule;
+use App\Models\SpecialTimeCharging;
+use App\Models\TransportPrice;
 use App\Models\Warehouse;
+use App\Models\WeightCharging;
 use App\Services\BaseConstService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Vinkla\Hashids\Facades\Hashids;
 
 class RegisterController extends BaseController
 {
@@ -49,7 +59,7 @@ class RegisterController extends BaseController
             new BusinessLogicException('账号已注册，请直接登录')
         );
 
-        return DB::transaction(function () use ($data) {
+
             $lastCompany = Company::lockForUpdate()->orderBy('created_at','desc')->first();
 
             $company = Company::create([
@@ -60,12 +70,37 @@ class RegisterController extends BaseController
                 //'phone' => $data['phone'],
             ]);
 
-            $this->addEmployeeForCompany($company, $data);
-            $this->addWarehouse($company,$data);
-            $this->initCompanyOrderCodeRules($company);
+            $this->addInstitution($company);//初始化组织结构
+            $this->addEmployee($company, $data);//初始化管理员帐户
+            $this->addWarehouse($company);//初始化仓库
+            $this->initCompanyOrderCodeRules($company);//初始化编号规则
+            $this->addTransportPrice($company);//初始化运价方案
+            $this->addMerchantGroup($company);//初始化商户组
+            $this->addMerchant($company);//初始化商户
+            $this->addMerchantApi($company);//初始化商户API
+    }
 
-           return 'true';
-        });
+    protected function addInstitution($company){
+        //创建根节点
+        $companyRoot = Institution::create([
+            'company_id'=>$company->id,
+            'name' => $company->name,
+            'parent' => 0,
+        ]);
+        $companyRoot->makeRoot();
+        //创建初始组织
+        $parentId =Institution::query()->where('company_id','=',$company->id)->first()->toArray()['id'];
+        $child = Institution::create([
+                'company_id'=>$company->id,
+                'name' =>$company->name,
+                'phone' => $company->phone ?? '',
+                'contacts' => $company->contacts?? '',
+                'country' => $company->country?? '',
+                'address' => $company->address ?? '',
+                'parent'=>$parentId,
+            ]);
+
+        return $child->moveTo($parentId);
     }
 
     /**
@@ -105,14 +140,14 @@ class RegisterController extends BaseController
      * @param  array  $data
      * @return mixed
      */
-    protected function addEmployeeForCompany(Company $company, array $data)
+    protected function addEmployee(Company $company, array $data)
     {
         return Employee::create([
             'email' => $data['email'],
             //'phone' => $data['phone'],
             'password'   => bcrypt($data['password']),
             'auth_group_id'   => 1,
-            'institution_id'   => 1,
+            'institution_id'   => Institution::query()->where('company_id',$company->id)->where('parent','<>',0)->first()->toArray()['id'],
             'fullname'  => $data['email'],
             'company_id'    => $company->id,
             'username'=>$data['email']
@@ -125,13 +160,13 @@ class RegisterController extends BaseController
      * @param array $data
      * @return mixed
      */
-    protected function addWarehouse(Company $company, array $data)
+    protected function addWarehouse(Company $company)
     {
         return Warehouse::create([
-            'name'=>$data['name'],
-            'contacter'=>$data['email'],
+            'name'=>$company->name,
+            'contacter'=>$company->email,
             'company_id'=> $company->id,
-            'country'=>'荷兰',
+            'country'=>'NL',
             'post_code'=>'2153PJ',
             'house_number'=>'20',
             'city'=>'Nieuw-Vennep',
@@ -140,7 +175,69 @@ class RegisterController extends BaseController
             'lat'=>'4.62897256',
         ]);
     }
+
     /**
+     * 添加初始运价方案
+     * @param $company
+     * @return mixed
+     */
+    protected function addTransportPrice($company){
+        $info= TransportPrice::create([
+            'company_id'=> $company->id,
+            'name'=>$company->name,
+            'remark'=>'',
+            'status'=>BaseConstService::TRANSPORT_PRICE_STATUS_1,
+            ]);
+        KilometresCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>0, 'end'=>2, 'price'=>4]);
+        KilometresCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>2, 'end'=>4, 'price'=>2]);
+        KilometresCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>4, 'end'=>6, 'price'=>1]);
+        WeightCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>1, 'end'=>2, 'price'=>2]);
+        WeightCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>2, 'end'=>4, 'price'=>1]);
+        SpecialTimeCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id,'start'=>'10:00:00', 'end'=>"11:00:00", 'price'=>1.5]);
+        return $info;
+    }
+
+    protected function addMerchantGroup($company)
+    {
+        return MerchantGroup::create([
+            'company_id'=> $company->id,
+            'name'=>$company->name,
+            'transport_price_id'=>TransportPrice::query()->where('company_id',$company->id)->first()->toArray()['id'],
+            'is_default'=>1,
+        ]);
+    }
+
+    protected function addMerchant($company){
+        return Merchant::create([
+            'company_id'=> $company->id,
+            'type'=>BaseConstService::MERCHANT_TYPE_2,
+            'name'=>$company->name,
+            'email'=>$company->email,
+            'password'=>Hash::make(BaseConstService::INITIAL_PASSWORD),
+            'settlement_type'=>BaseConstService::MERCHANT_SETTLEMENT_TYPE_1,
+            'merchant_group_id'=>MerchantGroup::query()->where('company_id',$company->id)->first()->toArray()['id'],
+            'contacter'=>$company->contacts,
+            'phone'=>$company->phone,
+            'address'=>$company->address,
+            'avatar'=>'',
+            'status'=>1,
+        ]);
+    }
+
+    protected function addMerchantApi($company){
+        $id=Merchant::query()->where('company_id',$company->id)->first()->toArray()['id'];
+        return MerchantApi::create([
+            'company_id'=> $company->id,
+            'merchant_id' => $id,
+            'key' => Hashids::encode(time() . $id),
+            'secret' => Hashids::connection('alternative')->encode(time() . $id),
+            'url'=> '',
+            'white_ip_list'=> '',
+            'status'=> 1,
+        ]);
+    }
+
+        /**
      * 注册验证码
      * @param  Request  $request
      * @return string
