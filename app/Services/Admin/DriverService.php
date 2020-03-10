@@ -99,4 +99,15 @@ class DriverService extends BaseService
         ]);
         return;
     }
+
+    public function getPageList()
+    {
+        if(!empty($this->formData['execution_date'])){
+            $info=Tour::query()->where('execution_date',$this->formData['execution_date'])->where('status','<>',BaseConstService::TOUR_STATUS_5)->get()->toArray();
+            if(!empty($info)){
+                $this->query->where('id','<>',$info['driver_id'])->where('is_locked','=',BaseConstService::DRIVER_TO_NORMAL);
+            }
+        }
+        return parent::getPageList();
+    }
 }

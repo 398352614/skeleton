@@ -128,5 +128,9 @@ return [
     "取件线路图片目录"  => "Pickup line picture directory",
     "司机文件目录"  => "Driver file directory",
     "车辆文件目录"  => "Vehicle file directory",
-    "取件线路文件目录"  => "Pickup line file directory"
+    "取件线路文件目录"  => "Pickup line file directory",
+
+    '票结'=>"By order",
+    '日结'=>"By day",
+    '月结'=>"By month",
 ];

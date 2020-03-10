@@ -19,21 +19,7 @@ class DriverController extends BaseController
         parent::__construct($service);
     }
 
-    /**
-     * @api {GET}  api/admin/driver 管理员端:司机列表
-     * @apiName index
-     * @apiGroup admin-driver
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 查询司机
-     * @apiSuccessExample {json}  返回示例
-     * HTTP/1.1 200 OK
-     * {
-     *  "ret":1,
-     *  "msg":"查询司机",
-     *  "data":{}
-     * }
-     */
+
     public function index(Request $request)
     {
         return $this->service->getPageList();
