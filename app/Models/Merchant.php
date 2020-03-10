@@ -79,6 +79,11 @@ class Merchant extends Authenticatable implements JWTSubject
      */
     protected $dates = [];
 
+    public function getSettlementTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::merchantSettlementTypeList($this->settlement_type);
+    }
+
 
     /**
      * @return mixed
