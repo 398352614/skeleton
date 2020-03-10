@@ -139,9 +139,6 @@ class TransportPriceService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $data['km_list'] = json_decode($data['km_list'], true);
-        $data['weight_list'] = json_decode($data['weight_list'], true);
-        $data['special_time_list'] = json_decode($data['special_time_list'], true);
         //新增公里计费，重量计费，特殊时段计费列表
         $this->insertDetailsAll($id, $data);
     }
