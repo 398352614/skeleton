@@ -31,13 +31,13 @@ class PackageService extends BaseService
                 $intersectPackage = array_intersect_assoc($dbPackage, $package);
                 $errorMsg = '包裹';
                 if (!empty($intersectPackage['express_first_no'])) {
-                    $errorMsg .= '快递单号1[' . $intersectPackage['express_first_no'] . ']已存在;';
+                    $errorMsg .= __('快递单号1[:express_no]已存在;', ['express_no' => $intersectPackage['express_first_no']]);
                 }
                 if (!empty($intersectPackage['express_second_no'])) {
-                    $errorMsg .= '快递单号2[' . $intersectPackage['express_second_no'] . ']已存在;';
+                    $errorMsg .= __('快递单号2[:express_no]已存在;', ['express_no' => $intersectPackage['express_second_no']]);
                 }
                 if (!empty($intersectPackage['out_order_no'])) {
-                    $errorMsg .= '外部标识[' . $intersectPackage['out_order_no'] . ']已存在;';
+                    $errorMsg .= __('外部标识[:out_order_no]已存在;', ['express_no' => $intersectPackage['out_order_no']]);
                 }
                 throw new BusinessLogicException($errorMsg);
             }

@@ -1,4 +1,7 @@
 {
+  "快递单号1[:express_no]已存在;": "first express number [:express_no] already exists;",
+  "快递单号2[:express_no]已存在;": "second express number [:express_no] already exists;",
+  "外部标识[:out_order_no]已存在;": "out order number [:out_order_no] already exists;",
   "用户认证失败": "User authentication failed",
   "明细数据格式不正确": "Incorrect format of detail data",
   "订单不存在!": "Order does not exist",
