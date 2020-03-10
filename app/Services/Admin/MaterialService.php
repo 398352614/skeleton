@@ -31,7 +31,7 @@ class MaterialService extends BaseService
         }
         $info = parent::getInfo($where, ['*'], false);
         if (!empty($info)) {
-            throw new BusinessLogicException('材料外部标识[' . $info['out_order_no'] . ']已存在');
+            throw new BusinessLogicException('材料外部标识[:out_order_no]已存在', 1000, ['out_order_no' => $info['out_order_no']]);
         }
     }
 
