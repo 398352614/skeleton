@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Models;
+
+use Illuminate\Support\Facades\App;
+
 /**
  * 汽车品牌型号表
  * Class CarBrand
@@ -65,11 +68,23 @@ class CarModel extends BaseModel
      */
     protected $dates = [];
 
+    protected $appends = [
+        'name'
+    ];
+
     /**
      * 一个型号属于一个品牌
      */
     public function brand()
     {
         return $this->belongsTo(CarBrand::class, 'brand_id', 'id');
+    }
+
+    public function getNameAttribute()
+    {
+        if (App::getLocale() === 'cn') {
+            return $this->cn_name ?? '';
+        }
+        return $this->en_name ?? '';
     }
 }

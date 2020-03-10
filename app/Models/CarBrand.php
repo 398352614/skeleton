@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Models;
+
+use Illuminate\Support\Facades\App;
+
 /**
  * 汽车品牌表
  * Class CarBrand
@@ -63,4 +66,16 @@ class CarBrand extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    protected $appends = [
+        'name'
+    ];
+
+    public function getNameAttribute()
+    {
+        if (App::getLocale() === 'cn') {
+            return $this->cn_name ?? '';
+        }
+        return $this->en_name ?? '';
+    }
 }
