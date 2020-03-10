@@ -84,8 +84,8 @@ class ReportService extends BaseService
             'name' => $info['warehouse_name'],
             'phone' => $info['warehouse_phone'],
             'post_code' => $info['warehouse_post_code'],
-            'street'=>$info['warehouse_street'],
-            'house_number'=>$info['warehouse_house_number'],
+            'street' => $info['warehouse_street'],
+            'house_number' => $info['warehouse_house_number'],
             'city' => $info['warehouse_city'],
             'address' => $info['warehouse_address'],
         ];
@@ -121,8 +121,8 @@ class ReportService extends BaseService
         $outWarehouseInfo['signature'] = $tour['begin_signature'];
         $outWarehouseInfo['order_list'] = array_values(collect($orderList)
             ->map(function ($order, $key) {
-                $order['type_name'] = ConstTranslateTrait::$orderTypeList[$order['type']];
-                $order['status_name'] = ConstTranslateTrait::$orderStatusList[$order['status']];
+                $order['type_name'] = ConstTranslateTrait::orderTypeList($order['type']);
+                $order['status_name'] = ConstTranslateTrait::orderStatusList($order['status']);
                 return $order;
             })->filter(function ($order, $key) {
                 return (intval($order['type']) === BaseConstService::ORDER_TYPE_2);
@@ -144,8 +144,8 @@ class ReportService extends BaseService
         $outWarehouseInfo['signature'] = $tour['end_signature'];
         $outWarehouseInfo['order_list'] = array_values(collect($orderList)
             ->map(function ($order, $key) {
-                $order['type_name'] = ConstTranslateTrait::$orderTypeList[$order['type']];
-                $order['status_name'] = ConstTranslateTrait::$orderStatusList[$order['status']];
+                $order['type_name'] = ConstTranslateTrait::orderTypeList($order['type']);
+                $order['status_name'] = ConstTranslateTrait::orderStatusList($order['status']);
                 return $order;
             })->filter(function ($order, $key) {
                 return (intval($order['type']) === BaseConstService::ORDER_TYPE_1);
@@ -163,8 +163,8 @@ class ReportService extends BaseService
     {
         $newBatchList = [];
         $orderList = collect($orderList)->map(function ($order, $key) {
-            $order['type_name'] = ConstTranslateTrait::$orderTypeList[$order['type']];
-            $order['status_name'] = ConstTranslateTrait::$orderStatusList[$order['status']];
+            $order['type_name'] = ConstTranslateTrait::orderTypeList($order['type']);
+            $order['status_name'] = ConstTranslateTrait::orderStatusList($order['status']);
             return $order;
         })->toArray();
         $orderList = array_create_group_index($orderList, 'batch_no');
@@ -175,8 +175,8 @@ class ReportService extends BaseService
                 'phone' => $batch['receiver_phone'],
                 'post_code' => $batch['receiver_post_code'],
                 'city' => $batch['receiver_city'],
-                'street'=>$batch['receiver_street'],
-                'house_number'=>$batch['receiver_house_number'],
+                'street' => $batch['receiver_street'],
+                'house_number' => $batch['receiver_house_number'],
                 'address' => $batch['receiver_address'],
                 'expect_quantity' => $batch['expect_pickup_quantity'] + $batch['expect_pie_quantity'],
                 'signature' => $batch['signature'],

@@ -30,6 +30,7 @@ use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -208,7 +209,7 @@ class OrderService extends BaseService
         $list = parent::getPageList();
         foreach ($list as &$order) {
             $batchException = $this->getBatchExceptionService()->getInfo(['batch_no' => $order['batch_no']], ['id', 'batch_no', 'stage'], false, ['created_at' => 'desc']);
-            $order['exception_stage_name'] = !empty($batchException) ? ConstTranslateTrait::$batchExceptionStageList[$batchException['stage']] : __('正常');
+            $order['exception_stage_name'] = !empty($batchException) ? ConstTranslateTrait::batchExceptionStageList($batchException['stage']) : __('正常');
         }
         return $list;
     }
@@ -233,13 +234,13 @@ class OrderService extends BaseService
     public function initStore()
     {
         $data = [];
-        $data['nature_list'] = array_values(collect(ConstTranslateTrait::$orderNatureList)->map(function ($value, $key) {
+        $data['nature_list'] = array_values(collect(ConstTranslateTrait::orderNatureList())->map(function ($value, $key) {
             return collect(['id' => $key, 'name' => $value]);
         })->toArray());
-        $data['settlement_type_list'] = array_values(collect(ConstTranslateTrait::$orderSettlementTypeList)->map(function ($value, $key) {
+        $data['settlement_type_list'] = array_values(collect(ConstTranslateTrait::orderSettlementTypeList())->map(function ($value, $key) {
             return collect(['id' => $key, 'name' => $value]);
         })->toArray());
-        $data['type'] = array_values(collect(ConstTranslateTrait::$orderTypeList)->map(function ($value, $key) {
+        $data['type'] = array_values(collect(ConstTranslateTrait::orderTypeList())->map(function ($value, $key) {
             return collect(['id' => $key, 'name' => $value]);
         })->toArray());
         return $data;

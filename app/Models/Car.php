@@ -125,22 +125,22 @@ class Car extends BaseModel
 
     public function getTransmissionNameAttribute()
     {
-        return empty($this->transmission) ? null : ConstTranslateTrait::$carTransmissionList[$this->transmission];
+        return empty($this->transmission) ? null : ConstTranslateTrait::carTransmissionList($this->transmission);
     }
 
     public function getFuelTypeNameAttribute()
     {
-        return empty($this->fuel_type) ? null : ConstTranslateTrait::$carFuelTypeList[$this->fuel_type];
+        return empty($this->fuel_type) ? null : ConstTranslateTrait::carFuelTypeList($this->fuel_type);
     }
 
     public function getOwnershipTypeNameAttribute()
     {
-        return empty($this->ownership_type) ? null : ConstTranslateTrait::$carOwnerShipTypeList[$this->ownership_type];
+        return empty($this->ownership_type) ? null : ConstTranslateTrait::carOwnerShipTypeList($this->ownership_type);
     }
 
     public function getRepairNameAttribute()
     {
-        return empty($this->repair) ? null : ConstTranslateTrait::$carRepairList[$this->repair];
+        return empty($this->repair) ? null : ConstTranslateTrait::carRepairList($this->repair);
     }
 
 }

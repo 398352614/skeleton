@@ -76,6 +76,6 @@ class OrderItem extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return ConstTranslateTrait::$orderStatusList[$this->status];
+        return ConstTranslateTrait::orderStatusList($this->status);
     }
 }

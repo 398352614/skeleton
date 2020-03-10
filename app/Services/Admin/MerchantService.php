@@ -27,18 +27,18 @@ class MerchantService extends BaseService
     use ExportTrait;
     public $filterRules = [
         'name' => ['like', 'name'],
-        'merchant_group_id'=>['=','merchant_group_id']];
+        'merchant_group_id' => ['=', 'merchant_group_id']];
 
-    protected $headings= [
-    'type',
-    'name',
-    'email' ,
-    'settlement_type' ,
-    'merchant_group_id',
-    'contacter',
-    'phone' ,
-    'address',
-    'status'
+    protected $headings = [
+        'type',
+        'name',
+        'email',
+        'settlement_type',
+        'merchant_group_id',
+        'contacter',
+        'phone',
+        'address',
+        'status'
     ];
 
     public function __construct(Merchant $merchant)
@@ -95,7 +95,7 @@ class MerchantService extends BaseService
         if ($merchantApi === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
         }
-        MerchantGroup::query()->where('id',$params['merchant_group_id'])->increment('count');
+        MerchantGroup::query()->where('id', $params['merchant_group_id'])->increment('count');
     }
 
     /**
@@ -108,13 +108,13 @@ class MerchantService extends BaseService
     public function updateById($id, $data)
     {
         $this->check($data);
-        $info=$this->getInfo(['id'=>$id],['merchant_group_id'],false);
-        MerchantGroup::query()->where('id',$info['merchant_group_id'])->decrement('count');
+        $info = $this->getInfo(['id' => $id], ['merchant_group_id'], false);
+        MerchantGroup::query()->where('id', $info['merchant_group_id'])->decrement('count');
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
         }
-        MerchantGroup::query()->where('id',$data['merchant_group_id'])->increment('count');
+        MerchantGroup::query()->where('id', $data['merchant_group_id'])->increment('count');
     }
 
     /**
@@ -165,8 +165,8 @@ class MerchantService extends BaseService
      */
     public function statusByList($data)
     {
-        $ids=json_decode ($data['ids'], true);
-        for($i=0;$i<count($ids);$i++){
+        $ids = json_decode($data['ids'], true);
+        for ($i = 0; $i < count($ids); $i++) {
             $rowCount[$i] = parent::updateById($ids[$i], ['status' => $data['status']]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('修改失败,请重新操作');
@@ -191,18 +191,18 @@ class MerchantService extends BaseService
      */
     public function merchantExcel()
     {
-        $cellData=[];
-        $info =$this->getList([],$this->headings,false)->toArray();
-        for($i=0;$i<count($info);$i++) {
-            $info[$i]['merchant_group_id']=$this->getMerchantGroupService()->getInfo(['id'=>$info[$i]['merchant_group_id']],['name'],false)->toArray()['name'];
-            $info[$i]['type']=empty($info[$i]['type']) ? null : ConstTranslateTrait::$merchantTypeList[$info[$i]['type']];
-            $info[$i]['settlement_type']=empty($info[$i]['settlement_type']) ? null : ConstTranslateTrait::$merchantSettlementTypeLsit[$info[$i]['settlement_type']];
-            $info[$i]['status']=empty($info[$i]['status']) ? null : ConstTranslateTrait::$merchantStatusList[$info[$i]['status']];
-            for($j=0;$j<count($info[$i]);$j++){
-               $cellData[$i][$j]=array_values($info[$i])[$j];
-           }
+        $cellData = [];
+        $info = $this->getList([], $this->headings, false)->toArray();
+        for ($i = 0; $i < count($info); $i++) {
+            $info[$i]['merchant_group_id'] = $this->getMerchantGroupService()->getInfo(['id' => $info[$i]['merchant_group_id']], ['name'], false)->toArray()['name'];
+            $info[$i]['type'] = empty($info[$i]['type']) ? null : ConstTranslateTrait::merchantTypeList($info[$i]['type']);
+            $info[$i]['settlement_type'] = empty($info[$i]['settlement_type']) ? null : ConstTranslateTrait::merchantSettlementTypeList($info[$i]['settlement_type']);
+            $info[$i]['status'] = empty($info[$i]['status']) ? null : ConstTranslateTrait::merchantStatusList($info[$i]['status']);
+            for ($j = 0; $j < count($info[$i]); $j++) {
+                $cellData[$i][$j] = array_values($info[$i])[$j];
+            }
         }
-        return $this->excelExport('merchant',$this->headings,$cellData,'merchant');
+        return $this->excelExport('merchant', $this->headings, $cellData, 'merchant');
     }
 
 }

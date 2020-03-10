@@ -35,7 +35,7 @@ class LineResource extends JsonResource
     {
         $week = [];
         foreach ($workDayList as $workDay) {
-            $week[$workDay] = ConstTranslateTrait::$weekList[$workDay];
+            $week[$workDay] = ConstTranslateTrait::weekList($workDay);
         }
         return implode(',', $week);
     }

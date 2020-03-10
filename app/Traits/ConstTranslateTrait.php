@@ -11,11 +11,41 @@
 namespace App\Traits;
 
 use App\Services\BaseConstService;
+use Illuminate\Support\Facades\App;
 
 /**
  * Trait ConstTranslateTrait
  * @package App\Traits
- *
+ * @method static weekList($args = null)
+ * @method static orderTypeList($args = null)
+ * @method static orderSettlementTypeList($args = null)
+ * @method static orderStatusList($args = null)
+ * @method static packageStatusList($args = null)
+ * @method static orderExceptionLabelList($args = null)
+ * @method static orderNatureList($args = null)
+ * @method static batchPayTypeList($args = null)
+ * @method static batchExceptionLabelList($args = null)
+ * @method static batchStatusList($args = null)
+ * @method static batchExceptionStatusList($args = null)
+ * @method static batchExceptionStageList($args = null)
+ * @method static batchExceptionFirstStageTypeList($args = null)
+ * @method static batchExceptionSecondStageTypeList($args = null)
+ * @method static tourStatusList($args = null)
+ * @method static carTransmissionList($args = null)
+ * @method static carFuelTypeList($args = null)
+ * @method static carOwnerShipTypeList($args = null)
+ * @method static carRepairList($args = null)
+ * @method static driverTypeList($args = null)
+ * @method static driverStatusList($args = null)
+ * @method static adminImageDirList($args = null)
+ * @method static driverImageDirList($args = null)
+ * @method static adminFileDirList($args = null)
+ * @method static adminExcelDirList($args = null)
+ * @method static driverFileDirList($args = null)
+ * @method static adminTxtDirList($args = null)
+ * @method static merchantTypeList($args = null)
+ * @method static merchantSettlementTypeList($args = null)
+ * @method static merchantStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -63,7 +93,6 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_STATUS_6 => '取消取派',
         BaseConstService::ORDER_STATUS_7 => '收回站',
     ];
-
 
     //订单异常标签1-正常2-异常
     public static $orderExceptionLabelList = [
@@ -177,7 +206,6 @@ trait ConstTranslateTrait
         BaseConstService::DRIVER_TO_LOCK => '锁定',
     ];
 
-
     //管理员端 图片目录
     public static $adminImageDirList = [
         BaseConstService::ADMIN_IMAGE_DRIVER_DIR => '司机图片目录',
@@ -222,7 +250,7 @@ trait ConstTranslateTrait
     ];
 
     //商户支付方式
-    public static $merchantSettlementTypeLsit = [
+    public static $merchantSettlementTypeList = [
         BaseConstService::MERCHANT_SETTLEMENT_TYPE_1 => '票结',
         BaseConstService::MERCHANT_SETTLEMENT_TYPE_2 => '日结',
         BaseConstService::MERCHANT_SETTLEMENT_TYPE_3 => '月结',
@@ -240,14 +268,21 @@ trait ConstTranslateTrait
      */
     public static function __callStatic($name, $args)
     {
+        /******************************************若未中文,则不用翻译*************************************************/
+        if (App::getLocale() === 'cn') {
+            return !empty($args) ? self::$$name[$args] : self::$$name;
+        }
+        /******************************************若非中文,则需要翻译*************************************************/
+        //若args存在,则获取翻译单个值
+        if (!empty($args)) {
+            return __(self::$$name[$args]);
+        }
+        //若args不存在,则获取翻译整个数组
         $arr = [];
-        if (isset(self::$$name)) {
-            $arr = self::$$name;
-            foreach ($arr as $key => $value) {
-                $msg = (strpos(__('msg.' . $value), 'msg.') === false) ? __('msg.' . $value) : $value;
-                $arr[$key] = $msg; // 翻译
-            }
+        foreach (self::$$name as $key => $item) {
+            $arr[$key] = __($item);
         }
         return $arr;
     }
+
 }

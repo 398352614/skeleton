@@ -121,7 +121,7 @@ class Tour extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::$tourStatusList[$this->status];
+        return empty($this->status) ? null : ConstTranslateTrait::tourStatusList($this->status);
     }
 
     public function getExpectTimeHumanAttribute()

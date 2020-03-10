@@ -88,6 +88,6 @@ class Package extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::$packageStatusList[$this->status];
+        return empty($this->status) ? null : ConstTranslateTrait::packageStatusList($this->status);
     }
 }

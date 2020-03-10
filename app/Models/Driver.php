@@ -118,7 +118,7 @@ class Driver extends Authenticatable implements JWTSubject
 
     public function getIsLockedNameAttribute()
     {
-        return empty($this->is_locked) ? null : ConstTranslateTrait::$driverStatusList[$this->is_locked];
+        return empty($this->is_locked) ? null : ConstTranslateTrait::driverStatusList($this->is_locked);
     }
 
     /**
@@ -126,6 +126,6 @@ class Driver extends Authenticatable implements JWTSubject
      */
     public function getFullNameAttribute()
     {
-        return $this->first_name .$this->last_name;
+        return $this->first_name . $this->last_name;
     }
 }

@@ -76,7 +76,7 @@ class TransactionService
         } catch (BusinessLogicException $e) {
             // 回滚事物
             DB::rollBack();
-            throw new BusinessLogicException($e->getMessage(), $e->getCode());
+            throw new BusinessLogicException($e->getMessage(), $e->getCode(),$e->replace);
         } catch (\Exception $e) {
             // 回滚事物
             DB::rollBack();

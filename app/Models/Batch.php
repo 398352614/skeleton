@@ -117,17 +117,17 @@ class Batch extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::$batchStatusList[$this->status];
+        return empty($this->status) ? null : ConstTranslateTrait::batchStatusList($this->status);
     }
 
     public function getPayTypeNameAttribute()
     {
-        return empty($this->pay_type) ? null : ConstTranslateTrait::$batchPayTypeList[$this->pay_type];
+        return empty($this->pay_type) ? null : ConstTranslateTrait::batchPayTypeList($this->pay_type);
     }
 
     public function getExceptionLabelNameAttribute()
     {
-        return empty($this->exception_label) ? null : ConstTranslateTrait::$batchExceptionLabelList[$this->exception_label];
+        return empty($this->exception_label) ? null : ConstTranslateTrait::batchExceptionLabelList($this->exception_label);
     }
 
     public function orders()
@@ -142,6 +142,6 @@ class Batch extends BaseModel
 
     public function getExpectTimeAttribute($value)
     {
-        return (int) ($value / 60);
+        return (int)($value / 60);
     }
 }

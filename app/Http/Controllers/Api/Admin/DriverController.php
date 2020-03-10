@@ -181,19 +181,13 @@ class DriverController extends BaseController
      */
     public function driverStatus()
     {
-        $data = array_values(collect(self::$driverStatusList)->map(function ($value, $key) {
+        $data = array_values(collect(ConstTranslateTrait::driverStatusList())->map(function ($value, $key) {
             return collect(['id' => $key, 'name' => $value]);
         })->toArray());
         return $data;
     }
 
     /**
-     * @api {POST}  api/admin/driver/lock-driver 管理员端:锁定司机
-     * @apiName lock-driver
-     * @apiGroup admin-driver
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 锁定司机
      * @throws
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
@@ -202,6 +196,12 @@ class DriverController extends BaseController
      *  "msg":"添加线路",
      *  "data":{}
      * }
+     * @api {POST}  api/admin/driver/lock-driver 管理员端:锁定司机
+     * @apiName lock-driver
+     * @apiGroup admin-driver
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 锁定司机
      */
     public function lockDriver(Request $request, $id)
     {
@@ -238,7 +238,7 @@ class DriverController extends BaseController
      */
     public function cropType()
     {
-        $data = array_values(collect(self::$driverTypeList)->map(function ($value, $key) {
+        $data = array_values(collect(ConstTranslateTrait::driverTypeList())->map(function ($value, $key) {
             return collect(['id' => $key, 'name' => $value]);
         })->toArray());
         return $data;
