@@ -113,7 +113,11 @@ return [
             'required_with' => '包裹重量是必须的',
             'numeric' => '包裹重量必须是数字'
         ],
-        'package_list.*.quantity' => [
+        'package_list.*.expect_quantity' => [
+            'required_with' => '包裹数量是必须的',
+            'integer' => '包裹数量必须是整数'
+        ],
+        'package_list.*.actual_quantity' => [
             'required_with' => '包裹数量是必须的',
             'integer' => '包裹数量必须是整数'
         ],

@@ -1,3 +1,6 @@
 {
-
+  "包裹快递单号1[:express_no]已存在;": "快递单号1[:express_no]已存在;",
+  "包裹快递单号2[:express_no]已存在;": "快递单号2[:express_no]已存在;",
+  "包裹外部标识[:out_order_no]已存在;": "外部标识[:out_order_no]已存在;",
+  "材料外部标识[:out_order_no]已存在": "材料外部标识[:out_order_no]已存在"
 }

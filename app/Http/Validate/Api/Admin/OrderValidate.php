@@ -85,7 +85,7 @@ class OrderValidate extends BaseValidate
         //包裹列表
         'package_list.*.name' => 'required_with:package_list|string|max:50',
         'package_list.*.weight' => 'required_with:package_list|numeric',
-        'package_list.*.quantity' => 'required_with:package_list|integer',
+        'package_list.*.expect_quantity' => 'required_with:package_list|integer',
         'package_list.*.remark' => 'nullable|string|max:250',
         'package_list.*.out_order_no' => 'nullable|string|max:50',
         'package_list.*.express_first_no' => 'required_with:package_list|string|max:50',
@@ -115,7 +115,7 @@ class OrderValidate extends BaseValidate
             //备注
             'special_remark', 'remark', 'lon', 'lat',
             //包裹列表
-            'package_list.*.name', 'package_list.*.weight', 'package_list.*.quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
+            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
@@ -131,7 +131,7 @@ class OrderValidate extends BaseValidate
             //备注
             'special_remark', 'remark', 'lon', 'lat',
             //包裹列表
-            'package_list.*.name', 'package_list.*.weight', 'package_list.*.quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
+            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],

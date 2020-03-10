@@ -144,20 +144,6 @@ class TransportPriceService extends BaseService
     }
 
     /**
-     * 状态-启用/禁用
-     * @param $id
-     * @param $data
-     * @throws BusinessLogicException
-     */
-    public function status($id, $data)
-    {
-        $rowCount = parent::updateById($id, ['status' => $data['status']]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
-        }
-    }
-
-    /**
      * 价格测试
      * @param $id
      * @param $params

@@ -373,6 +373,17 @@ class TourService extends BaseService
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], $batchFields, false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['batch_no', 'type', DB::raw('SUM(`expect_quantity`) as expect_quantity'), DB::raw('SUM(`actual_quantity`) as actual_quantity')], false, ['batch_no', 'type'])->toArray();
+        $packageList = collect($packageList)->groupBy('batch_no')->map(function ($itemPackageList) {
+            return collect($itemPackageList)->keyBy('type');
+        })->toArray();
+        $batchList = array_map(function ($batch) use ($packageList) {
+            $batch['expect_pickup_package_quantity'] = !empty($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['expect_quantity']) ? $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['expect_quantity'] : "0";
+            $batch['actual_pickup_package_quantity'] = empty($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['actual_quantity']) ? $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['actual_quantity'] : "0";
+            $batch['expect_pie_package_quantity'] = !empty($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['expect_quantity']) ? $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['expect_quantity'] : "0";
+            $batch['actual_pie_package_quantity'] = !empty($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['actual_quantity']) ? $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['actual_quantity'] : "0";
+            return $batch;
+        }, $batchList);
         $tour['batch_count'] = count($batchList);
         $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT]);
         $tour['batch_list'] = $batchList;
@@ -563,9 +574,9 @@ class TourService extends BaseService
                 //判断取件或派件
                 if (intval($dbPackage['type']) === BaseConstService::ORDER_TYPE_1) {
                     $totalStickerAmount += BaseConstService::STICKER_AMOUNT;
-                    $packageData = ['status' => $status, 'sticker_amount' => BaseConstService::STICKER_AMOUNT, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no']];
+                    $packageData = ['actual_quantity' => 1, 'status' => $status, 'sticker_amount' => BaseConstService::STICKER_AMOUNT, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no']];
                 } else {
-                    $packageData = ['status' => $status];
+                    $packageData = ['actual_quantity' => 1, 'status' => $status];
                 }
             } else {
                 $packageData = ['status' => BaseConstService::ORDER_STATUS_6];

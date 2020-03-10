@@ -100,6 +100,9 @@ class TourTaskService extends BaseService
             $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
             //获取最后一个站点的收件人信息
             $tour['last_receiver'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'desc', 'created_at' => 'desc']);
+            //获取是否有特殊事项
+            $order = $this->getOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['special_remark'], false);
+            $tour['is_exist_special_remark'] = !empty($order) ? true : false;
         }
         return $list;
     }
@@ -123,7 +126,7 @@ class TourTaskService extends BaseService
         //获取所有站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['id', 'batch_no', 'status', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
         //获取所有订单列表
-        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark'], false)->toArray();
         //订单列表根据站点编号 分组
         //$orderList = array_create_group_index($orderList, 'batch_no');
         //获取所有材料列表
@@ -138,6 +141,7 @@ class TourTaskService extends BaseService
         $tour['order_list'] = $orderList;
         $tour['material_list'] = $materialList;
         $tour['package_list'] = $packageList;
+        $tour['is_exist_special_remark'] = !empty(array_column($orderList, 'special_remark')) ? true : false;
         return $tour;
     }
 

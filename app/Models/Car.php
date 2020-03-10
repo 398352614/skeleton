@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use Illuminate\Support\Facades\App;
 
 /**
  * 汽车表
@@ -109,18 +110,14 @@ class Car extends BaseModel
 
     public function getBrandNameAttribute()
     {
-        if ($this->brand) {
-            return $this->brand->cn_name;
-        }
-        return '';
+        if (empty($this->brand)) return '';
+        return (App::getLocale() === 'cn') ? $this->brand->cn_name : $this->brand->en_name;
     }
 
     public function getModelNameAttribute()
     {
-        if ($this->model) {
-            return $this->model->cn_name;
-        }
-        return '';
+        if (empty($this->model)) return '';
+        return (App::getLocale() === 'cn') ? $this->model->cn_name : $this->model->en_name;
     }
 
     public function getTransmissionNameAttribute()
