@@ -270,12 +270,12 @@ trait ConstTranslateTrait
     {
         /******************************************若未中文,则不用翻译*************************************************/
         if (App::getLocale() === 'cn') {
-            return !empty($args) ? self::$$name[$args] : self::$$name;
+            return !empty($args) ? self::$$name[$args[0]] : self::$$name;
         }
         /******************************************若非中文,则需要翻译*************************************************/
         //若args存在,则获取翻译单个值
         if (!empty($args)) {
-            return __(self::$$name[$args]);
+            return __(self::$$name[$args[0]]);
         }
         //若args不存在,则获取翻译整个数组
         $arr = [];
