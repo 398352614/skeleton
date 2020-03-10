@@ -7,7 +7,7 @@ use App\Models\TourDriverEvent;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class CreateTourDriverEvent implements ShouldQueue
+class CreateTourDriverEvent
 {
     /**
      * Create the event listener.
