@@ -125,5 +125,7 @@
   "取件线路图片目录": "Pickup line picture directory",
   "司机文件目录": "Driver file directory",
   "车辆文件目录": "Vehicle file directory",
-  "取件线路文件目录": "Pickup line file directory"
+  "票结": "Ticket knot",
+  "日结": "Daily knots",
+  "月结": "Monthly knots"
 }

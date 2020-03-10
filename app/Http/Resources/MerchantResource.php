@@ -24,6 +24,7 @@ class MerchantResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'settlement_type' => $this->settlement_type,
+            'settlement_type_name' => $this->settlement_type_name,
             'merchant_group_id' => $this->merchant_group_id,
             'merchant_group_name' => MerchantGroup::query()->where('id',$this->merchant_group_id)->value('name'),
             'contacter' => $this->contacter,

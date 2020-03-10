@@ -44,9 +44,14 @@ class MerchantController extends BaseController
             throw new BusinessLogicException('数据不存在');
         }
         $info = $info->toArray();
-        $info['merchant_group_name']=MerchantGroup::query()->where('id',$info['merchant_group_id'])->value('name');
+        $info['merchant_group_name'] = MerchantGroup::query()->where('id', $info['merchant_group_id'])->value('name');
         unset($info['password']);
         return $info;
+    }
+
+    public function init()
+    {
+        return $this->service->init();
     }
 
     /**

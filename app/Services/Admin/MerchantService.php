@@ -69,6 +69,15 @@ class MerchantService extends BaseService
         return self::getInstance(MerchantGroupService::class);
     }
 
+    public function init()
+    {
+        $data = [];
+        $data['settlement_type_list'] = array_values(collect(ConstTranslateTrait::merchantSettlementTypeList())->map(function ($value, $key) {
+            return collect(['id' => $key, 'name' => $value]);
+        })->toArray());
+        return $data;
+    }
+
 
     /**
      * 新增

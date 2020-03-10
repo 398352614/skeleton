@@ -318,6 +318,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/', 'MerchantController@index');
         //获取详情
         Route::get('/{id}', 'MerchantController@show');
+        //初始化
+        Route::get('/init', 'MerchantController@init');
         //新增
         Route::post('/', 'MerchantController@store');
         //修改
