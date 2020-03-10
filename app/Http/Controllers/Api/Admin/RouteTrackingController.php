@@ -9,6 +9,7 @@ use App\Models\Tour;
 use App\Services\Admin\RouteTrackingService;
 use App\Services\BaseConstService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Psy\Formatter\Formatter;
 
 class RouteTrackingController extends BaseController
@@ -58,7 +59,7 @@ class RouteTrackingController extends BaseController
         $routeTracking = $tour->routeTracking->sortBy('created_at');
 
         return success('', [
-            'driver'                => $tour->driver,
+            'driver'                => Arr::except($tour->driver,'messager'),
             'route_tracking'        =>  $routeTracking,
             'time_consuming'        =>  '',
             'distance_consuming'    =>  '',
