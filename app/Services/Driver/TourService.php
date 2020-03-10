@@ -373,6 +373,15 @@ class TourService extends BaseService
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], $batchFields, false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['id', 'batch_no', 'type'], false)->toArray();
+        $packageList = collect($packageList)->groupBy('batch_no')->map(function ($itemPackageList) {
+            return collect($itemPackageList)->groupBy('type');
+        })->toArray();
+        $batchList = array_map(function ($batch) use ($packageList) {
+            $batch['pie_package_count'] = !empty($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]) ? count($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1], 2) : 0;
+            $batch['pickup_package_count'] = !empty($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]) ? count($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2], 2) : 0;
+            return $batch;
+        }, $batchList);
         $tour['batch_count'] = count($batchList);
         $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT]);
         $tour['batch_list'] = $batchList;
