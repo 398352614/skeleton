@@ -32,7 +32,7 @@ class ReceiverAddressValidate extends BaseValidate
         'receiver_address' => 'nullable|string|max:250',
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
-        'merchant_id'=>'required|integers',
+        'merchant_id'=>'required|integer',
     ];
 
     public $scene = [
