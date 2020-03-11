@@ -80,6 +80,10 @@ class RegisterController extends BaseController
             $this->addMerchantApi($company);//初始化商户API
     }
 
+    /**
+     * @param $company
+     * @return mixed
+     */
     protected function addInstitution($company){
         //创建根节点
         $companyRoot = Institution::create([
@@ -189,10 +193,7 @@ class RegisterController extends BaseController
             'status'=>BaseConstService::TRANSPORT_PRICE_STATUS_1,
             ]);
         KilometresCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>0, 'end'=>2, 'price'=>4]);
-        KilometresCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>2, 'end'=>4, 'price'=>2]);
-        KilometresCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>4, 'end'=>6, 'price'=>1]);
         WeightCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>1, 'end'=>2, 'price'=>2]);
-        WeightCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>2, 'end'=>4, 'price'=>1]);
         SpecialTimeCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id,'start'=>'10:00:00', 'end'=>"11:00:00", 'price'=>1.5]);
         return $info;
     }
