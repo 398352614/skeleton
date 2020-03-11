@@ -37,7 +37,7 @@ class PackageService extends BaseService
                     $errorMsg .= __('包裹快递单号2[:express_no]已存在;', ['express_no' => $intersectPackage['express_second_no']]);
                 }
                 if (!empty($intersectPackage['out_order_no'])) {
-                    $errorMsg .= __('包裹外部标识[:out_order_no]已存在;', ['express_no' => $intersectPackage['out_order_no']]);
+                    $errorMsg .= __('包裹外部标识[:out_order_no]已存在;', ['out_order_no' => $intersectPackage['out_order_no']]);
                 }
                 throw new BusinessLogicException($errorMsg);
             }
