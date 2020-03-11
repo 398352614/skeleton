@@ -23,16 +23,6 @@ class HomeService extends BaseService
 
     }
 
-    private function getDriverService()
-    {
-        return self::getInstance(DriverService::class);
-    }
-
-    private function getCarService()
-    {
-        return self::getInstance(CarService::class);
-    }
-
     private function getTourService()
     {
         return self::getInstance(TourService::class);
@@ -52,8 +42,6 @@ class HomeService extends BaseService
         $cancelOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_6]);//取消取派
         $exceptionOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);//异常
         //司机及车辆统计
-        $carSum=$this->getCarService()->count();//车辆总数
-        $driverSum=$this->getDriverService()->count();//司机总数
         $assignCar=$this->getTourService()->count(['execution_date'=>$date,'status'=>BaseConstService::TOUR_STATUS_2 ]);//已分配
         $waitOutCar=$this->getTourService()->count(['execution_date'=>$date,'status'=>BaseConstService::TOUR_STATUS_3 ]);//待出库
         $takingCar=$this->getTourService()->count(['execution_date'=>$date,'status'=>BaseConstService::TOUR_STATUS_4 ]);//配送中
@@ -68,8 +56,6 @@ class HomeService extends BaseService
             'signed_order'=>$signedOrder,
             'cancel_order'=>$cancelOrder,
             'exception_order'=>$exceptionOrder,
-            'car_sum'=>$carSum,
-            'driver_sum'=>$driverSum,
             'outing_car'=>$assignCar+$waitOutCar,
             'taking_car'=>$takingCar,
             'signed_car'=>$signedCar,
