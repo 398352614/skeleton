@@ -121,6 +121,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
         //rest api 放在最后
         Route::get('/', 'CarController@index')->name('car.index');
+        Route::get('/init', 'CarController@init')->name('car.init');   // 添加模型
         Route::post('/', 'CarController@store')->name('car.store');
         Route::get('/{id}', 'CarController@show')->name('car.show'); //车辆详情
         Route::put('/{id}', 'CarController@update')->name('car.update'); //车辆修改

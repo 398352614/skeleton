@@ -50,6 +50,13 @@ class CarController extends BaseController
         return $this->service->getPageList();
     }
 
+
+    public function init()
+    {
+        return $this->service->init();
+    }
+
+
     /**
      * @api {POST}  api/admin/car 管理员端:车辆新增
      * @apiName index
@@ -71,13 +78,6 @@ class CarController extends BaseController
     }
 
     /**
-     * @api {GET}  api/admin/car/{car} 管理员端:查询车辆详情
-     * @apiName show
-     * @apiGroup admin-car
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 查询车辆详情
-     * @apiSuccessExample {json}  返回示例
      * @throws
      * HTTP/1.1 200 OK
      * {
@@ -85,6 +85,13 @@ class CarController extends BaseController
      *  "msg":"查询司机",
      *  "data":{}
      * }
+     * @api {GET}  api/admin/car/{car} 管理员端:查询车辆详情
+     * @apiName show
+     * @apiGroup admin-car
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 查询车辆详情
+     * @apiSuccessExample {json}  返回示例
      */
     public function show($id)
     {
@@ -138,12 +145,6 @@ class CarController extends BaseController
     }
 
     /**
-     * @api {POST}  api/admin/car/lock 管理员端:车辆锁定
-     * @apiName lock
-     * @apiGroup admin-car
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 车辆锁定
      * @throws BusinessLogicException
      * @apiSuccessExample {json}  返回示例
      * HTTP/1.1 200 OK
@@ -152,6 +153,12 @@ class CarController extends BaseController
      *  "msg":"车辆编辑",
      *  "data":{}
      * }
+     * @api {POST}  api/admin/car/lock 管理员端:车辆锁定
+     * @apiName lock
+     * @apiGroup admin-car
+     * @apiPermission api
+     * @apiVersion 1.0.0
+     * @apiDescription 车辆锁定
      */
     public function lock(Request $request, $id)
     {
