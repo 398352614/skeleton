@@ -31,6 +31,16 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
     Route::put('', 'MerchantController@update');
     Route::put('api','merchantApiController@update');
 
+    //主页统计
+    Route::prefix('home')->group(function () {
+        Route::get('/', 'HomeController@home');
+        Route::get('/this-week-count', 'HomeController@thisWeekcount');
+        Route::get('/last-week-count', 'HomeController@lastWeekcount');
+        Route::get('/this-month-count', 'HomeController@thisMonthcount');
+        Route::get('/last-month-count', 'HomeController@lastMonthcount');
+        Route::get('/period-count', 'HomeController@periodCount');
+    });
+
     //API管理
     Route::prefix('api')->group(function () {
         Route::get('/', 'MerchantApiController@show');//获取详情

@@ -67,9 +67,9 @@ class CompanyScope implements Scope
         //如果是商家端
         if ($user instanceof Merchant) {
             $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
-            if (!($model instanceof Batch) && !($model instanceof Tour) && !($model instanceof Line) && !($model instanceof LineRange)
+            if (!($model instanceof Batch) && !($model instanceof Tour) && !($model instanceof Line) && !($model instanceof LineRange)&& !($model instanceof Car)&& !($model instanceof Driver)
             ) {
-                $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->merchant_id);
+                $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
             }
         }
     }
