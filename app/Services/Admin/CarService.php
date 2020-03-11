@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\CarResource;
 use App\Models\Car;
+use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
@@ -135,5 +136,18 @@ class CarService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆删除失败');
         }
+    }
+
+    public function getPageList()
+    {
+        if(!empty($this->formData['tour_no'])){
+            $date =Tour::query()->where('tour_no',$this->formData['tour_no'])->first()->toArray()['execution_date'];
+            $info=Tour::query()->where('execution_date',$date)->where('status','<>',BaseConstService::TOUR_STATUS_5)->whereNotNull('car_id')->pluck('car_id')->toArray();
+            if(!empty($info)){
+                $this->query->whereNotIn('id',$info);
+            }
+            $this->query->where('is_locked','=',BaseConstService::DRIVER_TO_NORMAL);
+        }
+        return parent::getPageList();
     }
 }

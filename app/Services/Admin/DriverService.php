@@ -102,11 +102,13 @@ class DriverService extends BaseService
 
     public function getPageList()
     {
-        if(!empty($this->formData['execution_date'])){
-            $info=Tour::query()->where('execution_date',$this->formData['execution_date'])->where('status','<>',BaseConstService::TOUR_STATUS_5)->get()->toArray();
+        if(!empty($this->formData['tour_no'])){
+            $date =Tour::query()->where('tour_no',$this->formData['tour_no'])->first()->toArray()['execution_date'];
+            $info=Tour::query()->where('execution_date',$date)->where('status','<>',BaseConstService::TOUR_STATUS_5)->whereNotNull('driver_id')->pluck('driver_id')->toArray();
             if(!empty($info)){
-                $this->query->where('id','<>',$info['driver_id'])->where('is_locked','=',BaseConstService::DRIVER_TO_NORMAL);
+                $this->query->whereNotIn('id',$info);
             }
+            $this->query->where('is_locked','=',BaseConstService::DRIVER_TO_NORMAL);
         }
         return parent::getPageList();
     }
