@@ -75,7 +75,7 @@ class SenderAddressService extends BaseService
      */
     public function store($params)
     {
-        if (!empty($this->Check($params))) {
+        if (!empty($this->check($params))) {
             throw new BusinessLogicException('地址新增失败，已有重复地址');
         }
         $rowCount = parent::create($params);
@@ -92,12 +92,12 @@ class SenderAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $this->Check($data, $id);
+        $info = $this->check($data, $id);
         if (!empty($info)) {
             throw new BusinessLogicException('发货方地址已存在,不能重复添加');
         }
         $rowCount = parent::updateById($id, $data);
-        if (empty($rowCount)) {
+        if ($rowCount === false) {
             throw new BusinessLogicException('地址修改失败');
         }
     }
