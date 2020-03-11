@@ -41,7 +41,7 @@ class InstitutionService extends BaseService
      */
     public function createNode(int $parentId, array $data)
     {
-        if ($parentId === 0) {
+        /*if ($parentId === 0) {
             $child = Institution::create([
                 'name' => $data['name'],
                 'phone' => $data['phone'] ?? '',
@@ -52,7 +52,7 @@ class InstitutionService extends BaseService
             ]);
 
              return $this->getCompanyRoot()->addChild($child);
-        }
+        }*/
 
         $child = Institution::create([
             'name' => $data['name'],
@@ -106,7 +106,7 @@ class InstitutionService extends BaseService
     public function getTree(): array
     {
             $info =$this->getCompanyService()->getInfo(['id' => auth()->user()->company_id], ['*'], false);
-        if(!$this->query->where('company_id','=',auth()->user()->company_id)->where('country','<>',null)->exists()){
+      /*  if(!$this->query->where('company_id','=',auth()->user()->company_id)->where('country','<>',null)->exists()){
             $this->createNode(0,[
                 'name'=>$info['name'],
                 'phone'=>$info['phone']??'',
@@ -115,7 +115,7 @@ class InstitutionService extends BaseService
                 'contacts'=>$info['contacts']??'',
                 'parent'=>0,
                   ]);
-        }
+        }*/
         return Institution::getRoots()->first()->getTree()[0]['children']??[];
     }
 
@@ -155,6 +155,9 @@ class InstitutionService extends BaseService
      */
     public function deleteNode(int $id): bool
     {
+        if($id ===Institution::query()->where('company_id',auth()->user()->company_id)->where('parent','<>',0)->first()->toArray()['id']){
+            throw new BusinessLogicException('无法删除根组织');
+        }
         /** @var Institution $institution */
         $institution = Institution::findOrFail($id);
 
@@ -166,10 +169,10 @@ class InstitutionService extends BaseService
     }
 
     /**
-     * 删除节点和以及后代
-     *
-     * @param  int  $id
+     *      * 删除节点和以及后代
+     * @param int $id
      * @return bool
+     * @throws BusinessLogicException
      */
     public function deleteNodeWithChildren(int $id): bool
     {

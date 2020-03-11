@@ -262,7 +262,6 @@ trait ConstTranslateTrait
         BaseConstService::MERCHANT_STATUS_1 => '启用',
         BaseConstService::MERCHANT_STATUS_2 => '禁用',
     ];
-
     /**
      * 此函数用于访问静态变量的同时对其进行翻译
      */
