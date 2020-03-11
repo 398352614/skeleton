@@ -33,6 +33,12 @@ class CarService extends BaseService
         $data['car_owner_ship_type_list'] = array_values(collect(ConstTranslateTrait::carOwnerShipTypeList())->map(function ($value, $key) {
             return collect(['id' => $key, 'name' => $value]);
         })->toArray());
+        $data['car_fuel_type_list'] = array_values(collect(ConstTranslateTrait::carFuelTypeList())->map(function ($value, $key) {
+            return collect(['id' => $key, 'name' => $value]);
+        })->toArray());
+        $data['car_transmission_list'] = array_values(collect(ConstTranslateTrait::carTransmissionList())->map(function ($value, $key) {
+            return collect(['id' => $key, 'name' => $value]);
+        })->toArray());
         return $data;
     }
 
