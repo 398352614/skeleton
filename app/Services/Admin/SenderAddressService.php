@@ -41,6 +41,16 @@ class SenderAddressService extends BaseService
         return $info;
     }
 
+    /**
+     * 商户是否存在验证
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function checkMerchant($params){
+        if (empty(Merchant::query()->where('id', $params['merchant_id'])->first())) {
+            throw new BusinessLogicException('商户不存在，请重新选择商户');
+        }
+    }
 
     /**
      * 联合唯一检验
@@ -65,7 +75,6 @@ class SenderAddressService extends BaseService
             $data['id'] = ['<>', $id];
         }
         $info = parent::getInfo($data, ['*'], true);
-
         return $info;
     }
 
@@ -75,11 +84,12 @@ class SenderAddressService extends BaseService
      */
     public function store($params)
     {
+        $this->checkMerchant($params);
         if (!empty($this->check($params))) {
             throw new BusinessLogicException('地址新增失败，已有重复地址');
         }
         $rowCount = parent::create($params);
-        if (empty($rowCount)) {
+        if ($rowCount === false) {
             throw new BusinessLogicException('地址新增失败');
         }
     }
@@ -92,6 +102,7 @@ class SenderAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
+        $this->checkMerchant($data);
         $info = $this->check($data, $id);
         if (!empty($info)) {
             throw new BusinessLogicException('发货方地址已存在,不能重复添加');
@@ -109,7 +120,7 @@ class SenderAddressService extends BaseService
     public function destroy($id)
     {
         $rowCount = parent::delete(['id' => $id]);
-        if (empty($rowCount)) {
+        if ($rowCount === false) {
             throw new BusinessLogicException('地址删除失败');
         }
     }

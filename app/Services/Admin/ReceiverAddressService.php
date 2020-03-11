@@ -45,15 +45,24 @@ class ReceiverAddressService extends BaseService
     }
 
     /**
+     * 商户是否存在验证
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function checkMerchant($params){
+        if (empty(Merchant::query()->where('id', $params['merchant_id'])->first())) {
+            throw new BusinessLogicException('商户不存在，请重新选择商户');
+        }
+    }
+
+    /**
      * 新增
      * @param $params
      * @throws BusinessLogicException
      */
     public function store($params)
     {
-        if (empty(Merchant::query()->where('id', $params['merchant_id'])->first())) {
-            throw new BusinessLogicException('商户不存在，请重新选择商户');
-        }
+        $this->checkMerchant($params);
         if (!empty($this->check($params))) {
             throw new BusinessLogicException('收货方地址已存在,不能重复添加');
         }
@@ -72,9 +81,7 @@ class ReceiverAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
-        if (empty(Merchant::query()->where('id', $data['merchant_id'])->first())) {
-            throw new BusinessLogicException('商户不存在，请重新选择商户');
-        }
+        $this->checkMerchant($data);
         if (!empty($this->check($data, $id))) {
             throw new BusinessLogicException('收货方地址已存在,不能重复添加');
         }
