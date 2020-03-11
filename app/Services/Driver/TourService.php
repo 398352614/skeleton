@@ -378,10 +378,10 @@ class TourService extends BaseService
             return collect($itemPackageList)->keyBy('type');
         })->toArray();
         $batchList = array_map(function ($batch) use ($packageList) {
-            $batch['expect_pickup_package_quantity'] = !empty($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['expect_quantity']) ? $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['expect_quantity'] : "0";
-            $batch['actual_pickup_package_quantity'] = !empty($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['actual_quantity']) ? $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['actual_quantity'] : "0";
-            $batch['expect_pie_package_quantity'] = !empty($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['expect_quantity']) ? $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['expect_quantity'] : "0";
-            $batch['actual_pie_package_quantity'] = !empty($packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['actual_quantity']) ? $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['actual_quantity'] : "0";
+            $batch['expect_pickup_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['expect_quantity'] ?? "0";
+            $batch['actual_pickup_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['actual_quantity'] ?? "0";
+            $batch['expect_pie_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['expect_quantity'] ?? "0";
+            $batch['actual_pie_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['actual_quantity'] ?? "0";
             return $batch;
         }, $batchList);
         $tour['batch_count'] = count($batchList);
