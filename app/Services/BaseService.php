@@ -312,6 +312,22 @@ class BaseService
         return $rowCount;
     }
 
+
+    /**
+     * 启用/禁用
+     * @param $id
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    public function status($id, $data)
+    {
+        $rowCount = self::updateById($id, ['status' => $data['status']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败,清重新操作');
+        }
+    }
+
+
     public function delete($where)
     {
         $this->query = $this->model::query();
