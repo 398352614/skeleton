@@ -118,12 +118,16 @@ class MerchantService extends BaseService
     {
         $this->check($data);
         $info = $this->getInfo(['id' => $id], ['merchant_group_id'], false);
-        MerchantGroup::query()->where('id', $info['merchant_group_id'])->decrement('count');
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
         }
-        MerchantGroup::query()->where('id', $data['merchant_group_id'])->increment('count');
+        $info = $info->toArray();
+        //若修改了商户组,则调整成员
+        if (intval($info['merchant_group_id']) !== intval($data['merchant_group_id'])) {
+            MerchantGroup::query()->where('id', $info['merchant_group_id'])->decrement('count');
+            MerchantGroup::query()->where('id', $data['merchant_group_id'])->increment('count');
+        }
     }
 
     /**
