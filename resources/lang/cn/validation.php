@@ -99,6 +99,12 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'lon' => [
+            'required' => '系统无法获取该地址的位置信息',
+        ],
+        'lat' => [
+            'required' => '系统无法获取该地址的位置信息',
+        ],
         //包裹列表
         'package_list.*.id' => [
             'required_with' => '包裹ID是必须的',
@@ -173,6 +179,48 @@ return [
         'material_list.*.remark' => [
             'string' => '材料备注必须是字符串',
             'max' => '材料备注字段必须在 :max 个字符之内',
+        ],
+        //公里计费列表
+        'km_list.*.start' => [
+            'required_with' => '公里计费列表起始值是必须的',
+            'integer' => '公里计费列表起始值必须是整数'
+        ],
+        'km_list.*.end' => [
+            'required_with' => '公里计费列表截止值是必须的',
+            'integer' => '公里计费列表截止值必须是整数',
+            'gt' => '公里计费列表截止值必须大于起始值'
+        ],
+        'km_list.*.price' => [
+            'required_with' => '公里计费列表价格是必须的',
+            'integer' => '公里计费列表价格必须是数字'
+        ],
+        //重量计费列表
+        'weight_list.*.start' => [
+            'required_with' => '重量计费列表起始值是必须的',
+            'integer' => '重量计费列表起始值必须是整数'
+        ],
+        'weight_list.*.end' => [
+            'required_with' => '重量计费列表截止值是必须的',
+            'integer' => '重量计费列表截止值必须是整数',
+            'gt' => '重量计费列表截止值必须大于起始值'
+        ],
+        'weight_list.*.price' => [
+            'required_with' => '重量计费列表价格是必须的',
+            'integer' => '重量计费列表价格必须是数字'
+        ],
+        //特殊时段计费列表
+        'special_time_list.*.start' => [
+            'required_with' => '特殊时段计费列表起始时间是必须的',
+            'date_format' => '特殊时段计费列表起始时间格式必须是H:i:s'
+        ],
+        'special_time_list.*.end' => [
+            'required_with' => '特殊时段计费列表截止值是必须的',
+            'date_format' => '特殊时段计费列表截止时间格式必须是H:i:s',
+            'after' => '特殊时段计费列表截止时间必须大于起始时间'
+        ],
+        'special_time_list.*.price' => [
+            'required_with' => '重量计费列表价格是必须的',
+            'integer' => '重量计费列表价格必须是数字'
         ],
     ],
 
