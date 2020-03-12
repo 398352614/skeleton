@@ -226,6 +226,7 @@ class RegisterController extends BaseController
             'company_id' => $company->id,
             'name' => $company->name,
             'transport_price_id' => $transportPrice->id,
+            'count' => 1,
             'is_default' => 1,
         ]);
         if ($merchantGroup === false) {
@@ -246,19 +247,19 @@ class RegisterController extends BaseController
     protected function addMerchant($company, $merchantGroup)
     {
         $merchant = Merchant::create([
-            'company_id' => $company->id,
-            'type' => BaseConstService::MERCHANT_TYPE_2,
-            'name' => $company->name,
-            'email' => $company->email,
-            'password' => Hash::make(BaseConstService::INITIAL_PASSWORD),
-            'settlement_type' => BaseConstService::MERCHANT_SETTLEMENT_TYPE_1,
-            'merchant_group_id' => $merchantGroup->id,
-            'contacter' => $company->contacts,
-            'phone' => $company->phone,
-            'address' => $company->address,
-            'avatar' => '',
-            'status' => 1,
-        ]);
+        'company_id' => $company->id,
+        'type' => BaseConstService::MERCHANT_TYPE_2,
+        'name' => $company->name,
+        'email' => $company->email,
+        'password' => Hash::make(BaseConstService::INITIAL_PASSWORD),
+        'settlement_type' => BaseConstService::MERCHANT_SETTLEMENT_TYPE_1,
+        'merchant_group_id' => $merchantGroup->id,
+        'contacter' => $company->contacts,
+        'phone' => $company->phone,
+        'address' => $company->address,
+        'avatar' => '',
+        'status' => 1,
+    ]);
         if ($merchant === false) {
             throw new BusinessLogicException('初始化商户失败');
         }
