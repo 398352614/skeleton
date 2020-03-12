@@ -195,15 +195,15 @@ class RegisterController extends BaseController
         if ($transportPrice === false) {
             throw new BusinessLogicException('初始化运价失败');
         }
-        $rowCount = KilometresCharging::create(['company_id' => $company->id, 'transport_price_id' => $info->id, 'start' => 0, 'end' => 2, 'price' => 4]);
+        $rowCount = KilometresCharging::create(['company_id' => $company->id, 'transport_price_id' => $transportPrice->id, 'start' => 0, 'end' => 2, 'price' => 4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('初始化运价失败');
         }
-        $rowCount = WeightCharging::create(['company_id' => $company->id, 'transport_price_id' => $info->id, 'start' => 1, 'end' => 2, 'price' => 2]);
+        $rowCount = WeightCharging::create(['company_id' => $company->id, 'transport_price_id' => $transportPrice->id, 'start' => 1, 'end' => 2, 'price' => 2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('初始化运价失败');
         }
-        $rowCount = SpecialTimeCharging::create(['company_id' => $company->id, 'transport_price_id' => $info->id, 'start' => '10:00:00', 'end' => "11:00:00", 'price' => 1.5]);
+        $rowCount = SpecialTimeCharging::create(['company_id' => $company->id, 'transport_price_id' => $transportPrice->id, 'start' => '10:00:00', 'end' => "11:00:00", 'price' => 1.5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('初始化运价失败');
         }
