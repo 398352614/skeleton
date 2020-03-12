@@ -25,6 +25,7 @@ class OrderResource extends JsonResource
             'type_name' => $this->type_name,
             'express_first_no' => $this->express_first_no,
             'express_second_no' => $this->express_second_no,
+            'status' => $this->status,
             'status_name' => $this->status_name,
             'execution_date' => $this->execution_date,
             'batch_no' => $this->batch_no,
