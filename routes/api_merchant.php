@@ -41,6 +41,11 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::get('/period-count', 'HomeController@periodCount');
     });
 
+    //运价管理
+    Route::prefix('transport-price')->group(function () {
+        Route::get('/', 'TransportPriceController@me');
+    });
+
     //API管理
     Route::prefix('api')->group(function () {
         Route::get('/', 'MerchantApiController@show');//获取详情

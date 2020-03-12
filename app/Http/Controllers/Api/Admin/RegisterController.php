@@ -190,7 +190,7 @@ class RegisterController extends BaseController
             'company_id'=> $company->id,
             'name'=>$company->name,
             'remark'=>'',
-            'status'=>BaseConstService::TRANSPORT_PRICE_STATUS_1,
+            'status'=>1,
             ]);
         KilometresCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>0, 'end'=>2, 'price'=>4]);
         WeightCharging::create(['company_id'=> $company->id, 'transport_price_id'=>$info->id, 'start'=>1, 'end'=>2, 'price'=>2]);

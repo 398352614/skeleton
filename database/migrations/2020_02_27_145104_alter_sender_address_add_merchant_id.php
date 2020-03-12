@@ -14,7 +14,7 @@ class AlterSenderAddressAddMerchantId extends Migration
     public function up()
     {
         Schema::table('sender_address', function (Blueprint $table) {
-            $table->string('merchant_id')->default(null)->nullable()->after('company_id')->comment('商户ID');
+            $table->integer('merchant_id')->default(null)->nullable()->after('company_id')->comment('商户ID');
             $table->index('merchant_id','merchant_id');
         });
     }

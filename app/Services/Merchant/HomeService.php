@@ -31,37 +31,10 @@ class HomeService extends BaseService
 
     //当日数据
     public function home(){
-        $date =Carbon::today()->addDay();
-        //当日订单
-        $noTakeOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_1]);//待分配
-        $assignOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_2]);//已分配
-        $waitOutOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_3]);//待出库
-        $takingOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_4]);//取派中
-        $signedOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_5]);//已完成
-        //异常订单
-        $cancelOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_6]);//取消取派
-        $exceptionOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);//异常
-        //司机及车辆统计
-        $assignCar=$this->getTourService()->count(['execution_date'=>$date,'status'=>BaseConstService::TOUR_STATUS_2 ]);//已分配
-        $waitOutCar=$this->getTourService()->count(['execution_date'=>$date,'status'=>BaseConstService::TOUR_STATUS_3 ]);//待出库
-        $takingCar=$this->getTourService()->count(['execution_date'=>$date,'status'=>BaseConstService::TOUR_STATUS_4 ]);//配送中
-        $signedCar=$this->getTourService()->count(['execution_date'=>$date,'status'=>BaseConstService::TOUR_STATUS_5 ]);//配送完成
         $graph=$this->thisWeekCount();
-
         return[
-            //'no_take_order' => $noTakeOrder,
-            'assign_order'=>$assignOrder,
-            'wait_out_order'=>$waitOutOrder,
-            'taking_order'=>$takingOrder,
-            'signed_order'=>$signedOrder,
-            'cancel_order'=>$cancelOrder,
-            'exception_order'=>$exceptionOrder,
-            'outing_car'=>$assignCar+$waitOutCar,
-            'taking_car'=>$takingCar,
-            'signed_car'=>$signedCar,
             'graph'=>$graph,
         ];
-
     }
 
     //本周订单统计

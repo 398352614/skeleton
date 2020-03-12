@@ -89,6 +89,8 @@ class MerchantService extends BaseService
     public function store($params)
     {
         $this->check($params);
+        $params['merchant_group_id'] =array_values($this->getMerchantGroupService()
+            ->getInfo(['company_id'=>auth()->user()->company_id,'is_default'=>1],['id'],false));
         $params['password'] = Hash::make(BaseConstService::INITIAL_PASSWORD);
         $merchant = parent::create($params);
         if ($merchant === false) {
