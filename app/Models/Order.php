@@ -112,7 +112,8 @@ class Order extends BaseModel
     protected $appends = [
         'status_name',
         'exception_label_name',
-        'type_name'
+        'type_name',
+        'merchant_id_name'
     ];
 
     /**
@@ -136,5 +137,16 @@ class Order extends BaseModel
     public function getExceptionLabelNameAttribute()
     {
         return empty($this->exception_label) ? null : ConstTranslateTrait::orderExceptionLabelList($this->exception_label);
+    }
+
+    public function getMerchantIdNameAttribute()
+    {
+        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+        return $this->merchant->name;
+    }
+
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
     }
 }

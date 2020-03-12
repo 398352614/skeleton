@@ -73,7 +73,7 @@ class ReceiverAddress extends BaseModel
     ];
 
     protected $appends = [
-
+        'merchant_id_name'
     ];
 
     /**
@@ -82,4 +82,15 @@ class ReceiverAddress extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    public function getMerchantIdNameAttribute()
+    {
+        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+        return $this->merchant->name;
+    }
+
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+    }
 }

@@ -52,6 +52,10 @@ class SenderAddress extends BaseModel
      */
     protected $dates = [];
 
+    protected $appends = [
+        'merchant_id_name'
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -71,4 +75,15 @@ class SenderAddress extends BaseModel
         'created_at',
         'updated_at',
     ];
+
+    public function getMerchantIdNameAttribute()
+    {
+        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+        return $this->merchant->name;
+    }
+
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+    }
 }
