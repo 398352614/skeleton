@@ -40,7 +40,7 @@ class CarModelService extends BaseService
 
     public function getListByBrand($params)
     {
-        return parent::getList(['brand_id' => $params['brand_id']])->toArray();
+        return parent::getList(['brand_id' => $params['brand_id']], ['id', 'cn_name', 'en_name'], false)->toArray();
     }
 
 

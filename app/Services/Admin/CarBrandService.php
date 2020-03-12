@@ -27,7 +27,7 @@ class CarBrandService extends BaseService
 
     public function index()
     {
-        return parent::getList()->toArray();
+        return parent::getList([], ['id', 'cn_name', 'en_name'], false)->toArray();
     }
 
 
