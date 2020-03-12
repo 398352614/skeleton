@@ -166,46 +166,6 @@ class CarController extends BaseController
     }
 
     /**
-     * @api {GET}  api/admin/car/brands 管理员端:获取车辆品牌
-     * @apiName brands
-     * @apiGroup admin-car
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 获取车辆品牌
-     * @apiSuccessExample {json}  返回示例
-     * HTTP/1.1 200 OK
-     * {
-     *  "ret":1,
-     *  "msg":"车辆编辑",
-     *  "data":{}
-     * }
-     */
-    public function getBrands()
-    {
-        return $this->brandService->getList();
-    }
-
-    /**
-     * @api {POST}  api/admin/car/addbrand 管理员端:添加车辆品牌
-     * @apiName addbrand
-     * @apiGroup admin-car
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 添加车辆品牌
-     * @apiSuccessExample {json}  返回示例
-     * HTTP/1.1 200 OK
-     * {
-     *  "ret":1,
-     *  "msg":"车辆编辑",
-     *  "data":{}
-     * }
-     */
-    public function addBrand(Request $request)
-    {
-        return $this->brandService->create($request->all());
-    }
-
-    /**
      * @api {GET}  api/admin/car/models 管理员端:获取车辆模型
      * @apiName models
      * @apiGroup admin-car

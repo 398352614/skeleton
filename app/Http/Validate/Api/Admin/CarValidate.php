@@ -127,13 +127,6 @@ class CarValidate extends BaseValidate
             'relate_material_name'
 
         ],
-        'addBrand'      => [
-            'cn_name', 'en_name'
-        ],
-        'addModel'      => [
-            'cn_name', 'en_name', 'brand_id'
-        ],
-
         'lock' =>[
             'is_locked',
         ]

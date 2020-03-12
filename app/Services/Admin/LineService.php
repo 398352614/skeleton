@@ -244,11 +244,6 @@ class LineService extends BaseService
             throw new BusinessLogicException('邮编范围不能为空');
         }
         $itemList = $params['item_list'];
-        foreach ($itemList as $item) {
-            if (intval($item['post_code_end']) < intval($item['post_code_start'])) {
-                throw new BusinessLogicException('结束邮编必须大于开始邮编');
-            }
-        }
         $length = count($itemList);
         for ($i = 0; $i <= $length - 1; $i++) {
             for ($j = $i + 1; $j <= $length - 1; $j++) {

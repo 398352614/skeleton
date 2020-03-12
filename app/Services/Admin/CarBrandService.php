@@ -24,4 +24,11 @@ class CarBrandService extends BaseService
         $this->setFilterRules();
     }
 
+
+    public function index()
+    {
+        return parent::getList()->toArray();
+    }
+
+
 }

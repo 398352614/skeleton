@@ -222,6 +222,18 @@ return [
             'required_with' => '重量计费列表价格是必须的',
             'integer' => '重量计费列表价格必须是数字'
         ],
+        //邮编列表
+        'item_list.*.post_code_start' => [
+            'required' => '邮编列表起始邮编是必须的',
+            'integer' => '邮编列表起始邮编必须是整数',
+            'between' => '邮编列表起始邮编范围必须的:min-:max之间'
+        ],
+        'item_list.*.post_code_end' => [
+            'required' => '邮编列表截止邮编是必须的',
+            'integer' => '邮编列表截止邮编必须是整数',
+            'between' => '邮编列表截止邮编范围必须的:min-:max之间',
+            'gt' => '邮编列表截止邮编必须大于起始邮编'
+        ],
     ],
 
     /*

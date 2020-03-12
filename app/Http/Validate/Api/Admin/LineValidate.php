@@ -20,8 +20,6 @@ class LineValidate extends BaseValidate
         'order_max_count' => '最大订单量',
         'remark' => '备注',
         'work_day_list' => '工作日',
-        //'item_list.*.post_code_start' => '起始邮编',
-        //'item_list.*.post_code_end' => '结束邮编',
     ];
 
     public $rules = [
@@ -33,7 +31,7 @@ class LineValidate extends BaseValidate
         'work_day_list' => 'required|string',
         //邮编列表
         'item_list.*.post_code_start' => 'required|integer|between:1000,9999',
-        'item_list.*.post_code_end' => 'required|integer|between:1000,9999',
+        'item_list.*.post_code_end' => 'required|integer|between:1000,9999|gt:item_list.*.post_code_start',
     ];
 
     public $scene = [

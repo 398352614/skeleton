@@ -114,14 +114,14 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     //车辆管理
     Route::prefix('car')->group(function () {
         Route::put('/{id}/lock', 'CarController@lock')->name('car.lock'); //车辆锁定操作
-        Route::get('/brands', 'CarController@getBrands')->name('car.brands');       // 获取品牌列表
-        Route::post('/addbrand', 'CarController@addBrand')->name('car.addbrand');   // 添加品牌
-        Route::get('/models', 'CarController@getModels')->name('car.models');       // 获取型号列表
-        Route::post('/addmodel', 'CarController@addModel')->name('car.addmodel');   // 添加模型
+        Route::get('/brands', 'CarBrandController@index')->name('carBrand.brands');  // 获取品牌列表
+        Route::post('/addbrand', 'CarBrandController@store')->name('carBrand.store');// 添加品牌
+        Route::get('/models', 'CarModelController@getListByBrand')->name('carModel.getListByBrand'); // 获取型号列表
+        Route::post('/addmodel', 'CarModelController@store')->name('carModel.store');   // 添加模型
 
         //rest api 放在最后
         Route::get('/', 'CarController@index')->name('car.index');
-        Route::get('/init', 'CarController@init')->name('car.init');   // 添加模型
+        Route::get('/init', 'CarController@init')->name('car.init');   // 初始化
         Route::post('/', 'CarController@store')->name('car.store');
         Route::get('/{id}', 'CarController@show')->name('car.show'); //车辆详情
         Route::put('/{id}', 'CarController@update')->name('car.update'); //车辆修改
