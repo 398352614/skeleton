@@ -29,9 +29,8 @@ trait LocationTrait
      */
     public static function getLocation($country, $city, $street, $houseNumber, $postCode)
     {
-        list($houseNumber, $houseNumberAddition) = self::splitHouseNumber($houseNumber);
         $key = sprintf("%s:%s-%s-%s", 'location', $country, $postCode, $houseNumber);
-        $value = Cache::rememberForever($key, self::getLocationDetail($country, $city, $street, $houseNumber, $postCode, $houseNumberAddition));
+        $value = Cache::rememberForever($key, self::getLocationDetail($country, $city, $street, $houseNumber, $postCode));
         return $value;
     }
 
@@ -58,10 +57,26 @@ trait LocationTrait
      * @param $houseNumber
      * @param $postCode
      * @param $houseNumberAddition
+     * @return array|\Closure
+     * @throws BusinessLogicException
+     */
+    private static function getLocationDetail($country, $city, $street, $houseNumber, $postCode)
+    {
+        return ($country === 'NL') ? self::getLocationDetailFirst($country, $city, $street, $houseNumber, $postCode) : self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode);
+    }
+
+    /**
+     * 获取地址信息方法一
+     * @param $country
+     * @param $city
+     * @param $street
+     * @param $houseNumber
+     * @param $postCode
      * @return \Closure
      */
-    private static function getLocationDetail($country, $city, $street, $houseNumber, $postCode, $houseNumberAddition)
-    {                $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
+    private static function getLocationDetailFirst($country, $city, $street, $houseNumber, $postCode)
+    {
+        list($houseNumber, $houseNumberAddition) = self::splitHouseNumber($houseNumber);
         return function () use ($country, $city, $street, $houseNumber, $postCode, $houseNumberAddition) {
             try {
                 $client = new \GuzzleHttp\Client();
@@ -103,31 +118,69 @@ trait LocationTrait
         };
     }
 
+
+    /**
+     * 获取地址信息方法二
+     * @param $country
+     * @param $city
+     * @param $street
+     * @param $houseNumber
+     * @param $postCode
+     * @return \Closure
+     */
+    private static function getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode)
+    {
+        return function () use ($country, $city, $street, $houseNumber, $postCode) {
+            $url = sprintf('%s?%s', config('thirdParty.location_api_another'), http_build_query(['q' => $country . '+' . $city . '+' . $street . '+' . $houseNumber . '+' . $postCode]));
+            try {
+                $client = new \GuzzleHttp\Client();
+                $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 3]);
+                $featureList = json_decode((string)($result->getBody()), TRUE)['features'];
+            } catch (\Exception $ex) {
+                throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取具体信息，请稍后再尝试');
+            }
+            $count = count($featureList);
+            if (($count == 0) || ($count > 3)) {
+                throw new \App\Exceptions\BusinessLogicException('国家,城市,街道,门牌号或邮编不正确，请仔细检查输入或联系客服');
+            }
+            return [
+                'province' => $featureList[0]['properties']['state'] ?? '',
+                'city' => $city,
+                'district' => '',
+                'street' => $street,
+                'house_number' => $houseNumber,
+                'lon' => $featureList[0]['geometry']['coordinates'][0],
+                'lat' => $featureList[0]['geometry']['coordinates'][1],
+            ];
+        };
+    }
+
+
     /**
      * 获取站点地图
      * @param $params
      * @throws BusinessLogicException
      */
-    public static function getBatchMap($params,$name)
+    public static function getBatchMap($params, $name)
     {
-        $markers ='&markers=color:blue%7Clabel:A%7C'.$params[0]['lat'].','.$params[0]['lon'];
-        for($i=1;$i<count($params);$i++){
-            $markers=$markers.'&markers=color:red%7Clabel:'.$i.'%7C'.$params[$i]['lat'].','.$params[$i]['lon'];
+        $markers = '&markers=color:blue%7Clabel:A%7C' . $params[0]['lat'] . ',' . $params[0]['lon'];
+        for ($i = 1; $i < count($params); $i++) {
+            $markers = $markers . '&markers=color:red%7Clabel:' . $i . '%7C' . $params[$i]['lat'] . ',' . $params[$i]['lon'];
         }
-                //$url = 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=127689096,1321755151&fm=15&gp=0.jpg';
-        $url =config('tms.map_url').'staticmap?size=640x640&maptype=roadmap'.$markers.'&key='.config('tms.map_key');
+        //$url = 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=127689096,1321755151&fm=15&gp=0.jpg';
+        $url = config('tms.map_url') . 'staticmap?size=640x640&maptype=roadmap' . $markers . '&key=' . config('tms.map_key');
         try {
             $client = new \GuzzleHttp\Client();
             $res = $client->request('GET', $url, [
                 'proxy' => [
-                    'http'  => env('HTTP_PROXY'), // Use this proxy with "http"
+                    'http' => env('HTTP_PROXY'), // Use this proxy with "http"
                     'https' => env('HTTPS_PROXY'), // Use this proxy with "https",
                 ]]);
-            } catch (\Exception $ex) {
-                throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
-            }
+        } catch (\Exception $ex) {
+            throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
+        }
         $map['image'] = $res->getBody();
-        $map['dir'] ='tour';
+        $map['dir'] = 'tour';
         $map['name'] = $name;
         return (new \App\Services\Admin\DownloadloadService)->imageDownload($map);
     }
