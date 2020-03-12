@@ -566,7 +566,7 @@ class OrderService extends BaseService
         unset($data['order_no'], $data['tour_no'], $data['batch_no']);
         /*************************************************订单修改******************************************************/
         //获取信息
-        $dbInfo = $this->getInfoOfStatus(['id' => $id]);
+        $dbInfo = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         //验证
         $this->check($data, $dbInfo['order_no']);
         //修改
