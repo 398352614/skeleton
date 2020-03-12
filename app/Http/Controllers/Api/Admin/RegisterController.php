@@ -52,25 +52,27 @@ class RegisterController extends BaseController
             new BusinessLogicException('账号已注册，请直接登录')
         );
 
+        DB::transaction(function () use ($data) {
 
-        $lastCompany = Company::lockForUpdate()->orderBy('created_at', 'desc')->first();
+            $lastCompany = Company::lockForUpdate()->orderBy('created_at', 'desc')->first();
+            $company = Company::create([
+                'company_code' => self::makeNewCompanyCode($lastCompany),
+                'email' => $data['email'],
+                'name' => $data['name'],
+                'contacts' => $data['email'],
+                //'phone' => $data['phone'],
+            ]);
 
-        $company = Company::create([
-            'company_code' => self::makeNewCompanyCode($lastCompany),
-            'email' => $data['email'],
-            'name' => $data['name'],
-            'contacts' => $data['email'],
-            //'phone' => $data['phone'],
-        ]);
-
-        $institutionId = $this->addInstitution($company);//初始化组织结构
-        $this->addEmployee($company, $data, $institutionId);//初始化管理员帐户
-        $this->addWarehouse($company);//初始化仓库
-        $this->initCompanyOrderCodeRules($company);//初始化编号规则
-        $transportPrice = $this->addTransportPrice($company);//初始化运价方案
-        $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化商户组
-        $merchant = $this->addMerchant($company, $merchantGroup);//初始化商户API
-        $this->addMerchantApi($company, $merchant);//初始化商户API
+            $institutionId = $this->addInstitution($company);//初始化组织结构
+            $this->addEmployee($company, $data, $institutionId);//初始化管理员帐户
+            $this->addWarehouse($company);//初始化仓库
+            $this->initCompanyOrderCodeRules($company);//初始化编号规则
+            $transportPrice = $this->addTransportPrice($company);//初始化运价方案
+            $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化商户组
+            $merchant = $this->addMerchant($company, $merchantGroup);//初始化商户API
+            $this->addMerchantApi($company, $merchant);//初始化商户API
+            return 'true';
+        });
     }
 
     /**
