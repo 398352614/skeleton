@@ -775,6 +775,7 @@ class OrderService extends BaseService
     public function recovery($id, $params)
     {
         $order = $this->getInfoOfStatus(['id' => $id], false, BaseConstService::ORDER_STATUS_7);
+        $order['receiver_country'] = $order['short'];
         /********************************************恢复之前验证包裹**************************************************/
         $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
         if (!empty($packageList)) {
