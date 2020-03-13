@@ -464,7 +464,7 @@ class BatchService extends BaseService
         $line = $this->getLineInfo($info);
         $tour = $this->getTourService()->assignBatchToTour($info, $line, $params);
         /***********************************************填充取件线路编号************************************************/
-        $this->fillTourInfo($info,$line, $tour);
+        $this->fillTourInfo($info, $line, $tour);
         /***********************************************修改订单************************************************/
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
