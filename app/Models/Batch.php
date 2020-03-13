@@ -104,7 +104,8 @@ class Batch extends BaseModel
     protected $appends = [
         'status_name',
         'exception_label_name',
-        'pay_type_name'
+        'pay_type_name',
+        'short'
     ];
 
     /**
@@ -143,5 +144,10 @@ class Batch extends BaseModel
     public function getExpectTimeAttribute($value)
     {
         return (int)($value / 60);
+    }
+
+    public function getShortAttribute()
+    {
+        return empty($this->receiver_country) ? null : $this->getOriginal('receiver_country');
     }
 }

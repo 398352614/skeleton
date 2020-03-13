@@ -103,7 +103,7 @@ class BatchService extends BaseService
 
     /**
      * 获取待分配订单信息
-     * @param $id
+     * @param $where
      * @param $isToArray
      * @param $status
      * @param $isLock
@@ -193,6 +193,7 @@ class BatchService extends BaseService
             if ((intval($tour['expect_pickup_quantity']) + intval($tour['expect_pie_quantity'])) < intval($line['order_max_count'])) {
                 //锁定当前站点
                 $batch = parent::getInfoLock(['id' => $batch['id']], ['*'], false)->toArray();
+                $batch['receiver_country'] = $batch['short'];
                 return [$batch, $line];
             }
         }
@@ -458,6 +459,7 @@ class BatchService extends BaseService
             throw new BusinessLogicException('当前站点已分配至当前指定取件线路');
         }
         $info['execution_date'] = $params['execution_date'];
+        $info['receiver_country'] = $info['short'];
         //获取线路信息
         $this->getLineInfo($info);
         $tour = $this->getTourService()->assignBatchToTour($info, $params);
