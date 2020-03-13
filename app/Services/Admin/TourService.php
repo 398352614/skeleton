@@ -455,7 +455,7 @@ class TourService extends BaseService
     {
         $info = $this->getInfoOfStatus(['tour_no' => $batch['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
         $quantity = intval($info['expect_pickup_quantity']) + intval($info['expect_pie_quantity']);
-        $batchQuantity = intval($batch['expect_pickup_quantity']) + $batch($info['expect_pie_quantity']);
+        $batchQuantity = intval($batch['expect_pickup_quantity']) + intval($batch['expect_pie_quantity']);
         //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
         if ($quantity - $batchQuantity <= 0) {
             $rowCount = parent::delete(['id' => $info['id']]);
