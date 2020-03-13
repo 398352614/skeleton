@@ -72,9 +72,9 @@ class PackageService extends BaseService
         if (!empty($package['out_order_no'])) {
             $orWhere['out_order_no'] = $package['out_order_no'];
         }
-        $query->orWhere(function ($query) use ($orWhere) {
+        $query->where(function ($query) use ($orWhere) {
             foreach ($orWhere as $key => $value) {
-                $query->where($key, '=', $value);
+                $query->where($key, '=', $value, 'or');
             }
         });
         $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_7])->first();
