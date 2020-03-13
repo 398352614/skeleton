@@ -65,7 +65,7 @@ class CarModelService extends BaseService
      */
     public function check($params)
     {
-        $brand = $this->getCarBrandService()->getInfo(['id' => $params['brand_id']]);
+        $brand = $this->getCarBrandService()->getInfo(['id' => $params['brand_id']], ['id'], false);
         if (empty($brand)) {
             throw new BusinessLogicException('车辆品牌不存在');
         }
