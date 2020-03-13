@@ -97,6 +97,6 @@ class ReceiverAddress extends BaseModel
 
     public function getShortAttribute()
     {
-        return empty($this->receiver_country) ? null : CountryTrait::getCountryName($this->receiver_country);
+        return empty($this->receiver_country) ? null : $this->receiver_country;
     }
 }

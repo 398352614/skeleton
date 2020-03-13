@@ -90,6 +90,6 @@ class SenderAddress extends BaseModel
 
     public function getShortAttribute()
     {
-        return empty($this->sender_country) ? null : CountryTrait::getCountryName($this->sender_country);
+        return empty($this->sender_country) ? null : $this->sender_country;
     }
 }
