@@ -18,6 +18,11 @@ use Illuminate\Support\Arr;
 
 class ReceiverAddressService extends BaseService
 {
+
+    public $filterRules = [
+        'merchant_id' => ['=', 'merchant_id']
+    ];
+
     public function __construct(ReceiverAddress $receiverAddress)
     {
         $this->request = request();

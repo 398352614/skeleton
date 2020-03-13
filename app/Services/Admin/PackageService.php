@@ -54,23 +54,29 @@ class PackageService extends BaseService
      */
     public function checkUnique($package, $orderNo = null)
     {
-        $query = $this->model::query()
-            ->where('express_first_no', '=', $package['express_first_no'])
-            ->orWhere('express_second_no', '=', $package['express_first_no']);
-        //若存在快递单号2,则验证
-        if (!empty($package['express_second_no'])) {
-            $query
-                ->orWhere('express_second_no', '=', $package['express_second_no'])
-                ->orWhere('express_second_no', '=', $package['express_first_no']);
-        }
-        //若存在外部标识,则验证
-        if (!empty($package['out_order_no'])) {
-            $query->orWhere('out_order_no', '=', $package['out_order_no']);
-        }
+        $query = $this->model::query();
         //若存在订单号,则排除
         if (!empty($orderNo)) {
             $query->where('order_no', '<>', $orderNo);
         }
+        $orWhere = [
+            'express_first_no' => $package['express_first_no'],
+            'express_second_no' => $package['express_first_no']
+        ];
+        //若存在快递单号2,则验证
+        if (!empty($package['express_second_no'])) {
+            $orWhere['express_second_no'] = $package['express_second_no'];
+            $orWhere['express_second_no'] = $package['express_first_no'];
+        }
+        //若存在外部标识,则验证
+        if (!empty($package['out_order_no'])) {
+            $orWhere['out_order_no'] = $package['out_order_no'];
+        }
+        $query->where(function ($query) use ($orWhere) {
+            foreach ($orWhere as $key => $value) {
+                $query->where($key, '=', $value, 'or');
+            }
+        });
         $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_7])->first();
         return !empty($result) ? $result->toArray() : [];
     }

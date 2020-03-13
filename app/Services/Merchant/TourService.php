@@ -47,7 +47,7 @@ class TourService extends BaseService
         'tour_no' => ['like', 'tour_no']
     ];
 
-    public $orderBy = ['created_at' => 'desc'];
+    public $orderBy = ['id' => 'desc'];
 
     public function __construct(Tour $tour, GoogleApiService $client, XLDirectionService $directionClient)
     {

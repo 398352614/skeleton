@@ -45,7 +45,7 @@ class OrderService extends BaseService
         'source' => ['=', 'source']
     ];
 
-    public $orderBy = ['created_at' => 'desc'];
+    public $orderBy = ['id' => 'desc'];
 
     public function __construct(Order $order)
     {

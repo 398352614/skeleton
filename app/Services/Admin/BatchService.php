@@ -35,7 +35,7 @@ class BatchService extends BaseService
         'receiver_street' => ['=', 'receiver_street']
     ];
 
-    public $orderBy = ['created_at' => 'desc'];
+    public $orderBy = ['id' => 'desc'];
 
     public function __construct(Batch $batch)
     {
