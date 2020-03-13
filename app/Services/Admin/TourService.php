@@ -769,7 +769,7 @@ class TourService extends BaseService
         //整理结构
         for ($i = 0; $i < count($info); $i++) {
             $orderInfo = $this->getOrderService()->getList(['batch_no' => $info[$i]['batch_no']], ['*'], false);
-            $cellData[$i][0] = $i;
+            $cellData[$i][0] = $i+1;
             $cellData[$i][1] = $info[$i]['receiver'];
             $cellData[$i][2] = $info[$i]['receiver_phone'];
             $cellData[$i][3] = $orderInfo[0]['out_user_id'] ?? '';
