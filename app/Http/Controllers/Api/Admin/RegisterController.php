@@ -10,6 +10,7 @@ use App\Http\Controllers\BaseController;
 use App\Mail\SendRegisterCode;
 use App\Mail\SendResetCode;
 use App\Models\Company;
+use App\Models\CompanyConfig;
 use App\Models\Employee;
 use App\Models\Institution;
 use App\Models\KilometresCharging;
@@ -62,6 +63,22 @@ class RegisterController extends BaseController
                 'contacts' => $data['email'],
                 //'phone' => $data['phone'],
             ]);
+            if ($company === false) {
+                throw new BusinessLogicException('企业注册失败');
+            }
+
+            $companyConfig = CompanyConfig::create([
+                'company_id' => $company->id,
+                'line_rule' => 1,
+                'weight_unit' => 'kg',
+                'currency_unit' => '￥',
+                'volume_unit' => 'cm³',
+                'map' => 'google'
+            ]);
+
+            if ($companyConfig === false) {
+                throw new BusinessLogicException('初始化企业配置信息失败');
+            }
 
             $institutionId = $this->addInstitution($company);//初始化组织结构
             $this->addEmployee($company, $data, $institutionId);//初始化管理员帐户
@@ -247,19 +264,19 @@ class RegisterController extends BaseController
     protected function addMerchant($company, $merchantGroup)
     {
         $merchant = Merchant::create([
-        'company_id' => $company->id,
-        'type' => BaseConstService::MERCHANT_TYPE_2,
-        'name' => $company->name,
-        'email' => $company->email,
-        'password' => Hash::make(BaseConstService::INITIAL_PASSWORD),
-        'settlement_type' => BaseConstService::MERCHANT_SETTLEMENT_TYPE_1,
-        'merchant_group_id' => $merchantGroup->id,
-        'contacter' => $company->contacts,
-        'phone' => $company->phone,
-        'address' => $company->address,
-        'avatar' => '',
-        'status' => 1,
-    ]);
+            'company_id' => $company->id,
+            'type' => BaseConstService::MERCHANT_TYPE_2,
+            'name' => $company->name,
+            'email' => $company->email,
+            'password' => Hash::make(BaseConstService::INITIAL_PASSWORD),
+            'settlement_type' => BaseConstService::MERCHANT_SETTLEMENT_TYPE_1,
+            'merchant_group_id' => $merchantGroup->id,
+            'contacter' => $company->contacts,
+            'phone' => $company->phone,
+            'address' => $company->address,
+            'avatar' => '',
+            'status' => 1,
+        ]);
         if ($merchant === false) {
             throw new BusinessLogicException('初始化商户失败');
         }
