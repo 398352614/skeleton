@@ -491,7 +491,7 @@ class TourService extends BaseService
      * @return BaseService|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|mixed|object|null
      * @throws BusinessLogicException
      */
-    public function assignBatchToTour($batch, $line, $params)
+    public function assignBatchToTour($batch,$params)
     {
         if (!empty($batch['tour_no'])) {
             $this->removeBatch($batch);
