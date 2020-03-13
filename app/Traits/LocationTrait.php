@@ -182,6 +182,6 @@ trait LocationTrait
         $map['image'] = $res->getBody();
         $map['dir'] = 'tour';
         $map['name'] = $name;
-        return (new \App\Services\Admin\DownloadloadService)->imageDownload($map);
+        return (new \App\Services\Admin\DownloadService)->imageDownload($map);
     }
 }
