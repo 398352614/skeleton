@@ -10,6 +10,10 @@ use App\Http\Resources\SenderAddressResource;
 
 class SenderAddressService extends BaseService
 {
+    public $filterRules = [
+        'merchant_id' => ['=', 'merchant_id']
+    ];
+
     public function __construct(SenderAddress $senderaddress)
     {
         $this->request = request();
@@ -46,7 +50,8 @@ class SenderAddressService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    public function checkMerchant($params){
+    public function checkMerchant($params)
+    {
         if (empty(Merchant::query()->where('id', $params['merchant_id'])->first())) {
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }

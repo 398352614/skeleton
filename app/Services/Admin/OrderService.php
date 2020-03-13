@@ -776,12 +776,12 @@ class OrderService extends BaseService
     {
         $order = $this->getInfoOfStatus(['id' => $id], false, BaseConstService::ORDER_STATUS_7);
         /********************************************恢复之前验证包裹**************************************************/
-        $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']])->toArray();
+        $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
         if (!empty($packageList)) {
             $this->getPackageService()->checkAllUnique($packageList, $order['order_no']);
         }
         /********************************************恢复之前验证材料**************************************************/
-        $materialList = $this->getMaterialService()->getList(['order_no' => $order['order_no']])->toArray();
+        $materialList = $this->getMaterialService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
         if (!empty($materialList)) {
             $outOrderNoList = array_column($materialList, 'out_order_no');
             if (!empty($outOrderNoList)) {

@@ -430,7 +430,7 @@ class TourService extends BaseService
      */
     public function removeBatchOrder($order, $batch)
     {
-        $info = $this->getInfoOfStatus(['tour_no' => $order['tour_no']], true, BaseConstService::TOUR_STATUS_1, true);
+        $info = $this->getInfoOfStatus(['tour_no' => $order['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
         $quantity = $info['expect_pickup_quantity'] + $info['expect_pie_quantity'];
         //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
         if ($quantity - 1 <= 0) {
