@@ -73,7 +73,8 @@ class ReceiverAddress extends BaseModel
     ];
 
     protected $appends = [
-        'merchant_id_name'
+        'merchant_id_name',
+        'short'
     ];
 
     /**
@@ -92,5 +93,10 @@ class ReceiverAddress extends BaseModel
     public function merchant()
     {
         return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+    }
+
+    public function getShortAttribute()
+    {
+        return empty($this->receiver_country) ? null : CountryTrait::getCountryName($this->receiver_country);
     }
 }
