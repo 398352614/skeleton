@@ -143,7 +143,7 @@ class BatchService extends BaseService
         /**************************************站点加入取件线路********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $order['type']);
         /***********************************************填充取件线路编号************************************************/
-        $this->fillTourInfo($batch, $tour);
+        $this->fillTourInfo($batch, $line, $tour);
 
         return [$batch, $tour];
     }
@@ -370,7 +370,7 @@ class BatchService extends BaseService
         /**************************************站点加入取件线路********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $order['type']);
         /***********************************************填充取件线路编号************************************************/
-        $this->fillTourInfo($batch, $tour);
+        $this->fillTourInfo($batch, $line, $tour);
         return [$batch, $tour];
     }
 
@@ -464,7 +464,7 @@ class BatchService extends BaseService
         $line = $this->getLineInfo($info);
         $tour = $this->getTourService()->assignBatchToTour($info, $line, $params);
         /***********************************************填充取件线路编号************************************************/
-        $this->fillTourInfo($info, $tour);
+        $this->fillTourInfo($info,$line, $tour);
         /***********************************************修改订单************************************************/
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
@@ -503,11 +503,13 @@ class BatchService extends BaseService
      * @param $tour
      * @throws BusinessLogicException
      */
-    private function fillTourInfo($batch, $tour)
+    private function fillTourInfo($batch, $line, $tour)
     {
         $rowCount = parent::updateById($batch['id'], [
             'execution_date' => $tour['execution_date'],
             'tour_no' => $tour['tour_no'],
+            'line_id' => $line['id'],
+            'line_name' => $line['name'],
             'driver_id' => $tour['driver_id'] ?? null,
             'driver_name' => $tour['driver_name'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
