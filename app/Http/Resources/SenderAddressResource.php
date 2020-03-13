@@ -24,6 +24,7 @@ class SenderAddressResource extends JsonResource
             'sender_phone' => $this->sender_phone,
             'short' => $this->short,
             'sender_country' => $this->sender_country,
+            'sender_country_name' => $this->sender_country_name,
             'sender_post_code' => $this->sender_post_code,
             'sender_house_number' => $this->sender_house_number,
             'sender_city' => $this->sender_city,

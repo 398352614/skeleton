@@ -18,6 +18,7 @@ class ReceiverAddressResource extends JsonResource
             'receiver_phone' => $this->receiver_phone,
             'short' => $this->short,
             'receiver_country' => $this->receiver_country,
+            'receiver_country_name' => $this->receiver_country_name,
             'receiver_post_code' => $this->receiver_post_code,
             'receiver_house_number' => $this->receiver_house_number,
             'receiver_city' => $this->receiver_city,

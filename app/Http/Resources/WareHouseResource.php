@@ -20,6 +20,7 @@ class WareHouseResource extends JsonResource
             'contacter' => $this->contacter,
             'phone' => $this->phone,
             'country' => $this->country,
+            'country_name' => $this->country_name,
             'post_code' => $this->post_code,
             'house_number' => $this->house_number,
             'city' => $this->city,

@@ -72,4 +72,8 @@ class LineRange extends BaseModel
      */
     protected $dates = [];
 
+    protected $appends = [
+        'country_name'
+    ];
+
 }

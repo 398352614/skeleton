@@ -28,6 +28,7 @@ class DriverResource extends JsonResource
             'street'                        => $this->street,
             'city'                          => $this->city,
             'country'                       => $this->country,
+            'country_name'                       => $this->country_name,
             'lisence_number'                => $this->lisence_number,
             'lisence_valid_date'            => !empty($this->lisence_valid_date) ? (string)$this->lisence_valid_date : null,
             'lisence_type'                  => $this->lisence_type,

@@ -95,7 +95,8 @@ class Driver extends Authenticatable implements JWTSubject
     protected $dates = [];
 
     protected $appends = [
-        'is_locked_name'
+        'is_locked_name',
+        'country_name'
     ];
 
     /**

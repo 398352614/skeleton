@@ -14,6 +14,7 @@ class CompanyInfoResource extends JsonResource
             'contacts' => $this->contacts ?? '',
             'phone' => $this->phone ?? '',
             'country' => $this->country ?? '',
+            'country_name' => $this->country_name ?? '',
             'address' => $this->address ?? '',
         ];
     }

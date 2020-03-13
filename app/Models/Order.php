@@ -114,7 +114,9 @@ class Order extends BaseModel
         'exception_label_name',
         'type_name',
         'merchant_id_name',
-        'short'
+        'receiver_country_name',
+        'sender_country_name',
+        'country_name'
     ];
 
     /**

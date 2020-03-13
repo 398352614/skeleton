@@ -66,4 +66,8 @@ class Company extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    protected $appends = [
+        'country_name'
+    ];
 }
