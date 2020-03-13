@@ -45,7 +45,7 @@ class TourService extends BaseService
         'tour_no' => ['like', 'tour_no']
     ];
 
-    protected $headings=[
+    protected $headings = [
         'id',
         'receiver',
         'receiver_phone',
@@ -767,7 +767,7 @@ class TourService extends BaseService
 
         //整理结构
         for ($i = 0; $i < count($info); $i++) {
-            $orderInfo=$this->getOrderService()->getList(['batch_no' => $info[$i]['batch_no']], ['*'], false);
+            $orderInfo = $this->getOrderService()->getList(['batch_no' => $info[$i]['batch_no']], ['*'], false);
             $cellData[$i][0] = $i;
             $cellData[$i][1] = $info[$i]['receiver'];
             $cellData[$i][2] = $info[$i]['receiver_phone'];
@@ -786,7 +786,7 @@ class TourService extends BaseService
         }
         $cellData = array_reverse($cellData);
         $dir = 'tour';
-        return $this->excelExport($tour_no,$this->headings, $cellData, $dir);
+        return $this->excelExport($tour_no, $this->headings, $cellData, $dir);
     }
 
     /**

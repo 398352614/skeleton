@@ -53,7 +53,8 @@ class SenderAddress extends BaseModel
     protected $dates = [];
 
     protected $appends = [
-        'merchant_id_name'
+        'merchant_id_name',
+        'short'
     ];
 
     /**
@@ -85,5 +86,10 @@ class SenderAddress extends BaseModel
     public function merchant()
     {
         return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+    }
+
+    public function getShortAttribute()
+    {
+        return empty($this->sender_country) ? null : $this->getOriginal('sender_country');
     }
 }

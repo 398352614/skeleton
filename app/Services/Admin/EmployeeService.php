@@ -14,7 +14,7 @@ class EmployeeService extends BaseService
         HasLoginControl;
 
     public $filterRules = [
-        'username' => ['like', 'username'],
+        'email' => ['like', 'email'],
         'fullname' => ['like', 'fullname'],
     ];
 
@@ -30,20 +30,20 @@ class EmployeeService extends BaseService
     }
 
     /**
-     * @param  int  $institution
+     * @param int $institution
      * @return mixed
      */
     public function indexOfInstitution(int $institution)
     {
-         $this->query->where('institution_id', $institution);
+        $this->query->where('institution_id', $institution);
 
-         return parent::getPaginate();
+        return parent::getPaginate();
     }
 
     /**
      *
      *
-     * @param  array  $data
+     * @param array $data
      * @throws BusinessLogicException
      */
     public function createEmployee(array $data)
@@ -55,7 +55,7 @@ class EmployeeService extends BaseService
                 'email' => $data['email'],
                 'phone' => $data['phone'] ?? '',
                 'remark' => $data['remark'] ?? '',
-                'auth_group_id' => $data['group_id']??1,
+                'auth_group_id' => $data['group_id'] ?? 1,
                 'institution_id' => $data['institution_id'] ?? null,
                 'password' => bcrypt($data['password']),
             ]
@@ -69,8 +69,8 @@ class EmployeeService extends BaseService
     /**
      * 修改
      *
-     * @param  int  $id
-     * @param  array  $data
+     * @param int $id
+     * @param array $data
      * @throws BusinessLogicException
      */
     public function updateEmployee(int $id, array $data)
@@ -79,13 +79,13 @@ class EmployeeService extends BaseService
         $employee = $this->model::findOrFail($id);
 
         $res = $employee->update([
-                'fullname' => $data['fullname'],
-                'username' => $data['username'],
-                'email' => $data['email'],
-                'phone' => $data['phone'] ?? '',
-                'remark' => $data['remark'] ?? '',
-                'auth_group_id' => $data['group_id']??'',
-                'institution_id' => $data['institution_id'] ?? null,
+            'fullname' => $data['fullname'],
+            'username' => $data['username'],
+            'email' => $data['email'],
+            'phone' => $data['phone'] ?? '',
+            'remark' => $data['remark'] ?? '',
+            'auth_group_id' => $data['group_id'] ?? '',
+            'institution_id' => $data['institution_id'] ?? null,
         ]);
 
         if ($res === false) {
@@ -96,8 +96,8 @@ class EmployeeService extends BaseService
     /**
      * 修改密码
      *
-     * @param  int  $id
-     * @param  array  $data
+     * @param int $id
+     * @param array $data
      * @return bool
      * @throws BusinessLogicException
      */
@@ -124,7 +124,7 @@ class EmployeeService extends BaseService
      */
     public function destroy($id)
     {
-        if(auth()->user()->id === $id){
+        if (auth()->user()->id === $id) {
             throw new BusinessLogicException('无法删除自己');
         }
         $rowCount = parent::delete(['id' => $id]);

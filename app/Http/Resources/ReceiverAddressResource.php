@@ -16,6 +16,7 @@ class ReceiverAddressResource extends JsonResource
             'merchant_id_name' => $this->merchant_id_name,
             'receiver' => $this->receiver,
             'receiver_phone' => $this->receiver_phone,
+            'short' => $this->short,
             'receiver_country' => $this->receiver_country,
             'receiver_post_code' => $this->receiver_post_code,
             'receiver_house_number' => $this->receiver_house_number,
@@ -26,7 +27,7 @@ class ReceiverAddressResource extends JsonResource
             'lat' => $this->lat,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
-            'merchant'=>Merchant::query()->where('id',$this->merchant_id)->value('name'),
+            'merchant' => Merchant::query()->where('id', $this->merchant_id)->value('name'),
         ];
     }
 }

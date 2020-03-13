@@ -676,6 +676,7 @@ class OrderService extends BaseService
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
             throw new BusinessLogicException('当前订单已存在分配的站点中!');
         }
+        $info['receiver_country'] = $info['short'];
         $info['execution_date'] = $params['execution_date'];
         list($batch, $tour) = $this->getBatchService()->assignOrderToBatch($info, $params);
         /**********************************填充取件批次编号和取件线路编号**********************************************/

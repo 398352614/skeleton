@@ -22,6 +22,7 @@ class SenderAddressResource extends JsonResource
             'merchant_id_name' => $this->merchant_id_name,
             'sender' => $this->sender,
             'sender_phone' => $this->sender_phone,
+            'short' => $this->short,
             'sender_country' => $this->sender_country,
             'sender_post_code' => $this->sender_post_code,
             'sender_house_number' => $this->sender_house_number,
