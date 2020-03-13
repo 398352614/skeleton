@@ -406,10 +406,6 @@ class OrderService extends BaseService
      */
     public function record($params)
     {
-        //记录来源
-        if (empty($this->getSourceSerice()->getInfo(['source_name' => $params['source']], ['*'], false))) {
-            $this->getSourceSerice()->create(['source_name' => $params['source']]);
-        }
         //记录发件人地址
         $info = $this->getSenderAddressService()->check($params);
         if (empty($info)) {

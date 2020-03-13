@@ -55,7 +55,6 @@ class OrderValidate extends BaseValidate
         'batch_no' => 'nullable|string|max:50',
         'out_order_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
         'execution_date' => 'required|date|after_or_equal:today',
-        'source' => 'required|string|max:50',
         'type' => 'nullable|integer|in:1,2',
         'out_user_id' => 'nullable|integer',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
@@ -105,7 +104,7 @@ class OrderValidate extends BaseValidate
             'receiver_city', 'receiver_street'
         ],
         'store' => [
-            'merchant_id', 'execution_date', 'source',
+            'merchant_id', 'execution_date',
             'out_order_no', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
@@ -121,7 +120,7 @@ class OrderValidate extends BaseValidate
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
         'update' => [
-            'merchant_id', 'execution_date', 'source',
+            'merchant_id', 'execution_date',
             'out_order_no', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
