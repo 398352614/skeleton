@@ -177,6 +177,7 @@ class OrderService extends BaseService
      */
     public function initPickupIndex()
     {
+        $allCount = $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1]);
         $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_1]);
         $assignCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_2]);
         $waitOutCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_3]);
@@ -184,7 +185,18 @@ class OrderService extends BaseService
         $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_5]);
         $cancelCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_6]);
         $exceptionCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
-        return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'wait_out' => $waitOutCount, 'taking' => $takingCount, 'singed' => $signedCount, 'cancel_count' => $cancelCount, 'exception_count' => $exceptionCount];
+        $delCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_7]);
+        return [
+            'all_count' => $allCount,
+            'no_take' => $noTakeCount,
+            'assign' => $assignCount,
+            'wait_out' => $waitOutCount,
+            'taking' => $takingCount,
+            'singed' => $signedCount,
+            'cancel_count' => $cancelCount,
+            'exception_count' => $exceptionCount,
+            'delete_count' => $delCount
+        ];
     }
 
     /**
@@ -193,6 +205,7 @@ class OrderService extends BaseService
      */
     public function initPieIndex()
     {
+        $allCount = $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2]);
         $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_1]);
         $assignCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_2]);
         $waitOutCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_3]);
@@ -200,7 +213,18 @@ class OrderService extends BaseService
         $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_5]);
         $cancelCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_6]);
         $exceptionCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
-        return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'wait_out' => $waitOutCount, 'taking' => $takingCount, 'singed' => $signedCount, 'cancel_count' => $cancelCount, 'exception_count' => $exceptionCount];
+        $delCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_7]);
+        return [
+            'all_count' => $allCount,
+            'no_take' => $noTakeCount,
+            'assign' => $assignCount,
+            'wait_out' => $waitOutCount,
+            'taking' => $takingCount,
+            'singed' => $signedCount,
+            'cancel_count' => $cancelCount,
+            'exception_count' => $exceptionCount,
+            'delete_count' => $delCount
+        ];
     }
 
 
