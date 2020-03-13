@@ -33,6 +33,20 @@ class InstitutionService extends BaseService
     }
 
     /**
+     * 检查层数
+     *
+     * @param $parentId
+     * @throws BusinessLogicException
+     */
+    public function checkDistance($parentId){
+        $distance =Institution::findOrFail($parentId)->getRoot()->distance;
+        dd($distance);
+        if($distance>3){
+            throw new BusinessLogicException('组织机构最高为3级');
+        }
+    }
+
+    /**
      * 创建节点
      *
      * @param  int  $parentId
@@ -53,7 +67,7 @@ class InstitutionService extends BaseService
 
              return $this->getCompanyRoot()->addChild($child);
         }*/
-
+        $this->checkDistance($parentId);
         $child = Institution::create([
             'name' => $data['name'],
             'phone' => $data['phone'] ?? '',

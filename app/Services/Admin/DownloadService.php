@@ -14,7 +14,7 @@ use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 
 /**
- * Class DownloadloadService
+ * Class DownloadService
  * @package App\Services\Admin
  */
 class DownloadService

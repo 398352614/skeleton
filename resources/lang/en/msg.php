@@ -82,6 +82,7 @@ return [
     "司机入库失败,请重新操作"  => "The driver failed to enter the warehouse, please try again",
     "无法删除根组织" =>"The original institution cannot be deleted",
     "该节点存在子机构，请先删除子机构"=>"This institution has child institution,please delete the child institution first",
+    "组织机构最高为3级"=>"The highest level of institution is 3",
 
     "星期一"  => "Monday",
     "星期二"  => "Tuesday",
