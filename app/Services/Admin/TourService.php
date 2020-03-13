@@ -60,7 +60,7 @@ class TourService extends BaseService
         'express_first_no_two',
     ];
 
-    public $orderBy = ['created_at' => 'desc'];
+    public $orderBy = ['id' => 'desc'];
 
     public function __construct(Tour $tour, GoogleApiService $client, XLDirectionService $directionClient)
     {
