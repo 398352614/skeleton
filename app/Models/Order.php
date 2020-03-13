@@ -113,7 +113,8 @@ class Order extends BaseModel
         'status_name',
         'exception_label_name',
         'type_name',
-        'merchant_id_name'
+        'merchant_id_name',
+        'short'
     ];
 
     /**
@@ -148,5 +149,10 @@ class Order extends BaseModel
     public function merchant()
     {
         return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+    }
+
+    public function getShortAttribute()
+    {
+        return empty($this->receiver_country) ? null : $this->getOriginal('receiver_country');
     }
 }
