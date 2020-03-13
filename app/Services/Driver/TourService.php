@@ -574,7 +574,7 @@ class TourService extends BaseService
                 //判断取件或派件
                 if (intval($dbPackage['type']) === BaseConstService::ORDER_TYPE_1) {
                     $totalStickerAmount += BaseConstService::STICKER_AMOUNT;
-                    $packageData = ['actual_quantity' => 1, 'status' => $status, 'sticker_amount' => BaseConstService::STICKER_AMOUNT, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no']] ?? '';
+                    $packageData = ['actual_quantity' => 1, 'status' => $status, 'sticker_amount' => BaseConstService::STICKER_AMOUNT, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no'] ?? ''];
                 } else {
                     $packageData = ['actual_quantity' => 1, 'status' => $status];
                 }
