@@ -43,7 +43,7 @@ class TestGuzzle extends Command
 
         $curl = new CurlClient();
 
-        $res = $curl->postJson($url, []);
+        $res = $curl->get($url, []);
 
         dd($res);
     }
