@@ -1,12 +1,16 @@
 <?php
-
+/**
+ * 商户
+ * User: long
+ * Date: 2020/1/3
+ * Time: 16:26
+ */
 
 namespace App\Http\Controllers\Api\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Models\MerchantGroup;
 use App\Services\Merchant\MerchantService;
 
 /**
@@ -21,7 +25,32 @@ class MerchantController extends BaseController
         parent::__construct($service);
     }
 
-   public function update(){
-        return $this->service->update(['id'=>auth()->user()->id],$this->data);
-   }
+    /**
+     * 获取详情
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function show()
+    {
+        $info = $this->service->getInfo(['id' => auth()->id()], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info = $info->toArray();
+        return $info;
+    }
+
+
+    /**
+     * 修改
+     *
+     * @return bool|int|void
+     * @throws BusinessLogicException
+     */
+    public function update()
+    {
+        return $this->service->updateById(auth()->id(), $this->data);
+    }
+
 }

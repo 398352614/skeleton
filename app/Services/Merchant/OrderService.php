@@ -12,13 +12,10 @@ namespace App\Services\Merchant;
 
 use App\Events\Order\OrderCreated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Middleware\Validate;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
-use App\Http\Validate\Api\Merchant\OrderValidate;
 use App\Models\Order;
 use App\Models\OrderImportLog;
-use App\Models\ReceiverAddress;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
@@ -28,8 +25,6 @@ use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use Illuminate\Support\Facades\DB;
-
-use Illuminate\Support\Facades\Validator;
 
 
 class OrderService extends BaseService
@@ -42,7 +37,7 @@ class OrderService extends BaseService
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'order_no,out_order_no' => ['like', 'keyword'],
         'exception_label' => ['=', 'exception_label'],
-        'source' => ['=', 'source']
+        'merchant_id' => ['=', 'merchant_id']
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -115,17 +110,8 @@ class OrderService extends BaseService
     }
 
     /**
-     * 来源 服务
-     * @return mixed
-     */
-    public function getSourceSerice()
-    {
-        return self::getInstance(SourceService::class);
-    }
-
-    /**
      * 发件人地址 服务
-     * @return mixed
+     * @return SenderAddressService
      */
     public function getSenderAddressService()
     {
@@ -134,11 +120,20 @@ class OrderService extends BaseService
 
     /**
      * 收人地址 服务
-     * @return mixed
+     * @return ReceiverAddressService
      */
     public function getReceiverAddressService()
     {
         return self::getInstance(ReceiverAddressService::class);
+    }
+
+    /**
+     * 线路 服务
+     * @return mixed
+     */
+    public function getLineRangeService()
+    {
+        return self::getInstance(LineRangeService::class);
     }
 
     /**
@@ -151,12 +146,12 @@ class OrderService extends BaseService
     }
 
     /**
-     * 国家服务
-     * @return CountryService
+     * 商户 服务
+     * @return MerchantService
      */
-    public function getCountryService()
+    private function getMerchantService()
     {
-        return self::getInstance(CountryService::class);
+        return self::getInstance(MerchantService::class);
     }
 
 
@@ -166,6 +161,7 @@ class OrderService extends BaseService
      */
     public function initPickupIndex()
     {
+        $allCount = $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1]);
         $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_1]);
         $assignCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_2]);
         $waitOutCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_3]);
@@ -173,7 +169,18 @@ class OrderService extends BaseService
         $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_5]);
         $cancelCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_6]);
         $exceptionCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
-        return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'wait_out' => $waitOutCount, 'taking' => $takingCount, 'singed' => $signedCount, 'cancel_count' => $cancelCount, 'exception_count' => $exceptionCount];
+        $delCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_7]);
+        return [
+            'all_count' => $allCount,
+            'no_take' => $noTakeCount,
+            'assign' => $assignCount,
+            'wait_out' => $waitOutCount,
+            'taking' => $takingCount,
+            'singed' => $signedCount,
+            'cancel_count' => $cancelCount,
+            'exception_count' => $exceptionCount,
+            'delete_count' => $delCount
+        ];
     }
 
     /**
@@ -182,6 +189,7 @@ class OrderService extends BaseService
      */
     public function initPieIndex()
     {
+        $allCount = $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2]);
         $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_1]);
         $assignCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_2]);
         $waitOutCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_3]);
@@ -189,7 +197,18 @@ class OrderService extends BaseService
         $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_5]);
         $cancelCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_6]);
         $exceptionCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
-        return ['no_take' => $noTakeCount, 'assign' => $assignCount, 'wait_out' => $waitOutCount, 'taking' => $takingCount, 'singed' => $signedCount, 'cancel_count' => $cancelCount, 'exception_count' => $exceptionCount];
+        $delCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_7]);
+        return [
+            'all_count' => $allCount,
+            'no_take' => $noTakeCount,
+            'assign' => $assignCount,
+            'wait_out' => $waitOutCount,
+            'taking' => $takingCount,
+            'singed' => $signedCount,
+            'cancel_count' => $cancelCount,
+            'exception_count' => $exceptionCount,
+            'delete_count' => $delCount
+        ];
     }
 
 
@@ -298,13 +317,7 @@ class OrderService extends BaseService
         $list = json_decode($params['list'], true);
         $successCount = 0;
         $failCount = 0;
-        $validatorList = [];
         $log = [];
-        $validate = new OrderValidate;
-        $rules = $validate->rules;
-        $message = $validate->message;
-        $item_rules = $validate->item_rules;
-        $itemCustomAttributes = $validate->itemCustomAttributes;
         for ($i = 0; $i < count($list); $i++) {
             //处理格式
             $list[$i]['execution_date'] = date('Y-m-d', ($list[$i]['execution_date'] - 25569) * 24 * 3600);
@@ -316,44 +329,22 @@ class OrderService extends BaseService
             }
             $list[$i]['lon'] = $info['lon'];
             $list[$i]['lat'] = $info['lat'];
-            //订单新增验证
-            $validator[$i] = \Illuminate\Support\Facades\Validator::make($list[$i], $rules, ['*.unique_ignore' => ':attribute已存在', 'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
-            ]);
-            if ($validator[$i]->fails()) {
-                $log[$i + 1] = array_values($validator[$i]->errors()->getMessages())[0];
+            //订单新增事务
+            try {
+                DB::beginTransaction();
+                $this->store($list[$i]);
+                $log[$i + 1] = 'success';
+                $successCount = $successCount + 1;
+                DB::commit();
+            } catch (BusinessLogicException $e) {
+                DB::rollBack();
+                $log[$i + 1] = $e->getMessage();
                 $failCount = $failCount + 1;
-            } else {
-                if (!empty($list[$i]['item_list'])) {
-                    $itemList = json_decode($list[$i]['item_list'], true);
-                    if (json_last_error() !== JSON_ERROR_NONE) {
-                        $log[$i + 1] = (new BusinessLogicException('明细数据格式不正确', 3001))->getMessage();
-                    } else {
-                        foreach ($itemList as $item) {
-                            $validatorList[$i] = \Illuminate\Support\Facades\Validator::make($item, $item_rules);
-                        }
-                        if ($validatorList[$i]->fails()) {
-                            $log[$i + 1] = array_values($validatorList[$i]->errors()->getMessages())[0];
-                            $failCount = $failCount + 1;
-                        } else {
-                            //订单新增事务
-                            try {
-                                DB::beginTransaction();
-                                $this->store($list[$i]);
-                                $log[$i + 1] = 'success';
-                                $successCount = $successCount + 1;
-                                DB::commit();
-                            } catch (BusinessLogicException $e) {
-                                DB::rollBack();
-                                $log[$i + 1] = $e->getMessage();
-                            } catch (\Exception $e) {
-                                DB::rollBack();
-                                $log[$i + 1] = $e->getMessage();
-                            }
-                        }
-                    }
-                }
+            } catch (\Exception $e) {
+                DB::rollBack();
+                $log[$i + 1] = $e->getMessage();
+                $failCount = $failCount + 1;
             }
-
         }
         $data['log'] = $log;
         $data['success'] = $successCount;
@@ -364,6 +355,7 @@ class OrderService extends BaseService
             'log' => json_encode($data['log']),
             'status' => 2
         ]);
+        return $data;
     }
 
     /**
@@ -377,9 +369,9 @@ class OrderService extends BaseService
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         $params['path'] = str_replace('tms-api.test/storage/', 'public//', $params['path']);
-        $heading = ['execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'special_remark', 'remark', 'item_list'];
+        $heading = ['execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'special_remark', 'remark', 'package_list', 'material_list'];
         $this->headingCheck($params['path'], $heading);//表头验证
-        $row = $this->excelImport($params['path'])[0];
+        $row = $this->orderExcelImport($params['path'])[0];
         $id = $this->orderImportLog($params);
         return ['row' => $row, 'id' => $id];
     }
@@ -388,7 +380,6 @@ class OrderService extends BaseService
     {
         $orderImport = [
             'company_id' => auth()->user()->company_id,
-            'name' => $params['name'],
             'url' => $params['path'],
             'status' => 1,
             'success_order' => 0,//$info['success'],
@@ -407,8 +398,8 @@ class OrderService extends BaseService
     {
         //验证$params
         $checkfile = \Illuminate\Support\Facades\Validator::make($params,
-            ['file' => 'required|file|mimes:txt,xls,xlsx', 'name' => 'required|unique:order_import_log'],
-            ['file.file' => '必须是文件', 'file.mimes' => ':attribute类型必须是excel,word,jpeg,bmp,png,pdf类型']);
+            ['file' => 'required|file|mimes:txt,xls,xlsx'],
+            ['file.file' => '必须是文件']);
         if ($checkfile->fails()) {
             $error = array_values($checkfile->errors()->getMessages())[0][0];
             throw new BusinessLogicException($error, 301);
@@ -419,13 +410,10 @@ class OrderService extends BaseService
     /**
      * 自动记录
      * @param $params
+     * @throws BusinessLogicException
      */
     public function record($params)
     {
-        //记录来源
-        if (empty($this->getSourceSerice()->getInfo(['source_name' => $params['source']], ['*'], false))) {
-            $this->getSourceSerice()->create(['source_name' => $params['source']]);
-        }
         //记录发件人地址
         $info = $this->getSenderAddressService()->check($params);
         if (empty($info)) {
@@ -441,18 +429,18 @@ class OrderService extends BaseService
     /**
      * 验证
      * @param $params
-     * @param $id
+     * @param $orderNo
      * @throws BusinessLogicException
      */
-    private function check(&$params, $id = null)
+    private function check(&$params, $orderNo = null)
     {
-        if (empty($params['package_list']) || empty($params['material_list'])) {
+        $params['merchant_id'] = auth()->id();
+        if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
-        $this->validateFields($params);
         //验证包裹列表
         if (!empty($params['package_list'])) {
-            $packageList = json_decode($params['package_list'], true);
+            $packageList = $params['package_list'];
             $nameList = array_column($packageList, 'name');
             if (count(array_unique($nameList)) !== count($nameList)) {
                 throw new BusinessLogicException('包裹名称有重复!不能添加订单');
@@ -461,11 +449,16 @@ class OrderService extends BaseService
             if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
                 throw new BusinessLogicException('包裹外部标识有重复!不能添加订单');
             }
+            $expressNoList = array_filter(array_merge(array_column($packageList, 'express_first_no'), array_column($packageList, 'express_second_no')));
+            if (count(array_unique($expressNoList)) !== count($expressNoList)) {
+                throw new BusinessLogicException('快递单号有重复!不能添加订单');
+            }
+            //验证外部标识/快递单号1/快递单号2
+            $this->getPackageService()->checkAllUnique($packageList, $orderNo);
         }
-
         //验证材料列表
         if (!empty($params['material_list'])) {
-            $materialList = json_decode($params['material_list'], true);
+            $materialList = $params['material_list'];
             $nameList = array_column($materialList, 'name');
             if (count(array_unique($nameList)) !== count($nameList)) {
                 throw new BusinessLogicException('材料名称有重复!不能添加订单');
@@ -475,64 +468,12 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('材料代码有重复!不能添加订单');
             }
             $outOrderNoList = array_column($materialList, 'out_order_no');
-            if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
-                throw new BusinessLogicException('材料外部标识有重复!不能添加订单');
-            }
-//            $statusList = [BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7];
-//            $material = DB::select("SELECT * FROM material INNER JOIN `order` ON (material.order_no = `order`.order_no) WHERE material.out_order_no IN $outOrderNoList AND `order`.status NOT IN $statusList LIMIT 1");
-//            if (!empty($material)) {
-//                throw new BusinessLogicException('当前外部标识已存在其他订单中');
-//            }
-        }
-        if (!is_include_chinese($params['receiver_country'])) {
-            $country = $this->getCountryService()->getInfo(['en_name' => $params['receiver_country']], ['*'], false);
-            !empty($country) && $params['receiver_country'] = $country['cn_name'];
-        }
-    }
-
-    /**
-     * 字段验证
-     * @param $params
-     * @throws BusinessLogicException
-     */
-    private function validateFields(&$params)
-    {
-        //验证包裹字段
-        if (!empty($params['package_list'])) {
-            $packageList = json_decode($params['package_list'], true);
-            $rules = [
-                'name' => 'required|string|max:50',
-                'weight' => 'required|numeric',
-                'quantity' => 'required|integer',
-                'remark' => 'nullable|string|max:250',
-                'out_order_no' => 'required|string|max:50|unique:package',
-                'express_first_no' => 'required|string|max:50|unique:package',
-                'express_second_no' => 'nullable|string|max:50|unique:package',
-            ];
-            foreach ($packageList as $package) {
-                $validator = Validator::make($package, $rules);
-                if ($validator->fails()) {
-                    $messageList = Arr::flatten($validator->errors()->getMessages());
-                    throw new BusinessLogicException(implode(';', $messageList), 3001);
+            if (!empty($outOrderNoList)) {
+                if (count(array_unique($outOrderNoList)) !== count($outOrderNoList)) {
+                    throw new BusinessLogicException('材料外部标识有重复!不能添加订单');
                 }
-            }
-        }
-        //验证材料字段
-        if (!empty($params['material_list'])) {
-            $materialList = json_decode($params['material_list'], true);
-            $rules = [
-                'name' => 'required|string|max:50',
-                'code' => 'required|string|max:50',
-                'out_order_no' => 'required|string|max:50|unique:material',
-                'expect_quantity' => 'required|integer',
-                'remark' => 'nullable|string|max:250',
-            ];
-            foreach ($materialList as $material) {
-                $validator = Validator::make($material, $rules);
-                if ($validator->fails()) {
-                    $messageList = Arr::flatten($validator->errors()->getMessages());
-                    throw new BusinessLogicException(implode(';', $messageList), 3001);
-                }
+                //验证唯一性
+                $this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $orderNo);
             }
         }
     }
@@ -546,12 +487,15 @@ class OrderService extends BaseService
      */
     private function addAllItemList($params, $batch, $tour)
     {
+        $status = $params['status'] ?? BaseConstService::PACKAGE_STATUS_1;
         //若存在包裹列表,则新增包裹列表
         if (!empty($params['package_list'])) {
-            $packageList = collect(json_decode($params['package_list'], true))->map(function ($item, $key) use ($params, $batch, $tour) {
-                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'weight', 'quantity', 'remark']);
+            $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
+                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'weight', 'expect_quantity', 'remark']);
                 return $collectItem->put('order_no', $params['order_no'])->put('batch_no', $batch['batch_no'])->put('tour_no', $tour['tour_no']);
             })->toArray();
+            data_set($packageList, '*.status', $status);
+            data_set($packageList, '*.type', $params['type']);
             $rowCount = $this->getPackageService()->insertAll($packageList);
             if ($rowCount === false) {
                 throw new BusinessLogicException('订单包裹新增失败!');
@@ -559,7 +503,7 @@ class OrderService extends BaseService
         }
         //若材料存在,则新增材料列表
         if (!empty($params['material_list'])) {
-            $materialList = collect(json_decode($params['material_list'], true))->map(function ($item, $key) use ($params, $batch, $tour) {
+            $materialList = collect($params['material_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
                 $collectItem = collect($item)->only(['name', 'code', 'out_order_no', 'expect_quantity', 'remark']);
                 return $collectItem->put('order_no', $params['order_no'])->put('batch_no', $batch['batch_no'])->put('tour_no', $tour['tour_no']);
             })->toArray();
@@ -581,6 +525,7 @@ class OrderService extends BaseService
      */
     public function fillBatchTourInfo($order, $batch, $tour, $isFillItem = true)
     {
+        $status = $tour['status'] ?? BaseConstService::ORDER_STATUS_1;
         $rowCount = parent::updateById($order['id'], [
             'execution_date' => $batch['execution_date'],
             'batch_no' => $batch['batch_no'],
@@ -590,14 +535,14 @@ class OrderService extends BaseService
             'driver_phone' => $tour['driver_phone'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
             'car_no' => $tour['car_no'] ?? '',
-            'status' => $tour['status'] ?? BaseConstService::ORDER_STATUS_1,
+            'status' => $status,
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         if ($isFillItem === false) return;
         //填充包裹
-        $rowCount = $this->getPackageService()->update(['order_no' => $order['order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+        $rowCount = $this->getPackageService()->update(['order_no' => $order['order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no'], 'status' => $status]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
@@ -621,16 +566,17 @@ class OrderService extends BaseService
     {
         unset($data['order_no'], $data['tour_no'], $data['batch_no']);
         /*************************************************订单修改******************************************************/
-        //验证
-        $this->check($data, $id);
         //获取信息
-        $dbInfo = $this->getInfoOfStatus(['id' => $id]);
+        $dbInfo = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        //验证
+        $this->check($data, $dbInfo['order_no']);
         //修改
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
         }
         $data = Arr::add($data, 'order_no', $dbInfo['order_no']);
+        $data = Arr::add($data, 'status', $dbInfo['status']);
         /******************************判断是否需要更换站点(取派日期+收货方地址 验证)***************************************/
         $isChangeBatch = $this->checkIsChangeBatch($dbInfo, $data);
         if ($isChangeBatch === true) {
@@ -689,6 +635,23 @@ class OrderService extends BaseService
     }
 
     /**
+     * 获取可分配星期
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getTourDate($id)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], true);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $this->getLineRangeService()->query
+            ->where('post_code_start', '<=', $info['receiver_post_code'])
+            ->where('post_code_end', '>=', $info['receiver_post_code'])->distinct()->pluck('schedule');
+    }
+
+    /**
      * 获取可分配的站点列表
      * @param $id
      * @param $params
@@ -714,7 +677,7 @@ class OrderService extends BaseService
      */
     public function assignToBatch($id, $params)
     {
-        $info = $this->getInfoOfStatus(['id' => $id]);
+        $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
             throw new BusinessLogicException('当前订单已存在分配的站点中!');
         }
@@ -731,17 +694,17 @@ class OrderService extends BaseService
      */
     public function removeFromBatch($id)
     {
-        $info = $this->getInfoOfStatus(['id' => $id]);
+        $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($info['batch_no'])) {
             throw new BusinessLogicException('已从站点移除!');
         }
         //订单移除站点和取件线路信息
-        $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null]);
+        $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
         //包裹移除站点和取件线路信息
-        $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '']);
+        $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
@@ -761,13 +724,13 @@ class OrderService extends BaseService
      */
     public function destroy($id)
     {
-        $info = $this->getInfoOfStatus(['id' => $id]);
+        $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_7, 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单删除失败,请重新操作');
         }
         //包裹移除站点和取件线路信息
-        $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '']);
+        $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_7]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
@@ -791,16 +754,31 @@ class OrderService extends BaseService
      */
     public function recovery($id, $params)
     {
-        $order = $this->getInfoOfStatus(['id' => $id], false, BaseConstService::ORDER_STATUS_7);
+        $orderCollection = $this->getInfoOfStatus(['id' => $id], false, BaseConstService::ORDER_STATUS_7);
+        $order = $orderCollection->toArray();
+        /********************************************恢复之前验证包裹**************************************************/
+        $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
+        if (!empty($packageList)) {
+            $this->getPackageService()->checkAllUnique($packageList, $order['order_no']);
+        }
+        /********************************************恢复之前验证材料**************************************************/
+        $materialList = $this->getMaterialService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
+        if (!empty($materialList)) {
+            $outOrderNoList = array_column($materialList, 'out_order_no');
+            if (!empty($outOrderNoList)) {
+                $this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $order['order_no']);
+            }
+        }
+        /**********************************************订单回复********************************************************/
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => $params['execution_date']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单恢复失败');
         }
         $order['execution_date'] = $params['execution_date'];
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
+        OrderTrailService::OrderStatusChangeCreateTrail($orderCollection, BaseConstService::ORDER_TRAIL_CREATED);
         /*****************************************订单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($order);
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
+        OrderTrailService::OrderStatusChangeCreateTrail($orderCollection, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($order, $batch, $tour);
     }

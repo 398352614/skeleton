@@ -103,7 +103,7 @@ class BatchService extends BaseService
 
     /**
      * 获取待分配订单信息
-     * @param $id
+     * @param $where
      * @param $isToArray
      * @param $status
      * @param $isLock
@@ -143,7 +143,7 @@ class BatchService extends BaseService
         /**************************************站点加入取件线路********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $order['type']);
         /***********************************************填充取件线路编号************************************************/
-        $this->fillTourInfo($batch, $tour);
+        $this->fillTourInfo($batch, $line, $tour);
 
         return [$batch, $tour];
     }
@@ -208,20 +208,7 @@ class BatchService extends BaseService
      */
     private function joinNewBatch($order)
     {
-        //获取邮编数字部分
-        $postCode = explode_post_code($order['receiver_post_code']);
-        //获取线路范围
-        $lineRange = $this->getLineRangeService()->getInfo(['post_code_start' => ['<=', $postCode], 'post_code_end' => ['>=', $postCode], 'schedule' => Carbon::parse($order['execution_date'])->dayOfWeek, 'country' => $order['receiver_country']], ['*'], false);
-        if (empty($lineRange)) {
-            throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
-        }
-        $lineRange = $lineRange->toArray();
-        //获取线路信息
-        $line = $this->getLineService()->getInfo(['id' => $lineRange['line_id']], ['*'], false);
-        if (empty($line)) {
-            throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
-        }
-        $line = $line->toArray();
+        $line = $this->getLineInfo($order);
         //站点新增
         $batchNo = $this->getOrderNoRuleService()->createBatchNo();
         $batch = parent::create($this->fillData($order, $line, $batchNo));
@@ -382,7 +369,7 @@ class BatchService extends BaseService
         /**************************************站点加入取件线路********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $order['type']);
         /***********************************************填充取件线路编号************************************************/
-        $this->fillTourInfo($batch, $tour);
+        $this->fillTourInfo($batch, $line, $tour);
         return [$batch, $tour];
     }
 
@@ -467,23 +454,44 @@ class BatchService extends BaseService
     public function assignToTour($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
-        $line = $this->getLineService()->getInfo(['id' => $info['line_id']], ['*'], false);
-        if (empty($line)) {
-            throw new BusinessLogicException('路线不存在');
-        }
-        $line = $line->toArray();
         if (!empty($params['tour_no']) && ($info['tour_no'] == $params['tour_no'])) {
             throw new BusinessLogicException('当前站点已分配至当前指定取件线路');
         }
         $info['execution_date'] = $params['execution_date'];
+        //获取线路信息
+        $line = $this->getLineInfo($info);
         $tour = $this->getTourService()->assignBatchToTour($info, $line, $params);
         /***********************************************填充取件线路编号************************************************/
-        $this->fillTourInfo($info, $tour);
+        $this->fillTourInfo($info, $line, $tour);
         /***********************************************修改订单************************************************/
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
-            $this->getOrderService()->fillBatchTourInfo($order['id'], $info, $tour);
+            $this->getOrderService()->fillBatchTourInfo($order, $info, $tour);
         }
+    }
+
+    /**
+     * 获取线路信息
+     * @param $info
+     * @return array
+     * @throws BusinessLogicException
+     */
+    private function getLineInfo($info)
+    {
+        //获取邮编数字部分
+        $postCode = explode_post_code($info['receiver_post_code']);
+        //获取线路范围
+        $lineRange = $this->getLineRangeService()->getInfo(['post_code_start' => ['<=', $postCode], 'post_code_end' => ['>=', $postCode], 'schedule' => Carbon::parse($info['execution_date'])->dayOfWeek, 'country' => $info['receiver_country']], ['*'], false);
+        if (empty($lineRange)) {
+            throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
+        }
+        $lineRange = $lineRange->toArray();
+        //获取线路信息
+        $line = $this->getLineService()->getInfo(['id' => $lineRange['line_id']], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
+        }
+        return $line->toArray();
     }
 
     /**
@@ -493,11 +501,13 @@ class BatchService extends BaseService
      * @param $tour
      * @throws BusinessLogicException
      */
-    private function fillTourInfo($batch, $tour)
+    private function fillTourInfo($batch, $line, $tour)
     {
         $rowCount = parent::updateById($batch['id'], [
             'execution_date' => $tour['execution_date'],
             'tour_no' => $tour['tour_no'],
+            'line_id' => $line['id'],
+            'line_name' => $line['name'],
             'driver_id' => $tour['driver_id'] ?? null,
             'driver_name' => $tour['driver_name'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
@@ -532,5 +542,22 @@ class BatchService extends BaseService
         }
         //将站点从取件线路移除
         $this->getTourService()->removeBatch($info);
+    }
+
+    /**
+     * 获取可分配日期
+     * @param $id
+     * @return \Illuminate\Support\Collection
+     * @throws BusinessLogicException
+     */
+    public function getTourDate($id)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], true);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $this->getLineRangeService()->query
+            ->where('post_code_start', '<=', $info['receiver_post_code'])
+            ->where('post_code_end', '>=', $info['receiver_post_code'])->distinct()->pluck('schedule');
     }
 }

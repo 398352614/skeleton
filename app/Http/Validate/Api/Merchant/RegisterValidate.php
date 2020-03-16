@@ -27,11 +27,11 @@ class RegisterValidate extends BaseValidate
         'new_password' => 'required|string|between:8,20',
         'confirm_new_password' => 'required|string|same:new_password',
         'name' => 'required|string|max:50|uniqueIgnore:company,id',
-        'company_code'=>'required|string'
+        'company_code' => 'required|string'
     ];
 
     public $scene = [
-        'store' => ['name', 'email', 'password', 'confirm_password','company_code'],
+        'store' => ['name', 'email', 'password', 'confirm_password', 'company_code'],
         'applyOfRegister' => ['email'],
         'applyOfReset' => ['email'],
         'resetPassword' => ['new_password', 'confirm_new_password', 'code', 'email'],

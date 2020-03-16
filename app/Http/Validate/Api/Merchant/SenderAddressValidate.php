@@ -35,9 +35,9 @@ class SenderAddressValidate extends BaseValidate
 
     public $scene = [
         'store' => ['sender', 'sender_phone', 'sender_country', 'sender_post_code',
-            'sender_house_number', 'sender_city', 'sender_street', 'sender_address','lon','lat' ],
+            'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'lon', 'lat'],
         'update' => ['sender', 'sender_phone', 'sender_country', 'sender_post_code',
-            'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'lon','lat'],
+            'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'lon', 'lat'],
     ];
 }
 

@@ -19,9 +19,9 @@ class TransportPriceController extends BaseController
         parent::__construct($service);
     }
 
-    public function me()
+    public function show()
     {
-        return $this->service->me();
+        return $this->service->show();
     }
 
 }

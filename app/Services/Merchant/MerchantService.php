@@ -10,14 +10,10 @@ namespace App\Services\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\MerchantResource;
 use App\Models\Merchant;
-use App\Services\BaseConstService;
 use App\Services\BaseService;
-use Illuminate\Hashing\Argon2IdHasher;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Vinkla\Hashids\Facades\Hashids;
+use Illuminate\Support\Arr;
+
 
 class MerchantService extends BaseService
 {
@@ -25,56 +21,6 @@ class MerchantService extends BaseService
     {
         $this->model = $merchant;
         $this->query = $this->model::query();
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->resource = MerchantResource::class;
-    }
-
-    /**
-     * 商户api 服务
-     * @return MerchantApiService
-     */
-    public function getMerchantApiService()
-    {
-        return parent::getInstance(MerchantApiService::class);
-    }
-
-    /**
-     * 商户组管理 服务
-     * @return MerchantGroupService
-     */
-    private function getMerchantGroupService()
-    {
-        return self::getInstance(MerchantGroupService::class);
-    }
-
-
-    /**
-     * 新增
-     * @param $params
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
-     * @throws BusinessLogicException
-     * @throws \Exception
-     */
-    public function store($params)
-    {
-        $this->check($params);
-        $params['password'] = Hash::make(BaseConstService::INITIAL_PASSWORD);
-        $merchant = parent::create($params);
-        if ($merchant === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
-        }
-        //生成授权api
-        $id = $merchant->getAttribute('id');
-        $merchantApi = $this->getMerchantApiService()->create([
-            'merchant_id' => $id,
-            'key' => Hashids::encode(time() . $id),
-            'secret' => Hashids::connection('alternative')->encode(time() . $id)
-        ]);
-        if ($merchantApi === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
-        }
-        return $merchant;
     }
 
     /**
@@ -86,38 +32,9 @@ class MerchantService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $this->check($data);
-        $rowCount = parent::updateById($id, $data);
+        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'contacter', 'phone', 'country', 'address']));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
         }
     }
-
-    /**
-     * 验证
-     * @param $params
-     * @throws BusinessLogicException
-     */
-    public function check(&$params)
-    {
-        $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $params['merchant_group_id']], ['*'], false);
-        if (empty($merchantGroup)) {
-            throw new BusinessLogicException('商户组不存在');
-        }
-    }
-
-    /**
-     * 修改密码
-     * @param $id
-     * @param $data
-     * @throws BusinessLogicException
-     */
-    public function updatePassword($id, $data)
-    {
-        $rowCount = parent::updateById($id, ['password' => Hash::make($data['password'])]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
-        }
-    }
-
 }

@@ -29,7 +29,7 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
     Route::post('logout', 'AuthController@logout');
     Route::put('my-password', 'AuthController@updatePassword');
     Route::put('', 'MerchantController@update');
-    Route::put('api','merchantApiController@update');
+    Route::put('api', 'merchantApiController@update');
 
     //主页统计
     Route::prefix('home')->group(function () {
@@ -43,7 +43,7 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
 
     //运价管理
     Route::prefix('transport-price')->group(function () {
-        Route::get('/', 'TransportPriceController@me');
+        Route::get('/', 'TransportPriceController@show');
     });
 
     //API管理

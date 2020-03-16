@@ -22,12 +22,13 @@ class MerchantApiController extends BaseController
 
     /**
      * 获取详情
+     * @param $merchantId
      * @return array
      * @throws BusinessLogicException
      */
     public function show()
     {
-        $info = $this->service->getInfo(['merchant_id' => auth()->user()->id], ['*'], false);
+        $info = $this->service->getInfo(['merchant_id' => auth()->id()], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -36,11 +37,12 @@ class MerchantApiController extends BaseController
 
     /**
      * 修改
+     * @param $merchantId
      * @throws BusinessLogicException
      */
     public function update()
     {
-        $rowCount = $this->service->update(['merchant_id' => auth()->user()->id], Arr::only($this->data, ['url', 'white_ip_list', 'status']));
+        $rowCount = $this->service->update(['merchant_id' => auth()->id()], Arr::only($this->data, ['url', 'white_ip_list', 'status']));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
         }

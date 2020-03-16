@@ -9,6 +9,7 @@
 
 namespace App\Http\Controllers\Api\Merchant;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Merchant\OrderService;
 
@@ -69,7 +70,27 @@ class OrderController extends BaseController
      */
     public function store()
     {
-        return $this->service->store(request()->all());
+        return $this->service->store($this->data);
+    }
+
+    /**
+     * 订单批量导入
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function orderImport()
+    {
+        return $this->service->orderImport($this->data);
+    }
+
+    /**
+     * 批量新增
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function storeByList()
+    {
+        return $this->service->createByList($this->data);
     }
 
     /**
@@ -80,9 +101,20 @@ class OrderController extends BaseController
      */
     public function update($id)
     {
-        return $this->service->updateById($id, request()->all());
+        return $this->service->updateById($id, $this->data);
     }
 
+
+    /**
+     * 通过订单，获取可分配的线路的取派日期
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getTourDate($id)
+    {
+        return $this->service->getTourDate($id);
+    }
 
     /**
      * 通过订单,获取可分配的站点列表
@@ -92,7 +124,7 @@ class OrderController extends BaseController
      */
     public function getBatchPageListByOrder($id)
     {
-        return $this->service->getBatchPageListByOrder($id, request()->all());
+        return $this->service->getBatchPageListByOrder($id, $this->data);
     }
 
 
@@ -104,7 +136,7 @@ class OrderController extends BaseController
      */
     public function assignToBatch($id)
     {
-        return $this->service->assignToBatch($id, request()->all());
+        return $this->service->assignToBatch($id, $this->data);
     }
 
     /**
@@ -134,7 +166,7 @@ class OrderController extends BaseController
      */
     public function recovery($id)
     {
-        return $this->service->recovery($id, request()->all());
+        return $this->service->recovery($id, $this->data);
     }
 
     /**

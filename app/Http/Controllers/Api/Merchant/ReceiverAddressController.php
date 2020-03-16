@@ -1,8 +1,8 @@
 <?php
 /**
- * 客户管理-收货方 接口
+ * 联系人管理-收货方 接口
  * User: long
- * Date: 2020/1/10
+ * Date: 2020/3/16
  * Time: 13:38
  */
 
@@ -14,7 +14,7 @@ use App\Services\Merchant\ReceiverAddressService;
 
 /**
  * Class ReceiverAddressController
- * @package App\Http\Controllers\Api\Admin
+ * @package App\Http\Controllers\Api\Merchant
  * @property ReceiverAddressService $service
  */
 class ReceiverAddressController extends BaseController
@@ -26,7 +26,7 @@ class ReceiverAddressController extends BaseController
 
     public function index()
     {
-        return $this->service->index();
+        return $this->service->getPageList();
     }
 
     /**

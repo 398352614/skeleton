@@ -11,6 +11,7 @@ use App\Models\Car;
 use App\Models\CarBrand;
 use App\Models\CarModel;
 use App\Models\Company;
+use App\Models\Country;
 use App\Models\Driver;
 use App\Models\Employee;
 use App\Models\KilometresCharging;
@@ -79,6 +80,7 @@ class CompanyScope implements Scope
                 && !($model instanceof KilometresCharging)
                 && !($model instanceof WeightCharging)
                 && !($model instanceof SpecialTimeCharging)
+                && !($model instanceof Country)
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
             }

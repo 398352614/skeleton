@@ -72,7 +72,7 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_SETTLEMENT_TYPE_2 => '到付',
     ];
 
-    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
+    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     public static $orderStatusList = [
         BaseConstService::ORDER_STATUS_1 => '待分配',
         BaseConstService::ORDER_STATUS_2 => '已分配',
@@ -80,10 +80,10 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_STATUS_4 => '取派中',
         BaseConstService::ORDER_STATUS_5 => '已完成',
         BaseConstService::ORDER_STATUS_6 => '取消取派',
-        BaseConstService::ORDER_STATUS_7 => '收回站',
+        BaseConstService::ORDER_STATUS_7 => '回收站',
     ];
 
-    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
+    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     public static $packageStatusList = [
         BaseConstService::ORDER_STATUS_1 => '待分配',
         BaseConstService::ORDER_STATUS_2 => '已分配',
@@ -91,7 +91,7 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_STATUS_4 => '取派中',
         BaseConstService::ORDER_STATUS_5 => '已完成',
         BaseConstService::ORDER_STATUS_6 => '取消取派',
-        BaseConstService::ORDER_STATUS_7 => '收回站',
+        BaseConstService::ORDER_STATUS_7 => '回收站',
     ];
 
     //订单异常标签1-正常2-异常
@@ -262,6 +262,7 @@ trait ConstTranslateTrait
         BaseConstService::MERCHANT_STATUS_1 => '启用',
         BaseConstService::MERCHANT_STATUS_2 => '禁用',
     ];
+
     /**
      * 此函数用于访问静态变量的同时对其进行翻译
      */

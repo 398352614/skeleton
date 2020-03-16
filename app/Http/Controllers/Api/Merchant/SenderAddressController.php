@@ -5,9 +5,14 @@ namespace App\Http\Controllers\Api\Merchant;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Merchant\SenderAddressService;
+
+/**
+ * Class SenderAddressController
+ * @package App\Http\Controllers\Api\Merchant
+ * @property SenderAddressService $service
+ */
 class SenderAddressController extends BaseController
 {
-
     public function __construct(SenderAddressService $service)
     {
         parent::__construct($service);
@@ -19,14 +24,16 @@ class SenderAddressController extends BaseController
      */
     public function index()
     {
-        return $this->service->index();
+        return $this->service->getPageList();
     }
 
-    /**
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
 
+    /**
+     * 获取详情
+     *
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
      */
     public function show($id)
     {
