@@ -12,7 +12,7 @@ class TestGuzzle extends Command
      *
      * @var string
      */
-    protected $signature = 'test:guzzle';
+    protected $signature = 'test:guzzle {url}';
 
     /**
      * The console command description.
@@ -38,7 +38,8 @@ class TestGuzzle extends Command
      */
     public function handle()
     {
-        $url = 'https://dev-distancematrix.nle-tech.com';
+        $url = $this->argument('url');
+        // $url = 'https://dev-distancematrix.nle-tech.com';
         // $url = 'https://dev-distancematrix.nle-tech.com/api/update-line?api_key=nletech&timestamp=1584347717&sign=a02822e91d08baba93f08e8cb63ae560a226e6b98c5a75b56d125a23d18c9e0e';
         // $url = 'https://www.baidu.com';
 
