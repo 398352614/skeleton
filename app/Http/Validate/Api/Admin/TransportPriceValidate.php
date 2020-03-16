@@ -17,7 +17,10 @@ class TransportPriceValidate extends BaseValidate
         'name' => '名称',
         'starting_price' => '起步价',
         'remark' => '特殊说明',
-        'status' => '状态'
+        'status' => '状态',
+        'km' => '公里',
+        'weight' => '重量',
+        'special_time' => '时间点'
     ];
 
 
@@ -38,6 +41,10 @@ class TransportPriceValidate extends BaseValidate
         'special_time_list.*.start' => 'required_with:special_time_list|date_format:H:i:s',
         'special_time_list.*.end' => 'required_with:special_time_list|date_format:H:i:s|after:special_time_list.*.start',
         'special_time_list.*.price' => 'required_with:special_time_list|numeric',
+        //运价计算
+        'km' => 'nullable|integer',
+        'weight' => 'nullable|integer',
+        'special_time' => 'nullable|date_format:H:i:s'
     ];
 
     public $scene = [
@@ -52,6 +59,9 @@ class TransportPriceValidate extends BaseValidate
             'km_list', 'km_list.*.start', 'km_list.*.end', 'km_list.*.price',
             'weight_list', 'weight_list.*.start', 'weight_list.*.end', 'weight_list.*.price',
             'special_time_list', 'special_time_list.*.start', 'special_time_list.*.end', 'special_time_list.*.price',
+        ],
+        'getPriceResult' => [
+            'km', 'weight', 'special_time'
         ],
     ];
 }

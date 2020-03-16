@@ -90,8 +90,8 @@ class TransportPriceService extends BaseService
         $info['km_list'] = $this->kilometresChargingModel->newQuery()->where('transport_price_id', '=', $id)->get()->toArray();
         $info['weight_list'] = $this->weightChargingModel->newQuery()->where('transport_price_id', '=', $id)->get()->toArray();
         $info['special_time_list'] = $this->specialTimeChargingModel->newQuery()->where('transport_price_id', '=', $id)->get()->toArray();
-        for($i=0;$i<count($info['special_time_list']);$i++){
-            $info['special_time_list'][$i]['period']=[$info['special_time_list'][$i]['start'],$info['special_time_list'][$i]['end']];
+        for ($i = 0; $i < count($info['special_time_list']); $i++) {
+            $info['special_time_list'][$i]['period'] = [$info['special_time_list'][$i]['start'], $info['special_time_list'][$i]['end']];
         }
         return $info;
     }
@@ -152,40 +152,60 @@ class TransportPriceService extends BaseService
      */
     public function getPriceResult($id, $params)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $info = $info->toArray();
+        $info = $this->show($id);
         $price = $info['starting_price'];
         //公里计费
         if (!empty($params['km'])) {
-            $km = $this->kilometresChargingModel->newQuery()->where('start', '<=', $params['km'])->where('end', '>', $params['km'])->first();
+            if (empty($info['km_list'])) {
+                throw new BusinessLogicException('当前运价没有公里计费列表');
+            }
+            $km = Arr::first($info['km_list'], function ($km, $key) use ($params) {
+                if (($km['start'] <= $params['km']) && ($km['end'] >= $params['km'])) {
+                    return true;
+                }
+                return false;
+            });
             if (empty($km)) {
                 throw new BusinessLogicException('当前公里不在该运价范围内');
             }
-            $km = $km->toArray();
             $price += $km['price'];
         }
         //重量计费
         if (!empty($params['weight'])) {
-            $weight = $this->weightChargingModel->newQuery()->where('start', '<=', $params['weight'])->where('end', '>', $params['weight'])->first();
+            if (empty($info['weight_list'])) {
+                throw new BusinessLogicException('当前运价没有重量计费列表');
+            }
+            $weight = Arr::first($info['weight_list'], function ($weight, $key) use ($params) {
+                if (($weight['start'] <= $params['weight']) && ($weight['end'] >= $params['weight'])) {
+                    return true;
+                }
+                return false;
+            });
             if (empty($weight)) {
                 throw new BusinessLogicException('当前重量不在该运价范围内');
             }
-            $weight = $weight->toArray();
             $price += $weight['price'];
         }
         //特殊时段计费
         if (!empty($params['special_time'])) {
-            $specialTime = $this->specialTimeChargingModel->newQuery()->where('start', '<=', $params['special_time'])->where('end', '>', $params['special_time'])->first();
+            if (empty($info['special_time_list'])) {
+                throw new BusinessLogicException('当前运价没有特殊时段计费列表');
+            }
+            $startDay = '1970-01-02';
+            $special = strtotime($startDay . $params['special_time']);
+            $specialTime = Arr::first($info['special_time_list'], function ($specialTime, $key) use ($params, $startDay, $special) {
+                $start = strtotime($startDay . $specialTime['start']);
+                $end = strtotime($startDay . $specialTime['end']);
+                if (($start <= $special) && ($end >= $special)) {
+                    return true;
+                }
+                return false;
+            });
             if (empty($specialTime)) {
                 throw new BusinessLogicException('当前时间不在该运价范围内');
             }
-            $specialTime = $specialTime->toArray();
             $price += $specialTime['price'];
         }
-        $info = $this->show($id);
         $info['price'] = $price;
         return $info;
     }
