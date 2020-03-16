@@ -109,10 +109,7 @@ class OrderController extends BaseController
      * 通过订单，获取可分配的线路的取派日期
      * @param $id
      * @return mixed
-<<<<<<< Updated upstream
      * @throws BusinessLogicException
-=======
->>>>>>> Stashed changes
      */
     public function getTourDate($id)
     {
