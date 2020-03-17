@@ -410,5 +410,9 @@ return [
         'permission' => '权限',
         'package_list' => '包裹列表',
         'material_list' => '材料列表',
+
+        'km' => '公里',
+        'weight' => '重量',
+        'special_time' => '时间点'
     ],
 ];
