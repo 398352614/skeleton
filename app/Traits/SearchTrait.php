@@ -27,6 +27,10 @@ trait SearchTrait
                 $query->whereIn($k, $value);
                 continue;
             }
+            if ($type === '<>') {
+                $query->where($k, $type, $value);
+                continue;
+            }
             //not in
             if ($type === 'not in' && is_array($value)) {
                 $query->whereNotIn($k, $value);
