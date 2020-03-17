@@ -1,4 +1,6 @@
 {
+  "包裹名称有重复!不能添加订单": "duplicate package name! Order cannot be added",
+  "订单中必须存在一个包裹或一种材料": "there must be a package or a material in the order",
   "包裹快递单号1[:express_no]已存在;": "package first express number [:express_no] already exists;",
   "包裹快递单号2[:express_no]已存在;": "package second express number [:express_no] already exists;",
   "包裹外部标识[:out_order_no]已存在;": "package out order number [:out_order_no] already exists;",
