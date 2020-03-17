@@ -10,6 +10,7 @@ namespace App\Traits;
 
 use App\Exceptions\BusinessLogicException;
 use App\Services\Admin\UploadService;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -170,12 +171,13 @@ trait LocationTrait
         //$url = 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=127689096,1321755151&fm=15&gp=0.jpg';
         $url = config('tms.map_url') . 'staticmap?size=640x640&maptype=roadmap' . $markers . '&key=' . config('tms.map_key');
         try {
+            if ((App::environment() === 'development') || (App::environment() === 'local')) {
+                $options = ['proxy' => ['http' => env('HTTP_PROXY'), 'https' => env('HTTPS_PROXY')]];
+            } else {
+                $options = [];
+            }
             $client = new \GuzzleHttp\Client();
-            $res = $client->request('GET', $url, [
-                'proxy' => [
-                    'http' => env('HTTP_PROXY'), // Use this proxy with "http"
-                    'https' => env('HTTPS_PROXY'), // Use this proxy with "https",
-                ]]);
+            $res = $client->request('GET', $url, $options);
         } catch (\Exception $ex) {
             throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
         }
