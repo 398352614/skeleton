@@ -71,16 +71,16 @@ class BaseValidate
         return empty($model) ? true : false;
     }
 
-    public static function __callStatic($name, $arguments)
-    {
-        $arr = [];
-        if (isset(self::$$name)) {
-            $arr = self::$$name;
-            foreach ($arr as $key => $value) {
-                $msg = (strpos(__('msg.' . $value), 'msg.') === false) ? __('msg.' . $value) : $value;
-                $arr[$key] = $msg; // 翻译
-            }
-        }
-        return $arr;
-    }
+//    public static function __callStatic($name, $arguments)
+//    {
+//        $arr = [];
+//        if (isset(self::$$name)) {
+//            $arr = self::$$name;
+//            foreach ($arr as $key => $value) {
+//                $msg = (strpos(__('msg.' . $value), 'msg.') === false) ? __('msg.' . $value) : $value;
+//                $arr[$key] = $msg; // 翻译
+//            }
+//        }
+//        return $arr;
+//    }
 }

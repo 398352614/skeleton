@@ -40,7 +40,6 @@ class InstitutionService extends BaseService
      */
     public function checkDistance($parentId){
         $distance =Institution::findOrFail($parentId)->getRoot()->distance;
-        dd($distance);
         if($distance>3){
             throw new BusinessLogicException('组织机构最高为3级');
         }
