@@ -121,7 +121,7 @@ class TransportPriceService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $this->check($params);
+        $this->check($data);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败,请重新操作');
