@@ -19,7 +19,6 @@ trait CountryTrait
      */
     public static function getCountryList()
     {
-        \Illuminate\Support\Facades\Cache::forget('country');
         $countryList = \Illuminate\Support\Facades\Cache::rememberForever('country', function () {
             $country = file_get_contents(config('tms.country_path'));
             $country = array_create_index(json_decode($country, true), 'short');
