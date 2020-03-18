@@ -413,6 +413,9 @@ return [
 
         'km' => '公里',
         'weight' => '重量',
-        'special_time' => '时间点'
+        'special_time' => '时间点',
+
+        'url' => 'url',
+        'white_ip_list' => '白名单',
     ],
 ];

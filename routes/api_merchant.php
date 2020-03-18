@@ -31,6 +31,38 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
     Route::put('', 'MerchantController@update');
     Route::put('api', 'merchantApiController@update');
 
+    //订单管理
+    Route::prefix('order')->group(function () {
+        //取件列表查询初始化
+        Route::get('/initPickupIndex', 'OrderController@initPickupIndex');
+        //派件列表查询初始化
+        Route::get('/initPieIndex', 'OrderController@initPieIndex');
+        //列表查询
+        Route::get('/', 'OrderController@index');
+        //获取详情
+        Route::get('/{id}', 'OrderController@show');
+        //新增初始化
+        Route::get('/initStore', 'OrderController@initStore');
+        //新增
+        Route::post('/', 'OrderController@store');
+        //修改
+        Route::put('/{id}', 'OrderController@update');
+        //获取可分配路线日期
+        Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
+        //获取可分配的站点列表
+        Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
+        //分配至站点
+        Route::put('/{id}/assignToBatch', 'OrderController@assignToBatch');
+        //从站点移除
+        Route::delete('/{id}/removeFromBatch', 'OrderController@removeFromBatch');
+        //删除
+        Route::delete('/{id}', 'OrderController@destroy');
+        //恢复
+        Route::put('/{id}/recovery', 'OrderController@recovery');
+        //彻底删除
+        Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
+    });
+
     //主页统计
     Route::prefix('home')->group(function () {
         Route::get('/', 'HomeController@home');
