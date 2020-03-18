@@ -6,6 +6,7 @@
 namespace App\Traits;
 
 use App\Exceptions\BusinessLogicException;
+use App\Exports\BaseExport;
 use App\Exports\BatchListExport;
 use App\Exports\MerchantExport;
 use App\Models\Merchant;
@@ -32,6 +33,7 @@ trait ExportTrait
     /**
      * 表格导出
      * @param $name
+     * @param $headings
      * @param $params
      * @return array
      * @throws BusinessLogicException
@@ -40,20 +42,14 @@ trait ExportTrait
     {
         $headings=$this->translate($headings);
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
-        $name = date('Ymd') .$name. auth()->user()->company_id;
         $path ='public\\admin\\excel\\'.$subPath . DIRECTORY_SEPARATOR . $name.'.xlsx';
         try {
-            if($dir==='tour'){
-                $rowCount=Excel::store(new BatchListExport($name,$params,$headings),$path);
-            }
-            if($dir==='merchant'){
-                $rowCount=Excel::store(new MerchantExport($params,$headings),$path);
-            }
+            $rowCount=Excel::store(new BaseExport($params,$headings,$name),$path);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('表格上传失败,请重新操作');
+            throw new BusinessLogicException('表格导出失败,请重新操作');
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('表格上传失败,请重新操作');
+            throw new BusinessLogicException('表格导出失败,请重新操作');
         }
         return [
             'name' => $name.'.xlsx',
