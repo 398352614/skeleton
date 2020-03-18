@@ -91,6 +91,17 @@ class CurlClient
     public function postJson($url, $params, $next = 0, $auth = null)
     {
         try {
+            //php 7.4兼容
+            //https://cloud.tencent.com/developer/article/1489213
+            stream_context_set_default(
+                [
+                    'ssl' => [
+                        'verify_host' => false,
+                        'verify_peer' => false,
+                        'verify_peer_name' => false
+                    ]
+                ]
+            );
             if ($auth) {
                 $response = $this->http->post($url, ['auth' => $auth, 'json' => $params]);
             } else {
@@ -124,6 +135,17 @@ class CurlClient
     public function get($url)
     {
         try {
+            //php 7.4兼容
+            //https://cloud.tencent.com/developer/article/1489213
+            stream_context_set_default(
+                [
+                    'ssl' => [
+                        'verify_host' => false,
+                        'verify_peer' => false,
+                        'verify_peer_name' => false
+                    ]
+                ]
+            );
             $res = $this->http->request('GET', $url);
             // app('log')->info('测试 url'.$url);
         } catch (\Exception $e) {
