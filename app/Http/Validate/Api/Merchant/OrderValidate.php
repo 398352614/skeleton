@@ -7,14 +7,13 @@
  * Time: 15:06
  */
 
-namespace App\Http\Validate\Api\Admin;
+namespace App\Http\Validate\Api\Merchant;
 
 use App\Http\Validate\BaseValidate;
 
 class OrderValidate extends BaseValidate
 {
     public $customAttributes = [
-        'merchant_id' => '商户ID',
         'batch_no' => '站点编号',
         'execution_date' => '取派日期',
         'out_order_no' => '外部订单号',
@@ -51,7 +50,6 @@ class OrderValidate extends BaseValidate
     ];
 
     public $rules = [
-        'merchant_id' => 'required|integer',
         'batch_no' => 'nullable|string|max:50',
         'out_order_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
         'execution_date' => 'required|date|after_or_equal:today',

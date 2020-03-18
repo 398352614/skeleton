@@ -7,6 +7,7 @@
 namespace App\Models\Scope;
 
 use App\Models\Batch;
+use App\Models\BatchException;
 use App\Models\Car;
 use App\Models\CarBrand;
 use App\Models\CarModel;
@@ -19,12 +20,14 @@ use App\Models\Line;
 use App\Models\LineRange;
 use App\Models\Material;
 use App\Models\Merchant;
+use App\Models\MerchantGroup;
 use App\Models\OrderNoRule;
 use App\Models\Package;
 use App\Models\SpecialTimeCharging;
 use App\Models\Tour;
 use App\Models\TourMaterial;
 use App\Models\TransportPrice;
+use App\Models\Warehouse;
 use App\Models\WeightCharging;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -81,6 +84,13 @@ class CompanyScope implements Scope
                 && !($model instanceof WeightCharging)
                 && !($model instanceof SpecialTimeCharging)
                 && !($model instanceof Country)
+                && !($model instanceof MerchantGroup)
+                && !($model instanceof Merchant)
+                && !($model instanceof BatchException)
+                && !($model instanceof Package)
+                && !($model instanceof Material)
+                && !($model instanceof OrderNoRule)
+                && !($model instanceof Warehouse)
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
             }

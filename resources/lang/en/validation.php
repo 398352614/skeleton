@@ -286,6 +286,8 @@ return [
         'material_list' => 'material list',
         'km' => 'km',
         'weight' => 'weight',
-        'special_time' => 'special time'
+        'special_time' => 'special time',
+        'url' => 'url',
+        'white_ip_list' => 'white IP list',
     ],
 ];

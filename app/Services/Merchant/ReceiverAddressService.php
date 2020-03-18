@@ -40,6 +40,7 @@ class ReceiverAddressService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
+        $info = $info->toArray();
         return $info;
     }
 

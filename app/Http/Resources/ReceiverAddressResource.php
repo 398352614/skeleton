@@ -28,7 +28,6 @@ class ReceiverAddressResource extends JsonResource
             'lat' => $this->lat,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
-            'merchant' => Merchant::query()->where('id', $this->merchant_id)->value('name'),
         ];
     }
 }
