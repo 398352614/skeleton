@@ -23,7 +23,9 @@
   "账户已被锁定,暂时无法登陆": "Account has been locked and login is temporarily unavailable",
   "验证码错误": "Verification code error",
   "原密码不正确": "The original password is incorrect",
-  "可能由于网络问题,无法获取具体信息,请稍后再尝试": "Unable to get data due to network problems, please try again later",
+  "可能由于网络问题，无法根据邮编和门牌号码获取城市和地址信息，请稍后再尝试": "Unable to get data due to network problems, please try again later",
+  "邮编或门牌号码不正确，请仔细检查输入或联系客服": "Zip code or house number is incorrect, please double check or enter customer service",
+  "城市或街道不正确": "City or street is incorrect",
   "国家,城市,街道,门牌号或邮编不正确,请仔细检查输入或联系客服": "Country, city, street, house number or zip code is incorrect, please double check input or contact customer service",
   "当前状态不能处理异常": "Current state cannot handle exceptions",
   "处理失败,请重新操作": "Processing failed, please try again",
@@ -140,5 +142,13 @@
   "车辆文件目录": "Vehicle file directory",
   "票结": "Ticket knot",
   "日结": "Daily knots",
-  "月结": "Monthly knots"
+  "月结": "Monthly knots",
+  "订单已创建":"Order created",
+  "已加入站点":"Order was added to branch",
+  "已分配司机":"Order was assigned to driver",
+  "取消分配司机":"Order was unassigned",
+  "订单装货中":"Order was packaging",
+  "订单派送中":"Order was processing",
+  "派件成功":"order completed ",
+  "取消派件":"Order canceled"
 }

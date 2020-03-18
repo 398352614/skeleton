@@ -63,14 +63,15 @@ class TransportPriceService extends BaseService
         if (empty($merchantGroup)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info = parent::getInfo(['id' => $merchantGroup['transport_price_id']], ['*'], false);
+        $transportPriceId = $merchantGroup['transport_price_id'];
+        $info = parent::getInfo(['id' => $transportPriceId], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
         $info = $info->toArray();
-        $info['km_list'] = $this->kilometresChargingModel->newQuery()->where('transport_price_id', '=', $id)->get()->toArray();
-        $info['weight_list'] = $this->weightChargingModel->newQuery()->where('transport_price_id', '=', $id)->get()->toArray();
-        $info['special_time_list'] = $this->specialTimeChargingModel->newQuery()->where('transport_price_id', '=', $id)->get()->toArray();
+        $info['km_list'] = $this->kilometresChargingModel->newQuery()->where('transport_price_id', '=', $transportPriceId)->get()->toArray();
+        $info['weight_list'] = $this->weightChargingModel->newQuery()->where('transport_price_id', '=', $transportPriceId)->get()->toArray();
+        $info['special_time_list'] = $this->specialTimeChargingModel->newQuery()->where('transport_price_id', '=', $transportPriceId)->get()->toArray();
         for ($i = 0; $i < count($info['special_time_list']); $i++) {
             $info['special_time_list'][$i]['period'] = [$info['special_time_list'][$i]['start'], $info['special_time_list'][$i]['end']];
         }

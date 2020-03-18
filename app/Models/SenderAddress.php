@@ -54,7 +54,8 @@ class SenderAddress extends BaseModel
 
     protected $appends = [
         'merchant_id_name',
-        'short'
+        'short',
+        'sender_country_name'
     ];
 
     /**

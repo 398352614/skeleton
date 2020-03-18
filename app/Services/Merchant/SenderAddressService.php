@@ -10,10 +10,10 @@ use App\Http\Resources\SenderAddressResource;
 
 class SenderAddressService extends BaseService
 {
-    public function __construct(SenderAddress $senderaddress)
+    public function __construct(SenderAddress $senderAddress)
     {
         $this->request = request();
-        $this->model = $senderaddress;
+        $this->model = $senderAddress;
         $this->query = $this->model::query();
         $this->resource = SenderAddressResource::class;
         $this->infoResource = SenderAddressResource::class;
@@ -33,7 +33,7 @@ class SenderAddressService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], true);
+        $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }

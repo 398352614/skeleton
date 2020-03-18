@@ -19,7 +19,7 @@ return [
     'receiver_address'=>'收件人地址',
     'receiver_post_code'=>'收件人邮编',
     'receiver_city'=>'收件人城市',
-    'source'=>'来源',
+    'merchant'=>'商户',
     'expect_pickup_quantity'=>'取件数量',
     'expect_pie_quantity'=>'派件数量',
     'express_first_no_one'=>'快递单号1',
