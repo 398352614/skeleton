@@ -66,4 +66,9 @@ class OrderTrail extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    public function getContentAttribute($value)
+    {
+        return !empty($value) ? __($value) : null;
+    }
 }
