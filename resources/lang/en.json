@@ -141,12 +141,12 @@
   "票结": "Ticket knot",
   "日结": "Daily knots",
   "月结": "Monthly knots",
-    "订单已创建":"Order created",
-    "已加入站点":"Order was added to branch",
-    "已分配司机":"Order was assigned to driver",
-    "取消分配司机":"Order was unassigned",
-    "订单装货中":"Order was packaging",
-    "订单派送中":"Order was processing",
-    "派件成功":"order completed ",
-    "取消派件":"Order canceled"
+  "订单已创建":"Order created",
+  "已加入站点":"Order was added to branch",
+  "已分配司机":"Order was assigned to driver",
+  "取消分配司机":"Order was unassigned",
+  "订单装货中":"Order was packaging",
+  "订单派送中":"Order was processing",
+  "派件成功":"order completed ",
+  "取消派件":"Order canceled"
 }
