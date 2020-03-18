@@ -18,6 +18,7 @@ use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use Illuminate\Hashing\Argon2IdHasher;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Vinkla\Hashids\Facades\Hashids;
@@ -197,9 +198,10 @@ class MerchantService extends BaseService
             $info[$i]['type'] = $info[$i]['type_name'];
             $info[$i]['settlement_type'] = $info[$i]['settlement_type_name'];
             $info[$i]['status'] = $info[$i]['status_name'];
-            for ($j = 0; $j < count($info[$i]); $j++) {
-                $cellData[$i][$j] = array_values($info[$i])[$j];
+            for ($j = 0; $j < count($this->headings); $j++) {
+                $cellData[$i][$j] = array_values(Arr::only($info[$i],$this->headings))[$j];
             }
+
         }
         return $this->excelExport('merchant', $this->headings, $cellData, 'merchant');
     }

@@ -143,7 +143,7 @@
   "取件线路图片目录": "Pickup line picture directory",
   "司机文件目录": "Driver file directory",
   "车辆文件目录": "Vehicle file directory",
-  "票结": "Ticket knot",
+  "票结": "Ticket knots",
   "日结": "Daily knots",
   "月结": "Monthly knots",
   "订单已创建":"Order created",
@@ -153,5 +153,10 @@
   "订单装货中":"Order was packaging",
   "订单派送中":"Order was processing",
   "派件成功":"order completed ",
-  "取消派件":"Order canceled"
+  "取消派件":"Order canceled",
+    "禁用": "Disable",
+    "启用": "Enable",
+    "个人":"Personal",
+    "商户": "Business",
+    "表格导出失败,请重新操作": "Excel export failed, please try again"
 }
