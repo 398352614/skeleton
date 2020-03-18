@@ -116,14 +116,6 @@ class OrderService extends BaseService
         return self::getInstance(TourService::class);
     }
 
-    /**
-     * 来源 服务
-     * @return mixed
-     */
-    public function getSourceSerice()
-    {
-        return self::getInstance(SourceService::class);
-    }
 
     /**
      * 发件人地址 服务

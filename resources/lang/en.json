@@ -7,6 +7,7 @@
   "材料外部标识[:out_order_no]已存在": "material out order number [:out_order_no] already exists;",
   "用户认证失败": "User authentication failed",
   "明细数据格式不正确": "Incorrect format of detail data",
+  "当前订单状态不能操作": "The current order status cannot be operated",
   "订单不存在!": "Order does not exist",
   "订单新增失败": "Order addition failed",
   "订单货物明细新增失败!": "Add goods to order failed",
