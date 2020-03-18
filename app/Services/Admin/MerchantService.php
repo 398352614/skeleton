@@ -194,9 +194,9 @@ class MerchantService extends BaseService
         $info = $this->getList([], $this->headings, false)->toArray();
         for ($i = 0; $i < count($info); $i++) {
             $info[$i]['merchant_group_id'] = $this->getMerchantGroupService()->getInfo(['id' => $info[$i]['merchant_group_id']], ['name'], false)->toArray()['name'];
-            $info[$i]['type'] = empty($info[$i]['type']) ? null : ConstTranslateTrait::merchantTypeList($info[$i]['type']);
-            $info[$i]['settlement_type'] = empty($info[$i]['settlement_type']) ? null : ConstTranslateTrait::merchantSettlementTypeList($info[$i]['settlement_type']);
-            $info[$i]['status'] = empty($info[$i]['status']) ? null : ConstTranslateTrait::merchantStatusList($info[$i]['status']);
+            $info[$i]['type'] = $info[$i]['type_name'];
+            $info[$i]['settlement_type'] = $info[$i]['settlement_type_name'];
+            $info[$i]['status'] = $info[$i]['status_name'];
             for ($j = 0; $j < count($info[$i]); $j++) {
                 $cellData[$i][$j] = array_values($info[$i])[$j];
             }
