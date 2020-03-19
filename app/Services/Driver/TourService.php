@@ -137,17 +137,17 @@ class TourService extends BaseService
         //取件线路 处理
         $rowCount = parent::updateById($id, ['status' => BaseConstService::TOUR_STATUS_3]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('取件线路锁定失败,请重新操作');
+            throw new BusinessLogicException('取件线路锁定失败，请重新操作');
         }
         //站点 处理
         $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::BATCH_WAIT_OUT]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点锁定失败,请重新操作');
+            throw new BusinessLogicException('站点锁定失败，请重新操作');
         }
         //订单 处理
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::ORDER_STATUS_3]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('订单锁定失败,请重新操作');
+            throw new BusinessLogicException('订单锁定失败，请重新操作');
         }
         //包裹 处理
         $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::PACKAGE_STATUS_3]);
@@ -175,17 +175,17 @@ class TourService extends BaseService
         //取件线路 处理
         $rowCount = parent::updateById($id, ['status' => BaseConstService::TOUR_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('取件线路取消锁定失败,请重新操作');
+            throw new BusinessLogicException('取件线路取消锁定失败，请重新操作');
         }
         //站点 处理
         $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_WAIT_OUT], ['status' => BaseConstService::BATCH_ASSIGNED]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点取消锁定失败,请重新操作');
+            throw new BusinessLogicException('站点取消锁定失败，请重新操作');
         }
         //订单 处理
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('订单取消锁定失败,请重新操作');
+            throw new BusinessLogicException('订单取消锁定失败，请重新操作');
         }
         //包裹 处理
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_2]);
@@ -205,7 +205,7 @@ class TourService extends BaseService
     {
         $rowCount = parent::updateById($id, ['remark' => $params['remark']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('备注失败,请重新操作');
+            throw new BusinessLogicException('备注失败，请重新操作');
         }
     }
 
@@ -225,7 +225,7 @@ class TourService extends BaseService
         //查看当前车辆是否已被分配给其他取件线路
         $otherTour = parent::getInfo(['id' => ['<>', $id], 'car_id' => $params['car_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
         if (!empty($otherTour)) {
-            throw new BusinessLogicException('当前车辆已被分配,请选择其他车辆');
+            throw new BusinessLogicException('当前车辆已被分配，请选择其他车辆');
         }
         //获取车辆
         $car = $this->getCarService()->getInfo(['id' => $params['car_id'], 'is_locked' => BaseConstService::CAR_TO_NORMAL], ['*'], false);
@@ -236,7 +236,7 @@ class TourService extends BaseService
         $car = $car->toArray();
         $rowCount = $this->updateTourAll($tour, ['car_id' => $car['id'], 'car_no' => $car['car_no']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('车辆分配失败,请重新操作');
+            throw new BusinessLogicException('车辆分配失败，请重新操作');
         }
     }
 
@@ -428,7 +428,7 @@ class TourService extends BaseService
         $actualTime = strtotime($now) - strtotime($tour['begin_time']);
         $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => $now, 'actual_time' => $actualTime]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('更新到达时间失败,请重新操作');
+            throw new BusinessLogicException('更新到达时间失败，请重新操作');
         }
     }
 
@@ -494,17 +494,17 @@ class TourService extends BaseService
         ];
         $rowCount = $this->getBatchExceptionService()->create($data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败,请重新操作');
+            throw new BusinessLogicException('上报异常失败，请重新操作');
         }
         //站点异常
         $rowCount = $this->getBatchService()->updateById($batch['id'], ['exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败,请重新操作');
+            throw new BusinessLogicException('上报异常失败，请重新操作');
         }
         //订单异常
         $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败,请重新操作');
+            throw new BusinessLogicException('上报异常失败，请重新操作');
         }
     }
 
@@ -529,17 +529,17 @@ class TourService extends BaseService
         $data = Arr::only($params, ['cancel_type', 'cancel_remark', 'cancel_picture']);
         $rowCount = $this->getBatchService()->updateById($batch['id'], Arr::add($data, 'status', BaseConstService::BATCH_CANCEL));
         if ($rowCount === false) {
-            throw new BusinessLogicException('取消取派失败,请重新操作');
+            throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //订单取消取派
         $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], Arr::add($data, 'status', BaseConstService::ORDER_STATUS_6));
         if ($rowCount === false) {
-            throw new BusinessLogicException('取消取派失败,请重新操作');
+            throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //包裹取消取派
         $rowCount = $this->getPackageService()->update(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::PACKAGE_STATUS_4], ['status' => BaseConstService::PACKAGE_STATUS_6]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('取消取派失败,请重新操作');
+            throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('batch_no', $batch['batch_no'])->get(), BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
     }
@@ -727,13 +727,13 @@ class TourService extends BaseService
         }
         $batchCount = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['not in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         if ($batchCount !== 0) {
-            throw new BusinessLogicException('当前取件线路还有未完成站点,请先处理');
+            throw new BusinessLogicException('当前取件线路还有未完成站点，请先处理');
         }
         $data = Arr::only($params, ['end_signature', 'end_signature_remark']);
         $data = Arr::add($data, 'end_time', now());
         $rowCount = parent::updateById($tour['id'], Arr::add($data, 'status', BaseConstService::TOUR_STATUS_5));
         if ($rowCount === false) {
-            throw new BusinessLogicException('司机入库失败,请重新操作');
+            throw new BusinessLogicException('司机入库失败，请重新操作');
         }
     }
 

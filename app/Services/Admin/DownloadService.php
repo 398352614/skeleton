@@ -39,10 +39,10 @@ class DownloadService
         try {
             $rowCount = $this->imageDisk->put($subPath.DIRECTORY_SEPARATOR.$params['name'],$params['image']);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('图片获取失败,请重新操作');
+            throw new BusinessLogicException('图片获取失败，请重新操作');
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('图片获取失败,请重新操作');
+            throw new BusinessLogicException('图片获取失败，请重新操作');
         }
         return [
             'name' => $params['name'],

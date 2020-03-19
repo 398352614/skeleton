@@ -180,7 +180,7 @@ class TourService extends BaseService
         //查看当前司机是否已被分配给其他取件线路
         $otherTour = parent::getInfo(['driver_id' => $params['driver_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
         if (!empty($otherTour)) {
-            throw new BusinessLogicException('当前司机已被分配,请选择其他司机');
+            throw new BusinessLogicException('当前司机已被分配，请选择其他司机');
         }
         //获取司机
         $driver = $this->getDriverService()->getInfo(['id' => $params['driver_id'], 'is_locked' => BaseConstService::DRIVER_TO_NORMAL], ['*'], false);
@@ -191,7 +191,7 @@ class TourService extends BaseService
         //取件线路分配 由于取件线路,站点,订单的已分配状态都为2,所以只需取一个状态即可(ORDER_STATUS_2,BATCH_ASSIGNED,TOUR_STATUS_2)
         $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => $driver['id'], 'driver_name' => $driver['first_name'] . $driver['last_name'], 'driver_phone' => $driver['phone'], 'status' => BaseConstService::ORDER_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('司机分配失败,请重新操作');
+            throw new BusinessLogicException('司机分配失败，请重新操作');
         }
     }
 
@@ -205,7 +205,7 @@ class TourService extends BaseService
         $tour = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::TOUR_STATUS_2, true);
         $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => null, 'driver_name' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('司机取消分配失败,请重新操作');
+            throw new BusinessLogicException('司机取消分配失败，请重新操作');
         }
     }
 
@@ -222,7 +222,7 @@ class TourService extends BaseService
         //查看当前车辆是否已被分配给其他取件线路
         $otherTour = parent::getInfo(['car_id' => $params['car_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
         if (!empty($otherTour)) {
-            throw new BusinessLogicException('当前车辆已被分配,请选择其他车辆');
+            throw new BusinessLogicException('当前车辆已被分配，请选择其他车辆');
         }
         //获取车辆
         $car = $this->getCarService()->getInfo(['id' => $params['car_id'], 'is_locked' => BaseConstService::CAR_TO_NORMAL], ['*'], false);
@@ -233,7 +233,7 @@ class TourService extends BaseService
         $car = $car->toArray();
         $rowCount = $this->assignOrCancelAssignAll($tour, ['car_id' => $car['id'], 'car_no' => $car['car_no']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('车辆分配失败,请重新操作');
+            throw new BusinessLogicException('车辆分配失败，请重新操作');
         }
         OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
     }
@@ -288,17 +288,17 @@ class TourService extends BaseService
         //取件线路 处理
         $rowCount = parent::updateById($id, ['status' => BaseConstService::TOUR_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('取件线路取消锁定失败,请重新操作');
+            throw new BusinessLogicException('取件线路取消锁定失败，请重新操作');
         }
         //站点 处理
         $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_WAIT_OUT], ['status' => BaseConstService::BATCH_ASSIGNED]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点取消锁定失败,请重新操作');
+            throw new BusinessLogicException('站点取消锁定失败，请重新操作');
         }
         //订单 处理
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('订单取消锁定失败,请重新操作');
+            throw new BusinessLogicException('订单取消锁定失败，请重新操作');
         }
         //包裹 处理
         $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_2]);
@@ -362,7 +362,7 @@ class TourService extends BaseService
             ], $quantity)
         );
         if ($tour === false) {
-            throw new BusinessLogicException('站点加入取件线路失败,请重新操作!');
+            throw new BusinessLogicException('站点加入取件线路失败，请重新操作!');
         }
         return $tour->getOriginal();
     }
@@ -383,7 +383,7 @@ class TourService extends BaseService
         ];
         $rowCount = parent::updateById($tour['id'], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点加入取件线路失败,请重新操作!');
+            throw new BusinessLogicException('站点加入取件线路失败，请重新操作!');
         }
         return $tour;
     }

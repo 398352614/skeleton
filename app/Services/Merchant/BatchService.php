@@ -412,12 +412,12 @@ class BatchService extends BaseService
         $data = Arr::only($params, ['cancel_type', 'cancel_remark', 'cancel_picture']);
         $rowCount = parent::updateById($info['id'], Arr::add($data, 'status', BaseConstService::BATCH_CANCEL));
         if ($rowCount === false) {
-            throw new BusinessLogicException('取消取派失败,请重新操作');
+            throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //订单取消取派
         $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], Arr::add($data, 'status', BaseConstService::ORDER_STATUS_6));
         if ($rowCount === false) {
-            throw new BusinessLogicException('取消取派失败,请重新操作');
+            throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('batch_no', $info['batch_no'])->get(), BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
     }
@@ -483,13 +483,13 @@ class BatchService extends BaseService
         //获取线路范围
         $lineRange = $this->getLineRangeService()->getInfo(['post_code_start' => ['<=', $postCode], 'post_code_end' => ['>=', $postCode], 'schedule' => Carbon::parse($info['execution_date'])->dayOfWeek, 'country' => $info['receiver_country']], ['*'], false);
         if (empty($lineRange)) {
-            throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         $lineRange = $lineRange->toArray();
         //获取线路信息
         $line = $this->getLineService()->getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (empty($line)) {
-            throw new BusinessLogicException('当前订单没有合适的线路,请先联系管理员');
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         return $line->toArray();
     }
@@ -515,7 +515,7 @@ class BatchService extends BaseService
             'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点加入取件线路失败,请重新操作');
+            throw new BusinessLogicException('站点加入取件线路失败，请重新操作');
         }
     }
 
@@ -528,7 +528,7 @@ class BatchService extends BaseService
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         if (empty($info['tour_no'])) {
-            throw new BusinessLogicException('当前站点已经移除,不能重复操作');
+            throw new BusinessLogicException('当前站点已经移除，不能重复操作');
         }
         //修改站点
         $rowCount = parent::updateById($id, ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null]);

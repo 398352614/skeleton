@@ -48,7 +48,7 @@ class DriverService extends BaseService
         $data=Arr::except($data,'password');
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
     }
 

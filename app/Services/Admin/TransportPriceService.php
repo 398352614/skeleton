@@ -124,7 +124,7 @@ class TransportPriceService extends BaseService
         $this->check($data);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
         //删除公里计费，重量计费，特殊时段计费列表
         $rowCount = $this->kilometresChargingModel->newQuery()->where('transport_price_id', '=', $id)->delete();

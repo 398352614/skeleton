@@ -230,4 +230,7 @@ class BaseConstService
     const MERCHANT_STATUS_1 = 1;
     const MERCHANT_STATUS_2 = 2;
 
+    //司机事件
+    const DRIVER_EVENT_1 = 1;
+    const DRIVER_EVENT_2 = 2;
 }

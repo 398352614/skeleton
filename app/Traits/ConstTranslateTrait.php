@@ -46,6 +46,7 @@ use Illuminate\Support\Facades\App;
  * @method static merchantTypeList($args = null)
  * @method static merchantSettlementTypeList($args = null)
  * @method static merchantStatusList($args = null)
+ * @method static driverEventList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -261,6 +262,11 @@ trait ConstTranslateTrait
     public static $merchantStatusList = [
         BaseConstService::MERCHANT_STATUS_1 => '启用',
         BaseConstService::MERCHANT_STATUS_2 => '禁用',
+    ];
+
+    public static $driverEventList = [
+        BaseConstService::DRIVER_EVENT_1 => '司机到达客户家',
+        BaseConstService::DRIVER_EVENT_2 => '司机离开客户家',
     ];
 
     /**

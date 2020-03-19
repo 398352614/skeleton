@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\Batch;
+use App\Services\BaseConstService;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;

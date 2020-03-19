@@ -39,8 +39,8 @@ class RouteTrackingController extends BaseController
     public function route(Request $request)
     {
         $payload = $request->validate([
-            'driver_id' => ['nullable'],
-            'tour_no'   => ['required_without:driver_id'], // 两字段必须存在一个
+            'driver_id' => 'nullable',
+            'tour_no'   => 'required_without:driver_id',
         ]);
         $tour = null;
         if ($payload['driver_id'] ?? null) {

@@ -4,6 +4,7 @@ namespace App\Events;
 
 use App\Events\Interfaces\CanCreateTourDriverEvent;
 use App\Models\Batch;
+use App\Services\BaseConstService;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -13,7 +14,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
 /**
- * 批次签收事件 
+ * 批次签收事件
  * 此时司机准备离开
  */
 class AfterTourBatchAssign implements CanCreateTourDriverEvent
@@ -38,7 +39,7 @@ class AfterTourBatchAssign implements CanCreateTourDriverEvent
      */
     public function getContent(): string
     {
-        return '司机离开客户家';
+        return BaseConstService::DRIVER_EVENT_2;
     }
 
     /**

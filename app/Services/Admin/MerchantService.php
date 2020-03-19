@@ -121,7 +121,7 @@ class MerchantService extends BaseService
         $info = $this->getInfo(['id' => $id], ['merchant_group_id'], false);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
         $info = $info->toArray();
         //若修改了商户组,则调整成员
@@ -154,7 +154,7 @@ class MerchantService extends BaseService
     {
         $rowCount = parent::updateById($id, ['password' => Hash::make($data['password'])]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
     }
 
@@ -169,7 +169,7 @@ class MerchantService extends BaseService
         for ($i = 0; $i < count($ids); $i++) {
             $rowCount[$i] = parent::updateById($ids[$i], ['status' => $data['status']]);
             if ($rowCount === false) {
-                throw new BusinessLogicException('修改失败,请重新操作');
+                throw new BusinessLogicException('修改失败，请重新操作');
             }
         }
     }

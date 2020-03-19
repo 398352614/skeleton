@@ -573,7 +573,7 @@ class OrderService extends BaseService
         //修改
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
         $data = Arr::add($data, 'order_no', $dbInfo['order_no']);
         $data = Arr::add($data, 'status', $dbInfo['status']);
@@ -590,12 +590,12 @@ class OrderService extends BaseService
         //删除包裹列表
         $rowCount = $this->getPackageService()->delete(['order_no' => $dbInfo['order_no']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
         //删除材料列表
         $rowCount = $this->getMaterialService()->delete(['order_no' => $dbInfo['order_no']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
         //新增包裹列表和材料列表
         $this->addAllItemList($data, $batch, $tour);
@@ -727,7 +727,7 @@ class OrderService extends BaseService
         $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_7, 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
-            throw new BusinessLogicException('订单删除失败,请重新操作');
+            throw new BusinessLogicException('订单删除失败，请重新操作');
         }
         //包裹移除站点和取件线路信息
         $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_7]);
@@ -794,17 +794,17 @@ class OrderService extends BaseService
         $info = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::ORDER_STATUS_7);
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('彻底删除失败,请重新操作');
+            throw new BusinessLogicException('彻底删除失败，请重新操作');
         }
         //删除包裹
         $rowCount = $this->getPackageService()->delete(['order_no' => $info['order_no']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('彻底删除失败,请重新操作');
+            throw new BusinessLogicException('彻底删除失败，请重新操作');
         }
         //删除材料
         $rowCount = $this->getMaterialService()->delete(['order_no' => $info['order_no']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('彻底删除失败,请重新操作');
+            throw new BusinessLogicException('彻底删除失败，请重新操作');
         }
     }
 }

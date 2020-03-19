@@ -67,7 +67,7 @@ class AuthController extends Controller
         //messager_token写入数据库
         $rowCount = Driver::where('email', auth('driver')->user()->email)->update(['messager' => $messagerToken]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('通讯ID存储失败,请重新操作');
+            throw new BusinessLogicException('通讯ID存储失败，请重新操作');
         }
         return $messagerToken;
     }

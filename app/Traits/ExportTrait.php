@@ -46,10 +46,10 @@ trait ExportTrait
         try {
             $rowCount=Excel::store(new BaseExport($params,$headings,$name),$path);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('表格导出失败,请重新操作');
+            throw new BusinessLogicException('表格导出失败，请重新操作');
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('表格导出失败,请重新操作');
+            throw new BusinessLogicException('表格导出失败，请重新操作');
         }
         return [
             'name' => $name.'.xlsx',

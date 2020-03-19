@@ -111,7 +111,7 @@ class SenderAddressService extends BaseService
         $this->checkMerchant($data);
         $info = $this->check($data, $id);
         if (!empty($info)) {
-            throw new BusinessLogicException('发货方地址已存在,不能重复添加');
+            throw new BusinessLogicException('发货方地址已存在，不能重复添加');
         }
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {

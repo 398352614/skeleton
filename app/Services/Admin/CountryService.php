@@ -92,7 +92,7 @@ class CountryService extends BaseService
     {
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('删除失败,请重新操作');
+            throw new BusinessLogicException('删除失败，请重新操作');
         }
     }
 }
