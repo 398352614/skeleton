@@ -24,23 +24,25 @@ trait ExportTrait
         $this->txtDisk = Storage::disk('admin_image_public');
     }
 
-    public function translate($headings){
+    public function translate($headings,$dir){
         for($i=0;$i<count($headings);$i++){
-            $headings[$i]=__('excel.'.$headings[$i]);
+            $headings[$i]=__('excel.'.$dir.'.'.$headings[$i]);
         };
         return $headings;
     }
+
     /**
      * 表格导出
      * @param $name
      * @param $headings
      * @param $params
+     * @param $dir
      * @return array
      * @throws BusinessLogicException
      */
     public function excelExport($name,$headings,$params,$dir)
     {
-        $headings=$this->translate($headings);
+        $headings=$this->translate($headings,$dir);
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
         $path ='public\\admin\\excel\\'.$subPath . DIRECTORY_SEPARATOR . $name.'.xlsx';
         try {

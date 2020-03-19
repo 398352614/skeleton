@@ -271,6 +271,9 @@ trait ConstTranslateTrait
 
     /**
      * 此函数用于访问静态变量的同时对其进行翻译
+     * @param $name
+     * @param $args
+     * @return array|string|null
      */
     public static function __callStatic($name, $args)
     {

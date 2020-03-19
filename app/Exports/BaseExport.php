@@ -22,12 +22,39 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
         $this->headings =$headings;
     }
 
+    /**
+     * 表格数据
+     * @return array
+     */
     public function array(): array
     {
-        $data = $this->data;//测试数据
+        $data = $this->data;
         return $data;
     }
 
+    /**
+     * 表格工作簿标题
+     * @return string
+     */
+    public function title(): string
+    {
+        // 设置工作䈬的名称
+        return $this->title;
+    }
+
+    /**
+     * 表头
+     * @return array
+     */
+    public function headings(): array
+    {
+        return $this->headings;
+    }
+
+    /**
+     * 格式调整
+     * @return array
+     */
     public function registerEvents(): array
     {
         return [
@@ -37,11 +64,11 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 // 冻结窗格
                 //$event->sheet->getDelegate()->freezePane('A1');
                 //设置单元格内容自动转行
-                $event->sheet->getDelegate()->getStyle('A1:Z100')->getAlignment()->setWrapText(TRUE);
+                $event->sheet->getDelegate()->getStyle('A1:A100')->getAlignment()->setWrapText(TRUE);
                 // 设置单元格内容水平靠右
-                $event->sheet->getDelegate()->getStyle('A1:Z100')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                $event->sheet->getDelegate()->getStyle('A1:A100')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                 //设置单元格内容垂直居中
-                $event->sheet->getDelegate()->getStyle('A1:Z100')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                $event->sheet->getDelegate()->getStyle('A1:A100')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 // 定义列宽度
                 $widths =[];
                 if($this->title === 'merchant'){
@@ -55,22 +82,5 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 // 其他样式需求（设置边框，背景色等）处理扩展中给出的宏，也可以自定义宏来实现，详情见官网说明
             },
         ];
-    }
-
-    /**
-     * @return string
-     */
-    public function title(): string
-    {
-        // 设置工作䈬的名称
-        return $this->title;
-    }
-
-    /**
-     * @return array
-     */
-    public function headings(): array
-    {
-        return $this->headings;
     }
 }

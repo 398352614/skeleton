@@ -20,12 +20,22 @@ class OrderImportController extends BaseController
     public function uploadTemplate(){
         return $this->service->uploadTemplate();
     }
+
     /**
-     * 获取导入模板
+     * 获取导入模板（无效）
      * @return mixed
      */
     public function getTemplate(){
         return $this->service->getTemplate();
+    }
+
+    /**
+     * 获取导入模板
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function getTemplateExcel(){
+        return $this->service->getTemplateExcel();
     }
 
     /**

@@ -786,7 +786,7 @@ class TourService extends BaseService
             $cellData[$i] = array_values($cellData[$i]);
         }
         $cellData = array_reverse($cellData);
-        $dir = 'tour';
+        $dir = 'batchList';
         return $this->excelExport($tour_no, $this->headings, $cellData, $dir);
     }
 

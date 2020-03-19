@@ -795,7 +795,7 @@ class TourService extends BaseService
             $cellData[$i] = array_values($cellData[$i]);
         }
         $cellData = array_reverse($cellData);
-        $dir = 'tour';
+        $dir = 'batchList';
         $name = date('Ymd') .$tour_no. auth()->user()->company_id;
         return $this->excelExport($name, $this->headings, $cellData, $dir);
     }
