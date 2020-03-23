@@ -495,12 +495,12 @@ class BatchService extends BaseService
         if (!empty($dbBatch)) {
             $dbBatch = $dbBatch->toArray();
             $rowCount = $this->model->newQuery()->where('id', $dbBatch['id'])->update([
-                DB::raw('expect_pickup_quantity=expect_pickup_quantity+' . $batch['expect_pickup_quantity']),
-                DB::raw('actual_pickup_quantity=actual_pickup_quantity+' . $batch['actual_pickup_quantity']),
-                DB::raw('expect_pie_quantity=expect_pie_quantity+' . $batch['expect_pie_quantity']),
-                DB::raw('actual_pie_quantity=actual_pie_quantity+' . $batch['actual_pie_quantity']),
-                DB::raw('replace_amount=replace_amount+' . $batch['replace_amount']),
-                DB::raw('settlement_amount=settlement_amount+' . $batch['settlement_amount']),
+                'expect_pickup_quantity' => DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']),
+                'actual_pickup_quantity' => DB::raw('actual_pickup_quantity+' . $batch['actual_pickup_quantity']),
+                'expect_pie_quantity' => DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']),
+                'actual_pie_quantity' => DB::raw('actual_pie_quantity+' . $batch['actual_pie_quantity']),
+                'replace_amount' => DB::raw('replace_amount+' . $batch['replace_amount']),
+                'settlement_amount' => DB::raw('settlement_amount+' . $batch['settlement_amount']),
             ]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('修改失败');
