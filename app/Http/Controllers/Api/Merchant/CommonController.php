@@ -6,7 +6,7 @@
  * Time: 15:34
  */
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\Merchant;
 
 
 use App\Http\Controllers\BaseController;

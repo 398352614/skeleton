@@ -299,16 +299,44 @@ class TourService extends BaseService
             throw new BusinessLogicException('出库失败');
         }
         //处理未出库的包裹,将未出库的包裹取消取派
-        if (!empty($params['cancel_package_id_list'])) {
-            $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'id' => ['in', explode(',', $params['cancel_package_id_list'])]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('未扫描包裹取消取派失败');
-            }
-        }
+        !empty($params['cancel_package_id_list']) && $this->cancelPackageList($tour, $params);
         //插入取件线路材料
         !empty($params['material_list']) && $this->insertMaterialList($tour, $params['material_list']);
 
         OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_DELIVERING);
+    }
+
+    /**
+     * 包裹取消取派
+     *
+     * @param $tour
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function cancelPackageList($tour, $params)
+    {
+        $cancelPackageIdList = explode(',', $params['cancel_package_id_list']);
+        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelPackageIdList]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('未扫描包裹取消取派失败');
+        }
+        //若一个订单下面的所有包裹都取消取派了，订单变为取消取派
+        $cancelPackageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelPackageIdList]], ['order_no', DB::raw('COUNT(id) AS quantity')], false, ['order_no'])->toArray();
+        $orderNoList = array_column($cancelPackageList, 'order_no');
+        $allPackageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no'], 'order_no' => ['in', $orderNoList]], ['order_no', DB::raw('COUNT(id) AS quantity')], false, ['order_no'])->toArray();
+
+        $cancelPackageList = array_create_index($cancelPackageList, 'order_no');
+        $allPackageList = array_create_index($allPackageList, 'order_no');
+        $cancelPackageList = Arr::where($cancelPackageList, function ($cancelPackage, $orderNo) use ($allPackageList) {
+            return ($cancelPackage['quantity'] >= $allPackageList[$orderNo]['quantity']);
+        });
+        if (!empty($cancelPackageList)) {
+            $cancelOrderNoList = array_column($cancelPackageList, 'order_no');
+            $rowCount = $this->getOrderService()->update(['order_no' => ['in', $cancelOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_6]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('未扫描包裹取消取派失败');
+            }
+        }
     }
 
     /**
