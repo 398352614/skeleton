@@ -16,6 +16,7 @@ use App\Services\OrderTrailService;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 
 class BatchService extends BaseService
 {
@@ -149,6 +150,27 @@ class BatchService extends BaseService
     }
 
     /**
+     * 获取站点条件
+     *
+     * @param $info
+     * @return array
+     */
+    private function getBatchWhere($info)
+    {
+        return [
+            'execution_date' => $info['execution_date'],
+            'receiver' => $info['receiver'],
+            'receiver_phone' => $info['receiver_phone'],
+            'receiver_country' => $info['receiver_country'],
+            'receiver_city' => $info['receiver_city'],
+            'receiver_street' => $info['receiver_street'],
+            'receiver_house_number' => $info['receiver_house_number'],
+            'receiver_post_code' => $info['receiver_post_code'],
+            'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
+        ];
+    }
+
+    /**
      * 判断是否存在相同站点
      * @param $order
      * @param $batchNo
@@ -157,17 +179,7 @@ class BatchService extends BaseService
      */
     private function hasSameBatch($order, $batchNo = null)
     {
-        $where = [
-            'execution_date' => $order['execution_date'],
-            'receiver' => $order['receiver'],
-            'receiver_phone' => $order['receiver_phone'],
-            'receiver_country' => $order['receiver_country'],
-            'receiver_city' => $order['receiver_city'],
-            'receiver_street' => $order['receiver_street'],
-            'receiver_house_number' => $order['receiver_house_number'],
-            'receiver_post_code' => $order['receiver_post_code'],
-            'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
-        ];
+        $where = $this->getBatchWhere($order);
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
             $dbBatch = parent::getInfo($where, ['*'], false);
@@ -467,6 +479,36 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $info, $tour);
+        }
+    }
+
+    /**
+     * 合并两个站点
+     *
+     * @param $tour
+     * @param $batch
+     * @throws BusinessLogicException
+     */
+    public function mergeTwoBatch($tour, $batch)
+    {
+        $dbBatch = parent::getInfo(array_merge(['tour_no' => $tour['tour_no']], $this->getBatchWhere($batch)), ['*'], false);
+        if (!empty($dbBatch)) {
+            $dbBatch = $dbBatch->toArray();
+            $rowCount = $this->model->newQuery()->where('id', $dbBatch['id'])->update([
+                DB::raw('expect_pickup_quantity=expect_pickup_quantity+' . $batch['expect_pickup_quantity']),
+                DB::raw('actual_pickup_quantity=actual_pickup_quantity+' . $batch['actual_pickup_quantity']),
+                DB::raw('expect_pie_quantity=expect_pie_quantity+' . $batch['expect_pie_quantity']),
+                DB::raw('actual_pie_quantity=actual_pie_quantity+' . $batch['actual_pie_quantity']),
+                DB::raw('replace_amount=replace_amount+' . $batch['replace_amount']),
+                DB::raw('settlement_amount=settlement_amount+' . $batch['settlement_amount']),
+            ]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('修改失败');
+            }
+            $rowCount = parent::delete(['id' => $batch['id']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('修改失败');
+            }
         }
     }
 
