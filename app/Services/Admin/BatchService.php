@@ -505,6 +505,9 @@ class BatchService extends BaseService
             if ($rowCount === false) {
                 throw new BusinessLogicException('修改失败');
             }
+            //把站点从原来取件线路移除
+            $this->getTourService()->removeBatch($batch);
+            //删除站点
             $rowCount = parent::delete(['id' => $batch['id']]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('修改失败');
