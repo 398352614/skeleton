@@ -511,12 +511,12 @@ class TourService extends BaseService
         if (!empty($tour)) {
             $tour = $tour->toArray();
             //合并两个相同站点
-            $this->getBatchService()->mergeTwoBatch($tour, $batch);
+            $batch = $this->getBatchService()->mergeTwoBatch($tour, $batch);
             $tour = $this->joinExistTour($tour, $quantity);
         } else {
             $tour = $this->joinNewTour($batch, $line, $quantity);;
         }
-        return $tour;
+        return [$tour, $batch];
     }
 
 

@@ -472,13 +472,13 @@ class BatchService extends BaseService
         $info['execution_date'] = $params['execution_date'];
         //获取线路信息
         $line = $this->getLineInfo($info);
-        $tour = $this->getTourService()->assignBatchToTour($info, $line, $params);
+        list($tour, $batch) = $this->getTourService()->assignBatchToTour($info, $line, $params);
         /***********************************************填充取件线路编号************************************************/
-        $this->fillTourInfo($info, $line, $tour);
+        $this->fillTourInfo($batch, $line, $tour);
         /***********************************************修改订单************************************************/
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
-            $this->getOrderService()->fillBatchTourInfo($order, $info, $tour);
+            $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
         }
     }
 
@@ -487,6 +487,7 @@ class BatchService extends BaseService
      *
      * @param $tour
      * @param $batch
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
     public function mergeTwoBatch($tour, $batch)
@@ -513,6 +514,7 @@ class BatchService extends BaseService
                 throw new BusinessLogicException('修改失败');
             }
         }
+        return $dbBatch;
     }
 
     /**
