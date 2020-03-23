@@ -129,21 +129,19 @@ class TourTaskService extends BaseService
         $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark'], false)->toArray();
         //获取所有材料列表
         $materialList = $this->getTourMaterialList($tour);
-        $materialList = array_create_group_index($materialList, 'order_no');
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
-        $orderList = array_map(function ($order) use ($materialList, $packageList) {
-            $order['material_list'] = $materialList['order_no'] ?? [];
-            $order['package_list'] = $packageList['order_no'] ?? [];
+        $orderList = array_map(function ($order) use ($packageList) {
+            $order['package_list'] = $packageList[$order['order_no']] ?? [];
             return $order;
         }, $orderList);
         //数据填充
         $tour['batch_list'] = $batchList;
         $tour['order_list'] = $orderList;
         $tour['material_list'] = $materialList;
-        $tour['package_list'] = $packageList;
+        //$tour['package_list'] = $packageList;
         $tour['is_exist_special_remark'] = !empty(array_column($orderList, 'special_remark')) ? true : false;
         return $tour;
     }
