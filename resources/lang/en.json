@@ -198,10 +198,14 @@
   "请选择开始时间": "Please select a start time",
   "请选择结束时间": "Please select an end time",
   "材料外部标识有重复!不能添加订单": "Material external identification is duplicated! Orders cannot be added",
-  "订单包裹新增失败": "Order package addition failed",
-  "订单材料新增失败": "Order material addition failed",
   "发货方地址已存在": "Shipper address already exists",
   "仓库不存在": "The warehouse does not exist",
   "表格格式不正确，请使用正确的模板导入": "The table format is incorrect, please import using the correct template",
-  "包裹已收入网点": "Parcels have been collected in outlets"
+  "包裹已收入网点": "Parcels have been collected in outlets",
+    "快递单号有重复!不能添加订单": "Duplicate package name! Order cannot be added",
+    "包裹外部标识有重复!不能添加订单": "Package external identification is duplicated! Order cannot be added",
+    "材料名称有重复!不能添加订单": "Duplicate material name! Order cannot be added",
+    "材料代码有重复!不能添加订单": "Duplicate material code! Order cannot be added",
+    "订单包裹新增失败!": "Order package addition failed!",
+    "订单材料新增失败!": "Order material addition failed!"
 }
