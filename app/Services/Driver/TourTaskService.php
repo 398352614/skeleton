@@ -137,6 +137,7 @@ class TourTaskService extends BaseService
         $orderList = array_map(function ($order) use ($materialList, $packageList) {
             $order['material_list'] = $materialList['order_no'] ?? [];
             $order['package_list'] = $packageList['order_no'] ?? [];
+            return $order;
         }, $orderList);
         //数据填充
         $tour['batch_list'] = $batchList;
