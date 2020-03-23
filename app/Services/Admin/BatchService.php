@@ -493,26 +493,23 @@ class BatchService extends BaseService
     public function mergeTwoBatch($tour, $batch)
     {
         $dbBatch = parent::getInfo(array_merge(['tour_no' => $tour['tour_no']], $this->getBatchWhere($batch)), ['*'], false);
-        if (!empty($dbBatch)) {
-            $dbBatch = $dbBatch->toArray();
-            $rowCount = $this->model->newQuery()->where('id', $dbBatch['id'])->update([
-                'expect_pickup_quantity' => DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']),
-                'actual_pickup_quantity' => DB::raw('actual_pickup_quantity+' . $batch['actual_pickup_quantity']),
-                'expect_pie_quantity' => DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']),
-                'actual_pie_quantity' => DB::raw('actual_pie_quantity+' . $batch['actual_pie_quantity']),
-                'replace_amount' => DB::raw('replace_amount+' . $batch['replace_amount']),
-                'settlement_amount' => DB::raw('settlement_amount+' . $batch['settlement_amount']),
-            ]);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('修改失败');
-            }
-            //把站点从原来取件线路移除
-            $this->getTourService()->removeBatch($batch);
-            //删除站点
-            $rowCount = parent::delete(['id' => $batch['id']]);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('修改失败');
-            }
+        if (empty($dbBatch)) return $batch;
+        $dbBatch = $dbBatch->toArray();
+        $rowCount = $this->model->newQuery()->where('id', $dbBatch['id'])->update([
+            'expect_pickup_quantity' => DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']),
+            'actual_pickup_quantity' => DB::raw('actual_pickup_quantity+' . $batch['actual_pickup_quantity']),
+            'expect_pie_quantity' => DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']),
+            'actual_pie_quantity' => DB::raw('actual_pie_quantity+' . $batch['actual_pie_quantity']),
+            'replace_amount' => DB::raw('replace_amount+' . $batch['replace_amount']),
+            'settlement_amount' => DB::raw('settlement_amount+' . $batch['settlement_amount']),
+        ]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败');
+        }
+        //删除站点
+        $rowCount = parent::delete(['id' => $batch['id']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败');
         }
         return $dbBatch;
     }
