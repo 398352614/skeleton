@@ -127,16 +127,18 @@ class TourTaskService extends BaseService
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['id', 'batch_no', 'status', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
         //获取所有订单列表
         $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark'], false)->toArray();
-        //订单列表根据站点编号 分组
-        //$orderList = array_create_group_index($orderList, 'batch_no');
         //获取所有材料列表
         $materialList = $this->getTourMaterialList($tour);
+        $materialList = array_create_group_index($materialList, 'order_no');
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
-        //数据组合填充
-//        foreach ($batchList as &$batch) {
-//            $batch['order_list'] = $orderList[$batch['batch_no']];
-//        }
+        $packageList = array_create_group_index($packageList, 'order_no');
+        //将包裹列表和材料列表放在对应订单下
+        $orderList = array_map(function ($order) use ($materialList, $packageList) {
+            $order['material_list'] = $materialList['order_no'] ?? [];
+            $order['package_list'] = $packageList['order_no'] ?? [];
+        }, $orderList);
+        //数据填充
         $tour['batch_list'] = $batchList;
         $tour['order_list'] = $orderList;
         $tour['material_list'] = $materialList;
