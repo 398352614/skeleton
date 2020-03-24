@@ -50,6 +50,10 @@ class MerchantController extends BaseController
      */
     public function update()
     {
+        $dbInfo = $this->service->getInfo(['name' => $this->data['name'], 'id' => ['<>', auth()->id()]], ['id'], false);
+        if (!empty($dbInfo)) {
+            throw new BusinessLogicException('名称已存在');
+        }
         return $this->service->updateById(auth()->id(), $this->data);
     }
 
