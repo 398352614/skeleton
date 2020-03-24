@@ -583,11 +583,11 @@ class BatchService extends BaseService
     {
         $arrCount = [];
         if ($type === 1) {
-            $arrCount['pickup_count'] = $this->getTourService()->sum('expect_expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+            $arrCount['pickup_count'] = $this->getTourService()->sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
         } elseif ($type === 2) {
             $arrCount['pie_count'] = $this->getTourService()->sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
         } else {
-            $arrCount['pickup_count'] = $this->getTourService()->sum('expect_expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+            $arrCount['pickup_count'] = $this->getTourService()->sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
             $arrCount['pie_count'] = $this->getTourService()->sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
         }
         return $arrCount;
