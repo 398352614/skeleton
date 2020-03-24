@@ -46,16 +46,10 @@ class MerchantValidate extends BaseValidate
 
     public $scene = [
         'update' => [
-            'type',
             'name',
-            'email',
-            'settlement_type',
-            'merchant_group_id',
             'contacter',
             'phone',
             'address',
-            'avatar',
-            'status',
         ]
     ];
 }
