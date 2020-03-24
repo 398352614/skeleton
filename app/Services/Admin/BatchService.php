@@ -280,7 +280,9 @@ class BatchService extends BaseService
         ];
         if (intval($order['type']) === 1) {
             $data['expect_pickup_quantity'] = 1;
+            $data['expect_pie_quantity'] = 0;
         } else {
+            $data['expect_pickup_quantity'] = 0;
             $data['expect_pie_quantity'] = 1;
         }
         return $data;
