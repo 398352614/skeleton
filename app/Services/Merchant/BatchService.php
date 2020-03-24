@@ -185,7 +185,7 @@ class BatchService extends BaseService
             $dbBatch = parent::getInfo($where, ['*'], false);
             $batchList = empty($dbBatch) ? [] : [$dbBatch->toArray()];
         } else {
-            $batchList = parent::getList($where, ['*'], false, [], ['created_at' => 'desc'])->toArray();
+            $batchList = parent::getList($where, ['*'], false, [], ['id' => 'desc'])->toArray();
         }
         if (empty($batchList)) return [[], []];
         foreach ($batchList as $batch) {
@@ -195,15 +195,9 @@ class BatchService extends BaseService
                 continue;
             }
             $line = $line->toArray();
-            //获取取件线路信息
-            $tour = $this->getTourService()->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
-            //若取件线路不是待分配或已分配状态,则需要新建站点
-            if (!in_array(intval($tour['status']), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2])) {
-                continue;
-            }
-            //若未超过最大订单量,则加入已有站点
-            if ((intval($tour['expect_pickup_quantity']) + intval($tour['expect_pie_quantity'])) < intval($line['order_max_count'])) {
-                //锁定当前站点
+            $tour = $this->getTourService()->getTourInfo($batch, $line, false);
+            //若存在，锁定当前站点
+            if (!empty($tour)) {
                 $batch = parent::getInfoLock(['id' => $batch['id']], ['*'], false)->toArray();
                 return [$batch, $line];
             }
@@ -285,7 +279,9 @@ class BatchService extends BaseService
         ];
         if (intval($order['type']) === 1) {
             $data['expect_pickup_quantity'] = 1;
+            $data['expect_pie_quantity'] = 0;
         } else {
+            $data['expect_pickup_quantity'] = 0;
             $data['expect_pie_quantity'] = 1;
         }
         return $data;
@@ -517,10 +513,11 @@ class BatchService extends BaseService
     /**
      * 获取线路信息
      * @param $info
+     * @param $$orderOrBatch
      * @return array
      * @throws BusinessLogicException
      */
-    private function getLineInfo($info)
+    private function getLineInfo($info, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
     {
         //获取邮编数字部分
         $postCode = explode_post_code($info['receiver_post_code']);
@@ -535,8 +532,66 @@ class BatchService extends BaseService
         if (empty($line)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
-        return $line->toArray();
+        $line = $line->toArray();
+        //预约当天的，需要判断是否在下单截止日期内
+        if (date('Y-m-d') == $info['execution_date']) {
+            if (time() > strtotime($info['execution_date'] . ' ' . $line['order_deadline'])) {
+                throw new BusinessLogicException('当天下单已超过截止时间');
+            }
+        }
+        //判断预约日期是否在可预约日期范围内
+        if (Carbon::today()->addDays($line['appointment_days'])->lt($info['execution_date'] . ' 00:00:00')) {
+            throw new BusinessLogicException('预约日期已超过可预约时间范围');
+        }
+        //若不是新增取件线路，则当前取件线路必须再最大订单量内
+        if ($line['is_increment'] == BaseConstService::IS_INCREMENT_2) {
+            if ($orderOrBatch === BaseConstService::ORDER_OR_BATCH_1) {
+                if ($info['type'] == 1) {
+                    $orderCount = $this->sumOrderCount($info, $line, 1);
+                    if (1 + $orderCount['pickup_count'] > $line['pickup_max_count']) {
+                        throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+                    };
+                } else {
+                    $orderCount = $this->sumOrderCount($info, $line, 2);
+                    if (1 + $orderCount['pie_count'] > $line['pie_max_count']) {
+                        throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+                    };
+                }
+            } else {
+                $orderCount = $this->sumOrderCount($info, $line, 3);
+                if ($info['expect_pickup_quantity'] + $orderCount['pickup_count'] > $line['pickup_max_count']) {
+                    throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+                };
+                if ($info['expect_pie_quantity'] + $orderCount['pie_count'] > $line['pie_max_count']) {
+                    throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+                };
+            }
+        }
+        return $line;
     }
+
+    /**
+     * 1-取件2-派件3-取件和派件
+     *
+     * @param $info
+     * @param $line
+     * @param int $type
+     * @return array
+     */
+    private function sumOrderCount($info, $line, $type = 1)
+    {
+        $arrCount = [];
+        if ($type === 1) {
+            $arrCount['pickup_count'] = $this->getTourService()->sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+        } elseif ($type === 2) {
+            $arrCount['pie_count'] = $this->getTourService()->sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+        } else {
+            $arrCount['pickup_count'] = $this->getTourService()->sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+            $arrCount['pie_count'] = $this->getTourService()->sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+        }
+        return $arrCount;
+    }
+
 
     /**
      * 填充站点信息和取件线路信息

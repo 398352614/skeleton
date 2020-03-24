@@ -318,9 +318,7 @@ class TourService extends BaseService
      */
     public function join($batch, $line, $type)
     {
-        //若不存在取件线路或者超过最大订单量,则新建取件线路
-        $this->query->where(DB::raw('expect_pickup_quantity+expect_pie_quantity'), '<', $line['order_max_count']);
-        $tour = parent::getInfoLock(['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['*'], false);
+        $tour = $this->getTourInfo($batch, $line);
         //加入取件线路
         $quantity = (intval($type) === 1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $tour = !empty($tour) ? $this->joinExistTour($tour->toArray(), $quantity) : $this->joinNewTour($batch, $line, $quantity);
@@ -500,9 +498,7 @@ class TourService extends BaseService
         if (!empty($params['tour_no'])) {
             $this->query->where('tour_no', '=', $params['tour_no']);
         }
-        //若不存在取件线路或者超过最大订单量,则新建取件线路
-        $this->query->where(DB::raw('expect_pickup_quantity+expect_pie_quantity'), '<', $line['order_max_count']);
-        $tour = parent::getInfoLock(['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['*'], false);
+        $tour = $this->getTourInfo($batch, $line);
         if (!empty($params['tour_no']) && empty($tour)) {
             throw new BusinessLogicException('当前指定取件线路不符合当前站点');
         }
@@ -517,6 +513,24 @@ class TourService extends BaseService
             $tour = $this->joinNewTour($batch, $line, $quantity);;
         }
         return [$tour, $batch];
+    }
+
+    /**
+     * 获取取件线路信息
+     * @param $batch
+     * @param $line
+     * @param $isLock
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getTourInfo($batch, $line, $isLock = true)
+    {
+        //若不存在取件线路或者超过最大订单量,则新建取件线路
+        $this->query->where(DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']), '<', $line['pickup_max_count']);
+        $this->query->where(DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']), '<', $line['pie_max_count']);
+        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
+        $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
+        return $tour;
     }
 
 
