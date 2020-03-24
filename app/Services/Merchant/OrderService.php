@@ -109,6 +109,7 @@ class OrderService extends BaseService
         return self::getInstance(TourService::class);
     }
 
+
     /**
      * 发件人地址 服务
      * @return SenderAddressService
@@ -445,7 +446,7 @@ class OrderService extends BaseService
             if (count(array_unique($nameList)) !== count($nameList)) {
                 throw new BusinessLogicException('包裹名称有重复!不能添加订单');
             }
-            $outOrderNoList = array_column($packageList, 'out_order_no');
+            $outOrderNoList = array_filter(array_column($packageList, 'out_order_no'));
             if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
                 throw new BusinessLogicException('包裹外部标识有重复!不能添加订单');
             }
@@ -467,7 +468,7 @@ class OrderService extends BaseService
             if (count(array_unique($codeList)) !== count($codeList)) {
                 throw new BusinessLogicException('材料代码有重复!不能添加订单');
             }
-            $outOrderNoList = array_column($materialList, 'out_order_no');
+            $outOrderNoList = array_filter(array_column($materialList, 'out_order_no'));
             if (!empty($outOrderNoList)) {
                 if (count(array_unique($outOrderNoList)) !== count($outOrderNoList)) {
                     throw new BusinessLogicException('材料外部标识有重复!不能添加订单');
@@ -551,8 +552,6 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
-
-
     }
 
     /**
@@ -677,7 +676,7 @@ class OrderService extends BaseService
      */
     public function assignToBatch($id, $params)
     {
-        $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_6]);
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
             throw new BusinessLogicException('当前订单已存在分配的站点中!');
         }

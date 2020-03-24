@@ -127,7 +127,7 @@ class LineService extends BaseService
     {
         $params = $this->check($params);
         //线路新增
-        $lineData = Arr::only($params, ['name', 'country', 'warehouse_id', 'order_max_count']);
+        $lineData = Arr::only($params, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days']);
         $lineData = array_merge($lineData, ['creator_id' => auth()->id(), 'creator_name' => auth()->user()->fullname]);
         $lineId = parent::insertGetId($lineData);
         if ($lineId === 0) {
@@ -163,7 +163,7 @@ class LineService extends BaseService
     public function updateById($id, $data)
     {
         $data = $this->check($data, $id);
-        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'warehouse_id', 'order_max_count']));
+        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days']));
         if ($rowCount === false) {
             throw new BusinessLogicException('线路修改失败');
         }

@@ -53,7 +53,7 @@ class TourService extends BaseService
         'receiver_address',
         'receiver_post_code',
         'receiver_city',
-        'source',
+        'merchant',
         'expect_pickup_quantity',
         'expect_pie_quantity',
         'express_first_no_one',
@@ -417,7 +417,7 @@ class TourService extends BaseService
             'settlement_amount' => $info['settlement_amount'] + $diffSettlementAmount
         ]));
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败，请重新操作');
+            throw new BusinessLogicException('修改失败');
         }
     }
 
@@ -507,9 +507,16 @@ class TourService extends BaseService
             throw new BusinessLogicException('当前指定取件线路不符合当前站点');
         }
         $quantity = ['expect_pickup_quantity' => $batch['expect_pickup_quantity'], 'expect_pie_quantity' => $batch['expect_pie_quantity']];
-        //加入取件线路
-        $tour = !empty($tour) ? $this->joinExistTour($tour->toArray(), $quantity) : $this->joinNewTour($batch, $line, $quantity);
-        return $tour;
+        //若存在取件线路，判断当前取件线路中是否已存在相同站点,若存在，则合并
+        if (!empty($tour)) {
+            $tour = $tour->toArray();
+            //合并两个相同站点
+            $batch = $this->getBatchService()->mergeTwoBatch($tour, $batch);
+            $tour = $this->joinExistTour($tour, $quantity);
+        } else {
+            $tour = $this->joinNewTour($batch, $line, $quantity);;
+        }
+        return [$tour, $batch];
     }
 
 
@@ -765,29 +772,39 @@ class TourService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $info = $this->getBatchService()->getList(['tour_no' => $tour_no], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
-
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
         //整理结构
         for ($i = 0; $i < count($info); $i++) {
             $orderInfo = $this->getOrderService()->getList(['batch_no' => $info[$i]['batch_no']], ['*'], false);
-            $cellData[$i][0] = $i+1;
+            if (empty($orderInfo)) {
+                throw new BusinessLogicException('数据不存在');
+            }
+            $packageInfo = $this->getPackageService()->getList(['order_no' => $orderInfo[0]['order_no']], ['*'], false);
+            if (empty($packageInfo)) {
+                throw new BusinessLogicException('数据不存在');
+            }
+            $cellData[$i][0] = $i + 1;
             $cellData[$i][1] = $info[$i]['receiver'];
             $cellData[$i][2] = $info[$i]['receiver_phone'];
             $cellData[$i][3] = $orderInfo[0]['out_user_id'] ?? '';
             $cellData[$i][4] = $info[$i]['receiver_street'] . ' ' . $info[$i]['receiver_house_number'];
             $cellData[$i][5] = $info[$i]['receiver_post_code'];
             $cellData[$i][6] = $info[$i]['receiver_city'];
-            $cellData[$i][7] = $orderInfo[0]['source'];;
+            $cellData[$i][7] = $orderInfo[0]['merchant_id_name'];
             $cellData[$i][8] = $info[$i]['expect_pickup_quantity'];
             $cellData[$i][9] = $info[$i]['expect_pie_quantity'];
-            $cellData[$i][10] = $orderInfo[0]['express_first_no'];
-            $cellData[$i][11] = $orderInfo[1]['express_first_no'] ?? '';
+            $cellData[$i][10] = $packageInfo[0]['express_first_no'] ?? "";
+            $cellData[$i][11] = $packageInfo[1]['express_first_no'] ?? "";
         }
         for ($i = 0; $i < count($cellData); $i++) {
             $cellData[$i] = array_values($cellData[$i]);
         }
         $cellData = array_reverse($cellData);
         $dir = 'batchList';
-        return $this->excelExport($tour_no, $this->headings, $cellData, $dir);
+        $name = date('Ymd') . $tour_no . auth()->user()->company_id;
+        return $this->excelExport($name, $this->headings, $cellData, $dir);
     }
 
     /**

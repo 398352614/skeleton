@@ -88,6 +88,14 @@ class BaseConstService
     const ORDER_NATURE_4 = 4;
     const ORDER_NATURE_5 = 5;
 
+    //线路规划 是否新增取件线路 1-是2-否
+    const IS_INCREMENT_1 = 1;
+    const IS_INCREMENT_2 = 2;
+
+    //订单/站点 1-订单2-站点
+    const ORDER_OR_BATCH_1 = 1;
+    const ORDER_OR_BATCH_2 = 1;
+
     //取件线路状态状态：1-待分配2-已分配-3-待出库4-取派中5-取派完成
     const TOUR_STATUS_1 = 1;
     const TOUR_STATUS_2 = 2;

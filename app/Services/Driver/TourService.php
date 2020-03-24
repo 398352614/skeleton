@@ -284,22 +284,30 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
+        //取消取派订单和包裹
+        if (!empty($params['cancel_order_id_list'])) {
+            $cancelOrderIdList = explode(',', $params['cancel_order_id_list']);
+            $rowCount = $this->getOrderService()->update(['id' => ['in', $cancelOrderIdList], 'tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_6]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('出库失败');
+            }
+            $cancelOrderList = $this->getOrderService()->getList(['id' => ['in', $cancelOrderIdList]], ['order_no'], false)->toArray();
+            //更换包裹状态
+            $rowCount = $this->getPackageService()->update(['order_no' => ['in', array_column($cancelOrderList, 'order_no')]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('出库失败');
+            }
+        }
         //订单更换状态
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
-        //包裹更换状态
-        $where = ['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3];
-        if (!empty($params['cancel_package_id_list'])) {
-            $where['id'] = ['not in', explode(',', $params['cancel_package_id_list'])];
-        }
-        $rowCount = $this->getPackageService()->update($where, ['status' => BaseConstService::PACKAGE_STATUS_4]);
+        //更换包裹状态
+        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
-        //处理未出库的包裹,将未出库的包裹取消取派
-        !empty($params['cancel_package_id_list']) && $this->cancelPackageList($tour, $params);
         //插入取件线路材料
         !empty($params['material_list']) && $this->insertMaterialList($tour, $params['material_list']);
 
