@@ -316,6 +316,12 @@ class OrderService extends BaseService
         $this->fillBatchTourInfo($order->getAttributes(), $batch, $tour, false);
         /**************************************新增订单货物明细********************************************************/
         $this->addAllItemList($params, $batch, $tour);
+        return [
+            'order_no' => $params['order_no'],
+            'batch_no' => $batch['batch_no'],
+            'tour_no' => $tour['tour_no'],
+            'line_name' => $tour['line_name']
+        ];
     }
 
     /**
@@ -486,7 +492,7 @@ class OrderService extends BaseService
                     throw new BusinessLogicException('材料外部标识有重复!不能添加订单');
                 }
                 //验证唯一性
-                $this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $orderNo);
+                //$this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $orderNo);
             }
         }
     }

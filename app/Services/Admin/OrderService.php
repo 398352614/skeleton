@@ -286,6 +286,7 @@ class OrderService extends BaseService
     /**
      * 新增
      * @param $params
+     * @return array
      * @throws BusinessLogicException
      */
     public function store($params)
@@ -311,6 +312,12 @@ class OrderService extends BaseService
         $this->fillBatchTourInfo($order->getAttributes(), $batch, $tour, false);
         /**************************************新增订单货物明细********************************************************/
         $this->addAllItemList($params, $batch, $tour);
+        return [
+            'order_no' => $params['order_no'],
+            'batch_no' => $batch['batch_no'],
+            'tour_no' => $tour['tour_no'],
+            'line_name' => $tour['line_name']
+        ];
     }
 
     /**
@@ -484,7 +491,7 @@ class OrderService extends BaseService
                     throw new BusinessLogicException('材料外部标识有重复!不能添加订单');
                 }
                 //验证唯一性
-                $this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $orderNo);
+                //$this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $orderNo);
             }
         }
     }
@@ -731,10 +738,10 @@ class OrderService extends BaseService
      * @param $id
      * @throws BusinessLogicException
      */
-    public function destroy($id)
+    public function destroy($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
-        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_7, 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
+        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_7, 'remark' => $params['remark'] ?? '', 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单删除失败，请重新操作');
         }
