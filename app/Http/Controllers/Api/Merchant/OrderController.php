@@ -10,7 +10,6 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Controllers\BaseController;
 use App\Services\Merchant\OrderService;
 
 /**
@@ -18,7 +17,7 @@ use App\Services\Merchant\OrderService;
  * @package App\Http\Controllers\Api\Admin
  * @property OrderService $service
  */
-class OrderController extends BaseController
+class OrderController extends OrderBaseController
 {
     public function __construct(OrderService $service)
     {
@@ -156,7 +155,7 @@ class OrderController extends BaseController
      */
     public function destroy($id)
     {
-        return $this->service->destroy($id);
+        return $this->service->destroy($id, $this->data);
     }
 
     /**

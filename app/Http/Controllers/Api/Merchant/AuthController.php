@@ -55,6 +55,8 @@ class AuthController extends Controller
             throw new BusinessLogicException('暂时无法登录，请联系管理员！');
         }
 
+        auth('merchant')->user()->is_api = false;
+
         return $this->respondWithToken($token);
     }
 
