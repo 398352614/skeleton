@@ -33,7 +33,7 @@ class AuthController extends Controller
         ];
 
         if (!$token = $this->guard()->attempt($credentials)) {
-            throw new BusinessLogicException('用户名或密码错误');
+            throw new BusinessLogicException('用户名或密码错误！');
         }
 
         /*if (auth('admin')->user()->is_locked == 1) {

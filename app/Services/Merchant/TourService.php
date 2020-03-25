@@ -248,7 +248,7 @@ class TourService extends BaseService
         $tour = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], false);
         $rowCount = $this->assignOrCancelAssignAll($tour, ['car_id' => null, 'car_no' => null]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('车辆取消分配失败,请重新操作');
+            throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
         OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER);
     }
@@ -303,7 +303,7 @@ class TourService extends BaseService
         //包裹 处理
         $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('包裹取消锁定失败,请重新操作');
+            throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
     }
 
@@ -360,7 +360,7 @@ class TourService extends BaseService
             ], $quantity)
         );
         if ($tour === false) {
-            throw new BusinessLogicException('站点加入取件线路失败，请重新操作!');
+            throw new BusinessLogicException('站点加入取件线路失败，请重新操作！');
         }
         return $tour->getOriginal();
     }
@@ -381,7 +381,7 @@ class TourService extends BaseService
         ];
         $rowCount = parent::updateById($tour['id'], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点加入取件线路失败，请重新操作!');
+            throw new BusinessLogicException('站点加入取件线路失败，请重新操作！');
         }
         return $tour;
     }
@@ -440,7 +440,7 @@ class TourService extends BaseService
             $rowCount = parent::updateById($info['id'], $data);
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('取件移除订单失败,请重新操作');
+            throw new BusinessLogicException('取件移除订单失败，请重新操作');
         }
     }
 
@@ -464,7 +464,7 @@ class TourService extends BaseService
             $rowCount = parent::updateById($info['id'], $data);
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('取件移除站点失败,请重新操作');
+            throw new BusinessLogicException('取件移除站点失败，请重新操作');
         }
     }
 
