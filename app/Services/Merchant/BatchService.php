@@ -405,7 +405,9 @@ class BatchService extends BaseService
             throw new BusinessLogicException('站点移除订单失败，请重新操作');
         }
         //取件线路移除站点
-        $this->getTourService()->removeBatchOrder($order, $info);
+        if (!empty($order['tour_no'])) {
+            $this->getTourService()->removeBatchOrder($order, $info);
+        }
     }
 
     /**

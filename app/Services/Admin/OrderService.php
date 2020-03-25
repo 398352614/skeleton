@@ -643,7 +643,9 @@ class OrderService extends BaseService
     private function changeBatch($dbInfo, $data)
     {
         //站点移除订单,添加新的订单
-        $this->getBatchService()->removeOrder(array_merge($data, Arr::only($dbInfo, ['batch_no', 'tour_no'])));
+        if (!empty($dbInfo['batch_no'])) {
+            $this->getBatchService()->removeOrder(array_merge($data, Arr::only($dbInfo, ['batch_no', 'tour_no'])));
+        }
         list($batch, $tour) = $this->getBatchService()->join($data);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($dbInfo, $batch, $tour, false);
