@@ -71,10 +71,10 @@ trait ExportTrait
         try {
             $rowCount = $this->txtDisk->put($subPath.DIRECTORY_SEPARATOR.$params['name'],$params['txt']);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('文档上传失败,请重新操作');
+            throw new BusinessLogicException('文档上传失败，请重新操作');
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('文档上传失败,请重新操作');
+            throw new BusinessLogicException('文档上传失败，请重新操作');
         }
         return [
             'name' => $params['name'],

@@ -190,7 +190,7 @@ class TourService extends BaseService
         //包裹 处理
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('包裹取消锁定失败,请重新操作');
+            throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
     }
 

@@ -240,7 +240,7 @@ class OrderService extends BaseService
     {
         $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
-            throw new BusinessLogicException('订单不存在!');
+            throw new BusinessLogicException('订单不存在！');
         }
         $info['package_list'] = $this->getPackageService()->getList(['order_no' => $info['order_no']], ['*'], false);
         $info['material_list'] = $this->getMaterialService()->getList(['order_no' => $info['order_no']], ['*'], false);
@@ -461,15 +461,15 @@ class OrderService extends BaseService
             $packageList = $params['package_list'];
             $nameList = array_column($packageList, 'name');
             if (count(array_unique($nameList)) !== count($nameList)) {
-                throw new BusinessLogicException('包裹名称有重复!不能添加订单');
+                throw new BusinessLogicException('包裹名称有重复！不能添加订单');
             }
             $outOrderNoList = array_filter(array_column($packageList, 'out_order_no'));
             if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
-                throw new BusinessLogicException('包裹外部标识有重复!不能添加订单');
+                throw new BusinessLogicException('包裹外部标识有重复！不能添加订单');
             }
             $expressNoList = array_filter(array_merge(array_column($packageList, 'express_first_no'), array_column($packageList, 'express_second_no')));
             if (count(array_unique($expressNoList)) !== count($expressNoList)) {
-                throw new BusinessLogicException('快递单号有重复!不能添加订单');
+                throw new BusinessLogicException('快递单号有重复！不能添加订单');
             }
             //验证外部标识/快递单号1/快递单号2
             $this->getPackageService()->checkAllUnique($packageList, $orderNo);
@@ -479,16 +479,16 @@ class OrderService extends BaseService
             $materialList = $params['material_list'];
             $nameList = array_column($materialList, 'name');
             if (count(array_unique($nameList)) !== count($nameList)) {
-                throw new BusinessLogicException('材料名称有重复!不能添加订单');
+                throw new BusinessLogicException('材料名称有重复！不能添加订单');
             }
             $codeList = array_column($materialList, 'code');
             if (count(array_unique($codeList)) !== count($codeList)) {
-                throw new BusinessLogicException('材料代码有重复!不能添加订单');
+                throw new BusinessLogicException('材料代码有重复！不能添加订单');
             }
             $outOrderNoList = array_filter(array_column($materialList, 'out_order_no'));
             if (!empty($outOrderNoList)) {
                 if (count(array_unique($outOrderNoList)) !== count($outOrderNoList)) {
-                    throw new BusinessLogicException('材料外部标识有重复!不能添加订单');
+                    throw new BusinessLogicException('材料外部标识有重复！不能添加订单');
                 }
                 //验证唯一性
                 //$this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $orderNo);
@@ -516,7 +516,7 @@ class OrderService extends BaseService
             data_set($packageList, '*.type', $params['type']);
             $rowCount = $this->getPackageService()->insertAll($packageList);
             if ($rowCount === false) {
-                throw new BusinessLogicException('订单包裹新增失败!');
+                throw new BusinessLogicException('订单包裹新增失败！');
             }
         }
         //若材料存在,则新增材料列表
@@ -527,7 +527,7 @@ class OrderService extends BaseService
             })->toArray();
             $rowCount = $this->getMaterialService()->insertAll($materialList);
             if ($rowCount === false) {
-                throw new BusinessLogicException('订单材料新增失败!');
+                throw new BusinessLogicException('订单材料新增失败！');
             }
         }
 
@@ -697,7 +697,7 @@ class OrderService extends BaseService
     {
         $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
-            throw new BusinessLogicException('当前订单已存在分配的站点中!');
+            throw new BusinessLogicException('当前订单已存在分配的站点中！');
         }
         $info['execution_date'] = $params['execution_date'];
         list($batch, $tour) = $this->getBatchService()->assignOrderToBatch($info, $params);

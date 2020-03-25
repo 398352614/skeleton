@@ -142,7 +142,7 @@ trait LocationTrait
             }
             $count = count($featureList);
             if (($count == 0) || ($count > 3)) {
-                throw new \App\Exceptions\BusinessLogicException('国家,城市,街道,门牌号或邮编不正确，请仔细检查输入或联系客服');
+                throw new \App\Exceptions\BusinessLogicException('国家，城市，街道，门牌号或邮编不正确，请仔细检查输入或联系客服');
             }
             return [
                 'province' => $featureList[0]['properties']['state'] ?? '',

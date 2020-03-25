@@ -71,7 +71,7 @@ class ReceiverAddressService extends BaseService
     {
         $this->checkMerchant($params);
         if (!empty($this->check($params))) {
-            throw new BusinessLogicException('收货方地址已存在,不能重复添加');
+            throw new BusinessLogicException('收货方地址已存在，不能重复添加');
         }
         $rowCount = parent::create($params);
         if ($rowCount === false) {
@@ -90,7 +90,7 @@ class ReceiverAddressService extends BaseService
     {
         $this->checkMerchant($data);
         if (!empty($this->check($data, $id))) {
-            throw new BusinessLogicException('收货方地址已存在,不能重复添加');
+            throw new BusinessLogicException('收货方地址已存在，不能重复添加');
         }
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
