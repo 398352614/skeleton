@@ -468,7 +468,7 @@ class BatchService extends BaseService
         }
         $info['execution_date'] = $params['execution_date'];
         //获取线路信息
-        $line = $this->getLineInfo($info);
+        $line = $this->getLineInfo($info, BaseConstService::ORDER_OR_BATCH_2);
         list($tour, $batch) = $this->getTourService()->assignBatchToTour($info, $line, $params);
         /***********************************************填充取件线路编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);

@@ -693,7 +693,7 @@ class OrderService extends BaseService
      */
     public function assignToBatch($id, $params)
     {
-        $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_6]);
+        $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
             throw new BusinessLogicException('当前订单已存在分配的站点中!');
         }
@@ -740,7 +740,7 @@ class OrderService extends BaseService
      */
     public function destroy($id, $params)
     {
-        $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $info = $this->getInfoOfStatus(['id' => $id], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_6]);
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_7, 'remark' => $params['remark'] ?? '', 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单删除失败，请重新操作');

@@ -94,7 +94,7 @@ class BaseConstService
 
     //订单/站点 1-订单2-站点
     const ORDER_OR_BATCH_1 = 1;
-    const ORDER_OR_BATCH_2 = 1;
+    const ORDER_OR_BATCH_2 = 2;
 
     //取件线路状态状态：1-待分配2-已分配-3-待出库4-取派中5-取派完成
     const TOUR_STATUS_1 = 1;
