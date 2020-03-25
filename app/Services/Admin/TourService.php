@@ -495,7 +495,7 @@ class TourService extends BaseService
         if (!empty($batch['tour_no'])) {
             $this->removeBatch($batch);
         }
-        $tour = $this->getTourInfo($batch, $line, $params['tour_no']);
+        $tour = $this->getTourInfo($batch, $line, $params['tour_no'] ?? '');
         if (!empty($params['tour_no']) && empty($tour)) {
             throw new BusinessLogicException('当前指定取件线路不符合当前站点');
         }
