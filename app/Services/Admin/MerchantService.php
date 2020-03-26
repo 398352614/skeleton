@@ -68,9 +68,7 @@ class MerchantService extends BaseService
     public function init()
     {
         $data = [];
-        $data['settlement_type_list'] = array_values(collect(ConstTranslateTrait::merchantSettlementTypeList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
+        $data['settlement_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$merchantSettlementTypeList);
         return $data;
     }
 

@@ -270,6 +270,25 @@ trait ConstTranslateTrait
     ];
 
     /**
+     * 格式化常量列表
+     * @param $list
+     * @return array
+     */
+    public static function formatList($list)
+    {
+        /******************************************若非中文,则需要翻译*************************************************/
+        if (App::getLocale() !== 'cn') {
+            foreach ($list as $key => $item) {
+                $list[$key] = __($item);
+            }
+        }
+        return array_values(collect($list)->map(function ($value, $key) {
+            return collect(['id' => $key, 'name' => $value]);
+        })->toArray());
+    }
+
+
+    /**
      * 此函数用于访问静态变量的同时对其进行翻译
      * @param $name
      * @param $args
@@ -277,7 +296,7 @@ trait ConstTranslateTrait
      */
     public static function __callStatic($name, $args)
     {
-        /******************************************若未中文,则不用翻译*************************************************/
+        /******************************************若为中文,则不用翻译*************************************************/
         if (App::getLocale() === 'cn') {
             return !empty($args) ? self::$$name[$args[0]] : self::$$name;
         }
@@ -293,5 +312,4 @@ trait ConstTranslateTrait
         }
         return $arr;
     }
-
 }
