@@ -172,7 +172,7 @@ trait LocationTrait
         $url = config('tms.map_url') . 'staticmap?size=640x640&maptype=roadmap' . $markers . '&key=' . config('tms.map_key');
         try {
             if ((App::environment() === 'development') || (App::environment() === 'local')) {
-                $options = ['proxy' => ['http' => env('HTTP_PROXY'), 'https' => env('HTTPS_PROXY')]];
+                $options = ['proxy' => ['http' => env('VPN'), 'https' => env('VPN')]];
             } else {
                 $options = [];
             }
