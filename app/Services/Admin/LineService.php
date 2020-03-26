@@ -27,7 +27,7 @@ class LineService extends BaseService
 
     public function __construct(Line $line)
     {
-        parent::__construct($line);
+        parent::__construct($line,LineResource::class);
     }
 
     /**
