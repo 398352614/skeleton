@@ -841,4 +841,26 @@ class TourService extends BaseService
         return LocationTrait::getBatchMap($params, $name);
     }
 
+    /**
+     * 统计订单数量
+     *
+     * @param $info
+     * @param $line
+     * @param int $type 1-取件2-派件3-取件和派件
+     * @return array
+     */
+    public function sumOrderCount($info, $line, $type = 1)
+    {
+        $arrCount = [];
+        if ($type === 1) {
+            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+        } elseif ($type === 2) {
+            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+        } else {
+            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+        }
+        return $arrCount;
+    }
+
 }
