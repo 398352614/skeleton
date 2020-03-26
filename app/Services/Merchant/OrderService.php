@@ -290,14 +290,14 @@ class OrderService extends BaseService
 
     /**
      * 新增
+     *
      * @param $params
+     * @return array
      * @throws BusinessLogicException
      */
     public function store($params)
     {
-        $location = $this->check($params);
-        $params['lon']=$location;
-        $params['lat']=$location;
+        $this->check($params);
         /*************************************************订单新增************************************************/
         //生成单号
         $params['order_no'] = $this->getOrderNoRuleService()->createOrderNo();
@@ -455,10 +455,10 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-        if(empty($params['lon'])||empty($params['lat'])){
+        if (empty($params['lon']) || empty($params['lat'])) {
             $info = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
-            $params['lon']=$info['lon'];
-            $params['lat']=$info['lat'];
+            $params['lon'] = $info['lon'];
+            $params['lat'] = $info['lat'];
         }
         $params['merchant_id'] = auth()->id();
         if (empty($params['package_list']) && empty($params['material_list'])) {
