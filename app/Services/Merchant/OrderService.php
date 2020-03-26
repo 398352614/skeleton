@@ -295,7 +295,9 @@ class OrderService extends BaseService
      */
     public function store($params)
     {
-        $this->check($params);
+        $location = $this->check($params);
+        $params['lon']=$location;
+        $params['lat']=$location;
         /*************************************************订单新增************************************************/
         //生成单号
         $params['order_no'] = $this->getOrderNoRuleService()->createOrderNo();
@@ -453,6 +455,11 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        if(empty($params['lon'])||empty($params['lat'])){
+            $info = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
+            $params['lon']=$info['lon'];
+            $params['lat']=$info['lat'];
+        }
         $params['merchant_id'] = auth()->id();
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');

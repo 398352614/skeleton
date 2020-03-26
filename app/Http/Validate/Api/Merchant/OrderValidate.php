@@ -76,8 +76,8 @@ class OrderValidate extends BaseValidate
         'receiver_city' => 'required|string|max:50',
         'receiver_street' => 'required|string|max:50',
         'receiver_address' => 'nullable|string|max:250',
-        'lon' => 'required|string|max:50',
-        'lat' => 'required|string|max:50',
+        'lon' => 'nullable|string|max:50',
+        'lat' => 'nullable|string|max:50',
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
         //包裹列表
