@@ -244,15 +244,9 @@ class OrderService extends BaseService
     public function initStore()
     {
         $data = [];
-        $data['nature_list'] = array_values(collect(ConstTranslateTrait::orderNatureList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
-        $data['settlement_type_list'] = array_values(collect(ConstTranslateTrait::orderSettlementTypeList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
-        $data['type'] = array_values(collect(ConstTranslateTrait::orderTypeList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
+        $data['nature_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderNatureList);
+        $data['settlement_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSettlementTypeList);
+        $data['type'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderTypeList);
         return $data;
     }
 

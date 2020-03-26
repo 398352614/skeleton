@@ -116,9 +116,7 @@ class UploadService
      */
     public function getImageDirList()
     {
-        $data = array_values(collect(ConstTranslateTrait::adminImageDirList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
+        $data = ConstTranslateTrait::formatList(ConstTranslateTrait::$adminImageDirList);
         return $data;
     }
 
@@ -159,9 +157,7 @@ class UploadService
      */
     public function getFileDirList()
     {
-        $data = array_values(collect(ConstTranslateTrait::adminFileDirList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
+        $data = ConstTranslateTrait::formatList(ConstTranslateTrait::$adminFileDirList);
         return $data;
     }
 

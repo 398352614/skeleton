@@ -167,9 +167,7 @@ class DriverController extends BaseController
      */
     public function driverStatus()
     {
-        $data = array_values(collect(ConstTranslateTrait::driverStatusList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
+        $data = ConstTranslateTrait::formatList(ConstTranslateTrait::$driverStatusList);
         return $data;
     }
 
@@ -224,9 +222,7 @@ class DriverController extends BaseController
      */
     public function cropType()
     {
-        $data = array_values(collect(ConstTranslateTrait::driverTypeList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
+        $data = ConstTranslateTrait::formatList(ConstTranslateTrait::$driverTypeList);
         return $data;
     }
 }
