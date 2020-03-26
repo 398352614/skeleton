@@ -19,7 +19,6 @@ class WareHouseService extends BaseService
 {
     public function __construct(Warehouse $warehouse)
     {
-        $this->model = $warehouse;
-        $this->query = $this->model::query();
+        parent::__construct($warehouse);
     }
 }

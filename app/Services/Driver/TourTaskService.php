@@ -37,12 +37,7 @@ class TourTaskService extends BaseService
 
     public function __construct(Tour $tour, TourMaterial $tourMaterial)
     {
-        $this->request = request();
-        $this->model = $tour;
-        $this->query = $this->model::query();
-        $this->resource = TourTaskResource::class;
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($tour,TourTaskResource::class);
         $this->tourMaterialModel = $tourMaterial;
     }
 

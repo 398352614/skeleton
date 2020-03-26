@@ -20,7 +20,6 @@ class MerchantGroupService extends BaseService
 {
     public function __construct(MerchantGroup $merchantGroup)
     {
-        $this->model = $merchantGroup;
-        $this->query = $this->model::query();
+        parent::__construct($merchantGroup);
     }
 }

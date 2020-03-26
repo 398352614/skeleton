@@ -12,12 +12,7 @@ class SenderAddressService extends BaseService
 {
     public function __construct(SenderAddress $senderAddress)
     {
-        $this->request = request();
-        $this->model = $senderAddress;
-        $this->query = $this->model::query();
-        $this->resource = SenderAddressResource::class;
-        $this->infoResource = SenderAddressResource::class;
-        $this->setFilterRules();
+        parent::__construct($senderAddress,SenderAddressResource::class,SenderAddressResource::class);
     }
 
     public function index()

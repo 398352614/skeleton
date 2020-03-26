@@ -16,8 +16,7 @@ class DriverService extends BaseService
 {
     public function __construct(Driver $driver)
     {
-        $this->model = $driver;
-        $this->query = $this->model::query();
+        parent::__construct($driver);
     }
 
 }

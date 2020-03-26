@@ -44,13 +44,7 @@ class OrderService extends BaseService
 
     public function __construct(Order $order)
     {
-        $this->model = $order;
-        $this->query = $this->model::query();
-        $this->resource = OrderResource::class;
-        $this->infoResource = OrderInfoResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($order,OrderResource::class,OrderInfoResource::class);
     }
 
 

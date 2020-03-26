@@ -16,8 +16,7 @@ class OrderService extends BaseService
 {
     public function __construct(Order $order)
     {
-        $this->request = request();
-        $this->model = $order;
-        $this->query = $this->model::query();
+        parent::__construct($order);
+
     }
 }

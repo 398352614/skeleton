@@ -33,11 +33,7 @@ class TransportPriceService extends BaseService
         WeightCharging $weightCharging,
         SpecialTimeCharging $specialTimeCharging)
     {
-        $this->model = $transportPrice;
-        $this->query = $this->model::query();
-        $this->resource = TransportPriceResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
+        parent::__construct($transportPrice,TransportPriceResource::class);
         //子模型
         $this->kilometresChargingModel = $kilometresCharging;
         $this->weightChargingModel = $weightCharging;

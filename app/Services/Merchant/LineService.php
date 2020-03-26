@@ -15,7 +15,6 @@ class LineService extends BaseService
 {
     public function __construct(Line $line)
     {
-        $this->model = $line;
-        $this->query = $this->model::query();
+        parent::__construct($line);
     }
 }
