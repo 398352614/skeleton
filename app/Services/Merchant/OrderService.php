@@ -459,10 +459,10 @@ class OrderService extends BaseService
             if (count(array_unique($nameList)) !== count($nameList)) {
                 throw new BusinessLogicException('包裹名称有重复！不能添加订单');
             }
-            $outOrderNoList = array_filter(array_column($packageList, 'out_order_no'));
-            if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
-                throw new BusinessLogicException('包裹外部标识有重复！不能添加订单');
-            }
+//            $outOrderNoList = array_filter(array_column($packageList, 'out_order_no'));
+//            if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
+//                throw new BusinessLogicException('包裹外部标识有重复！不能添加订单');
+//            }
             $expressNoList = array_filter(array_merge(array_column($packageList, 'express_first_no'), array_column($packageList, 'express_second_no')));
             if (count(array_unique($expressNoList)) !== count($expressNoList)) {
                 throw new BusinessLogicException('快递单号有重复！不能添加订单');

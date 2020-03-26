@@ -68,9 +68,9 @@ class PackageService extends BaseService
             $orWhere['express_second_no'] = $package['express_first_no'];
         }
         //若存在外部标识,则验证
-        if (!empty($package['out_order_no'])) {
-            $orWhere['out_order_no'] = $package['out_order_no'];
-        }
+//        if (!empty($package['out_order_no'])) {
+//            $orWhere['out_order_no'] = $package['out_order_no'];
+//        }
         $query->where(function ($query) use ($orWhere) {
             foreach ($orWhere as $key => $value) {
                 $query->where($key, '=', $value, 'or');
