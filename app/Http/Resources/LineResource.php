@@ -24,7 +24,7 @@ class LineResource extends JsonResource
             'country_name' => $this->country_name,
             'line_range' => $this->line_range,
             'work_day_list' => $this->getWorkDayList($this->work_day_list),
-            'pickup_max_count' => $this->order_max_count,
+            'pickup_max_count' => $this->pickup_max_count,
             'pie_max_count'=>$this->pie_max_count,
             'is_increment'=>$this->is_increment,
             'order_deadline'=>$this->order_deadline,
