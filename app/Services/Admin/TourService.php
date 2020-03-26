@@ -318,7 +318,7 @@ class TourService extends BaseService
      */
     public function join($batch, $line, $type)
     {
-        $tour = $this->getTourInfo($batch, $line);
+        $tour = $this->getTourInfo($batch, $line, $batch['tour_no'] ?? '');
         //加入取件线路
         $quantity = (intval($type) === 1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $tour = !empty($tour) ? $this->joinExistTour($tour->toArray(), $quantity) : $this->joinNewTour($batch, $line, $quantity);
@@ -495,10 +495,7 @@ class TourService extends BaseService
         if (!empty($batch['tour_no'])) {
             $this->removeBatch($batch);
         }
-        if (!empty($params['tour_no'])) {
-            $this->query->where('tour_no', '=', $params['tour_no']);
-        }
-        $tour = $this->getTourInfo($batch, $line);
+        $tour = $this->getTourInfo($batch, $line, $params['tour_no'] ?? '');
         if (!empty($params['tour_no']) && empty($tour)) {
             throw new BusinessLogicException('当前指定取件线路不符合当前站点');
         }
@@ -520,11 +517,15 @@ class TourService extends BaseService
      * @param $batch
      * @param $line
      * @param $isLock
+     * @param $tourNo
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getTourInfo($batch, $line, $isLock = true)
+    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null)
     {
+        if (!empty($tourNo)) {
+            $this->query->where('tour_no', '=', $tourNo);
+        }
         //若不存在取件线路或者超过最大订单量,则新建取件线路
         $this->query->where(DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']), '<', $line['pickup_max_count']);
         $this->query->where(DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']), '<', $line['pie_max_count']);

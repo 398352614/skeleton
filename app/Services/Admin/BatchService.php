@@ -196,7 +196,7 @@ class BatchService extends BaseService
                 continue;
             }
             $line = $line->toArray();
-            $tour = $this->getTourService()->getTourInfo($batch, $line, false);
+            $tour = $this->getTourService()->getTourInfo($batch, $line, false, $batch['tour_no'] ?? '');
             //若存在，锁定当前站点
             if (!empty($tour)) {
                 $batch = parent::getInfoLock(['id' => $batch['id']], ['*'], false)->toArray();
