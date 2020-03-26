@@ -393,6 +393,27 @@ class BaseService
     }
 
     /**
+     * 根据状态获取信息
+     * @param $where
+     * @param $isToArray
+     * @param $status
+     * @param $isLock
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getInfoOfStatus($where, $isToArray = true, $status = 1, $isLock = true)
+    {
+        $info = ($isLock === true) ? $this->getInfoLock($where, ['*'], false) : $this->getInfo($where, ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if (!in_array(intval($info['status']), Arr::wrap($status))) {
+            throw new BusinessLogicException('当前状态下不能操作');
+        }
+        return $isToArray ? $info->toArray() : $info;
+    }
+
+    /**
      * @param $name
      * @param $arguments
      * @return null|mixed

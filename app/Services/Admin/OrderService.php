@@ -251,27 +251,6 @@ class OrderService extends BaseService
     }
 
     /**
-     * 获取待分配订单信息
-     * @param $id
-     * @param $isToArray
-     * @param $status
-     * @param $isLock
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws BusinessLogicException
-     */
-    private function getInfoOfStatus($where, $isToArray = true, $status = BaseConstService::ORDER_STATUS_1, $isLock = true)
-    {
-        $info = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        if (!in_array(intval($info['status']), Arr::wrap($status))) {
-            throw new BusinessLogicException('当前订单状态不能操作');
-        }
-        return $isToArray ? $info->toArray() : $info;
-    }
-
-    /**
      * 新增
      * @param $params
      * @return array
