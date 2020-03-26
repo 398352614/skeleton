@@ -13,8 +13,7 @@ class PackageService extends BaseService
 {
     public function __construct(Package $package)
     {
-        $this->model = $package;
-        $this->query = $this->model::query();
+        parent::__construct($package);
     }
 
     /**

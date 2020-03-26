@@ -20,13 +20,7 @@ class EmployeeService extends BaseService
 
     public function __construct(Employee $employee)
     {
-        $this->model = $employee;
-        $this->query = $this->model::query();
-        $this->resource = EmployeeListResource::class;
-        $this->infoResource = EmployeeListResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($employee, EmployeeListResource::class, EmployeeListResource::class);
     }
 
     /**

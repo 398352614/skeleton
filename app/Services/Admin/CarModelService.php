@@ -18,15 +18,9 @@ class CarModelService extends BaseService
         'brand_id' => ['=', 'brand_id'],
     ];
 
-    public function __construct(CarModel $carBrand)
+    public function __construct(CarModel $carModel)
     {
-        $this->model = $carBrand;
-        $this->query = $this->model::query();
-        $this->resource = CarModelResource::class;
-        $this->infoResource = CarModelResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($carModel, CarModelResource::class, CarModelResource::class);
     }
 
     /**

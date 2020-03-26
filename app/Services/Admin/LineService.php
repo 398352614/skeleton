@@ -25,12 +25,7 @@ class LineService extends BaseService
 
     public function __construct(Line $line)
     {
-        $this->model = $line;
-        $this->query = $this->model::query();
-        $this->resource = LineResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($line);
     }
 
     /**

@@ -3,13 +3,16 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\OrderInfoResource;
+use App\Http\Resources\OrderResource;
 use App\Models\BaseModel;
 use App\Traits\FactoryInstanceTrait;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class BaseService
 {
@@ -60,6 +63,17 @@ class BaseService
      * @var array 表单数据
      */
     public $formData = [];
+
+    public function __construct(Model $model, $resource = null, $infoResource = null)
+    {
+        $this->model = $model;
+        $this->query = $this->model::query();
+        $this->resource = $resource;
+        $this->infoResource = $infoResource;
+        $this->request = request();
+        $this->formData = $this->request->all();
+        $this->setFilterRules();
+    }
 
 
     /**
@@ -376,5 +390,27 @@ class BaseService
         $sum = $this->query->sum($field);
         $this->query = $this->model::query();
         return $sum;
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return null|mixed
+     * @throws BusinessLogicException
+     */
+    public function __call($name, $arguments)
+    {
+        if (preg_match('/^(get)(\w+)(Service)$/', $name)) {
+            $className = substr($name, 3);
+            $className = __NAMESPACE__ . '\\' . $className;
+            if (!class_exists($className)) {
+                $className = 'App\Service\\' . $className;
+                if (!class_exists($className)) {
+                    throw new BusinessLogicException($className . '类不存在');
+                }
+            }
+            return FactoryInstanceTrait::getInstance($className, $arguments);
+        };
+        throw new BusinessLogicException('方法不存在');
     }
 }

@@ -14,12 +14,7 @@ class VersionService extends BaseService
 {
     public function __construct(version $version)
     {
-        $this->model = $version;
-        $this->query = $this->model::query();
-        $this->resource = VersionResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($version, VersionResource::class);
     }
 
     /**

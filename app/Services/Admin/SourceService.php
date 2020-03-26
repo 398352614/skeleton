@@ -13,12 +13,7 @@ class SourceService extends BaseService
 {
     public function __construct(Source $source)
     {
-        $this->model = $source;
-        $this->query = $this->model::query();
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->resource = SourceResource::class;
-
+        parent::__construct($source, SourceResource::class);
     }
 
     /**

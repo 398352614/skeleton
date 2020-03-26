@@ -40,13 +40,7 @@ class BatchService extends BaseService
 
     public function __construct(Batch $batch)
     {
-        $this->model = $batch;
-        $this->query = $this->model::query();
-        $this->resource = BatchResource::class;
-        $this->infoResource = BatchInfoResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($batch, BatchResource::class, BatchInfoResource::class);
     }
 
     /**

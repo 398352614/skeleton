@@ -11,10 +11,9 @@ use App\Services\BaseService;
 
 class MaterialService extends BaseService
 {
-    public function __construct(Material $materia)
+    public function __construct(Material $material)
     {
-        $this->model = $materia;
-        $this->query = $this->model::query();
+        parent::__construct($material);
     }
 
     /**

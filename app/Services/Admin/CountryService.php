@@ -20,10 +20,7 @@ class CountryService extends BaseService
 {
     public function __construct(Country $country)
     {
-        $this->request = request();
-        $this->model = $country;
-        $this->query = $this->model::query();
-        $this->resource = CountryResource::class;
+        parent::__construct($country, CountryResource::class);
     }
 
     /**

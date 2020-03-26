@@ -24,14 +24,7 @@ class OrderImportService extends BaseService
 
     public function __construct(OrderImportLog $orderImportLog)
     {
-        $this->model = $orderImportLog;
-        $this->query = $this->model::query();
-        $this->resource = OrderImportResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->infoResource = OrderImportInfoResource::class;
-
-        $this->setFilterRules();
+        parent::__construct($orderImportLog, OrderImportResource::class, OrderImportInfoResource::class);
     }
 
     protected $headings = [
@@ -74,18 +67,19 @@ class OrderImportService extends BaseService
      */
     public function uploadTemplate()
     {
-        $data=$this->formData;
-            $data['dir']='template';
-            if(empty((new UploadService())->fileUpload($data))){
-                throw new BusinessLogicException('上传失败');
-            };
+        $data = $this->formData;
+        $data['dir'] = 'template';
+        if (empty((new UploadService())->fileUpload($data))) {
+            throw new BusinessLogicException('上传失败');
+        };
     }
 
     /**
      *下载模板
      * @return mixed
      */
-    public function getTemplate(){
+    public function getTemplate()
+    {
         return Storage::disk('admin_file_public')->url(auth()->user()->company_id . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'order_import_template.xlsx');
     }
 
@@ -96,35 +90,35 @@ class OrderImportService extends BaseService
     public function getTemplateExcel()
     {
         $cellData[0] = array_values([
-            'execution_date'=>'2020-01-01',
-            'out_order_no'=>'634831',
-            'express_first_no'=>'ERP204231834534',
-            'express_second_no'=>'223423',
-            'merchant'=>'ERP',
-            'nature'=>'1',
-            'settlement_type'=>'1',
-            'settlement_amount'=>'5.00',
-            'replace_amount'=>'10.00',
-            'delivery'=>'1',
-            'receiver'=>'Mike',
-            'receiver_phone'=>'512353',
-            'receiver_country'=>'NL',
-            'receiver_post_code'=>'21535PJ',
-            'receiver_house_number'=>'20',
-            'receiver_city'=>'Nieuw-Vennep',
-            'receiver_street'=>'Pesetaweg',
-            'receiver_address'=>'First floor',
-            'sender'=>'Jack',
-            'sender_phone'=>'17558493213',
-            'sender_country'=>'中国',
-            'sender_post_code'=>'410000',
-            'sender_house_number'=>'C8',
-            'sender_city'=>'长沙',
-            'sender_street'=>'麓谷企业广场',
-            'sender_address'=>'808',
-            'special_remark'=>'Special remark 1',
-            'remark'=>'remark 1',
-            'package_list'=>'[     
+            'execution_date' => '2020-01-01',
+            'out_order_no' => '634831',
+            'express_first_no' => 'ERP204231834534',
+            'express_second_no' => '223423',
+            'merchant' => 'ERP',
+            'nature' => '1',
+            'settlement_type' => '1',
+            'settlement_amount' => '5.00',
+            'replace_amount' => '10.00',
+            'delivery' => '1',
+            'receiver' => 'Mike',
+            'receiver_phone' => '512353',
+            'receiver_country' => 'NL',
+            'receiver_post_code' => '21535PJ',
+            'receiver_house_number' => '20',
+            'receiver_city' => 'Nieuw-Vennep',
+            'receiver_street' => 'Pesetaweg',
+            'receiver_address' => 'First floor',
+            'sender' => 'Jack',
+            'sender_phone' => '17558493213',
+            'sender_country' => '中国',
+            'sender_post_code' => '410000',
+            'sender_house_number' => 'C8',
+            'sender_city' => '长沙',
+            'sender_street' => '麓谷企业广场',
+            'sender_address' => '808',
+            'special_remark' => 'Special remark 1',
+            'remark' => 'remark 1',
+            'package_list' => '[     
                 {        
                         "name":"包裹1",
                         "express_first_no":"express_no_1",
@@ -144,7 +138,7 @@ class OrderImportService extends BaseService
                         "remark":"remark 2"   
                     }
                 ]',
-                            'material_list'=>'[     
+            'material_list' => '[     
                     {        
                         "name":"材料1", 
                         "code":"code1", 

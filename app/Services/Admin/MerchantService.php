@@ -44,12 +44,7 @@ class MerchantService extends BaseService
 
     public function __construct(Merchant $merchant)
     {
-        $this->model = $merchant;
-        $this->query = $this->model::query();
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->resource = MerchantResource::class;
-        $this->setFilterRules();
+        parent::__construct($merchant, MerchantResource::class);
     }
 
     /**

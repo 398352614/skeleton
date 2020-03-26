@@ -24,12 +24,7 @@ class MerchantGroupService extends BaseService
 
     public function __construct(MerchantGroup $merchantGroup)
     {
-        $this->model = $merchantGroup;
-        $this->query = $this->model::query();
-        $this->resource = MerchantGroupResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($merchantGroup, MerchantGroupResource::class);
     }
 
     /**
@@ -137,11 +132,12 @@ class MerchantGroupService extends BaseService
      * @param $data
      * @throws BusinessLogicException
      */
-    public function updatePrice($data){
-        $ids=json_decode ($data['ids'], true);
-        for($i=0;$i<count($ids);$i++){
-          $info=$this->update(['id'=>$ids[$i]],['transport_price_id'=>$data['transport_price_id']]);
-            if(empty($info)){
+    public function updatePrice($data)
+    {
+        $ids = json_decode($data['ids'], true);
+        for ($i = 0; $i < count($ids); $i++) {
+            $info = $this->update(['id' => $ids[$i]], ['transport_price_id' => $data['transport_price_id']]);
+            if (empty($info)) {
                 throw new BusinessLogicException('批量设置运价失败');
             }
         }

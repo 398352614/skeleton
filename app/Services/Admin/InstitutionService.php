@@ -15,11 +15,7 @@ class InstitutionService extends BaseService
 {
     public function __construct(Institution $institution)
     {
-        $this->model = $institution;
-        $this->query = $this->model::query();
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($institution);
     }
 
     /**

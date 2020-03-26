@@ -18,13 +18,7 @@ class CarService extends BaseService
 
     public function __construct(Car $car)
     {
-        $this->model = $car;
-        $this->query = $this->model::query();
-        $this->resource = CarResource::class;
-        $this->infoResource = CarResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($car, CarResource::class, CarResource::class);
     }
 
 

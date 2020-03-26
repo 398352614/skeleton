@@ -64,13 +64,7 @@ class TourService extends BaseService
 
     public function __construct(Tour $tour, GoogleApiService $client, XLDirectionService $directionClient)
     {
-        $this->model = $tour;
-        $this->query = $this->model::query();
-        $this->resource = TourResource::class;
-        $this->infoResource = TourInfoResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($tour, TourResource::class, TourInfoResource::class);
         $this->apiClient = $client;
         $this->directionClient = $directionClient;
     }

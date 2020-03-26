@@ -16,6 +16,7 @@ use App\Models\BatchException;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use Illuminate\Support\Carbon;
+
 class BatchExceptionService extends BaseService
 {
     public $filterRules = [
@@ -26,12 +27,7 @@ class BatchExceptionService extends BaseService
 
     public function __construct(BatchException $batchException)
     {
-        $this->request = request();
-        $this->model = $batchException;
-        $this->query = $this->model::query();
-        $this->resource = BatchExceptionResource::class;
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($batchException, BatchExceptionResource::class);
     }
 
     /**
@@ -88,7 +84,7 @@ class BatchExceptionService extends BaseService
             'deal_name' => auth()->user()->username,
             'deal_remark' => $params['deal_remark'],
             'status' => BaseConstService::BATCH_EXCEPTION_2,
-            'deal_time' =>Carbon::now()
+            'deal_time' => Carbon::now()
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('处理失败，请重新操作');

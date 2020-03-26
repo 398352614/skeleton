@@ -14,15 +14,9 @@ class SenderAddressService extends BaseService
         'merchant_id' => ['=', 'merchant_id']
     ];
 
-    public function __construct(SenderAddress $senderaddress)
+    public function __construct(SenderAddress $senderAddress)
     {
-        $this->request = request();
-        $this->model = $senderaddress;
-        $this->query = $this->model::query();
-        $this->resource = SenderAddressResource::class;
-        $this->infoResource = SenderAddressResource::class;
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($senderAddress, SenderAddressResource::class, SenderAddressResource::class);
     }
 
     public function index()
