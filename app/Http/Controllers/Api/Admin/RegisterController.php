@@ -22,7 +22,9 @@ use App\Models\SpecialTimeCharging;
 use App\Models\TransportPrice;
 use App\Models\Warehouse;
 use App\Models\WeightCharging;
+use App\Services\Admin\CompanyService;
 use App\Services\BaseConstService;
+use App\Services\BaseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -33,6 +35,11 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class RegisterController extends BaseController
 {
+    public function __construct(CompanyService $service, $exceptMethods = [])
+    {
+        parent::__construct($service, $exceptMethods);
+    }
+
     /**
      * @param Request $request
      * @return JsonResponse|void
