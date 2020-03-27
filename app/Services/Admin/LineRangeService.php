@@ -16,8 +16,7 @@ class LineRangeService extends BaseService
 {
     public function __construct(LineRange $lineRange)
     {
-        $this->model = $lineRange;
-        $this->query = $this->model::query();
+        parent::__construct($lineRange);
     }
 
     /**

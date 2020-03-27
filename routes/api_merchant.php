@@ -63,6 +63,12 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
     });
 
+    //物流状态管理
+    Route::prefix('order-trail')->group(function () {
+        //rest api 放在最后
+        Route::get('/', 'OrderTrailController@index')->name('order-trail.index');
+    });
+
     //主页统计
     Route::prefix('home')->group(function () {
         Route::get('/', 'HomeController@home');

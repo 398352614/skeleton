@@ -12,12 +12,7 @@ class SenderAddressService extends BaseService
 {
     public function __construct(SenderAddress $senderAddress)
     {
-        $this->request = request();
-        $this->model = $senderAddress;
-        $this->query = $this->model::query();
-        $this->resource = SenderAddressResource::class;
-        $this->infoResource = SenderAddressResource::class;
-        $this->setFilterRules();
+        parent::__construct($senderAddress,SenderAddressResource::class,SenderAddressResource::class);
     }
 
     public function index()
@@ -91,7 +86,7 @@ class SenderAddressService extends BaseService
     {
         $info = $this->check($data, $id);
         if (!empty($info)) {
-            throw new BusinessLogicException('发货方地址已存在,不能重复添加');
+            throw new BusinessLogicException('发货方地址已存在，不能重复添加');
         }
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {

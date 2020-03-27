@@ -77,6 +77,7 @@ class Package extends BaseModel
 
     protected $appends = [
         'status_name',
+        'type_name'
     ];
 
     /**
@@ -90,5 +91,10 @@ class Package extends BaseModel
     public function getStatusNameAttribute()
     {
         return empty($this->status) ? null : ConstTranslateTrait::packageStatusList($this->status);
+    }
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->status) ? null : ConstTranslateTrait::orderTypeList($this->type);
     }
 }

@@ -76,8 +76,8 @@ class OrderValidate extends BaseValidate
         'receiver_city' => 'required|string|max:50',
         'receiver_street' => 'required|string|max:50',
         'receiver_address' => 'nullable|string|max:250',
-        'lon' => 'required|string|max:50',
-        'lat' => 'required|string|max:50',
+        'lon' => 'nullable|string|max:50',
+        'lat' => 'nullable|string|max:50',
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
         //包裹列表
@@ -132,6 +132,7 @@ class OrderValidate extends BaseValidate
         'getBatchPageListByOrder' => ['execution_date'],
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
+        'destroy' => ['remark']
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',

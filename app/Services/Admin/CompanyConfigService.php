@@ -18,9 +18,7 @@ class CompanyConfigService extends BaseService
 {
     public function __construct(CompanyConfig $companyConfig)
     {
-        $this->request = request();
-        $this->model = $companyConfig;
-        $this->query = $this->model::query();
+        parent::__construct($companyConfig);
     }
 
     /**

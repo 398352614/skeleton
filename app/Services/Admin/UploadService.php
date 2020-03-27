@@ -99,10 +99,10 @@ class UploadService
         try {
             $rowCount = $this->imageDisk->putFileAs($subPath, $params['image'], $params['name']);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('图片上传失败,请重新操作');
+            throw new BusinessLogicException('图片上传失败，请重新操作');
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('图片上传失败,请重新操作');
+            throw new BusinessLogicException('图片上传失败，请重新操作');
         }
         return [
             'name' => $params['name'],
@@ -116,9 +116,7 @@ class UploadService
      */
     public function getImageDirList()
     {
-        $data = array_values(collect(ConstTranslateTrait::adminImageDirList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
+        $data = ConstTranslateTrait::formatList(ConstTranslateTrait::$adminImageDirList);
         return $data;
     }
 
@@ -142,10 +140,10 @@ class UploadService
         try {
             $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('文件上传失败,请重新操作'.$ex->getMessage());
+            throw new BusinessLogicException('文件上传失败，请重新操作');
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('文件上传失败,请重新操作');
+            throw new BusinessLogicException('文件上传失败，请重新操作');
         }
         return [
             'name' => $params['name'],
@@ -159,9 +157,7 @@ class UploadService
      */
     public function getFileDirList()
     {
-        $data = array_values(collect(ConstTranslateTrait::adminFileDirList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
+        $data = ConstTranslateTrait::formatList(ConstTranslateTrait::$adminFileDirList);
         return $data;
     }
 

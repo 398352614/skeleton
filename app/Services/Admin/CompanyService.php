@@ -16,37 +16,37 @@ class CompanyService extends BaseService
 {
     public function __construct(Company $company)
     {
-        $this->model = $company;
+        parent::__construct($company);
         $this->query = $this->model::query()->withoutGlobalScope(CompanyScope::class);
     }
 
     /**
      * 创建或者更新信息
-     * @param  array  $data
+     * @param array $data
      * @return bool
      */
     public function createInfo(array $data): bool
     {
-        $where = ['name'=>$data['name']];
-        if(!empty(auth()->user()->company_id)){
-            $where['id'] = ['<>',auth()->user()->company_id];
+        $where = ['name' => $data['name']];
+        if (!empty(auth()->user()->company_id)) {
+            $where['id'] = ['<>', auth()->user()->company_id];
         }
-        $info = parent::getInfo($where,['*'],false);
-        if(!empty($info)){
+        $info = parent::getInfo($where, ['*'], false);
+        if (!empty($info)) {
             throw new BusinessLogicException('公司名称已存在');
         }
         return $this->query->updateOrCreate(
-            [
-                'id' => auth()->user()->company_id,
-            ],
-            [
-                'name' => $data['name'] ?? '',
-                'contacts' => $data['contacts'] ?? '',
-                'phone' => $data['phone'] ?? '',
-                'country' => $data['country'] ?? '',
-                'address' => $data['address'] ?? '',
-            ]
-        ) !== 0;
+                [
+                    'id' => auth()->user()->company_id,
+                ],
+                [
+                    'name' => $data['name'] ?? '',
+                    'contacts' => $data['contacts'] ?? '',
+                    'phone' => $data['phone'] ?? '',
+                    'country' => $data['country'] ?? '',
+                    'address' => $data['address'] ?? '',
+                ]
+            ) !== 0;
     }
 
     /**

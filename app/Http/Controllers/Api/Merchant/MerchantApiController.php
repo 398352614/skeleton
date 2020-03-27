@@ -44,7 +44,7 @@ class MerchantApiController extends BaseController
     {
         $rowCount = $this->service->update(['merchant_id' => auth()->id()], Arr::only($this->data, ['url', 'white_ip_list', 'status']));
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
     }
 }

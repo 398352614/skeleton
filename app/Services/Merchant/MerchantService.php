@@ -19,8 +19,8 @@ class MerchantService extends BaseService
 {
     public function __construct(Merchant $merchant)
     {
-        $this->model = $merchant;
-        $this->query = $this->model::query();
+        parent::__construct($merchant);
+
     }
 
     /**
@@ -34,7 +34,7 @@ class MerchantService extends BaseService
     {
         $rowCount = parent::updateById($id, Arr::only($data, ['name', 'contacter', 'phone', 'country', 'address']));
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
     }
 }

@@ -14,12 +14,7 @@ class VersionService extends BaseService
 {
     public function __construct(version $version)
     {
-        $this->model = $version;
-        $this->query = $this->model::query();
-        $this->resource = VersionResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($version, VersionResource::class);
     }
 
     /**
@@ -61,7 +56,7 @@ class VersionService extends BaseService
     {
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
     }
 

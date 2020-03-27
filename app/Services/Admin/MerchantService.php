@@ -18,6 +18,7 @@ use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use Illuminate\Hashing\Argon2IdHasher;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Vinkla\Hashids\Facades\Hashids;
@@ -43,12 +44,7 @@ class MerchantService extends BaseService
 
     public function __construct(Merchant $merchant)
     {
-        $this->model = $merchant;
-        $this->query = $this->model::query();
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->resource = MerchantResource::class;
-        $this->setFilterRules();
+        parent::__construct($merchant, MerchantResource::class);
     }
 
     /**
@@ -72,9 +68,7 @@ class MerchantService extends BaseService
     public function init()
     {
         $data = [];
-        $data['settlement_type_list'] = array_values(collect(ConstTranslateTrait::merchantSettlementTypeList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
+        $data['settlement_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$merchantSettlementTypeList);
         return $data;
     }
 
@@ -120,7 +114,7 @@ class MerchantService extends BaseService
         $info = $this->getInfo(['id' => $id], ['merchant_group_id'], false);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
         $info = $info->toArray();
         //若修改了商户组,则调整成员
@@ -153,7 +147,7 @@ class MerchantService extends BaseService
     {
         $rowCount = parent::updateById($id, ['password' => Hash::make($data['password'])]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
     }
 
@@ -168,7 +162,7 @@ class MerchantService extends BaseService
         for ($i = 0; $i < count($ids); $i++) {
             $rowCount[$i] = parent::updateById($ids[$i], ['status' => $data['status']]);
             if ($rowCount === false) {
-                throw new BusinessLogicException('修改失败,请重新操作');
+                throw new BusinessLogicException('修改失败，请重新操作');
             }
         }
     }
@@ -194,12 +188,13 @@ class MerchantService extends BaseService
         $info = $this->getList([], $this->headings, false)->toArray();
         for ($i = 0; $i < count($info); $i++) {
             $info[$i]['merchant_group_id'] = $this->getMerchantGroupService()->getInfo(['id' => $info[$i]['merchant_group_id']], ['name'], false)->toArray()['name'];
-            $info[$i]['type'] = empty($info[$i]['type']) ? null : ConstTranslateTrait::merchantTypeList($info[$i]['type']);
-            $info[$i]['settlement_type'] = empty($info[$i]['settlement_type']) ? null : ConstTranslateTrait::merchantSettlementTypeList($info[$i]['settlement_type']);
-            $info[$i]['status'] = empty($info[$i]['status']) ? null : ConstTranslateTrait::merchantStatusList($info[$i]['status']);
-            for ($j = 0; $j < count($info[$i]); $j++) {
-                $cellData[$i][$j] = array_values($info[$i])[$j];
+            $info[$i]['type'] = $info[$i]['type_name'];
+            $info[$i]['settlement_type'] = $info[$i]['settlement_type_name'];
+            $info[$i]['status'] = $info[$i]['status_name'];
+            for ($j = 0; $j < count($this->headings); $j++) {
+                $cellData[$i][$j] = array_values(Arr::only($info[$i],$this->headings))[$j];
             }
+
         }
         return $this->excelExport('merchant', $this->headings, $cellData, 'merchant');
     }

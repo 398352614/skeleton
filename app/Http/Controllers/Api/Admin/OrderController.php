@@ -156,7 +156,7 @@ class OrderController extends BaseController
      */
     public function destroy($id)
     {
-        return $this->service->destroy($id);
+        return $this->service->destroy($id, $this->data);
     }
 
     /**

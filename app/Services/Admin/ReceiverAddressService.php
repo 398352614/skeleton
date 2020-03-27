@@ -25,13 +25,7 @@ class ReceiverAddressService extends BaseService
 
     public function __construct(ReceiverAddress $receiverAddress)
     {
-        $this->request = request();
-        $this->model = $receiverAddress;
-        $this->query = $this->model::query();
-        $this->resource = ReceiverAddressResource::class;
-        $this->infoResource = ReceiverAddressResource::class;
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($receiverAddress, ReceiverAddressResource::class, ReceiverAddressResource::class);
     }
 
 
@@ -71,7 +65,7 @@ class ReceiverAddressService extends BaseService
     {
         $this->checkMerchant($params);
         if (!empty($this->check($params))) {
-            throw new BusinessLogicException('收货方地址已存在,不能重复添加');
+            throw new BusinessLogicException('收货方地址已存在，不能重复添加');
         }
         $rowCount = parent::create($params);
         if ($rowCount === false) {
@@ -90,11 +84,11 @@ class ReceiverAddressService extends BaseService
     {
         $this->checkMerchant($data);
         if (!empty($this->check($data, $id))) {
-            throw new BusinessLogicException('收货方地址已存在,不能重复添加');
+            throw new BusinessLogicException('收货方地址已存在，不能重复添加');
         }
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,请重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
     }
 
@@ -123,7 +117,7 @@ class ReceiverAddressService extends BaseService
     {
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('删除失败,请重新操作');
+            throw new BusinessLogicException('删除失败，请重新操作');
         }
     }
 

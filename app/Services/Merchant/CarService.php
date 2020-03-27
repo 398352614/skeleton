@@ -14,7 +14,6 @@ class CarService extends BaseService
 {
     public function __construct(Car $car)
     {
-        $this->model = $car;
-        $this->query = $this->model::query();
+        parent::__construct($car);
     }
 }

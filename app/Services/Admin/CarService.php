@@ -18,28 +18,16 @@ class CarService extends BaseService
 
     public function __construct(Car $car)
     {
-        $this->model = $car;
-        $this->query = $this->model::query();
-        $this->resource = CarResource::class;
-        $this->infoResource = CarResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($car, CarResource::class, CarResource::class);
     }
 
 
     public function init()
     {
         $data = [];
-        $data['car_owner_ship_type_list'] = array_values(collect(ConstTranslateTrait::carOwnerShipTypeList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
-        $data['car_fuel_type_list'] = array_values(collect(ConstTranslateTrait::carFuelTypeList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
-        $data['car_transmission_list'] = array_values(collect(ConstTranslateTrait::carTransmissionList())->map(function ($value, $key) {
-            return collect(['id' => $key, 'name' => $value]);
-        })->toArray());
+        $data['car_owner_ship_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carOwnerShipTypeList);
+        $data['car_fuel_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carFuelTypeList);
+        $data['car_transmission_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carTransmissionList);
         return $data;
     }
 

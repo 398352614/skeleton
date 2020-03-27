@@ -13,12 +13,7 @@ class SourceService extends BaseService
 {
     public function __construct(Source $source)
     {
-        $this->model = $source;
-        $this->query = $this->model::query();
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->resource = SourceResource::class;
-
+        parent::__construct($source, SourceResource::class);
     }
 
     /**
@@ -40,7 +35,7 @@ class SourceService extends BaseService
     {
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('删除失败,请重新操作');
+            throw new BusinessLogicException('删除失败，请重新操作');
         }
     }
 

@@ -16,7 +16,7 @@ class BatchExceptionService extends BaseService
 
     public function __construct(BatchException $batchException)
     {
-        $this->model = $batchException;
-        $this->query = $this->model::query();
+        parent::__construct($batchException);
+
     }
 }

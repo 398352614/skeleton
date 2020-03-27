@@ -16,7 +16,6 @@ class MerchantApiService extends BaseService
 {
     public function __construct(MerchantApi $merchantApi)
     {
-        $this->model = $merchantApi;
-        $this->query = $this->model::query();
+        parent::__construct($merchantApi);
     }
 }

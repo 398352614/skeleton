@@ -19,10 +19,7 @@ class MemorandumService extends BaseService
 {
     public function __construct(Memorandum $memorandum)
     {
-        $this->request = request();
-        $this->model = $memorandum;
-        $this->query = $this->model::query();
-        $this->resource = MemorandumResource::class;
+        parent::__construct($memorandum,MemorandumResource::class);
     }
 
     /**

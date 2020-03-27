@@ -31,8 +31,8 @@ class MerchantValidate extends BaseValidate
 
     public $rules = [
         'type' => 'required|integer|in:1,2',
-        'name' => 'required|string|max:100|uniqueIgnore:merchant,id,company_id',
-        'email' => 'required|string|max:50|email|uniqueIgnore:merchant,id',
+        'name' => 'required|string|max:100',
+        'email' => 'required|string|max:50',
         'settlement_type' => 'required|integer|in:1,2,3',
         'merchant_group_id' => 'required|integer',
         'contacter' => 'required|string|max:50',
@@ -46,16 +46,10 @@ class MerchantValidate extends BaseValidate
 
     public $scene = [
         'update' => [
-            'type',
             'name',
-            'email',
-            'settlement_type',
-            'merchant_group_id',
             'contacter',
             'phone',
             'address',
-            'avatar',
-            'status',
         ]
     ];
 }

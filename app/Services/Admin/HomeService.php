@@ -14,13 +14,7 @@ class HomeService extends BaseService
 {
     public function __construct(Order $order)
     {
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
-        $this->model=$order;
-        $this->query = $this->model::query();
-        $this->request = request();
-
+        parent::__construct($order);
     }
 
     private function getDriverService()

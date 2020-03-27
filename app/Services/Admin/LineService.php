@@ -12,7 +12,9 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\LineResource;
 use App\Models\Line;
+use App\Services\BaseConstService;
 use App\Services\BaseService;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
 class LineService extends BaseService
@@ -25,12 +27,7 @@ class LineService extends BaseService
 
     public function __construct(Line $line)
     {
-        $this->model = $line;
-        $this->query = $this->model::query();
-        $this->resource = LineResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($line,LineResource::class);
     }
 
     /**
@@ -49,6 +46,15 @@ class LineService extends BaseService
     public function getWareHouseService()
     {
         return self::getInstance(WareHouseService::class);
+    }
+
+    /**
+     * 取件线路 服务
+     * @return TourService
+     */
+    private function getTourService()
+    {
+        return self::getInstance(TourService::class);
     }
 
     public function postQuery($postCode)
@@ -127,7 +133,7 @@ class LineService extends BaseService
     {
         $params = $this->check($params);
         //线路新增
-        $lineData = Arr::only($params, ['name', 'country', 'warehouse_id', 'order_max_count']);
+        $lineData = Arr::only($params, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days']);
         $lineData = array_merge($lineData, ['creator_id' => auth()->id(), 'creator_name' => auth()->user()->fullname]);
         $lineId = parent::insertGetId($lineData);
         if ($lineId === 0) {
@@ -163,7 +169,7 @@ class LineService extends BaseService
     public function updateById($id, $data)
     {
         $data = $this->check($data, $id);
-        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'warehouse_id', 'order_max_count']));
+        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days']));
         if ($rowCount === false) {
             throw new BusinessLogicException('线路修改失败');
         }
@@ -260,5 +266,65 @@ class LineService extends BaseService
                 }
             }
         }
+    }
+
+    /**
+     * 获取线路信息
+     * @param $info
+     * @param $orderOrBatch
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getInfoByRule($info, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
+    {
+        //获取邮编数字部分
+        $postCode = explode_post_code($info['receiver_post_code']);
+        //获取线路范围
+        $lineRange = $this->getLineRangeService()->getInfo(['post_code_start' => ['<=', $postCode], 'post_code_end' => ['>=', $postCode], 'schedule' => Carbon::parse($info['execution_date'])->dayOfWeek, 'country' => $info['receiver_country']], ['*'], false);
+        if (empty($lineRange)) {
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        $lineRange = $lineRange->toArray();
+        //获取线路信息
+        $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        $line = $line->toArray();
+        //预约当天的，需要判断是否在下单截止日期内
+        if (date('Y-m-d') == $info['execution_date']) {
+            if (time() > strtotime($info['execution_date'] . ' ' . $line['order_deadline'])) {
+                throw new BusinessLogicException('当天下单已超过截止时间');
+            }
+        }
+        //判断预约日期是否在可预约日期范围内
+        if (Carbon::today()->addDays($line['appointment_days'])->lt($info['execution_date'] . ' 00:00:00')) {
+            throw new BusinessLogicException('预约日期已超过可预约时间范围');
+        }
+        //若不是新增取件线路，则当前取件线路必须再最大订单量内
+        if ($line['is_increment'] == BaseConstService::IS_INCREMENT_2) {
+            if ($orderOrBatch === BaseConstService::ORDER_OR_BATCH_1) {
+                if ($info['type'] == 1) {
+                    $orderCount = $this->getTourService()->sumOrderCount($info, $line, 1);
+                    if (1 + $orderCount['pickup_count'] > $line['pickup_max_count']) {
+                        throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+                    };
+                } else {
+                    $orderCount = $this->getTourService()->sumOrderCount($info, $line, 2);
+                    if (1 + $orderCount['pie_count'] > $line['pie_max_count']) {
+                        throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+                    };
+                }
+            } else {
+                $orderCount = $this->getTourService()->sumOrderCount($info, $line, 3);
+                if ($info['expect_pickup_quantity'] + $orderCount['pickup_count'] > $line['pickup_max_count']) {
+                    throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+                };
+                if ($info['expect_pie_quantity'] + $orderCount['pie_count'] > $line['pie_max_count']) {
+                    throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+                };
+            }
+        }
+        return $line;
     }
 }

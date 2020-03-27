@@ -46,10 +46,7 @@ class TourService extends BaseService
 
     public function __construct(Tour $tour, TourMaterial $tourMaterial)
     {
-        $this->request = request();
-        $this->formData = request()->all();
-        $this->model = $tour;
-        $this->query = $this->model::query();
+        parent::__construct($tour);
         $this->tourMaterialModel = $tourMaterial;
     }
 
@@ -137,17 +134,17 @@ class TourService extends BaseService
         //取件线路 处理
         $rowCount = parent::updateById($id, ['status' => BaseConstService::TOUR_STATUS_3]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('取件线路锁定失败,请重新操作');
+            throw new BusinessLogicException('取件线路锁定失败，请重新操作');
         }
         //站点 处理
         $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::BATCH_WAIT_OUT]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点锁定失败,请重新操作');
+            throw new BusinessLogicException('站点锁定失败，请重新操作');
         }
         //订单 处理
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::ORDER_STATUS_3]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('订单锁定失败,请重新操作');
+            throw new BusinessLogicException('订单锁定失败，请重新操作');
         }
         //包裹 处理
         $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::PACKAGE_STATUS_3]);
@@ -175,22 +172,22 @@ class TourService extends BaseService
         //取件线路 处理
         $rowCount = parent::updateById($id, ['status' => BaseConstService::TOUR_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('取件线路取消锁定失败,请重新操作');
+            throw new BusinessLogicException('取件线路取消锁定失败，请重新操作');
         }
         //站点 处理
         $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_WAIT_OUT], ['status' => BaseConstService::BATCH_ASSIGNED]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点取消锁定失败,请重新操作');
+            throw new BusinessLogicException('站点取消锁定失败，请重新操作');
         }
         //订单 处理
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('订单取消锁定失败,请重新操作');
+            throw new BusinessLogicException('订单取消锁定失败，请重新操作');
         }
         //包裹 处理
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('包裹取消锁定失败,请重新操作');
+            throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
     }
 
@@ -205,7 +202,7 @@ class TourService extends BaseService
     {
         $rowCount = parent::updateById($id, ['remark' => $params['remark']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('备注失败,请重新操作');
+            throw new BusinessLogicException('备注失败，请重新操作');
         }
     }
 
@@ -225,7 +222,7 @@ class TourService extends BaseService
         //查看当前车辆是否已被分配给其他取件线路
         $otherTour = parent::getInfo(['id' => ['<>', $id], 'car_id' => $params['car_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
         if (!empty($otherTour)) {
-            throw new BusinessLogicException('当前车辆已被分配,请选择其他车辆');
+            throw new BusinessLogicException('当前车辆已被分配，请选择其他车辆');
         }
         //获取车辆
         $car = $this->getCarService()->getInfo(['id' => $params['car_id'], 'is_locked' => BaseConstService::CAR_TO_NORMAL], ['*'], false);
@@ -236,7 +233,7 @@ class TourService extends BaseService
         $car = $car->toArray();
         $rowCount = $this->updateTourAll($tour, ['car_id' => $car['id'], 'car_no' => $car['car_no']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('车辆分配失败,请重新操作');
+            throw new BusinessLogicException('车辆分配失败，请重新操作');
         }
     }
 
@@ -271,7 +268,7 @@ class TourService extends BaseService
     public function outWarehouse($id, $params)
     {
         $tour = $this->checkOutWarehouse($id);
-        $params = Arr::only($params, ['material_list', 'cancel_package_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic']);
+        $params = Arr::only($params, ['material_list', 'cancel_order_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic']);
         $params = Arr::add($params, 'status', BaseConstService::TOUR_STATUS_4);
         $params = Arr::add($params, 'begin_time', now());
         //取件线路更换状态
@@ -284,31 +281,71 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
+        //取消取派订单和包裹
+        if (!empty($params['cancel_order_id_list'])) {
+            $cancelOrderIdList = array_filter(explode(',', $params['cancel_order_id_list']), function ($value) {
+                return is_numeric($value);
+            });
+            if (!empty($cancelOrderIdList)) {
+                $rowCount = $this->getOrderService()->update(['id' => ['in', $cancelOrderIdList], 'tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_6]);
+                if ($rowCount === false) {
+                    throw new BusinessLogicException('出库失败');
+                }
+                $cancelOrderList = $this->getOrderService()->getList(['id' => ['in', $cancelOrderIdList]], ['order_no'], false)->toArray();
+                //更换包裹状态
+                $rowCount = $this->getPackageService()->update(['order_no' => ['in', array_column($cancelOrderList, 'order_no'), 'status' => BaseConstService::PACKAGE_STATUS_3]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
+                if ($rowCount === false) {
+                    throw new BusinessLogicException('出库失败');
+                }
+            }
+        }
         //订单更换状态
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
-        //包裹更换状态
-        $where = ['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3];
-        if (!empty($params['cancel_package_id_list'])) {
-            $where['id'] = ['not in', explode(',', $params['cancel_package_id_list'])];
-        }
-        $rowCount = $this->getPackageService()->update($where, ['status' => BaseConstService::PACKAGE_STATUS_4]);
+        //更换包裹状态
+        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
-        }
-        //处理未出库的包裹,将未出库的包裹取消取派
-        if (!empty($params['cancel_package_id_list'])) {
-            $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'id' => ['in', explode(',', $params['cancel_package_id_list'])]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('未扫描包裹取消取派失败');
-            }
         }
         //插入取件线路材料
         !empty($params['material_list']) && $this->insertMaterialList($tour, $params['material_list']);
 
         OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_DELIVERING);
+    }
+
+    /**
+     * 包裹取消取派
+     *
+     * @param $tour
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function cancelPackageList($tour, $params)
+    {
+        $cancelPackageIdList = explode(',', $params['cancel_package_id_list']);
+        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelPackageIdList]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('未扫描包裹取消取派失败');
+        }
+        //若一个订单下面的所有包裹都取消取派了，订单变为取消取派
+        $cancelPackageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelPackageIdList]], ['order_no', DB::raw('COUNT(id) AS quantity')], false, ['order_no'])->toArray();
+        $orderNoList = array_column($cancelPackageList, 'order_no');
+        $allPackageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no'], 'order_no' => ['in', $orderNoList]], ['order_no', DB::raw('COUNT(id) AS quantity')], false, ['order_no'])->toArray();
+
+        $cancelPackageList = array_create_index($cancelPackageList, 'order_no');
+        $allPackageList = array_create_index($allPackageList, 'order_no');
+        $cancelPackageList = Arr::where($cancelPackageList, function ($cancelPackage, $orderNo) use ($allPackageList) {
+            return ($cancelPackage['quantity'] >= $allPackageList[$orderNo]['quantity']);
+        });
+        if (!empty($cancelPackageList)) {
+            $cancelOrderNoList = array_column($cancelPackageList, 'order_no');
+            $rowCount = $this->getOrderService()->update(['order_no' => ['in', $cancelOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_6]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('未扫描包裹取消取派失败');
+            }
+        }
     }
 
     /**
@@ -428,7 +465,7 @@ class TourService extends BaseService
         $actualTime = strtotime($now) - strtotime($tour['begin_time']);
         $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => $now, 'actual_time' => $actualTime]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('更新到达时间失败,请重新操作');
+            throw new BusinessLogicException('更新到达时间失败，请重新操作');
         }
     }
 
@@ -494,17 +531,17 @@ class TourService extends BaseService
         ];
         $rowCount = $this->getBatchExceptionService()->create($data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败,请重新操作');
+            throw new BusinessLogicException('上报异常失败，请重新操作');
         }
         //站点异常
         $rowCount = $this->getBatchService()->updateById($batch['id'], ['exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败,请重新操作');
+            throw new BusinessLogicException('上报异常失败，请重新操作');
         }
         //订单异常
         $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败,请重新操作');
+            throw new BusinessLogicException('上报异常失败，请重新操作');
         }
     }
 
@@ -529,17 +566,17 @@ class TourService extends BaseService
         $data = Arr::only($params, ['cancel_type', 'cancel_remark', 'cancel_picture']);
         $rowCount = $this->getBatchService()->updateById($batch['id'], Arr::add($data, 'status', BaseConstService::BATCH_CANCEL));
         if ($rowCount === false) {
-            throw new BusinessLogicException('取消取派失败,请重新操作');
+            throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //订单取消取派
         $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], Arr::add($data, 'status', BaseConstService::ORDER_STATUS_6));
         if ($rowCount === false) {
-            throw new BusinessLogicException('取消取派失败,请重新操作');
+            throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //包裹取消取派
         $rowCount = $this->getPackageService()->update(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::PACKAGE_STATUS_4], ['status' => BaseConstService::PACKAGE_STATUS_6]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('取消取派失败,请重新操作');
+            throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('batch_no', $batch['batch_no'])->get(), BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
     }
@@ -727,13 +764,13 @@ class TourService extends BaseService
         }
         $batchCount = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['not in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         if ($batchCount !== 0) {
-            throw new BusinessLogicException('当前取件线路还有未完成站点,请先处理');
+            throw new BusinessLogicException('当前取件线路还有未完成站点，请先处理');
         }
         $data = Arr::only($params, ['end_signature', 'end_signature_remark']);
         $data = Arr::add($data, 'end_time', now());
         $rowCount = parent::updateById($tour['id'], Arr::add($data, 'status', BaseConstService::TOUR_STATUS_5));
         if ($rowCount === false) {
-            throw new BusinessLogicException('司机入库失败,请重新操作');
+            throw new BusinessLogicException('司机入库失败，请重新操作');
         }
     }
 

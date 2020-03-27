@@ -13,8 +13,7 @@ class PackageService extends BaseService
 {
     public function __construct(Package $package)
     {
-        $this->model = $package;
-        $this->query = $this->model::query();
+        parent::__construct($package);
     }
 
     /**
@@ -69,15 +68,15 @@ class PackageService extends BaseService
             $orWhere['express_second_no'] = $package['express_first_no'];
         }
         //若存在外部标识,则验证
-        if (!empty($package['out_order_no'])) {
-            $orWhere['out_order_no'] = $package['out_order_no'];
-        }
+//        if (!empty($package['out_order_no'])) {
+//            $orWhere['out_order_no'] = $package['out_order_no'];
+//        }
         $query->where(function ($query) use ($orWhere) {
             foreach ($orWhere as $key => $value) {
                 $query->where($key, '=', $value, 'or');
             }
         });
-        $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_7])->first();
+        $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
         return !empty($result) ? $result->toArray() : [];
     }
 }

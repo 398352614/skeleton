@@ -83,7 +83,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //上传模板
         Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
         //获取模板
-        Route::get('/getTemplate', 'OrderImportController@getTemplate');
+        Route::get('/getTemplate', 'OrderImportController@getTemplateExcel');
         //批量导入
         Route::post('/import', 'OrderController@orderImport');
         //批量新增

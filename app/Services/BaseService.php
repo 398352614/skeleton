@@ -3,13 +3,16 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\OrderInfoResource;
+use App\Http\Resources\OrderResource;
 use App\Models\BaseModel;
 use App\Traits\FactoryInstanceTrait;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class BaseService
 {
@@ -60,6 +63,17 @@ class BaseService
      * @var array 表单数据
      */
     public $formData = [];
+
+    public function __construct(Model $model, $resource = null, $infoResource = null)
+    {
+        $this->model = $model;
+        $this->query = $this->model::query();
+        $this->resource = $resource;
+        $this->infoResource = $infoResource;
+        $this->request = request();
+        $this->formData = $this->request->all();
+        $this->setFilterRules();
+    }
 
 
     /**
@@ -323,7 +337,7 @@ class BaseService
     {
         $rowCount = self::updateById($id, ['status' => $data['status']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败,清重新操作');
+            throw new BusinessLogicException('修改失败，清重新操作');
         }
     }
 
@@ -376,5 +390,48 @@ class BaseService
         $sum = $this->query->sum($field);
         $this->query = $this->model::query();
         return $sum;
+    }
+
+    /**
+     * 根据状态获取信息
+     * @param $where
+     * @param $isToArray
+     * @param $status
+     * @param $isLock
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getInfoOfStatus($where, $isToArray = true, $status = 1, $isLock = true)
+    {
+        $info = ($isLock === true) ? $this->getInfoLock($where, ['*'], false) : $this->getInfo($where, ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if (!in_array(intval($info['status']), Arr::wrap($status))) {
+            throw new BusinessLogicException('当前状态下不能操作');
+        }
+        return $isToArray ? $info->toArray() : $info;
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return null|mixed
+     * @throws BusinessLogicException
+     */
+    public function __call($name, $arguments)
+    {
+        if (preg_match('/^(get)(\w+)(Service)$/', $name)) {
+            $className = substr($name, 3);
+            $className = __NAMESPACE__ . '\\' . $className;
+            if (!class_exists($className)) {
+                $className = 'App\Service\\' . $className;
+                if (!class_exists($className)) {
+                    throw new BusinessLogicException($className . '类不存在');
+                }
+            }
+            return FactoryInstanceTrait::getInstance($className, $arguments);
+        };
+        throw new BusinessLogicException('方法不存在');
     }
 }

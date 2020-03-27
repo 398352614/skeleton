@@ -46,6 +46,7 @@ use Illuminate\Support\Facades\App;
  * @method static merchantTypeList($args = null)
  * @method static merchantSettlementTypeList($args = null)
  * @method static merchantStatusList($args = null)
+ * @method static driverEventList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -263,12 +264,39 @@ trait ConstTranslateTrait
         BaseConstService::MERCHANT_STATUS_2 => '禁用',
     ];
 
+    public static $driverEventList = [
+        BaseConstService::DRIVER_EVENT_1 => '司机到达客户家',
+        BaseConstService::DRIVER_EVENT_2 => '司机离开客户家',
+    ];
+
+    /**
+     * 格式化常量列表
+     * @param $list
+     * @return array
+     */
+    public static function formatList($list)
+    {
+        /******************************************若非中文,则需要翻译*************************************************/
+        if (App::getLocale() !== 'cn') {
+            foreach ($list as $key => $item) {
+                $list[$key] = __($item);
+            }
+        }
+        return array_values(collect($list)->map(function ($value, $key) {
+            return collect(['id' => $key, 'name' => $value]);
+        })->toArray());
+    }
+
+
     /**
      * 此函数用于访问静态变量的同时对其进行翻译
+     * @param $name
+     * @param $args
+     * @return array|string|null
      */
     public static function __callStatic($name, $args)
     {
-        /******************************************若未中文,则不用翻译*************************************************/
+        /******************************************若为中文,则不用翻译*************************************************/
         if (App::getLocale() === 'cn') {
             return !empty($args) ? self::$$name[$args[0]] : self::$$name;
         }
@@ -284,5 +312,4 @@ trait ConstTranslateTrait
         }
         return $arr;
     }
-
 }

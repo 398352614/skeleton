@@ -22,6 +22,7 @@ use App\Models\Material;
 use App\Models\Merchant;
 use App\Models\MerchantGroup;
 use App\Models\OrderNoRule;
+use App\Models\OrderTrail;
 use App\Models\Package;
 use App\Models\SpecialTimeCharging;
 use App\Models\Tour;
@@ -91,6 +92,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Material)
                 && !($model instanceof OrderNoRule)
                 && !($model instanceof Warehouse)
+                && !($model instanceof OrderTrail)
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
             }

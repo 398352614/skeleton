@@ -37,12 +37,7 @@ class TourTaskService extends BaseService
 
     public function __construct(Tour $tour, TourMaterial $tourMaterial)
     {
-        $this->request = request();
-        $this->model = $tour;
-        $this->query = $this->model::query();
-        $this->resource = TourTaskResource::class;
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($tour,TourTaskResource::class);
         $this->tourMaterialModel = $tourMaterial;
     }
 
@@ -127,20 +122,21 @@ class TourTaskService extends BaseService
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['id', 'batch_no', 'status', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
         //获取所有订单列表
         $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark'], false)->toArray();
-        //订单列表根据站点编号 分组
-        //$orderList = array_create_group_index($orderList, 'batch_no');
         //获取所有材料列表
         $materialList = $this->getTourMaterialList($tour);
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
-        //数据组合填充
-//        foreach ($batchList as &$batch) {
-//            $batch['order_list'] = $orderList[$batch['batch_no']];
-//        }
+        $packageList = array_create_group_index($packageList, 'order_no');
+        //将包裹列表和材料列表放在对应订单下
+        $orderList = array_map(function ($order) use ($packageList) {
+            $order['package_list'] = $packageList[$order['order_no']] ?? [];
+            return $order;
+        }, $orderList);
+        //数据填充
         $tour['batch_list'] = $batchList;
         $tour['order_list'] = $orderList;
         $tour['material_list'] = $materialList;
-        $tour['package_list'] = $packageList;
+        //$tour['package_list'] = $packageList;
         $tour['is_exist_special_remark'] = !empty(array_column($orderList, 'special_remark')) ? true : false;
         return $tour;
     }

@@ -3,6 +3,7 @@
 namespace App\Services\Auth;
 
 use App\Exceptions\BusinessLogicException;
+use App\Models\Merchant;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -61,13 +62,30 @@ class MerchantApiGuard implements Guard
         }
         $merchantApi = $this->provider->retrieveByCredentials($credentials);
         if ($this->hasValidCredentials($merchantApi, $credentials)) {
-            $this->user = $merchantApi;
-            $data = request()->input('data');
-            request()->offsetUnset('data');
-            request()->merge($data);
-            return true;
+            return $this->validCredentialSuccess($merchantApi);
         }
         return false;
+    }
+
+    /**
+     * 认证成功后的操作
+     *
+     * @param $merchantApi
+     * @return boolean
+     * @throws BusinessLogicException
+     */
+    private function validCredentialSuccess($merchantApi)
+    {
+        $merchant = (new Merchant())->newQuery()->where('id', '=', $merchantApi->merchant_id)->first();
+        if (empty($merchant)) {
+            throw new BusinessLogicException('商户不存在');
+        }
+        $merchant->is_api = true;
+        $this->user = $merchant;
+        $data = request()->input('data');
+        request()->offsetUnset('data');
+        request()->merge($data);
+        return true;
     }
 
     /**

@@ -18,4 +18,5 @@ use Illuminate\Support\Facades\Route;
 Route::namespace('Api\Merchant')->middleware(['auth:merchant_api'])->group(function () {
     Route::post('me', 'AuthController@me');
     Route::post('order', 'OrderController@store');
+    Route::post('cancel-order', 'OrderController@destroy');
 });

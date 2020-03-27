@@ -6,6 +6,7 @@
 namespace App\Traits;
 
 use App\Exceptions\BusinessLogicException;
+use App\Exports\BaseExport;
 use App\Exports\BatchListExport;
 use App\Exports\MerchantExport;
 use App\Models\Merchant;
@@ -23,37 +24,34 @@ trait ExportTrait
         $this->txtDisk = Storage::disk('admin_image_public');
     }
 
-    public function translate($headings){
+    public function translate($headings,$dir){
         for($i=0;$i<count($headings);$i++){
-            $headings[$i]=__('excel.'.$headings[$i]);
+            $headings[$i]=__('excel.'.$dir.'.'.$headings[$i]);
         };
         return $headings;
     }
+
     /**
      * 表格导出
      * @param $name
+     * @param $headings
      * @param $params
+     * @param $dir
      * @return array
      * @throws BusinessLogicException
      */
     public function excelExport($name,$headings,$params,$dir)
     {
-        $headings=$this->translate($headings);
+        $headings=$this->translate($headings,$dir);
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
-        $name = date('Ymd') .$name. auth()->user()->company_id;
         $path ='public\\admin\\excel\\'.$subPath . DIRECTORY_SEPARATOR . $name.'.xlsx';
         try {
-            if($dir==='tour'){
-                $rowCount=Excel::store(new BatchListExport($name,$params,$headings),$path);
-            }
-            if($dir==='merchant'){
-                $rowCount=Excel::store(new MerchantExport($params,$headings),$path);
-            }
+            $rowCount=Excel::store(new BaseExport($params,$headings,$name),$path);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('表格上传失败,请重新操作');
+            throw new BusinessLogicException('表格导出失败，请重新操作');
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('表格上传失败,请重新操作');
+            throw new BusinessLogicException('表格导出失败，请重新操作');
         }
         return [
             'name' => $name.'.xlsx',
@@ -73,10 +71,10 @@ trait ExportTrait
         try {
             $rowCount = $this->txtDisk->put($subPath.DIRECTORY_SEPARATOR.$params['name'],$params['txt']);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('文档上传失败,请重新操作');
+            throw new BusinessLogicException('文档上传失败，请重新操作');
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('文档上传失败,请重新操作');
+            throw new BusinessLogicException('文档上传失败，请重新操作');
         }
         return [
             'name' => $params['name'],

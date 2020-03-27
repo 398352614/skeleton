@@ -19,12 +19,6 @@ class RouteTrackingService extends BaseService
 
     public function __construct(RouteTracking $tracking)
     {
-        $this->model = $tracking;
-        $this->query = $this->model::query();
-        $this->resource = RouteTrackingResource::class;
-        $this->infoResource = RouteTrackingResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($tracking, RouteTrackingResource::class, RouteTrackingResource::class);
     }
 }

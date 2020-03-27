@@ -339,7 +339,11 @@ return [
         'parent_id' => '父节点ID',
         //Admin-Line
         'warehouse_id' => '仓库ID',
-        'order_max_count' => '最大订单量',
+        'pickup_max_count' => '取件最大订单量',
+        'pie_max_count' => '派件最大订单量',
+        'is_increment' => '是否新增取件线路',
+        'order_deadline' => '当天下单截止时间',
+        'appointment_days' => '可预约天数',
         'work_day_list' => '工作日',
         //Admin-Order
         'execution_date' => '取派日期',
