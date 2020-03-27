@@ -283,16 +283,20 @@ class TourService extends BaseService
         }
         //取消取派订单和包裹
         if (!empty($params['cancel_order_id_list'])) {
-            $cancelOrderIdList = explode(',', $params['cancel_order_id_list']);
-            $rowCount = $this->getOrderService()->update(['id' => ['in', $cancelOrderIdList], 'tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_6]);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('出库失败');
-            }
-            $cancelOrderList = $this->getOrderService()->getList(['id' => ['in', $cancelOrderIdList]], ['order_no'], false)->toArray();
-            //更换包裹状态
-            $rowCount = $this->getPackageService()->update(['order_no' => ['in', array_column($cancelOrderList, 'order_no')]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('出库失败');
+            $cancelOrderIdList = array_filter(explode(',', $params['cancel_order_id_list']), function ($value) {
+                return is_numeric($value);
+            });
+            if (!empty($cancelOrderIdList)) {
+                $rowCount = $this->getOrderService()->update(['id' => ['in', $cancelOrderIdList], 'tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_6]);
+                if ($rowCount === false) {
+                    throw new BusinessLogicException('出库失败');
+                }
+                $cancelOrderList = $this->getOrderService()->getList(['id' => ['in', $cancelOrderIdList]], ['order_no'], false)->toArray();
+                //更换包裹状态
+                $rowCount = $this->getPackageService()->update(['order_no' => ['in', array_column($cancelOrderList, 'order_no')]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
+                if ($rowCount === false) {
+                    throw new BusinessLogicException('出库失败');
+                }
             }
         }
         //订单更换状态
