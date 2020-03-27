@@ -263,7 +263,7 @@ class OrderService extends BaseService
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    private function getInfoByOfStatus($id, $isToArray = true, $status = BaseConstService::ORDER_STATUS_1, $isLock = true)
+    private function getInfoByIdOfStatus($id, $isToArray = true, $status = BaseConstService::ORDER_STATUS_1, $isLock = true)
     {
         $where = [$this->getIdKeyName($id) => $id];
         $info = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
@@ -579,7 +579,7 @@ class OrderService extends BaseService
         unset($data['order_no'], $data['tour_no'], $data['batch_no']);
         /*************************************************订单修改******************************************************/
         //获取信息
-        $dbInfo = $this->getInfoByOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $dbInfo = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         //验证
         $this->check($data, $dbInfo['order_no']);
         //修改
@@ -691,7 +691,7 @@ class OrderService extends BaseService
      */
     public function assignToBatch($id, $params)
     {
-        $info = $this->getInfoByOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
             throw new BusinessLogicException('当前订单已存在分配的站点中！');
         }
@@ -708,7 +708,7 @@ class OrderService extends BaseService
      */
     public function removeFromBatch($id)
     {
-        $info = $this->getInfoByOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($info['batch_no'])) {
             throw new BusinessLogicException('已从站点移除!');
         }
@@ -739,7 +739,7 @@ class OrderService extends BaseService
      */
     public function destroy($id, $params)
     {
-        $info = $this->getInfoByOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_6]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_6]);
         $rowCount = parent::updateById($info['id'], ['status' => BaseConstService::ORDER_STATUS_7, 'remark' => $params['remark'] ?? '', 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单删除失败，请重新操作');
@@ -769,7 +769,7 @@ class OrderService extends BaseService
      */
     public function recovery($id, $params)
     {
-        $orderCollection = $this->getInfoByOfStatus($id, false, BaseConstService::ORDER_STATUS_7);
+        $orderCollection = $this->getInfoByIdOfStatus($id, false, BaseConstService::ORDER_STATUS_7);
         $order = $orderCollection->toArray();
         /********************************************恢复之前验证包裹**************************************************/
         $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
@@ -806,7 +806,7 @@ class OrderService extends BaseService
      */
     public function actualDestroy($id)
     {
-        $info = $this->getInfoByOfStatus($id, true, BaseConstService::ORDER_STATUS_7);
+        $info = $this->getInfoByIdOfStatus($id, true, BaseConstService::ORDER_STATUS_7);
         $rowCount = parent::delete(['id' => $info['id']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('彻底删除失败，请重新操作');
