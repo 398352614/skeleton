@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api\Driver;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Controller;
 use App\Models\RouteTracking;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use Illuminate\Http\Request;
 use Psy\Formatter\Formatter;
 
-class RouteTrackingController extends BaseController
+class RouteTrackingController extends Controller
 {
     /**
      * @api {POST}  api/driver/route-tracking/collect 手持端:采集司机地址
