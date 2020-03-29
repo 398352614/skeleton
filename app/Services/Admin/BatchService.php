@@ -357,7 +357,7 @@ class BatchService extends BaseService
      */
     public function removeOrder($order)
     {
-        $info = $this->getInfoOfStatus(['batch_no' => $order['batch_no']], true, BaseConstService::BATCH_WAIT_ASSIGN, true);
+        $info = $this->getInfoOfStatus(['batch_no' => $order['batch_no']], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         $quantity = $info['expect_pickup_quantity'] + $info['expect_pie_quantity'];
         //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
         if ($quantity - 1 <= 0) {
@@ -431,7 +431,7 @@ class BatchService extends BaseService
      */
     public function assignToTour($id, $params)
     {
-        $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_CANCEL], true);
+        $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         if (!empty($params['tour_no']) && ($info['tour_no'] == $params['tour_no'])) {
             throw new BusinessLogicException('当前站点已分配至当前指定取件线路');
         }
