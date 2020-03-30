@@ -484,18 +484,19 @@ class TourService extends BaseService
         $orderList = collect($orderList)->map(function ($order, $key) {
             /**@var Order $order */
             return collect(Arr::add($order->toArray(), 'status_name', $order->status_name));
-        });
-//        $orderList = array_create_group_index($orderList, 'type');
-//        $orderList['pickup'] = $orderList['1'] ?? [];
-//        $orderList['pie'] = $orderList['2'] ?? [];
-//        unset($orderList['1'], $orderList['2']);
+        })->toArray();
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
+        $packageList = array_create_group_index($packageList, 'order_no');
+        //将包裹列表和材料列表放在对应订单下
+        $orderList = array_map(function ($order) use ($packageList) {
+            $order['package_list'] = $packageList[$order['order_no']] ?? [];
+            return $order;
+        }, $orderList);
         //获取站点中过所有材料
         $materialList = $this->getMaterialService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
         $batch['order_list'] = $orderList;
         $batch['material_list'] = $materialList;
-        $batch['package_list'] = $packageList;
         $batch['sticker_amount'] = BaseConstService::STICKER_AMOUNT;
         $batch['tour_id'] = $tour['id'];
         return $batch;

@@ -24,7 +24,7 @@ trait ResponseTrait
         return [
             'code' => $code,
             'data' => $data,
-            'msg' => __($msg, [])
+            'msg' => __($msg, $replace)
         ];
     }
 

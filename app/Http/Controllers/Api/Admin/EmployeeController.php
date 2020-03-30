@@ -89,4 +89,11 @@ class EmployeeController extends Controller
 
         return failed();
     }
+
+    public function move(int $id,int $institutionId){
+        if ($this->service->updateById($id,['institution_id'=>$institutionId])){
+            return success();
+        }
+        return failed();
+    }
 }

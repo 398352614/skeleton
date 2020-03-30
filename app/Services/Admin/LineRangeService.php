@@ -11,6 +11,7 @@ namespace App\Services\Admin;
 
 use App\Models\LineRange;
 use App\Services\BaseService;
+use Illuminate\Support\Facades\DB;
 
 class LineRangeService extends BaseService
 {
@@ -34,7 +35,7 @@ class LineRangeService extends BaseService
         $newList = [];
         $list = array_create_group_index($list, 'line_id');
         foreach ($list as $key => $lineList) {
-            $newList[$key]['line_range'] = implode(';', array_column(multi_array_unique($lineList,'range'), 'range'));
+            $newList[$key]['line_range'] = implode(';', array_column(multi_array_unique($lineList, 'range'), 'range'));
             $newList[$key]['work_day_list'] = array_column($lineList, 'schedule');
         }
         return $newList;
@@ -42,25 +43,21 @@ class LineRangeService extends BaseService
 
     /**
      * 检查邮编规则是否存在
-     * @param $postcode
+     * @param $postcodeStart
+     * @param $postcodeEnd
      * @param $country
      * @param $workDayList
      * @param null $id
      * @return bool
      */
-    public function checkIfPostcodeExisted($postcode, $country, $workDayList, $id = null)
+    public function checkIfPostcodeIntervalOverlap($postcodeStart, $postcodeEnd, $country, $workDayList, $id = null)
     {
-        return $id === null ? parent::count([
-                    'post_code_start' => ['<=', $postcode],
-                    'post_code_end' => ['>=', $postcode],
-                    'country' => $country,
-                    'schedule' => ['in', $workDayList]]
-            ) > 0 : parent::count([
-                    'line_id' => ['<>', $id],
-                    'post_code_start' => ['<=', $postcode],
-                    'post_code_end' => ['>=', $postcode],
-                    'country' => $country,
-                    'schedule' => ['in', $workDayList]]
-            ) > 0;
+        $sql = "SELECT id FROM line_range WHERE company_id=? AND country=? AND schedule IN (?) AND GREATEST(`post_code_start`,?)<=LEAST(`post_code_end`,?)";
+        $sql = (!empty($id)) ? $sql . " AND line_id<>{$id}" : $sql;
+        $bindings = [auth()->user()->company_id, $country, $workDayList, $postcodeStart, $postcodeEnd];
+        $info = DB::selectOne($sql, $bindings);
+        return !empty($info) ? true : false;
     }
+
+
 }
