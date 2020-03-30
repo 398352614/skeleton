@@ -27,7 +27,7 @@ class LineService extends BaseService
 
     public function __construct(Line $line)
     {
-        parent::__construct($line,LineResource::class);
+        parent::__construct($line, LineResource::class);
     }
 
     /**
@@ -231,9 +231,9 @@ class LineService extends BaseService
         if (empty($warehouse)) {
             throw new BusinessLogicException('仓库不存在!');
         }
-        $params['work_day_list'] = explode(',', $params['work_day_list']);
         //验证线路区间
         $this->checkRange($params, $id);
+        $params['work_day_list'] = explode(',', $params['work_day_list']);
         return $params;
     }
 
@@ -260,10 +260,8 @@ class LineService extends BaseService
         }
         //当前是否已存在邮编
         foreach ($itemList as $item) {
-            for ($i = $item['post_code_start']; $i <= $item['post_code_end']; $i++) {
-                if ($this->getLineRangeService()->checkIfPostcodeExisted($i, $params['country'], $params['work_day_list'], $id)) {
-                    throw new BusinessLogicException("邮编{$i}已存在");
-                }
+            if ($this->getLineRangeService()->checkIfPostcodeIntervalOverlap($item['post_code_start'], $item['post_code_end'], $params['country'], $params['work_day_list'], $id)) {
+                throw new BusinessLogicException("邮编:post_code_start到:post_code_end已存在", 1000, ['post_code_start' => $item['post_code_start'], 'post_code_end' => $item['post_code_end']]);
             }
         }
     }

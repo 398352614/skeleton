@@ -5,6 +5,7 @@
   "包裹快递单号2[:express_no]已存在;": "package second express number [:express_no] already exists;",
   "包裹外部标识[:out_order_no]已存在;": "package out order number [:out_order_no] already exists;",
   "材料外部标识[:out_order_no]已存在": "material out order number [:out_order_no] already exists;",
+  "邮编:post_code_start-:post_code_end已存在": "post code :post_code_start-:post_code_end already exists",
   "用户认证失败": "User authentication failed",
   "明细数据格式不正确": "Incorrect format of detail data",
   "当前订单状态不能操作": "The current order status cannot be operated",
