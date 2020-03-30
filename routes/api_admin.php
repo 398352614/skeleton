@@ -236,6 +236,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::delete('/{id}', 'EmployeeController@destroy');
         Route::put('/{id}/forbid-login/{enabled}', 'EmployeeController@setLogin');
         Route::put('/{id}/password', 'EmployeeController@resetPassword');//修改员工密码
+        Route::put('/{id}/move-to/{parentId}', 'EmployeeController@move');
     });
 
     //组织管理
