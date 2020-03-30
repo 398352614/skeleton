@@ -68,4 +68,9 @@ class LineController extends BaseController
     {
         return $this->service->destroy($id);
     }
+
+    public function lineImport()
+    {
+        return $this->service->lineImport($this->data);
+    }
 }

@@ -202,6 +202,7 @@ class BaseConstService
     const ADMIN_FILE_ORDER_DIR = 'order';
     const ADMIN_FILE_APK_DIR = 'package';
     const ADMIN_FILE_TEMPLATE_DIR = 'template';
+    const ADMIN_FILE_LINE_DIR = 'line';
 
     //司机端 文件目录
     const DRIVER_FILE_TOUR_DIR = 'tour';

@@ -137,6 +137,9 @@ class UploadService
         if($params['dir']==='template') {
             $params['name'] ='order_import_template.xlsx';
         }
+        if($params['dir']==='line') {
+            $params['name'] ='line.csv';
+        }
         try {
             $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);
         } catch (\Exception $ex) {

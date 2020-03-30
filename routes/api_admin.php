@@ -196,6 +196,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}', 'LineController@update');
         //删除
         Route::delete('/{id}', 'LineController@destroy');
+        //导入
+        Route::post('/import', 'LineController@lineImport');
     });
 
     //仓库管理

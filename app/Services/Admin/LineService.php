@@ -14,11 +14,13 @@ use App\Http\Resources\LineResource;
 use App\Models\Line;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Traits\ImportTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
 class LineService extends BaseService
 {
+    use ImportTrait;
 
     public $filterRules = [
         'name' => ['like', 'name'],
@@ -324,5 +326,59 @@ class LineService extends BaseService
             }
         }
         return $line;
+    }
+
+    public function getUploadService()
+    {
+        return self::getInstance(UploadService::class);
+    }
+
+    /**
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function lineImportValidate($params)
+    {
+        //验证$params
+        $checkfile = \Illuminate\Support\Facades\Validator::make($params,
+            ['file' => 'required|file|mimes:txt,xls,xlsx'],
+            ['file.file' => '必须是文件']);
+        if ($checkfile->fails()) {
+            $error = array_values($checkfile->errors()->getMessages())[0][0];
+            throw new BusinessLogicException($error, 301);
+        }
+    }
+
+    /**
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function lineImport($params)
+    {
+        $this->lineImportValidate($params);
+        $params['dir'] = 'line';
+        $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
+        $params['path'] = str_replace('http://tms-api.test/storage/', 'public//', $params['path']);
+        $row = $this->lineExcelImport($params['path'])[0];
+        for($i=1;$i < count($row);$i++){
+            $data[$i]['line_name'] =$row[$i][0];
+            $data[$i]['post_code_start'] =$row[$i][1];
+            $data[$i]['post_code_end'] =$row[$i][2];
+            $data[$i]['schedule'] =$row[$i][3];
+            $data[$i]['country'] =$row[$i][4];
+            $data[$i]['appointment_days'] =$row[$i][5];
+            $data[$i]['order_deadline'] =$row[$i][6];
+            $data[$i]['pickup_max_count'] =$row[$i][7];
+            $data[$i]['pie_max_count'] =$row[$i][8]??$row[$i][7];
+            $data[$i]['item_list'] =['post_code_start'=>$data[$i]['post_code_start'],'post_code_end'=>$data[$i]['post_code_end'] =$row[$i][2]];
+        }
+        dd($data=array_create_group_index($data,'line_name'));
+        for($i=0;$i<count();){
+
+        }
+
+        dd($data);
+        return $this->insertAll($row);
     }
 }
