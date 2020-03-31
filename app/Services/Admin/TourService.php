@@ -516,11 +516,11 @@ class TourService extends BaseService
         foreach ($batchIds as $key => $batchId) {
             $tempbatch = Batch::where('id', $batchId)->first();
             if (!$first && in_array($tempbatch->status, [
-                    BaseConstService::BATCH_WAIT_ASSIGN,
-                    BaseConstService::BATCH_WAIT_OUT,
-                    BaseConstService::BATCH_DELIVERING,
-                    BaseConstService::BATCH_ASSIGNED
-                ])) {
+                BaseConstService::BATCH_WAIT_ASSIGN,
+                BaseConstService::BATCH_WAIT_OUT,
+                BaseConstService::BATCH_DELIVERING,
+                BaseConstService::BATCH_ASSIGNED
+            ])) {
                 if ($tempbatch) {
                     $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地
@@ -684,6 +684,7 @@ class TourService extends BaseService
         if (time() - $tourLog->created_at->timestamp > 3600 * 24 || $tourLog->created_at->timestamp < strtotime(date("Y-m-d"))) { // 标记为异常日志
             app('log')->info('异常的线路日志为:' . $this->formData['line_code']);
             $tourLog->update(['status' => BaseConstService::TOUR_LOG_ERROR]);
+            self::setTourLock($this->formData['line_code'], 0);
             throw new BusinessLogicException('更新时间已超时');
         }
 
@@ -736,7 +737,6 @@ class TourService extends BaseService
     public function getUploadService()
     {
         return self::getInstance(UploadService::class);
-
     }
 
     protected function getRelativeUrl(string $url): string
@@ -862,5 +862,4 @@ class TourService extends BaseService
         }
         return $arrCount;
     }
-
 }
