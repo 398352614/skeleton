@@ -361,24 +361,41 @@ class LineService extends BaseService
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         $params['path'] = str_replace('http://tms-api.test/storage/', 'public//', $params['path']);
         $row = $this->lineExcelImport($params['path'])[0];
-        for($i=1;$i < count($row);$i++){
-            $data[$i]['line_name'] =$row[$i][0];
-            $data[$i]['post_code_start'] =$row[$i][1];
-            $data[$i]['post_code_end'] =$row[$i][2];
-            $data[$i]['schedule'] =$row[$i][3];
-            $data[$i]['country'] =$row[$i][4];
-            $data[$i]['appointment_days'] =$row[$i][5];
-            $data[$i]['order_deadline'] =$row[$i][6];
-            $data[$i]['pickup_max_count'] =$row[$i][7];
-            $data[$i]['pie_max_count'] =$row[$i][8]??$row[$i][7];
-            $data[$i]['item_list'] =['post_code_start'=>$data[$i]['post_code_start'],'post_code_end'=>$data[$i]['post_code_end'] =$row[$i][2]];
+        for ($i = 1; $i < count($row); $i++) {
+            $data[$i]['name'] = $row[$i][0];
+            $data[$i]['post_code_start'] = $row[$i][1];
+            $data[$i]['post_code_end'] = $row[$i][2];
+            $data[$i]['schedule'] = $row[$i][3];
+            $data[$i]['country'] = $row[$i][4];
+            $data[$i]['appointment_days'] = $row[$i][5];
+            $data[$i]['order_deadline'] = $row[$i][6];
+            $data[$i]['pickup_max_count'] = $row[$i][7];
+            $data[$i]['pie_max_count'] = $row[$i][8] ?? $row[$i][7];
+            $data[$i]['item_list'] = ['post_code_start' => $data[$i]['post_code_start'], 'post_code_end' => $data[$i]['post_code_end'] = $row[$i][2]];
         }
-        dd($data=array_create_group_index($data,'line_name'));
-        for($i=0;$i<count();){
-
+        $lineList = collect($data)->groupBy('name')->map(function ($itemLineList) {
+            $itemList = [];
+            $itemLineList->map(function ($line) use (&$itemList) {
+                $itemList[] = $line['item_list'];
+                return $line;
+            });
+            $itemLineList = $itemLineList->toArray();
+            $itemLineList[0]['item_list'] = $itemList;
+            return collect($itemLineList[0]);
+        });
+        return $lineList;
+        $lineList = collect($data)->unique('name')->map(function ($line) {
+            return collect(Arr::only($line, ['name', 'country', 'appointment_days', 'order_deadline', 'pickup_max_count', 'pie_max_count']));
+        })->toArray();
+        $thirdLineList = [];
+        foreach ($lineList as $line) {
+            $id = parent::insertGetId($line);
+            $thirdLineList[$line['name']] = $id;
         }
-
-        dd($data);
-        return $this->insertAll($row);
+        $data = array_map(function ($line) use ($thirdLineList) {
+            $line['line_id'] = $thirdLineList[$line['name']];
+            return $line;
+        }, $data);
+        return $this->insertAll($data);
     }
 }
