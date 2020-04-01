@@ -10,6 +10,7 @@ namespace App\Events\TourDriver;
 
 use App\Events\Interfaces\ITourDriver;
 use App\Services\BaseConstService;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Queue\SerializesModels;
 
 class BackWarehouse implements ITourDriver
@@ -37,7 +38,7 @@ class BackWarehouse implements ITourDriver
 
     public function getContent(): string
     {
-        return BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE;
+        return ConstTranslateTrait::$driverEventList[BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE];
     }
 
 }

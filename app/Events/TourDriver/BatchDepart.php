@@ -5,6 +5,7 @@
  * Date: 2020/3/31
  * Time: 15:00
  */
+
 namespace App\Events\TourDriver;
 
 use App\Events\Interfaces\ITourDriver;
@@ -52,6 +53,6 @@ class BatchDepart implements ITourDriver
      */
     public function getContent(): string
     {
-        return BaseConstService::DRIVER_EVENT_BATCH_ARRIVED;
+        return '从' . $this->batch['receiver'] . '客户家离开';
     }
 }

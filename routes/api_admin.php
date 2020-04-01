@@ -176,6 +176,11 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/{id}/png', 'TourController@batchPng'); //导出站点地图png
     });
 
+    //取件线路-司机
+    Route::prefix('tour-driver')->group(function () {
+        Route::get('/{tour_no}','TourDriverController@getListByTourNo');
+    });
+
     //任务报告
     Route::prefix('report')->group(function () {
         //列表查询

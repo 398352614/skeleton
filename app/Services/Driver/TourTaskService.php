@@ -37,7 +37,7 @@ class TourTaskService extends BaseService
 
     public function __construct(Tour $tour, TourMaterial $tourMaterial)
     {
-        parent::__construct($tour,TourTaskResource::class);
+        parent::__construct($tour, TourTaskResource::class);
         $this->tourMaterialModel = $tourMaterial;
     }
 
@@ -94,7 +94,7 @@ class TourTaskService extends BaseService
             //获取站点数量
             $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
             //获取最后一个站点的收件人信息
-            $tour['last_receiver'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'desc', 'created_at' => 'desc']);
+            $tour['last_receiver'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'asc', 'created_at' => 'asc']);
             //获取是否有特殊事项
             $order = $this->getOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['special_remark'], false);
             $tour['is_exist_special_remark'] = !empty($order) ? true : false;

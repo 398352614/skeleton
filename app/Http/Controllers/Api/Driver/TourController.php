@@ -97,9 +97,11 @@ class TourController extends BaseController
         return $this->service->getBatchOrderList($id, $this->data);
     }
 
+
     /**
      * 到达站点
      * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function batchArrive($id)
     {

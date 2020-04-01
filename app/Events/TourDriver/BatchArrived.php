@@ -53,7 +53,7 @@ class BatchArrived implements ITourDriver
      */
     public function getContent(): string
     {
-        return BaseConstService::DRIVER_EVENT_BATCH_ARRIVED;
+        return '到达' . $this->batch['receiver'] . '客户家';
     }
 
 }

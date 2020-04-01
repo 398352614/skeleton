@@ -73,7 +73,7 @@ trait TourTrait
         event(new BatchDepart($batch));
         //触发站点预计到达时间
         $location = ['lat' => $batch['receiver_lat'], 'lon' => $batch['receiver_lon']];
-        $nextBatch = Batch::query()->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'desc')->first(['batch_no']);
+        $nextBatch = Batch::query()->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first(['batch_no']);
         if (!empty($nextBatch)) {
             event(new AfterDriverLocationUpdated(Tour::where('tour_no', $tour['tour_no'])->first(), $nextBatch->batch_no, $location, true));
         }

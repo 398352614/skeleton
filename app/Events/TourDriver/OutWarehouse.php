@@ -10,6 +10,7 @@ namespace App\Events\TourDriver;
 
 use App\Events\Interfaces\ITourDriver;
 use App\Services\BaseConstService;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Queue\SerializesModels;
 
 class OutWarehouse implements ITourDriver
@@ -37,7 +38,7 @@ class OutWarehouse implements ITourDriver
 
     public function getContent(): string
     {
-        return BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE;
+        return ConstTranslateTrait::$driverEventList[BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE];
     }
 
 }
