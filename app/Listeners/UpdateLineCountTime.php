@@ -3,12 +3,20 @@
 namespace App\Listeners;
 
 use App\Events\AfterTourUpdated;
+use App\Exceptions\BusinessLogicException;
+use App\Models\Batch;
+use App\Models\Tour;
+use App\Models\TourLog;
+use App\Services\BaseConstService;
 use App\Services\GoogleApiService;
+use App\Traits\UpdateTourTimeAndDistanceTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class UpdateLineCountTime 
+class UpdateLineCountTime
 {
+    use UpdateTourTimeAndDistanceTrait;
+
     /**
      * @var GoogleApiService
      */
@@ -36,5 +44,9 @@ class UpdateLineCountTime
         $tour = $event->tour; // 获取事件对应的线路
         $res = $this->apiClient->UpdateTour($tour, $event->nextBatch);
         app('log')->info('更新线路的返回结果为:', $res);
+
+        if (!$this->updateTourTimeAndDistance($tour)) {
+            throw new BusinessLogicException('更新线路失败');
+        }
     }
 }

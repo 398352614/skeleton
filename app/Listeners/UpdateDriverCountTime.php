@@ -4,14 +4,18 @@ namespace App\Listeners;
 
 use App\Events\AfterDriverLocationUpdated;
 use App\Events\UpdateDriver;
+use App\Exceptions\BusinessLogicException;
 use App\Model\Line;
 use App\Model\LineLocation;
 use App\Services\GoogleApiService;
+use App\Traits\UpdateTourTimeAndDistanceTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
 class UpdateDriverCountTime implements ShouldQueue
 {
+    use UpdateTourTimeAndDistanceTrait;
+
     /**
      * Create the event listener.
      *
@@ -44,7 +48,7 @@ class UpdateDriverCountTime implements ShouldQueue
             if (!$driverLocation) {
                 //此处需要考虑事件没有传入司机位置的情况,此时查找司机位置
             }
-            
+
             $data = [
                 "latitude"      =>  $driverLocation['latitude'],
                 "longitude"     =>  $driverLocation['longitude'],
@@ -55,6 +59,11 @@ class UpdateDriverCountTime implements ShouldQueue
             $res = $appClient->PushDriverLocation($data);
 
             app('log')->info('更新司机位置的结果为:', $res ?? []);
+
+            if (!$this->updateTourTimeAndDistance($tour)) {
+                throw new BusinessLogicException('更新线路失败');
+            }
         }
+        return;
     }
 }
