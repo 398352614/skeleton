@@ -12,6 +12,7 @@ use App\Services\GoogleApiService;
 use App\Traits\UpdateTourTimeAndDistanceTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
 
 class UpdateLineCountTime
 {
@@ -43,7 +44,7 @@ class UpdateLineCountTime
         app('log')->info('更新线路出发事件进入此处');
         $tour = $event->tour; // 获取事件对应的线路
         $res = $this->apiClient->UpdateTour($tour, $event->nextBatch);
-        app('log')->info('更新线路的返回结果为:'. $res);
+        app('log')->info('更新线路的返回结果为:'. json_encode($res,JSON_UNESCAPED_UNICODE));
 
         if (!$this->updateTourTimeAndDistance($tour)) {
             throw new BusinessLogicException('更新线路失败');
