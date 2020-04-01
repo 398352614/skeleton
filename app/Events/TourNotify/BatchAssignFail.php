@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\TourNotify;
 
 use App\Events\Interfaces\ShouldSendNotify2Merchant;
 use App\Models\Batch;
@@ -14,10 +14,8 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class BatchAssignSuccess implements ShouldSendNotify2Merchant
+class BatchAssignFail implements ShouldSendNotify2Merchant
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
-
     public $batch;
 
     /**
@@ -28,16 +26,6 @@ class BatchAssignSuccess implements ShouldSendNotify2Merchant
     public function __construct(Batch $batch)
     {
         $this->batch = $batch;
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
     }
 
     public function getTour(): Tour
@@ -52,6 +40,11 @@ class BatchAssignSuccess implements ShouldSendNotify2Merchant
 
     public function notifyType(): int
     {
-        return BaseConstService::PICKUP_SUCCESS;
+        return BaseConstService::PICKUP_FAILED;
+    }
+
+    public function getData(): array
+    {
+        // TODO: Implement getData() method.
     }
 }

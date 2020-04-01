@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\TourNotify;
 
 use App\Events\Interfaces\ShouldSendNotify2Merchant;
 use App\Models\Batch;
@@ -14,12 +14,8 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-/**
- * 司机出库事件
- */
-class OutWarehouse implements ShouldSendNotify2Merchant
+class ExpectedArriveTimeNotify implements ShouldSendNotify2Merchant
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $tour;
 
@@ -31,16 +27,6 @@ class OutWarehouse implements ShouldSendNotify2Merchant
     public function __construct(Tour $tour)
     {
         $this->tour = $tour;
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
     }
 
     public function getTour(): Tour
@@ -55,6 +41,11 @@ class OutWarehouse implements ShouldSendNotify2Merchant
 
     public function notifyType(): int
     {
-        return BaseConstService::OUT_WAREHOUSE;
+        return BaseConstService::EXPECTED_ARRIVE_TIME;
+    }
+
+    public function getData(): array
+    {
+        // TODO: Implement getData() method.
     }
 }

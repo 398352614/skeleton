@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace App\Events\TourNotify;
 
 use App\Events\Interfaces\ShouldSendNotify2Merchant;
 use App\Models\Batch;
@@ -14,47 +14,37 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-/**
- * 司机回仓事件
- */
-class BackWarehouse implements ShouldSendNotify2Merchant
+class BatchAssignSuccess implements ShouldSendNotify2Merchant
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $tour;
+    public $batch;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Tour $tour)
+    public function __construct(Batch $batch)
     {
-        $this->tour = $tour;
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
+        $this->batch = $batch;
     }
 
     public function getTour(): Tour
     {
-        return $this->tour;
+        return $this->batch->tour;
     }
 
     public function getBatch(): ?Batch
     {
-        return null;
+        return $this->batch;
     }
 
     public function notifyType(): int
     {
-        return BaseConstService::BACK_WAREHOUSE;
+        return BaseConstService::PICKUP_SUCCESS;
+    }
+
+    public function getData(): array
+    {
+        // TODO: Implement getData() method.
     }
 }

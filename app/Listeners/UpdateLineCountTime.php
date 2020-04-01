@@ -33,17 +33,17 @@ class UpdateLineCountTime
     }
 
     /**
-     * Handle the event.
+     * 更新取件线路
      *
-     * @param  AfterTourUpdated  $event
-     * @return void
+     * @param AfterTourUpdated $event
+     * @throws BusinessLogicException
      */
-    public function handle($event)
+    public function handle(AfterTourUpdated $event)
     {
         app('log')->info('更新线路出发事件进入此处');
         $tour = $event->tour; // 获取事件对应的线路
         $res = $this->apiClient->UpdateTour($tour, $event->nextBatch);
-        app('log')->info('更新线路的返回结果为:', $res);
+        app('log')->info('更新线路的返回结果为:'. $res);
 
         if (!$this->updateTourTimeAndDistance($tour)) {
             throw new BusinessLogicException('更新线路失败');

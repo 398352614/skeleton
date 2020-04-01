@@ -24,16 +24,22 @@ class AfterDriverLocationUpdated
 
     public $nextBatchNo;
 
+    public $queue;
+
+
     /**
-     * Create a new event instance.
-     *
-     * @return void
+     * AfterDriverLocationUpdated constructor.
+     * @param Tour $tour
+     * @param $nextBatchNo
+     * @param null $location
+     * @param bool $queue 是否加入队列
      */
-    public function __construct(Tour $tour, $nextBatchNo,$location=null)
+    public function __construct(Tour $tour, $nextBatchNo, $location = null, $queue = false)
     {
         $this->tour = $tour;
         $this->location = $location;
         $this->nextBatchNo = $nextBatchNo;
+        $this->queue = $queue;
     }
 
     /**

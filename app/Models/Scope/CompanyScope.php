@@ -68,6 +68,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof Material))
                 && (!($model instanceof Package))
                 && (!($model instanceof TourMaterial))
+                && (!($model instanceof Merchant))
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
             }

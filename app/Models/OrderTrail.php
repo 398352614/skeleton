@@ -47,6 +47,7 @@ class OrderTrail extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'merchant_id',
         'order_no',
         'content',
         'created_at',

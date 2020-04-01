@@ -165,6 +165,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机分配失败，请重新操作');
         }
+        OrderTrailService::storeByTourNo($tour['tour_no'], BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
     }
 
     /**
@@ -179,6 +180,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机取消分配失败，请重新操作');
         }
+        OrderTrailService::storeByTourNo($tour['tour_no'], BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER);
     }
 
 
@@ -207,7 +209,6 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆分配失败，请重新操作');
         }
-        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
     }
 
     /**
@@ -222,7 +223,6 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
-        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('tour_no', $tour['tour_no'])->get(), BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER);
     }
 
 
@@ -277,6 +277,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
+        OrderTrailService::storeByTourNo($tour['tour_no'], BaseConstService::ORDER_TRAIL_UN_LOCK);
     }
 
 

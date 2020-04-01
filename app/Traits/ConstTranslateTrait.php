@@ -266,8 +266,10 @@ trait ConstTranslateTrait
     ];
 
     public static $driverEventList = [
-        BaseConstService::DRIVER_EVENT_1 => '司机到达客户家',
-        BaseConstService::DRIVER_EVENT_2 => '司机离开客户家',
+        BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE => '司机从仓库出发',
+        BaseConstService::DRIVER_EVENT_BATCH_ARRIVED => '司机到达客户家',
+        BaseConstService::DRIVER_EVENT_BATCH_DEPART => '司机从客户加离开',
+        BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE => '司机返回仓库',
     ];
 
     /**

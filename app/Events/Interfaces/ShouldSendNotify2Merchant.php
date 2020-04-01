@@ -23,4 +23,10 @@ interface ShouldSendNotify2Merchant
      * @return BaseConstService 订阅及通知常量
      */
     public function notifyType(): int;
+
+    /**
+     * 推送数据
+     * @return array
+     */
+    public function getData(): array;
 }

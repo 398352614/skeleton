@@ -10,16 +10,11 @@
 
 namespace App\Services\Admin;
 
-use App\Events\Order\OrderCreated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Middleware\Validate;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
-use App\Http\Validate\Api\Admin\OrderValidate;
-use App\Models\Merchant;
 use App\Models\Order;
 use App\Models\OrderImportLog;
-use App\Models\ReceiverAddress;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
@@ -29,10 +24,6 @@ use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use Illuminate\Support\Facades\DB;
-
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Validator;
-
 
 class OrderService extends BaseService
 {
@@ -250,6 +241,10 @@ class OrderService extends BaseService
         return $data;
     }
 
+
+
+
+
     /**
      * 新增
      * @param $params
@@ -269,16 +264,21 @@ class OrderService extends BaseService
         if ($order === false) {
             throw new BusinessLogicException('订单新增失败');
         }
-        //自动记录
-        $this->record($params);
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
+        $order = $order->getAttributes();
         /*****************************************订单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($params);
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
-        $this->fillBatchTourInfo($order->getAttributes(), $batch, $tour, false);
+        $this->fillBatchTourInfo($order, $batch, $tour, false);
         /**************************************新增订单货物明细********************************************************/
         $this->addAllItemList($params, $batch, $tour);
+        //自动记录
+        $this->record($params);
+        //订单轨迹-订单创建
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
+        //订单轨迹-订单加入站点
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
+        //订单轨迹-订单加入取件线路
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
         return [
             'order_no' => $params['order_no'],
             'batch_no' => $batch['batch_no'],
@@ -416,6 +416,11 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        if (empty($params['lon']) || empty($params['lat'])) {
+            $info = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
+            $params['lon'] = $info['lon'];
+            $params['lat'] = $info['lat'];
+        }
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在');
@@ -670,6 +675,7 @@ class OrderService extends BaseService
         list($batch, $tour) = $this->getBatchService()->assignOrderToBatch($info, $params);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($info, $batch, $tour);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
     }
 
     /**
@@ -699,12 +705,14 @@ class OrderService extends BaseService
             throw new BusinessLogicException('移除失败,请重新操作');
         }
         $this->getBatchService()->removeOrder($info);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH);
     }
 
 
     /**
      * 删除
      * @param $id
+     * @param $params
      * @throws BusinessLogicException
      */
     public function destroy($id, $params)
@@ -728,6 +736,7 @@ class OrderService extends BaseService
         if (!empty($info['batch_no'])) {
             $this->getBatchService()->removeOrder($info);
         }
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_DELETE);
     }
 
 
@@ -739,8 +748,7 @@ class OrderService extends BaseService
      */
     public function recovery($id, $params)
     {
-        $orderCollection = $this->getInfoOfStatus(['id' => $id], false, BaseConstService::ORDER_STATUS_7);
-        $order = $orderCollection->toArray();
+        $order = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::ORDER_STATUS_7);
         /********************************************恢复之前验证包裹**************************************************/
         $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
         if (!empty($packageList)) {
@@ -754,18 +762,20 @@ class OrderService extends BaseService
                 $this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $order['order_no']);
             }
         }
-        /**********************************************订单回复********************************************************/
+        /**********************************************订单恢复********************************************************/
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => $params['execution_date']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单恢复失败');
         }
         $order['execution_date'] = $params['execution_date'];
-        OrderTrailService::OrderStatusChangeCreateTrail($orderCollection, BaseConstService::ORDER_TRAIL_CREATED);
         /*****************************************订单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($order);
-        OrderTrailService::OrderStatusChangeCreateTrail($orderCollection, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($order, $batch, $tour);
+        //订单轨迹-订单加入站点
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
+        //订单轨迹-订单加入取件线路
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
     }
 
 

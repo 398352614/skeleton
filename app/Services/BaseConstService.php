@@ -208,16 +208,25 @@ class BaseConstService
     const DRIVER_FILE_TOUR_DIR = 'tour';
 
 
-    //order_trail 订单轨迹常量  1-订单创建 2-加入线路 3-已分配司机 4-已收入网点 5-待出库 6-配送中 7-已签收 8-取消取派 9-取消司机分配
+    /**
+     * order_trail 订单轨迹常量
+     * 1-订单创建 2-加入站点 3-加入取件线路 4-已分配司机 5-加入网点 6-待出库 7-配送中 8-已签收
+     * 9-取消取派 10-取消司机分配 11-取消待出库 12-移除站点 13-移除取件线路 14-订单删除
+     */
     const ORDER_TRAIL_CREATED = 1;
     const ORDER_TRAIL_JOIN_BATCH = 2;
-    const ORDER_TRAIL_ASSIGN_DRIVER = 3;
-    const ORDER_TRAIL_REVENUE_OUTLETS = 4;
-    const ORDER_TRAIL_LOCK = 5;
-    const ORDER_TRAIL_DELIVERING = 6;
-    const ORDER_TRAIL_DELIVERED = 7;
-    const ORDER_TRAIL_CANCEL_DELIVER = 8;
-    const ORDER_TRAIL_CANCEL_ASSIGN_DRIVER = 9;
+    const ORDER_TRAIL_JOIN_TOUR = 3;
+    const ORDER_TRAIL_ASSIGN_DRIVER = 4;
+    const ORDER_TRAIL_REVENUE_OUTLETS = 5;
+    const ORDER_TRAIL_LOCK = 6;
+    const ORDER_TRAIL_DELIVERING = 7;
+    const ORDER_TRAIL_DELIVERED = 8;
+    const ORDER_TRAIL_CANCEL_DELIVER = 9;
+    const ORDER_TRAIL_CANCEL_ASSIGN_DRIVER = 10;
+    const ORDER_TRAIL_UN_LOCK = 11;
+    const ORDER_TRAIL_REMOVE_BATCH = 12;
+    const ORDER_TRAIL_REMOVE_TOUR = 13;
+    const ORDER_TRAIL_DELETE = 14;
 
     //订阅及通知常量
     const OUT_WAREHOUSE = 1; // 出库
@@ -239,7 +248,9 @@ class BaseConstService
     const MERCHANT_STATUS_1 = 1;
     const MERCHANT_STATUS_2 = 2;
 
-    //司机事件
-    const DRIVER_EVENT_1 = 1;
-    const DRIVER_EVENT_2 = 2;
+    //司机事件1-司机出库2-司机到达站点3-司机从站点出发4-司机回仓
+    const DRIVER_EVENT_OUT_WAREHOUSE = 1;
+    const DRIVER_EVENT_BATCH_ARRIVED = 2;
+    const DRIVER_EVENT_BATCH_DEPART = 3;
+    const DRIVER_EVENT_BACK_WAREHOUSE = 4;
 }

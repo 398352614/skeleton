@@ -2,17 +2,58 @@
 
 namespace App\Listeners;
 
+use App\Events\Interfaces\ShouldSendNotify2Merchant;
 use App\Models\Batch;
 use App\Models\Merchant;
 use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
-class SendNotify2Merchant
+class SendNotify2Merchant implements ShouldQueue
 {
+    use Dispatchable,InteractsWithQueue, Queueable, SerializesModels;
+
+    /**
+     * 任务连接名称。
+     *
+     * @var string|null
+     */
+    public $connection = 'redis';
+
+    /**
+     * 任务发送到的队列的名称.
+     *
+     * @var string|null
+     */
+    public $queue = 'tour-notify';
+
+    /**
+     * 处理任务的延迟时间.
+     *
+     * @var int
+     */
+    public $delay = 2;
+
+    /**
+     * 任务可以尝试的最大次数。
+     *
+     * @var int
+     */
+    public $tries = 3;
+
+    /**
+     * 任务可以执行的最大秒数 (超时时间)。
+     *
+     * @var int
+     */
+    public $timeout = 30;
+
     /**
      * @var BaseConstService
      */
@@ -29,7 +70,7 @@ class SendNotify2Merchant
 
     /**
      * Create the event listener.
-     *
+     * @param $curlClient
      * @return void
      */
     public function __construct(CurlClient $curlClient)
@@ -43,7 +84,7 @@ class SendNotify2Merchant
      * @param  object  $event
      * @return void
      */
-    public function handle($event)
+    public function handle(ShouldSendNotify2Merchant $event)
     {
         $tour = $event->getTour();      // 必定存在
         $batch = $event->getBatch();    // 可能不存在
@@ -88,6 +129,7 @@ class SendNotify2Merchant
             $this->postData($merchant, $data);
         }
     }
+
 
     /**
      * 获取 tour 司机回仓的数据

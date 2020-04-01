@@ -3,18 +3,19 @@
 namespace App\Providers;
 
 use App\Events\AfterDriverLocationUpdated;
-use App\Events\AfterTourBatchAssign;
 use App\Events\AfterTourInit;
 use App\Events\AfterTourUpdated;
-use App\Events\DriverArriveBatch;
+use App\Events\TourDriver\BackWarehouse;
+use App\Events\TourDriver\BatchArrived;
+use App\Events\TourDriver\BatchDepart;
+use App\Events\TourDriver\OutWarehouse;
 use App\Listeners\CountTourTimeAndDistance;
-use App\Listeners\CreateTourDriverEvent;
+use App\Listeners\TourDriver;
 use App\Listeners\UpdateDriverCountTime;
 use App\Listeners\UpdateLineCountTime;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -39,11 +40,22 @@ class EventServiceProvider extends ServiceProvider
         AfterTourUpdated::class => [
             UpdateLineCountTime::class,
         ],
-        DriverArriveBatch::class => [
-            CreateTourDriverEvent::class,
+        /*********************************取件线路-司机****************************************/
+        //司机出库
+        OutWarehouse::class => [
+            TourDriver::class,
         ],
-        AfterTourBatchAssign::class => [
-            CreateTourDriverEvent::class,
+        //司机到达站点
+        BatchArrived::class => [
+            TourDriver::class,
+        ],
+        //司机从站点出发
+        BatchDepart::class => [
+            TourDriver::class,
+        ],
+        //司机回仓
+        BackWarehouse::class => [
+            TourDriver::class,
         ],
     ];
 
@@ -55,7 +67,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

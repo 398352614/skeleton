@@ -3,10 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\AfterDriverLocationUpdated;
-use App\Events\UpdateDriver;
 use App\Exceptions\BusinessLogicException;
-use App\Model\Line;
-use App\Model\LineLocation;
 use App\Services\GoogleApiService;
 use App\Traits\UpdateTourTimeAndDistanceTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,20 +14,39 @@ class UpdateDriverCountTime implements ShouldQueue
     use UpdateTourTimeAndDistanceTrait;
 
     /**
-     * Create the event listener.
+     * 任务连接名称。
      *
-     * @return void
+     * @var string|null
      */
-    public function __construct()
-    {
-        //
-    }
+    public $connection = 'redis';
 
     /**
-     * Handle the event.
+     * 任务发送到的队列的名称.
      *
-     * @param  AfterDriverLocationUpdated  $event
-     * @return void
+     * @var string|null
+     */
+    public $queue = 'location';
+
+    /**
+     * 处理任务的延迟时间.
+     *
+     * @var int
+     */
+    public $delay = 60;
+
+    /**
+     * 任务可以尝试的最大次数。
+     *
+     * @var int
+     */
+    public $tries = 3;
+
+
+    /**
+     * 更新预计到达时间
+     *
+     * @param AfterDriverLocationUpdated $event
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function handle(AfterDriverLocationUpdated $event)
     {
@@ -50,10 +66,10 @@ class UpdateDriverCountTime implements ShouldQueue
             }
 
             $data = [
-                "latitude"      =>  $driverLocation['latitude'],
-                "longitude"     =>  $driverLocation['longitude'],
-                "target_code"   =>  $nextBatchNo,
-                "line_code"     =>  $tour->tour_no,
+                "latitude" => $driverLocation['latitude'],
+                "longitude" => $driverLocation['longitude'],
+                "target_code" => $nextBatchNo,
+                "line_code" => $tour->tour_no,
             ];
 
             $res = $appClient->PushDriverLocation($data);
@@ -65,5 +81,16 @@ class UpdateDriverCountTime implements ShouldQueue
             }
         }
         return;
+    }
+
+    /**
+     * 确定监听器是否应加入队列
+     *
+     * @param \App\Events\AfterDriverLocationUpdated $event
+     * @return bool
+     */
+    public function shouldQueue(AfterDriverLocationUpdated $event)
+    {
+        return ($event->queue === true);
     }
 }

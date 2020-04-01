@@ -4,7 +4,7 @@ namespace App\Events\Interfaces;
 
 use App\Models\Order;
 
-interface CanCreateTourDriverEvent
+interface ITourDriver
 {
     /**
      * 获取线路司机事件文本

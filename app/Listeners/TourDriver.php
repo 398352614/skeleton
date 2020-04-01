@@ -2,12 +2,10 @@
 
 namespace App\Listeners;
 
-use App\Events\Interfaces\CanCreateTourDriverEvent;
+use App\Events\Interfaces\ITourDriver;
 use App\Models\TourDriverEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
-class CreateTourDriverEvent
+class TourDriver
 {
     /**
      * Create the event listener.
@@ -22,16 +20,17 @@ class CreateTourDriverEvent
     /**
      * Handle the event.
      *
-     * @param  CanCreateTourDriverEvent  $event
+     * @param  TourDriver  $event
      * @return void
      */
-    public function handle(CanCreateTourDriverEvent $event)
+    public function handle(ITourDriver $event)
     {
+        $location = $event->getLocation();
         TourDriverEvent::create([
             'content'   => $event->getContent(),
             'tour_no'   => $event->getTourNo(),
-            'lat'       =>  $event->getLocation()['lat'],
-            'lon'       =>  $event->getLocation()['lon'],
+            'lat'       =>  $location['lat'],
+            'lon'       =>  $location['lon'],
         ]);
     }
 }
