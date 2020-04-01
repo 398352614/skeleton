@@ -448,7 +448,8 @@ class TourService extends BaseService
      */
     public function getListByBatch($batch, $line)
     {
-        $this->query->where(DB::raw('expect_pickup_quantity+expect_pie_quantity'), '<', $line['order_max_count']);
+        $this->query->where(DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']), '<', $line['pickup_max_count']);
+        $this->query->where(DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']), '<', $line['pie_max_count']);
         $tourList = parent::getList(['execution_date' => $batch['execution_date'], 'line_id' => $batch['line_id'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['*'], false)->toArray();
         return $tourList;
     }
