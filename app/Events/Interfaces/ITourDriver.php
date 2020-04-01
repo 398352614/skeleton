@@ -11,6 +11,8 @@ interface ITourDriver
      */
     public function getContent(): string;
 
+    public function getAddress(): string;
+
     /**
      * 获取当前司机事件的司机位置
      */

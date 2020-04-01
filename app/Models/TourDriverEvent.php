@@ -50,6 +50,7 @@ class TourDriverEvent extends BaseModel
         'lon',
         'lat',
         'content',
+        'address',
         'icon_id',
         'icon_path',
         'tour_no',

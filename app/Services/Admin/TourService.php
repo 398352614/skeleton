@@ -323,6 +323,7 @@ class TourService extends BaseService
                 'warehouse_id' => $warehouse['id'],
                 'warehouse_name' => $warehouse['name'],
                 'warehouse_phone' => $warehouse['phone'],
+                'warehouse_country' => $warehouse['country'],
                 'warehouse_post_code' => $warehouse['post_code'],
                 'warehouse_city' => $warehouse['city'],
                 'warehouse_street' => $warehouse['street'],
@@ -518,11 +519,11 @@ class TourService extends BaseService
         foreach ($batchIds as $key => $batchId) {
             $tempbatch = Batch::where('id', $batchId)->first();
             if (!$first && in_array($tempbatch->status, [
-                BaseConstService::BATCH_WAIT_ASSIGN,
-                BaseConstService::BATCH_WAIT_OUT,
-                BaseConstService::BATCH_DELIVERING,
-                BaseConstService::BATCH_ASSIGNED
-            ])) {
+                    BaseConstService::BATCH_WAIT_ASSIGN,
+                    BaseConstService::BATCH_WAIT_OUT,
+                    BaseConstService::BATCH_DELIVERING,
+                    BaseConstService::BATCH_ASSIGNED
+                ])) {
                 if ($tempbatch) {
                     $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地

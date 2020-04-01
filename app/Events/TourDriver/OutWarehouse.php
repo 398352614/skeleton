@@ -12,6 +12,7 @@ use App\Events\Interfaces\ITourDriver;
 use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 
 class OutWarehouse implements ITourDriver
 {
@@ -39,6 +40,12 @@ class OutWarehouse implements ITourDriver
     public function getContent(): string
     {
         return ConstTranslateTrait::$driverEventList[BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE];
+    }
+
+    public function getAddress(): string
+    {
+        $address = implode(' ', Arr::only($this->tour, ['warehouse_street', 'warehouse_house_number', 'warehouse_city', 'warehouse_post_code', 'warehouse_country']));
+        return $address;
     }
 
 }

@@ -11,6 +11,7 @@ namespace App\Events\TourDriver;
 use App\Events\Interfaces\ITourDriver;
 use App\Services\BaseConstService;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 
 class BatchArrived implements ITourDriver
 {
@@ -54,6 +55,12 @@ class BatchArrived implements ITourDriver
     public function getContent(): string
     {
         return '到达' . $this->batch['receiver'] . '客户家';
+    }
+
+    public function getAddress(): string
+    {
+        $address = implode(' ', Arr::only($this->batch, ['receiver_street', 'receiver_house_number', 'receiver_city', 'receiver_post_code', 'receiver_country']));
+        return $address;
     }
 
 }
