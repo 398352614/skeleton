@@ -373,7 +373,7 @@ class LineService extends BaseService
         $params['name'] = 'line';
         $params['dir'] = 'line';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
-        $params['path'] = str_replace('http://tms-api.test/storage/', 'public//', $params['path']);
+        $params['path'] = str_replace('tms-api.test/storage/', 'public//', $params['path']);
         $row = $this->lineExcelImport($params['path'])[0];
         //内部数据处理
         for ($i = 1; $i < count($row); $i++) {
