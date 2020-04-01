@@ -115,7 +115,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('car')->group(function () {
         Route::put('/{id}/lock', 'CarController@lock')->name('car.lock'); //车辆锁定操作
         Route::get('/brands', 'CarBrandController@index')->name('carBrand.brands');  // 获取品牌列表
-        Route::post('/addbrand', 'CarBrandController@store')->name('carBrand.store');// 添加品牌
+        Route::post('/addbrand', 'CarBrandController@store')->name('carBrand.store'); // 添加品牌
         Route::get('/models', 'CarModelController@getListByBrand')->name('carModel.getListByBrand'); // 获取型号列表
         Route::post('/addmodel', 'CarModelController@store')->name('carModel.store');   // 添加模型
 
@@ -137,7 +137,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/{id}', 'BatchController@show')->name('batch.show');       //批次详情
         Route::put('/{id}/cancel', 'BatchController@cancel');                        //取消取派
         Route::get('/{id}/getTourList', 'BatchController@getTourList');              //获取取件线路列表
-        Route::get('/{id}/getTourDate', 'BatchController@getTourDate');//获取可分配路线日期
+        Route::get('/{id}/getTourDate', 'BatchController@getTourDate'); //获取可分配路线日期
         Route::put('/{id}/assignToTour', 'BatchController@assignToTour');            //分配站点至取件线路
         Route::delete('/{id}/removeFromTour', 'BatchController@removeFromTour');     //移除站点
     });
@@ -160,8 +160,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //线路任务管理
     Route::prefix('tour')->group(function () {
-        Route::post('/update-batch-index', 'TourController@updateBatchIndex')->middleware('checktourredislock');         //更改线路任务顺序 -- 手动优化
-        Route::post('/auto-op-tour', 'TourController@autoOpTour')->middleware('checktourredislock');         //自动优化线路
+        Route::post('/update-batch-index', 'TourController@updateBatchIndex');         //更改线路任务顺序 -- 手动优化
+        Route::post('/auto-op-tour', 'TourController@autoOpTour');         //自动优化线路
 
         //rest api 放在最后
         Route::get('/', 'TourController@index')->name('tour.index');
@@ -171,9 +171,9 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/assignCar', 'TourController@assignCar');                     //分配车辆
         Route::put('/{id}/cancelAssignCar', 'TourController@cancelAssignCar');         //取消分配车辆
         Route::put('/{id}/unlock', 'TourController@unlock');         //取消待出库
-        Route::get('/{id}/excel', 'TourController@batchExcel');//导出投递站点excel
-        Route::get('/{id}/txt', 'TourController@cityTxt');//导出投递城市txt
-        Route::get('/{id}/png', 'TourController@batchPng');//导出站点地图png
+        Route::get('/{id}/excel', 'TourController@batchExcel'); //导出投递站点excel
+        Route::get('/{id}/txt', 'TourController@cityTxt'); //导出投递城市txt
+        Route::get('/{id}/png', 'TourController@batchPng'); //导出站点地图png
     });
 
     //任务报告
@@ -226,7 +226,6 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/show', 'CompanyConfigController@show');
         //修改
         Route::put('/update', 'CompanyConfigController@update');
-
     });
 
     //员工管理
@@ -237,7 +236,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/', 'EmployeeController@store');
         Route::delete('/{id}', 'EmployeeController@destroy');
         Route::put('/{id}/forbid-login/{enabled}', 'EmployeeController@setLogin');
-        Route::put('/{id}/password', 'EmployeeController@resetPassword');//修改员工密码
+        Route::put('/{id}/password', 'EmployeeController@resetPassword'); //修改员工密码
         Route::put('/{id}/move-to/{parentId}', 'EmployeeController@move');
     });
 
@@ -344,7 +343,6 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/{merchant_id}', 'MerchantApiController@show');
         //修改
         Route::put('/{merchant_id}', 'MerchantApiController@update');
-
     });
 
 
@@ -364,7 +362,6 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/{id}/indexOfMerchant', 'MerchantGroupController@indexOfMerchant');
         //批量修改运价方案
         Route::put('/transportPrice', 'MerchantGroupController@updatePrice');
-
     });
 
     //运价管理
@@ -385,9 +382,9 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     Route::prefix('version')->group(function () {
         //版本管理
-        Route::get('/', 'VersionController@index');//版本列表
-        Route::post('/', 'VersionController@store');//版本新增
-        Route::put('/{id}', 'VersionController@update');//版本修改
-        Route::delete('/{id}', 'VersionController@delete');//版本删除
+        Route::get('/', 'VersionController@index'); //版本列表
+        Route::post('/', 'VersionController@store'); //版本新增
+        Route::put('/{id}', 'VersionController@update'); //版本修改
+        Route::delete('/{id}', 'VersionController@delete'); //版本删除
     });
 });

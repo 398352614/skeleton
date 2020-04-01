@@ -543,7 +543,6 @@ class TourService extends BaseService
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
         // set_time_limit(240);
-        self::setTourLock($this->formData['tour_no'], 1); // 加锁
 
         app('log')->info('更新线路传入的参数为:', $this->formData);
 
@@ -575,7 +574,6 @@ class TourService extends BaseService
     {
         //需要先判断当前 tour 是否被锁定状态!!! 中间件或者 validate 验证规则???
         // set_time_limit(240);
-        self::setTourLock($this->formData['tour_no'], 1); // 加锁
 
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
         $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
