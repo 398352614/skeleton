@@ -41,6 +41,8 @@ class UpdateDriverCountTime implements ShouldQueue
      */
     public $tries = 3;
 
+    public $apiClient;
+
 
     /**
      * 更新预计到达时间
@@ -55,7 +57,7 @@ class UpdateDriverCountTime implements ShouldQueue
         $driverLocation = $event->location; // 司机位置数组
         $nextBatchNo = $event->nextBatchNo; // 下一个站点的唯一标识
 
-        $appClient = new GoogleApiService;
+        $this->apiClient =  new GoogleApiService;
 
         //需要验证上一次操作是否完成,不可多次修改数据,防止数据混乱
 
@@ -72,7 +74,7 @@ class UpdateDriverCountTime implements ShouldQueue
                 "line_code" => $tour->tour_no,
             ];
 
-            $res = $appClient->PushDriverLocation($data);
+            $res = $this->apiClient->PushDriverLocation($data);
 
             app('log')->info('更新司机位置的结果为:', $res ?? []);
 

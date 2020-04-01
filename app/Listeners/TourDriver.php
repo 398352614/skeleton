@@ -31,6 +31,7 @@ class TourDriver
             'tour_no'   => $event->getTourNo(),
             'lat'       =>  $location['lat'],
             'lon'       =>  $location['lon'],
+            'address'   => $event->getAddress()
         ]);
     }
 }
