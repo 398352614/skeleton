@@ -310,7 +310,7 @@ class TourService extends BaseService
         //获取仓库信息
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
-            throw new BusinessLogicException('仓库不存在!');
+            throw new BusinessLogicException('仓库不存在！');
         }
         $warehouse = $warehouse->toArray();
         $tour = parent::create(

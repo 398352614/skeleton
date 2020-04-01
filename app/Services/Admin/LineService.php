@@ -11,12 +11,15 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\LineResource;
+use App\Http\Validate\Api\Admin\LineValidate;
 use App\Models\Line;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\ImportTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class LineService extends BaseService
 {
@@ -231,7 +234,7 @@ class LineService extends BaseService
     {
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
-            throw new BusinessLogicException('仓库不存在!');
+            throw new BusinessLogicException('仓库不存在！');
         }
         //验证线路区间
         $this->checkRange($params, $id);
@@ -341,8 +344,17 @@ class LineService extends BaseService
     {
         //验证$params
         $checkfile = \Illuminate\Support\Facades\Validator::make($params,
-            ['file' => 'required|file|mimes:txt,xls,xlsx'],
+            ['file' => 'required|file|mimes:txt,xls,xlsx',
+                'is_increment' => 'sometimes|integer|in:1,2',
+                'order_deadline' => 'sometimes|date_format:H:i:s',
+                'appointment_days' => 'sometimes|integer',
+                'warehouse_id'=>'sometimes|integer'],
             ['file.file' => '必须是文件']);
+        if(array_key_exists('warehouse_id',$params)){
+            if(empty($this->getWareHouseService()->getInfo(['id'=>$params['warehouse_id']],['*']))){
+                throw new BusinessLogicException('仓库不存在！');
+            }
+        }
         if ($checkfile->fails()) {
             $error = array_values($checkfile->errors()->getMessages())[0][0];
             throw new BusinessLogicException($error, 301);
@@ -356,46 +368,124 @@ class LineService extends BaseService
      */
     public function lineImport($params)
     {
+        //数据获取
         $this->lineImportValidate($params);
+        $params['name'] = 'line';
         $params['dir'] = 'line';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         $params['path'] = str_replace('http://tms-api.test/storage/', 'public//', $params['path']);
         $row = $this->lineExcelImport($params['path'])[0];
+        //内部数据处理
         for ($i = 1; $i < count($row); $i++) {
             $data[$i]['name'] = $row[$i][0];
             $data[$i]['post_code_start'] = $row[$i][1];
             $data[$i]['post_code_end'] = $row[$i][2];
             $data[$i]['schedule'] = $row[$i][3];
-            $data[$i]['country'] = $row[$i][4];
+            $data[$i]['country'] = $row[$i][4] ?? 'NL';
             $data[$i]['appointment_days'] = $row[$i][5];
             $data[$i]['order_deadline'] = $row[$i][6];
             $data[$i]['pickup_max_count'] = $row[$i][7];
             $data[$i]['pie_max_count'] = $row[$i][8] ?? $row[$i][7];
-            $data[$i]['item_list'] = ['post_code_start' => $data[$i]['post_code_start'], 'post_code_end' => $data[$i]['post_code_end'] = $row[$i][2]];
+            if ($data[$i]['pie_max_count'] === 0) {
+                $data[$i]['pie_max_count'] = 10000;
+            };
+            if ($data[$i]['pickup_max_count'] === 0) {
+                $data[$i]['pickup_max_count'] = 10000;
+            };
         }
-        $lineList = collect($data)->groupBy('name')->map(function ($itemLineList) {
-            $itemList = [];
-            $itemLineList->map(function ($line) use (&$itemList) {
-                $itemList[] = $line['item_list'];
-                return $line;
-            });
+        //外部数据获取
+        $lineList = collect($data)->groupBy('name')->map(function ($itemLineList) use ($params, $data) {
             $itemLineList = $itemLineList->toArray();
-            $itemLineList[0]['item_list'] = $itemList;
-            return collect($itemLineList[0]);
+            $itemLineList[0]['appointment_days'] = $params['appointment_days'] ?? 30;
+            $itemLineList[0]['order_deadline'] = $params['order_deadline'] ?? '23:59:59';
+            $itemLineList[0]['warehouse_id'] = $params['warehouse_id'] ?? $this->getWareHouseService()->query->first()->value('id');
+            $itemLineList[0]['is_increment'] = $params['is_increment'] ?? 2;
+            $lineData = Arr::only($itemLineList[0], ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days']);
+            $lineData = array_merge($lineData, ['creator_id' => auth()->id(), 'creator_name' => auth()->user()->fullname]);
+            $info=$lineData['name'];
+            if($this->getInfo(['name'=>$lineData['name'],'company_id'=>auth()->user()->company_id],['*'],false)){
+                throw new BusinessLogicException($lineData['name'].'名称已存在');
+            }
+            //插入主表
+            $itemLineList[0]['line_id'] = parent::insertGetId($lineData);
+            for ($i = 0; $i < count($itemLineList); $i++) {
+                $itemLineList[$i]['line_id'] = $itemLineList[0]['line_id'];
+                $itemLineList[$i]['company_id'] = auth()->user()->company_id;
+                $itemLineList[$i]['country'] = $itemLineList[0]['country'];
+                $itemLineList[$i] = Arr::only($itemLineList[$i], ['name','line_id', 'post_code_start', 'post_code_end', 'schedule', 'country']);
+                //自动别名重复（邮编范围，星期），并插入主表
+                if ($itemLineList[$i]['schedule'] !== $itemLineList[0]['schedule']) {
+                    $lineData['name'] = $info . $i;
+                    $itemLineList[$i]['line_id'] = parent::insertGetId($lineData);
+                }
+            }
+            return collect($itemLineList);
         });
-        return $lineList;
-        $lineList = collect($data)->unique('name')->map(function ($line) {
-            return collect(Arr::only($line, ['name', 'country', 'appointment_days', 'order_deadline', 'pickup_max_count', 'pie_max_count']));
-        })->toArray();
-        $thirdLineList = [];
-        foreach ($lineList as $line) {
-            $id = parent::insertGetId($line);
-            $thirdLineList[$line['name']] = $id;
+        $lineList = array_values($lineList->toArray());
+        //邮编自我验证
+        for($i = 0; $i < count($lineList); $i++){
+            $this->lineRangeValidate($lineList[$i]);
         }
-        $data = array_map(function ($line) use ($thirdLineList) {
-            $line['line_id'] = $thirdLineList[$line['name']];
-            return $line;
-        }, $data);
-        return $this->insertAll($data);
+        //去除按Name分组
+        $info = [];
+        for ($i = 0; $i < count($lineList); $i++) {
+            $info = array_merge($info, $lineList[$i]);
+        }
+        //邮编与已有线路验证
+        $this->postCodeValidate($info);
+        //处理插入数据格式
+        for ($i = 0; $i < count($info); $i++) {
+            $info[$i] = Arr::except($info[$i],'name');
+        }
+        //批量插入
+        if ($this->getLineRangeService()->insertAll($info)===true) {
+            return success();
+        };
+        return failed();
+    }
+
+    /**
+     * 主表验证
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function lineRangeValidate($params){
+        Validator::make($params,
+            ['file' => 'required|file|mimes:txt,xls,xlsx',
+                'is_increment' => 'sometimes|integer|in:1,2',
+                'order_deadline' => 'sometimes|date_format:H:i:s',
+                'appointment_days' => 'sometimes|integer',
+                'warehouse_id'=>'sometimes|integer'],
+            ['file.file' => '必须是文件']);
+        $length = count($params);
+        for ($i = 0; $i <= $length - 1; $i++) {
+            for ($j = $i + 1; $j <= $length - 1; $j++) {
+                if (max($params[$i]['post_code_start'], $params[$j]['post_code_start']) <= min($params[$i]['post_code_end'], $params[$j]['post_code_end'] && $params[$i]['line_id'])===$params[$j]['line_id']) {
+                    throw new BusinessLogicException($params[$i]['name'].'邮编存在重叠,无法添加');
+                }
+            }
+        }
+    }
+
+    /**
+     * 附表验证
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function postCodeValidate($params){
+        foreach ($params as $item) {
+            if($item['post_code_start']>$item['post_code_end']){
+                throw new BusinessLogicException($item['name'].'邮编列表截止邮编必须大于起始邮编');
+            }
+            if($item['post_code_start']<1000 ||$item['post_code_start']>9999 ){
+                throw new BusinessLogicException($item['name'].'邮编列表起始邮编范围必须在1000-9999之间');
+            }
+            if($item['post_code_end']<1000 ||$item['post_code_end']>9999 ){
+                throw new BusinessLogicException($item['name'].'邮编列表截至邮编范围必须在1000-9999之间');
+            }
+            if ($this->getLineRangeService()->checkIfPostcodeIntervalOverlap($item['post_code_start'], $item['post_code_end'], $item['country'], $item['schedule'])) {
+                throw new BusinessLogicException($item['name']."邮编:post_code_start到:post_code_end已存在", 1000, ['post_code_start' => $item['post_code_start'], 'post_code_end' => $item['post_code_end']]);
+            }
+        }
     }
 }
