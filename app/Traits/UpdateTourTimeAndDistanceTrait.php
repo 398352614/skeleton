@@ -18,11 +18,11 @@ trait UpdateTourTimeAndDistanceTrait
         }
         $data = $info['data'];
 
-        app('log')->info('开始更新线路,线路标识为:' . $this->formData['line_code']);
+        app('log')->info('开始更新线路,线路标识为:' . $tour->tour_no);
         app('log')->info('api返回的结果为:', $info);
 
-        TourLog::where('tour_no', $this->formData['line_code'])->where('action', $this->formData['type'])->update(['status' => BaseConstService::TOUR_LOG_COMPLETE]); // 日志标记为已完成
-        $tour = Tour::where('tour_no', $this->formData['line_code'])->first();
+        TourLog::where('tour_no', $tour->tour_no)->where('action', $tour->tour_no)->update(['status' => BaseConstService::TOUR_LOG_COMPLETE]); // 日志标记为已完成
+        $tour = Tour::where('tour_no', $tour->tour_no)->first();
         $max_time = 0;
         $max_distance = 0;
 
