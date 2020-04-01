@@ -57,6 +57,7 @@ trait UpdateTourTimeAndDistanceTrait
             return true;
         } catch (\Exception $e) {
             self::setTourLock($tour->tour_no, 0);
+            app('log')->info('错误-----:' . $e->getMessage());
             throw new BusinessLogicException($e->getMessage());
         }
     }
