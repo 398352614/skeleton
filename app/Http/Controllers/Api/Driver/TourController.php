@@ -151,6 +151,17 @@ class TourController extends BaseController
     }
 
     /**
+     * 获取取件线路统计数据
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function getTotalInfo($id)
+    {
+        return $this->service->getTotalInfo($id);
+    }
+
+    /**
      * 司机入库
      * @param $id
      * @throws \App\Exceptions\BusinessLogicException

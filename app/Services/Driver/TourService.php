@@ -762,6 +762,33 @@ class TourService extends BaseService
     }
 
     /**
+     * 获取取件线路统计数据
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getTotalInfo($id)
+    {
+        $tour = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('取件线路不存在');
+        }
+        $tour = $tour->toArray();
+        //包裹信息
+        $tour['pickup_package_expect_count'] = $this->getPackageService()->sum('expect_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_TYPE_1]);
+        $tour['pickup_package_actual_count'] = $this->getPackageService()->sum('actual_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::PACKAGE_STATUS_5]);
+        $tour['pie_package_expect_count'] = $this->getPackageService()->sum('expect_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_TYPE_2]);
+        $tour['pie_package_actual_count'] = $this->getPackageService()->sum('actual_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::PACKAGE_STATUS_5]);
+        //材料信息
+        $tour['material_expect_count'] = $this->tourMaterialModel->newQuery()->where('tour_no', $tour['tour_no'])->sum('expect_quantity');
+        $tour['material_actual_count'] = $this->tourMaterialModel->newQuery()->where('tour_no', $tour['tour_no'])->sum('finish_quantity');
+        //总费用计算
+        $tour['total_amount'] = $totalAmount = $tour['sticker_amount'] + $tour['replace_amount'] + $tour['settlement_amount'];
+        return $tour;
+
+    }
+
+    /**
      * 司机入库
      * @param $id
      * @param $params
