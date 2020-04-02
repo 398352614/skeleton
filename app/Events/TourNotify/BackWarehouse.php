@@ -24,35 +24,22 @@ class BackWarehouse implements ShouldSendNotify2Merchant
     /**
      * Create a new event instance.
      *
+     * @param $tour
      * @return void
      */
-    public function __construct(Tour $tour)
+    public function __construct($tour)
     {
         $this->tour = $tour;
     }
 
-    public function getTour(): Tour
-    {
-        return $this->tour;
-    }
-
-    public function getBatch(): ?Batch
-    {
-        return null;
-    }
 
     public function notifyType(): int
     {
-        return BaseConstService::BACK_WAREHOUSE;
-    }
-
-    public function getMerchantList(): array
-    {
-        return [];
+        return BaseConstService::NOTIFY_BACK_WAREHOUSE;
     }
 
 
-    public function getData(): array
+    public function getDataList(): array
     {
         return [];
     }

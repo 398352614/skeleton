@@ -4,6 +4,7 @@ namespace App\Events\TourNotify;
 
 use App\Events\Interfaces\ShouldSendNotify2Merchant;
 use App\Models\Batch;
+use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use Illuminate\Broadcasting\Channel;
@@ -22,34 +23,46 @@ class OutWarehouse implements ShouldSendNotify2Merchant
 
     public $tour;
 
+    public $batchList;
+
+    public $orderList;
+
     /**
-     * Create a new event instance.
-     *
-     * @return void
+     * OutWarehouse constructor.
+     * @param $tour
+     * @param $batchList
+     * @param $orderList
      */
-    public function __construct(Tour $tour)
+    public function __construct($tour, $batchList, $orderList)
     {
         $this->tour = $tour;
+        $this->batchList = $batchList;
+        $this->orderList = $orderList;
     }
 
-
-    public function getTour(): Tour
-    {
-        return $this->tour;
-    }
-
-    public function getBatch(): ?Batch
-    {
-        return null;
-    }
 
     public function notifyType(): int
     {
-        return BaseConstService::OUT_WAREHOUSE;
+        return BaseConstService::NOTIFY_OUT_WAREHOUSE;
     }
 
-    public function getData(): array
+    public function getDataList(): array
     {
-        // TODO: Implement getData() method.
+        $batchList = collect($this->orderList)->keyBy('batch_no')->toArray();
+        $orderList = collect($this->orderList)->groupBy(function ($order) {
+            return $order['merchant_id'] . '-' . $order['batch_no'];
+        })->toArray();
+        $newBatchList = [];
+        foreach ($orderList as $merchantIdBatchNo => $merchantBatchList) {
+            list($merchantId, $batchNo) = explode('-', $merchantIdBatchNo);
+            if (!empty($batchList[$batchNo])) {
+                $newBatchList[$merchantId][] = array_merge($batchList[$batchNo], ['merchant_id' => $merchantId, 'order_list' => $merchantBatchList]);
+            }
+        }
+        $tourList = [];
+        foreach ($newBatchList as $merchantId => $merchantBatchList) {
+            $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch_list' => $merchantBatchList]);
+        }
+        return $tourList;
     }
 }

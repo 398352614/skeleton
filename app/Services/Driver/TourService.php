@@ -291,7 +291,7 @@ class TourService extends BaseService
                 if ($rowCount === false) {
                     throw new BusinessLogicException('出库失败');
                 }
-                $cancelOrderList = $this->getOrderService()->getList(['id' => ['in', $cancelOrderIdList]], ['order_no'], false)->toArray();
+                $cancelOrderList = $this->getOrderService()->getList(['id' => ['in', $cancelOrderIdList]], ['*'], false)->toArray();
                 //更换包裹状态
                 $rowCount = $this->getPackageService()->update(['order_no' => ['in', array_column($cancelOrderList, 'order_no'), 'status' => BaseConstService::PACKAGE_STATUS_3]], ['status' => BaseConstService::PACKAGE_STATUS_6]);
                 if ($rowCount === false) {
