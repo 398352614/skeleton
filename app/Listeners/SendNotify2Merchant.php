@@ -57,15 +57,6 @@ class SendNotify2Merchant implements ShouldQueue
     public $timeout = 30;
 
     /**
-     * @var BaseConstService
-     */
-    // const OUT_WAREHOUSE             = 1; // 出库
-    // const PICKUP_FAILED             = 2; // 取件失败
-    // const PICKUP_SUCCESS            = 3; // 取件成功
-    // const EXPECTED_ARRIVE_TIME      = 4; // 预计到达时间
-    // const BACK_WAREHOUSE            = 5; // 回到仓库
-
-    /**
      * @var CurlClient
      */
     public $curl;

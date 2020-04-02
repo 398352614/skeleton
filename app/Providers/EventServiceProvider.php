@@ -10,6 +10,7 @@ use App\Events\TourDriver\BatchArrived;
 use App\Events\TourDriver\BatchDepart;
 use App\Events\TourDriver\OutWarehouse;
 use App\Listeners\CountTourTimeAndDistance;
+use App\Listeners\SendNotify2Merchant;
 use App\Listeners\TourDriver;
 use App\Listeners\UpdateDriverCountTime;
 use App\Listeners\UpdateLineCountTime;
@@ -33,7 +34,7 @@ class EventServiceProvider extends ServiceProvider
             UpdateDriverCountTime::class,
         ],
         //
-        AfterTourInit::class    =>  [
+        AfterTourInit::class => [
             CountTourTimeAndDistance::class,
         ],
         //更新线路触发事件
@@ -56,6 +57,25 @@ class EventServiceProvider extends ServiceProvider
         //司机回仓
         BackWarehouse::class => [
             TourDriver::class,
+        ],
+        /*********************************取件线路消息通知****************************************/
+        \App\Events\TourNotify\OutWarehouse::class => [
+            SendNotify2Merchant::class
+        ],
+        \App\Events\TourNotify\NextBatch::class => [
+            SendNotify2Merchant::class
+        ],
+        \App\Events\TourNotify\ArrivedBatch::class => [
+            SendNotify2Merchant::class
+        ],
+        \App\Events\TourNotify\AssignBatch::class => [
+            SendNotify2Merchant::class
+        ],
+        \App\Events\TourNotify\CancelBatch::class => [
+            SendNotify2Merchant::class
+        ],
+        \App\Events\TourNotify\BackWarehouse::class => [
+            SendNotify2Merchant::class
         ],
     ];
 

@@ -14,6 +14,7 @@ use App\Events\TourDriver\BatchDepart;
 use App\Events\TourDriver\BackWarehouse;
 use App\Events\TourDriver\OutWarehouse;
 use App\Events\TourNotify\CancelBatch;
+use App\Events\TourNotify\NextBatch;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
@@ -38,6 +39,10 @@ trait TourTrait
         $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
         event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $newOrderList));
 
+        //通知下一个站点事件
+        event(new NextBatch($tour, self::getNextBatch()));
+
+
     }
 
     public static function afterBatchArrived($tour, $batch)
@@ -56,6 +61,9 @@ trait TourTrait
         self::dealBatchEvent($tour, $batch);
 
         event(new \App\Events\TourNotify\CancelBatch($tour, $batch));
+
+        //通知下一个站点事件
+        event(new NextBatch($tour, self::getNextBatch()));
     }
 
 
@@ -64,6 +72,9 @@ trait TourTrait
         OrderTrailService::storeByBatchNo($batch['batch_no'], BaseConstService::ORDER_TRAIL_DELIVERED);
         self::dealBatchEvent($tour, $batch);
         event(new \App\Events\TourNotify\AssignBatch($tour, $batch));
+
+        //通知下一个站点事件
+        event(new NextBatch($tour, self::getNextBatch()));
     }
 
     public static function afterBackWarehouse($tour)
@@ -85,11 +96,16 @@ trait TourTrait
         //触发司机离开站点
         event(new BatchDepart($batch));
         //触发站点预计到达时间
+        $nextBatch = self::getNextBatch();
         $location = ['latitude' => $batch['receiver_lat'], 'longitude' => $batch['receiver_lon']];
-        $nextBatch = Batch::query()->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first(['batch_no']);
         if (!empty($nextBatch)) {
             event(new AfterDriverLocationUpdated(Tour::where('tour_no', $tour['tour_no'])->first(), $nextBatch->batch_no, $location, true));
         }
+    }
+
+    private static function getNextBatch()
+    {
+        return $nextBatch = Batch::query()->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first(['batch_no']);
     }
 
 }
