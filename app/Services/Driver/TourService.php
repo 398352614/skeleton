@@ -636,8 +636,8 @@ class TourService extends BaseService
             'actual_pickup_quantity' => intval($tour['actual_pickup_quantity']) + $pickupCount,
             'actual_pie_quantity' => intval($tour['actual_pie_quantity']) + $pieCount,
             'sticker_amount' => $tour['sticker_amount'] + $totalStickerAmount,
-            'replace_amount' => $tour['replace_amount'] + $batch['replace_amount'],
-            'settlement_amount' => $tour['settlement_amount'] + $batch['replace_amount'],
+            //'replace_amount' => $tour['replace_amount'] + $batch['replace_amount'],
+            //'settlement_amount' => $tour['settlement_amount'] + $batch['settlement_amount'],
         ];
         $rowCount = parent::updateById($id, $tourData);
         if ($rowCount === false) {
