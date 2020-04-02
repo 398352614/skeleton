@@ -40,7 +40,7 @@ trait TourTrait
         event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $newOrderList));
 
         //通知下一个站点事件
-        event(new NextBatch($tour, self::getNextBatch()));
+        event(new NextBatch($tour, self::getNextBatch()->toArray()));
 
 
     }
@@ -63,7 +63,7 @@ trait TourTrait
         event(new \App\Events\TourNotify\CancelBatch($tour, $batch));
 
         //通知下一个站点事件
-        event(new NextBatch($tour, self::getNextBatch()));
+        event(new NextBatch($tour, self::getNextBatch()->toArray()));
     }
 
 
@@ -74,7 +74,7 @@ trait TourTrait
         event(new \App\Events\TourNotify\AssignBatch($tour, $batch));
 
         //通知下一个站点事件
-        event(new NextBatch($tour, self::getNextBatch()));
+        event(new NextBatch($tour, self::getNextBatch()->toArray()));
     }
 
     public static function afterBackWarehouse($tour)
