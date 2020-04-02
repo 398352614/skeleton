@@ -285,16 +285,20 @@ class TourService extends BaseService
      * 站点加入取件线路
      * @param $batch
      * @param $line
-     * @param $type
+     * @param $order
      * @return BaseService|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function join($batch, $line, $type)
+    public function join($batch, $line, $order)
     {
         $tour = $this->getTourInfo($batch, $line, $batch['tour_no'] ?? '');
         //加入取件线路
-        $quantity = (intval($type) === 1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
-        $tour = !empty($tour) ? $this->joinExistTour($tour->toArray(), $quantity) : $this->joinNewTour($batch, $line, $quantity);
+        $quantity = (intval($order['type']) === 1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
+        $amount = [
+            'replace_amount' => $order['replace_amount'] ?? 0.00,
+            'settlement_amount' => $order['settlement_amount'] ?? 0.00
+        ];
+        $tour = !empty($tour) ? $this->joinExistTour($tour->toArray(), $quantity, $amount) : $this->joinNewTour($batch, $line, $quantity);
         return $tour;
     }
 
@@ -330,7 +334,9 @@ class TourService extends BaseService
                 'warehouse_house_number' => $warehouse['house_number'],
                 'warehouse_address' => $warehouse['address'],
                 'warehouse_lon' => $warehouse['lon'],
-                'warehouse_lat' => $warehouse['lat']
+                'warehouse_lat' => $warehouse['lat'],
+                'replace_amount' => $batch['replace_amount'] ?? 0.00,
+                'settlement_amount' => $batch['settlement_amount'] ?? 0.00
             ], $quantity)
         );
         if ($tour === false) {
@@ -344,16 +350,17 @@ class TourService extends BaseService
      * 加入已存在取件线路
      * @param $tour
      * @param $quantity
+     * @param $amount
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function joinExistTour($tour, $quantity)
+    public function joinExistTour($tour, $quantity, $amount)
     {
         $data = [
             'expect_pickup_quantity' => !empty($quantity['expect_pickup_quantity']) ? $tour['expect_pickup_quantity'] + $quantity['expect_pickup_quantity'] : $tour['expect_pickup_quantity'],
             'expect_pie_quantity' => !empty($quantity['expect_pie_quantity']) ? $tour['expect_pie_quantity'] + $quantity['expect_pie_quantity'] : $tour['expect_pie_quantity'],
         ];
-        $rowCount = parent::updateById($tour['id'], $data);
+        $rowCount = parent::updateById($tour['id'], array_merge($data, $amount));
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败，请重新操作！');
         }
@@ -475,12 +482,13 @@ class TourService extends BaseService
             throw new BusinessLogicException('当前指定取件线路不符合当前站点');
         }
         $quantity = ['expect_pickup_quantity' => $batch['expect_pickup_quantity'], 'expect_pie_quantity' => $batch['expect_pie_quantity']];
+        $amount = ['replace_amount' => $batch['replace_amount'] ?? 0.00, 'settlement_amount' => $batch['settlement_amount'] ?? 0.00];
         //若存在取件线路，判断当前取件线路中是否已存在相同站点,若存在，则合并
         if (!empty($tour)) {
             $tour = $tour->toArray();
             //合并两个相同站点
             $batch = $this->getBatchService()->mergeTwoBatch($tour, $batch);
-            $tour = $this->joinExistTour($tour, $quantity);
+            $tour = $this->joinExistTour($tour, $quantity, $amount);
         } else {
             $tour = $this->joinNewTour($batch, $line, $quantity);;
         }
