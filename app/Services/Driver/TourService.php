@@ -783,7 +783,7 @@ class TourService extends BaseService
         $tour['material_expect_count'] = $this->tourMaterialModel->newQuery()->where('tour_no', $tour['tour_no'])->sum('expect_quantity');
         $tour['material_actual_count'] = $this->tourMaterialModel->newQuery()->where('tour_no', $tour['tour_no'])->sum('finish_quantity');
         //总费用计算
-        $tour['total_amount'] = $totalAmount = $tour['sticker_amount'] + $tour['replace_amount'] + $tour['settlement_amount'];
+        $tour['total_amount'] = $tour['sticker_amount'] + $tour['replace_amount'] + $tour['settlement_amount'];
         return $tour;
 
     }
