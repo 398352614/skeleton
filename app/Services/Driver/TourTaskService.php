@@ -119,9 +119,9 @@ class TourTaskService extends BaseService
         //获取站点数量
         $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
         //获取所有站点
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['id', 'batch_no', 'status', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
         //获取所有订单列表
-        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         //获取所有材料列表
         $materialList = $this->getTourMaterialList($tour);
         //获取所有包裹列表
