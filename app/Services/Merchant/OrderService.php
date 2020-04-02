@@ -379,7 +379,7 @@ class OrderService extends BaseService
         $this->orderImportValidate($params);
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
-        $params['path'] = str_replace('http://tms-api.test/storage/', 'public//', $params['path']);
+        $params['path'] = str_replace(env('APP_URL').'/storage/', 'public//', $params['path']);
         $heading = ['execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'special_remark', 'remark', 'package_list', 'material_list'];
         $this->headingCheck($params['path'], $heading);//表头验证
         $row = $this->orderExcelImport($params['path'])[0];
