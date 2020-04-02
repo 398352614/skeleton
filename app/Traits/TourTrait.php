@@ -28,7 +28,7 @@ trait TourTrait
         //取消派送订单，取派失败
         empty($cancelOrderList) && OrderTrailService::storeAllByOrderList($cancelOrderList, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
         //派送订单
-        $orderList = Order::query()->select(['*'])->whereNotIn('order_no', array_column($cancelOrderList, 'order_no'))->get()->toArray();
+        $orderList = Order::query()->select(['*'])->where('tour_no', $tour['tour_no'])->whereNotIn('order_no', array_column($cancelOrderList, 'order_no'))->get()->toArray();
         !empty($orderList) && OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_DELIVERING);
         //触发司机出库1
         event(new OutWarehouse($tour));
