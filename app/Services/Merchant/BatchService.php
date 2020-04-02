@@ -108,7 +108,7 @@ class BatchService extends BaseService
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
         list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order);
         /**************************************站点加入取件线路********************************************************/
-        $tour = $this->getTourService()->join($batch, $line, $order['type']);
+        $tour = $this->getTourService()->join($batch, $line, $order);
         /***********************************************填充取件线路编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);
 
@@ -342,7 +342,7 @@ class BatchService extends BaseService
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
         list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order);
         /**************************************站点加入取件线路********************************************************/
-        $tour = $this->getTourService()->join($batch, $line, $order['type']);
+        $tour = $this->getTourService()->join($batch, $line, $order);
         /***********************************************填充取件线路编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);
         return [$batch, $tour];
