@@ -19,7 +19,7 @@ use Illuminate\Queue\SerializesModels;
 
 class SendNotify2Merchant implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue,SerializesModels;
 
     /**
      * 任务连接名称。
