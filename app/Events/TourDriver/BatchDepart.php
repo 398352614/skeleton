@@ -59,7 +59,14 @@ class BatchDepart implements ITourDriver
 
     public function getAddress(): string
     {
-        $address = implode(' ', Arr::only($this->batch, ['receiver_street', 'receiver_house_number', 'receiver_city', 'receiver_post_code', 'receiver_country']));
+        $address = [
+            'receiver_street' => $this->batch['receiver_street'],
+            'receiver_house_number' => $this->batch['receiver_house_number'],
+            'receiver_city' => $this->batch['receiver_city'],
+            'receiver_post_code' => $this->batch['receiver_post_code'],
+            'receiver_country' => $this->batch['receiver_country']
+        ];
+        $address = implode(' ', $address);
         return $address;
     }
 }

@@ -44,7 +44,14 @@ class BackWarehouse implements ITourDriver
 
     public function getAddress(): string
     {
-        $address = implode(' ', Arr::only($this->tour, ['warehouse_street', 'warehouse_house_number', 'warehouse_city', 'warehouse_post_code', 'warehouse_country']));
+        $address = [
+            'warehouse_street' => $this->tour['warehouse_street'],
+            'warehouse_house_number' => $this->tour['warehouse_house_number'],
+            'warehouse_city' => $this->tour['warehouse_city'],
+            'warehouse_post_code' => $this->tour['warehouse_post_code'],
+            'warehouse_country' => $this->tour['warehouse_country']
+        ];
+        $address = implode(' ', $address);
         return $address;
     }
 
