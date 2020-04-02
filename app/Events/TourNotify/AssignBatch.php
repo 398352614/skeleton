@@ -29,7 +29,7 @@ class AssignBatch implements ShouldSendNotify2Merchant
         $this->orderList = $orderList ?? $this->getOrderAndPackageList($this->batch['batch_no']);
     }
 
-    public function notifyType(): int
+    public function notifyType(): string
     {
         return BaseConstService::NOTIFY_ASSIGN_BATCH;
     }

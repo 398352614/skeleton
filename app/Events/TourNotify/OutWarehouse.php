@@ -41,7 +41,7 @@ class OutWarehouse implements ShouldSendNotify2Merchant
     }
 
 
-    public function notifyType(): int
+    public function notifyType(): string
     {
         return BaseConstService::NOTIFY_OUT_WAREHOUSE;
     }

@@ -36,7 +36,7 @@ class CancelBatch implements ShouldSendNotify2Merchant
         $this->orderList = $orderList ?? $this->getOrderList($this->batch['batch_no']);
     }
 
-    public function notifyType(): int
+    public function notifyType(): string
     {
         return BaseConstService::NOTIFY_CANCEL_BATCH;
     }

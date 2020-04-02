@@ -28,7 +28,7 @@ class NextBatch implements ShouldSendNotify2Merchant
         $this->orderList = $orderList ?? $this->getOrderList($this->nextBatch['batch_no']);
     }
 
-    public function notifyType(): int
+    public function notifyType(): string
     {
         return BaseConstService::NOTIFY_NEXT_BACTH;
     }

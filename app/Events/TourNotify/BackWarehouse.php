@@ -33,7 +33,7 @@ class BackWarehouse implements ShouldSendNotify2Merchant
     }
 
 
-    public function notifyType(): int
+    public function notifyType(): string
     {
         return BaseConstService::NOTIFY_BACK_WAREHOUSE;
     }

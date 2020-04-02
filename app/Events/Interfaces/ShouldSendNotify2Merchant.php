@@ -12,7 +12,7 @@ interface ShouldSendNotify2Merchant
      * 发送的动作类型
      * @return BaseConstService 订阅及通知常量
      */
-    public function notifyType(): int;
+    public function notifyType(): string ;
 
     /**
      * 推送数据
