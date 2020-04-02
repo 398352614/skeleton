@@ -65,7 +65,7 @@ trait TourTrait
         //通知下一个站点事件
         $nextBatch = self::getNextBatch();
         if (!empty($nextBatch)) {
-            event(new NextBatch($tour, self::getNextBatch()->toArray()));
+            event(new NextBatch($tour, $nextBatch->toArray()));
         }
     }
 
@@ -77,8 +77,9 @@ trait TourTrait
         event(new \App\Events\TourNotify\AssignBatch($tour, $batch));
 
         //通知下一个站点事件
+        $nextBatch = self::getNextBatch();
         if (!empty($nextBatch)) {
-            event(new NextBatch($tour, self::getNextBatch()->toArray()));
+            event(new NextBatch($tour, $nextBatch->toArray()));
         }
     }
 
