@@ -503,7 +503,7 @@ class OrderService extends BaseService
      */
     private function addAllItemList($params, $batch, $tour)
     {
-        $status = $params['status'] ?? BaseConstService::PACKAGE_STATUS_1;
+        $status = $tour['status'] ?? BaseConstService::PACKAGE_STATUS_1;
         //若存在包裹列表,则新增包裹列表
         if (!empty($params['package_list'])) {
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
