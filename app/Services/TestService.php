@@ -81,4 +81,9 @@ class TestService extends BaseService
         }
     }
 
+    public function updateAll()
+    {
+
+    }
+
 }

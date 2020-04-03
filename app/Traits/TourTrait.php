@@ -55,12 +55,13 @@ trait TourTrait
     }
 
 
-    public static function afterBatchCancel($tour, $batch)
+    public static function afterBatchCancel($tour, $batch, $orderList)
     {
-        OrderTrailService::storeByBatchNo($batch['batch_no'], BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+        data_set($orderList, '*.status', BaseConstService::ORDER_STATUS_6);
+        OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
         self::dealBatchEvent($tour, $batch);
 
-        event(new \App\Events\TourNotify\CancelBatch($tour, $batch));
+        event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $orderList));
 
         //通知下一个站点事件
         $nextBatch = self::getNextBatch();
@@ -72,9 +73,10 @@ trait TourTrait
 
     public static function afterBatchSign($tour, $batch)
     {
-        OrderTrailService::storeByBatchNo($batch['batch_no'], BaseConstService::ORDER_TRAIL_DELIVERED);
+        $orderList = Order::query()->where('batch_no', $batch['batch_no'])->where('status', BaseConstService::ORDER_STATUS_5)->get()->toArray();
+        OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_DELIVERED);
         self::dealBatchEvent($tour, $batch);
-        event(new \App\Events\TourNotify\AssignBatch($tour, $batch));
+        event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $orderList));
 
         //通知下一个站点事件
         $nextBatch = self::getNextBatch();

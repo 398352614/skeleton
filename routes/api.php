@@ -28,5 +28,7 @@ Route::namespace('Api')->group(function () {
         Route::delete('/{id}', 'TestController@destroy');
         //计算日期
         Route::get('/calDate', 'TestController@calDate');
+        //批量修改
+        Route::get('/updateAll', 'TestController@updateAll');
     });
 });
