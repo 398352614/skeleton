@@ -28,6 +28,7 @@ class TourResource extends JsonResource
             'warehouse_id' => $this->warehouse_id,
             'warehouse_name' => $this->warehouse_name,
             'warehouse_phone' => $this->warehouse_phone,
+            'warehouse_country' => $this->warehouse_country,
             'warehouse_post_code' => $this->warehouse_post_code,
             'warehouse_city' => $this->warehouse_city,
             'warehouse_street'=> $this->warehouse_street,

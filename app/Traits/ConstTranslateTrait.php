@@ -226,7 +226,8 @@ trait ConstTranslateTrait
         BaseConstService::ADMIN_FILE_CAR_DIR => '车辆文件目录',
         BaseConstService::ADMIN_FILE_ORDER_DIR => '订单文件目录',
         BaseConstService::ADMIN_FILE_APK_DIR => '安装包目录',
-        BaseConstService::ADMIN_FILE_TEMPLATE_DIR => '表格模板目录'
+        BaseConstService::ADMIN_FILE_TEMPLATE_DIR => '表格模板目录',
+        BaseConstService::ADMIN_FILE_LINE_DIR => '线路目录'
     ];
 
     //管理员端 表格目录
@@ -265,8 +266,10 @@ trait ConstTranslateTrait
     ];
 
     public static $driverEventList = [
-        BaseConstService::DRIVER_EVENT_1 => '司机到达客户家',
-        BaseConstService::DRIVER_EVENT_2 => '司机离开客户家',
+        BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE => '司机从仓库出发',
+        BaseConstService::DRIVER_EVENT_BATCH_ARRIVED => '司机到达客户家',
+        BaseConstService::DRIVER_EVENT_BATCH_DEPART => '司机从客户加离开',
+        BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE => '司机返回仓库',
     ];
 
     /**

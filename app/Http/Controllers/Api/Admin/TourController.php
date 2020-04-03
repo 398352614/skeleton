@@ -20,7 +20,7 @@ class TourController extends BaseController
     public function __construct(TourService $service)
     {
         //事务包裹和数据传入
-        parent::__construct($service, ['updateBatchIndex', 'autoOpTour']);
+        parent::__construct($service, ['updateBatchIndex', 'autoOpTour', 'dealCallback']);
     }
 
     /**
@@ -228,8 +228,8 @@ class TourController extends BaseController
      * @param $id
      * @return mixed
      */
-    public function batchPng($id){
+    public function batchPng($id)
+    {
         return $this->service->batchPng($id);
     }
-
 }

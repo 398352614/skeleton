@@ -4,12 +4,14 @@ namespace App\Events\Interfaces;
 
 use App\Models\Order;
 
-interface CanCreateTourDriverEvent
+interface ITourDriver
 {
     /**
      * 获取线路司机事件文本
      */
     public function getContent(): string;
+
+    public function getAddress(): string;
 
     /**
      * 获取当前司机事件的司机位置

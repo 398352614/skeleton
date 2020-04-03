@@ -108,7 +108,7 @@ class BatchService extends BaseService
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
         list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order);
         /**************************************站点加入取件线路********************************************************/
-        $tour = $this->getTourService()->join($batch, $line, $order['type']);
+        $tour = $this->getTourService()->join($batch, $line, $order);
         /***********************************************填充取件线路编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);
 
@@ -162,7 +162,7 @@ class BatchService extends BaseService
                 continue;
             }
             $line = $line->toArray();
-            $tour = $this->getTourService()->getTourInfo($batch, $line, false);
+            $tour = $this->getTourService()->getTourInfo($batch, $line, false, $batch['tour_no'] ?? '');
             //若存在，锁定当前站点
             if (!empty($tour)) {
                 $batch = parent::getInfoLock(['id' => $batch['id']], ['*'], false)->toArray();
@@ -342,7 +342,7 @@ class BatchService extends BaseService
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
         list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order);
         /**************************************站点加入取件线路********************************************************/
-        $tour = $this->getTourService()->join($batch, $line, $order['type']);
+        $tour = $this->getTourService()->join($batch, $line, $order);
         /***********************************************填充取件线路编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);
         return [$batch, $tour];
@@ -396,7 +396,7 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
-        OrderTrailService::OrderStatusChangeUseOrderCollection(Order::where('batch_no', $info['batch_no'])->get(), BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+        OrderTrailService::storeByBatchNo($info['batch_no'], BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
     }
 
     /**
@@ -445,6 +445,7 @@ class BatchService extends BaseService
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
         }
+        OrderTrailService::storeByBatchNo($info['batch_no'], BaseConstService::ORDER_TRAIL_JOIN_TOUR);
     }
 
     /**
@@ -478,7 +479,6 @@ class BatchService extends BaseService
         }
         return $dbBatch;
     }
-
 
     /**
      * 填充站点信息和取件线路信息
@@ -528,6 +528,7 @@ class BatchService extends BaseService
         }
         //将站点从取件线路移除
         $this->getTourService()->removeBatch($info);
+        OrderTrailService::storeByBatchNo($info['batch_no'], BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
     }
 
     /**

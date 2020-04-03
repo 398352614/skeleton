@@ -97,9 +97,11 @@ class TourController extends BaseController
         return $this->service->getBatchOrderList($id, $this->data);
     }
 
+
     /**
      * 到达站点
      * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function batchArrive($id)
     {
@@ -146,6 +148,17 @@ class TourController extends BaseController
     public function batchSign($id)
     {
         return $this->service->batchSign($id, $this->data);
+    }
+
+    /**
+     * 获取取件线路统计数据
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function getTotalInfo($id)
+    {
+        return $this->service->getTotalInfo($id);
     }
 
     /**

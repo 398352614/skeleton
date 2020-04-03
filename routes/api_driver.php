@@ -109,6 +109,8 @@ Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
         Route::put('/{id}/batchCancel', 'TourController@batchCancel');
         //站点 签收
         Route::put('/{id}/batchSign', 'TourController@batchSign');
+        //获取取件线路统计数据
+        Route::get('/{id}/getTotalInfo', 'TourController@getTotalInfo');
         //司机入库
         Route::put('/{id}/inWarehouse', 'TourController@inWarehouse');
     });
