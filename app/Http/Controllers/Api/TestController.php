@@ -64,4 +64,9 @@ class TestController extends BaseController
     {
         return $this->service->calDate();
     }
+
+    public function updateAll()
+    {
+        return $this->service->updateAll();
+    }
 }

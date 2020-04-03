@@ -569,6 +569,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //订单取消取派
+        $cancelOrderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['*'], false)->toArray();
         $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], Arr::add($data, 'status', BaseConstService::ORDER_STATUS_6));
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
@@ -578,7 +579,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
-        TourTrait::afterBatchCancel($tour, $batch);
+        TourTrait::afterBatchCancel($tour, $batch, $cancelOrderList);
     }
 
     /**
