@@ -35,7 +35,7 @@ class HomeService extends BaseService
 
     //当日数据
     public function home(){
-        $date =Carbon::today()->addDay();
+        $date =Carbon::today()->format('Y-m-d');
         //当日订单
         $noTakeOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_1]);//待分配
         $assignOrder = parent::count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_2]);//已分配
@@ -48,6 +48,7 @@ class HomeService extends BaseService
         //司机及车辆统计
         $carSum=$this->getCarService()->count();//车辆总数
         $driverSum=$this->getDriverService()->count();//司机总数
+        dd($this->getTourService()->get);
         $assignCar=$this->getTourService()->count(['execution_date'=>$date,'status'=>BaseConstService::TOUR_STATUS_2 ]);//已分配
         $waitOutCar=$this->getTourService()->count(['execution_date'=>$date,'status'=>BaseConstService::TOUR_STATUS_3 ]);//待出库
         $takingCar=$this->getTourService()->count(['execution_date'=>$date,'status'=>BaseConstService::TOUR_STATUS_4 ]);//配送中
