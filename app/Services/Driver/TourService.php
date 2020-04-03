@@ -497,7 +497,6 @@ class TourService extends BaseService
         $materialList = $this->getMaterialService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
         $batch['order_list'] = $orderList;
         $batch['material_list'] = $materialList;
-        $batch['sticker_amount'] = BaseConstService::STICKER_AMOUNT;
         $batch['tour_id'] = $tour['id'];
         return $batch;
     }
