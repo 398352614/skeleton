@@ -167,13 +167,14 @@ class ReportService extends BaseService
     private function getOutWarehouseInfo($tour, $warehouseInfo, $packageList, $tourMaterialList)
     {
         $outWarehouseInfo = $warehouseInfo;
+        $outWarehouseInfo['signature'] =$tour['begin_signature'];
         $outWarehouseInfo['package_list'] = $packageList;
         $outWarehouseInfo['material_list'] = $tourMaterialList;
         return $outWarehouseInfo;
     }
 
     /**
-     * 获取出库信息
+     * 获取入库信息
      * @param $tour
      * @param $warehouseInfo
      * @param $packageList
@@ -183,6 +184,7 @@ class ReportService extends BaseService
     private function getInWarehouseInfo($tour, $warehouseInfo, $packageList, $tourMaterialList)
     {
         $inWarehouseInfo = $warehouseInfo;
+        $inWarehouseInfo['signature'] =$tour['end_signature'];
         $inWarehouseInfo['package_list'] = $packageList;
         $inWarehouseInfo['material_list'] = $tourMaterialList;
         return $inWarehouseInfo;
