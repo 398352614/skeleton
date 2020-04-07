@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Api\Admin\OrderController;
 use App\Models\Merchant;
 use Illuminate\Console\Command;
@@ -66,10 +67,13 @@ class GenerateOrder extends Command
             $controller->setData($data);
             $res = $controller->store();
             $this->info(json_encode($res, true));
+        } catch (BusinessLogicException $exception) {
+            $this->error($exception->getMessage());
+            exit;
         } catch (\Exception $exception) {
             $this->error($exception->getMessage());
+            exit;
         }
-        Log::info('generate order:' . json_encode($res));
     }
 
     /**
