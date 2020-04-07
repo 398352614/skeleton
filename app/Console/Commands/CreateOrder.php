@@ -42,13 +42,13 @@ class CreateOrder extends Command
     }
 
     /**
-     * Execute the console command
-     *
      * @param OrderController $controller
+     * @throws \Exception
      */
     public function handle(OrderController $controller)
     {
-        for ($i=0;$i<$this->option('times')??1;$i++){
+        $times=$this->option('times')??1;
+        for ($i=0;$i<$times;$i++){
             $merchantId = $this->option('merchant_id') ?? 3;
             $merchant = Merchant::query()->where('id', $merchantId)->first();
             if (empty($merchant)) {
@@ -57,8 +57,8 @@ class CreateOrder extends Command
             }
             auth()->setUser($merchant);
             $executionDate = $this->option('execution_date') ?? date('Y-m-d');
-            $paCount = $this->option('package_count') ?? random_int(1,10);
-            $maCount = $this->option('material_count') ?? random_int(1,10);
+            $paCount = $this->option('package_count') ?? 1;
+            $maCount = $this->option('material_count') ?? 1;
             $data = array_merge(
                 $this->base($executionDate, $merchantId),
                 $this->getReceiver(),
