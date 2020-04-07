@@ -46,4 +46,13 @@ class BaseController extends Controller
     {
         $this->data = Request::all();
     }
+
+    /**
+     * 手动设置data值
+     * @param $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
 }
