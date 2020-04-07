@@ -215,8 +215,8 @@ class GenerateOrder extends Command
         for ($k = 0; $k < $maCount; $k++) {
             $materialList[$k] = [
                 "name" => $faker->word . $k,
-                "code" => 'CODE' . $faker->randomNumber(8, true) . $i . $k,
-                "out_order_no" => 'OUT' . $faker->randomNumber(8, true) . $i . $k,
+                "code" => 'CODE' . $faker->randomNumber(8, true) . $k,
+                "out_order_no" => 'OUT' . $faker->randomNumber(8, true) . $k,
                 "expect_quantity" => $faker->randomNumber(2, false),
                 "remark" => $faker->sentences(3, true)];
         }
