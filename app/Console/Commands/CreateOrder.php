@@ -10,7 +10,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Faker\Factory;
 
-class GenerateOrder extends Command
+class CreateOrder extends Command
 {
     /**
      * The name and signature of the console command.
@@ -29,7 +29,7 @@ class GenerateOrder extends Command
      *
      * @var string
      */
-    protected $description = 'generate a new order';
+    protected $description = 'create a new order';
 
     /**
      * Create a new command instance.
@@ -48,7 +48,7 @@ class GenerateOrder extends Command
      */
     public function handle(OrderController $controller)
     {
-        for ($i=0;$i<$this->option('times');$i++){
+        for ($i=0;$i<$this->option('times')??1;$i++){
             $merchantId = $this->option('merchant_id') ?? 3;
             $merchant = Merchant::query()->where('id', $merchantId)->first();
             if (empty($merchant)) {
