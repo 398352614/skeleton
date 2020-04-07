@@ -83,7 +83,7 @@ class OrderValidate extends BaseValidate
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
         //包裹列表
-        'package_list.*.name' => 'required_with:package_list|string|max:50',
+        'package_list.*.name' => 'nullable|string|max:50',
         'package_list.*.weight' => 'required_with:package_list|numeric',
         'package_list.*.expect_quantity' => 'required_with:package_list|integer',
         'package_list.*.remark' => 'nullable|string|max:250',

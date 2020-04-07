@@ -207,10 +207,10 @@ class CreateOrder extends Command
         $materialList = [];
         for ($j = 0; $j < $paCount; $j++) {
             $packageList[$j] = [
-                'name' => $faker->word . $j,
-                'express_first_no' => 'F' . $faker->randomNumber(6, true) . $j,
-                'express_second_no' => 'S' . $faker->randomNumber(6, true) . $j,
-                'out_order_no' => 'O' . $faker->randomNumber(6, true) . $j,
+                'name' => '',
+                'express_first_no' => $j . 'F' . $faker->randomNumber(5, true),
+                'express_second_no' => $j . 'S' . $faker->randomNumber(5, true),
+                'out_order_no' => $j . 'O' . $faker->randomNumber(5, true),
                 'weight' => $faker->randomFloat(2, 0, 100),
                 'quantity' => 1,
                 'remark' => $faker->sentences(1, true)];
@@ -218,8 +218,8 @@ class CreateOrder extends Command
         for ($k = 0; $k < $maCount; $k++) {
             $materialList[$k] = [
                 "name" => $faker->word . $k,
-                "code" => 'C' . $faker->randomNumber(6, true) . $k,
-                "out_order_no" => 'O' . $faker->randomNumber(6, true) . $k,
+                "code" => $k . 'C' . $faker->randomNumber(5, true),
+                "out_order_no" => $k . 'O' . $faker->randomNumber(5, true),
                 "expect_quantity" => $faker->randomNumber(2, false),
                 "remark" => $faker->sentences(1, true)];
         }
