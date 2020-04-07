@@ -216,7 +216,7 @@ class GenerateOrder extends Command
                 "expect_quantity" => $faker->randomNumber(2, false),
                 "remark" => $faker->sentences(3, true)];
         }
-        return ['material_list' => $packageList, 'package_list' => $materialList];
+        return ['material_list' => $materialList, 'package_list' => $packageList];
     }
 
     /**
