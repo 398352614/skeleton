@@ -17,7 +17,8 @@ class GenerateOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'order:generate 
+    protected $signature = 'order:create 
+                                            {--times= : times}
                                             {--merchant_id= : merchant id} 
                                             {--execution_date= : execution date} 
                                             {--material_count= : material count} 
@@ -47,32 +48,34 @@ class GenerateOrder extends Command
      */
     public function handle(OrderController $controller)
     {
-        $merchantId = $this->option('merchant_id') ?? 3;
-        $merchant = Merchant::query()->where('id', $merchantId)->first();
-        if (empty($merchant)) {
-            $this->error('merchant id dose not exist');
-            exit;
-        }
-        auth()->setUser($merchant);
-        $executionDate = $this->option('execution_date') ?? date('Y-m-d');
-        $paCount = $this->option('package_count') ?? 1;
-        $maCount = $this->option('material_count') ?? 0;
-        $data = array_merge(
-            $this->base($executionDate, $merchantId),
-            $this->getReceiver(),
-            $this->getSender(),
-            $this->getMaPaList($maCount, $paCount)
-        );
-        try {
-            $controller->setData($data);
-            $res = $controller->store();
-            $this->info(json_encode($res, true));
-        } catch (BusinessLogicException $exception) {
-            $this->error($exception->getMessage());
-            exit;
-        } catch (\Exception $exception) {
-            $this->error($exception->getMessage());
-            exit;
+        for ($i=0;$i<$this->option('times');$i++){
+            $merchantId = $this->option('merchant_id') ?? 3;
+            $merchant = Merchant::query()->where('id', $merchantId)->first();
+            if (empty($merchant)) {
+                $this->error('merchant id dose not exist');
+                exit;
+            }
+            auth()->setUser($merchant);
+            $executionDate = $this->option('execution_date') ?? date('Y-m-d');
+            $paCount = $this->option('package_count') ?? random_int(1,10);
+            $maCount = $this->option('material_count') ?? random_int(1,10);
+            $data = array_merge(
+                $this->base($executionDate, $merchantId),
+                $this->getReceiver(),
+                $this->getSender(),
+                $this->getMaPaList($maCount, $paCount)
+            );
+            try {
+                $controller->setData($data);
+                $res = $controller->store();
+                $this->info(json_encode($res, true));
+            } catch (BusinessLogicException $exception) {
+                $this->error($exception->getMessage());
+                exit;
+            } catch (\Exception $exception) {
+                $this->error($exception->getMessage());
+                exit;
+            }
         }
     }
 
@@ -205,20 +208,20 @@ class GenerateOrder extends Command
         for ($j = 0; $j < $paCount; $j++) {
             $packageList[$j] = [
                 'name' => $faker->word . $j,
-                'express_first_no' => 'FIRST' . $faker->randomNumber(6, true) . $j,
-                'express_second_no' => 'SECOND' . $faker->randomNumber(8, true) . $j,
-                'out_order_no' => 'OUT' . $faker->randomNumber(6, true) . $j,
+                'express_first_no' => 'F' . $faker->randomNumber(6, true) . $j,
+                'express_second_no' => 'S' . $faker->randomNumber(6, true) . $j,
+                'out_order_no' => 'O' . $faker->randomNumber(6, true) . $j,
                 'weight' => $faker->randomFloat(2, 0, 100),
                 'quantity' => 1,
-                'remark' => $faker->sentences(3, true)];
+                'remark' => $faker->sentences(1, true)];
         }
         for ($k = 0; $k < $maCount; $k++) {
             $materialList[$k] = [
                 "name" => $faker->word . $k,
-                "code" => 'CODE' . $faker->randomNumber(8, true) . $k,
-                "out_order_no" => 'OUT' . $faker->randomNumber(8, true) . $k,
+                "code" => 'C' . $faker->randomNumber(6, true) . $k,
+                "out_order_no" => 'O' . $faker->randomNumber(6, true) . $k,
                 "expect_quantity" => $faker->randomNumber(2, false),
-                "remark" => $faker->sentences(3, true)];
+                "remark" => $faker->sentences(1, true)];
         }
         return ['material_list' => $materialList, 'package_list' => $packageList];
     }
@@ -234,8 +237,8 @@ class GenerateOrder extends Command
         $base = [
             'type' => $faker->numberBetween(1, 2),
             'settlement_type' => $faker->numberBetween(1, 2),
-            'special_remark' => $faker->sentence(5, true),
-            'remark' => $faker->sentence(5, true),
+            'special_remark' => $faker->sentence(2, true),
+            'remark' => $faker->sentence(2, true),
             'execution_date' => $executionDate,
             'merchant_id' => $merchantId
         ];
