@@ -26,8 +26,8 @@ class CommonValidate extends BaseValidate
         'country' => 'required|string|max:50',
         'post_code' => 'required|string|max:50',
         'house_number' => 'required|string|max:50',
-        'city' => 'required|string|max:50',
-        'street' => 'required|string|max:50',
+        'city' => 'nullable|string|max:50',
+        'street' => 'nullable|string|max:50',
     ];
 
     public $scene = [
