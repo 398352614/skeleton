@@ -90,7 +90,7 @@ class SendNotify2Merchant implements ShouldQueue
         $merchantList = $this->getMerchantList(array_column($dataList, 'merchant_id'));
         if (empty($merchantList)) return true;
         foreach ($dataList as $merchantId => $data) {
-            $postData = ['type' => $notifyType, 'data' => $dataList];
+            $postData = ['type' => $notifyType, 'data' => $data];
             $this->postData($merchantList[$merchantId]['url'], $postData);
         }
         return true;
