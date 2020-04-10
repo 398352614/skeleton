@@ -24,7 +24,7 @@ class AssignBatch extends ATourNotify
 
     public function __construct($tour, $batch, $orderList = [])
     {
-        $orderList = $orderList ?? $this->getOrderAndPackageList($this->batch['batch_no']);
+        $orderList = !empty($orderList) ? $orderList : $this->getOrderAndPackageList($batch['batch_no']);
         parent::__construct($tour, $batch, [], $orderList);
     }
 

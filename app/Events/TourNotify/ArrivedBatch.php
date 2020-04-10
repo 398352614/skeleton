@@ -25,7 +25,7 @@ class ArrivedBatch extends ATourNotify
 
     public function __construct($tour, $batch, $orderList = [])
     {
-        $orderList = $orderList ?? $this->getOrderList($this->batch['batch_no']);
+        $orderList = !empty($orderList) ? $orderList : $this->getOrderList($batch['batch_no']);
         parent::__construct($tour, $batch, [], $orderList);
     }
 
