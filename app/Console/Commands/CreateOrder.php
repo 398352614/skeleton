@@ -212,7 +212,7 @@ class CreateOrder extends Command
                 'express_second_no' => $j . 'S' . $faker->randomNumber(5, true),
                 'out_order_no' => $j . 'O' . $faker->randomNumber(5, true),
                 'weight' => $faker->randomFloat(2, 0, 100),
-                'quantity' => 1,
+                'expect_quantity' => 1,
                 'remark' => $faker->sentences(1, true)];
         }
         for ($k = 0; $k < $maCount; $k++) {
