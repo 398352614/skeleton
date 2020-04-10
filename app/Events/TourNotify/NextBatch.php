@@ -9,23 +9,17 @@
 namespace App\Events\TourNotify;
 
 
+use App\Events\Interfaces\ATourNotify;
 use App\Events\Interfaces\ShouldSendNotify2Merchant;
 use App\Models\Order;
 use App\Services\BaseConstService;
 
-class NextBatch implements ShouldSendNotify2Merchant
+class NextBatch extends ATourNotify
 {
-    public $tour;
-
-    public $nextBatch;
-
-    public $orderList;
-
-    public function __construct($tour, $nextBatch, $orderList = [])
+    public function __construct($tour, $batch, $orderList = [])
     {
-        $this->tour = $tour;
-        $this->nextBatch = $nextBatch;
-        $this->orderList = $orderList ?? $this->getOrderList($this->nextBatch['batch_no']);
+        $orderList = $orderList ?? $this->getOrderList($this->batch['batch_no']);
+        parent::__construct($tour, $batch, [], $orderList);
     }
 
     public function notifyType(): string
@@ -35,11 +29,11 @@ class NextBatch implements ShouldSendNotify2Merchant
 
     public function getDataList(): array
     {
-        $orderList = $this->getOrderList($this->nextBatch['batch_no']);
+        $orderList = $this->getOrderList($this->batch['batch_no']);
         $orderList = collect($orderList)->groupBy('merchant_id')->toArray();
         $batchList = [];
         foreach ($orderList as $merchantId => $merchantOrderList) {
-            $batchList[$merchantId] = array_merge($this->nextBatch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
+            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
         }
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {

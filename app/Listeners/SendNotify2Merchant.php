@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\Interfaces\ShouldSendNotify2Merchant;
+use App\Events\Interfaces\ATourNotify;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
 use App\Models\Merchant;
@@ -75,11 +75,11 @@ class SendNotify2Merchant implements ShouldQueue
     /**
      * Handle the event
      *
-     * @param ShouldSendNotify2Merchant $event
+     * @param ATourNotify $event
      * @return bool
      * @throws BusinessLogicException
      */
-    public function handle(ShouldSendNotify2Merchant $event)
+    public function handle(ATourNotify $event)
     {
         $dataList = $event->getDataList();
         $notifyType = $event->notifyType();
