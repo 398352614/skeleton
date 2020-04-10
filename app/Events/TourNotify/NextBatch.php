@@ -8,9 +8,7 @@
 
 namespace App\Events\TourNotify;
 
-
 use App\Events\Interfaces\ATourNotify;
-use App\Events\Interfaces\ShouldSendNotify2Merchant;
 use App\Models\Order;
 use App\Services\BaseConstService;
 
