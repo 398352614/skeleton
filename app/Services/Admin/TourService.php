@@ -293,7 +293,7 @@ class TourService extends BaseService
     {
         $tour = $this->getTourInfo($batch, $line, $batch['tour_no'] ?? '');
         //加入取件线路
-        $quantity = (intval($order['type']) === 1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
+        $quantity = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $amount = [
             'replace_amount' => $order['replace_amount'] ?? 0.00,
             'settlement_amount' => $order['settlement_amount'] ?? 0.00

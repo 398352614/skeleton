@@ -47,8 +47,8 @@ class CreateOrder extends Command
      */
     public function handle(OrderController $controller)
     {
-        $times=$this->option('times')??1;
-        for ($i=0;$i<$times;$i++){
+        $times = $this->option('times') ?? 1;
+        for ($i = 0; $i < $times; $i++) {
             $merchantId = $this->option('merchant_id') ?? 3;
             $merchant = Merchant::query()->where('id', $merchantId)->first();
             if (empty($merchant)) {
@@ -235,8 +235,8 @@ class CreateOrder extends Command
     {
         $faker = Factory::create('nl-NL');
         $base = [
-            'type' => $faker->numberBetween(1, 2),
-            'settlement_type' => $faker->numberBetween(1, 2),
+            'type' => Arr::random([1, 2]),
+            'settlement_type' => Arr::random([1, 2]),
             'special_remark' => $faker->sentence(2, true),
             'remark' => $faker->sentence(2, true),
             'execution_date' => $executionDate,
