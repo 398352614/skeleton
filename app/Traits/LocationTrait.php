@@ -13,6 +13,7 @@ use App\Services\Admin\UploadService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 trait LocationTrait
@@ -63,7 +64,7 @@ trait LocationTrait
      */
     private static function getLocationDetail($country, $city, $street, $houseNumber, $postCode)
     {
-        return ($country === 'NL') ? self::getLocationDetailFirst($country, $city, $street, $houseNumber, $postCode) : self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode);
+        return ($country === 'NL') ? self::getLocationDetailFirst($country, $houseNumber, $postCode) : self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode);
     }
 
     /**
@@ -75,10 +76,10 @@ trait LocationTrait
      * @param $postCode
      * @return \Closure
      */
-    private static function getLocationDetailFirst($country, $city, $street, $houseNumber, $postCode)
+    private static function getLocationDetailFirst($country, $houseNumber, $postCode)
     {
         list($houseNumber, $houseNumberAddition) = self::splitHouseNumber($houseNumber);
-        return function () use ($country, $city, $street, $houseNumber, $postCode, $houseNumberAddition) {
+        return function () use ($country, $houseNumber, $postCode, $houseNumberAddition) {
             try {
                 $client = new \GuzzleHttp\Client();
                 $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
@@ -100,9 +101,6 @@ trait LocationTrait
 
             if ($res->getStatusCode() !== 200) {
                 throw new \App\Exceptions\BusinessLogicException('邮编或门牌号码不正确，请仔细检查输入或联系客服');
-            }
-            if ((Str::lower($arrayBody['city']) !== Str::lower($city)) || (Str::lower($arrayBody['street']) !== Str::lower($street))) {
-                throw new BusinessLogicException('城市或街道不正确');
             }
             if (empty($arrayBody['latitude']) || empty($arrayBody['longitude'])) {
                 throw new BusinessLogicException('邮编或门牌号码不正确，请仔细检查输入或联系客服');

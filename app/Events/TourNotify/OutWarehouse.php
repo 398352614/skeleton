@@ -2,7 +2,7 @@
 
 namespace App\Events\TourNotify;
 
-use App\Events\Interfaces\ShouldSendNotify2Merchant;
+use App\Events\Interfaces\ATourNotify;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
@@ -14,19 +14,13 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 
 /**
  * 司机出库事件
  */
-class OutWarehouse implements ShouldSendNotify2Merchant
+class OutWarehouse extends ATourNotify
 {
-
-    public $tour;
-
-    public $batchList;
-
-    public $orderList;
-
     /**
      * OutWarehouse constructor.
      * @param $tour
@@ -35,9 +29,7 @@ class OutWarehouse implements ShouldSendNotify2Merchant
      */
     public function __construct($tour, $batchList, $orderList)
     {
-        $this->tour = $tour;
-        $this->batchList = $batchList;
-        $this->orderList = $orderList;
+        parent::__construct($tour, [], $batchList, $orderList);
     }
 
 

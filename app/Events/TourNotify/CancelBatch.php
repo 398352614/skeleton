@@ -9,19 +9,12 @@
 namespace App\Events\TourNotify;
 
 
-use App\Events\Interfaces\ShouldSendNotify2Merchant;
+use App\Events\Interfaces\ATourNotify;
 use App\Models\Order;
 use App\Services\BaseConstService;
 
-class CancelBatch implements ShouldSendNotify2Merchant
+class CancelBatch extends ATourNotify
 {
-
-    public $tour;
-
-    public $batch;
-
-    public $orderList;
-
     /**
      * CancelBatch constructor.
      *
@@ -31,9 +24,8 @@ class CancelBatch implements ShouldSendNotify2Merchant
      */
     public function __construct($tour, $batch, $orderList = [])
     {
-        $this->tour = $tour;
-        $this->batch = $batch;
-        $this->orderList = $orderList ?? $this->getOrderList($this->batch['batch_no']);
+        $orderList = $orderList ?? $this->getOrderList($this->batch['batch_no']);
+        parent::__construct($tour, $batch, [], $orderList);
     }
 
     public function notifyType(): string

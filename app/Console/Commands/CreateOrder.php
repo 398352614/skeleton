@@ -42,13 +42,13 @@ class CreateOrder extends Command
     }
 
     /**
-     * Execute the console command
-     *
      * @param OrderController $controller
+     * @throws \Exception
      */
     public function handle(OrderController $controller)
     {
-        for ($i=0;$i<$this->option('times')??1;$i++){
+        $times = $this->option('times') ?? 1;
+        for ($i = 0; $i < $times; $i++) {
             $merchantId = $this->option('merchant_id') ?? 3;
             $merchant = Merchant::query()->where('id', $merchantId)->first();
             if (empty($merchant)) {
@@ -57,8 +57,8 @@ class CreateOrder extends Command
             }
             auth()->setUser($merchant);
             $executionDate = $this->option('execution_date') ?? date('Y-m-d');
-            $paCount = $this->option('package_count') ?? random_int(1,10);
-            $maCount = $this->option('material_count') ?? random_int(1,10);
+            $paCount = $this->option('package_count') ?? 1;
+            $maCount = $this->option('material_count') ?? 1;
             $data = array_merge(
                 $this->base($executionDate, $merchantId),
                 $this->getReceiver(),
@@ -207,19 +207,19 @@ class CreateOrder extends Command
         $materialList = [];
         for ($j = 0; $j < $paCount; $j++) {
             $packageList[$j] = [
-                'name' => $faker->word . $j,
-                'express_first_no' => 'F' . $faker->randomNumber(6, true) . $j,
-                'express_second_no' => 'S' . $faker->randomNumber(6, true) . $j,
-                'out_order_no' => 'O' . $faker->randomNumber(6, true) . $j,
+                'name' => '',
+                'express_first_no' => $j . 'F' . $faker->randomNumber(5, true),
+                'express_second_no' => $j . 'S' . $faker->randomNumber(5, true),
+                'out_order_no' => $j . 'O' . $faker->randomNumber(5, true),
                 'weight' => $faker->randomFloat(2, 0, 100),
-                'quantity' => 1,
+                'expect_quantity' => 1,
                 'remark' => $faker->sentences(1, true)];
         }
         for ($k = 0; $k < $maCount; $k++) {
             $materialList[$k] = [
                 "name" => $faker->word . $k,
-                "code" => 'C' . $faker->randomNumber(6, true) . $k,
-                "out_order_no" => 'O' . $faker->randomNumber(6, true) . $k,
+                "code" => $k . 'C' . $faker->randomNumber(5, true),
+                "out_order_no" => $k . 'O' . $faker->randomNumber(5, true),
                 "expect_quantity" => $faker->randomNumber(2, false),
                 "remark" => $faker->sentences(1, true)];
         }
@@ -235,8 +235,8 @@ class CreateOrder extends Command
     {
         $faker = Factory::create('nl-NL');
         $base = [
-            'type' => $faker->numberBetween(1, 2),
-            'settlement_type' => $faker->numberBetween(1, 2),
+            'type' => Arr::random([1, 2]),
+            'settlement_type' => Arr::random([1, 2]),
             'special_remark' => $faker->sentence(2, true),
             'remark' => $faker->sentence(2, true),
             'execution_date' => $executionDate,
