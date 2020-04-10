@@ -279,7 +279,7 @@ class BatchService extends BaseService
      */
     public function updateAboutOrderByOrder($dbOrder, $order)
     {
-        $info = $this->getInfoOfStatus(['batch_no' => $dbOrder['batch_no']], true, BaseConstService::BATCH_WAIT_ASSIGN, true);
+        $info = $this->getInfoOfStatus(['batch_no' => $dbOrder['batch_no']], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         //若订单类型改变,则站点统计数量改变
         $data = [];
         if (intval($dbOrder['type']) !== intval($order['type'])) {

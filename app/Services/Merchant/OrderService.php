@@ -457,10 +457,10 @@ class OrderService extends BaseService
         //验证包裹列表
         if (!empty($params['package_list'])) {
             $packageList = $params['package_list'];
-            $nameList = array_column($packageList, 'name');
+/*            $nameList = array_column($packageList, 'name');
             if (count(array_unique($nameList)) !== count($nameList)) {
                 throw new BusinessLogicException('包裹名称有重复！不能添加订单');
-            }
+            }*/
 //            $outOrderNoList = array_filter(array_column($packageList, 'out_order_no'));
 //            if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
 //                throw new BusinessLogicException('包裹外部标识有重复！不能添加订单');
@@ -642,7 +642,7 @@ class OrderService extends BaseService
     {
         //站点移除订单,添加新的订单
         if (!empty($dbInfo['batch_no'])) {
-            $this->getBatchService()->removeOrder(array_merge($data, Arr::only($dbInfo, ['batch_no', 'tour_no'])));
+            $this->getBatchService()->removeOrder($dbInfo);
         }
         list($batch, $tour) = $this->getBatchService()->join($data);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
