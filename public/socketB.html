@@ -10,7 +10,7 @@
                 alert("您的浏览器支持 WebSocket!");
 
                 // 打开一个 web socket
-                var ws = new WebSocket("ws://192.168.0.208:2346?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zOS45Ny42MS4xOTU6MTQyODBcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTg2MzQyNzg2LCJleHAiOjE1ODc1NTIzODYsIm5iZiI6MTU4NjM0Mjc4NiwianRpIjoiTmtDdDRvYXZ1R0FZOGhtMyIsInN1YiI6MywicHJ2IjoiMzI5NjNhNjA2YzJmMTcxZjFjMTQzMzFlNzY5NzY2Y2Q1OTEyZWQxNSIsInJvbGUiOiJlbXBsb3llZSJ9.Q6NTklgyLeMefWpxrsangpbDQnDmEllYGiRoG_u1GyE");
+                var ws = new WebSocket("ws://dev-tms.nle-tech.com/socket?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zOS45Ny42MS4xOTU6MTQyODBcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTg2MzQyNzg2LCJleHAiOjE1ODc1NTIzODYsIm5iZiI6MTU4NjM0Mjc4NiwianRpIjoiTmtDdDRvYXZ1R0FZOGhtMyIsInN1YiI6MywicHJ2IjoiMzI5NjNhNjA2YzJmMTcxZjFjMTQzMzFlNzY5NzY2Y2Q1OTEyZWQxNSIsInJvbGUiOiJlbXBsb3llZSJ9.Q6NTklgyLeMefWpxrsangpbDQnDmEllYGiRoG_u1GyE");
                 console.log(ws);
 
                 ws.onopen = function () {
