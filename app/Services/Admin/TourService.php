@@ -376,7 +376,7 @@ class TourService extends BaseService
      */
     public function updateAboutOrderByOrder($dbOrder, $order)
     {
-        $info = $this->getInfoOfStatus(['tour_no' => $dbOrder['tour_no']], true, BaseConstService::TOUR_STATUS_1, true);
+        $info = $this->getInfoOfStatus(['tour_no' => $dbOrder['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
         //若订单类型改变,则站点统计数量改变
         $data = [];
         if (intval($dbOrder['type']) !== intval($order['type'])) {
