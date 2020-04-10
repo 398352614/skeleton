@@ -178,7 +178,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //取件线路-司机
     Route::prefix('tour-driver')->group(function () {
-        Route::get('/{tour_no}','TourDriverController@getListByTourNo');
+        Route::get('/{tour_no}', 'TourDriverController@getListByTourNo');
     });
 
     //任务报告
@@ -391,5 +391,11 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/', 'VersionController@store'); //版本新增
         Route::put('/{id}', 'VersionController@update'); //版本修改
         Route::delete('/{id}', 'VersionController@delete'); //版本删除
+    });
+
+    //worker
+    Route::prefix('worker')->group(function () {
+        //绑定
+        Route::post('/bind/{client_id}', 'WorkerController@bind');
     });
 });

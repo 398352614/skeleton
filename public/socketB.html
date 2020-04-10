@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>菜鸟教程(runoob.com)</title>
+
+    <script type="text/javascript">
+        function WebSocketTest() {
+            if ("WebSocket" in window) {
+                alert("您的浏览器支持 WebSocket!");
+
+                // 打开一个 web socket
+                var ws = new WebSocket("ws://39.97.61.195:2346?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zOS45Ny42MS4xOTU6MTQyODBcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTg2MzQyNzg2LCJleHAiOjE1ODc1NTIzODYsIm5iZiI6MTU4NjM0Mjc4NiwianRpIjoiTmtDdDRvYXZ1R0FZOGhtMyIsInN1YiI6MywicHJ2IjoiMzI5NjNhNjA2YzJmMTcxZjFjMTQzMzFlNzY5NzY2Y2Q1OTEyZWQxNSIsInJvbGUiOiJlbXBsb3llZSJ9.Q6NTklgyLeMefWpxrsangpbDQnDmEllYGiRoG_u1GyE");
+                console.log(ws);
+
+                ws.onopen = function () {
+
+                };
+
+                ws.onmessage = function (evt) {
+                    var received_msg = evt.data;
+                    console.log(received_msg);
+                    alert(received_msg);
+                };
+
+                ws.onclose = function () {
+                    // 关闭 websocket
+                    alert("连接已关闭...");
+                };
+            } else {
+                // 浏览器不支持 WebSocket
+                alert("您的浏览器不支持 WebSocket!");
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+<div id="sse">
+    <a href="javascript:WebSocketTest()">运行 WebSocket</a>
+</div>
+
+</body>

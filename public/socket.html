@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>菜鸟教程(runoob.com)</title>
+
+    <script type="text/javascript">
+        function WebSocketTest() {
+            if ("WebSocket" in window) {
+                alert("您的浏览器支持 WebSocket!");
+
+                // 打开一个 web socket
+                var ws = new WebSocket("ws://39.97.61.195:2346?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8zOS45Ny42MS4xOTU6MTQyODBcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTg2MzM2MjY1LCJleHAiOjE1ODc1NDU4NjUsIm5iZiI6MTU4NjMzNjI2NSwianRpIjoibjlhWFVVZmpJdGF6UzN0ciIsInN1YiI6MiwicHJ2IjoiMzI5NjNhNjA2YzJmMTcxZjFjMTQzMzFlNzY5NzY2Y2Q1OTEyZWQxNSIsInJvbGUiOiJlbXBsb3llZSJ9.bYfAAeIP0KW3UJBYuwyJ6ru_IV_Bx0ygBB5thzqwYzI");
+                console.log(ws);
+
+                ws.onopen = function () {
+                    // Web Socket 已连接上，使用 send() 方法发送数据
+                    var data;
+                    data = {u_id: 3, content: "notify-admin"};
+                    var obj = {type: "notifyAdmin", data: data};
+                    ws.send(JSON.stringify(obj));
+                    alert("数据发送中...");
+                };
+
+                ws.onmessage = function (evt) {
+                    var received_msg = evt.data;
+                    console.log(received_msg);
+                };
+
+                ws.onclose = function () {
+                    // 关闭 websocket
+                    alert("连接已关闭...");
+                };
+            } else {
+                // 浏览器不支持 WebSocket
+                alert("您的浏览器不支持 WebSocket!");
+            }
+        }
+    </script>
+
+</head>
+<body>
+
+<div id="sse">
+    <a href="javascript:WebSocketTest()">运行 WebSocket</a>
+</div>
+
+</body>

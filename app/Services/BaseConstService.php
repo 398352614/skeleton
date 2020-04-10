@@ -254,4 +254,10 @@ class BaseConstService
     const DRIVER_EVENT_BATCH_ARRIVED = 2;
     const DRIVER_EVENT_BATCH_DEPART = 3;
     const DRIVER_EVENT_BACK_WAREHOUSE = 4;
+
+
+    //worker 组名
+    const WORKER_GROUP_ADMIN = 'admin';
+    const WORKER_GROUP_MERCHANT = 'merchant';
+    const WORKER_GROUP_DRIVER = 'driver';
 }
