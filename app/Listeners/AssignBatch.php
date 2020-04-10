@@ -1,28 +1,36 @@
 <?php
 /**
- * 下一个站点事件
+ * 签收站点 事件
  * User: long
  * Date: 2020/4/2
- * Time: 14:45
+ * Time: 15:41
  */
 
 namespace App\Events\TourNotify;
 
+
 use App\Events\Interfaces\ATourNotify;
 use App\Models\Order;
+use App\Models\Package;
 use App\Services\BaseConstService;
 
-class NextBatch extends ATourNotify
+class AssignBatch extends ATourNotify
 {
+    public $tour;
+
+    public $batch;
+
+    public $orderList;
+
     public function __construct($tour, $batch, $orderList = [])
     {
-        $orderList = $orderList ?? $this->getOrderList($this->batch['batch_no']);
+        $orderList = $orderList ?? $this->getOrderAndPackageList($this->batch['batch_no']);
         parent::__construct($tour, $batch, [], $orderList);
     }
 
     public function notifyType(): string
     {
-        return BaseConstService::NOTIFY_NEXT_BACTH;
+        return BaseConstService::NOTIFY_ASSIGN_BATCH;
     }
 
     public function getDataList(): array
@@ -45,9 +53,14 @@ class NextBatch extends ATourNotify
      * @param $batchNo
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function getOrderList($batchNo)
+    public function getOrderAndPackageList($batchNo)
     {
-        $orderList = Order::query()->where('batch_no', $batchNo)->where('status', BaseConstService::ORDER_STATUS_4)->get();
-        return $orderList->toArray();
+        $orderList = Order::query()->where('batch_no', $batchNo)->where('status', BaseConstService::ORDER_STATUS_5)->get()->toArray();
+        $packageList = Package::query()->whereIn('order_no', array_column($orderList, 'order_no'))->get()->toArray();
+        $packageList = collect($packageList)->groupBy('order_no')->toArray();
+        foreach ($orderList as &$order) {
+            $order['package_list'] = $packageList[$order['order_no']] ?? '';
+        }
+        return $orderList;
     }
 }

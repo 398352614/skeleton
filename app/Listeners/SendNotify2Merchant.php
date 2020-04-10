@@ -16,10 +16,11 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SendNotify2Merchant implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue,SerializesModels;
+    use Dispatchable, InteractsWithQueue, SerializesModels;
 
     /**
      * 任务连接名称。
@@ -83,6 +84,8 @@ class SendNotify2Merchant implements ShouldQueue
     {
         $dataList = $event->getDataList();
         $notifyType = $event->notifyType();
+        Log::info('notify-type:' . $notifyType);
+        Log::info('dataList:' . json_encode($dataList, JSON_UNESCAPED_UNICODE));
         if (empty($dataList)) return true;
         $merchantList = $this->getMerchantList(array_column($dataList, 'merchant_id'));
         if (empty($merchantList)) return true;
