@@ -22,11 +22,16 @@ abstract class ATourNotify
 
     public $orderList;
 
-    public static $tourFields = [];
+    public static $tourFields = ['line_name', 'tour_no', 'execution_date', 'expect_distance', 'expect_time'];
 
-    public static $batchFields = [];
+    public static $batchFields = [
+        'tour_no', 'batch_no', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
+        'receiver_city', 'receiver_street', 'receiver_address'
+    ];
 
-    public static $orderFields = [];
+    public static $orderFields = [
+        'merchant_id', 'tour_no', 'batch_no', 'order_no', 'status'
+    ];
 
     public function __construct($tour, $batch, $batchList, $orderList)
     {
