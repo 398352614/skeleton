@@ -25,6 +25,7 @@ trait WorkerTrait
     private static function parseMessage($message)
     {
         $message = json_decode($message, true);
+        var_dump($message);
         if (json_last_error() !== 0) {
             return false;
         }
