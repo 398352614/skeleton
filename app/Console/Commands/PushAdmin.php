@@ -59,6 +59,7 @@ class PushAdmin extends Command
         $client = new Client('wss://dev-tms.nle-tech.com/socket/?token=' . $token);
         $client->send('{"type":"notifyDriver","data":{"u_id":4,"content":"hello"}}');
         $receive = $client->receive();
+        $client->close();
         $this->info('receive' . $receive);
         $this->info('push successful');
         return true;
