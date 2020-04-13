@@ -78,6 +78,7 @@ trait WorkerTrait
 
     public static function notifyAdmin($clientId, $data)
     {
+        Log::info('notifyAdmin-data' . json_encode($data, JSON_UNESCAPED_UNICODE));
         Gateway::sendToUid(Events::GUARD_ADMIN . '-' . $data['u_id'], $data['content']);
     }
 }

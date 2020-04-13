@@ -15,11 +15,11 @@
 
                 ws.onopen = function () {
                     // Web Socket 已连接上，使用 send() 方法发送数据
-                    var data;
+/*                    var data;
                     data = {u_id: 6, content: "notify-admin"};
                     var obj = {type: "notifyAdmin", data: data};
                     ws.send(JSON.stringify(obj));
-                    alert("数据发送中...");
+                    alert("数据发送中...");*/
                 };
 
                 ws.onmessage = function (evt) {
@@ -27,10 +27,10 @@
                     console.log(received_msg);
                 };
 
-                ws.onclose = function () {
-                    // 关闭 websocket
-                    alert("连接已关闭...");
-                };
+                // ws.onclose = function () {
+                //     // 关闭 websocket
+                //     alert("连接已关闭...");
+                // };
             } else {
                 // 浏览器不支持 WebSocket
                 alert("您的浏览器不支持 WebSocket!");
