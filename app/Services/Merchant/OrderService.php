@@ -23,7 +23,9 @@ use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Services\Admin\LineService;
 
 class OrderService extends BaseService
 {
@@ -651,6 +653,14 @@ class OrderService extends BaseService
     }
 
     /**
+     * 获取线路信息（可预约日期）
+     * @return mixed
+     */
+    public function getLineService(){
+        return self::getInstance(LineService::class);
+    }
+
+    /**
      * 获取可分配星期
      * @param $id
      * @return mixed
@@ -658,13 +668,30 @@ class OrderService extends BaseService
      */
     public function getTourDate($id)
     {
+        $ids=[];
+        $data=[];
         $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        return $this->getLineRangeService()->query
-            ->where('post_code_start', '<=', $info['receiver_post_code'])
-            ->where('post_code_end', '>=', $info['receiver_post_code'])->distinct()->pluck('schedule');
+        $lineRange=$this->getLineRangeService()->query->where('post_code_start', '<=', $info['receiver_post_code'])
+            ->where('post_code_end', '>=', $info['receiver_post_code'])
+            ->where('country',$info['receiver_country'])
+            ->get();
+        if(empty($lineRange)){
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        foreach ($lineRange as $key =>$value){
+            $ids[$key]=$value['line_id'];
+            $data[intval($value['schedule'])]=$this->getLineService()->getInfo(['id'=>$ids[$key]],['*'],false)->toArray()['appointment_days'];
+        }
+        for($i=0;$i<7;$i++){
+            if(empty($data[$i])){
+                $data[$i]=0;
+            }
+        }
+        krsort($data);
+        return array_reverse($data);
     }
 
     /**

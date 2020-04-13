@@ -115,8 +115,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('car')->group(function () {
         Route::put('/{id}/lock', 'CarController@lock')->name('car.lock'); //车辆锁定操作
         Route::get('/brands', 'CarBrandController@index')->name('carBrand.brands');  // 获取品牌列表
+        Route::get('/allBrands', 'CarBrandController@getAll')->name('carBrand.getAll');  // 获取品牌列表
         Route::post('/addbrand', 'CarBrandController@store')->name('carBrand.store'); // 添加品牌
         Route::get('/models', 'CarModelController@getListByBrand')->name('carModel.getListByBrand'); // 获取型号列表
+        Route::get('/allModels/{id}', 'CarModelController@getAll')->name('carModel.getAll');  // 获取所有品牌列表
         Route::post('/addmodel', 'CarModelController@store')->name('carModel.store');   // 添加模型
 
         //rest api 放在最后
