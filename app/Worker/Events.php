@@ -59,11 +59,15 @@ class Events
             };
         }
         Gateway::closeClient($client_id);
+        var_dump(Gateway::getAllGroupUidList());
+        var_dump(Gateway::getAllUidList());
         return;
     }
 
     public static function onMessage($client_id, $message)
     {
+        var_dump(Gateway::getAllGroupUidList());
+        var_dump(Gateway::getAllUidList());
         //数据解析
         $message = self::parseData($message);
         if (!$message) {
