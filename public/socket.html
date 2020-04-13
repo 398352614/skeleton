@@ -15,11 +15,11 @@
 
                 ws.onopen = function () {
                     // Web Socket 已连接上，使用 send() 方法发送数据
-/*                    var data;
-                    data = {u_id: 6, content: "notify-admin"};
-                    var obj = {type: "notifyAdmin", data: data};
+                    var data;
+                    data = {u_id: 4, content: "notify-driver"};
+                    var obj = {type: "notifyDriver", data: data};
                     ws.send(JSON.stringify(obj));
-                    alert("数据发送中...");*/
+                    //alert("数据发送中...");
                 };
 
                 ws.onmessage = function (evt) {
