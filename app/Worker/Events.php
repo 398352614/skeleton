@@ -71,7 +71,7 @@ class Events
             return;
         }
         //业务处理
-        list($type, $data) = [$message['type'], $message['data']];
+        list($type, $data) = [$message['type'], $message['data'] ?? []];
         self::$type($client_id, $data);
     }
 
