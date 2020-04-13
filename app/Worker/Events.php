@@ -59,19 +59,15 @@ class Events
             };
         }
         Gateway::closeClient($client_id);
-        var_dump(Gateway::getAllGroupUidList());
-        var_dump(Gateway::getAllUidList());
         return;
     }
 
     public static function onMessage($client_id, $message)
     {
-        var_dump(Gateway::getAllGroupUidList());
-        var_dump(Gateway::getAllUidList());
         //数据解析
-        $message = self::parseData($message);
+        $message = self::parseMessage($message);
         if (!$message) {
-            Gateway::sendToClient($client_id, '数据格式不正确');
+            Gateway::sendToClient($client_id, '消息格式不正确');
             return;
         }
         //业务处理
@@ -82,7 +78,7 @@ class Events
 
     public static function onClose($client_id)
     {
-        echo var_dump("开始关闭client_id" . $client_id);
+        Log::info("开始关闭client_id" . $client_id);
     }
 
 }
