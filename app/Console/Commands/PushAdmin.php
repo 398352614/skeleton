@@ -59,6 +59,7 @@ class PushAdmin extends Command
         $client = new Client('wss://dev-tms.nle-tech.com/socket/?token=' . $token);
         $client->send('{"type":' . $type . ',"data":' . $data . '}');
         $receive = $client->receive();
+        $this->info('receive' . $receive);
         $this->info('push successful');
         return true;
     }
