@@ -58,6 +58,7 @@ trait WorkerTrait
             return;
         }
         $toUid = $data['u_id'];
+        Log::info('admin-is-online' . Gateway::isUidOnline($toUid));
         if (Gateway::isUidOnline($toUid)) {
             Gateway::sendToUid($toUid, $data['content'] ?? '');
         } else {
@@ -79,6 +80,7 @@ trait WorkerTrait
     public static function notifyAdmin($clientId, $data)
     {
         Log::info('notifyAdmin-data' . json_encode($data, JSON_UNESCAPED_UNICODE));
+        Log::info('admin-is-online' . Gateway::isUidOnline($data['u_id']));
         Gateway::sendToUid(Events::GUARD_ADMIN . '-' . $data['u_id'], $data['content']);
     }
 }
