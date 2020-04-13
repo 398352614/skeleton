@@ -29,7 +29,7 @@ trait WorkerTrait
         if (json_last_error() !== 0) {
             return false;
         }
-        if (empty($message['type']) || empty($message['data']) || !in_array($message['type'], self::$type)) {
+        if (empty($message['type']) || !in_array($message['type'], self::$type)) {
             return false;
         }
         return $message;
