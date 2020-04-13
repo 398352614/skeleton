@@ -43,7 +43,6 @@ class PushAdmin extends Command
     public function handle()
     {
         $data = $this->ask('please input data(JSON format)');
-        var_dump($data);
         if (!isJson($data)) {
             $this->error('The data must be JSON format');
             exit;
@@ -57,7 +56,8 @@ class PushAdmin extends Command
         }
         $token = Auth::guard('admin')->login($user);
         $client = new Client('wss://dev-tms.nle-tech.com/socket/?token=' . $token);
-        $client->send('{"type":"notifyDriver","data":{"u_id":4,"content":"hello"}}');
+        $message = ['type' => $type, 'data' => $data];
+        $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
         $client->close();
         $this->info('push successful');
         return true;
