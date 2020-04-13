@@ -59,11 +59,7 @@ trait WorkerTrait
         }
         $toUid = $data['u_id'];
         Log::info('driver-is-online' . Gateway::isUidOnline($toUid));
-        if (Gateway::isUidOnline($toUid)) {
-            Gateway::sendToUid($toUid, $data['content'] ?? '');
-        } else {
-            Log::info('notify-driver-data:' . json_encode($data, true));
-        }
+        Gateway::sendToUid($toUid, $data['content'] ?? '');
     }
 
     /**
