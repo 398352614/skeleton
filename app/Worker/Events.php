@@ -64,6 +64,7 @@ class Events
 
     public static function onMessage($client_id, $message)
     {
+        var_dump($message);
         //数据解析
         $message = self::parseMessage($message);
         if (!$message) {
