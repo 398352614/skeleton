@@ -6,6 +6,7 @@ use App\Models\Employee;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use WebSocket\Client;
 
 class PushAdmin extends Command
 {
@@ -35,8 +36,9 @@ class PushAdmin extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return mixed
+     * @return bool
+     * @throws \WebSocket\BadOpcodeException
+     * @throws \WebSocket\ConnectionException
      */
     public function handle()
     {
@@ -54,12 +56,9 @@ class PushAdmin extends Command
             exit;
         }
         $token = Auth::guard('admin')->login($user);
-        $client = stream_socket_client('ws://dev-tms.nle-tech.com/socket/?token=' . $token);
-        if (!$client) {
-            $this->error('can not connect');
-            exit;
-        }
-        fwrite($client, '{"type":' . $type . ',"data":' . $data . "\n");
+        $client = new Client('wss://dev-tms.nle-tech.com/socket/?token=' . $token);
+        $client->send('{"type":' . $type . ',"data":' . $data . '}');
+        $receive = $client->receive();
         $this->info('push successful');
         return true;
     }
