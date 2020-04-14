@@ -325,8 +325,8 @@ class BatchService extends BaseService
                 $line = $this->getLineService()->getInfo(['id' => $info[$i]['line_id']], ['*'], false)->toArray();
                 if (!empty($tour) && !empty($line)) {
                     //当日截止时间验证
-                    if ((date('Y-m-d') == $info['execution_date'] && time() < strtotime($info['execution_date'] . ' ' . $line['order_deadline']) ||
-                        date('Y-m-d') !== $info['execution_date'])) {
+                    if ((date('Y-m-d') == $info[$i]['execution_date'] && time() < strtotime($info[$i]['execution_date'] . ' ' . $line['order_deadline']) ||
+                        date('Y-m-d') !== $info[$i]['execution_date'])) {
                         //取件订单，线路最大订单量验证
                         if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $info[$i]['expect_pickup_quantity'] < $line['pickup_max_count']) {
                             $data[$i]=$info[$i];
