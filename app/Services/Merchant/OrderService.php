@@ -684,17 +684,14 @@ class OrderService extends BaseService
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         //判断是否超过线路最大取派量
-        foreach ($lineRange as $key =>$value){
-            $line[$key]=$this->getLineService()->getInfo(['id'=>$value[$key]['line_id']],['*'],false)->toArray();
-            $tour[$key]=$this->getTourService()->query->where('line_id',$line[$key]['id'])->get();
-            for($i=0,$count=count($tour[$key]);$i<$count;$i++){
-                $pickup[$key]=$pickup[$key]+$tour[$key][$i]['expect_pickup_quantity'];
-                $pie[$key]=$pie[$key]+$tour[$key][$i]['expect_pie_quantity'];
-            }
-            $data[intval($value['schedule'])]=$line[$key]['appointment_days'];
-            if($pickup[$key]>=$line[$key]['pickup_max_count'] ||
-                $pickup[$key]>=$line[$key]['pie_max_count']){
-                $data[intval($value['schedule'])]=0;
+        for($i=0,$j=count($lineRange);$i<$j;$i++){
+            $line[$i]=$this->getLineService()->getInfo(['id'=>$lineRange[$i]['line_id']],['*'],false)->toArray();
+            $tour[$i]=$this->getTourService()->getInfo(['line_id'=>$line[$i]['id']],['*'],false)->toArray();
+            $data[intval($lineRange[$i]['schedule'])]=$line[$i]['appointment_days'];
+            if($tour[$i]['expect_pickup_quantity']>$line[$i]['pickup_max_count'] && $info['type'] === BaseConstService::ORDER_TYPE_1 OR
+                $tour[$i]['expect_pie_quantity']>$line[$i]['pie_max_count'] && $info['type'] === BaseConstService::ORDER_TYPE_2
+            ){
+                $data[intval($lineRange[$i]['schedule'])]=0;
             }
         }
         for($i=0;$i<7;$i++){
