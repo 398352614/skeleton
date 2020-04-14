@@ -457,9 +457,23 @@ class TourService extends BaseService
      */
     public function getListByBatch($batch, $line)
     {
-        $this->query->where(DB::raw('expect_pickup_quantity+expect_pie_quantity'), '<', $line['order_max_count']);
-        $tourList = parent::getList(['execution_date' => $batch['execution_date'], 'line_id' => $batch['line_id'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['*'], false)->toArray();
-        return $tourList;
+        $data=[];
+        $tour = $this->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
+        if (!empty($tour) && !empty($line)) {
+            //当日截止时间验证
+            if ((date('Y-m-d') == $batch['execution_date'] && time() < strtotime($batch['execution_date'] . ' ' . $line['order_deadline']) ||
+                date('Y-m-d') !== $batch['execution_date'])) {
+                //取件订单，线路最大订单量验证
+                if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
+                    $data=$batch;
+                }
+                //派件订单，线路最大订单量验证
+                if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
+                    $data=$batch;
+                }
+            }
+        }
+        return $data;
     }
 
 

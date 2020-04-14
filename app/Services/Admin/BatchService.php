@@ -310,14 +310,37 @@ class BatchService extends BaseService
      * 通过订单数据,获取站点列表
      * @param $order
      * @return mixed
+     * @throws BusinessLogicException
      */
     public function getPageListByOrder($order)
     {
+        //通过订单获取可能站点
+        $data=[];
         $fields = ['receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
-        $this->formData = array_merge($this->formData, Arr::only($order, $fields));
-        $this->filters['execution_date'] = ['=', $order['execution_date']];
-        $this->setFilterRules();
-        return parent::getPageList();
+        $rule = array_merge($this->formData, Arr::only($order, $fields));
+        $this->query->whereIn('status',[BaseConstService::BATCH_WAIT_ASSIGN,BaseConstService::BATCH_ASSIGNED]);
+        $info=$this->getList($rule);
+        if (!empty($info)) {
+            for($i=0,$j=count($info);$i<$j;$i++) {
+                $tour = $this->getTourService()->getInfo(['tour_no' => $info[$i]['tour_no']], ['*'], false)->toArray();
+                $line = $this->getLineService()->getInfo(['id' => $info[$i]['line_id']], ['*'], false)->toArray();
+                if (!empty($tour) && !empty($line)) {
+                    //当日截止时间验证
+                    if ((date('Y-m-d') == $info['execution_date'] && time() < strtotime($info['execution_date'] . ' ' . $line['order_deadline']) ||
+                        date('Y-m-d') !== $info['execution_date'])) {
+                        //取件订单，线路最大订单量验证
+                        if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $info[$i]['expect_pickup_quantity'] < $line['pickup_max_count']) {
+                            $data[$i]=$info[$i];
+                        }
+                        //派件订单，线路最大订单量验证
+                        if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $info[$i]['expect_pie_quantity'] < $line['pie_max_count']) {
+                            $data[$i]=$info[$i];
+                        }
+                    }
+                }
+            }
+        }
+        return $data;
     }
 
     /**

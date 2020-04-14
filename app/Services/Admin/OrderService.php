@@ -642,22 +642,34 @@ class OrderService extends BaseService
      */
     public function getTourDate($id)
     {
-        $ids=[];
         $data=[];
+        $pickup=0;
+        $pie=0;
         $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
+        //获取邮编表
         $lineRange=$this->getLineRangeService()->query->where('post_code_start', '<=', $info['receiver_post_code'])
-                ->where('post_code_end', '>=', $info['receiver_post_code'])
-                ->where('country',$info['receiver_country'])
-                ->get();
+            ->where('post_code_end', '>=', $info['receiver_post_code'])
+            ->where('country',$info['receiver_country'])
+            ->get();
         if(empty($lineRange)){
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
+        //判断是否超过线路最大取派量
         foreach ($lineRange as $key =>$value){
-            $ids[$key]=$value['line_id'];
-            $data[intval($value['schedule'])]=$this->getLineService()->getInfo(['id'=>$ids[$key]],['*'],false)->toArray()['appointment_days'];
+            $line[$key]=$this->getLineService()->getInfo(['id'=>$value[$key]['line_id']],['*'],false)->toArray();
+            $tour[$key]=$this->getTourService()->query->where('line_id',$line[$key]['id'])->get();
+            for($i=0,$count=count($tour[$key]);$i<$count;$i++){
+                $pickup[$key]=$pickup[$key]+$tour[$key][$i]['expect_pickup_quantity'];
+                $pie[$key]=$pie[$key]+$tour[$key][$i]['expect_pie_quantity'];
+            }
+            $data[intval($value['schedule'])]=$line[$key]['appointment_days'];
+            if($pickup[$key]>=$line[$key]['pickup_max_count'] ||
+                $pickup[$key]>=$line[$key]['pie_max_count']){
+                $data[intval($value['schedule'])]=0;
+            }
         }
         for($i=0;$i<7;$i++){
             if(empty($data[$i])){
