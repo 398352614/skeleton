@@ -50,16 +50,12 @@ class Driver extends Authenticatable implements JWTSubject
         'email',
         'encrypt',
         'password',
-        'last_name',
-        'first_name',
+        'fullname',
         'gender',
         'birthday',
         'phone',
         'duty_paragraph',
-        'post_code',
-        'door_no',
-        'street',
-        'city',
+        'address',
         'country',
         'lisence_number',
         'lisence_valid_date',
@@ -120,13 +116,5 @@ class Driver extends Authenticatable implements JWTSubject
     public function getIsLockedNameAttribute()
     {
         return empty($this->is_locked) ? null : ConstTranslateTrait::driverStatusList($this->is_locked);
-    }
-
-    /**
-     * @return string
-     */
-    public function getFullNameAttribute()
-    {
-        return $this->first_name . $this->last_name;
     }
 }

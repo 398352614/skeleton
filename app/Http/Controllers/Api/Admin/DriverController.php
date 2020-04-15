@@ -8,11 +8,15 @@ use App\Services\Admin\DriverService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Http\Request;
 
+/**
+ * Class DriverController
+ * @package App\Http\Controllers\Api\Admin
+ * @property DriverService $service
+ */
 class DriverController extends BaseController
 {
     use ConstTranslateTrait;
 
-    public $service;
 
     public function __construct(DriverService $service)
     {
@@ -53,6 +57,7 @@ class DriverController extends BaseController
      * @apiVersion 1.0.0
      * @apiDescription 修改司机
      * @apiSuccessExample {json}  返回示例
+     * @throws BusinessLogicException
      * HTTP/1.1 200 OK
      * {
      *  "ret":1,
@@ -94,6 +99,7 @@ class DriverController extends BaseController
      * @apiVersion 1.0.0
      * @apiDescription 删除司机
      * @apiSuccessExample {json}  返回示例
+     * @throws BusinessLogicException
      * HTTP/1.1 200 OK
      * {
      *  "ret":1,

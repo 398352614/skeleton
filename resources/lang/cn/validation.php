@@ -312,12 +312,10 @@ return [
         //Admin-Company
         //Admin-Country
         //Admin-Driver
-        'last_name' => '姓',
-        'first_name' => '名',
+        'fullname' => '姓名',
         'gender' => '性别',
         'birthday' => '生日',
         'duty_paragraph' => '税号',
-        'door_no' => '门牌号',
         'lisence_number' => '驾照编号',
         'lisence_valid_date' => '有效期',
         'lisence_type' => '驾照类型',
@@ -331,7 +329,6 @@ return [
         'bic' => 'BIC',
         'crop_type' => '合作类型',
         //Admin-Employee
-        'fullname' => '姓名',
         'username' => '用户名',
         'group_id' => '用户组',
         'institution_id' => '组织机构',
