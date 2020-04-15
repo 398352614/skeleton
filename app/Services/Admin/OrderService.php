@@ -311,7 +311,7 @@ class OrderService extends BaseService
             $list[$i]['lon'] = $info['lon'];
             $list[$i]['lat'] = $info['lat'];
 
-            $job = (new OrderCreateByList($list[$i],$params['id']));
+            $job = (new OrderCreateByList($list[$i], $params['id']));
             dispatch($job);
             //订单新增事务
             try {
@@ -433,10 +433,10 @@ class OrderService extends BaseService
         //验证包裹列表
         if (!empty($params['package_list'])) {
             $packageList = $params['package_list'];
-/*            $nameList = array_column($packageList, 'name');
-            if (count(array_unique($nameList)) !== count($nameList)) {
-                throw new BusinessLogicException('包裹名称有重复！不能添加订单');
-            }*/
+            /*            $nameList = array_column($packageList, 'name');
+                        if (count(array_unique($nameList)) !== count($nameList)) {
+                            throw new BusinessLogicException('包裹名称有重复！不能添加订单');
+                        }*/
 //            $outOrderNoList = array_filter(array_column($packageList, 'out_order_no'));
 //            if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
 //                throw new BusinessLogicException('包裹外部标识有重复！不能添加订单');
@@ -630,7 +630,8 @@ class OrderService extends BaseService
      * 获取线路信息（可预约日期）
      * @return mixed
      */
-    public function getLineService(){
+    public function getLineService()
+    {
         return self::getInstance(LineService::class);
     }
 
@@ -642,33 +643,33 @@ class OrderService extends BaseService
      */
     public function getTourDate($id)
     {
-        $data=[];
+        $data = [];
         $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
         //获取邮编表
-        $lineRange=$this->getLineRangeService()->query->where('post_code_start', '<=', $info['receiver_post_code'])
+        $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $info['receiver_post_code'])
             ->where('post_code_end', '>=', $info['receiver_post_code'])
-            ->where('country',$info['receiver_country'])
+            ->where('country', $info['receiver_country'])
             ->get();
-        if(empty($lineRange)){
+        if (empty($lineRange)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         //判断是否超过线路最大取派量
-        for($i=0,$j=count($lineRange);$i<$j;$i++){
-            $line[$i]=$this->getLineService()->getInfo(['id'=>$lineRange[$i]['line_id']],['*'],false)->toArray();
-            $tour[$i]=$this->getTourService()->getInfo(['line_id'=>$line[$i]['id']],['*'],false)->toArray();
-            $data[intval($lineRange[$i]['schedule'])]=$line[$i]['appointment_days'];
-            if($tour[$i]['expect_pickup_quantity']>$line[$i]['pickup_max_count'] && $info['type'] === BaseConstService::ORDER_TYPE_1 OR
-                $tour[$i]['expect_pie_quantity']>$line[$i]['pie_max_count'] && $info['type'] === BaseConstService::ORDER_TYPE_2
-            ){
-                $data[intval($lineRange[$i]['schedule'])]=0;
+        for ($i = 0, $j = count($lineRange); $i < $j; $i++) {
+            $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
+            $tour[$i] = $this->getTourService()->getInfo(['line_id' => $line[$i]['id']], ['*'], false)->toArray();
+            $data[intval($lineRange[$i]['schedule'])] = $line[$i]['appointment_days'];
+            if ($tour[$i]['expect_pickup_quantity'] > $line[$i]['pickup_max_count'] && $info['type'] === BaseConstService::ORDER_TYPE_1 OR
+                $tour[$i]['expect_pie_quantity'] > $line[$i]['pie_max_count'] && $info['type'] === BaseConstService::ORDER_TYPE_2
+            ) {
+                $data[intval($lineRange[$i]['schedule'])] = 0;
             }
         }
-        for($i=0;$i<7;$i++){
-            if(empty($data[$i])){
-                $data[$i]=0;
+        for ($i = 0; $i < 7; $i++) {
+            if (empty($data[$i])) {
+                $data[$i] = 0;
             }
         }
         krsort($data);
