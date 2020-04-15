@@ -50,7 +50,7 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         //获取可分配路线日期
         Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
         //获取可分配的站点列表
-        Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
+        //Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
         //分配至站点
         Route::put('/{id}/assignToBatch', 'OrderController@assignToBatch');
         //从站点移除
@@ -77,6 +77,7 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::get('/this-month-count', 'HomeController@thisMonthcount');
         Route::get('/last-month-count', 'HomeController@lastMonthcount');
         Route::get('/period-count', 'HomeController@periodCount');
+        Route::get('/all-count', 'HomeController@all');
     });
 
     //运价管理
