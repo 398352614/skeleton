@@ -124,6 +124,15 @@ class OrderService extends BaseService
 
     /**
      * 线路 服务
+     * @return LineService
+     */
+    public function getLineService()
+    {
+        return self::getInstance(LineService::class);
+    }
+
+    /**
+     * 线路范围 服务
      * @return mixed
      */
     public function getLineRangeService()
@@ -624,15 +633,6 @@ class OrderService extends BaseService
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($dbInfo, $batch, $tour, false);
         return [$batch, $tour];
-    }
-
-    /**
-     * 获取线路信息（可预约日期）
-     * @return mixed
-     */
-    public function getLineService()
-    {
-        return self::getInstance(LineService::class);
     }
 
     /**
