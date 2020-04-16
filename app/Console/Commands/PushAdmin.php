@@ -55,7 +55,7 @@ class PushAdmin extends Command
             exit;
         }
         $token = Auth::guard('admin')->login($user);
-        $client = new Client('wss://dev-tms.nle-tech.com/socket/?token=' . $token);
+        $client = new Client('wss://' . config('tms.push_url') . '/?token=' . $token);
         $message = ['type' => $type, 'data' => $data];
         $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
         $client->close();
