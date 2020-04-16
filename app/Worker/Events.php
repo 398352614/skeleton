@@ -49,7 +49,7 @@ class Events extends BaseEvents
     {
         var_dump($message);
         $message = json_decode($message, true);
-        if (json_last_error() == 0 || empty($message['type']) || !in_array($message['type'], self::$type)) {
+        if (json_last_error() !== 0 || empty($message['type']) || !in_array($message['type'], self::$type)) {
             Gateway::sendToClient($clientId, '消息格式不正确');
             return;
         }

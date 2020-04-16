@@ -10,15 +10,15 @@
                 alert("您的浏览器支持 WebSocket!");
 
                 // 打开一个 web socket
-                var ws = new WebSocket("wss://dev-tms.nle-tech.com/socket/?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTg2NTE2MDg3LCJleHAiOjE1ODc3MjU2ODcsIm5iZiI6MTU4NjUxNjA4NywianRpIjoiZEVtQnZUVlFnYVREMTFqViIsInN1YiI6NSwicHJ2IjoiMzI5NjNhNjA2YzJmMTcxZjFjMTQzMzFlNzY5NzY2Y2Q1OTEyZWQxNSIsInJvbGUiOiJlbXBsb3llZSJ9.ZAAMHSVl4tHuoWHGqo0_-PM0-uiJE2vPLLx9AaIDft4");
+                var ws = new WebSocket("wss://dev-tms.nle-tech.com/socket/?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTg3MDI3MTU5LCJleHAiOjE1ODgyMzY3NTksIm5iZiI6MTU4NzAyNzE1OSwianRpIjoiTGtwRW1tYVhvTEdkTmJpbiIsInN1YiI6MywicHJ2IjoiMzI5NjNhNjA2YzJmMTcxZjFjMTQzMzFlNzY5NzY2Y2Q1OTEyZWQxNSIsInJvbGUiOiJlbXBsb3llZSJ9.xIEbauxfMuKxYdv9CYBRx0fwFKU1DC5gRGBvUZ8svz4");
                 console.log(ws);
 
                 ws.onopen = function () {
                     // Web Socket 已连接上，使用 send() 方法发送数据
-                    var data;
-                    data = {u_id: 4, content: "notify-driver"};
-                    var obj = {type: "notifyDriver", data: data};
-                    ws.send(JSON.stringify(obj));
+                   var data;
+                   data = {content: "notify-driver"};
+                   var obj = {type: "pushOneDriver", to_id: 7, data: data};
+                   ws.send(JSON.stringify(obj));
                     //alert("数据发送中...");
                 };
 
