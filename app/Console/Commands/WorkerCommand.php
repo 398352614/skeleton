@@ -37,6 +37,8 @@ class WorkerCommand extends Command
 
     private function start()
     {
+        Worker::$stdoutFile = '/tmp/workerman_stdout.log';
+        Worker::$logFile = '/tmp/workerman.log';
         $this->startGateWay();
         $this->startBusinessWorker();
         $this->startRegister();
