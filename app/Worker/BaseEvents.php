@@ -130,7 +130,7 @@ class BaseEvents
             $NoToIdList = array_diff($dbToIdList, $toIdList);
             unset($toIdList, $dbToIdList);
             foreach ($NoToIdList as $toId) {
-                self::workerInsert($client, $toId, $data);
+                self::workerInsert($client, self::getUid($guard, $toId), $data);
             }
             unset($NoToIdList);
         }
