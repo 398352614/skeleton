@@ -12,6 +12,7 @@ use App\Models\Authenticatable;
 use GatewayWorker\Lib\Gateway;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -22,7 +23,7 @@ class BaseEvents
      */
     public static $db;
 
-    const GUARD_ADMIN = 'employee';
+    const GUARD_ADMIN = 'admin';
 
     const GUARD_DRIVER = 'driver';
 
@@ -30,7 +31,16 @@ class BaseEvents
 
     const SUPER_ADMIN_ID = 3;
 
-    public static $guards = [self::GUARD_ADMIN, self::GUARD_DRIVER, self::GUARD_MERCHANT];
+    /**
+     * @var array 看守器列表
+     * 键名 表名称
+     * 键值 看守器名称
+     */
+    public static $guards = [
+        'employee' => self::GUARD_ADMIN,
+        'driver' => self::GUARD_DRIVER,
+        'merchant' => self::GUARD_MERCHANT
+    ];
 
     public static $type = ['heart', 'pushOneDriver', 'pushCompanyDriverList', 'pushDriverList', 'pushOneAdmin', 'pushCompanyAdminList', 'pushAdminList', 'pushAll'];
 
@@ -123,10 +133,10 @@ class BaseEvents
         Gateway::sendToGroup($group, $data);
         //若存在不在线的,则保存进数据库
         $toClientCount = Gateway::getClientCountByGroup($group);
-        $dbClientCount = self::$db->table($guard)->where('company_id', $client['company_id'])->count(['id']);
+        $dbClientCount = self::$db->table(array_search($guard, self::$guards))->where('company_id', $client['company_id'])->count(['id']);
         if ($toClientCount != $dbClientCount) {
             $toIdList = array_column(Gateway::getClientSessionsByGroup($group), 'id');
-            $dbToIdList = self::$db->table($guard)->where('company_id', $client['company_id'])->pluck('id')->toArray();
+            $dbToIdList = self::$db->table(array_search($guard, self::$guards))->where('company_id', $client['company_id'])->pluck('id')->toArray();
             $NoToIdList = array_diff($dbToIdList, $toIdList);
             unset($toIdList, $dbToIdList);
             foreach ($NoToIdList as $toId) {
@@ -153,10 +163,10 @@ class BaseEvents
         Gateway::sendToGroup($guard, $data);
         //若存在不在线的,则保存进数据库
         $toClientCount = Gateway::getClientCountByGroup($guard);
-        $dbClientCount = self::$db->table($guard)->count(['id']);
+        $dbClientCount = self::$db->table(array_search($guard, self::$guards))->count(['id']);
         if ($toClientCount != $dbClientCount) {
-            $toIdList = array_column(Gateway::getClientSessionsByGroup($guard), 'id');
-            $dbToIdList = self::$db->table($guard)->pluck('id')->toArray();
+            $toIdList = array_column(Gateway::getClientSessionsByGroup(array_search($guard, self::$guards)), 'id');
+            $dbToIdList = self::$db->table(array_search($guard, self::$guards))->pluck('id')->toArray();
             $NoToIdList = array_diff($dbToIdList, $toIdList);
             unset($toIdList, $dbToIdList);
             foreach ($NoToIdList as $toId) {
@@ -244,15 +254,15 @@ class BaseEvents
         //若存在不在线的,则保存进数据库
         $toClientCount = Gateway::getAllUidCount();
         $dbClientCount = 0;
-        foreach (self::$guards as $guard) {
-            $count = self::$db->table($guard)->count(['id']);
+        foreach (self::$guards as $table => $guard) {
+            $count = self::$db->table($table)->count(['id']);
             $dbClientCount += $count;
         }
         if ($toClientCount != $dbClientCount) {
             $toIdList = Gateway::getAllUidList();
             $dbToIdList = [];
-            foreach (self::$guards as $guard) {
-                $dbGuardIdList = self::$db->table($guard)->pluck('id')->toArray();
+            foreach (self::$guards as $table => $guard) {
+                $dbGuardIdList = self::$db->table($table)->pluck('id')->toArray();
                 $dbGuardIdList = array_map(function ($id) use ($guard) {
                     return self::getUid($guard, $id);
                 }, $dbGuardIdList);
