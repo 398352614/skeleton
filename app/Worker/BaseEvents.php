@@ -81,7 +81,7 @@ class BaseEvents
             if (($message['company_auth'] == 1) && ($client['company_id'] !== $message['company_id'])) continue;
             Gateway::sendToUid($toId, $message['data']);
         }
-        self::$db->table('worker')->newQuery()->where('to_id', $toId)->delete();
+        self::$db->table('worker')->where('to_id', $toId)->delete();
     }
 
     /**
@@ -123,10 +123,10 @@ class BaseEvents
         Gateway::sendToGroup($group, $data);
         //若存在不在线的,则保存进数据库
         $toClientCount = Gateway::getClientCountByGroup($group);
-        $dbClientCount = self::$db->table($guard)->newQuery()->where('company_id', $client['company_id'])->count(['id']);
+        $dbClientCount = self::$db->table($guard)->where('company_id', $client['company_id'])->count(['id']);
         if ($toClientCount != $dbClientCount) {
             $toIdList = array_column(Gateway::getClientSessionsByGroup($group), 'id');
-            $dbToIdList = self::$db->table($guard)->newQuery()->where('company_id', $client['company_id'])->pluck('id')->toArray();
+            $dbToIdList = self::$db->table($guard)->where('company_id', $client['company_id'])->pluck('id')->toArray();
             $NoToIdList = array_diff($dbToIdList, $toIdList);
             unset($toIdList, $dbToIdList);
             foreach ($NoToIdList as $toId) {
@@ -153,10 +153,10 @@ class BaseEvents
         Gateway::sendToGroup($guard, $data);
         //若存在不在线的,则保存进数据库
         $toClientCount = Gateway::getClientCountByGroup($guard);
-        $dbClientCount = self::$db->table($guard)->newQuery()->count(['id']);
+        $dbClientCount = self::$db->table($guard)->count(['id']);
         if ($toClientCount != $dbClientCount) {
             $toIdList = array_column(Gateway::getClientSessionsByGroup($guard), 'id');
-            $dbToIdList = self::$db->table($guard)->newQuery()->pluck('id')->toArray();
+            $dbToIdList = self::$db->table($guard)->pluck('id')->toArray();
             $NoToIdList = array_diff($dbToIdList, $toIdList);
             unset($toIdList, $dbToIdList);
             foreach ($NoToIdList as $toId) {
@@ -245,14 +245,14 @@ class BaseEvents
         $toClientCount = Gateway::getAllUidCount();
         $dbClientCount = 0;
         foreach (self::$guards as $guard) {
-            $count = self::$db->table($guard)->newQuery()->count(['id']);
+            $count = self::$db->table($guard)->count(['id']);
             $dbClientCount += $count;
         }
         if ($toClientCount != $dbClientCount) {
             $toIdList = Gateway::getAllUidList();
             $dbToIdList = [];
             foreach (self::$guards as $guard) {
-                $dbGuardIdList = self::$db->table($guard)->newQuery()->pluck('id')->toArray();
+                $dbGuardIdList = self::$db->table($guard)->pluck('id')->toArray();
                 $dbGuardIdList = array_map(function ($id) use ($guard) {
                     return self::getUid($guard, $id);
                 }, $dbGuardIdList);
@@ -286,7 +286,7 @@ class BaseEvents
             'created_at' => $now,
             'updated_at' => $now
         ];
-        $rowCount = self::$db->table('worker')->newQuery()->insert($insertData);
+        $rowCount = self::$db->table('worker')->insert($insertData);
         if ($rowCount === false) {
             Log::channel('worker-daily')->info('fail-insert-data:' . json_encode($insertData, JSON_UNESCAPED_UNICODE));
         }
