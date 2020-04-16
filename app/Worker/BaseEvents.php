@@ -75,7 +75,7 @@ class BaseEvents
     {
         $client = Gateway::getSession($clientId);
         $toId = Gateway::getUidByClientId($clientId);
-        $list = self::$db->table('worker')->query()->newQuery()->where('to_id', $toId)->get(['company_id', 'data', 'company_auth'])->toArray();
+        $list = self::$db->table('worker')->newQuery()->where('to_id', $toId)->get(['company_id', 'data', 'company_auth'])->toArray();
         if (empty($list)) return;
         foreach ($list as $message) {
             if (($message['company_auth'] == 1) && ($client['company_id'] !== $message['company_id'])) continue;
