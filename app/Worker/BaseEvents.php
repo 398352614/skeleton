@@ -79,7 +79,7 @@ class BaseEvents
         if (empty($list)) return;
         foreach ($list as $message) {
             if (($message->company_auth == 1) && ($client['company_id'] !== $message->company_id)) continue;
-            Gateway::sendToUid($toId, $message['data']);
+            Gateway::sendToUid($toId, $message->data);
         }
         self::$db->table('worker')->where('to_id', $toId)->delete();
     }
