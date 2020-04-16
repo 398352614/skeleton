@@ -40,7 +40,7 @@ class Events
 
     public static $guards = [self::GUARD_ADMIN, self::GUARD_DRIVER, self::GUARD_MERCHANT];
 
-    public static $type = ['heart', 'pushDriver', 'pushDriverList', 'pushAdmin'];
+    public static $type = ['heart', 'pushOneDriver', 'pushCompanyDriverList', 'pushDriverList', 'pushOneAdmin', 'pushCompanyAdminList', 'pushAdminList', 'pushAll'];
 
     public static function onWorkerStart($businessWorker)
     {
