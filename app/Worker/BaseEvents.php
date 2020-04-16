@@ -28,7 +28,7 @@ class BaseEvents
 
     const GUARD_MERCHANT = 'merchant';
 
-    const SUPER_ADMIN_ID = 1;
+    const SUPER_ADMIN_ID = 3;
 
     public static $guards = [self::GUARD_ADMIN, self::GUARD_DRIVER, self::GUARD_MERCHANT];
 
@@ -145,7 +145,7 @@ class BaseEvents
     private static function pushGuard($client, $guard, $data)
     {
         //只有超级管理员才能推送
-        if ($client['id'] != self::SUPER_ADMIN_ID) {
+        if (($client['guard'] != self::GUARD_ADMIN) || ($client['id'] != self::SUPER_ADMIN_ID)) {
             Gateway::sendToClient($client['client_id'], '没有权限');
             return;
         }
@@ -235,7 +235,7 @@ class BaseEvents
     public static function pushAll($client, $data)
     {
         //只有超级管理员才能推送
-        if ($client['id'] != self::SUPER_ADMIN_ID) {
+        if (($client['guard'] != self::GUARD_ADMIN) || ($client['id'] != self::SUPER_ADMIN_ID)) {
             Gateway::sendToClient($client['client_id'], '没有权限');
             return;
         }
