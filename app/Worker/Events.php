@@ -61,7 +61,7 @@ class Events extends BaseEvents
             return;
         }
         //执行业务
-        list($type, $data, $toId) = [$message['type'], $message['data'] ?? [], $message['to_id'] ?? null];
+        list($type, $data, $toId) = [$message['type'], json_encode($message['data'] ?? [], JSON_UNESCAPED_UNICODE), $message['to_id'] ?? null];
         is_null($toId) ? self::$type(Gateway::getSession($clientId), $data) : self::$type(Gateway::getSession($clientId), $data, $toId);
     }
 
