@@ -291,7 +291,7 @@ class BaseEvents
         $insertData = [
             'company_id' => $client['company_id'],
             'to_id' => $toId,
-            'data' => json_encode($data, JSON_UNESCAPED_UNICODE),
+            'data' => $data,
             'company_auth' => $companyAuth,
             'created_at' => $now,
             'updated_at' => $now
