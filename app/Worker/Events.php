@@ -19,7 +19,7 @@ class Events extends BaseEvents
     public static function onWorkerStart($businessWorker)
     {
         self::init();
-        echo "WorkerStart\n";
+        Log::channel('worker-daily')->info('WorkerStart');
     }
 
 
@@ -68,7 +68,7 @@ class Events extends BaseEvents
 
     public static function onClose($clientId)
     {
-        Log::info("关闭clientId" . $clientId);
+        Log::channel('worker-daily')->info('关闭clientId' . $clientId);
     }
 
 }

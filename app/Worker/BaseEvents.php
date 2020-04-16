@@ -288,7 +288,7 @@ class BaseEvents
         ];
         $rowCount = self::$db->table('worker')->newQuery()->insert($insertData);
         if ($rowCount === false) {
-            Log::info('fail-insert-data:' . json_encode($insertData, JSON_UNESCAPED_UNICODE));
+            Log::channel('worker-daily')->info('fail-insert-data:' . json_encode($insertData, JSON_UNESCAPED_UNICODE));
         }
     }
 
