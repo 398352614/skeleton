@@ -22,7 +22,7 @@ class BaseEvents
      */
     public static $db;
 
-    const GUARD_ADMIN = 'admin';
+    const GUARD_ADMIN = 'employee';
 
     const GUARD_DRIVER = 'driver';
 
