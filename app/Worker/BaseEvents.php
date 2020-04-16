@@ -1,31 +1,40 @@
 <?php
-
 /**
- * worker trait
+ * Created by PhpStorm
  * User: long
- * Date: 2020/4/7
- * Time: 18:12
+ * Date: 2020/4/16
+ * Time: 15:37
  */
 
-namespace App\Traits;
+namespace App\Worker;
 
 use App\Models\Authenticatable;
-use App\Models\Worker;
-use App\Worker\Events;
 use GatewayWorker\Lib\Gateway;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-trait WorkerTrait
+class BaseEvents
 {
     /**
      * @var Connection $db
      */
     public static $db;
 
-    private static function init()
+    const GUARD_ADMIN = 'admin';
+
+    const GUARD_DRIVER = 'driver';
+
+    const GUARD_MERCHANT = 'merchant';
+
+    const SUPER_ADMIN_ID = 1;
+
+    public static $guards = [self::GUARD_ADMIN, self::GUARD_DRIVER, self::GUARD_MERCHANT];
+
+    public static $type = ['heart', 'pushOneDriver', 'pushCompanyDriverList', 'pushDriverList', 'pushOneAdmin', 'pushCompanyAdminList', 'pushAdminList', 'pushAll'];
+
+    protected static function init()
     {
         self::$db = DB::connection();
     }
@@ -47,7 +56,7 @@ trait WorkerTrait
      * @param string $guard
      * @param Authenticatable $user
      */
-    private static function setUser(string $client_id, $auth, string $guard, Authenticatable $user)
+    protected static function setUser(string $client_id, $auth, string $guard, Authenticatable $user)
     {
         Gateway::bindUid($client_id, self::getUid($guard, $user->id));
         Gateway::joinGroup($client_id, $guard);
@@ -62,7 +71,7 @@ trait WorkerTrait
      * 发送消息
      * @param $clientId
      */
-    private static function send($clientId)
+    protected static function send($clientId)
     {
         $client = Gateway::getSession($clientId);
         $toId = Gateway::getUidByClientId($clientId);
@@ -73,16 +82,6 @@ trait WorkerTrait
             Gateway::sendToUid($toId, $message['data']);
         }
         self::$db->table('worker')->newQuery()->where('to_id', $toId)->delete();
-    }
-
-    /**
-     * 心跳检测
-     * @param $client_id
-     * @param $data
-     */
-    public static function heart($client_id, $data)
-    {
-        return;
     }
 
     /**

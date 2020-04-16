@@ -8,39 +8,13 @@
 
 namespace App\Worker;
 
-use App\Models\Employee;
-use App\Traits\WorkerTrait;
 use GatewayWorker\Lib\Gateway;
-use Illuminate\Database\Connection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use phpDocumentor\Reflection\Types\Self_;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\JWTGuard;
-use Workerman\Lib\Timer;
 
-class Events
+class Events extends BaseEvents
 {
-    use WorkerTrait;
-
-    /**
-     * @var Connection $db
-     */
-    public static $db;
-
-    const GUARD_ADMIN = 'admin';
-
-    const GUARD_DRIVER = 'driver';
-
-    const GUARD_MERCHANT = 'merchant';
-
-    const SUPER_ADMIN_ID = 1;
-
-    public static $guards = [self::GUARD_ADMIN, self::GUARD_DRIVER, self::GUARD_MERCHANT];
-
-    public static $type = ['heart', 'pushOneDriver', 'pushCompanyDriverList', 'pushDriverList', 'pushOneAdmin', 'pushCompanyAdminList', 'pushAdminList', 'pushAll'];
 
     public static function onWorkerStart($businessWorker)
     {
@@ -79,10 +53,14 @@ class Events
             Gateway::sendToClient($clientId, '消息格式不正确');
             return;
         }
+        //若是心跳检测,则不执行业务
+        if ($message['type'] == 'heart') return;
+        //若推送至单个用户,to_id必须存在
         if ((stristr($message['type'], 'one') !== false) && empty($message['to_id'])) {
             Gateway::sendToClient($clientId, '接收人不存在');
             return;
         }
+        //执行业务
         list($type, $data, $toId) = [$message['type'], $message['data'] ?? [], $message['to_id'] ?? null];
         is_null($toId) ? self::$type(Gateway::getSession($clientId), $data) : self::$type(Gateway::getSession($clientId), $data, $toId);
     }
@@ -90,7 +68,7 @@ class Events
 
     public static function onClose($clientId)
     {
-        Log::info("开始关闭client_id" . $clientId);
+        Log::info("关闭clientId" . $clientId);
     }
 
 }
