@@ -55,7 +55,7 @@ class OrderValidate extends BaseValidate
         'batch_no' => 'nullable|string|max:50',
         'out_order_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
         'execution_date' => 'required|date|after_or_equal:today',
-        'type' => 'nullable|integer|in:1,2',
+        'type' => 'required|integer|in:1,2',
         'out_user_id' => 'nullable|integer',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
         'settlement_type' => 'required|in:1,2',
