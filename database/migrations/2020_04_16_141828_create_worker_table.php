@@ -21,6 +21,8 @@ class CreateWorkerTable extends Migration
             $table->smallInteger('company_auth')->default(1)->nullable()->comment('是否需要验证公司权限1-是2-否');
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
+
+            $table->index('to_id', 'to_id');
         });
     }
 
