@@ -43,7 +43,7 @@ class PushAdmin extends Command
     public function handle()
     {
         $data = $this->ask('please input data(Array format)');
-        if (!isJson($data)) {
+        if (!is_array($data)) {
             $this->error('The data must be Array format');
             exit;
         }
