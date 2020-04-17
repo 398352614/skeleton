@@ -7,6 +7,9 @@
  */
 
 namespace App\Traits;
+
+use Illuminate\Support\Arr;
+
 trait CountryTrait
 {
     /**
@@ -48,6 +51,24 @@ trait CountryTrait
         $value = $countryList[$short][$locate . '_name'] ?? $short;
         unset($countryList);
         return $value;
+    }
+
+    /**
+     * 通过名称获取简称
+     * @param $nameList
+     * @return array
+     */
+    public static function getShortListByName($nameList)
+    {
+        $countryList = self::getCountryList();
+        $newNameList = [];
+        foreach ($nameList as $name) {
+            $country = Arr::first($countryList, function ($country, $key) use ($name) {
+                return in_array($name, [$country['cn_name'], $country['en_name']]);
+            }, '');
+            $newNameList[$name] = $country['short'];
+        }
+        return $newNameList;
     }
 
 
