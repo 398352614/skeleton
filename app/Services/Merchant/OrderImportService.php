@@ -6,7 +6,7 @@
  * Time: 20:06
  */
 
-namespace App\Services\Admin;
+namespace App\Services\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;
@@ -94,7 +94,7 @@ class OrderImportService extends BaseService
      */
     public function getTemplate()
     {
-        return Storage::disk('admin_file_public')->url(auth()->user()->company_id . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'order_import_template.xlsx');
+        return Storage::disk('merchant_file_public')->url(auth()->user()->company_id . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'order_import_template.xlsx');
     }
 
     /**
@@ -103,7 +103,7 @@ class OrderImportService extends BaseService
      */
     public function getTemplateExcel()
     {
-        $cellData[0] = [];
+        $cellData[0] =[];
 
         return $this->excelExport('template', OrderImportService::$headings, $cellData, 'order');
     }

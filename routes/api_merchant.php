@@ -69,6 +69,22 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::get('/', 'OrderTrailController@index')->name('order-trail.index');
     });
 
+    //订单导入记录管理
+    Route::prefix('order-import')->group(function () {
+        //上传模板
+        Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
+        //获取模板
+        Route::get('/getTemplate', 'OrderImportController@getTemplateExcel');
+        //批量导入
+        Route::post('/import', 'OrderController@orderImport');
+        //批量新增
+        Route::post('/storeByList', 'OrderController@storeByList');
+        //列表查询
+        Route::get('/log', 'OrderImportController@index');
+        //记录详情
+        Route::get('/log/{id}', 'OrderImportController@show');
+    });
+
     //主页统计
     Route::prefix('home')->group(function () {
         Route::get('/', 'HomeController@home');

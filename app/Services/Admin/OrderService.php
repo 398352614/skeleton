@@ -20,11 +20,13 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\CountryTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 
 class OrderService extends BaseService
@@ -305,55 +307,101 @@ class OrderService extends BaseService
     public function createByList($params)
     {
         $list = json_decode($params['list'], true);
-        $successCount = 0;
-        $failCount = 0;
-        $log = [];
+        $countryNameList = array_unique(collect($list)->pluck('receiver_country')->toArray());
+        $countryShortList=CountryTrait::getShortListByName($countryNameList);
+        $typeList=['取件'=>1,'派件'=>2,'Pickup'=>1,'Delivery'=>2];
+        $settlementList=['寄付'=>1,'到付'=>1,'Send'=>1,'Pay on site'=>2];
+        $deliveryList=['是'=>1,'否'=>2,'Yes'=>1,'No'=>2];
+        $itemList=['包裹'=>1,'材料'=>2,'Package'=>1,'Material'=>2];
         for ($i = 0; $i < count($list); $i++) {
+            //验证数据
+            if(!in_array($list[$i]['type'],array_keys($typeList))){
+                throw new BusinessLogicException('取派类型格式不正确');
+            }
+            if(!in_array($list[$i]['settlement_type'],array_keys($settlementList))){
+                throw new BusinessLogicException('支付方式格式不正确');
+            }
+            if(!in_array($list[$i]['delivery'],array_keys($deliveryList))){
+                throw new BusinessLogicException('是否上门取件格式不正确');
+            }
+            if(!in_array($list[$i]['receiver_country'],array_keys($countryShortList))){
+                throw new BusinessLogicException('国家不正确');
+            }
             //处理格式
             $list[$i]['execution_date'] = date('Y-m-d', ($list[$i]['execution_date'] - 25569) * 24 * 3600);
             $list[$i] = array_map('strval', $list[$i]);
+            $list[$i]['receiver_country']=$countryShortList[$list[$i]['receiver_country']];
+            $list[$i]['type']=$typeList[$list[$i]['type']];
+            $list[$i]['settlement_type']=$settlementList[$list[$i]['settlement_type']];
+            $list[$i]['delivery']=$deliveryList[$list[$i]['delivery']]??1;
+            $list[$i]['package_list']=[];
+            $list[$i]['material_list']=[];
+            for($j=0;$j<5;$j++){
+                $list[$i]['item_type_'.($j+1)]=$itemList[$list[$i]['item_type_'.($j+1)]]??0;
+                if($list[$i]['item_type_'.($j+1)] === 1){
+                    $list[$i]['package_list'][$j]['name']=$list[$i]['item_name_'.($j+1)];
+                    $list[$i]['package_list'][$j]['express_first_no']=$list[$i]['item_number_'.($j+1)];
+                    $list[$i]['package_list'][$j]['weight']=$list[$i]['item_weight_'.($j+1)]??1;
+                    $list[$i]['package_list'][$j]['quantity']=$list[$i]['item_count_'.($j+1)]??1;
+                    $list[$i]['package_list'][$j]['express_second_no']='';
+                    $list[$i]['package_list'][$j]['out_order_no']='';
+                    $list[$i]['package_list']=array_values($list[$i]['package_list']);
+                }elseif ($list[$i]['item_type_'.($j+1)] === 2){
+                    $list[$i]['material_list'][$j]['name']=$list[$i]['item_name_'.($j+1)];
+                    $list[$i]['material_list'][$j]['code']=$list[$i]['item_number_'.($j+1)];
+                    $list[$i]['material_list'][$j]['remark']='';
+                    $list[$i]['material_list'][$j]['quantity']=$list[$i]['item_count_'.($j+1)]??1;
+                    $list[$i]['material_list'][$j]['out_order_no']='';
+                    $list[$i]['material_list']=array_values($list[$i]['material_list']);
+                }
+            }
+            $list[$i]=Arr::only($list[$i],['type',
+                'receiver',
+                'receiver_phone',
+                'receiver_country',
+                'receiver_post_code',
+                'receiver_house_number',
+                'receiver_address',
+                'execution_date',
+                'settlement_type',
+                'settlement_amount',
+                'replace_amount',
+                'out_order_no',
+                'delivery',
+                'remark',
+                'package_list',
+                'material_list']);
             //获取经纬度
-            $info = $this->getReceiverAddressService()->check($list[$i]);
+            try{
+                $info = $this->getReceiverAddressService()->check($list[$i]);
+            }catch (BusinessLogicException $e){
+                throw new BusinessLogicException(__('行').($i+1).':'.$e->getMessage());
+            }
+            $list[$i]['sender']=$list[$i]['sender_phone']=$list[$i]['sender_country']=$list[$i]['sender_post_code']
+                =$list[$i]['sender_house_number']=$list[$i]['sender_address']=$list[$i]['sender_city']=$list[$i]['sender_street']
+                =$list[$i]['receiver_city']=$list[$i]['receiver_street']='';
             if (empty($info)) {
                 $info = $this->getLocation($list[$i]['receiver_country'], $list[$i]['receiver_city'], $list[$i]['receiver_street'], $list[$i]['receiver_house_number'], $list[$i]['receiver_post_code']);
             }
             $list[$i]['lon'] = $info['lon'];
             $list[$i]['lat'] = $info['lat'];
-
-            $job = (new OrderCreateByList($list[$i], $params['id']));
-            dispatch($job);
+            $list[$i]['merchant_id']=auth()->user()->id;
             //订单新增事务
             try {
-                DB::beginTransaction();
                 $this->store($list[$i]);
-                $log[$i + 1] = 'success';
-                $successCount = $successCount + 1;
-                DB::commit();
             } catch (BusinessLogicException $e) {
-                DB::rollBack();
-                $log[$i + 1] = $e->getMessage();
-                $failCount = $failCount + 1;
+                throw new BusinessLogicException(__('行').($i+1).':'.$e->getMessage());
             } catch (\Exception $e) {
-                DB::rollBack();
-                $log[$i + 1] = $e->getMessage();
-                $failCount = $failCount + 1;
+                throw new BusinessLogicException(__('行').($i+1).':'.$e->getMessage());
             }
         }
-        $data['log'] = $log;
-        $data['success'] = $successCount;
-        $data['fail'] = $failCount;
-        OrderImportLog::query()->where('id', $params['id'])->update([
-            'success_order' => $data['success'],
-            'fail_order' => $data['fail'],
-            'log' => json_encode($data['log']),
-            'status' => 2
-        ]);
-        return $data;
+        return;
     }
 
     /**
      * 订单导入
      * @param $params
+     * @return array
      * @throws BusinessLogicException
      */
     public function orderImport($params)
@@ -362,11 +410,31 @@ class OrderService extends BaseService
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
-        $heading = ['execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'special_remark', 'remark', 'package_list', 'material_list'];
-        $this->headingCheck($params['path'], $heading);//表头验证
-        $row = $this->orderExcelImport($params['path'])[0];
+        $headingCN = ['*取派类型', '*收件人姓名', '*收件人电话', '*收件人国家', '*收件人邮编', '*收件人门牌号', '*收件人详细地址', '*取派日期', '*结算类型', '运费金额', '代收货款', '外部订单号', '是否送货上门', '备注',
+            '*物品一类型', '*物品一名称', '物品一扫码编号', '物品一数量', '物品一重量',
+            '物品二类型', '物品二名称', '物品二扫码编号', '物品二数量', '物品二重量',
+            '物品三类型', '物品三名称', '物品三扫码编号', '物品三数量', '物品三重量',
+            '物品四类型', '物品四名称', '物品四扫码编号', '物品四数量', '物品四重量',
+            '物品五类型', '物品五名称', '物品五扫码编号', '物品五数量', '物品五重量'];
+        $headingEN = ['*Type','*Receiver','*Phone','*Country','*Post Code','*House Number','*Address','*Execution Date','*Settlement Type','Settlement Amount','Replace Amount','Out Order No','Delivery','Remark',
+            '*Item Type 1','*Item Name 1','Item Code 1','Item Count 1','Item Weight 1',
+            'Item Type 2','Item Name 2','Item Code 2','Item Count 2','Item Weight 2',
+            'Item Type 3','Item Name 3','Item Code 3','Item Count 3','Item Weight 3',
+            'Item Type 4','Item Name 4','Item Code 4','Item Count 4','Item Weight 4',
+            'Item Type 5','Item Name 5','Item Code 5','Item Count 5','Item Weight 5'];
+        $row =collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
+        if(App::getLocale() === 'cn' && $row[0] !== $headingCN){
+            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
+        }elseif (App::getLocale() === 'en' && $row[0] !== $headingEN){
+            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
+        }
+        $heading=OrderImportService::$headings;
+        $data=[];
+        for($i=1;$i<count($row);$i++){
+            $data[$i-1]=collect($heading)->combine($row[$i])->toArray();
+        }
         $id = $this->orderImportLog($params);
-        return ['row' => $row, 'id' => $id];
+        return $data;
     }
 
     public function orderImportLog($params)
