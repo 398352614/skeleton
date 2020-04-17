@@ -42,9 +42,9 @@ class PushAdmin extends Command
      */
     public function handle()
     {
-        $data = $this->ask('please input data(Array format)');
-        if (!is_array($data)) {
-            $this->error('The data must be Array format');
+        $data = $this->ask('please input data(JSON format)');
+        if (!isJson($data)) {
+            $this->error('The data must be JSON format');
             exit;
         }
         $id = $this->argument('id');
@@ -55,7 +55,7 @@ class PushAdmin extends Command
             exit;
         }
         $token = Auth::guard('admin')->login($user);
-        $message = ['type' => $type, 'data' => $data];
+        $message = ['type' => $type, 'data' => json_decode($data, true)];
         $client = new Client('wss://' . config('tms.push_url') . '/?token=' . $token);
         $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
         $client->close();
