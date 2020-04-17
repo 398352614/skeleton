@@ -489,10 +489,6 @@ class OrderService extends BaseService
         //验证材料列表
         if (!empty($params['material_list'])) {
             $materialList = $params['material_list'];
-            $nameList = array_column($materialList, 'name');
-            if (count(array_unique($nameList)) !== count($nameList)) {
-                throw new BusinessLogicException('材料名称有重复！不能添加订单');
-            }
             $codeList = array_column($materialList, 'code');
             if (count(array_unique($codeList)) !== count($codeList)) {
                 throw new BusinessLogicException('材料代码有重复！不能添加订单');

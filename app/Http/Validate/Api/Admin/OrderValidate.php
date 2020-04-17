@@ -84,14 +84,14 @@ class OrderValidate extends BaseValidate
         'remark' => 'nullable|string|max:250',
         //包裹列表
         'package_list.*.name' => 'nullable|string|max:50',
-        'package_list.*.weight' => 'required_with:package_list|numeric',
+        'package_list.*.weight' => 'nullable|numeric',
         'package_list.*.expect_quantity' => 'required_with:package_list|integer',
         'package_list.*.remark' => 'nullable|string|max:250',
         'package_list.*.out_order_no' => 'nullable|string|max:50',
         'package_list.*.express_first_no' => 'required_with:package_list|string|max:50',
         'package_list.*.express_second_no' => 'nullable|string|max:50',
         //材料列表
-        'material_list.*.name' => 'required_with:material_list|string|max:50',
+        'material_list.*.name' => 'nullable|string|max:50',
         'material_list.*.code' => 'required_with:material_list|string|max:50',
         'material_list.*.out_order_no' => 'nullable|string|max:50',
         'material_list.*.expect_quantity' => 'required_with:material_list|integer',

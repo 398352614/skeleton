@@ -76,8 +76,8 @@ class OrderValidate extends BaseValidate
         'receiver_city' => 'nullable|string|max:50',
         'receiver_street' => 'nullable|string|max:50',
         'receiver_address' => 'required|string|max:250',
-        'lon' => 'nullable|string|max:50',
-        'lat' => 'nullable|string|max:50',
+        'lon' => 'required|string|max:50',
+        'lat' => 'required|string|max:50',
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
         //包裹列表
@@ -89,7 +89,7 @@ class OrderValidate extends BaseValidate
         'package_list.*.express_first_no' => 'required_with:package_list|string|max:50',
         'package_list.*.express_second_no' => 'nullable|string|max:50',
         //材料列表
-        'material_list.*.name' => 'required_with:material_list|string|max:50',
+        'material_list.*.name' => 'nullable|string|max:50',
         'material_list.*.code' => 'required_with:material_list|string|max:50',
         'material_list.*.out_order_no' => 'nullable|string|max:50',
         'material_list.*.expect_quantity' => 'required_with:material_list|integer',
