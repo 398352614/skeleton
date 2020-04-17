@@ -57,7 +57,7 @@ class PushAdmin extends Command
         $token = Auth::guard('admin')->login($user);
         $client = new Client('wss://' . config('tms.push_url') . '/?token=' . $token);
         $message = ['type' => $type, 'data' => $data];
-        $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
+        $client->send($message);
         $client->close();
         $this->info('push successful');
         return true;
