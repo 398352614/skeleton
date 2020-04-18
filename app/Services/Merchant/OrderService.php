@@ -826,12 +826,14 @@ class OrderService extends BaseService
         for($i=$today;$i<=7;$i++){
             if($data[$i] !== 0){
                 $firstDate = Carbon::today()->addDays(($i-$today))->format('Y-m-d');
+                break;
             }
         }
         if (empty($firstDate)) {
             for ($i = 1; $i < $today; $i++) {
                 if ($data[$i] !== 0) {
                     $firstDate = Carbon::today()->addWeek()->startOfWeek()->addDays($i-1)->format('Y-m-d');
+                    break;
                 }
             }
         }
