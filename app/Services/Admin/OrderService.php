@@ -752,7 +752,7 @@ class OrderService extends BaseService
         if(empty($data)){
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
-        $today=Carbon::today()->dayOfWeek;
+        $today=Carbon::today()->dayOfWeek-1;
         for ($i = 0; $i < 7; $i++) {
             if (empty($data[$i])) {
                 $data[$i] = 0;
@@ -764,7 +764,7 @@ class OrderService extends BaseService
                 $firstDate = Carbon::today()->addDays(($i-$today))->format('Y-m-d');
             }
         }
-        if (empty($data['first_date'])) {
+        if (empty($firstDate)) {
             for ($i = 0; $i < $today; $i++) {
                 if ($data[$i] !== 0) {
                     $firstDate = Carbon::today()->addWeek()->startOfWeek()->addDays($i)->format('Y-m-d');

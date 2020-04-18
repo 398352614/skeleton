@@ -815,7 +815,7 @@ class OrderService extends BaseService
         if(empty($data)){
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
-        $today=Carbon::today()->dayOfWeek;
+        $today=Carbon::today()->dayOfWeek-1;
         for ($i = 0; $i < 7; $i++) {
             if (empty($data[$i])) {
                 $data[$i] = 0;
@@ -824,17 +824,17 @@ class OrderService extends BaseService
         krsort($data);
         for($i=$today;$i<6;$i++){
             if($data[$i] !== 0){
-                $data['first_date'] = Carbon::today()->addDays(($i-$today))->format('Y-m-d');
+                $firstDate = Carbon::today()->addDays(($i-$today))->format('Y-m-d');
             }
         }
-        if (empty($data['first_date'])) {
+        if (empty($firstDate)) {
             for ($i = 0; $i < $today; $i++) {
                 if ($data[$i] !== 0) {
-                    $data['first_date'] = Carbon::today()->addWeek()->startOfWeek()->addDays($i)->format('Y-m-d');
+                    $firstDate = Carbon::today()->addWeek()->startOfWeek()->addDays($i)->format('Y-m-d');
                 }
             }
         }
-        return array_reverse($data);
+        return ['schedule'=>array_reverse($data),'first_date'=>$firstDate];
     }
 
     /**
