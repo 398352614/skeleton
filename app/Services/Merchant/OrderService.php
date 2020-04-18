@@ -800,6 +800,7 @@ class OrderService extends BaseService
         if (empty($lineRange)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
+        $data=[];
         //判断是否超过线路最大取派量
         for ($i = 0, $j = count($lineRange); $i < $j; $i++) {
             $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
@@ -811,12 +812,28 @@ class OrderService extends BaseService
                 $data[intval($lineRange[$i]['schedule'])] = 0;
             }
         }
+        if(empty($data)){
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        $today=Carbon::today()->dayOfWeek;
         for ($i = 0; $i < 7; $i++) {
             if (empty($data[$i])) {
                 $data[$i] = 0;
             }
         }
         krsort($data);
+        for($i=$today;$i<6;$i++){
+            if($data[$i] !== 0){
+                $data['first_date'] = Carbon::today()->addDays(($i-$today))->format('Y-m-d');
+            }
+        }
+        if (empty($data['first_date'])) {
+            for ($i = 0; $i < $today; $i++) {
+                if ($data[$i] !== 0) {
+                    $data['first_date'] = Carbon::today()->addWeek()->startOfWeek()->addDays($i)->format('Y-m-d');
+                }
+            }
+        }
         return array_reverse($data);
     }
 

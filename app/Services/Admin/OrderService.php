@@ -749,13 +749,29 @@ class OrderService extends BaseService
                 $data[intval($lineRange[$i]['schedule'])] = 0;
             }
         }
+        if(empty($data)){
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        $today=Carbon::today()->dayOfWeek;
         for ($i = 0; $i < 7; $i++) {
             if (empty($data[$i])) {
                 $data[$i] = 0;
             }
         }
         krsort($data);
-        return array_reverse($data);
+        for($i=$today;$i<6;$i++){
+            if($data[$i] !== 0){
+                $firstDate = Carbon::today()->addDays(($i-$today))->format('Y-m-d');
+            }
+        }
+        if (empty($data['first_date'])) {
+            for ($i = 0; $i < $today; $i++) {
+                if ($data[$i] !== 0) {
+                    $firstDate = Carbon::today()->addWeek()->startOfWeek()->addDays($i)->format('Y-m-d');
+                }
+            }
+        }
+        return ['schedule'=>array_reverse($data),'first_date'=>$firstDate];
     }
 
     /**
