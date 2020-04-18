@@ -759,18 +759,20 @@ class OrderService extends BaseService
             }
         }
         krsort($data);
+        $data[7]=$data[0];
         for($i=$today;$i<=7;$i++){
-            if($data[$i+1] !== 0){
+            if($data[$i] !== 0){
                 $firstDate = Carbon::today()->addDays(($i-$today))->format('Y-m-d');
             }
         }
         if (empty($firstDate)) {
             for ($i = 1; $i < $today; $i++) {
-                if ($data[$i+1] !== 0) {
+                if ($data[$i] !== 0) {
                     $firstDate = Carbon::today()->addWeek()->startOfWeek()->addDays($i-1)->format('Y-m-d');
                 }
             }
         }
+        array_pop($data);
         return ['schedule'=>array_reverse($data),'first_date'=>$firstDate];
     }
 
