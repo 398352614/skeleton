@@ -61,7 +61,9 @@ class OrderInfoResource extends JsonResource
             'driver_phone' => $this->driver_phone,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
-            'item_list' => $this->item_list
+            'item_list' => $this->item_list,
+            'lon'=>$this->lon,
+            'lat'=>$this->lat
         ];
     }
 }
