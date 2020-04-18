@@ -725,6 +725,40 @@ class OrderService extends BaseService
     }
 
     /**
+     * 根据地址获得可分配日期
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getDate($params){
+        $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $params['receiver_post_code'])
+            ->where('post_code_end', '>=', $params['receiver_post_code'])
+            ->where('country', $params['receiver_country'])
+            ->get();
+        if (empty($lineRange)) {
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        //判断是否超过线路最大取派量
+        for ($i = 0, $j = count($lineRange); $i < $j; $i++) {
+            $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
+            $tour[$i] = $this->getTourService()->getInfo(['line_id' => $line[$i]['id']], ['*'], false)->toArray();
+            $data[intval($lineRange[$i]['schedule'])] = $line[$i]['appointment_days'];
+            if ($tour[$i]['expect_pickup_quantity'] > $line[$i]['pickup_max_count'] && $params['type'] === BaseConstService::ORDER_TYPE_1 OR
+                $tour[$i]['expect_pie_quantity'] > $line[$i]['pie_max_count'] && $params['type'] === BaseConstService::ORDER_TYPE_2
+            ) {
+                $data[intval($lineRange[$i]['schedule'])] = 0;
+            }
+        }
+        for ($i = 0; $i < 7; $i++) {
+            if (empty($data[$i])) {
+                $data[$i] = 0;
+            }
+        }
+        krsort($data);
+        return array_reverse($data);
+    }
+
+    /**
      * 获取可分配的站点列表
      * @param $id
      * @param $params
