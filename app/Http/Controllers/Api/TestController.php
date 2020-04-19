@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\TestService;
+use GuzzleHttp\Client;
 
 /**
  * Class TestController
@@ -32,6 +33,27 @@ class TestController extends BaseController
 
     public function show($id)
     {
+        $url = 'http://api.map.baidu.com/batch';
+        $list = [
+            [
+                "method" => "get",
+                "url" => "/geocoding/v3/?address=重庆市沙坪坝区学城大道62号&ak=你的ak&output=json"
+            ],
+            [
+                "method" => "get",
+                "url" => "/geocoding/v3/?address=重庆市沙坪坝区学城大道62号&ak=你的ak&output=json"
+            ]
+        ];
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('POST', $url, [
+            'form_params' => json_encode(['reqs' => $list])
+        ]);
+        $body = $res->getBody();
+        $stringBody = (string)$body;
+        $arrayBody = json_decode($stringBody, TRUE);
+
+        print_r($arrayBody);exit;
+
         return $this->service->show($id);
     }
 
