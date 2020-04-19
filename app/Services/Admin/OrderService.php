@@ -684,18 +684,55 @@ class OrderService extends BaseService
     }
 
     /**
-     * 获取可分配日期
+     * 通过订单获得可选日期
      * @param $id
      * @return mixed
      * @throws BusinessLogicException
      */
     public function getTourDate($id)
     {
-        $data = [];
         $info = parent::getInfo(['id' => $id], ['*'], true);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
+        $data=$this->getSchedule($info);
+        return array_reverse($data);
+    }
+
+    /**
+     * 通过地址获得可选日期
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getDate($params){
+        $firstDate='';
+        $data=$this->getSchedule($params);
+        $today=Carbon::today()->dayOfWeek;
+        $data[7]=$data[0];
+        for($i=$today;$i<=7;$i++){
+            if($data[$i] !== 0){
+                $firstDate = Carbon::today()->addDays(($i-$today))->format('Y-m-d');
+                break;
+            }
         }
+        if (empty($firstDate)) {
+            for ($i = 1; $i < $today; $i++) {
+                if ($data[$i] !== 0) {
+                    $firstDate = Carbon::today()->addWeek()->startOfWeek()->addDays($i-1)->format('Y-m-d');
+                    break;
+                }
+            }
+        }
+        array_pop($data);
+        return ['schedule'=>array_reverse($data),'first_date'=>$firstDate];
+    }
+
+    /**
+     * 获取可选日期
+     * @param $info
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getSchedule($info){
+        $data=[];
         //获取邮编表
         $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $info['receiver_post_code'])
             ->where('post_code_end', '>=', $info['receiver_post_code'])
@@ -722,60 +759,6 @@ class OrderService extends BaseService
         }
         krsort($data);
         return array_reverse($data);
-    }
-
-    /**
-     * 根据地址获得可分配日期
-     * @param $params
-     * @return array
-     * @throws BusinessLogicException
-     */
-    public function getDate($params){
-        $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $params['receiver_post_code'])
-            ->where('post_code_end', '>=', $params['receiver_post_code'])
-            ->where('country', $params['receiver_country'])
-            ->get();
-        if (empty($lineRange)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-        }
-        //判断是否超过线路最大取派量
-        for ($i = 0, $j = count($lineRange); $i < $j; $i++) {
-            $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
-            $tour[$i] = $this->getTourService()->getInfo(['line_id' => $line[$i]['id']], ['*'], false)->toArray();
-            $data[intval($lineRange[$i]['schedule'])] = $line[$i]['appointment_days'];
-            if ($tour[$i]['expect_pickup_quantity'] > $line[$i]['pickup_max_count'] && $params['type'] === BaseConstService::ORDER_TYPE_1 OR
-                $tour[$i]['expect_pie_quantity'] > $line[$i]['pie_max_count'] && $params['type'] === BaseConstService::ORDER_TYPE_2
-            ) {
-                $data[intval($lineRange[$i]['schedule'])] = 0;
-            }
-        }
-        if(empty($data)){
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-        }
-        $today=Carbon::today()->dayOfWeek;
-        for ($i = 0; $i < 7; $i++) {
-            if (empty($data[$i])) {
-                $data[$i] = 0;
-            }
-        }
-        krsort($data);
-        $data[7]=$data[0];
-        for($i=$today;$i<=7;$i++){
-            if($data[$i] !== 0){
-                $firstDate = Carbon::today()->addDays(($i-$today))->format('Y-m-d');
-                break;
-            }
-        }
-        if (empty($firstDate)) {
-            for ($i = 1; $i < $today; $i++) {
-                if ($data[$i] !== 0) {
-                    $firstDate = Carbon::today()->addWeek()->startOfWeek()->addDays($i-1)->format('Y-m-d');
-                    break;
-                }
-            }
-        }
-        array_pop($data);
-        return ['schedule'=>array_reverse($data),'first_date'=>$firstDate];
     }
 
     /**
