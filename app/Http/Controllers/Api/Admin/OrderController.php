@@ -117,6 +117,17 @@ class OrderController extends BaseController
     }
 
     /**
+     * 通过国家邮编，获取可分配的取派日期
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getDate()
+    {
+        return $this->service->getDate($this->data);
+    }
+
+    /**
      * 通过订单,获取可分配的站点列表
      * @param $id
      * @return mixed

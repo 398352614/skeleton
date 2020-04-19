@@ -101,7 +101,11 @@ class ReceiverAddressService extends BaseService
      */
     public function check($data, $id = null)
     {
-        $where = Arr::only($data, ['receiver', 'merchant_id', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street']);
+        if($data['receiver_country']==='NL'){
+            $where =Arr::only($data, ['receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number']);
+        }else{
+            $where = Arr::only($data, ['receiver', 'merchant_id', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street']);
+        }
         if (!empty($id)) {
             $where = Arr::add($where, 'id', ['<>', $id]);
         }

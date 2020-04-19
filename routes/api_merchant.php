@@ -49,6 +49,8 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::put('/{id}', 'OrderController@update');
         //获取可分配路线日期
         Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
+        //获取可分配路线日期(新增)
+        Route::get('/getDate', 'OrderController@getDate');
         //获取可分配的站点列表
         //Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
         //分配至站点
@@ -67,6 +69,22 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
     Route::prefix('order-trail')->group(function () {
         //rest api 放在最后
         Route::get('/', 'OrderTrailController@index')->name('order-trail.index');
+    });
+
+    //订单导入记录管理
+    Route::prefix('order-import')->group(function () {
+        //上传模板
+        Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
+        //获取模板
+        Route::get('/getTemplate', 'OrderImportController@getTemplateExcel');
+        //批量导入
+        Route::post('/import', 'OrderController@orderImport');
+        //批量新增
+        Route::post('/storeByList', 'OrderController@storeByList');
+        //列表查询
+        Route::get('/log', 'OrderImportController@index');
+        //记录详情
+        Route::get('/log/{id}', 'OrderImportController@show');
     });
 
     //主页统计
