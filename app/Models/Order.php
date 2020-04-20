@@ -56,6 +56,7 @@ class Order extends BaseModel
         'express_first_no',
         'express_second_no',
         'source',
+        'list_mode',
         'type',
         'out_user_id',
         'nature',
@@ -116,7 +117,8 @@ class Order extends BaseModel
         'merchant_id_name',
         'receiver_country_name',
         'sender_country_name',
-        'country_name'
+        'country_name',
+        'source_name'
     ];
 
     /**
@@ -146,6 +148,11 @@ class Order extends BaseModel
     {
         if (empty($this->merchant) || empty($this->merchant_id)) return '';
         return $this->merchant->name;
+    }
+
+    public function getSourceNameAttribute()
+    {
+        return empty($this->source) ? null : ConstTranslateTrait::orderSourceList($this->source);
     }
 
     public function merchant()

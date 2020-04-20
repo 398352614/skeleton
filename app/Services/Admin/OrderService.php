@@ -495,6 +495,7 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
         if (empty($params['lon']) || empty($params['lat'])) {
             $info = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
             $params['lon'] = $info['lon'];

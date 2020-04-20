@@ -53,6 +53,11 @@ class BaseConstService
     const ORDER_TYPE_1 = 1;
     const ORDER_TYPE_2 = 2;
 
+    //订单来源1-手动添加2-批量导入3-第三方
+    const ORDER_SOURCE_1 = 1;
+    const ORDER_SOURCE_2 = 2;
+    const ORDER_SOURCE_3 = 3;
+
     //订单结算方式1-寄付2-到付
     const ORDER_SETTLEMENT_TYPE_1 = 1;
     const ORDER_SETTLEMENT_TYPE_2 = 2;

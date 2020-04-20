@@ -229,6 +229,7 @@ return [
         'express_first_no' => 'express first no',
         'express_second_no' => 'express second no',
         'source' => 'source',
+        'list_mode' => 'list mode',
         'type' => 'type',
         'out_user_id' => 'out user id',
         'nature' => 'nature',

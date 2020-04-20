@@ -19,7 +19,7 @@ class OrderValidate extends BaseValidate
         'out_order_no' => '外部订单号',
         'express_first_no' => '快递单号1',
         'express_second_no' => '快递单号2',
-        'source' => '来源',
+        'list_mode' => '清单模式',
         'type' => '类型',
         'out_user_id' => '外部客户ID',
         'nature' => '性质',
@@ -53,6 +53,7 @@ class OrderValidate extends BaseValidate
         'batch_no' => 'nullable|string|max:50',
         'out_order_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
         'execution_date' => 'required|date|after_or_equal:today',
+        'list_mode' => 'sometimes|required|in:1,2',
         'type' => 'required|integer|in:1,2',
         'out_user_id' => 'nullable|integer',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
@@ -99,7 +100,7 @@ class OrderValidate extends BaseValidate
     public $scene = [
         'store' => [
             'merchant_id', 'execution_date',
-            'out_order_no', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
+            'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             //'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
             //'sender_city', 'sender_street', 'sender_address',
@@ -115,7 +116,7 @@ class OrderValidate extends BaseValidate
         ],
         'update' => [
             'merchant_id', 'execution_date',
-            'out_order_no', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
+            'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             //'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
             //'sender_city', 'sender_street', 'sender_address',

@@ -340,6 +340,7 @@ return [
         'express_first_no' => '快递单号1',
         'express_second_no' => '快递单号2',
         'source' => '来源',
+        'list_mode' => '清单模式',
         'type' => '类型',
         'out_user_id' => '外部客户ID',
         'nature' => '性质',
