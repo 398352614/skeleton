@@ -328,7 +328,9 @@ class OrderService extends BaseService
                     $list[$i]['material_list']=array_values($list[$i]['material_list']);
                 }
             }
-            $list[$i]=Arr::only($list[$i],['type',
+            $list[$i]=Arr::only($list[$i],[
+                'merchant_id',
+                'type',
                 'receiver',
                 'receiver_phone',
                 'receiver_country',
@@ -354,8 +356,6 @@ class OrderService extends BaseService
             }
             $list[$i]['lon'] = $info['lon'];
             $list[$i]['lat'] = $info['lat'];
-            $list[$i]['merchant_id']=auth()->user()->id;
-            //订单新增事务
             try {
                 $this->store($list[$i]);
             } catch (BusinessLogicException $e) {
@@ -412,6 +412,7 @@ class OrderService extends BaseService
         $countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {
             //处理格式
+            $data[$i]['merchant_id']=$params['merchant_id'];
             $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             $data[$i] = array_map('strval', $data[$i]);
             $data[$i]['receiver_country'] = $countryShortList[$data[$i]['receiver_country_name']];
