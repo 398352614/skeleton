@@ -79,6 +79,7 @@ trait LocationTrait
     private static function getLocationDetailFirst($country, $houseNumber, $postCode)
     {
         list($houseNumber, $houseNumberAddition) = self::splitHouseNumber($houseNumber);
+        dd(sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition));
         return function () use ($country, $houseNumber, $postCode, $houseNumberAddition) {
             try {
                 $client = new \GuzzleHttp\Client();
