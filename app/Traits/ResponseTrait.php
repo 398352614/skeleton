@@ -9,6 +9,8 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Facades\App;
+
 trait ResponseTrait
 {
     /**
@@ -24,7 +26,7 @@ trait ResponseTrait
         return [
             'code' => $code,
             'data' => $data,
-            'msg' => __($msg, $replace)
+            'msg' => !empty($replace) || (App::getLocale() != 'cn') ? __($msg, $replace) : $msg
         ];
     }
 
