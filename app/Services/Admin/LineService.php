@@ -315,7 +315,7 @@ class LineService extends BaseService
                 } else {
                     $orderCount = $this->getTourService()->sumOrderCount($info, $line, 2);
                     if (1 + $orderCount['pie_count'] > $line['pie_max_count']) {
-                        throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+                        throw new BusinessLogicException('当前线路已达到最大派件订单数量');
                     };
                 }
             } else {
@@ -324,7 +324,7 @@ class LineService extends BaseService
                     throw new BusinessLogicException('当前线路已达到最大取件订单数量');
                 };
                 if ($info['expect_pie_quantity'] + $orderCount['pie_count'] > $line['pie_max_count']) {
-                    throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+                    throw new BusinessLogicException('当前线路已达到最大派件订单数量');
                 };
             }
         }
