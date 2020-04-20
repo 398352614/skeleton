@@ -693,7 +693,7 @@ class OrderService extends BaseService
     {
         $info = parent::getInfo(['id' => $id], ['*'], true);
         $data=$this->getSchedule($info);
-        return array_reverse($data);
+        return $data;
     }
 
     /**
@@ -722,7 +722,7 @@ class OrderService extends BaseService
             }
         }
         array_pop($data);
-        return ['schedule'=>array_reverse($data),'first_date'=>$firstDate];
+        return ['schedule'=>$data,'first_date'=>$firstDate];
     }
 
     /**
