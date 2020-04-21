@@ -85,7 +85,7 @@ class BaseValidate
         $list = explode(',', $value);
         if (count($list) > $maxCount) return false;
         $id = Arr::first($list, function ($v) {
-            return is_numeric($v);
+            return !is_numeric($v);
         });
         return empty($id) ? true : false;
 
