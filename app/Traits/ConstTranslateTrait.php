@@ -48,17 +48,9 @@ use Illuminate\Support\Facades\App;
  * @method static merchantSettlementTypeList($args = null)
  * @method static merchantStatusList($args = null)
  * @method static driverEventList($args = null)
- * @method static itemList($args = null)
  */
 trait ConstTranslateTrait
 {
-    //物品类型
-    public static $itemList = [
-        BaseConstService::PACKAGE => '包裹',
-        BaseConstService::MATERIAL => '材料',
-    ];
-
-
     //星期
     public static $weekList = [
         BaseConstService::MONDAY => '星期一',

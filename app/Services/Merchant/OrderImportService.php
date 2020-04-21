@@ -94,10 +94,7 @@ class OrderImportService extends BaseService
      */
     public function getTemplate()
     {
-        return [
-            'name' => 'templateTips.docx',
-            'path' => Storage::disk('merchant_file_public')->url(auth()->user()->company_id . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'templateTips.docx')
-        ];
+        return Storage::disk('merchant_file_public')->url(auth()->user()->company_id . DIRECTORY_SEPARATOR . 'template' . DIRECTORY_SEPARATOR . 'templateTips.docx');
     }
 
     /**
