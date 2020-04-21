@@ -97,6 +97,8 @@ class OrderValidate extends BaseValidate
         'material_list.*.out_order_no' => 'nullable|string|max:50',
         'material_list.*.expect_quantity' => 'required_with:material_list|integer',
         'material_list.*.remark' => 'nullable|string|max:250',
+
+        'id_list' => 'required|string|max:10000'
     ];
 
     public $scene = [
@@ -135,7 +137,8 @@ class OrderValidate extends BaseValidate
         'getBatchPageListByOrder' => ['execution_date'],
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
-        'destroy' => ['remark']
+        'destroy' => ['remark'],
+        'removeListFromBatch' => ['id_list']
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',

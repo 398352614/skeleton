@@ -71,16 +71,23 @@ class BaseValidate
         return empty($model) ? true : false;
     }
 
-//    public static function __callStatic($name, $arguments)
-//    {
-//        $arr = [];
-//        if (isset(self::$$name)) {
-//            $arr = self::$$name;
-//            foreach ($arr as $key => $value) {
-//                $msg = (strpos(__('msg.' . $value), 'msg.') === false) ? __('msg.' . $value) : $value;
-//                $arr[$key] = $msg; // 翻译
-//            }
-//        }
-//        return $arr;
-//    }
+    /**
+     * 验证id列表值是否是合法的
+     * @param $attribute
+     * @param $value
+     * @param $parameters
+     * @param $validator
+     * @return bool
+     */
+    public function checkIdList($attribute, $value, $parameters, $validator)
+    {
+        $maxCount = $parameters[0] ?? 100;
+        $list = explode(',', $value);
+        if (count($list) > $maxCount) return false;
+        $id = Arr::first($list, function ($v) {
+            return is_numeric($v);
+        });
+        return empty($id) ? true : false;
+
+    }
 }

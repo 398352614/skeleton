@@ -72,6 +72,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/assignToBatch', 'OrderController@assignToBatch');
         //从站点移除
         Route::delete('/{id}/removeFromBatch', 'OrderController@removeFromBatch');
+        //批量订单从站点移除
+        Route::delete('/removeListFromBatch', 'OrderController@removeListFromBatch');
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
         //恢复

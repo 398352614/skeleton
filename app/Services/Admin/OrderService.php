@@ -308,27 +308,27 @@ class OrderService extends BaseService
         $list = json_decode($params['list'], true);
         for ($i = 0; $i < count($list); $i++) {
             //处理格式
-            $list[$i]['package_list']=[];
-            $list[$i]['material_list']=[];
-            for($j=0;$j<5;$j++){
-                if($list[$i]['item_type_'.($j+1)] === 1){
-                    $list[$i]['package_list'][$j]['name']=$list[$i]['item_name_'.($j+1)];
-                    $list[$i]['package_list'][$j]['express_first_no']=$list[$i]['item_number_'.($j+1)];
-                    $list[$i]['package_list'][$j]['weight']=$list[$i]['item_weight_'.($j+1)]??1;
-                    $list[$i]['package_list'][$j]['quantity']=$list[$i]['item_count_'.($j+1)]??1;
-                    $list[$i]['package_list'][$j]['express_second_no']='';
-                    $list[$i]['package_list'][$j]['out_order_no']='';
-                    $list[$i]['package_list']=array_values($list[$i]['package_list']);
-                }elseif ($list[$i]['item_type_'.($j+1)] === 2){
-                    $list[$i]['material_list'][$j]['name']=$list[$i]['item_name_'.($j+1)];
-                    $list[$i]['material_list'][$j]['code']=$list[$i]['item_number_'.($j+1)];
-                    $list[$i]['material_list'][$j]['remark']='';
-                    $list[$i]['material_list'][$j]['quantity']=$list[$i]['item_count_'.($j+1)]??1;
-                    $list[$i]['material_list'][$j]['out_order_no']='';
-                    $list[$i]['material_list']=array_values($list[$i]['material_list']);
+            $list[$i]['package_list'] = [];
+            $list[$i]['material_list'] = [];
+            for ($j = 0; $j < 5; $j++) {
+                if ($list[$i]['item_type_' . ($j + 1)] === 1) {
+                    $list[$i]['package_list'][$j]['name'] = $list[$i]['item_name_' . ($j + 1)];
+                    $list[$i]['package_list'][$j]['express_first_no'] = $list[$i]['item_number_' . ($j + 1)];
+                    $list[$i]['package_list'][$j]['weight'] = $list[$i]['item_weight_' . ($j + 1)] ?? 1;
+                    $list[$i]['package_list'][$j]['quantity'] = $list[$i]['item_count_' . ($j + 1)] ?? 1;
+                    $list[$i]['package_list'][$j]['express_second_no'] = '';
+                    $list[$i]['package_list'][$j]['out_order_no'] = '';
+                    $list[$i]['package_list'] = array_values($list[$i]['package_list']);
+                } elseif ($list[$i]['item_type_' . ($j + 1)] === 2) {
+                    $list[$i]['material_list'][$j]['name'] = $list[$i]['item_name_' . ($j + 1)];
+                    $list[$i]['material_list'][$j]['code'] = $list[$i]['item_number_' . ($j + 1)];
+                    $list[$i]['material_list'][$j]['remark'] = '';
+                    $list[$i]['material_list'][$j]['quantity'] = $list[$i]['item_count_' . ($j + 1)] ?? 1;
+                    $list[$i]['material_list'][$j]['out_order_no'] = '';
+                    $list[$i]['material_list'] = array_values($list[$i]['material_list']);
                 }
             }
-            $list[$i]=Arr::only($list[$i],[
+            $list[$i] = Arr::only($list[$i], [
                 'merchant_id',
                 'type',
                 'receiver',
@@ -348,9 +348,9 @@ class OrderService extends BaseService
                 'material_list']);
             //获取经纬度
             $info = $this->getReceiverAddressService()->check($list[$i]);
-            $list[$i]['sender']=$list[$i]['sender_phone']=$list[$i]['sender_country']=$list[$i]['sender_post_code']
-                =$list[$i]['sender_house_number']=$list[$i]['sender_address']=$list[$i]['sender_city']=$list[$i]['sender_street']
-                =$list[$i]['receiver_city']=$list[$i]['receiver_street']='';
+            $list[$i]['sender'] = $list[$i]['sender_phone'] = $list[$i]['sender_country'] = $list[$i]['sender_post_code']
+                = $list[$i]['sender_house_number'] = $list[$i]['sender_address'] = $list[$i]['sender_city'] = $list[$i]['sender_street']
+                = $list[$i]['receiver_city'] = $list[$i]['receiver_street'] = '';
             if (empty($info)) {
                 $info = $this->getLocation($list[$i]['receiver_country'], $list[$i]['receiver_city'], $list[$i]['receiver_street'], $list[$i]['receiver_house_number'], $list[$i]['receiver_post_code']);
             }
@@ -359,9 +359,9 @@ class OrderService extends BaseService
             try {
                 $this->store($list[$i]);
             } catch (BusinessLogicException $e) {
-                throw new BusinessLogicException(__('行').($i+1).':'.$e->getMessage());
+                throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
             } catch (\Exception $e) {
-                throw new BusinessLogicException(__('行').($i+1).':'.$e->getMessage());
+                throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
             }
         }
         return;
@@ -412,7 +412,7 @@ class OrderService extends BaseService
         $countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {
             //处理格式
-            $data[$i]['merchant_id']=$params['merchant_id'];
+            $data[$i]['merchant_id'] = $params['merchant_id'];
             $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             $data[$i] = array_map('strval', $data[$i]);
             $data[$i]['receiver_country'] = $countryShortList[$data[$i]['receiver_country_name']];
@@ -682,7 +682,7 @@ class OrderService extends BaseService
     public function getTourDate($id)
     {
         $info = parent::getInfo(['id' => $id], ['*'], true);
-        $data=$this->getSchedule($info);
+        $data = $this->getSchedule($info);
         return $data;
     }
 
@@ -692,27 +692,28 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getDate($params){
-        $firstDate='';
-        $data=$this->getSchedule($params);
-        $today=Carbon::today()->dayOfWeek;
-        $data[7]=$data[0];
-        for($i=$today;$i<=7;$i++){
-            if($data[$i] !== 0){
-                $firstDate = Carbon::today()->addDays(($i-$today))->format('Y-m-d');
+    public function getDate($params)
+    {
+        $firstDate = '';
+        $data = $this->getSchedule($params);
+        $today = Carbon::today()->dayOfWeek;
+        $data[7] = $data[0];
+        for ($i = $today; $i <= 7; $i++) {
+            if ($data[$i] !== 0) {
+                $firstDate = Carbon::today()->addDays(($i - $today))->format('Y-m-d');
                 break;
             }
         }
         if (empty($firstDate)) {
             for ($i = 1; $i < $today; $i++) {
                 if ($data[$i] !== 0) {
-                    $firstDate = Carbon::today()->addWeek()->startOfWeek()->addDays($i-1)->format('Y-m-d');
+                    $firstDate = Carbon::today()->addWeek()->startOfWeek()->addDays($i - 1)->format('Y-m-d');
                     break;
                 }
             }
         }
         array_pop($data);
-        return ['schedule'=>$data,'first_date'=>$firstDate];
+        return ['schedule' => $data, 'first_date' => $firstDate];
     }
 
     /**
@@ -721,8 +722,9 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getSchedule($info){
-        $data=[];
+    public function getSchedule($info)
+    {
+        $data = [];
         //获取邮编表
         $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $info['receiver_post_code'])
             ->where('post_code_end', '>=', $info['receiver_post_code'])
@@ -816,6 +818,48 @@ class OrderService extends BaseService
         }
         $this->getBatchService()->removeOrder($info);
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH);
+    }
+
+    /**
+     * 批量订单从站点移除
+     * @param $idList
+     * @throws BusinessLogicException
+     */
+    public function removeListFromBatch($idList)
+    {
+        $idList = explode_id_string($idList);
+        $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
+        if (empty($orderList)) {
+            throw new BusinessLogicException('所有订单的当前状态不能操作，只允许待分配或已分配状态的订单操作');
+        }
+        $statusList = [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2];
+        $orderList = Arr::where($orderList, function ($order) use ($statusList) {
+            if (!in_array($order['status'], $statusList)) {
+                throw new BusinessLogicException('订单[:order_no]的当前状态不能操作,只允许待分配或已分配状态的订单操作', 1000, ['order_no' => $order['order_no']]);
+            }
+            return !empty($order['batch_no']);
+        });
+        $orderNoList = array_column($orderList, 'order_no');
+        $where = ['order_no' => ['in', $orderNoList]];
+        //订单移除站点和取件线路信息
+        $rowCount = parent::update($where, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        //包裹移除站点和取件线路信息
+        $rowCount = $this->getPackageService()->update($where, ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        //材料移除站点和取件线路信息
+        $rowCount = $this->getMaterialService()->update($where, ['tour_no' => '', 'batch_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        foreach ($orderList as $order) {
+            $this->getBatchService()->removeOrder($order);
+        }
+        OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_REMOVE_BATCH);
     }
 
 

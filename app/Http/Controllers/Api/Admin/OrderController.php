@@ -161,6 +161,15 @@ class OrderController extends BaseController
     }
 
     /**
+     * 批量订单从站点移除
+     * @throws BusinessLogicException
+     */
+    public function removeListFromBatch()
+    {
+        return $this->service->removeListFromBatch($this->data['id_list']);
+    }
+
+    /**
      * 删除订单
      * @param $id
      * @throws \App\Exceptions\BusinessLogicException
