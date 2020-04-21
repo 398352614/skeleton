@@ -803,30 +803,41 @@ class OrderService extends BaseService
                     }
                     //如果线路不自增，验证最大订单量
                     if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
-                        for ($k = $date->dayOfWeek,$l=$line[$i]['appointment_days']; $k<$l; $k = $k + 7) {
+                        for ($k = $date->dayOfWeek, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
                             $params['execution_date'] = Carbon::today()->addDays($k)->format('Y-m-d');
                             if ($info['type'] == 1) {
                                 $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 1);
                                 if (1 + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count']) {
                                     if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                        if(time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])){
-                                            $data[]=$params['execution_date'];
+                                        if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                            $data[] = $params['execution_date'];
                                         }
-                                    }else{
-                                        $data[]=$params['execution_date'];
+                                    } else {
+                                        $data[] = $params['execution_date'];
                                     }
                                 }
                             } else {
                                 $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 2);
                                 if (1 + $orderCount['pie_count'] <= $line[$i]['pie_max_count']) {
                                     if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                        if(time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])){
-                                            $data[]=$params['execution_date'];
+                                        if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                            $data[] = $params['execution_date'];
                                         }
-                                    }else{
-                                        $data[]=$params['execution_date'];
+                                    } else {
+                                        $data[] = $params['execution_date'];
                                     }
                                 }
+                            }
+                        }
+                    } elseif ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_1) {
+                        for ($k = $date->dayOfWeek, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] = Carbon::today()->addDays($k)->format('Y-m-d');
+                            if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
+                                if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                    $data[] = $params['execution_date'];
+                                }
+                            } else {
+                                $data[] = $params['execution_date'];
                             }
                         }
                     }
