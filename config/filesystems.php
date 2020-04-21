@@ -103,6 +103,23 @@ return [
             'visibility' => 'public',
         ],
 
+        //商户端-文件
+        'merchant_file_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/merchant/file'),
+            'url' => env('APP_URL').'/storage/merchant/file',
+            'visibility' => 'public',
+        ],
+
+
+        //商户端-文件
+        'merchant_image_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/merchant/images'),
+            'url' => env('APP_URL').'/storage/merchant/images',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

@@ -30,8 +30,8 @@ class UploadService
 
     public function __construct()
     {
-        $this->imageDisk = Storage::disk('admin_image_public');
-        $this->fileDisk = Storage::disk('admin_file_public');
+        $this->imageDisk = Storage::disk('merchant_image_public');
+        $this->fileDisk = Storage::disk('merchant_file_public');
     }
 
     /**
@@ -131,7 +131,7 @@ class UploadService
             $params['name'] =date('YmdHis') . '.apk';
         }
         if($params['dir']==='template') {
-            $params['name'] ='order_import_template.xlsx';
+            $params['name'] ='templateTips.docx';
         }
         try {
             $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);

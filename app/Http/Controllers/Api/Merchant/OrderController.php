@@ -188,4 +188,12 @@ class OrderController extends OrderBaseController
     {
         return $this->service->actualDestroy($id);
     }
+
+    /**
+     * 检查
+     * @throws BusinessLogicException
+     */
+    public function importCheck(){
+        return $this->service->importCheck($this->data);
+    }
 }

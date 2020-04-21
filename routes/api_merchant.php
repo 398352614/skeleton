@@ -77,6 +77,8 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
         //获取模板
         Route::get('/getTemplate', 'OrderImportController@getTemplateExcel');
+        //获取模板说明
+        Route::get('/getTemplateTips', 'OrderImportController@getTemplate');
         //批量导入
         Route::post('/import', 'OrderController@orderImport');
         //批量新增
@@ -85,6 +87,8 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::get('/log', 'OrderImportController@index');
         //记录详情
         Route::get('/log/{id}', 'OrderImportController@show');
+        //检查
+        Route::get('/check', 'OrderController@importCheck');
     });
 
     //主页统计
