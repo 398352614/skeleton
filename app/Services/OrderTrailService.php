@@ -100,7 +100,6 @@ class OrderTrailService extends BaseService
         $data = [
             'company_id' => $order['company_id'],
             'order_no' => $order['order_no'],
-            'merchant_id' => $order['merchant_id'],
             'content' => $content,
         ];
         !empty($order['merchant_id']) && $data['merchant_id'] = $order['merchant_id'];
