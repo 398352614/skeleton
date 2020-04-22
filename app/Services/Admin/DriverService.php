@@ -57,7 +57,7 @@ class DriverService extends BaseService
             'password' => Hash::make($this->formData['password']),
             'fullname' => $this->formData['fullname'],
             'gender' => $this->formData['gender'],
-            'birthday' => $this->formData['birthday'],
+            'birthday' => $this->formData['birthday'] ?? null,
             'phone' => $this->formData['phone'], // $this->formData['phone_first'] . $this->formData['phone_last'],
             'duty_paragraph' => $this->formData['duty_paragraph'],
             'address' => $this->formData['address'],
