@@ -596,16 +596,8 @@ class BatchService extends BaseService
                         for ($k = $date->dayOfWeek, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
                             $params['execution_date'] = Carbon::today()->addDays($k)->format('Y-m-d');
                             $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 3);
-                            if ($info['expect_pickup_quantity'] + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count']) {
-                                if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                    if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
-                                        $data[] = $params['execution_date'];
-                                    }
-                                } else {
-                                    $data[] = $params['execution_date'];
-                                }
-                            }
-                            if ($info['expect_pie_quantity'] + $orderCount['pie_count'] <= $line[$i]['pie_max_count']) {
+                            if ($info['expect_pickup_quantity'] + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count'] &&
+                                $info['expect_pie_quantity'] + $orderCount['pie_count'] <= $line[$i]['pie_max_count']) {
                                 if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
                                     if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
                                         $data[] = $params['execution_date'];
