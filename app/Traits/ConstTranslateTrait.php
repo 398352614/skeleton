@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\App;
  * Trait ConstTranslateTrait
  * @package App\Traits
  * @method static weekList($args = null)
+ * @method static orderSourceList($arg = null)
  * @method static orderTypeList($args = null)
  * @method static orderSettlementTypeList($args = null)
  * @method static orderStatusList($args = null)
@@ -65,6 +66,13 @@ trait ConstTranslateTrait
     public static $orderTypeList = [
         BaseConstService::ORDER_TYPE_1 => '取件',
         BaseConstService::ORDER_TYPE_2 => '派件',
+    ];
+
+    //订单来源1-手动添加2-批量导入3-第三方
+    public static $orderSourceList = [
+        BaseConstService::ORDER_SOURCE_1 => '手动添加',
+        BaseConstService::ORDER_SOURCE_2 => '批量导入',
+        BaseConstService::ORDER_SOURCE_3 => '第三方'
     ];
 
     //订单结算方式1-寄付2-到付

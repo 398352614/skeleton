@@ -142,3 +142,21 @@ if (!function_exists('is_include_chinese')) {
         return (preg_match('/[\x{4e00}-\x{9fa5}]/u', $str) === 1) ? true : false;
     }
 }
+
+if (!function_exists('explode_id_string')) {
+
+    /**
+     * 分隔ID字符串
+     * @param $delimiter
+     * @param $str
+     * @return array
+     */
+    function explode_id_string($str, $delimiter = ',')
+    {
+        $list = is_array($str) ? $str : explode($delimiter, $str);
+        $list = array_filter($list, function ($value) {
+            return is_numeric($value);
+        });
+        return $list;
+    }
+}

@@ -21,12 +21,14 @@ class TourValidate extends BaseValidate
 
     public $rules = [
         'driver_id' => 'required|integer',
-        'car_id' => 'required|integer'
+        'car_id' => 'required|integer',
+        'order_id_list' => 'required|string|checkIdList:20'
     ];
 
     public $scene = [
         'assignDriver' => ['driver_id'],
-        'assignCar' => ['car_id']
+        'assignCar' => ['car_id'],
+        'getAddOrderPageList' => ['order_id_list']
     ];
 }
 

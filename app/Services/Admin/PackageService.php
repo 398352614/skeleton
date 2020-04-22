@@ -27,16 +27,15 @@ class PackageService extends BaseService
         foreach ($packageList as $package) {
             $dbPackage = $this->checkUnique($package, $orderNo);
             if (!empty($dbPackage)) {
-                $intersectPackage = array_intersect_assoc($dbPackage, $package);
                 $errorMsg = '';
-                if (!empty($intersectPackage['express_first_no'])) {
-                    $errorMsg .= __('包裹快递单号1[:express_no]已存在;', ['express_no' => $intersectPackage['express_first_no']]);
+                if (!empty($package['express_first_no'])) {
+                    $errorMsg .= __('包裹快递单号1[:express_no]已存在;', ['express_no' => $package['express_first_no']]);
                 }
-                if (!empty($intersectPackage['express_second_no'])) {
-                    $errorMsg .= __('包裹快递单号2[:express_no]已存在;', ['express_no' => $intersectPackage['express_second_no']]);
+                if (!empty($package['express_second_no'])) {
+                    $errorMsg .= __('包裹快递单号2[:express_no]已存在;', ['express_no' => $package['express_second_no']]);
                 }
-                if (!empty($intersectPackage['out_order_no'])) {
-                    $errorMsg .= __('包裹外部标识[:out_order_no]已存在;', ['out_order_no' => $intersectPackage['out_order_no']]);
+                if (!empty($package['out_order_no'])) {
+                    $errorMsg .= __('包裹外部标识[:out_order_no]已存在;', ['out_order_no' => $package['out_order_no']]);
                 }
                 throw new BusinessLogicException($errorMsg);
             }

@@ -99,16 +99,20 @@ class BatchService extends BaseService
     /**
      * 加入站点
      * @param $order
+     * @param $batchNo
+     * @param $tourNo
+     * @param $line
+     * @param $isAddOrder
      * @return array
      * @throws BusinessLogicException
      */
-    public function join($order)
+    public function join($order, $batchNo = null, $tourNo = null, $line = [], $isAddOrder = false)
     {
-        list($batch, $line) = $this->hasSameBatch($order);
+        list($batch, $line) = $this->hasSameBatch($order, $batchNo, $tourNo, $line, $isAddOrder);
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
-        list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order);
+        list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order, $line);
         /**************************************站点加入取件线路********************************************************/
-        $tour = $this->getTourService()->join($batch, $line, $order);
+        $tour = $this->getTourService()->join($batch, $line, $order, $tourNo, $isAddOrder);
         /***********************************************填充取件线路编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);
 
@@ -141,12 +145,22 @@ class BatchService extends BaseService
      * 判断是否存在相同站点
      * @param $order
      * @param $batchNo
+     * @param $tourNo
+     * @param $line
+     * @param $isAddOrder bool 是否是加单
      * @return array
      * @throws BusinessLogicException
      */
-    private function hasSameBatch($order, $batchNo = null)
+    private function hasSameBatch($order, $batchNo = null, $tourNo = null, $line = [], $isAddOrder = false)
     {
         $where = $this->getBatchWhere($order);
+        $isAddOrder && $where['status'] = ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]];
+        if (!empty($tourNo)) {
+            $where['tour_no'] = $tourNo;
+        }
+        if (!empty($line)) {
+            $where['line_id'] = $line['id'];
+        }
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
             $dbBatch = parent::getInfo($where, ['*'], false);
@@ -154,42 +168,43 @@ class BatchService extends BaseService
         } else {
             $batchList = parent::getList($where, ['*'], false, [], ['id' => 'desc'])->toArray();
         }
-        if (empty($batchList)) return [[], []];
+        if (empty($batchList)) return [[], $line];
         foreach ($batchList as $batch) {
             //获取线路信息
-            $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
-            if (empty($line)) {
+            $dbLine = $line ?? $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
+            if (empty($dbLine)) {
                 continue;
             }
-            $line = $line->toArray();
-            $tour = $this->getTourService()->getTourInfo($batch, $line, false, $batch['tour_no'] ?? '');
+            $dbLine = $dbLine->toArray();
+            $tour = $this->getTourService()->getTourInfo($batch, $dbLine, false, $batch['tour_no'] ?? '');
             //若存在，锁定当前站点
             if (!empty($tour)) {
                 $batch = parent::getInfoLock(['id' => $batch['id']], ['*'], false)->toArray();
-                return [$batch, $line];
+                return [$batch, $dbLine];
             }
         }
-        return [[], []];
+        return [[], $line];
     }
 
 
     /**
      * 加入新的站点
      * @param $order
+     * @param $line
      * @return array
      * @throws BusinessLogicException
      */
-    private function joinNewBatch($order)
+    private function joinNewBatch($order, $line)
     {
-        $line = $this->getLineService()->getInfoByRule($order);
+        $newLine = $line ?? $this->getLineService()->getInfoByRule($order);
         //站点新增
         $batchNo = $this->getOrderNoRuleService()->createBatchNo();
-        $batch = parent::create($this->fillData($order, $line, $batchNo));
+        $batch = parent::create($this->fillData($order, $newLine, $batchNo));
         if ($batch === false) {
             throw new BusinessLogicException('订单加入站点失败!');
         }
         $batch = $batch->getOriginal();
-        return [$batch, $line];
+        return [$batch, $newLine];
     }
 
     /**
@@ -279,7 +294,7 @@ class BatchService extends BaseService
      */
     public function updateAboutOrderByOrder($dbOrder, $order)
     {
-        $info = $this->getInfoOfStatus(['batch_no' => $dbOrder['batch_no']], true, BaseConstService::BATCH_WAIT_ASSIGN, true);
+        $info = $this->getInfoOfStatus(['batch_no' => $dbOrder['batch_no']], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         //若订单类型改变,则站点统计数量改变
         $data = [];
         if (intval($dbOrder['type']) !== intval($order['type'])) {
@@ -310,14 +325,37 @@ class BatchService extends BaseService
      * 通过订单数据,获取站点列表
      * @param $order
      * @return mixed
+     * @throws BusinessLogicException
      */
     public function getPageListByOrder($order)
     {
+        //通过订单获取可能站点
+        $data = [];
         $fields = ['receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
-        $this->formData = array_merge($this->formData, Arr::only($order, $fields));
-        $this->filters['execution_date'] = ['=', $order['execution_date']];
-        $this->setFilterRules();
-        return parent::getPageList();
+        $rule = array_merge($this->formData, Arr::only($order, $fields));
+        $this->query->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]);
+        $info = $this->getList($rule);
+        if (!empty($info)) {
+            for ($i = 0, $j = count($info); $i < $j; $i++) {
+                $tour = $this->getTourService()->getInfo(['tour_no' => $info[$i]['tour_no']], ['*'], false)->toArray();
+                $line = $this->getLineService()->getInfo(['id' => $info[$i]['line_id']], ['*'], false)->toArray();
+                if (!empty($tour) && !empty($line)) {
+                    //当日截止时间验证
+                    if ((date('Y-m-d') == $info[$i]['execution_date'] && time() < strtotime($info[$i]['execution_date'] . ' ' . $line['order_deadline']) ||
+                        date('Y-m-d') !== $info[$i]['execution_date'])) {
+                        //取件订单，线路最大订单量验证
+                        if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $info[$i]['expect_pickup_quantity'] < $line['pickup_max_count']) {
+                            $data[$i] = $info[$i];
+                        }
+                        //派件订单，线路最大订单量验证
+                        if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $info[$i]['expect_pie_quantity'] < $line['pie_max_count']) {
+                            $data[$i] = $info[$i];
+                        }
+                    }
+                }
+            }
+        }
+        return $data;
     }
 
     /**
@@ -534,17 +572,75 @@ class BatchService extends BaseService
     /**
      * 获取可分配日期
      * @param $id
-     * @return \Illuminate\Support\Collection
+     * @return array
      * @throws BusinessLogicException
      */
     public function getTourDate($id)
     {
+
         $info = parent::getInfo(['id' => $id], ['*'], true);
-        if (empty($info)) {
+        if(empty($info)){
             throw new BusinessLogicException('数据不存在');
         }
-        return $this->getLineRangeService()->query
-            ->where('post_code_start', '<=', $info['receiver_post_code'])
-            ->where('post_code_end', '>=', $info['receiver_post_code'])->distinct()->pluck('schedule');
+        $data=$this->getSchedule($info);
+        return $data;
     }
+
+    public function getSchedule($info){
+        $data = [];
+        //获取邮编数字部分
+        $postCode = explode_post_code($info['receiver_post_code']);
+        //获取线路范围
+        $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $postCode)
+            ->where('post_code_end', '>=', $postCode)
+            ->where('country', $info['receiver_country'])
+            ->get();
+        //按邮编范围循环
+        if (!empty($lineRange)) {
+            for ($i = 0, $j = count($lineRange); $i < $j; $i++) {
+                //获取线路信息
+                $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
+                if (!empty($line[$i])) {
+                    //获得当前邮编范围的首天
+                    if (\Illuminate\Support\Carbon::today()->dayOfWeek < $lineRange[$i]['schedule']) {
+                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule']);
+                    } else {
+                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule']);
+                    }
+                    //如果线路不自增，验证最大订单量
+                    if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
+                        for ($k = $date->dayOfWeek, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] = Carbon::today()->addDays($k)->format('Y-m-d');
+                            $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 3);
+                            if ($info['expect_pickup_quantity'] + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count'] &&
+                                $info['expect_pie_quantity'] + $orderCount['pie_count'] <= $line[$i]['pie_max_count']) {
+                                if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
+                                    if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                        $data[] = $params['execution_date'];
+                                    }
+                                } else {
+                                    $data[] = $params['execution_date'];
+                                }
+                            }
+                        }
+                    } elseif ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_1) {
+                        for ($k = $date->dayOfWeek, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] = Carbon::today()->addDays($k)->format('Y-m-d');
+                            if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
+                                if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                    $data[] = $params['execution_date'];
+                                }
+                            } else {
+                                $data[] = $params['execution_date'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        asort($data);
+        $data=array_values($data);
+        return $data;
+    }
+
 }

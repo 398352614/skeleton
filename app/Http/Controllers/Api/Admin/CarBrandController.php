@@ -34,4 +34,8 @@ class CarBrandController extends BaseController
     {
         return $this->service->create($this->data);
     }
+
+    public function getAll(){
+        return $this->service->getAll();
+    }
 }

@@ -527,7 +527,7 @@ class TourService extends BaseService
             'type' => $params['type'],
             'remark' => $params['exception_remark'],
             'picture' => $params['picture'],
-            'driver_name' => auth()->user()->first_name . auth()->user()->last_name
+            'driver_name' => auth()->user()->fullname
         ];
         $rowCount = $this->getBatchExceptionService()->create($data);
         if ($rowCount === false) {
@@ -833,7 +833,7 @@ class TourService extends BaseService
 
         throw_if(
             $tour->batchs->count() != $this->formData['batch_ids'],
-            new BusinessLogicException('线路')
+            new BusinessLogicException('线路的站点数量不正确')
         );
 
         //此处的所有 batchids 应该经过验证!

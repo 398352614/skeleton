@@ -117,6 +117,17 @@ class OrderController extends BaseController
     }
 
     /**
+     * 通过国家邮编，获取可分配的取派日期
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getDate()
+    {
+        return $this->service->getDate($this->data);
+    }
+
+    /**
      * 通过订单,获取可分配的站点列表
      * @param $id
      * @return mixed
@@ -150,6 +161,15 @@ class OrderController extends BaseController
     }
 
     /**
+     * 批量订单从站点移除
+     * @throws BusinessLogicException
+     */
+    public function removeListFromBatch()
+    {
+        return $this->service->removeListFromBatch($this->data['id_list']);
+    }
+
+    /**
      * 删除订单
      * @param $id
      * @throws \App\Exceptions\BusinessLogicException
@@ -177,5 +197,14 @@ class OrderController extends BaseController
     public function actualDestroy($id)
     {
         return $this->service->actualDestroy($id);
+    }
+
+    /**
+     * 批量分配订单至取件线路
+     * @throws BusinessLogicException
+     */
+    public function assignListTour()
+    {
+        return $this->service->assignListTour($this->data);
     }
 }

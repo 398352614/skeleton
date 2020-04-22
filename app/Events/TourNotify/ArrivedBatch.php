@@ -9,11 +9,12 @@
 namespace App\Events\TourNotify;
 
 
-use App\Events\Interfaces\ShouldSendNotify2Merchant;
+use App\Events\Interfaces\ATourNotify;
 use App\Models\Order;
 use App\Services\BaseConstService;
+use Illuminate\Support\Facades\Log;
 
-class ArrivedBatch implements ShouldSendNotify2Merchant
+class ArrivedBatch extends ATourNotify
 {
 
     public $tour;
@@ -24,9 +25,8 @@ class ArrivedBatch implements ShouldSendNotify2Merchant
 
     public function __construct($tour, $batch, $orderList = [])
     {
-        $this->tour = $tour;
-        $this->batch = $batch;
-        $this->orderList = $orderList ?? $this->getOrderList($this->batch['batch_no']);
+        $orderList = !empty($orderList) ? $orderList : $this->getOrderList($batch['batch_no']);
+        parent::__construct($tour, $batch, [], $orderList);
     }
 
     public function notifyType(): string
@@ -37,14 +37,17 @@ class ArrivedBatch implements ShouldSendNotify2Merchant
     public function getDataList(): array
     {
         $orderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
+        Log::info('order-list:' . json_encode($orderList));
         $batchList = [];
         foreach ($orderList as $merchantId => $merchantOrderList) {
             $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
         }
+        Log::info('batch-list:' . json_encode($batchList));
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
             $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch]);
         }
+        Log::info('tour-list:' . json_encode($tourList));
         return $tourList;
     }
 

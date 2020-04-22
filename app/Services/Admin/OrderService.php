@@ -13,16 +13,20 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
+use App\Jobs\OrderCreateByList;
 use App\Models\Order;
 use App\Models\OrderImportLog;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\CountryTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 
 class OrderService extends BaseService
@@ -122,7 +126,16 @@ class OrderService extends BaseService
 
     /**
      * 线路 服务
-     * @return mixed
+     * @return LineService
+     */
+    public function getLineService()
+    {
+        return self::getInstance(LineService::class);
+    }
+
+    /**
+     * 线路范围 服务
+     * @return LineRangeService
      */
     public function getLineRangeService()
     {
@@ -242,9 +255,6 @@ class OrderService extends BaseService
     }
 
 
-
-
-
     /**
      * 新增
      * @param $params
@@ -289,60 +299,78 @@ class OrderService extends BaseService
 
     /**
      * 订单批量新增
-     * @param $list
-     * @param $name
+     * @param $params
      * @return mixed
      * @throws BusinessLogicException
      */
     public function createByList($params)
     {
         $list = json_decode($params['list'], true);
-        $successCount = 0;
-        $failCount = 0;
-        $log = [];
         for ($i = 0; $i < count($list); $i++) {
             //处理格式
-            $list[$i]['execution_date'] = date('Y-m-d', ($list[$i]['execution_date'] - 25569) * 24 * 3600);
-            $list[$i] = array_map('strval', $list[$i]);
+            $list[$i]['package_list'] = [];
+            $list[$i]['material_list'] = [];
+            for ($j = 0; $j < 5; $j++) {
+                if ($list[$i]['item_type_' . ($j + 1)] === 1) {
+                    $list[$i]['package_list'][$j]['name'] = $list[$i]['item_name_' . ($j + 1)];
+                    $list[$i]['package_list'][$j]['express_first_no'] = $list[$i]['item_number_' . ($j + 1)];
+                    $list[$i]['package_list'][$j]['weight'] = $list[$i]['item_weight_' . ($j + 1)] ?? 1;
+                    $list[$i]['package_list'][$j]['quantity'] = $list[$i]['item_count_' . ($j + 1)] ?? 1;
+                    $list[$i]['package_list'][$j]['express_second_no'] = '';
+                    $list[$i]['package_list'][$j]['out_order_no'] = '';
+                    $list[$i]['package_list'] = array_values($list[$i]['package_list']);
+                } elseif ($list[$i]['item_type_' . ($j + 1)] === 2) {
+                    $list[$i]['material_list'][$j]['name'] = $list[$i]['item_name_' . ($j + 1)];
+                    $list[$i]['material_list'][$j]['code'] = $list[$i]['item_number_' . ($j + 1)];
+                    $list[$i]['material_list'][$j]['remark'] = '';
+                    $list[$i]['material_list'][$j]['quantity'] = $list[$i]['item_count_' . ($j + 1)] ?? 1;
+                    $list[$i]['material_list'][$j]['out_order_no'] = '';
+                    $list[$i]['material_list'] = array_values($list[$i]['material_list']);
+                }
+            }
+            $list[$i] = Arr::only($list[$i], [
+                'merchant_id',
+                'type',
+                'receiver',
+                'receiver_phone',
+                'receiver_country',
+                'receiver_post_code',
+                'receiver_house_number',
+                'receiver_address',
+                'execution_date',
+                'settlement_type',
+                'settlement_amount',
+                'replace_amount',
+                'out_order_no',
+                'delivery',
+                'remark',
+                'package_list',
+                'material_list']);
             //获取经纬度
             $info = $this->getReceiverAddressService()->check($list[$i]);
+            $list[$i]['sender'] = $list[$i]['sender_phone'] = $list[$i]['sender_country'] = $list[$i]['sender_post_code']
+                = $list[$i]['sender_house_number'] = $list[$i]['sender_address'] = $list[$i]['sender_city'] = $list[$i]['sender_street']
+                = $list[$i]['receiver_city'] = $list[$i]['receiver_street'] = '';
             if (empty($info)) {
                 $info = $this->getLocation($list[$i]['receiver_country'], $list[$i]['receiver_city'], $list[$i]['receiver_street'], $list[$i]['receiver_house_number'], $list[$i]['receiver_post_code']);
             }
             $list[$i]['lon'] = $info['lon'];
             $list[$i]['lat'] = $info['lat'];
-            //订单新增事务
             try {
-                DB::beginTransaction();
                 $this->store($list[$i]);
-                $log[$i + 1] = 'success';
-                $successCount = $successCount + 1;
-                DB::commit();
             } catch (BusinessLogicException $e) {
-                DB::rollBack();
-                $log[$i + 1] = $e->getMessage();
-                $failCount = $failCount + 1;
+                throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
             } catch (\Exception $e) {
-                DB::rollBack();
-                $log[$i + 1] = $e->getMessage();
-                $failCount = $failCount + 1;
+                throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
             }
         }
-        $data['log'] = $log;
-        $data['success'] = $successCount;
-        $data['fail'] = $failCount;
-        OrderImportLog::query()->where('id', $params['id'])->update([
-            'success_order' => $data['success'],
-            'fail_order' => $data['fail'],
-            'log' => json_encode($data['log']),
-            'status' => 2
-        ]);
-        return $data;
+        return;
     }
 
     /**
      * 订单导入
      * @param $params
+     * @return array
      * @throws BusinessLogicException
      */
     public function orderImport($params)
@@ -350,12 +378,52 @@ class OrderService extends BaseService
         $this->orderImportValidate($params);
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
-        $params['path'] = str_replace(env('APP_URL').'/storage/', 'public//', $params['path']);
-        $heading = ['execution_date', 'out_order_no', 'express_first_no', 'express_second_no', 'source', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'special_remark', 'remark', 'package_list', 'material_list'];
-        $this->headingCheck($params['path'], $heading);//表头验证
-        $row = $this->orderExcelImport($params['path'])[0];
+        $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
+        $headingCN = ['*取派类型', '*收件人姓名', '*收件人电话', '*收件人国家', '*收件人邮编', '*收件人门牌号', '*收件人详细地址', '*取派日期', '*结算类型', '运费金额', '代收货款', '外部订单号', '是否送货上门', '备注',
+            '*物品一类型', '*物品一名称', '物品一扫码编号', '物品一数量', '物品一重量',
+            '物品二类型', '物品二名称', '物品二扫码编号', '物品二数量', '物品二重量',
+            '物品三类型', '物品三名称', '物品三扫码编号', '物品三数量', '物品三重量',
+            '物品四类型', '物品四名称', '物品四扫码编号', '物品四数量', '物品四重量',
+            '物品五类型', '物品五名称', '物品五扫码编号', '物品五数量', '物品五重量'];
+        $headingEN = ['*Type', '*Receiver', '*Phone', '*Country', '*Post Code', '*House Number', '*Address', '*Execution Date', '*Settlement Type', 'Settlement Amount', 'Replace Amount', 'Out Order No', 'Delivery', 'Remark',
+            '*Item Type 1', '*Item Name 1', 'Item Code 1', 'Item Count 1', 'Item Weight 1',
+            'Item Type 2', 'Item Name 2', 'Item Code 2', 'Item Count 2', 'Item Weight 2',
+            'Item Type 3', 'Item Name 3', 'Item Code 3', 'Item Count 3', 'Item Weight 3',
+            'Item Type 4', 'Item Name 4', 'Item Code 4', 'Item Count 4', 'Item Weight 4',
+            'Item Type 5', 'Item Name 5', 'Item Code 5', 'Item Count 5', 'Item Weight 5'];
+        $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
+        if (App::getLocale() === 'cn' && $row[0] !== $headingCN) {
+            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
+        } elseif (App::getLocale() === 'en' && $row[0] !== $headingEN) {
+            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
+        }
+        $heading = OrderImportService::$headings;
+        $data = [];
+        for ($i = 1; $i < count($row); $i++) {
+            $data[$i - 1] = collect($heading)->combine($row[$i])->toArray();
+        }
         $id = $this->orderImportLog($params);
-        return ['row' => $row, 'id' => $id];
+        //数据处理
+        $typeList = ['取件' => 1, '派件' => 2, 'Pickup' => 1, 'Delivery' => 2];
+        $settlementList = ['寄付' => 1, '到付' => 1, 'Send' => 1, 'Pay on site' => 2];
+        $deliveryList = ['是' => 1, '否' => 2, 'Yes' => 1, 'No' => 2];
+        $itemList = ['包裹' => 1, '材料' => 2, 'Package' => 1, 'Material' => 2];
+        $countryNameList = array_unique(collect($data)->pluck('receiver_country_name')->toArray());
+        $countryShortList = CountryTrait::getShortListByName($countryNameList);
+        for ($i = 0; $i < count($data); $i++) {
+            //处理格式
+            $data[$i]['merchant_id'] = $params['merchant_id'];
+            $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
+            $data[$i] = array_map('strval', $data[$i]);
+            $data[$i]['receiver_country'] = $countryShortList[$data[$i]['receiver_country_name']];
+            $data[$i]['type'] = $typeList[$data[$i]['type_name']];
+            $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type_name']];
+            $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery_name']] ?? 1;
+            for ($j = 0; $j < 5; $j++) {
+                $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_name_' . ($j + 1)]] ?? 0;
+            }
+        }
+        return $data;
     }
 
     public function orderImportLog($params)
@@ -416,6 +484,7 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
         if (empty($params['lon']) || empty($params['lat'])) {
             $info = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
             $params['lon'] = $info['lon'];
@@ -431,14 +500,6 @@ class OrderService extends BaseService
         //验证包裹列表
         if (!empty($params['package_list'])) {
             $packageList = $params['package_list'];
-            $nameList = array_column($packageList, 'name');
-            if (count(array_unique($nameList)) !== count($nameList)) {
-                throw new BusinessLogicException('包裹名称有重复！不能添加订单');
-            }
-//            $outOrderNoList = array_filter(array_column($packageList, 'out_order_no'));
-//            if (!empty($outOrderNoList) && (count(array_unique($outOrderNoList)) !== count($outOrderNoList))) {
-//                throw new BusinessLogicException('包裹外部标识有重复！不能添加订单');
-//            }
             $expressNoList = array_filter(array_merge(array_column($packageList, 'express_first_no'), array_column($packageList, 'express_second_no')));
             if (count(array_unique($expressNoList)) !== count($expressNoList)) {
                 throw new BusinessLogicException('快递单号有重复！不能添加订单');
@@ -449,22 +510,10 @@ class OrderService extends BaseService
         //验证材料列表
         if (!empty($params['material_list'])) {
             $materialList = $params['material_list'];
-            $nameList = array_column($materialList, 'name');
-            if (count(array_unique($nameList)) !== count($nameList)) {
-                throw new BusinessLogicException('材料名称有重复！不能添加订单');
-            }
             $codeList = array_column($materialList, 'code');
             if (count(array_unique($codeList)) !== count($codeList)) {
                 throw new BusinessLogicException('材料代码有重复！不能添加订单');
             }
-//            $outOrderNoList = array_filter(array_column($materialList, 'out_order_no'));
-//            if (!empty($outOrderNoList)) {
-//                if (count(array_unique($outOrderNoList)) !== count($outOrderNoList)) {
-//                    throw new BusinessLogicException('材料外部标识有重复！不能添加订单');
-//                }
-//                //验证唯一性
-//                //$this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $orderNo);
-//            }
         }
     }
 
@@ -515,7 +564,7 @@ class OrderService extends BaseService
      */
     public function fillBatchTourInfo($order, $batch, $tour, $isFillItem = true)
     {
-        $status = $tour['status'] ?? BaseConstService::ORDER_STATUS_1;
+        $status = $batch['status'] ?? BaseConstService::ORDER_STATUS_1;
         $rowCount = parent::updateById($order['id'], [
             'execution_date' => $batch['execution_date'],
             'batch_no' => $batch['batch_no'],
@@ -616,7 +665,7 @@ class OrderService extends BaseService
     {
         //站点移除订单,添加新的订单
         if (!empty($dbInfo['batch_no'])) {
-            $this->getBatchService()->removeOrder(array_merge($data, Arr::only($dbInfo, ['batch_no', 'tour_no'])));
+            $this->getBatchService()->removeOrder($dbInfo);
         }
         list($batch, $tour) = $this->getBatchService()->join($data);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
@@ -625,7 +674,7 @@ class OrderService extends BaseService
     }
 
     /**
-     * 获取可分配星期
+     * 通过订单获得可选日期
      * @param $id
      * @return mixed
      * @throws BusinessLogicException
@@ -633,12 +682,99 @@ class OrderService extends BaseService
     public function getTourDate($id)
     {
         $info = parent::getInfo(['id' => $id], ['*'], true);
-        if (empty($info)) {
+        if(empty($info)){
             throw new BusinessLogicException('数据不存在');
         }
-        return $this->getLineRangeService()->query
-            ->where('post_code_start', '<=', $info['receiver_post_code'])
-            ->where('post_code_end', '>=', $info['receiver_post_code'])->distinct()->pluck('schedule');
+        $data = $this->getSchedule($info);
+        return $data;
+    }
+
+    /**
+     * 通过地址获得可选日期
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getDate($params)
+    {
+        $data = $this->getSchedule($params);
+        return $data;
+    }
+
+    /**
+     * 获取可选日期
+     * @param $info
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getSchedule($info)
+    {
+        $data = [];
+        //获取邮编数字部分
+        $postCode = explode_post_code($info['receiver_post_code']);
+        //获取线路范围
+        $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $postCode)
+            ->where('post_code_end', '>=', $postCode)
+            ->where('country', $info['receiver_country'])
+            ->get();
+        //按邮编范围循环
+        if (!empty($lineRange)) {
+            for ($i = 0, $j = count($lineRange); $i < $j; $i++) {
+                //获取线路信息
+                $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
+                if (!empty($line[$i])) {
+                    //获得当前邮编范围的首天
+                    if (Carbon::today()->dayOfWeek < $lineRange[$i]['schedule']) {
+                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule']);
+                    } else {
+                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule']);
+                    }
+                    //如果线路不自增，验证最大订单量
+                    if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
+                        for ($k = $date->dayOfWeek, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] = Carbon::today()->addDays($k)->format('Y-m-d');
+                            if ($info['type'] == 1) {
+                                $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 1);
+                                if (1 + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count']) {
+                                    if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
+                                        if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                            $data[] = $params['execution_date'];
+                                        }
+                                    } else {
+                                        $data[] = $params['execution_date'];
+                                    }
+                                }
+                            } else {
+                                $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 2);
+                                if (1 + $orderCount['pie_count'] <= $line[$i]['pie_max_count']) {
+                                    if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
+                                        if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                            $data[] = $params['execution_date'];
+                                        }
+                                    } else {
+                                        $data[] = $params['execution_date'];
+                                    }
+                                }
+                            }
+                        }
+                    } elseif ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_1) {
+                        for ($k = $date->dayOfWeek, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] = Carbon::today()->addDays($k)->format('Y-m-d');
+                            if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
+                                if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                    $data[] = $params['execution_date'];
+                                }
+                            } else {
+                                $data[] = $params['execution_date'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        asort($data);
+        $data=array_values($data);
+        return $data;
     }
 
     /**
@@ -687,7 +823,7 @@ class OrderService extends BaseService
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($info['batch_no'])) {
-            throw new BusinessLogicException('已从站点移除!');
+            return;
         }
         //订单移除站点和取件线路信息
         $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
@@ -706,6 +842,49 @@ class OrderService extends BaseService
         }
         $this->getBatchService()->removeOrder($info);
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
+    }
+
+    /**
+     * 批量订单从站点移除
+     * @param $idList
+     * @throws BusinessLogicException
+     */
+    public function removeListFromBatch($idList)
+    {
+        $idList = explode_id_string($idList);
+        $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
+        if (empty($orderList)) {
+            throw new BusinessLogicException('所有订单的当前状态不能操作，只允许待分配或已分配状态的订单操作');
+        }
+        $statusList = [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2];
+        $orderList = Arr::where($orderList, function ($order) use ($statusList) {
+            if (!in_array($order['status'], $statusList)) {
+                throw new BusinessLogicException('订单[:order_no]的当前状态不能操作,只允许待分配或已分配状态的订单操作', 1000, ['order_no' => $order['order_no']]);
+            }
+            return !empty($order['batch_no']);
+        });
+        $orderNoList = array_column($orderList, 'order_no');
+        $where = ['order_no' => ['in', $orderNoList]];
+        //订单移除站点和取件线路信息
+        $rowCount = parent::update($where, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        //包裹移除站点和取件线路信息
+        $rowCount = $this->getPackageService()->update($where, ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        //材料移除站点和取件线路信息
+        $rowCount = $this->getMaterialService()->update($where, ['tour_no' => '', 'batch_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        foreach ($orderList as $order) {
+            $this->getBatchService()->removeOrder($order);
+        }
+        OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_REMOVE_BATCH);
     }
 
 
@@ -801,5 +980,78 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('彻底删除失败，请重新操作');
         }
+    }
+
+    /**
+     * 批量订单分配至指定取件线路
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function assignListTour($params)
+    {
+        list($orderIdList, $tourNo) = [$params['id_list'], $params['tour_no']];
+        /******************************************1.获取数据**********************************************************/
+        list($orderList, $lineId) = $this->getAddOrderList($orderIdList);
+        $orderList = Arr::where($orderList, function ($order) use ($tourNo) {
+            return (($order['tour_no'] != $tourNo) && ($order['type'] == BaseConstService::ORDER_TYPE_1));
+        });
+        //获取线路信息
+        $line = $this->getLineService()->getInfo(['id' => $lineId], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('线路不存在');
+        }
+        $line = $line->toArray();
+        //获取取件线路信息
+        $tour = $this->getTourService()->getInfo(['tour_no' => $tourNo, 'line_id' => $line['id'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('取件线路当前状态不能操作');
+        }
+        $tour = $tour->toArray();
+        /*******************************************2.验证*************************************************************/
+        $count = 0;
+        if ($tour['status'] == BaseConstService::TOUR_STATUS_4) {
+            $materialCount = $this->getMaterialService()->count(['order_no' => ['in', array_column($orderList, 'order_no')]]);
+            if ($materialCount > 0) {
+                throw new BusinessLogicException('当前取件线路正在派送中，取件订单加单不能包含材料');
+            }
+        }
+        if ($tour['expect_pickup_quantity'] + $count > $line['pickup_max_count']) {
+            throw new BusinessLogicException('取件数量超过线路取件订单最大值');
+        }
+        /*******************************************2.加单*************************************************************/
+        data_set($orderList, '*.execution_date', $tour['execution_date']);
+        foreach ($orderList as $order) {
+            $this->removeFromBatch($order['id']);
+            list($batch, $tour) = $this->getBatchService()->join($order, null, $tourNo, $line, true);
+            /**********************************填充取件批次编号和取件线路编号**********************************************/
+            $this->fillBatchTourInfo($order, $batch, $tour);
+            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
+            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
+        }
+    }
+
+
+    /**
+     * 获取可加单的订单列表
+     * @param $orderIdList
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getAddOrderList($orderIdList)
+    {
+        $lineId = null;
+        $orderList = parent::getList(['id' => ['in', explode(',', $orderIdList)]], ['*'], false)->toArray();
+        $statusList = [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2];
+        foreach ($orderList as $order) {
+            if (!in_array($order['status'], $statusList)) {
+                throw new BusinessLogicException('订单[:order_no]的不是待分配或已分配状态，不能操作', 1000, ['order_no' => $order['order_no']]);
+            }
+            $dbLineId = $this->getLineRangeService()->getLineIdByRule($order);
+            if (empty($dbLineId) || (!empty($lineId) && ($lineId != $dbLineId))) {
+                return [$orderList, 0];
+            }
+            $lineId = $dbLineId;
+        }
+        return [$orderList, $lineId];
     }
 }

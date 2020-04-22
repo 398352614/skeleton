@@ -64,18 +64,24 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}', 'OrderController@update');
         //获取可分配路线日期
         Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
+        //获取可分配路线日期(新增)
+        Route::get('/getDate', 'OrderController@getDate');
         //获取可分配的站点列表
         Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
         //分配至站点
         Route::put('/{id}/assignToBatch', 'OrderController@assignToBatch');
         //从站点移除
         Route::delete('/{id}/removeFromBatch', 'OrderController@removeFromBatch');
+        //批量订单从站点移除
+        Route::delete('/removeListFromBatch', 'OrderController@removeListFromBatch');
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
         //恢复
         Route::put('/{id}/recovery', 'OrderController@recovery');
         //彻底删除
         Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
+        //批量订单分配至指定取件线路
+        Route::put('/assignListTour', 'OrderController@assignListTour');
     });
 
     //订单导入记录管理
@@ -115,8 +121,10 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('car')->group(function () {
         Route::put('/{id}/lock', 'CarController@lock')->name('car.lock'); //车辆锁定操作
         Route::get('/brands', 'CarBrandController@index')->name('carBrand.brands');  // 获取品牌列表
+        Route::get('/allBrands', 'CarBrandController@getAll')->name('carBrand.getAll');  // 获取品牌列表
         Route::post('/addbrand', 'CarBrandController@store')->name('carBrand.store'); // 添加品牌
         Route::get('/models', 'CarModelController@getListByBrand')->name('carModel.getListByBrand'); // 获取型号列表
+        Route::get('/allModels/{id}', 'CarModelController@getAll')->name('carModel.getAll');  // 获取所有品牌列表
         Route::post('/addmodel', 'CarModelController@store')->name('carModel.store');   // 添加模型
 
         //rest api 放在最后
@@ -164,6 +172,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/auto-op-tour', 'TourController@autoOpTour');         //自动优化线路
 
         //rest api 放在最后
+        Route::get('/getAddOrderPageList', 'TourController@getAddOrderPageList');
         Route::get('/', 'TourController@index')->name('tour.index');
         Route::get('/{id}', 'TourController@show')->name('tour.show');
         Route::put('/{id}/assignDriver', 'TourController@assignDriver');               //分配司机
@@ -178,7 +187,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //取件线路-司机
     Route::prefix('tour-driver')->group(function () {
-        Route::get('/{tour_no}','TourDriverController@getListByTourNo');
+        Route::get('/{tour_no}', 'TourDriverController@getListByTourNo');
     });
 
     //任务报告
@@ -391,5 +400,11 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/', 'VersionController@store'); //版本新增
         Route::put('/{id}', 'VersionController@update'); //版本修改
         Route::delete('/{id}', 'VersionController@delete'); //版本删除
+    });
+
+    //worker
+    Route::prefix('worker')->group(function () {
+        //绑定
+        Route::post('/bind/{client_id}', 'WorkerController@bind');
     });
 });

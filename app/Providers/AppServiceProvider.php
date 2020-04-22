@@ -8,6 +8,7 @@ use App\Services\ReisService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
+use Tymon\JWTAuth\JWTGuard;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -83,5 +84,11 @@ class AppServiceProvider extends ServiceProvider
 
         //验证类扩展
         Validator::extend('uniqueIgnore', 'App\\Http\\Validate\\BaseValidate@uniqueIgnore');
+        Validator::extend('checkIdList', 'App\\Http\\Validate\\BaseValidate@checkIdList');
+
+        JWTGuard::macro('setUserNull', function () {
+            $this->user = null;
+            return null;
+        });
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Events\TourNotify;
 
-use App\Events\Interfaces\ShouldSendNotify2Merchant;
+use App\Events\Interfaces\ATourNotify;
 use App\Models\Batch;
 use App\Models\Tour;
 use App\Services\BaseConstService;
@@ -17,7 +17,7 @@ use Illuminate\Queue\SerializesModels;
 /**
  * 司机回仓事件
  */
-class BackWarehouse implements ShouldSendNotify2Merchant
+class BackWarehouse extends ATourNotify
 {
     public $tour;
 
@@ -29,7 +29,7 @@ class BackWarehouse implements ShouldSendNotify2Merchant
      */
     public function __construct($tour)
     {
-        $this->tour = $tour;
+        parent::__construct($tour, [], [], []);
     }
 
 

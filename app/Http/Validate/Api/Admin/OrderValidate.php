@@ -20,7 +20,7 @@ class OrderValidate extends BaseValidate
         'out_order_no' => '外部订单号',
         'express_first_no' => '快递单号1',
         'express_second_no' => '快递单号2',
-        'source' => '来源',
+        'list_mode' => '清单模式',
         'type' => '类型',
         'out_user_id' => '外部客户ID',
         'nature' => '性质',
@@ -55,7 +55,8 @@ class OrderValidate extends BaseValidate
         'batch_no' => 'nullable|string|max:50',
         'out_order_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
         'execution_date' => 'required|date|after_or_equal:today',
-        'type' => 'nullable|integer|in:1,2',
+        'list_mode' => 'sometimes|required|in:1,2',
+        'type' => 'required|integer|in:1,2',
         'out_user_id' => 'nullable|integer',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
         'settlement_type' => 'required|in:1,2',
@@ -83,25 +84,28 @@ class OrderValidate extends BaseValidate
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
         //包裹列表
-        'package_list.*.name' => 'required_with:package_list|string|max:50',
-        'package_list.*.weight' => 'required_with:package_list|numeric',
+        'package_list.*.name' => 'nullable|string|max:50',
+        'package_list.*.weight' => 'nullable|numeric',
         'package_list.*.expect_quantity' => 'required_with:package_list|integer',
         'package_list.*.remark' => 'nullable|string|max:250',
         'package_list.*.out_order_no' => 'nullable|string|max:50',
         'package_list.*.express_first_no' => 'required_with:package_list|string|max:50',
         'package_list.*.express_second_no' => 'nullable|string|max:50',
         //材料列表
-        'material_list.*.name' => 'required_with:material_list|string|max:50',
+        'material_list.*.name' => 'nullable|string|max:50',
         'material_list.*.code' => 'required_with:material_list|string|max:50',
         'material_list.*.out_order_no' => 'nullable|string|max:50',
         'material_list.*.expect_quantity' => 'required_with:material_list|integer',
         'material_list.*.remark' => 'nullable|string|max:250',
+
+        'id_list' => 'required|string|checkIdList:100',
+        'tour_no' => 'nullable|string|max:50',
     ];
 
     public $scene = [
         'store' => [
             'merchant_id', 'execution_date',
-            'out_order_no', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
+            'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
             'sender_city', 'sender_street', 'sender_address',
@@ -117,7 +121,7 @@ class OrderValidate extends BaseValidate
         ],
         'update' => [
             'merchant_id', 'execution_date',
-            'out_order_no', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
+            'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
             'sender_city', 'sender_street', 'sender_address',
@@ -134,7 +138,8 @@ class OrderValidate extends BaseValidate
         'getBatchPageListByOrder' => ['execution_date'],
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
-        'destroy' => ['remark']
+        'destroy' => ['remark'],
+        'removeListFromBatch' => ['id_list']
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',

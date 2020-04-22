@@ -289,15 +289,7 @@ return [
         'outgoing_time' => '出厂日期',
         'car_brand_id' => '车辆品牌ID',
         'car_model_id' => '汽车型号id',
-        'frame_number' => '车架号',
-        'engine_number' => '发动机编号',
-        'transmission' => '车型',
-        'fuel_type' => '燃料类型',
-        'current_miles' => '当前里程数',
-        'annual_inspection_data' => '下次年检日期',
         'ownership_type' => '类型',
-        'received_date' => '接收车辆日期',
-        'month_road_tax' => '每月路税',
         'insurance_company' => '保险公司',
         'insurance_type' => '保险类型',
         'month_insurance' => '每月保险',
@@ -312,12 +304,10 @@ return [
         //Admin-Company
         //Admin-Country
         //Admin-Driver
-        'last_name' => '姓',
-        'first_name' => '名',
+        'fullname' => '姓名',
         'gender' => '性别',
         'birthday' => '生日',
         'duty_paragraph' => '税号',
-        'door_no' => '门牌号',
         'lisence_number' => '驾照编号',
         'lisence_valid_date' => '有效期',
         'lisence_type' => '驾照类型',
@@ -331,7 +321,6 @@ return [
         'bic' => 'BIC',
         'crop_type' => '合作类型',
         //Admin-Employee
-        'fullname' => '姓名',
         'username' => '用户名',
         'group_id' => '用户组',
         'institution_id' => '组织机构',
@@ -351,6 +340,7 @@ return [
         'express_first_no' => '快递单号1',
         'express_second_no' => '快递单号2',
         'source' => '来源',
+        'list_mode' => '清单模式',
         'type' => '类型',
         'out_user_id' => '外部客户ID',
         'nature' => '性质',
@@ -421,5 +411,31 @@ return [
 
         'url' => 'url',
         'white_ip_list' => '白名单',
+
+        //order-import
+        "item_name_1"=>"物品一名称",
+        "item_number_1"=>"物品一扫码编号",
+        "item_count_1"=>"物品一数量",
+        "item_weight_1"=>"物品一重量",
+
+        "item_name_2"=>"物品二名称",
+        "item_number_2"=>"物品二扫码编号",
+        "item_count_2"=>"物品二数量",
+        "item_weight_2"=>"物品二重量",
+
+        "item_name_3"=>"物品三名称",
+        "item_number_3"=>"物品三扫码编号",
+        "item_count_3"=>"物品三数量",
+        "item_weight_3"=>"物品三重量",
+
+        "item_name_4"=>"物品四名称",
+        "item_number_4"=>"物品四扫码编号",
+        "item_count_4"=>"物品四数量",
+        "item_weight_4"=>"物品四重量",
+
+        "item_name_5"=>"物品五名称",
+        "item_number_5"=>"物品五扫码编号",
+        "item_count_5"=>"物品五数量",
+        "item_weight_5"=>"物品五重量",
     ],
 ];

@@ -2,15 +2,21 @@
 
 namespace App\Exports;
 
+use App\Services\CommonService;
+use App\Traits\FactoryInstanceTrait;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithEvents;     // 自动注册事件监听器
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;    // 导出 0 原样显示，不为 null
 use Maatwebsite\Excel\Concerns\WithTitle;    // 设置工作䈬名称
-use Maatwebsite\Excel\Events\AfterSheet;    // 在工作表流程结束时会引发事件
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Facades\Excel;    // 在工作表流程结束时会引发事件
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 
 class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComparison,WithHeadings
 {
+    use FactoryInstanceTrait;
     protected $data;
     protected $title;
     protected $headings;
@@ -21,6 +27,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
         $this->title =$title;
         $this->headings =$headings;
     }
+
 
     /**
      * 表格数据
@@ -59,27 +66,139 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
     {
         return [
             AfterSheet::class => function(AfterSheet $event) {
+            $endColumn=$event->sheet->getDelegate()->getHighestColumn();
+            $cell='A1:'.$endColumn.'2';
+                $event->sheet->getDelegate()->freezePane('A2');
                 // 合并单元格
-                //$event->sheet->getDelegate()->setMergeCells(['A1:O1', 'A2:C2', 'D2:O2']);
-                // 冻结窗格
-                //$event->sheet->getDelegate()->freezePane('A1');
+                //$event->sheet->getDelegate()->setMergeCells(['A1:'.$endColumn.'1']);
                 //设置单元格内容自动转行
-                $event->sheet->getDelegate()->getStyle('A1:A100')->getAlignment()->setWrapText(TRUE);
+                $event->sheet->getDelegate()->getStyle($cell)->getAlignment()->setWrapText(TRUE);
                 // 设置单元格内容水平靠右
-                $event->sheet->getDelegate()->getStyle('A1:A100')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                $event->sheet->getDelegate()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                 //设置单元格内容垂直居中
-                $event->sheet->getDelegate()->getStyle('A1:A100')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                $event->sheet->getDelegate()->getStyle($cell)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 // 定义列宽度
-                $widths =[];
-                if($this->title === 'merchant'){
-                    $widths = ['A' => 10, 'B' => 10, 'C' => 25,'D'=>15,'E'=>10,'F'=>10,'G'=>20,'H'=>25,'I'=>10];
-                }elseif (strstr($this->title,'TOUR')){
-                    $widths = ['A' => 5, 'B' => 15, 'C' => 15,'D'=>15,'E'=>25,'F'=>15,'G'=>15,'H'=>10,'I'=>10,'J'=>10,'K'=>15,'L'=>15];
+                for($i=0,$j=count($this->headings());$i<=$j;$i++){
+                    $event->sheet->getDelegate()->getColumnDimensionByColumn($i)->setWidth('20');
                 }
-                foreach ($widths as $k => $v) {
-                    $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
+                //设置字体大小
+                $event->sheet->getDelegate()->getStyle('A1:'.$endColumn.'1')->getFont()->setSize(12);
+                if($this->title ==='template'){
+                    $event->sheet->getDelegate()->getStyle('A1:'.$endColumn.'1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFAAAAAA');
+                    $event->sheet->getDelegate()->getStyle('H2:H101')->getNumberFormat()
+                        ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_YYYYMMDD2);
+                    $countryList=implode(',',collect(self::getInstance(CommonService::class)->getCountryList())->pluck('name')->toArray());
+                    $typeList=implode(',',[__('取件'),__('派件')]);
+                    $settlementList=implode(',',[__('寄付'),__('到付')]);
+                    $deliveryList=implode(',',[__('是'),__('否')]);
+                    $itemList=implode(',',[__('包裹'),__('材料')]);
+                    $event->sheet->getDelegate()->getStyle('A1:I1')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    $event->sheet->getDelegate()->getStyle('O1:P1')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    for ($i=0;$i<99;$i++){
+                        $event->sheet->getDelegate()->getcell('A'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            ->setErrorStyle(DataValidation::STYLE_INFORMATION )
+                            ->setAllowBlank(true)
+                            ->setShowInputMessage(true)
+                            ->setShowErrorMessage(true)
+                            ->setShowDropDown(true)
+                            ->setErrorTitle(__('输入的值有误'))
+                            ->setError(__('输入的值有误'))
+                            ->setPromptTitle('')
+                            ->setPrompt('')
+                            ->setFormula1('"' . $typeList . '"');
+                        $event->sheet->getDelegate()->getcell('D'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            ->setErrorStyle(DataValidation::STYLE_INFORMATION )
+                            ->setAllowBlank(true)
+                            ->setShowInputMessage(true)
+                            ->setShowErrorMessage(true)
+                            ->setShowDropDown(true)
+                            ->setErrorTitle(__('输入的值有误'))
+                            ->setError(__('输入的值有误'))
+                            ->setPromptTitle('')
+                            ->setPrompt('')
+                            ->setFormula1('"' . $countryList . '"');
+                        $event->sheet->getDelegate()->getcell('I'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            ->setErrorStyle(DataValidation::STYLE_INFORMATION )
+                            ->setAllowBlank(true)
+                            ->setShowInputMessage(true)
+                            ->setShowErrorMessage(true)
+                            ->setShowDropDown(true)
+                            ->setErrorTitle(__('输入的值有误'))
+                            ->setError(__('输入的值有误'))
+                            ->setPromptTitle('')
+                            ->setPrompt('')
+                            ->setFormula1('"' . $settlementList . '"');
+                        $event->sheet->getDelegate()->getcell('M'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            ->setErrorStyle(DataValidation::STYLE_INFORMATION )
+                            ->setAllowBlank(true)
+                            ->setShowInputMessage(true)
+                            ->setShowErrorMessage(true)
+                            ->setShowDropDown(true)
+                            ->setErrorTitle(__('输入的值有误'))
+                            ->setError(__('输入的值有误'))
+                            ->setPromptTitle('')
+                            ->setPrompt('')
+                            ->setFormula1('"' . $deliveryList . '"');
+                        $event->sheet->getDelegate()->getcell('O'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            ->setErrorStyle(DataValidation::STYLE_INFORMATION )
+                            ->setAllowBlank(true)
+                            ->setShowInputMessage(true)
+                            ->setShowErrorMessage(true)
+                            ->setShowDropDown(true)
+                            ->setErrorTitle(__('输入的值有误'))
+                            ->setError(__('输入的值有误'))
+                            ->setPromptTitle('')
+                            ->setPrompt('')
+                            ->setFormula1('"' . $itemList . '"');
+                        $event->sheet->getDelegate()->getcell('T'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            ->setErrorStyle(DataValidation::STYLE_INFORMATION )
+                            ->setAllowBlank(true)
+                            ->setShowInputMessage(true)
+                            ->setShowErrorMessage(true)
+                            ->setShowDropDown(true)
+                            ->setErrorTitle(__('输入的值有误'))
+                            ->setError(__('输入的值有误'))
+                            ->setPromptTitle('')
+                            ->setPrompt('')
+                            ->setFormula1('"' . $itemList . '"');
+                        $event->sheet->getDelegate()->getcell('Y'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            ->setErrorStyle(DataValidation::STYLE_INFORMATION )
+                            ->setAllowBlank(true)
+                            ->setShowInputMessage(true)
+                            ->setShowErrorMessage(true)
+                            ->setShowDropDown(true)
+                            ->setErrorTitle(__('输入的值有误'))
+                            ->setError(__('输入的值有误'))
+                            ->setPromptTitle('')
+                            ->setPrompt('')
+                            ->setFormula1('"' . $itemList . '"');
+                        $event->sheet->getDelegate()->getcell('AD'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            ->setErrorStyle(DataValidation::STYLE_INFORMATION )
+                            ->setAllowBlank(true)
+                            ->setShowInputMessage(true)
+                            ->setShowErrorMessage(true)
+                            ->setShowDropDown(true)
+                            ->setErrorTitle(__('输入的值有误'))
+                            ->setError(__('输入的值有误'))
+                            ->setPromptTitle('')
+                            ->setPrompt('')
+                            ->setFormula1('"' . $itemList . '"');
+                        $event->sheet->getDelegate()->getcell('AI'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            ->setErrorStyle(DataValidation::STYLE_INFORMATION )
+                            ->setAllowBlank(true)
+                            ->setShowInputMessage(true)
+                            ->setShowErrorMessage(true)
+                            ->setShowDropDown(true)
+                            ->setErrorTitle(__('输入的值有误'))
+                            ->setError(__('输入的值有误'))
+                            ->setPromptTitle('')
+                            ->setPrompt('')
+                            ->setFormula1('"' . $itemList . '"');
+                    }
+
+/*                    $event->sheet->getDelegate()->getComment('A1')
+                        ->getText()->createTextRun(__('1-取件，2-派件'));*/
                 }
-                // 其他样式需求（设置边框，背景色等）处理扩展中给出的宏，也可以自定义宏来实现，详情见官网说明
             },
         ];
     }

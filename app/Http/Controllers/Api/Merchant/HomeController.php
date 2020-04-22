@@ -18,26 +18,51 @@ class HomeController extends BaseController
         parent::__construct($service);
     }
 
+    /**
+     * 主页（默认显示今天总数和这周每日完成订单数）
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
     public function home()
     {
         return $this->service->home();
     }
 
+    /**
+     * 此周数据
+     * @return array
+     * @throws \Exception
+     */
     public function thisWeekCount()
     {
         return $this->service->thisWeekCount();
     }
 
+    /**
+     * 上周数据
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
     public function lastWeekCount()
     {
         return $this->service->lastWeekCount();
     }
 
+    /**
+     * 此月数据
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
     public function thisMonthCount()
     {
         return $this->service->thisMonthCount();
     }
 
+    /**
+     * 上月数据
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
     public function lastMonthCount()
     {
         return $this->service->lastMonthCount();
@@ -52,5 +77,9 @@ class HomeController extends BaseController
     public function periodCount()
     {
         return $this->service->periodCount($this->data);
+    }
+
+    public function all(){
+        return $this->service->all();
     }
 }

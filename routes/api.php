@@ -30,5 +30,7 @@ Route::namespace('Api')->group(function () {
         Route::get('/calDate', 'TestController@calDate');
         //批量修改
         Route::get('/updateAll', 'TestController@updateAll');
+        //批量修改
+        Route::get('/hex/{id}', 'TestController@hex');
     });
 });

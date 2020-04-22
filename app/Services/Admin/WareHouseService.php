@@ -19,7 +19,16 @@ class WareHouseService extends BaseService
 {
     public function __construct(Warehouse $warehouse)
     {
-        parent::__construct($warehouse, WareHouseResource::class,WareHouseResource::class);
+        parent::__construct($warehouse, WareHouseResource::class, WareHouseResource::class);
+    }
+
+    /**
+     * 线路 服务
+     * @return LineService
+     */
+    public function getLineService()
+    {
+        return self::getInstance(LineService::class);
     }
 
     /**
@@ -72,6 +81,11 @@ class WareHouseService extends BaseService
      */
     public function destroy($id)
     {
+        //删除仓库前 先验证线路是否存在
+        $line = $this->getLineService()->getInfo(['warehouse_id' => $id], ['id'], false);
+        if (!empty($line)) {
+            throw new BusinessLogicException('存在当前仓库的线路,请先删除线路');
+        }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('仓库删除失败，请重新操作');

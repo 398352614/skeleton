@@ -23,17 +23,4 @@ Trait ImportTrait
         return Excel::toArray(new lineImport, $path);
     }
 
-    /**
-     * 检查表头
-     * @param $path
-     * @param $heading
-     * @throws BusinessLogicException
-     */
-    public function headingCheck($path,$heading){
-        $validate= (new HeadingRowImport())->toArray($path)[0][0];
-        if($validate !== $heading){
-            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
-        }
-    }
-
 }
