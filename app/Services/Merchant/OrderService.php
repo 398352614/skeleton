@@ -790,6 +790,9 @@ class OrderService extends BaseService
     public function getTourDate($id)
     {
         $info = parent::getInfo(['id' => $id], ['*'], true);
+        if(empty($info)){
+            throw new BusinessLogicException('数据不存在');
+        }
         $data=$this->getSchedule($info);
         return $data;
     }
