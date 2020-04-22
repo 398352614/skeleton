@@ -41,7 +41,7 @@ class CarValidate extends BaseValidate
         'outgoing_time' => 'nullable|date_format:Y-m-d',
         'car_brand_id' => 'required|integer',
         'car_model_id' => 'required|integer',
-        'ownership_type' => 'required|integer|between:1,3',
+        'ownership_type' => 'nullable|integer|between:1,3',
         'insurance_company' => 'nullable|string|max:50',
         'insurance_type' => 'nullable|string|max:50',
         'month_insurance' => 'nullable|numeric',
