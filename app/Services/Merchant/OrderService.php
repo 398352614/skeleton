@@ -598,7 +598,7 @@ class OrderService extends BaseService
      * 导入验证
      * @param $data
      * @return array
-     */
+    */
     public function importCheck($data){
         $data = json_decode($data['list'], true);
         $list=[];
@@ -606,17 +606,20 @@ class OrderService extends BaseService
             for ($i=0,$j=count($data);$i<$j;$i++){
                 $validator[$i] = Validator::make($data[$i], $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message),$validate->customAttributes);
                 if ($validator[$i]->fails()) {
-                    $key=$validator[$i]->errors()->keys();
-                    foreach ($key as $v){
-                        $list[$i][$v] =$validator[$i]->errors()->first($v);
+                    $key = $validator[$i]->errors()->keys();
+                    foreach ($key as $v) {
+                        $list[$i][$v] = $validator[$i]->errors()->first($v);
                     }
                 }
-                $address[$i]=$this->getReceiverAddressService()->check($data[$i]);
-                if(empty($address[$i])){
-                    sleep(1);
+                //如果没传经纬度，就去地址库拉经纬度
+                if(empty($data[$i]['lon']) || empty($data[$i]['lat'])){
+                    $address[$i]=$this->getReceiverAddressService()->check($data[$i]);
+                    if(empty($address[$i])){
+                        sleep(1);
+                    }
+                    $list[$i]['lon']=$address[$i]['lon']??null;
+                    $list[$i]['lat']=$address[$i]['lat']??null;
                 }
-                $list[$i]['lon']=$address[$i]['lon']??null;
-                $list[$i]['lat']=$address[$i]['lat']??null;
                 $data[$i]=$this->form($data[$i]);
                 try{
                     $this->check($data[$i]);

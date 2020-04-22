@@ -133,7 +133,8 @@ class OrderValidate extends BaseValidate
         'getBatchPageListByOrder' => ['execution_date'],
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
-        'destroy' => ['remark']
+        'destroy' => ['remark'],
+        'getDate' =>['receiver_country','receiver_post_code','type'],
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
