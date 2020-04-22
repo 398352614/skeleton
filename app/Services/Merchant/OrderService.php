@@ -303,14 +303,33 @@ class OrderService extends BaseService
     }
 
     /**
-     * 新增
+     * 订单新增
      * @param $params
+     * @param bool $checked
      * @return array
      * @throws BusinessLogicException
      */
     public function store($params)
     {
-        $this->check($params);
+            $this->check($params);
+        //设置订单来源
+        data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
+        //填充商户ID
+        $params['merchant_id'] = auth()->id();
+        //用仓库填充发件人
+        $line = $this->getLineService()->getInfoByRule($params, BaseConstService::ORDER_OR_BATCH_1);
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        $params = array_merge($params, [
+            'sender' => $warehouse['contacter'],
+            'sender_phone' => $warehouse['phone'],
+            'sender_country' => $warehouse['country'],
+            'sender_post_code' => $warehouse['post_code'],
+            'sender_house_number' => $warehouse['house_number'],
+            'sender_city' => $warehouse['city'],
+            'sender_street' => $warehouse['street'],
+            'sender_address' => $warehouse['address']
+        ]);
+
         /*************************************************订单新增************************************************/
         //生成单号
         $params['order_no'] = $this->getOrderNoRuleService()->createOrderNo();
@@ -355,55 +374,11 @@ class OrderService extends BaseService
     {
         $list = json_decode($params['list'], true);
         for ($i = 0; $i < count($list); $i++) {
-            //处理格式
-            $list[$i]['package_list']=[];
-            $list[$i]['material_list']=[];
-            for($j=0;$j<5;$j++){
-                if($list[$i]['item_type_'.($j+1)] === 1){
-                    $list[$i]['package_list'][$j]['name']=$list[$i]['item_name_'.($j+1)];
-                    $list[$i]['package_list'][$j]['express_first_no']=$list[$i]['item_number_'.($j+1)];
-                    $list[$i]['package_list'][$j]['weight']=$list[$i]['item_weight_'.($j+1)]??1;
-                    $list[$i]['package_list'][$j]['quantity']=$list[$i]['item_count_'.($j+1)]??1;
-                    $list[$i]['package_list'][$j]['express_second_no']='';
-                    $list[$i]['package_list'][$j]['out_order_no']='';
-                    $list[$i]['package_list']=array_values($list[$i]['package_list']);
-                }elseif ($list[$i]['item_type_'.($j+1)] === 2){
-                    $list[$i]['material_list'][$j]['name']=$list[$i]['item_name_'.($j+1)];
-                    $list[$i]['material_list'][$j]['code']=$list[$i]['item_number_'.($j+1)];
-                    $list[$i]['material_list'][$j]['remark']='';
-                    $list[$i]['material_list'][$j]['quantity']=$list[$i]['item_count_'.($j+1)]??1;
-                    $list[$i]['material_list'][$j]['out_order_no']='';
-                    $list[$i]['material_list']=array_values($list[$i]['material_list']);
-                }
-            }
-            $list[$i] = Arr::only($list[$i], [
-                'type',
-                'receiver',
-                'receiver_phone',
-                'receiver_country',
-                'receiver_post_code',
-                'receiver_house_number',
-                'receiver_address',
-                'execution_date',
-                'settlement_type',
-                'settlement_amount',
-                'replace_amount',
-                'out_order_no',
-                'delivery',
-                'remark',
-                'package_list',
-                'material_list']);
+            $list[$i] = $this->form($list[$i]);
+            $list[$i]['receiver_city']='';
+            $list[$i]['receiver_street']='';
+            $list[$i]['receiver_city']='';
             //获取经纬度
-            $info = $this->getReceiverAddressService()->check($list[$i]);
-            $list[$i]['sender'] = $list[$i]['sender_phone'] = $list[$i]['sender_country'] = $list[$i]['sender_post_code']
-                = $list[$i]['sender_house_number'] = $list[$i]['sender_address'] = $list[$i]['sender_city'] = $list[$i]['sender_street']
-                = $list[$i]['receiver_city'] = $list[$i]['receiver_street'] = '';
-            if (empty($info)) {
-                $info = $this->getLocation($list[$i]['receiver_country'], $list[$i]['receiver_city'], $list[$i]['receiver_street'], $list[$i]['receiver_house_number'], $list[$i]['receiver_post_code']);
-            }
-            $list[$i]['lon'] = $info['lon'];
-            $list[$i]['lat'] = $info['lat'];
-            $list[$i]['merchant_id'] = auth()->user()->id;
             try {
                 $this->store($list[$i]);
             } catch (BusinessLogicException $e) {
@@ -476,14 +451,53 @@ class OrderService extends BaseService
         return $data;
     }
 
-    /*public function importCheck($data){
-        $validate=new OrderImportValidate;
-        $validator = Validator::make($data, $validate->customAttributes, array_merge(BaseValidate::$baseMessage, $validate->message);
-        if ($validator->fails()) {
-            $messageList = Arr::flatten($validator->errors()->all());
-
+    /**
+     * 订单格式转换
+     * @param $data
+     * @return mixed
+     */
+    public function form($data){
+        $data['package_list']=[];
+        $data['material_list']=[];
+        for($j=0;$j<5;$j++){
+            if($data['item_type_'.($j+1)] === 1 ||$data['item_type_'.($j+1)] === '1'){
+                $data['package_list'][$j]['name']=$data['item_name_'.($j+1)];
+                $data['package_list'][$j]['express_first_no']=$data['item_number_'.($j+1)];
+                $data['package_list'][$j]['weight']=$data['item_weight_'.($j+1)]??1;
+                $data['package_list'][$j]['quantity']=$data['item_count_'.($j+1)]??1;
+                $data['package_list'][$j]['express_second_no']='';
+                $data['package_list'][$j]['out_order_no']='';
+                $data['package_list']=array_values($data['package_list']);
+            }elseif ($data['item_type_'.($j+1)] === 2 || $data['item_type_'.($j+1)] === '2'){
+                $data['material_list'][$j]['name']=$data['item_name_'.($j+1)];
+                $data['material_list'][$j]['code']=$data['item_number_'.($j+1)];
+                $data['material_list'][$j]['remark']='';
+                $data['material_list'][$j]['quantity']=$data['item_count_'.($j+1)]??1;
+                $data['material_list'][$j]['out_order_no']='';
+                $data['material_list']=array_values($data['material_list']);
+            }
         }
-    }*/
+        $data = Arr::only($data, [
+            'type',
+            'receiver',
+            'receiver_phone',
+            'receiver_country',
+            'receiver_post_code',
+            'receiver_house_number',
+            'receiver_address',
+            'execution_date',
+            'settlement_type',
+            'settlement_amount',
+            'replace_amount',
+            'out_order_no',
+            'delivery',
+            'remark',
+            'package_list',
+            'material_list',
+            'lon',
+            'lat']);
+        return $data;
+    }
 
     public function orderImportLog($params)
     {
@@ -543,7 +557,8 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-        data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
+
+        //获取经纬度
         $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
         if (empty($params['lon']) || empty($params['lat'])) {
@@ -551,7 +566,6 @@ class OrderService extends BaseService
             $params['lon'] = $info['lon'];
             $params['lat'] = $info['lat'];
         }
-        $params['merchant_id'] = auth()->id();
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
@@ -573,21 +587,42 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('材料代码有重复！不能添加订单');
             }
         }
+        //用线路仓库填充发件人
         $line = $this->getLineService()->getInfoByRule($params, BaseConstService::ORDER_OR_BATCH_1);
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
             throw new BusinessLogicException('仓库不存在');
         }
-        $params = array_merge($params, [
-            'sender' => $warehouse['contacter'],
-            'sender_phone' => $warehouse['phone'],
-            'sender_country' => $warehouse['country'],
-            'sender_post_code' => $warehouse['post_code'],
-            'sender_house_number' => $warehouse['house_number'],
-            'sender_city' => $warehouse['city'],
-            'sender_street' => $warehouse['street'],
-            'sender_address' => $warehouse['address']
-        ]);
+    }
+
+    /**
+     * 导入验证
+     * @param $data
+     * @return array
+     */
+    public function importCheck($data){
+        $data = json_decode($data['list'], true);
+        $list=[];
+            $validate=new OrderImportValidate;
+            for ($i=0,$j=count($data);$i<$j;$i++){
+                $validator[$i] = Validator::make($data[$i], $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message),$validate->customAttributes);
+                if ($validator[$i]->fails()) {
+                    $key=$validator[$i]->errors()->keys();
+                    foreach ($key as $v){
+                        $list[$i+1][$v] =$validator[$i]->errors()->first($v);
+                    }
+                }
+                $data[$i]=$this->form($data[$i]);
+                try{
+                    $this->check($data[$i]);
+                }catch (BusinessLogicException $e){
+                    $list[$i+1]['log']=$e->getMessage();
+                }
+                $list[$i+1]['lon']=$data[$i]['lon']??'';
+                $list[$i+1]['lat']=$data[$i]['lat']??'';
+                sleep(1);
+            }
+        return $list;
     }
 
     /**
@@ -768,8 +803,6 @@ class OrderService extends BaseService
     public function getDate($params)
     {
         $data = $this->getSchedule($params);
-        asort($data);
-        $data=array_values($data);
         return $data;
     }
 
@@ -844,6 +877,8 @@ class OrderService extends BaseService
                 }
             }
         }
+        asort($data);
+        $data=array_values($data);
         return $data;
     }
 
