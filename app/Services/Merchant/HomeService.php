@@ -109,7 +109,7 @@ class HomeService extends BaseService
         }
         $begin=Carbon::create($params['begin_date']);
         $end=Carbon::create($params['end_date']);
-        return $this->orderCount($begin,$end);
+        return $this->data($begin,$end);
     }
 
     /**
