@@ -31,12 +31,14 @@ class HomeService extends BaseService
     }
 
     public function all(){
-        $end=Carbon::today();
         $order=$this->query->whereNotNull('execution_date')->pluck('execution_date')->toArray();
-        if(empty($order)){
-            $begin=$end;
-        }else{
+        if(empty($order)) {
+            $end=$begin=Carbon::today();
+        }else {
+            asort($order);
+            $order=array_values(array_unique($order));
             $begin=Carbon::create($order[0]);
+            $end=Carbon::create($order[count($order)-1]);
         }
         $data=$this->data($begin,$end);
         $data['graph']=$this->orderCount($begin,$end);
