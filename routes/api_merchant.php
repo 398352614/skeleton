@@ -88,7 +88,7 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         //记录详情
         Route::get('/log/{id}', 'OrderImportController@show');
         //检查
-        Route::get('/check', 'OrderController@importCheck');
+        Route::post('/check', 'OrderController@importCheck');
     });
 
     //主页统计
