@@ -557,7 +557,6 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-
         //获取经纬度
         $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
@@ -612,6 +611,12 @@ class OrderService extends BaseService
                         $list[$i][$v] =$validator[$i]->errors()->first($v);
                     }
                 }
+                $address[$i]=$this->getReceiverAddressService()->check($data[$i]);
+                if(empty($address[$i])){
+                    sleep(1);
+                }
+                $list[$i]['lon']=$address[$i]['lon']??null;
+                $list[$i]['lat']=$address[$i]['lat']??null;
                 $data[$i]=$this->form($data[$i]);
                 try{
                     $this->check($data[$i]);
@@ -620,7 +625,6 @@ class OrderService extends BaseService
                 }
                 $list[$i]['lon']=$data[$i]['lon']??'';
                 $list[$i]['lat']=$data[$i]['lat']??'';
-                sleep(1);
             }
         return $list;
     }
