@@ -609,17 +609,17 @@ class OrderService extends BaseService
                 if ($validator[$i]->fails()) {
                     $key=$validator[$i]->errors()->keys();
                     foreach ($key as $v){
-                        $list[$i+1][$v] =$validator[$i]->errors()->first($v);
+                        $list[$i][$v] =$validator[$i]->errors()->first($v);
                     }
                 }
                 $data[$i]=$this->form($data[$i]);
                 try{
                     $this->check($data[$i]);
                 }catch (BusinessLogicException $e){
-                    $list[$i+1]['log']=$e->getMessage();
+                    $list[$i]['log']=$e->getMessage();
                 }
-                $list[$i+1]['lon']=$data[$i]['lon']??'';
-                $list[$i+1]['lat']=$data[$i]['lat']??'';
+                $list[$i]['lon']=$data[$i]['lon']??'';
+                $list[$i]['lat']=$data[$i]['lat']??'';
                 sleep(1);
             }
         return $list;
