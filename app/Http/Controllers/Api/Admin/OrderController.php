@@ -198,4 +198,13 @@ class OrderController extends BaseController
     {
         return $this->service->actualDestroy($id);
     }
+
+    /**
+     * 批量分配订单至取件线路
+     * @throws BusinessLogicException
+     */
+    public function assignListTour()
+    {
+        return $this->service->assignListTour($this->data);
+    }
 }

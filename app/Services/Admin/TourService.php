@@ -42,7 +42,8 @@ class TourService extends BaseService
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_id' => ['=', 'driver_id'],
         'line_name' => ['like', 'line_name'],
-        'tour_no' => ['like', 'tour_no']
+        'tour_no' => ['like', 'tour_no'],
+        'driver_name' => ['like', 'driver_name']
     ];
 
     protected $headings = [
@@ -124,12 +125,45 @@ class TourService extends BaseService
     }
 
     /**
+     * 线路 服务
+     * @return LineService
+     */
+    private function getLineService()
+    {
+        return self::getInstance(LineService::class);
+    }
+
+    /**
+     * 线路区间 服务
+     * @return LineRangeService
+     */
+    private function getLineRangeService()
+    {
+        return self::getInstance(LineRangeService::class);
+    }
+
+    /**
      * 单号规则 服务
      * @return OrderNoRuleService
      */
     private function getOrderNoRuleService()
     {
         return self::getInstance(OrderNoRuleService::class);
+    }
+
+    /**
+     * 获取可加单的取件线路列表
+     * @param $orderIdList
+     * @return array|mixed
+     * @throws BusinessLogicException
+     */
+    public function getAddOrderPageList($orderIdList)
+    {
+        $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
+        list($orderList, $lineId) = $this->getOrderService()->getAddOrderList($orderIdList);
+        $this->filters['line_id'] = ['=', $lineId];
+        $list = parent::getPageList();
+        return $list;
     }
 
     public function getPageList()
@@ -286,12 +320,21 @@ class TourService extends BaseService
      * @param $batch
      * @param $line
      * @param $order
+     * @param $tourNo
+     * @param $isAddOrder
      * @return BaseService|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function join($batch, $line, $order)
+    public function join($batch, $line, $order, $tourNo = null, $isAddOrder = false)
     {
-        $tour = $this->getTourInfo($batch, $line, $batch['tour_no'] ?? '');
+        if (!empty($batch['tour_no'])) {
+            $newTourNo = $batch['tour_no'];
+        } elseif (!empty($tourNo)) {
+            $newTourNo = $tourNo;
+        } else {
+            $newTourNo = null;
+        }
+        $tour = $this->getTourInfo($batch, $line, true, $newTourNo, $isAddOrder);
         //加入取件线路
         $quantity = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $amount = [
@@ -457,7 +500,7 @@ class TourService extends BaseService
      */
     public function getListByBatch($batch, $line)
     {
-        $data=[];
+        $data = [];
         $tour = $this->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
         if (!empty($tour) && !empty($line)) {
             //当日截止时间验证
@@ -465,11 +508,11 @@ class TourService extends BaseService
                 date('Y-m-d') !== $batch['execution_date'])) {
                 //取件订单，线路最大订单量验证
                 if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
-                    $data=$batch;
+                    $data = $batch;
                 }
                 //派件订单，线路最大订单量验证
                 if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
-                    $data=$batch;
+                    $data = $batch;
                 }
             }
         }
@@ -514,10 +557,11 @@ class TourService extends BaseService
      * @param $line
      * @param $isLock
      * @param $tourNo
+     * @param $isAddOrder bool
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null)
+    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null, $isAddOrder = false)
     {
         if (!empty($tourNo)) {
             $this->query->where('tour_no', '=', $tourNo);

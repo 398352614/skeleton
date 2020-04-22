@@ -135,7 +135,7 @@ class OrderService extends BaseService
 
     /**
      * 线路范围 服务
-     * @return mixed
+     * @return LineRangeService
      */
     public function getLineRangeService()
     {
@@ -564,7 +564,7 @@ class OrderService extends BaseService
      */
     public function fillBatchTourInfo($order, $batch, $tour, $isFillItem = true)
     {
-        $status = $tour['status'] ?? BaseConstService::ORDER_STATUS_1;
+        $status = $batch['status'] ?? BaseConstService::ORDER_STATUS_1;
         $rowCount = parent::updateById($order['id'], [
             'execution_date' => $batch['execution_date'],
             'batch_no' => $batch['batch_no'],
@@ -799,7 +799,7 @@ class OrderService extends BaseService
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($info['batch_no'])) {
-            throw new BusinessLogicException('已从站点移除!');
+            return;
         }
         //订单移除站点和取件线路信息
         $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
@@ -818,6 +818,7 @@ class OrderService extends BaseService
         }
         $this->getBatchService()->removeOrder($info);
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
     }
 
     /**
@@ -955,5 +956,78 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('彻底删除失败，请重新操作');
         }
+    }
+
+    /**
+     * 批量订单分配至指定取件线路
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function assignListTour($params)
+    {
+        list($orderIdList, $tourNo) = [$params['id_list'], $params['tour_no']];
+        /******************************************1.获取数据**********************************************************/
+        list($orderList, $lineId) = $this->getAddOrderList($orderIdList);
+        $orderList = Arr::where($orderList, function ($order) use ($tourNo) {
+            return (($order['tour_no'] != $tourNo) && ($order['type'] == BaseConstService::ORDER_TYPE_1));
+        });
+        //获取线路信息
+        $line = $this->getLineService()->getInfo(['id' => $lineId], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('线路不存在');
+        }
+        $line = $line->toArray();
+        //获取取件线路信息
+        $tour = $this->getTourService()->getInfo(['tour_no' => $tourNo, 'line_id' => $line['id'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('取件线路当前状态不能操作');
+        }
+        $tour = $tour->toArray();
+        /*******************************************2.验证*************************************************************/
+        $count = 0;
+        if ($tour['status'] == BaseConstService::TOUR_STATUS_4) {
+            $materialCount = $this->getMaterialService()->count(['order_no' => ['in', array_column($orderList, 'order_no')]]);
+            if ($materialCount > 0) {
+                throw new BusinessLogicException('当前取件线路正在派送中，取件订单加单不能包含材料');
+            }
+        }
+        if ($tour['expect_pickup_quantity'] + $count > $line['pickup_max_count']) {
+            throw new BusinessLogicException('取件数量超过线路取件订单最大值');
+        }
+        /*******************************************2.加单*************************************************************/
+        data_set($orderList, '*.execution_date', $tour['execution_date']);
+        foreach ($orderList as $order) {
+            $this->removeFromBatch($order['id']);
+            list($batch, $tour) = $this->getBatchService()->join($order, null, $tourNo, $line, true);
+            /**********************************填充取件批次编号和取件线路编号**********************************************/
+            $this->fillBatchTourInfo($order, $batch, $tour);
+            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
+            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
+        }
+    }
+
+
+    /**
+     * 获取可加单的订单列表
+     * @param $orderIdList
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getAddOrderList($orderIdList)
+    {
+        $lineId = null;
+        $orderList = parent::getList(['id' => ['in', explode(',', $orderIdList)]], ['*'], false)->toArray();
+        $statusList = [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2];
+        foreach ($orderList as $order) {
+            if (!in_array($order['status'], $statusList)) {
+                throw new BusinessLogicException('订单[:order_no]的不是待分配或已分配状态，不能操作', 1000, ['order_no' => $order['order_no']]);
+            }
+            $dbLineId = $this->getLineRangeService()->getLineIdByRule($order);
+            if (empty($dbLineId) || (!empty($lineId) && ($lineId != $dbLineId))) {
+                return [$orderList, 0];
+            }
+            $lineId = $dbLineId;
+        }
+        return [$orderList, $lineId];
     }
 }

@@ -99,16 +99,20 @@ class BatchService extends BaseService
     /**
      * 加入站点
      * @param $order
+     * @param $batchNo
+     * @param $tourNo
+     * @param $line
+     * @param $isAddOrder
      * @return array
      * @throws BusinessLogicException
      */
-    public function join($order)
+    public function join($order, $batchNo = null, $tourNo = null, $line = [], $isAddOrder = false)
     {
-        list($batch, $line) = $this->hasSameBatch($order);
+        list($batch, $line) = $this->hasSameBatch($order, $batchNo, $tourNo, $line, $isAddOrder);
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
-        list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order);
+        list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order, $line);
         /**************************************站点加入取件线路********************************************************/
-        $tour = $this->getTourService()->join($batch, $line, $order);
+        $tour = $this->getTourService()->join($batch, $line, $order, $tourNo, $isAddOrder);
         /***********************************************填充取件线路编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);
 
@@ -141,12 +145,22 @@ class BatchService extends BaseService
      * 判断是否存在相同站点
      * @param $order
      * @param $batchNo
+     * @param $tourNo
+     * @param $line
+     * @param $isAddOrder bool 是否是加单
      * @return array
      * @throws BusinessLogicException
      */
-    private function hasSameBatch($order, $batchNo = null)
+    private function hasSameBatch($order, $batchNo = null, $tourNo = null, $line = [], $isAddOrder = false)
     {
         $where = $this->getBatchWhere($order);
+        $isAddOrder && $where['status'] = ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]];
+        if (!empty($tourNo)) {
+            $where['tour_no'] = $tourNo;
+        }
+        if (!empty($line)) {
+            $where['line_id'] = $line['id'];
+        }
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
             $dbBatch = parent::getInfo($where, ['*'], false);
@@ -154,42 +168,43 @@ class BatchService extends BaseService
         } else {
             $batchList = parent::getList($where, ['*'], false, [], ['id' => 'desc'])->toArray();
         }
-        if (empty($batchList)) return [[], []];
+        if (empty($batchList)) return [[], $line];
         foreach ($batchList as $batch) {
             //获取线路信息
-            $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
-            if (empty($line)) {
+            $dbLine = $line ?? $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
+            if (empty($dbLine)) {
                 continue;
             }
-            $line = $line->toArray();
-            $tour = $this->getTourService()->getTourInfo($batch, $line, false, $batch['tour_no'] ?? '');
+            $dbLine = $dbLine->toArray();
+            $tour = $this->getTourService()->getTourInfo($batch, $dbLine, false, $batch['tour_no'] ?? '');
             //若存在，锁定当前站点
             if (!empty($tour)) {
                 $batch = parent::getInfoLock(['id' => $batch['id']], ['*'], false)->toArray();
-                return [$batch, $line];
+                return [$batch, $dbLine];
             }
         }
-        return [[], []];
+        return [[], $line];
     }
 
 
     /**
      * 加入新的站点
      * @param $order
+     * @param $line
      * @return array
      * @throws BusinessLogicException
      */
-    private function joinNewBatch($order)
+    private function joinNewBatch($order, $line)
     {
-        $line = $this->getLineService()->getInfoByRule($order);
+        $newLine = $line ?? $this->getLineService()->getInfoByRule($order);
         //站点新增
         $batchNo = $this->getOrderNoRuleService()->createBatchNo();
-        $batch = parent::create($this->fillData($order, $line, $batchNo));
+        $batch = parent::create($this->fillData($order, $newLine, $batchNo));
         if ($batch === false) {
             throw new BusinessLogicException('订单加入站点失败!');
         }
         $batch = $batch->getOriginal();
-        return [$batch, $line];
+        return [$batch, $newLine];
     }
 
     /**
@@ -315,13 +330,13 @@ class BatchService extends BaseService
     public function getPageListByOrder($order)
     {
         //通过订单获取可能站点
-        $data=[];
+        $data = [];
         $fields = ['receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
         $rule = array_merge($this->formData, Arr::only($order, $fields));
-        $this->query->whereIn('status',[BaseConstService::BATCH_WAIT_ASSIGN,BaseConstService::BATCH_ASSIGNED]);
-        $info=$this->getList($rule);
+        $this->query->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]);
+        $info = $this->getList($rule);
         if (!empty($info)) {
-            for($i=0,$j=count($info);$i<$j;$i++) {
+            for ($i = 0, $j = count($info); $i < $j; $i++) {
                 $tour = $this->getTourService()->getInfo(['tour_no' => $info[$i]['tour_no']], ['*'], false)->toArray();
                 $line = $this->getLineService()->getInfo(['id' => $info[$i]['line_id']], ['*'], false)->toArray();
                 if (!empty($tour) && !empty($line)) {
@@ -330,11 +345,11 @@ class BatchService extends BaseService
                         date('Y-m-d') !== $info[$i]['execution_date'])) {
                         //取件订单，线路最大订单量验证
                         if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $info[$i]['expect_pickup_quantity'] < $line['pickup_max_count']) {
-                            $data[$i]=$info[$i];
+                            $data[$i] = $info[$i];
                         }
                         //派件订单，线路最大订单量验证
                         if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $info[$i]['expect_pie_quantity'] < $line['pie_max_count']) {
-                            $data[$i]=$info[$i];
+                            $data[$i] = $info[$i];
                         }
                     }
                 }
@@ -562,26 +577,26 @@ class BatchService extends BaseService
      */
     public function getTourDate($id)
     {
-        $ids=[];
-        $data=[];
+        $ids = [];
+        $data = [];
         $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $lineRange=$this->getLineRangeService()->query->where('post_code_start', '<=', $info['receiver_post_code'])
+        $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $info['receiver_post_code'])
             ->where('post_code_end', '>=', $info['receiver_post_code'])
-            ->where('country',$info['receiver_country'])
+            ->where('country', $info['receiver_country'])
             ->get();
-        if(empty($lineRange)){
+        if (empty($lineRange)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
-        foreach ($lineRange as $key =>$value){
-            $ids[$key]=$value['line_id'];
-            $data[intval($value['schedule'])]=$this->getLineService()->getInfo(['id'=>$ids[$key]],['*'],false)->toArray()['appointment_days'];
+        foreach ($lineRange as $key => $value) {
+            $ids[$key] = $value['line_id'];
+            $data[intval($value['schedule'])] = $this->getLineService()->getInfo(['id' => $ids[$key]], ['*'], false)->toArray()['appointment_days'];
         }
-        for($i=0;$i<7;$i++){
-            if(empty($data[$i])){
-                $data[$i]=0;
+        for ($i = 0; $i < 7; $i++) {
+            if (empty($data[$i])) {
+                $data[$i] = 0;
             }
         }
         krsort($data);

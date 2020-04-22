@@ -98,7 +98,8 @@ class OrderValidate extends BaseValidate
         'material_list.*.expect_quantity' => 'required_with:material_list|integer',
         'material_list.*.remark' => 'nullable|string|max:250',
 
-        'id_list' => 'required|string|checkIdList:100'
+        'id_list' => 'required|string|checkIdList:100',
+        'tour_no' => 'nullable|string|max:50',
     ];
 
     public $scene = [

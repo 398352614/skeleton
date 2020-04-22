@@ -24,6 +24,16 @@ class TourController extends BaseController
     }
 
     /**
+     * 获取可加单的取件线路列表
+     * @return array|mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function getAddOrderPageList()
+    {
+        return $this->service->getAddOrderPageList($this->data['order_id_list']);
+    }
+
+    /**
      * @api {GET}  api/admin/tour 管理员端:查询任务列表
      * @apiName index
      * @apiGroup admin-tour

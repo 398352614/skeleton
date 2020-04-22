@@ -80,6 +80,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}/recovery', 'OrderController@recovery');
         //彻底删除
         Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
+        //批量订单分配至指定取件线路
+        Route::put('/assignListTour', 'OrderController@assignListTour');
     });
 
     //订单导入记录管理
@@ -170,6 +172,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::post('/auto-op-tour', 'TourController@autoOpTour');         //自动优化线路
 
         //rest api 放在最后
+        Route::get('/getAddOrderPageList', 'TourController@getAddOrderPageList');
         Route::get('/', 'TourController@index')->name('tour.index');
         Route::get('/{id}', 'TourController@show')->name('tour.show');
         Route::put('/{id}/assignDriver', 'TourController@assignDriver');               //分配司机
