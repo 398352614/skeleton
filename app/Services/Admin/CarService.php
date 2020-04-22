@@ -37,12 +37,12 @@ class CarService extends BaseService
     {
         return $this->create([
             'car_no' => $this->formData['car_no'],
-            'outgoing_time' => $this->formData['outgoing_time'],
+            'outgoing_time' => $this->formData['outgoing_time'] ?? null,
             'car_brand_id' => $this->formData['car_brand_id'],
             'car_model_id' => $this->formData['car_model_id'],
-            'ownership_type' => $this->formData['ownership_type'],
-            'insurance_company' => $this->formData['insurance_company'],
-            'insurance_type' => $this->formData['insurance_type'],
+            'ownership_type' => $this->formData['ownership_type'] ?? 1,
+            'insurance_company' => $this->formData['insurance_company'] ?? '',
+            'insurance_type' => $this->formData['insurance_type'] ?? '',
             'month_insurance' => $this->formData['month_insurance'] ?? 0.00,
             'rent_start_date' => $this->formData['rent_start_date'] ?? '2020-01-01',
             'rent_end_date' => $this->formData['rent_end_date'] ?? '2020-01-01',
@@ -112,13 +112,13 @@ class CarService extends BaseService
 
     public function getPageList()
     {
-        if(!empty($this->formData['tour_no'])){
-            $date =Tour::query()->where('tour_no',$this->formData['tour_no'])->first()->toArray()['execution_date'];
-            $info=Tour::query()->where('execution_date',$date)->where('status','<>',BaseConstService::TOUR_STATUS_5)->whereNotNull('car_id')->pluck('car_id')->toArray();
-            if(!empty($info)){
-                $this->query->whereNotIn('id',$info);
+        if (!empty($this->formData['tour_no'])) {
+            $date = Tour::query()->where('tour_no', $this->formData['tour_no'])->first()->toArray()['execution_date'];
+            $info = Tour::query()->where('execution_date', $date)->where('status', '<>', BaseConstService::TOUR_STATUS_5)->whereNotNull('car_id')->pluck('car_id')->toArray();
+            if (!empty($info)) {
+                $this->query->whereNotIn('id', $info);
             }
-            $this->query->where('is_locked','=',BaseConstService::DRIVER_TO_NORMAL);
+            $this->query->where('is_locked', '=', BaseConstService::DRIVER_TO_NORMAL);
         }
         return parent::getPageList();
     }
