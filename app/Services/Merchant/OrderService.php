@@ -633,7 +633,7 @@ class OrderService extends BaseService
             try{
                 $info = LocationTrait::getLocation($data['receiver_country'], $data['receiver_city'], $data['receiver_street'], $data['receiver_house_number'], $data['receiver_post_code']);
             }catch (BusinessLogicException $e){
-                $list['log']=$e->getMessage();
+                $list['log']=__($e->getMessage());
             } catch (\Exception $e) {
             }
             $data['lon'] = $info['lon']??null;
@@ -656,7 +656,7 @@ class OrderService extends BaseService
             $line = $this->getLineService()->getInfoByRule($data, BaseConstService::ORDER_OR_BATCH_1);
             $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         }catch (BusinessLogicException $e){
-            $list['log']=$e->getMessage();
+            $list['log']=__($e->getMessage());
         }catch (\Exception $e){
             $list['log']=__('当前订单没有合适的线路，请先联系管理员');
         }
