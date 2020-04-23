@@ -31,7 +31,7 @@ class WareHouseValidate extends BaseValidate
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:warehouse,id,company_id',
         'contacter' => 'required|string|max:50',
-        'phone' => 'required|string|max:20',
+        'phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
         'country' => 'required|string|max:50',
         'post_code' => 'required|string|max:50',
         'house_number' => 'required|string|max:50',
