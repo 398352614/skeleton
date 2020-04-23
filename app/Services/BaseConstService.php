@@ -40,6 +40,11 @@ class BaseConstService
     const ASSIGN_YES = 1;
     const ASSIGN_CANCEL = 2;
 
+    //物品种类1包裹2材料
+    const PACKAGE = 1;
+    const MATERIAL = 2;
+
+
     //星期定义
     const MONDAY = 1;
     const TUESDAY = 2;

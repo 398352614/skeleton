@@ -1,4 +1,5 @@
 {
+    "扫码编号有重复": "Item code is duplicate",
   "取派类型格式不正确": "The type input is incorrect",
   "支付方式格式不正确": "The settlement amount input is incorrect",
   "是否上门取件格式不正确": "The delivery input is incorrect",

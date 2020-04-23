@@ -377,8 +377,6 @@ class OrderService extends BaseService
             $list[$i] = $this->form($list[$i]);
             $list[$i]['receiver_city']='';
             $list[$i]['receiver_street']='';
-            $list[$i]['receiver_city']='';
-            //获取经纬度
             try {
                 $this->store($list[$i]);
             } catch (BusinessLogicException $e) {
@@ -586,7 +584,7 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('材料代码有重复！不能添加订单');
             }
         }
-        //用线路仓库填充发件人
+        //检查仓库
         $line = $this->getLineService()->getInfoByRule($params, BaseConstService::ORDER_OR_BATCH_1);
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
@@ -595,40 +593,76 @@ class OrderService extends BaseService
     }
 
     /**
-     * 导入验证
+     * 批量导入验证
+     * @param $params
+     * @return mixed
+     */
+    public function importCheckByList($params){
+        $list = json_decode($params['list'], true);
+        for($i=0,$j=count($list);$i<$j;$i++){
+            $list[$i]=$this->importCheck($list[$i]);
+        }
+        return $list;
+    }
+
+    /**
+     * 单条导入验证
      * @param $data
      * @return array
     */
     public function importCheck($data){
-        $data = json_decode($data['list'], true);
         $list=[];
-            $validate=new OrderImportValidate;
-            for ($i=0,$j=count($data);$i<$j;$i++){
-                $validator[$i] = Validator::make($data[$i], $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message),$validate->customAttributes);
-                if ($validator[$i]->fails()) {
-                    $key = $validator[$i]->errors()->keys();
-                    foreach ($key as $v) {
-                        $list[$i][$v] = $validator[$i]->errors()->first($v);
-                    }
-                }
-                //如果没传经纬度，就去地址库拉经纬度
-                if(empty($data[$i]['lon']) || empty($data[$i]['lat'])){
-                    $address[$i]=$this->getReceiverAddressService()->check($data[$i]);
-                    if(empty($address[$i])){
-                        sleep(1);
-                    }
-                    $list[$i]['lon']=$address[$i]['lon']??null;
-                    $list[$i]['lat']=$address[$i]['lat']??null;
-                }
-                $data[$i]=$this->form($data[$i]);
-                try{
-                    $this->check($data[$i]);
-                }catch (BusinessLogicException $e){
-                    $list[$i]['log']=$e->getMessage();
-                }
-                $list[$i]['lon']=$data[$i]['lon']??'';
-                $list[$i]['lat']=$data[$i]['lat']??'';
+        $validate=new OrderImportValidate;
+        $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message),$validate->customAttributes);
+        if ($validator->fails()) {
+            $key = $validator->errors()->keys();
+            foreach ($key as $v) {
+                $list[$v] = $validator->errors()->first($v);
             }
+        }
+        //如果没传经纬度，就去地址库拉经纬度
+        if(empty($data['lon']) || empty($data['lat'])){
+            $address=$this->getReceiverAddressService()->check($data);
+            $list['lon']=$address['lon']??null;
+            $list['lat']=$address['lat']??null;
+        }
+        //如果地址库没有，就通过第三方API获取经纬度
+        $fields = ['receiver_city', 'receiver_street'];
+        $data = array_merge(array_fill_keys($fields, ''), $data);
+        if (empty($data['lon']) || empty($data['lat'])) {
+            try{
+                $info = LocationTrait::getLocation($data['receiver_country'], $data['receiver_city'], $data['receiver_street'], $data['receiver_house_number'], $data['receiver_post_code']);
+            }catch (BusinessLogicException $e){
+                $list['log']=$e->getMessage();
+            } catch (\Exception $e) {
+            }
+            $data['lon'] = $info['lon']??null;
+            $data['lat'] = $info['lat']??null;
+        }
+        $package=[];
+        $material=[];
+        for($j=0;$j<5;$j++){
+            if($data['item_type_'.($j+1)] === 1){
+                $package[$j]=$data['item_number_'.($j+1)];
+            }elseif ($data['item_type_'.($j+1)] === 2){
+                $material[$j]=$data['item_number_'.($j+1)];
+            }
+            if(count(array_unique($package)) !== count($package) || count(array_unique($material)) !== count($material) ){
+                $data['item_number_'.($j+1)]='扫码编号有重复';
+            }
+        }
+        //检查仓库
+        try{
+            $line = $this->getLineService()->getInfoByRule($data, BaseConstService::ORDER_OR_BATCH_1);
+            $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        }catch (BusinessLogicException $e){
+            $list['log']=$e->getMessage();
+        }catch (\Exception $e){
+            $list['log']='当前订单没有合适的线路，请先联系管理员';
+        }
+        $list['lon']=$data['lon']??'';
+        $list['lat']=$data['lat']??'';
+
         return $list;
     }
 
