@@ -557,7 +557,6 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-
         //获取经纬度
         $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
@@ -599,7 +598,7 @@ class OrderService extends BaseService
      * 导入验证
      * @param $data
      * @return array
-     */
+    */
     public function importCheck($data){
         $data = json_decode($data['list'], true);
         $list=[];
@@ -607,20 +606,28 @@ class OrderService extends BaseService
             for ($i=0,$j=count($data);$i<$j;$i++){
                 $validator[$i] = Validator::make($data[$i], $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message),$validate->customAttributes);
                 if ($validator[$i]->fails()) {
-                    $key=$validator[$i]->errors()->keys();
-                    foreach ($key as $v){
-                        $list[$i+1][$v] =$validator[$i]->errors()->first($v);
+                    $key = $validator[$i]->errors()->keys();
+                    foreach ($key as $v) {
+                        $list[$i][$v] = $validator[$i]->errors()->first($v);
                     }
+                }
+                //如果没传经纬度，就去地址库拉经纬度
+                if(empty($data[$i]['lon']) || empty($data[$i]['lat'])){
+                    $address[$i]=$this->getReceiverAddressService()->check($data[$i]);
+                    if(empty($address[$i])){
+                        sleep(1);
+                    }
+                    $list[$i]['lon']=$address[$i]['lon']??null;
+                    $list[$i]['lat']=$address[$i]['lat']??null;
                 }
                 $data[$i]=$this->form($data[$i]);
                 try{
                     $this->check($data[$i]);
                 }catch (BusinessLogicException $e){
-                    $list[$i+1]['log']=$e->getMessage();
+                    $list[$i]['log']=$e->getMessage();
                 }
-                $list[$i+1]['lon']=$data[$i]['lon']??'';
-                $list[$i+1]['lat']=$data[$i]['lat']??'';
-                sleep(1);
+                $list[$i]['lon']=$data[$i]['lon']??'';
+                $list[$i]['lat']=$data[$i]['lat']??'';
             }
         return $list;
     }
