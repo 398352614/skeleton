@@ -62,7 +62,7 @@ class OrderImportValidate extends BaseValidate
         'type' => 'required|integer|in:1,2',
         'settlement_type' => 'required|in:1,2',
         'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric',
-        'replace_amount' => 'nullable|numeric',
+        'replace_amount' => 'nullable|numeric|gt:0',
         'delivery' => 'nullable|integer|in:1,2',
         'receiver' => 'required|string|max:50',
         'receiver_phone' => 'required|string|max:20',
