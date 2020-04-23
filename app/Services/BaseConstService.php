@@ -40,10 +40,6 @@ class BaseConstService
     const ASSIGN_YES = 1;
     const ASSIGN_CANCEL = 2;
 
-    //物品种类1包裹2材料
-    const PACKAGE = 1;
-    const MATERIAL = 2;
-
 
     //星期定义
     const MONDAY = 1;
@@ -91,12 +87,9 @@ class BaseConstService
     const ORDER_EXCEPTION_LABEL_1 = 1;
     const ORDER_EXCEPTION_LABEL_2 = 2;
 
-    //订单性质1-包裹2-材料3-文件4-增值服务5-其他
+    //订单性质1-包裹2-材料
     const ORDER_NATURE_1 = 1;
     const ORDER_NATURE_2 = 2;
-    const ORDER_NATURE_3 = 3;
-    const ORDER_NATURE_4 = 4;
-    const ORDER_NATURE_5 = 5;
 
     //线路规划 是否新增取件线路 1-是2-否
     const IS_INCREMENT_1 = 1;

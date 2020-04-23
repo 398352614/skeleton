@@ -378,23 +378,10 @@ class OrderService extends BaseService
         $this->orderImportValidate($params);
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
-        $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
-        $headingCN = ['*取派类型', '*收件人姓名', '*收件人电话', '*收件人国家', '*收件人邮编', '*收件人门牌号', '*收件人详细地址', '*取派日期', '*结算类型', '运费金额', '代收货款', '外部订单号', '是否送货上门', '备注',
-            '*物品一类型', '*物品一名称', '物品一扫码编号', '物品一数量', '物品一重量',
-            '物品二类型', '物品二名称', '物品二扫码编号', '物品二数量', '物品二重量',
-            '物品三类型', '物品三名称', '物品三扫码编号', '物品三数量', '物品三重量',
-            '物品四类型', '物品四名称', '物品四扫码编号', '物品四数量', '物品四重量',
-            '物品五类型', '物品五名称', '物品五扫码编号', '物品五数量', '物品五重量'];
-        $headingEN = ['*Type', '*Receiver', '*Phone', '*Country', '*Post Code', '*House Number', '*Address', '*Execution Date', '*Settlement Type', 'Settlement Amount', 'Replace Amount', 'Out Order No', 'Delivery', 'Remark',
-            '*Item Type 1', '*Item Name 1', 'Item Code 1', 'Item Count 1', 'Item Weight 1',
-            'Item Type 2', 'Item Name 2', 'Item Code 2', 'Item Count 2', 'Item Weight 2',
-            'Item Type 3', 'Item Name 3', 'Item Code 3', 'Item Count 3', 'Item Weight 3',
-            'Item Type 4', 'Item Name 4', 'Item Code 4', 'Item Count 4', 'Item Weight 4',
-            'Item Type 5', 'Item Name 5', 'Item Code 5', 'Item Count 5', 'Item Weight 5'];
+        $params['path'] = str_replace(config('app.url') . '/storage/', 'public//', $params['path']);
+        $headings=array_values(__('excel.order'));
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
-        if (App::getLocale() === 'cn' && $row[0] !== $headingCN) {
-            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
-        } elseif (App::getLocale() === 'en' && $row[0] !== $headingEN) {
+        if ($row[0] !== $headings) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
         $heading = OrderImportService::$headings;
@@ -724,15 +711,18 @@ class OrderService extends BaseService
                 $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
                 if (!empty($line[$i])) {
                     //获得当前邮编范围的首天
+                    if ($lineRange[$i]['schedule'] ===0){
+                        $lineRange[$i]['schedule']=7;
+                    }
                     if (Carbon::today()->dayOfWeek < $lineRange[$i]['schedule']) {
-                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule']);
+                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule']-1);
                     } else {
-                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule']);
+                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule']-1);
                     }
                     //如果线路不自增，验证最大订单量
                     if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
-                        for ($k = $date->dayOfWeek, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
-                            $params['execution_date'] = Carbon::today()->addDays($k)->format('Y-m-d');
+                        for ($k = 0, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] = $date->addDays($k)->format('Y-m-d');
                             if ($info['type'] == 1) {
                                 $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 1);
                                 if (1 + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count']) {
@@ -758,8 +748,8 @@ class OrderService extends BaseService
                             }
                         }
                     } elseif ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_1) {
-                        for ($k = $date->dayOfWeek, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
-                            $params['execution_date'] = Carbon::today()->addDays($k)->format('Y-m-d');
+                        for ($k = 0, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] = $date->addDays($k)->format('Y-m-d');
                             if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
                                 if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
                                     $data[] = $params['execution_date'];

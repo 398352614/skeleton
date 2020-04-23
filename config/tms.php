@@ -8,6 +8,6 @@ return [
     'map_key' => env('MAP_KEY'),
     'messager_key' => env('MESSAGER_KEY'),
     'messager_secret' => env('MESSAGER_SECRET'),
-
+    'vpn'=>env('VPN'),
     'push_url' => env('PUSH_URL', 'dev-tms.nle-tech.com/socket'),
 ];
