@@ -4,7 +4,9 @@
 namespace App\Http\Validate\Api\Merchant;
 
 
-class OrderImportValidate
+use App\Http\Validate\BaseValidate;
+
+class OrderImportValidate extends BaseValidate
 {
     public $customAttributes = [
         'type' => '类型',

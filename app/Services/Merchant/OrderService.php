@@ -613,7 +613,7 @@ class OrderService extends BaseService
     public function importCheck($data){
         $list=[];
         $validate=new OrderImportValidate;
-        $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message),$validate->customAttributes);
+        $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message));
         if ($validator->fails()) {
             $key = $validator->errors()->keys();
             foreach ($key as $v) {
@@ -648,7 +648,7 @@ class OrderService extends BaseService
                 $material[$j]=$data['item_number_'.($j+1)];
             }
             if(count(array_unique($package)) !== count($package) || count(array_unique($material)) !== count($material) ){
-                $data['item_number_'.($j+1)]='扫码编号有重复';
+                $data['item_number_'.($j+1)]=__('扫码编号有重复');
             }
         }
         //检查仓库
@@ -658,7 +658,7 @@ class OrderService extends BaseService
         }catch (BusinessLogicException $e){
             $list['log']=$e->getMessage();
         }catch (\Exception $e){
-            $list['log']='当前订单没有合适的线路，请先联系管理员';
+            $list['log']=__('当前订单没有合适的线路，请先联系管理员');
         }
         $list['lon']=$data['lon']??'';
         $list['lat']=$data['lat']??'';
