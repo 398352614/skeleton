@@ -80,6 +80,7 @@ return [
     ],
     'string' => ':attribute 必须是一个字符串',
     'timezone' => ':attribute 必须是个有效的时区.',
+    'today' => '今天',
     'unique' => ':attribute 已存在',
     'url' => ':attribute 无效的格式',
     'unique_ignore' => ':attribute 已存在',
