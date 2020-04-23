@@ -40,7 +40,7 @@ return [
     'email' => ':attribute必须是一个合法的电子邮件地址',
     'exists' => '选定的 :attribute 是无效的.',
     'file' => ':attribute必须是一个文件',
-    'gt.numeric'=>':attribute必须大于:value',
+    'gte.numeric'=>':attribute不能小于:value',
     'filled' => ':attribute的字段是必填的',
     'image' => ':attribute必须是 jpeg, png, bmp 或者 gif 格式的图片',
     'in' => '选定的 :attribute 是无效的',

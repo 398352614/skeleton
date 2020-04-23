@@ -26,24 +26,24 @@ class TransportPriceValidate extends BaseValidate
 
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:transport_price,id',
-        'starting_price' => 'required|numeric',
+        'starting_price' => 'required|numeric|gte:0',
         'remark' => 'nullable|string|max:250',
         'status' => 'required|integer|in:1,2',
         //公里计费列表
         'km_list.*.start' => 'required_with:km_list|integer',
         'km_list.*.end' => 'required_with:km_list|integer|gt:km_list.*.start',
-        'km_list.*.price' => 'required_with:km_list|numeric',
+        'km_list.*.price' => 'required_with:km_list|numeric|gte:0',
         //重量计费列表
         'weight_list.*.start' => 'required_with:weight_list|integer',
         'weight_list.*.end' => 'required_with:weight_list|integer|gt:weight_list.*.start',
-        'weight_list.*.price' => 'required_with:weight_list|numeric',
+        'weight_list.*.price' => 'required_with:weight_list|numeric|gte:0',
         //特殊时段计费列表
         'special_time_list.*.start' => 'required_with:special_time_list|date_format:H:i:s',
         'special_time_list.*.end' => 'required_with:special_time_list|date_format:H:i:s|after:special_time_list.*.start',
-        'special_time_list.*.price' => 'required_with:special_time_list|numeric',
+        'special_time_list.*.price' => 'required_with:special_time_list|numeric|gte:0',
         //运价计算
-        'km' => 'nullable|integer',
-        'weight' => 'nullable|integer',
+        'km' => 'nullable|integer|gte:0',
+        'weight' => 'nullable|integer|gte:0',
         'special_time' => 'nullable|date_format:H:i:s'
     ];
 
