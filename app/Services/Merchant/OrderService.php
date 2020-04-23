@@ -657,6 +657,8 @@ class OrderService extends BaseService
             $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         }catch (BusinessLogicException $e){
             $list['log']=$e->getMessage();
+        }catch (\Exception $e){
+            $list['log']='当前订单没有合适的线路，请先联系管理员';
         }
         $list['lon']=$data['lon']??'';
         $list['lat']=$data['lat']??'';
