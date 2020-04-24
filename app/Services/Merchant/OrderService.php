@@ -649,6 +649,15 @@ class OrderService extends BaseService
             if(count(array_unique($package)) !== count($package) || count(array_unique($material)) !== count($material) ){
                 $data['item_number_'.($j+1)]=__('扫码编号有重复');
             }
+            foreach ($package as $v) {
+                $dbPackage = $this->getPackageService()->checkUnique($v);
+                if (!empty($dbPackage)) {
+                    $errorMsg = '';
+                    if (!empty($v['express_first_no'])) {
+                        $list['item_number_'.($j+1)]=__('物品').$j.__('扫码编号有重复');
+                    }
+                }
+            }
         }
         //检查仓库
         try{
