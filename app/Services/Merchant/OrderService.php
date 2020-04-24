@@ -645,18 +645,18 @@ class OrderService extends BaseService
                 if($data['item_type_'.($j+1)] === 1){
                     $package[$j]=$data['item_number_'.($j+1)];
                     $result[$j] = DB::table('package')->where('express_first_no',$data['item_number_'.($j+1)])->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
-                    if (!empty($result)) {
-                        $list['item_number_' . ($j + 1)] = __('物品') . ($j+1) . __('扫码编号有重复');
+                    if (!empty($result[$j])) {
+                        $list['item_number_' . ($j + 1)] = __('物品') . ($j+1) . __('编号有重复');
                     }
                 }elseif ($data['item_type_'.($j+1)] === 2){
                     $material[$j]=$data['item_number_'.($j+1)];
                     $result[$j] = DB::table('material')->where('code',$data['item_number_'.($j+1)])->first();
-                    if (!empty($result)) {
-                        $list['item_number_' . ($j + 1)] = __('物品') . ($j+1) . __('扫码编号有重复');
+                    if (!empty($result[$j])) {
+                        $list['item_number_' . ($j + 1)] = __('物品') . ($j+1) . __('编号有重复');
                     }
                 }
                 if(count(array_unique($package)) !== count($package) || count(array_unique($material)) !== count($material) ){
-                    $list['item_number_'.($j+1)]=__('扫码编号有重复');
+                    $list['item_number_'.($j+1)]=__('编号有重复');
                 }
             }
         }
@@ -987,7 +987,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('已从站点移除!');
         }
         //订单移除站点和取件线路信息
-        $rowCount = parent::updateById($info['id'], ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
+        $rowCount = parent::updateById($info['id'], ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1,'execution_date'=>null]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
