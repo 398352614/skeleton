@@ -646,17 +646,17 @@ class OrderService extends BaseService
                     $package[$j]=$data['item_number_'.($j+1)];
                     $result[$j] = DB::table('package')->where('express_first_no',$data['item_number_'.($j+1)])->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
                     if (!empty($result)) {
-                        $list['item_number_' . ($j + 1)] = __('物品') . ($j+1) . __('扫码编号有重复');
+                        $list['item_number_' . ($j + 1)] = __('物品') . ($j+1) . __('编号有重复');
                     }
                 }elseif ($data['item_type_'.($j+1)] === 2){
                     $material[$j]=$data['item_number_'.($j+1)];
                     $result[$j] = DB::table('material')->where('code',$data['item_number_'.($j+1)])->first();
                     if (!empty($result)) {
-                        $list['item_number_' . ($j + 1)] = __('物品') . ($j+1) . __('扫码编号有重复');
+                        $list['item_number_' . ($j + 1)] = __('物品') . ($j+1) . __('编号有重复');
                     }
                 }
                 if(count(array_unique($package)) !== count($package) || count(array_unique($material)) !== count($material) ){
-                    $list['item_number_'.($j+1)]=__('扫码编号有重复');
+                    $list['item_number_'.($j+1)]=__('编号有重复');
                 }
             }
         }
