@@ -322,10 +322,10 @@ class OrderService extends BaseService
     {
             $this->check($params);
         //设置订单来源
+        data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
         if($import===true){
             data_set($params, 'source', BaseConstService::ORDER_SOURCE_2);
         }
-        data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
         //填充商户ID
         $params['merchant_id'] = auth()->id();
         //用仓库填充发件人

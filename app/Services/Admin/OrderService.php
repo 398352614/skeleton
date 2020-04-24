@@ -275,6 +275,7 @@ class OrderService extends BaseService
     public function store($params,$import=false)
     {
         $this->check($params);
+        data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
         if($import===true){
             data_set($params, 'source', BaseConstService::ORDER_SOURCE_2);
         }
