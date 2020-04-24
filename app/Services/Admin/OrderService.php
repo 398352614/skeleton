@@ -1039,10 +1039,10 @@ class OrderService extends BaseService
             OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
             OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
         }
-        $message = ['type' => 'pushOneDriver', 'to_id' => $tour['driver_id'], 'data' => ['content' => '有新的订单加入取件线路']];
-        $client = new Client('wss://' . config('tms.push_url') . '/?token=' . JWTAuth::getToken());
-        $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
-        $client->close();
+//        $message = ['type' => 'pushOneDriver', 'to_id' => $tour['driver_id'], 'data' => ['content' => '有新的订单加入取件线路']];
+//        $client = new Client('wss://' . config('tms.push_url') . '/?token=' . JWTAuth::getToken());
+//        $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
+//        $client->close();
     }
 
 
