@@ -26,6 +26,7 @@ use App\Models\OrderTrail;
 use App\Models\Package;
 use App\Models\SpecialTimeCharging;
 use App\Models\Tour;
+use App\Models\TourLog;
 use App\Models\TourMaterial;
 use App\Models\TransportPrice;
 use App\Models\Warehouse;
@@ -69,6 +70,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof Package))
                 && (!($model instanceof TourMaterial))
                 && (!($model instanceof Merchant))
+                && (!($model instanceof TourLog))
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
             }

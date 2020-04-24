@@ -825,7 +825,6 @@ class TourService extends BaseService
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
         set_time_limit(240);
-        self::setTourLock($this->formData['tour_no'], 1); // 加锁
 
         app('log')->info('更新线路传入的参数为:', $this->formData);
 
