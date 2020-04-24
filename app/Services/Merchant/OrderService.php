@@ -650,7 +650,7 @@ class OrderService extends BaseService
                 $data['item_number_'.($j+1)]=__('扫码编号有重复');
             }
             foreach ($package as $v) {
-                $result = DB::table('Package')->where('express_first_no',$v)->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
+                $result = DB::table('package')->where('express_first_no',$v)->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
                 if (!empty($result)) {
                         $list['item_number_' . ($j + 1)] = __('物品') . $j . __('扫码编号有重复');
                     }
