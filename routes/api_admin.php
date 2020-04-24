@@ -52,6 +52,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/initPickupIndex', 'OrderController@initPickupIndex');
         //派件列表查询初始化
         Route::get('/initPieIndex', 'OrderController@initPieIndex');
+        //查询初始化
+        Route::get('/initIndex','OrderController@initIndex');
         //列表查询
         Route::get('/', 'OrderController@index');
         //获取详情

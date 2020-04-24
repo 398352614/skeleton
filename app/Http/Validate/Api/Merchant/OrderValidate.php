@@ -91,7 +91,8 @@ class OrderValidate extends BaseValidate
         'package_list.*.express_second_no' => 'nullable|string|max:50',
         //材料列表
         'material_list.*.name' => 'nullable|string|max:50',
-        'material_list.*.code' => 'required_with:material_list|string|max:50',
+        'material_list.*.code' => 'nullable|string|max:50',
+        //'material_list.*.code' => 'required_with:material_list|string|max:50',
         'material_list.*.out_order_no' => 'nullable|string|max:50',
         'material_list.*.expect_quantity' => 'required_with:material_list|integer|gte:0',
         'material_list.*.remark' => 'nullable|string|max:250',

@@ -39,7 +39,8 @@ class OrderService extends BaseService
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'order_no,out_order_no' => ['like', 'keyword'],
         'exception_label' => ['=', 'exception_label'],
-        'merchant_id' => ['=', 'merchant_id']
+        'merchant_id' => ['=', 'merchant_id'],
+        'source'=>['=','source'],
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -160,6 +161,16 @@ class OrderService extends BaseService
         return self::getInstance(MerchantService::class);
     }
 
+    /**
+     * 查询初始化
+     * @return array
+     */
+    public function initIndex(){
+        $data = [];
+        $data['source_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSourceList);
+        $data['status_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderStatusList);
+        return $data;
+    }
 
     /**
      * 取件列初始化
@@ -261,9 +272,13 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function store($params)
+    public function store($params,$import=false)
     {
         $this->check($params);
+        data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
+        if($import===true){
+            data_set($params, 'source', BaseConstService::ORDER_SOURCE_2);
+        }
         /*************************************************订单新增************************************************/
         //生成单号
         $params['order_no'] = $this->getOrderNoRuleService()->createOrderNo();
@@ -357,7 +372,7 @@ class OrderService extends BaseService
             $list[$i]['lon'] = $info['lon'];
             $list[$i]['lat'] = $info['lat'];
             try {
-                $this->store($list[$i]);
+                $this->store($list[$i],true);
             } catch (BusinessLogicException $e) {
                 throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
             } catch (\Exception $e) {

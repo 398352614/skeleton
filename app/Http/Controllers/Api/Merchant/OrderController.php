@@ -24,6 +24,14 @@ class OrderController extends OrderBaseController
         parent::__construct($service);
     }
 
+    /**
+     * 查询初始化
+     * @return array
+     */
+    public function initIndex(){
+        return $this->service->initIndex();
+    }
+
     public function index()
     {
         return $this->service->getPageList();
