@@ -650,15 +650,11 @@ class OrderService extends BaseService
                 $data['item_number_'.($j+1)]=__('扫码编号有重复');
             }
             foreach ($package as $v) {
-                if (!empty($dbPackage)) {
-                    $dbPackage = $this->getPackageService()->checkUnique($v);
-                    if (!empty($dbPackage)) {
-                        if (!empty($v['item_number_'.($j+1)])) {
-                            $list['item_number_' . ($j + 1)] = __('物品') . $j . __('扫码编号有重复');
-                        }
+                $result = DB::table('Package')->where('express_first_no',$v)->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
+                if (!empty($result)) {
+                        $list['item_number_' . ($j + 1)] = __('物品') . $j . __('扫码编号有重复');
                     }
                 }
-            }
         }
         //检查仓库
         try{
