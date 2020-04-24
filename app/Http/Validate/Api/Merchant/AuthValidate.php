@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Validate\Api\Driver;
+namespace App\Http\Validate\Api\Merchant;
 
 use App\Http\Validate\BaseValidate;
 

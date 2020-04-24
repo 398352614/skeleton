@@ -171,7 +171,7 @@ class BatchService extends BaseService
         if (empty($batchList)) return [[], $line];
         foreach ($batchList as $batch) {
             //获取线路信息
-            $dbLine = $line ?? $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
+            $dbLine = !empty($line) ? $line : $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
             if (empty($dbLine)) {
                 continue;
             }
@@ -196,7 +196,7 @@ class BatchService extends BaseService
      */
     private function joinNewBatch($order, $line)
     {
-        $newLine = $line ?? $this->getLineService()->getInfoByRule($order);
+        $newLine = !empty($line) ? $line : $this->getLineService()->getInfoByRule($order);
         //站点新增
         $batchNo = $this->getOrderNoRuleService()->createBatchNo();
         $batch = parent::create($this->fillData($order, $newLine, $batchNo));
@@ -579,14 +579,15 @@ class BatchService extends BaseService
     {
 
         $info = parent::getInfo(['id' => $id], ['*'], true);
-        if(empty($info)){
+        if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data=$this->getSchedule($info);
+        $data = $this->getSchedule($info);
         return $data;
     }
 
-    public function getSchedule($info){
+    public function getSchedule($info)
+    {
         $data = [];
         //获取邮编数字部分
         $postCode = explode_post_code($info['receiver_post_code']);
@@ -639,7 +640,7 @@ class BatchService extends BaseService
             }
         }
         asort($data);
-        $data=array_values($data);
+        $data = array_values($data);
         return $data;
     }
 

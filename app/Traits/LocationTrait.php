@@ -89,7 +89,8 @@ trait LocationTrait
                                 config('thirdParty.location_api_key'),
                                 config('thirdParty.location_api_secret')
                             ],
-                        'http_errors' => false
+                        'http_errors' => false,
+                        'timeout' => 3
                     ]
                 );
             } catch (\Exception $ex) {
@@ -170,7 +171,7 @@ trait LocationTrait
         $url = config('tms.map_url') . 'staticmap?size=640x640&maptype=roadmap' . $markers . '&key=' . config('tms.map_key');
         try {
             if ((App::environment() === 'development') || (App::environment() === 'local')) {
-                $options = ['proxy' => ['http' => env('VPN'), 'https' => env('VPN')]];
+                $options = ['proxy' => ['http' => config('tms.vpn'), 'https' => config('tms.vpn')]];
             } else {
                 $options = [];
             }

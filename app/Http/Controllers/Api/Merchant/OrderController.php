@@ -190,6 +190,14 @@ class OrderController extends OrderBaseController
     }
 
     /**
+     * 批量检查
+     * @return array
+     */
+    public function importCheckByList(){
+        return $this->service->importCheckByList($this->data);
+    }
+
+    /**
      * 检查
      * @throws BusinessLogicException
      */

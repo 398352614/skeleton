@@ -13,6 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\TestService;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\App;
 
 /**
  * Class TestController

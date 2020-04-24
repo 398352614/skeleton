@@ -70,7 +70,7 @@ class OrderValidate extends BaseValidate
 //        'sender_street' => 'required|string|max:50',
 //        'sender_address' => 'nullable|string|max:250',
         'receiver' => 'required|string|max:50',
-        'receiver_phone' => 'required|string|max:20',
+        'receiver_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
         'receiver_country' => 'required|string|max:20',
         'receiver_post_code' => 'required|string|max:50',
         'receiver_house_number' => 'nullable|string|max:50',
@@ -83,8 +83,8 @@ class OrderValidate extends BaseValidate
         'remark' => 'nullable|string|max:250',
         //包裹列表
         'package_list.*.name' => 'nullable|string|max:50',
-        'package_list.*.weight' => 'nullable|numeric',
-        'package_list.*.expect_quantity' => 'required_with:package_list|integer',
+        'package_list.*.weight' => 'nullable|numeric|gte:0',
+        'package_list.*.expect_quantity' => 'required_with:package_list|integer|gte:0',
         'package_list.*.remark' => 'nullable|string|max:250',
         'package_list.*.out_order_no' => 'nullable|string|max:50',
         'package_list.*.express_first_no' => 'required_with:package_list|string|max:50',
@@ -93,7 +93,7 @@ class OrderValidate extends BaseValidate
         'material_list.*.name' => 'nullable|string|max:50',
         'material_list.*.code' => 'required_with:material_list|string|max:50',
         'material_list.*.out_order_no' => 'nullable|string|max:50',
-        'material_list.*.expect_quantity' => 'required_with:material_list|integer',
+        'material_list.*.expect_quantity' => 'required_with:material_list|integer|gte:0',
         'material_list.*.remark' => 'nullable|string|max:250',
     ];
 
@@ -133,7 +133,8 @@ class OrderValidate extends BaseValidate
         'getBatchPageListByOrder' => ['execution_date'],
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
-        'destroy' => ['remark']
+        'destroy' => ['remark'],
+        'getDate' =>['receiver_country','receiver_post_code','type'],
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',

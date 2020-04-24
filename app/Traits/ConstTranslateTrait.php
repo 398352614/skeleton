@@ -51,6 +51,8 @@ use Illuminate\Support\Facades\App;
  */
 trait ConstTranslateTrait
 {
+
+
     //星期
     public static $weekList = [
         BaseConstService::MONDAY => '星期一',
@@ -109,13 +111,10 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_EXCEPTION_LABEL_2 => '异常'
     ];
 
-    //订单性质1-包裹2-材料3-文件4-增值服务5-其他
+    //订单性质1-包裹2-材料
     public static $orderNatureList = [
         BaseConstService::ORDER_NATURE_1 => '包裹',
         BaseConstService::ORDER_NATURE_2 => '材料',
-        BaseConstService::ORDER_NATURE_3 => '文件',
-        BaseConstService::ORDER_NATURE_4 => '增值服务',
-        BaseConstService::ORDER_NATURE_5 => '其他'
     ];
 
     //支付方式1-现金支付2-银行卡支付
