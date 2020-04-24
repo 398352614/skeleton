@@ -210,6 +210,7 @@ class OrderController extends BaseController
     /**
      * 批量分配订单至取件线路
      * @throws BusinessLogicException
+     * @throws \WebSocket\BadOpcodeException
      */
     public function assignListTour()
     {

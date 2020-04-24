@@ -27,7 +27,11 @@ use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use WebSocket\Client;
 
 class OrderService extends BaseService
 {
@@ -40,7 +44,7 @@ class OrderService extends BaseService
         'order_no,out_order_no' => ['like', 'keyword'],
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
-        'source'=>['=','source'],
+        'source' => ['=', 'source'],
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -165,7 +169,8 @@ class OrderService extends BaseService
      * 查询初始化
      * @return array
      */
-    public function initIndex(){
+    public function initIndex()
+    {
         $data = [];
         $data['source_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSourceList);
         $data['status_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderStatusList);
@@ -272,11 +277,11 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function store($params,$import=false)
+    public function store($params, $import = false)
     {
         $this->check($params);
         data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
-        if($import===true){
+        if ($import === true) {
             data_set($params, 'source', BaseConstService::ORDER_SOURCE_2);
         }
         /*************************************************订单新增************************************************/
@@ -372,7 +377,7 @@ class OrderService extends BaseService
             $list[$i]['lon'] = $info['lon'];
             $list[$i]['lat'] = $info['lat'];
             try {
-                $this->store($list[$i],true);
+                $this->store($list[$i], true);
             } catch (BusinessLogicException $e) {
                 throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
             } catch (\Exception $e) {
@@ -394,7 +399,7 @@ class OrderService extends BaseService
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         $params['path'] = str_replace(config('app.url') . '/storage/', 'public//', $params['path']);
-        $headings=array_values(__('excel.order'));
+        $headings = array_values(__('excel.order'));
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
         if ($row[0] !== $headings) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
@@ -684,7 +689,7 @@ class OrderService extends BaseService
     public function getTourDate($id)
     {
         $info = parent::getInfo(['id' => $id], ['*'], true);
-        if(empty($info)){
+        if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
         $data = $this->getSchedule($info);
@@ -726,13 +731,13 @@ class OrderService extends BaseService
                 $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
                 if (!empty($line[$i])) {
                     //获得当前邮编范围的首天
-                    if ($lineRange[$i]['schedule'] ===0){
-                        $lineRange[$i]['schedule']=7;
+                    if ($lineRange[$i]['schedule'] === 0) {
+                        $lineRange[$i]['schedule'] = 7;
                     }
                     if (Carbon::today()->dayOfWeek < $lineRange[$i]['schedule']) {
-                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule']-1);
+                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule'] - 1);
                     } else {
-                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule']-1);
+                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule'] - 1);
                     }
                     //如果线路不自增，验证最大订单量
                     if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
@@ -778,7 +783,7 @@ class OrderService extends BaseService
             }
         }
         asort($data);
-        $data=array_values($data);
+        $data = array_values($data);
         return $data;
     }
 
@@ -991,6 +996,7 @@ class OrderService extends BaseService
      * 批量订单分配至指定取件线路
      * @param $params
      * @throws BusinessLogicException
+     * @throws \WebSocket\BadOpcodeException
      */
     public function assignListTour($params)
     {
@@ -1033,6 +1039,10 @@ class OrderService extends BaseService
             OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
             OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
         }
+        $message = ['type' => 'pushOneDriver', 'to_id' => $tour['driver_id'], 'data' => ['content' => '有新的订单加入取件线路']];
+        $client = new Client('wss://' . config('tms.push_url') . '/?token=' . JWTAuth::getToken());
+        $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
+        $client->close();
     }
 
 
