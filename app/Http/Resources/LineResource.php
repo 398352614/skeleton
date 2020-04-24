@@ -29,6 +29,7 @@ class LineResource extends JsonResource
             'is_increment'=>$this->is_increment,
             'order_deadline'=>$this->order_deadline,
             'creator_name' => $this->creator_name,
+            'remark'=>$this->remark,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
