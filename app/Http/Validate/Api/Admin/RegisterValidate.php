@@ -23,7 +23,7 @@ class RegisterValidate extends BaseValidate
         'password' => 'required|string|between:8,20',
         'confirm_password' => 'required|string|same:password',
         //'phone'     => 'required|string|phone:CN',
-        'code' => 'required|string|digits_between:6,6',
+        'code' => 'required|string|digits:6',
         'new_password' => 'required|string|between:8,20',
         'confirm_new_password' => 'required|string|same:new_password',
         'name' => 'required|string|max:50|uniqueIgnore:company,id'
