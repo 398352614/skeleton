@@ -641,16 +641,23 @@ class OrderService extends BaseService
         $package=[];
         $material=[];
         for($j=0;$j<5;$j++){
-            if($data['item_type_'.($j+1)] === 1){
-                $result = DB::table('package')->where('express_first_no',$data['item_number_'.($j+1)])->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
-                if (!empty($result)) {
-                    $list['item_number_' . ($j + 1)] = __('物品') . $j . __('扫码编号有重复');
+            if($data['item_number_'.($j+1)]){
+                if($data['item_type_'.($j+1)] === 1){
+                    $package[$j]=$data['item_number_'.($j+1)];
+                    $result[$j] = DB::table('package')->where('express_first_no',$data['item_number_'.($j+1)])->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
+                    if (!empty($result)) {
+                        $list['item_number_' . ($j + 1)] = __('物品') . ($j+1) . __('扫码编号有重复');
+                    }
+                }elseif ($data['item_type_'.($j+1)] === 2){
+                    $material[$j]=$data['item_number_'.($j+1)];
+                    $result[$j] = DB::table('material')->where('code',$data['item_number_'.($j+1)])->first();
+                    if (!empty($result)) {
+                        $list['item_number_' . ($j + 1)] = __('物品') . ($j+1) . __('扫码编号有重复');
+                    }
                 }
-            }elseif ($data['item_type_'.($j+1)] === 2){
-                $material[$j]=$data['item_number_'.($j+1)];
-            }
-            if(count(array_unique($package)) !== count($package) || count(array_unique($material)) !== count($material) ){
-                $data['item_number_'.($j+1)]=__('扫码编号有重复');
+                if(count(array_unique($package)) !== count($package) || count(array_unique($material)) !== count($material) ){
+                    $list['item_number_'.($j+1)]=__('扫码编号有重复');
+                }
             }
         }
         //检查仓库
@@ -879,14 +886,14 @@ class OrderService extends BaseService
                         $lineRange[$i]['schedule']=7;
                     }
                     if (Carbon::today()->dayOfWeek < $lineRange[$i]['schedule']) {
-                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule']-1);
+                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule']-1)->format('Y-m-d');
                     } else {
-                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule']-1);
+                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule']-1)->format('Y-m-d');
                     }
                     //如果线路不自增，验证最大订单量
                     if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
                         for ($k = 0, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
-                            $params['execution_date'] = $date->addDays($k)->format('Y-m-d');
+                            $params['execution_date'] = Carbon::create($date)->addDays($k)->format('Y-m-d');
                             if ($info['type'] == 1) {
                                 $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 1);
                                 if (1 + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count']) {
@@ -913,7 +920,7 @@ class OrderService extends BaseService
                         }
                     } elseif ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_1) {
                         for ($k = 0, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
-                            $params['execution_date'] = $date->addDays($k)->format('Y-m-d');
+                            $params['execution_date'] = Carbon::create($date)->addDays($k)->format('Y-m-d');
                             if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
                                 if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
                                     $data[] = $params['execution_date'];
