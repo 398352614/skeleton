@@ -41,7 +41,7 @@ return [
     'exists' => '选定的 :attribute 是无效的.',
     'file' => ':attribute必须是一个文件',
     'gte.numeric'=>':attribute不能小于:value',
-    'lte'=>':attribute不能超过:value',
+    'lte.numeric'=>':attribute不能超过:value',
     'filled' => ':attribute的字段是必填的',
     'image' => ':attribute必须是 jpeg, png, bmp 或者 gif 格式的图片',
     'in' => '选定的 :attribute 是无效的',
