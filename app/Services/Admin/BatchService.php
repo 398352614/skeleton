@@ -171,11 +171,16 @@ class BatchService extends BaseService
         if (empty($batchList)) return [[], $line];
         foreach ($batchList as $batch) {
             //获取线路信息
-            $dbLine = !empty($line) ? $line : $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
-            if (empty($dbLine)) {
-                continue;
+            if (!empty($line)) {
+                $dbLine = $line;
+            } else {
+                $dbLine = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
+                if (empty($dbLine)) {
+                    continue;
+                } else {
+                    $dbLine = $dbLine->toArray();
+                }
             }
-            $dbLine = $dbLine->toArray();
             $tour = $this->getTourService()->getTourInfo($batch, $dbLine, false, $batch['tour_no'] ?? '');
             //若存在，锁定当前站点
             if (!empty($tour)) {
