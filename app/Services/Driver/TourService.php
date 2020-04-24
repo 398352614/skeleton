@@ -830,9 +830,8 @@ class TourService extends BaseService
         app('log')->info('更新线路传入的参数为:', $this->formData);
 
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
-
         throw_if(
-            $tour->batchs->count() != $this->formData['batch_ids'],
+            $tour->batchs->count() != count($this->formData['batch_ids']),
             new BusinessLogicException('线路的站点数量不正确')
         );
 
