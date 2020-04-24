@@ -33,7 +33,7 @@ class LineValidate extends BaseValidate
         'pie_max_count' => 'required|integer|lte:10000',
         'is_increment' => 'required|integer|in:1,2',
         'order_deadline' => 'required|date_format:H:i:s',
-        'appointment_days' => 'required|integer',
+        'appointment_days' => 'required|integer|gte:0',
         'remark' => 'nullable|string|max:250',
         'work_day_list' => 'required|string',
         //邮编列表
