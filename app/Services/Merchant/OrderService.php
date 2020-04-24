@@ -671,7 +671,11 @@ class OrderService extends BaseService
         }
         $list['lon']=$data['lon']??'';
         $list['lat']=$data['lat']??'';
-
+        if(count($list) >2){
+            $list['status']='fail';
+        }else{
+            $list['status']='success';
+        }
         return $list;
     }
 
