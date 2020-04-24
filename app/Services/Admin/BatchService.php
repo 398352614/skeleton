@@ -525,9 +525,9 @@ class BatchService extends BaseService
      * @param $tour
      * @throws BusinessLogicException
      */
-    private function fillTourInfo($batch, $line, $tour)
+    private function fillTourInfo(&$batch, $line, $tour)
     {
-        $rowCount = parent::updateById($batch['id'], [
+        $data = [
             'execution_date' => $tour['execution_date'],
             'tour_no' => $tour['tour_no'],
             'line_id' => $line['id'],
@@ -537,10 +537,12 @@ class BatchService extends BaseService
             'car_id' => $tour['car_id'] ?? null,
             'car_no' => $tour['car_no'] ?? '',
             'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN
-        ]);
+        ];
+        $rowCount = parent::updateById($batch['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败，请重新操作');
         }
+        $batch = array_merge($batch, $data);
     }
 
     /**
