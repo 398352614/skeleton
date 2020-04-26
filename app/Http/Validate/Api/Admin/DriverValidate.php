@@ -42,6 +42,8 @@ class DriverValidate extends BaseValidate
     public $rules = [
         'email'                         => 'required|string|max:50|uniqueIgnore:driver,id',
         'password'                      => 'required|string|max:100',
+        'new_password'                  => 'required|string|max:100',
+        'confirm_new_password'          => 'required|string|max:100|same:new_password',
         'fullname'                      => 'required|string|max:50',
         'gender'                        => 'nullable|string|max:10',
         'birthday'                      => 'nullable|date|date_format:Y-m-d',
@@ -109,7 +111,7 @@ class DriverValidate extends BaseValidate
             'bic',
             // 'crop_type',
         ],
-        'resetPassword' => ['password'],
+        'resetPassword' => ['new_password','confirm_new_password'],
         'lockDriver' => ['is_locked']
     ];
 }

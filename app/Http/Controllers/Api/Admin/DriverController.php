@@ -71,6 +71,9 @@ class DriverController extends BaseController
     }
 
     /**
+     * @param $id
+     * @return void
+     * @throws BusinessLogicException
      * @api {POST}  api/admin/driver/{driver}/reset-password 管理员端:重置密码
      * @apiName reset-password
      * @apiGroup admin-driver
@@ -86,9 +89,9 @@ class DriverController extends BaseController
      *  "data":{}
      * }
      */
-    public function resetPassword(Request $request, $id)
+    public function resetPassword($id)
     {
-        return $this->service->resetPassword($id, $request->validated['password']);
+        return $this->service->resetPassword($id, $this->data);
     }
 
     /**
