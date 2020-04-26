@@ -419,8 +419,8 @@ class OrderService extends BaseService
         }
         $headings = OrderImportService::$headings;
         $data = [];
-        for ($i = 1; $i < count($row); $i++) {
-            $data[$i - 1] = collect($headings)->combine($row[$i])->toArray();
+        for ($i = 2; $i < count($row); $i++) {
+            $data[$i - 2] = collect($headings)->combine($row[$i])->toArray();
         }
         if (count($data) > 100) {
             throw new BusinessLogicException('导入订单数量不得超过100个');
@@ -432,12 +432,12 @@ class OrderService extends BaseService
         $deliveryList = ['是' => 1, '否' => 2, 'Yes' => 1, 'No' => 2];
         $itemList = ['包裹' => 1, '材料' => 2, 'Package' => 1, 'Material' => 2];
         $countryNameList = array_unique(collect($data)->pluck('receiver_country_name')->toArray());
-        $countryShortList = CountryTrait::getShortListByName($countryNameList);
+        //$countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {
             //处理格式
-            $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
+            //$data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             $data[$i] = array_map('strval', $data[$i]);
-            $data[$i]['receiver_country'] = $countryShortList[$data[$i]['receiver_country_name']];
+            $data[$i]['receiver_country'] = auth()->user()->country;
             $data[$i]['type'] = $typeList[$data[$i]['type_name']];
             $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type_name']];
             $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery_name']] ?? 1;

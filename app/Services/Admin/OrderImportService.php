@@ -31,7 +31,6 @@ class OrderImportService extends BaseService
         'type_name',
         'receiver',
         'receiver_phone',
-        'receiver_country_name',
         'receiver_post_code',
         'receiver_house_number',
         'receiver_address',

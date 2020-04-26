@@ -31,7 +31,6 @@ return [
         "type"=>"*取派类型",
         "receiver"=>"*收件人姓名",
         "receiver_phone"=>"*收件人电话",
-        "receiver_country"=>"*收件人国家",
         "receiver_post_code"=>"*收件人邮编",
         "receiver_house_number"=>"*收件人门牌号",
         "receiver_address"=>"*收件人详细地址",

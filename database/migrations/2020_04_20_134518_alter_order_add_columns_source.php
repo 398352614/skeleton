@@ -29,7 +29,7 @@ class AlterOrderAddColumnsSource extends Migration
     {
         Schema::table('order', function (Blueprint $table) {
             $table->dropColumn('list_mode');
-            $table->smallInteger('source')->default(1)->nullable()->after('type')->comment('来源1-手动添加2-批量导入3-第三方');
+            $table->smallInteger('source')->default(1)->nullable()->after('type')->comment('来源1-手动添加2-批量导入3-第三方')->change();
         });
     }
 }

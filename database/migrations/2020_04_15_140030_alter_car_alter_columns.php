@@ -33,7 +33,14 @@ class AlterCarAlterColumns extends Migration
     public function down()
     {
         Schema::table('car', function (Blueprint $table) {
-
+            $table->string('frame_number');
+            $table->string('engine_number');
+            $table->string('current_miles');
+            $table->string('annual_inspection_date');
+            $table->string('fuel_type');
+            $table->string('received_date');
+            $table->string('month_road_tax');
+            $table->string('transmission');
         });
     }
 }

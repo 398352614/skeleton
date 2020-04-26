@@ -31,7 +31,6 @@ return [
         "type"=>"*Type",
         "receiver"=>"*Receiver",
         "receiver_phone"=>"*Phone",
-        "receiver_country"=>"*Country",
         "receiver_post_code"=>"*Post Code",
         "receiver_house_number"=>"*House Number",
         "receiver_address"=>"*Address",

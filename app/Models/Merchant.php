@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use App\Traits\CountryTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -52,6 +53,7 @@ class Merchant extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'country',
         'settlement_type',
         'merchant_group_id',
         'contacter',
@@ -99,6 +101,11 @@ class Merchant extends Authenticatable implements JWTSubject
     public function getTypeNameAttribute()
     {
         return empty($this->type) ? null : ConstTranslateTrait::merchantTypeList($this->type);
+    }
+
+    public function getCountryNameAttribute()
+    {
+        return empty($this->country) ? null : CountryTrait::getCountryName($this->country);
     }
 
 
