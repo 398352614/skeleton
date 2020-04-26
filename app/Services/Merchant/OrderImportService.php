@@ -109,7 +109,7 @@ class OrderImportService extends BaseService
             __('取件'),
             __('示例，此行数据不会被导入'),
             __('1XXXXXXXXXX'),
-            __('410000'),
+            __('41X000'),
             __('C8栋808'),
             __('麓谷企业广场'),
             '2020-01-01',

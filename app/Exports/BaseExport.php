@@ -85,9 +85,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 if($this->title ==='template'){
                     //冻结单元格
                     $event->sheet->getDelegate()->freezePane('A3');
-                    //设置表头背景色为灰色
-                    $event->sheet->getDelegate()->getStyle('A1:'.$endColumn.'1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFAAAAAA');
-                    //设置日期格式
+                   //设置日期格式
                     $event->sheet->getDelegate()->getStyle('H2:H101')->getNumberFormat()
                         ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_YYYYMMDD2);
                     //设置字体颜色
@@ -202,9 +200,11 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                             ->setPrompt('')
                             ->setFormula1('"' . $itemList . '"');
                     }
+                    //设置表头背景色为灰色
+                    $event->sheet->getDelegate()->getStyle('A1:'.$endColumn.'1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFAAAAAA');
 
-/*                    $event->sheet->getDelegate()->getComment('A1')
-                        ->getText()->createTextRun(__('1-取件，2-派件'));*/
+                    /*                    $event->sheet->getDelegate()->getComment('A1')
+                                            ->getText()->createTextRun(__('1-取件，2-派件'));*/
                 }
             },
         ];
