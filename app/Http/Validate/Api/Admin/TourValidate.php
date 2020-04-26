@@ -30,5 +30,10 @@ class TourValidate extends BaseValidate
         'assignCar' => ['car_id'],
         'getAddOrderPageList' => ['order_id_list']
     ];
+
+    public $message = [
+        'driver_id.required'=>'请选择司机',
+        'car_id.required'=>'请选择车辆',
+    ];
 }
 

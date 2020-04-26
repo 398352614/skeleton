@@ -1,4 +1,6 @@
 {
+    "请选择司机": "Please select a driver",
+    "请选择车辆": "Please select a car",
     "物品": "Item",
     "编号有重复": "item code is duplicate",
   "取派类型格式不正确": "The type input is incorrect",
