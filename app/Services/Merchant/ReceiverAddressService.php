@@ -23,6 +23,10 @@ class ReceiverAddressService extends BaseService
         parent::__construct($receiverAddress,ReceiverAddressResource::class,ReceiverAddressResource::class);
     }
 
+    public $filterRules = [
+        'receiver' => ['like', 'receiver'],
+        'receiver_post_code' => ['like', 'receiver_post_code'],
+    ];
 
     /**
      * 获取详情

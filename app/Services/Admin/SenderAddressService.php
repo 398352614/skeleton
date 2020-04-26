@@ -11,7 +11,9 @@ use App\Http\Resources\SenderAddressResource;
 class SenderAddressService extends BaseService
 {
     public $filterRules = [
-        'merchant_id' => ['=', 'merchant_id']
+        'merchant_id' => ['=', 'merchant_id'],
+        'sender' => ['like', 'sender'],
+        'sender_post_code' => ['like', 'sender_post_code']
     ];
 
     public function __construct(SenderAddress $senderAddress)

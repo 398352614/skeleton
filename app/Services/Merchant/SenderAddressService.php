@@ -15,6 +15,11 @@ class SenderAddressService extends BaseService
         parent::__construct($senderAddress,SenderAddressResource::class,SenderAddressResource::class);
     }
 
+    public $filterRules = [
+        'sender' => ['like', 'sender'],
+        'sender_post_code' => ['like', 'sender_post_code'],
+    ];
+
     public function index()
     {
         return parent::getpagelist();
