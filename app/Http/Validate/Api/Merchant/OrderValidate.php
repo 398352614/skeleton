@@ -71,7 +71,7 @@ class OrderValidate extends BaseValidate
 //        'sender_address' => 'nullable|string|max:250',
         'receiver' => 'required|string|max:50',
         'receiver_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'receiver_country' => 'required|string|max:20',
+//        'receiver_country' => 'required|string|max:20',
         'receiver_post_code' => 'required|string|max:50',
         'receiver_house_number' => 'nullable|string|max:50',
         'receiver_city' => 'nullable|string|max:50',
@@ -122,7 +122,7 @@ class OrderValidate extends BaseValidate
             //'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
             //'sender_city', 'sender_street', 'sender_address',
             //收货人信息
-            'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
+            'receiver', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address',
             //备注
             'special_remark', 'remark', 'lon', 'lat',
@@ -135,7 +135,7 @@ class OrderValidate extends BaseValidate
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
-        'getDate' =>['receiver_country','receiver_post_code','type'],
+        'getDate' =>['receiver_post_code','type'],
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',

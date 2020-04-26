@@ -96,6 +96,8 @@ class AuthController extends Controller
         return [
             'username' => auth('merchant')->user()->name,
             'company_id' => auth('merchant')->user()->company_id,
+            'country' => auth('merchant')->user()->country,
+            'country_name'=>auth('merchant')->user()->country_name,
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('merchant')->factory()->getTTL() * 60

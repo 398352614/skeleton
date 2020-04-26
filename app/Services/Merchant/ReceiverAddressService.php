@@ -48,6 +48,7 @@ class ReceiverAddressService extends BaseService
      */
     public function store($params)
     {
+        $params['receiver_address']=auth()->user()->country;
         if (!empty($this->check($params))) {
             throw new BusinessLogicException('收货方地址已存在，不能重复添加');
         }
@@ -66,6 +67,7 @@ class ReceiverAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
+        $data['receiver_address']=auth()->user()->country;
         if (!empty($this->check($data, $id))) {
             throw new BusinessLogicException('收货方地址已存在，不能重复添加');
         }

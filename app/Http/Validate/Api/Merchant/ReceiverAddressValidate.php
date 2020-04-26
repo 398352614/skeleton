@@ -35,11 +35,11 @@ class ReceiverAddressValidate extends BaseValidate
 
     public $scene = [
         'store' => [
-            'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
+            'receiver', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address', 'lon', 'lat',
         ],
         'update' => [
-            'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
+            'receiver', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address', 'lon', 'lat',
         ]
     ];

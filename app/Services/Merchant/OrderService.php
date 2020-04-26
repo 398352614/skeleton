@@ -320,14 +320,15 @@ class OrderService extends BaseService
      */
     public function store($params,$import=false)
     {
-            $this->check($params);
+        //填充商户ID及国家
+        $params['merchant_id'] = auth()->user()->id;
+        $params['merchant_id'] = auth()->user()->country;
+        $this->check($params);
         //设置订单来源
         data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
         if($import===true){
             data_set($params, 'source', BaseConstService::ORDER_SOURCE_2);
         }
-        //填充商户ID
-        $params['merchant_id'] = auth()->id();
         //用仓库填充发件人
         $line = $this->getLineService()->getInfoByRule($params, BaseConstService::ORDER_OR_BATCH_1);
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
@@ -387,6 +388,7 @@ class OrderService extends BaseService
         $list = json_decode($params['list'], true);
         for ($i = 0; $i < count($list); $i++) {
             $list[$i] = $this->form($list[$i]);
+            $list[$i]['receiver_country']=auth()->user()->country;
             $list[$i]['receiver_city']='';
             $list[$i]['receiver_street']='';
             try {
@@ -879,7 +881,7 @@ class OrderService extends BaseService
         //获取线路范围
         $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
-            ->where('country', $info['receiver_country'])
+            ->where('country', auth()->user()->country)
             ->get();
         //按邮编范围循环
         if (!empty($lineRange)) {
