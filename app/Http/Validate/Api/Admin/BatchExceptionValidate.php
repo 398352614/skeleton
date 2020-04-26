@@ -19,7 +19,7 @@ class BatchExceptionValidate extends BaseValidate
 
 
     public $rules = [
-        'deal_remark' => 'required|string|max:250',
+        'deal_remark' => 'required|string|max:250|min:5',
     ];
 
     public $scene = [
