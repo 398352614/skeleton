@@ -435,7 +435,9 @@ class OrderService extends BaseService
         //$countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {
             //处理格式
-            $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
+            if(is_numeric($data[$i]['execution_date'])){
+                $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
+            }
             $data[$i] = array_map('strval', $data[$i]);
             $data[$i]['receiver_country'] = auth()->user()->country;
             $data[$i]['type'] = $typeList[$data[$i]['type_name']];
