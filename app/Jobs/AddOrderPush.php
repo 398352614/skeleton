@@ -129,6 +129,9 @@ class AddOrderPush implements ShouldQueue
             ->whereIn('order_no', array_column($orderList, 'order_no'))
             ->get(['name', 'code', DB::raw('SUM(expect_quantity) as expect_quantity'), DB::raw('0 as actual_quantity')])
             ->toArray();
-        return !empty($materialList) ? $materialList : [];
+        $materialList = Arr::where($materialList, function ($material) {
+            return !empty($material['code']) && !empty($material['expect_quantity']);
+        });
+        return $materialList;
     }
 }
