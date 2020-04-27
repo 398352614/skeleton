@@ -51,10 +51,7 @@ class AddOrderPush implements ShouldQueue
         $message = [
             'type' => 'pushOneDriver',
             'to_id' => $this->toId,
-            'data' => [
-                'type' => self::$type,
-                'order_list' => $this->getOrderPackageList($this->orderList),
-                'material_list' => $this->getMaterialList($this->orderList)],
+            'data' => $this->getData()
         ];
         try {
             $client = new Client('wss://' . config('tms.push_url') . '/?token=' . $this->token);
@@ -68,17 +65,33 @@ class AddOrderPush implements ShouldQueue
     }
 
     /**
+     * 获取推送数据
+     * @return array
+     */
+    private function getData()
+    {
+        $data = [
+            'type' => self::$type,
+            'is_exist_special_remark' => !empty(array_filter(array_column($this->orderList, 'special_remark'))) ? true : false,
+            'order_list' => $this->getOrderPackageList($this->orderList),
+            'material_list' => $this->getMaterialList($this->orderList),
+        ];
+        return $data;
+    }
+
+
+    /**
      * 获取订单包裹列表
      * @param $orderList
      * @return mixed
      */
-    public function getOrderPackageList($orderList)
+    private function getOrderPackageList($orderList)
     {
         $packageList = Package::query()->whereIn('order_no', array_column($orderList, 'order_no'))->get(['order_no', 'type', 'name', 'express_first_no', 'expect_quantity'])->toArray();
         $packageList = collect($packageList)->groupBy('order_no')->toArray();
         foreach ($orderList as &$order) {
             $order['package_list'] = $packageList[$order['order_no']] ?? '';
-            $order = Arr::only($order, ['order_no']);
+            $order = Arr::only($order, ['order_no', 'special_remark']);
         }
         unset($packageList);
         return $orderList;
@@ -89,7 +102,7 @@ class AddOrderPush implements ShouldQueue
      * @param $orderList
      * @return array
      */
-    public function getMaterialList($orderList)
+    private function getMaterialList($orderList)
     {
         return Material::query()
             ->whereIn('order_no', array_column($orderList, 'order_no'))
