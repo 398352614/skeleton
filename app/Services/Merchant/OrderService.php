@@ -322,7 +322,7 @@ class OrderService extends BaseService
     {
         //填充商户ID及国家
         $params['merchant_id'] = auth()->user()->id;
-        $params['merchant_id'] = auth()->user()->country;
+        $params['country'] = auth()->user()->country;
         $this->check($params);
         //设置订单来源
         data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);

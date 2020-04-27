@@ -85,7 +85,7 @@ class DriverService extends BaseService
     public function resetPassword($id, $params)
     {
         Driver::where('id', $id)->update([
-            'password' => Hash::make($params['password']),
+            'password' => Hash::make($params['new_password']),
         ]);
         return;
     }
