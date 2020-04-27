@@ -492,14 +492,17 @@ class OrderService extends BaseService
     private function check(&$params, $orderNo = null)
     {
         data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
+        //通过商户获取国家
+        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
+        if (empty($merchant)) {
+            throw new BusinessLogicException('商户不存在');
+        }
+        $params['receiver_country']=$merchant['country'];
+        //通过地址获取经纬度
         if (empty($params['lon']) || empty($params['lat'])) {
             $info = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
             $params['lon'] = $info['lon'];
             $params['lat'] = $info['lat'];
-        }
-        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
-        if (empty($merchant)) {
-            throw new BusinessLogicException('商户不存在');
         }
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
