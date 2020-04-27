@@ -1045,7 +1045,7 @@ class OrderService extends BaseService
         }
 
         //加单推送
-        dispatch(new AddOrderPush($orderList, $tour['to_id']));
+        dispatch(new AddOrderPush($orderList, $tour['driver_id']));
     }
 
 
