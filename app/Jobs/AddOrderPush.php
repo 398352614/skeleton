@@ -18,6 +18,34 @@ class AddOrderPush implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    /**
+     * 任务连接名称。
+     *
+     * @var string|null
+     */
+    public $connection = 'redis';
+
+    /**
+     * 任务发送到的队列的名称.
+     *
+     * @var string|null
+     */
+    public $queue = 'add-order-push';
+
+    /**
+     * 处理任务的延迟时间.
+     *
+     * @var int
+     */
+    public $delay = 60;
+
+    /**
+     * 任务可以尝试的最大次数。
+     *
+     * @var int
+     */
+    public $tries = 3;
+
     public $orderList;
 
     public $toId;
@@ -25,8 +53,6 @@ class AddOrderPush implements ShouldQueue
     public $token;
 
     static $type = 'add_order';
-
-    public $tries = 3;
 
     /**
      * AddOrderPush constructor.
@@ -58,7 +84,7 @@ class AddOrderPush implements ShouldQueue
             $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
             $client->close();
         } catch (\Exception $ex) {
-            Log::error('加单错误:' . $ex->getMessage());
+            Log::channel('job-daily')->error('加单错误:' . $ex->getMessage());
             return false;
         }
         return true;
