@@ -15,6 +15,7 @@ use App\Models\Tour;
 use App\Models\TourMaterial;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -159,6 +160,9 @@ class TourTaskService extends BaseService
                 DB::raw('0 as actual_quantity'),
             ], false, ['code'])->toArray();
         }
+        $materialList = Arr::where($materialList, function ($material) {
+            return !empty($material['code']) && !empty($material['expect_quantity']);
+        });
         return $materialList;
     }
 
