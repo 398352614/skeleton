@@ -943,6 +943,9 @@ class OrderService extends BaseService
         }
         asort($data);
         $data=array_values($data);
+        if(empty($data)){
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
         return $data;
     }
 
