@@ -17,14 +17,7 @@ use WebSocket\Client;
 class AddOrderPush implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    /**
-     * 任务连接名称。
-     *
-     * @var string|null
-     */
-    public $connection = 'redis';
-
+    
     /**
      * 任务发送到的队列的名称.
      *
