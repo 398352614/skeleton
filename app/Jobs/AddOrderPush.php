@@ -128,10 +128,8 @@ class AddOrderPush implements ShouldQueue
         $materialList = Material::query()
             ->whereIn('order_no', array_column($orderList, 'order_no'))
             ->get(['name', 'code', DB::raw('SUM(expect_quantity) as expect_quantity'), DB::raw('0 as actual_quantity')])
+            ->groupBy('code')
             ->toArray();
-        $materialList = Arr::where($materialList, function ($material) {
-            return !empty($material['code']) && !empty($material['expect_quantity']);
-        });
         return $materialList;
     }
 }
