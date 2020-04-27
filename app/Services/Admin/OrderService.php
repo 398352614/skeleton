@@ -13,6 +13,7 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
+use App\Jobs\AddOrderPush;
 use App\Jobs\OrderCreateByList;
 use App\Models\Order;
 use App\Models\OrderImportLog;
@@ -836,7 +837,7 @@ class OrderService extends BaseService
             return;
         }
         //订单移除站点和取件线路信息
-        $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1,'execution_date'=>null]);
+        $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => null]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
@@ -1039,10 +1040,9 @@ class OrderService extends BaseService
             OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
             OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
         }
-//        $message = ['type' => 'pushOneDriver', 'to_id' => $tour['driver_id'], 'data' => ['content' => '有新的订单加入取件线路']];
-//        $client = new Client('wss://' . config('tms.push_url') . '/?token=' . JWTAuth::getToken());
-//        $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
-//        $client->close();
+
+        //加单推送
+        dispatch(new AddOrderPush($orderList, $tour['to_id']));
     }
 
 
