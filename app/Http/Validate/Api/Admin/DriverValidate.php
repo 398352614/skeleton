@@ -37,6 +37,8 @@ class DriverValidate extends BaseValidate
         'bic'                           => 'BIC',
         'crop_type'                     => '合作类型',
         'is_locked'                     => '是否锁定',
+        'new_password'                  => '新密码',
+        'confirm_new_password'          => '新密码确认',
     ];
 
     public $rules = [
