@@ -266,7 +266,7 @@ class TourService extends BaseService
      */
     public function outWarehouse($id, $params)
     {
-        $tour = $this->checkOutWarehouse($id);
+        $tour = $this->checkOutWarehouse($id, $params);
         $params = Arr::only($params, ['material_list', 'cancel_order_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic']);
         $params = Arr::add($params, 'status', BaseConstService::TOUR_STATUS_4);
         $params = Arr::add($params, 'begin_time', now());
@@ -356,6 +356,10 @@ class TourService extends BaseService
      */
     private function insertMaterialList($tour, $materialList)
     {
+        $codeList = array_column($materialList, 'code');
+        if (count($codeList) != count(array_unique($codeList))) {
+            throw new BusinessLogicException('材料有重复,请先合并');
+        }
         $materialList = collect($materialList)->map(function ($material, $key) use ($tour) {
             $material = Arr::only($material, ['expect_quantity', 'actual_quantity', 'code', 'name']);
             $material = Arr::add($material, 'tour_no', $tour['tour_no']);
@@ -372,10 +376,11 @@ class TourService extends BaseService
     /**
      * 验证-出库
      * @param $id
+     * @param $params
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    private function checkOutWarehouse($id)
+    private function checkOutWarehouse($id, $params)
     {
         $tour = parent::getInfoLock(['id' => $id], ['*'], false);
         if (empty($tour)) {
@@ -387,6 +392,11 @@ class TourService extends BaseService
         }
         if (empty($tour['car_id']) || empty($tour['car_no'])) {
             throw new BusinessLogicException('当前待分配车辆,请先分配车辆');
+        }
+        //验证订单数量
+        $orderCount = $this->getOrderService()->count(['tour_no' => $tour['tour_no']]);
+        if ($orderCount != $params['order_count']) {
+            throw new BusinessLogicException('当前取件线路的订单数量不正确');
         }
         return $tour;
     }
