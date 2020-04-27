@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
             ->environments(['local', 'development', 'testing'])
             ->daily();
         //队列监听
-        $schedule->command('queue:listen --queue=location,tour-notify,add-order-push')->everyMinute();
+        $schedule->command('queue:listen --queue=location,tour-notify,add-order-push')->everyMinute()->onOneServer();
     }
 
     /**
