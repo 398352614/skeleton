@@ -36,12 +36,6 @@ class SendNotify2Merchant implements ShouldQueue
      */
     public $queue = 'tour-notify';
 
-    /**
-     * 处理任务的延迟时间.
-     *
-     * @var int
-     */
-    public $delay = 2;
 
     /**
      * 任务可以尝试的最大次数。

@@ -17,7 +17,7 @@ use WebSocket\Client;
 class AddOrderPush implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    
+
     /**
      * 任务发送到的队列的名称.
      *
@@ -25,12 +25,6 @@ class AddOrderPush implements ShouldQueue
      */
     public $queue = 'add-order-push';
 
-    /**
-     * 处理任务的延迟时间.
-     *
-     * @var int
-     */
-    public $delay = 60;
 
     /**
      * 任务可以尝试的最大次数。
