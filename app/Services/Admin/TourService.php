@@ -45,6 +45,7 @@ class TourService extends BaseService
         'tour_no' => ['like', 'tour_no'],
         'driver_name' => ['like', 'driver_name'],
         'driver_name,line_name' => ['like', 'keyword'],
+        'line_name,driver_name' => ['like', 'key_word'],
     ];
 
     protected $headings = [
