@@ -725,7 +725,7 @@ class OrderService extends BaseService
         //获取线路范围
         $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
-            ->where('country', $info['receiver_country'])
+            ->where('country', auth()->user()->country)
             ->get();
         //按邮编范围循环
         if (!empty($lineRange)) {
@@ -734,18 +734,18 @@ class OrderService extends BaseService
                 $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
                 if (!empty($line[$i])) {
                     //获得当前邮编范围的首天
-                    if ($lineRange[$i]['schedule'] === 0) {
-                        $lineRange[$i]['schedule'] = 7;
+                    if ($lineRange[$i]['schedule'] ===0){
+                        $lineRange[$i]['schedule']=7;
                     }
                     if (Carbon::today()->dayOfWeek < $lineRange[$i]['schedule']) {
-                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule'] - 1);
+                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule']-1)->format('Y-m-d');
                     } else {
-                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule'] - 1);
+                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule']-1)->format('Y-m-d');
                     }
                     //如果线路不自增，验证最大订单量
                     if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
                         for ($k = 0, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
-                            $params['execution_date'] = $date->addDays($k)->format('Y-m-d');
+                            $params['execution_date'] = Carbon::create($date)->addDays($k)->format('Y-m-d');
                             if ($info['type'] == 1) {
                                 $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 1);
                                 if (1 + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count']) {
@@ -772,7 +772,7 @@ class OrderService extends BaseService
                         }
                     } elseif ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_1) {
                         for ($k = 0, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
-                            $params['execution_date'] = $date->addDays($k)->format('Y-m-d');
+                            $params['execution_date'] = Carbon::create($date)->addDays($k)->format('Y-m-d');
                             if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
                                 if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
                                     $data[] = $params['execution_date'];
@@ -786,7 +786,7 @@ class OrderService extends BaseService
             }
         }
         asort($data);
-        $data = array_values($data);
+        $data=array_values($data);
         return $data;
     }
 
