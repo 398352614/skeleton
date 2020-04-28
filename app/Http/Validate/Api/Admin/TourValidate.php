@@ -34,6 +34,7 @@ class TourValidate extends BaseValidate
     public $message = [
         'driver_id.required'=>'请选择司机',
         'car_id.required'=>'请选择车辆',
+        'order_id_list.checkIdList'=>'格式不正确',
     ];
 }
 
