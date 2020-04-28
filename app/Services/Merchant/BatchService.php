@@ -99,16 +99,21 @@ class BatchService extends BaseService
     /**
      * 加入站点
      * @param $order
+     * @param $line
+     * @param
      * @return array
      * @throws BusinessLogicException
      */
-    public function join($order)
+    public function join($order, $line, $batchNo = null)
     {
-        list($batch, $line) = $this->hasSameBatch($order);
+        list($batch, $tour) = $this->hasSameBatch($order, $line, $batchNo);
+        if (!empty($batchNo) && empty($batch)) {
+            throw new BusinessLogicException('当前指定站点不符合当前订单');
+        }
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
-        list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order);
+        $batch = !empty($batch) ? $this->joinExistBatch($order, $batch) : $this->joinNewBatch($order, $line);
         /**************************************站点加入取件线路********************************************************/
-        $tour = $this->getTourService()->join($batch, $line, $order);
+        $tour = $this->getTourService()->join($batch, $line, $order, $tour);
         /***********************************************填充取件线路编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);
 
@@ -118,7 +123,6 @@ class BatchService extends BaseService
 
     /**
      * 获取站点条件
-     *
      * @param $info
      * @return array
      */
@@ -141,12 +145,14 @@ class BatchService extends BaseService
      * 判断是否存在相同站点
      * @param $order
      * @param $batchNo
+     * @param $line
      * @return array
      * @throws BusinessLogicException
      */
-    private function hasSameBatch($order, $batchNo = null)
+    private function hasSameBatch($order, $line, $batchNo = null)
     {
         $where = $this->getBatchWhere($order);
+        $where = Arr::add($where, 'line_id', $line['id']);
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
             $dbBatch = parent::getInfo($where, ['*'], false);
@@ -156,18 +162,8 @@ class BatchService extends BaseService
         }
         if (empty($batchList)) return [[], []];
         foreach ($batchList as $batch) {
-            //获取线路信息
-            $line = $this->getLineService()->getInfo(['id' => $batch['line_id']], ['*'], false);
-            if (empty($line)) {
-                continue;
-            }
-            $line = $line->toArray();
-            $tour = $this->getTourService()->getTourInfo($batch, $line, false, $batch['tour_no'] ?? '');
-            //若存在，锁定当前站点
-            if (!empty($tour)) {
-                $batch = parent::getInfoLock(['id' => $batch['id']], ['*'], false)->toArray();
-                return [$batch, $line];
-            }
+            $tour = $this->getTourService()->getTourInfo($batch, $line, true, $batch['tour_no'] ?? '');
+            return [$batch, $tour];
         }
         return [[], []];
     }
@@ -176,20 +172,19 @@ class BatchService extends BaseService
     /**
      * 加入新的站点
      * @param $order
+     * @param $line
      * @return array
      * @throws BusinessLogicException
      */
-    private function joinNewBatch($order)
+    private function joinNewBatch($order, $line)
     {
-        $line = $this->getLineService()->getInfoByRule($order);
-        //站点新增
         $batchNo = $this->getOrderNoRuleService()->createBatchNo();
         $batch = parent::create($this->fillData($order, $line, $batchNo));
         if ($batch === false) {
             throw new BusinessLogicException('订单加入站点失败!');
         }
         $batch = $batch->getOriginal();
-        return [$batch, $line];
+        return $batch;
     }
 
     /**
@@ -199,8 +194,10 @@ class BatchService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function joinExistBatch($order, $batch, $line)
+    public function joinExistBatch($order, $batch)
     {
+        //锁定站点
+        $batch = parent::getInfoLock(['id' => $batch['id']], ['*'], false);
         $replaceAmount = empty($order['replace_amount']) ? 0.00 : $order['replace_amount'];
         $settlementAmount = empty($order['settlement_amount']) ? 0.00 : $order['settlement_amount'];
         $data = (intval($order['type']) === 1) ? [
@@ -212,7 +209,10 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('订单加入站点失败!');
         }
-        return [$batch, $line];
+
+        //todo batch合并data
+
+        return $batch;
     }
 
     /**
@@ -310,17 +310,18 @@ class BatchService extends BaseService
      * 通过订单数据,获取站点列表
      * @param $order
      * @return mixed
+     * @throws BusinessLogicException
      */
     public function getPageListByOrder($order)
     {
         //通过订单获取可能站点
-        $data=[];
+        $data = [];
         $fields = ['receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
         $rule = array_merge($this->formData, Arr::only($order, $fields));
-        $this->query->whereIn('status',[BaseConstService::BATCH_WAIT_ASSIGN,BaseConstService::BATCH_ASSIGNED]);
-        $info=$this->getList($rule);
+        $this->query->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]);
+        $info = $this->getList($rule);
         if (!empty($info)) {
-            for($i=0,$j=count($info);$i<$j;$i++) {
+            for ($i = 0, $j = count($info); $i < $j; $i++) {
                 $tour = $this->getTourService()->getInfo(['tour_no' => $info[$i]['tour_no']], ['*'], false)->toArray();
                 $line = $this->getLineService()->getInfo(['id' => $info[$i]['line_id']], ['*'], false)->toArray();
                 if (!empty($tour) && !empty($line)) {
@@ -329,11 +330,11 @@ class BatchService extends BaseService
                         date('Y-m-d') !== $info[$i]['execution_date'])) {
                         //取件订单，线路最大订单量验证
                         if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $info[$i]['expect_pickup_quantity'] < $line['pickup_max_count']) {
-                            $data[$i]=$info[$i];
+                            $data[$i] = $info[$i];
                         }
                         //派件订单，线路最大订单量验证
                         if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $info[$i]['expect_pie_quantity'] < $line['pie_max_count']) {
-                            $data[$i]=$info[$i];
+                            $data[$i] = $info[$i];
                         }
                     }
                 }
@@ -341,35 +342,6 @@ class BatchService extends BaseService
         }
         return $data;
     }
-
-    /**
-     * 订单分配至站点
-     * @param $order
-     * @param $params
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function assignOrderToBatch($order, $params)
-    {
-        //从旧站点移除
-        if (!empty($order['batch_no'])) {
-            $this->removeOrder($order);
-        }
-        //判断是否可以加入该站点
-        $batchNo = !empty($params['batch_no']) ? $params['batch_no'] : null;
-        list($batch, $line) = $this->hasSameBatch($order, $batchNo);
-        if (!empty($batchNo) && empty($batch)) {
-            throw new BusinessLogicException('当前指定站点不符合当前订单');
-        }
-        /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
-        list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order);
-        /**************************************站点加入取件线路********************************************************/
-        $tour = $this->getTourService()->join($batch, $line, $order);
-        /***********************************************填充取件线路编号************************************************/
-        $this->fillTourInfo($batch, $line, $tour);
-        return [$batch, $tour];
-    }
-
 
     /**
      * 站点移除订单
@@ -562,26 +534,26 @@ class BatchService extends BaseService
      */
     public function getTourDate($id)
     {
-        $ids=[];
-        $data=[];
+        $ids = [];
+        $data = [];
         $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $lineRange=$this->getLineRangeService()->query->where('post_code_start', '<=', $info['receiver_post_code'])
+        $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $info['receiver_post_code'])
             ->where('post_code_end', '>=', $info['receiver_post_code'])
-            ->where('country',$info['receiver_country'])
+            ->where('country', $info['receiver_country'])
             ->get();
-        if(empty($lineRange)){
+        if (empty($lineRange)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
-        foreach ($lineRange as $key =>$value){
-            $ids[$key]=$value['line_id'];
-            $data[intval($value['schedule'])]=$this->getLineService()->getInfo(['id'=>$ids[$key]],['*'],false)->toArray()['appointment_days'];
+        foreach ($lineRange as $key => $value) {
+            $ids[$key] = $value['line_id'];
+            $data[intval($value['schedule'])] = $this->getLineService()->getInfo(['id' => $ids[$key]], ['*'], false)->toArray()['appointment_days'];
         }
-        for($i=0;$i<7;$i++){
-            if(empty($data[$i])){
-                $data[$i]=0;
+        for ($i = 0; $i < 7; $i++) {
+            if (empty($data[$i])) {
+                $data[$i] = 0;
             }
         }
         krsort($data);

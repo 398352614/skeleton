@@ -149,6 +149,15 @@ class OrderService extends BaseService
     }
 
     /**
+     * 仓库 服务
+     * @return WareHouseService
+     */
+    public function getWareHouseService()
+    {
+        return self::getInstance(WareHouseService::class);
+    }
+
+    /**
      * 上传 服务
      * @return mixed
      */
@@ -273,31 +282,30 @@ class OrderService extends BaseService
 
 
     /**
-     * 新增
+     * 订单新增
      * @param $params
+     * @param $orderSource
      * @return array
      * @throws BusinessLogicException
      */
-    public function store($params, $import = false)
+    public function store($params, $orderSource = BaseConstService::ORDER_SOURCE_1)
     {
+        //数据验证
         $this->check($params);
-        data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
-        if ($import === true) {
-            data_set($params, 'source', BaseConstService::ORDER_SOURCE_2);
-        }
+        //填充发件人信息
+        $line = $this->fillSender($params);
+        //设置订单来源
+        data_set($params, 'source', $orderSource);
         /*************************************************订单新增************************************************/
         //生成单号
         $params['order_no'] = $this->getOrderNoRuleService()->createOrderNo();
-        if (empty($params['receiver_address'])) {
-            $params['receiver_address'] = '';
-        }
         $order = parent::create($params);
         if ($order === false) {
             throw new BusinessLogicException('订单新增失败');
         }
         $order = $order->getAttributes();
         /*****************************************订单加入站点*********************************************************/
-        list($batch, $tour) = $this->getBatchService()->join($params);
+        list($batch, $tour) = $this->getBatchService()->join($params, $line);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($order, $batch, $tour, false);
         /**************************************新增订单货物明细********************************************************/
@@ -492,13 +500,15 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-        data_set($params, 'source', (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1);
+        //获取经纬度
+        $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
+        $params = array_merge(array_fill_keys($fields, ''), $params);
         //通过商户获取国家
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在');
         }
-        $params['receiver_country']=$merchant['country'];
+        $params['receiver_country'] = $merchant['country'];
         //通过地址获取经纬度
         if (empty($params['lon']) || empty($params['lat'])) {
             $info = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
@@ -526,6 +536,38 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('材料代码有重复！不能添加订单');
             }
         }
+        if (empty($params['receiver_address'])) {
+            $params['receiver_address'] = '';
+        }
+    }
+
+    /**
+     * 填充发件人信息
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    private function fillSender(&$params)
+    {
+        //获取线路
+        $line = $this->getLineService()->getInfoByRule($params, BaseConstService::ORDER_OR_BATCH_1);
+        //获取仓库
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        if (empty($warehouse)) {
+            throw new BusinessLogicException('仓库不存在');
+        }
+        //填充发件人信息
+        $params = array_merge($params, [
+            'sender' => $warehouse['contacter'],
+            'sender_phone' => $warehouse['phone'],
+            'sender_country' => $warehouse['country'],
+            'sender_post_code' => $warehouse['post_code'],
+            'sender_house_number' => $warehouse['house_number'],
+            'sender_city' => $warehouse['city'],
+            'sender_street' => $warehouse['street'],
+            'sender_address' => $warehouse['address']
+        ]);
+        return $line;
     }
 
     /**
@@ -575,7 +617,7 @@ class OrderService extends BaseService
      */
     public function fillBatchTourInfo($order, $batch, $tour, $isFillItem = true)
     {
-        $status = $batch['status'] ?? BaseConstService::ORDER_STATUS_1;
+        $status = $tour['status'] ?? BaseConstService::ORDER_STATUS_1;
         $rowCount = parent::updateById($order['id'], [
             'execution_date' => $batch['execution_date'],
             'batch_no' => $batch['batch_no'],
@@ -618,21 +660,22 @@ class OrderService extends BaseService
         $dbInfo = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         //验证
         $this->check($data, $dbInfo['order_no']);
-        //修改
-        $rowCount = parent::updateById($id, $data);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败，请重新操作');
-        }
         $data = Arr::add($data, 'order_no', $dbInfo['order_no']);
         $data = Arr::add($data, 'status', $dbInfo['status']);
         /******************************判断是否需要更换站点(取派日期+收货方地址 验证)***************************************/
         $isChangeBatch = $this->checkIsChangeBatch($dbInfo, $data);
         if ($isChangeBatch === true) {
-            list($batch, $tour) = $this->changeBatch($dbInfo, $data);
+            $line = $this->fillSender($data);
+            list($batch, $tour) = $this->changeBatch($dbInfo, $data, $line);
         } else {
             $this->getBatchService()->updateAboutOrderByOrder($dbInfo, $data);
             $batch = ['batch_no' => $dbInfo['batch_no']];
             $tour = ['tour_no' => $dbInfo['tour_no']];
+        }
+        //修改
+        $rowCount = parent::updateById($dbInfo['id'], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
         /*********************************************更换清单列表***************************************************/
         //删除包裹列表
@@ -669,16 +712,17 @@ class OrderService extends BaseService
      * 订单更换站点
      * @param $dbInfo
      * @param $data
+     * @param $line
      * @return array
      * @throws BusinessLogicException
      */
-    private function changeBatch($dbInfo, $data)
+    private function changeBatch($dbInfo, $data, $line)
     {
         //站点移除订单,添加新的订单
         if (!empty($dbInfo['batch_no'])) {
             $this->getBatchService()->removeOrder($dbInfo);
         }
-        list($batch, $tour) = $this->getBatchService()->join($data);
+        list($batch, $tour) = $this->getBatchService()->join($data, $line);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($dbInfo, $batch, $tour, false);
         return [$batch, $tour];
@@ -735,13 +779,13 @@ class OrderService extends BaseService
                 $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
                 if (!empty($line[$i])) {
                     //获得当前邮编范围的首天
-                    if ($lineRange[$i]['schedule'] ===0){
-                        $lineRange[$i]['schedule']=7;
+                    if ($lineRange[$i]['schedule'] === 0) {
+                        $lineRange[$i]['schedule'] = 7;
                     }
                     if (Carbon::today()->dayOfWeek < $lineRange[$i]['schedule']) {
-                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule']-1)->format('Y-m-d');
+                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule'] - 1)->format('Y-m-d');
                     } else {
-                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule']-1)->format('Y-m-d');
+                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule'] - 1)->format('Y-m-d');
                     }
                     //如果线路不自增，验证最大订单量
                     if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
@@ -787,8 +831,8 @@ class OrderService extends BaseService
             }
         }
         asort($data);
-        $data=array_values($data);
-        if(empty($data)){
+        $data = array_values($data);
+        if (empty($data)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         return $data;
@@ -825,9 +869,22 @@ class OrderService extends BaseService
             throw new BusinessLogicException('当前订单已存在分配的站点中！');
         }
         $info['execution_date'] = $params['execution_date'];
-        list($batch, $tour) = $this->getBatchService()->assignOrderToBatch($info, $params);
-        /**********************************填充取件批次编号和取件线路编号**********************************************/
+        $line = $this->fillSender($info);
+        /***********************************************1.修改*********************************************************/
+        $rowCount = parent::updateById($id, $info);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败');
+        }
+        /********************************************2.从旧站点移除****************************************************/
+        if (!empty($order['batch_no'])) {
+            $this->getBatchService()->removeOrder($order);
+        }
+        /*******************************************3.加入新站点*******************************************************/
+        $batchNo = !empty($params['batch_no']) ? $params['batch_no'] : null;
+        list($batch, $tour) = $this->getBatchService()->join($order, $line, $batchNo);
+        /*********************************4.填充取件批次编号和取件线路编号*********************************************/
         $this->fillBatchTourInfo($info, $batch, $tour);
+
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
     }
 
@@ -840,7 +897,7 @@ class OrderService extends BaseService
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($info['batch_no'])) {
-            return;
+            throw new BusinessLogicException('已从站点移除!');
         }
         //订单移除站点和取件线路信息
         $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => null]);
@@ -959,13 +1016,15 @@ class OrderService extends BaseService
             }
         }
         /**********************************************订单恢复********************************************************/
-        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => $params['execution_date']]);
+        $order['execution_date'] = $params['execution_date'];
+        $order['status'] = BaseConstService::ORDER_STATUS_1;
+        $line = $this->fillSender($order);
+        $rowCount = parent::updateById($order['id'], $order);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单恢复失败');
         }
-        $order['execution_date'] = $params['execution_date'];
         /*****************************************订单加入站点*********************************************************/
-        list($batch, $tour) = $this->getBatchService()->join($order);
+        list($batch, $tour) = $this->getBatchService()->join($order, $line);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($order, $batch, $tour);
         //订单轨迹-订单加入站点
@@ -1014,13 +1073,13 @@ class OrderService extends BaseService
             return (($order['tour_no'] != $tourNo) && ($order['type'] == BaseConstService::ORDER_TYPE_1));
         });
         //获取线路信息
-        $line = $this->getLineService()->getInfo(['id' => $lineId], ['*'], false);
+        $line = $this->getLineService()->getInfoLock(['id' => $lineId], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('线路不存在');
         }
         $line = $line->toArray();
         //获取取件线路信息
-        $tour = $this->getTourService()->getInfo(['tour_no' => $tourNo, 'line_id' => $line['id'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);
+        $tour = $this->getTourService()->getInfoLock(['tour_no' => $tourNo, 'line_id' => $line['id'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路当前状态不能操作');
         }
@@ -1040,7 +1099,7 @@ class OrderService extends BaseService
         data_set($orderList, '*.execution_date', $tour['execution_date']);
         foreach ($orderList as $order) {
             $this->removeFromBatch($order['id']);
-            list($batch, $tour) = $this->getBatchService()->join($order, null, $tourNo, $line, true);
+            list($batch, $tour) = $this->getBatchService()->join($order, $line, $tour, $tour, true);
             /**********************************填充取件批次编号和取件线路编号**********************************************/
             $this->fillBatchTourInfo($order, $batch, $tour);
             OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
@@ -1061,7 +1120,7 @@ class OrderService extends BaseService
     public function getAddOrderList($orderIdList)
     {
         $lineId = null;
-        $orderList = parent::getList(['id' => ['in', explode(',', $orderIdList)]], ['*'], false)->toArray();
+        $orderList = parent::getList(['id' => ['in', explode(',', $orderIdList)], 'type' => BaseConstService::ORDER_TYPE_1], ['*'], false)->toArray();
         $statusList = [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2];
         foreach ($orderList as $order) {
             if (!in_array($order['status'], $statusList)) {

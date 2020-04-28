@@ -127,24 +127,6 @@ class TourService extends BaseService
     }
 
     /**
-     * 线路 服务
-     * @return LineService
-     */
-    private function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 线路区间 服务
-     * @return LineRangeService
-     */
-    private function getLineRangeService()
-    {
-        return self::getInstance(LineRangeService::class);
-    }
-
-    /**
      * 单号规则 服务
      * @return OrderNoRuleService
      */
@@ -322,28 +304,19 @@ class TourService extends BaseService
      * @param $batch
      * @param $line
      * @param $order
-     * @param $tourNo
-     * @param $isAddOrder
+     * @param $tour
      * @return BaseService|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function join($batch, $line, $order, $tourNo = null, $isAddOrder = false)
+    public function join($batch, $line, $order, $tour)
     {
-        if (!empty($batch['tour_no'])) {
-            $newTourNo = $batch['tour_no'];
-        } elseif (!empty($tourNo)) {
-            $newTourNo = $tourNo;
-        } else {
-            $newTourNo = null;
-        }
-        $tour = $this->getTourInfo($batch, $line, true, $newTourNo, $isAddOrder);
         //加入取件线路
         $quantity = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $amount = [
             'replace_amount' => $order['replace_amount'] ?? 0.00,
             'settlement_amount' => $order['settlement_amount'] ?? 0.00
         ];
-        $tour = !empty($tour) ? $this->joinExistTour($tour->toArray(), $quantity, $amount) : $this->joinNewTour($batch, $line, $quantity);
+        $tour = !empty($tour) ? $this->joinExistTour($tour, $quantity, $amount) : $this->joinNewTour($batch, $line, $quantity);
         return $tour;
     }
 
@@ -535,7 +508,7 @@ class TourService extends BaseService
         if (!empty($batch['tour_no'])) {
             $this->removeBatch($batch);
         }
-        $tour = $this->getTourInfo($batch, $line, $params['tour_no'] ?? '');
+        $tour = $this->getTourInfo($batch, $line, true, $params['tour_no'] ?? '');
         if (!empty($params['tour_no']) && empty($tour)) {
             throw new BusinessLogicException('当前指定取件线路不符合当前站点');
         }
@@ -543,8 +516,6 @@ class TourService extends BaseService
         $amount = ['replace_amount' => $batch['replace_amount'] ?? 0.00, 'settlement_amount' => $batch['settlement_amount'] ?? 0.00];
         //若存在取件线路，判断当前取件线路中是否已存在相同站点,若存在，则合并
         if (!empty($tour)) {
-            $tour = $tour->toArray();
-            //合并两个相同站点
             $batch = $this->getBatchService()->mergeTwoBatch($tour, $batch);
             $tour = $this->joinExistTour($tour, $quantity, $amount);
         } else {
@@ -559,11 +530,10 @@ class TourService extends BaseService
      * @param $line
      * @param $isLock
      * @param $tourNo
-     * @param $isAddOrder bool
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null, $isAddOrder = false)
+    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null)
     {
         if (!empty($tourNo)) {
             $this->query->where('tour_no', '=', $tourNo);
@@ -571,14 +541,9 @@ class TourService extends BaseService
         //若不存在取件线路或者超过最大订单量,则新建取件线路
         $this->query->where(DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']), '<', $line['pickup_max_count']);
         $this->query->where(DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']), '<', $line['pie_max_count']);
-        if ($isAddOrder) {
-            $status = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
-        } else {
-            $status = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]];
-        }
-        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => $status];
+        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
-        return $tour;
+        return $tour->toArray();
     }
 
 
