@@ -212,7 +212,7 @@ class BatchService extends BaseService
 
         //todo batch合并data
 
-        return $batch;
+        return $batch->toArray();
     }
 
     /**
