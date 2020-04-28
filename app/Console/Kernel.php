@@ -24,12 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //telescope 日志每日清理
-        $schedule->command('telescope:prune --hours=24')
-            ->environments(['local', 'development', 'testing'])
-            ->daily();
-        //队列监听
-        $schedule->command('queue:listen --queue=location,tour-notify,add-order-push')->everyMinute()->onOneServer();
+        
     }
 
     /**
