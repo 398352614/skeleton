@@ -357,6 +357,7 @@ class TourService extends BaseService
     private function insertMaterialList($tour, $materialList)
     {
         $codeList = array_column($materialList, 'code');
+        data_fill($materialList, '*.name', '');
         if (count($codeList) != count(array_unique($codeList))) {
             throw new BusinessLogicException('材料有重复,请先合并');
         }
