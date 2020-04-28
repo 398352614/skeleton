@@ -86,9 +86,9 @@ class OrderController extends BaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderImport()
+    public function import()
     {
-        return $this->service->orderImport($this->data);
+        return $this->service->import($this->data);
     }
 
     /**

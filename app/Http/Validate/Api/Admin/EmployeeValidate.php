@@ -19,7 +19,7 @@ class EmployeeValidate extends BaseValidate
 
 
     public $rules = [
-        'fullname' => 'required|string|max:50',
+        'fullname' => 'required|string|max:50|unique',
         'username' => 'required|string|max:50|uniqueIgnore:employee,id,company_id',
         'password' => 'required|string|between:8,20',
         'email' => 'required|email|max:50|uniqueIgnore:employee,id',

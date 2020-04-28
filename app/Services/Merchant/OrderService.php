@@ -392,46 +392,52 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderImport($params)
+    public function import($params)
     {
+        //文件验证
         $this->orderImportValidate($params);
+        //文件读取
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
-        $headings = array_values(__('excel.order'));
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
+        //表头验证
+        $headings=array_values(__('excel.order'));
         if ($row[0] !== $headings) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
+        //将表头和每条数据组合
         $headings = OrderImportService::$headings;
         $data = [];
         for ($i = 2; $i < count($row); $i++) {
             $data[$i - 2] = collect($headings)->combine($row[$i])->toArray();
         }
+        //数量验证
         if (count($data) > 100) {
             throw new BusinessLogicException('导入订单数量不得超过100个');
         }
-        $id = $this->orderImportLog($params);
+        //$id = $this->orderImportLog($params);
         //数据处理
-        $typeList = ['取件' => 1, '派件' => 2, 'Pickup' => 1, 'Delivery' => 2];
-        $settlementList = ['寄付' => 1, '到付' => 1, 'Send' => 1, 'Pay on site' => 2];
+        $typeList = array_flip(ConstTranslateTrait::$orderTypeList);
+        $settlementList = array_flip(ConstTranslateTrait::$orderSettlementTypeList);
         $deliveryList = ['是' => 1, '否' => 2, 'Yes' => 1, 'No' => 2];
-        $itemList = ['包裹' => 1, '材料' => 2, 'Package' => 1, 'Material' => 2];
-        $countryNameList = array_unique(collect($data)->pluck('receiver_country_name')->toArray());
+        $itemList = array_flip(ConstTranslateTrait::$orderNatureList);
+        //$countryNameList = array_unique(collect($data)->pluck('receiver_country_name')->toArray());
         //$countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {
-            //处理格式
-            if (is_numeric($data[$i]['execution_date'])) {
-                $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
-            }
-            $data[$i] = array_map('strval', $data[$i]);
-            $data[$i]['receiver_country'] = auth()->user()->country;
+            //反向翻译
             $data[$i]['type'] = $typeList[$data[$i]['type_name']];
             $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type_name']];
             $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery_name']] ?? 1;
             for ($j = 0; $j < 5; $j++) {
                 $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_name_' . ($j + 1)]] ?? 0;
             }
+            //日期如果是excel时间格式，转换成短横连接格式
+            if(is_numeric($data[$i]['execution_date'])){
+                $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
+            }
+            $data[$i] = array_map('strval', $data[$i]);
+            $data[$i]['receiver_country'] = auth()->user()->country;//填充收件人国家
         }
         return $data;
     }
