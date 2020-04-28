@@ -35,6 +35,14 @@ class AddOrderPush implements ShouldQueue
 
 
     /**
+     * 任务可以执行的最大秒数 (超时时间)。
+     *
+     * @var int
+     */
+    public $timeout = 30;
+
+
+    /**
      * 任务可以尝试的最大次数。
      *
      * @var int

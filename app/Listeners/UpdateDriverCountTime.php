@@ -7,11 +7,13 @@ use App\Exceptions\BusinessLogicException;
 use App\Services\GoogleApiService;
 use App\Traits\UpdateTourTimeAndDistanceTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class UpdateDriverCountTime implements ShouldQueue
 {
-    use UpdateTourTimeAndDistanceTrait;
+    use UpdateTourTimeAndDistanceTrait, Dispatchable, InteractsWithQueue, SerializesModels;
 
     /**
      * 任务连接名称。
@@ -27,6 +29,13 @@ class UpdateDriverCountTime implements ShouldQueue
      */
     public $queue = 'location';
 
+
+    /**
+     * 任务可以执行的最大秒数 (超时时间)。
+     *
+     * @var int
+     */
+    public $timeout = 30;
 
     /**
      * 任务可以尝试的最大次数。
@@ -51,7 +60,7 @@ class UpdateDriverCountTime implements ShouldQueue
         $driverLocation = $event->location; // 司机位置数组
         $nextBatchNo = $event->nextBatchNo; // 下一个站点的唯一标识
 
-        $this->apiClient =  new GoogleApiService;
+        $this->apiClient = new GoogleApiService;
 
         //需要验证上一次操作是否完成,不可多次修改数据,防止数据混乱
 
