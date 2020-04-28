@@ -73,7 +73,7 @@ class OrderValidate extends BaseValidate
         'receiver_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
 //        'receiver_country' => 'required|string|max:20',
         'receiver_post_code' => 'required|string|max:50',
-        'receiver_house_number' => 'nullable|string|max:50',
+        'receiver_house_number' => 'nullable|string|max:50|required_if:receiver_country,NL',
         'receiver_city' => 'nullable|string|max:50',
         'receiver_street' => 'nullable|string|max:50',
         'receiver_address' => 'required|string|max:250',
