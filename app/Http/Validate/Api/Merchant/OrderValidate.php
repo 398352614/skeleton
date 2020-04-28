@@ -139,6 +139,7 @@ class OrderValidate extends BaseValidate
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
+        'receiver_house_number.required_if'=> '当国家是荷兰时，门牌号必填',
     ];
 }
 
