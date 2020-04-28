@@ -46,7 +46,7 @@ class DriverValidate extends BaseValidate
         'password'                      => 'required|string|max:100',
         'new_password'                  => 'required|string|max:100',
         'confirm_new_password'          => 'required|string|max:100|same:new_password',
-        'fullname'                      => 'required|string|max:50',
+        'fullname'                      => 'required|string|max:50|unique',
         'gender'                        => 'nullable|string|max:10',
         'birthday'                      => 'nullable|date|date_format:Y-m-d',
         'phone'                         => 'required|string|max:20|uniqueIgnore:driver,id|regex:/^[0-9]([0-9-])*[0-9]$/',
