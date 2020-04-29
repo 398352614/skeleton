@@ -135,17 +135,17 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路锁定失败，请重新操作');
         }
         //站点 处理
-        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::BATCH_WAIT_OUT]);
+        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_ASSIGNED], ['status' => BaseConstService::BATCH_WAIT_OUT]);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点锁定失败，请重新操作');
         }
         //订单 处理
-        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::ORDER_STATUS_3]);
+        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_2], ['status' => BaseConstService::ORDER_STATUS_3]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单锁定失败，请重新操作');
         }
         //包裹 处理
-        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::PACKAGE_STATUS_3]);
+        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_2], ['status' => BaseConstService::PACKAGE_STATUS_3]);
         if ($rowCount === false) {
             throw new BusinessLogicException('包裹锁定失败,请重新操作');
         }
