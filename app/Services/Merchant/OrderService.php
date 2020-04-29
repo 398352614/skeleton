@@ -425,6 +425,7 @@ class OrderService extends BaseService
         //$countryNameList = array_unique(collect($data)->pluck('receiver_country_name')->toArray());
         //$countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {
+            $data[$i] = array_map('strval', $data[$i]);
             //反向翻译
             $data[$i]['type'] = $typeList[$data[$i]['type_name']];
             $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type_name']];
