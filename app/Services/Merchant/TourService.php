@@ -525,7 +525,7 @@ class TourService extends BaseService
         $this->query->where(DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']), '<', $line['pie_max_count']);
         $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
-        return $tour->toArray();
+        return !empty($tour) ? $tour->toArray() : [];
     }
 
 
