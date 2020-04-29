@@ -21,7 +21,7 @@ class AuthValidate extends BaseValidate
     public $rules = [
         'username' => 'required|string',
         'password' => 'required|string',
-        'new_password' => 'required|string|between:8,20',
+        'new_password' => 'required|string|between:8,20|different:origin_password',
         'confirm_new_password' => 'required|string|same:new_password',
         'email' => 'required|email',
         'code' => 'required|string|digits_between:6,6',
@@ -34,6 +34,10 @@ class AuthValidate extends BaseValidate
         'resetPassword' => ['new_password', 'confirm_new_password', 'email', 'code'],
         'applyOfReset' => ['email'],
         'updatePassword' => ['origin_password', 'new_password', 'new_confirm_password']
+    ];
+
+    public $message = [
+        'new_password.different'=>'新密码不能和旧密码一样'
     ];
 }
 

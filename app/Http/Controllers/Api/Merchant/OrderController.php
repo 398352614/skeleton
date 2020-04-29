@@ -10,6 +10,7 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Exceptions\BusinessLogicException;
+use App\Services\BaseConstService;
 use App\Services\Merchant\OrderService;
 
 /**
@@ -22,6 +23,15 @@ class OrderController extends OrderBaseController
     public function __construct(OrderService $service)
     {
         parent::__construct($service);
+    }
+
+    /**
+     * 查询初始化
+     * @return array
+     */
+    public function initIndex()
+    {
+        return $this->service->initIndex();
     }
 
     public function index()
@@ -69,7 +79,8 @@ class OrderController extends OrderBaseController
      */
     public function store()
     {
-        return $this->service->store($this->data);
+        $orderSource = (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1;
+        return $this->service->store($this->data, $orderSource);
     }
 
     /**
@@ -77,9 +88,9 @@ class OrderController extends OrderBaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderImport()
+    public function import()
     {
-        return $this->service->orderImport($this->data);
+        return $this->service->import($this->data);
     }
 
     /**
@@ -193,7 +204,8 @@ class OrderController extends OrderBaseController
      * 批量检查
      * @return array
      */
-    public function importCheckByList(){
+    public function importCheckByList()
+    {
         return $this->service->importCheckByList($this->data);
     }
 
@@ -201,7 +213,8 @@ class OrderController extends OrderBaseController
      * 检查
      * @throws BusinessLogicException
      */
-    public function importCheck(){
+    public function importCheck()
+    {
         return $this->service->importCheck($this->data);
     }
 }

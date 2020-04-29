@@ -17,6 +17,7 @@ class MerchantValidate extends BaseValidate
         'type' => '类型',
         'name' => '全称',
         'email' => '邮箱',
+        'country' => '国家',
         'settlement_type' => '结算方式',
         'merchant_group_id' => '商户组ID',
         'contacter' => '联系人',
@@ -33,6 +34,7 @@ class MerchantValidate extends BaseValidate
         'type' => 'required|integer|in:1,2',
         'name' => 'required|string|max:100',
         'email' => 'required|string|max:50',
+        'country' => 'required|string|max:50',
         'settlement_type' => 'required|integer|in:1,2,3',
         'merchant_group_id' => 'required|integer',
         'contacter' => 'required|string|max:50',
@@ -50,6 +52,7 @@ class MerchantValidate extends BaseValidate
             'contacter',
             'phone',
             'address',
+            'country',
         ]
     ];
 }

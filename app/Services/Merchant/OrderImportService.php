@@ -31,7 +31,6 @@ class OrderImportService extends BaseService
         'type',
         'receiver',
         'receiver_phone',
-        'receiver_country',
         'receiver_post_code',
         'receiver_house_number',
         'receiver_address',
@@ -44,32 +43,32 @@ class OrderImportService extends BaseService
         'remark',
 
         'item_type_1',
-        'item_name_1',
         'item_number_1',
+        'item_name_1',
         'item_count_1',
         'item_weight_1',
 
         'item_type_2',
-        'item_name_2',
         'item_number_2',
+        'item_name_2',
         'item_count_2',
         'item_weight_2',
 
         'item_type_3',
-        'item_name_3',
         'item_number_3',
+        'item_name_3',
         'item_count_3',
         'item_weight_3',
 
         'item_type_4',
-        'item_name_4',
         'item_number_4',
+        'item_name_4',
         'item_count_4',
         'item_weight_4',
 
         'item_type_5',
-        'item_name_5',
         'item_number_5',
+        'item_name_5',
         'item_count_5',
         'item_weight_5',
     ];
@@ -106,7 +105,25 @@ class OrderImportService extends BaseService
      */
     public function getTemplateExcel()
     {
-        $cellData[0] =[];
+        $cellData[0] =[
+            __('取件'),
+            __('示例，此行数据不会被导入'),
+            __('1XXXXXXXXXX'),
+            __('41X000'),
+            __('C8栋808'),
+            __('麓谷企业广场'),
+            '2020-01-01',
+            __('寄付'),
+            '7.00',
+            '0.00',
+            'outNo001',
+            __('是'),
+            __('小心轻放'),
+            __('包裹'),
+            'TMS001',
+            __('苹果'),
+            '1',
+            '1'];
 
         return $this->excelExport('template', OrderImportService::$headings, $cellData, 'order');
     }

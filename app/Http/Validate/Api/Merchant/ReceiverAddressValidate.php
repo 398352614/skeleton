@@ -25,21 +25,21 @@ class ReceiverAddressValidate extends BaseValidate
         'receiver_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
         'receiver_country' => 'required|string|max:20',
         'receiver_post_code' => 'required|string|max:50',
-        'receiver_house_number' => 'required|string|max:50',
-        'receiver_city' => 'required|string|max:50',
-        'receiver_street' => 'required|string|max:50',
-        'receiver_address' => 'nullable|string|max:250',
+        'receiver_house_number' => 'nullable|string|max:50',
+        'receiver_city' => 'nullable|string|max:50',
+        'receiver_street' => 'nullable|string|max:50',
+        'receiver_address' => 'required|string|max:250',
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
     ];
 
     public $scene = [
         'store' => [
-            'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
+            'receiver', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address', 'lon', 'lat',
         ],
         'update' => [
-            'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
+            'receiver', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address', 'lon', 'lat',
         ]
     ];

@@ -36,12 +36,6 @@ class SendNotify2Merchant implements ShouldQueue
      */
     public $queue = 'tour-notify';
 
-    /**
-     * 处理任务的延迟时间.
-     *
-     * @var int
-     */
-    public $delay = 2;
 
     /**
      * 任务可以尝试的最大次数。
@@ -82,16 +76,20 @@ class SendNotify2Merchant implements ShouldQueue
      */
     public function handle(ATourNotify $event)
     {
-        $dataList = $event->getDataList();
-        $notifyType = $event->notifyType();
-        Log::info('notify-type:' . $notifyType);
-        Log::info('dataList:' . json_encode($dataList, JSON_UNESCAPED_UNICODE));
-        if (empty($dataList)) return true;
-        $merchantList = $this->getMerchantList(array_column($dataList, 'merchant_id'));
-        if (empty($merchantList)) return true;
-        foreach ($dataList as $merchantId => $data) {
-            $postData = ['type' => $notifyType, 'data' => $data];
-            $this->postData($merchantList[$merchantId]['url'], $postData);
+        try {
+            $dataList = $event->getDataList();
+            $notifyType = $event->notifyType();
+            Log::info('notify-type:' . $notifyType);
+            Log::info('dataList:' . json_encode($dataList, JSON_UNESCAPED_UNICODE));
+            if (empty($dataList)) return true;
+            $merchantList = $this->getMerchantList(array_column($dataList, 'merchant_id'));
+            if (empty($merchantList)) return true;
+            foreach ($dataList as $merchantId => $data) {
+                $postData = ['type' => $notifyType, 'data' => $data];
+                $this->postData($merchantList[$merchantId]['url'], $postData);
+            }
+        } catch (\Exception $ex) {
+            Log::channel('job-daily')->error($ex->getMessage());
         }
         return true;
     }

@@ -34,6 +34,7 @@ class MerchantService extends BaseService
         'type',
         'name',
         'email',
+        'country',
         'settlement_type',
         'merchant_group_id',
         'contacter',
@@ -191,6 +192,7 @@ class MerchantService extends BaseService
             $info[$i]['type'] = $info[$i]['type_name'];
             $info[$i]['settlement_type'] = $info[$i]['settlement_type_name'];
             $info[$i]['status'] = $info[$i]['status_name'];
+            $info[$i]['country'] = $info[$i]['country_name'];
             for ($j = 0; $j < count($this->headings); $j++) {
                 $cellData[$i][$j] = array_values(Arr::only($info[$i],$this->headings))[$j];
             }

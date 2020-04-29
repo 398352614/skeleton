@@ -15,6 +15,11 @@ class SenderAddressService extends BaseService
         parent::__construct($senderAddress,SenderAddressResource::class,SenderAddressResource::class);
     }
 
+    public $filterRules = [
+        'sender' => ['like', 'sender'],
+        'sender_post_code' => ['like', 'sender_post_code'],
+    ];
+
     public function index()
     {
         return parent::getpagelist();
@@ -67,6 +72,7 @@ class SenderAddressService extends BaseService
      */
     public function store($params)
     {
+        $params['receiver_address']=auth()->user()->country;
         if (!empty($this->check($params))) {
             throw new BusinessLogicException('地址新增失败，已有重复地址');
         }
@@ -84,6 +90,7 @@ class SenderAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
+        $data['receiver_address']=auth()->user()->country;
         $info = $this->check($data, $id);
         if (!empty($info)) {
             throw new BusinessLogicException('发货方地址已存在，不能重复添加');

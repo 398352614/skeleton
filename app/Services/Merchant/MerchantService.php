@@ -32,7 +32,7 @@ class MerchantService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'contacter', 'phone', 'country', 'address']));
+        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country','contacter', 'phone', 'country', 'address']));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }

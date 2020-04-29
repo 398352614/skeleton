@@ -20,12 +20,23 @@ class ReceiverAddressService extends BaseService
 {
 
     public $filterRules = [
-        'merchant_id' => ['=', 'merchant_id']
+        'merchant_id' => ['=', 'merchant_id'],
+        'receiver' => ['like', 'receiver'],
+        'receiver_post_code' => ['like', 'receiver_post_code']
     ];
 
     public function __construct(ReceiverAddress $receiverAddress)
     {
         parent::__construct($receiverAddress, ReceiverAddressResource::class, ReceiverAddressResource::class);
+    }
+
+    /**
+     * 商户 服务
+     * @return MerchantService
+     */
+    private function getMerchantService()
+    {
+        return self::getInstance(MerchantService::class);
     }
 
 
@@ -49,11 +60,14 @@ class ReceiverAddressService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    public function checkMerchant($params)
+    public function checkMerchant(&$params)
     {
-        if (empty(Merchant::query()->where('id', $params['merchant_id'])->first())) {
+        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['id', 'country'], false);
+        if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }
+        $merchant = $merchant->toArray();
+        $params = Arr::add($params, 'receiver_country', $merchant['country']);
     }
 
     /**
@@ -101,10 +115,10 @@ class ReceiverAddressService extends BaseService
      */
     public function check($data, $id = null)
     {
-        $fields=['receiver', 'merchant_id', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
-        foreach ($fields as $v){
-            if(isset($data[$v])){
-                $where[$v]=$data[$v];
+        $fields = ['receiver', 'merchant_id', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
+        foreach ($fields as $v) {
+            if (isset($data[$v])) {
+                $where[$v] = $data[$v];
             }
         }
         if (!empty($id)) {

@@ -286,19 +286,19 @@ class TourService extends BaseService
      * @param $batch
      * @param $line
      * @param $order
+     * @param $tour
      * @return BaseService|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function join($batch, $line, $order)
+    public function join($batch, $line, $order, $tour)
     {
-        $tour = $this->getTourInfo($batch, $line, $batch['tour_no'] ?? '');
         //加入取件线路
         $quantity = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $amount = [
             'replace_amount' => $order['replace_amount'] ?? 0.00,
             'settlement_amount' => $order['settlement_amount'] ?? 0.00
         ];
-        $tour = !empty($tour) ? $this->joinExistTour($tour->toArray(), $quantity, $amount) : $this->joinNewTour($batch, $line, $quantity);
+        $tour = !empty($tour) ? $this->joinExistTour($tour, $quantity, $amount) : $this->joinNewTour($batch, $line, $quantity);
         return $tour;
     }
 
@@ -457,7 +457,7 @@ class TourService extends BaseService
      */
     public function getListByBatch($batch, $line)
     {
-        $data=[];
+        $data = [];
         $tour = $this->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
         if (!empty($tour) && !empty($line)) {
             //当日截止时间验证
@@ -465,11 +465,11 @@ class TourService extends BaseService
                 date('Y-m-d') !== $batch['execution_date'])) {
                 //取件订单，线路最大订单量验证
                 if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
-                    $data=$batch;
+                    $data = $batch;
                 }
                 //派件订单，线路最大订单量验证
                 if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
-                    $data=$batch;
+                    $data = $batch;
                 }
             }
         }
@@ -490,7 +490,7 @@ class TourService extends BaseService
         if (!empty($batch['tour_no'])) {
             $this->removeBatch($batch);
         }
-        $tour = $this->getTourInfo($batch, $line, $params['tour_no'] ?? '');
+        $tour = $this->getTourInfo($batch, $line, true, $params['tour_no'] ?? '');
         if (!empty($params['tour_no']) && empty($tour)) {
             throw new BusinessLogicException('当前指定取件线路不符合当前站点');
         }
@@ -498,8 +498,6 @@ class TourService extends BaseService
         $amount = ['replace_amount' => $batch['replace_amount'] ?? 0.00, 'settlement_amount' => $batch['settlement_amount'] ?? 0.00];
         //若存在取件线路，判断当前取件线路中是否已存在相同站点,若存在，则合并
         if (!empty($tour)) {
-            $tour = $tour->toArray();
-            //合并两个相同站点
             $batch = $this->getBatchService()->mergeTwoBatch($tour, $batch);
             $tour = $this->joinExistTour($tour, $quantity, $amount);
         } else {
@@ -527,7 +525,7 @@ class TourService extends BaseService
         $this->query->where(DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']), '<', $line['pie_max_count']);
         $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
-        return $tour;
+        return !empty($tour) ? $tour->toArray() : [];
     }
 
 

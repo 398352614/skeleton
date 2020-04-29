@@ -30,6 +30,7 @@ return [
     ],
     'boolean' => ':attribute字符必须是 true 或false, 1 或 0 ',
     'confirmed' => ':attribute 二次确认不匹配',
+    'check_id_list'=>'请选择至少一个订单',
     'date' => ':attribute 必须是一个合法的日期',
     'date_format' => ':attribute 与给定的格式 :format 不符合',
     'different' => ':attribute 必须不同于 :other',
@@ -41,6 +42,7 @@ return [
     'exists' => '选定的 :attribute 是无效的.',
     'file' => ':attribute必须是一个文件',
     'gte.numeric'=>':attribute不能小于:value',
+    'lte.numeric'=>':attribute不能超过:value',
     'filled' => ':attribute的字段是必填的',
     'image' => ':attribute必须是 jpeg, png, bmp 或者 gif 格式的图片',
     'in' => '选定的 :attribute 是无效的',
@@ -416,27 +418,27 @@ return [
 
         //order-import
         "item_name_1"=>"物品一名称",
-        "item_number_1"=>"物品一扫码编号",
+        "item_number_1"=>"物品一编号",
         "item_count_1"=>"物品一数量",
         "item_weight_1"=>"物品一重量",
 
         "item_name_2"=>"物品二名称",
-        "item_number_2"=>"物品二扫码编号",
+        "item_number_2"=>"物品二编号",
         "item_count_2"=>"物品二数量",
         "item_weight_2"=>"物品二重量",
 
         "item_name_3"=>"物品三名称",
-        "item_number_3"=>"物品三扫码编号",
+        "item_number_3"=>"物品三编号",
         "item_count_3"=>"物品三数量",
         "item_weight_3"=>"物品三重量",
 
         "item_name_4"=>"物品四名称",
-        "item_number_4"=>"物品四扫码编号",
+        "item_number_4"=>"物品四编号",
         "item_count_4"=>"物品四数量",
         "item_weight_4"=>"物品四重量",
 
         "item_name_5"=>"物品五名称",
-        "item_number_5"=>"物品五扫码编号",
+        "item_number_5"=>"物品五编号",
         "item_count_5"=>"物品五数量",
         "item_weight_5"=>"物品五重量",
     ],

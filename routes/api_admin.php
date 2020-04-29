@@ -52,6 +52,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('/initPickupIndex', 'OrderController@initPickupIndex');
         //派件列表查询初始化
         Route::get('/initPieIndex', 'OrderController@initPieIndex');
+        //查询初始化
+        Route::get('/initIndex','OrderController@initIndex');
         //列表查询
         Route::get('/', 'OrderController@index');
         //获取详情
@@ -91,7 +93,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //获取模板
         Route::get('/getTemplate', 'OrderImportController@getTemplateExcel');
         //批量导入
-        Route::post('/import', 'OrderController@orderImport');
+        Route::post('/import', 'OrderController@import');
         //批量新增
         Route::post('/storeByList', 'OrderController@storeByList');
         //列表查询

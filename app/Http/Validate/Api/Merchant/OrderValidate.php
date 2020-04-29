@@ -58,11 +58,11 @@ class OrderValidate extends BaseValidate
         'out_user_id' => 'nullable|integer',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
         'settlement_type' => 'required|in:1,2',
-        'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric',
-        'replace_amount' => 'nullable|numeric',
+        'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
+        'replace_amount' => 'nullable|numeric|gte:0',
         'delivery' => 'nullable|integer|in:1,2',
 //        'sender' => 'required|string|max:50',
-//        'sender_phone' => 'required|string|max:20',
+//        'sender_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
 //        'sender_country' => 'required|string|max:20',
 //        'sender_post_code' => 'required|string|max:50',
 //        'sender_house_number' => 'required|string|max:50',
@@ -71,9 +71,9 @@ class OrderValidate extends BaseValidate
 //        'sender_address' => 'nullable|string|max:250',
         'receiver' => 'required|string|max:50',
         'receiver_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'receiver_country' => 'required|string|max:20',
+//        'receiver_country' => 'required|string|max:20',
         'receiver_post_code' => 'required|string|max:50',
-        'receiver_house_number' => 'nullable|string|max:50',
+        'receiver_house_number' => 'nullable|string|max:50|required_if:receiver_country,NL',
         'receiver_city' => 'nullable|string|max:50',
         'receiver_street' => 'nullable|string|max:50',
         'receiver_address' => 'required|string|max:250',
@@ -92,6 +92,7 @@ class OrderValidate extends BaseValidate
         //材料列表
         'material_list.*.name' => 'nullable|string|max:50',
         'material_list.*.code' => 'required_with:material_list|string|max:50',
+        //'material_list.*.code' => 'required_with:material_list|string|max:50',
         'material_list.*.out_order_no' => 'nullable|string|max:50',
         'material_list.*.expect_quantity' => 'required_with:material_list|integer|gte:0',
         'material_list.*.remark' => 'nullable|string|max:250',
@@ -121,7 +122,7 @@ class OrderValidate extends BaseValidate
             //'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
             //'sender_city', 'sender_street', 'sender_address',
             //收货人信息
-            'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
+            'receiver', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address',
             //备注
             'special_remark', 'remark', 'lon', 'lat',
@@ -134,10 +135,11 @@ class OrderValidate extends BaseValidate
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
-        'getDate' =>['receiver_country','receiver_post_code','type'],
+        'getDate' =>['receiver_post_code','type'],
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
+        'receiver_house_number.required_if' => '当国家是荷兰时，门牌号必填',
     ];
 }
 

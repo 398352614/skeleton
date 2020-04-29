@@ -37,12 +37,16 @@ class DriverValidate extends BaseValidate
         'bic'                           => 'BIC',
         'crop_type'                     => '合作类型',
         'is_locked'                     => '是否锁定',
+        'new_password'                  => '新密码',
+        'confirm_new_password'          => '新密码确认',
     ];
 
     public $rules = [
         'email'                         => 'required|string|max:50|uniqueIgnore:driver,id',
         'password'                      => 'required|string|max:100',
-        'fullname'                      => 'required|string|max:50',
+        'new_password'                  => 'required|string|max:100',
+        'confirm_new_password'          => 'required|string|max:100|same:new_password',
+        'fullname'                      => 'required|string|max:50|uniqueIgnore:driver,id',
         'gender'                        => 'nullable|string|max:10',
         'birthday'                      => 'nullable|date|date_format:Y-m-d',
         'phone'                         => 'required|string|max:20|uniqueIgnore:driver,id|regex:/^[0-9]([0-9-])*[0-9]$/',
@@ -109,7 +113,7 @@ class DriverValidate extends BaseValidate
             'bic',
             // 'crop_type',
         ],
-        'resetPassword' => ['password'],
+        'resetPassword' => ['new_password','confirm_new_password'],
         'lockDriver' => ['is_locked']
     ];
 }

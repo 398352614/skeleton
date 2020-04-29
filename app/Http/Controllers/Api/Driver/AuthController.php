@@ -107,7 +107,7 @@ class AuthController extends Controller
     protected function respondWithToken($params)
     {
         return [
-            'username' => auth('driver')->user()->fullName,
+            'username' => auth('driver')->user()->fullname,
             'company_id' => auth('driver')->user()->company_id,
             'access_token' => $params['token'],
             'messager_token' =>$params['messager_token'],

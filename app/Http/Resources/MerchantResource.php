@@ -23,6 +23,7 @@ class MerchantResource extends JsonResource
             'type' => $this->type,
             'name' => $this->name,
             'email' => $this->email,
+            'country' => $this->country,
             'settlement_type' => $this->settlement_type,
             'settlement_type_name' => $this->settlement_type_name,
             'merchant_group_id' => $this->merchant_group_id,

@@ -25,6 +25,14 @@ class OrderController extends BaseController
         parent::__construct($service);
     }
 
+    /**
+     * 查询初始化
+     * @return array
+     */
+    public function initIndex(){
+        return $this->service->initIndex();
+    }
+
     public function index()
     {
         return $this->service->getPageList();
@@ -78,9 +86,9 @@ class OrderController extends BaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderImport()
+    public function import()
     {
-        return $this->service->orderImport($this->data);
+        return $this->service->import($this->data);
     }
 
     /**
@@ -202,6 +210,7 @@ class OrderController extends BaseController
     /**
      * 批量分配订单至取件线路
      * @throws BusinessLogicException
+     * @throws \WebSocket\BadOpcodeException
      */
     public function assignListTour()
     {

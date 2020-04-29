@@ -135,17 +135,17 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路锁定失败，请重新操作');
         }
         //站点 处理
-        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::BATCH_WAIT_OUT]);
+        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_ASSIGNED], ['status' => BaseConstService::BATCH_WAIT_OUT]);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点锁定失败，请重新操作');
         }
         //订单 处理
-        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::ORDER_STATUS_3]);
+        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_2], ['status' => BaseConstService::ORDER_STATUS_3]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单锁定失败，请重新操作');
         }
         //包裹 处理
-        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no']], ['status' => BaseConstService::PACKAGE_STATUS_3]);
+        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_2], ['status' => BaseConstService::PACKAGE_STATUS_3]);
         if ($rowCount === false) {
             throw new BusinessLogicException('包裹锁定失败,请重新操作');
         }
@@ -266,7 +266,7 @@ class TourService extends BaseService
      */
     public function outWarehouse($id, $params)
     {
-        $tour = $this->checkOutWarehouse($id);
+        $tour = $this->checkOutWarehouse($id, $params);
         $params = Arr::only($params, ['material_list', 'cancel_order_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic']);
         $params = Arr::add($params, 'status', BaseConstService::TOUR_STATUS_4);
         $params = Arr::add($params, 'begin_time', now());
@@ -356,6 +356,11 @@ class TourService extends BaseService
      */
     private function insertMaterialList($tour, $materialList)
     {
+        $codeList = array_column($materialList, 'code');
+        data_fill($materialList, '*.name', '');
+        if (count($codeList) != count(array_unique($codeList))) {
+            throw new BusinessLogicException('材料有重复,请先合并');
+        }
         $materialList = collect($materialList)->map(function ($material, $key) use ($tour) {
             $material = Arr::only($material, ['expect_quantity', 'actual_quantity', 'code', 'name']);
             $material = Arr::add($material, 'tour_no', $tour['tour_no']);
@@ -372,10 +377,11 @@ class TourService extends BaseService
     /**
      * 验证-出库
      * @param $id
+     * @param $params
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    private function checkOutWarehouse($id)
+    private function checkOutWarehouse($id, $params)
     {
         $tour = parent::getInfoLock(['id' => $id], ['*'], false);
         if (empty($tour)) {
@@ -387,6 +393,11 @@ class TourService extends BaseService
         }
         if (empty($tour['car_id']) || empty($tour['car_no'])) {
             throw new BusinessLogicException('当前待分配车辆,请先分配车辆');
+        }
+        //验证订单数量
+        $orderCount = $this->getOrderService()->count(['tour_no' => $tour['tour_no']]);
+        if ($orderCount != $params['order_count']) {
+            throw new BusinessLogicException('当前取件线路的订单数量不正确');
         }
         return $tour;
     }
@@ -825,14 +836,12 @@ class TourService extends BaseService
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
         set_time_limit(240);
-        self::setTourLock($this->formData['tour_no'], 1); // 加锁
 
         app('log')->info('更新线路传入的参数为:', $this->formData);
 
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
-
         throw_if(
-            $tour->batchs->count() != $this->formData['batch_ids'],
+            $tour->batchs->count() != count($this->formData['batch_ids']),
             new BusinessLogicException('线路的站点数量不正确')
         );
 
@@ -858,14 +867,21 @@ class TourService extends BaseService
     {
         $first = false;
         foreach ($batchIds as $key => $batchId) {
-            if (!$first) {
-                $batch = Batch::where('id', $batchId)->whereIn('status', [BaseConstService::BATCH_DELIVERING, BaseConstService::BATCH_ASSIGNED])->first();
-                if ($batch) {
+            $tempbatch = Batch::where('id', $batchId)->first();
+            if (!$first && in_array($tempbatch->status, [
+                    BaseConstService::BATCH_WAIT_ASSIGN,
+                    BaseConstService::BATCH_WAIT_OUT,
+                    BaseConstService::BATCH_DELIVERING,
+                    BaseConstService::BATCH_ASSIGNED
+                ])) {
+                if ($tempbatch) {
+                    $batch = $tempbatch;
                     $first = true; // 找到了下一个目的地
                 }
             }
+            $tempbatch->update(['sort_id' => $key + 1]);
         }
-        if ($batch) {
+        if ($batch ?? null) {
             return $batch;
         }
 
