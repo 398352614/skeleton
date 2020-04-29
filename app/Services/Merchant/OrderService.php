@@ -437,7 +437,6 @@ class OrderService extends BaseService
             if(is_numeric($data[$i]['execution_date'])){
                 $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             }
-            $data[$i] = array_map('strval', $data[$i]);
             $data[$i]['receiver_country'] = auth()->user()->country;//填充收件人国家
         }
         return $data;
