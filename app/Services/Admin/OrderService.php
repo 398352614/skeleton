@@ -439,6 +439,7 @@ class OrderService extends BaseService
             $data[$i]['type'] = $typeList[$data[$i]['type_name']];
             $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type_name']];
             $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery_name']] ?? 1;
+            $data[$i]['delivery_name'] = $data[$i]['delivery_name'] ?? __('是');
             for ($j = 0; $j < 5; $j++) {
                 $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_name_' . ($j + 1)]] ?? 0;
             }

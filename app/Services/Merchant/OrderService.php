@@ -429,6 +429,7 @@ class OrderService extends BaseService
             $data[$i]['type'] = $typeList[$data[$i]['type_name']];
             $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type_name']];
             $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery_name']] ?? 1;
+            $data[$i]['delivery_name'] = $data[$i]['delivery_name'] ?? __('是');
             for ($j = 0; $j < 5; $j++) {
                 $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_name_' . ($j + 1)]] ?? 0;
             }
@@ -436,7 +437,6 @@ class OrderService extends BaseService
             if(is_numeric($data[$i]['execution_date'])){
                 $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             }
-            $data[$i] = array_map('strval', $data[$i]);
             $data[$i]['receiver_country'] = auth()->user()->country;//填充收件人国家
         }
         return $data;
@@ -1034,7 +1034,7 @@ class OrderService extends BaseService
     {
         $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($info['batch_no'])) {
-            return;
+            throw new BusinessLogicException('已从站点移除!');
         }
         //订单移除站点和取件线路信息
         $rowCount = parent::updateById($info['id'], ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => null]);
