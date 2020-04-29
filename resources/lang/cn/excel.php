@@ -9,7 +9,8 @@ return [
         "contacter"=>"联系人" ,
         "phone"=>"电话" ,
         "address"=>"地址" ,
-        "status"=>"状态"
+        "status"=>"状态",
+        'country'=>"国家",
     ],
 
     "batchList"=>[

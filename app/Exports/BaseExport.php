@@ -67,7 +67,8 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
         return [
             AfterSheet::class => function(AfterSheet $event) {
             $endColumn=$event->sheet->getDelegate()->getHighestColumn();
-            $cell='A1:'.$endColumn.'2';
+            $endRow=$event->sheet->getDelegate()->getHighestRow();
+            $cell='A1:'.$endColumn.$endRow;
                 // 合并单元格
                 //$event->sheet->getDelegate()->setMergeCells(['A1:'.$endColumn.'1']);
                 //设置单元格内容自动转行
