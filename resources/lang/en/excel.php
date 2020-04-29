@@ -10,6 +10,7 @@ return [
         "phone"=>"Phone" ,
         "address"=>"Address" ,
         "status"=>"Status",
+        'country'=>"Country",
     ],
 
     "batchList"=>[
