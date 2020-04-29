@@ -95,6 +95,6 @@ class Package extends BaseModel
 
     public function getTypeNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::orderTypeList($this->type);
+        return empty($this->status) ? null : ConstTranslateTrait::orderTypeList($this->status);
     }
 }

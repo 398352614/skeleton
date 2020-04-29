@@ -17,7 +17,7 @@ class MemorandumResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'content' => Str::limit($this->content, 30),
+            'content' => Str::limit($this->content, 250),
             'created_at' => (string)$this->created_at
         ];
     }

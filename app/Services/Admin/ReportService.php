@@ -200,12 +200,7 @@ class ReportService extends BaseService
     private function getBatchInfoList($batchList, $orderList, $materialList)
     {
         $newBatchList = [];
-        //订单处理
-        $orderList = collect($orderList)->map(function ($order, $key) {
-            $order['type_name'] = ConstTranslateTrait::orderTypeList($order['type']);
-            $order['status_name'] = ConstTranslateTrait::orderStatusList($order['status']);
-            return $order;
-        })->toArray();
+
         $orderList = array_create_group_index($orderList, 'batch_no');
         //材料处理
         $materialList = collect($materialList)->groupBy('batch_no')->toArray();
