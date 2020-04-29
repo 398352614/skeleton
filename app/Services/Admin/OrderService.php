@@ -886,12 +886,12 @@ class OrderService extends BaseService
             throw new BusinessLogicException('修改失败');
         }
         /********************************************2.从旧站点移除****************************************************/
-        if (!empty($order['batch_no'])) {
-            $this->getBatchService()->removeOrder($order);
+        if (!empty($info['batch_no'])) {
+            $this->getBatchService()->removeOrder($info);
         }
         /*******************************************3.加入新站点*******************************************************/
         $batchNo = !empty($params['batch_no']) ? $params['batch_no'] : null;
-        list($batch, $tour) = $this->getBatchService()->join($order, $line, $batchNo);
+        list($batch, $tour) = $this->getBatchService()->join($info, $line, $batchNo);
         /*********************************4.填充取件批次编号和取件线路编号*********************************************/
         $this->fillBatchTourInfo($info, $batch, $tour);
 
