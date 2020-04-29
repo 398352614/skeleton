@@ -62,7 +62,7 @@ class ReceiverAddressService extends BaseService
      */
     public function checkMerchant(&$params)
     {
-        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'], ['id', 'country'], false]);
+        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['id', 'country'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }
