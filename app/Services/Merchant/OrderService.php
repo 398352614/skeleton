@@ -1034,7 +1034,7 @@ class OrderService extends BaseService
     {
         $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($info['batch_no'])) {
-            throw new BusinessLogicException('已从站点移除!');
+            return;
         }
         //订单移除站点和取件线路信息
         $rowCount = parent::updateById($info['id'], ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => null]);

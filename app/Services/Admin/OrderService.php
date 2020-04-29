@@ -412,7 +412,7 @@ class OrderService extends BaseService
         $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
         //表头验证
-        $headings=array_values(__('excel.order'));
+        $headings = array_values(__('excel.order'));
         if ($row[0] !== $headings) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
@@ -443,7 +443,7 @@ class OrderService extends BaseService
                 $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_name_' . ($j + 1)]] ?? 0;
             }
             //日期如果是excel时间格式，转换成短横连接格式
-            if(is_numeric($data[$i]['execution_date'])){
+            if (is_numeric($data[$i]['execution_date'])) {
                 $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             }
             $data[$i] = array_map('strval', $data[$i]);
@@ -907,7 +907,7 @@ class OrderService extends BaseService
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($info['batch_no'])) {
-            throw new BusinessLogicException('已从站点移除!');
+            return;
         }
         //订单移除站点和取件线路信息
         $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => null]);
@@ -1109,7 +1109,7 @@ class OrderService extends BaseService
         data_set($orderList, '*.execution_date', $tour['execution_date']);
         foreach ($orderList as $order) {
             $this->removeFromBatch($order['id']);
-            list($batch, $tour) = $this->getBatchService()->join($order, $line, $tour, $tour, true);
+            list($batch, $tour) = $this->getBatchService()->join($order, $line, null, $tour, true);
             /**********************************填充取件批次编号和取件线路编号**********************************************/
             $this->fillBatchTourInfo($order, $batch, $tour);
             OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);

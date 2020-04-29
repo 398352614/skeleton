@@ -77,12 +77,12 @@ class AddOrderPush implements ShouldQueue
      */
     public function handle()
     {
-        $message = [
-            'type' => 'pushOneDriver',
-            'to_id' => $this->toId,
-            'data' => $this->getData()
-        ];
         try {
+            $message = [
+                'type' => 'pushOneDriver',
+                'to_id' => $this->toId,
+                'data' => $this->getData()
+            ];
             $client = new Client('wss://' . config('tms.push_url') . '/?token=' . $this->token);
             $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
             $client->close();
