@@ -88,6 +88,24 @@ class BatchService extends BaseService
         return self::getInstance(OrderService::class);
     }
 
+    /**
+     * 包裹 服务
+     * @return PackageService
+     */
+    private function getPackageService()
+    {
+        return self::getInstance(PackageService::class);
+    }
+
+    /**
+     * 材料 服务
+     * @return MaterialService
+     */
+    private function getMaterialService()
+    {
+        return self::getInstance(MaterialService::class);
+    }
+
     public function getPageList()
     {
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
@@ -550,14 +568,24 @@ class BatchService extends BaseService
             throw new BusinessLogicException('当前站点已经移除，不能重复操作');
         }
         //修改站点
-        $rowCount = parent::updateById($id, ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null]);
+        $rowCount = parent::updateById($id, ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::BATCH_WAIT_ASSIGN]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
         //修改订单
-        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null]);
+        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
+        }
+        //包裹移除站点和取件线路信息
+        $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        //材料移除站点和取件线路信息
+        $rowCount = $this->getMaterialService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
         }
         //将站点从取件线路移除
         $this->getTourService()->removeBatch($info);
