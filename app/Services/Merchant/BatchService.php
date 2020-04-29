@@ -539,13 +539,13 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        //包裹移除站点和取件线路信息
-        $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_1]);
+        //包裹移除取件线路信息
+        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
-        //材料移除站点和取件线路信息
-        $rowCount = $this->getMaterialService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '']);
+        //材料移除取件线路信息
+        $rowCount = $this->getMaterialService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
