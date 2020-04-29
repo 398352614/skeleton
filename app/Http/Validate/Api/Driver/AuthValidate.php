@@ -19,7 +19,7 @@ class AuthValidate extends BaseValidate
 
 
     public $rules = [
-        'username' => 'required|string',
+        'username' => 'required|string|uniqueIgnore:driver,id',
         'password' => 'required|string',
         'new_password' => 'required|string|between:8,20|different:origin_password',
         'confirm_new_password' => 'required|string|same:new_password',
