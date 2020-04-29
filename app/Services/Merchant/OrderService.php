@@ -662,6 +662,9 @@ class OrderService extends BaseService
                 $info = LocationTrait::getLocation($data['receiver_country'], $data['receiver_city'], $data['receiver_street'], $data['receiver_house_number'], $data['receiver_post_code']);
             } catch (BusinessLogicException $e) {
                 $list['log'] = __($e->getMessage());
+                $list['receiver_house_number'] = __('请检查输入');
+                $list['receiver_post_code'] = __('请检查输入');
+                $list['log'] = __($e->getMessage());
             } catch (\Exception $e) {
             }
             $data['lon'] = $info['lon'] ?? null;
@@ -695,8 +698,14 @@ class OrderService extends BaseService
             $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         } catch (BusinessLogicException $e) {
             $list['log'] = __($e->getMessage());
+            $list['receiver_house_number'] = __('请检查输入');
+            $list['receiver_post_code'] = __('请检查输入');
+            $list['execution_date'] = __('请检查输入');
         } catch (\Exception $e) {
             $list['log'] = __('当前订单没有合适的线路，请先联系管理员');
+            $list['receiver_house_number'] = __('请检查输入');
+            $list['receiver_post_code'] = __('请检查输入');
+            $list['execution_date'] = __('请检查输入');
         }
         $list['lon'] = $data['lon'] ?? '';
         $list['lat'] = $data['lat'] ?? '';
