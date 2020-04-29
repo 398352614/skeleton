@@ -87,8 +87,8 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     //冻结单元格
                     $event->sheet->getDelegate()->freezePane('A3');
                    //设置日期格式
-                    $event->sheet->getDelegate()->getStyle('H2:H101')->getNumberFormat()
-                        ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_YYYYMMDD2);
+                    $event->sheet->getDelegate()->getStyle('G2:G102')->getNumberFormat()
+                        ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_YYYYMMDD);
                     //设置字体颜色
                     $event->sheet->getDelegate()->getStyle('A1:H1')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                     $event->sheet->getDelegate()->getStyle('N1:O1')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
