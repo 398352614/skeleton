@@ -146,7 +146,7 @@ class ReportService extends BaseService
             $materialList = $this->tourMaterialModel->newQuery()->where('tour_no', '=', $tour['tour_no'])->get()->toArray();
         } else {
             $materialList = collect($materialList)->groupBy('code')->map(function ($materialList, $key) {
-                $quantity = $materialList->sum('quantity');
+                $quantity = $materialList->sum('expect_quantity');
                 $materialList = $materialList->toArray();
                 $materialList[0]['expect_quantity'] = $quantity;
                 $materialList[0]['actual_quantity'] = 0;
