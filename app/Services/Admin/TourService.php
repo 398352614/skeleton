@@ -378,10 +378,12 @@ class TourService extends BaseService
             'expect_pickup_quantity' => !empty($quantity['expect_pickup_quantity']) ? $tour['expect_pickup_quantity'] + $quantity['expect_pickup_quantity'] : $tour['expect_pickup_quantity'],
             'expect_pie_quantity' => !empty($quantity['expect_pie_quantity']) ? $tour['expect_pie_quantity'] + $quantity['expect_pie_quantity'] : $tour['expect_pie_quantity'],
         ];
-        $rowCount = parent::updateById($tour['id'], array_merge($data, $amount));
+        $data = array_merge($data, $amount);
+        $rowCount = parent::updateById($tour['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败，请重新操作！');
         }
+        $tour = array_merge($tour, $data);
         return $tour;
     }
 
