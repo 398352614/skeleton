@@ -123,10 +123,13 @@ if (!function_exists('explode_post_code')) {
      */
     function explode_post_code($postcode, $letter = false)
     {
-        preg_match('/^(\d+)(\D+)?$/', $postcode, $value);
-        if ($letter)
-            return $value[2] ?? '';
-        return (int)$value[1];
+        $postcode= trim($postcode);
+        $final_postcode =  preg_replace('/\D/','',$postcode);
+        if($letter) {
+            return trim($postcode, $final_postcode);
+        }
+
+        return $final_postcode;
     }
 }
 
