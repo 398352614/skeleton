@@ -28,7 +28,8 @@ class ReportService extends BaseService
 {
     public $filterRules = [
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'driver_id' => ['=', 'driver_id']
+        'driver_id' => ['=', 'driver_id'],
+        'driver_name' => ['=', 'driver_name'],
     ];
 
     private $tourMaterialModel;
@@ -167,7 +168,7 @@ class ReportService extends BaseService
     private function getOutWarehouseInfo($tour, $warehouseInfo, $packageList, $tourMaterialList)
     {
         $outWarehouseInfo = $warehouseInfo;
-        $outWarehouseInfo['signature'] =$tour['begin_signature'];
+        $outWarehouseInfo['signature'] = $tour['begin_signature'];
         $outWarehouseInfo['package_list'] = $packageList;
         $outWarehouseInfo['material_list'] = $tourMaterialList;
         return $outWarehouseInfo;
@@ -184,7 +185,7 @@ class ReportService extends BaseService
     private function getInWarehouseInfo($tour, $warehouseInfo, $packageList, $tourMaterialList)
     {
         $inWarehouseInfo = $warehouseInfo;
-        $inWarehouseInfo['signature'] =$tour['end_signature'];
+        $inWarehouseInfo['signature'] = $tour['end_signature'];
         $inWarehouseInfo['package_list'] = $packageList;
         $inWarehouseInfo['material_list'] = $tourMaterialList;
         return $inWarehouseInfo;

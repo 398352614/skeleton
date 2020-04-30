@@ -389,7 +389,7 @@ class BaseService
         }
         $sum = $this->query->sum($field);
         $this->query = $this->model::query();
-        return $sum;
+        return !empty($sum) ? $sum : 0;
     }
 
     /**

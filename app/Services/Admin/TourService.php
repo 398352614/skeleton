@@ -43,7 +43,7 @@ class TourService extends BaseService
         'driver_id' => ['=', 'driver_id'],
         'line_name' => ['like', 'line_name'],
         'tour_no' => ['like', 'tour_no'],
-        'driver_name' => ['like', 'driver_name'],
+        'driver_name' => ['=', 'driver_name'],
         'line_name,driver_name' => ['like', 'key_word'],
     ];
 

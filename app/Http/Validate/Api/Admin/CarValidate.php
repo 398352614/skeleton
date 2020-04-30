@@ -31,9 +31,9 @@ class CarValidate extends BaseValidate
         'relate_material_name' => '相关文件名',
         'is_locked' => '是否锁定1-正常2-锁定',
 
-        'cn_name' =>'中文名称',
-        'en_name' =>'英文名称',
-        'brand_id'      =>  ['品牌ID'],
+        'cn_name' => '中文名称',
+        'en_name' => '英文名称',
+        'brand_id' => ['品牌ID'],
     ];
 
     public $rules = [
@@ -45,22 +45,22 @@ class CarValidate extends BaseValidate
         'insurance_company' => 'nullable|string|max:50',
         'insurance_type' => 'nullable|string|max:50',
         'month_insurance' => 'nullable|numeric|gte:0',
-        'rent_start_date' => 'nullable|required_unless:ownership_type,2|date_format:Y-m-d',
-        'rent_end_date' => 'nullable|required_unless:ownership_type,2|date_format:Y-m-d',
+        'rent_start_date' => 'nullable|date_format:Y-m-d',
+        'rent_end_date' => 'nullable|date_format:Y-m-d',
         'rent_month_fee' => 'nullable|numeric|gte:0',
         'repair' => 'nullable|integer|in:1,2',
         'remark' => 'nullable|string',
         'relate_material' => 'nullable|string',
-        'relate_material_name'=> 'nullable|string',
+        'relate_material_name' => 'nullable|string',
         'is_locked' => 'required|integer|in:1,2',
 
-        'cn_name' =>'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
-        'en_name' =>'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
-        'brand_id'      =>  ['required'],
+        'cn_name' => 'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
+        'en_name' => 'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
+        'brand_id' => ['required'],
     ];
     public $scene = [
         //保存
-        'store'             => [
+        'store' => [
             'car_no',
             'outgoing_time',
             'car_brand_id',
@@ -77,7 +77,7 @@ class CarValidate extends BaseValidate
             'relate_material',
             'relate_material_name'
         ],
-        'update'             => [
+        'update' => [
             'car_no',
             'outgoing_time',
             'car_brand_id',
@@ -95,7 +95,7 @@ class CarValidate extends BaseValidate
             'relate_material_name'
 
         ],
-        'lock' =>[
+        'lock' => [
             'is_locked',
         ]
     ];

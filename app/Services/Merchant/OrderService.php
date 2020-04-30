@@ -951,20 +951,20 @@ class OrderService extends BaseService
                     if ($lineRange[$i]['schedule'] === 0) {
                         $lineRange[$i]['schedule'] = 7;
                     }
-                    if (Carbon::today()->dayOfWeek < $lineRange[$i]['schedule']) {
-                        $date = Carbon::today()->startOfWeek()->addDays($lineRange[$i]['schedule'] - 1)->format('Y-m-d');
+                    if (Carbon::today()->dayOfWeek <= $lineRange[$i]['schedule']) {
+                        $date=$lineRange[$i]['schedule'] - Carbon::today()->dayOfWeek;
                     } else {
-                        $date = Carbon::today()->addWeek()->startOfWeek()->addDays($lineRange[$i]['schedule'] - 1)->format('Y-m-d');
+                        $date=$lineRange[$i]['schedule'] - Carbon::today()->dayOfWeek + 7 ;
                     }
                     //如果线路不自增，验证最大订单量
                     if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
-                        for ($k = 0, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
-                            $params['execution_date'] = Carbon::create($date)->addDays($k)->format('Y-m-d');
+                        for ($k = 0, $l = $line[$i]['appointment_days']-$date; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] = Carbon::create(date("Y-m-d"))->addDays($date+$k)->format('Y-m-d');
                             if ($info['type'] == 1) {
                                 $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 1);
                                 if (1 + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count']) {
                                     if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                        if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                        if (time() < strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
                                             $data[] = $params['execution_date'];
                                         }
                                     } else {
@@ -975,7 +975,7 @@ class OrderService extends BaseService
                                 $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 2);
                                 if (1 + $orderCount['pie_count'] <= $line[$i]['pie_max_count']) {
                                     if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                        if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                        if (time() < strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
                                             $data[] = $params['execution_date'];
                                         }
                                     } else {
@@ -985,10 +985,10 @@ class OrderService extends BaseService
                             }
                         }
                     } elseif ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_1) {
-                        for ($k = 0, $l = $line[$i]['appointment_days']; $k < $l; $k = $k + 7) {
-                            $params['execution_date'] = Carbon::create($date)->addDays($k)->format('Y-m-d');
+                        for ($k = 0, $l = $line[$i]['appointment_days']-$date; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] =  Carbon::create(date("Y-m-d"))->addDays($date+$k)->format('Y-m-d');
                             if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                if (time() > strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
+                                if (time() < strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
                                     $data[] = $params['execution_date'];
                                 }
                             } else {
