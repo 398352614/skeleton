@@ -379,9 +379,10 @@ class OrderService extends BaseService
                 $this->store($list[$i], BaseConstService::ORDER_SOURCE_2);
             } catch (BusinessLogicException $e) {
                 throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
-            } catch (\Exception $e) {
-                throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
             }
+/*            catch (\Exception $e) {
+                throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
+            }*/
         }
         return;
     }
