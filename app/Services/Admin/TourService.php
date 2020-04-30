@@ -307,9 +307,9 @@ class TourService extends BaseService
      * @return BaseService|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function join($batch, $line, $order, $tour)
+    public function join($batch, $line, $order, $tour = [])
     {
-        $tour = !empty($tour) ? $tour : $this->getTourInfo($batch,$line);
+        $tour = !empty($tour) ? $tour : $this->getTourInfo($batch, $line);
         //加入取件线路
         $quantity = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $amount = [
@@ -476,10 +476,10 @@ class TourService extends BaseService
     public function getListByBatch($batch, $line)
     {
         $data = [];
-        $tour = $this->getList(['line_id' => $line['id'],'execution_date'=>$batch['execution_date'],'status'=>['in',[BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['*'], false)->toArray();
+        $tour = $this->getList(['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['*'], false)->toArray();
         if (!empty($tour) && !empty($line)) {
             //当日截止时间验证
-            for($i=0,$j=count($tour);$i<$j;$i++){
+            for ($i = 0, $j = count($tour); $i < $j; $i++) {
                 if ((date('Y-m-d') == $batch['execution_date'] && time() < strtotime($batch['execution_date'] . ' ' . $line['order_deadline']) ||
                     date('Y-m-d') !== $batch['execution_date'])) {
                     //取件订单，线路最大订单量验证

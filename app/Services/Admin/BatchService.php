@@ -389,7 +389,7 @@ class BatchService extends BaseService
             throw new BusinessLogicException('当前指定站点不符合当前订单');
         }
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
-        list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch, $line) : $this->joinNewBatch($order, $line);
+        list($batch, $line) = !empty($batch) ? $this->joinExistBatch($order, $batch) : $this->joinNewBatch($order, $line);
         /**************************************站点加入取件线路********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $order);
         /***********************************************填充取件线路编号************************************************/
