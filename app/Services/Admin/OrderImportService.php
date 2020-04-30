@@ -43,32 +43,32 @@ class OrderImportService extends BaseService
         'remark',
 
         'item_type_name_1',
-        'item_name_1',
         'item_number_1',
+        'item_name_1',
         'item_count_1',
         'item_weight_1',
 
         'item_type_name_2',
-        'item_name_2',
         'item_number_2',
+        'item_name_2',
         'item_count_2',
         'item_weight_2',
 
         'item_type_name_3',
-        'item_name_3',
         'item_number_3',
+        'item_name_3',
         'item_count_3',
         'item_weight_3',
 
         'item_type_name_4',
-        'item_name_4',
         'item_number_4',
+        'item_name_4',
         'item_count_4',
         'item_weight_4',
 
         'item_type_name_5',
-        'item_name_5',
         'item_number_5',
+        'item_name_5',
         'item_count_5',
         'item_weight_5',
     ];
