@@ -653,7 +653,7 @@ class OrderService extends BaseService
                 }else{
                     $list[$i] = $this->importCheck($list[$i]);
                 }
-                if($list[$i]['log'] === __('当前订单没有合适的线路，请先联系管理员')){
+                if(isset($list[$i]['log']) && $list[$i]['log'] === __('当前订单没有合适的线路，请先联系管理员')){
                     $list[$i]['receiver_house_number'] = __('请检查输入');
                     $list[$i]['receiver_post_code'] = __('请检查输入');
                     $list[$i]['execution_date'] = __('请检查输入');
