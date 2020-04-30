@@ -638,12 +638,12 @@ class OrderService extends BaseService
                         }
                         $package[] = $list[$i]['item_number_' . ($k + 1)];
                     }
-                    if ($list[$i]['item_type_' . ($k + 1)] === 2) {
+/*                    if ($list[$i]['item_type_' . ($k + 1)] === 2) {
                         if(in_array($list[$i]['item_number_' . ($k + 1)],$material)){
                             $info[$i]['item_number_' . ($k + 1)]=__('物品') . ($k + 1).__('编号有重复');
                         }
                         $material[] = $list[$i]['item_number_' . ($k + 1)];
-                    }
+                    }*/
                 }
             }
         }
@@ -652,6 +652,11 @@ class OrderService extends BaseService
                     $list[$i] = array_merge($this->importCheck($list[$i]),$info[$i]);
                 }else{
                     $list[$i] = $this->importCheck($list[$i]);
+                }
+                if($list[$i]['log'] === __('当前订单没有合适的线路，请先联系管理员')){
+                    $list[$i]['receiver_house_number'] = __('请检查输入');
+                    $list[$i]['receiver_post_code'] = __('请检查输入');
+                    $list[$i]['execution_date'] = __('请检查输入');
                 }
                 if (count($list[$i]) > 2) {
                     $list[$i]['status'] = 0;
@@ -694,7 +699,6 @@ class OrderService extends BaseService
                 $list['log'] = __($e->getMessage());
                 $list['receiver_house_number'] = __('请检查输入');
                 $list['receiver_post_code'] = __('请检查输入');
-                $list['log'] = __($e->getMessage());
             } catch (\Exception $e) {
             }
             $data['lon'] = $info['lon'] ?? null;
@@ -710,12 +714,12 @@ class OrderService extends BaseService
                     if (!empty($result[$j])) {
                         $list['item_number_' . ($j + 1)] = __('物品') . ($j + 1) . __('编号有重复');
                     }
-                } elseif ($data['item_type_' . ($j + 1)] === 2) {
-                    $material[$j] = $data['item_number_' . ($j + 1)];
-                    $result[$j] = DB::table('material')->where('code', $data['item_number_' . ($j + 1)])->first();
-                    if (!empty($result[$j])) {
+                }
+                elseif ($data['item_type_' . ($j + 1)] === 2) {
+                    if (in_array($data['item_number_' . ($j + 1)],$material)) {
                         $list['item_number_' . ($j + 1)] = __('物品') . ($j + 1) . __('编号有重复');
                     }
+                    $material[$j] = $data['item_number_' . ($j + 1)];
                 }
             }
         }
@@ -725,14 +729,7 @@ class OrderService extends BaseService
             $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         } catch (BusinessLogicException $e) {
             $list['log'] = __($e->getMessage());
-            $list['receiver_house_number'] = __('请检查输入');
-            $list['receiver_post_code'] = __('请检查输入');
-            $list['execution_date'] = __('请检查输入');
         } catch (\Exception $e) {
-            $list['log'] = __('当前订单没有合适的线路，请先联系管理员');
-            $list['receiver_house_number'] = __('请检查输入');
-            $list['receiver_post_code'] = __('请检查输入');
-            $list['execution_date'] = __('请检查输入');
         }
         $list['lon'] = $data['lon'] ?? '';
         $list['lat'] = $data['lat'] ?? '';
