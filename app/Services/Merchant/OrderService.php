@@ -625,9 +625,39 @@ class OrderService extends BaseService
      */
     public function importCheckByList($params)
     {
+        $info=[];
+        $package=[];
+        $material=[];
         $list = json_decode($params['list'], true);
-        for ($i = 0, $j = count($list); $i < $j; $i++) {
-            $list[$i] = $this->importCheck($list[$i]);
+        for($i=0,$j=count($list);$i<$j;$i++) {
+            for ($k = 0; $k < 5; $k++) {
+                if ($list[$i]['item_type_' . ($k + 1)]) {
+                    if ($list[$i]['item_type_' . ($k + 1)] === 1) {
+                        if(in_array($list[$i]['item_number_' . ($k + 1)],$package)){
+                            $info[$i]['item_number_' . ($k + 1)]=__('物品') . ($k + 1).__('编号有重复');
+                        }
+                        $package[] = $list[$i]['item_number_' . ($k + 1)];
+                    }
+                    if ($list[$i]['item_type_' . ($k + 1)] === 2) {
+                        if(in_array($list[$i]['item_number_' . ($k + 1)],$material)){
+                            $info[$i]['item_number_' . ($k + 1)]=__('物品') . ($k + 1).__('编号有重复');
+                        }
+                        $material[] = $list[$i]['item_number_' . ($k + 1)];
+                    }
+                }
+            }
+        }
+            for ($i = 0, $j = count($list); $i < $j; $i++) {
+                if(isset($info[$i])){
+                    $list[$i] = array_merge($this->importCheck($list[$i]),$info[$i]);
+                }else{
+                    $list[$i] = $this->importCheck($list[$i]);
+                }
+                if (count($list[$i]) > 2) {
+                    $list[$i]['status'] = 0;
+                } else {
+                    $list[$i]['status'] = 1;
+                }
         }
         return $list;
     }
@@ -673,7 +703,7 @@ class OrderService extends BaseService
         $package = [];
         $material = [];
         for ($j = 0; $j < 5; $j++) {
-            if ($data['item_number_' . ($j + 1)]) {
+            if (!empty($data['item_type_' . ($j + 1)])) {
                 if ($data['item_type_' . ($j + 1)] === 1) {
                     $package[$j] = $data['item_number_' . ($j + 1)];
                     $result[$j] = DB::table('package')->where('express_first_no', $data['item_number_' . ($j + 1)])->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
@@ -686,9 +716,6 @@ class OrderService extends BaseService
                     if (!empty($result[$j])) {
                         $list['item_number_' . ($j + 1)] = __('物品') . ($j + 1) . __('编号有重复');
                     }
-                }
-                if (count(array_unique($package)) !== count($package) || count(array_unique($material)) !== count($material)) {
-                    $list['item_number_' . ($j + 1)] = __('编号有重复');
                 }
             }
         }
@@ -709,11 +736,6 @@ class OrderService extends BaseService
         }
         $list['lon'] = $data['lon'] ?? '';
         $list['lat'] = $data['lat'] ?? '';
-        if (count($list) > 2) {
-            $list['status'] = 0;
-        } else {
-            $list['status'] = 1;
-        }
         return $list;
     }
 
