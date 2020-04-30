@@ -653,11 +653,11 @@ class OrderService extends BaseService
                 }else{
                     $list[$i] = $this->importCheck($list[$i]);
                 }
-        }
-        if (count($list) > 2) {
-            $list['status'] = 0;
-        } else {
-            $list['status'] = 1;
+                if (count($list[$i]) > 2) {
+                    $list[$i]['status'] = 0;
+                } else {
+                    $list[$i]['status'] = 1;
+                }
         }
         return $list;
     }
