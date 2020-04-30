@@ -49,7 +49,7 @@ class LineService extends BaseService
     public function getInfoByRule($info, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
     {
         //获取邮编数字部分
-        $postCode = explode_post_code($info['receiver_post_code']);
+        $postCode = explode_post_code(ltrim($info['receiver_post_code']));
         //获取线路范围
         $lineRange = $this->getLineRangeService()->getInfo(['post_code_start' => ['<=', $postCode], 'post_code_end' => ['>=', $postCode], 'schedule' => Carbon::parse($info['execution_date'])->dayOfWeek, 'country' => $info['receiver_country']], ['*'], false);
         if (empty($lineRange)) {

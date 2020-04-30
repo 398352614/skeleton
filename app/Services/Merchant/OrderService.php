@@ -375,7 +375,6 @@ class OrderService extends BaseService
             $list[$i]['receiver_country'] = auth()->user()->country;
             $list[$i]['receiver_city'] = '';
             $list[$i]['receiver_street'] = '';
-            $list[$i]['receiver_post_code']=ltrim($list[$i]['receiver_post_code']);
             try {
                 $this->store($list[$i], BaseConstService::ORDER_SOURCE_2);
             } catch (BusinessLogicException $e) {
