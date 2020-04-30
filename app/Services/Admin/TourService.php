@@ -476,18 +476,20 @@ class TourService extends BaseService
     public function getListByBatch($batch, $line)
     {
         $data = [];
-        $tour = $this->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
+        $tour = $this->getList(['line_id' => $line['id'],'execution_date'=>$batch['execution_date'],'status'=>['in',[BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['*'], false)->toArray();
         if (!empty($tour) && !empty($line)) {
             //当日截止时间验证
-            if ((date('Y-m-d') == $batch['execution_date'] && time() < strtotime($batch['execution_date'] . ' ' . $line['order_deadline']) ||
-                date('Y-m-d') !== $batch['execution_date'])) {
-                //取件订单，线路最大订单量验证
-                if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
-                    $data = $batch;
-                }
-                //派件订单，线路最大订单量验证
-                if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
-                    $data = $batch;
+            for($i=0,$j=count($tour);$i<$j;$i++){
+                if ((date('Y-m-d') == $batch['execution_date'] && time() < strtotime($batch['execution_date'] . ' ' . $line['order_deadline']) ||
+                    date('Y-m-d') !== $batch['execution_date'])) {
+                    //取件订单，线路最大订单量验证
+                    if ($batch['status'] = BaseConstService::ORDER_TYPE_1 && $tour[$i]['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
+                        $data[$i] = $tour[$i];
+                    }
+                    //派件订单，线路最大订单量验证
+                    if ($batch['status'] = BaseConstService::ORDER_TYPE_2 && $tour[$i]['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
+                        $data[$i] = $tour[$i];
+                    }
                 }
             }
         }
