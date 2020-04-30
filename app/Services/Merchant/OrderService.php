@@ -694,7 +694,6 @@ class OrderService extends BaseService
                 $list['log'] = __($e->getMessage());
                 $list['receiver_house_number'] = __('请检查输入');
                 $list['receiver_post_code'] = __('请检查输入');
-                $list['log'] = __($e->getMessage());
             } catch (\Exception $e) {
             }
             $data['lon'] = $info['lon'] ?? null;
