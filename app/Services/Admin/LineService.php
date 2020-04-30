@@ -212,7 +212,7 @@ class LineService extends BaseService
     {
         $tour = $this->getTourService()->getInfo(['line_id' => $id, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['id'], false);
         if (!empty($tour)) {
-            throw new BusinessLogicException('当前正在使用该线路');
+            throw new BusinessLogicException('当前正在使用该线路，不能操作');
         }
         //删除线路
         $rowCount = parent::delete(['id' => $id]);
