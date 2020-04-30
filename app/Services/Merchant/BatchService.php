@@ -228,9 +228,9 @@ class BatchService extends BaseService
             throw new BusinessLogicException('订单加入站点失败!');
         }
 
-        //todo batch合并data
+        $batch = array_merge($batch->toArray(), $data);
 
-        return $batch->toArray();
+        return $batch;
     }
 
     /**

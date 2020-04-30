@@ -292,7 +292,7 @@ class TourService extends BaseService
      */
     public function join($batch, $line, $order, $tour)
     {
-        $tour = !empty($tour) ? $tour : $this->getTourInfo($batch,$line);
+        $tour = !empty($tour) ? $tour : $this->getTourInfo($batch, $line);
         //加入取件线路
         $quantity = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $amount = [
@@ -365,6 +365,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败，请重新操作！');
         }
+        $tour = array_merge($tour, $data);
         return $tour;
     }
 

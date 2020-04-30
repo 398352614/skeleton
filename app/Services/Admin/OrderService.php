@@ -775,7 +775,7 @@ class OrderService extends BaseService
      */
     public function getSchedule($info)
     {
-        $info['country']=$this->getMerchantService()->getInfo(['id'=>$info['merchant_id']],['*'],false)->toArray()['country'];
+        $info['country'] = $this->getMerchantService()->getInfo(['id' => $info['merchant_id']], ['*'], false)->toArray()['country'];
         $data = [];
         //获取邮编数字部分
         $postCode = explode_post_code($info['receiver_post_code']);
@@ -795,14 +795,14 @@ class OrderService extends BaseService
                         $lineRange[$i]['schedule'] = 7;
                     }
                     if (Carbon::today()->dayOfWeek <= $lineRange[$i]['schedule']) {
-                        $date=$lineRange[$i]['schedule'] - Carbon::today()->dayOfWeek;
+                        $date = $lineRange[$i]['schedule'] - Carbon::today()->dayOfWeek;
                     } else {
-                        $date=$lineRange[$i]['schedule'] - Carbon::today()->dayOfWeek + 7 ;
+                        $date = $lineRange[$i]['schedule'] - Carbon::today()->dayOfWeek + 7;
                     }
                     //如果线路不自增，验证最大订单量
                     if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
-                        for ($k = 0, $l = $line[$i]['appointment_days']-$date; $k < $l; $k = $k + 7) {
-                            $params['execution_date'] = Carbon::create(date("Y-m-d"))->addDays($date+$k)->format('Y-m-d');
+                        for ($k = 0, $l = $line[$i]['appointment_days'] - $date; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] = Carbon::create(date("Y-m-d"))->addDays($date + $k)->format('Y-m-d');
                             if ($info['type'] == 1) {
                                 $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 1);
                                 if (1 + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count']) {
@@ -828,8 +828,8 @@ class OrderService extends BaseService
                             }
                         }
                     } elseif ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_1) {
-                        for ($k = 0, $l = $line[$i]['appointment_days']-$date; $k < $l; $k = $k + 7) {
-                            $params['execution_date'] =  Carbon::create(date("Y-m-d"))->addDays($date+$k)->format('Y-m-d');
+                        for ($k = 0, $l = $line[$i]['appointment_days'] - $date; $k < $l; $k = $k + 7) {
+                            $params['execution_date'] = Carbon::create(date("Y-m-d"))->addDays($date + $k)->format('Y-m-d');
                             if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
                                 if (time() < strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
                                     $data[] = $params['execution_date'];
