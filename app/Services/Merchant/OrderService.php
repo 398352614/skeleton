@@ -375,14 +375,15 @@ class OrderService extends BaseService
             $list[$i]['receiver_country'] = auth()->user()->country;
             $list[$i]['receiver_city'] = '';
             $list[$i]['receiver_street'] = '';
+            $list[$i]['receiver_post_code']=ltrim($list[$i]['receiver_post_code']);
             try {
                 $this->store($list[$i], BaseConstService::ORDER_SOURCE_2);
             } catch (BusinessLogicException $e) {
                 throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
             }
-            catch (\Exception $e) {
+/*            catch (\Exception $e) {
                 throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
-            }
+            }*/
         }
         return;
     }
@@ -451,7 +452,6 @@ class OrderService extends BaseService
      */
     public function form($data)
     {
-        $data['receiver_post_code']=ltrim($data['receiver_post_code']);
         $data['package_list'] = [];
         $data['material_list'] = [];
         for ($j = 0; $j < 5; $j++) {
