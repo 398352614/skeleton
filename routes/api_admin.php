@@ -90,8 +90,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('order-import')->group(function () {
         //上传模板
         Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
-        //获取模板
-        Route::get('/getTemplate', 'OrderImportController@getTemplateExcel');
+        //生成模板
+        Route::get('/getTemplate', 'OrderImportController@templateExport');
         //批量导入
         Route::post('/import', 'OrderController@import');
         //批量新增

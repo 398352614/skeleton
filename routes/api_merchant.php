@@ -77,8 +77,8 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
     Route::prefix('order-import')->group(function () {
         //上传模板
         Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
-        //获取模板
-        Route::get('/getTemplate', 'OrderImportController@getTemplateExcel');
+        //生成模板
+        Route::get('/getTemplate', 'OrderImportController@templateExport');
         //获取模板说明
         Route::get('/getTemplateTips', 'OrderImportController@getTemplate');
         //批量导入

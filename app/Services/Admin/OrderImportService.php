@@ -100,7 +100,7 @@ class OrderImportService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getTemplateExcel()
+    public function templateExport()
     {
         $cellData[0] = [];
 

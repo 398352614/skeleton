@@ -34,8 +34,8 @@ class OrderImportController extends BaseController
      * @return array
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function getTemplateExcel(){
-        return $this->service->getTemplateExcel();
+    public function templateExport(){
+        return $this->service->templateExport();
     }
 
     /**
