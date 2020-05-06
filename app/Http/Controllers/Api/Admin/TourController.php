@@ -217,9 +217,9 @@ class TourController extends BaseController
      * @return mixed
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function batchExcel($id)
+    public function batchExport($id)
     {
-        return $this->service->batchExcel($id);
+        return $this->service->batchExport($id);
     }
 
     /**
@@ -228,9 +228,9 @@ class TourController extends BaseController
      * @return mixed
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function cityTxt($id)
+    public function cityExport($id)
     {
-        return $this->service->cityTxt($id);
+        return $this->service->cityExport($id);
     }
 
     /**
@@ -238,8 +238,8 @@ class TourController extends BaseController
      * @param $id
      * @return mixed
      */
-    public function batchPng($id)
+    public function mapExport($id)
     {
-        return $this->service->batchPng($id);
+        return $this->service->mapExport($id);
     }
 }

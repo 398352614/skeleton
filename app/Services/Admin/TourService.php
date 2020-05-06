@@ -766,7 +766,7 @@ class TourService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function batchExcel($id)
+    public function batchExport($id)
     {
         //取出数据
         $cellData = [];
@@ -816,7 +816,7 @@ class TourService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function cityTxt($id)
+    public function cityExport($id)
     {
         $tourInfo = $this->getInfo(['id' => $id], ['*'], false);
         if (empty($tourInfo)) {
@@ -840,7 +840,7 @@ class TourService extends BaseService
      * @param $id
      * @throws BusinessLogicException
      */
-    public function batchPng($id)
+    public function mapExport($id)
     {
         $tourInfo = $this->getInfo(['id' => $id], ['*'], false);
         if (empty($tourInfo)) {
