@@ -24,7 +24,7 @@ class BatchService extends BaseService
     public $filterRules = [
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'driver_id' => ['=', 'driver_id'],
+        'driver_name' => ['like', 'driver_name'],
         'line_id,line_name' => ['like', 'line_keyword'],
         'batch_no' => ['like', 'keyword'],
         'receiver' => ['=', 'receiver'],

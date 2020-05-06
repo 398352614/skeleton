@@ -28,8 +28,7 @@ class ReportService extends BaseService
 {
     public $filterRules = [
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'driver_id' => ['=', 'driver_id'],
-        'driver_name' => ['=', 'driver_name'],
+        'driver_name' => ['like', 'driver_name'],
     ];
 
     private $tourMaterialModel;

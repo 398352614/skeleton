@@ -40,10 +40,9 @@ class TourService extends BaseService
     public $filterRules = [
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'driver_id' => ['=', 'driver_id'],
         'line_name' => ['like', 'line_name'],
         'tour_no' => ['like', 'tour_no'],
-        'driver_name' => ['=', 'driver_name'],
+        'driver_name' => ['like', 'driver_name'],
         'line_name,driver_name' => ['like', 'key_word'],
     ];
 
