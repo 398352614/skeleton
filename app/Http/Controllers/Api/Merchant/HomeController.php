@@ -70,7 +70,6 @@ class HomeController extends BaseController
 
     /**
      * 时间段订单统计
-     *
      * @return array
      * @throws \App\Exceptions\BusinessLogicException
      */
@@ -79,6 +78,10 @@ class HomeController extends BaseController
         return $this->service->periodCount($this->data);
     }
 
+    /**
+     * 总计统计
+     * @return array
+     */
     public function all(){
         return $this->service->all();
     }
