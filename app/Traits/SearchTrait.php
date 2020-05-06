@@ -22,6 +22,11 @@ trait SearchTrait
             if ($type === 'like' && $value === '') {
                 continue;
             }
+            //如果是like查询，但其中包含Mysql不能识别的%和_则加上转义符号
+            if($type === 'like'){
+                $value=str_replace('_','\_',$value);
+                $value=str_replace('%','\%',$value);
+            }
             //in
             if ($type === 'in' && is_array($value)) {
                 $query->whereIn($k, $value);
