@@ -196,9 +196,9 @@ class TransportPriceService extends BaseService
                 }
                 return false;
             });
-            if (empty($specialTime)) {
+/*            if (empty($specialTime)) {
                 throw new BusinessLogicException('当前时间不在该运价范围内');
-            }
+            }*/
             $price += $specialTime['price'];
         }
         $info['price'] = $price;
