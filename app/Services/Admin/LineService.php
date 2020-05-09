@@ -65,7 +65,7 @@ class LineService extends BaseLineService
      */
     public function postcodeShow($id)
     {
-        $info = parent::getInfo(['id' => $id, 'rule' => BaseConstService::LINE_RULE_POST_CODE], ['id'], false);
+        $info = parent::getInfo(['id' => $id, 'rule' => BaseConstService::LINE_RULE_POST_CODE], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('线路不存在');
         }

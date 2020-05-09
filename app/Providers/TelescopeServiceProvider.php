@@ -40,7 +40,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
      */
     protected function hideSensitiveRequestDetails()
     {
-        if ($this->app->isLocal()) {
+        if ($this->app->isLocal()  || $this->app->environment() === 'development') {
             return;
         }
 
