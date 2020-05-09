@@ -13,12 +13,8 @@ class AlterCompanyConfigAlterColumnLineRule extends Migration
      */
     public function up()
     {
-        Schema::table('auth_list', function (Blueprint $table) {
-            $table->integerIncrements('id');
-            $table->string('controller', 50)->comment('控制器');
-            $table->string('method', 50)->comment('方法');
-            $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
-            $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
+        Schema::table('company_config', function (Blueprint $table) {
+            $table->smallInteger('line_rule')->default(1)->nullable()->comment('线路规则1-邮编2-区域')->change();
         });
     }
 
