@@ -5,11 +5,11 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * worker表
+ * line_area表
  * Class Employee
  * @package App\Models
  */
-class Worker extends BaseModel
+class LineArea extends BaseModel
 {
     /**
      * 司机实际取件导航
@@ -17,7 +17,7 @@ class Worker extends BaseModel
      *
      * @var string
      */
-    protected $table = 'worker';
+    protected $table = 'line_area';
 
     /**
      * The primary key for the model.
@@ -47,9 +47,10 @@ class Worker extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'to_id',
-        'data',
-        'company_auth',
+        'line_id',
+        'coordinate_list',
+        'schedule',
+        'country',
         'created_at',
         'updated_at',
     ];

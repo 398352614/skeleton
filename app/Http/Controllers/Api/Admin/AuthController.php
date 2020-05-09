@@ -26,10 +26,10 @@ class AuthController extends Controller
 
         $credentials = [
             $this->username() => $request['username'],
-            'password'        => $request['password']
+            'password' => $request['password']
         ];
 
-        if (! $token = $this->guard()->attempt($credentials)) {
+        if (!$token = $this->guard()->attempt($credentials)) {
             throw new BusinessLogicException('用户名或密码错误！');
         }
 
@@ -48,7 +48,10 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth('admin')->user());
+        $user = auth('admin')->user();
+        //不可删除
+        $companyConfig = $user->companyConfig;
+        return response()->json($user);
     }
 
     /**
@@ -80,14 +83,15 @@ class AuthController extends Controller
             'company_id' => auth('admin')->user()->company_id,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('admin')->factory()->getTTL() * 60
+            'expires_in' => auth('admin')->factory()->getTTL() * 60,
+            'company_config' => auth('admin')->user()->companyConfig
         ];
     }
 
     /**
      * Validate the user login request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     protected function validateLogin(Request $request)
@@ -115,6 +119,7 @@ class AuthController extends Controller
             return 'fullname';
         }
     }
+
     /**
      * Get the guard to be used during authentication.
      *
@@ -128,7 +133,7 @@ class AuthController extends Controller
     /**
      * 更新自己的密码
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return array
      * @throws BusinessLogicException
      */

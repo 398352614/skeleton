@@ -76,7 +76,7 @@ class RegisterController extends BaseController
 
             $companyConfig = CompanyConfig::create([
                 'company_id' => $company->id,
-                'line_rule' => 1,
+                'line_rule' => BaseConstService::LINE_RULE_POST_CODE,
                 'weight_unit' => 'kg',
                 'currency_unit' => '￥',
                 'volume_unit' => 'cm³',

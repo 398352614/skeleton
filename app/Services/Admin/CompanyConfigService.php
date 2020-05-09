@@ -11,6 +11,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\CompanyConfig;
+use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
 
@@ -29,7 +30,7 @@ class CompanyConfigService extends BaseService
     public function createOrUpdate($params)
     {
         $rowCount = $this->query->updateOrCreate(['company_id' => auth()->user()->company_id], [
-            'line_rule' => $params['line_rule'] ?? '',
+            'line_rule' => $params['line_rule'] ?? BaseConstService::LINE_RULE_POST_CODE,
             'weight_unit' => $params['weight_unit'] ?? '',
             'currency_unit' => $params['currency_unit'] ?? '',
             'volume_unit' => $params['volume_unit'] ?? '',

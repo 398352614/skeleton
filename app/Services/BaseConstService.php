@@ -17,6 +17,10 @@ class BaseConstService
     const TOUR = 'TOUR';
     const BATCH_EXCEPTION = 'BE';
 
+    //线路规则1-邮编2-区域
+    const LINE_RULE_POST_CODE = 1;
+    const LINE_RULE_AREA = 2;
+
     //订单号编号类型
     const ORDER_NO_TYPE = 'order';
     //站点编号类型

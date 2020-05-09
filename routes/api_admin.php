@@ -53,7 +53,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //派件列表查询初始化
         Route::get('/initPieIndex', 'OrderController@initPieIndex');
         //查询初始化
-        Route::get('/initIndex','OrderController@initIndex');
+        Route::get('/initIndex', 'OrderController@initIndex');
         //列表查询
         Route::get('/', 'OrderController@index');
         //获取详情
@@ -85,6 +85,7 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         //批量订单分配至指定取件线路
         Route::put('/assignListTour', 'OrderController@assignListTour');
     });
+
 
     //订单导入记录管理
     Route::prefix('order-import')->group(function () {
@@ -202,18 +203,31 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
 
     //线路管理
     Route::prefix('line')->group(function () {
+        /****************************************邮编线路**************************************/
         //列表查询
-        Route::get('/', 'LineController@index');
+        Route::get('/', 'LineController@postcodeIndex');
         //获取详情
-        Route::get('/{id}', 'LineController@show');
+        Route::get('/{id}', 'LineController@postcodeShow');
         //新增
-        Route::post('/', 'LineController@store');
+        Route::post('/', 'LineController@postcodeStore');
         //修改
-        Route::put('/{id}', 'LineController@update');
+        Route::put('/{id}', 'LineController@postcodeUpdate');
         //删除
-        Route::delete('/{id}', 'LineController@destroy');
+        Route::delete('/{id}', 'LineController@postcodeDestroy');
         //导入
-        Route::post('/import', 'LineController@lineImport');
+        Route::post('/import', 'LineController@postcodeLineImport');
+
+        /****************************************区域线路**************************************/
+        //列表查询
+        Route::get('/area', 'LineController@areaIndex');
+        //获取详情
+        Route::get('/area/{id}', 'LineController@areaShow');
+        //新增
+        Route::post('/area', 'LineController@areaStore');
+        //修改
+        Route::put('/area/{id}', 'LineController@areaUpdate');
+        //删除
+        Route::delete('/area/{id}', 'LineController@areaDestroy');
     });
 
     //仓库管理
