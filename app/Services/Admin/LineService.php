@@ -96,11 +96,11 @@ class LineService extends BaseLineService
         //基础验证
         $this->check($params);
         //邮编范围验证
-        $this->getLineRangeService()->checkRange($params['item_list'], $params['country'], $params['workday_list']);
+        $this->getLineRangeService()->checkRange($params['item_list'], $params['country'], $params['work_day_list']);
         //新增
         $lineId = $this->store($params);
         //邮编范围批量新增
-        $this->getLineRangeService()->storeAll($lineId, $params['item_list'], $params['country'], $params['workday_list']);
+        $this->getLineRangeService()->storeAll($lineId, $params['item_list'], $params['country'], $params['work_day_list']);
     }
 
     /**
@@ -119,7 +119,7 @@ class LineService extends BaseLineService
         //基础验证
         $this->check($data);
         //邮编范围验证
-        $this->getLineRangeService()->checkRange($data['item_list'], $data['country'], $data['workday_list'], $id);
+        $this->getLineRangeService()->checkRange($data['item_list'], $data['country'], $data['work_day_list'], $id);
         //修改
         $this->updateById($id, $data);
         //删除原来线路范围
@@ -128,7 +128,7 @@ class LineService extends BaseLineService
             throw new BusinessLogicException('线路范围修改失败');
         }
         //批量新增
-        $this->getLineRangeService()->storeAll($id, $data['item_list'], $data['country'], $data['workday_list']);
+        $this->getLineRangeService()->storeAll($id, $data['item_list'], $data['country'], $data['work_day_list']);
     }
 
     /**
