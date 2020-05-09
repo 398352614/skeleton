@@ -17,6 +17,9 @@ use App\Traits\LocationTrait;
 
 class WareHouseService extends BaseService
 {
+    public $filterRules = [
+        'country' => ['=', 'country'],
+    ];
     public function __construct(Warehouse $warehouse)
     {
         parent::__construct($warehouse, WareHouseResource::class, WareHouseResource::class);
