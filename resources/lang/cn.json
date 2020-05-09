@@ -3,5 +3,7 @@
   "包裹快递单号2[:express_no]已存在;": "包裹快递单号2[:express_no]已存在;",
   "包裹外部标识[:out_order_no]已存在;": "包裹外部标识[:out_order_no]已存在;",
   "材料外部标识[:out_order_no]已存在": "材料外部标识[:out_order_no]已存在",
-  "邮编:post_code_start-:post_code_end已存在": "邮编:post_code_start-:post_code_end已存在"
+  "邮编:post_code_start-:post_code_end已存在": "邮编:post_code_start-:post_code_end已存在",
+  "材料代码[:code]有重复！不能添加订单": "材料代码[:code]有重复！不能添加订单",
+  "快递单号[:express_no]有重复！不能添加订单": "快递单号[:express_no]有重复！不能添加订单"
 }

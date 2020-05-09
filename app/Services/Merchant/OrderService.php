@@ -567,7 +567,8 @@ class OrderService extends BaseService
             $packageList = $params['package_list'];
             $expressNoList = array_filter(array_merge(array_column($packageList, 'express_first_no'), array_column($packageList, 'express_second_no')));
             if (count(array_unique($expressNoList)) !== count($expressNoList)) {
-                throw new BusinessLogicException('快递单号有重复！不能添加订单');
+                $repeatExpressNoList = implode(',', array_diff_assoc($expressNoList, array_unique($expressNoList)));
+                throw new BusinessLogicException('快递单号[:express_no]有重复！不能添加订单', 1000, ['express_no' => $repeatExpressNoList]);
             }
             //验证外部标识/快递单号1/快递单号2
             $this->getPackageService()->checkAllUnique($packageList, $orderNo);
@@ -577,7 +578,8 @@ class OrderService extends BaseService
             $materialList = $params['material_list'];
             $codeList = array_column($materialList, 'code');
             if (count(array_unique($codeList)) !== count($codeList)) {
-                throw new BusinessLogicException('材料代码有重复！不能添加订单');
+                $repeatCodeList = implode(',', array_diff_assoc($codeList, array_unique($codeList)));
+                throw new BusinessLogicException('材料代码[:code]有重复！不能添加订单', 1000, ['code' => $repeatCodeList]);
             }
         }
         if (empty($params['receiver_address'])) {
