@@ -134,7 +134,7 @@ trait CountryAddressTrait
             if (!empty($arrayBody['status']) && $arrayBody['status'] == 1) {
                 throw new \App\Exceptions\BusinessLogicException('系统无相关国家信息');
             }
-            return $arrayBody;
+            return $arrayBody['Country'];
         };
     }
 }
