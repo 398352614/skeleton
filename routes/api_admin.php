@@ -326,6 +326,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::get('getLocation', 'CommonController@getLocation');
         //获取所有国家列表
         Route::get('getCountryList', 'CommonController@getCountryList');
+        //获取指定国家地址
+        Route::get('getCountryAddress/{country}', 'CommonController@getCountryAddress');
     });
 
     //上传接口

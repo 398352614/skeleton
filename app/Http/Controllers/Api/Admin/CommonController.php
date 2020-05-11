@@ -46,4 +46,14 @@ class CommonController
         return $this->service->getCountryList();
     }
 
+    /**
+     * 获取国家地址
+     * @param $country
+     * @return mixed
+     */
+    public function getCountryAddress($country)
+    {
+        return $this->service->getCountryAddress($country);
+    }
+
 }
