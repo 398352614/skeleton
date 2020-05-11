@@ -25,7 +25,7 @@ trait ExportTrait
     }
 
     public function translate($headings,$dir){
-        for($i=0;$i<count($headings);$i++){
+        for($i=0,$j=count($headings);$i<$j;$i++){
             $headings[$i]=__('excel.'.$dir.'.'.$headings[$i]);
         };
         return $headings;
