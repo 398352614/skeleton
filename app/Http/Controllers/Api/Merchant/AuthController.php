@@ -9,10 +9,12 @@ namespace App\Http\Controllers\Api\Merchant;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
+use App\Models\CompanyConfig;
 use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -66,9 +68,9 @@ class AuthController extends Controller
      */
     public function me()
     {
-        $user = auth('admin')->user();
+        $user=auth('merchant')->user();
         //不可删除
-        $companyConfig = $user->companyConfig;
+        $user->company_config = DB::table('company_config')->where('company_id',auth('merchant')->user()->company_id)->first();
         return response()->json($user);
     }
 
