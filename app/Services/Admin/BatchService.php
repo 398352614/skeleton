@@ -106,14 +106,6 @@ class BatchService extends BaseService
         return self::getInstance(MaterialService::class);
     }
 
-    /**
-     * 商户 服务
-     * @return MerchantService
-     */
-    public function getMerchantService(){
-        return self::getInstance(MerchantService::class);
-    }
-
     public function getPageList()
     {
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
@@ -624,14 +616,13 @@ class BatchService extends BaseService
      */
     public function getSchedule($info)
     {
-        $info['country'] = $this->getMerchantService()->getInfo(['id' => $info['merchant_id']], ['*'], false)->toArray()['country'];
         $data = [];
         //获取邮编数字部分
         $postCode = explode_post_code($info['receiver_post_code']);
         //获取线路范围
         $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
-            ->where('country', $info['country'])
+            ->where('country', $info['receiver_country'])
             ->get();
         //按邮编范围循环
         if (!empty($lineRange)) {
