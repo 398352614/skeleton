@@ -705,7 +705,7 @@ class OrderService extends BaseService
             $data['lon'] = $info['lon'] ?? null;
             $data['lat'] = $info['lat'] ?? null;
             $data['receiver_city'] = $info['city'] ?? null;
-            $data['receiver_street'] = $info['receiver_street'] ?? null;
+            $data['receiver_street'] = $info['street'] ?? null;
         }
         $package = [];
         $material = [];
@@ -729,15 +729,15 @@ class OrderService extends BaseService
         //检查仓库
         try {
             $line = $this->getLineService()->getInfoByRule($data, BaseConstService::ORDER_OR_BATCH_1);
-            $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+            $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         } catch (BusinessLogicException $e) {
             $list['log'] = __($e->getMessage());
         } catch (\Exception $e) {
         }
         $list['lon'] = $data['lon'] ?? '';
         $list['lat'] = $data['lat'] ?? '';
-        $list['receiver_city'] = $data['receiver_city'] ?? '';
-        $list['receiver_street'] = $data['receiver_street'] ?? '';
+        $list['receiver_city'] = $data['receiver_city'];
+        $list['receiver_street'] = $data['receiver_street'];
         return $list;
     }
 
