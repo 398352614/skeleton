@@ -659,7 +659,7 @@ class OrderService extends BaseService
                     $list[$i]['receiver_post_code'] = __('请检查输入');
                     $list[$i]['execution_date'] = __('请检查输入');
                 }
-                if (count($list[$i]) > 2) {
+                if (count($list[$i]) > 4) {
                     $list[$i]['status'] = 0;
                 } else {
                     $list[$i]['status'] = 1;
