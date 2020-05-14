@@ -14,6 +14,7 @@ use App\Http\Controllers\BaseController;
 use App\Services\TestService;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\App;
+use voku\helper\ASCII;
 
 /**
  * Class TestController
@@ -91,5 +92,11 @@ class TestController extends BaseController
     public function updateAll()
     {
         return $this->service->updateAll();
+    }
+
+    public function incrementLetter(){
+        $letter_no=4;
+
+        return chr(ord('Z')+1);
     }
 }
