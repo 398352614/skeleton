@@ -373,8 +373,6 @@ class OrderService extends BaseService
         for ($i = 0; $i < count($list); $i++) {
             $list[$i] = $this->form($list[$i]);
             $list[$i]['receiver_country'] = auth()->user()->country;
-            $list[$i]['receiver_city'] = '';
-            $list[$i]['receiver_street'] = '';
             try {
                 $this->store($list[$i], BaseConstService::ORDER_SOURCE_2);
             } catch (BusinessLogicException $e) {
@@ -641,12 +639,12 @@ class OrderService extends BaseService
                         }
                         $package[] = $list[$i]['item_number_' . ($k + 1)];
                     }
-/*                    if ($list[$i]['item_type_' . ($k + 1)] === 2) {
+                    if ($list[$i]['item_type_' . ($k + 1)] === 2) {
                         if(in_array($list[$i]['item_number_' . ($k + 1)],$material)){
                             $info[$i]['item_number_' . ($k + 1)]=__('物品') . ($k + 1).__('编号有重复');
                         }
                         $material[] = $list[$i]['item_number_' . ($k + 1)];
-                    }*/
+                    }
                 }
             }
         }
@@ -706,6 +704,8 @@ class OrderService extends BaseService
             }
             $data['lon'] = $info['lon'] ?? null;
             $data['lat'] = $info['lat'] ?? null;
+            $data['receiver_city'] = $info['city'] ?? null;
+            $data['receiver_street'] = $info['receiver_street'] ?? null;
         }
         $package = [];
         $material = [];
