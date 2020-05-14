@@ -41,7 +41,7 @@ class LineService extends BaseLineService
     {
         //如果存在post_code查询
         if (!empty($this->formData['post_code'])) {
-            $this->query->whereRaw("id IN (SELECT DISTINCT line_id FROM line_range WHERE post_code_start <= {$this->formData['post_code']} AND post_code_end >= {$this->formData['post_code']})");
+            $this->query->whereRaw("id IN (SELECT DISTINCT line_id FROM line_range WHERE post_code_start <= {$this->formData['post_code']} AND post_code_end = {$this->formData['post_code']})");
         }
         $this->filters['rule'] = ['=', BaseConstService::LINE_RULE_POST_CODE];
         $list = parent::getPageList();
