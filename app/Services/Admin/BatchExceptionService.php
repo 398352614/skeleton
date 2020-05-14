@@ -22,6 +22,7 @@ class BatchExceptionService extends BaseService
     public $filterRules = [
         'status' => ['=', 'status'],
         'batch_exception_no' => ['like', 'keyword'],
+        'batch_no' => ['like', 'keyword'],
         'created_at' => ['between', ['begin_date', 'end_date']]
     ];
 
