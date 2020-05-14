@@ -736,6 +736,8 @@ class OrderService extends BaseService
         }
         $list['lon'] = $data['lon'] ?? '';
         $list['lat'] = $data['lat'] ?? '';
+        $list['receiver_city'] = $data['receiver_city'] ?? '';
+        $list['receiver_street'] = $data['receiver_street'] ?? '';
         return $list;
     }
 
