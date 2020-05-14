@@ -689,6 +689,8 @@ class OrderService extends BaseService
             $address = $this->getReceiverAddressService()->check($data);
             $list['lon'] = $address['lon'] ?? null;
             $list['lat'] = $address['lat'] ?? null;
+            $list['receiver_city'] = $address['receiver_city'] ?? null;
+            $list['receiver_street'] = $address['receiver_street'] ?? null;
         }
         //如果地址库没有，就通过第三方API获取经纬度
         $fields = ['receiver_city', 'receiver_street'];
@@ -702,10 +704,10 @@ class OrderService extends BaseService
                 $list['receiver_post_code'] = __('请检查输入');
             } catch (\Exception $e) {
             }
-            $data['lon'] = $info['lon'] ?? null;
-            $data['lat'] = $info['lat'] ?? null;
-            $data['receiver_city'] = $info['city'] ?? null;
-            $data['receiver_street'] = $info['street'] ?? null;
+            $list['lon'] = $info['lon'] ?? '';
+            $list['lat'] = $info['lat'] ?? '';
+            $list['receiver_city'] = $info['city'] ?? '';
+            $list['receiver_street'] = $info['street'] ?? '';
         }
         $package = [];
         $material = [];
@@ -734,10 +736,6 @@ class OrderService extends BaseService
             $list['log'] = __($e->getMessage());
         } catch (\Exception $e) {
         }
-        $list['lon'] = $data['lon'] ?? '';
-        $list['lat'] = $data['lat'] ?? '';
-        $list['receiver_city'] = $data['receiver_city'];
-        $list['receiver_street'] = $data['receiver_street'];
         return $list;
     }
 
