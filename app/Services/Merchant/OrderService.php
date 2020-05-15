@@ -691,23 +691,28 @@ class OrderService extends BaseService
             $list['lat'] = $address['lat'] ?? null;
             $list['receiver_city'] = $address['receiver_city'] ?? null;
             $list['receiver_street'] = $address['receiver_street'] ?? null;
-        }
-        //如果地址库没有，就通过第三方API获取经纬度
-        $fields = ['receiver_city', 'receiver_street'];
-        $data = array_merge(array_fill_keys($fields, ''), $data);
-        if (empty($data['lon']) || empty($data['lat'])) {
-            try {
-                $info = LocationTrait::getLocation($data['receiver_country'], $data['receiver_city'], $data['receiver_street'], $data['receiver_house_number'], $data['receiver_post_code']);
-            } catch (BusinessLogicException $e) {
-                $list['log'] = __($e->getMessage());
-                $list['receiver_house_number'] = __('请检查输入');
-                $list['receiver_post_code'] = __('请检查输入');
-            } catch (\Exception $e) {
+            //如果地址库没有，就通过第三方API获取经纬度
+            $fields = ['receiver_city', 'receiver_street'];
+            $data = array_merge(array_fill_keys($fields, ''), $data);
+            if (empty($data['lon']) || empty($data['lat'])) {
+                try {
+                    $info = LocationTrait::getLocation($data['receiver_country'], $data['receiver_city'], $data['receiver_street'], $data['receiver_house_number'], $data['receiver_post_code']);
+                } catch (BusinessLogicException $e) {
+                    $list['log'] = __($e->getMessage());
+                    $list['receiver_house_number'] = __('请检查输入');
+                    $list['receiver_post_code'] = __('请检查输入');
+                } catch (\Exception $e) {
+                }
+                $list['lon'] = $info['lon'] ?? '';
+                $list['lat'] = $info['lat'] ?? '';
+                $list['receiver_city'] = $info['city'] ?? '';
+                $list['receiver_street'] = $info['street'] ?? '';
             }
-            $list['lon'] = $info['lon'] ?? '';
-            $list['lat'] = $info['lat'] ?? '';
-            $list['receiver_city'] = $info['city'] ?? '';
-            $list['receiver_street'] = $info['street'] ?? '';
+        }else{
+            $list['lon'] = $data['lon'] ?? null;
+            $list['lat'] = $data['lat'] ?? null;
+            $list['receiver_city'] = $data['receiver_city'] ?? null;
+            $list['receiver_street'] = $data['receiver_street'] ?? null;
         }
         $package = [];
         $material = [];
