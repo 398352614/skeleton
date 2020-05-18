@@ -25,7 +25,7 @@ class AuthValidate extends BaseValidate
 
     public $scene = [
         'login' => ['username', 'password'],
-        'updatePassword' => ['origin_password', 'new_password', 'new_confirm_password']
+        'updatePassword' => ['origin_password', 'new_password', 'confirm_new_password']
     ];
 
     public $message = [
