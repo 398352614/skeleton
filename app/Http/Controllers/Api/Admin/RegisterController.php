@@ -136,25 +136,23 @@ class RegisterController extends BaseController
     protected function initCompanyOrderCodeRules($company)
     {
         $rules = [
-            BaseConstService::BATCH_NO_TYPE,
-            BaseConstService::ORDER_NO_TYPE,
-            BaseConstService::TOUR_NO_TYPE,
-            BaseConstService::BATCH_EXCEPTION_NO_TYPE,
+            BaseConstService::BATCH_NO_TYPE => BaseConstService::BATCH,
+            BaseConstService::ORDER_NO_TYPE => BaseConstService::ORDER,
+            BaseConstService::TOUR_NO_TYPE => BaseConstService::TOUR,
+            BaseConstService::BATCH_EXCEPTION_NO_TYPE => BaseConstService::BATCH_EXCEPTION,
         ];
-
-        $rules = array_map(function ($value) use ($company) {
-            $prefix = BaseConstService::TMS . substr('000' . $company->id, -4, 4);
-            $length = ($value == BaseConstService::ORDER_NO_TYPE) ? 8 : 4;
+        collect($rules)->map(function ($rule, $type) use ($company) {
+            $prefix = $rule . substr('000' . $company->id, -4, 4);
+            $length = ($type == BaseConstService::ORDER_NO_TYPE) ? 8 : 4;
             return [
                 'company_id' => $company->id,
-                'type' => $value,
+                'type' => $rule,
                 'prefix' => $prefix,
                 'start_index' => 1,
                 'int_length' => $length,
                 'max_no' => $prefix . str_repeat('9', $length)
             ];
-        }, $rules);
-
+        });
         foreach ($rules as $rule) {
             $data[] = OrderNoRule::create($rule);
         }
