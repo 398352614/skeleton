@@ -44,7 +44,7 @@ class OrderNoRuleService extends BaseService
      */
     public function store($params)
     {
-        $params = Arr::only($params, ['type', 'prefix', 'int_length', 'string_length']);
+        $params = Arr::only($params, ['type', 'prefix', 'int_length', 'string_length', 'status']);
         if (!array_key_exists($params['type'], ConstTranslateTrait::$noTypeList)) {
             throw new BusinessLogicException('当前编号规则未定义');
         }
@@ -71,7 +71,7 @@ class OrderNoRuleService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $data = Arr::only($data, ['prefix', 'int_length', 'string_length']);
+        $data = Arr::only($data, ['prefix', 'int_length', 'string_length', 'status']);
         $this->check($data, $id);
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if ($info['string_length'] != $data['string_length']) {
