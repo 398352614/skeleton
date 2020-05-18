@@ -14,6 +14,7 @@ use App\Http\Resources\OrderNoRuleResource;
 use App\Models\OrderNoRule;
 use App\Traits\AlphaTrait;
 use App\Traits\ConstTranslateTrait;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class OrderNoRuleService extends BaseService
@@ -69,7 +70,7 @@ class OrderNoRuleService extends BaseService
      */
     public function updateById($id, $data)
     {
-        unset($data['id'], $data['company_id'], $data['type']);
+        $data = Arr::only($data, ['type', 'prefix', 'length', 'string_length']);
         $this->check($data, $id);
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if ($info['string_length'] != $data['string_length']) {
