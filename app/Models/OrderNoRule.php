@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 单号规则表
  * Class Employee
@@ -68,4 +70,13 @@ class OrderNoRule extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    protected $appends = [
+        'type_name'
+    ];
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::noTypeList($this->type);
+    }
 }

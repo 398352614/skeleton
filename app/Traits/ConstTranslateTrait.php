@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\App;
 /**
  * Trait ConstTranslateTrait
  * @package App\Traits
+ * @method static noTypeList($args = null)
  * @method static weekList($args = null)
  * @method static orderSourceList($arg = null)
  * @method static orderTypeList($args = null)
