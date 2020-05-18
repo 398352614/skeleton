@@ -146,7 +146,7 @@ class RegisterController extends BaseController
             return [
                 'company_id' => $company->id,
                 'type' => $value,
-                'prefix' => substr('000' . $company->id, -4, 4),
+                'prefix' => BaseConstService::TMS . substr('000' . $company->id, -4, 4),
                 'start_index' => 1,
                 'length' => ($value == BaseConstService::ORDER_NO_TYPE) ? 8 : 4,
             ];
