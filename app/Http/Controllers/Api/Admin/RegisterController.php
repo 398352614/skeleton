@@ -141,17 +141,17 @@ class RegisterController extends BaseController
             BaseConstService::TOUR_NO_TYPE => BaseConstService::TOUR,
             BaseConstService::BATCH_EXCEPTION_NO_TYPE => BaseConstService::BATCH_EXCEPTION,
         ];
-        collect($rules)->map(function ($rule, $type) use ($company) {
+        $rules = collect($rules)->map(function ($rule, $type) use ($company) {
             $prefix = $rule . substr('000' . $company->id, -4, 4);
             $length = ($type == BaseConstService::ORDER_NO_TYPE) ? 8 : 4;
-            return [
+            return collect([
                 'company_id' => $company->id,
                 'type' => $rule,
                 'prefix' => $prefix,
                 'start_index' => 1,
                 'int_length' => $length,
                 'max_no' => $prefix . str_repeat('9', $length)
-            ];
+            ]);
         });
         foreach ($rules as $rule) {
             $data[] = OrderNoRule::create($rule);
