@@ -10,7 +10,7 @@ class AuthValidate extends BaseValidate
         'username' => '用户名',
         'password' => '密码',
         'new_password' => '新密码',
-        'confirm_new_password' => '新密码确认',
+        'new_confirm_password' => '新密码确认',
         'origin_password' => '原密码',
     ];
 
@@ -19,13 +19,13 @@ class AuthValidate extends BaseValidate
         'username' => 'required|string',
         'password' => 'required|string',
         'new_password' => 'required|string|between:8,20|different:origin_password',
-        'confirm_new_password' => 'required|string|same:new_password',
+        'new_confirm_password' => 'required|string|same:new_password',
         'origin_password' => 'required|string|between:8,20',
     ];
 
     public $scene = [
         'login' => ['username', 'password'],
-        'updatePassword' => ['origin_password', 'new_password', 'confirm_new_password']
+        'updatePassword' => ['origin_password', 'new_password', 'new_confirm_password']
     ];
 
     public $message = [
