@@ -152,7 +152,7 @@ class RegisterController extends BaseController
                 'int_length' => $length,
                 'max_no' => $prefix . str_repeat('9', $length)
             ]);
-        });
+        })->toArray();
         foreach ($rules as $rule) {
             $data[] = OrderNoRule::create($rule);
         }
