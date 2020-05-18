@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\TestService;
+use App\Traits\AlphaTrait;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\App;
 use voku\helper\ASCII;
@@ -54,7 +55,8 @@ class TestController extends BaseController
         $stringBody = (string)$body;
         $arrayBody = json_decode($stringBody, TRUE);
 
-        print_r($arrayBody);exit;
+        print_r($arrayBody);
+        exit;
 
         return $this->service->show($id);
     }
@@ -94,9 +96,4 @@ class TestController extends BaseController
         return $this->service->updateAll();
     }
 
-    public function incrementLetter(){
-        $letter_no=4;
-
-        return chr(ord('Z')+1);
-    }
 }

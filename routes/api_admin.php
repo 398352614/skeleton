@@ -420,6 +420,17 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::delete('/{id}', 'VersionController@delete'); //版本删除
     });
 
+    //单号规则管理
+    Route::prefix('order-no-rule')->group(function () {
+        Route::get('/', 'OrderNoRuleController@index');
+        Route::get('/{id}', 'OrderNoRuleController@show');
+        Route::get('/initStore', 'OrderNoRuleController@initStore');
+        Route::post('/', 'OrderNoRuleController@store');
+        Route::put('/{id}', 'OrderNoRuleController@update');
+        Route::delete('/{id}', 'OrderNoRuleController@destroy');
+    });
+
+
     //worker
     Route::prefix('worker')->group(function () {
         //绑定

@@ -51,7 +51,13 @@ use Illuminate\Support\Facades\App;
  */
 trait ConstTranslateTrait
 {
-
+    //编号类型
+    public static $noTypeList = [
+        BaseConstService::ORDER_NO_TYPE => '订单编号规则',
+        BaseConstService::BATCH_NO_TYPE => '站点编号规则',
+        BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
+        BaseConstService::TOUR_NO_TYPE => '取件线路编号规则',
+    ];
 
     //星期
     public static $weekList = [
