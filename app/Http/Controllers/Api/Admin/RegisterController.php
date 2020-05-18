@@ -137,7 +137,7 @@ class RegisterController extends BaseController
     {
         $rules = [
             BaseConstService::BATCH_NO_TYPE => BaseConstService::BATCH,
-            BaseConstService::ORDER_NO_TYPE => BaseConstService::ORDER,
+            BaseConstService::ORDER_NO_TYPE => BaseConstService::TMS,
             BaseConstService::TOUR_NO_TYPE => BaseConstService::TOUR,
             BaseConstService::BATCH_EXCEPTION_NO_TYPE => BaseConstService::BATCH_EXCEPTION,
         ];
