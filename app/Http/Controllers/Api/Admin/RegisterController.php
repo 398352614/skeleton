@@ -150,7 +150,7 @@ class RegisterController extends BaseController
                 'type' => $value,
                 'prefix' => $prefix,
                 'start_index' => 1,
-                'length' => $length,
+                'int_length' => $length,
                 'max_no' => $prefix . str_repeat('9', $length)
             ];
         }, $rules);

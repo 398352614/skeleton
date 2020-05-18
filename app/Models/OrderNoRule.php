@@ -48,7 +48,7 @@ class OrderNoRule extends BaseModel
         'type',
         'prefix',
         'start_index',
-        'length',
+        'int_length',
         'start_string_index',
         'string_length',
         'max_no',

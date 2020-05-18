@@ -44,7 +44,7 @@ class OrderNoRuleService extends BaseService
      */
     public function store($params)
     {
-        $params = Arr::only($params, ['type', 'prefix', 'length', 'string_length']);
+        $params = Arr::only($params, ['type', 'prefix', 'int_length', 'string_length']);
         if (!array_key_exists($params['type'], ConstTranslateTrait::$noTypeList)) {
             throw new BusinessLogicException('当前编号规则未定义');
         }
@@ -54,7 +54,7 @@ class OrderNoRuleService extends BaseService
         }
         //若字母长度不为0,则生成开始字符索引
         $params['start_string_index'] = str_repeat('A', $params['string_length']);
-        $params['max_no'] = $params['prefix'] . str_repeat('Z', $params['string_length']) . str_repeat('9', $params['length']);
+        $params['max_no'] = $params['prefix'] . str_repeat('Z', $params['string_length']) . str_repeat('9', $params['int_length']);
         $this->check($params);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
@@ -71,13 +71,13 @@ class OrderNoRuleService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $data = Arr::only($data, ['prefix', 'length', 'string_length']);
+        $data = Arr::only($data, ['prefix', 'int_length', 'string_length']);
         $this->check($data, $id);
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if ($info['string_length'] != $data['string_length']) {
             $data['start_string_index'] = str_repeat('A', $data['string_length']);
         }
-        $data['max_no'] = $data['prefix'] . str_repeat('Z', $data['string_length']) . str_repeat('9', $data['length']);
+        $data['max_no'] = $data['prefix'] . str_repeat('Z', $data['string_length']) . str_repeat('9', $data['int_length']);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
@@ -128,7 +128,7 @@ class OrderNoRuleService extends BaseService
             throw new BusinessLogicException('订单单号规则不存在或已被金庸，请先联系后台管理员');
         }
         $info = $info->toArray();
-        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['length']}s", $info['start_index']);
+        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
         //修改索引
         $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
         $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
@@ -180,7 +180,7 @@ class OrderNoRuleService extends BaseService
             throw new BusinessLogicException('站点单号规则不存在或已被禁用，请先联系后台管理员');
         }
         $info = $info->toArray();
-        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['length']}s", $info['start_index']);
+        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
         //修改索引
         $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
         $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
@@ -207,7 +207,7 @@ class OrderNoRuleService extends BaseService
             throw new BusinessLogicException('取件线路单号规则不存在或已被禁用，请先联系后台管理员');
         }
         $info = $info->toArray();
-        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['length']}s", $info['start_index']);
+        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
         //修改索引
         $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
         $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
@@ -230,7 +230,7 @@ class OrderNoRuleService extends BaseService
             throw new BusinessLogicException('异常站点单号规则不存在或已被禁用，请先联系后台管理员');
         }
         $info = $info->toArray();
-        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['length']}s", $info['start_index']);
+        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
         //修改索引
         $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
         $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];

@@ -15,7 +15,7 @@ class OrderNoRuleResource extends JsonResource
             'type_name' => $this->type_name,
             'prefix' => $this->prefix,
             'start_index' => $this->start_index,
-            'length' => $this->length,
+            'int_length' => $this->int_length,
             'start_string_index' => $this->start_string_index,
             'string_length' => $this->string_length,
             'max_no' => $this->max_no,
