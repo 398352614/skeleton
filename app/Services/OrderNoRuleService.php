@@ -125,7 +125,7 @@ class OrderNoRuleService extends BaseService
     {
         $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::ORDER_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
         if (empty($info)) {
-            throw new BusinessLogicException('订单单号规则不存在或已被金庸，请先联系后台管理员');
+            throw new BusinessLogicException('订单单号规则不存在或已被禁用，请先联系后台管理员');
         }
         $info = $info->toArray();
         $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
@@ -137,35 +137,6 @@ class OrderNoRuleService extends BaseService
             throw new BusinessLogicException('单号生成失败，请重新操作');
         }
         return $orderNo;
-    }
-
-    public function createNo($type)
-    {
-        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => $type], ['*'], false)->toArray();
-        if (empty($info)) {
-            throw new BusinessLogicException('单号规则不存在，请先添加单号规则');
-        }
-        $letterPart = '';
-        $letter = '';
-        $number = '';
-        if ($info['letterLength'] > 0) {
-            $number = substr((string)$info['start_index'], -$info['numberLength']);
-            $letterPart = str_replace($number, '', (string)$info['start_index']);
-        } else {
-            $letterPart = 0;
-        }
-        $letterPart = str_pad(base_convert((int)$letterPart, 10, 25), $info['letterLength'], "0", STR_PAD_LEFT);
-        $arr = ['0' => 'A', '1' => 'B', '2' => 'C', '3' => 'D', '4' => 'E', '5' => 'F', '6' => 'G', '7' => 'H', '8' => 'I', '9' => 'J', 'A' => 'K', 'B' => 'L', 'C' => 'M', 'D' => 'N', 'E' => 'O', 'F' => 'P', 'G' => 'Q', 'H' => 'R', 'I' => 'S', 'J' => 'T', 'K' => 'U', 'L' => 'V', 'M' => 'W', 'N' => 'X', 'O' => 'Y', 'P' => 'Z'];
-        for ($i = 0, $j = strlen($letterPart); $i < $j; $i++) {//遍历字符串追加给数组
-            $letterPart[$i] = substr($letterPart[$i], $i);
-            $letter = $letter . $arr[$letterPart[$i]];
-        }
-        $no = $info['prefix'] . $letter . $number;
-        $rowCount = parent::updateById($info['id'], ['start_index' => $info['start_index'] + 1]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('单号生成失败，请重新操作');
-        }
-        return $no;
     }
 
     /**
