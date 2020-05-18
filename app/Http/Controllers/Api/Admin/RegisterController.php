@@ -146,7 +146,7 @@ class RegisterController extends BaseController
             $length = ($type == BaseConstService::ORDER_NO_TYPE) ? 8 : 4;
             return collect([
                 'company_id' => $company->id,
-                'type' => $rule,
+                'type' => $type,
                 'prefix' => $prefix,
                 'start_index' => 1,
                 'int_length' => $length,
