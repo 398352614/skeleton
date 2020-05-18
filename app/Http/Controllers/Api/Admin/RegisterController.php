@@ -143,12 +143,15 @@ class RegisterController extends BaseController
         ];
 
         $rules = array_map(function ($value) use ($company) {
+            $prefix = BaseConstService::TMS . substr('000' . $company->id, -4, 4);
+            $length = ($value == BaseConstService::ORDER_NO_TYPE) ? 8 : 4;
             return [
                 'company_id' => $company->id,
                 'type' => $value,
-                'prefix' => BaseConstService::TMS . substr('000' . $company->id, -4, 4),
+                'prefix' => $prefix,
                 'start_index' => 1,
-                'length' => ($value == BaseConstService::ORDER_NO_TYPE) ? 8 : 4,
+                'length' => $length,
+                'max_no' => $prefix . str_repeat('9', $length)
             ];
         }, $rules);
 
