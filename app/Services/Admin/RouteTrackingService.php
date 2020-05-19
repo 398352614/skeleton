@@ -38,17 +38,13 @@ class RouteTrackingService extends BaseService
     public function show(){
         $tour = null;
         if ($this->formData['driver_id'] ?? null) {
-            $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
+            $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->where('status',BaseConstService::TOUR_STATUS_4)->first();
         } else {
-            $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
+            $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->where('status',BaseConstService::TOUR_STATUS_4)->first();
         }
         if (!$tour) {
             throw new BusinessLogicException('没找到相关线路');
         }
-        if($tour->status !== BaseConstService::TOUR_STATUS_4){
-            throw new BusinessLogicException('该取件线路不在取派中，无法追踪');
-        }
-
         $routeTracking = $tour->routeTracking->sortBy('created_at');
         return success('', [
             'driver'                => Arr::except($tour->driver,'messager'),
