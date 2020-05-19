@@ -27,7 +27,7 @@ class TourDriver
     public function handle(ITourDriver $event)
     {
         $location = $event->getLocation();
-        TourDriverEvent::create([
+        $tourDriverEvent = TourDriverEvent::create([
             'content'   => $event->getContent(),
             'tour_no'   => $event->getTourNo(),
             'lat'       =>  $location['lat'],
@@ -40,6 +40,7 @@ class TourDriver
             'tour_no'   => $event->getTourNo(),
             'driver_id' => $event->getDriverId(),
             'time' =>time(),
+            'tour_driver_event_id'=>$tourDriverEvent->id,
         ]);
     }
 }
