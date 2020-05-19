@@ -51,6 +51,8 @@ class RouteTracking extends BaseModel
         'lat',
         'tour_no',
         'driver_id',
+        'time',
+        'route_tracking_id',
         'created_at',
         'updated_at',
     ];
