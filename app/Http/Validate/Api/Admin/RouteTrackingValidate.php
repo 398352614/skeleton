@@ -21,7 +21,7 @@ class RouteTrackingValidate extends BaseValidate
 
     public $rules = [
         'driver_id' => 'required|integer',
-        'tour_no' => 'required_without:driver_id|integer',
+        'tour_no' => 'required_without:driver_id|string',
     ];
 
     public $scene = [
