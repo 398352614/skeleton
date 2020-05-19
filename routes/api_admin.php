@@ -138,6 +138,9 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
         Route::put('/{id}', 'CarController@update')->name('car.update'); //车辆修改
         Route::delete('/{id}', 'CarController@destroy')->name('car.destroy'); //车辆删除
 
+        Route::get('/track', 'RouteTrackingController@show')->name('car.track-show');  // 车辆追踪
+        Route::get('/all-track', 'RouteTrackingController@index')->name('car.track-index');  // 所有车辆追踪
+
         // $router->post('car/lock', 'CarInfoController@lock');
     });
 

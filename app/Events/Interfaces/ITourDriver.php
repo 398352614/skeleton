@@ -22,4 +22,6 @@ interface ITourDriver
      * 获取当前司机事件的 tour_no
      */
     public function getTourNo(): string;
+
+    public function getDriverId():string;
 }

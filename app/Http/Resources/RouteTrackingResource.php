@@ -14,7 +14,13 @@ class RouteTrackingResource extends JsonResource
      */
     public function toArray($request)
     {
-        $tracking = parent::toArray($request);
-        return $tracking;
+        return [
+            'lon'=>$this->lon,
+            'lat'=>$this->lat,
+            'tour_no'=>$this->tour_no,
+            'driver_id'=>$this->driver_id,
+            'tour_driver_event_id'=>$this->tour_driver_event_id,
+            'time'=>$this->time,
+        ];
     }
 }

@@ -70,4 +70,8 @@ class BatchArrived implements ITourDriver
         return $address;
     }
 
+    public function getDriverId(): string
+    {
+        return $this->batch['driver_id'];
+    }
 }

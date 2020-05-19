@@ -3,16 +3,25 @@
 namespace App\Http\Controllers\Api\Driver;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Models\RouteTracking;
 use App\Models\Tour;
+use App\Services\Driver\RouteTrackingService;
 use App\Services\BaseConstService;
 use Illuminate\Http\Request;
-use Psy\Formatter\Formatter;
 
-class RouteTrackingController extends Controller
+class RouteTrackingController extends BaseController
 {
+
+    public function __construct(RouteTrackingService $service)
+    {
+        parent::__construct($service);
+    }
+
     /**
+     * @param Request $request
+     * @return array
+     * @throws \Throwable
      * @api {POST}  api/driver/route-tracking/collect 手持端:采集司机地址
      * @apiName collect
      * @apiGroup route-tracking
@@ -29,26 +38,16 @@ class RouteTrackingController extends Controller
      *  "data":{}
      * }
      */
-    public function collect(Request $request)
+    public function store()
     {
-        $payload = $request->validate([
-            'lon'   => ['required', 'string'],
-            'lat'   => ['required', 'string'],
-        ]);
+        return $this->service->store($this->data);
+    }
 
-        $driverID = $request->user()->id;
-
-        $tour = Tour::where('driver_id', $driverID)->where('status', BaseConstService::TOUR_STATUS_4)->first();
-
-        throw_unless($tour != null, new BusinessLogicException('当前司机不存在派送中线路'));
-
-        RouteTracking::create([
-            'lon' => $payload['lon'],
-            'lat' => $payload['lat'],
-            'tour_no'   => $tour->tour_no,
-            'driver_id' => $driverID,
-        ]);
-
-        return success('采集成功');
+    /**
+     * 批量采集位置
+     * @return mixed
+     */
+    public function storeByList(){
+        return $this->service->createBylist($this->data);
     }
 }

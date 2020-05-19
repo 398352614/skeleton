@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\Interfaces\ITourDriver;
+use App\Models\RouteTracking;
 use App\Models\TourDriverEvent;
 
 class TourDriver
@@ -32,6 +33,13 @@ class TourDriver
             'lat'       =>  $location['lat'],
             'lon'       =>  $location['lon'],
             'address'   => $event->getAddress()
+        ]);
+        RouteTracking::create([
+            'lon' => $location['lon'],
+            'lat' => $location['lat'],
+            'tour_no'   => $event->getTourNo(),
+            'driver_id' => $event->getDriverId(),
+            'time' =>time(),
         ]);
     }
 }

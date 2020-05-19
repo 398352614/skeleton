@@ -69,4 +69,9 @@ class BatchDepart implements ITourDriver
         $address = implode(' ', $address);
         return $address;
     }
+
+    public function getDriverId(): string
+    {
+        return $this->batch['driver_id'];
+    }
 }

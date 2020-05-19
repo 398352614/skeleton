@@ -55,4 +55,8 @@ class OutWarehouse implements ITourDriver
         return $address;
     }
 
+    public function getDriverId(): string
+    {
+        return $this->tour['driver_id'];
+    }
 }
