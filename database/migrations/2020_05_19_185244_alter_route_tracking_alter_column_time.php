@@ -17,7 +17,7 @@ class AlterRouteTrackingAlterColumnTime extends Migration
             $table->dropColumn('time');
         });
         Schema::table('route_tracking', function (Blueprint $table) {
-            $table->integer('time')->nullable()->after('tour_driver_event_id')->comment('时间');
+            $table->string('time')->nullable()->after('tour_driver_event_id')->comment('时间');
         });
     }
 
