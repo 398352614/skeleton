@@ -68,12 +68,12 @@ class RouteTrackingService extends BaseService
         $info=$this->getTourService()->getList(['status'=>BaseConstService::TOUR_STATUS_4],['*'],false)->toArray();
         for($i=0,$j=count($info);$i<$j;$i++){
             $info[$i]=Arr::only($info[$i],['id','driver_id','driver_name','driver_phone','car_no','line_name','tour_no']);
-            $data[$i]=$this->getList(['tour_no'=>$info[$i]['tour_no']],['*'],true,[],['created_at'=>'desc'])[0];
+            $data[$i]=$this->getList(['tour_no'=>$info[$i]['tour_no']],['*'],true,[],['created_at'=>'desc'])->toArray();
             if(empty($data[$i])){
                 throw new BusinessLogicException('数据不存在');
             }
-            $info[$i]['lon']=$data[$i]['lon'];
-            $info[$i]['lat']=$data[$i]['lat'];
+            $info[$i]['lon']=$data[$i][0]['lon'];
+            $info[$i]['lat']=$data[$i][0]['lat'];
         }
         return $info;
     }
