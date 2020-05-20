@@ -23,7 +23,7 @@ class RouteTrackingValidate extends BaseValidate
     public $rules = [
         'location_list.*.lon' => 'required|string',
         'location_list.*.lat' => 'required|string',
-        'location_list.*.time' => 'required|date',
+        'location_list.*.time' => 'required|integer',
     ];
 
     public $scene = [
