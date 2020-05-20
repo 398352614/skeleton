@@ -609,16 +609,16 @@ class BatchService extends BaseService
 
     /**
      * @param $id
-     * @param $lineId
+     * @param $params
      * @return array
      * @throws BusinessLogicException
      */
-    public function getLineDate($id,$lineId){
+    public function getLineDate($id,$params){
         $info = parent::getInfo(['id' => $id], ['*'], true);
-        if (empty($info)) {
+        if (empty($info) || empty($params['line_id'])) {
             throw new BusinessLogicException('数据不存在');
         }
-        $lineRange=$this->getLineRangeService()->getList(['line_id'=>$lineId],['*'],false);
+        $lineRange=$this->getLineRangeService()->getList(['line_id'=>$params['line_id']],['*'],false);
         $data = $this->getSchedule($info,$lineRange);
         return $data;
     }

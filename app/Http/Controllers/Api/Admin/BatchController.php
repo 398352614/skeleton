@@ -119,8 +119,8 @@ class BatchController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function getLineDate($id,$lineId){
-        return $this->service->getLineDate($id,$lineId);
+    public function getLineDate($id){
+        return $this->service->getLineDate($id,$this->data);
 
     }
 }
