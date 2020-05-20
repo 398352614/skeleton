@@ -27,14 +27,11 @@ class CompanyController extends BaseController
 
     /**
      * 更新
-     * @return array
+     * @return bool
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function update()
     {
-        if ($this->service->createInfo($this->data)) {
-            return success();
-        }
-
-        return failed();
+        return $this->service->createInfo($this->data);
     }
 }

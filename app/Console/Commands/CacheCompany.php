@@ -1,0 +1,90 @@
+<?php
+
+namespace App\Console\Commands;
+
+use App\Models\Company;
+use App\Models\CompanyConfig;
+use App\Models\Country;
+use App\Models\Menu;
+use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
+
+class CacheCompany extends Command
+{
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'company:cache 
+                                            {--company_id= : company id}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'cache company list';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        try {
+            //获取公司ID
+            $companyId = $this->option('company_id');
+            //获取配置
+            $rootKey = config('tms.cache_prefix.company');
+            $tag = config('tms.cache_tags.company');
+            //1.若只缓存一个企业
+            if (!empty($companyId)) {
+                $country = Country::query()->where('company_id', $companyId)->first(['short']);
+                $company = Company::query()->where('id', $companyId)->first();
+                $company = array_merge(
+                    Arr::only($company->getAttributes(), ['id', 'company_code']),
+                    Arr::only($company->companyConfig->getAttributes(), ['line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']),
+                    ['country' => $country['short'] ?? '']
+                );
+                Cache::tags($tag)->forget($rootKey . $company['id']);
+                Cache::tags($tag)->forever($rootKey . $company['id'], $company);
+                $this->info('cache company successful');
+                return;
+            }
+            //2.缓存所有企业
+            $countryList = collect(Country::query()->get(['company_id', 'short']))->unique('company_id')->keyBy('company_id')->toArray();
+            $companyList = collect(Company::query()->get())->map(function ($company) use ($countryList) {
+                /**@var \App\Models\Company $company */
+                $companyConfig = $company->companyConfig->getAttributes();
+                $company = $company->getAttributes();
+                return collect(array_merge(
+                    Arr::only($company, ['id', 'company_code']),
+                    Arr::only($companyConfig, ['line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']),
+                    ['country' => $countryList[$company['id']]['short'] ?? '']
+                ));
+            })->toArray();
+            foreach ($companyList as $company) {
+                Cache::tags($tag)->forget($rootKey . $company['id']);
+                Cache::tags($tag)->forever($rootKey . $company['id'], $company);
+            }
+            $this->info('cache company list successful');
+            return;
+        } catch (\Exception $ex) {
+            $this->error($ex->getMessage());
+            return;
+        }
+    }
+}

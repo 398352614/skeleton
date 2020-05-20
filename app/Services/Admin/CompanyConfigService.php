@@ -14,6 +14,7 @@ use App\Models\CompanyConfig;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
+use Illuminate\Support\Facades\Artisan;
 
 class CompanyConfigService extends BaseService
 {
@@ -39,5 +40,6 @@ class CompanyConfigService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
+        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
     }
 }
