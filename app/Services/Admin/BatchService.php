@@ -5,19 +5,14 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\BatchResource;
 use App\Http\Resources\BatchInfoResource;
-use App\Http\Resources\TourResource;
 use App\Models\Batch;
-use App\Models\Order;
-use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Services\OrderTrailService;
-use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Carbon;
 class BatchService extends BaseService
 {
 
@@ -600,18 +595,10 @@ class BatchService extends BaseService
      */
     public function getTourDate($id)
     {
-
         $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getSchedule($info);
-        return $data;
-    }
-
-    public function getSchedule($info)
-    {
-        $data = [];
         //获取邮编数字部分
         $postCode = explode_post_code($info['receiver_post_code']);
         //获取线路范围
@@ -619,6 +606,29 @@ class BatchService extends BaseService
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $info['receiver_country'])
             ->get();
+        $data = $this->getSchedule($info,$lineRange);
+        return $data;
+    }
+
+    /**
+     * @param $id
+     * @param $lineId
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getLineDate($id,$lineId){
+        $info = parent::getInfo(['id' => $id], ['*'], true);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $lineRange=$this->getLineRangeService()->getList(['line_id'=>$lineId],['*'],false);
+        $data = $this->getSchedule($info,$lineRange);
+        return $data;
+    }
+
+    public function getSchedule($info,$lineRange)
+    {
+        $data = [];
         //按邮编范围循环
         if (!empty($lineRange)) {
             for ($i = 0, $j = count($lineRange); $i < $j; $i++) {
@@ -661,9 +671,9 @@ class BatchService extends BaseService
                     }
                 }
             }
+            asort($data);
+            $data = array_values($data);
         }
-        asort($data);
-        $data = array_values($data);
         return $data;
     }
 
