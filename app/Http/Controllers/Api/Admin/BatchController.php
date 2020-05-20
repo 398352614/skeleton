@@ -104,7 +104,23 @@ class BatchController extends BaseController
         return $this->service->removeFromTour($id);
     }
 
+    /**
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
     public function getTourDate($id){
         return $this->service->getTourDate($id);
+    }
+
+    /**
+     * @param $id
+     * @param $lineId
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getLineDate($id,$lineId){
+        return $this->service->getLineDate($id,$lineId);
+
     }
 }
