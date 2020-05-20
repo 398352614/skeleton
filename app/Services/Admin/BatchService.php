@@ -480,12 +480,9 @@ class BatchService extends BaseService
     public function assignToTour($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
-        if (!empty($params['tour_no']) && ($info['tour_no'] == $params['tour_no'])) {
-            throw new BusinessLogicException('当前站点已分配至当前指定取件线路');
-        }
         $info['execution_date'] = $params['execution_date'];
         //获取线路信息
-        $line = $this->getLineService()->getInfoByRule($info, BaseConstService::ORDER_OR_BATCH_2);
+        $line = $this->getLineService()->getInfoByLineId($info, $params['line_id'], BaseConstService::ORDER_OR_BATCH_2);
         list($tour, $batch) = $this->getTourService()->assignBatchToTour($info, $line, $params);
         /***********************************************填充取件线路编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);

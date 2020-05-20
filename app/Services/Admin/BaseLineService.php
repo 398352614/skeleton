@@ -135,6 +135,26 @@ class BaseLineService extends BaseService
     }
 
     /**
+     * 通过线路ID 获取信息信息
+     * @param $lineId
+     * @param $info
+     * @param $orderOrBatch
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getInfoByLineId($lineId, $info, $orderOrBatch)
+    {
+        //获取线路信息
+        $line = parent::getInfo(['id' => $lineId], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
+        }
+        $line = $line->toArray();
+        $this->checkRule($info, $line, $orderOrBatch);
+        return $line;
+    }
+
+    /**
      * 获取线路信息
      * @param $info
      * @param $orderOrBatch
@@ -157,6 +177,20 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
+        //验证规则
+        $this->checkRule($info, $line, $orderOrBatch);
+        return $line;
+    }
+
+    /**
+     * 验证规则
+     * @param $info
+     * @param $line
+     * @param $orderOrBatch
+     * @throws BusinessLogicException
+     */
+    public function checkRule($info, $line, $orderOrBatch)
+    {
         //预约当天的，需要判断是否在下单截止日期内
         if (date('Y-m-d') == $info['execution_date']) {
             if (time() > strtotime($info['execution_date'] . ' ' . $line['order_deadline'])) {
@@ -191,6 +225,5 @@ class BaseLineService extends BaseService
                 };
             }
         }
-        return $line;
     }
 }
