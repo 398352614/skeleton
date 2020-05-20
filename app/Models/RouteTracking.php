@@ -71,6 +71,14 @@ class RouteTracking extends BaseModel
      */
     protected $dates = [];
 
+    protected $appends = [
+        'time_human',
+    ];
+
+    public function getTimeHumanAttribute()
+    {
+        return empty($this->time) ? null : date("Y-m-d H:i:s",$this->time);
+    }
 
     // public function getStatusNameAttribute()
     // {

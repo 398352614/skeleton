@@ -27,6 +27,7 @@ class RouteTrackingService extends BaseService
      * @throws BusinessLogicException
      */
     public function store($params){
+        $params['time']=strtotime(date("Y-m-d H:i:s"),$params['time']);
         $params['driver_id']=auth()->user()->id;
         $tour = Tour::query()->where('driver_id', $params['driver_id'])->where('status', BaseConstService::TOUR_STATUS_4)->first();
         if($tour === false){
@@ -54,6 +55,7 @@ class RouteTrackingService extends BaseService
         for($i=0,$j=count($data);$i<$j;$i++){
             $data[$i]['driver_id']=auth()->user()->id;
             $data[$i]['tour_no']=$tour->tour_no;
+            $data[$i]['time']=strtotime($data[$i]['time']);
         }
         parent::insertAll($data);
     }
