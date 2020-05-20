@@ -70,6 +70,7 @@ class RouteTrackingService extends BaseService
             }
             $info[$i]['lon']=$data[$i][0]['lon'];
             $info[$i]['lat']=$data[$i][0]['lat'];
+            $info[$i]['time']=$data[$i][0]['time_human'];
         }
         return $info;
     }
