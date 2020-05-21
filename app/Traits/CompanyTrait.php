@@ -20,7 +20,7 @@ trait CompanyTrait
     public static function getCountry()
     {
         $company = self::getCompany();
-        return $company['short'] ?? '';
+        return $company['country'] ?? '';
     }
 
     /**
@@ -31,7 +31,7 @@ trait CompanyTrait
     {
         $rootKey = config('tms.cache_prefix.company');
         $tag = config('tms.cache_tags.company');
-        $companyId = auth()->user()->company_id;
+        $companyId = auth()->user()->companyConfig->company_id;
         $company = Cache::tags($tag)->get($rootKey . $companyId);
         if (empty($company)) {
             Artisan::call('company:cache --company_id=' . $companyId);
