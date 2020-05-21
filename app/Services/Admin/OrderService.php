@@ -389,9 +389,9 @@ class OrderService extends BaseService
             try {
                 $this->store($list[$i], true);
             } catch (BusinessLogicException $e) {
-                throw new BusinessLogicException(__('第:line行') . ($i + 1) . ':' . $e->getMessage());
+                throw new BusinessLogicException(__('第:line行：',['line'=>$i + 1]).__($e->getMessage()));
             } catch (\Exception $e) {
-                throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
+                throw new BusinessLogicException(__('第:line行：',['line'=>$i + 1]).__($e->getMessage()));
             }
         }
         return;
