@@ -142,7 +142,7 @@ class BaseLineService extends BaseService
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getInfoByLineId($lineId, $info, $orderOrBatch)
+    public function getInfoByLineId( $info, $lineId, $orderOrBatch)
     {
         //获取线路信息
         $line = parent::getInfo(['id' => $lineId], ['*'], false);

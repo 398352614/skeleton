@@ -23,7 +23,6 @@ class RouteTrackingService extends BaseService
 
     /**
      * @param $params
-     * @return void
      * @throws BusinessLogicException
      */
     public function store($params){

@@ -442,5 +442,13 @@ return [
         "item_number_5" => "物品五编号",
         "item_count_5" => "物品五数量",
         "item_weight_5" => "物品五重量",
+
+        //order_no_rule
+        "prefix" => "开始字符",
+        "int_length" => "数字长度",
+        "string_length" => "字母长度",
+        "max_no" => "最大单号",
+        "start_index" => "数字计数",
+        "start_string_index" => "前缀计数",
     ],
 ];
