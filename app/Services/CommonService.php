@@ -30,13 +30,6 @@ class CommonService
     public function getLocation($params)
     {
         $params['country'] = CompanyTrait::getCountry();
-        if ($params['country'] !== 'NL') {
-            $checkfile = Validator::make($params, ['city' => 'required', 'street' => 'required']);
-            if ($checkfile->fails()) {
-                $error = array_values($checkfile->errors()->getMessages())[0][0];
-                throw new BusinessLogicException($error, 301);
-            }
-        }
         return LocationTrait::getLocation($params['country'], $params['city'], $params['street'], $params['house_number'], $params['post_code']);
     }
 
