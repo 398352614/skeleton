@@ -60,6 +60,15 @@ class CountryService extends BaseService
         return self::getInstance(WareHouseService::class);
     }
 
+    /**
+     * 线路 服务
+     * @return LineService
+     */
+    private function getLineService()
+    {
+        return self::getInstance(LineService::class);
+    }
+
 
     /**
      * 列表查询
@@ -146,6 +155,10 @@ class CountryService extends BaseService
         $warehouse = $this->getWareHouseService()->getInfo([], ['id'], false);
         if (!empty($warehouse)) {
             throw new BusinessLogicException('已存在仓库');
+        }
+        $line = $this->getLineService()->getInfo([], ['id'], false);
+        if (!empty($line)) {
+            throw new BusinessLogicException('已存在线路');
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
