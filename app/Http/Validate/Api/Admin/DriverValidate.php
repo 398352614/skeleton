@@ -54,7 +54,7 @@ class DriverValidate extends BaseValidate
         'phone'                         => 'required|string|max:20|uniqueIgnore:driver,id|regex:/^[0-9]([0-9-])*[0-9]$/',
         'duty_paragraph'                => 'nullable|string|max:50',
         'address'                       => 'nullable|string|max:50',
-        'country'                       => 'required|string|max:100',
+        'country'                       => 'nullable|string|max:100',
         'lisence_number'                => 'nullable|string|max:50',
         'lisence_valid_date'            => 'nullable|date|date_format:Y-m-d',
         'lisence_type'                  => 'nullable|string|max:100',

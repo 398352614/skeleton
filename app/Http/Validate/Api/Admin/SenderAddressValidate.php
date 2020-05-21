@@ -24,7 +24,7 @@ class SenderAddressValidate extends BaseValidate
     public $rules = [
         'sender' => 'required|string|max:50',
         'sender_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'sender_country' => 'required|string|max:20',
+        'sender_country' => 'nullable|string|max:20',
         'sender_post_code' => 'required|string|max:50',
         'sender_house_number' => 'required|string|max:50',
         'sender_city' => 'required|string|max:50',

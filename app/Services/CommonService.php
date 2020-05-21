@@ -10,6 +10,7 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Country;
+use App\Traits\CompanyTrait;
 use App\Traits\CountryAddressTrait;
 use App\Traits\LocationTrait;
 use Doctrine\DBAL\Driver\OCI8\Driver;
@@ -28,6 +29,7 @@ class CommonService
      */
     public function getLocation($params)
     {
+        $params['country'] = CompanyTrait::getCountry();
         if ($params['country'] !== 'NL') {
             $checkfile = Validator::make($params, ['city' => 'required', 'street' => 'required']);
             if ($checkfile->fails()) {

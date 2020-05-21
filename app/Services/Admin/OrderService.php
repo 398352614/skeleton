@@ -20,6 +20,7 @@ use App\Models\OrderImportLog;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
+use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
 use App\Traits\ImportTrait;
@@ -519,7 +520,7 @@ class OrderService extends BaseService
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在');
         }
-        $params['receiver_country'] = $merchant['country'];
+        $params['receiver_country'] = CompanyTrait::getCountry();
         //通过地址获取经纬度
         if (empty($params['lon']) || empty($params['lat'])) {
             $info = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
