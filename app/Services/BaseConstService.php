@@ -36,6 +36,9 @@ class BaseConstService
     //贴单费用
     const STICKER_AMOUNT = 7.00;
 
+    //编号规则最大长度
+    const ORDER_NO_RULE_LENGTH =13;
+
     //1-启用2-禁用
     const ON = 1;
     const OFF = 2;
