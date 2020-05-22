@@ -29,7 +29,6 @@ class AuthValidate extends BaseValidate
     ];
 
     public $message = [
-        'new_password.different'=>'新密码不能和旧密码一样'
     ];
 }
 

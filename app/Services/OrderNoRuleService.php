@@ -33,7 +33,7 @@ class OrderNoRuleService extends BaseService
         $data = [];
         $dbTypeList = parent::getList([], ['type'], false)->toArray();
         $dbTypeList = !empty($dbTypeList) ? array_flip(array_column($dbTypeList, 'type')) : [];
-        $data['type_list'] = ConstTranslateTrait::formatList(array_diff_key(ConstTranslateTrait::$noTypeList, $dbTypeList));
+        $data['type_list'] = __(ConstTranslateTrait::formatList(array_diff_key(ConstTranslateTrait::$noTypeList, $dbTypeList)));
         return $data;
     }
 

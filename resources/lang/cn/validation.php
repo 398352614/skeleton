@@ -239,6 +239,12 @@ return [
             'between' => '邮编列表截止邮编范围必须的:min-:max之间',
             'gt' => '邮编列表截止邮编必须大于起始邮编'
         ],
+        'new_password'=>[
+            'different' => '新密码不能和旧密码一样',
+        ],
+        'receiver_house_number'=>[
+            'required_if' => '当国家是荷兰时，门牌号必填',
+        ]
     ],
 
     /*
@@ -364,6 +370,7 @@ return [
         //Admin-Tour
         'driver_id' => '司机ID',
         'car_id' => '车辆ID',
+        'order_count' => '订单数量',
         //Admin-Upload
         'image' => '图片',
         'file' => '文件',
@@ -378,7 +385,7 @@ return [
         //driver-memorandum
         'content' => '内容',
 
-        //driver-tourtask
+        //driver-tourTask
         'batch_id' => '站点ID',
         'order_id' => '订单ID',
 
@@ -450,5 +457,9 @@ return [
         "max_no" => "最大单号",
         "start_index" => "数字计数",
         "start_string_index" => "前缀计数",
+
+        //轨迹表
+        'time'=>'时间',
+
     ],
 ];

@@ -135,6 +135,10 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'new_password'=>[
+            'different' => 'The new password cannot be the same as the original password.',
+            ],
+
     ],
 
     /*
@@ -149,6 +153,7 @@ return [
     */
 
     'attributes' => [
+        'time'=>'time',
         'country' => 'country',
         'cn_name' => 'cn name',
         'en_name' => 'en name',
