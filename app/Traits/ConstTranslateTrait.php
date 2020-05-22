@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\App;
  * Trait ConstTranslateTrait
  * @package App\Traits
  * @method static noTypeList($args = null)
+ * @method static lineRuleList($args = null)
  * @method static weekList($args = null)
  * @method static orderSourceList($arg = null)
  * @method static orderTypeList($args = null)
@@ -58,6 +59,12 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_NO_TYPE => '站点编号规则',
         BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
         BaseConstService::TOUR_NO_TYPE => '取件线路编号规则',
+    ];
+
+    //线路分配规则
+    public static $lineRuleList = [
+        BaseConstService::LINE_RULE_POST_CODE => '按邮编自动分配',
+        BaseConstService::LINE_RULE_AREA => '按区域自动分配',
     ];
 
     //星期

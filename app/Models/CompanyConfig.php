@@ -65,7 +65,9 @@ class CompanyConfig extends BaseModel
 
     ];
 
-    protected $appends = [];
+    protected $appends = [
+        'line_rule_name'
+    ];
 
     /**
      * The attributes that should be mutated to dates.
@@ -73,4 +75,10 @@ class CompanyConfig extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+
+    public function getLineRuleNameAttribute()
+    {
+        return empty($this->line_rule) ? null : ConstTranslateTrait::lineRuleList($this->line_rule);
+    }
 }
