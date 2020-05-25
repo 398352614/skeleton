@@ -13,10 +13,12 @@ return [
 
     //缓存前缀
     'cache_prefix' => [
-        'company' => 'company:'
+        'company' => 'company:',
+        'address_template' => 'address_template:',
     ],
     //缓存标签
     'cache_tags' => [
-        'company' => 'company'
+        'company' => 'company',
+        'address_template' => 'address_template',
     ]
 ];

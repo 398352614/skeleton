@@ -17,7 +17,7 @@ class WareHouseResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'contacter' => $this->contacter,
+            'fullname' => $this->fullname,
             'phone' => $this->phone,
             'country' => $this->country,
             'country_name' => $this->country_name,

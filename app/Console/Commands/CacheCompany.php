@@ -3,9 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Company;
-use App\Models\CompanyConfig;
 use App\Models\Country;
-use App\Models\Menu;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
@@ -56,7 +54,7 @@ class CacheCompany extends Command
                 $company = Company::query()->where('id', $companyId)->first();
                 $company = array_merge(
                     Arr::only($company->getAttributes(), ['id', 'company_code']),
-                    Arr::only($company->companyConfig->getAttributes(), ['line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']),
+                    Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']),
                     ['country' => $country['short'] ?? '']
                 );
                 Cache::tags($tag)->forget($rootKey . $company['id']);
@@ -72,7 +70,7 @@ class CacheCompany extends Command
                 $company = $company->getAttributes();
                 return collect(array_merge(
                     Arr::only($company, ['id', 'company_code']),
-                    Arr::only($companyConfig, ['line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']),
+                    Arr::only($companyConfig, ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']),
                     ['country' => $countryList[$company['id']]['short'] ?? '']
                 ));
             })->toArray();

@@ -5,19 +5,18 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 公司配置 表
+ * 地址模板 表
  * Class Employee
  * @package App\Models
  */
-class CompanyConfig extends BaseModel
+class AddressTemplate extends BaseModel
 {
     /**
-     * 司机实际取件导航
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'company_config';
+    protected $table = 'address_template';
 
     /**
      * The primary key for the model.
@@ -46,13 +45,7 @@ class CompanyConfig extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'company_id',
-        'address_template_id',
-        'line_rule',
-        'weight_unit',
-        'currency_unit',
-        'volume_unit',
-        'map',
+        'template',
         'created_at',
         'updated_at',
     ];
@@ -67,7 +60,7 @@ class CompanyConfig extends BaseModel
     ];
 
     protected $appends = [
-        'line_rule_name'
+
     ];
 
     /**
@@ -76,10 +69,4 @@ class CompanyConfig extends BaseModel
      * @var array
      */
     protected $dates = [];
-
-
-    public function getLineRuleNameAttribute()
-    {
-        return empty($this->line_rule) ? null : ConstTranslateTrait::lineRuleList($this->line_rule);
-    }
 }

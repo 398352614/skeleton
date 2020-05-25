@@ -361,7 +361,7 @@ class OrderService extends BaseService
             $list[$i] = Arr::only($list[$i], [
                 'merchant_id',
                 'type',
-                'receiver',
+                'receiver_fullname',
                 'receiver_phone',
                 'receiver_country',
                 'receiver_post_code',
@@ -378,7 +378,7 @@ class OrderService extends BaseService
                 'material_list']);
             //获取经纬度
             $info = $this->getReceiverAddressService()->check($list[$i]);
-            $list[$i]['sender'] = $list[$i]['sender_phone'] = $list[$i]['sender_country'] = $list[$i]['sender_post_code']
+            $list[$i]['sender_fullname'] = $list[$i]['sender_phone'] = $list[$i]['sender_country'] = $list[$i]['sender_post_code']
                 = $list[$i]['sender_house_number'] = $list[$i]['sender_address'] = $list[$i]['sender_city'] = $list[$i]['sender_street']
                 = $list[$i]['receiver_city'] = $list[$i]['receiver_street'] = '';
             if (empty($info)) {
@@ -572,7 +572,7 @@ class OrderService extends BaseService
         }
         //填充发件人信息
         $params = array_merge($params, [
-            'sender' => $warehouse['contacter'],
+            'sender_fullname' => $warehouse['fullname'],
             'sender_phone' => $warehouse['phone'],
             'sender_country' => $warehouse['country'],
             'sender_post_code' => $warehouse['post_code'],
@@ -715,7 +715,7 @@ class OrderService extends BaseService
      */
     private function checkIsChangeBatch($dbOrder, $order)
     {
-        $fields = ['execution_date', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
+        $fields = ['execution_date', 'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
         $newDbOrder = Arr::only($dbOrder, $fields);
         $newOrder = Arr::only($order, $fields);
         return empty(array_diff($newDbOrder, $newOrder)) ? false : true;

@@ -27,7 +27,7 @@ class OrderValidate extends BaseValidate
         'settlement_amount' => '结算金额',
         'replace_amount' => '代收款',
         'delivery' => '自提',
-        'sender' => '发件人',
+        'sender_fullname' => '发件人',
         'sender_phone' => '发件人电话',
         'sender_country' => '发件人国家',
         'sender_post_code' => '发件人邮编',
@@ -35,7 +35,7 @@ class OrderValidate extends BaseValidate
         'sender_city' => '发件人城市',
         'sender_street' => '发件人街道',
         'sender_address' => '发件人详细地址',
-        'receiver' => '收件人',
+        'receiver_fullname' => '收件人',
         'receiver_phone' => '收件人电话',
         'receiver_country' => '收件人国家',
         'receiver_post_code' => '收件人邮编',
@@ -61,7 +61,7 @@ class OrderValidate extends BaseValidate
         'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
         'replace_amount' => 'nullable|numeric|gte:0',
         'delivery' => 'nullable|integer|in:1,2',
-//        'sender' => 'required|string|max:50',
+//        'sender_fullname' => 'required|string|max:50',
 //        'sender_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
 //        'sender_country' => 'required|string|max:20',
 //        'sender_post_code' => 'required|string|max:50',
@@ -69,7 +69,7 @@ class OrderValidate extends BaseValidate
 //        'sender_city' => 'required|string|max:50',
 //        'sender_street' => 'required|string|max:50',
 //        'sender_address' => 'nullable|string|max:250',
-        'receiver' => 'required|string|max:50',
+        'receiver_fullname' => 'required|string|max:50',
         'receiver_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
 //        'receiver_country' => 'required|string|max:20',
         'receiver_post_code' => 'required|string|max:50',
@@ -103,10 +103,10 @@ class OrderValidate extends BaseValidate
             'merchant_id', 'execution_date',
             'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
-            //'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
+            //'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
             //'sender_city', 'sender_street', 'sender_address',
             //收货人信息
-            'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
+            'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address',
             //备注
             'special_remark', 'remark', 'lon', 'lat',
@@ -119,10 +119,10 @@ class OrderValidate extends BaseValidate
             'merchant_id', 'execution_date',
             'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
-            //'sender', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
+            //'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
             //'sender_city', 'sender_street', 'sender_address',
             //收货人信息
-            'receiver', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
+            'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address',
             //备注
             'special_remark', 'remark', 'lon', 'lat',

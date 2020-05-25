@@ -68,7 +68,7 @@ class Batch extends BaseModel
         'actual_pickup_quantity',
         'expect_pie_quantity',
         'actual_pie_quantity',
-        'receiver',
+        'receiver_fullname',
         'receiver_phone',
         'receiver_country',
         'receiver_post_code',

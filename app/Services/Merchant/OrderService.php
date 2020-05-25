@@ -472,7 +472,7 @@ class OrderService extends BaseService
         }
         $data = Arr::only($data, [
             'type',
-            'receiver',
+            'receiver_fullname',
             'receiver_phone',
             'receiver_country',
             'receiver_post_code',
@@ -608,7 +608,7 @@ class OrderService extends BaseService
         }
         //填充发件人信息
         $params = array_merge($params, [
-            'sender' => $warehouse['contacter'],
+            'sender_fullname' => $warehouse['fullname'],
             'sender_phone' => $warehouse['phone'],
             'sender_country' => $warehouse['country'],
             'sender_post_code' => $warehouse['post_code'],
@@ -875,7 +875,7 @@ class OrderService extends BaseService
      */
     private function checkIsChangeBatch($dbOrder, $order)
     {
-        $fields = ['execution_date', 'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
+        $fields = ['execution_date', 'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
         $newDbOrder = Arr::only($dbOrder, $fields);
         $newOrder = Arr::only($order, $fields);
         return empty(array_diff($newDbOrder, $newOrder)) ? false : true;

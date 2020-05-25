@@ -123,9 +123,9 @@ if (!function_exists('explode_post_code')) {
      */
     function explode_post_code($postcode, $letter = false)
     {
-        $postcode= trim($postcode);
-        $final_postcode =  preg_replace('/\D/','',$postcode);
-        if($letter) {
+        $postcode = trim($postcode);
+        $final_postcode = preg_replace('/\D/', '', $postcode);
+        if ($letter) {
             return trim($postcode, $final_postcode);
         }
 
@@ -161,5 +161,23 @@ if (!function_exists('explode_id_string')) {
             return is_numeric($value);
         });
         return $list;
+    }
+}
+
+if (!function_exists('array_key_prefix')) {
+
+    /**
+     * 设置数组键的前缀
+     * @param $arr
+     * @param $prefix
+     * @return array
+     */
+    function array_key_prefix($arr, $prefix = '')
+    {
+        foreach ($arr as $key => $value) {
+            $arr[$prefix . $key] = $value;
+            unset($arr[$key]);
+        }
+        return $arr;
     }
 }

@@ -10,6 +10,8 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\BusinessLogicException;
+use App\Traits\AddressTemplateTrait;
+use App\Traits\CompanyTrait;
 use function foo\func;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
@@ -55,7 +57,7 @@ class Validate
                 return $next($request);
             }
             //获取验证规则
-            $rules = $this->getRules($this->validate->rules, $this->validate->scene[$method]);
+            $rules = $this->getRules($this->validate->rules, $this->validate->scene[$method], $method);
             /************************************验证规则获取 end******************************************************/
             /********************************************数据验证 start************************************************/
             //验证
@@ -72,11 +74,22 @@ class Validate
      * 获取验证规则
      * @param $rules
      * @param $scene
+     * @param $method
      * @return array
      */
-    public function getRules($rules, $scene)
+    public function getRules($rules, $scene, $method)
     {
-        return Arr::only($rules, $scene);
+        $rules = Arr::only($rules, $scene);
+        //获取地址验证规则
+        if (in_array($method, ['store', 'update'])) {
+            $validateName = get_class($this->validate);
+            $type = strtolower(str_replace('Validate', '', substr($validateName, (strrpos($validateName, '\\') + 1))));
+            if (in_array($type, ['order', 'receiver', 'sender', 'warehouse'])) {
+                $addressRules = AddressTemplateTrait::getFormatAddressTemplate($type);
+                $rules = array_merge($rules, $addressRules);
+            }
+        }
+        return $rules;
     }
 
     /**
@@ -98,6 +111,7 @@ class Validate
                 $data[$key] = $value;
             }
         }
+        //规则验证
         $validator = Validator::make($data, $rules, $message, $customAttributes);
         if ($validator->fails()) {
             $messageList = Arr::flatten($validator->errors()->getMessages());

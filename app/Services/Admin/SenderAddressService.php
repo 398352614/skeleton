@@ -12,7 +12,7 @@ class SenderAddressService extends BaseService
 {
     public $filterRules = [
         'merchant_id' => ['=', 'merchant_id'],
-        'sender' => ['like', 'sender'],
+        'sender_fullname' => ['like', 'sender_fullname'],
         'sender_post_code' => ['like', 'sender_post_code']
     ];
 
@@ -65,7 +65,7 @@ class SenderAddressService extends BaseService
     {
         $data = [
             'merchant_id' => $params['merchant_id'],
-            'sender' => $params['sender'],
+            'sender_fullname' => $params['sender_fullname'],
             'sender_phone' => $params['sender_phone'],
             'sender_country' => $params['sender_country'],
             'sender_post_code' => $params['sender_post_code'],

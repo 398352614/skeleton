@@ -7,7 +7,7 @@ use App\Http\Validate\BaseValidate;
 class SenderAddressValidate extends BaseValidate
 {
     public $customAttributes = [
-        'sender' => '发件人姓名',
+        'sender_fullname' => '发件人姓名',
         'sender_phone' => '发件人电话',
         'sender_country' => '发件人国家',
         'sender_post_code' => '发件人邮编',
@@ -22,7 +22,7 @@ class SenderAddressValidate extends BaseValidate
 
 
     public $rules = [
-        'sender' => 'required|string|max:50',
+        'sender_fullname' => 'required|string|max:50',
         'sender_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
         'sender_country' => 'nullable|string|max:20',
         'sender_post_code' => 'required|string|max:50',
@@ -36,9 +36,9 @@ class SenderAddressValidate extends BaseValidate
     ];
 
     public $scene = [
-        'store' => ['sender', 'sender_phone', 'sender_country', 'sender_post_code',
+        'store' => ['sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code',
             'sender_house_number', 'sender_city', 'sender_street', 'sender_address','lon','lat','merchant_id' ],
-        'update' => ['sender', 'sender_phone', 'sender_country', 'sender_post_code',
+        'update' => ['sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code',
             'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'lon','lat','merchant_id'],
     ];
 }

@@ -21,7 +21,7 @@ class ReceiverAddressService extends BaseService
 
     public $filterRules = [
         'merchant_id' => ['=', 'merchant_id'],
-        'receiver' => ['like', 'receiver'],
+        'receiver_fullname' => ['like', '_fullname'],
         'receiver_post_code' => ['like', 'receiver_post_code']
     ];
 
@@ -115,7 +115,7 @@ class ReceiverAddressService extends BaseService
      */
     public function check($data, $id = null)
     {
-        $fields = ['receiver', 'merchant_id', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
+        $fields = ['receiver_fullname', 'merchant_id', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
         foreach ($fields as $v) {
             if (isset($data[$v])) {
                 $where[$v] = $data[$v];

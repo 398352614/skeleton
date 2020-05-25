@@ -16,7 +16,7 @@ class SenderAddressService extends BaseService
     }
 
     public $filterRules = [
-        'sender' => ['like', 'sender'],
+        'sender_fullname' => ['like', 'sender_fullname'],
         'sender_post_code' => ['like', 'sender_post_code'],
     ];
 
@@ -51,7 +51,7 @@ class SenderAddressService extends BaseService
     public function check($params, $id = null)
     {
         $data = [
-            'sender' => $params['sender'],
+            'sender_fullname' => $params['sender_fullname'],
             'sender_phone' => $params['sender_phone'],
             'sender_country' => $params['sender_country'],
             'sender_post_code' => $params['sender_post_code'],

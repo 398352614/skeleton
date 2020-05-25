@@ -28,7 +28,7 @@ class BatchInfoResource extends JsonResource
             'actual_pickup_quantity' => $this->actual_pickup_quantity,
             'expect_pie_quantity' => $this->expect_pie_quantity,
             'actual_pie_quantity' => $this->actual_pie_quantity,
-            'receiver' => $this->receiver,
+            'receiver_fullname' => $this->receiver_fullname,
             'receiver_phone' => $this->receiver_phone,
             'receiver_country' => $this->receiver_country,
             'receiver_country_name' => $this->receiver_country_name,
