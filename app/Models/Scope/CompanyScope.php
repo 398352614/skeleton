@@ -6,6 +6,7 @@
 
 namespace App\Models\Scope;
 
+use App\Models\AddressTemplate;
 use App\Models\Batch;
 use App\Models\BatchException;
 use App\Models\Car;
@@ -53,7 +54,10 @@ class CompanyScope implements Scope
 
         //如果是员工端
         if ($user instanceof Employee) {
-            if (!($model instanceof Company)) {
+            if (
+                !($model instanceof Company)
+                && !($model instanceof AddressTemplate)
+            ) {
                 $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
             }
         }
