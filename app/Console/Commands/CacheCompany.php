@@ -50,12 +50,12 @@ class CacheCompany extends Command
             $tag = config('tms.cache_tags.company');
             //1.若只缓存一个企业
             if (!empty($companyId)) {
-                $country = Country::query()->where('company_id', $companyId)->first(['short']);
+                $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name']);
                 $company = Company::query()->where('id', $companyId)->first();
                 $company = array_merge(
                     Arr::only($company->getAttributes(), ['id', 'company_code']),
                     Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']),
-                    ['country' => $country['short'] ?? '']
+                    ['country' => $country['short'] ?? '', 'country_en_name' => $country['en_name'] ?? '', 'country_cn_name' => $country['cn_name'] ?? '']
                 );
                 Cache::tags($tag)->forget($rootKey . $company['id']);
                 Cache::tags($tag)->forever($rootKey . $company['id'], $company);
@@ -63,7 +63,7 @@ class CacheCompany extends Command
                 return;
             }
             //2.缓存所有企业
-            $countryList = collect(Country::query()->get(['company_id', 'short']))->unique('company_id')->keyBy('company_id')->toArray();
+            $countryList = collect(Country::query()->get(['company_id', 'short', 'en_name', 'cn_name']))->unique('company_id')->keyBy('company_id')->toArray();
             $companyList = collect(Company::query()->get())->map(function ($company) use ($countryList) {
                 /**@var \App\Models\Company $company */
                 $companyConfig = $company->companyConfig->getAttributes();
@@ -71,7 +71,7 @@ class CacheCompany extends Command
                 return collect(array_merge(
                     Arr::only($company, ['id', 'company_code']),
                     Arr::only($companyConfig, ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']),
-                    ['country' => $countryList[$company['id']]['short'] ?? '']
+                    ['country' => $countryList[$company['id']]['short'] ?? '', 'country_en_name' => $countryList[$company['id']]['en_name'] ?? '', 'country_cn_name' => $countryList[$company['id']]['cn_name'] ?? '']
                 ));
             })->toArray();
             foreach ($companyList as $company) {
