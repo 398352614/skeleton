@@ -33,7 +33,7 @@ class OrderNoRuleService extends BaseService
         $data = [];
         $dbTypeList = parent::getList([], ['type'], false)->toArray();
         $dbTypeList = !empty($dbTypeList) ? array_flip(array_column($dbTypeList, 'type')) : [];
-        $data['type_list'] = ConstTranslateTrait::formatList(array_diff_key(ConstTranslateTrait::$noTypeList, $dbTypeList));
+        $data['type_list'] = __(ConstTranslateTrait::formatList(array_diff_key(ConstTranslateTrait::$noTypeList, $dbTypeList)));
         return $data;
     }
 
@@ -44,13 +44,10 @@ class OrderNoRuleService extends BaseService
      */
     public function store($params)
     {
+        $this->check($params);
         $params = Arr::only($params, ['type', 'prefix', 'int_length', 'string_length', 'status']);
         if (!array_key_exists($params['type'], ConstTranslateTrait::$noTypeList)) {
             throw new BusinessLogicException('当前编号规则未定义');
-        }
-        $dbNoRule = parent::getInfo(['type' => $params['type']], ['id'], false);
-        if (!empty($dbNoRule)) {
-            throw new BusinessLogicException('当前单号规则已存在');
         }
         //若字母长度不为0,则生成开始字符索引
         $params['start_string_index'] = str_repeat('A', $params['string_length']);
@@ -92,12 +89,8 @@ class OrderNoRuleService extends BaseService
      */
     private function check($params, $id = null)
     {
-        $query = DB::table('order_no_rule');
-        !empty($id) && $query->where('id', '<>', $id);
-        //判断前缀是否存在
-        $dbNoRule = $query->where('prefix', $params['prefix'])->first();
-        if (!empty($dbNoRule)) {
-            throw new BusinessLogicException('系统的开始字符已存在');
+        if(strlen($params['prefix']) + $params['int_length'] + $params['string_length'] > BaseConstService::ORDER_NO_RULE_LENGTH){
+            throw new BusinessLogicException("单号规则总长度不得超过:length位",1000,['length' => BaseConstService::ORDER_NO_RULE_LENGTH]);
         }
     }
 

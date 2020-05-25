@@ -54,7 +54,7 @@ class BatchArrived implements ITourDriver
      */
     public function getContent(): string
     {
-        return '到达' . $this->batch['receiver_fullname'] . '客户家';
+        return '到达[' . $this->batch['receiver_fullname'] . ']客户家';
     }
 
     public function getAddress(): string

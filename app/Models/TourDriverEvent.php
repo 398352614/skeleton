@@ -75,6 +75,13 @@ class TourDriverEvent extends BaseModel
 
     public function getContentAttribute($value)
     {
-        return !empty($value) ? __($value) : null;
+        if(preg_match('/\[.*]/',$value,$params)){
+            $params=str_replace('[','',$params);
+            $params=str_replace(']','',$params);
+            $value=str_replace($params,':params',$value);
+            return !empty($value)?__($value,['params'=>$params[0]]): null;
+        }else{
+            return !empty($value)?__($value): null;
+        }
     }
 }
