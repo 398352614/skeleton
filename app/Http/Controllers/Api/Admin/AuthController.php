@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Traits\CompanyTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -84,7 +85,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('admin')->factory()->getTTL() * 60,
-            'company_config' => auth('admin')->user()->companyConfig
+            'company_config' => CompanyTrait::getCompany(auth('admin')->user()->company_id)
         ];
     }
 

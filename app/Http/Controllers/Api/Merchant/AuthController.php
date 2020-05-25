@@ -11,6 +11,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
 use App\Models\CompanyConfig;
 use App\Models\Employee;
+use App\Traits\CompanyTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -106,7 +107,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('merchant')->factory()->getTTL() * 60,
-            'company_config' => auth('merchant')->user()->companyConfig
+            'company_config' => CompanyTrait::getCompany(auth('merchant')->user()->company_id)
         ];
     }
 

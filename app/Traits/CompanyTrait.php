@@ -25,13 +25,14 @@ trait CompanyTrait
 
     /**
      * 获取企业信息
+     * @param $companyId
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
-    public static function getCompany()
+    public static function getCompany($companyId = null)
     {
         $rootKey = config('tms.cache_prefix.company');
         $tag = config('tms.cache_tags.company');
-        $companyId = auth()->user()->companyConfig->company_id;
+        $companyId = $companyId ?? auth()->user()->companyConfig->company_id;
         $company = Cache::tags($tag)->get($rootKey . $companyId);
         if (empty($company)) {
             Artisan::call('company:cache --company_id=' . $companyId);
