@@ -60,11 +60,11 @@ class LineValidate extends BaseValidate
         'areaIndex' => ['is_get_area'],
         'areaStore' => [
             'name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark',
-            'coordinate_list.*.lat', 'coordinate_list.*.lon'
+            'coordinate_list', 'coordinate_list.*.lat', 'coordinate_list.*.lon'
         ],
         'areaUpdate' => [
             'name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark',
-            'coordinate_list.*.lat', 'coordinate_list.*.lon'
+            'coordinate_list', 'coordinate_list.*.lat', 'coordinate_list.*.lon'
         ],
     ];
 }
