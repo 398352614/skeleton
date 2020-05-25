@@ -40,6 +40,7 @@ class LineValidate extends BaseValidate
         //邮编列表
         'item_list.*.post_code_start' => 'required|integer|between:1000,9999',
         'item_list.*.post_code_end' => 'required|integer|between:1000,9999|gt:item_list.*.post_code_start',
+        'coordinate_list' => 'required',
         //区域列表
         'coordinate_list.*.lat' => 'required|string|max:30',
         'coordinate_list.*.lon' => 'required|string|max:30',

@@ -289,5 +289,6 @@ return [
         'special_time' => 'special time',
         'url' => 'url',
         'white_ip_list' => 'white IP list',
+        'coordinate_list' => 'coordinate list',
     ],
 ];

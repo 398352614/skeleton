@@ -239,10 +239,10 @@ return [
             'between' => '邮编列表截止邮编范围必须的:min-:max之间',
             'gt' => '邮编列表截止邮编必须大于起始邮编'
         ],
-        'new_password'=>[
+        'new_password' => [
             'different' => '新密码不能和旧密码一样',
         ],
-        'receiver_house_number'=>[
+        'receiver_house_number' => [
             'required_if' => '当国家是荷兰时，门牌号必填',
         ]
     ],
@@ -311,6 +311,8 @@ return [
         'relate_material' => '文件',
         'relate_material_name' => '相关文件名',
         'brand_id' => '品牌ID',
+        //Admin-line
+        'coordinate_list' => '坐标列表',
         //Admin-Common
         //Admin-Company
         //Admin-Country
