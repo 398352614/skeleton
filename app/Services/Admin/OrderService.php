@@ -290,7 +290,7 @@ class OrderService extends BaseService
      * @throws BusinessLogicException
      */
     public function store($params, $orderSource = BaseConstService::ORDER_SOURCE_1)
-    {
+    {C
         //数据验证
         $this->check($params);
         //填充发件人信息

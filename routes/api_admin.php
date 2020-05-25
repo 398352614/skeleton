@@ -258,6 +258,8 @@ Route::namespace('Api\Admin')->middleware(['auth:admin'])->group(function () {
     Route::prefix('company-config')->group(function () {
         //获取详情
         Route::get('/show', 'CompanyConfigController@show');
+        //获取地址模板列表
+        Route::get('/getAddressTemplateList', 'CompanyConfigController@getAddressTemplateList');
         //修改
         Route::put('/update', 'CompanyConfigController@update');
     });

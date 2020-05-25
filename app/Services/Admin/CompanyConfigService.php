@@ -32,6 +32,13 @@ class CompanyConfigService extends BaseService
         return self::getInstance(AddressTemplateService::class);
     }
 
+    public function getAddressTemplateList()
+    {
+        $data = [];
+        $data['template_list'] = $this->getAddressTemplateService()->getList(['id']);
+        return $data;
+    }
+
     /**
      * 创建或更新
      * @param $params
