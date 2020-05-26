@@ -28,6 +28,7 @@ class CompanyConfigValidate extends BaseValidate
     public $scene = [
         'update' => [
             'line_rule',
+            'address_template_id',
             'weight_unit',
             'currency_unit',
             'volume_unit',
