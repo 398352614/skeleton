@@ -389,9 +389,9 @@ class OrderService extends BaseService
             try {
                 $this->store($list[$i], true);
             } catch (BusinessLogicException $e) {
-                throw new BusinessLogicException(__('第:line行：',['line'=>$i + 1]).__($e->getMessage()));
+                throw new BusinessLogicException(__('第:line行：', ['line' => $i + 1]) . __($e->getMessage()));
             } catch (\Exception $e) {
-                throw new BusinessLogicException(__('第:line行：',['line'=>$i + 1]).__($e->getMessage()));
+                throw new BusinessLogicException(__('第:line行：', ['line' => $i + 1]) . __($e->getMessage()));
             }
         }
         return;
@@ -521,12 +521,6 @@ class OrderService extends BaseService
             throw new BusinessLogicException('商户不存在');
         }
         $params['receiver_country'] = CompanyTrait::getCountry();
-        //通过地址获取经纬度
-        if (empty($params['lon']) || empty($params['lat'])) {
-            $info = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
-            $params['lon'] = $info['lon'];
-            $params['lat'] = $info['lat'];
-        }
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
@@ -549,9 +543,6 @@ class OrderService extends BaseService
                 $repeatCodeList = implode(',', array_diff_assoc($codeList, array_unique($codeList)));
                 throw new BusinessLogicException('材料代码[:code]有重复！不能添加订单', 1000, ['code' => $repeatCodeList]);
             }
-        }
-        if (empty($params['receiver_address'])) {
-            $params['receiver_address'] = '';
         }
     }
 

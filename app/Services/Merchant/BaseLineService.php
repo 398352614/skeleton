@@ -6,7 +6,7 @@
  * Time: 15:58
  */
 
-namespace App\Services\Admin;
+namespace App\Services\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;

@@ -24,6 +24,51 @@ class CompanyConfigService extends BaseService
     }
 
     /**
+     * 订单 服务
+     * @return OrderService
+     */
+    private function getOrderService()
+    {
+        return self::getInstance(OrderService::class);
+    }
+
+    /**
+     * 收件人地址 服务
+     * @return ReceiverAddressService
+     */
+    private function getReceiverAddressService()
+    {
+        return self::getInstance(ReceiverAddressService::class);
+    }
+
+    /**
+     * 发件人地址 服务
+     * @return SenderAddressService
+     */
+    private function getSenderAddressService()
+    {
+        return self::getInstance(SenderAddressService::class);
+    }
+
+    /**
+     * 仓库 服务
+     * @return WareHouseService
+     */
+    private function getWareHouseService()
+    {
+        return self::getInstance(WareHouseService::class);
+    }
+
+    /**
+     * 线路 服务
+     * @return LineService
+     */
+    private function getLineService()
+    {
+        return self::getInstance(LineService::class);
+    }
+
+    /**
      * 地址模板 服务
      * @return AddressTemplateService
      */
@@ -46,6 +91,27 @@ class CompanyConfigService extends BaseService
      */
     public function createOrUpdate($params)
     {
+        $order = $this->getOrderService()->getInfo([], ['id'], false);
+        if (!empty($order)) {
+            throw new BusinessLogicException('已存在订单');
+        }
+        $receiver = $this->getReceiverAddressService()->getInfo([], ['id'], false);
+        if (!empty($receiver)) {
+            throw new BusinessLogicException('已存在收件人');
+        }
+        $sender = $this->getSenderAddressService()->getInfo([], ['id'], false);
+        if (!empty($sender)) {
+            throw new BusinessLogicException('已存在发件人');
+        }
+        $warehouse = $this->getWareHouseService()->getInfo([], ['id'], false);
+        if (!empty($warehouse)) {
+            throw new BusinessLogicException('已存在仓库');
+        }
+        $line = $this->getLineService()->getInfo([], ['id'], false);
+        if (!empty($line)) {
+            throw new BusinessLogicException('已存在线路');
+        }
+
         $addressTemplate = $this->getAddressTemplateService()->getInfo(['id' => $params['address_template_id']], ['id'], false);
         if (empty($addressTemplate)) {
             throw new BusinessLogicException('地址模板不存在');
