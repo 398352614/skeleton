@@ -14,6 +14,7 @@ use App\Http\Resources\ReceiverAddressResource;
 use App\Models\Merchant;
 use App\Models\ReceiverAddress;
 use App\Services\BaseService;
+use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 
 class ReceiverAddressService extends BaseService
@@ -66,8 +67,7 @@ class ReceiverAddressService extends BaseService
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }
-        $merchant = $merchant->toArray();
-        $params = Arr::add($params, 'receiver_country', $merchant['country']);
+        $params['receiver_country'] = CompanyTrait::getCountry();
     }
 
     /**
@@ -115,11 +115,11 @@ class ReceiverAddressService extends BaseService
      */
     public function check($data, $id = null)
     {
-        $fields = ['receiver_fullname', 'merchant_id', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
-        foreach ($fields as $v) {
-            if (isset($data[$v])) {
-                $where[$v] = $data[$v];
-            }
+        if (auth()->user()->companyConfig->address_template_id == 1) {
+            $fields = ['merchant_id', 'receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
+            $where = Arr::only($data, $fields);
+        } else {
+            $where = Arr::only($data, ['merchant_id', 'receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_address']);
         }
         if (!empty($id)) {
             $where = Arr::add($where, 'id', ['<>', $id]);

@@ -7,6 +7,7 @@ use App\Models\Merchant;
 use App\Models\SenderAddress;
 use App\Services\BaseService;
 use App\Http\Resources\SenderAddressResource;
+use Illuminate\Support\Arr;
 
 class SenderAddressService extends BaseService
 {
@@ -63,20 +64,16 @@ class SenderAddressService extends BaseService
 
     public function check($params, $id = null)
     {
-        $data = [
-            'merchant_id' => $params['merchant_id'],
-            'sender_fullname' => $params['sender_fullname'],
-            'sender_phone' => $params['sender_phone'],
-            'sender_country' => $params['sender_country'],
-            'sender_post_code' => $params['sender_post_code'],
-            'sender_house_number' => $params['sender_house_number'],
-            'sender_city' => $params['sender_city'],
-            'sender_street' => $params['sender_street'],
-        ];
-        if (!empty($id)) {
-            $data['id'] = ['<>', $id];
+        if (auth()->user()->companyConfig->address_template_id == 1) {
+            $fields = ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street'];
+            $where = Arr::only($params, $fields);
+        } else {
+            $where = Arr::only($params, ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_address']);
         }
-        $info = parent::getInfo($data, ['*'], true);
+        if (!empty($id)) {
+            $where['id'] = ['<>', $id];
+        }
+        $info = parent::getInfo($where, ['*'], true);
         return $info;
     }
 
