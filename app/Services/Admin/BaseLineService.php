@@ -186,7 +186,8 @@ class BaseLineService extends BaseService
                 throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
             }
             foreach ($lineAreaList as $lineArea) {
-                if (MapAreaTrait::containsPoint($lineArea['coordinate_list'], $coordinate)) {
+                $coordinateList = json_decode($lineArea['coordinate_list'], true);
+                if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
                     $lineId = $lineArea['line_id'];
                     break;
                 }
