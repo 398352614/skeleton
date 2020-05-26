@@ -80,7 +80,7 @@ class CompanyConfigService extends BaseService
     public function getAddressTemplateList()
     {
         $data = [];
-        $data['template_list'] = $this->getAddressTemplateService()->getList(['id']);
+        $data['template_list'] = $this->getAddressTemplateService()->getList([],['id'],false);
         return $data;
     }
 

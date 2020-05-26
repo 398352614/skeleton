@@ -316,9 +316,9 @@ class OrderService extends BaseService
         //订单轨迹-订单创建
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
         //订单轨迹-订单加入站点
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
         //订单轨迹-订单加入取件线路
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR,$tour);
         return [
             'order_no' => $params['order_no'],
             'batch_no' => $batch['batch_no'],
@@ -614,10 +614,10 @@ class OrderService extends BaseService
 
     /**
      * 填充站点信息和取件线路信息
-     * @param $id
+     * @param $order
      * @param $batch
      * @param $tour
-     * @param bool 是否需要填充包裹和材料
+     * @param bool $isFillItem
      * @throws BusinessLogicException
      */
     public function fillBatchTourInfo($order, $batch, $tour, $isFillItem = true)
@@ -891,7 +891,7 @@ class OrderService extends BaseService
         /*********************************4.填充取件批次编号和取件线路编号*********************************************/
         $this->fillBatchTourInfo($info, $batch, $tour);
 
-        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
     }
 
     /**
@@ -921,8 +921,8 @@ class OrderService extends BaseService
             throw new BusinessLogicException('移除失败,请重新操作');
         }
         $this->getBatchService()->removeOrder($info);
-        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH);
-        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH,$info);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR,$info);
     }
 
     /**
@@ -1034,9 +1034,9 @@ class OrderService extends BaseService
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($order, $batch, $tour);
         //订单轨迹-订单加入站点
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
         //订单轨迹-订单加入取件线路
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR,$tour);
     }
 
 
@@ -1108,8 +1108,8 @@ class OrderService extends BaseService
             list($batch, $tour) = $this->getBatchService()->join($order, $line, null, $tour, true);
             /**********************************填充取件批次编号和取件线路编号**********************************************/
             $this->fillBatchTourInfo($order, $batch, $tour);
-            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH);
-            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
+            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
+            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR,$tour);
         }
 
         //加单推送

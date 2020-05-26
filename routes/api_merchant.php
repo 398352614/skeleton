@@ -24,12 +24,12 @@ Route::namespace('Api\Merchant')->group(function () {
 });
 
 //认证
-Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function () {
+Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant','auth:merchant'])->group(function () {
     Route::get('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
     Route::put('my-password', 'AuthController@updatePassword');
     Route::put('', 'MerchantController@update');
-    Route::put('api', 'merchantApiController@update');
+    Route::put('api', 'MerchantApiController@update');
 
     //订单管理
     Route::prefix('order')->group(function () {

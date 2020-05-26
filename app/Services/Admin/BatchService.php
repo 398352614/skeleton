@@ -440,7 +440,7 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
-        OrderTrailService::storeByBatchNo($info['batch_no'], BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+        OrderTrailService::storeByBatchNo($info, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
     }
 
     /**
@@ -486,7 +486,7 @@ class BatchService extends BaseService
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
         }
-        OrderTrailService::storeByBatchNo($info['batch_no'], BaseConstService::ORDER_TRAIL_JOIN_TOUR);
+        OrderTrailService::storeByBatchNo($info, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
     }
 
     /**
@@ -581,7 +581,7 @@ class BatchService extends BaseService
         }
         //将站点从取件线路移除
         $this->getTourService()->removeBatch($info);
-        OrderTrailService::storeByBatchNo($info['batch_no'], BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
+        OrderTrailService::storeByBatchNo($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
     }
 
     /**

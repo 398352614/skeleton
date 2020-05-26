@@ -33,7 +33,7 @@ Route::namespace('Api\Driver')->middleware([])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
+Route::namespace('Api\Driver')->middleware(['companyValidate:driver','auth:driver'])->group(function () {
     Route::post('logout', 'AuthController@logout');
     Route::get('me', 'AuthController@me');
     Route::put('my-password', 'AuthController@updatePassword');

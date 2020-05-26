@@ -71,6 +71,9 @@ class OrderNoRuleService extends BaseService
         $data = Arr::only($data, ['prefix', 'int_length', 'string_length', 'status']);
         $this->check($data, $id);
         $info = parent::getInfo(['id' => $id], ['*'], false);
+        if(empty($info)){
+            throw new BusinessLogicException('操作失败');
+        }
         if ($info['string_length'] != $data['string_length']) {
             $data['start_string_index'] = str_repeat('A', $data['string_length']);
         }

@@ -29,7 +29,7 @@ Route::namespace('Api\Admin')->group(function () {
 });
 
 //认证
-Route::namespace('Api\Admin')->middleware(['companyValidate','auth:admin'])->group(function () {
+Route::namespace('Api\Admin')->middleware(['companyValidate:admin','auth:admin'])->group(function () {
     Route::get('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
     Route::put('my-password', 'AuthController@updatePassword');

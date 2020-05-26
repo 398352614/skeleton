@@ -149,7 +149,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('包裹锁定失败,请重新操作');
         }
-        OrderTrailService::storeByTourNo($tour['tour_no'], BaseConstService::ORDER_TRAIL_LOCK);
+        OrderTrailService::storeByTourNo($tour, BaseConstService::ORDER_TRAIL_LOCK);
     }
 
     /**
@@ -187,7 +187,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
-        OrderTrailService::storeByTourNo($tour['tour_no'], BaseConstService::ORDER_TRAIL_UN_LOCK);
+        OrderTrailService::storeByTourNo($tour, BaseConstService::ORDER_TRAIL_UN_LOCK);
     }
 
 
