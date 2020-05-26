@@ -13,6 +13,7 @@ use App\Models\Car;
 use App\Models\CarBrand;
 use App\Models\CarModel;
 use App\Models\Company;
+use App\Models\CompanyConfig;
 use App\Models\Country;
 use App\Models\Driver;
 use App\Models\Employee;
@@ -84,6 +85,7 @@ class CompanyScope implements Scope
         if ($user instanceof Merchant) {
             $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
             if (!($model instanceof Batch)
+                && !($model instanceof CompanyConfig)
                 && !($model instanceof Tour)
                 && !($model instanceof Line)
                 && !($model instanceof LineRange)
