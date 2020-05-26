@@ -52,9 +52,10 @@ class CacheCompany extends Command
             if (!empty($companyId)) {
                 $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name']);
                 $company = Company::query()->where('id', $companyId)->first();
+                $companyConfig = !empty($company->companyConfig) ? Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']) : [];
                 $company = array_merge(
                     Arr::only($company->getAttributes(), ['id', 'company_code']),
-                    Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']),
+                    $companyConfig,
                     ['country' => $country['short'] ?? '', 'country_en_name' => $country['en_name'] ?? '', 'country_cn_name' => $country['cn_name'] ?? '']
                 );
                 Cache::tags($tag)->forget($rootKey . $company['id']);
@@ -66,11 +67,11 @@ class CacheCompany extends Command
             $countryList = collect(Country::query()->get(['company_id', 'short', 'en_name', 'cn_name']))->unique('company_id')->keyBy('company_id')->toArray();
             $companyList = collect(Company::query()->get())->map(function ($company) use ($countryList) {
                 /**@var \App\Models\Company $company */
-                $companyConfig = $company->companyConfig->getAttributes();
+                $companyConfig = !empty($company->companyConfig) ? Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']) : [];
                 $company = $company->getAttributes();
                 return collect(array_merge(
                     Arr::only($company, ['id', 'company_code']),
-                    Arr::only($companyConfig, ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']),
+                    $companyConfig,
                     ['country' => $countryList[$company['id']]['short'] ?? '', 'country_en_name' => $countryList[$company['id']]['en_name'] ?? '', 'country_cn_name' => $countryList[$company['id']]['cn_name'] ?? '']
                 ));
             })->toArray();
