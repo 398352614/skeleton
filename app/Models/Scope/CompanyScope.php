@@ -19,6 +19,7 @@ use App\Models\Driver;
 use App\Models\Employee;
 use App\Models\KilometresCharging;
 use App\Models\Line;
+use App\Models\LineArea;
 use App\Models\LineRange;
 use App\Models\Material;
 use App\Models\Merchant;
@@ -89,6 +90,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Tour)
                 && !($model instanceof Line)
                 && !($model instanceof LineRange)
+                && !($model instanceof LineArea)
                 && !($model instanceof TransportPrice)
                 && !($model instanceof KilometresCharging)
                 && !($model instanceof WeightCharging)
