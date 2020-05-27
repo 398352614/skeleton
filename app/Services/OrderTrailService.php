@@ -24,13 +24,13 @@ class OrderTrailService extends BaseService
         parent::__construct($orderTrail, OrderTrailResource::class, OrderTrailResource::class);
     }
 
-    public static function storeByTourNo($tour, int $action)
+    public static function storeByTour($tour, int $action)
     {
         $orderList = Order::query()->select(self::$selectFields)->where('tour_no', $tour['tour_no'])->get()->toArray();
         !empty($orderList) && self::storeAllByOrderList($orderList, $action,$tour);
     }
 
-    public static function storeByBatchNo($batch, int $action)
+    public static function storeByBatch($batch, int $action)
     {
         $orderList = Order::query()->select(self::$selectFields)->where('batch_no', $batch['batch_no'])->get()->toArray();
         !empty($orderList) && self::storeAllByOrderList($orderList, $action,$batch);
