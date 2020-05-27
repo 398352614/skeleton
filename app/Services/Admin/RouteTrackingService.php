@@ -77,12 +77,10 @@ class RouteTrackingService extends BaseService
         for($i=0,$j=count($info);$i<$j;$i++){
             $info[$i]=Arr::only($info[$i],['id','driver_id','driver_name','driver_phone','car_no','line_name','tour_no']);
             $data[$i]=parent::getList(['tour_no'=>$info[$i]['tour_no']],['*'],false,[],['created_at'=>'desc'])->toArray();
-            if(empty($data[$i])){
-                throw new BusinessLogicException('数据不存在');
-            }
-            $info[$i]['lon']=$data[$i][0]['lon'];
-            $info[$i]['lat']=$data[$i][0]['lat'];
-            $info[$i]['time']=$data[$i][0]['time_human'];
+
+            $info[$i]['lon']=$data[$i][0]['lon'] ?? '';
+            $info[$i]['lat']=$data[$i][0]['lat'] ?? '';
+            $info[$i]['time']=$data[$i][0]['time_human'] ?? '';
         }
         return $info;
     }
