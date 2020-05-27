@@ -48,9 +48,9 @@ class companyValidate extends Middleware
             $arr=[
                 'line_rule',
                 'address_template_id',
-                'company'
+                'country'
             ];
-            if(Arr::hasAny(self::getCompany(auth()->user()->company_id),$arr)){
+            if(!Arr::has(self::getCompany(auth()->user()->company_id),$arr)){
                 throw new BusinessLogicException('请先联系管理员到配置管理，填写高级配置内容');
             }
         }
