@@ -1,4 +1,10 @@
 {
+    "订单创建成功,订单号[:params1]": "Order [:params1] successfully created",
+    "订单已加入站点[:params1]": "Order has been added to the site [:params1]",
+    "订单从站点[:params1]中移除": "Order removed from site [:params1]",
+    "订单加入取件线路[:params1]": "Order to join pickup line [:params1]",
+    "订单从取件线路[:params1]移除": "Order removed from pickup line [:params1]",
+    "订单分配司机，司机姓名[:params1]，联系方式[:params2]": "Order allocation driver, driver name [:params1], contact phone [:params2]",
     "到达[:params]客户家": "Arrive at [:params] customer's home",
     "从[:params]客户家离开": "Leave [:params] customer's home",
     "第:line行：":"Line :line：",
