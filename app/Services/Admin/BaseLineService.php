@@ -14,6 +14,7 @@ use App\Http\Resources\LineResource;
 use App\Models\Line;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
 use Carbon\Carbon;
@@ -129,6 +130,7 @@ class BaseLineService extends BaseService
      */
     public function check(&$params)
     {
+        $params['country'] = CompanyTrait::getCountry();
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
             throw new BusinessLogicException('仓库不存在！');
