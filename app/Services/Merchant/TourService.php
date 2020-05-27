@@ -165,6 +165,9 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机分配失败，请重新操作');
         }
+        $tour['driver_id']=$driver['id'];
+        $tour['driver_name']=$driver['fullname'];
+        $tour['driver_phone']=$driver['phone'];
         OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
     }
 
