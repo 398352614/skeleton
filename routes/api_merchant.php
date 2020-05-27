@@ -144,9 +144,11 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant','auth:m
     //取件线路
     Route::prefix('tour')->group(function () {
         //列表查询
-        Route::get('/', 'tourcontroller@index')->name('tour.index');
+        Route::get('/', 'tourController@index')->name('tour.index');
         //详情
-        Route::get('/{id}', 'tourcontroller@show')->name('tour.show');
+        Route::get('/{id}', 'TourController@show')->name('tour.show');
+        //追踪
+        Route::get('/track', 'routeTrackingController@show')->name('tour.track');
         //路径
         Route::get('/driver', 'TourDriverController@getListByTourNo')->name('tour.driver');
     });
