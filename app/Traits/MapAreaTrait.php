@@ -38,7 +38,7 @@ trait MapAreaTrait
         $lat = $coordinate['lat'];
         $bool = false;
         //基本 验证
-        if ($lon < min($lonList) || $lon > max($lonList) || $lat > min($latList) || $lat > max($latList)) {
+        if ((bccomp($lon, min($lonList), 10) == -1) || bccomp($lon, max($lonList), 10) == 1 || bccomp($lat, min($latList), 10) == -1 || bccomp($lat, max($latList), 10) == 1) {
             return $bool;
         }
         //引射线法 验证奇偶数
