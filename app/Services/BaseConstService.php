@@ -21,6 +21,10 @@ class BaseConstService
     const LINE_RULE_POST_CODE = 1;
     const LINE_RULE_AREA = 2;
 
+    //打印模板
+    const PRINT_TEMPLATE_STANDARD = 1;
+    const PRINT_TEMPLATE_GENERAL = 2;
+
     //订单号编号类型
     const ORDER_NO_TYPE = 'order';
     //站点编号类型
@@ -37,7 +41,7 @@ class BaseConstService
     const STICKER_AMOUNT = 7.00;
 
     //编号规则最大长度
-    const ORDER_NO_RULE_LENGTH =13;
+    const ORDER_NO_RULE_LENGTH = 13;
 
     //1-启用2-禁用
     const ON = 1;
