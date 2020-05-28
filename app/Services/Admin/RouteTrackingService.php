@@ -56,21 +56,31 @@ class RouteTrackingService extends BaseService
     }
 
     /**
+     * 司机服务
+     * @return DriverService
+     */
+    public function getDriverService(){
+        return self::getInstance(DriverService::class);
+    }
+
+    /**
      * 获取所有车辆位置
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * @throws BusinessLogicException
      */
     public function index(){
-        $info=$this->getTourService()->getList(['status'=>BaseConstService::TOUR_STATUS_4],['*'],false)->toArray();
+        if(!empty($this->formData['driver_name'])){
+            $info=$this->getTourService()->getList(['status'=>BaseConstService::TOUR_STATUS_4,'driver_name'=>['like',$this->formData['driver_name']]],['*'],false)->toArray();
+        }else{
+            $info=$this->getTourService()->getList(['status'=>BaseConstService::TOUR_STATUS_4],['*'],false)->toArray();
+        }
         for($i=0,$j=count($info);$i<$j;$i++){
             $info[$i]=Arr::only($info[$i],['id','driver_id','driver_name','driver_phone','car_no','line_name','tour_no']);
             $data[$i]=parent::getList(['tour_no'=>$info[$i]['tour_no']],['*'],false,[],['created_at'=>'desc'])->toArray();
-            if(empty($data[$i])){
-                throw new BusinessLogicException('数据不存在');
-            }
-            $info[$i]['lon']=$data[$i][0]['lon'];
-            $info[$i]['lat']=$data[$i][0]['lat'];
-            $info[$i]['time']=$data[$i][0]['time_human'];
+
+            $info[$i]['lon']=$data[$i][0]['lon'] ?? '';
+            $info[$i]['lat']=$data[$i][0]['lat'] ?? '';
+            $info[$i]['time']=$data[$i][0]['time_human'] ?? '';
         }
         return $info;
     }

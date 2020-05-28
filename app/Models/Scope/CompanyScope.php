@@ -27,8 +27,10 @@ use App\Models\MerchantGroup;
 use App\Models\OrderNoRule;
 use App\Models\OrderTrail;
 use App\Models\Package;
+use App\Models\RouteTracking;
 use App\Models\SpecialTimeCharging;
 use App\Models\Tour;
+use App\Models\TourDriverEvent;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
 use App\Models\TransportPrice;
@@ -104,6 +106,8 @@ class CompanyScope implements Scope
                 && !($model instanceof OrderNoRule)
                 && !($model instanceof Warehouse)
                 && !($model instanceof OrderTrail)
+                && !($model instanceof TourDriverEvent)
+                && !($model instanceof RouteTracking)
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
             }
