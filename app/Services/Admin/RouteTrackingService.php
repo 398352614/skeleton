@@ -52,7 +52,8 @@ class RouteTrackingService extends BaseService
                 $routeTracking[$k]['event']=$tour->tourDriverEvent->where('id',$v['tour_driver_event_id'])
                     ->map(function ($item){
                         $item['time']=date_format($item['created_at'],"Y-m-d H:i:s");
-                        return $item->only('content','time');
+                        $item['type']='station';
+                        return $item->only('content','time','type');
                     })->toArray();
             }
         }
@@ -62,24 +63,32 @@ class RouteTrackingService extends BaseService
                 abs($routeTracking[$i]['lat']-$routeTracking[$i-1]['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE){
                 $routeTracking[$i]['stopTime']=round($routeTracking[$i-1]['stopTime']+abs($routeTracking[$i]['time']-$routeTracking[$i-1]['time'])/60);
                 if($routeTracking[$i]['stopTime'] >= BaseConstService::STOP_TIME){
-                    $content[0]=[
+                    $content[$i][]=[
                         'content'=>__("司机已在此停留[:time]分钟",['time'=>$routeTracking[$i]['stopTime']]),
                         'time'=>$routeTracking[$i]['time_human'],
+                        'type'=>'stop',
                     ];
-                    $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'] ?? [], $content);
-                    $info[]=$routeTracking[$i];
+                    $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'] ?? [],[collect($content[$i])->sortByDesc('time')->first()]);
+                    if($routeTracking[$i-1]['stopTime']>=BaseConstService::STOP_TIME){
+                        $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'],$routeTracking[$i-1]['event']);
+                        $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
+                        $info=Arr::except($info,[$i-1]);
+                        $info[$i]['event']=array_merge([collect($info[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'][0]],collect($info[$i]['event'])->groupBy('type')->toArray()['station']);
+                    }else{
+                        $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
+                    }
                 }
             }else{
                 $routeTracking[$i]['stopTime']=0.0;
+                $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
             }
-            $info[]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
         }
         return success('', [
-            'route_tracking'        =>  $info,
+            'route_tracking'        =>  array_values($info),
             'driver'                => Arr::except($tour->driver,'messager'),
+            'tour_event'            =>  $tour->tourDriverEvent,
             'time_consuming'        =>  '',
             'distance_consuming'    =>  '',
-            'tour_event'            =>  $tour->tourDriverEvent,
         ]);
     }
 
