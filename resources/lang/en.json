@@ -1,5 +1,5 @@
 {
-    "司机在此停留[:time]分钟": "The driver stopped here for [:time] minutes",
+    "司机已在此停留[:time]分钟": "The driver stopped here for [:time] minutes",
     "订单创建成功,订单号[:params1]": "Order [:params1] successfully created",
     "订单已加入站点[:params1]": "Order has been added to the site [:params1]",
     "订单从站点[:params1]中移除": "Order removed from site [:params1]",

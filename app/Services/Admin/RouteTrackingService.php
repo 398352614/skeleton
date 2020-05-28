@@ -63,7 +63,7 @@ class RouteTrackingService extends BaseService
                 $routeTracking[$i]['stopTime']=round($routeTracking[$i-1]['stopTime']+abs($routeTracking[$i]['time']-$routeTracking[$i-1]['time'])/60);
                 if($routeTracking[$i]['stopTime'] >= BaseConstService::STOP_TIME){
                     $content[0]=[
-                        'content'=>__("司机在此停留[:time]分钟",['time'=>$routeTracking[$i]['stopTime']]),
+                        'content'=>__("司机已在此停留[:time]分钟",['time'=>$routeTracking[$i]['stopTime']]),
                         'time'=>$routeTracking[$i]['time_human'],
                     ];
                     $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'] ?? [], $content);
@@ -72,7 +72,7 @@ class RouteTrackingService extends BaseService
             }else{
                 $routeTracking[$i]['stopTime']=0.0;
             }
-            $info[]=Arr::except($routeTracking[$i],'stopTime');
+            $info[]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
         }
         return success('', [
             'route_tracking'        =>  $info,
