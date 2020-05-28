@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\App;
  * @package App\Traits
  * @method static noTypeList($args = null)
  * @method static lineRuleList($args = null)
+ * @method static printTemplateList($args = null)
  * @method static weekList($args = null)
  * @method static orderSourceList($arg = null)
  * @method static orderTypeList($args = null)
@@ -65,6 +66,12 @@ trait ConstTranslateTrait
     public static $lineRuleList = [
         BaseConstService::LINE_RULE_POST_CODE => '按邮编自动分配',
         BaseConstService::LINE_RULE_AREA => '按区域自动分配',
+    ];
+
+    //打印模板列表
+    public static $printTemplateList = [
+        BaseConstService::PRINT_TEMPLATE_STANDARD => '标准模板',
+        BaseConstService::PRINT_TEMPLATE_GENERAL => '通用模板',
     ];
 
     //星期

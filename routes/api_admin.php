@@ -29,7 +29,7 @@ Route::namespace('Api\Admin')->group(function () {
 });
 
 //认证
-Route::namespace('Api\Admin')->middleware(['companyValidate:admin','auth:admin'])->group(function () {
+Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'])->group(function () {
     Route::get('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
     Route::put('my-password', 'AuthController@updatePassword');
@@ -434,6 +434,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin','auth:admin']
         Route::post('/', 'OrderNoRuleController@store');
         Route::put('/{id}', 'OrderNoRuleController@update');
         Route::delete('/{id}', 'OrderNoRuleController@destroy');
+    });
+
+    //打印模板
+    Route::prefix('print-template')->group(function () {
+        Route::get('/show', 'PrintTemplateController@show');        //详情
+        Route::put('/update', 'PrintTemplateController@update');    //修改
     });
 
 
