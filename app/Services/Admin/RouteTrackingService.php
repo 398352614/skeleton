@@ -37,6 +37,7 @@ class RouteTrackingService extends BaseService
      */
     public function show(){
         $tour = null;
+        $info=[];
         if ($this->formData['driver_id'] ?? null) {
             $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->where('status',BaseConstService::TOUR_STATUS_4)->first();
         } else {
@@ -45,10 +46,37 @@ class RouteTrackingService extends BaseService
         if (!$tour) {
             throw new BusinessLogicException('没找到相关线路');
         }
-        $routeTracking = $tour->routeTracking->sortBy('created_at');
+        $routeTracking = $tour->routeTracking->sortBy('time_human')->toArray();
+        foreach ($routeTracking as $k=>$v){
+            if(!empty($v['tour_driver_event_id'])){
+                $routeTracking[$k]['event']=$tour->tourDriverEvent->where('id',$v['tour_driver_event_id'])
+                    ->map(function ($item){
+                        $item['time']=date_format($item['created_at'],"Y-m-d H:i:s");
+                        return $item->only('content','time');
+                    })->toArray();
+            }
+        }
+        $routeTracking[0]['stopTime']=0.0;
+        for($i=1,$j=count($routeTracking);$i<$j;$i++){
+            if(abs($routeTracking[$i]['lon']-$routeTracking[$i-1]['lon']) < BaseConstService::LOCATION_DISTANCE_RANGE &&
+                abs($routeTracking[$i]['lat']-$routeTracking[$i-1]['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE){
+                $routeTracking[$i]['stopTime']=round($routeTracking[$i-1]['stopTime']+abs($routeTracking[$i]['time']-$routeTracking[$i-1]['time'])/60);
+                if($routeTracking[$i]['stopTime'] >= BaseConstService::STOP_TIME){
+                    $content[0]=[
+                        'content'=>__("司机在此停留[:time]分钟",['time'=>$routeTracking[$i]['stopTime']]),
+                        'time'=>$routeTracking[$i]['time_human'],
+                    ];
+                    $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'] ?? [], $content);
+                    $info[]=$routeTracking[$i];
+                }
+            }else{
+                $routeTracking[$i]['stopTime']=0.0;
+            }
+            $info[]=Arr::except($routeTracking[$i],'stopTime');
+        }
         return success('', [
+            'route_tracking'        =>  $info,
             'driver'                => Arr::except($tour->driver,'messager'),
-            'route_tracking'        =>  $routeTracking,
             'time_consuming'        =>  '',
             'distance_consuming'    =>  '',
             'tour_event'            =>  $tour->tourDriverEvent,
