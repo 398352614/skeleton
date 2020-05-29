@@ -37,14 +37,14 @@ class OrderTrailService extends BaseService
     }
 
 
-    public static function storeAllByOrderList(array $orderList, int $action,$params)
+    public static function storeAllByOrderList(array $orderList, int $action,$params =null)
     {
         foreach ($orderList as $key => $order) {
-            self::OrderStatusChangeCreateTrail($order, $action,$params);
+            self::OrderStatusChangeCreateTrail($order, $action, $params ?? $order);
         }
     }
 
-    public static function OrderStatusChangeCreateTrail(array $order, int $action,$params =null)
+    public static function OrderStatusChangeCreateTrail(array $order, int $action,$params =[])
     {
         //根据不同的类型生成不同的content
         $content = '';

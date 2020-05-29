@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\TourService;
+use App\Services\Merchant\TourService;
 use App\Services\Traits\TourRedisLockTrait;
 use Illuminate\Http\Request;
 
 /**
  * Class TourController
- * @package App\Http\Controllers\Api\Admin
+ * @package App\Http\Controllers\Api\merchant
  * @property TourService $service
  */
 class TourController extends BaseController
@@ -22,15 +22,6 @@ class TourController extends BaseController
         parent::__construct($service, ['updateBatchIndex', 'autoOpTour', 'dealCallback']);
     }
 
-    /**
-     * 获取可加单的取件线路列表
-     * @return array|mixed
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function getAddOrderPageList()
-    {
-        return $this->service->getAddOrderPageList($this->data['order_id_list']);
-    }
 
     /**
      * @api {GET}  api/admin/tour 管理员端:查询任务列表
@@ -53,6 +44,8 @@ class TourController extends BaseController
     }
 
     /**
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @api {GET}  api/admin/tour/{tour} 管理员端:查看具体任务
      * @apiName show
      * @apiGroup admin-tour
@@ -209,39 +202,5 @@ class TourController extends BaseController
     {
         self::setTourLock($request->tour_no, 0);
         return '1';
-    }
-
-
-    /**
-     * 导出投递列表
-     * @param $id
-     * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function batchExport($id)
-    {
-        return $this->service->batchExport($id);
-    }
-
-    /**
-     * 导出城市线路
-     * @param $id
-     * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function cityExport($id)
-    {
-        return $this->service->cityExport($id);
-    }
-
-    /**
-     * 导出站点地图
-     * @param $id
-     * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function mapExport($id)
-    {
-        return $this->service->mapExport($id);
     }
 }
