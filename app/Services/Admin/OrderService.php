@@ -20,11 +20,14 @@ use App\Models\OrderImportLog;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
+use App\Services\PrintService;
+use App\Traits\BarcodeTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
+use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use Illuminate\Support\Carbon;
@@ -316,9 +319,9 @@ class OrderService extends BaseService
         //订单轨迹-订单创建
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
         //订单轨迹-订单加入站点
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
         //订单轨迹-订单加入取件线路
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR,$tour);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR, $tour);
         return [
             'order_no' => $params['order_no'],
             'batch_no' => $batch['batch_no'],
@@ -891,7 +894,7 @@ class OrderService extends BaseService
         /*********************************4.填充取件批次编号和取件线路编号*********************************************/
         $this->fillBatchTourInfo($info, $batch, $tour);
 
-        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
     }
 
     /**
@@ -921,8 +924,8 @@ class OrderService extends BaseService
             throw new BusinessLogicException('移除失败,请重新操作');
         }
         $this->getBatchService()->removeOrder($info);
-        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH,$info);
-        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR,$info);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH, $info);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR, $info);
     }
 
     /**
@@ -1034,9 +1037,9 @@ class OrderService extends BaseService
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($order, $batch, $tour);
         //订单轨迹-订单加入站点
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
         //订单轨迹-订单加入取件线路
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR,$tour);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR, $tour);
     }
 
 
@@ -1108,8 +1111,8 @@ class OrderService extends BaseService
             list($batch, $tour) = $this->getBatchService()->join($order, $line, null, $tour, true);
             /**********************************填充取件批次编号和取件线路编号**********************************************/
             $this->fillBatchTourInfo($order, $batch, $tour);
-            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
-            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR,$tour);
+            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
+            OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR, $tour);
         }
 
         //加单推送
@@ -1139,5 +1142,35 @@ class OrderService extends BaseService
             $lineId = $dbLineId;
         }
         return [$orderList, $lineId];
+    }
+
+    /**
+     * 批量订单打印
+     * @param $idList
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function orderPrintAll($idList)
+    {
+        $company = CompanyTrait::getCompany();
+        $orderList = parent::getList(['id' => ['in', explode_id_string($idList)]], ['*'], false)->toArray();
+        $orderNoList = array_column($orderList, 'order_no');
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'expect_quantity', 'express_first_no'], false)->toArray();
+        $packageList = array_create_group_index($packageList, 'order_no');
+        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'expect_quantity', 'code'], false)->toArray();
+        $materialList = array_create_group_index($materialList, 'order_no');
+        $orderList = collect($orderList)->map(function ($order) use ($packageList, $materialList, $company) {
+            $order['package_list'] = $packageList[$order['order_no']] ?? [];
+            $order['material_list'] = $materialList[$order['order_no']] ?? [];
+            $order['count'] = count($order['package_list']) + count($order['material_list']);
+            $order['company_name'] = $company['name'];
+            return collect($order);
+        })->toArray();
+        $printList = [];
+        foreach ($orderList as $order) {
+            $order['barcode'] = BarcodeTrait::generateOne($order['order_no']);
+            $printList[$order['id']] = PrintTrait::tPrint($order, 'order.order', 'order', $order['order_no'] . '.pdf');
+        }
+        return $printList;
     }
 }

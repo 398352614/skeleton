@@ -54,7 +54,7 @@ class CacheCompany extends Command
                 $company = Company::query()->where('id', $companyId)->first();
                 $companyConfig = !empty($company->companyConfig) ? Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']) : [];
                 $company = array_merge(
-                    Arr::only($company->getAttributes(), ['id', 'company_code']),
+                    Arr::only($company->getAttributes(), ['id', 'name', 'company_code']),
                     $companyConfig,
                     ['country' => $country['short'] ?? '', 'country_en_name' => $country['en_name'] ?? '', 'country_cn_name' => $country['cn_name'] ?? '']
                 );
@@ -70,7 +70,7 @@ class CacheCompany extends Command
                 $companyConfig = !empty($company->companyConfig) ? Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']) : [];
                 $company = $company->getAttributes();
                 return collect(array_merge(
-                    Arr::only($company, ['id', 'company_code']),
+                    Arr::only($company, ['id', 'name', 'company_code']),
                     $companyConfig,
                     ['country' => $countryList[$company['id']]['short'] ?? '', 'country_en_name' => $countryList[$company['id']]['en_name'] ?? '', 'country_cn_name' => $countryList[$company['id']]['cn_name'] ?? '']
                 ));

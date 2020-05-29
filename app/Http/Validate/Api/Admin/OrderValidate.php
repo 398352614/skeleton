@@ -140,7 +140,8 @@ class OrderValidate extends BaseValidate
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
         'removeListFromBatch' => ['id_list'],
-        'getDate' => ['receiver_post_code','type'],
+        'getDate' => ['receiver_post_code', 'type'],
+        'orderPrintAll' => ['id_list'],
     ];
 
     public $message = [

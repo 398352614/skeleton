@@ -84,6 +84,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
         //批量订单分配至指定取件线路
         Route::put('/assignListTour', 'OrderController@assignListTour');
+        //批量打印
+        Route::get('/orderPrintAll', 'OrderController@orderPrintAll');
     });
 
 
