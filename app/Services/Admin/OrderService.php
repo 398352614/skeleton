@@ -869,7 +869,7 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
             }
             //获取线路信息
-            $line = parent::getInfo(['id' => $lineId], ['*'], false);
+            $line = $this->getLineService()->getInfo(['id' => $lineId], ['*'], false);
             if (empty($line)) {
                 throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
             }
