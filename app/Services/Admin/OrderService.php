@@ -874,8 +874,8 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
             }
             $line = $line->toArray();
-            if($line['is_increment'] === BaseConstService::IS_INCREMENT_2){
-                for($i=0;$i<$line['appointment_days'];$i++){
+            if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
+                for ($i = 0; $i < $line['appointment_days']; $i++) {
                     $params['execution_date'] = Carbon::create(date("Y-m-d"))->addDays($i)->format('Y-m-d');
                     if ($info['type'] == 1) {
                         $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 1);
@@ -902,7 +902,7 @@ class OrderService extends BaseService
                     }
                 }
             } elseif ($line['is_increment'] == BaseConstService::IS_INCREMENT_1) {
-                for ($k = 0 ; $k < $line['appointment_days'];$k ++) {
+                for ($k = 0; $k < $line['appointment_days']; $k++) {
                     $params['execution_date'] = Carbon::create(date("Y-m-d"))->addDays($k)->format('Y-m-d');
                     if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
                         if (time() < strtotime($params['execution_date'] . ' ' . $line['order_deadline'])) {
@@ -1244,7 +1244,10 @@ class OrderService extends BaseService
         $printList = [];
         foreach ($orderList as $order) {
             $order['barcode'] = BarcodeTrait::generateOne($order['order_no']);
-            $printList[$order['id']] = PrintTrait::tPrint($order, 'order.order', 'order', $order['order_no'] . '.pdf');
+            $printList[$order['id']] = [
+                'id' => $order['id'],
+                'url' => PrintTrait::tPrint($order, 'order.order', 'order', $order['order_no'] . '.pdf')
+            ];
         }
         return $printList;
     }
