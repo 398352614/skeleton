@@ -1244,7 +1244,7 @@ class OrderService extends BaseService
         $printList = [];
         foreach ($orderList as $order) {
             $order['barcode'] = BarcodeTrait::generateOne($order['order_no']);
-            $printList[$order['id']] = [
+            $printList[] = [
                 'id' => $order['id'],
                 'url' => PrintTrait::tPrint($order, 'order.order', 'order', $order['order_no'] . '.pdf')
             ];
