@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Order</title>
 
     <style>
@@ -143,7 +144,7 @@
 <div class="facial-list">
     <div class="company-name bottom-line">{{$data['company_name']}}</div>
     <div class="bar-code bottom-line">
-        <!--<img src="data:image/png; base64, {{ $data['barcode'] }}"/>-->
+    <img src="data:image/png; base64, {{ $data['barcode'] }}"/>
         <div>{{$data['order_no']}}</div>
     </div>
     <div class="address bottom-line">
