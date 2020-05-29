@@ -38,7 +38,7 @@ trait PrintTrait
             $newFilePath = storage_path('app/public/pdf') . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName;
             /** @var PdfFaker $snappyPdf */
             $snappyPdf = SnappyPdf::loadView($view, ['data' => $data]);
-            $snappyPdf->setPaper('a4')->save($newFilePath, true);
+            $snappyPdf->save($newFilePath, true);
             unset($snappyPdf);
         } catch (\Exception $ex) {
             throw new BusinessLogicException('打印失败');
