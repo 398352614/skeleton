@@ -25,8 +25,8 @@
         }
 
         .facial-list {
-            width: 592px;
-            height: 840px;
+            width: 740px;
+            height: 1050px;
             box-sizing: border-box;
             border: 1px solid #000;
         }
