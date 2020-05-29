@@ -40,4 +40,14 @@ trait CompanyTrait
         }
         return $company;
     }
+
+    /**
+     *获取线路规则
+     * @return mixed|string
+     */
+    public static function getLineRule()
+    {
+        $company = self::getCompany();
+        return $company['line_rule'] ?? '';
+    }
 }
