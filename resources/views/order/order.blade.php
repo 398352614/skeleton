@@ -25,8 +25,10 @@
         }
 
         .facial-list {
-            width: 800px;
-            margin: 0 auto;
+            width: 740px;
+            height: 1050px;
+            box-sizing: border-box;
+            border: 1px solid #000;
         }
 
         .facial-list .company-name {

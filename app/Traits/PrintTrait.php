@@ -41,7 +41,7 @@ trait PrintTrait
             $snappyPdf->setPaper('a4')->save($newFilePath, true);
             unset($snappyPdf);
         } catch (\Exception $ex) {
-            throw new BusinessLogicException('打印失败');
+            throw new BusinessLogicException($ex->getMessage());
         }
         $url = Storage::disk('public_pdf')->url(DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName);
         return $url;
