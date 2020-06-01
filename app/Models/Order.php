@@ -118,7 +118,8 @@ class Order extends BaseModel
         'receiver_country_name',
         'sender_country_name',
         'country_name',
-        'settlement_type_name'
+        'settlement_type_name',
+        'source_name'
     ];
 
     /**
@@ -159,6 +160,11 @@ class Order extends BaseModel
     public function getShortAttribute()
     {
         return empty($this->receiver_country) ? null : $this->getOriginal('receiver_country');
+    }
+
+    public function getSourceNameAttribute()
+    {
+        return empty($this->source) ? null : ConstTranslateTrait::orderSourceList($this->source);
     }
 
     public function getSettlementTypeNameAttribute()
