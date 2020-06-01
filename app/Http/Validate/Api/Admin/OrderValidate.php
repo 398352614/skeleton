@@ -140,7 +140,6 @@ class OrderValidate extends BaseValidate
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
         'removeListFromBatch' => ['id_list'],
-        'getDate' => ['type'],
         'orderPrintAll' => ['id_list'],
     ];
 

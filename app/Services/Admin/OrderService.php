@@ -13,6 +13,7 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
+use App\Http\Validate\BaseValidate;
 use App\Jobs\AddOrderPush;
 use App\Jobs\OrderCreateByList;
 use App\Models\Order;
@@ -36,6 +37,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use WebSocket\Client;
 
@@ -758,6 +760,7 @@ class OrderService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
+        $this->validate($info);
         $data = $this->getSchedule($info);
         return $data;
     }
@@ -770,8 +773,27 @@ class OrderService extends BaseService
      */
     public function getDate($params)
     {
+        $this->validate($params);
+        $params['lon']=$params['receiver_lon'];
+        $params['lat']=$params['receiver_lat'];
         $data = $this->getSchedule($params);
         return $data;
+    }
+
+    /**
+     * 获取可选日期验证
+     * @param $info
+     * @throws BusinessLogicException
+     */
+    public function validate($info){
+        if(CompanyTrait::getCompany()['address_template_id'] === 1){
+            $validator=Validator::make($info,['type'=>'required|integer|in:1,2','receiver_city'=>'required|string|max:50','receiver_street'=>'required|string|max:50','receiver_post_code'=>'required|string|max:50','receiver_house_number'=>'required|string|max:50','receiver_lon'=>'required|string|max:50','receiver_lat'=>'required|string|max:50']);
+        }else{
+            $validator=Validator::make($info,['receiver_address'=>'required|string|max:50','receiver_lon'=>'required|string|max:50','receiver_lat'=>'required|string|max:50']);
+        }
+        if ($validator->fails()) {
+            throw new BusinessLogicException('地址数据不正确，无法拉取可选日期', 3001);
+        }
     }
 
     /**
