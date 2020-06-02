@@ -69,7 +69,7 @@ class Order extends BaseModel
         'cancel_type',
         'cancel_remark',
         'cancel_picture',
-        'sender',
+        'sender_fullname',
         'sender_phone',
         'sender_country',
         'sender_post_code',
@@ -77,7 +77,7 @@ class Order extends BaseModel
         'sender_city',
         'sender_street',
         'sender_address',
-        'receiver',
+        'receiver_fullname',
         'receiver_phone',
         'receiver_country',
         'receiver_post_code',
@@ -118,6 +118,7 @@ class Order extends BaseModel
         'receiver_country_name',
         'sender_country_name',
         'country_name',
+        'settlement_type_name',
         'source_name'
     ];
 
@@ -150,10 +151,6 @@ class Order extends BaseModel
         return $this->merchant->name;
     }
 
-    public function getSourceNameAttribute()
-    {
-        return empty($this->source) ? null : ConstTranslateTrait::orderSourceList($this->source);
-    }
 
     public function merchant()
     {
@@ -163,5 +160,15 @@ class Order extends BaseModel
     public function getShortAttribute()
     {
         return empty($this->receiver_country) ? null : $this->getOriginal('receiver_country');
+    }
+
+    public function getSourceNameAttribute()
+    {
+        return empty($this->source) ? null : ConstTranslateTrait::orderSourceList($this->source);
+    }
+
+    public function getSettlementTypeNameAttribute()
+    {
+        return empty($this->settlement_type) ? null : ConstTranslateTrait::orderSettlementTypeList($this->settlement_type);
     }
 }

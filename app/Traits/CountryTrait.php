@@ -70,6 +70,4 @@ trait CountryTrait
         }
         return $newNameList;
     }
-
-
 }

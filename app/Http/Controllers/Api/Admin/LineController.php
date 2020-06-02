@@ -23,54 +23,114 @@ class LineController extends BaseController
         parent::__construct($service);
     }
 
-    public function index()
+    /**
+     * 邮编-列表查询
+     * @return \App\Services\Admin\BaseLineService|array|mixed
+     */
+    public function postcodeIndex()
     {
-        return $this->service->getPageList();
+        return $this->service->postcodeIndex();
     }
 
     /**
-     * 获取详情
+     * 邮编-详情
      * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function show($id)
+    public function postcodeShow($id)
     {
-        return $this->service->show($id);
+        return $this->service->postcodeShow($id);
     }
 
 
     /**
-     * 新增
+     * 邮编-新增
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function store()
+    public function postcodeStore()
     {
-        return $this->service->store($this->data);
+        return $this->service->postcodeStore($this->data);
     }
 
     /**
+     * 邮编-修改
      * @param $id
      * @return bool|int|void
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function update($id)
+    public function postcodeUpdate($id)
     {
-        return $this->service->updateById($id, $this->data);
+        return $this->service->postcodeUpdate($id, $this->data);
     }
 
     /**
-     * 删除
+     * 邮编-删除
      * @param $id
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function destroy($id)
+    public function postcodeDestroy($id)
     {
-        return $this->service->destroy($id);
+        return $this->service->postcodeDestroy($id);
     }
 
-    public function lineImport()
+    /**
+     * 邮编-导入
+     * @return mixed
+     */
+    public function postcodeImport()
     {
-        return $this->service->lineImport($this->data);
+        return $this->service->postcodeImport($this->data);
     }
+
+    /**
+     * 区域-列表查询
+     * @return mixed
+     */
+    public function areaIndex()
+    {
+        $isGetArea = !empty($this->data['is_get_area']) ?: 2;
+        return $this->service->areaIndex($isGetArea);
+    }
+
+    /**
+     * 区域-详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function areaShow($id)
+    {
+        return $this->service->areaShow($id);
+    }
+
+    /**
+     * 区域-新增
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function areaStore()
+    {
+        return $this->service->areaStore($this->data);
+    }
+
+    /**
+     * 区域-修改
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function areaUpdate($id)
+    {
+        return $this->service->areaUpdate($id, $this->data);
+    }
+
+    /**
+     * 区域-删除
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function areaDestroy($id)
+    {
+        return $this->service->areaDestroy($id);
+    }
+
 }

@@ -20,6 +20,8 @@ class RouteTrackingController extends BaseController
     }
 
     /**
+     * @param Request $request
+     * @return
      * @api {POST}  api/admin/route-tracking/route 管理员端:获取已收集的司机的路线
      * @apiName route
      * @apiGroup route-tracking
@@ -36,34 +38,12 @@ class RouteTrackingController extends BaseController
      *  "data":{}
      * }
      */
-    public function route(Request $request)
+    public function show(Request $request)
     {
-        $payload = $request->validate([
-            'driver_id' => 'nullable',
-            'tour_no'   => 'required_without:driver_id',
-        ]);
-        $tour = null;
-        if ($payload['driver_id'] ?? null) {
-            $tour = Tour::where('driver_id', $payload['driver_id'])->first();
-        } else {
-            $tour = Tour::where('tour_no', $payload['tour_no'])->first();
-            $status=$tour->toArray()['status'];
-            if($status!==BaseConstService::TOUR_STATUS_4){
-                throw new BusinessLogicException('该取件线路不在取派中，无法追踪');
-            }
-        }
-        if (!$tour) {
-            throw new BusinessLogicException('没找到相关线路');
-        }
+        return $this->service->show();
+    }
 
-        $routeTracking = $tour->routeTracking->sortBy('created_at');
-
-        return success('', [
-            'driver'                => Arr::except($tour->driver,'messager'),
-            'route_tracking'        =>  $routeTracking,
-            'time_consuming'        =>  '',
-            'distance_consuming'    =>  '',
-            'tour_event'            =>  $tour->tourDriverEvent,
-        ]);
+    public function index(){
+        return $this->service->index();
     }
 }

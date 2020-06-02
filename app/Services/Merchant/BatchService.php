@@ -27,7 +27,7 @@ class BatchService extends BaseService
         'driver_id' => ['=', 'driver_id'],
         'line_id,line_name' => ['like', 'line_keyword'],
         'batch_no' => ['like', 'keyword'],
-        'receiver' => ['=', 'receiver'],
+        'receiver_fullname' => ['=', 'receiver_fullname'],
         'receiver_phone' => ['=', 'receiver_phone'],
         'receiver_country' => ['=', 'receiver_country'],
         'receiver_post_code' => ['=', 'receiver_post_code'],
@@ -148,7 +148,7 @@ class BatchService extends BaseService
     {
         return [
             'execution_date' => $info['execution_date'],
-            'receiver' => $info['receiver'],
+            'receiver_fullname' => $info['receiver_fullname'],
             'receiver_phone' => $info['receiver_phone'],
             'receiver_country' => $info['receiver_country'],
             'receiver_city' => $info['receiver_city'],
@@ -249,7 +249,7 @@ class BatchService extends BaseService
             'line_id' => $line['id'],
             'line_name' => $line['name'],
             'execution_date' => $order['execution_date'],
-            'receiver' => $order['receiver'],
+            'receiver_fullname' => $order['receiver_fullname'],
             'receiver_phone' => $order['receiver_phone'],
             'receiver_country' => $order['receiver_country'],
             'receiver_post_code' => $order['receiver_post_code'],
@@ -334,7 +334,7 @@ class BatchService extends BaseService
     {
         //通过订单获取可能站点
         $data = [];
-        $fields = ['receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
+        $fields = ['receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
         $rule = array_merge($this->formData, Arr::only($order, $fields));
         $this->query->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]);
         $info = $this->getList($rule);
@@ -408,7 +408,7 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
-        OrderTrailService::storeByBatchNo($info['batch_no'], BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+        OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
     }
 
     /**
@@ -458,7 +458,7 @@ class BatchService extends BaseService
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
         }
-        OrderTrailService::storeByBatchNo($info['batch_no'], BaseConstService::ORDER_TRAIL_JOIN_TOUR);
+        OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
     }
 
     /**
@@ -551,7 +551,7 @@ class BatchService extends BaseService
         }
         //将站点从取件线路移除
         $this->getTourService()->removeBatch($info);
-        OrderTrailService::storeByBatchNo($info['batch_no'], BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
+        OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
     }
 
     /**

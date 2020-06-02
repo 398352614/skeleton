@@ -6,17 +6,20 @@
 
 namespace App\Models\Scope;
 
+use App\Models\AddressTemplate;
 use App\Models\Batch;
 use App\Models\BatchException;
 use App\Models\Car;
 use App\Models\CarBrand;
 use App\Models\CarModel;
 use App\Models\Company;
+use App\Models\CompanyConfig;
 use App\Models\Country;
 use App\Models\Driver;
 use App\Models\Employee;
 use App\Models\KilometresCharging;
 use App\Models\Line;
+use App\Models\LineArea;
 use App\Models\LineRange;
 use App\Models\Material;
 use App\Models\Merchant;
@@ -24,8 +27,10 @@ use App\Models\MerchantGroup;
 use App\Models\OrderNoRule;
 use App\Models\OrderTrail;
 use App\Models\Package;
+use App\Models\RouteTracking;
 use App\Models\SpecialTimeCharging;
 use App\Models\Tour;
+use App\Models\TourDriverEvent;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
 use App\Models\TransportPrice;
@@ -53,7 +58,10 @@ class CompanyScope implements Scope
 
         //如果是员工端
         if ($user instanceof Employee) {
-            if (!($model instanceof Company)) {
+            if (
+                !($model instanceof Company)
+                && !($model instanceof AddressTemplate)
+            ) {
                 $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
             }
         }
@@ -80,9 +88,11 @@ class CompanyScope implements Scope
         if ($user instanceof Merchant) {
             $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
             if (!($model instanceof Batch)
+                && !($model instanceof CompanyConfig)
                 && !($model instanceof Tour)
                 && !($model instanceof Line)
                 && !($model instanceof LineRange)
+                && !($model instanceof LineArea)
                 && !($model instanceof TransportPrice)
                 && !($model instanceof KilometresCharging)
                 && !($model instanceof WeightCharging)
@@ -96,6 +106,8 @@ class CompanyScope implements Scope
                 && !($model instanceof OrderNoRule)
                 && !($model instanceof Warehouse)
                 && !($model instanceof OrderTrail)
+                && !($model instanceof TourDriverEvent)
+                && !($model instanceof RouteTracking)
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
             }

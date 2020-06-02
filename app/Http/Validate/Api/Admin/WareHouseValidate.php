@@ -15,7 +15,7 @@ class WareHouseValidate extends BaseValidate
 {
     public $customAttributes = [
         'name' => '名称',
-        'contacter' => '联系人',
+        'fullname' => '联系人',
         'phone' => '手机号',
         'country' => '国家',
         'post_code' => '邮编',
@@ -30,9 +30,9 @@ class WareHouseValidate extends BaseValidate
 
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:warehouse,id,company_id',
-        'contacter' => 'required|string|max:50',
+        'fullname' => 'required|string|max:50',
         'phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'country' => 'required|string|max:50',
+        'country' => 'nullable|string|max:50',
         'post_code' => 'required|string|max:50',
         'house_number' => 'required|string|max:50',
         'city' => 'required|string|max:50',
@@ -43,8 +43,8 @@ class WareHouseValidate extends BaseValidate
     ];
 
     public $scene = [
-        'store' => ['name', 'contacter', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat'],
-        'update' => ['name', 'contacter', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat']
+        'store' => ['name', 'fullname', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat'],
+        'update' => ['name', 'fullname', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat']
     ];
 }
 

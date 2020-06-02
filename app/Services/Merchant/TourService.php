@@ -47,7 +47,7 @@ class TourService extends BaseService
 
     protected $headings = [
         'id',
-        'receiver',
+        'receiver_fullname',
         'receiver_phone',
         'out_user_id',
         'receiver_address',
@@ -165,7 +165,10 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机分配失败，请重新操作');
         }
-        OrderTrailService::storeByTourNo($tour['tour_no'], BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
+        $tour['driver_id']=$driver['id'];
+        $tour['driver_name']=$driver['fullname'];
+        $tour['driver_phone']=$driver['phone'];
+        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
     }
 
     /**
@@ -180,7 +183,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机取消分配失败，请重新操作');
         }
-        OrderTrailService::storeByTourNo($tour['tour_no'], BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER);
+        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER);
     }
 
 
@@ -277,7 +280,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
-        OrderTrailService::storeByTourNo($tour['tour_no'], BaseConstService::ORDER_TRAIL_UN_LOCK);
+        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_UN_LOCK);
     }
 
 
@@ -770,7 +773,7 @@ class TourService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
             $cellData[$i][0] = $i + 1;
-            $cellData[$i][1] = $info[$i]['receiver'];
+            $cellData[$i][1] = $info[$i]['receiver_fullname'];
             $cellData[$i][2] = $info[$i]['receiver_phone'];
             $cellData[$i][3] = $orderInfo[0]['out_user_id'] ?? '';
             $cellData[$i][4] = $info[$i]['receiver_street'] . ' ' . $info[$i]['receiver_house_number'];

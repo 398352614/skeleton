@@ -36,6 +36,15 @@ class CompanyConfigController extends BaseController
     }
 
     /**
+     * 获取地址模板列表
+     * @return array
+     */
+    public function getAddressTemplateList()
+    {
+        return $this->service->getAddressTemplateList();
+    }
+
+    /**
      * 更新
      * @param $params
      * @throws BusinessLogicException

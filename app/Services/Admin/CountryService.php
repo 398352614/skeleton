@@ -15,6 +15,7 @@ use App\Models\Country;
 use App\Services\BaseService;
 use App\Traits\CountryTrait;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Artisan;
 
 class CountryService extends BaseService
 {
@@ -22,6 +23,52 @@ class CountryService extends BaseService
     {
         parent::__construct($country, CountryResource::class);
     }
+
+    /**
+     * 订单 服务
+     * @return OrderService
+     */
+    private function getOrderService()
+    {
+        return self::getInstance(OrderService::class);
+    }
+
+    /**
+     * 收件人地址 服务
+     * @return ReceiverAddressService
+     */
+    private function getReceiverAddressService()
+    {
+        return self::getInstance(ReceiverAddressService::class);
+    }
+
+    /**
+     * 发件人地址 服务
+     * @return SenderAddressService
+     */
+    private function getSenderAddressService()
+    {
+        return self::getInstance(SenderAddressService::class);
+    }
+
+    /**
+     * 仓库 服务
+     * @return WareHouseService
+     */
+    private function getWareHouseService()
+    {
+        return self::getInstance(WareHouseService::class);
+    }
+
+    /**
+     * 线路 服务
+     * @return LineService
+     */
+    private function getLineService()
+    {
+        return self::getInstance(LineService::class);
+    }
+
 
     /**
      * 列表查询
@@ -70,6 +117,11 @@ class CountryService extends BaseService
      */
     public function store($params)
     {
+        //判断是否已经存在国家
+        $info = parent::getInfo([], ['id'], false);
+        if (!empty($info)) {
+            throw new BusinessLogicException('已存在国家');
+        }
         $country = CountryTrait::getCountry($params['short']);
         if (empty($country)) {
             throw new BusinessLogicException('国家不存在');
@@ -78,6 +130,7 @@ class CountryService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('国家新增失败');
         }
+        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
     }
 
     /**
@@ -87,9 +140,30 @@ class CountryService extends BaseService
      */
     public function destroy($id)
     {
+        $order = $this->getOrderService()->getInfo([], ['id'], false);
+        if (!empty($order)) {
+            throw new BusinessLogicException('已存在订单');
+        }
+        $receiver = $this->getReceiverAddressService()->getInfo([], ['id'], false);
+        if (!empty($receiver)) {
+            throw new BusinessLogicException('已存在收件人');
+        }
+        $sender = $this->getSenderAddressService()->getInfo([], ['id'], false);
+        if (!empty($sender)) {
+            throw new BusinessLogicException('已存在发件人');
+        }
+        $warehouse = $this->getWareHouseService()->getInfo([], ['id'], false);
+        if (!empty($warehouse)) {
+            throw new BusinessLogicException('已存在仓库');
+        }
+        $line = $this->getLineService()->getInfo([], ['id'], false);
+        if (!empty($line)) {
+            throw new BusinessLogicException('已存在线路');
+        }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('删除失败，请重新操作');
         }
+        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
     }
 }

@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers\Api\Merchant;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Merchant\OrderImportService;
 use Illuminate\Http\Request;
 
+/**
+ * Class OrderImportController
+ * @package App\Http\Controllers\Api\Merchant
+ * @property OrderImportService $service
+ */
 class OrderImportController extends BaseController
 {
     public function __construct(OrderImportService $service)
@@ -15,7 +21,7 @@ class OrderImportController extends BaseController
 
     /**
      * 上传导入模板
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function uploadTemplate(){
         return $this->service->uploadTemplate();
@@ -32,10 +38,10 @@ class OrderImportController extends BaseController
     /**
      * 获取导入模板
      * @return array
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
-    public function getTemplateExcel(){
-        return $this->service->getTemplateExcel();
+    public function templateExport(){
+        return $this->service->templateExport();
     }
 
     /**

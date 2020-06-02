@@ -51,6 +51,8 @@ class RouteTracking extends BaseModel
         'lat',
         'tour_no',
         'driver_id',
+        'time',
+        'tour_driver_event_id',
         'created_at',
         'updated_at',
     ];
@@ -69,6 +71,14 @@ class RouteTracking extends BaseModel
      */
     protected $dates = [];
 
+    protected $appends = [
+        'time_human',
+    ];
+
+    public function getTimeHumanAttribute()
+    {
+        return empty($this->time) ? null : date("Y-m-d H:i:s",$this->time);
+    }
 
     // public function getStatusNameAttribute()
     // {

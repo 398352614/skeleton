@@ -74,22 +74,8 @@ class RegisterController extends BaseController
                 throw new BusinessLogicException('企业注册失败');
             }
 
-            $companyConfig = CompanyConfig::create([
-                'company_id' => $company->id,
-                'line_rule' => 1,
-                'weight_unit' => 'kg',
-                'currency_unit' => '￥',
-                'volume_unit' => 'cm³',
-                'map' => 'google'
-            ]);
-
-            if ($companyConfig === false) {
-                throw new BusinessLogicException('初始化企业配置信息失败');
-            }
-
             $institutionId = $this->addInstitution($company);//初始化组织结构
             $this->addEmployee($company, $data, $institutionId);//初始化管理员帐户
-            $this->addWarehouse($company);//初始化仓库
             $this->initCompanyOrderCodeRules($company);//初始化编号规则
             $transportPrice = $this->addTransportPrice($company);//初始化运价方案
             $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化商户组
@@ -136,22 +122,23 @@ class RegisterController extends BaseController
     protected function initCompanyOrderCodeRules($company)
     {
         $rules = [
-            BaseConstService::BATCH_NO_TYPE,
-            BaseConstService::ORDER_NO_TYPE,
-            BaseConstService::TOUR_NO_TYPE,
-            BaseConstService::BATCH_EXCEPTION_NO_TYPE,
+            BaseConstService::BATCH_NO_TYPE => BaseConstService::BATCH,
+            BaseConstService::ORDER_NO_TYPE => BaseConstService::TMS,
+            BaseConstService::TOUR_NO_TYPE => BaseConstService::TOUR,
+            BaseConstService::BATCH_EXCEPTION_NO_TYPE => BaseConstService::BATCH_EXCEPTION,
         ];
-
-        $rules = array_map(function ($value) use ($company) {
-            return [
+        $rules = collect($rules)->map(function ($rule, $type) use ($company) {
+            $prefix = $rule . substr('000' . $company->id, -4, 4);
+            $length = ($type == BaseConstService::ORDER_NO_TYPE) ? 8 : 4;
+            return collect([
                 'company_id' => $company->id,
-                'type' => $value,
-                'prefix' => substr('000' . $company->id, -4, 4),
+                'type' => $type,
+                'prefix' => $prefix,
                 'start_index' => 1,
-                'length' => ($value == BaseConstService::ORDER_NO_TYPE) ? 8 : 4,
-            ];
-        }, $rules);
-
+                'int_length' => $length,
+                'max_no' => $prefix . str_repeat('9', $length)
+            ]);
+        })->toArray();
         foreach ($rules as $rule) {
             $data[] = OrderNoRule::create($rule);
         }
@@ -177,28 +164,6 @@ class RegisterController extends BaseController
             'fullname' => $data['email'],
             'company_id' => $company->id,
             'username' => $data['email']
-        ]);
-    }
-
-    /**
-     * 添加初始仓库
-     * @param Company $company
-     * @param array $data
-     * @return mixed
-     */
-    protected function addWarehouse(Company $company)
-    {
-        return Warehouse::create([
-            'name' => $company->name,
-            'contacter' => $company->email,
-            'company_id' => $company->id,
-            'country' => 'NL',
-            'post_code' => '2153PJ',
-            'house_number' => '20',
-            'city' => 'Nieuw-Vennep',
-            'street' => 'Pesetaweg',
-            'lon' => '4.62897256',
-            'lat' => '52.25347699',
         ]);
     }
 

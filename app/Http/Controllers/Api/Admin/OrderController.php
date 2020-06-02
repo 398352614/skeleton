@@ -29,7 +29,8 @@ class OrderController extends BaseController
      * 查询初始化
      * @return array
      */
-    public function initIndex(){
+    public function initIndex()
+    {
         return $this->service->initIndex();
     }
 
@@ -215,5 +216,15 @@ class OrderController extends BaseController
     public function assignListTour()
     {
         return $this->service->assignListTour($this->data);
+    }
+
+    /**
+     * 批量打印
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function orderPrintAll()
+    {
+        return $this->service->orderPrintAll($this->data['id_list']);
     }
 }

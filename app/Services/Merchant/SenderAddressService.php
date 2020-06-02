@@ -7,16 +7,18 @@ use App\Models\Merchant;
 use App\Models\SenderAddress;
 use App\Services\BaseService;
 use App\Http\Resources\SenderAddressResource;
+use App\Traits\CompanyTrait;
+use Illuminate\Support\Arr;
 
 class SenderAddressService extends BaseService
 {
     public function __construct(SenderAddress $senderAddress)
     {
-        parent::__construct($senderAddress,SenderAddressResource::class,SenderAddressResource::class);
+        parent::__construct($senderAddress, SenderAddressResource::class, SenderAddressResource::class);
     }
 
     public $filterRules = [
-        'sender' => ['like', 'sender'],
+        'sender_fullname' => ['like', 'sender_fullname'],
         'sender_post_code' => ['like', 'sender_post_code'],
     ];
 
@@ -50,19 +52,16 @@ class SenderAddressService extends BaseService
 
     public function check($params, $id = null)
     {
-        $data = [
-            'sender' => $params['sender'],
-            'sender_phone' => $params['sender_phone'],
-            'sender_country' => $params['sender_country'],
-            'sender_post_code' => $params['sender_post_code'],
-            'sender_house_number' => $params['sender_house_number'],
-            'sender_city' => $params['sender_city'],
-            'sender_street' => $params['sender_street'],
-        ];
-        if (!empty($id)) {
-            $data['id'] = ['<>', $id];
+        if (auth()->user()->companyConfig->address_template_id == 1) {
+            $fields = ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street'];
+            $where = Arr::only($params, $fields);
+        } else {
+            $where = Arr::only($params, ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_address']);
         }
-        $info = parent::getInfo($data, ['*'], true);
+        if (!empty($id)) {
+            $where['id'] = ['<>', $id];
+        }
+        $info = parent::getInfo($where, ['*'], true);
         return $info;
     }
 
@@ -72,7 +71,7 @@ class SenderAddressService extends BaseService
      */
     public function store($params)
     {
-        $params['receiver_address']=auth()->user()->country;
+        $params['receiver_country'] = CompanyTrait::getCountry();
         if (!empty($this->check($params))) {
             throw new BusinessLogicException('地址新增失败，已有重复地址');
         }
@@ -90,7 +89,7 @@ class SenderAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $data['receiver_address']=auth()->user()->country;
+        $params['receiver_country'] = CompanyTrait::getCountry();
         $info = $this->check($data, $id);
         if (!empty($info)) {
             throw new BusinessLogicException('发货方地址已存在，不能重复添加');

@@ -47,6 +47,7 @@ class Line extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'rule',
         'name',
         'country',
         'remark',
@@ -81,8 +82,6 @@ class Line extends BaseModel
     protected $appends = [
         'country_name'
     ];
-
-
 
 
 }

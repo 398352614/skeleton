@@ -9,10 +9,13 @@ namespace App\Http\Controllers\Api\Merchant;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
+use App\Models\CompanyConfig;
 use App\Models\Employee;
+use App\Traits\CompanyTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -42,7 +45,7 @@ class AuthController extends Controller
 
         $credentials = [
             $this->username() => $request['username'],
-            'password'        => $request['password']
+            'password' => $request['password']
         ];
 
         if (!$token = $this->guard()->attempt($credentials)) {
@@ -66,7 +69,10 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth('merchant')->user());
+        $user=auth('merchant')->user();
+        //不可删除
+        $user->company_config = DB::table('company_config')->where('company_id',auth('merchant')->user()->company_id)->first();
+        return response()->json($user);
     }
 
     /**
@@ -97,17 +103,18 @@ class AuthController extends Controller
             'username' => auth('merchant')->user()->name,
             'company_id' => auth('merchant')->user()->company_id,
             'country' => auth('merchant')->user()->country,
-            'country_name'=>auth('merchant')->user()->country_name,
+            'country_name' => auth('merchant')->user()->country_name,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('merchant')->factory()->getTTL() * 60
+            'expires_in' => auth('merchant')->factory()->getTTL() * 60,
+            'company_config' => CompanyTrait::getCompany(auth('merchant')->user()->company_id)
         ];
     }
 
     /**
      * Validate the user login request.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return void
      */
     protected function validateLogin(Request $request)
@@ -135,6 +142,7 @@ class AuthController extends Controller
             return 'name';
         }
     }
+
     /**
      * Get the guard to be used during authentication.
      *
@@ -148,7 +156,7 @@ class AuthController extends Controller
     /**
      * 更新自己的密码
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return array
      * @throws BusinessLogicException
      */

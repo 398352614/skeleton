@@ -52,6 +52,7 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
             'days' => 14,
+            'permission' => 0664,
         ],
 
         'worker-daily' => [
@@ -59,6 +60,7 @@ return [
             'path' => storage_path('logs/worker/worker.log'),
             'level' => 'debug',
             'days' => 14,
+            'permission' => 0664,
         ],
 
         'job-daily' => [
@@ -66,6 +68,7 @@ return [
             'path' => storage_path('logs/worker/job.log'),
             'level' => 'debug',
             'days' => 14,
+            'permission' => 0664,
         ],
 
         'slack' => [

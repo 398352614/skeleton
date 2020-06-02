@@ -17,6 +17,7 @@ class DriverValidate extends BaseValidate
     public $customAttributes = [
         'email'                         => '用户邮箱',
         'password'                      => '密码',
+        'confirm_password'              => '密码',
         'fullname'                      => '姓名',
         'gender'                        => '性别',
         'birthday'                      => '生日',
@@ -44,6 +45,7 @@ class DriverValidate extends BaseValidate
     public $rules = [
         'email'                         => 'required|string|max:50|uniqueIgnore:driver,id',
         'password'                      => 'required|string|max:100',
+        'confirm_password'              => 'required|string|max:100|same:password',
         'new_password'                  => 'required|string|max:100',
         'confirm_new_password'          => 'required|string|max:100|same:new_password',
         'fullname'                      => 'required|string|max:50|uniqueIgnore:driver,id',
@@ -52,7 +54,7 @@ class DriverValidate extends BaseValidate
         'phone'                         => 'required|string|max:20|uniqueIgnore:driver,id|regex:/^[0-9]([0-9-])*[0-9]$/',
         'duty_paragraph'                => 'nullable|string|max:50',
         'address'                       => 'nullable|string|max:50',
-        'country'                       => 'required|string|max:100',
+        'country'                       => 'nullable|string|max:100',
         'lisence_number'                => 'nullable|string|max:50',
         'lisence_valid_date'            => 'nullable|date|date_format:Y-m-d',
         'lisence_type'                  => 'nullable|string|max:100',
@@ -72,6 +74,7 @@ class DriverValidate extends BaseValidate
         'driverRegister'             => [
             'email',
             'password',
+            'confirm_password',
             'fullname',
             'gender',
             'birthday',

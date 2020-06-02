@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\App;
 /**
  * Trait ConstTranslateTrait
  * @package App\Traits
+ * @method static noTypeList($args = null)
+ * @method static lineRuleList($args = null)
+ * @method static printTemplateList($args = null)
  * @method static weekList($args = null)
  * @method static orderSourceList($arg = null)
  * @method static orderTypeList($args = null)
@@ -51,7 +54,25 @@ use Illuminate\Support\Facades\App;
  */
 trait ConstTranslateTrait
 {
+    //编号类型
+    public static $noTypeList = [
+        BaseConstService::ORDER_NO_TYPE => '订单编号规则',
+        BaseConstService::BATCH_NO_TYPE => '站点编号规则',
+        BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
+        BaseConstService::TOUR_NO_TYPE => '取件线路编号规则',
+    ];
 
+    //线路分配规则
+    public static $lineRuleList = [
+        BaseConstService::LINE_RULE_POST_CODE => '按邮编自动分配',
+        BaseConstService::LINE_RULE_AREA => '按区域自动分配',
+    ];
+
+    //打印模板列表
+    public static $printTemplateList = [
+        BaseConstService::PRINT_TEMPLATE_STANDARD => '标准模板',
+        BaseConstService::PRINT_TEMPLATE_GENERAL => '通用模板',
+    ];
 
     //星期
     public static $weekList = [
@@ -275,7 +296,7 @@ trait ConstTranslateTrait
     public static $driverEventList = [
         BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE => '司机从仓库出发',
         BaseConstService::DRIVER_EVENT_BATCH_ARRIVED => '司机到达客户家',
-        BaseConstService::DRIVER_EVENT_BATCH_DEPART => '司机从客户加离开',
+        BaseConstService::DRIVER_EVENT_BATCH_DEPART => '司机从客户家离开',
         BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE => '司机返回仓库',
     ];
 

@@ -87,7 +87,7 @@ class CreateOrder extends Command
     {
         $receiverList = [
             [
-                'receiver' => '大娃',
+                'receiver_fullname' => '大娃',
                 'receiver_phone' => '123456781',
                 'receiver_country' => 'NL',
                 'receiver_post_code' => '5611HW',
@@ -99,7 +99,7 @@ class CreateOrder extends Command
                 'lat' => '51.43842145'
             ],
             [
-                'receiver' => '二娃',
+                'receiver_fullname' => '二娃',
                 'receiver_phone' => '1234567892',
                 'receiver_country' => 'NL',
                 'receiver_post_code' => '3031AT',
@@ -111,7 +111,7 @@ class CreateOrder extends Command
                 'lat' => '51.92512668'
             ],
             [
-                'receiver' => '三娃',
+                'receiver_fullname' => '三娃',
                 'receiver_phone' => '1234567893',
                 'receiver_country' => 'NL',
                 'receiver_post_code' => '6702AG',
@@ -123,7 +123,7 @@ class CreateOrder extends Command
                 'lat' => '51.96484667'
             ],
             [
-                'receiver' => '四娃',
+                'receiver_fullname' => '四娃',
                 'receiver_phone' => '1234567894',
                 'receiver_country' => 'NL',
                 'receiver_post_code' => '1013BD',
@@ -135,7 +135,7 @@ class CreateOrder extends Command
                 'lat' => '52.39512152'
             ],
             [
-                'receiver' => '五娃',
+                'receiver_fullname' => '五娃',
                 'receiver_phone' => '1234567895',
                 'receiver_country' => 'NL',
                 'receiver_post_code' => '9405PR',
@@ -147,7 +147,7 @@ class CreateOrder extends Command
                 'lat' => '52.99499546'
             ],
             [
-                'receiver' => '六娃',
+                'receiver_fullname' => '六娃',
                 'receiver_phone' => '1234567896',
                 'receiver_country' => 'NL',
                 'receiver_post_code' => '9723ZB',
@@ -159,7 +159,7 @@ class CreateOrder extends Command
                 'lat' => '53.2082316'
             ],
             [
-                'receiver' => '七娃',
+                'receiver_fullname' => '七娃',
                 'receiver_phone' => '1234567897',
                 'receiver_country' => 'NL',
                 'receiver_post_code' => '1183GT',
@@ -181,7 +181,7 @@ class CreateOrder extends Command
     private function getSender()
     {
         return [
-            'sender' => 'test',
+            'sender_fullname' => 'test',
             'sender_phone' => '123456789',
             'sender_country' => 'NL',
             'sender_post_code' => '7041AH',

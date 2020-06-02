@@ -30,7 +30,7 @@ return [
     ],
     'boolean' => ':attribute字符必须是 true 或false, 1 或 0 ',
     'confirmed' => ':attribute 二次确认不匹配',
-    'check_id_list'=>'请选择至少一个订单',
+    'check_id_list' => '请选择至少一个订单',
     'date' => ':attribute 必须是一个合法的日期',
     'date_format' => ':attribute 与给定的格式 :format 不符合',
     'different' => ':attribute 必须不同于 :other',
@@ -41,8 +41,8 @@ return [
     'email' => ':attribute必须是一个合法的电子邮件地址',
     'exists' => '选定的 :attribute 是无效的.',
     'file' => ':attribute必须是一个文件',
-    'gte.numeric'=>':attribute不能小于:value',
-    'lte.numeric'=>':attribute不能超过:value',
+    'gte.numeric' => ':attribute不能小于:value',
+    'lte.numeric' => ':attribute不能超过:value',
     'filled' => ':attribute的字段是必填的',
     'image' => ':attribute必须是 jpeg, png, bmp 或者 gif 格式的图片',
     'in' => '选定的 :attribute 是无效的',
@@ -142,7 +142,8 @@ return [
         'package_list.*.express_first_no' => [
             'required_with' => '包裹快递单号1是必须的',
             'max' => "包裹快递单号1字段必须在 :max 个字符之内",
-            'string' => '包裹名称必须是字符串'
+            'string' => '包裹名称必须是字符串',
+            'regex' => '快递单号是无效的'
         ],
         'package_list.*.express_second_no' => [
             'max' => '包裹名称字段必须在 :max 个字符之内',
@@ -238,6 +239,12 @@ return [
             'between' => '邮编列表截止邮编范围必须的:min-:max之间',
             'gt' => '邮编列表截止邮编必须大于起始邮编'
         ],
+        'new_password' => [
+            'different' => '新密码不能和旧密码一样',
+        ],
+        'receiver_house_number' => [
+            'required_if' => '当国家是荷兰时，门牌号必填',
+        ]
     ],
 
     /*
@@ -304,6 +311,8 @@ return [
         'relate_material' => '文件',
         'relate_material_name' => '相关文件名',
         'brand_id' => '品牌ID',
+        //Admin-line
+        'coordinate_list' => '坐标列表',
         //Admin-Common
         //Admin-Company
         //Admin-Country
@@ -363,6 +372,7 @@ return [
         //Admin-Tour
         'driver_id' => '司机ID',
         'car_id' => '车辆ID',
+        'order_count' => '订单数量',
         //Admin-Upload
         'image' => '图片',
         'file' => '文件',
@@ -377,7 +387,7 @@ return [
         //driver-memorandum
         'content' => '内容',
 
-        //driver-tourtask
+        //driver-tourTask
         'batch_id' => '站点ID',
         'order_id' => '订单ID',
 
@@ -417,29 +427,41 @@ return [
         'white_ip_list' => '白名单',
 
         //order-import
-        "item_name_1"=>"物品一名称",
-        "item_number_1"=>"物品一编号",
-        "item_count_1"=>"物品一数量",
-        "item_weight_1"=>"物品一重量",
+        "item_name_1" => "物品一名称",
+        "item_number_1" => "物品一编号",
+        "item_count_1" => "物品一数量",
+        "item_weight_1" => "物品一重量",
 
-        "item_name_2"=>"物品二名称",
-        "item_number_2"=>"物品二编号",
-        "item_count_2"=>"物品二数量",
-        "item_weight_2"=>"物品二重量",
+        "item_name_2" => "物品二名称",
+        "item_number_2" => "物品二编号",
+        "item_count_2" => "物品二数量",
+        "item_weight_2" => "物品二重量",
 
-        "item_name_3"=>"物品三名称",
-        "item_number_3"=>"物品三编号",
-        "item_count_3"=>"物品三数量",
-        "item_weight_3"=>"物品三重量",
+        "item_name_3" => "物品三名称",
+        "item_number_3" => "物品三编号",
+        "item_count_3" => "物品三数量",
+        "item_weight_3" => "物品三重量",
 
-        "item_name_4"=>"物品四名称",
-        "item_number_4"=>"物品四编号",
-        "item_count_4"=>"物品四数量",
-        "item_weight_4"=>"物品四重量",
+        "item_name_4" => "物品四名称",
+        "item_number_4" => "物品四编号",
+        "item_count_4" => "物品四数量",
+        "item_weight_4" => "物品四重量",
 
-        "item_name_5"=>"物品五名称",
-        "item_number_5"=>"物品五编号",
-        "item_count_5"=>"物品五数量",
-        "item_weight_5"=>"物品五重量",
+        "item_name_5" => "物品五名称",
+        "item_number_5" => "物品五编号",
+        "item_count_5" => "物品五数量",
+        "item_weight_5" => "物品五重量",
+
+        //order_no_rule
+        "prefix" => "开始字符",
+        "int_length" => "数字长度",
+        "string_length" => "字母长度",
+        "max_no" => "最大单号",
+        "start_index" => "数字计数",
+        "start_string_index" => "前缀计数",
+
+        //轨迹表
+        'time'=>'时间',
+
     ],
 ];

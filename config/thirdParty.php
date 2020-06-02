@@ -8,7 +8,9 @@
 return [
     //位置api
     'location_api' => env('LOCATION_API'),
-    'location_api_another'=>env('LOCATION_API_ANOTHER'),
+    'location_api_another' => env('LOCATION_API_ANOTHER'),
     'location_api_key' => env('LOCATION_API_KEY'),
     'location_api_secret' => env('LOCATION_API_SECRET'),
+    'country_cn_api' => env('COUNTRY_CN_API'),
+    'country_api' => env('COUNTRY_API')
 ];

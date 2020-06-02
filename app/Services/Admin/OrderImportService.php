@@ -29,7 +29,7 @@ class OrderImportService extends BaseService
 
     public static $headings = [
         'type_name',
-        'receiver',
+        'receiver_fullname',
         'receiver_phone',
         'receiver_post_code',
         'receiver_house_number',
@@ -100,7 +100,7 @@ class OrderImportService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getTemplateExcel()
+    public function templateExport()
     {
         $cellData[0] = [];
 

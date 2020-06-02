@@ -33,7 +33,7 @@ Route::namespace('Api\Driver')->middleware([])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
+Route::namespace('Api\Driver')->middleware(['companyValidate:driver','auth:driver'])->group(function () {
     Route::post('logout', 'AuthController@logout');
     Route::get('me', 'AuthController@me');
     Route::put('my-password', 'AuthController@updatePassword');
@@ -130,6 +130,8 @@ Route::namespace('Api\Driver')->middleware(['auth:driver'])->group(function () {
     //线路追踪
     Route::prefix('route-tracking')->group(function () {
         //用户采集地址
-        Route::post('collect', 'RouteTrackingController@collect');
+        Route::post('collect', 'RouteTrackingController@storeByList');
+        //用户采集地址(弃用)
+        Route::post('list-collect', 'RouteTrackingController@store');
     });
 });

@@ -9,6 +9,7 @@
 namespace App\Services\Admin;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Models\LineRange;
 use App\Services\BaseService;
 use Carbon\Carbon;
@@ -40,6 +41,66 @@ class LineRangeService extends BaseService
             $newList[$key]['work_day_list'] = array_column($lineList, 'schedule');
         }
         return $newList;
+    }
+
+    /**
+     * 批量新增
+     * @param $lineId
+     * @param $rangeList
+     * @param $country
+     * @param $workdayList
+     * @throws BusinessLogicException
+     */
+    public function storeAll($lineId, $rangeList, $country, $workdayList)
+    {
+        $workdayList = explode(',', $workdayList);
+        $newRangeList = [];
+        $index = 0;
+        foreach ($workdayList as $workDay) {
+            foreach ($rangeList as $key => $range) {
+                $newRangeList[$index]['line_id'] = $lineId;
+                $newRangeList[$index]['post_code_start'] = $range['post_code_start'];
+                $newRangeList[$index]['post_code_end'] = $range['post_code_end'];
+                $newRangeList[$index]['schedule'] = $workDay;
+                $newRangeList[$index]['country'] = $country;
+                $index++;
+            }
+        }
+        $rowCount = parent::insertAll($newRangeList);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('线路范围新增失败');
+        }
+    }
+
+
+    /**
+     * 邮编范围验证
+     * max(A.start,B.start)<=min(A.end,B,end)
+     * @param $rangeList
+     * @param $country
+     * @param $workdayList
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function checkRange($rangeList, $country, $workdayList, $id = null)
+    {
+        if (empty($rangeList)) {
+            throw new BusinessLogicException('邮编范围不能为空');
+        }
+        $length = count($rangeList);
+        for ($i = 0; $i <= $length - 1; $i++) {
+            for ($j = $i + 1; $j <= $length - 1; $j++) {
+                if (max($rangeList[$i]['post_code_start'], $rangeList[$j]['post_code_start']) <= min($rangeList[$i]['post_code_end'], $rangeList[$j]['post_code_end'])) {
+                    throw new BusinessLogicException('邮编存在重叠,无法添加');
+                }
+            }
+        }
+        //当前是否已存在邮编
+        foreach ($rangeList as $range) {
+            if ($this->checkIfPostcodeIntervalOverlap($range['post_code_start'], $range['post_code_end'], $country, $workdayList, $id)) {
+                throw new BusinessLogicException("邮编:post_code_start到:post_code_end已存在", 1000, ['post_code_start' => $range['post_code_start'], 'post_code_end' => $range['post_code_end']]);
+            }
+        }
     }
 
     /**

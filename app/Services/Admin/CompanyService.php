@@ -6,6 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Company;
 use App\Models\Scope\CompanyScope;
 use App\Services\BaseService;
+use Illuminate\Support\Facades\Artisan;
 
 /**
  * 公司配置服务
@@ -24,8 +25,9 @@ class CompanyService extends BaseService
      * 创建或者更新信息
      * @param array $data
      * @return bool
+     * @throws BusinessLogicException
      */
-    public function createInfo(array $data): bool
+    public function createInfo(array $data)
     {
         $where = ['name' => $data['name']];
         if (!empty(auth()->user()->company_id)) {
@@ -35,7 +37,7 @@ class CompanyService extends BaseService
         if (!empty($info)) {
             throw new BusinessLogicException('公司名称已存在');
         }
-        return $this->query->updateOrCreate(
+        $rowCount = $this->query->updateOrCreate(
                 [
                     'id' => auth()->user()->company_id,
                 ],
@@ -47,6 +49,11 @@ class CompanyService extends BaseService
                     'address' => $data['address'] ?? '',
                 ]
             ) !== 0;
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        return 'true';
     }
 
     /**

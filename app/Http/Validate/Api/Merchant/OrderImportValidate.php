@@ -10,7 +10,7 @@ class OrderImportValidate extends BaseValidate
 {
     public $customAttributes = [
         'type' => '类型',
-        'receiver' => '收件人',
+        'receiver_fullname' => '收件人',
         'receiver_phone' => '收件人电话',
         'receiver_country' => '收件人国家',
         'receiver_post_code' => '收件人邮编',
@@ -64,9 +64,9 @@ class OrderImportValidate extends BaseValidate
         'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
         'replace_amount' => 'nullable|numeric|gte:0',
         'delivery' => 'nullable|integer|in:1,2',
-        'receiver' => 'required|string|max:50',
+        'receiver_fullname' => 'required|string|max:50',
         'receiver_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'receiver_country' => 'required|string|max:20',
+        'receiver_country' => 'nullable|string|max:20',
         'receiver_post_code' => 'required|string|max:50',
         'receiver_house_number' => 'required|string|max:50',
         'receiver_address' => 'required|string|max:250',

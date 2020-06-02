@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Models;
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 单号规则表
  * Class Employee
@@ -46,8 +48,11 @@ class OrderNoRule extends BaseModel
         'type',
         'prefix',
         'start_index',
-        'end_alpha',
-        'length',
+        'int_length',
+        'start_string_index',
+        'string_length',
+        'max_no',
+        'status',
         'created_at',
         'updated_at',
     ];
@@ -65,4 +70,13 @@ class OrderNoRule extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    protected $appends = [
+        'type_name'
+    ];
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::noTypeList($this->type);
+    }
 }

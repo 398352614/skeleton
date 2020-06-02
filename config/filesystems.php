@@ -120,6 +120,14 @@ return [
             'visibility' => 'public',
         ],
 
+        //pdf文件
+        'public_pdf'=>[
+            'driver' => 'local',
+            'root'   => storage_path('app/public/pdf'),
+            'url'   => env('APP_URL').'/storage/pdf',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

@@ -11,6 +11,7 @@ namespace App\Models;
 
 use App\Models\Scope\CompanyScope;
 use App\Models\Scope\HasCompanyId;
+use App\Traits\CompanyTrait;
 use App\Traits\CountryTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
@@ -60,6 +61,14 @@ class BaseModel extends Model
             if (in_array('company_id', $columns)) {
                 if (!isset($model->company_id) || $model->company_id === null) {
                     $model->company_id = auth()->user() ? auth()->user()->company_id : self::getCompanyId();
+                }
+            }
+            //若存在国家字段,则自动填充国家字段
+            $countryList = ['country', 'receiver_country', 'sender_country'];
+            $newColumns = array_flip($columns);
+            foreach ($countryList as $country) {
+                if (!empty($newColumns[$country])) {
+                    $model->$country = auth()->user() ? CompanyTrait::getCountry() : null;
                 }
             }
             //若是司机端 则添加司机ID

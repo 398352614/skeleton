@@ -24,12 +24,12 @@ Route::namespace('Api\Merchant')->group(function () {
 });
 
 //认证
-Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function () {
+Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant','auth:merchant'])->group(function () {
     Route::get('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
     Route::put('my-password', 'AuthController@updatePassword');
     Route::put('', 'MerchantController@update');
-    Route::put('api', 'merchantApiController@update');
+    Route::put('api', 'MerchantApiController@update');
 
     //订单管理
     Route::prefix('order')->group(function () {
@@ -77,8 +77,8 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
     Route::prefix('order-import')->group(function () {
         //上传模板
         Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
-        //获取模板
-        Route::get('/getTemplate', 'OrderImportController@getTemplateExcel');
+        //生成模板
+        Route::get('/getTemplate', 'OrderImportController@templateExport');
         //获取模板说明
         Route::get('/getTemplateTips', 'OrderImportController@getTemplate');
         //批量导入
@@ -96,10 +96,10 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
     //主页统计
     Route::prefix('home')->group(function () {
         Route::get('/', 'HomeController@home');
-        Route::get('/this-week-count', 'HomeController@thisWeekcount');
-        Route::get('/last-week-count', 'HomeController@lastWeekcount');
-        Route::get('/this-month-count', 'HomeController@thisMonthcount');
-        Route::get('/last-month-count', 'HomeController@lastMonthcount');
+        Route::get('/this-week-count', 'HomeController@thisWeekCount');
+        Route::get('/last-week-count', 'HomeController@lastWeekCount');
+        Route::get('/this-month-count', 'HomeController@thisMonthCount');
+        Route::get('/last-month-count', 'HomeController@lastMonthCount');
         Route::get('/period-count', 'HomeController@periodCount');
         Route::get('/all-count', 'HomeController@all');
     });
@@ -139,5 +139,17 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant'])->group(function 
         Route::get('getLocation', 'CommonController@getLocation');
         //获取所有国家列表
         Route::get('getCountryList', 'CommonController@getCountryList');
+    });
+
+    //取件线路
+    Route::prefix('tour')->group(function () {
+        //列表查询
+        Route::get('/', 'TourController@index')->name('tour.index');
+        //详情
+        Route::get('/{id}', 'TourController@show')->name('tour.show');
+        //追踪
+        Route::get('/track', 'RouteTrackingController@show')->name('tour.track');
+        //路径
+        Route::get('/driver', 'TourDriverController@getListByTourNo')->name('tour.driver');
     });
 });

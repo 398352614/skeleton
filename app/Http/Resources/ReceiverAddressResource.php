@@ -14,7 +14,7 @@ class ReceiverAddressResource extends JsonResource
             'company_id' => $this->company_id,
             'merchant_id' => $this->merchant_id,
             'merchant_id_name' => $this->merchant_id_name,
-            'receiver' => $this->receiver,
+            'receiver_fullname' => $this->receiver_fullname,
             'receiver_phone' => $this->receiver_phone,
             'short' => $this->short,
             'receiver_country' => $this->receiver_country,

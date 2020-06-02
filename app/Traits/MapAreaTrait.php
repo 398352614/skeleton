@@ -8,6 +8,8 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Arr;
+
 trait MapAreaTrait
 {
 
@@ -22,15 +24,21 @@ trait MapAreaTrait
      * @param array $coordinate
      * @return bool
      */
-    public static function validatePoint(array $coordinateList, array $coordinate)
+    public static function containsPoint(array $coordinateList, array $coordinate)
     {
+        //若有相同点
+        $samePoint = Arr::where($coordinateList, function ($coordinateV) use ($coordinate) {
+            return (($coordinate['lat'] == $coordinateV['lat']) && ($coordinate['lat'] == $coordinateV['lat']));
+        });
+        if (!empty($samePoint)) return true;
+
         $latList = array_column($coordinateList, 'lat');
         $lonList = array_column($coordinateList, 'lon');
         $lon = $coordinate['lon'];
         $lat = $coordinate['lat'];
         $bool = false;
         //基本 验证
-        if ($lon < min($lonList) || $lon > max($lonList) || $lat > min($latList) || $lat > max($latList)) {
+        if ((bccomp($lon, min($lonList), 10) == -1) || bccomp($lon, max($lonList), 10) == 1 || bccomp($lat, min($latList), 10) == -1 || bccomp($lat, max($latList), 10) == 1) {
             return $bool;
         }
         //引射线法 验证奇偶数
@@ -55,15 +63,15 @@ trait MapAreaTrait
      * @param $secondCoordinateList
      * @return bool
      */
-    public function TwoAreasOverlap($firstCoordinateList, $secondCoordinateList)
+    public static function TwoAreasOverlap($firstCoordinateList, $secondCoordinateList)
     {
         foreach ($firstCoordinateList as $firstCoordinate) {
-            if (self::validatePoint($secondCoordinateList, $firstCoordinate)) {
+            if (self::containsPoint($secondCoordinateList, $firstCoordinate)) {
                 return true;
             }
         }
         foreach ($secondCoordinateList as $secondCoordinate) {
-            if (self::validatePoint($firstCoordinateList, $secondCoordinate)) {
+            if (self::containsPoint($firstCoordinateList, $secondCoordinate)) {
                 return true;
             }
         }

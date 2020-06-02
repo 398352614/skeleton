@@ -9,6 +9,7 @@ use App\Models\Driver;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
@@ -61,7 +62,7 @@ class DriverService extends BaseService
             'phone' => $this->formData['phone'], // $this->formData['phone_first'] . $this->formData['phone_last'],
             'duty_paragraph' => $this->formData['duty_paragraph'],
             'address' => $this->formData['address'],
-            'country' => $this->formData['country'],
+            'country' => CompanyTrait::getCountry(),
             'lisence_number' => $this->formData['lisence_number'] ?? '',
             'lisence_valid_date' => $this->formData['lisence_valid_date'] ?? null,
             'lisence_type' => $this->formData['lisence_type'] ?? null,

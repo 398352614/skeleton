@@ -32,5 +32,7 @@ Route::namespace('Api')->group(function () {
         Route::get('/updateAll', 'TestController@updateAll');
         //批量修改
         Route::get('/hex/{id}', 'TestController@hex');
+
+        Route::get('/letter', 'TestController@incrementLetter');
     });
 });

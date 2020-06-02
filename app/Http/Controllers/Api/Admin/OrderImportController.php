@@ -6,6 +6,11 @@ use App\Http\Controllers\BaseController;
 use App\Services\Admin\OrderImportService;
 use Illuminate\Http\Request;
 
+/**
+ * Class OrderImportController
+ * @package App\Http\Controllers\Api\Admin
+ * @property OrderImportService $service
+ */
 class OrderImportController extends BaseController
 {
     public function __construct(OrderImportService $service)
@@ -34,8 +39,8 @@ class OrderImportController extends BaseController
      * @return array
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function getTemplateExcel(){
-        return $this->service->getTemplateExcel();
+    public function templateExport(){
+        return $this->service->templateExport();
     }
 
     /**

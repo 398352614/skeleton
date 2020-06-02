@@ -135,6 +135,10 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'new_password'=>[
+            'different' => 'The new password cannot be the same as the original password.',
+            ],
+
     ],
 
     /*
@@ -149,6 +153,7 @@ return [
     */
 
     'attributes' => [
+        'time'=>'time',
         'country' => 'country',
         'cn_name' => 'cn name',
         'en_name' => 'en name',
@@ -163,7 +168,7 @@ return [
         'name' => 'name',
         'contacts' => 'contacts',
         'address' => 'address',
-        'receiver' => 'receiver',
+        'receiver' => 'receiver_fullname',
         'receiver_phone' => 'receiver phone',
         'receiver_country' => 'receiver country',
         'receiver_post_code' => 'receiver post code',
@@ -173,7 +178,7 @@ return [
         'receiver_address' => 'receiver address',
         'lon' => 'lon',
         'lat' => 'lat',
-        'sender' => 'sender',
+        'sender_fullname' => 'sender_fullname',
         'sender_phone' => 'sender phone',
         'sender_country' => 'sender country',
         'sender_post_code' => 'sender post code',
@@ -284,5 +289,6 @@ return [
         'special_time' => 'special time',
         'url' => 'url',
         'white_ip_list' => 'white IP list',
+        'coordinate_list' => 'coordinate list',
     ],
 ];

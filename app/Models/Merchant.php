@@ -127,4 +127,9 @@ class Merchant extends Authenticatable implements JWTSubject
             'role' => 'merchant',
         ];
     }
+
+    public function companyConfig()
+    {
+        return $this->belongsTo(CompanyConfig::class, 'company_id', 'company_id');
+    }
 }

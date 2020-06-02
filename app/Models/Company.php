@@ -70,4 +70,9 @@ class Company extends BaseModel
     protected $appends = [
         'country_name'
     ];
+
+    public function companyConfig()
+    {
+        return $this->hasOne(CompanyConfig::class, 'company_id', 'id');
+    }
 }

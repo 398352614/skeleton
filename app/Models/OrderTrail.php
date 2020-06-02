@@ -70,6 +70,15 @@ class OrderTrail extends BaseModel
 
     public function getContentAttribute($value)
     {
-        return !empty($value) ? __($value) : null;
+        if(preg_match_all('/\[([a-zA-Z0-9@.])*]/',$value,$params)){
+            for($i=0,$j=count($params[0]);$i<$j;$i++){
+                $k=1;
+                $data['params'.($i+1)]=str_replace('[','',str_replace(']','',$params[0][$i]));
+                $value=str_replace($data['params'.($i+1)],':params'.($i+1),$value,$k);
+            }
+            return !empty($value)?__($value,$data): null;
+        }else{
+            return !empty($value)?__($value): null;
+        }
     }
 }

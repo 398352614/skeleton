@@ -149,7 +149,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('包裹锁定失败,请重新操作');
         }
-        OrderTrailService::storeByTourNo($tour['tour_no'], BaseConstService::ORDER_TRAIL_LOCK);
+        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_LOCK);
     }
 
     /**
@@ -187,7 +187,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
-        OrderTrailService::storeByTourNo($tour['tour_no'], BaseConstService::ORDER_TRAIL_UN_LOCK);
+        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_UN_LOCK);
     }
 
 
@@ -417,7 +417,7 @@ class TourService extends BaseService
         }
         $batchFields = [
             'id', 'batch_no', 'tour_no', 'status',
-            'receiver', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
+            'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], $batchFields, false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
@@ -532,7 +532,7 @@ class TourService extends BaseService
         $data = [
             'batch_exception_no' => $batchExceptionNo,
             'batch_no' => $batch['batch_no'],
-            'receiver' => $batch['receiver'],
+            'receiver' => $batch['receiver_fullname'],
             'source' => __('司机来源'),
             'stage' => $params['stage'],
             'type' => $params['type'],

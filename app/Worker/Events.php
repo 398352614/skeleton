@@ -39,6 +39,7 @@ class Events extends BaseEvents
                 if (!empty($user)) {
                     self::setUser($clientId, $auth, $guard, $user);
                     self::send($clientId);
+                    Log::channel('worker-daily')->info('连接clientId' . $clientId);
                     return;
                 };
             }

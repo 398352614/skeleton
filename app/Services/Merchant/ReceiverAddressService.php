@@ -14,17 +14,18 @@ use App\Http\Resources\ReceiverAddressResource;
 use App\Models\Merchant;
 use App\Models\ReceiverAddress;
 use App\Services\BaseService;
+use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 
 class ReceiverAddressService extends BaseService
 {
     public function __construct(ReceiverAddress $receiverAddress)
     {
-        parent::__construct($receiverAddress,ReceiverAddressResource::class,ReceiverAddressResource::class);
+        parent::__construct($receiverAddress, ReceiverAddressResource::class, ReceiverAddressResource::class);
     }
 
     public $filterRules = [
-        'receiver' => ['like', 'receiver'],
+        'receiver_fullname' => ['like', 'receiver_fullname'],
         'receiver_post_code' => ['like', 'receiver_post_code'],
     ];
 
@@ -52,7 +53,7 @@ class ReceiverAddressService extends BaseService
      */
     public function store($params)
     {
-        $params['receiver_address']=auth()->user()->country;
+        $params['receiver_country'] = CompanyTrait::getCountry();
         if (!empty($this->check($params))) {
             throw new BusinessLogicException('收货方地址已存在，不能重复添加');
         }
@@ -71,7 +72,7 @@ class ReceiverAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $data['receiver_address']=auth()->user()->country;
+        $params['receiver_country'] = CompanyTrait::getCountry();
         if (!empty($this->check($data, $id))) {
             throw new BusinessLogicException('收货方地址已存在，不能重复添加');
         }
@@ -90,12 +91,11 @@ class ReceiverAddressService extends BaseService
      */
     public function check($data, $id = null)
     {
-        $where=[];
-        $fields=['receiver', 'merchant_id', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
-        foreach ($fields as $v){
-            if(isset($data[$v])){
-                $where[$v]=$data[$v];
-            }
+        if (auth()->user()->companyConfig->address_template_id == 1) {
+            $fields = ['merchant_id', 'receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
+            $where = Arr::only($data, $fields);
+        } else {
+            $where = Arr::only($data, ['merchant_id', 'receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_address']);
         }
         if (!empty($id)) {
             $where = Arr::add($where, 'id', ['<>', $id]);

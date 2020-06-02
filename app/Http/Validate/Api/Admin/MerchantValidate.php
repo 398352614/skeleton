@@ -34,7 +34,7 @@ class MerchantValidate extends BaseValidate
         'type' => 'required|integer|in:1,2',
         'name' => 'required|string|max:100|uniqueIgnore:merchant,id,company_id',
         'email' => 'required|string|max:50|email|uniqueIgnore:merchant,id',
-        'country' => 'required|string|max:50',
+        'country' => 'nullable|string|max:50',
         'settlement_type' => 'required|integer|in:1,2,3',
         'merchant_group_id' => 'required|integer',
         'contacter' => 'required|string|max:50',
