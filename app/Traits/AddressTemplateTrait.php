@@ -11,6 +11,7 @@ namespace App\Traits;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait AddressTemplateTrait
 {
@@ -27,7 +28,9 @@ trait AddressTemplateTrait
             return [];
         }
         $addressTemplate = Cache::tags($tag)->get($rootKey . $company['address_template_id']);
-        return json_decode($addressTemplate['template'], true);
+        print_r($addressTemplate);exit;
+        $template = $addressTemplate['template'];
+        return json_decode($template, true);
     }
 
     public static function getFormatAddressTemplate($type)

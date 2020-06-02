@@ -16,6 +16,7 @@ use App\Services\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class WareHouseService extends BaseService
 {

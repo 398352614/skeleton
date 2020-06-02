@@ -14,6 +14,7 @@ use App\Traits\AddressTemplateTrait;
 use App\Traits\CompanyTrait;
 use function foo\func;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Validate\BaseValidate;
 use Illuminate\Support\Str;
@@ -64,7 +65,7 @@ class Validate
             $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), [], $request);
             /*********************************************数据验证 end*************************************************/
         } catch (\Exception $ex) {
-            throw new BusinessLogicException($ex->getMessage(), $ex->getCode());
+            throw new BusinessLogicException($ex->getFile() . $ex->getLine() . $ex->getMessage(), $ex->getCode());
         }
 
         return $next($request);
