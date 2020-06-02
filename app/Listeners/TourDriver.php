@@ -39,7 +39,7 @@ class TourDriver
             'lat' => $location['lat'],
             'tour_no'   => $event->getTourNo(),
             'driver_id' => $event->getDriverId(),
-            'time' =>(string)date('yyyy-MM-dd HH:mm:ss'),
+            'time' =>time(),
             'tour_driver_event_id'=>$tourDriverEvent->id,
         ]);
     }
