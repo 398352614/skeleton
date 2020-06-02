@@ -11,6 +11,7 @@ namespace App\Traits;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait AddressTemplateTrait
 {
@@ -32,7 +33,9 @@ trait AddressTemplateTrait
 
     public static function getFormatAddressTemplate($type)
     {
+        Log::info('one');
         $addressTemplate = self::getAddressTemplate();
+        Log::info('two');
         if ($type == 'order') {
             $orderReceiverAddress = array_key_prefix($addressTemplate, 'receiver_');
             $senderReceiverAddress = array_key_prefix(Arr::only($addressTemplate, 'sender_'));
@@ -44,9 +47,11 @@ trait AddressTemplateTrait
         if ($type == 'sender') {
             return array_key_prefix($addressTemplate, 'sender_');
         }
+        Log::info('three');
         if ($type == 'warehouse') {
             return $addressTemplate;
         }
+        Log::info('four');
         return [];
     }
 }

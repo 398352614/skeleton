@@ -83,16 +83,12 @@ class Validate
         $rules = Arr::only($rules, $scene);
         //获取地址验证规则
         if (in_array($method, ['store', 'update'])) {
-            Log::info('one');
             $validateName = get_class($this->validate);
-            Log::info('two');
             $type = strtolower(str_replace('Validate', '', substr($validateName, (strrpos($validateName, '\\') + 1))));
-            Log::info('three');
             if (in_array($type, ['order', 'receiver', 'sender', 'warehouse'])) {
                 $addressRules = AddressTemplateTrait::getFormatAddressTemplate($type);
                 $rules = array_merge($rules, $addressRules);
             }
-            Log::info('four');
         }
         return $rules;
     }
