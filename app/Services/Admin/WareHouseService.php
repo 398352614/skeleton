@@ -55,6 +55,7 @@ class WareHouseService extends BaseService
     /**
      * 新增
      * @param $params
+     * @return string
      * @throws BusinessLogicException
      */
     public function store($params)
@@ -64,6 +65,7 @@ class WareHouseService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('仓库新增失败,请重新操作');
         }
+        return 'true';
     }
 
     /**
