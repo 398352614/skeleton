@@ -75,16 +75,15 @@ class RouteTrackingService extends BaseService
                 if(!empty($routeTracking[$i-1]['event'])){
                     $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'],$routeTracking[$i-1]['event']);
                 }
-                $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
                 if(!empty($info[$i]['event']) && !empty(collect($info[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'])){
                     $info[$i]['event']=array_merge([collect($info[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'][0]],collect($info[$i]['event'])->groupBy('type')->toArray()['station'] ?? []);
                 }
                 $info=Arr::except($info,[$i-1]);
             }else{
                 $routeTracking[$i]['stopTime']=0.0;
-                $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
             }
             $info[0]=$routeTracking[0];
+            $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
         }
         return success('', [
             'route_tracking'        =>  array_values($info),
