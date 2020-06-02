@@ -28,6 +28,7 @@ trait AddressTemplateTrait
             return [];
         }
         $addressTemplate = Cache::tags($tag)->get($rootKey . $company['address_template_id']);
+        print_r($addressTemplate);exit;
         $template = $addressTemplate['template'];
         return json_decode($template, true);
     }
