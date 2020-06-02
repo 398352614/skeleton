@@ -24,6 +24,7 @@ class RouteTrackingValidate extends BaseValidate
         'location_list.*.lon' => 'required|string',
         'location_list.*.lat' => 'required|string',
         'location_list.*.time' => 'required|date_format:Y-m-d H:i:s',
+        'location_list'=>'required|json',
     ];
 
     public $scene = [

@@ -909,22 +909,6 @@ class OrderService extends BaseService
     }
 
     /**
-     * 通过订单获得可选日期
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getTourDate($id)
-    {
-        $info = parent::getInfo(['id' => $id], ['*'], true);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $data = $this->getSchedule($info);
-        return $data;
-    }
-
-    /**
      * 通过地址获得可选日期
      * @param $params
      * @return array
@@ -932,8 +916,27 @@ class OrderService extends BaseService
      */
     public function getDate($params)
     {
+        $this->validate($params);
+        $params['lon']=$params['receiver_lon'];
+        $params['lat']=$params['receiver_lat'];
         $data = $this->getSchedule($params);
         return $data;
+    }
+
+    /**
+     * 获取可选日期验证
+     * @param $info
+     * @throws BusinessLogicException
+     */
+    public function validate($info){
+        if(CompanyTrait::getCompany()['address_template_id'] === 1){
+            $validator=Validator::make($info,['type'=>'required|integer|in:1,2','receiver_city'=>'required|string|max:50','receiver_street'=>'required|string|max:50','receiver_post_code'=>'required|string|max:50','receiver_house_number'=>'required|string|max:50','receiver_lon'=>'required|string|max:50','receiver_lat'=>'required|string|max:50']);
+        }else{
+            $validator=Validator::make($info,['receiver_address'=>'required|string|max:50','receiver_lon'=>'required|string|max:50','receiver_lat'=>'required|string|max:50']);
+        }
+        if ($validator->fails()) {
+            throw new BusinessLogicException('地址数据不正确，无法拉取可选日期', 3001);
+        }
     }
 
     /**
@@ -1031,7 +1034,7 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
             }
             //获取线路信息
-            $line = parent::getInfo(['id' => $lineId], ['*'], false);
+            $line = $this->getLineService()->getInfo(['id' => $lineId], ['*'], false);
             if (empty($line)) {
                 throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
             }

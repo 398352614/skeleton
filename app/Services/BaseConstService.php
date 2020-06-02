@@ -123,6 +123,11 @@ class BaseConstService
     const TOUR_STATUS_4 = 4;
     const TOUR_STATUS_5 = 5;
 
+    //取件线路状态状态：1-未取派2-取派中-3-取派完成
+    const MERCHANT_TOUR_STATUS_1 = 1;
+    const MERCHANT_TOUR_STATUS_2 = 2;
+    const MERCHANT_TOUR_STATUS_3 = 3;
+
     //tour 在途状态  1-配送中 2-已完成 3-异常
     const TOUR_STATUS_DELIVERYING = 1;
     const TOUR_STATUS_COMPLETED = 2;

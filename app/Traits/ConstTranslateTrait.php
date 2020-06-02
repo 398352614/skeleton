@@ -51,6 +51,7 @@ use Illuminate\Support\Facades\App;
  * @method static merchantSettlementTypeList($args = null)
  * @method static merchantStatusList($args = null)
  * @method static driverEventList($args = null)
+ * @method static merchantTourStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -194,6 +195,13 @@ trait ConstTranslateTrait
         BaseConstService::TOUR_STATUS_3 => '待出库',
         BaseConstService::TOUR_STATUS_4 => '取派中',
         BaseConstService::TOUR_STATUS_5 => '取派完成',
+    ];
+
+    //商户端在途类型1-未取派-2-取派中3-取派完成
+    public static $merchantTourStatusList = [
+        BaseConstService::MERCHANT_TOUR_STATUS_1 => '未取派',
+        BaseConstService::MERCHANT_TOUR_STATUS_2 => '取派中',
+        BaseConstService::MERCHANT_TOUR_STATUS_3 => '取派完成',
     ];
 
     //车辆车型1自动档-2手动挡

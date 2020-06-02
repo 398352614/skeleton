@@ -388,7 +388,8 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路不存在');
         }
         $tour = $tour->toArray();
-        if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_3) {
+        if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_3 &&
+            !empty($this->getInfo(['driver_id'=>auth()->user()->id,'status'=>['<>',BaseConstService::TOUR_STATUS_4]],['*'],false))) {
             throw new BusinessLogicException('取件线路当前状态不允许出库');
         }
         if (empty($tour['car_id']) || empty($tour['car_no'])) {
