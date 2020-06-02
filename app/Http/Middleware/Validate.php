@@ -65,7 +65,7 @@ class Validate
             $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), [], $request);
             /*********************************************数据验证 end*************************************************/
         } catch (\Exception $ex) {
-            throw new BusinessLogicException($ex->getMessage(), $ex->getCode());
+            throw new BusinessLogicException($ex->getFile() . $ex->getLine() . $ex->getMessage(), $ex->getCode());
         }
 
         return $next($request);
