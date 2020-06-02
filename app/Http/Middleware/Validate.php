@@ -36,7 +36,6 @@ class Validate
      */
     public function handle($request, $next)
     {
-        Log::info('one');
         $data = $request->all();
         $action = $request->route()->getAction();
         try {
@@ -58,12 +57,10 @@ class Validate
             if (empty($this->validate->rules) || empty($this->validate->scene[$method])) {
                 return $next($request);
             }
-            Log::info('two');
             //获取验证规则
             $rules = $this->getRules($this->validate->rules, $this->validate->scene[$method], $method);
             /************************************验证规则获取 end******************************************************/
             /********************************************数据验证 start************************************************/
-            Log::info('three');
             //验证
             $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), [], $request);
             /*********************************************数据验证 end*************************************************/
@@ -86,12 +83,16 @@ class Validate
         $rules = Arr::only($rules, $scene);
         //获取地址验证规则
         if (in_array($method, ['store', 'update'])) {
+            Log::info('one');
             $validateName = get_class($this->validate);
+            Log::info('two');
             $type = strtolower(str_replace('Validate', '', substr($validateName, (strrpos($validateName, '\\') + 1))));
+            Log::info('three');
             if (in_array($type, ['order', 'receiver', 'sender', 'warehouse'])) {
                 $addressRules = AddressTemplateTrait::getFormatAddressTemplate($type);
                 $rules = array_merge($rules, $addressRules);
             }
+            Log::info('four');
         }
         return $rules;
     }
