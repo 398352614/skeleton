@@ -32,7 +32,7 @@ trait CompanyTrait
     {
         $rootKey = config('tms.cache_prefix.company');
         $tag = config('tms.cache_tags.company');
-        $companyId = $companyId ?? auth()->user()->companyConfig->company_id;
+        $companyId = $companyId ?? auth()->user()->company_id;
         $company = Cache::tags($tag)->get($rootKey . $companyId);
         if (empty($company)) {
             Artisan::call('company:cache --company_id=' . $companyId);
@@ -49,5 +49,15 @@ trait CompanyTrait
     {
         $company = self::getCompany();
         return $company['line_rule'] ?? '';
+    }
+
+    /**
+     * 获取地址模板ID
+     * @return mixed|string
+     */
+    public static function getAddressTemplateId()
+    {
+        $company = self::getCompany();
+        return $company['address_template_id'] ?? '';
     }
 }

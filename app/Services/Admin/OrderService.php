@@ -15,13 +15,11 @@ use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
 use App\Http\Validate\BaseValidate;
 use App\Jobs\AddOrderPush;
-use App\Jobs\OrderCreateByList;
 use App\Models\Order;
 use App\Models\OrderImportLog;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
-use App\Services\PrintService;
 use App\Traits\BarcodeTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
@@ -392,7 +390,7 @@ class OrderService extends BaseService
                 'package_list',
                 'material_list']);
             //获取经纬度
-            $info = $this->getReceiverAddressService()->check($list[$i]);
+            $info = $this->getReceiverAddressService()->getInfo($list[$i]);
             $list[$i]['sender_fullname'] = $list[$i]['sender_phone'] = $list[$i]['sender_country'] = $list[$i]['sender_post_code']
                 = $list[$i]['sender_house_number'] = $list[$i]['sender_address'] = $list[$i]['sender_city'] = $list[$i]['sender_street']
                 = $list[$i]['receiver_city'] = $list[$i]['receiver_street'] = '';
@@ -464,7 +462,7 @@ class OrderService extends BaseService
                 $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             }
             $data[$i] = array_map('strval', $data[$i]);
-            $data[$i]['receiver_country'] = auth()->user()->country;//填充收件人国家
+            $data[$i]['receiver_country'] = CompanyTrait::getCountry();//填充收件人国家
         }
         return $data;
     }
@@ -508,12 +506,12 @@ class OrderService extends BaseService
     public function record($params)
     {
         //记录发件人地址
-        $info = $this->getSenderAddressService()->check($params);
+        $info = $this->getSenderAddressService()->getInfoByUnique($params);
         if (empty($info)) {
             $this->getSenderAddressService()->create($params);
         }
         //记录收件人地址
-        $info = $this->getReceiverAddressService()->check($params);
+        $info = $this->getReceiverAddressService()->getInfoByUnique($params);
         if (empty($info)) {
             $this->getReceiverAddressService()->create($params);
         }
@@ -558,6 +556,10 @@ class OrderService extends BaseService
                 $repeatCodeList = implode(',', array_diff_assoc($codeList, array_unique($codeList)));
                 throw new BusinessLogicException('材料代码[:code]有重复！不能添加订单', 1000, ['code' => $repeatCodeList]);
             }
+        }
+        //填充地址
+        if (CompanyTrait::getAddressTemplateId() == 1) {
+            $params['receiver_address'] = implode(' ', array_filter(Arr::only($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
         }
     }
 
@@ -774,8 +776,8 @@ class OrderService extends BaseService
     public function getDate($params)
     {
         $this->validate($params);
-        $params['lon']=$params['receiver_lon'];
-        $params['lat']=$params['receiver_lat'];
+        $params['lon'] = $params['receiver_lon'];
+        $params['lat'] = $params['receiver_lat'];
         $data = $this->getSchedule($params);
         return $data;
     }
@@ -785,11 +787,12 @@ class OrderService extends BaseService
      * @param $info
      * @throws BusinessLogicException
      */
-    public function validate($info){
-        if(CompanyTrait::getCompany()['address_template_id'] === 1){
-            $validator=Validator::make($info,['type'=>'required|integer|in:1,2','receiver_city'=>'required|string|max:50','receiver_street'=>'required|string|max:50','receiver_post_code'=>'required|string|max:50','receiver_house_number'=>'required|string|max:50','receiver_lon'=>'required|string|max:50','receiver_lat'=>'required|string|max:50']);
-        }else{
-            $validator=Validator::make($info,['receiver_address'=>'required|string|max:50','receiver_lon'=>'required|string|max:50','receiver_lat'=>'required|string|max:50']);
+    public function validate($info)
+    {
+        if (CompanyTrait::getCompany()['address_template_id'] === 1) {
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_city' => 'required|string|max:50', 'receiver_street' => 'required|string|max:50', 'receiver_post_code' => 'required|string|max:50', 'receiver_house_number' => 'required|string|max:50', 'receiver_lon' => 'required|string|max:50', 'receiver_lat' => 'required|string|max:50']);
+        } else {
+            $validator = Validator::make($info, ['receiver_address' => 'required|string|max:50', 'receiver_lon' => 'required|string|max:50', 'receiver_lat' => 'required|string|max:50']);
         }
         if ($validator->fails()) {
             throw new BusinessLogicException('地址数据不正确，无法拉取可选日期', 3001);

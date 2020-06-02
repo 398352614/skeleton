@@ -23,6 +23,7 @@ use App\Services\Admin\OrderImportService;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
+use App\Traits\AddressTemplateTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
@@ -362,9 +363,9 @@ class OrderService extends BaseService
         //订单轨迹-订单创建
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
         //订单轨迹-订单加入站点
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
         //订单轨迹-订单加入取件线路
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR,$tour);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR, $tour);
         return [
             'order_no' => $params['order_no'],
             'batch_no' => $batch['batch_no'],
@@ -385,7 +386,7 @@ class OrderService extends BaseService
         $list = json_decode($params['list'], true);
         for ($i = 0; $i < count($list); $i++) {
             $list[$i] = $this->form($list[$i]);
-            $list[$i]['receiver_country'] = auth()->user()->country;
+            $list[$i]['receiver_country'] = CompanyTrait::getCountry();
             try {
                 $this->store($list[$i], BaseConstService::ORDER_SOURCE_2);
             } catch (BusinessLogicException $e) {
@@ -450,7 +451,7 @@ class OrderService extends BaseService
             if (is_numeric($data[$i]['execution_date'])) {
                 $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             }
-            $data[$i]['receiver_country'] = auth()->user()->country;//填充收件人国家
+            $data[$i]['receiver_country'] = CompanyTrait::getCountry();//填充收件人国家
         }
         return $data;
     }
@@ -1132,7 +1133,7 @@ class OrderService extends BaseService
         list($batch, $tour) = $this->getBatchService()->join($info, $line, $batchNo);
         /*********************************4.填充取件批次编号和取件线路编号*********************************************/
         $this->fillBatchTourInfo($info, $batch, $tour);
-        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
     }
 
     /**
@@ -1162,8 +1163,8 @@ class OrderService extends BaseService
             throw new BusinessLogicException('移除失败,请重新操作');
         }
         $this->getBatchService()->removeOrder($info);
-        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH,$info);
-        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR,$info);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH, $info);
+        OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR, $info);
     }
 
     /**
@@ -1276,9 +1277,9 @@ class OrderService extends BaseService
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($order, $batch, $tour);
         //订单轨迹-订单加入站点
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH,$batch);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
         //订单轨迹-订单加入取件线路
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR,$batch);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR, $batch);
     }
 
 
