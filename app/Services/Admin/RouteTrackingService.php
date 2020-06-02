@@ -76,8 +76,8 @@ class RouteTrackingService extends BaseService
                     }else{
                         $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
                     }
-                    $info=Arr::except($info,[$i-1]);
                 }
+                $info=Arr::except($info,[$i-1]);
             }else{
                 $routeTracking[$i]['stopTime']=0.0;
                 $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
