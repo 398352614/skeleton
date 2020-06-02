@@ -89,8 +89,9 @@ class RouteTrackingService extends BaseService
             $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
         }
         $info[0]=Arr::except($routeTracking[0],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
+        $info=collect(array_values($info))->sortByDesc('time')->toArray();
         return success('', [
-            'route_tracking'        =>  array_values($info),
+            'route_tracking'        =>  $info,
             'driver'                => Arr::except($tour->driver,'messager'),
             'tour_event'            =>  $tour->tourDriverEvent,
             'time_consuming'        =>  '',
