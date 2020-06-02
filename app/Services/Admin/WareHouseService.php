@@ -60,7 +60,6 @@ class WareHouseService extends BaseService
      */
     public function store($params)
     {
-        Log::info('store begin');
         $this->fillData($params);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
