@@ -16,6 +16,7 @@ use App\Services\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class WareHouseService extends BaseService
 {
@@ -55,17 +56,19 @@ class WareHouseService extends BaseService
     /**
      * 新增
      * @param $params
-     * @return string
      * @throws BusinessLogicException
      */
     public function store($params)
     {
+        Log::info('one');
         $this->fillData($params);
+        Log::info('two');
         $rowCount = parent::create($params);
+        Log::info('three');
         if ($rowCount === false) {
             throw new BusinessLogicException('仓库新增失败,请重新操作');
         }
-        return 'true';
+        Log::info('four');
     }
 
     /**
