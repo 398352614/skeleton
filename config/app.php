@@ -162,8 +162,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
-        Barryvdh\Snappy\ServiceProvider::class,
-        Milon\Barcode\BarcodeServiceProvider::class,
+        //Barryvdh\Snappy\ServiceProvider::class,
+        //Milon\Barcode\BarcodeServiceProvider::class,
 
         /*
          * Package Service Providers...
