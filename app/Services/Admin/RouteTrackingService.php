@@ -69,7 +69,11 @@ class RouteTrackingService extends BaseService
                         'time'=>$routeTracking[$i]['time_human'],
                         'type'=>'stop',
                     ];
-                    $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'] ?? [],[collect($content[$i])->sortByDesc('time')->first()]);
+                    if(!empty($routeTracking[$i]['event'])){
+                        $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'],[collect($content[$i])->sortByDesc('time')->first()]);
+                    }else{
+                        $routeTracking[$i]['event']=[collect($content[$i])->sortByDesc('time')->first()];
+                    }
                 }
                 //合并
                 if(!empty($routeTracking[$i-1]['event'])){
