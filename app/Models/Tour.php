@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 use Carbon\CarbonInterval;
 
@@ -109,7 +110,9 @@ class Tour extends BaseModel
     protected $appends = [
         'status_name',
         'expect_time_human',
-        'actual_time_human'
+        'actual_time_human',
+        'merchant_status',
+        'merchant_status_name'
     ];
 
     /**
@@ -179,6 +182,18 @@ class Tour extends BaseModel
     public function getExpectDistanceAttribute($value)
     {
         return round($value / 1000, 2);
+    }
+
+    public function getMerchantStatusAttribute(){
+        if(in_array($this->status,[BaseConstService::TOUR_STATUS_1,BaseConstService::TOUR_STATUS_2,BaseConstService::TOUR_STATUS_3])){
+            return BaseConstService::MERCHANT_TOUR_STATUS_1;
+        }else{
+            return $this->status-2;
+        }
+    }
+
+    public function getMerchantStatusNameAttribute(){
+        return empty($this->merchant_status) ? null : ConstTranslateTrait::merchantTourStatusList($this->merchant_status);
     }
 
     /*    public function getExpectTimeAttribute($value)
