@@ -69,11 +69,7 @@ class RouteTrackingService extends BaseService
                         'time'=>$routeTracking[$i]['time_human'],
                         'type'=>'stop',
                     ];
-                    if(!empty($routeTracking[$i]['event'])){
-                        $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'],[collect($content[$i])->sortByDesc('time')->first()]);
-                    }else{
-                        $routeTracking[$i]['event']=[collect($content[$i])->sortByDesc('time')->first()];
-                    }
+                    $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'] ?? [],[collect($content[$i])->sortByDesc('time')->first()]);
                 }
                 //合并
                 if(!empty($routeTracking[$i-1]['event'])){
@@ -81,7 +77,7 @@ class RouteTrackingService extends BaseService
                 }
                 $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
                 if(!empty($info[$i]['event'])){
-                    $info[$i]['event']=array_merge([collect($info[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'][0] ?? []],collect($info[$i]['event'])->groupBy('type')->toArray()['station'] ?? []);
+                    $info[$i]['event']=array_merge([collect($info[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'][0]] ?? [],collect($info[$i]['event'])->groupBy('type')->toArray()['station'] ?? []);
                 }
                 $info=Arr::except($info,[$i-1]);
             }else{
