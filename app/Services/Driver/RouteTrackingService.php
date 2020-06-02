@@ -47,7 +47,7 @@ class RouteTrackingService extends BaseService
      */
     public function createByList($params){
         $data=$params['location_list'];
-        $tour = Tour::query()->where('driver_id', auth()->user()->id)->where('status', BaseConstService::TOUR_STATUS_4)->first();
+        $tour = Tour::query()->where('driver_id', auth()->user()->id)->where('tour_no',$params['tour_no'])->where('status', BaseConstService::TOUR_STATUS_4)->first();
         if(empty($tour)){
             throw new BusinessLogicException('当前司机不存在派送中线路');
         }
