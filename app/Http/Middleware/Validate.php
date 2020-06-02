@@ -36,6 +36,7 @@ class Validate
      */
     public function handle($request, $next)
     {
+        Log::info('validate begin');
         $data = $request->all();
         $action = $request->route()->getAction();
         try {
@@ -57,10 +58,12 @@ class Validate
             if (empty($this->validate->rules) || empty($this->validate->scene[$method])) {
                 return $next($request);
             }
+            Log::info('rule begin');
             //获取验证规则
             $rules = $this->getRules($this->validate->rules, $this->validate->scene[$method], $method);
             /************************************验证规则获取 end******************************************************/
             /********************************************数据验证 start************************************************/
+            Log::info('real validate begin');
             //验证
             $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), [], $request);
             /*********************************************数据验证 end*************************************************/
