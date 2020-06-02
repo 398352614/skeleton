@@ -56,8 +56,7 @@ class RouteTrackingService extends BaseService
                         $item['type']='station';
                         return $item->only('content','time','type','address');
                     })->toArray());
-                dd($routeTracking[$k]['event']);
-                $routeTracking[$k]['address']=$routeTracking[$k]['event']['address'];
+                $routeTracking[$k]['address']=$routeTracking[$k]['event'][0]['address'];
             }
         }
         $routeTracking[0]['stopTime']=0.0;
