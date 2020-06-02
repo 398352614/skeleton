@@ -60,15 +60,11 @@ class WareHouseService extends BaseService
      */
     public function store($params)
     {
-        Log::info('one');
         $this->fillData($params);
-        Log::info('two');
         $rowCount = parent::create($params);
-        Log::info('three');
         if ($rowCount === false) {
             throw new BusinessLogicException('仓库新增失败,请重新操作');
         }
-        Log::info('four');
     }
 
     /**
