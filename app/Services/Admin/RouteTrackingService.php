@@ -75,7 +75,7 @@ class RouteTrackingService extends BaseService
                 if(!empty($routeTracking[$i]['event'])){
                     $routeTracking[$i+1]['event']=array_merge($routeTracking[$i+1]['event'],$routeTracking[$i]['event']);
                 }
-                $info[$i+1]=Arr::except($routeTracking[$i+1],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
+                $info[$i+1]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
                 if(!empty($info[$i+1]['event']) && !empty(collect($info[$i+1]['event'])->groupBy('type')->sortByDesc('time')['stop'])){
                     $info[$i+1]['event']=array_merge([collect($info[$i+1]['event'])->groupBy('type')->sortByDesc('time')['stop'][0]],collect($info[$i+1]['event'])->groupBy('type')->toArray()['station'] ?? []);
                 }
