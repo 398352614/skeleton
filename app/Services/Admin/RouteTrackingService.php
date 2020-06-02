@@ -68,7 +68,7 @@ class RouteTrackingService extends BaseService
                         'time'=>$routeTracking[$i]['time_human'],
                         'type'=>'stop',
                     ];
-                    $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'] ?? [],[collect($content[$i])->sortByDesc('time')->first()]);
+                    $routeTracking[$i]['event']=array_values(array_merge($routeTracking[$i]['event'] ?? [],[collect($content[$i])->sortByDesc('time')->first()]));
                     if($routeTracking[$i-1]['stopTime']>=BaseConstService::STOP_TIME){
                         $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'],$routeTracking[$i-1]['event']);
                         $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
