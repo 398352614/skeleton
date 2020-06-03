@@ -762,7 +762,6 @@ class OrderService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $this->validate($info);
         $data = $this->getSchedule($info);
         return $data;
     }
@@ -775,9 +774,9 @@ class OrderService extends BaseService
      */
     public function getDate($params)
     {
-        $this->validate($params);
         $params['lon'] = $params['receiver_lon'];
         $params['lat'] = $params['receiver_lat'];
+        $this->validate($params);
         $data = $this->getSchedule($params);
         return $data;
     }
@@ -790,7 +789,7 @@ class OrderService extends BaseService
     public function validate($info)
     {
         if (CompanyTrait::getCompany()['address_template_id'] === 1) {
-            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_city' => 'required|string|max:50', 'receiver_street' => 'required|string|max:50', 'receiver_post_code' => 'required|string|max:50', 'receiver_house_number' => 'required|string|max:50', 'receiver_lon' => 'required|string|max:50', 'receiver_lat' => 'required|string|max:50']);
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_city' => 'required|string|max:50', 'receiver_street' => 'required|string|max:50', 'receiver_post_code' => 'required|string|max:50', 'receiver_house_number' => 'required|string|max:50', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
         } else {
             $validator = Validator::make($info, ['receiver_address' => 'required|string|max:50', 'receiver_lon' => 'required|string|max:50', 'receiver_lat' => 'required|string|max:50']);
         }
