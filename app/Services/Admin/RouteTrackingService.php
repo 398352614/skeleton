@@ -54,8 +54,9 @@ class RouteTrackingService extends BaseService
                     ->map(function ($item){
                         $item['time']=date_format($item['created_at'],"Y-m-d H:i:s");
                         $item['type']='station';
-                        return $item->only('content','time','type');
+                        return $item->only('content','time','type','address');
                     })->toArray());
+                $routeTracking[$k]['address']=$routeTracking[$k]['event'][0]['address'];
             }
         }
         $routeTracking[0]['stopTime']=0.0;
@@ -75,6 +76,9 @@ class RouteTrackingService extends BaseService
                 if(!empty($routeTracking[$i-1]['event'])){
                     $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'],$routeTracking[$i-1]['event']);
                 }
+                if(!empty($routeTracking[$i-1]['address'])){
+                    $routeTracking[$i]['address']=$routeTracking[$i-1]['address'];
+                }
                 if(!empty($info[$i]['event']) && !empty(collect($info[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'])){
                     $info[$i]['event']=array_merge([collect($info[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'][0]],collect($info[$i]['event'])->groupBy('type')->toArray()['station'] ?? []);
                 }
@@ -82,11 +86,18 @@ class RouteTrackingService extends BaseService
             }else{
                 $routeTracking[$i]['stopTime']=0.0;
             }
-            $info[0]=$routeTracking[0];
             $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
+            if(empty($info[$i]['address'])){
+                $info[$i]['address']="";
+            }
+            if(empty($info[$i]['event'])){
+                $info[$i]['event']=[];
+            }
         }
+        $info[0]=Arr::except($routeTracking[0],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
+        $info=array_values(collect($info)->sortBy('time_human')->toArray());
         return success('', [
-            'route_tracking'        =>  array_values($info),
+            'route_tracking'        =>  $info,
             'driver'                => Arr::except($tour->driver,'messager'),
             'tour_event'            =>  $tour->tourDriverEvent,
             'time_consuming'        =>  '',

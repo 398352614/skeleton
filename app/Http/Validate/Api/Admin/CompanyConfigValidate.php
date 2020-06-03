@@ -7,7 +7,7 @@ use App\Http\Validate\BaseValidate;
 class CompanyConfigValidate extends BaseValidate
 {
     public $customAttributes = [
-        'name' => '线路分配规则',
+        'line_rule' => '线路分配规则',
         'address_template_id' => '地址模板',
         'weight_unit' => '重量单位',
         'currency_unit' => '货币单位',
