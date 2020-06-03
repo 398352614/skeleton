@@ -932,8 +932,6 @@ class OrderService extends BaseService
      */
     public function getDate($params)
     {
-        $params['lon']=$params['receiver_lon'];
-        $params['lat']=$params['receiver_lat'];
         $this->validate($params);
         $data = $this->getSchedule($params);
         return $data;
