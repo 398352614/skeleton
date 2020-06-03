@@ -154,7 +154,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/cancel', 'BatchController@cancel');                        //取消取派
         Route::get('/{id}/getTourList', 'BatchController@getTourList');              //获取取件线路列表
         Route::get('/{id}/getTourDate', 'BatchController@getTourDate'); //获取可分配路线日期
-        Route::put('/{id}/assignToTour', 'BatchController@assignToTour');            //分配站点至取件线路
+        Route::put('/{id}/assign-Tour', 'BatchController@assignToTour');            //分配站点至取件线路
         Route::delete('/{id}/removeFromTour', 'BatchController@removeFromTour');     //移除站点
         Route::get('/{id}/get-date', 'BatchController@getLineDate'); //获取可分配路线日期
     });
