@@ -383,7 +383,7 @@ class TourService extends BaseService
      */
     private function checkOutWarehouse($id, $params)
     {
-        if(!empty($this->getInfo(['driver_id'=>auth()->user()->id,'status'=>['<>',BaseConstService::TOUR_STATUS_4]],['*'],false))){
+        if(!empty($this->getInfo(['driver_id'=>auth()->user()->id,'status'=>['=',BaseConstService::TOUR_STATUS_4]],['*'],false))){
             throw new BusinessLogicException('同时只能进行一个任务，请先完成其他取派中的任务');
         }
         $tour = parent::getInfoLock(['id' => $id], ['*'], false);
