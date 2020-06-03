@@ -129,7 +129,7 @@ class RegisterController extends BaseController
         ];
         $rules = collect($rules)->map(function ($rule, $type) use ($company) {
             $prefix = $rule . substr('000' . $company->id, -4, 4);
-            $length = ($type == BaseConstService::ORDER_NO_TYPE) ? 8 : 4;
+            $length = ($type == BaseConstService::ORDER_NO_TYPE) ? 6 : 4;
             return collect([
                 'company_id' => $company->id,
                 'type' => $type,
