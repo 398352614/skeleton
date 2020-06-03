@@ -45,7 +45,7 @@ class RouteTrackingService extends BaseService
             $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->where('status',BaseConstService::TOUR_STATUS_4)->first();
         }
         if (!$tour) {
-            throw new BusinessLogicException('没找到相关线路');
+            throw new BusinessLogicException('没找到相关进行中的线路');
         }
         $routeTracking = $tour->routeTracking->sortBy('time_human')->toArray();
         foreach ($routeTracking as $k=>$v){
