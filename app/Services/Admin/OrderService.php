@@ -51,6 +51,7 @@ class OrderService extends BaseService
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
+        'tour_no' => ['=','tour_no']
     ];
 
     public $orderBy = ['id' => 'desc'];
