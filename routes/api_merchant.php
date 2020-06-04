@@ -52,7 +52,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant','auth:m
         //获取可分配路线日期
         Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
         //获取可分配路线日期(新增)
-        Route::get('/getDate', 'OrderController@getDate');
+        Route::get('/get-date', 'OrderController@getDate');
         //获取可分配的站点列表
         //Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
         //分配至站点
