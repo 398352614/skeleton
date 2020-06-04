@@ -123,4 +123,10 @@ class BatchController extends BaseController
         return $this->service->getLineDate($id,$this->data);
 
     }
+
+
+    public function getLineList(){
+        return $this->service->getLineList();
+
+    }
 }
