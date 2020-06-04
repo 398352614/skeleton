@@ -26,24 +26,13 @@ class CompanyConfigController extends BaseController
 
     /**
      * 获取详情
-     * @return array
+     * @return mixed
      * @throws BusinessLogicException
      */
     public function show()
     {
         $info = $this->service->getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
-        return empty($info) ? [
-            'id'=>null,
-            'company_id'=>null,
-            'address_template_id'=>null,
-            'weight_unit'=>null,
-            'currency_unit'=>null,
-            'volume_unit'=>null,
-            'map'=>null,
-            'created_at'=>null,
-            'updated_at'=>null,
-            'line_rule_name'=>null,
-        ] : $info->toArray();
+        return empty($info) ? "" : $info->toArray();
     }
 
     /**
