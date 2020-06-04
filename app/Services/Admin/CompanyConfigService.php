@@ -80,7 +80,7 @@ class CompanyConfigService extends BaseService
     public function getAddressTemplateList()
     {
         $data = [];
-        $data['template_list'] = $this->getAddressTemplateService()->getList([],['id'],false);
+        $data['template_list'] = $this->getAddressTemplateService()->getList([], ['id'], false);
         return $data;
     }
 
@@ -115,6 +115,9 @@ class CompanyConfigService extends BaseService
         $addressTemplate = $this->getAddressTemplateService()->getInfo(['id' => $params['address_template_id']], ['id'], false);
         if (empty($addressTemplate)) {
             throw new BusinessLogicException('地址模板不存在');
+        }
+        if (($params['line_rule'] == BaseConstService::LINE_RULE_POST_CODE) && ($params['address_template_id'] != 1)) {
+            throw new BusinessLogicException('若线路规则为按邮编分配，则只能选择地址模板一');
         }
         $rowCount = $this->query->updateOrCreate(['company_id' => auth()->user()->company_id], [
             'line_rule' => $params['line_rule'],

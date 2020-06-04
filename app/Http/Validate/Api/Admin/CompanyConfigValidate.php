@@ -17,8 +17,8 @@ class CompanyConfigValidate extends BaseValidate
 
 
     public $rules = [
-        'line_rule' => 'required|integer',
-        'address_template_id' => 'required|integer',
+        'line_rule' => 'required|integer|in:1,2',
+        'address_template_id' => 'required|integer|in:1,2',
         'weight_unit' => 'required|string|max:50',
         'currency_unit' => 'required|string|max:50',
         'volume_unit' => 'required|string|max:50',
