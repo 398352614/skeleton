@@ -191,6 +191,14 @@ class OrderService extends BaseService
     }
 
     /**
+     * 线路基础 服务
+     * @return BaseLineService
+     */
+    public function getBaseLineService(){
+        return self::getInstance(BaseLineService::class);
+    }
+
+    /**
      * 查询初始化
      * @return array
      */
@@ -763,7 +771,7 @@ class OrderService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getSchedule($info);
+        $data = $this->getBaseLineService()->getScheduleList($info);
         return $data;
     }
 
@@ -776,7 +784,7 @@ class OrderService extends BaseService
     public function getDate($params)
     {
         $this->validate($params);
-        $data = $this->getSchedule($params);
+        $data = $this->getBaseLineService()->getScheduleList($params);
         return $data;
     }
 

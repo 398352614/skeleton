@@ -17,7 +17,7 @@ use App\Services\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
-use Carbon\Carbon;
+use \Illuminate\Support\Carbon;
 use Illuminate\Support\Arr;
 
 class BaseLineService extends BaseService
@@ -253,5 +253,63 @@ class BaseLineService extends BaseService
                 };
             }
         }
+    }
+
+    /**
+     * @param $params
+     */
+    public function getScheduleList($params)
+    {
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $this->getScheduleListByPostcode($params);
+        }else{
+            $this->getScheduleListByArea($params);
+        }
+    }
+
+    private function getScheduleListByPostcode($params)
+    {
+        $lineRange = $this->getLineRangeByPostcode($params['receiver_post_code']);
+        for ($i = 0, $j = count($lineRange); $i < $j; $i++) {
+            $line[$i] = parent::getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
+            if (!empty($line[$i])) {
+                //获得当前邮编范围的首天
+                if ($lineRange[$i]['schedule'] === 0) {
+                    $lineRange[$i]['schedule'] = 7;
+                }
+                if (Carbon::today()->dayOfWeek <= $lineRange[$i]['schedule']) {
+                    $date = $lineRange[$i]['schedule'] - Carbon::today()->dayOfWeek;
+                } else {
+                    $date = $lineRange[$i]['schedule'] - Carbon::today()->dayOfWeek + 7;
+                }
+                //如果线路不自增，验证最大订单量
+                if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
+                }else{
+
+                }
+            }
+        }
+    }
+
+    private function getScheduleListByArea($params)
+    {
+    }
+
+    /**
+     * 通过邮编获得邮编范围
+     * @param $postCode
+     * @return array
+     */
+    private function getLineRangeByPostcode($postCode)
+    {
+        //获取邮编数字部分
+        $postCode = explode_post_code($postCode ?? 0);
+        //获取线路范围
+        $lineRange = $this->getLineRangeService()->query
+            ->where('post_code_start', '<=', $postCode)
+            ->where('post_code_end', '>=', $postCode)
+            ->where('country', CompanyTrait::getCountry())
+            ->get()->toArray();
+        return $lineRange ?? [];
     }
 }
