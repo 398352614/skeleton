@@ -689,6 +689,7 @@ class OrderService extends BaseService
      * 单条导入验证
      * @param $data
      * @return array
+     * @throws BusinessLogicException
      */
     public function importCheck($data)
     {

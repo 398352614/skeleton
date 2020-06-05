@@ -115,7 +115,6 @@ class BatchController extends BaseController
 
     /**
      * @param $id
-     * @param $lineId
      * @return mixed
      * @throws BusinessLogicException
      */

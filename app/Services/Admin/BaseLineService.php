@@ -227,20 +227,30 @@ class BaseLineService extends BaseService
     public function getScheduleList($params,$orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
     {
         $lineRangeList=$this->getLineRangeList($params);
-        $dateList=[];
-        for ($i = 0, $j = count($lineRangeList); $i < $j; $i++) {
-            if(!empty($lineRangeList[$i])){
-                $dateList =array_merge($dateList,$this->checkRuleForDate($params,$lineRangeList[$i],$orderOrBatch));
-            }
-        }
-        asort($dateList);
-        $dateList = array_values($dateList);
-        if (empty($dateList)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-        }
-        return $dateList ?? [];
+        return $this->getScheduleListByLineRange($params,$lineRangeList,$orderOrBatch);
     }
 
+    /**
+     * 通过线路获得可选日期（仅站点）
+     * @param $params
+     * @param $lineId
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getScheduleListByLine($params,$lineId){
+        $lineRangeList=$this->getLineRangeListByLine($lineId);
+        return $this->getScheduleListByLineRange($params,$lineRangeList,BaseConstService::ORDER_OR_BATCH_2);
+    }
+
+
+    private function getLineRangeListByLine($params){
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $lineRangeList = $this->getLineRangeService()->getList(['line_id'=>$params],['*'],false)->toArray();
+        }else{
+            $lineRangeList = $this->getLineAreaService()->getList(['line_id'=>$params],['*'],false)->toArray();
+        }
+        return $lineRangeList ?? [];
+    }
     /**
      * 获取线路范围列表
      * @param $params
@@ -255,6 +265,31 @@ class BaseLineService extends BaseService
             $lineRangeList = $this->getLineRangeByArea($coordinate);
         }
         return $lineRangeList;
+    }
+
+
+    /**
+     * 通过线路范围获取可选日期
+     * @param $params
+     * @param array $lineRangeList
+     * @param int $orderOrBatch
+     * @return array
+     * @throws BusinessLogicException
+     */
+    private function getScheduleListByLineRange($params,array $lineRangeList, int $orderOrBatch)
+    {
+        $dateList=[];
+        for ($i = 0, $j = count($lineRangeList); $i < $j; $i++) {
+            if(!empty($lineRangeList[$i])){
+                $dateList =array_merge($dateList,$this->checkRuleForDate($params,$lineRangeList[$i],$orderOrBatch));
+            }
+        }
+        asort($dateList);
+        $dateList = array_values($dateList);
+        if (empty($dateList)) {
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        return $dateList ?? [];
     }
 
     /**
@@ -437,5 +472,4 @@ class BaseLineService extends BaseService
         };
         return;
     }
-
 }
