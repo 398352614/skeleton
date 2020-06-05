@@ -18,6 +18,7 @@ use App\Http\Validate\BaseValidate;
 use App\Jobs\AddOrderPush;
 use App\Models\Order;
 use App\Models\OrderImportLog;
+use App\Services\Admin\BaseLineService;
 use App\Services\Admin\LineAreaService;
 use App\Services\Admin\OrderImportService;
 use App\Services\BaseConstService;
@@ -189,6 +190,14 @@ class OrderService extends BaseService
     private function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * 线路基础 服务
+     * @return BaseLineService
+     */
+    public function getBaseLineService(){
+        return self::getInstance(BaseLineService::class);
     }
 
     /**
@@ -545,12 +554,12 @@ class OrderService extends BaseService
     public function record($params)
     {
         //记录发件人地址
-        $info = $this->getSenderAddressService()->check($params);
+        $info = $this->getSenderAddressService()->getInfoByUnique($params);
         if (empty($info)) {
             $this->getSenderAddressService()->create($params);
         }
         //记录收件人地址
-        $info = $this->getReceiverAddressService()->check($params);
+        $info = $this->getReceiverAddressService()->getInfoByUnique($params);
         if (empty($info)) {
             $this->getReceiverAddressService()->create($params);
         }
@@ -917,11 +926,11 @@ class OrderService extends BaseService
      */
     public function getTourDate($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], true);
-        if (empty($info)) {
+        $params = parent::getInfo(['id' => $id], ['*'], true);
+        if (empty($params)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getSchedule($info);
+        $data = $this->getBaseLineService()->getScheduleList($params);
         return $data;
     }
 
@@ -934,7 +943,7 @@ class OrderService extends BaseService
     public function getDate($params)
     {
         $this->validate($params);
-        $data = $this->getSchedule($params);
+        $data = $this->getBaseLineService()->getScheduleList($params);
         return $data;
     }
 
@@ -943,163 +952,16 @@ class OrderService extends BaseService
      * @param $info
      * @throws BusinessLogicException
      */
-    public function validate($info){
-        if(CompanyTrait::getCompany()['address_template_id'] === 1){
-            $validator=Validator::make($info,['type'=>'required|integer|in:1,2','receiver_city'=>'required|string|max:50','receiver_street'=>'required|string|max:50','receiver_post_code'=>'required|string|max:50','receiver_house_number'=>'required|string|max:50','lon'=>'required|string|max:50','lat'=>'required|string|max:50']);
-        }else{
-            $validator=Validator::make($info,['type' => 'required|integer|in:1,2','receiver_address'=>'required|string|max:50','lon'=>'required|string|max:50','lat'=>'required|string|max:50']);
+    public function validate($info)
+    {
+        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_address' => 'required|string|max:50', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
+        } else {
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_city' => 'required|string|max:50', 'receiver_street' => 'required|string|max:50', 'receiver_post_code' => 'required|string|max:50', 'receiver_house_number' => 'required|string|max:50']);
         }
         if ($validator->fails()) {
             throw new BusinessLogicException('地址数据不正确，无法拉取可选日期', 3001);
         }
-    }
-
-    /**
-     * 获取可选日期
-     * @param $info
-     * @return array
-     * @throws BusinessLogicException
-     */
-    public function getSchedule($info)
-    {
-        $info['country'] = CompanyTrait::getCountry();
-        $data = [];
-        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            //获取邮编数字部分
-            $postCode = explode_post_code($info['receiver_post_code'] ?? 0);
-            //获取线路范围
-            $lineRange = $this->getLineRangeService()->query->where('post_code_start', '<=', $postCode)
-                ->where('post_code_end', '>=', $postCode)
-                ->where('country', $info['country'])
-                ->get();
-            //按邮编范围循环
-            if (!empty($lineRange)) {
-                for ($i = 0, $j = count($lineRange); $i < $j; $i++) {
-                    //获取线路信息
-                    $line[$i] = $this->getLineService()->getInfo(['id' => $lineRange[$i]['line_id']], ['*'], false)->toArray();
-                    if (!empty($line[$i])) {
-                        //获得当前邮编范围的首天
-                        if ($lineRange[$i]['schedule'] === 0) {
-                            $lineRange[$i]['schedule'] = 7;
-                        }
-                        if (Carbon::today()->dayOfWeek <= $lineRange[$i]['schedule']) {
-                            $date = $lineRange[$i]['schedule'] - Carbon::today()->dayOfWeek;
-                        } else {
-                            $date = $lineRange[$i]['schedule'] - Carbon::today()->dayOfWeek + 7;
-                        }
-                        //如果线路不自增，验证最大订单量
-                        if ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_2) {
-                            for ($k = 0, $l = $line[$i]['appointment_days'] - $date; $k < $l; $k = $k + 7) {
-                                $params['execution_date'] = Carbon::create(date("Y-m-d"))->addDays($date + $k)->format('Y-m-d');
-                                if ($info['type'] == 1) {
-                                    $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 1);
-                                    if (1 + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count']) {
-                                        if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                            if (time() < strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
-                                                $data[] = $params['execution_date'];
-                                            }
-                                        } else {
-                                            $data[] = $params['execution_date'];
-                                        }
-                                    }
-                                } else {
-                                    $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 2);
-                                    if (1 + $orderCount['pie_count'] <= $line[$i]['pie_max_count']) {
-                                        if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                            if (time() < strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
-                                                $data[] = $params['execution_date'];
-                                            }
-                                        } else {
-                                            $data[] = $params['execution_date'];
-                                        }
-                                    }
-                                }
-                            }
-                        } elseif ($line[$i]['is_increment'] == BaseConstService::IS_INCREMENT_1) {
-                            for ($k = 0, $l = $line[$i]['appointment_days'] - $date; $k < $l; $k = $k + 7) {
-                                $params['execution_date'] = Carbon::create(date("Y-m-d"))->addDays($date + $k)->format('Y-m-d');
-                                if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                    if (time() < strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
-                                        $data[] = $params['execution_date'];
-                                    }
-                                } else {
-                                    $data[] = $params['execution_date'];
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            asort($data);
-            $data = array_values($data);
-        } else {
-            $coordinate = ['lat' => $info['lat'], 'lon' => $info['lon']];
-            $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
-            if (empty($lineAreaList)) {
-                throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-            }
-            foreach ($lineAreaList as $lineArea) {
-                $coordinateList = json_decode($lineArea['coordinate_list'], true);
-                if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
-                    $lineId = $lineArea['line_id'];
-                    break;
-                }
-            }
-            if (empty($lineId)) {
-                throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-            }
-            //获取线路信息
-            $line = $this->getLineService()->getInfo(['id' => $lineId], ['*'], false);
-            if (empty($line)) {
-                throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-            }
-            $line = $line->toArray();
-            if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
-                for ($i = 0; $i < $line['appointment_days']; $i++) {
-                    $params['execution_date'] = Carbon::create(date("Y-m-d"))->addDays($i)->format('Y-m-d');
-                    if ($info['type'] == 1) {
-                        $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 1);
-                        if (1 + $orderCount['pickup_count'] <= $line[$i]['pickup_max_count']) {
-                            if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                if (time() < strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
-                                    $data[] = $params['execution_date'];
-                                }
-                            } else {
-                                $data[] = $params['execution_date'];
-                            }
-                        }
-                    } else {
-                        $orderCount = $this->getTourService()->sumOrderCount($params, $line[$i], 2);
-                        if (1 + $orderCount['pie_count'] <= $line[$i]['pie_max_count']) {
-                            if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                                if (time() < strtotime($params['execution_date'] . ' ' . $line[$i]['order_deadline'])) {
-                                    $data[] = $params['execution_date'];
-                                }
-                            } else {
-                                $data[] = $params['execution_date'];
-                            }
-                        }
-                    }
-                }
-            } elseif ($line['is_increment'] == BaseConstService::IS_INCREMENT_1) {
-                for ($k = 0; $k < $line['appointment_days']; $k++) {
-                    $params['execution_date'] = Carbon::create(date("Y-m-d"))->addDays($k)->format('Y-m-d');
-                    if ($params['execution_date'] === Carbon::today()->format('Y-m-d')) {
-                        if (time() < strtotime($params['execution_date'] . ' ' . $line['order_deadline'])) {
-                            $data[] = $params['execution_date'];
-                        }
-                    } else {
-                        $data[] = $params['execution_date'];
-                    }
-                }
-            }
-            asort($data);
-            $data = array_values($data);
-        }
-        if (empty($data)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-        }
-        return $data;
     }
 
     /**

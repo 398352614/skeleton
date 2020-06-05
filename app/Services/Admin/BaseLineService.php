@@ -214,9 +214,7 @@ class BaseLineService extends BaseService
         //判断预约日期是否在可预约日期范围内
         $this->appointmentDayCheck($info,$line);
         //若不是新增取件线路，则当前取件线路必须再最大订单量内
-        if ($line['is_increment'] == BaseConstService::IS_INCREMENT_2) {
-            $this->maxCheck($info, $line, $orderOrBatch);
-        }
+        $this->maxCheck($info, $line, $orderOrBatch);
     }
 
     /**
@@ -226,13 +224,13 @@ class BaseLineService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getScheduleList($params,$orderOrBatch)
+    public function getScheduleList($params,$orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
     {
         $lineRangeList=$this->getLineRangeList($params);
         $dateList=[];
         for ($i = 0, $j = count($lineRangeList); $i < $j; $i++) {
-            if(!empty($lineRange[$i])){
-                $dateList =array_merge($dateList,$this->checkRuleForDate($params,$lineRange[$i],$orderOrBatch));
+            if(!empty($lineRangeList[$i])){
+                $dateList =array_merge($dateList,$this->checkRuleForDate($params,$lineRangeList[$i],$orderOrBatch));
             }
         }
         asort($dateList);
@@ -269,21 +267,13 @@ class BaseLineService extends BaseService
     private function checkRuleForDate($params,$lineRange,$orderOrBatch)
     {
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false)->toArray();
-        $date = $this->getFirstWeekDate($lineRange);
-        for ($k = 0, $l = $line['appointment_days'] - $date; $k < $l; $k = $k + 7) {
-            $params['execution_date'] = Carbon::today()->addDays($date + $k)->format("Y-m-d");
-            try {
-                $this->deadlineCheck($params, $line);
-            } catch (BusinessLogicException $e) {
-                continue;
-            }
-            try {
-                $this->appointmentDayCheck($params, $line);
-            } catch (BusinessLogicException $e) {
-                continue;
-            }
-            if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
+        if(!empty($line)){
+            $date = $this->getFirstWeekDate($lineRange);
+            for ($k = 0, $l = $line['appointment_days'] - $date; $k < $l; $k = $k + 7) {
+                $params['execution_date'] = Carbon::today()->addDays($date + $k)->format("Y-m-d");
                 try {
+                    $this->deadlineCheck($params, $line);
+                    $this->appointmentDayCheck($params, $line);
                     $this->maxCheck($params,$line,$orderOrBatch);
                 } catch (BusinessLogicException $e) {
                     continue;
@@ -366,20 +356,21 @@ class BaseLineService extends BaseService
 
     /**
      * 最大订单量检查
-     * @param $line
      * @param $params
+     * @param $line
      * @param $orderOrBatch
-     * @param $type
      * @throws BusinessLogicException
      */
     private function maxCheck($params,$line,$orderOrBatch)
     {
-        if($orderOrBatch === 2){
-            $this->MaxBatchCheck($params, $line);
-        }elseif ($orderOrBatch === 1 && $params['type'] === '1'){
-            $this->pickupMaxCheck($params, $line);
-        }elseif ($orderOrBatch === 1 && $params['type'] === '2'){
-            $this->pieMaxCheck($params, $line);
+        if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
+            if ($orderOrBatch === 2) {
+                $this->MaxBatchCheck($params, $line);
+            } elseif ($orderOrBatch === 1 && $params['type'] === '1') {
+                $this->pickupMaxCheck($params, $line);
+            } elseif ($orderOrBatch === 1 && $params['type'] === '2') {
+                $this->pieMaxCheck($params, $line);
+            }
         }
     }
 

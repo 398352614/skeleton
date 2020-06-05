@@ -72,7 +72,7 @@ class SenderAddressService extends BaseService
 
     /**
      * 联合唯一检验
-     * @param $params
+     * @param $data
      * @param null $id
      * @throws BusinessLogicException
      */
