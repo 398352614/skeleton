@@ -767,11 +767,11 @@ class OrderService extends BaseService
      */
     public function getTourDate($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], true);
-        if (empty($info)) {
+        $params = parent::getInfo(['id' => $id], ['*'], true);
+        if (empty($params)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getBaseLineService()->getScheduleList($info,BaseConstService::ORDER_OR_BATCH_1);
+        $data = $this->getBaseLineService()->getScheduleList($params,BaseConstService::ORDER_OR_BATCH_1);
         return $data;
     }
 

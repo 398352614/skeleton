@@ -19,6 +19,7 @@ use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
 use \Illuminate\Support\Carbon;
 use Illuminate\Support\Arr;
+use mysql_xdevapi\Collection;
 
 class BaseLineService extends BaseService
 {
@@ -166,41 +167,8 @@ class BaseLineService extends BaseService
      */
     public function getInfoByRule($info, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
     {
-        $lineId = null;
-        //分配规则
-        if (auth()->user()->companyConfig->line_rule == BaseConstService::LINE_RULE_POST_CODE) {
-            //获取邮编数字部分
-            $postCode = explode_post_code($info['receiver_post_code']);
-            //获取线路范围
-            $lineRange = $this->getLineRangeService()->getInfo(['post_code_start' => ['<=', $postCode], 'post_code_end' => ['>=', $postCode], 'schedule' => Carbon::parse($info['execution_date'])->dayOfWeek, 'country' => $info['receiver_country']], ['*'], false);
-            if (empty($lineRange)) {
-                throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-            }
-            $lineId = $lineRange->line_id;
-        } else {
-            if ($orderOrBatch === BaseConstService::ORDER_OR_BATCH_1) {
-                $coordinate = ['lat' => $info['lat'], 'lon' => $info['lon']];
-            } else {
-                $coordinate = ['lat' => $info['receiver_lat'], 'lon' => $info['receiver_lon']];
-            }
-            $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
-            if (empty($lineAreaList)) {
-                throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-            }
-            foreach ($lineAreaList as $lineArea) {
-                $coordinateList = json_decode($lineArea['coordinate_list'], true);
-                if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
-                    $lineId = $lineArea['line_id'];
-                    break;
-                }
-            }
-            unset($lineAreaList);
-        }
-        if (empty($lineId)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-        }
-        //获取线路信息
-        $line = parent::getInfo(['id' => $lineId], ['*'], false);
+        $lineRange = $this->getLineRange($info);
+        $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
@@ -208,6 +176,28 @@ class BaseLineService extends BaseService
         //验证规则
         $this->checkRule($info, $line, $orderOrBatch);
         return $line;
+    }
+
+    /**
+     * 获取线路范围
+     * @param $info
+     * @return array|mixed
+     * @throws BusinessLogicException
+     */
+    private function getLineRange($info)
+    {
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code']);
+            $lineRange = collect($lineRange)->where('schedule',Carbon::create($info['execution_date'])->dayOfWeek)->first();
+        } else {
+            $coordinate = ['lat' => $info['lon'] ?? $info ['receiver_lon'], 'lon' => $info['lat'] ?? $info ['receiver_lon']];
+            $lineRange = $this->getLineRangeByArea($coordinate);
+            $lineRange = collect($lineRange)->where('schedule',Carbon::create($info['execution_date'])->dayOfWeek)->first();
+        }
+        if (empty($lineRange)) {
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        return $lineRange;
     }
 
     /**
@@ -220,42 +210,17 @@ class BaseLineService extends BaseService
     public function checkRule($info, $line, $orderOrBatch)
     {
         //预约当天的，需要判断是否在下单截止日期内
-        if (date('Y-m-d') == $info['execution_date']) {
-            if (time() > strtotime($info['execution_date'] . ' ' . $line['order_deadline'])) {
-                throw new BusinessLogicException('当天下单已超过截止时间');
-            }
-        }
+        $this->deadlineCheck($info,$line);
         //判断预约日期是否在可预约日期范围内
-        if (Carbon::today()->addDays($line['appointment_days'])->lt($info['execution_date'] . ' 00:00:00')) {
-            throw new BusinessLogicException('预约日期已超过可预约时间范围');
-        }
+        $this->appointmentDayCheck($info,$line);
         //若不是新增取件线路，则当前取件线路必须再最大订单量内
         if ($line['is_increment'] == BaseConstService::IS_INCREMENT_2) {
-            if ($orderOrBatch === BaseConstService::ORDER_OR_BATCH_1) {
-                if ($info['type'] == 1) {
-                    $orderCount = $this->getTourService()->sumOrderCount($info, $line, 1);
-                    if (1 + $orderCount['pickup_count'] > $line['pickup_max_count']) {
-                        throw new BusinessLogicException('当前线路已达到最大取件订单数量');
-                    };
-                } else {
-                    $orderCount = $this->getTourService()->sumOrderCount($info, $line, 2);
-                    if (1 + $orderCount['pie_count'] > $line['pie_max_count']) {
-                        throw new BusinessLogicException('当前线路已达到最大派件订单数量');
-                    };
-                }
-            } else {
-                $orderCount = $this->getTourService()->sumOrderCount($info, $line, 3);
-                if ($info['expect_pickup_quantity'] + $orderCount['pickup_count'] > $line['pickup_max_count']) {
-                    throw new BusinessLogicException('当前线路已达到最大取件订单数量');
-                };
-                if ($info['expect_pie_quantity'] + $orderCount['pie_count'] > $line['pie_max_count']) {
-                    throw new BusinessLogicException('当前线路已达到最大派件订单数量');
-                };
-            }
+            $this->maxCheck($info, $line, $orderOrBatch);
         }
     }
 
     /**
+     * 获取可选日期
      * @param $params
      * @param $orderOrBatch
      * @return array
@@ -263,14 +228,9 @@ class BaseLineService extends BaseService
      */
     public function getScheduleList($params,$orderOrBatch)
     {
+        $lineRangeList=$this->getLineRangeList($params);
         $dateList=[];
-        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRange = $this->getLineRangeByPostcode($params['receiver_post_code']);
-        }else{
-            $coordinate = ['lat' => $params['lon'] ?? $params ['receiver_lon'], 'lon' => $params['lat'] ?? $params ['receiver_lon']];
-            $lineRange = $this->getLineRangeByArea($coordinate);
-        }
-        for ($i = 0, $j = count($lineRange); $i < $j; $i++) {
+        for ($i = 0, $j = count($lineRangeList); $i < $j; $i++) {
             if(!empty($lineRange[$i])){
                 $dateList =array_merge($dateList,$this->checkRuleForDate($params,$lineRange[$i],$orderOrBatch));
             }
@@ -284,18 +244,34 @@ class BaseLineService extends BaseService
     }
 
     /**
-     * @param $info
+     * 获取线路范围列表
+     * @param $params
+     * @return array
+     */
+    private function getLineRangeList($params)
+    {
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $lineRangeList = $this->getLineRangeByPostcode($params['receiver_post_code']);
+        }else{
+            $coordinate = ['lat' => $params['lon'] ?? $params ['receiver_lon'], 'lon' => $params['lat'] ?? $params ['receiver_lon']];
+            $lineRangeList = $this->getLineRangeByArea($coordinate);
+        }
+        return $lineRangeList;
+    }
+
+    /**
+     * 验证规则 获取可选日期
+     * @param $params
      * @param $lineRange
      * @param $orderOrBatch
      * @return array
-     * @throws BusinessLogicException
      */
-    private function checkRuleForDate($info,$lineRange,$orderOrBatch)
+    private function checkRuleForDate($params,$lineRange,$orderOrBatch)
     {
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false)->toArray();
         $date = $this->getFirstWeekDate($lineRange);
         for ($k = 0, $l = $line['appointment_days'] - $date; $k < $l; $k = $k + 7) {
-            $params = ['execution_date' => Carbon::today()->addDays($date + $k)->format("Y-m-d")];
+            $params['execution_date'] = Carbon::today()->addDays($date + $k)->format("Y-m-d");
             try {
                 $this->deadlineCheck($params, $line);
             } catch (BusinessLogicException $e) {
@@ -308,7 +284,7 @@ class BaseLineService extends BaseService
             }
             if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
                 try {
-                    $this->maxCheck($line,$params,$orderOrBatch,$info['type']);
+                    $this->maxCheck($params,$line,$orderOrBatch);
                 } catch (BusinessLogicException $e) {
                     continue;
                 }
@@ -319,7 +295,7 @@ class BaseLineService extends BaseService
     }
 
     /**
-     * 通过邮编获得邮编范围
+     * 通过邮编获得线路范围
      * @param $postCode
      * @return array
      */
@@ -337,7 +313,7 @@ class BaseLineService extends BaseService
     }
 
     /**
-     * 通过经纬度获得区域范围
+     * 通过经纬度获得线路范围
      * @param $coordinate
      * @return array
      */
@@ -356,6 +332,23 @@ class BaseLineService extends BaseService
     }
 
     /**
+     * 获取首周可选日期
+     * @param $lineRange
+     * @return int
+     */
+    private function getFirstWeekDate($lineRange)
+    {
+        if ($lineRange['schedule'] === 0) {
+            $lineRange['schedule'] = 7;
+        }
+        $date = $lineRange['schedule'] - Carbon::today()->dayOfWeek;
+        if (Carbon::today()->dayOfWeek > $lineRange['schedule']) {
+            $date = $date + 7;
+        }
+        return $date;
+    }
+
+    /**
      * 当日截止时间检查
      * @param $info
      * @param $line
@@ -369,6 +362,25 @@ class BaseLineService extends BaseService
             }
         }
         return;
+    }
+
+    /**
+     * 最大订单量检查
+     * @param $line
+     * @param $params
+     * @param $orderOrBatch
+     * @param $type
+     * @throws BusinessLogicException
+     */
+    private function maxCheck($params,$line,$orderOrBatch)
+    {
+        if($orderOrBatch === 2){
+            $this->MaxBatchCheck($params, $line);
+        }elseif ($orderOrBatch === 1 && $params['type'] === '1'){
+            $this->pickupMaxCheck($params, $line);
+        }elseif ($orderOrBatch === 1 && $params['type'] === '2'){
+            $this->pieMaxCheck($params, $line);
+        }
     }
 
     /**
@@ -435,37 +447,4 @@ class BaseLineService extends BaseService
         return;
     }
 
-    /**
-     * 获取首周可选日期
-     * @param $lineRange
-     */
-    private function getFirstWeekDate($lineRange)
-    {
-        if ($lineRange['schedule'] === 0) {
-            $lineRange['schedule'] = 7;
-        }
-        $date = $lineRange['schedule'] - Carbon::today()->dayOfWeek;
-        if (Carbon::today()->dayOfWeek > $lineRange['schedule']) {
-            $date = $date + 7;
-        }
-        return $date;
-    }
-
-    /**
-     * @param $line
-     * @param $params
-     * @param $orderOrBatch
-     * @param $type
-     * @throws BusinessLogicException
-     */
-    private function maxCheck($line,$params,$orderOrBatch,$type)
-    {
-        if($orderOrBatch === 2){
-            $this->MaxBatchCheck($params, $line);
-        }elseif ($orderOrBatch === 1 && $type === '1'){
-            $this->pickupMaxCheck($params, $line);
-        }elseif ($orderOrBatch === 1 && $type === '2'){
-            $this->pieMaxCheck($params, $line);
-        }
-    }
 }
