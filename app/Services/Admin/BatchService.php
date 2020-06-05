@@ -661,7 +661,7 @@ class BatchService extends BaseService
             $lineRange=$this->getLineRangeService()->getList(['line_id'=>$params['line_id']],['*'],false);
             $data = $this->getSchedule($info,$lineRange);
         }else{
-            $coordinate = ['lat' => $info['lat'], 'lon' => $info['lon']];
+            $coordinate = ['lat' => $info['lat'] ?? $info['receiver_lat'], 'lon' => $info['lon'] ?? $info['receiver_lon']];
             $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
             if (empty($lineAreaList)) {
                 throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');

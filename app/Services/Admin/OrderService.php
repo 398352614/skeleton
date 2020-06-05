@@ -771,7 +771,7 @@ class OrderService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getBaseLineService()->getScheduleList($info);
+        $data = $this->getBaseLineService()->getScheduleList($info,BaseConstService::ORDER_OR_BATCH_1);
         return $data;
     }
 
@@ -784,7 +784,7 @@ class OrderService extends BaseService
     public function getDate($params)
     {
         $this->validate($params);
-        $data = $this->getBaseLineService()->getScheduleList($params);
+        $data = $this->getBaseLineService()->getScheduleList($params,BaseConstService::ORDER_OR_BATCH_1);
         return $data;
     }
 
