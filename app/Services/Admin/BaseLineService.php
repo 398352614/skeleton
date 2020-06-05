@@ -308,14 +308,14 @@ class BaseLineService extends BaseService
             }
             if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
                 try {
-                    $this->MaxCheck($line,$params,$orderOrBatch,$info['type']);
+                    $this->maxCheck($line,$params,$orderOrBatch,$info['type']);
                 } catch (BusinessLogicException $e) {
                     continue;
                 }
                 $dateList[] = $params['execution_date'];
             }
-            return $dateList ?? [];
         }
+        return $dateList ?? [];
     }
 
     /**
@@ -458,7 +458,7 @@ class BaseLineService extends BaseService
      * @param $type
      * @throws BusinessLogicException
      */
-    private function MaxCheck($line,$params,$orderOrBatch,$type)
+    private function maxCheck($line,$params,$orderOrBatch,$type)
     {
         if($orderOrBatch === 2){
             $this->MaxBatchCheck($params, $line);
