@@ -44,10 +44,10 @@ class BaseConstService
     const ORDER_NO_RULE_LENGTH = 13;
 
     //经纬度差距范围，小数点后6位为1米
-    const LOCATION_DISTANCE_RANGE = 0.000001 *10;
+    const LOCATION_DISTANCE_RANGE = 0.000001 * 10;
 
     //停留记录时间
-    const STOP_TIME= 30;
+    const STOP_TIME = 30;
 
     //1-启用2-禁用
     const ON = 1;
@@ -70,6 +70,10 @@ class BaseConstService
     //订单类型1-取2-派
     const ORDER_TYPE_1 = 1;
     const ORDER_TYPE_2 = 2;
+
+    //订单出库状态1-可出库2-不可出库
+    const ORDER_OUT_STATUS_1 = 1;
+    const ORDER_OUT_STATUS_2 = 2;
 
     //订单来源1-手动添加2-批量导入3-第三方
     const ORDER_SOURCE_1 = 1;

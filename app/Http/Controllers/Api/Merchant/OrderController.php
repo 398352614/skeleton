@@ -79,7 +79,14 @@ class OrderController extends OrderBaseController
      */
     public function store()
     {
-        $orderSource = (auth()->user()->getAttribute('is_api') == true) ? BaseConstService::ORDER_SOURCE_3 : BaseConstService::ORDER_SOURCE_1;
+        $data = $this->data;
+        if (auth()->user()->getAttribute('is_api') == true) {
+            $orderSource = BaseConstService::ORDER_SOURCE_3;
+            $data['can_out'] = BaseConstService::ORDER_OUT_STATUS_2;
+        } else {
+            $orderSource = BaseConstService::ORDER_SOURCE_1;
+            $data['can_out'] = BaseConstService::ORDER_OUT_STATUS_1;
+        }
         return $this->service->store($this->data, $orderSource);
     }
 
@@ -216,5 +223,15 @@ class OrderController extends OrderBaseController
     public function importCheck()
     {
         return $this->service->importCheck($this->data);
+    }
+
+    /**
+     * 修改订单出库状态
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function updateOutStatus($id)
+    {
+        return $this->service->updateOutStatus($id, $this->data);
     }
 }

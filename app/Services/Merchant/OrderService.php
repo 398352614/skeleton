@@ -52,7 +52,7 @@ class OrderService extends BaseService
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
-        'tour_no' => ['=','tour_no']
+        'tour_no' => ['=', 'tour_no']
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -196,7 +196,8 @@ class OrderService extends BaseService
      * 线路基础 服务
      * @return BaseLineService
      */
-    public function getBaseLineService(){
+    public function getBaseLineService()
+    {
         return self::getInstance(BaseLineService::class);
     }
 
@@ -1182,6 +1183,21 @@ class OrderService extends BaseService
         $rowCount = $this->getMaterialService()->delete(['order_no' => $info['order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('彻底删除失败，请重新操作');
+        }
+    }
+
+    /**
+     * 修改订单的出库状态
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function updateOutStatus($id, $params)
+    {
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]);
+        $rowCount = parent::updateById($info['id'], ['can_out' => $params['can_out']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败');
         }
     }
 

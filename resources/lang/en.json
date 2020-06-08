@@ -46,6 +46,7 @@
   "材料代码[:code]有重复！不能添加订单": "material number[:code] already exists;",
   "快递单号[:express_no]有重复！不能添加订单": "express number [:express_no] already exists;",
   "邮编:post_code_start-:post_code_end已存在": "post code :post_code_start-:post_code_end already exists",
+  "订单[:order_no]不可出库": "order[:order_no] can not out warehouse",
   "用户认证失败": "User authentication failed",
   "明细数据格式不正确": "Incorrect format of detail data",
   "当前订单状态不能操作": "The current order status cannot be operated",

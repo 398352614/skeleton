@@ -287,6 +287,11 @@ class TourService extends BaseService
                 return is_numeric($value);
             });
             if (!empty($cancelOrderIdList)) {
+                //判断是否存在不可出库且没有取消取派的订单
+                $disableOutOrder = $this->getOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelOrderIdList], 'out_status' => BaseConstService::ORDER_OUT_STATUS_2], ['id,order_no'], false);
+                if (!empty($disableOutOrder)) {
+                    throw new BusinessLogicException('订单[:order_no]不可出库', 1000, ['order_no' => $disableOutOrder->order_no]);
+                }
                 $rowCount = $this->getOrderService()->update(['id' => ['in', $cancelOrderIdList], 'tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_6]);
                 if ($rowCount === false) {
                     throw new BusinessLogicException('出库失败');
@@ -383,7 +388,7 @@ class TourService extends BaseService
      */
     private function checkOutWarehouse($id, $params)
     {
-        if(!empty($this->getInfo(['driver_id'=>auth()->user()->id,'status'=>['=',BaseConstService::TOUR_STATUS_4]],['*'],false))){
+        if (!empty($this->getInfo(['driver_id' => auth()->user()->id, 'status' => ['=', BaseConstService::TOUR_STATUS_4]], ['*'], false))) {
             throw new BusinessLogicException('同时只能进行一个任务，请先完成其他取派中的任务');
         }
         $tour = parent::getInfoLock(['id' => $id], ['*'], false);

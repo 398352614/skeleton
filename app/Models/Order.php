@@ -97,6 +97,7 @@ class Order extends BaseModel
         'car_no',
         'sticker_no',
         'sticker_amount',
+        'out_status',
         'created_at',
         'updated_at',
     ];
