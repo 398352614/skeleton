@@ -796,7 +796,7 @@ class OrderService extends BaseService
     public function validate($info)
     {
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
-            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_address' => 'required|string|max:50', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_address' => 'required|string|max:250', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
         } else {
             $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_city' => 'required|string|max:50', 'receiver_street' => 'required|string|max:50', 'receiver_post_code' => 'required|string|max:50', 'receiver_house_number' => 'required|string|max:50']);
         }

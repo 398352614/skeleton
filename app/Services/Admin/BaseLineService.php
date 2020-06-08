@@ -344,7 +344,7 @@ class BaseLineService extends BaseService
      */
     private function getLineRangeByArea($coordinate)
     {
-        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
+        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list','schedule'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
         if(!empty($lineAreaList)){
             foreach ($lineAreaList as $lineArea) {
                 $coordinateList = json_decode($lineArea['coordinate_list'], true);
