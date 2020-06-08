@@ -114,7 +114,7 @@
         <div class="facial-list">
             <div class="company-name bottom-line">{{$data['company_name']}}</div>
             <div class="bar-code bottom-line">
-                <img src="data:image/png; base64, {{ $data['barcode'] }}"/>
+                <img src="data:image/png; base64, ‌iVBORw0KGgoAAAANSUhEUgAAASIAAAAeAQMAAACyv4GXAAAABlBMVEX///8AAABVwtN+AAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAAADtJREFUOI1j+MzDfP7AmT8fbP4cOH/+83l+HoMPNh8+fD58GMi04bFnPvPB3vgAw6iqUVWjqkZVUUUVAEa5cNk0MI1kAAAAAElFTkSuQmCC"/>
                 <div>{{$data['order_no']}}</div>
             </div>
             <div class="address bottom-line">
