@@ -114,7 +114,7 @@
         <div class="facial-list">
             <div class="company-name bottom-line">{{$data['company_name']}}</div>
             <div class="bar-code bottom-line">
-                <img src="data:image/png,{{ $data['barcode'] }}"/>
+                <img src="{{ $data['barcode'] }}" />
                 <div>{{$data['order_no']}}</div>
             </div>
             <div class="address bottom-line">
