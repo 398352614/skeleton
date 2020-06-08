@@ -287,11 +287,6 @@ class TourService extends BaseService
                 return is_numeric($value);
             });
             if (!empty($cancelOrderIdList)) {
-                //判断是否存在不可出库且没有取消取派的订单
-                $disableOutOrder = $this->getOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelOrderIdList], 'out_status' => BaseConstService::ORDER_OUT_STATUS_2], ['id,order_no'], false);
-                if (!empty($disableOutOrder)) {
-                    throw new BusinessLogicException('订单[:order_no]不可出库', 1000, ['order_no' => $disableOutOrder->order_no]);
-                }
                 $rowCount = $this->getOrderService()->update(['id' => ['in', $cancelOrderIdList], 'tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_6]);
                 if ($rowCount === false) {
                     throw new BusinessLogicException('出库失败');
@@ -303,6 +298,11 @@ class TourService extends BaseService
                     throw new BusinessLogicException('出库失败');
                 }
             }
+        }
+        //判断是否存在不可出库且没有取消取派的订单
+        $disableOutOrder = $this->getOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3, 'out_status' => BaseConstService::ORDER_OUT_STATUS_2], ['id,order_no'], false);
+        if (!empty($disableOutOrder)) {
+            throw new BusinessLogicException('订单[:order_no]不可出库', 1000, ['order_no' => $disableOutOrder->order_no]);
         }
         //订单更换状态
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_4]);
