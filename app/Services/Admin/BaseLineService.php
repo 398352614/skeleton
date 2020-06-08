@@ -179,28 +179,6 @@ class BaseLineService extends BaseService
     }
 
     /**
-     * 获取线路范围
-     * @param $info
-     * @return array|mixed
-     * @throws BusinessLogicException
-     */
-    private function getLineRange($info)
-    {
-        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code']);
-            $lineRange = collect($lineRange)->where('schedule',Carbon::create($info['execution_date'])->dayOfWeek)->first();
-        } else {
-            $coordinate = ['lat' => $info['lon'] ?? $info ['receiver_lon'], 'lon' => $info['lat'] ?? $info ['receiver_lon']];
-            $lineRange = $this->getLineRangeByArea($coordinate);
-            $lineRange = collect($lineRange)->where('schedule',Carbon::create($info['execution_date'])->dayOfWeek)->first();
-        }
-        if (empty($lineRange)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-        }
-        return $lineRange;
-    }
-
-    /**
      * 验证规则
      * @param $info
      * @param $line
@@ -242,7 +220,11 @@ class BaseLineService extends BaseService
         return $this->getScheduleListByLineRange($params,$lineRangeList,BaseConstService::ORDER_OR_BATCH_2);
     }
 
-
+    /**
+     * 通过线路获得线路范围列表（仅站点）
+     * @param $params
+     * @return array
+     */
     private function getLineRangeListByLine($params){
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             $lineRangeList = $this->getLineRangeService()->getList(['line_id'=>$params],['*'],false)->toArray();
@@ -251,6 +233,27 @@ class BaseLineService extends BaseService
         }
         return $lineRangeList ?? [];
     }
+
+    /**
+     * 获取线路范围
+     * @param $info
+     * @return array|mixed
+     * @throws BusinessLogicException
+     */
+    private function getLineRange($info)
+    {
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code']);
+        } else {
+            $coordinate = ['lat' => $info['lon'] ?? $info ['receiver_lon'], 'lon' => $info['lat'] ?? $info ['receiver_lon']];
+            $lineRange = $this->getLineRangeByArea($coordinate,$info['execution_date']);
+        }
+        if (empty($lineRange)) {
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        return $lineRange;
+    }
+
     /**
      * 获取线路范围列表
      * @param $params
@@ -259,12 +262,90 @@ class BaseLineService extends BaseService
     private function getLineRangeList($params)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRangeList = $this->getLineRangeByPostcode($params['receiver_post_code']);
+            $lineRangeList = $this->getLineRangeListByPostcode($params['receiver_post_code']);
         }else{
             $coordinate = ['lat' => $params['lon'] ?? $params ['receiver_lon'], 'lon' => $params['lat'] ?? $params ['receiver_lon']];
-            $lineRangeList = $this->getLineRangeByArea($coordinate);
+            $lineRangeList = $this->getLineRangeListByArea($coordinate);
         }
         return $lineRangeList;
+    }
+
+    /**
+     * 通过邮编获得线路范围
+     * @param $postCode
+     * @return array
+     */
+    private function getLineRangeByPostcode($postCode)
+    {
+        //获取邮编数字部分
+        $postCode = explode_post_code($postCode ?? 0);
+        //获取线路范围
+        $lineRange = $this->getLineRangeService()->query
+            ->where('post_code_start', '<=', $postCode)
+            ->where('post_code_end', '>=', $postCode)
+            ->where('country', CompanyTrait::getCountry())
+            ->where('schedule',Carbon::create($info['execution_date'])->dayOfWeek)
+            ->first()->toArray();
+        return $lineRange ?? [];
+    }
+
+    /**
+     * 通过邮编获得线路范围列表
+     * @param array $postCode
+     * @return array
+     */
+    private function getLineRangeListByPostcode(array $postCode)
+    {
+        //获取邮编数字部分
+        $postCode = explode_post_code($postCode ?? 0);
+        //获取线路范围
+        $lineRange = $this->getLineRangeService()->query
+            ->where('post_code_start', '<=', $postCode)
+            ->where('post_code_end', '>=', $postCode)
+            ->where('country', CompanyTrait::getCountry())
+            ->get()->toArray();
+        return $lineRange ?? [];
+    }
+
+    /**
+     * 通过经纬度获得线路范围
+     * @param $coordinate
+     * @param $date
+     * @return array
+     */
+    private function getLineRangeByArea($coordinate,$date)
+    {
+        $lineRange=[];
+        $schedule=Carbon::create($date)->dayOfWeek;
+        $lineAreaList = $this->getLineAreaService()->getList(['schedule'=>$schedule], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
+        if(!empty($lineAreaList)){
+            foreach ($lineAreaList as $lineArea) {
+                $coordinateList = json_decode($lineArea['coordinate_list'], true);
+                if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
+                    $lineRange = $lineArea;
+                }
+            }
+        }
+        return $lineRange ?? [];
+    }
+
+    /**
+     * 通过经纬度获得线路范围列表
+     * @param array $coordinate
+     * @return array
+     */
+    private function getLineRangeListByArea(array $coordinate)
+    {
+        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
+        if(!empty($lineAreaList)){
+            foreach ($lineAreaList as $lineArea) {
+                $coordinateList = json_decode($lineArea['coordinate_list'], true);
+                if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
+                    $lineRange[] = $lineArea;
+                }
+            }
+        }
+        return $lineRange ?? [];
     }
 
 
@@ -317,43 +398,6 @@ class BaseLineService extends BaseService
             }
         }
         return $dateList ?? [];
-    }
-
-    /**
-     * 通过邮编获得线路范围
-     * @param $postCode
-     * @return array
-     */
-    private function getLineRangeByPostcode($postCode)
-    {
-        //获取邮编数字部分
-        $postCode = explode_post_code($postCode ?? 0);
-        //获取线路范围
-        $lineRange = $this->getLineRangeService()->query
-            ->where('post_code_start', '<=', $postCode)
-            ->where('post_code_end', '>=', $postCode)
-            ->where('country', CompanyTrait::getCountry())
-            ->get()->toArray();
-        return $lineRange ?? [];
-    }
-
-    /**
-     * 通过经纬度获得线路范围
-     * @param $coordinate
-     * @return array
-     */
-    private function getLineRangeByArea($coordinate)
-    {
-        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list','schedule'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
-        if(!empty($lineAreaList)){
-            foreach ($lineAreaList as $lineArea) {
-                $coordinateList = json_decode($lineArea['coordinate_list'], true);
-                if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
-                    $lineRange[] = $lineArea;
-                }
-            }
-        }
-        return $lineRange ?? [];
     }
 
     /**
