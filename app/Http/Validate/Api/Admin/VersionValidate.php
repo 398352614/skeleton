@@ -21,7 +21,7 @@ class VersionValidate extends BaseValidate
         'name' => 'nullable|string|max:20',
         'version' => 'required|string|max:50',
         'status' => 'nullable|integer|max:4',
-        'file' => 'required|file',
+        //'file' => 'required|file',
         'change_log' => 'nullable|string',
 
     ];
