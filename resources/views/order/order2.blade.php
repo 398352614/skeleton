@@ -114,8 +114,8 @@
         <div class="facial-list">
             <div class="company-name bottom-line">{{$data['company_name']}}</div>
             <div class="bar-code bottom-line">
-                <img src="http://gss0.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/f636afc379310a5591a83d9bb54543a9832610d4.jpg" />
-                <!-- <div>TMS2839284902</div> -->
+                <img src="data:image/png; base64, {{ $data['barcode'] }}"/>
+                <div>{{$data['order_no']}}</div>
             </div>
             <div class="address bottom-line">
                 <div class="address-obj right-line">发货方</div>
