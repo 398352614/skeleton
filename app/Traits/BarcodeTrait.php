@@ -15,7 +15,9 @@ trait BarcodeTrait
 {
     public static function generateOne($content)
     {
-        $barcode = DNS1D::getBarcodePNGPath($content, 'C128');
+        $d = new DNS1D();
+        $d->setStorPath(storage_path('app/public/admin/barcode/'));
+        $barcode = $d->getBarcodePNGPath($content, 'C128');
         return $barcode;
     }
 }
