@@ -4,7 +4,7 @@
         <meta charset="UTF-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <title>E-Sale Tech</title>
+        <title>Order</title>
         <style>
             .font-size-t1 {
                 font-size: 24px;
@@ -112,7 +112,7 @@
     </head>
     <body>
         <div class="facial-list">
-            <div class="company-name bottom-line">公司名称</div>
+            <div class="company-name bottom-line">{{$data['company_name']}}</div>
             <div class="bar-code bottom-line">
                 <img src="http://gss0.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/f636afc379310a5591a83d9bb54543a9832610d4.jpg" />
                 <!-- <div>TMS2839284902</div> -->
@@ -120,61 +120,52 @@
             <div class="address bottom-line">
                 <div class="address-obj right-line">发货方</div>
                 <div class="address-info">
-                    <div>姓名</div>
-                    <div>电话</div>
-                    <div>地址</div>
+                    <div>姓名：{{$data['sender_fullname']}}</div>
+                    <div>电话：{{$data['sender_phone']}}</div>
+                    <div>地址：{{$data['sender_address']}}</div>
                 </div>
             </div>
             <div class="address bottom-line">
                 <div class="address-obj right-line">收货人</div>
                 <div class="address-info">
-                    <div>姓名</div>
-                    <div>电话</div>
-                    <div>地址</div>
+                    <div>姓名：{{$data['receiver_fullname']}}</div>
+                    <div>电话：{{$data['receiver_phone']}}</div>
+                    <div>地址：{{$data['receiver_address']}}</div>
                 </div>
             </div>
             <div class="destination bottom-line">
-                <div class="destination-address right-line font-size-t1">目的地：湖南长沙</div>
+                <div class="destination-address right-line font-size-t1">目的地：{{$data['receiver_address']}}</div>
                 <div class="destination-info">
-                    <div>快件类型: 取件/派件</div>
-                    <div>代收货款: xxx元</div>
-                    <div>支付方式: 寄付/到付</div>
-                    <div>运费金额: 0/xx元</div>
+                    <div>快件类型: {{$data['type_name']}}</div>
+                    <div>代收货款: {{$data['replace_amount']}}元</div>
+                    <div>支付方式: {{$data['settlement_type_name']}}</div>
+                    <div>运费金额: {{$data['settlement_amount']}}元</div>
                 </div>
             </div>
             <div class="item-information bottom-line">
                 <div class="item-information-item">物品信息</div>
-                <div class="item-information-num">总数量</div>
+                <div class="item-information-num">总数量：{{$data['count']}}</div>
             </div>
             <div class="package bottom-line">
-                <div>
-                    <span>包裹</span>
-                    <span>数量: 1</span>
-                    <span>
-                        <span>编号</span>
-                        <img src="http://gss0.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/f636afc379310a5591a83d9bb54543a9832610d4.jpg" width="100px" />
-                    </span>
-                </div>
-                <div>
-                    <span></span>
-                    <span>数量: 1</span>
-                    <span>
-                        <span>编号</span>
-                        <img src="http://gss0.baidu.com/9fo3dSag_xI4khGko9WTAnF6hhy/zhidao/pic/item/f636afc379310a5591a83d9bb54543a9832610d4.jpg" width="100px" />
-                    </span>
-                </div>
+                @foreach($data['package_list'] as $key=>$package)
+                    <div>
+                        <span>包裹</span>
+                        <span>数量：{{$package['expect_quantity']}}</span>
+                        <span>
+                            <span>编号</span>
+                            <span>{{$package['express_first_no']}}</span>
+                        </span>
+                    </div>
+                @endforeach
             </div>
             <div class="material-science">
-                <div>
-                    <span>材料</span>
-                    <span>数量: 2</span>
-                    <span>代码: UIO</span>
-                </div>
-                <div>
-                    <span></span>
-                    <span>数量: 2</span>
-                    <span>代码: UIO</span>
-                </div>
+                @foreach($data['material_list'] as $key=>$material)
+                    <div>
+                        <span>材料</span>
+                        <span>数量：{{$material['expect_quantity']}}</span>
+                        <span>代码：{{$material['code']}}</span>
+                    </div>
+                @endforeach
             </div>
         </div>
     </body>
