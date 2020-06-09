@@ -23,8 +23,13 @@ class LineController extends BaseController
         parent::__construct($service);
     }
 
+    /**
+     * 通过邮编获取日期列表
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
     public function getDateListByPostCode()
     {
-        return $this->service->getDateListByPostCode($this->data['post_code']);
+        return $this->service->getDateListByPostCode($this->data['receiver_post_code']);
     }
 }

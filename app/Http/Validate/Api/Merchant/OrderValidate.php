@@ -97,7 +97,8 @@ class OrderValidate extends BaseValidate
         'material_list.*.expect_quantity' => 'required_with:material_list|integer|gte:0',
         'material_list.*.remark' => 'nullable|string|max:250',
 
-        'out_status' => 'required|integer|in:1.2'
+        'order_no' => 'nullable|string|max:50',
+        'out_status' => 'required|integer|in:1,2'
     ];
 
     public $scene = [
@@ -137,7 +138,7 @@ class OrderValidate extends BaseValidate
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
-        'updateOutStatus' => ['out_status'],
+        'updateOutStatus' => ['order_no', 'out_status'],
         'getDateListByPostCode' => ['receiver_post_code']
     ];
     public $message = [

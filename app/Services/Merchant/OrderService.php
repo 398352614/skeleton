@@ -1182,7 +1182,7 @@ class OrderService extends BaseService
     public function updateOutStatus($id, $params)
     {
         $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]);
-        $rowCount = parent::updateById($info['id'], ['can_out' => $params['can_out']]);
+        $rowCount = parent::updateById($info['id'], ['out_status' => $params['out_status']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
