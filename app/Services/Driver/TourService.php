@@ -300,7 +300,7 @@ class TourService extends BaseService
             }
         }
         //判断是否存在不可出库且待出库的订单
-        $disableOutOrder = $this->getOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3, 'out_status' => BaseConstService::ORDER_OUT_STATUS_2], ['id,order_no'], false);
+        $disableOutOrder = $this->getOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3, 'out_status' => BaseConstService::ORDER_OUT_STATUS_2], ['id', 'order_no'], false);
         if (!empty($disableOutOrder)) {
             throw new BusinessLogicException('订单[:order_no]不可出库', 1000, ['order_no' => $disableOutOrder->order_no]);
         }
