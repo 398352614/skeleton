@@ -20,5 +20,5 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant_api'])->group(funct
     Route::post('order', 'OrderController@store');
     Route::post('cancel-order', 'OrderController@destroy');
     Route::post('order-out-status', 'OrderController@updateOutStatus');
-    Route::post('date-list', 'LineController@getDateList');
+    Route::post('date-list', 'LineController@getDateListByPostCode');
 });
