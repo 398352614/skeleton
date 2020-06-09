@@ -157,7 +157,7 @@
                             @endif
                             <span>数量：{{$package['expect_quantity']}}</span>
                             <span>
-                                <span>编号</span>
+                                <span>编号：</span>
                                 <span>{{$package['express_first_no']}}</span>
                             </span>
                         </div>
