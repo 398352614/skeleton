@@ -137,7 +137,8 @@ class OrderValidate extends BaseValidate
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
-        'updateOutStatus' => ['out_status']
+        'updateOutStatus' => ['out_status'],
+        'getDateListByPostCode' => ['receiver_post_code']
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
