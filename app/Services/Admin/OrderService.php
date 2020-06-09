@@ -13,7 +13,6 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
-use App\Http\Validate\BaseValidate;
 use App\Jobs\AddOrderPush;
 use App\Models\Order;
 use App\Models\OrderImportLog;
@@ -23,21 +22,12 @@ use App\Services\OrderNoRuleService;
 use App\Traits\BarcodeTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
-use App\Traits\CountryTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
-use App\Traits\MapAreaTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use WebSocket\Client;
 
 class OrderService extends BaseService
 {
@@ -155,15 +145,6 @@ class OrderService extends BaseService
     }
 
     /**
-     * 线路区域 服务
-     * @return LineAreaService
-     */
-    public function getLineAreaService()
-    {
-        return self::getInstance(LineAreaService::class);
-    }
-
-    /**
      * 仓库 服务
      * @return WareHouseService
      */
@@ -194,7 +175,8 @@ class OrderService extends BaseService
      * 线路基础 服务
      * @return BaseLineService
      */
-    public function getBaseLineService(){
+    public function getBaseLineService()
+    {
         return self::getInstance(BaseLineService::class);
     }
 

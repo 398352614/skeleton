@@ -17,7 +17,7 @@ use App\Services\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Arr;
 
 class BaseLineService extends BaseService
@@ -130,30 +130,11 @@ class BaseLineService extends BaseService
      */
     public function check(&$params)
     {
+        $params['country'] = CompanyTrait::getCountry();
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
             throw new BusinessLogicException('仓库不存在！');
         }
-    }
-
-    /**
-     * 通过线路ID 获取信息信息
-     * @param $lineId
-     * @param $info
-     * @param $orderOrBatch
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws BusinessLogicException
-     */
-    public function getInfoByLineId($info, $lineId, $orderOrBatch)
-    {
-        //获取线路信息
-        $line = parent::getInfo(['id' => $lineId], ['*'], false);
-        if (empty($line)) {
-            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
-        }
-        $line = $line->toArray();
-        $this->checkRule($info, $line, $orderOrBatch);
-        return $line;
     }
 
     /**
@@ -186,9 +167,9 @@ class BaseLineService extends BaseService
     public function checkRule($info, $line, $orderOrBatch)
     {
         //预约当天的，需要判断是否在下单截止日期内
-        $this->deadlineCheck($info,$line);
+        $this->deadlineCheck($info, $line);
         //判断预约日期是否在可预约日期范围内
-        $this->appointmentDayCheck($info,$line);
+        $this->appointmentDayCheck($info, $line);
         //若不是新增取件线路，则当前取件线路必须再最大订单量内
         $this->maxCheck($info, $line, $orderOrBatch);
     }
@@ -200,13 +181,143 @@ class BaseLineService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getScheduleList($params,$orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
+    public function getScheduleList($params, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
     {
-        $lineRangeList=$this->getLineRangeList($params);
-        $dateList=[];
+        $lineRangeList = $this->getLineRangeList($params);
+        return $this->getScheduleListByLineRangeList($params, $lineRangeList, $orderOrBatch);
+    }
+
+    /**
+     * 获取线路范围
+     * @param $info
+     * @return array|mixed
+     * @throws BusinessLogicException
+     */
+    private function getLineRange($info)
+    {
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'], $info['execution_date']);
+        } else {
+            $coordinate = ['lat' => $info['lon'] ?? $info ['receiver_lon'], 'lon' => $info['lat'] ?? $info ['receiver_lon']];
+            $lineRange = $this->getLineRangeByArea($coordinate, $info['execution_date']);
+        }
+        if (empty($lineRange)) {
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        return $lineRange;
+    }
+
+    /**
+     * 获取线路范围列表
+     * @param $params
+     * @return array
+     */
+    private function getLineRangeList($params)
+    {
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $lineRangeList = $this->getLineRangeListByPostcode($params['receiver_post_code']);
+        } else {
+            $coordinate = ['lat' => $params['lon'] ?? $params ['receiver_lon'], 'lon' => $params['lat'] ?? $params ['receiver_lon']];
+            $lineRangeList = $this->getLineRangeListByArea($coordinate);
+        }
+        return $lineRangeList;
+    }
+
+    /**
+     * 通过邮编获得线路范围
+     * @param $postCode
+     * @param $executionDate
+     * @return array
+     */
+    private function getLineRangeByPostcode($postCode, $executionDate)
+    {
+        //获取邮编数字部分
+        $postCode = explode_post_code($postCode);
+        //获取线路范围
+        $lineRange = $this->getLineRangeService()->query
+            ->where('post_code_start', '<=', $postCode)
+            ->where('post_code_end', '>=', $postCode)
+            ->where('country', CompanyTrait::getCountry())
+            ->where('schedule', Carbon::create($executionDate)->dayOfWeek)
+            ->first();
+        return !empty($lineRange) ? $lineRange->toArray() : [];
+    }
+
+    /**
+     * 通过邮编获得线路范围列表
+     * @param  $postCode
+     * @return array
+     */
+    private function getLineRangeListByPostcode($postCode)
+    {
+        //获取邮编数字部分
+        $postCode = explode_post_code($postCode);
+        //获取线路范围
+        $lineRangeList = $this->getLineRangeService()->query
+            ->where('post_code_start', '<=', $postCode)
+            ->where('post_code_end', '>=', $postCode)
+            ->where('country', CompanyTrait::getCountry())
+            ->get()->toArray();
+        return $lineRangeList ?? [];
+    }
+
+    /**
+     * 通过经纬度获得线路范围
+     * @param $coordinate
+     * @param $date
+     * @return array
+     */
+    private function getLineRangeByArea($coordinate, $date)
+    {
+        $lineRange = [];
+        $schedule = Carbon::create($date)->dayOfWeek;
+        $lineAreaList = $this->getLineAreaService()->getList(['schedule' => $schedule], ['line_id', 'coordinate_list'], false)->toArray();
+        if (!empty($lineAreaList)) {
+            foreach ($lineAreaList as $lineArea) {
+                $coordinateList = json_decode($lineArea['coordinate_list'], true);
+                if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
+                    $lineRange = $lineArea;
+                    break;
+                }
+            }
+        }
+        return $lineRange ?? [];
+    }
+
+    /**
+     * 通过经纬度获得线路范围列表
+     * @param array $coordinate
+     * @return array
+     */
+    private function getLineRangeListByArea(array $coordinate)
+    {
+        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
+        if (!empty($lineAreaList)) {
+            foreach ($lineAreaList as $lineArea) {
+                $coordinateList = json_decode($lineArea['coordinate_list'], true);
+                if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
+                    $lineRangeList[] = $lineArea;
+                }
+            }
+        }
+        return $lineRangeList ?? [];
+    }
+
+
+    /**
+     * 通过线路范围列表获取可选日期列表
+     * @param $params
+     * @param array $lineRangeList
+     * @param int $orderOrBatch
+     * @return array
+     * @throws BusinessLogicException
+     */
+    private function getScheduleListByLineRangeList($params, array $lineRangeList, int $orderOrBatch)
+    {
+        $dateList = [];
         for ($i = 0, $j = count($lineRangeList); $i < $j; $i++) {
-            if(!empty($lineRangeList[$i])){
-                $dateList =array_merge($dateList,$this->checkRuleForDate($params,$lineRangeList[$i],$orderOrBatch));
+            if (!empty($lineRangeList[$i])) {
+                $dateList = array_merge($dateList, $this->checkRuleForDate($params, $lineRangeList[$i], $orderOrBatch));
             }
         }
         asort($dateList);
@@ -224,17 +335,17 @@ class BaseLineService extends BaseService
      * @param $orderOrBatch
      * @return array
      */
-    private function checkRuleForDate($params,$lineRange,$orderOrBatch)
+    private function checkRuleForDate($params, $lineRange, $orderOrBatch)
     {
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false)->toArray();
-        if(!empty($line)){
+        if (!empty($line)) {
             $date = $this->getFirstWeekDate($lineRange);
             for ($k = 0, $l = $line['appointment_days'] - $date; $k < $l; $k = $k + 7) {
                 $params['execution_date'] = Carbon::today()->addDays($date + $k)->format("Y-m-d");
                 try {
                     $this->deadlineCheck($params, $line);
                     $this->appointmentDayCheck($params, $line);
-                    $this->maxCheck($params,$line,$orderOrBatch);
+                    $this->maxCheck($params, $line, $orderOrBatch);
                 } catch (BusinessLogicException $e) {
                     continue;
                 }
@@ -242,120 +353,6 @@ class BaseLineService extends BaseService
             }
         }
         return $dateList ?? [];
-    }
-
-    /**
-     * 获取线路范围
-     * @param $info
-     * @return array|mixed
-     * @throws BusinessLogicException
-     */
-    private function getLineRange($info)
-    {
-        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code']);
-        } else {
-            $coordinate = ['lat' => $info['lon'] ?? $info ['receiver_lon'], 'lon' => $info['lat'] ?? $info ['receiver_lon']];
-            $lineRange = $this->getLineRangeByArea($coordinate,$info['execution_date']);
-        }
-        if (empty($lineRange)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
-        }
-        return $lineRange;
-    }
-
-    /**
-     * 获取线路范围列表
-     * @param $params
-     * @return array
-     */
-    private function getLineRangeList($params)
-    {
-        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRangeList = $this->getLineRangeListByPostcode($params['receiver_post_code']);
-        }else{
-            $coordinate = ['lat' => $params['lon'] ?? $params ['receiver_lon'], 'lon' => $params['lat'] ?? $params ['receiver_lon']];
-            $lineRangeList = $this->getLineRangeListByArea($coordinate);
-        }
-        return $lineRangeList;
-    }
-
-    /**
-     * 通过邮编获得线路范围
-     * @param $postCode
-     * @return array
-     */
-    private function getLineRangeByPostcode($postCode)
-    {
-        //获取邮编数字部分
-        $postCode = explode_post_code($postCode ?? 0);
-        //获取线路范围
-        $lineRange = $this->getLineRangeService()->query
-            ->where('post_code_start', '<=', $postCode)
-            ->where('post_code_end', '>=', $postCode)
-            ->where('country', CompanyTrait::getCountry())
-            ->where('schedule', \Illuminate\Support\Carbon::create($info['execution_date'])->dayOfWeek)
-            ->first()->toArray();
-        return $lineRange ?? [];
-    }
-
-    /**
-     * 通过邮编获得线路范围列表
-     * @param array $postCode
-     * @return array
-     */
-    private function getLineRangeListByPostcode(array $postCode)
-    {
-        //获取邮编数字部分
-        $postCode = explode_post_code($postCode ?? 0);
-        //获取线路范围
-        $lineRange = $this->getLineRangeService()->query
-            ->where('post_code_start', '<=', $postCode)
-            ->where('post_code_end', '>=', $postCode)
-            ->where('country', CompanyTrait::getCountry())
-            ->get()->toArray();
-        return $lineRange ?? [];
-    }
-
-    /**
-     * 通过经纬度获得线路范围
-     * @param $coordinate
-     * @param $date
-     * @return array
-     */
-    private function getLineRangeByArea($coordinate,$date)
-    {
-        $lineRange=[];
-        $schedule=Carbon::create($date)->dayOfWeek;
-        $lineAreaList = $this->getLineAreaService()->getList(['schedule'=>$schedule], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
-        if(!empty($lineAreaList)){
-            foreach ($lineAreaList as $lineArea) {
-                $coordinateList = json_decode($lineArea['coordinate_list'], true);
-                if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
-                    $lineRange = $lineArea;
-                }
-            }
-        }
-        return $lineRange ?? [];
-    }
-
-    /**
-     * 通过经纬度获得线路范围列表
-     * @param array $coordinate
-     * @return array
-     */
-    private function getLineRangeListByArea(array $coordinate)
-    {
-        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
-        if(!empty($lineAreaList)){
-            foreach ($lineAreaList as $lineArea) {
-                $coordinateList = json_decode($lineArea['coordinate_list'], true);
-                if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
-                    $lineRange[] = $lineArea;
-                }
-            }
-        }
-        return $lineRange ?? [];
     }
 
     /**
@@ -382,7 +379,8 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function deadlineCheck($info,$line){
+    private function deadlineCheck($info, $line)
+    {
         if (date('Y-m-d') == $info['execution_date']) {
             if (time() > strtotime($info['execution_date'] . ' ' . $line['order_deadline'])) {
                 throw new BusinessLogicException('当天下单已超过截止时间');
@@ -398,7 +396,7 @@ class BaseLineService extends BaseService
      * @param $orderOrBatch
      * @throws BusinessLogicException
      */
-    private function maxCheck($params,$line,$orderOrBatch)
+    private function maxCheck($params, $line, $orderOrBatch)
     {
         if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
             if ($orderOrBatch === 2) {
@@ -418,7 +416,8 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function appointmentDayCheck($info,$line){
+    private function appointmentDayCheck($info, $line)
+    {
         //判断预约日期是否在可预约日期范围内
         if (Carbon::today()->addDays($line['appointment_days'])->lt($info['execution_date'] . ' 00:00:00')) {
             throw new BusinessLogicException('预约日期已超过可预约时间范围');
@@ -433,7 +432,8 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function pickupMaxCheck($info,$line){
+    private function pickupMaxCheck($info, $line)
+    {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 1);
         if (1 + $orderCount['pickup_count'] > $line['pickup_max_count']) {
             throw new BusinessLogicException('当前线路已达到最大取件订单数量');
@@ -448,7 +448,8 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function pieMaxCheck($info,$line){
+    private function pieMaxCheck($info, $line)
+    {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 2);
         if (1 + $orderCount['pie_count'] > $line['pie_max_count']) {
             throw new BusinessLogicException('当前线路已达到最大派件订单数量');

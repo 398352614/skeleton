@@ -15,29 +15,19 @@ use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
 use App\Http\Validate\Api\Merchant\OrderImportValidate;
 use App\Http\Validate\BaseValidate;
-use App\Jobs\AddOrderPush;
 use App\Models\Order;
 use App\Models\OrderImportLog;
-use App\Services\Admin\BaseLineService;
-use App\Services\Admin\LineAreaService;
-use App\Services\Admin\OrderImportService;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
-use App\Traits\AddressTemplateTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
-use App\Traits\MapAreaTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use App\Services\Merchant\LineService;
 use Illuminate\Support\Facades\Validator;
 
 class OrderService extends BaseService
@@ -154,7 +144,6 @@ class OrderService extends BaseService
     {
         return self::getInstance(LineRangeService::class);
     }
-
 
     /**
      * 线路区域 服务
@@ -932,8 +921,7 @@ class OrderService extends BaseService
         if (empty($params)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getBaseLineService()->getScheduleList($params);
-        return $data;
+        return $this->getBaseLineService()->getScheduleList($params);
     }
 
     /**
@@ -945,8 +933,7 @@ class OrderService extends BaseService
     public function getDate($params)
     {
         $this->validate($params);
-        $data = $this->getBaseLineService()->getScheduleList($params);
-        return $data;
+        return $this->getBaseLineService()->getScheduleList($params);
     }
 
     /**

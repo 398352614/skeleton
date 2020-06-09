@@ -17,9 +17,8 @@ use App\Services\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
-use \Illuminate\Support\Carbon;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Arr;
-use mysql_xdevapi\Collection;
 
 class BaseLineService extends BaseService
 {
@@ -205,7 +204,7 @@ class BaseLineService extends BaseService
     public function getScheduleList($params, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
     {
         $lineRangeList = $this->getLineRangeList($params);
-        return $this->getScheduleListByLineRange($params, $lineRangeList, $orderOrBatch);
+        return $this->getScheduleListByLineRangeList($params, $lineRangeList, $orderOrBatch);
     }
 
     /**
@@ -361,7 +360,7 @@ class BaseLineService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    private function getScheduleListByLineRange($params, array $lineRangeList, int $orderOrBatch)
+    private function getScheduleListByLineRangeList($params, array $lineRangeList, int $orderOrBatch)
     {
         $dateList = [];
         for ($i = 0, $j = count($lineRangeList); $i < $j; $i++) {
