@@ -555,6 +555,7 @@ class TourService extends BaseService
 
     /**
      * 此处要求batchIds 为有序,并且已完成或者异常的 batch 在前方,未完成的 batch 在后方
+     * @throws BusinessLogicException
      */
     public function getNextBatchAndUpdateIndex($batchIds): Batch
     {
@@ -623,9 +624,10 @@ class TourService extends BaseService
 
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
         $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
-
         if (!$nextBatch) {
+            $nextBatch=Batch::where('tour_no', $this->formData['tour_no'])->first();
             // self::setTourLock($this->formData['tour_no'], 0);
+            event(new AfterTourUpdated($tour, $nextBatch->batch_no));
             throw new BusinessLogicException('没有找到下一个目的地');
         }
 
