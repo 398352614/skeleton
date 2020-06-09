@@ -260,7 +260,7 @@ class BaseLineService extends BaseService
      * @param $params
      * @return array
      */
-    private function getLineRangeList($params)
+    public function getLineRangeList($params)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             $lineRangeList = $this->getLineRangeListByPostcode($params['receiver_post_code']);
@@ -360,7 +360,7 @@ class BaseLineService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    private function getScheduleListByLineRangeList($params, array $lineRangeList, int $orderOrBatch)
+    public function getScheduleListByLineRangeList($params, array $lineRangeList, int $orderOrBatch)
     {
         $dateList = [];
         for ($i = 0, $j = count($lineRangeList); $i < $j; $i++) {
