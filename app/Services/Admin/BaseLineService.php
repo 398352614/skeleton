@@ -217,7 +217,7 @@ class BaseLineService extends BaseService
     public function getScheduleListByLine($params, $lineId)
     {
         $lineRangeList = $this->getLineRangeListByLine($lineId);
-        return $this->getScheduleListByLineRange($params, $lineRangeList, BaseConstService::ORDER_OR_BATCH_2);
+        return $this->getScheduleListByLineRangeList($params, $lineRangeList, BaseConstService::ORDER_OR_BATCH_2);
     }
 
     /**
