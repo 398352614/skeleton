@@ -265,7 +265,7 @@ class BaseLineService extends BaseService
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             $lineRangeList = $this->getLineRangeListByPostcode($params['receiver_post_code']);
         } else {
-            $coordinate = ['lat' => $params['lon'] ?? $params ['receiver_lon'], 'lon' => $params['lat'] ?? $params ['receiver_lon']];
+            $coordinate = ['lat' => $params['lat'] ?? $params ['receiver_lat'], 'lon' => $params['lon'] ?? $params ['receiver_lon']];
             $lineRangeList = $this->getLineRangeListByArea($coordinate);
         }
         return $lineRangeList;
