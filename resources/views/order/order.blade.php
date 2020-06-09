@@ -24,6 +24,7 @@
                 height: 840px;
                 box-sizing: border-box;
                 border: 1px solid #000;
+                overflow: hidden;
             }
             .facial-list .company-name {
                 padding: 15px;
@@ -111,7 +112,7 @@
 
     </head>
     <body>
-        <div class="facial-list" overflow: hidden;>
+        <div class="facial-list">
             <div class="company-name bottom-line">{{$data['company_name']}}</div>
             <div class="bar-code bottom-line">
                 <img src="{{ $data['barcode'] }}" />
