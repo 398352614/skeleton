@@ -299,12 +299,12 @@ class BaseLineService extends BaseService
         //获取邮编数字部分
         $postCode = explode_post_code($postCode ?? 0);
         //获取线路范围
-        $lineRange = $this->getLineRangeService()->query
+        $lineRangeList = $this->getLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', CompanyTrait::getCountry())
             ->get()->toArray();
-        return $lineRange ?? [];
+        return $lineRangeList ?? [];
     }
 
     /**
@@ -338,14 +338,14 @@ class BaseLineService extends BaseService
     {
         $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
         if(!empty($lineAreaList)){
-            foreach ($lineAreaList as $lineArea) {
+                foreach ($lineAreaList as $lineArea) {
                 $coordinateList = json_decode($lineArea['coordinate_list'], true);
                 if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
-                    $lineRange[] = $lineArea;
+                    $lineRangeList[] = $lineArea;
                 }
             }
         }
-        return $lineRange ?? [];
+        return $lineRangeList ?? [];
     }
 
 
