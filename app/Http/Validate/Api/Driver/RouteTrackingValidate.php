@@ -28,7 +28,7 @@ class RouteTrackingValidate extends BaseValidate
     ];
 
     public $scene = [
-        'storeByList' => ['location_list.*.lon','location_list.*.lat','location_list.*.time'],
+        'storeByList' => ['location_list.*.lon','location_list.*.lat','location_list.*.time','location_list'],
     ];
 
     public $message = [
