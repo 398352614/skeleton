@@ -248,7 +248,7 @@ class BaseLineService extends BaseService
      * @param  $postCode
      * @return array
      */
-    private function getLineRangeListByPostcode($postCode)
+    public function getLineRangeListByPostcode($postCode)
     {
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
@@ -312,7 +312,7 @@ class BaseLineService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    private function getScheduleListByLineRangeList($params, array $lineRangeList, int $orderOrBatch)
+    public function getScheduleListByLineRangeList($params, array $lineRangeList, int $orderOrBatch)
     {
         $dateList = [];
         for ($i = 0, $j = count($lineRangeList); $i < $j; $i++) {
