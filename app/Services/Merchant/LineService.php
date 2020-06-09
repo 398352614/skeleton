@@ -22,13 +22,19 @@ class LineService extends BaseLineService
         parent::__construct($line);
     }
 
+    /**
+     * 获取日期列表
+     * @param $postCode
+     * @return array
+     * @throws BusinessLogicException
+     */
     public function getDateListByPostCode($postCode)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_AREA) {
             return [];
         }
-        //$lineRangeList = parent::getLineRangeListByPostcode($postCode);
-        //$dateList = parent::getScheduleListByLineRange(['type' => BaseConstService::ORDER_TYPE_2], $lineRangeList, BaseConstService::ORDER_OR_BATCH_1);
-        //return $dateList;
+        $lineRangeList = parent::getLineRangeListByPostcode($postCode);
+        $dateList = parent::getScheduleListByLineRangeList(['type' => BaseConstService::ORDER_TYPE_2], $lineRangeList, BaseConstService::ORDER_OR_BATCH_1);
+        return $dateList;
     }
 }

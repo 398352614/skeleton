@@ -111,7 +111,7 @@
 
     </head>
     <body>
-        <div class="facial-list">
+        <div class="facial-list" overflow: hidden;>
             <div class="company-name bottom-line">{{$data['company_name']}}</div>
             <div class="bar-code bottom-line">
                 <img src="{{ $data['barcode'] }}" />
