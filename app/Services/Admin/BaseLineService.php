@@ -217,7 +217,7 @@ class BaseLineService extends BaseService
     public function getScheduleListByLine($params, $lineId)
     {
         $lineRangeList = $this->getLineRangeListByLine($lineId);
-        return $this->getScheduleListByLineRange($params, $lineRangeList, BaseConstService::ORDER_OR_BATCH_2);
+        return $this->getScheduleListByLineRangeList($params, $lineRangeList, BaseConstService::ORDER_OR_BATCH_2);
     }
 
     /**
@@ -246,7 +246,7 @@ class BaseLineService extends BaseService
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'], $info['execution_date']);
         } else {
-            $coordinate = ['lat' => $info['lon'] ?? $info ['receiver_lon'], 'lon' => $info['lat'] ?? $info ['receiver_lon']];
+            $coordinate = ['lat' => $info['lat'] ?? $info ['receiver_lat'], 'lon' => $info['lon'] ?? $info ['receiver_lon']];
             $lineRange = $this->getLineRangeByArea($coordinate, $info['execution_date']);
         }
         if (empty($lineRange)) {
@@ -339,7 +339,7 @@ class BaseLineService extends BaseService
      */
     private function getLineRangeListByArea(array $coordinate)
     {
-        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
+        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list','schedule'], false)->toArray();
         if (!empty($lineAreaList)) {
             foreach ($lineAreaList as $lineArea) {
                 $coordinateList = json_decode($lineArea['coordinate_list'], true);
