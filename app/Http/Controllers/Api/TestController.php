@@ -15,7 +15,7 @@ use App\Services\TestService;
 use App\Traits\AlphaTrait;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\App;
-use voku\helper\ASCII;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class TestController
@@ -94,6 +94,18 @@ class TestController extends BaseController
     public function updateAll()
     {
         return $this->service->updateAll();
+    }
+
+    public function getPath()
+    {
+        $disk = Storage::disk('admin_print_template_public');
+        $fileList = $disk->allFiles();
+        $fileNameList = [];
+        foreach ($fileList as $file) {
+            $fileName = explode('.', $file)[0];
+            $fileNameList[$fileName] = $disk->url($file);
+        }
+        return $fileNameList;
     }
 
 }

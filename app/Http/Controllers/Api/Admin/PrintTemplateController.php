@@ -24,6 +24,15 @@ class PrintTemplateController extends BaseController
         parent::__construct($service, $exceptMethods);
     }
 
+    /**
+     * 初始化
+     * @return array
+     */
+    public function init()
+    {
+        return $this->service->init();
+    }
+
 
     public function show()
     {

@@ -12,13 +12,35 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Models\PrintTemplate;
 use App\Services\BaseService;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class PrintTemplateService extends BaseService
 {
     public function __construct(PrintTemplate $model, $resource = null, $infoResource = null)
     {
         parent::__construct($model, $resource, $infoResource);
+    }
+
+    /**
+     * 初始化
+     * @return array
+     */
+    public function init()
+    {
+        $data = [];
+        $templateList = array_create_index(ConstTranslateTrait::formatList(ConstTranslateTrait::$printTemplateList), 'id');
+        $disk = Storage::disk('admin_print_template_public');
+        $fileList = $disk->allFiles();
+        foreach ($fileList as $file) {
+            $fileName = explode('.', $file)[0];
+            if (!empty($templateList[$fileName])) {
+                $templateList[$fileName]['url'] = $disk->url($file);
+            }
+        }
+        $data['template_list'] = array_values($templateList);
+        return $data;
     }
 
     public function show()

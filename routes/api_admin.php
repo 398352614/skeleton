@@ -441,6 +441,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //打印模板
     Route::prefix('print-template')->group(function () {
+        Route::get('/init', 'PrintTemplateController@init');        //详情
         Route::get('/show', 'PrintTemplateController@show');        //详情
         Route::put('/update', 'PrintTemplateController@update');    //修改
     });

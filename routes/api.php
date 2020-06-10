@@ -34,5 +34,6 @@ Route::namespace('Api')->group(function () {
         Route::get('/hex/{id}', 'TestController@hex');
 
         Route::get('/letter', 'TestController@incrementLetter');
+        Route::get('/getPath', 'TestController@getPath');
     });
 });

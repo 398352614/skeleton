@@ -127,7 +127,7 @@
                 </div>
             </div>
             <div class="address bottom-line">
-                <div class="address-obj right-line">收货人</div>
+                <div class="address-obj right-line">收货方</div>
                 <div class="address-info">
                     <div>姓名：{{$data['receiver_fullname']}}</div>
                     <div>电话：{{$data['receiver_phone']}}</div>

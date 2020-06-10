@@ -172,12 +172,12 @@ class OrderService extends BaseService
     }
 
     /**
-     * 线路基础 服务
-     * @return BaseLineService
+     * 打印模板 服务
+     * @return PrintTemplateService
      */
-    public function getBaseLineService()
+    private function getPrintTemplateService()
     {
-        return self::getInstance(BaseLineService::class);
+        return self::getInstance(PrintTemplateService::class);
     }
 
     /**
@@ -753,7 +753,7 @@ class OrderService extends BaseService
         if (empty($params)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getBaseLineService()->getScheduleList($params);
+        $data = $this->getLineService()->getScheduleList($params);
         return $data;
     }
 
@@ -766,7 +766,7 @@ class OrderService extends BaseService
     public function getDate($params)
     {
         $this->validate($params);
-        $data = $this->getBaseLineService()->getScheduleList($params);
+        $data = $this->getLineService()->getScheduleList($params);
         return $data;
     }
 
@@ -1092,6 +1092,10 @@ class OrderService extends BaseService
      */
     public function orderPrintAll($idList)
     {
+        $printTemplate = $this->getPrintTemplateService()->getInfo([], ['id', 'type'], false);
+        if (empty($printTemplate)) {
+            throw new BusinessLogicException('未设置打印模板，请联系管理员设置打印模板');
+        }
         $company = CompanyTrait::getCompany();
         $orderList = parent::getList(['id' => ['in', explode_id_string($idList)]], ['*'], false)->toArray();
         $orderNoList = array_column($orderList, 'order_no');
@@ -1106,12 +1110,22 @@ class OrderService extends BaseService
             $order['company_name'] = $company['name'];
             return collect($order);
         })->toArray();
+        //若是通用打印模板,则需要将快递号转为条码
+        if ($printTemplate->type == BaseConstService::PRINT_TEMPLATE_GENERAL) {
+            $orderView = 'order.order';
+            $orderList = collect($orderList)->map(function ($order) {
+                $order['first_express_no'] = BarcodeTrait::generateOne($order['first_express_no']);
+                return collect($order);
+            })->toArray();
+        } else {
+            $orderView = 'order.order-2';
+        }
         $printList = [];
         foreach ($orderList as $order) {
             $order['barcode'] = BarcodeTrait::generateOne($order['order_no']);
             $printList[] = [
                 'id' => $order['id'],
-                'url' => PrintTrait::tPrint($order, 'order.order', 'order', $order['order_no'] . '.pdf')
+                'url' => PrintTrait::tPrint($order, $orderView, 'order', $order['order_no'] . '.pdf')
             ];
         }
         return $printList;

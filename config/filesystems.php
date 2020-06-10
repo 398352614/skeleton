@@ -87,6 +87,22 @@ return [
             'visibility' => 'public',
         ],
 
+        //管理员端-条码
+        'admin_barcode_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/admin/barcode'),
+            'url' => env('APP_URL').'/storage/admin/barcode',
+            'visibility' => 'public',
+        ],
+
+        //管理员端-打印模板
+        'admin_print_template_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/admin/print_template'),
+            'url' => env('APP_URL').'/storage/admin/print_template',
+            'visibility' => 'public',
+        ],
+
         //司机端-图片
         'driver_image_public' => [
             'driver' => 'local',
