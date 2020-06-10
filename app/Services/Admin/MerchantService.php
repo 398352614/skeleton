@@ -28,7 +28,9 @@ class MerchantService extends BaseService
     use ExportTrait;
     public $filterRules = [
         'name' => ['like', 'name'],
-        'merchant_group_id' => ['=', 'merchant_group_id']];
+        'merchant_group_id' => ['=', 'merchant_group_id'],
+        'status' => ['=', 'status']
+    ];
 
     protected $headings = [
         'type',
@@ -194,7 +196,7 @@ class MerchantService extends BaseService
             $info[$i]['status'] = $info[$i]['status_name'];
             $info[$i]['country'] = $info[$i]['country_name'];
             for ($j = 0; $j < count($this->headings); $j++) {
-                $cellData[$i][$j] = array_values(Arr::only($info[$i],$this->headings))[$j];
+                $cellData[$i][$j] = array_values(Arr::only($info[$i], $this->headings))[$j];
             }
 
         }
