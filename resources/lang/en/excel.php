@@ -30,7 +30,7 @@ return [
 
     "order"=>[
         "type"=>"*Type",
-        "receiver"=>"*Receiver",
+        "receiver_fullname"=>"*Receiver",
         "receiver_phone"=>"*Phone",
         "receiver_post_code"=>"*Post Code",
         "receiver_house_number"=>"*House Number",
