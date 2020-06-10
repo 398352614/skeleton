@@ -1113,11 +1113,13 @@ class OrderService extends BaseService
         //若是通用打印模板,则需要将快递号转为条码
         if ($printTemplate->type == BaseConstService::PRINT_TEMPLATE_GENERAL) {
             $orderView = 'order.order-2';
-            if (!empty($orderList['package_list'])) {
-                $orderList['package_list'] = collect($orderList['package_list'])->map(function ($package) {
-                    $package['first_express_no'] = BarcodeTrait::generateOne($package['first_express_no']);
-                    return collect($package);
-                })->toArray();
+            foreach ($orderList as $key => $order) {
+                if (!empty($order['package_list'])) {
+                    $orderList[$key]['package_list'] = collect($order['package_list'])->map(function ($package) {
+                        $package['express_first_no'] = BarcodeTrait::generateOne($package['express_first_no']);
+                        return collect($package);
+                    })->toArray();
+                }
             }
         } else {
             $orderView = 'order.order';
