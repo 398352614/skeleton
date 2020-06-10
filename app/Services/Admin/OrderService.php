@@ -520,7 +520,7 @@ class OrderService extends BaseService
         $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
         //通过商户获取国家
-        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'],'status'=>BaseConstService::MERCHANT_STATUS_1], ['*'], false);
+        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'], 'status' => BaseConstService::MERCHANT_STATUS_1], ['*'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在');
         }
@@ -1113,10 +1113,12 @@ class OrderService extends BaseService
         //若是通用打印模板,则需要将快递号转为条码
         if ($printTemplate->type == BaseConstService::PRINT_TEMPLATE_GENERAL) {
             $orderView = 'order.order-2';
-            $orderList = collect($orderList)->map(function ($order) {
-                $order['first_express_no'] = BarcodeTrait::generateOne($order['first_express_no']);
-                return collect($order);
-            })->toArray();
+            if (!empty($orderList['package_list'])) {
+                $orderList['package_list'] = collect($orderList['package_list'])->map(function ($package) {
+                    $package['first_express_no'] = BarcodeTrait::generateOne($package['first_express_no']);
+                    return collect($package);
+                })->toArray();
+            }
         } else {
             $orderView = 'order.order';
         }
