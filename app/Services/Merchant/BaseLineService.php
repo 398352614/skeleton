@@ -275,8 +275,6 @@ class BaseLineService extends BaseService
         if (!empty($lineAreaList)) {
             foreach ($lineAreaList as $lineArea) {
                 $coordinateList = json_decode($lineArea['coordinate_list'], true);
-                dd($coordinate,$coordinateList);
-
                 if (!empty($coordinateList) && MapAreaTrait::containsPoint($coordinateList, $coordinate)) {
                     $lineRange = $lineArea;
                     break;
