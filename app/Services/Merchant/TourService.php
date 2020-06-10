@@ -134,13 +134,13 @@ class TourService extends BaseService
 
     public function getPageList()
     {
-        if(!empty($this->formData['merchantStatus'])){
-            if($this->formData['merchantStatus'] === BaseConstService::MERCHANT_TOUR_STATUS_1 ){
+        if(!empty($this->formData['merchant_status'])){
+            if($this->formData['merchant_status'] === BaseConstService::MERCHANT_TOUR_STATUS_1 ){
                 $this->filters['status'] = ['in',[BaseConstService::TOUR_STATUS_1,BaseConstService::TOUR_STATUS_2,BaseConstService::TOUR_STATUS_3]];
-            }elseif(in_array($this->formData['merchantStatus'],[BaseConstService::MERCHANT_TOUR_STATUS_2,BaseConstService::MERCHANT_TOUR_STATUS_3])){
-                $this->filters['status'] = ['=',$this->formData['merchantStatus']+2];
+            }elseif(in_array($this->formData['merchant_status'],[BaseConstService::MERCHANT_TOUR_STATUS_2,BaseConstService::MERCHANT_TOUR_STATUS_3])){
+                $this->filters['status'] = ['=',$this->formData['merchant_status']+2];
             }else{
-                unset($this->filters['merchantStatus']);
+                unset($this->filters['merchant_status']);
             }
         }
         return parent::getPageList();
