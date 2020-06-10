@@ -520,7 +520,7 @@ class OrderService extends BaseService
         $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
         //通过商户获取国家
-        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
+        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'],'status'=>BaseConstService::MERCHANT_STATUS_1], ['*'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在');
         }
