@@ -676,7 +676,7 @@ class OrderService extends BaseService
         }
         //如果没传经纬度，就去地址库拉经纬度
         if (empty($data['lon']) || empty($data['lat'])) {
-            $address = $this->getReceiverAddressService()->check($data);
+            $address = $this->getReceiverAddressService()->getInfoByUnique($data);
             $list['lon'] = $address['lon'] ?? null;
             $list['lat'] = $address['lat'] ?? null;
             $list['receiver_city'] = $address['receiver_city'] ?? null;
