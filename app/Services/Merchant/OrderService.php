@@ -422,12 +422,12 @@ class OrderService extends BaseService
         for ($i = 0; $i < count($data); $i++) {
             $data[$i] = array_map('strval', $data[$i]);
             //反向翻译
-            $data[$i]['type'] = $typeList[$data[$i]['type_name']];
-            $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type_name']];
-            $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery_name']] ?? 1;
-            $data[$i]['delivery_name'] = $data[$i]['delivery_name'] ?? __('是');
+            $data[$i]['type'] = $typeList[$data[$i]['type']];
+            $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type']];
+            $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery']] ?? 1;
+            $data[$i]['delivery'] = $data[$i]['delivery'] ?? __('是');
             for ($j = 0; $j < 5; $j++) {
-                $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_name_' . ($j + 1)]] ?? 0;
+                $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_' . ($j + 1)]] ?? 0;
             }
             //日期如果是excel时间格式，转换成短横连接格式
             if (is_numeric($data[$i]['execution_date'])) {
@@ -509,7 +509,7 @@ class OrderService extends BaseService
     {
         //验证$params
         $checkfile = \Illuminate\Support\Facades\Validator::make($params,
-            ['file' => 'required|file|mimes:txt,xls,xlsx'],
+            ['file' => 'required|file'],
             ['file.file' => '必须是文件']);
         if ($checkfile->fails()) {
             $error = array_values($checkfile->errors()->getMessages())[0][0];

@@ -441,12 +441,12 @@ class OrderService extends BaseService
         //$countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {
             //反向翻译
-            $data[$i]['type'] = $typeList[$data[$i]['type_name']];
-            $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type_name']];
-            $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery_name']] ?? 1;
-            $data[$i]['delivery_name'] = $data[$i]['delivery_name'] ?? __('是');
+            $data[$i]['type'] = $typeList[$data[$i]['type']];
+            $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type']];
+            $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery']] ?? 1;
+            $data[$i]['delivery_name'] = $data[$i]['delivery'] ?? __('是');
             for ($j = 0; $j < 5; $j++) {
-                $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_name_' . ($j + 1)]] ?? 0;
+                $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_' . ($j + 1)]] ?? 0;
             }
             //日期如果是excel时间格式，转换成短横连接格式
             if (is_numeric($data[$i]['execution_date'])) {
