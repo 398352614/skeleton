@@ -38,7 +38,6 @@ class TourService extends BaseService
     public $directionClient;
 
     public $filterRules = [
-        'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_id' => ['=', 'driver_id'],
         'line_name' => ['like', 'line_name'],
@@ -135,7 +134,7 @@ class TourService extends BaseService
     public function getPageList()
     {
         if(!empty($this->formData['merchant_status'])){
-            if($this->formData['merchant_status'] === BaseConstService::MERCHANT_TOUR_STATUS_1 ){
+            if($this->formData['merchant_status'] == BaseConstService::MERCHANT_TOUR_STATUS_1 ){
                 $this->filters['status'] = ['in',[BaseConstService::TOUR_STATUS_1,BaseConstService::TOUR_STATUS_2,BaseConstService::TOUR_STATUS_3]];
             }elseif(in_array($this->formData['merchant_status'],[BaseConstService::MERCHANT_TOUR_STATUS_2,BaseConstService::MERCHANT_TOUR_STATUS_3])){
                 $this->filters['status'] = ['=',$this->formData['merchant_status']+2];
