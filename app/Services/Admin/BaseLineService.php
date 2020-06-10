@@ -17,6 +17,9 @@ use App\Services\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
+use http\Exception\BadConversionException;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Arr;
 
@@ -142,7 +145,7 @@ class BaseLineService extends BaseService
      * @param $lineId
      * @param $info
      * @param $orderOrBatch
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function getInfoByLineId($info, $lineId, $orderOrBatch)
@@ -155,6 +158,22 @@ class BaseLineService extends BaseService
         $line = $line->toArray();
         $this->checkRule($info, $line, $orderOrBatch);
         return $line;
+    }
+
+    /**
+     *  通过信息获得线路
+     * @param $info
+     * @return mixed|string
+     */
+    public function getLineIdByInfo($info)
+    {
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'],null);
+        } else {
+            $coordinate = ['lat' => $info['lat'] ?? $info ['receiver_lat'], 'lon' => $info['lon'] ?? $info ['receiver_lon']];
+            $lineRange = $this->getLineRangeByArea($coordinate, null);
+        }
+        return $lineRange['line_id'] ?? '';
     }
 
     /**
@@ -285,9 +304,10 @@ class BaseLineService extends BaseService
         $lineRange = $this->getLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
-            ->where('country', CompanyTrait::getCountry())
-            ->where('schedule', Carbon::create($executionDate)->dayOfWeek)
-            ->first();
+            ->where('country', CompanyTrait::getCountry());
+        //若存在取派日期，则加上取派日期条件
+        !empty($executionDate) && $lineRange->where('schedule', Carbon::create($executionDate)->dayOfWeek);
+        $lineRange=  $lineRange->first();
         return !empty($lineRange) ? $lineRange->toArray() : [];
     }
 
@@ -318,8 +338,12 @@ class BaseLineService extends BaseService
     private function getLineRangeByArea($coordinate, $date)
     {
         $lineRange = [];
-        $schedule = Carbon::create($date)->dayOfWeek;
-        $lineAreaList = $this->getLineAreaService()->getList(['schedule' => $schedule], ['line_id', 'coordinate_list'], false)->toArray();
+        if(empty($date)){
+            $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false)->toArray();
+        }else{
+            $schedule = Carbon::create($date)->dayOfWeek;
+            $lineAreaList = $this->getLineAreaService()->getList(['schedule' => $schedule], ['line_id', 'coordinate_list'], false)->toArray();
+        }
         if (!empty($lineAreaList)) {
             foreach ($lineAreaList as $lineArea) {
                 $coordinateList = json_decode($lineArea['coordinate_list'], true);
@@ -339,7 +363,7 @@ class BaseLineService extends BaseService
      */
     private function getLineRangeListByArea(array $coordinate)
     {
-        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list','schedule'], false)->toArray();
+        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list', 'schedule'], false)->toArray();
         if (!empty($lineAreaList)) {
             foreach ($lineAreaList as $lineArea) {
                 $coordinateList = json_decode($lineArea['coordinate_list'], true);
