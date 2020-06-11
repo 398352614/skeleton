@@ -44,7 +44,7 @@ class BaseConstService
     const ORDER_NO_RULE_LENGTH = 13;
 
     //经纬度差距范围，小数点后6位为1米
-    const LOCATION_DISTANCE_RANGE = 0.000001 * 10;
+    const LOCATION_DISTANCE_RANGE = 0.000001 * 1000;
 
     //停留记录时间
     const STOP_TIME = 30;
