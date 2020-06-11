@@ -74,7 +74,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
     });
 
     //订单导入记录管理
-    Route::prefix('order-import')->group(function () {
+    Route::prefix('order-import')->middleware(['importCheck'])->group(function () {
         //上传模板
         Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
         //生成模板
