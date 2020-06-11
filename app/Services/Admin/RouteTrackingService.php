@@ -47,7 +47,7 @@ class RouteTrackingService extends BaseService
         if (!$tour) {
             throw new BusinessLogicException('没找到相关进行中的线路');
         }
-        $routeTracking = $tour->routeTracking->sortBy('time_human')->toArray();
+        $routeTracking = $tour->routeTracking->toArray();
         foreach ($routeTracking as $k=>$v){
             if(!empty($v['tour_driver_event_id'])){
                 $routeTracking[$k]['event']=array_values($tour->tourDriverEvent->where('id',$v['tour_driver_event_id'])
@@ -59,18 +59,20 @@ class RouteTrackingService extends BaseService
                 $routeTracking[$k]['address']=$routeTracking[$k]['event'][0]['address'];
             }
         }
-        $routeTracking[0]['stopTime']=0.0;
+        $routeTracking = collect($routeTracking)->sortBy('time_human')->toArray();
+        $routeTracking[0]['stopTime']=0;
         for($i=1,$j=count($routeTracking);$i<$j;$i++){
             if(abs($routeTracking[$i]['lon']-$routeTracking[$i-1]['lon']) < BaseConstService::LOCATION_DISTANCE_RANGE &&
                 abs($routeTracking[$i]['lat']-$routeTracking[$i-1]['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE){
                 $routeTracking[$i]['stopTime']=round($routeTracking[$i-1]['stopTime']+abs($routeTracking[$i]['time']-$routeTracking[$i-1]['time'])/60);
+                //造停点事件
                 if($routeTracking[$i]['stopTime'] >= BaseConstService::STOP_TIME){
                     $content[$i][]=[
                         'content'=>__("司机已在此停留[:time]分钟",['time'=>$routeTracking[$i]['stopTime']]),
                         'time'=>$routeTracking[$i]['time_human'],
                         'type'=>'stop',
                     ];
-                    $routeTracking[$i]['event']=array_merge($routeTracking[$i]['event'] ?? [],[collect($content[$i])->sortByDesc('time')->first()]);
+                    $routeTracking[$i]['event']=array_merge($routeTracking[$i-1]['event'] ?? [],[collect($content[$i])->sortByDesc('time')->first()]);
                 }
                 //合并
                 if(!empty($routeTracking[$i-1]['event'])){
@@ -79,12 +81,15 @@ class RouteTrackingService extends BaseService
                 if(!empty($routeTracking[$i-1]['address'])){
                     $routeTracking[$i]['address']=$routeTracking[$i-1]['address'];
                 }
-                if(!empty($info[$i]['event']) && !empty(collect($info[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'])){
-                    $info[$i]['event']=array_merge([collect($info[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'][0]],collect($info[$i]['event'])->groupBy('type')->toArray()['station'] ?? []);
+                if(!empty($routeTracking[$i]['event']) && !empty(collect($routeTracking[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'])){
+                    $routeTracking[$i]['event']=array_merge(collect($routeTracking[$i]['event'])->groupBy('type')->sortByDesc('time')->toArray()['stop'][0],collect($routeTracking[$i]['event'])->groupBy('type')->toArray()['station'] ?? []);
+                }elseif(!empty($routeTracking[$i]['event'])){
+                    $routeTracking[$i]['event']=collect($routeTracking[$i]['event'])->groupBy('type')->toArray()['station'] ?? [];
                 }
+                $routeTracking=Arr::except($routeTracking,[$i-1]);
                 $info=Arr::except($info,[$i-1]);
             }else{
-                $routeTracking[$i]['stopTime']=0.0;
+                $routeTracking[$i]['stopTime']=0;
             }
             $info[$i]=Arr::except($routeTracking[$i],['stopTime','created_at','updated_at','time','tour_driver_event_id','driver_id']);
             if(empty($info[$i]['address'])){
