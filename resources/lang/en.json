@@ -1,4 +1,5 @@
 {
+    "地址模板二无法进行批量导入": "Can't import the order with the 2rd address template",
     "没找到相关进行中的线路": "Did not find the relevant line in progress",
     "无搜索结果": "No search results",
     "同时只能进行一个任务，请先完成其他取派中的任务": "Only one task can be carried out at the same time, please complete the tasks in other assignments first",

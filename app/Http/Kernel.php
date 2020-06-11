@@ -35,7 +35,7 @@ class Kernel extends HttpKernel
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class
         ],
 
         'api' => [
@@ -67,7 +67,8 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'validate' => \App\Http\Middleware\Validate::class,
         'response' => \App\Http\Middleware\Response::class,
-        'checktourredislock' => \App\Http\Middleware\CheckTourRedisLock::class
+        'checktourredislock' => \App\Http\Middleware\CheckTourRedisLock::class,
+        'importCheck'=> \App\Http\Middleware\ImportCheck::class
     ];
 
     /**
