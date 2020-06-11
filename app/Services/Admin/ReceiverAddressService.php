@@ -22,7 +22,7 @@ class ReceiverAddressService extends BaseService
 
     public $filterRules = [
         'merchant_id' => ['=', 'merchant_id'],
-        'receiver_fullname' => ['like', '_fullname'],
+        'receiver_fullname' => ['like', 'receiver_fullname'],
         'receiver_post_code' => ['like', 'receiver_post_code']
     ];
 

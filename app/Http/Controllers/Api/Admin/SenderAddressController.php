@@ -5,6 +5,12 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\SenderAddressService;
+
+/**
+ * Class SenderAddressController
+ * @package App\Http\Controllers\Api\Admin
+ * @property SenderAddressService $service
+ */
 class SenderAddressController extends BaseController
 {
 
