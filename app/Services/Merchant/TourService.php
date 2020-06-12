@@ -142,97 +142,9 @@ class TourService extends BaseService
                 unset($this->filters['merchant_status']);
             }
         }
+        $this->filters['merchant_id'] = ['=',auth()->user()->id];
         return parent::getPageList();
     }
-
-    /**
-     * 分配司机
-     * @param $id
-     * @param $params
-     * @throws BusinessLogicException
-     */
-    public function assignDriver($id, $params)
-    {
-        $tour = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::TOUR_STATUS_1, false);
-        //查看当前司机是否已被分配给其他取件线路
-        $otherTour = parent::getInfo(['driver_id' => $params['driver_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
-        if (!empty($otherTour)) {
-            throw new BusinessLogicException('当前司机已被分配，请选择其他司机');
-        }
-        //获取司机
-        $driver = $this->getDriverService()->getInfo(['id' => $params['driver_id'], 'is_locked' => BaseConstService::DRIVER_TO_NORMAL], ['*'], false);
-        if (empty($driver)) {
-            throw new BusinessLogicException('司机不存在或已被锁定');
-        }
-        $driver = $driver->toArray();
-        //取件线路分配 由于取件线路,站点,订单的已分配状态都为2,所以只需取一个状态即可(ORDER_STATUS_2,BATCH_ASSIGNED,TOUR_STATUS_2)
-        $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => $driver['id'], 'driver_name' => $driver['fullname'], 'driver_phone' => $driver['phone'], 'status' => BaseConstService::ORDER_STATUS_2]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('司机分配失败，请重新操作');
-        }
-        $tour['driver_id']=$driver['id'];
-        $tour['driver_name']=$driver['fullname'];
-        $tour['driver_phone']=$driver['phone'];
-        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
-    }
-
-    /**
-     * 取消司机分配
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function cancelAssignDriver($id)
-    {
-        $tour = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::TOUR_STATUS_2, true);
-        $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => null, 'driver_name' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('司机取消分配失败，请重新操作');
-        }
-        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER);
-    }
-
-
-    /**
-     * 分配车辆
-     * @param $id
-     * @param $params
-     * @throws BusinessLogicException
-     */
-    public function assignCar($id, $params)
-    {
-        $tour = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3], false);
-        //查看当前车辆是否已被分配给其他取件线路
-        $otherTour = parent::getInfo(['car_id' => $params['car_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
-        if (!empty($otherTour)) {
-            throw new BusinessLogicException('当前车辆已被分配，请选择其他车辆');
-        }
-        //获取车辆
-        $car = $this->getCarService()->getInfo(['id' => $params['car_id'], 'is_locked' => BaseConstService::CAR_TO_NORMAL], ['*'], false);
-        if (empty($car)) {
-            throw new BusinessLogicException('车辆不存在或已被锁定');
-        }
-        //分配
-        $car = $car->toArray();
-        $rowCount = $this->assignOrCancelAssignAll($tour, ['car_id' => $car['id'], 'car_no' => $car['car_no']]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('车辆分配失败，请重新操作');
-        }
-    }
-
-    /**
-     * 取消车辆分配
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function cancelAssignCar($id)
-    {
-        $tour = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], false);
-        $rowCount = $this->assignOrCancelAssignAll($tour, ['car_id' => null, 'car_no' => null]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('车辆取消分配失败，请重新操作');
-        }
-    }
-
 
     /**
      * 分配或取消分配司机或车辆到取件线路-站点-订单
