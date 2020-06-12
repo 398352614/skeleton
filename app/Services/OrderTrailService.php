@@ -110,4 +110,9 @@ class OrderTrailService extends BaseService
     {
         return parent::getList(['order_no' => $this->formData['order_no']]);
     }
+
+    public function create($data)
+    {
+        return parent::create($data);
+    }
 }
