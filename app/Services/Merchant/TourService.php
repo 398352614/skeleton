@@ -142,7 +142,7 @@ class TourService extends BaseService
                 unset($this->filters['merchant_status']);
             }
         }
-        $this->filters['merchant_id'] = ['=',auth()->user()->id];
+        $this->filters['id'] = ['=',auth()->user()->id];
         return parent::getPageList();
     }
 
