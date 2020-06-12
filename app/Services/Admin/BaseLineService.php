@@ -148,10 +148,10 @@ class BaseLineService extends BaseService
      * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
-    public function getInfoByLineId($info, $lineId, $orderOrBatch)
+    public function getInfoByLineId($info, $params, $orderOrBatch)
     {
         //获取线路信息
-        $line = parent::getInfo(['id' => $lineId], ['*'], false);
+        $line = parent::getInfo(['id' => $params['line_id'],'execution_date'=>$params['execution_date']], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
@@ -538,12 +538,12 @@ class BaseLineService extends BaseService
      */
     private function MaxBatchCheck(array $info, array $line)
     {
-        $orderCount = $this->getTourService()->sumOrderCount($info, $line, 1);
+        $orderCount = $this->getTourService()->sumOrderCount($info, $line, 3);
         if ($info['expect_pickup_quantity'] + $orderCount['pickup_count'] > $line['pickup_max_count']) {
             throw new BusinessLogicException('当前线路已达到最大取件订单数量');
         };
-        if ($info['expect_pickup_quantity'] + $orderCount['pickup_count'] > $line['pickup_max_count']) {
-            throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+        if ($info['expect_pie_quantity'] + $orderCount['pie_count'] > $line['pie_max_count']) {
+            throw new BusinessLogicException('当前线路已达到最大派件订单数量');
         };
         return;
     }
