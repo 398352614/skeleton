@@ -13,6 +13,7 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Services\OrderTrailService;
+use App\Traits\CompanyTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Bus;
@@ -146,17 +147,29 @@ class BatchService extends BaseService
      */
     private function getBatchWhere($info)
     {
-        return [
-            'execution_date' => $info['execution_date'],
-            'receiver_fullname' => $info['receiver_fullname'],
-            'receiver_phone' => $info['receiver_phone'],
-            'receiver_country' => $info['receiver_country'],
-            'receiver_city' => $info['receiver_city'],
-            'receiver_street' => $info['receiver_street'],
-            'receiver_house_number' => $info['receiver_house_number'],
-            'receiver_post_code' => $info['receiver_post_code'],
-            'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
-        ];
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $where = [
+                'execution_date' => $info['execution_date'],
+                'receiver_fullname' => $info['receiver_fullname'],
+                'receiver_phone' => $info['receiver_phone'],
+                'receiver_country' => $info['receiver_country'],
+                'receiver_city' => $info['receiver_city'],
+                'receiver_street' => $info['receiver_street'],
+                'receiver_house_number' => $info['receiver_house_number'],
+                'receiver_post_code' => $info['receiver_post_code'],
+                'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
+            ];
+        } else {
+            $where = [
+                'execution_date' => $info['execution_date'],
+                'receiver_fullname' => $info['receiver_fullname'],
+                'receiver_phone' => $info['receiver_phone'],
+                'receiver_country' => $info['receiver_country'],
+                'receiver_address' => $info['receiver_address'],
+                'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
+            ];
+        }
+        return $where;
     }
 
     /**

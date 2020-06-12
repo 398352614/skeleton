@@ -310,7 +310,7 @@ class OrderService extends BaseService
         }
         $order = $order->getAttributes();
         /*****************************************订单加入站点*********************************************************/
-        list($batch, $tour) = $this->getBatchService()->join($params, $line);
+        list($batch, $tour) = $this->getBatchService()->join($order, $line);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($order, $batch, $tour, false);
         /**************************************新增订单货物明细********************************************************/

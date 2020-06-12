@@ -15,6 +15,7 @@ use App\Traits\MapAreaTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+
 class BatchService extends BaseService
 {
 
@@ -124,7 +125,8 @@ class BatchService extends BaseService
      * 线路基础 服务
      * @return BaseLineService
      */
-    public function getBaseLineService(){
+    public function getBaseLineService()
+    {
         return self::getInstance(BaseLineService::class);
     }
 
@@ -162,17 +164,29 @@ class BatchService extends BaseService
      */
     private function getBatchWhere($info)
     {
-        return [
-            'execution_date' => $info['execution_date'],
-            'receiver_fullname' => $info['receiver_fullname'],
-            'receiver_phone' => $info['receiver_phone'],
-            'receiver_country' => $info['receiver_country'],
-            'receiver_city' => $info['receiver_city'],
-            'receiver_street' => $info['receiver_street'],
-            'receiver_house_number' => $info['receiver_house_number'],
-            'receiver_post_code' => $info['receiver_post_code'],
-            'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
-        ];
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $where = [
+                'execution_date' => $info['execution_date'],
+                'receiver_fullname' => $info['receiver_fullname'],
+                'receiver_phone' => $info['receiver_phone'],
+                'receiver_country' => $info['receiver_country'],
+                'receiver_city' => $info['receiver_city'],
+                'receiver_street' => $info['receiver_street'],
+                'receiver_house_number' => $info['receiver_house_number'],
+                'receiver_post_code' => $info['receiver_post_code'],
+                'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
+            ];
+        } else {
+            $where = [
+                'execution_date' => $info['execution_date'],
+                'receiver_fullname' => $info['receiver_fullname'],
+                'receiver_phone' => $info['receiver_phone'],
+                'receiver_country' => $info['receiver_country'],
+                'receiver_address' => $info['receiver_address'],
+                'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
+            ];
+        }
+        return $where;
     }
 
     /**
@@ -356,9 +370,9 @@ class BatchService extends BaseService
     {
         //通过订单获取可能站点
         $data = [];
-        if(CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE){
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             $fields = ['receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
-        }else{
+        } else {
             $fields = ['receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_address'];
         }
         $rule = array_merge($this->formData, Arr::only($order, $fields));
@@ -619,7 +633,7 @@ class BatchService extends BaseService
         if (empty($params)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getBaseLineService()->getScheduleList($params,BaseConstService::ORDER_OR_BATCH_2);
+        $data = $this->getBaseLineService()->getScheduleList($params, BaseConstService::ORDER_OR_BATCH_2);
         return $data;
     }
 
@@ -630,12 +644,13 @@ class BatchService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getLineDate($id,$data){
+    public function getLineDate($id, $data)
+    {
         $params = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($params)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getBaseLineService()->getScheduleListByLine($params,$data['line_id']);
+        $data = $this->getBaseLineService()->getScheduleListByLine($params, $data['line_id']);
         return $data;
     }
 
@@ -643,11 +658,12 @@ class BatchService extends BaseService
      * 获取可选线路
      * @return BaseLineService|array|mixed
      */
-    public function getLineList(){
-        if(CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE){
-            $info=$this->getLineService()->postcodeIndex();
-        }else{
-            $info=$this->getLineService()->areaIndex(1);
+    public function getLineList()
+    {
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $info = $this->getLineService()->postcodeIndex();
+        } else {
+            $info = $this->getLineService()->areaIndex(1);
         }
         return $info ?? [];
     }
