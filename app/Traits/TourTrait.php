@@ -33,8 +33,6 @@ trait TourTrait
         //触发司机出库1
         event(new OutWarehouse($tour));
         //触发司机出库事件2
-        data_set($cancelOrderList, '*.status', 'cancel');
-        data_set($orderList, '*.status', 'delivering');
         $newOrderList = array_merge($cancelOrderList, $orderList);
         $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
         event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $newOrderList));

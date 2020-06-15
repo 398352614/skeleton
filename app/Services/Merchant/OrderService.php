@@ -352,7 +352,10 @@ class OrderService extends BaseService
             'order_no' => $params['order_no'],
             'batch_no' => $batch['batch_no'],
             'tour_no' => $tour['tour_no'],
-            'line_name' => $tour['line_name']
+            'line'=>[
+                'line_id'=>$tour['line_id'],
+                'line_name'=>$tour['line_name'],
+            ]
         ];
     }
 
