@@ -93,23 +93,23 @@ class CompanyConfigService extends BaseService
     {
         $order = $this->getOrderService()->getInfo([], ['id'], false);
         if (!empty($order)) {
-            throw new BusinessLogicException('已存在订单');
+            throw new BusinessLogicException('已存在订单，不能修改配置信息');
         }
         $receiver = $this->getReceiverAddressService()->getInfo([], ['id'], false);
         if (!empty($receiver)) {
-            throw new BusinessLogicException('已存在收件人');
+            throw new BusinessLogicException('已存在收件人，不能修改配置信息');
         }
         $sender = $this->getSenderAddressService()->getInfo([], ['id'], false);
         if (!empty($sender)) {
-            throw new BusinessLogicException('已存在发件人');
+            throw new BusinessLogicException('已存在发件人，不能修改配置信息');
         }
         $warehouse = $this->getWareHouseService()->getInfo([], ['id'], false);
         if (!empty($warehouse)) {
-            throw new BusinessLogicException('已存在仓库');
+            throw new BusinessLogicException('已存在仓库，不能修改配置信息');
         }
         $line = $this->getLineService()->getInfo([], ['id'], false);
         if (!empty($line)) {
-            throw new BusinessLogicException('已存在线路');
+            throw new BusinessLogicException('已存在线路，不能修改配置信息');
         }
 
         $addressTemplate = $this->getAddressTemplateService()->getInfo(['id' => $params['address_template_id']], ['id'], false);
