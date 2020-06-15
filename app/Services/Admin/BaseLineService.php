@@ -155,6 +155,14 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
+        if(CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE){
+            $data = $this->getLineRangeService()->getInfo(['line_id'=>$params['line_id'],'schedule'=>Carbon::create($params['execution_date'])->dayOfWeek],['*'],false);
+        }else{
+            $data = $this->getLineAreaService()->getInfo(['line_id'=>$params['line_id'],'schedule'=>Carbon::create($params['execution_date'])->dayOfWeek],['*'],false);
+        }
+        if(empty($data)){
+            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
+        }
         $this->checkRule($info, $line, $orderOrBatch);
         return $line;
     }
