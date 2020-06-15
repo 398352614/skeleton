@@ -141,9 +141,9 @@ class BaseLineService extends BaseService
     }
 
     /**
-     * 通过线路ID 获取信息信息
-     * @param $lineId
+     * 通过线路ID 获取信息
      * @param $info
+     * @param $params
      * @param $orderOrBatch
      * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
