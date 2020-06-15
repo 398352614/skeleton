@@ -471,7 +471,7 @@ class BaseLineService extends BaseService
     {
         if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
             if ($orderOrBatch === 2) {
-                $this->MaxBatchCheck($params, $line);
+                $this->maxBatchCheck($params, $line);
             } elseif ($orderOrBatch === 1 && $params['type'] === '1') {
                 $this->pickupMaxCheck($params, $line);
             } elseif ($orderOrBatch === 1 && $params['type'] === '2') {
@@ -506,7 +506,7 @@ class BaseLineService extends BaseService
     private function pickupMaxCheck($info, $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 1);
-        if (1 + $orderCount['pickup_count'] > $line['pickup_max_count']) {
+        if (1 + intval($orderCount['pickup_count']) > intval($line['pickup_max_count'])) {
             throw new BusinessLogicException('当前线路已达到最大取件订单数量');
         };
         return;
@@ -522,7 +522,7 @@ class BaseLineService extends BaseService
     private function pieMaxCheck($info, $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 2);
-        if (1 + $orderCount['pie_count'] > $line['pie_max_count']) {
+        if (1 + intval($orderCount['pie_count']) > intval($line['pie_max_count'])) {
             throw new BusinessLogicException('当前线路已达到最大派件订单数量');
         };
         return;
@@ -535,13 +535,13 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function MaxBatchCheck(array $info, array $line)
+    private function maxBatchCheck(array $info, array $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 3);
         if (intval($info['expect_pickup_quantity']) + intval($orderCount['pickup_count']) > intval($line['pickup_max_count'])) {
             throw new BusinessLogicException('当前线路已达到最大取件订单数量');
         };
-        if (intval($info['expect_pie_quantity']) + intval($orderCount['pie_count']) >= intval($line['pie_max_count'])) {
+        if (intval($info['expect_pie_quantity']) + intval($orderCount['pie_count']) > intval($line['pie_max_count'])) {
             throw new BusinessLogicException('当前线路已达到最大派件订单数量');
         };
         return;
