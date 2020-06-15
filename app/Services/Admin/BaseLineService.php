@@ -151,7 +151,7 @@ class BaseLineService extends BaseService
     public function getInfoByLineId($info, $params, $orderOrBatch)
     {
         //获取线路信息
-        $line = parent::getInfo(['id' => $params['line_id'],'schedule'=>Carbon::create($params['execution_date'])->dayOfWeek], ['*'], false);
+        $line = parent::getInfo(['id' => $params['line_id']], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
