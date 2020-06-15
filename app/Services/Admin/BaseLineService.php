@@ -17,7 +17,6 @@ use App\Services\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
-use http\Exception\BadConversionException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -539,10 +538,10 @@ class BaseLineService extends BaseService
     private function MaxBatchCheck(array $info, array $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 3);
-        if ($info['expect_pickup_quantity'] + $orderCount['pickup_count'] > $line['pickup_max_count']) {
+        if (intval($info['expect_pickup_quantity']) + intval($orderCount['pickup_count']) > intval($line['pickup_max_count'])) {
             throw new BusinessLogicException('当前线路已达到最大取件订单数量');
         };
-        if ($info['expect_pie_quantity'] + $orderCount['pie_count'] > $line['pie_max_count']) {
+        if (intval($info['expect_pie_quantity']) + intval($orderCount['pie_count']) >= intval($line['pie_max_count'])) {
             throw new BusinessLogicException('当前线路已达到最大派件订单数量');
         };
         return;
