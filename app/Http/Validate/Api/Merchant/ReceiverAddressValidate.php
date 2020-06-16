@@ -23,12 +23,11 @@ class ReceiverAddressValidate extends BaseValidate
     public $rules = [
         'receiver_fullname' => 'required|string|max:50',
         'receiver_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'receiver_country' => 'nullable|string|max:20',
         'receiver_post_code' => 'required|string|max:50',
-        'receiver_house_number' => 'nullable|string|max:50',
-        'receiver_city' => 'nullable|string|max:50',
-        'receiver_street' => 'nullable|string|max:50',
-        'receiver_address' => 'required|string|max:250',
+        'receiver_house_number' => 'required|string|max:50',
+        'receiver_city' => 'required|string|max:50',
+        'receiver_street' => 'required|string|max:50',
+        'receiver_address' => 'checkAddress|string|max:250',
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
     ];

@@ -120,7 +120,7 @@ class CountryService extends BaseService
         //判断是否已经存在国家
         $info = parent::getInfo([], ['id'], false);
         if (!empty($info)) {
-            throw new BusinessLogicException('已存在国家');
+            throw new BusinessLogicException('已添加了国家，不能再次添加国家');
         }
         $country = CountryTrait::getCountry($params['short']);
         if (empty($country)) {
@@ -142,23 +142,23 @@ class CountryService extends BaseService
     {
         $order = $this->getOrderService()->getInfo([], ['id'], false);
         if (!empty($order)) {
-            throw new BusinessLogicException('已存在订单');
+            throw new BusinessLogicException('已存在订单，不能删除国家');
         }
         $receiver = $this->getReceiverAddressService()->getInfo([], ['id'], false);
         if (!empty($receiver)) {
-            throw new BusinessLogicException('已存在收件人');
+            throw new BusinessLogicException('已存在收件人，不能删除国家');
         }
         $sender = $this->getSenderAddressService()->getInfo([], ['id'], false);
         if (!empty($sender)) {
-            throw new BusinessLogicException('已存在发件人');
+            throw new BusinessLogicException('已存在发件人，不能删除国家');
         }
         $warehouse = $this->getWareHouseService()->getInfo([], ['id'], false);
         if (!empty($warehouse)) {
-            throw new BusinessLogicException('已存在仓库');
+            throw new BusinessLogicException('已存在仓库，不能删除国家');
         }
         $line = $this->getLineService()->getInfo([], ['id'], false);
         if (!empty($line)) {
-            throw new BusinessLogicException('已存在线路');
+            throw new BusinessLogicException('已存在线路，不能删除国家');
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {

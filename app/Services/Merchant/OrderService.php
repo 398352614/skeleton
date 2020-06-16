@@ -580,6 +580,10 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('材料代码[:code]有重复！不能添加订单', 1000, ['code' => $repeatCodeList]);
             }
         }
+        //填充地址
+        if (CompanyTrait::getAddressTemplateId() == 1) {
+            $params['receiver_address'] = implode(' ', array_filter(Arr::only($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
+        }
     }
 
     /**

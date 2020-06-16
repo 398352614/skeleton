@@ -24,51 +24,6 @@ class CompanyConfigService extends BaseService
     }
 
     /**
-     * 订单 服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 收件人地址 服务
-     * @return ReceiverAddressService
-     */
-    private function getReceiverAddressService()
-    {
-        return self::getInstance(ReceiverAddressService::class);
-    }
-
-    /**
-     * 发件人地址 服务
-     * @return SenderAddressService
-     */
-    private function getSenderAddressService()
-    {
-        return self::getInstance(SenderAddressService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    private function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
-    }
-
-    /**
-     * 线路 服务
-     * @return LineService
-     */
-    private function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
      * 地址模板 服务
      * @return AddressTemplateService
      */
@@ -91,33 +46,9 @@ class CompanyConfigService extends BaseService
      */
     public function createOrUpdate($params)
     {
-        $order = $this->getOrderService()->getInfo([], ['id'], false);
-        if (!empty($order)) {
-            throw new BusinessLogicException('已存在订单，不能修改配置信息');
-        }
-        $receiver = $this->getReceiverAddressService()->getInfo([], ['id'], false);
-        if (!empty($receiver)) {
-            throw new BusinessLogicException('已存在收件人，不能修改配置信息');
-        }
-        $sender = $this->getSenderAddressService()->getInfo([], ['id'], false);
-        if (!empty($sender)) {
-            throw new BusinessLogicException('已存在发件人，不能修改配置信息');
-        }
-        $warehouse = $this->getWareHouseService()->getInfo([], ['id'], false);
-        if (!empty($warehouse)) {
-            throw new BusinessLogicException('已存在仓库，不能修改配置信息');
-        }
-        $line = $this->getLineService()->getInfo([], ['id'], false);
-        if (!empty($line)) {
-            throw new BusinessLogicException('已存在线路，不能修改配置信息');
-        }
-
         $addressTemplate = $this->getAddressTemplateService()->getInfo(['id' => $params['address_template_id']], ['id'], false);
         if (empty($addressTemplate)) {
             throw new BusinessLogicException('地址模板不存在');
-        }
-        if (($params['line_rule'] == BaseConstService::LINE_RULE_POST_CODE) && ($params['address_template_id'] != 1)) {
-            throw new BusinessLogicException('若线路规则为按邮编分配，则只能选择地址模板一');
         }
         $rowCount = $this->query->updateOrCreate(['company_id' => auth()->user()->company_id], [
             'line_rule' => $params['line_rule'],

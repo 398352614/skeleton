@@ -30,7 +30,7 @@ class CommonService
     public function getLocation($params)
     {
         $params['country'] = CompanyTrait::getCountry();
-        return LocationTrait::getLocation($params['country'], $params['city'], $params['street'], $params['house_number'], $params['post_code']);
+        return LocationTrait::getLocation($params['country'], $params['city'] ?? '', $params['street'] ?? '', $params['house_number'], $params['post_code']);
     }
 
     /**

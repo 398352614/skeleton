@@ -24,12 +24,11 @@ class SenderAddressValidate extends BaseValidate
     public $rules = [
         'sender_fullname' => 'required|string|max:50',
         'sender_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'sender_country' => 'nullable|string|max:20',
         'sender_post_code' => 'required|string|max:50',
         'sender_house_number' => 'required|string|max:50',
         'sender_city' => 'required|string|max:50',
         'sender_street' => 'required|string|max:50',
-        'sender_address' => 'nullable|string|max:250',
+        'sender_address' => 'checkAddress|string|max:250',
         'lon' => 'nullable|string|max:50',
         'lat' => 'nullable|string|max:50',
         'merchant_id'=>'required|integer',

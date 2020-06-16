@@ -5,6 +5,7 @@ namespace App\Events\TourNotify;
 use App\Events\Interfaces\ATourNotify;
 use App\Models\Batch;
 use App\Models\Order;
+use App\Models\Package;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use Illuminate\Broadcasting\Channel;
@@ -40,6 +41,12 @@ class OutWarehouse extends ATourNotify
 
     public function getDataList(): array
     {
+        $packageList = Package::query()->whereIn('order_no',array_column($this->orderList,'order_no'))->get(['order_no','express_first_no'])->groupBy('order_no')->toArray();
+        $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList){
+            $order['package_list'] = $packageList['order_no'] ?? [];
+            return collect($order);
+        })->toArray();
+        unset($packageList);
         $batchList = collect($this->orderList)->keyBy('batch_no')->toArray();
         $orderList = collect($this->orderList)->groupBy(function ($order) {
             return $order['merchant_id'] . '-' . $order['batch_no'];
