@@ -352,9 +352,9 @@ class OrderService extends BaseService
             'order_no' => $params['order_no'],
             'batch_no' => $batch['batch_no'],
             'tour_no' => $tour['tour_no'],
-            'line'=>[
-                'line_id'=>$tour['line_id'],
-                'line_name'=>$tour['line_name'],
+            'line' => [
+                'line_id' => $tour['line_id'],
+                'line_name' => $tour['line_name'],
             ]
         ];
     }
@@ -933,9 +933,9 @@ class OrderService extends BaseService
     public function validate($info)
     {
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
-            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_address' => 'required|string|max:250', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
         } else {
-            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_city' => 'required|string|max:50', 'receiver_street' => 'required|string|max:50', 'receiver_post_code' => 'required|string|max:50', 'receiver_house_number' => 'required|string|max:50']);
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_post_code' => 'required|string|max:50']);
         }
         if ($validator->fails()) {
             throw new BusinessLogicException('地址数据不正确，无法拉取可选日期', 3001);
