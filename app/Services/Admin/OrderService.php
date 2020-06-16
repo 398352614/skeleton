@@ -1110,7 +1110,7 @@ class OrderService extends BaseService
             $order['material_list'] = $materialList[$order['order_no']] ?? [];
             $order['count'] = count($order['package_list']) + count($order['material_list']);
             $order['company_name'] = $company['name'];
-            $order['receiver_address_short'] = $order['country_name'] . $order['receiver_city'];
+            $order['receiver_address_short'] = $order['receiver_country_name'] . $order['receiver_city'];
             return collect($order);
         })->toArray();
         //若是通用打印模板,则需要将快递号转为条码
