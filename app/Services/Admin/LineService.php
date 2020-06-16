@@ -15,6 +15,7 @@ use App\Http\Validate\Api\Admin\LineValidate;
 use App\Models\Line;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Traits\ConstTranslateTrait;
 use App\Traits\ImportTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -168,9 +169,10 @@ class LineService extends BaseLineService
         $lineAreaList = $this->getLineAreaService()->getList(['line_id' => ['in', $lineIdList]], ['line_id', 'coordinate_list', 'country'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
         $lineAreaList = array_create_index($lineAreaList, 'line_id');
         if (empty($lineAreaList)) return $list;
-
+        $workdayList = implode(',',ConstTranslateTrait::formatList(ConstTranslateTrait::$weekList));
         foreach ($list as &$line) {
             $line['coordinate_list'] = json_decode($lineAreaList[$line['id']]['coordinate_list'], true);
+            $line['work_day_list'] = $workdayList;
         }
         return $list;
     }
