@@ -69,7 +69,7 @@ class OrderValidate extends BaseValidate
         'receiver_house_number' => 'required|string|max:50',
         'receiver_city' => 'required|string|max:50',
         'receiver_street' => 'required|string|max:50',
-        'receiver_address' => 'checkAddress|string|max:250',
+        'receiver_address' => 'checkAddress|string|min:0|max:250',
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
         'special_remark' => 'nullable|string|max:250',
