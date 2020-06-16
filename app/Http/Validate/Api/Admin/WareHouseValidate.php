@@ -37,7 +37,7 @@ class WareHouseValidate extends BaseValidate
         'house_number' => 'required|string|max:50',
         'city' => 'required|string|max:50',
         'street' => 'required|string|max:50',
-        'address' => 'checkAddress|string|max:250',
+        'address' => 'checkAddress|nullable|string|max:250',
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
     ];
