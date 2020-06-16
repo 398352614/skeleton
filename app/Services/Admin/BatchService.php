@@ -505,13 +505,19 @@ class BatchService extends BaseService
 
 
     /**
+     * 更换取件线路
      * @param $id
      * @param $params
+     * @return string
      * @throws BusinessLogicException
      */
     public function assignToTour($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
+        //如果是在同一条线路并且在同一个日期,则不变
+        if (($params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date'])) {
+            return 'true';
+        }
         $info['execution_date'] = $params['execution_date'];
         //获取线路信息
         $line = $this->getLineService()->getInfoByLineId($info, $params, BaseConstService::ORDER_OR_BATCH_2);
