@@ -530,6 +530,7 @@ class BatchService extends BaseService
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
         }
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
+        return 'true';
     }
 
     /**

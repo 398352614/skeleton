@@ -87,6 +87,7 @@ class BatchController extends BaseController
     /**
      * 分配站点至取件线路
      * @param $id
+     * @return string
      * @throws BusinessLogicException
      */
     public function assignToTour($id)
@@ -109,7 +110,8 @@ class BatchController extends BaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function getTourDate($id){
+    public function getTourDate($id)
+    {
         return $this->service->getTourDate($id);
     }
 
@@ -118,13 +120,15 @@ class BatchController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function getLineDate($id){
-        return $this->service->getLineDate($id,$this->data);
+    public function getLineDate($id)
+    {
+        return $this->service->getLineDate($id, $this->data);
 
     }
 
 
-    public function getLineList(){
+    public function getLineList()
+    {
         return $this->service->getLineList();
 
     }

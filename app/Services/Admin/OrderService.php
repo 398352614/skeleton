@@ -809,13 +809,14 @@ class OrderService extends BaseService
      * 将订单分配至站点
      * @param $id
      * @param $params
+     * @return string
      * @throws BusinessLogicException
      */
     public function assignToBatch($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
-            throw new BusinessLogicException('当前订单已存在分配的站点中！');
+            return 'true';
         }
         $info['execution_date'] = $params['execution_date'];
         $line = $this->fillSender($info);
@@ -835,6 +836,7 @@ class OrderService extends BaseService
         $this->fillBatchTourInfo($info, $batch, $tour);
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
+        return 'true';
     }
 
     /**
