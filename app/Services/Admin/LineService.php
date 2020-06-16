@@ -161,6 +161,10 @@ class LineService extends BaseLineService
     {
         $this->filters['rule'] = ['=', BaseConstService::LINE_RULE_AREA];
         $list = parent::getPageList();
+        $workdayList = implode(',',ConstTranslateTrait::formatList(ConstTranslateTrait::$weekList));
+        foreach ($list as &$line) {
+            $line['work_day_list'] = $workdayList;
+        }
         if ($isGetArea === 2) return $list;
 
         $lineIdList = array_column($list->all(), 'id');
@@ -169,7 +173,6 @@ class LineService extends BaseLineService
         $lineAreaList = $this->getLineAreaService()->getList(['line_id' => ['in', $lineIdList]], ['line_id', 'coordinate_list', 'country'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
         $lineAreaList = array_create_index($lineAreaList, 'line_id');
         if (empty($lineAreaList)) return $list;
-        $workdayList = implode(',',ConstTranslateTrait::formatList(ConstTranslateTrait::$weekList));
         foreach ($list as &$line) {
             $line['coordinate_list'] = json_decode($lineAreaList[$line['id']]['coordinate_list'], true);
             $line['work_day_list'] = $workdayList;
