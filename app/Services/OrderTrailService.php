@@ -113,6 +113,9 @@ class OrderTrailService extends BaseService
      */
     public function getNoPageList()
     {
+        if(empty($this->formData['order_no'])){
+            throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查单号是否正确');
+        }
         $info =parent::getList(['order_no' => $this->formData['order_no']]);
         if($info->isEmpty()){
             throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查单号是否正确');
