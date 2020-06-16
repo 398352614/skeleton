@@ -40,9 +40,9 @@ class RouteTrackingService extends BaseService
         $info=[];
         $content=[];
         if ($this->formData['driver_id'] ?? null) {
-            $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->where('status',BaseConstService::TOUR_STATUS_4)->first();
+            $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
         } else {
-            $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->where('status',BaseConstService::TOUR_STATUS_4)->first();
+            $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
         }
         if (!$tour) {
             throw new BusinessLogicException('没找到相关进行中的线路');
