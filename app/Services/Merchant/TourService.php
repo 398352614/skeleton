@@ -646,7 +646,7 @@ class TourService extends BaseService
 
     public function getBatchCountInfo($id)
     {
-        $info = parent::getInfo(['id' => $id,'status' => BaseConstService::TOUR_STATUS_4], ['*'], true);
+        $info = parent::getInfo(['id' => $id,'status' => ['in',[BaseConstService::TOUR_STATUS_4,BaseConstService::TOUR_STATUS_5]]], ['*'], true);
         if (empty($info)){
             throw new BusinessLogicException('该取件线路不在取派中，无法进行追踪');
         }
