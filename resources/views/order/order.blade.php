@@ -135,7 +135,7 @@
                 </div>
             </div>
             <div class="destination bottom-line">
-                <div class="destination-address right-line font-size-t1">目的地：{{$data['receiver_address']}}</div>
+                <div class="destination-address right-line font-size-t1">目的地：{{$data['receiver_address_short']}}</div>
                 <div class="destination-info">
                     <div>快件类型: {{$data['type_name']}}</div>
                     <div>代收货款: {{$data['replace_amount']}}元</div>
