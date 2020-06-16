@@ -40,6 +40,7 @@ trait UpdateTourTimeAndDistanceTrait
                 $tourBatch = Batch::where('batch_no', str_replace($tour->tour_no, '', $key))->where('tour_no', $tour->tour_no)->first();
                 $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', $data['timestamp'] + $res['time']);
                 $tourBatch->expect_distance = $res['distance'];
+                $tourBatch->expect_time = $res['time'];
                 $tourBatch->save();
                 $max_time = max($max_time, $res['time']);
                 $max_distance = max($max_distance, $res['distance']);
