@@ -552,6 +552,11 @@ class OrderService extends BaseService
         if (empty($orderNo)) {
             $params['merchant_id'] = auth()->user()->id;
             $params['receiver_country'] = CompanyTrait::getCountry();
+            if (empty($params['lat']) || empty($params['lon'])) {
+                $location = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
+                $params['lat'] = $location['lat'];
+                $params['lon'] = $location['lon'];
+            }
         }
         //获取经纬度
         $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
