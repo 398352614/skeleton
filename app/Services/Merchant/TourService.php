@@ -134,7 +134,7 @@ class TourService extends BaseService
 
     public function getPageList()
     {
-        $orderQuery = $tourNo = $this->getOrderService()->query->whereNotNull('tour_no');
+        $orderQuery = $this->getOrderService()->query->whereNotNull('tour_no');
         if(!empty($this->formData['tour_no'])){
             $orderQuery->where('tour_no','like',$this->formData['tour_no']);
         }
