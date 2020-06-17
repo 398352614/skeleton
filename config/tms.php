@@ -10,6 +10,7 @@ return [
     'messager_secret' => env('MESSAGER_SECRET'),
     'vpn' => env('VPN'),
     'push_url' => env('PUSH_URL', 'dev-tms.nle-tech.com/socket'),
+    'country_path' => storage_path(env('COUNTRY_PATH')),
 
     //缓存前缀
     'cache_prefix' => [
