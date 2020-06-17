@@ -18,6 +18,7 @@ use App\Services\GoogleApiService;
 use App\Services\OrderNoRuleService;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
@@ -133,8 +134,18 @@ class TourService extends BaseService
 
     public function getPageList()
     {
-        $tourNo = $this->getOrderService()->query->whereNotNull('tour_no')->groupBy('tour_no')->limit($this->per_page)->pluck('tour_no')->toArray();
-        $this->query->whereIn('tour_no',$tourNo);
+        $orderQuery = $tourNo = $this->getOrderService()->query->whereNotNull('tour_no');
+        if(!empty($this->formData['tour_no'])){
+            $orderQuery->where('tour_no','like',$this->formData['tour_no']);
+        }
+        if(!empty($this->formData['begin_date']) && !empty($this->formData['end_date'])){
+            $orderQuery->whereBetween('execution_date',[
+                Carbon::parse($this->formData['begin_date'])->startOfDay(),
+                Carbon::parse($this->formData['end_date'])->endOfDay()
+            ]);
+        }
+        $tourNoList = $orderQuery->groupBy('tour_no')->limit($this->per_page)->pluck('tour_no')->toArray();
+        $this->query->whereIn('tour_no',$tourNoList);
         if (!empty($this->formData['merchant_status'])) {
             if ($this->formData['merchant_status'] == BaseConstService::MERCHANT_TOUR_STATUS_1) {
                 $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]];
