@@ -139,7 +139,7 @@ class TourService extends BaseService
             if ($this->formData['merchant_status'] == BaseConstService::MERCHANT_TOUR_STATUS_1) {
                 $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]];
             } elseif (in_array($this->formData['merchant_status'], [BaseConstService::MERCHANT_TOUR_STATUS_2, BaseConstService::MERCHANT_TOUR_STATUS_3])) {
-                $this->filters['status'] = ['=', $this->formData['merchant_status'] + 2];
+                $this->filters['status'] = ['=', intval($this->formData['merchant_status']) + 2];
             } else {
                 unset($this->filters['merchant_status']);
             }
