@@ -620,8 +620,7 @@ class TourService extends BaseService
         /*******************************************1.处理站点下的材料*************************************************/
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list']);
         /*******************************************1.处理站点下的包裹*************************************************/
-        $totalStickerAmount = 0.00;
-        !empty($params['package_list']) && $totalStickerAmount = $this->dealPackageList($batch, $params['package_list']);
+        $totalStickerAmount = $this->dealPackageList($batch, $params['package_list'] ?? []);
         /****************************************2.处理站点下的所有订单************************************************/
         $pickupCount = $pieCount = 0;
         $dbOrderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['*'], false)->toArray();

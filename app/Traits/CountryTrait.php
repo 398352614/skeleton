@@ -20,7 +20,7 @@ trait CountryTrait
     public static function getCountryList()
     {
         $countryList = \Illuminate\Support\Facades\Cache::rememberForever('country', function () {
-            $country = \Illuminate\Support\Facades\Storage::disk('public')->get('country.json');
+            $country = \Illuminate\Support\Facades\Storage::disk('public')->get(config('tms.country_path'));
             $country = array_create_index(json_decode($country, true), 'short');
             return json_encode($country, JSON_UNESCAPED_UNICODE);
         });
