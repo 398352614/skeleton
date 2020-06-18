@@ -429,8 +429,8 @@ class OrderService extends BaseService
             $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type']];
             $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery']] ?? 1;
             $data[$i]['delivery'] = $data[$i]['delivery'] ?? __('是');
-            for ($j = 0; $j < 5; $j++) {
-                $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_' . ($j + 1)]] ?? 0;
+            for ($j = 1; $j <= 5; $j++) {
+                $data[$i]['item_type_' . ($j)] = $itemList[$data[$i]['item_type_' . ($j)]] ?? 0;
             }
             //日期如果是excel时间格式，转换成短横连接格式
             if (is_numeric($data[$i]['execution_date'])) {

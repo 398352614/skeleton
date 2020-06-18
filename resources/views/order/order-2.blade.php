@@ -119,46 +119,46 @@
                 <div>{{$data['order_no']}}</div>
             </div>
             <div class="address bottom-line">
-                <div class="address-obj right-line">发货方</div>
+                <div class="address-obj right-line">{{__('发货方')}}</div>
                 <div class="address-info">
-                    <div>姓名：{{$data['sender_fullname']}}</div>
-                    <div>电话：{{$data['sender_phone']}}</div>
-                    <div>地址：{{$data['sender_address']}}</div>
+                    <div>{{__('姓名').'：'.$data['sender_fullname']}}</div>
+                    <div>{{__('电话').'：'.$data['sender_phone']}}</div>
+                    <div>{{__('地址').'：'.$data['sender_address']}}</div>
                 </div>
             </div>
             <div class="address bottom-line">
-                <div class="address-obj right-line">收货方</div>
+                <div class="address-obj right-line">{{__('收货方')}}</div>
                 <div class="address-info">
-                    <div>姓名：{{$data['receiver_fullname']}}</div>
-                    <div>电话：{{$data['receiver_phone']}}</div>
-                    <div>地址：{{$data['receiver_address']}}</div>
+                    <div>{{__('姓名').'：'.$data['receiver_fullname']}}</div>
+                    <div>{{__('电话').'：'.$data['receiver_phone']}}</div>
+                    <div>{{__('地址').'：'.$data['receiver_address']}}</div>
                 </div>
             </div>
             <div class="destination bottom-line">
-                <div class="destination-address right-line font-size-t1">目的地：{{$data['receiver_address_short']}}</div>
+                <div class="destination-address right-line font-size-t1">{{__('目的地').'：'.$data['receiver_address_short']}}</div>
                 <div class="destination-info">
-                    <div>快件类型: {{$data['type_name']}}</div>
-                    <div>代收货款: {{$data['replace_amount']}}元</div>
-                    <div>支付方式: {{$data['settlement_type_name']}}</div>
-                    <div>运费金额: {{$data['settlement_amount']}}元</div>
+                    <div>{{__('快件类型').'：'.$data['type_name']}}</div>
+                    <div>{{__('代收货款').'：'.$data['replace_amount']}}元</div>
+                    <div>{{__('支付方式').'：'.$data['settlement_type_name']}}</div>
+                    <div>{{__('运费金额').'：'.$data['settlement_amount'].__('元')}}</div>
                 </div>
             </div>
             <div class="item-information bottom-line">
-                <div class="item-information-item">物品信息</div>
-                <div class="item-information-num">总数量：{{$data['count']}}</div>
+                <div class="item-information-item">{{__('物品信息')}}</div>
+                <div class="item-information-num">{{__('总数量').'：'.$data['count']}}</div>
             </div>
             @if(!empty($data['package_list']))
                 <div class="package bottom-line">
                     @foreach($data['package_list'] as $key=>$package)
                         <div>
                             @if($key==0)
-                                <span>包裹</span>
+                                <span>{{__('包裹')}}</span>
                             @else
                                 <span></span>
                             @endif
-                            <span>数量：{{$package['expect_quantity']}}</span>
+                            <span>{{__('数量：').$package['expect_quantity']}}</span>
                             <span>
-                                <span>编号：</span>
+                                <span>{{__('编号')}}：</span>
                                 <img src="{{$package['express_first_no']}}" width="100px" />
                             </span>
                         </div>
@@ -170,12 +170,12 @@
                     @foreach($data['material_list'] as $key=>$material)
                         <div>
                             @if($key==0)
-                                <span>材料</span>
+                                <span>{{__('材料')}}：</span>
                             @else
                                 <span></span>
                             @endif
-                            <span>数量：{{$material['expect_quantity']}}</span>
-                            <span>代码：{{$material['code']}}</span>
+                            <span>{{__('数量').'：'.$material['expect_quantity']}}</span>
+                            <span>{{__('代码').'：'.$material['code']}}</span>
                         </div>
                     @endforeach
                 </div>
