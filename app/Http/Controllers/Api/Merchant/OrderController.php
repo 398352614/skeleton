@@ -79,15 +79,14 @@ class OrderController extends OrderBaseController
      */
     public function store()
     {
-        $data = $this->data;
         if (auth()->user()->getAttribute('is_api') == true) {
             $orderSource = BaseConstService::ORDER_SOURCE_3;
-            $data['out_status'] = BaseConstService::ORDER_OUT_STATUS_2;
+            $this->data['out_status'] = BaseConstService::ORDER_OUT_STATUS_2;
         } else {
             $orderSource = BaseConstService::ORDER_SOURCE_1;
-            $data['out_status'] = BaseConstService::ORDER_OUT_STATUS_1;
+            $this->data['out_status'] = BaseConstService::ORDER_OUT_STATUS_1;
         }
-        return $this->service->store($data, $orderSource);
+        return $this->service->store($this->data, $orderSource);
     }
 
     /**
