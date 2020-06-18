@@ -29,13 +29,8 @@ class SenderAddressService extends BaseService
      */
     public function getUniqueWhere($data)
     {
-        $where = [];
-        if (CompanyTrait::getAddressTemplateId() == 1) {
-            $fields = ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street'];
-            $where = Arr::only($data, $fields);
-        } else {
-            $where = Arr::only($data, ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_address']);
-        }
+        $fields = ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street', 'sender_address'];
+        $where = Arr::only($data, $fields);
         return $where;
     }
 

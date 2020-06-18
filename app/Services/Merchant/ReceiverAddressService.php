@@ -36,13 +36,8 @@ class ReceiverAddressService extends BaseService
      */
     public function getUniqueWhere($data)
     {
-        $where = [];
-        if (CompanyTrait::getAddressTemplateId() == 1) {
-            $fields = ['merchant_id', 'receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
-            $where = Arr::only($data, $fields);
-        } else {
-            $where = Arr::only($data, ['merchant_id', 'receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_address']);
-        }
+        $fields = ['merchant_id', 'receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address'];
+        $where = Arr::only($data, $fields);
         return $where;
     }
 
