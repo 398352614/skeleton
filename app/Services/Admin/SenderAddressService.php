@@ -97,7 +97,7 @@ class SenderAddressService extends BaseService
         if (!empty($info)) {
             throw new BusinessLogicException('发货方地址已存在，不能重复添加');
         }
-        if (CompanyTrait::getAddressTemplateId() == 1) {
+        if ((CompanyTrait::getAddressTemplateId() == 1)  || empty($params['sender_address'])) {
             $data['sender_address'] = implode(' ', array_filter(Arr::only($data, ['sender_country', 'sender_city', 'sender_street', 'sender_post_code', 'sender_house_number'])));
         }
     }

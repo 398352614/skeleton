@@ -115,7 +115,7 @@ class ReceiverAddressService extends BaseService
         if (!empty($info)) {
             throw new BusinessLogicException('收货方地址已存在，不能重复添加');
         }
-        if (CompanyTrait::getAddressTemplateId() == 1) {
+        if (CompanyTrait::getAddressTemplateId() == 1  || empty($params['receiver_address'])) {
             $data['receiver_address'] = implode(' ', array_filter(Arr::only($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
         }
     }

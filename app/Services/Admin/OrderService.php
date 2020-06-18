@@ -549,7 +549,7 @@ class OrderService extends BaseService
             }
         }
         //填充地址
-        if (CompanyTrait::getAddressTemplateId() == 1) {
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
             $params['receiver_address'] = implode(' ', array_filter(Arr::only($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
         }
     }
