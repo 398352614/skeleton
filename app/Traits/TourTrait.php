@@ -111,7 +111,7 @@ trait TourTrait
 
     private static function getNextBatch()
     {
-        return $nextBatch = Batch::query()->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first(['batch_no']);
+        return $nextBatch = Batch::query()->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first(['batch_no','expect_arrive_time','expect_time','expect_distance']);
     }
 
 }
