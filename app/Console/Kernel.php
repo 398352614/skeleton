@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('telescope:prune --hours=1')->twiceDaily(10, 22)->onOneServer();
+        $schedule->command('telescope:prune')->daily()->onOneServer();
     }
 
     /**
