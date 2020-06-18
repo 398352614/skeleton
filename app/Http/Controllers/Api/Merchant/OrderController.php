@@ -87,7 +87,7 @@ class OrderController extends OrderBaseController
             $orderSource = BaseConstService::ORDER_SOURCE_1;
             $data['out_status'] = BaseConstService::ORDER_OUT_STATUS_1;
         }
-        return $this->service->store($this->data, $orderSource);
+        return $this->service->store($data, $orderSource);
     }
 
     /**
