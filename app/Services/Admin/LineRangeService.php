@@ -115,7 +115,7 @@ class LineRangeService extends BaseService
      */
     public function checkIfPostcodeIntervalOverlap($postcodeStart, $postcodeEnd, $country, $workDayList, $id = null)
     {
-        $workDayList = "\'" . implode('\',', explode(',', $workDayList)) . "\'";
+        $workDayList = implode('\',', explode(',', $workDayList));
         $sql = "SELECT id FROM line_range WHERE company_id=? AND country=? AND schedule IN (?) AND GREATEST(`post_code_start`,?)<=LEAST(`post_code_end`,?)";
         $sql = (!empty($id)) ? $sql . " AND line_id<>{$id}" : $sql;
         $bindings = [auth()->user()->company_id, $country, $workDayList, $postcodeStart, $postcodeEnd];
