@@ -15,6 +15,7 @@ use App\Models\Merchant;
 use App\Models\MerchantGroup;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use Illuminate\Hashing\Argon2IdHasher;
