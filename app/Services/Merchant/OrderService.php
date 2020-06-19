@@ -589,6 +589,15 @@ class OrderService extends BaseService
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
             $params['receiver_address'] = implode(' ', array_filter(Arr::only($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
         }
+        //若存在外部订单号,则判断是否存在已预约的订单号
+        if(!empty($params['out_order_no'])){
+            $where = ['out_order_no'=>$params['out_order_no'],'status'=>['not in',[BaseConstService::ORDER_STATUS_7]]];
+            !empty($orderNo) && $where['order_no'] = ['<>',$orderNo];
+            $dbOrder = parent::getInfo($where,['id'],false);
+            if(!empty($dbOrder)){
+                throw new BusinessLogicException('外部订单号已存在');
+            }
+        }
     }
 
     /**

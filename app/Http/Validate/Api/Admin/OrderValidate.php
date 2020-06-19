@@ -53,7 +53,7 @@ class OrderValidate extends BaseValidate
     public $rules = [
         'merchant_id' => 'required|integer',
         'batch_no' => 'nullable|string|max:50',
-        'out_order_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
+        'out_order_no' => 'nullable|string|max:50',
         'execution_date' => 'required|date|after_or_equal:today',
         'list_mode' => 'sometimes|required|in:1,2',
         'type' => 'required|integer|in:1,2',
