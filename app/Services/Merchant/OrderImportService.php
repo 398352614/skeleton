@@ -33,7 +33,6 @@ class OrderImportService extends BaseService
         'receiver_phone',
         'receiver_post_code',
         'receiver_house_number',
-        'receiver_address',
         'execution_date',
         'settlement_type',
         'settlement_amount',

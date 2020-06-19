@@ -34,7 +34,6 @@ return [
         "receiver_phone"=>"*Phone",
         "receiver_post_code"=>"*Post Code",
         "receiver_house_number"=>"*House Number",
-        "receiver_address"=>"*Address",
         "execution_date"=>"*Execution Date",
         "settlement_type"=>"*Settlement Type",
         "settlement_amount"=>"Settlement Amount",

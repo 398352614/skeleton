@@ -34,7 +34,6 @@ return [
         "receiver_phone"=>"*收件人电话",
         "receiver_post_code"=>"*收件人邮编",
         "receiver_house_number"=>"*收件人门牌号",
-        "receiver_address"=>"*收件人详细地址",
         "execution_date"=>"*取派日期",
         "settlement_type"=>"*结算类型",
         "settlement_amount"=>"运费金额",

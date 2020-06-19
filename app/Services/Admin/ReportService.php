@@ -77,9 +77,11 @@ class ReportService extends BaseService
 
     public function getPageList()
     {
+        $this->query->orderByDesc('created_at');
         $list = parent::getPageList();
         foreach ($list as &$tour) {
             $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
+            $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['in',[BaseConstService::BATCH_CHECKOUT,BaseConstService::BATCH_CANCEL]]]);
         }
         return $list;
     }
@@ -222,6 +224,8 @@ class ReportService extends BaseService
                 'actual_distance' => $batch['actual_distance'],
                 'expect_time' => $batch['expect_time'],
                 'actual_time' => $batch['actual_time'],
+                'expect_time_human' => $batch['expect_time_human'],
+                'actual_time_human' => $batch['actual_time_human'],
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
