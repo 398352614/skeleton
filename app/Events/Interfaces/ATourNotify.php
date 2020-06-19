@@ -26,7 +26,7 @@ abstract class ATourNotify
 
     public static $batchFields = [
         'tour_no', 'batch_no', 'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
-        'receiver_city', 'receiver_street', 'receiver_address'
+        'receiver_city', 'receiver_street', 'receiver_address', 'expect_arrive_time', 'expect_time', 'expect_distance'
     ];
 
     public static $orderFields = [
