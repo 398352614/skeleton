@@ -102,7 +102,7 @@ class ReportService extends BaseService
         $info = $info->toArray();
         //获取站点数量
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
-        $info['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['in',[BaseConstService::BATCH_CHECKOUT,BaseConstService::BATCH_CANCEL]]]);
+        $info['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no'], 'status' => ['in',[BaseConstService::BATCH_CHECKOUT,BaseConstService::BATCH_CANCEL]]]);
         //组装取件线路站点信息
         $warehouseInfo = [
             'id' => $info['warehouse_id'],
