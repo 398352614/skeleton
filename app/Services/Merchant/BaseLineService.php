@@ -401,9 +401,9 @@ class BaseLineService extends BaseService
         if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
             if ($orderOrBatch === 2) {
                 $this->MaxBatchCheck($params, $line);
-            } elseif ($orderOrBatch === 1 && $params['type'] === '1') {
+            } elseif ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::ORDER_TYPE_1) {
                 $this->pickupMaxCheck($params, $line);
-            } elseif ($orderOrBatch === 1 && $params['type'] === '2') {
+            } elseif ($orderOrBatch === 1 && intval($params['type']) ===  BaseConstService::ORDER_TYPE_2) {
                 $this->pieMaxCheck($params, $line);
             }
         }
