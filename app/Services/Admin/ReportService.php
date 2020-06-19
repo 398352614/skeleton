@@ -77,6 +77,7 @@ class ReportService extends BaseService
 
     public function getPageList()
     {
+        $this->query->orderByDesc('created_at');
         $list = parent::getPageList();
         foreach ($list as &$tour) {
             $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
