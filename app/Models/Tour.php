@@ -196,7 +196,7 @@ class Tour extends BaseModel
         return empty($this->merchant_status) ? null : ConstTranslateTrait::merchantTourStatusList($this->merchant_status);
     }
 
-/*    public function getExpectTimeAttribute($value)
+    public function getExpectTimeAttribute($value)
     {
         return (int)($value / 60);
     }
@@ -204,5 +204,5 @@ class Tour extends BaseModel
     public function getActualTimeAttribute($value)
     {
         return (int)($value / 60);
-    }*/
+    }
 }
