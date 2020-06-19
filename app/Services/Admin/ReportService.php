@@ -81,6 +81,7 @@ class ReportService extends BaseService
         $list = parent::getPageList();
         foreach ($list as &$tour) {
             $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
+            $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['in',[BaseConstService::BATCH_CHECKOUT,BaseConstService::BATCH_CANCEL]]]);
         }
         return $list;
     }
