@@ -153,14 +153,4 @@ class Batch extends BaseModel
     {
         return empty($this->actual_time) ? null : CarbonInterval::second($this->actual_time)->cascade()->forHumans();
     }
-
-    public function getExpectTimeAttribute($value)
-    {
-        return (int)($value / 60);
-    }
-
-    public function getActualTimeAttribute($value)
-    {
-        return (int)($value / 60);
-    }
 }
