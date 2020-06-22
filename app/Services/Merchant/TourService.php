@@ -19,6 +19,7 @@ use App\Services\OrderNoRuleService;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
 use Carbon\Carbon;
+use http\Env\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
@@ -135,17 +136,17 @@ class TourService extends BaseService
     public function getPageList()
     {
         $orderQuery = $this->getOrderService()->query->whereNotNull('tour_no');
-        if(!empty($this->formData['tour_no'])){
-            $orderQuery->where('tour_no','like',$this->formData['tour_no']);
+        if (!empty($this->formData['tour_no'])) {
+            $orderQuery->where('tour_no', 'like', $this->formData['tour_no']);
         }
-        if(!empty($this->formData['begin_date']) && !empty($this->formData['end_date'])){
-            $orderQuery->whereBetween('execution_date',[
+        if (!empty($this->formData['begin_date']) && !empty($this->formData['end_date'])) {
+            $orderQuery->whereBetween('execution_date', [
                 Carbon::parse($this->formData['begin_date'])->startOfDay(),
                 Carbon::parse($this->formData['end_date'])->endOfDay()
             ]);
         }
         $tourNoList = $orderQuery->groupBy('tour_no')->limit($this->per_page)->pluck('tour_no')->toArray();
-        $this->query->whereIn('tour_no',$tourNoList);
+        $this->query->whereIn('tour_no', $tourNoList);
         if (!empty($this->formData['merchant_status'])) {
             if ($this->formData['merchant_status'] == BaseConstService::MERCHANT_TOUR_STATUS_1) {
                 $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]];
@@ -655,12 +656,24 @@ class TourService extends BaseService
         return '更新完成';
     }
 
+    /**
+     * 查询
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
     public function getBatchCountInfo($id)
     {
-        $info = parent::getInfo(['id' => $id,'status' => ['in',[BaseConstService::TOUR_STATUS_4,BaseConstService::TOUR_STATUS_5]]], ['*'], true);
-        if (empty($info)){
+        $info = parent::getInfo(['id' => $id,'status' => ['in', [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5]]], ['*'], true);
+        if (empty($info)) {
             throw new BusinessLogicException('该取件线路不在取派中，无法进行追踪');
         }
+        //通过订单查询站点编号
+        $batchNoList = $this->getOrderService()->query->whereNotNull('batch_no')->where('tour_no',$info['tour_no'])->pluck('batch_no')->toArray();
+        if (empty($batchNoList)) {
+            throw new BusinessLogicException('该取件线路不在取派中，无法进行追踪');
+        }
+        $info['batchs']=$this->getBatchService()->getList(['batch_no'=>['in',$batchNoList]],['*'],true)->toArray(request()) ?? [];
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         return $info;
     }
