@@ -446,6 +446,16 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/update', 'PrintTemplateController@update');    //修改
     });
 
+    //费用管理
+    Route::prefix('fee')->group(function () {
+        Route::get('/', 'FeeController@index');             //列表查询
+        Route::get('/init', 'FeeController@init');             //初始化
+        Route::get('/{id}', 'FeeController@show');          //详情
+        Route::post('/', 'FeeController@store');            //新增
+        Route::put('/{id}', 'FeeController@update');        //修改
+        Route::delete('/{id}', 'FeeController@destroy');    //删除
+    });
+
 
     //worker
     Route::prefix('worker')->group(function () {

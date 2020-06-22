@@ -308,6 +308,12 @@ trait ConstTranslateTrait
         BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE => '司机返回仓库',
     ];
 
+    //费用等级
+    public static $feeLevelList = [
+        BaseConstService::FEE_LEVEL_1 => '系统级',
+        BaseConstService::FEE_LEVEL_2 => '自定义'
+    ];
+
     /**
      * 格式化常量列表
      * @param $list

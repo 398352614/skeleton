@@ -17,6 +17,7 @@ use App\Models\CompanyConfig;
 use App\Models\Country;
 use App\Models\Driver;
 use App\Models\Employee;
+use App\Models\Fee;
 use App\Models\KilometresCharging;
 use App\Models\Line;
 use App\Models\LineArea;
@@ -79,6 +80,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof TourMaterial))
                 && (!($model instanceof Merchant))
                 && (!($model instanceof TourLog))
+                && (!($model instanceof Fee))
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
             }

@@ -19,6 +19,7 @@ use App\Models\TourLog;
 use App\Models\TourMaterial;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Services\FeeService;
 use App\Services\OrderNoRuleService;
 use App\Traits\TourTrait;
 use Illuminate\Support\Arr;
@@ -481,7 +482,7 @@ class TourService extends BaseService
         list($tour, $batch) = $this->checkBatch($id, $params);
         $now = now();
         $actualTime = strtotime($now) - strtotime($tour['begin_time']);
-        $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => $now, 'actual_time' => $actualTime,'actual_distance'=>$batch['expect_distance']]);
+        $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => $now, 'actual_time' => $actualTime, 'actual_distance' => $batch['expect_distance']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('更新到达时间失败，请重新操作');
         }
@@ -700,6 +701,7 @@ class TourService extends BaseService
      */
     private function dealPackageList($batch, $packageList)
     {
+        $stickerAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::STICKER]);
         /***************************************2.处理站点下的所有包裹*************************************************/
         $packageList = collect($packageList)->unique('id')->keyBy('id')->toArray();
         $packageIdList = array_keys($packageList);
@@ -711,8 +713,8 @@ class TourService extends BaseService
                 $status = BaseConstService::ORDER_STATUS_5;
                 //判断取件或派件
                 if (intval($dbPackage['type']) === BaseConstService::ORDER_TYPE_1) {
-                    $totalStickerAmount += BaseConstService::STICKER_AMOUNT;
-                    $packageData = ['actual_quantity' => 1, 'status' => $status, 'sticker_amount' => BaseConstService::STICKER_AMOUNT, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no'] ?? ''];
+                    $totalStickerAmount += $stickerAmount;
+                    $packageData = ['actual_quantity' => 1, 'status' => $status, 'sticker_amount' => $stickerAmount, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no'] ?? ''];
                 } else {
                     $packageData = ['actual_quantity' => 1, 'status' => $status];
                 }

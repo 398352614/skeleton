@@ -37,8 +37,14 @@ class BaseConstService
     //初始密码
     const INITIAL_PASSWORD = '12345678';
 
-    //贴单费用
-    const STICKER_AMOUNT = 7.00;
+
+    //费用编码
+    const STICKER = 'STICKER';
+
+    //费用等级1-系统级2-自定义
+    const FEE_LEVEL_1 = 1;
+    const FEE_LEVEL_2 = 2;
+
 
     //编号规则最大长度
     const ORDER_NO_RULE_LENGTH = 13;
