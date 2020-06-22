@@ -423,8 +423,11 @@ class TourService extends BaseService
             //验证材料数量
             $expectMaterialList = $this->getTourTaskService()->getTourMaterialList($tour);
             foreach ($materialList as $v) {
-                $expectQuantity = intval(collect($expectMaterialList)->where('code', $v['code'])->first()['expect_quantity']);
-                if (intval($v['actual_quantity']) > intval($expectQuantity)) {
+                $expectQuantity = collect($expectMaterialList)->where('code',$v['code'])->first();
+                if(empty($expectQuantity)){
+                    throw new BusinessLogicException('当前取件线路的材料代码不正确');
+                }
+                if (intval($v['actual_quantity']) > intval($expectQuantity)['expect_quantity']) {
                     throw new BusinessLogicException('当前取件线路的材料数量不正确');
                 }
             }
@@ -800,10 +803,13 @@ class TourService extends BaseService
         if ($batch['tour_no'] != $tour['tour_no']) {
             throw new BusinessLogicException('当前站点不属于当前取件线路');
         }
-        if (!empty($params['material_list'])) {
-            foreach ($params['material_list'] as $v) {
-                $expectQuantity = $this->getMaterialService()->getInfo(['tour_no' => $tour['tour_no'], 'code' => $v['code']], ['*'], false)['expect_quantity'];
-                if (intval($v['actual_quantity']) > intval($expectQuantity)) {
+        if(!empty($params['material_list'])){
+            foreach ($params['material_list'] as $v){
+                $expectQuantity=$this->getMaterialService()->getInfo(['tour_no'=>$tour['tour_no'],'code'=>$v['code']],['*'],false)['expect_quantity'];
+                if(empty($expectQuantity)){
+                    throw new BusinessLogicException('当前取件线路的材料代码不正确');
+                }
+                if(intval($v['actual_quantity'])>intval($expectQuantity)){
                     throw new BusinessLogicException('材料数量不得超过预计材料数量');
                 }
                 $surplusQuantity = TourMaterial::query()->where('tour_no', $tour['tour_no'])->where('code', $v['code'])->first()['surplus_quantity'];
@@ -864,8 +870,6 @@ class TourService extends BaseService
         }
         $data = Arr::only($params, ['end_signature', 'end_signature_remark']);
         $data = Arr::add($data, 'end_time', now());
-        $data = Arr::add($data, 'actual_time', strtotime($data['end_time']) - strtotime($tour['begin_time']));
-        $data = Arr::add($data, 'actual_distance', $tour['expect_distance']);
         $rowCount = parent::updateById($tour['id'], Arr::add($data, 'status', BaseConstService::TOUR_STATUS_5));
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败，请重新操作');
