@@ -799,6 +799,18 @@ class TourService extends BaseService
         if ($batch['tour_no'] != $tour['tour_no']) {
             throw new BusinessLogicException('当前站点不属于当前取件线路');
         }
+        if(!empty($params['material_list'])){
+            foreach ($params['material_list'] as $v){
+                $expectQuantity=$this->getMaterialService()->getInfo(['tour_no'=>$tour['tour_no'],'code'=>$v['code']],['*'],false)['expect_quantity'];
+                if(intval($v['actual_quantity'])>intval($expectQuantity)){
+                    throw new BusinessLogicException('材料数量不得超过预计材料数量');
+                }
+                $surplusQuantity=TourMaterial::query()->where('tour_no',$tour['tour_no'])->where('code',$v['code'])->first()['surplus_quantity'];
+                if(intval($v['actual_quantity'])>$surplusQuantity){
+                    throw new BusinessLogicException('剩余材料只剩[:count]个，请重新选择材料数量',301,['count'=>$surplusQuantity]);
+                }
+            }
+        }
         return [$tour, $batch];
     }
 

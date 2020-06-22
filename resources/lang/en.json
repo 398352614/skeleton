@@ -7,9 +7,11 @@
     "编号": "",
     "数量": "",
     "代码": "",
-
-
     "发货方": "Sender",
+
+    "材料数量不得超过预计材料数量": "The number of actual material has exceeded the expect material",
+    "剩余材料只剩[:count]个，请重新选择材料数量": "The number of the rest material is [:count],please choose another material number",
+    "当前取件线路的材料数量不正确": "The number of the material is incorrect",
     "地址模板二无法进行批量导入": "Can't import the order with the 2rd address template",
     "没找到相关进行中的线路": "Did not find the relevant line in progress",
     "无搜索结果": "No search results",
