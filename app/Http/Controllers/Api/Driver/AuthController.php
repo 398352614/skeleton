@@ -119,6 +119,12 @@ class AuthController extends Controller
         ];
     }
 
+    /**
+     * 获取企业配置信息
+     * @param $companyId
+     * @return array
+     * @throws BusinessLogicException
+     */
     private function getCompanyConfig($companyId)
     {
         //获取贴单费用
