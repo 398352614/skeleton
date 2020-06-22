@@ -44,7 +44,7 @@ class OutWarehouse extends ATourNotify
         $packageList = Package::query()->whereIn('order_no',array_column($this->orderList,'order_no'))->get(['order_no','express_first_no'])->toArray();
         $packageList = array_create_group_index($packageList,'order_no');
         $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList){
-            $order['package_list'] = $packageList['order_no'] ?? [];
+            $order['package_list'] = $packageList[$order['order_no']] ?? [];
             return collect($order);
         })->toArray();
         unset($packageList);
