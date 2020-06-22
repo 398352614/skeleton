@@ -113,6 +113,14 @@ class TourService extends BaseService
     }
 
     /**
+     * 任务 服务
+     * @return TourTaskService
+     */
+    public function getTourTaskService(){
+        return self::getInstance(TourTaskService::class);
+    }
+
+    /**
      * 锁定-开始装货
      * @param $id
      * @throws BusinessLogicException
@@ -362,11 +370,7 @@ class TourService extends BaseService
      */
     private function insertMaterialList($tour, $materialList)
     {
-        $codeList = array_column($materialList, 'code');
         data_fill($materialList, '*.name', '');
-        if (count($codeList) != count(array_unique($codeList))) {
-            throw new BusinessLogicException('材料有重复,请先合并');
-        }
         $materialList = collect($materialList)->map(function ($material, $key) use ($tour) {
             $material = Arr::only($material, ['expect_quantity', 'actual_quantity', 'code', 'name']);
             $material = Arr::add($material, 'tour_no', $tour['tour_no']);
@@ -408,6 +412,23 @@ class TourService extends BaseService
         if ($orderCount != $params['order_count']) {
             throw new BusinessLogicException('当前取件线路的订单数量不正确');
         }
+        //材料验证
+        if(!empty($params['material_list'])){
+            $materialList = $params['material_list'];
+            $codeList = array_column($materialList, 'code');
+            if (count($codeList) != count(array_unique($codeList))) {
+                throw new BusinessLogicException('材料有重复,请先合并');
+            }
+            //验证材料数量
+            $expectMaterialList = $this->getTourTaskService()->getTourMaterialList($tour);
+            foreach ($materialList as $v) {
+                $expectQuantity = intval(collect($expectMaterialList)->where('code',$v['code'])->first()['expect_quantity']);
+                if (intval($v['actual_quantity']) > intval($expectQuantity)) {
+                    throw new BusinessLogicException('当前取件线路的材料数量不正确');
+                }
+            }
+        }
+        //验证材料数量
         return $tour;
     }
 
