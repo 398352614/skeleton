@@ -148,7 +148,7 @@ class TourTaskService extends BaseService
      * @param $materialList
      * @return array
      */
-    private function getTourMaterialList($tour)
+    public function getTourMaterialList($tour)
     {
         if (in_array(intval($tour['status']), [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5])) {
             $materialList = $this->tourMaterialModel->newQuery()->where('tour_no', '=', $tour['tour_no'])->get()->toArray();
