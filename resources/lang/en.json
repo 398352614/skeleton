@@ -1,4 +1,15 @@
 {
+    "快件类型": "",
+    "代收货款": "",
+    "物品信息": "",
+    "运费金额": "",
+    "总数量": "",
+    "编号": "",
+    "数量": "",
+    "代码": "",
+
+
+    "发货方": "Sender",
     "地址模板二无法进行批量导入": "Can't import the order with the 2rd address template",
     "没找到相关进行中的线路": "Did not find the relevant line in progress",
     "无搜索结果": "No search results",
