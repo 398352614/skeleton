@@ -110,7 +110,6 @@ class OrderImportService extends BaseService
             __('1XXXXXXXXXX'),
             __('41X000'),
             __('C8栋808'),
-            __('麓谷企业广场'),
             '2020-01-01',
             __('寄付'),
             '7.00',
