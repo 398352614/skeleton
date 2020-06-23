@@ -23,7 +23,4 @@ class LineController extends BaseController
         parent::__construct($service);
     }
 
-    public function index(){
-        return $this->service->getList([],['name','id'],false);
-    }
 }

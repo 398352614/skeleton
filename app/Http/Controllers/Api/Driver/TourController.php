@@ -193,10 +193,10 @@ class TourController extends BaseController
     }
 
     /**
-     * 通过线路获取取件线路
-     * @return array|\Illuminate\Support\Collection
+     * 获取线路及取件线路列表
+     * @return array
      */
-    public function getTourByLine(){
-        return $this->service->getTourByLine($this->data);
+    public function getTourList(){
+        return $this->service->getTourList();
     }
 }

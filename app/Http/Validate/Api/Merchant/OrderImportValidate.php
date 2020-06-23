@@ -15,7 +15,6 @@ class OrderImportValidate extends BaseValidate
         'receiver_country' => '收件人国家',
         'receiver_post_code' => '收件人邮编',
         'receiver_house_number' => '收件人门牌号',
-        'receiver_address' => '收件人详细地址',
         'execution_date' => '取派日期',
         'out_order_no' => '外部订单号',
         'settlement_type' => '结算方式',
@@ -69,7 +68,6 @@ class OrderImportValidate extends BaseValidate
         'receiver_country' => 'nullable|string|max:20',
         'receiver_post_code' => 'required|string|max:50',
         'receiver_house_number' => 'required|string|max:50',
-        'receiver_address' => 'required|string|max:250',
         'remark' => 'nullable|string|max:250',
 
         'item_type_1'=>'required|integer|in:1,2',
