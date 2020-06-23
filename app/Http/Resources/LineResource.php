@@ -26,6 +26,7 @@ class LineResource extends JsonResource
             'pie_max_count' => $this->pie_max_count,
             'is_increment' => $this->is_increment,
             'order_deadline' => $this->order_deadline,
+            'appointment_days'=>$this->appointment_days,
             'creator_name' => $this->creator_name,
             'remark' => $this->remark,
             'created_at' => (string)$this->created_at,
