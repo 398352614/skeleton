@@ -52,7 +52,7 @@ trait PrintTrait
                 $html .= '<p></p>' . $string;
             }
             $snappyPdf = SnappyPdf::loadHTML($html);
-            $snappyPdf->save($newFilePath, true);
+            $snappyPdf->setPaper('A4')->save($newFilePath, true);
             unset($snappyPdf);
         } catch (\Exception $ex) {
             throw new BusinessLogicException($ex->getMessage());
