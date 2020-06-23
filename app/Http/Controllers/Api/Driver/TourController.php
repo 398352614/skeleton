@@ -191,4 +191,12 @@ class TourController extends BaseController
     {
         return $this->service->updateBatchIndex();
     }
+
+    /**
+     * 通过线路获取取件线路
+     * @return array|\Illuminate\Support\Collection
+     */
+    public function getTourByLine(){
+        return $this->service->getTourByLine($this->data);
+    }
 }

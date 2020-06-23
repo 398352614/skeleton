@@ -25,6 +25,7 @@ use App\Traits\TourTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use App\Services\Traits\TourRedisLockTrait;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -935,5 +936,20 @@ class TourService extends BaseService
         }
 
         throw new BusinessLogicException('未查找到下一个目的地');
+    }
+
+    /**
+     * 通过线路ID获得取件线路
+     * @param $params
+     * @return array|Collection
+     */
+    public function getTourByLine($params){
+        $info = DB::table('tour')
+            ->where('company_id',auth()->user()->company_id)
+            ->where('line_id',$params['line_id'])
+            ->where('execution_date',today()->format('Y-m-d'))
+            ->pluck('tour_no')
+            ->toArray();
+        return $info ?? [];
     }
 }
