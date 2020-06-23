@@ -433,26 +433,31 @@ return [
         'white_ip_list' => '白名单',
 
         //order-import
+        "item_type_1" => "物品一类型",
         "item_name_1" => "物品一名称",
         "item_number_1" => "物品一编号",
         "item_count_1" => "物品一数量",
         "item_weight_1" => "物品一重量",
 
+        "item_type_2" => "物品二类型",
         "item_name_2" => "物品二名称",
         "item_number_2" => "物品二编号",
         "item_count_2" => "物品二数量",
         "item_weight_2" => "物品二重量",
 
+        "item_type_3" => "物品三类型",
         "item_name_3" => "物品三名称",
         "item_number_3" => "物品三编号",
         "item_count_3" => "物品三数量",
         "item_weight_3" => "物品三重量",
 
+        "item_type_4" => "物品四类型",
         "item_name_4" => "物品四名称",
         "item_number_4" => "物品四编号",
         "item_count_4" => "物品四数量",
         "item_weight_4" => "物品四重量",
 
+        "item_type_5" => "物品五类型",
         "item_name_5" => "物品五名称",
         "item_number_5" => "物品五编号",
         "item_count_5" => "物品五数量",
