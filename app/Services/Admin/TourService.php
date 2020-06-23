@@ -181,9 +181,9 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机分配失败，请重新操作');
         }
-        $tour['driver_id']=$driver['id'];
-        $tour['driver_name']=$driver['fullname'];
-        $tour['driver_phone']=$driver['phone'];
+        $tour['driver_id'] = $driver['id'];
+        $tour['driver_name'] = $driver['fullname'];
+        $tour['driver_phone'] = $driver['phone'];
         OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
     }
 
@@ -431,7 +431,7 @@ class TourService extends BaseService
      */
     public function removeBatchOrder($order, $batch)
     {
-        $info = $this->getInfoOfStatus(['tour_no' => $order['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
+        $info = $this->getInfoOfStatus(['tour_no' => $order['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3], true);
         $quantity = $info['expect_pickup_quantity'] + $info['expect_pie_quantity'];
         //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
         if ($quantity - 1 <= 0) {
@@ -625,7 +625,7 @@ class TourService extends BaseService
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
         $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
         if (!$nextBatch) {
-            $nextBatch=Batch::where('tour_no', $this->formData['tour_no'])->first();
+            $nextBatch = Batch::where('tour_no', $this->formData['tour_no'])->first();
             // self::setTourLock($this->formData['tour_no'], 0);
         }
 
