@@ -38,7 +38,7 @@ trait PrintTrait
      */
     public static function tPrintAll($dataList, $view, $dir, $fileName = null)
     {
-        !empty($fileName) && $fileName = self::getFileName();
+        empty($fileName) && $fileName = self::getFileName();
         data_set($dataList, '*.currency_unit', __(CompanyTrait::getCompany()['currency_unit']));
         $dir = self::getDir($dir);
         try {
