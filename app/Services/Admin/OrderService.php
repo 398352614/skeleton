@@ -553,11 +553,11 @@ class OrderService extends BaseService
             $params['receiver_address'] = implode(' ', array_filter(Arr::only($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
         }
         //若存在外部订单号,则判断是否存在已预约的订单号
-        if(!empty($params['out_order_no'])){
-            $where = ['out_order_no'=>$params['out_order_no'],'status'=>['not in',[BaseConstService::ORDER_STATUS_7]]];
-            !empty($orderNo) && $where['order_no'] = ['<>',$orderNo];
-            $dbOrder = parent::getInfo($where,['id'],false);
-            if(!empty($dbOrder)){
+        if (!empty($params['out_order_no'])) {
+            $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_7]]];
+            !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
+            $dbOrder = parent::getInfo($where, ['id'], false);
+            if (!empty($dbOrder)) {
                 throw new BusinessLogicException('外部订单号已存在');
             }
         }
@@ -1119,7 +1119,7 @@ class OrderService extends BaseService
             $order['material_list'] = $materialList[$order['order_no']] ?? [];
             $order['count'] = count($order['package_list']) + count($order['material_list']);
             $order['company_name'] = $company['name'];
-            $order['receiver_address_short'] = $order['receiver_country_name'] .' '. $order['receiver_city'];
+            $order['receiver_address_short'] = $order['receiver_country_name'] . ' ' . $order['receiver_city'];
             return collect($order);
         })->toArray();
         //若是通用打印模板,则需要将快递号转为条码
@@ -1136,8 +1136,8 @@ class OrderService extends BaseService
         } else {
             $orderView = 'order.order';
         }
-        foreach ($orderList as $order) {
-            $order['barcode'] = BarcodeTrait::generateOne($order['order_no']);
+        foreach ($orderList as $key => $order) {
+            $orderList[$key]['barcode'] = BarcodeTrait::generateOne($order['order_no']);
         }
         $url = PrintTrait::tPrintAll($orderList, $orderView, 'order', null);
         return $url;
