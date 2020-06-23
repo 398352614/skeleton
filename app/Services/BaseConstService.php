@@ -100,7 +100,7 @@ class BaseConstService
     const ORDER_STATUS_7 = 7;
 
 
-    //包裹列表-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    //包裹列表1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     const PACKAGE_STATUS_1 = 1;
     const PACKAGE_STATUS_2 = 2;
     const PACKAGE_STATUS_3 = 3;

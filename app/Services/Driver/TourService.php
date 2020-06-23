@@ -952,4 +952,19 @@ class TourService extends BaseService
             ->toArray();
         return $info ?? [];
     }
+
+    public function getTourList(){
+        $info=[];
+        $tour=DB::table('tour')
+            ->where('company_id',auth()->user()->company_id)
+            ->where('execution_date',today()->format('Y-m-d'))
+            ->get()->toArray();
+        $tour=collect($tour)->groupBy('line_id')->toArray();
+        foreach ($tour as $k=>$v){
+            $info[$k]['line_name']=$v[0]->line_name;
+            $info[$k]['tour_no_list']=collect($v)->pluck('tour_no');
+        }
+        $info=array_values($info);
+        return $info;
+    }
 }

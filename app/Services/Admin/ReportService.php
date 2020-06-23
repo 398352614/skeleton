@@ -81,7 +81,7 @@ class ReportService extends BaseService
         $list = parent::getPageList();
         foreach ($list as &$tour) {
             $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
-            $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['in',[BaseConstService::BATCH_CHECKOUT,BaseConstService::BATCH_CANCEL]]]);
+            $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         }
         return $list;
     }
@@ -102,7 +102,7 @@ class ReportService extends BaseService
         $info = $info->toArray();
         //获取站点数量
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
-        $info['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no'], 'status' => ['in',[BaseConstService::BATCH_CHECKOUT,BaseConstService::BATCH_CANCEL]]]);
+        $info['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         //组装取件线路站点信息
         $warehouseInfo = [
             'id' => $info['warehouse_id'],
@@ -122,8 +122,47 @@ class ReportService extends BaseService
         $materialList = $this->getMaterialService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         //获取站点的取件材料汇总
         $tourMaterialList = $this->getTourMaterialList($info, $materialList);
+        //统计预计实际材料数量
+        $info['expect_material_quantity'] = 0;
+        $info['actual_material_quantity'] = 0;
+        if (!empty($tourMaterialList)) {
+            foreach ($tourMaterialList as $v) {
+                $info['expect_material_quantity'] += $v['expect_quantity'];
+                $info['actual_material_quantity'] += $v['actual_quantity'];
+            }
+        }
         //获取所有的站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
+        //统计站点的各费用
+        $info['card_settlement_amount'] = 0;
+        $info['card_replace_amount'] = 0;
+        $info['card_sticker_amount'] = 0;
+        $info['card_total_amount'] =0;
+        $info['card_sticker_count'] =0;
+        $info['cash_settlement_amount'] = 0;
+        $info['cash_replace_amount'] = 0;
+        $info['cash_sticker_amount'] = 0;
+        $info['cash_total_amount'] =0;
+        $info['cash_sticker_count'] =0;
+        foreach ($orderList as $v) {
+            if($v['status'] == BaseConstService::ORDER_STATUS_5) {
+                $v['pay_type']=collect($batchList)->where('batch_no',$v['batch_no'])->first()['pay_type'];
+                dd($v);
+                if ($v['pay_type'] == BaseConstService::ORDER_SETTLEMENT_TYPE_1) {
+                    $info['card_settlement_amount'] += $v['settlement_amount'];
+                    $info['card_replace_amount'] += $v['replace_amount'];
+                    $info['card_sticker_amount'] += $v['sticker_amount'];
+                    $info['card_total_amount'] += $v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'];
+                    $info['card_sticker_count'] += $v['sticker_no'] ? 1 : 0;
+                } else {
+                    $info['cash_settlement_amount'] += $v['settlement_amount'];
+                    $info['cash_replace_amount'] += $v['replace_amount'];
+                    $info['cash_sticker_amount'] += $v['sticker_amount'];
+                    $info['cash_total_amount'] += $v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'];
+                    $info['cash_sticker_count'] += $v['sticker_no'] ? 1 : 0;
+                }
+            }
+        }
         /**********************************************获取出库信息****************************************************/
         $outWarehouseInfo = $this->getOutWarehouseInfo($info, $warehouseInfo, $packageList, $tourMaterialList);
         /**********************************************获取入库信息****************************************************/
