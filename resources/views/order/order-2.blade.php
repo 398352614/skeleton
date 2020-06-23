@@ -138,9 +138,9 @@
                 <div class="destination-address right-line font-size-t1">{{__('目的地').'：'.$data['receiver_address_short']}}</div>
                 <div class="destination-info">
                     <div>{{__('快件类型').'：'.$data['type_name']}}</div>
-                    <div>{{__('代收货款').'：'.$data['replace_amount']}}元</div>
+                    <div>{{__('代收货款').'：'.$data['replace_amount'].$data['currency_unit']}}</div>
                     <div>{{__('支付方式').'：'.$data['settlement_type_name']}}</div>
-                    <div>{{__('运费金额').'：'.$data['settlement_amount'].__('元')}}</div>
+                    <div>{{__('运费金额').'：'.$data['settlement_amount'].$data['currency_unit']}}</div>
                 </div>
             </div>
             <div class="item-information bottom-line">
@@ -156,7 +156,7 @@
                             @else
                                 <span></span>
                             @endif
-                            <span>{{__('数量：').$package['expect_quantity']}}</span>
+                            <span>{{__('数量').':'.$package['expect_quantity']}}</span>
                             <span>
                                 <span>{{__('编号')}}：</span>
                                 <img src="{{$package['express_first_no']}}" width="100px" />

@@ -90,11 +90,11 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     $event->sheet->getDelegate()->getStyle('G2:G102')->getNumberFormat()
                         ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_YYYYMMDD);
                     //设置字体颜色
-                    $event->sheet->getDelegate()->getStyle('A1:H1')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-                    $event->sheet->getDelegate()->getStyle('N1:O1')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    $event->sheet->getDelegate()->getStyle('A1:G1')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                    $event->sheet->getDelegate()->getStyle('M1:N1')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                     //设置金额格式
+                    $event->sheet->getDelegate()->getStyle('H1:H102')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
                     $event->sheet->getDelegate()->getStyle('I1:I102')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
-                    $event->sheet->getDelegate()->getStyle('J1:J102')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
                     //$countryList=implode(',',collect(self::getInstance(CommonService::class)->getCountryList())->pluck('name')->toArray());
                     $typeList=implode(',',[__('取件'),__('派件')]);
                     $settlementList=implode(',',[__('寄付'),__('到付')]);
@@ -123,7 +123,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                             ->setPromptTitle('')
                             ->setPrompt('')
                             ->setFormula1('"' . $countryList . '"');*/
-                        $event->sheet->getDelegate()->getcell('H'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                        $event->sheet->getDelegate()->getcell('G'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
                             ->setErrorStyle(DataValidation::STYLE_INFORMATION )
                             ->setAllowBlank(true)
                             ->setShowInputMessage(true)
@@ -134,7 +134,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                             ->setPromptTitle('')
                             ->setPrompt('')
                             ->setFormula1('"' . $settlementList . '"');
-                        $event->sheet->getDelegate()->getcell('L'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                        $event->sheet->getDelegate()->getcell('k'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
                             ->setErrorStyle(DataValidation::STYLE_INFORMATION )
                             ->setAllowBlank(true)
                             ->setShowInputMessage(true)
@@ -145,7 +145,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                             ->setPromptTitle('')
                             ->setPrompt('')
                             ->setFormula1('"' . $deliveryList . '"');
-                        $event->sheet->getDelegate()->getcell('N'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                        $event->sheet->getDelegate()->getcell('M'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
                             ->setErrorStyle(DataValidation::STYLE_INFORMATION )
                             ->setAllowBlank(true)
                             ->setShowInputMessage(true)
@@ -156,7 +156,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                             ->setPromptTitle('')
                             ->setPrompt('')
                             ->setFormula1('"' . $itemList . '"');
-                        $event->sheet->getDelegate()->getcell('S'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                        $event->sheet->getDelegate()->getcell('R'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
                             ->setErrorStyle(DataValidation::STYLE_INFORMATION )
                             ->setAllowBlank(true)
                             ->setShowInputMessage(true)
@@ -167,7 +167,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                             ->setPromptTitle('')
                             ->setPrompt('')
                             ->setFormula1('"' . $itemList . '"');
-                        $event->sheet->getDelegate()->getcell('X'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                        $event->sheet->getDelegate()->getcell('W'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
                             ->setErrorStyle(DataValidation::STYLE_INFORMATION )
                             ->setAllowBlank(true)
                             ->setShowInputMessage(true)
@@ -178,7 +178,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                             ->setPromptTitle('')
                             ->setPrompt('')
                             ->setFormula1('"' . $itemList . '"');
-                        $event->sheet->getDelegate()->getcell('AC'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                        $event->sheet->getDelegate()->getcell('AB'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
                             ->setErrorStyle(DataValidation::STYLE_INFORMATION )
                             ->setAllowBlank(true)
                             ->setShowInputMessage(true)
@@ -189,7 +189,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                             ->setPromptTitle('')
                             ->setPrompt('')
                             ->setFormula1('"' . $itemList . '"');
-                        $event->sheet->getDelegate()->getcell('AH'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                        $event->sheet->getDelegate()->getcell('AG'.($i+2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
                             ->setErrorStyle(DataValidation::STYLE_INFORMATION )
                             ->setAllowBlank(true)
                             ->setShowInputMessage(true)

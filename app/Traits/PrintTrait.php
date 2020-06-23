@@ -33,6 +33,7 @@ trait PrintTrait
      */
     public static function tPrint($data, $view, $dir, $fileName)
     {
+        $data['currency_unit']=__(CompanyTrait::getCompany()['currency_unit']);
         $dir = self::getDir($dir);
         try {
             $newFilePath = storage_path('app/public/pdf') . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName;
