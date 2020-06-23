@@ -1191,4 +1191,24 @@ class OrderService extends BaseService
         }
     }
 
+    /**
+     * 获取订单派送信息
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getOrderDispatchInfo($id)
+    {
+        $where = [$this->getIdKeyName($id) => $id];
+        $info = parent::getInfo($where, ['batch_no'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $batch = $this->getBatchService()->getInfo(['batch_no' => $info->batch_no], ['expect_distance', 'actual_distance', 'expect_time', 'actual_time', 'expect_arrive_time', 'actual_arrive_time'], false);
+        if (empty($batch)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $batch->toArray();
+    }
+
 }

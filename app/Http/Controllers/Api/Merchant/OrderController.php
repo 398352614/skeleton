@@ -233,4 +233,15 @@ class OrderController extends OrderBaseController
     {
         return $this->service->updateOutStatus($id, $this->data);
     }
+
+    /**
+     * 获取订单派送信息
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getOrderDispatchInfo($id)
+    {
+        return $this->service->getOrderDispatchInfo($id);
+    }
 }
