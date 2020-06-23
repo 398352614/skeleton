@@ -590,11 +590,11 @@ class OrderService extends BaseService
             $params['receiver_address'] = implode(' ', array_filter(Arr::only($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
         }
         //若存在外部订单号,则判断是否存在已预约的订单号
-        if(!empty($params['out_order_no'])){
-            $where = ['out_order_no'=>$params['out_order_no'],'status'=>['not in',[BaseConstService::ORDER_STATUS_7]]];
-            !empty($orderNo) && $where['order_no'] = ['<>',$orderNo];
-            $dbOrder = parent::getInfo($where,['id'],false);
-            if(!empty($dbOrder)){
+        if (!empty($params['out_order_no'])) {
+            $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_7]]];
+            !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
+            $dbOrder = parent::getInfo($where, ['id'], false);
+            if (!empty($dbOrder)) {
                 throw new BusinessLogicException('外部订单号已存在');
             }
         }
@@ -1087,7 +1087,7 @@ class OrderService extends BaseService
      */
     public function destroy($id, $params)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]);
         $rowCount = parent::updateById($info['id'], ['status' => BaseConstService::ORDER_STATUS_7, 'remark' => $params['remark'] ?? '', 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单删除失败，请重新操作');

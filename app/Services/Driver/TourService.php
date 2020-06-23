@@ -414,6 +414,14 @@ class TourService extends BaseService
         if ($orderCount != $params['order_count']) {
             throw new BusinessLogicException('当前取件线路的订单数量不正确');
         }
+        //验证订单是否都可出库
+        $outOrderIdList = array_filter(explode(',', $params['out_order_id_list']), function ($value) {
+            return is_numeric($value);
+        });
+        $NoOutOrder = $this->getOrderService()->getInfo(['id' => ['in', $outOrderIdList], 'status' => ['<>', BaseConstService::ORDER_STATUS_3]], ['order_no'], false);
+        if (!empty($NoOutOrder)) {
+            throw new BusinessLogicException('订单[:order_no]已取消或已删除,不能出库,请先剔除', 1000, ['order' => $NoOutOrder->order_no]);
+        }
         //材料验证
         if (!empty($params['material_list'])) {
             $materialList = $params['material_list'];
@@ -424,8 +432,8 @@ class TourService extends BaseService
             //验证材料数量
             $expectMaterialList = $this->getTourTaskService()->getTourMaterialList($tour);
             foreach ($materialList as $v) {
-                $expectQuantity = collect($expectMaterialList)->where('code',$v['code'])->first();
-                if(empty($expectQuantity)){
+                $expectQuantity = collect($expectMaterialList)->where('code', $v['code'])->first();
+                if (empty($expectQuantity)) {
                     throw new BusinessLogicException('当前取件线路的材料代码不正确');
                 }
                 if (intval($v['actual_quantity']) > intval($expectQuantity)['expect_quantity']) {
@@ -804,13 +812,13 @@ class TourService extends BaseService
         if ($batch['tour_no'] != $tour['tour_no']) {
             throw new BusinessLogicException('当前站点不属于当前取件线路');
         }
-        if(!empty($params['material_list'])){
-            foreach ($params['material_list'] as $v){
-                $expectQuantity=$this->getMaterialService()->getInfo(['tour_no'=>$tour['tour_no'],'code'=>$v['code']],['*'],false)['expect_quantity'];
-                if(empty($expectQuantity)){
+        if (!empty($params['material_list'])) {
+            foreach ($params['material_list'] as $v) {
+                $expectQuantity = $this->getMaterialService()->getInfo(['tour_no' => $tour['tour_no'], 'code' => $v['code']], ['*'], false)['expect_quantity'];
+                if (empty($expectQuantity)) {
                     throw new BusinessLogicException('当前取件线路的材料代码不正确');
                 }
-                if(intval($v['actual_quantity'])>intval($expectQuantity)){
+                if (intval($v['actual_quantity']) > intval($expectQuantity)) {
                     throw new BusinessLogicException('材料数量不得超过预计材料数量');
                 }
                 $surplusQuantity = TourMaterial::query()->where('tour_no', $tour['tour_no'])->where('code', $v['code'])->first()['surplus_quantity'];
@@ -943,11 +951,12 @@ class TourService extends BaseService
      * @param $params
      * @return array|Collection
      */
-    public function getTourByLine($params){
+    public function getTourByLine($params)
+    {
         $info = DB::table('tour')
-            ->where('company_id',auth()->user()->company_id)
-            ->where('line_id',$params['line_id'])
-            ->where('execution_date',today()->format('Y-m-d'))
+            ->where('company_id', auth()->user()->company_id)
+            ->where('line_id', $params['line_id'])
+            ->where('execution_date', today()->format('Y-m-d'))
             ->pluck('tour_no')
             ->toArray();
         return $info ?? [];

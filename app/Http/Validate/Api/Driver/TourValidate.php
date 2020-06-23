@@ -26,6 +26,7 @@ class TourValidate extends BaseValidate
         'cancel_remark' => '取消取派内容',
         'cancel_picture' => '取消取派图片',
         'cancel_order_id_list' => '取消订单ID列表',
+        'out_order_id_list' => '出库订单ID列表',
         'signature' => '客户签名',
         'pay_type' => '支付方式',
         'pay_picture' => '支付图片',
@@ -47,6 +48,7 @@ class TourValidate extends BaseValidate
         'begin_signature_second_pic' => 'nullable|string|max:250',
         'begin_signature_third_pic' => 'nullable|string|max:250',
         'cancel_order_id_list' => 'nullable|string',
+        'out_order_id_list' => 'nullable|string',
         'order_count' => 'required|integer',
         //异常上报
         'stage' => 'required|integer|in:1,2',
@@ -89,7 +91,7 @@ class TourValidate extends BaseValidate
         'outWarehouse' => [
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.expect_quantity', 'material_list.*.actual_quantity',
-            'cancel_order_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic',
+            'cancel_order_id_list', 'out_order_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic',
             'order_count'
         ],
         'getBatchOrderList' => ['batch_id'],
