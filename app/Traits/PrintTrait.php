@@ -49,7 +49,7 @@ trait PrintTrait
             $html = '';
             foreach ($dataList as $data) {
                 $string = view($view, ['data' => $data])->render();
-                $html = '<p></p>>' . $string;
+                $html = '<p></p>' . $string;
             }
             $snappyPdf = SnappyPdf::loadHTML($html);
             $snappyPdf->save($newFilePath, true);
