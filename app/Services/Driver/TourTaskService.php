@@ -215,5 +215,24 @@ class TourTaskService extends BaseService
         return $order->toArray()['special_remark'];
     }
 
+    /**
+     * 获取订单列表
+     * @param $params
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getOrderList($params){
+        //获取所有订单列表
+        $orderList = $this->getOrderService()->getList(['tour_no' => $params['tour_no']], ['order_no'], false)->toArray();
+        //获取所有包裹列表
+        $packageList = $this->getPackageService()->getList(['tour_no' => $params['tour_no']], ['order_no','express_first_no'], false)->toArray();
+        $packageList = array_create_group_index($packageList, 'order_no');
+        //将包裹列表和材料列表放在对应订单下
+        $orderList = array_map(function ($order) use ($packageList) {
+            $order['package_list'] = $packageList[$order['order_no']] ?? [];
+            return $order;
+        }, $orderList);
+        return $orderList ?? [];
+    }
 
 }
