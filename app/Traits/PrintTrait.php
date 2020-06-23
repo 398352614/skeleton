@@ -48,7 +48,7 @@ trait PrintTrait
             /** @var PdfFaker $snappyPdf */
             $html = '';
             foreach ($dataList as $data) {
-                $html .= view($view, $data)->render();
+                $html .= view($view, ['data' => $data])->render();
             }
             $snappyPdf = SnappyPdf::loadHTML($view);
             $snappyPdf->save($newFilePath, true);
