@@ -13,6 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Barryvdh\Snappy\PdfFaker;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 
 trait PrintTrait
 {
@@ -32,9 +33,10 @@ trait PrintTrait
      * @param $dataList
      * @param $view
      * @param $dir
-     * @param $fileName
+     * @param null $fileName
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \Throwable
      */
     public static function tPrintAll($dataList, $view, $dir, $fileName = null)
     {
@@ -44,9 +46,11 @@ trait PrintTrait
         try {
             $newFilePath = storage_path('app/public/pdf') . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName;
             /** @var PdfFaker $snappyPdf */
+            $html = '';
             foreach ($dataList as $data) {
-                $snappyPdf = SnappyPdf::loadView($view, ['data' => $data]);
+                $html .= view($view, $data)->render();
             }
+            $snappyPdf = SnappyPdf::loadHTML($view);
             $snappyPdf->save($newFilePath, true);
             unset($snappyPdf);
         } catch (\Exception $ex) {
