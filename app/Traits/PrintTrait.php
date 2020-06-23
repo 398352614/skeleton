@@ -50,7 +50,7 @@ trait PrintTrait
             foreach ($dataList as $data) {
                 $html .= view($view, ['data' => $data])->render();
             }
-            $snappyPdf = SnappyPdf::loadHTML($view);
+            $snappyPdf = SnappyPdf::loadHTML($html);
             $snappyPdf->save($newFilePath, true);
             unset($snappyPdf);
         } catch (\Exception $ex) {
