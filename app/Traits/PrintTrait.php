@@ -22,24 +22,33 @@ trait PrintTrait
         return $dir . DIRECTORY_SEPARATOR . auth()->user()->company_id;
     }
 
+    private static function getFileName()
+    {
+        return md5(auth()->user()->company_id . time()) . '.pdf';
+    }
+
     /**
      * 打印
-     * @param $data
+     * @param $dataList
      * @param $view
      * @param $dir
      * @param $fileName
      * @return mixed
      * @throws BusinessLogicException
      */
-    public static function tPrint($data, $view, $dir, $fileName)
+    public static function tPrintAll($dataList, $view, $dir, $fileName = null)
     {
-        $data['currency_unit']=__(CompanyTrait::getCompany()['currency_unit']);
+        !empty($fileName) && $fileName = self::getFileName();
+        data_set($dataList, '*.currency_unit', __(CompanyTrait::getCompany()['currency_unit']));
         $dir = self::getDir($dir);
         try {
             $newFilePath = storage_path('app/public/pdf') . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName;
+            $snappyPdf = new SnappyPdf();
             /** @var PdfFaker $snappyPdf */
-            $snappyPdf = SnappyPdf::loadView($view, ['data' => $data]);
-            $snappyPdf->setPaper('a4')->save($newFilePath, true);
+            foreach ($dataList as $data) {
+                $snappyPdf = $snappyPdf->loadView($view, ['data' => $data]);
+            }
+            $snappyPdf->save($newFilePath, true);
             unset($snappyPdf);
         } catch (\Exception $ex) {
             throw new BusinessLogicException($ex->getMessage());

@@ -1136,14 +1136,10 @@ class OrderService extends BaseService
         } else {
             $orderView = 'order.order';
         }
-        $printList = [];
         foreach ($orderList as $order) {
             $order['barcode'] = BarcodeTrait::generateOne($order['order_no']);
-            $printList[] = [
-                'id' => $order['id'],
-                'url' => PrintTrait::tPrint($order, $orderView, 'order', $order['order_no'] . '.pdf')
-            ];
         }
-        return $printList;
+        $url = PrintTrait::tPrintAll($orderList, $orderView, 'order', null);
+        return $url;
     }
 }
