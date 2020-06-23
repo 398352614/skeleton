@@ -43,10 +43,9 @@ trait PrintTrait
         $dir = self::getDir($dir);
         try {
             $newFilePath = storage_path('app/public/pdf') . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName;
-            $snappyPdf = new SnappyPdf();
             /** @var PdfFaker $snappyPdf */
             foreach ($dataList as $data) {
-                $snappyPdf = $snappyPdf->loadView($view, ['data' => $data]);
+                $snappyPdf = SnappyPdf::loadView($view, ['data' => $data]);
             }
             $snappyPdf->save($newFilePath, true);
             unset($snappyPdf);
