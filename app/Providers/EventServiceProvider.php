@@ -11,6 +11,7 @@ use App\Events\TourDriver\BatchDepart;
 use App\Events\TourDriver\OutWarehouse;
 use App\Listeners\CountTourTimeAndDistance;
 use App\Listeners\SendNotify2Merchant;
+use App\Listeners\SendOrderExecutionDate;
 use App\Listeners\TourDriver;
 use App\Listeners\UpdateDriverCountTime;
 use App\Listeners\UpdateLineCountTime;
@@ -77,6 +78,10 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\TourNotify\BackWarehouse::class => [
             SendNotify2Merchant::class
         ],
+        /*********************************取派日期修改通知****************************************/
+        \App\Events\OrderExecutionDateUpdated::class => [
+            SendOrderExecutionDate::class
+        ]
     ];
 
     /**
