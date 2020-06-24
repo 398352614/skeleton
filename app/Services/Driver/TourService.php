@@ -689,8 +689,8 @@ class TourService extends BaseService
             'actual_pickup_quantity' => intval($tour['actual_pickup_quantity']) + $pickupCount,
             'actual_pie_quantity' => intval($tour['actual_pie_quantity']) + $pieCount,
             'sticker_amount' => $tour['sticker_amount'] + $totalStickerAmount,
-            //'replace_amount' => $tour['replace_amount'] + $batch['replace_amount'],
-            //'settlement_amount' => $tour['settlement_amount'] + $batch['settlement_amount'],
+            'replace_amount' => $tour['replace_amount'] + $batch['replace_amount'],
+            'settlement_amount' => $tour['settlement_amount'] + $batch['settlement_amount'],
         ];
         $rowCount = parent::updateById($id, $tourData);
         if ($rowCount === false) {
@@ -747,7 +747,9 @@ class TourService extends BaseService
                 $status = BaseConstService::ORDER_STATUS_5;
                 //判断取件或派件
                 if (intval($dbPackage['type']) === BaseConstService::ORDER_TYPE_1) {
-                    $totalStickerAmount += $stickerAmount;
+                    if (!empty($packageList[$dbPackage['id']]['sticker_no'])) {
+                        $totalStickerAmount += $stickerAmount;
+                    }
                     $packageData = ['actual_quantity' => 1, 'status' => $status, 'sticker_amount' => $stickerAmount, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no'] ?? ''];
                 } else {
                     $packageData = ['actual_quantity' => 1, 'status' => $status];
@@ -962,18 +964,19 @@ class TourService extends BaseService
         return $info ?? [];
     }
 
-    public function getTourList(){
-        $info=[];
-        $tour=DB::table('tour')
-            ->where('company_id',auth()->user()->company_id)
-            ->where('execution_date',today()->format('Y-m-d'))
+    public function getTourList()
+    {
+        $info = [];
+        $tour = DB::table('tour')
+            ->where('company_id', auth()->user()->company_id)
+            ->where('execution_date', today()->format('Y-m-d'))
             ->get()->toArray();
-        $tour=collect($tour)->groupBy('line_id')->toArray();
-        foreach ($tour as $k=>$v){
-            $info[$k]['line_name']=$v[0]->line_name;
-            $info[$k]['tour_no_list']=collect($v)->pluck('tour_no');
+        $tour = collect($tour)->groupBy('line_id')->toArray();
+        foreach ($tour as $k => $v) {
+            $info[$k]['line_name'] = $v[0]->line_name;
+            $info[$k]['tour_no_list'] = collect($v)->pluck('tour_no');
         }
-        $info=array_values($info);
+        $info = array_values($info);
         return $info;
     }
 }
