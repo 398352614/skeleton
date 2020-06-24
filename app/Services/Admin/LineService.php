@@ -162,7 +162,7 @@ class LineService extends BaseLineService
         $this->filters['rule'] = ['=', BaseConstService::LINE_RULE_AREA];
         $list = parent::getPageList();
         $workdayList = array_keys(ConstTranslateTrait::$weekList);
-        foreach ($list as $key=>$line) {
+        foreach ($list as $key => $line) {
             $list[$key]['work_day_list'] = $workdayList;
         }
         if ($isGetArea === 2) return $list;

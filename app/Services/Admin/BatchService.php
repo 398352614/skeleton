@@ -670,11 +670,7 @@ class BatchService extends BaseService
      */
     public function getLineList()
     {
-        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $info = $this->getLineService()->postcodeIndex();
-        } else {
-            $info = $this->getLineService()->areaIndex(1);
-        }
-        return $info ?? [];
+        $list = $this->getLineService()->getPageList();
+        return $list ?? [];
     }
 }
