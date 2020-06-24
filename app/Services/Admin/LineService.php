@@ -174,7 +174,7 @@ class LineService extends BaseLineService
         $lineAreaList = array_create_index($lineAreaList, 'line_id');
         if (empty($lineAreaList)) return $list;
         foreach ($list as &$line) {
-            $line['coordinate_list'] = json_decode($lineAreaList[$line['id']]['coordinate_list'], true);
+            $line['coordinate_list'] = !empty($lineAreaList[$line['id']]['coordinate_list']) ? json_decode($lineAreaList[$line['id']]['coordinate_list'], true) : [];
             $line['work_day_list'] = $workdayList;
         }
         return $list;
