@@ -329,7 +329,7 @@ class TourService extends BaseService
         !empty($params['material_list']) && $this->insertMaterialList($tour, $params['material_list']);
 
         //若站点下所有订单都取消了，就取消取派站点
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['batch_no'], false)->toArray();
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['batch_no', 'id'], false)->toArray();
         foreach ($batchList as $batch) {
             $order = $this->getOrderService()->getInfo(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['id'], false);
             if (!empty($order)) continue;
