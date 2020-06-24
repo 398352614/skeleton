@@ -410,13 +410,7 @@ class TourService extends BaseService
                 $data['expect_pie_quantity'] = $info['expect_pie_quantity'] + 1;
             }
         }
-        //代收款费用
-        $diffReplaceAmount = $order['replace_amount'] - $dbOrder['replace_amount'];
-        $diffSettlementAmount = $order['settlement_amount'] - $dbOrder['settlement_amount'];
-        $rowCount = parent::updateById($info['id'], array_merge($data, [
-            'replace_amount' => $info['replace_amount'] + $diffReplaceAmount,
-            'settlement_amount' => $info['settlement_amount'] + $diffSettlementAmount
-        ]));
+        $rowCount = parent::updateById($info['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
