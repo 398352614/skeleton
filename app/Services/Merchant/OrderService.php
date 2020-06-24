@@ -1213,7 +1213,7 @@ class OrderService extends BaseService
         if (empty($batch)) {
             throw new BusinessLogicException('数据不存在');
         }
-        return $batch->toArray();
+        return Arr::only($batch->toArray(), ['expect_distance', 'actual_distance', 'expect_time', 'actual_time', 'expect_arrive_time', 'actual_arrive_time']);
     }
 
 }
