@@ -179,11 +179,6 @@ class Tour extends BaseModel
         ];
     }
 
-    public function getExpectDistanceAttribute($value)
-    {
-        return round($value / 1000, 2);
-    }
-
     public function getMerchantStatusAttribute(){
         if(in_array($this->status,[BaseConstService::TOUR_STATUS_1,BaseConstService::TOUR_STATUS_2,BaseConstService::TOUR_STATUS_3])){
             return BaseConstService::MERCHANT_TOUR_STATUS_1;
