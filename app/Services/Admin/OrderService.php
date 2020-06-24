@@ -929,11 +929,16 @@ class OrderService extends BaseService
      * 删除
      * @param $id
      * @param $params
+     * @return mixed
      * @throws BusinessLogicException
      */
     public function destroy($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]);
+        //若当前订单已取消取派了,在直接返回成功，不再删除
+        if (intval($info['status']) == BaseConstService::ORDER_STATUS_6) {
+            return 'true';
+        }
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_7, 'remark' => $params['remark'] ?? '', 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单删除失败，请重新操作');
