@@ -451,7 +451,7 @@ class TourService extends BaseService
                 if (empty($expectQuantity)) {
                     throw new BusinessLogicException('当前取件线路的材料代码不正确');
                 }
-                if (intval($v['actual_quantity']) > intval($expectQuantity)['expect_quantity']) {
+                if (intval($v['actual_quantity']) > intval($expectQuantity['expect_quantity'])) {
                     throw new BusinessLogicException('当前取件线路的材料数量不正确');
                 }
             }
