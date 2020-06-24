@@ -898,6 +898,8 @@ class TourService extends BaseService
         }
         $data = Arr::only($params, ['end_signature', 'end_signature_remark']);
         $data = Arr::add($data, 'end_time', now());
+        $actualTime = strtotime($data['end_time']) - strtotime($tour['begin_time']);
+        $data = array_merge($data, ['actual_time' => $actualTime, 'actual_distance' => $tour['expect_distance']]);
         $rowCount = parent::updateById($tour['id'], Arr::add($data, 'status', BaseConstService::TOUR_STATUS_5));
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败，请重新操作');
