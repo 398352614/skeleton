@@ -252,6 +252,7 @@ class ReportService extends BaseService
         foreach ($batchList as $key => $batch) {
             $newBatchList[$key] = [
                 'id' => $batch['id'],
+                'batch_no' => $batch['batch_no'],
                 'name' => $batch['receiver_fullname'],
                 'phone' => $batch['receiver_phone'],
                 'post_code' => $batch['receiver_post_code'],
