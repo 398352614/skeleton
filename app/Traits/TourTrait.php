@@ -38,9 +38,10 @@ trait TourTrait
         event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $newOrderList));
 
         //通知下一个站点事件
-        event(new NextBatch($tour, self::getNextBatch($tour['tour_no'])->toArray()));
-
-
+        $nextBatch = self::getNextBatch($tour['tour_no']);
+        if (!empty($nextBatch)) {
+            event(new NextBatch($tour, $nextBatch->toArray()));
+        }
     }
 
     public static function afterBatchArrived($tour, $batch)
