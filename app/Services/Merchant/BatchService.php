@@ -2,6 +2,7 @@
 
 namespace App\Services\Merchant;
 
+use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\BatchResource;
 use App\Http\Resources\BatchInfoResource;
@@ -457,6 +458,7 @@ class BatchService extends BaseService
     public function assignToTour($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
+        $dbExecutionDate = $info['execution_date'];
         if (!empty($params['tour_no']) && ($info['tour_no'] == $params['tour_no'])) {
             throw new BusinessLogicException('当前站点已分配至当前指定取件线路');
         }
@@ -470,6 +472,7 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
+            ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($order['order_no'], $params['execution_date']));
         }
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
     }

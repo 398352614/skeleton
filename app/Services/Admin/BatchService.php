@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\BatchResource;
 use App\Http\Resources\BatchInfoResource;
@@ -514,6 +515,7 @@ class BatchService extends BaseService
     public function assignToTour($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
+        $dbExecutionDate = $info['execution_date'];
         //如果是在同一条线路并且在同一个日期,则不变
         if (($params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date'])) {
             return 'true';
@@ -528,6 +530,7 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
+            ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($order['order_no'], $params['execution_date']));
         }
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
         return 'true';

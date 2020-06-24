@@ -129,7 +129,7 @@ class BaseConstService
     //取件线路状态状态：1-待分配2-已分配-3-待出库4-取派中5-取派完成
     const TOUR_STATUS_1 = 1;
     const TOUR_STATUS_2 = 2;
-    const TOUR_STATUS_3 = 3;
+    const STOUR_STATUS_3 = 3;
     const TOUR_STATUS_4 = 4;
     const TOUR_STATUS_5 = 5;
 
@@ -270,6 +270,7 @@ class BaseConstService
     const NOTIFY_ASSIGN_BATCH = 'assign-batch';         //签收站点通知
     const NOTIFY_CANCEL_BATCH = 'cancel-batch';         //取消派送站点通知
     const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回仓库通知
+    const NOTIFY_ORDER_EXECUTION_DATE_UPDATE = 'update-execution-date'; //修改取派日期通知
 
     //商户类型
     const MERCHANT_TYPE_1 = 1;

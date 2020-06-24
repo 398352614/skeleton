@@ -10,6 +10,7 @@
 
 namespace App\Services\Admin;
 
+use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
@@ -824,6 +825,7 @@ class OrderService extends BaseService
     public function assignToBatch($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $dbExecutionDate = $info['execution_date'];
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
             return 'true';
         }
@@ -845,6 +847,7 @@ class OrderService extends BaseService
         $this->fillBatchTourInfo($info, $batch, $tour);
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
+        ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($info['order_no'], $params['execution_date']));
         return 'true';
     }
 

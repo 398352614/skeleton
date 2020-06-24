@@ -10,6 +10,7 @@
 
 namespace App\Services\Merchant;
 
+use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
@@ -984,6 +985,7 @@ class OrderService extends BaseService
     public function assignToBatch($id, $params)
     {
         $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $dbExecutionDate = $info['execution_date'];
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
             throw new BusinessLogicException('当前订单已存在分配的站点中！');
         }
@@ -1003,7 +1005,9 @@ class OrderService extends BaseService
         list($batch, $tour) = $this->getBatchService()->join($info, $line, $batchNo);
         /*********************************4.填充取件批次编号和取件线路编号*********************************************/
         $this->fillBatchTourInfo($info, $batch, $tour);
+
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
+        ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($info['order_no'], $params['execution_date']));
     }
 
     /**
