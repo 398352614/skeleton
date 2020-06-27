@@ -517,7 +517,7 @@ class BatchService extends BaseService
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         $dbExecutionDate = $info['execution_date'];
         //如果是在同一条线路并且在同一个日期,则不变
-        if (($params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date'])) {
+        if (($params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date']) && !empty($info['tour_no'])) {
             return 'true';
         }
         $info['execution_date'] = $params['execution_date'];
