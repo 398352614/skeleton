@@ -742,6 +742,9 @@ class TourService extends BaseService
     public function getBatchCountInfo($id)
     {
         $info = parent::getInfo(['id' => $id], ['*'], true);
+        if(empty($info)){
+            throw new BusinessLogicException('数据不存在');
+        }
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         return $info;
     }
