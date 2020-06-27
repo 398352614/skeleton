@@ -146,8 +146,8 @@ class ReportService extends BaseService
         $info['cash_sticker_count'] = 0;
         foreach ($orderList as $k => $v) {
             $orderList[$k]['settlement_amount']=intval($v['settlement_amount']);
-            $orderList[$k]['replace_amount']=intval($v['settlement_amount']);
-            $orderList[$k]['sticker_amount']=intval($v['settlement_amount']);
+            $orderList[$k]['replace_amount']=intval($v['replace_amount']);
+            $orderList[$k]['sticker_amount']=intval($v['sticker_amount']);
             $orderList[$k]['total_amount']=intval($v['settlement_amount'])+intval($v['replace_amount'])+intval($v['sticker_amount']);
             if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
                 $v['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'];
