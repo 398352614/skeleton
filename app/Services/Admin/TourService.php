@@ -181,9 +181,9 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机分配失败，请重新操作');
         }
-        $tour['driver_id']=$driver['id'];
-        $tour['driver_name']=$driver['fullname'];
-        $tour['driver_phone']=$driver['phone'];
+        $tour['driver_id'] = $driver['id'];
+        $tour['driver_name'] = $driver['fullname'];
+        $tour['driver_phone'] = $driver['phone'];
         OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
     }
 
@@ -345,7 +345,7 @@ class TourService extends BaseService
                 'line_name' => $line['name'],
                 'execution_date' => $batch['execution_date'],
                 'warehouse_id' => $warehouse['id'],
-                'warehouse_name' => $warehouse['name'],
+                'warehouse_name' => $warehouse['fullname'],
                 'warehouse_phone' => $warehouse['phone'],
                 'warehouse_country' => $warehouse['country'],
                 'warehouse_post_code' => $warehouse['post_code'],
@@ -410,13 +410,7 @@ class TourService extends BaseService
                 $data['expect_pie_quantity'] = $info['expect_pie_quantity'] + 1;
             }
         }
-        //代收款费用
-        $diffReplaceAmount = $order['replace_amount'] - $dbOrder['replace_amount'];
-        $diffSettlementAmount = $order['settlement_amount'] - $dbOrder['settlement_amount'];
-        $rowCount = parent::updateById($info['id'], array_merge($data, [
-            'replace_amount' => $info['replace_amount'] + $diffReplaceAmount,
-            'settlement_amount' => $info['settlement_amount'] + $diffSettlementAmount
-        ]));
+        $rowCount = parent::updateById($info['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
@@ -431,7 +425,7 @@ class TourService extends BaseService
      */
     public function removeBatchOrder($order, $batch)
     {
-        $info = $this->getInfoOfStatus(['tour_no' => $order['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
+        $info = $this->getInfoOfStatus(['tour_no' => $order['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3], true);
         $quantity = $info['expect_pickup_quantity'] + $info['expect_pie_quantity'];
         //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
         if ($quantity - 1 <= 0) {
@@ -545,8 +539,8 @@ class TourService extends BaseService
             $this->query->where('tour_no', '=', $tourNo);
         }
         //若不存在取件线路或者超过最大订单量,则新建取件线路
-        $this->query->where(DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']), '<', $line['pickup_max_count']);
-        $this->query->where(DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']), '<', $line['pie_max_count']);
+        $this->query->where(DB::raw('expect_pickup_quantity+' . intval($batch['expect_pickup_quantity'])), '<=', $line['pickup_max_count']);
+        $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
         $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         return !empty($tour) ? $tour->toArray() : [];
@@ -555,6 +549,7 @@ class TourService extends BaseService
 
     /**
      * 此处要求batchIds 为有序,并且已完成或者异常的 batch 在前方,未完成的 batch 在后方
+     * @throws BusinessLogicException
      */
     public function getNextBatchAndUpdateIndex($batchIds): Batch
     {
@@ -623,10 +618,9 @@ class TourService extends BaseService
 
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
         $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
-
         if (!$nextBatch) {
+            $nextBatch = Batch::where('tour_no', $this->formData['tour_no'])->first();
             // self::setTourLock($this->formData['tour_no'], 0);
-            throw new BusinessLogicException('没有找到下一个目的地');
         }
 
         TourLog::create([

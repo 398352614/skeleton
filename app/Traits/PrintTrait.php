@@ -13,6 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Barryvdh\Snappy\PdfFaker;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 
 trait PrintTrait
 {
@@ -22,23 +23,35 @@ trait PrintTrait
         return $dir . DIRECTORY_SEPARATOR . auth()->user()->company_id;
     }
 
+    private static function getFileName()
+    {
+        return md5(auth()->user()->company_id . time()) . '.pdf';
+    }
+
     /**
      * 打印
-     * @param $data
+     * @param $dataList
      * @param $view
      * @param $dir
-     * @param $fileName
+     * @param null $fileName
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \Throwable
      */
-    public static function tPrint($data, $view, $dir, $fileName)
+    public static function tPrintAll($dataList, $view, $dir, $fileName = null)
     {
+        empty($fileName) && $fileName = self::getFileName();
+        data_set($dataList, '*.currency_unit', __(CompanyTrait::getCompany()['currency_unit']));
         $dir = self::getDir($dir);
         try {
             $newFilePath = storage_path('app/public/pdf') . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName;
             /** @var PdfFaker $snappyPdf */
-            $snappyPdf = SnappyPdf::loadView($view, ['data' => $data]);
-            $snappyPdf->setPaper('a4')->save($newFilePath, true);
+            $html = '';
+            foreach ($dataList as $data) {
+                $html .= view($view, ['data' => $data])->render();
+            }
+            $snappyPdf = SnappyPdf::loadHTML($html);
+            $snappyPdf->setPaper('A5')->save($newFilePath, true);
             unset($snappyPdf);
         } catch (\Exception $ex) {
             throw new BusinessLogicException($ex->getMessage());

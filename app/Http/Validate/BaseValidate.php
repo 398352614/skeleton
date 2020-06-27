@@ -9,6 +9,8 @@
 
 namespace App\Http\Validate;
 
+use App\Traits\AddressTemplateTrait;
+use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
@@ -88,6 +90,20 @@ class BaseValidate
             return !is_numeric($v);
         });
         return empty($id) ? true : false;
+    }
 
+    /**
+     * 地址验证 是否必填
+     * @param $attribute
+     * @param $value
+     * @param $parameters
+     * @param $validator
+     * @return bool
+     */
+    public function checkAddress($attribute, $value, $parameters, $validator){
+        if(empty($value) && CompanyTrait::getAddressTemplateId() == 2){
+            return false;
+        }
+        return true;
     }
 }

@@ -80,6 +80,15 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver','auth:drive
         Route::get('/{id}', 'BatchExceptionController@show');
     });
 
+    //包裹复核功能
+    Route::prefix('order')->group(function () {
+        //获取线路
+        Route::get('/get-line', 'LineController@index');
+        //获取取件线路
+        Route::get('/get-tour', 'TourController@getTourList');
+        //获取订单及包裹
+        Route::get('/', 'TourTaskController@getOrderList');
+    });
 
     //取件线路 管理
     Route::prefix('tour')->group(function () {

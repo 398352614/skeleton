@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderTrailResource;
 use App\Models\Order;
 use App\Models\OrderTrail;
@@ -106,8 +107,24 @@ class OrderTrailService extends BaseService
         OrderTrail::query()->create($data);
     }
 
+    /**
+     * 物流信息追踪
+     * @throws BusinessLogicException
+     */
     public function getNoPageList()
     {
-        return parent::getList(['order_no' => $this->formData['order_no']]);
+        if(empty($this->formData['order_no'])){
+            throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查单号是否正确');
+        }
+        $info =parent::getList(['order_no' => $this->formData['order_no']]);
+        if($info->isEmpty()){
+            throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查单号是否正确');
+        }
+        return $info;
+    }
+
+    public function create($data)
+    {
+        return parent::create($data);
     }
 }

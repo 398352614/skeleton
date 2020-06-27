@@ -12,6 +12,7 @@ use App\Mail\SendResetCode;
 use App\Models\Company;
 use App\Models\CompanyConfig;
 use App\Models\Employee;
+use App\Models\Fee;
 use App\Models\Institution;
 use App\Models\KilometresCharging;
 use App\Models\Merchant;
@@ -81,6 +82,7 @@ class RegisterController extends BaseController
             $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化商户组
             $merchant = $this->addMerchant($company, $merchantGroup);//初始化商户API
             $this->addMerchantApi($company, $merchant);//初始化商户API
+            $this->addFee($company);//添加费用
             return 'true';
         });
     }
@@ -129,7 +131,7 @@ class RegisterController extends BaseController
         ];
         $rules = collect($rules)->map(function ($rule, $type) use ($company) {
             $prefix = $rule . substr('000' . $company->id, -4, 4);
-            $length = ($type == BaseConstService::ORDER_NO_TYPE) ? 8 : 4;
+            $length = ($type == BaseConstService::ORDER_NO_TYPE) ? 6 : 4;
             return collect([
                 'company_id' => $company->id,
                 'type' => $type,
@@ -276,6 +278,24 @@ class RegisterController extends BaseController
         ]);
         if ($merchant === false) {
             throw new BusinessLogicException('初始化商户API失败');
+        }
+    }
+
+    /**
+     * 添加费用
+     * @param $company
+     * @throws BusinessLogicException
+     */
+    private function addFee($company)
+    {
+        $fee = Fee::create([
+            'company_id' => $company->id,
+            'name' => '贴单费用',
+            'code' => BaseConstService::STICKER,
+            'amount' => 7.00
+        ]);
+        if ($fee === false) {
+            throw new BusinessLogicException('费用初始化失败');
         }
     }
 
@@ -444,4 +464,5 @@ class RegisterController extends BaseController
 
         return '0001';
     }
+
 }

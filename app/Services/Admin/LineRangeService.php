@@ -13,6 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\LineRange;
 use App\Services\BaseService;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class LineRangeService extends BaseService
@@ -114,9 +115,9 @@ class LineRangeService extends BaseService
      */
     public function checkIfPostcodeIntervalOverlap($postcodeStart, $postcodeEnd, $country, $workDayList, $id = null)
     {
-        $sql = "SELECT id FROM line_range WHERE company_id=? AND country=? AND schedule IN (?) AND GREATEST(`post_code_start`,?)<=LEAST(`post_code_end`,?)";
+        $sql = "SELECT id FROM line_range WHERE company_id=? AND country=? AND schedule IN ($workDayList) AND GREATEST(`post_code_start`,?)<=LEAST(`post_code_end`,?)";
         $sql = (!empty($id)) ? $sql . " AND line_id<>{$id}" : $sql;
-        $bindings = [auth()->user()->company_id, $country, $workDayList, $postcodeStart, $postcodeEnd];
+        $bindings = [auth()->user()->company_id, $country, $postcodeStart, $postcodeEnd];
         $info = DB::selectOne($sql, $bindings);
         return !empty($info) ? true : false;
     }

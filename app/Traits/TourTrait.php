@@ -33,16 +33,15 @@ trait TourTrait
         //触发司机出库1
         event(new OutWarehouse($tour));
         //触发司机出库事件2
-        data_set($cancelOrderList, '*.status', 'cancel');
-        data_set($orderList, '*.status', 'delivering');
         $newOrderList = array_merge($cancelOrderList, $orderList);
         $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
         event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $newOrderList));
 
         //通知下一个站点事件
-        event(new NextBatch($tour, self::getNextBatch()->toArray()));
-
-
+        $nextBatch = self::getNextBatch($tour['tour_no']);
+        if (!empty($nextBatch)) {
+            event(new NextBatch($tour, $nextBatch->toArray()));
+        }
     }
 
     public static function afterBatchArrived($tour, $batch)
@@ -64,7 +63,7 @@ trait TourTrait
         event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $orderList));
 
         //通知下一个站点事件
-        $nextBatch = self::getNextBatch();
+        $nextBatch = self::getNextBatch($tour['tour_no']);
         if (!empty($nextBatch)) {
             event(new NextBatch($tour, $nextBatch->toArray()));
         }
@@ -79,7 +78,7 @@ trait TourTrait
         event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $orderList));
 
         //通知下一个站点事件
-        $nextBatch = self::getNextBatch();
+        $nextBatch = self::getNextBatch($tour['tour_no']);
         if (!empty($nextBatch)) {
             event(new NextBatch($tour, $nextBatch->toArray()));
         }
@@ -104,16 +103,16 @@ trait TourTrait
         //触发司机离开站点
         event(new BatchDepart($batch));
         //触发站点预计到达时间
-        $nextBatch = self::getNextBatch();
+        $nextBatch = self::getNextBatch($tour['tour_no']);
         $location = ['latitude' => $batch['receiver_lat'], 'longitude' => $batch['receiver_lon']];
         if (!empty($nextBatch)) {
             event(new AfterDriverLocationUpdated(Tour::where('tour_no', $tour['tour_no'])->first(), $nextBatch->batch_no, $location, true));
         }
     }
 
-    private static function getNextBatch()
+    private static function getNextBatch($tourNo)
     {
-        return $nextBatch = Batch::query()->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first(['batch_no']);
+        return $nextBatch = Batch::query()->where('tour_no', $tourNo)->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first(['batch_no', 'expect_arrive_time', 'expect_time', 'expect_distance']);
     }
 
 }

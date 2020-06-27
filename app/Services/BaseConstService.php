@@ -37,17 +37,23 @@ class BaseConstService
     //初始密码
     const INITIAL_PASSWORD = '12345678';
 
-    //贴单费用
-    const STICKER_AMOUNT = 7.00;
+
+    //费用编码
+    const STICKER = 'STICKER';
+
+    //费用等级1-系统级2-自定义
+    const FEE_LEVEL_1 = 1;
+    const FEE_LEVEL_2 = 2;
+
 
     //编号规则最大长度
     const ORDER_NO_RULE_LENGTH = 13;
 
     //经纬度差距范围，小数点后6位为1米
-    const LOCATION_DISTANCE_RANGE = 0.000001 *10;
+    const LOCATION_DISTANCE_RANGE = 0.000001 * 1000;
 
     //停留记录时间
-    const STOP_TIME= 30;
+    const STOP_TIME = 30;
 
     //1-启用2-禁用
     const ON = 1;
@@ -71,6 +77,10 @@ class BaseConstService
     const ORDER_TYPE_1 = 1;
     const ORDER_TYPE_2 = 2;
 
+    //订单出库状态1-可出库2-不可出库
+    const ORDER_OUT_STATUS_1 = 1;
+    const ORDER_OUT_STATUS_2 = 2;
+
     //订单来源1-手动添加2-批量导入3-第三方
     const ORDER_SOURCE_1 = 1;
     const ORDER_SOURCE_2 = 2;
@@ -90,7 +100,7 @@ class BaseConstService
     const ORDER_STATUS_7 = 7;
 
 
-    //包裹列表-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    //包裹列表1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     const PACKAGE_STATUS_1 = 1;
     const PACKAGE_STATUS_2 = 2;
     const PACKAGE_STATUS_3 = 3;
@@ -122,6 +132,11 @@ class BaseConstService
     const TOUR_STATUS_3 = 3;
     const TOUR_STATUS_4 = 4;
     const TOUR_STATUS_5 = 5;
+
+    //取件线路状态状态：1-未取派2-取派中-3-取派完成
+    const MERCHANT_TOUR_STATUS_1 = 1;
+    const MERCHANT_TOUR_STATUS_2 = 2;
+    const MERCHANT_TOUR_STATUS_3 = 3;
 
     //tour 在途状态  1-配送中 2-已完成 3-异常
     const TOUR_STATUS_DELIVERYING = 1;
@@ -255,6 +270,7 @@ class BaseConstService
     const NOTIFY_ASSIGN_BATCH = 'assign-batch';         //签收站点通知
     const NOTIFY_CANCEL_BATCH = 'cancel-batch';         //取消派送站点通知
     const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回仓库通知
+    const NOTIFY_ORDER_EXECUTION_DATE_UPDATE = 'update-execution-date'; //修改取派日期通知
 
     //商户类型
     const MERCHANT_TYPE_1 = 1;

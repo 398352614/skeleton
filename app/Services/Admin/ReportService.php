@@ -77,9 +77,11 @@ class ReportService extends BaseService
 
     public function getPageList()
     {
+        $this->query->orderByDesc('created_at');
         $list = parent::getPageList();
         foreach ($list as &$tour) {
             $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
+            $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         }
         return $list;
     }
@@ -100,6 +102,7 @@ class ReportService extends BaseService
         $info = $info->toArray();
         //获取站点数量
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
+        $info['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         //组装取件线路站点信息
         $warehouseInfo = [
             'id' => $info['warehouse_id'],
@@ -112,15 +115,57 @@ class ReportService extends BaseService
             'address' => $info['warehouse_address'],
         ];
         //获取当前取件线路上的所有订单
-        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'sticker_no'], false)->toArray();
         //获取当前取件线路上的所有包裹
         $packageList = $this->getPackageService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         //获取当前取件线路上的所有材料
         $materialList = $this->getMaterialService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         //获取站点的取件材料汇总
         $tourMaterialList = $this->getTourMaterialList($info, $materialList);
+        //统计预计实际材料数量
+        $info['expect_material_quantity'] = 0;
+        $info['actual_material_quantity'] = 0;
+        if (!empty($tourMaterialList)) {
+            foreach ($tourMaterialList as $v) {
+                $info['expect_material_quantity'] += $v['expect_quantity'];
+                $info['actual_material_quantity'] += $v['actual_quantity'];
+            }
+        }
         //获取所有的站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
+        //统计站点的各费用
+        $info['card_settlement_amount'] = 0;
+        $info['card_replace_amount'] = 0;
+        $info['card_sticker_amount'] = 0;
+        $info['card_total_amount'] = 0;
+        $info['card_sticker_count'] = 0;
+        $info['cash_settlement_amount'] = 0;
+        $info['cash_replace_amount'] = 0;
+        $info['cash_sticker_amount'] = 0;
+        $info['cash_total_amount'] = 0;
+        $info['cash_sticker_count'] = 0;
+        foreach ($orderList as $k => $v) {
+            $orderList[$k]['settlement_amount']=intval($v['settlement_amount']);
+            $orderList[$k]['replace_amount']=intval($v['settlement_amount']);
+            $orderList[$k]['sticker_amount']=intval($v['settlement_amount']);
+            $orderList[$k]['total_amount']=intval($v['settlement_amount'])+intval($v['replace_amount'])+intval($v['sticker_amount']);
+            if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
+                $v['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'];
+                if ($v['pay_type'] == BaseConstService::ORDER_SETTLEMENT_TYPE_1) {
+                    $info['card_settlement_amount'] += intval($v['settlement_amount']);
+                    $info['card_replace_amount'] += intval($v['replace_amount']);
+                    $info['card_sticker_amount'] += intval($v['sticker_amount']);
+                    $info['card_total_amount'] += intval($orderList[$k]['total_amount']);
+                    $info['card_sticker_count'] += $v['sticker_no'] ? 1 : 0;
+                } else {
+                    $info['cash_settlement_amount'] += intval($v['settlement_amount']);
+                    $info['cash_replace_amount'] += intval($v['replace_amount']);
+                    $info['cash_sticker_amount'] += intval($v['sticker_amount']);
+                    $info['cash_total_amount'] += intval($orderList[$k]['total_amount']);
+                    $info['cash_sticker_count'] += $v['sticker_no'] ? 1 : 0;
+                }
+            }
+        }
         /**********************************************获取出库信息****************************************************/
         $outWarehouseInfo = $this->getOutWarehouseInfo($info, $warehouseInfo, $packageList, $tourMaterialList);
         /**********************************************获取入库信息****************************************************/
@@ -207,6 +252,7 @@ class ReportService extends BaseService
         foreach ($batchList as $key => $batch) {
             $newBatchList[$key] = [
                 'id' => $batch['id'],
+                'batch_no' => $batch['batch_no'],
                 'name' => $batch['receiver_fullname'],
                 'phone' => $batch['receiver_phone'],
                 'post_code' => $batch['receiver_post_code'],
@@ -215,6 +261,14 @@ class ReportService extends BaseService
                 'house_number' => $batch['receiver_house_number'],
                 'address' => $batch['receiver_address'],
                 'expect_quantity' => $batch['expect_pickup_quantity'] + $batch['expect_pie_quantity'],
+                'sticker_amount' => intval($batch['sticker_amount']),
+                'replace_amount' => intval($batch['replace_amount']),
+                'settlement_amount' => intval($batch['settlement_amount']),
+                'total_amount' => intval($batch['settlement_amount'])+intval($batch['sticker_amount'])+intval($batch['replace_amount']),
+                'cancel_type' => $batch['cancel_type'],
+                'cancel_remark' => $batch['cancel_remark'],
+                'pay_picture' => $batch['pay_picture'],
+                'pay_type' => $batch['pay_type'],
                 'signature' => $batch['signature'],
                 'expect_arrive_time' => $batch['expect_arrive_time'],
                 'actual_arrive_time' => $batch['actual_arrive_time'],
@@ -222,6 +276,8 @@ class ReportService extends BaseService
                 'actual_distance' => $batch['actual_distance'],
                 'expect_time' => $batch['expect_time'],
                 'actual_time' => $batch['actual_time'],
+                'expect_time_human' => $batch['expect_time_human'],
+                'actual_time_human' => $batch['actual_time_human'],
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];

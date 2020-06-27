@@ -10,7 +10,9 @@ namespace App\Traits;
 
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait AddressTemplateTrait
 {
@@ -27,6 +29,10 @@ trait AddressTemplateTrait
             return [];
         }
         $addressTemplate = Cache::tags($tag)->get($rootKey . $company['address_template_id']);
+        if (empty($addressTemplate)) {
+            Artisan::call('address-template:cache');
+            $addressTemplate = Cache::tags($tag)->get($rootKey . $company['address_template_id']);
+        }
         return json_decode($addressTemplate['template'], true);
     }
 

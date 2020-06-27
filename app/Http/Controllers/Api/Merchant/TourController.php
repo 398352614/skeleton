@@ -46,6 +46,7 @@ class TourController extends BaseController
     /**
      * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws \App\Exceptions\BusinessLogicException
      * @api {GET}  api/admin/tour/{tour} 管理员端:查看具体任务
      * @apiName show
      * @apiGroup admin-tour

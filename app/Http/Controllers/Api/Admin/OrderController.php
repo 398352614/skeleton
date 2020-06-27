@@ -152,6 +152,7 @@ class OrderController extends BaseController
      * 分配至站点
      * 参数存在站点编号(batchNo),为指定站点;否则为新建站点
      * @param $id
+     * @return string
      * @throws \App\Exceptions\BusinessLogicException
      */
     public function assignToBatch($id)

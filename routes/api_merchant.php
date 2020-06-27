@@ -24,7 +24,7 @@ Route::namespace('Api\Merchant')->group(function () {
 });
 
 //认证
-Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant','auth:merchant'])->group(function () {
+Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:merchant'])->group(function () {
     Route::get('me', 'AuthController@me');
     Route::post('logout', 'AuthController@logout');
     Route::put('my-password', 'AuthController@updatePassword');
@@ -38,7 +38,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant','auth:m
         //派件列表查询初始化
         Route::get('/initPieIndex', 'OrderController@initPieIndex');
         //查询初始化
-        Route::get('/initIndex','OrderController@initIndex');
+        Route::get('/initIndex', 'OrderController@initIndex');
         //列表查询
         Route::get('/', 'OrderController@index');
         //获取详情
@@ -52,7 +52,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant','auth:m
         //获取可分配路线日期
         Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
         //获取可分配路线日期(新增)
-        Route::get('/getDate', 'OrderController@getDate');
+        Route::get('/get-date', 'OrderController@getDate');
         //获取可分配的站点列表
         //Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
         //分配至站点
@@ -74,7 +74,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant','auth:m
     });
 
     //订单导入记录管理
-    Route::prefix('order-import')->group(function () {
+    Route::prefix('order-import')->middleware(['importCheck'])->group(function () {
         //上传模板
         Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
         //生成模板

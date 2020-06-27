@@ -67,7 +67,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取可分配路线日期
         Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
         //获取可分配路线日期(新增)
-        Route::get('/getDate', 'OrderController@getDate');
+        Route::get('/get-date', 'OrderController@getDate');
         //获取可分配的站点列表
         Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
         //分配至站点
@@ -154,9 +154,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/cancel', 'BatchController@cancel');                        //取消取派
         Route::get('/{id}/getTourList', 'BatchController@getTourList');              //获取取件线路列表
         Route::get('/{id}/getTourDate', 'BatchController@getTourDate'); //获取可分配路线日期
-        Route::put('/{id}/assignToTour', 'BatchController@assignToTour');            //分配站点至取件线路
+        Route::put('/{id}/assign-tour', 'BatchController@assignToTour');            //分配站点至取件线路
         Route::delete('/{id}/removeFromTour', 'BatchController@removeFromTour');     //移除站点
         Route::get('/{id}/get-date', 'BatchController@getLineDate'); //获取可分配路线日期
+        Route::get('/get-line', 'BatchController@getLineList'); //获取可分配路线日期
     });
 
     //物流状态管理
@@ -440,8 +441,19 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //打印模板
     Route::prefix('print-template')->group(function () {
+        Route::get('/init', 'PrintTemplateController@init');        //详情
         Route::get('/show', 'PrintTemplateController@show');        //详情
         Route::put('/update', 'PrintTemplateController@update');    //修改
+    });
+
+    //费用管理
+    Route::prefix('fee')->group(function () {
+        Route::get('/', 'FeeController@index');             //列表查询
+        Route::get('/init', 'FeeController@init');             //初始化
+        Route::get('/{id}', 'FeeController@show');          //详情
+        Route::post('/', 'FeeController@store');            //新增
+        Route::put('/{id}', 'FeeController@update');        //修改
+        Route::delete('/{id}', 'FeeController@destroy');    //删除
     });
 
 

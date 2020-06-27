@@ -26,6 +26,7 @@ class Events extends BaseEvents
     public static function onWebSocketConnect($clientId, $message)
     {
         try {
+            //Log::channel('token--' . $message['get']['token'] ?? 'token null');
             if (empty($message['get']['token'])) {
                 Gateway::closeClient($clientId);
                 return;

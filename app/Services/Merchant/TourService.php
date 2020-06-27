@@ -18,6 +18,8 @@ use App\Services\GoogleApiService;
 use App\Services\OrderNoRuleService;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
+use Carbon\Carbon;
+use http\Env\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
@@ -38,7 +40,6 @@ class TourService extends BaseService
     public $directionClient;
 
     public $filterRules = [
-        'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_id' => ['=', 'driver_id'],
         'line_name' => ['like', 'line_name'],
@@ -134,100 +135,29 @@ class TourService extends BaseService
 
     public function getPageList()
     {
-        if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
-            unset($this->filters['status']);
+        $orderQuery = $this->getOrderService()->query->whereNotNull('tour_no');
+        if (!empty($this->formData['tour_no'])) {
+            $orderQuery->where('tour_no', 'like', $this->formData['tour_no']);
+        }
+        if (!empty($this->formData['begin_date']) && !empty($this->formData['end_date'])) {
+            $orderQuery->whereBetween('execution_date', [
+                Carbon::parse($this->formData['begin_date'])->startOfDay(),
+                Carbon::parse($this->formData['end_date'])->endOfDay()
+            ]);
+        }
+        $tourNoList = $orderQuery->groupBy('tour_no')->limit($this->per_page)->pluck('tour_no')->toArray();
+        $this->query->whereIn('tour_no', $tourNoList);
+        if (!empty($this->formData['merchant_status'])) {
+            if ($this->formData['merchant_status'] == BaseConstService::MERCHANT_TOUR_STATUS_1) {
+                $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]];
+            } elseif (in_array($this->formData['merchant_status'], [BaseConstService::MERCHANT_TOUR_STATUS_2, BaseConstService::MERCHANT_TOUR_STATUS_3])) {
+                $this->filters['status'] = ['=', intval($this->formData['merchant_status']) + 2];
+            } else {
+                unset($this->filters['merchant_status']);
+            }
         }
         return parent::getPageList();
     }
-
-    /**
-     * 分配司机
-     * @param $id
-     * @param $params
-     * @throws BusinessLogicException
-     */
-    public function assignDriver($id, $params)
-    {
-        $tour = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::TOUR_STATUS_1, false);
-        //查看当前司机是否已被分配给其他取件线路
-        $otherTour = parent::getInfo(['driver_id' => $params['driver_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
-        if (!empty($otherTour)) {
-            throw new BusinessLogicException('当前司机已被分配，请选择其他司机');
-        }
-        //获取司机
-        $driver = $this->getDriverService()->getInfo(['id' => $params['driver_id'], 'is_locked' => BaseConstService::DRIVER_TO_NORMAL], ['*'], false);
-        if (empty($driver)) {
-            throw new BusinessLogicException('司机不存在或已被锁定');
-        }
-        $driver = $driver->toArray();
-        //取件线路分配 由于取件线路,站点,订单的已分配状态都为2,所以只需取一个状态即可(ORDER_STATUS_2,BATCH_ASSIGNED,TOUR_STATUS_2)
-        $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => $driver['id'], 'driver_name' => $driver['fullname'], 'driver_phone' => $driver['phone'], 'status' => BaseConstService::ORDER_STATUS_2]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('司机分配失败，请重新操作');
-        }
-        $tour['driver_id']=$driver['id'];
-        $tour['driver_name']=$driver['fullname'];
-        $tour['driver_phone']=$driver['phone'];
-        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
-    }
-
-    /**
-     * 取消司机分配
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function cancelAssignDriver($id)
-    {
-        $tour = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::TOUR_STATUS_2, true);
-        $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => null, 'driver_name' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('司机取消分配失败，请重新操作');
-        }
-        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER);
-    }
-
-
-    /**
-     * 分配车辆
-     * @param $id
-     * @param $params
-     * @throws BusinessLogicException
-     */
-    public function assignCar($id, $params)
-    {
-        $tour = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3], false);
-        //查看当前车辆是否已被分配给其他取件线路
-        $otherTour = parent::getInfo(['car_id' => $params['car_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
-        if (!empty($otherTour)) {
-            throw new BusinessLogicException('当前车辆已被分配，请选择其他车辆');
-        }
-        //获取车辆
-        $car = $this->getCarService()->getInfo(['id' => $params['car_id'], 'is_locked' => BaseConstService::CAR_TO_NORMAL], ['*'], false);
-        if (empty($car)) {
-            throw new BusinessLogicException('车辆不存在或已被锁定');
-        }
-        //分配
-        $car = $car->toArray();
-        $rowCount = $this->assignOrCancelAssignAll($tour, ['car_id' => $car['id'], 'car_no' => $car['car_no']]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('车辆分配失败，请重新操作');
-        }
-    }
-
-    /**
-     * 取消车辆分配
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function cancelAssignCar($id)
-    {
-        $tour = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], false);
-        $rowCount = $this->assignOrCancelAssignAll($tour, ['car_id' => null, 'car_no' => null]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('车辆取消分配失败，请重新操作');
-        }
-    }
-
 
     /**
      * 分配或取消分配司机或车辆到取件线路-站点-订单
@@ -329,7 +259,7 @@ class TourService extends BaseService
                 'line_name' => $line['name'],
                 'execution_date' => $batch['execution_date'],
                 'warehouse_id' => $warehouse['id'],
-                'warehouse_name' => $warehouse['name'],
+                'warehouse_name' => $warehouse['fullname'],
                 'warehouse_phone' => $warehouse['phone'],
                 'warehouse_country' => $warehouse['country'],
                 'warehouse_post_code' => $warehouse['post_code'],
@@ -526,8 +456,8 @@ class TourService extends BaseService
             $this->query->where('tour_no', '=', $tourNo);
         }
         //若不存在取件线路或者超过最大订单量,则新建取件线路
-        $this->query->where(DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']), '<', $line['pickup_max_count']);
-        $this->query->where(DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']), '<', $line['pie_max_count']);
+        $this->query->where(DB::raw('expect_pickup_quantity+' . intval($batch['expect_pickup_quantity'])), '<=', $line['pickup_max_count']);
+        $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
         $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         return !empty($tour) ? $tour->toArray() : [];
@@ -726,9 +656,24 @@ class TourService extends BaseService
         return '更新完成';
     }
 
+    /**
+     * 查询
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
     public function getBatchCountInfo($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], true);
+        $info = parent::getInfo(['id' => $id,'status' => ['in', [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5]]], ['*'], true);
+        if (empty($info)) {
+            throw new BusinessLogicException('该取件线路不在取派中，无法进行追踪');
+        }
+        //通过订单查询站点编号
+        $batchNoList = $this->getOrderService()->query->whereNotNull('batch_no')->where('tour_no',$info['tour_no'])->pluck('batch_no')->toArray();
+        if (empty($batchNoList)) {
+            throw new BusinessLogicException('该取件线路不在取派中，无法进行追踪');
+        }
+        $info['batchs']=$this->getBatchService()->getList(['batch_no'=>['in',$batchNoList]],['*'],true)->toArray(request()) ?? [];
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         return $info;
     }

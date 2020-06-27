@@ -15,6 +15,7 @@ use App\Http\Validate\Api\Admin\LineValidate;
 use App\Models\Line;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Traits\ConstTranslateTrait;
 use App\Traits\ImportTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -160,6 +161,10 @@ class LineService extends BaseLineService
     {
         $this->filters['rule'] = ['=', BaseConstService::LINE_RULE_AREA];
         $list = parent::getPageList();
+        $workdayList = array_keys(ConstTranslateTrait::$weekList);
+        foreach ($list as $key => $line) {
+            $list[$key]['work_day_list'] = $workdayList;
+        }
         if ($isGetArea === 2) return $list;
 
         $lineIdList = array_column($list->all(), 'id');
@@ -168,9 +173,9 @@ class LineService extends BaseLineService
         $lineAreaList = $this->getLineAreaService()->getList(['line_id' => ['in', $lineIdList]], ['line_id', 'coordinate_list', 'country'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
         $lineAreaList = array_create_index($lineAreaList, 'line_id');
         if (empty($lineAreaList)) return $list;
-
         foreach ($list as &$line) {
-            $line['coordinate_list'] = json_decode($lineAreaList[$line['id']]['coordinate_list'], true);
+            $line['coordinate_list'] = !empty($lineAreaList[$line['id']]['coordinate_list']) ? json_decode($lineAreaList[$line['id']]['coordinate_list'], true) : [];
+            $line['work_day_list'] = $workdayList;
         }
         return $list;
     }

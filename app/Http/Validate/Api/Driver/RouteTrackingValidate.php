@@ -24,10 +24,11 @@ class RouteTrackingValidate extends BaseValidate
         'location_list.*.lon' => 'required|string',
         'location_list.*.lat' => 'required|string',
         'location_list.*.time' => 'required|date_format:Y-m-d H:i:s',
+        'location_list'=>'required',
     ];
 
     public $scene = [
-        'storeByList' => ['location_list.*.lon','location_list.*.lat','location_list.*.time'],
+        'storeByList' => ['location_list.*.lon','location_list.*.lat','location_list.*.time','location_list'],
     ];
 
     public $message = [

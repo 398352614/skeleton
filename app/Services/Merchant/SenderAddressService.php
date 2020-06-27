@@ -22,6 +22,18 @@ class SenderAddressService extends BaseService
         'sender_post_code' => ['like', 'sender_post_code'],
     ];
 
+    /**
+     * 获取唯一性条件
+     * @param $data
+     * @return array
+     */
+    public function getUniqueWhere($data)
+    {
+        $fields = ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street', 'sender_address'];
+        $where = Arr::only($data, $fields);
+        return $where;
+    }
+
     public function index()
     {
         return parent::getpagelist();
@@ -42,27 +54,36 @@ class SenderAddressService extends BaseService
         return $info;
     }
 
+    /**
+     * 通过唯一组合字段获取信息
+     * @param $data
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function getInfoByUnique($data)
+    {
+        return parent::getInfo($this->getUniqueWhere($data), ['*'], false);
+    }
+
 
     /**
      * 联合唯一检验
-     * @param $params
-     * @param int $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @param $data
+     * @param null $id
+     * @throws BusinessLogicException
      */
-
-    public function check($params, $id = null)
+    private function check(&$data, $id = null)
     {
-        if (auth()->user()->companyConfig->address_template_id == 1) {
-            $fields = ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street'];
-            $where = Arr::only($params, $fields);
-        } else {
-            $where = Arr::only($params, ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_address']);
+        $data['sender_country'] = CompanyTrait::getCountry();
+        //判断是否唯一
+        $where = $this->getUniqueWhere($data);
+        !empty($id) && $where = Arr::add($where, 'id', ['<>', $id]);
+        $info = parent::getInfo($where, ['*'], false);
+        if (!empty($info)) {
+            throw new BusinessLogicException('发货方地址已存在，不能重复添加');
         }
-        if (!empty($id)) {
-            $where['id'] = ['<>', $id];
+        if (CompanyTrait::getAddressTemplateId() == 1  || empty($params['sender_address'])) {
+            $data['sender_address'] = implode(' ', array_filter(Arr::only($data, ['sender_country', 'sender_city', 'sender_street', 'sender_post_code', 'sender_house_number'])));
         }
-        $info = parent::getInfo($where, ['*'], true);
-        return $info;
     }
 
     /**
@@ -71,10 +92,7 @@ class SenderAddressService extends BaseService
      */
     public function store($params)
     {
-        $params['receiver_country'] = CompanyTrait::getCountry();
-        if (!empty($this->check($params))) {
-            throw new BusinessLogicException('地址新增失败，已有重复地址');
-        }
+        $this->check($params);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('地址新增失败');
@@ -89,7 +107,6 @@ class SenderAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $params['receiver_country'] = CompanyTrait::getCountry();
         $info = $this->check($data, $id);
         if (!empty($info)) {
             throw new BusinessLogicException('发货方地址已存在，不能重复添加');

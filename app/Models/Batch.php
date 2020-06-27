@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use Carbon\CarbonInterval;
 
 /**
  * batch 表对应的模型,相当于一个在途站点
@@ -106,6 +107,8 @@ class Batch extends BaseModel
         'exception_label_name',
         'pay_type_name',
         'receiver_country_name',
+        'expect_time_human',
+        'actual_time_human',
     ];
 
     /**
@@ -136,13 +139,13 @@ class Batch extends BaseModel
         return $this->hasMany(Order::class, 'batch_no', 'batch_no');
     }
 
-    public function getExpectDistanceAttribute($value)
+    public function getExpectTimeHumanAttribute()
     {
-        return round($value / 1000, 2);
+        return empty($this->expect_time) ? null : CarbonInterval::second($this->expect_time)->cascade()->forHumans();
     }
 
-    public function getExpectTimeAttribute($value)
+    public function getActualTimeHumanAttribute()
     {
-        return (int)($value / 60);
+        return empty($this->actual_time) ? null : CarbonInterval::second($this->actual_time)->cascade()->forHumans();
     }
 }

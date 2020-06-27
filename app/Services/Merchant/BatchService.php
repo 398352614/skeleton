@@ -2,6 +2,7 @@
 
 namespace App\Services\Merchant;
 
+use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\BatchResource;
 use App\Http\Resources\BatchInfoResource;
@@ -13,6 +14,7 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Services\OrderTrailService;
+use App\Traits\CompanyTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Bus;
@@ -146,17 +148,29 @@ class BatchService extends BaseService
      */
     private function getBatchWhere($info)
     {
-        return [
-            'execution_date' => $info['execution_date'],
-            'receiver_fullname' => $info['receiver_fullname'],
-            'receiver_phone' => $info['receiver_phone'],
-            'receiver_country' => $info['receiver_country'],
-            'receiver_city' => $info['receiver_city'],
-            'receiver_street' => $info['receiver_street'],
-            'receiver_house_number' => $info['receiver_house_number'],
-            'receiver_post_code' => $info['receiver_post_code'],
-            'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
-        ];
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $where = [
+                'execution_date' => $info['execution_date'],
+                'receiver_fullname' => $info['receiver_fullname'],
+                'receiver_phone' => $info['receiver_phone'],
+                'receiver_country' => $info['receiver_country'],
+                'receiver_city' => $info['receiver_city'],
+                'receiver_street' => $info['receiver_street'],
+                'receiver_house_number' => $info['receiver_house_number'],
+                'receiver_post_code' => $info['receiver_post_code'],
+                'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
+            ];
+        } else {
+            $where = [
+                'execution_date' => $info['execution_date'],
+                'receiver_fullname' => $info['receiver_fullname'],
+                'receiver_phone' => $info['receiver_phone'],
+                'receiver_country' => $info['receiver_country'],
+                'receiver_address' => $info['receiver_address'],
+                'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
+            ];
+        }
+        return $where;
     }
 
     /**
@@ -444,6 +458,7 @@ class BatchService extends BaseService
     public function assignToTour($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
+        $dbExecutionDate = $info['execution_date'];
         if (!empty($params['tour_no']) && ($info['tour_no'] == $params['tour_no'])) {
             throw new BusinessLogicException('当前站点已分配至当前指定取件线路');
         }
@@ -457,6 +472,7 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
+            ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($order['order_no'], $params['execution_date']));
         }
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
     }

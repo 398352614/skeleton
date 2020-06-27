@@ -74,4 +74,14 @@ class TourTaskController extends BaseController
     }
 
 
+    /**
+     * 获取订单及包裹列表
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function getOrderList(){
+        return $this->service->getOrderList($this->data);
+    }
+
+
 }

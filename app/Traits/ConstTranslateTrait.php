@@ -51,6 +51,7 @@ use Illuminate\Support\Facades\App;
  * @method static merchantSettlementTypeList($args = null)
  * @method static merchantStatusList($args = null)
  * @method static driverEventList($args = null)
+ * @method static merchantTourStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -196,6 +197,13 @@ trait ConstTranslateTrait
         BaseConstService::TOUR_STATUS_5 => '取派完成',
     ];
 
+    //商户端在途类型1-未取派-2-取派中3-取派完成
+    public static $merchantTourStatusList = [
+        BaseConstService::MERCHANT_TOUR_STATUS_1 => '未取派',
+        BaseConstService::MERCHANT_TOUR_STATUS_2 => '取派中',
+        BaseConstService::MERCHANT_TOUR_STATUS_3 => '取派完成',
+    ];
+
     //车辆车型1自动档-2手动挡
     public static $carTransmissionList = [
         BaseConstService::CAR_TRANSMISSION_1 => '自动挡',
@@ -298,6 +306,12 @@ trait ConstTranslateTrait
         BaseConstService::DRIVER_EVENT_BATCH_ARRIVED => '司机到达客户家',
         BaseConstService::DRIVER_EVENT_BATCH_DEPART => '司机从客户家离开',
         BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE => '司机返回仓库',
+    ];
+
+    //费用等级
+    public static $feeLevelList = [
+        BaseConstService::FEE_LEVEL_1 => '系统级',
+        BaseConstService::FEE_LEVEL_2 => '自定义'
     ];
 
     /**

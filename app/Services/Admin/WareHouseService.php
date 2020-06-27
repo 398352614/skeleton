@@ -13,13 +13,17 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\WareHouseResource;
 use App\Models\Warehouse;
 use App\Services\BaseService;
+use App\Traits\CompanyTrait;
 use App\Traits\LocationTrait;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class WareHouseService extends BaseService
 {
     public $filterRules = [
         'country' => ['=', 'country'],
     ];
+
     public function __construct(Warehouse $warehouse)
     {
         parent::__construct($warehouse, WareHouseResource::class, WareHouseResource::class);
@@ -56,6 +60,7 @@ class WareHouseService extends BaseService
      */
     public function store($params)
     {
+        $this->fillData($params);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('仓库新增失败,请重新操作');
@@ -71,9 +76,23 @@ class WareHouseService extends BaseService
      */
     public function updateById($id, $data)
     {
+        $this->fillData($params);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('仓库修改失败，请重新操作');
+        }
+    }
+
+    /**
+     * 填充数据
+     * @param $params
+     */
+    private function fillData(&$params)
+    {
+        //填充地址
+        $params['country'] = CompanyTrait::getCountry();
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['address'])) {
+            $params['address'] = implode(' ', array_filter(Arr::only($params, ['country', 'city', 'street', 'post_code', 'house_number'])));
         }
     }
 

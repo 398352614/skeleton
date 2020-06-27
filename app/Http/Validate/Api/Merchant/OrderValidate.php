@@ -51,7 +51,7 @@ class OrderValidate extends BaseValidate
 
     public $rules = [
         'batch_no' => 'nullable|string|max:50',
-        'out_order_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
+        'out_order_no' => 'nullable|string|max:50',
         'execution_date' => 'required|date|after_or_equal:today',
         'list_mode' => 'sometimes|required|in:1,2',
         'type' => 'required|integer|in:1,2',
@@ -61,24 +61,15 @@ class OrderValidate extends BaseValidate
         'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
         'replace_amount' => 'nullable|numeric|gte:0',
         'delivery' => 'nullable|integer|in:1,2',
-//        'sender_fullname' => 'required|string|max:50',
-//        'sender_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-//        'sender_country' => 'required|string|max:20',
-//        'sender_post_code' => 'required|string|max:50',
-//        'sender_house_number' => 'required|string|max:50',
-//        'sender_city' => 'required|string|max:50',
-//        'sender_street' => 'required|string|max:50',
-//        'sender_address' => 'nullable|string|max:250',
         'receiver_fullname' => 'required|string|max:50',
         'receiver_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-//        'receiver_country' => 'required|string|max:20',
         'receiver_post_code' => 'required|string|max:50',
-        'receiver_house_number' => 'nullable|string|max:50',
-        'receiver_city' => 'nullable|string|max:50',
-        'receiver_street' => 'nullable|string|max:50',
-        'receiver_address' => 'required|string|max:250',
-        'lon' => 'required|string|max:50',
-        'lat' => 'required|string|max:50',
+        'receiver_house_number' => 'required|string|max:50',
+        'receiver_city' => 'required|string|max:50',
+        'receiver_street' => 'required|string|max:50',
+        'receiver_address' => 'checkAddress|nullable|string|max:250',
+        'lon' => 'nullable|string|max:50',
+        'lat' => 'nullable|string|max:50',
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
         //包裹列表
@@ -96,6 +87,9 @@ class OrderValidate extends BaseValidate
         'material_list.*.out_order_no' => 'nullable|string|max:50',
         'material_list.*.expect_quantity' => 'required_with:material_list|integer|gte:0',
         'material_list.*.remark' => 'nullable|string|max:250',
+
+        'order_no' => 'nullable|string|max:50',
+        'out_status' => 'required|integer|in:1,2'
     ];
 
     public $scene = [
@@ -135,6 +129,8 @@ class OrderValidate extends BaseValidate
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
+        'updateOutStatus' => ['order_no', 'out_status'],
+        'getDateListByPostCode' => ['receiver_post_code']
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
