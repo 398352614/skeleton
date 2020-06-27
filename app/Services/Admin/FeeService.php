@@ -99,5 +99,9 @@ class FeeService extends BaseService
         return 'true';
     }
 
+    public function getPageList(){
+        $this->query->orderBy('level')->orderBy('created_at');
+        return parent::getPageList();
+    }
 
 }
