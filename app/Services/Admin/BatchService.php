@@ -670,7 +670,7 @@ class BatchService extends BaseService
      */
     public function getLineList()
     {
-        $list = $this->getLineService()->getPageList();
+        $list = $this->getLineService()->query->where('rule','=',CompanyTrait::getLineRule())->paginate();
         return $list ?? [];
     }
 }
