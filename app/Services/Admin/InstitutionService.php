@@ -19,7 +19,15 @@ class InstitutionService extends BaseService
     }
 
     /**
-     * @param  int  $id
+     * 成员 服务
+     * @return EmployeeService
+     */
+    public function getEmployeeService(){
+        return self::getInstance(EmployeeService::class);
+    }
+
+    /**
+     * @param int $id
      * @return mixed
      */
     public function indexOfEmployees(int $id)
@@ -34,9 +42,10 @@ class InstitutionService extends BaseService
      * @param $parentId
      * @throws BusinessLogicException
      */
-    public function checkDistance($parentId){
-        $distance =Institution::findOrFail($parentId)->getRoot()->distance;
-        if($distance>3){
+    public function checkDistance($parentId)
+    {
+        $distance = Institution::findOrFail($parentId)->getRoot()->distance;
+        if ($distance > 3) {
             throw new BusinessLogicException('组织机构最高为3级');
         }
     }
@@ -44,9 +53,10 @@ class InstitutionService extends BaseService
     /**
      * 创建节点
      *
-     * @param  int  $parentId
-     * @param  array  $data
+     * @param int $parentId
+     * @param array $data
      * @return bool
+     * @throws BusinessLogicException
      */
     public function createNode(int $parentId, array $data)
     {
@@ -76,18 +86,19 @@ class InstitutionService extends BaseService
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
      * @return mixed
      */
     public function show(int $id)
     {
         return Institution::findOrFail($id);
     }
+
     /**
      * 更新节点信息
      *
-     * @param  int  $id
-     * @param  array  $data
+     * @param int $id
+     * @param array $data
      * @return bool
      */
     public function updateNode(int $id, array $data)
@@ -104,9 +115,11 @@ class InstitutionService extends BaseService
         ]);
     }
 
-    public function getCompanyService(){
+    public function getCompanyService()
+    {
         return self::getInstance(CompanyService::class);
     }
+
     /**
      * 获得树
      *
@@ -114,24 +127,24 @@ class InstitutionService extends BaseService
      */
     public function getTree(): array
     {
-            $info =$this->getCompanyService()->getInfo(['id' => auth()->user()->company_id], ['*'], false);
-      /*  if(!$this->query->where('company_id','=',auth()->user()->company_id)->where('country','<>',null)->exists()){
-            $this->createNode(0,[
-                'name'=>$info['name'],
-                'phone'=>$info['phone']??'',
-                'country'=> $info['id']??'',
-                'address'=>$info['address']??'',
-                'contacts'=>$info['contacts']??'',
-                'parent'=>0,
-                  ]);
-        }*/
-        return Institution::getRoots()->first()->getTree()[0]['children']??[];
+        $info = $this->getCompanyService()->getInfo(['id' => auth()->user()->company_id], ['*'], false);
+        /*  if(!$this->query->where('company_id','=',auth()->user()->company_id)->where('country','<>',null)->exists()){
+              $this->createNode(0,[
+                  'name'=>$info['name'],
+                  'phone'=>$info['phone']??'',
+                  'country'=> $info['id']??'',
+                  'address'=>$info['address']??'',
+                  'contacts'=>$info['contacts']??'',
+                  'parent'=>0,
+                    ]);
+          }*/
+        return Institution::getRoots()->first()->getTree()[0]['children'] ?? [];
     }
 
     /**
      * 获得子节点树
      *
-     * @param  int  $id
+     * @param int $id
      * @return array
      */
     public function getChildren(int $id): array
@@ -142,8 +155,8 @@ class InstitutionService extends BaseService
     /**
      * 移动到某一个节点下面
      *
-     * @param  int  $id
-     * @param  int  $parentId
+     * @param int $id
+     * @param int $parentId
      * @return bool
      */
     public function move(int $id, int $parentId): bool
@@ -157,14 +170,14 @@ class InstitutionService extends BaseService
     /**
      * 删除节点
      *
-     * @param  int  $id
+     * @param int $id
      * @return bool
      * @throws BusinessLogicException
      * @throws \Exception
      */
     public function deleteNode(int $id): bool
     {
-        if($id ===Institution::query()->where('company_id',auth()->user()->company_id)->where('parent','<>',0)->first()->toArray()['id']){
+        if ($id === Institution::query()->where('company_id', auth()->user()->company_id)->where('parent', '<>', 0)->first()->toArray()['id']) {
             throw new BusinessLogicException('无法删除根组织');
         }
         /** @var Institution $institution */
@@ -172,6 +185,10 @@ class InstitutionService extends BaseService
 
         if ($this->hasChildren($institution)) {
             throw new BusinessLogicException('该节点存在子机构，请先删除子机构');
+        }
+        $info=$this->getEmployeeService()->getInfo(['institution_id'=>$id]);
+        if(empty($info)){
+            throw new BusinessLogicException('请先删除该机构下的所有成员');
         }
 
         return $institution->delete();
@@ -193,7 +210,7 @@ class InstitutionService extends BaseService
         $isolated = Institution::getIsolated();
 
         $isolated->flatMap(function (Institution $institution) {
-           return $institution->delete();
+            return $institution->delete();
         });
 
         return true;
@@ -202,7 +219,7 @@ class InstitutionService extends BaseService
     /**
      * 是否有孩子节点
      *
-     * @param  Institution  $institution
+     * @param Institution $institution
      * @return bool
      */
     protected function hasChildren(Institution $institution): bool
