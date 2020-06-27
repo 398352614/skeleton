@@ -269,6 +269,7 @@ class ReportService extends BaseService
                 'cancel_remark' => $batch['cancel_remark'],
                 'pay_picture' => $batch['pay_picture'],
                 'pay_type' => $batch['pay_type'],
+                'pay_type_name' => $batch['pay_type_name'],
                 'signature' => $batch['signature'],
                 'expect_arrive_time' => $batch['expect_arrive_time'],
                 'actual_arrive_time' => $batch['actual_arrive_time'],
