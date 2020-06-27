@@ -187,7 +187,7 @@ class InstitutionService extends BaseService
             throw new BusinessLogicException('该节点存在子机构，请先删除子机构');
         }
         $info=$this->getEmployeeService()->getInfo(['institution_id'=>$id]);
-        if(empty($info)){
+        if(!empty($info)){
             throw new BusinessLogicException('请先删除该机构下的所有成员');
         }
 
@@ -195,7 +195,7 @@ class InstitutionService extends BaseService
     }
 
     /**
-     *      * 删除节点和以及后代
+     * 删除节点和以及后代
      * @param int $id
      * @return bool
      * @throws BusinessLogicException
