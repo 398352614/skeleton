@@ -223,7 +223,7 @@ class TourService extends BaseService
      * @return BaseService|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function join($batch, $line, $order, $tour)
+    public function join($batch, $line, $order, $tour = [])
     {
         $tour = !empty($tour) ? $tour : $this->getTourInfo($batch, $line);
         //加入取件线路
@@ -453,7 +453,7 @@ class TourService extends BaseService
     public function getTourInfo($batch, $line, $isLock = true, $tourNo = null)
     {
         if (!empty($tourNo)) {
-            $this->query->where('tour_no', '=', $tourNo);
+            $this->query->where('tour_no',  $tourNo);
         }
         //若不存在取件线路或者超过最大订单量,则新建取件线路
         $this->query->where(DB::raw('expect_pickup_quantity+' . intval($batch['expect_pickup_quantity'])), '<=', $line['pickup_max_count']);
