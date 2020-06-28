@@ -124,9 +124,9 @@ class BatchService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function join($order, $line, $batchNo = null)
+    public function join($order, $line, $batchNo = null, $tour = [], $isAddOrder = false)
     {
-        list($batch, $tour) = $this->hasSameBatch($order, $line, $batchNo);
+        list($batch, $tour) = $this->hasSameBatch($order, $line, $batchNo, $tour, $isAddOrder);
         if (!empty($batchNo) && empty($batch)) {
             throw new BusinessLogicException('当前指定站点不符合当前订单');
         }
@@ -181,10 +181,12 @@ class BatchService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    private function hasSameBatch($order, $line, $batchNo = null)
+    private function hasSameBatch($order, $line, $batchNo = null, $tour = [], $isAddOrder = false)
     {
         $where = $this->getBatchWhere($order);
         $where = Arr::add($where, 'line_id', $line['id']);
+        !empty($tour['tour_no']) && $where['tour_no'] = $tour['tour_no'];
+        $isAddOrder && $where['status'] = ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]];
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
             $dbBatch = parent::getInfo($where, ['*'], false);
@@ -195,9 +197,11 @@ class BatchService extends BaseService
         if (empty($batchList)) return [[], []];
         foreach ($batchList as $batch) {
             $tour = $this->getTourService()->getTourInfo($batch, $line, true, $batch['tour_no'] ?? '');
-            return [$batch, $tour];
+            if (!empty($tour)) {
+                return [$batch, $tour];
+            }
         }
-        return [[], []];
+        return [[], $tour];
     }
 
 
