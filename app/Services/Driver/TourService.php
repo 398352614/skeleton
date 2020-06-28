@@ -673,7 +673,7 @@ class TourService extends BaseService
         $totalStickerAmount = $this->dealPackageList($batch, $params['package_list'] ?? []);
         //验证贴单费用
         if(bccomp($params['total_sticker_amount'],$totalStickerAmount) !== 0){
-            throw new BusinessLogicException('贴单总计费用不正确，请重新计算',5001);
+            throw new BusinessLogicException('5001',5001);
         }
         /****************************************2.处理站点下的所有订单************************************************/
         $pickupCount = $pieCount = 0;
