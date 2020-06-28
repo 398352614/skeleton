@@ -212,7 +212,7 @@ class BaseLineService extends BaseService
      * @param $params
      * @return array
      */
-    private function getLineRangeList($params)
+    public function getLineRangeList($params)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             $lineRangeList = $this->getLineRangeListByPostcode($params['receiver_post_code']);
@@ -237,9 +237,10 @@ class BaseLineService extends BaseService
         $lineRange = $this->getLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
-            ->where('country', CompanyTrait::getCountry())
-            ->where('schedule', Carbon::create($executionDate)->dayOfWeek)
-            ->first();
+            ->where('country', CompanyTrait::getCountry());
+        //若存在取派日期，则加上取派日期条件
+        !empty($executionDate) && $lineRange->where('schedule', Carbon::create($executionDate)->dayOfWeek);
+        $lineRange = $lineRange->first();
         return !empty($lineRange) ? $lineRange->toArray() : [];
     }
 
@@ -270,8 +271,12 @@ class BaseLineService extends BaseService
     private function getLineRangeByArea($coordinate, $date)
     {
         $lineRange = [];
-        $schedule = Carbon::create($date)->dayOfWeek;
-        $lineAreaList = $this->getLineAreaService()->getList(['schedule' => $schedule], ['line_id', 'coordinate_list'], false)->toArray();
+        if (empty($date)) {
+            $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false)->toArray();
+        } else {
+            $schedule = Carbon::create($date)->dayOfWeek;
+            $lineAreaList = $this->getLineAreaService()->getList(['schedule' => $schedule], ['line_id', 'coordinate_list'], false)->toArray();
+        }
         if (!empty($lineAreaList)) {
             foreach ($lineAreaList as $lineArea) {
                 $coordinateList = json_decode($lineArea['coordinate_list'], true);
@@ -291,7 +296,7 @@ class BaseLineService extends BaseService
      */
     private function getLineRangeListByArea(array $coordinate)
     {
-        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list','schedule'], false)->toArray();
+        $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list', 'schedule'], false)->toArray();
         if (!empty($lineAreaList)) {
             foreach ($lineAreaList as $lineArea) {
                 $coordinateList = json_decode($lineArea['coordinate_list'], true);
@@ -403,7 +408,7 @@ class BaseLineService extends BaseService
     {
         if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
             if ($orderOrBatch === 2) {
-                $this->MaxBatchCheck($params, $line);
+                $this->maxBatchCheck($params, $line);
             } elseif ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::ORDER_TYPE_1) {
                 $this->pickupMaxCheck($params, $line);
             } elseif ($orderOrBatch === 1 && intval($params['type']) ===  BaseConstService::ORDER_TYPE_2) {
@@ -438,7 +443,7 @@ class BaseLineService extends BaseService
     private function pickupMaxCheck($info, $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 1);
-        if (1 + $orderCount['pickup_count'] > $line['pickup_max_count']) {
+        if (1 + intval($orderCount['pickup_count']) > intval($line['pickup_max_count'])) {
             throw new BusinessLogicException('当前线路已达到最大取件订单数量');
         };
         return;
@@ -454,7 +459,7 @@ class BaseLineService extends BaseService
     private function pieMaxCheck($info, $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 2);
-        if (1 + $orderCount['pie_count'] > $line['pie_max_count']) {
+        if (1 + intval($orderCount['pie_count']) > intval($line['pie_max_count'])) {
             throw new BusinessLogicException('当前线路已达到最大派件订单数量');
         };
         return;
@@ -467,13 +472,13 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function MaxBatchCheck(array $info, array $line)
+    private function maxBatchCheck(array $info, array $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 3);
-        if ($info['expect_pickup_quantity'] + $orderCount['pickup_count'] > $line['pickup_max_count']) {
+        if (intval($info['expect_pickup_quantity']) + intval($orderCount['pickup_count']) > intval($line['pickup_max_count'])) {
             throw new BusinessLogicException('当前线路已达到最大取件订单数量');
         };
-        if ($info['expect_pie_quantity'] + $orderCount['pie_count'] > $line['pie_max_count']) {
+        if (intval($info['expect_pie_quantity']) + intval($orderCount['pie_count']) > intval($line['pie_max_count'])) {
             throw new BusinessLogicException('当前线路已达到最大派件订单数量');
         };
         return;
