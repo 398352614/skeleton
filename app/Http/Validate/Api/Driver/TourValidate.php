@@ -49,6 +49,7 @@ class TourValidate extends BaseValidate
         'begin_signature_third_pic' => 'nullable|string|max:250',
         'cancel_order_id_list' => 'nullable|string',
         'out_order_id_list' => 'nullable|string',
+        'total_sticker_amount'=>'required|numeric',
         'order_count' => 'required|integer',
         //异常上报
         'stage' => 'required|integer|in:1,2',
@@ -104,7 +105,8 @@ class TourValidate extends BaseValidate
             //包裹列表
             'package_list.*.id', 'package_list.*.sticker_no',
             //材料列表
-            'material_list.*.order_no', 'material_list.*.code', 'material_list.*.actual_quantity'
+            'material_list.*.order_no', 'material_list.*.code', 'material_list.*.actual_quantity',
+            'total_sticker_amount'
         ],
         'inWarehouse' => ['end_signature', 'end_signature_remark']
     ];

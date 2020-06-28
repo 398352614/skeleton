@@ -70,7 +70,9 @@ class CompanyScope implements Scope
 
         //如果是司机端
         if ($user instanceof Driver) {
-            $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
+            if(!($model) instanceof Company){
+                $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
+            }
             //车辆模型和司机无关
             if ((!($model instanceof Car))
                 && (!($model instanceof OrderNoRule))
@@ -84,6 +86,9 @@ class CompanyScope implements Scope
                 && (!($model instanceof Fee))
                 && (!($model instanceof Line))
                 && (!($model instanceof Order))
+                && (!($model instanceof Country))
+                && (!($model instanceof Company))
+                && (!($model instanceof CompanyConfig))
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
             }
