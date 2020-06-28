@@ -157,13 +157,13 @@ class ReportService extends BaseService
                     $info['card_replace_amount'] += intval($v['replace_amount']);
                     $info['card_sticker_amount'] += intval($v['sticker_amount']);
                     $info['card_total_amount'] += intval($orderList[$k]['total_amount']);
-                    $info['card_sticker_count'] += count(collect($orderList[$k]['package_list'])->whereNotNull('sticker_no')->toArray());
+                    $info['card_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no','<>',"")->toArray());
                 } else {
                     $info['cash_settlement_amount'] += intval($v['settlement_amount']);
                     $info['cash_replace_amount'] += intval($v['replace_amount']);
                     $info['cash_sticker_amount'] += intval($v['sticker_amount']);
                     $info['cash_total_amount'] += intval($orderList[$k]['total_amount']);
-                    $info['cash_sticker_count'] += count(collect($orderList[$k]['package_list'])->whereNotNull('sticker_no')->toArray());
+                    $info['cash_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no','<>',"")->toArray());
                 }
             }
         }
