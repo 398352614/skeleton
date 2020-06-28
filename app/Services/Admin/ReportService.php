@@ -152,7 +152,7 @@ class ReportService extends BaseService
             $orderList[$k]['total_amount']=intval($v['settlement_amount'])+intval($v['replace_amount'])+intval($v['sticker_amount']);
             if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
                 $v['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'];
-                if ($v['pay_type'] == BaseConstService::ORDER_SETTLEMENT_TYPE_1) {
+                if ($v['pay_type'] == BaseConstService::BATCH_PAY_TYPE_2) {
                     $info['card_settlement_amount'] += intval($v['settlement_amount']);
                     $info['card_replace_amount'] += intval($v['replace_amount']);
                     $info['card_sticker_amount'] += intval($v['sticker_amount']);
