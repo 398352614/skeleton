@@ -428,7 +428,7 @@ class OrderService extends BaseService
             //反向翻译
             $data[$i]['type'] = $typeList[$data[$i]['type']];
             $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type']];
-            $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery']] ?? 1;
+            $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery']] ?? 2;
             $data[$i]['delivery'] = $data[$i]['delivery'] ?? __('是');
             for ($j = 1; $j <= 5; $j++) {
                 $data[$i]['item_type_' . ($j)] = $itemList[$data[$i]['item_type_' . ($j)]] ?? null;
