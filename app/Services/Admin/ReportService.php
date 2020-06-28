@@ -145,6 +145,7 @@ class ReportService extends BaseService
         $info['cash_total_amount'] = 0;
         $info['cash_sticker_count'] = 0;
         foreach ($orderList as $k => $v) {
+            $orderList[$k]['package_list']=collect($packageList)->where('order_no',$v['order_no'])->all();
             $orderList[$k]['settlement_amount']=intval($v['settlement_amount']);
             $orderList[$k]['replace_amount']=intval($v['replace_amount']);
             $orderList[$k]['sticker_amount']=intval($v['sticker_amount']);
@@ -156,13 +157,13 @@ class ReportService extends BaseService
                     $info['card_replace_amount'] += intval($v['replace_amount']);
                     $info['card_sticker_amount'] += intval($v['sticker_amount']);
                     $info['card_total_amount'] += intval($orderList[$k]['total_amount']);
-                    $info['card_sticker_count'] += $v['sticker_no'] ? 1 : 0;
+                    $info['card_sticker_count'] += count($orderList[$k]['package_list']);;
                 } else {
                     $info['cash_settlement_amount'] += intval($v['settlement_amount']);
                     $info['cash_replace_amount'] += intval($v['replace_amount']);
                     $info['cash_sticker_amount'] += intval($v['sticker_amount']);
                     $info['cash_total_amount'] += intval($orderList[$k]['total_amount']);
-                    $info['cash_sticker_count'] += $v['sticker_no'] ? 1 : 0;
+                    $info['cash_sticker_count'] += count($orderList[$k]['package_list']);;
                 }
             }
         }
