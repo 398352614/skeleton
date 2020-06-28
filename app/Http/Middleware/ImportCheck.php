@@ -20,7 +20,7 @@ class ImportCheck
     public function handle($request, Closure $next)
     {
         if(CompanyTrait::getAddressTemplateId() == 2){
-            throw new BusinessLogicException('地址模板二无法进行批量导入');
+            throw new BusinessLogicException('地址模板二无法进行批量导入，请联系管理员');
         }
         return $next($request);
     }

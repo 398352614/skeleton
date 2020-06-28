@@ -979,8 +979,10 @@ class OrderService extends BaseService
         $materialList = $this->getMaterialService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
         if (!empty($materialList)) {
             $outOrderNoList = array_column($materialList, 'out_order_no');
-            if (!empty($outOrderNoList)) {
-                $this->getMaterialService()->checkAllUniqueByOutOrderNoList($outOrderNoList, $order['order_no']);
+            foreach ($outOrderNoList as $item) {
+                if (!empty($item)) {
+                    $this->getMaterialService()->checkAllUniqueByOutOrderNoList($item, $order['order_no']);
+                }
             }
         }
         /**********************************************订单恢复********************************************************/

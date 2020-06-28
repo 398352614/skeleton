@@ -18,13 +18,13 @@ class MaterialService extends BaseService
 
     /**
      * 验证材料外部标识列表唯一性
-     * @param $outOrderNoList
+     * @param $item
      * @param null $orderNo
      * @throws BusinessLogicException
      */
-    public function checkAllUniqueByOutOrderNoList($outOrderNoList, $orderNo = null)
+    public function checkAllUniqueByOutOrderNoList($item, $orderNo = null)
     {
-        $where = ['out_order_no' => ['in', $outOrderNoList]];
+        $where = ['out_order_no' => ['=', $item]];
         if (!empty($orderNo)) {
             $where['order_no'] = ['<>', $orderNo];
         }

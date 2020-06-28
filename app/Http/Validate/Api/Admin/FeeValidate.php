@@ -13,6 +13,10 @@ use App\Http\Validate\BaseValidate;
 
 class FeeValidate extends BaseValidate
 {
+    public $customAttributes = [
+        'code' => '编码',
+    ];
+
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:fee,id,company_id',
         'code' => 'required|string|max:50|uniqueIgnore:fee,id,company_id',
@@ -23,6 +27,10 @@ class FeeValidate extends BaseValidate
     public $scene = [
         'store' => ['name', 'code', 'amount', 'status'],
         'update' => ['name', 'code', 'amount', 'status'],
+    ];
+
+    public $message = [
+
     ];
 }
 
