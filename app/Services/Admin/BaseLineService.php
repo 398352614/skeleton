@@ -155,12 +155,12 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
-        if(CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE){
-            $data = $this->getLineRangeService()->getInfo(['line_id'=>$params['line_id'],'schedule'=>Carbon::create($params['execution_date'])->dayOfWeek],['*'],false);
-        }else{
-            $data = $this->getLineAreaService()->getInfo(['line_id'=>$params['line_id'],'schedule'=>Carbon::create($params['execution_date'])->dayOfWeek],['*'],false);
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
+            $data = $this->getLineRangeService()->getInfo(['line_id' => $params['line_id'], 'schedule' => Carbon::create($params['execution_date'])->dayOfWeek], ['*'], false);
+        } else {
+            $data = $this->getLineAreaService()->getInfo(['line_id' => $params['line_id'], 'schedule' => Carbon::create($params['execution_date'])->dayOfWeek], ['*'], false);
         }
-        if(empty($data)){
+        if (empty($data)) {
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         $this->checkRule($info, $line, $orderOrBatch);
@@ -175,7 +175,7 @@ class BaseLineService extends BaseService
     public function getLineIdByInfo($info)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'],null);
+            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'], null);
         } else {
             $coordinate = ['lat' => $info['lat'] ?? $info ['receiver_lat'], 'lon' => $info['lon'] ?? $info ['receiver_lon']];
             $lineRange = $this->getLineRangeByArea($coordinate, null);
@@ -314,7 +314,7 @@ class BaseLineService extends BaseService
             ->where('country', CompanyTrait::getCountry());
         //若存在取派日期，则加上取派日期条件
         !empty($executionDate) && $lineRange->where('schedule', Carbon::create($executionDate)->dayOfWeek);
-        $lineRange=  $lineRange->first();
+        $lineRange = $lineRange->first();
         return !empty($lineRange) ? $lineRange->toArray() : [];
     }
 
@@ -345,9 +345,9 @@ class BaseLineService extends BaseService
     private function getLineRangeByArea($coordinate, $date)
     {
         $lineRange = [];
-        if(empty($date)){
+        if (empty($date)) {
             $lineAreaList = $this->getLineAreaService()->getList([], ['line_id', 'coordinate_list'], false)->toArray();
-        }else{
+        } else {
             $schedule = Carbon::create($date)->dayOfWeek;
             $lineAreaList = $this->getLineAreaService()->getList(['schedule' => $schedule], ['line_id', 'coordinate_list'], false)->toArray();
         }
@@ -447,6 +447,9 @@ class BaseLineService extends BaseService
         $date = $lineRange['schedule'] - Carbon::today()->dayOfWeek;
         if (Carbon::today()->dayOfWeek > $lineRange['schedule']) {
             $date = $date + 7;
+        }
+        if ($lineRange['schedule'] === 7 && Carbon::today()->dayOfWeek === 0) {
+            $date = 0;
         }
         return $date;
     }
