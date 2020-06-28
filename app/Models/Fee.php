@@ -77,6 +77,6 @@ class Fee extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::orderStatusList($this->status);
+        return empty($this->status) ? null : ConstTranslateTrait::merchantStatusList($this->status);
     }
 }
