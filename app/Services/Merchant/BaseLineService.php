@@ -369,6 +369,9 @@ class BaseLineService extends BaseService
         if (Carbon::today()->dayOfWeek > $lineRange['schedule']) {
             $date = $date + 7;
         }
+        if ($lineRange['schedule'] === 7 && Carbon::today()->dayOfWeek === 0) {
+            $date = 0;
+        }
         return $date;
     }
 
