@@ -143,4 +143,10 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver','auth:drive
         //用户采集地址(弃用)
         Route::post('list-collect', 'RouteTrackingController@store');
     });
+
+    //费用管理
+    Route::prefix('fee')->group(function () {
+        //获取所有费用
+        Route::get('getAllFeeList', 'FeeController@getAllFeeList');
+    });
 });

@@ -671,6 +671,10 @@ class TourService extends BaseService
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list']);
         /*******************************************1.处理站点下的包裹*************************************************/
         $totalStickerAmount = $this->dealPackageList($batch, $params['package_list'] ?? []);
+        //验证贴单费用
+        if(bccomp($params['total_sticker_amount'],$totalStickerAmount) !== 0){
+            throw new BusinessLogicException('贴单总计费用不正确，请重新计算');
+        }
         /****************************************2.处理站点下的所有订单************************************************/
         $pickupCount = $pieCount = 0;
         $dbOrderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['*'], false)->toArray();
