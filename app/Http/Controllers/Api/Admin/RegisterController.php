@@ -331,6 +331,9 @@ class RegisterController extends BaseController
         /*$request->validate([
             'email' => 'required|email',
         ]);*/
+        if (empty(Employee::query()->where('username',$request['username'])->first())){
+            throw new BusinessLogicException('用户不存在，请检查用户名');
+        }
 
         return RegisterController::sendCode($request->input('email'), 'RESET');
     }

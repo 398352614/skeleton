@@ -30,6 +30,10 @@ class AuthController extends Controller
             'password' => $request['password']
         ];
 
+        if (empty(Employee::query()->where('username',$request['username'])->first())){
+            throw new BusinessLogicException('邮箱未注册，请先注册');
+        }
+
         if (!$token = $this->guard()->attempt($credentials)) {
             throw new BusinessLogicException('用户名或密码错误！');
         }

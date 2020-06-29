@@ -10,6 +10,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Api\Admin\RegisterController;
 use App\Http\Controllers\Controller;
 use App\Models\Driver;
+use App\Models\Employee;
 use App\Services\BaseConstService;
 use App\Services\FeeService;
 use Illuminate\Http\JsonResponse;
@@ -33,6 +34,11 @@ class AuthController extends Controller
             $this->username() => $request['username'],
             'password' => $request['password'],
         ];
+
+
+        if (empty(Employee::query()->where('username',$request['username'])->first())){
+            throw new BusinessLogicException('邮箱未注册，请先注册');
+        }
 
         if (!$token = $this->guard()->attempt($credentials)) {
             throw new BusinessLogicException('用户名或密码错误！');
@@ -221,6 +227,9 @@ class AuthController extends Controller
 //        $request->validate([
 //            'email' => 'required|email',
 //        ]);
+        if (empty(Employee::query()->where('username',$request['username'])->first())){
+            throw new BusinessLogicException('用户不存在，请检查用户名');
+        }
 
         return RegisterController::sendCode($request->input('email'), 'RESET');
     }
