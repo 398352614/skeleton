@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Driver;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Driver\TourService;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class TourController
@@ -72,8 +73,8 @@ class TourController extends BaseController
      */
     public function checkOutWarehouse($id)
     {
-         $this->service->checkOutWarehouse($id, $this->data);
-         return 'true';
+        $this->service->checkOutWarehouse($id, $this->data);
+        return 'true';
     }
 
     /**
@@ -89,7 +90,7 @@ class TourController extends BaseController
     /**
      * 获取站点列表
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws \App\Exceptions\BusinessLogicException
      */
     public function getBatchList($id)
@@ -100,7 +101,7 @@ class TourController extends BaseController
     /**
      * 获取站点的订单列表
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws \App\Exceptions\BusinessLogicException
      */
     public function getBatchOrderList($id)
@@ -122,7 +123,7 @@ class TourController extends BaseController
     /**
      * 获取站点详情
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws \App\Exceptions\BusinessLogicException
      */
     public function getBatchInfo($id)
@@ -133,7 +134,7 @@ class TourController extends BaseController
     /**
      * 站点 异常上报
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws \App\Exceptions\BusinessLogicException
      */
     public function batchException($id)
@@ -164,7 +165,7 @@ class TourController extends BaseController
     /**
      * 获取取件线路统计数据
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws \App\Exceptions\BusinessLogicException
      */
     public function getTotalInfo($id)
