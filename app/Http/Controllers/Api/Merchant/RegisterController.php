@@ -147,13 +147,28 @@ class RegisterController extends BaseController
             'email' => 'required|email',
         ]);*/
 
-        if (empty(Employee::query()->where('username',$request['username'])->first())){
+        if (empty(Merchant::query()->where($this->username(),$request['username'])->first())){
             throw new BusinessLogicException('用户不存在，请检查用户名');
         }
 
         return RegisterController::sendCode($request->input('email'), 'RESET');
     }
 
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    protected function username()
+    {
+        $username = request()->get('username');
+
+        if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
+            return 'email';
+        } else {
+            return 'phone';
+        }
+    }
 
     /**
      * @api {PUT}  api/merchant/password-reset 商家端:重置密码
