@@ -11,6 +11,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
 use App\Models\CompanyConfig;
 use App\Models\Employee;
+use App\Models\Merchant;
 use App\Traits\CompanyTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -51,7 +52,7 @@ class AuthController extends Controller
             'password' => $request['password']
         ];
 
-        if (empty(Employee::query()->where('username',$request['username'])->first())){
+        if (empty(Merchant::query()->where( $this->username(),$request['username'])->first())){
             throw new BusinessLogicException('邮箱未注册，请先注册');
         }
 
