@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Services\CurlClient;
 use App\Services\GoogleApiService;
 use App\Services\ReisService;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\JWTGuard;
 
 class AppServiceProvider extends ServiceProvider
@@ -49,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(UrlGenerator $url)
     {
         /*
         if (env('APP_ENV') === 'local') {
@@ -91,5 +93,8 @@ class AppServiceProvider extends ServiceProvider
             $this->user = null;
             return null;
         });
+        if (Str::startsWith(env('APP_URL'), 'https')) {
+            $url->forceScheme('https');
+        }
     }
 }
