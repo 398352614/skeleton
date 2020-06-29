@@ -344,7 +344,7 @@ class TourService extends BaseService
      */
     public function removeBatchOrder($order, $batch)
     {
-        $info = $this->getInfoOfStatus(['tour_no' => $order['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
+        $info = $this->getInfoOfStatus(['tour_no' => $order['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3], true);
         $quantity = $info['expect_pickup_quantity'] + $info['expect_pie_quantity'];
         //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
         if ($quantity - 1 <= 0) {
@@ -453,7 +453,7 @@ class TourService extends BaseService
     public function getTourInfo($batch, $line, $isLock = true, $tourNo = null)
     {
         if (!empty($tourNo)) {
-            $this->query->where('tour_no',  $tourNo);
+            $this->query->where('tour_no', $tourNo);
         }
         //若不存在取件线路或者超过最大订单量,则新建取件线路
         $this->query->where(DB::raw('expect_pickup_quantity+' . intval($batch['expect_pickup_quantity'])), '<=', $line['pickup_max_count']);
@@ -664,16 +664,16 @@ class TourService extends BaseService
      */
     public function getBatchCountInfo($id)
     {
-        $info = parent::getInfo(['id' => $id,'status' => ['in', [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5]]], ['*'], true);
+        $info = parent::getInfo(['id' => $id, 'status' => ['in', [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5]]], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('该取件线路不在取派中，无法进行追踪');
         }
         //通过订单查询站点编号
-        $batchNoList = $this->getOrderService()->query->whereNotNull('batch_no')->where('tour_no',$info['tour_no'])->pluck('batch_no')->toArray();
+        $batchNoList = $this->getOrderService()->query->whereNotNull('batch_no')->where('tour_no', $info['tour_no'])->pluck('batch_no')->toArray();
         if (empty($batchNoList)) {
             throw new BusinessLogicException('该取件线路不在取派中，无法进行追踪');
         }
-        $info['batchs']=$this->getBatchService()->getList(['batch_no'=>['in',$batchNoList]],['*'],true)->toArray(request()) ?? [];
+        $info['batchs'] = $this->getBatchService()->getList(['batch_no' => ['in', $batchNoList]], ['*'], true)->toArray(request()) ?? [];
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         return $info;
     }
