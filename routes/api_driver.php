@@ -102,6 +102,8 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver','auth:drive
         Route::put('/{id}/remark', 'TourController@remark');
         //更换车辆
         Route::put('/{id}/changeCar', 'TourController@changeCar');
+        //司机出库前验证
+        Route::put('/{id}/checkOutWarehouse', 'TourController@checkOutWarehouse');
         //司机出库
         Route::put('/{id}/outWarehouse', 'TourController@outWarehouse');
         //获取站点列表
