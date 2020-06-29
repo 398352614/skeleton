@@ -182,8 +182,9 @@ class RegisterController extends BaseController
         $transportPrice = TransportPrice::create([
             'company_id' => $company->id,
             'name' => $company->name,
-            'remark' => '',
+            'remark' => 'remark',
             'status' => 1,
+            'starting_price' => 0,
         ]);
         if ($transportPrice === false) {
             throw new BusinessLogicException('初始化运价失败');
