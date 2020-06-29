@@ -159,7 +159,10 @@ trait LocationTrait
     /**
      * 获取站点地图
      * @param $params
+     * @param $name
+     * @return array
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function getBatchMap($params, $name)
     {

@@ -164,6 +164,28 @@ if (!function_exists('explode_id_string')) {
     }
 }
 
+if (!function_exists('fields_sort')) {
+
+    /**
+     * 字段排序
+     * @param $data
+     * @param $fields
+     * @return array
+     */
+    function array_only_fields_sort($data, $fields)
+    {
+        $newData = [];
+        if (collect($data)->has($fields)) {
+            foreach ($fields as $v) {
+                $newData[$v] = $data[$v];
+            }
+        } else {
+            $newData = \Illuminate\Support\Arr::only($data,$fields);
+        }
+        return $newData;
+    }
+}
+
 if (!function_exists('array_key_prefix')) {
 
     /**
