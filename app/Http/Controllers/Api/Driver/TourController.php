@@ -67,12 +67,13 @@ class TourController extends BaseController
     /**
      * 出库前验证
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return mixed
      * @throws \App\Exceptions\BusinessLogicException
      */
     public function checkOutWarehouse($id)
     {
-        return $this->service->checkOutWarehouse($id, $this->data);
+         $this->service->checkOutWarehouse($id, $this->data);
+         return 'true';
     }
 
     /**
