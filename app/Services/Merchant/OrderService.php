@@ -1159,7 +1159,7 @@ class OrderService extends BaseService
         //订单轨迹-订单加入站点
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
         //订单轨迹-订单加入取件线路
-        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR, $batch);
+        OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR, $tour);
     }
 
 
