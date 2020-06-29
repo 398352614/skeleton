@@ -386,7 +386,7 @@ class BatchService extends BaseService
      */
     public function removeOrder($order)
     {
-        $info = $this->getInfoOfStatus(['batch_no' => $order['batch_no']], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
+        $info = $this->getInfoOfStatus(['batch_no' => $order['batch_no']], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT], true);
         $quantity = $info['expect_pickup_quantity'] + $info['expect_pie_quantity'];
         //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
         if ($quantity - 1 <= 0) {
