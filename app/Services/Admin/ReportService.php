@@ -145,11 +145,11 @@ class ReportService extends BaseService
         $info['cash_total_amount'] = 0;
         $info['cash_sticker_count'] = 0;
         foreach ($orderList as $k => $v) {
-            $orderList[$k]['package_list']=collect($packageList)->where('order_no',$v['order_no'])->all();
-            $orderList[$k]['settlement_amount']=intval($v['settlement_amount']);
-            $orderList[$k]['replace_amount']=intval($v['replace_amount']);
-            $orderList[$k]['sticker_amount']=intval($v['sticker_amount']);
-            $orderList[$k]['total_amount']=intval($v['settlement_amount'])+intval($v['replace_amount'])+intval($v['sticker_amount']);
+            $orderList[$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
+            $orderList[$k]['settlement_amount'] = intval($v['settlement_amount']);
+            $orderList[$k]['replace_amount'] = intval($v['replace_amount']);
+            $orderList[$k]['sticker_amount'] = intval($v['sticker_amount']);
+            $orderList[$k]['total_amount'] = intval($v['settlement_amount']) + intval($v['replace_amount']) + intval($v['sticker_amount']);
             if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
                 $v['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'];
                 if ($v['pay_type'] == BaseConstService::BATCH_PAY_TYPE_2) {
@@ -157,15 +157,18 @@ class ReportService extends BaseService
                     $info['card_replace_amount'] += intval($v['replace_amount']);
                     $info['card_sticker_amount'] += intval($v['sticker_amount']);
                     $info['card_total_amount'] += intval($orderList[$k]['total_amount']);
-                    $info['card_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no','<>',"")->toArray());
+                    $info['card_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
                 } else {
                     $info['cash_settlement_amount'] += intval($v['settlement_amount']);
                     $info['cash_replace_amount'] += intval($v['replace_amount']);
                     $info['cash_sticker_amount'] += intval($v['sticker_amount']);
                     $info['cash_total_amount'] += intval($orderList[$k]['total_amount']);
-                    $info['cash_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no','<>',"")->toArray());
+                    $info['cash_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
                 }
             }
+        }
+        foreach ($packageList as $k => $v) {
+            $packageList[$k]['out_order_no'] = collect($orderList)->where('order_no', $v['order_no'])->first()['out_order_no'];
         }
         /**********************************************获取出库信息****************************************************/
         $outWarehouseInfo = $this->getOutWarehouseInfo($info, $warehouseInfo, $packageList, $tourMaterialList);
@@ -265,7 +268,7 @@ class ReportService extends BaseService
                 'sticker_amount' => intval($batch['sticker_amount']),
                 'replace_amount' => intval($batch['replace_amount']),
                 'settlement_amount' => intval($batch['settlement_amount']),
-                'total_amount' => intval($batch['settlement_amount'])+intval($batch['sticker_amount'])+intval($batch['replace_amount']),
+                'total_amount' => intval($batch['settlement_amount']) + intval($batch['sticker_amount']) + intval($batch['replace_amount']),
                 'cancel_type' => $batch['cancel_type'],
                 'cancel_remark' => $batch['cancel_remark'],
                 'pay_picture' => $batch['pay_picture'],

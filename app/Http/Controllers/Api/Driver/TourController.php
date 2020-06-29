@@ -65,6 +65,17 @@ class TourController extends BaseController
     }
 
     /**
+     * 出库前验证
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function checkOutWarehouse($id)
+    {
+        return $this->service->checkOutWarehouse($id, $this->data);
+    }
+
+    /**
      * 司机出库
      * @param $id
      * @throws \App\Exceptions\BusinessLogicException
@@ -196,7 +207,8 @@ class TourController extends BaseController
      * 获取线路及取件线路列表
      * @return array
      */
-    public function getTourList(){
+    public function getTourList()
+    {
         return $this->service->getTourList();
     }
 }

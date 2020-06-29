@@ -268,7 +268,6 @@ class TourService extends BaseService
         return true;
     }
 
-
     /**
      * 出库
      * @param $id
@@ -405,7 +404,7 @@ class TourService extends BaseService
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    private function checkOutWarehouse($id, $params)
+    public function checkOutWarehouse($id, $params)
     {
         if (!empty($this->getInfo(['driver_id' => auth()->user()->id, 'status' => ['=', BaseConstService::TOUR_STATUS_4]], ['*'], false))) {
             throw new BusinessLogicException('同时只能进行一个任务，请先完成其他取派中的任务');
@@ -421,11 +420,6 @@ class TourService extends BaseService
         if (empty($tour['car_id']) || empty($tour['car_no'])) {
             throw new BusinessLogicException('当前待分配车辆,请先分配车辆');
         }
-        //验证订单数量
-        $orderCount = $this->getOrderService()->count(['tour_no' => $tour['tour_no']]);
-        if ($orderCount != $params['order_count']) {
-            throw new BusinessLogicException('当前取件线路的订单数量不正确');
-        }
         //存在出库订单,则验证
         if (!empty($params['out_order_id_list'])) {
             //验证订单是否都可出库
@@ -436,6 +430,11 @@ class TourService extends BaseService
             if (!empty($NoOutOrder)) {
                 throw new BusinessLogicException('订单[:order_no]已取消或已删除,不能出库,请先剔除', 1000, ['order' => $NoOutOrder->order_no]);
             }
+        }
+        //验证订单数量
+        $orderCount = $this->getOrderService()->count(['tour_no' => $tour['tour_no']]);
+        if ($orderCount != $params['order_count']) {
+            throw new BusinessLogicException($orderCount, 5002);
         }
         //材料验证
         if (!empty($params['material_list'])) {
@@ -672,8 +671,8 @@ class TourService extends BaseService
         /*******************************************1.处理站点下的包裹*************************************************/
         $totalStickerAmount = $this->dealPackageList($batch, $params['package_list'] ?? []);
         //验证贴单费用
-        if(bccomp($params['total_sticker_amount'],$totalStickerAmount) !== 0){
-            throw new BusinessLogicException('5001',5001);
+        if (bccomp($params['total_sticker_amount'], $totalStickerAmount) !== 0) {
+            throw new BusinessLogicException('5001', 5001);
         }
         /****************************************2.处理站点下的所有订单************************************************/
         $pickupCount = $pieCount = 0;
