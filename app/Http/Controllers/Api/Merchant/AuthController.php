@@ -20,6 +20,9 @@ use Illuminate\Support\Facades\DB;
 class AuthController extends Controller
 {
     /**
+     * @param Request $request
+     * @return array
+     * @throws BusinessLogicException
      * @api {POST}  api/merchant/login 商家端:登录
      * @apiName register
      * @apiGroup user-register
@@ -47,6 +50,10 @@ class AuthController extends Controller
             $this->username() => $request['username'],
             'password' => $request['password']
         ];
+
+        if (empty(Employee::query()->where('username',$request['username'])->first())){
+            throw new BusinessLogicException('用户不存在，请检查用户名');
+        }
 
         if (!$token = $this->guard()->attempt($credentials)) {
             throw new BusinessLogicException('用户名或密码错误！');
