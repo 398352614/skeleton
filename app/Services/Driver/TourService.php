@@ -682,7 +682,7 @@ class TourService extends BaseService
             //若不存在取派完成的包裹,则认为订单取派失败
             $packageCount = $this->getPackageService()->count(['order_no' => $dbOrder['order_no'], 'status' => BaseConstService::PACKAGE_STATUS_5]);
             if ($packageCount == 0) {
-                $cancelOrderNoList[] = $dbOrderList['order_no'];
+                $cancelOrderNoList[] = $dbOrder['order_no'];
                 continue;
             }
             //若存在取派完成的包裹,则认为i订单取派完成;
