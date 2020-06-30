@@ -16,12 +16,13 @@ use App\Services\BaseConstService;
 
 class AssignBatch extends ATourNotify
 {
-    public $tour;
 
-    public $batch;
-
-    public $orderList;
-
+    /**
+     * AssignBatch constructor.
+     * @param $tour
+     * @param $batch
+     * @param array $orderList
+     */
     public function __construct($tour, $batch, $orderList = [])
     {
         $orderList = !empty($orderList) ? $orderList : $this->getOrderAndPackageList($batch['batch_no']);
