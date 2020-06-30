@@ -1089,7 +1089,7 @@ class OrderService extends BaseService
             if (!in_array($order['status'], $statusList)) {
                 throw new BusinessLogicException('订单[:order_no]的不是待分配或已分配状态，不能操作', 1000, ['order_no' => $order['order_no']]);
             }
-            if ($order['type'] == BaseConstService::ORDER_TYPE_1) {
+            if ($order['type'] == BaseConstService::ORDER_TYPE_2) {
                 throw new BusinessLogicException('派件订单不允许加单');
             }
             $dbLineId = $this->getLineService()->getLineIdByInfo($order);
