@@ -186,61 +186,53 @@ class OrderService extends BaseService
     }
 
     /**
-     * 取件列初始化
+     * 订单统计
+     * @param $params
      * @return array
+     * @throws BusinessLogicException
      */
-    public function initPickupIndex()
+    public function orderCount($params)
     {
-        $allCount = $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1]);
-        $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_1]);
-        $assignCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_2]);
-        $waitOutCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_3]);
-        $takingCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_4]);
-        $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_5]);
-        $cancelCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_6]);
-        $exceptionCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
-        $delCount = parent::count(['type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::ORDER_STATUS_7]);
+        if(!array_key_exists('type',$params)){
+            throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
+        }
+        if(!empty($params['type']) && !in_array($params['type'],[BaseConstService::ORDER_TYPE_1,BaseConstService::ORDER_NATURE_2])){
+            throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
+        }
         return [
-            'all_count' => $allCount,
-            'no_take' => $noTakeCount,
-            'assign' => $assignCount,
-            'wait_out' => $waitOutCount,
-            'taking' => $takingCount,
-            'singed' => $signedCount,
-            'cancel_count' => $cancelCount,
-            'exception_count' => $exceptionCount,
-            'delete_count' => $delCount
+            'all_count' => $this->singleOrderCount($params['type']),
+            'no_take' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_1),
+            'assign' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_2),
+            'wait_out' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_3),
+            'taking' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_4),
+            'singed' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_5),
+            'cancel_count' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_6),
+            'delete_count' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_7),
+            'exception_count' => $this->singleOrderCount($params['type'],null, BaseConstService::ORDER_EXCEPTION_LABEL_2),
         ];
     }
 
     /**
-     * 派件列表初始化
-     * @return array
+     * 单项订单统计
+     * @param $type
+     * @param $status
+     * @param null $exceptionType
+     * @return int
      */
-    public function initPieIndex()
+    public function singleOrderCount($type, $status = null, $exceptionType = null)
     {
-        $allCount = $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2]);
-        $noTakeCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_1]);
-        $assignCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_2]);
-        $waitOutCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_3]);
-        $takingCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_4]);
-        $signedCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_5]);
-        $cancelCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_6]);
-        $exceptionCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
-        $delCount = parent::count(['type' => BaseConstService::ORDER_TYPE_2, 'status' => BaseConstService::ORDER_STATUS_7]);
-        return [
-            'all_count' => $allCount,
-            'no_take' => $noTakeCount,
-            'assign' => $assignCount,
-            'wait_out' => $waitOutCount,
-            'taking' => $takingCount,
-            'singed' => $signedCount,
-            'cancel_count' => $cancelCount,
-            'exception_count' => $exceptionCount,
-            'delete_count' => $delCount
-        ];
+        $where = [];
+        if (!empty($status)) {
+            $where = ['status' => $status];
+        }
+        if (!empty($type)) {
+            $where = array_merge($where, ['type' => $type]);
+        }
+        if (!empty($exceptionType)) {
+            $where = array_merge($where, ['exception_label' => $exceptionType]);
+        }
+        return parent::count($where);
     }
-
 
     public function getPageList()
     {

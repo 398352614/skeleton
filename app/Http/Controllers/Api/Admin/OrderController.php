@@ -12,6 +12,8 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\OrderService;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class OrderController
@@ -42,8 +44,8 @@ class OrderController extends BaseController
     /**
      * 获取详情
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws \App\Exceptions\BusinessLogicException
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
      */
     public function show($id)
     {
@@ -51,21 +53,13 @@ class OrderController extends BaseController
     }
 
     /**
-     * 取件列表初始化
+     * 订单统计
      * @return array
+     * @throws BusinessLogicException
      */
-    public function initPickupIndex()
+    public function orderCount()
     {
-        return $this->service->initPickupIndex();
-    }
-
-    /**
-     * 派件列表初始化
-     * @return array
-     */
-    public function initPieIndex()
-    {
-        return $this->service->initPieIndex();
+        return $this->service->orderCount($this->data);
     }
 
     public function initStore()
@@ -75,7 +69,7 @@ class OrderController extends BaseController
 
     /**
      * 新增
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function store()
     {
@@ -106,7 +100,7 @@ class OrderController extends BaseController
      * 修改
      * @param $id
      * @return bool|int|void
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function update($id)
     {
@@ -140,7 +134,7 @@ class OrderController extends BaseController
      * 通过订单,获取可分配的站点列表
      * @param $id
      * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function getBatchPageListByOrder($id)
     {
@@ -153,7 +147,7 @@ class OrderController extends BaseController
      * 参数存在站点编号(batchNo),为指定站点;否则为新建站点
      * @param $id
      * @return string
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function assignToBatch($id)
     {
@@ -163,7 +157,7 @@ class OrderController extends BaseController
     /**
      * 从站点中移除订单
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function removeFromBatch($id)
     {
@@ -182,7 +176,7 @@ class OrderController extends BaseController
     /**
      * 删除订单
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function destroy($id)
     {
@@ -192,7 +186,7 @@ class OrderController extends BaseController
     /**
      * 恢复
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function recovery($id)
     {
@@ -202,7 +196,7 @@ class OrderController extends BaseController
     /**
      * 彻底删除
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function actualDestroy($id)
     {

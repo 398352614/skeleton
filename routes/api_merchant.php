@@ -33,10 +33,8 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
 
     //订单管理
     Route::prefix('order')->group(function () {
-        //取件列表查询初始化
-        Route::get('/initPickupIndex', 'OrderController@initPickupIndex');
-        //派件列表查询初始化
-        Route::get('/initPieIndex', 'OrderController@initPieIndex');
+        //订单统计
+        Route::get('/count', 'OrderController@ordercount');
         //查询初始化
         Route::get('/initIndex', 'OrderController@initIndex');
         //列表查询

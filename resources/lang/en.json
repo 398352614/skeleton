@@ -18,6 +18,7 @@
     "￥": "CNY",
     "$": "USD",
 
+    "订单取派类型有误，无法获取统计数据": "The type of order is incorrect,can't get the statistical data",
     "请先删除该机构下的所有成员": "Please delete the member under this institution",
     "当前取件线路的材料代码不正确": "The code of material is incorrect",
     "材料数量不得超过预计材料数量": "The number of actual material has exceeded the expect material",
