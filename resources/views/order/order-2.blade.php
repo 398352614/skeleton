@@ -20,8 +20,8 @@
                 border-right: 1px solid #000;
             }
             .facial-list {
-                width: 1036px;
-                height: 1470px;
+                width: 962px;
+                height: 1365px;
                 box-sizing: border-box;
                 border: 1px solid #000;
                 overflow: hidden;
