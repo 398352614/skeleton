@@ -36,9 +36,9 @@ class CancelBatch extends ATourNotify
 
     public function getDataList(): array
     {
-        $packageList = Package::query()->whereIn('order_no',array_column($this->orderList,'order_no'))->get(['order_no','express_first_no'])->toArray();
-        $packageList = array_create_group_index($packageList,'order_no');
-        $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList){
+        $packageList = Package::query()->whereIn('order_no', array_column($this->orderList, 'order_no'))->get(['order_no', 'express_first_no', 'status'])->toArray();
+        $packageList = array_create_group_index($packageList, 'order_no');
+        $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList) {
             $order['package_list'] = $packageList[$order['order_no']] ?? [];
             return collect($order);
         })->toArray();
