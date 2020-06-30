@@ -268,7 +268,7 @@ class BaseConstService
     const NOTIFY_NEXT_BACTH = 'next-batch';             //下一个站点通知
     const NOTIFY_ARRIVED_BATCH = 'arrive-batch';        //到达站点通知
     const NOTIFY_ASSIGN_BATCH = 'assign-batch';         //签收站点通知
-    const NOTIFY_CANCEL_BATCH = 'cancel-batch';         //取消派送站点通知
+    const NOTIFY_CANCEL_BATCH = 'assign-batch';         //取消派送站点通知(也叫签收)
     const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回仓库通知
     const NOTIFY_ORDER_EXECUTION_DATE_UPDATE = 'update-execution-date'; //修改取派日期通知
 

@@ -676,17 +676,36 @@ class TourService extends BaseService
         }
         /****************************************2.处理站点下的所有订单************************************************/
         $pickupCount = $pieCount = 0;
+        $signOrderNoList = $cancelOrderNoList = [];
         $dbOrderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['*'], false)->toArray();
         foreach ($dbOrderList as $dbOrder) {
+            //若不存在取派完成的包裹,则认为订单取派失败
+            $packageCount = $this->getPackageService()->count(['order_no' => $dbOrder['order_no'], 'status' => BaseConstService::PACKAGE_STATUS_5]);
+            if ($packageCount == 0) {
+                $cancelOrderNoList[] = $dbOrderList['order_no'];
+                continue;
+            }
+            //若存在取派完成的包裹,则认为i订单取派完成;
             if (intval($dbOrder['type']) === BaseConstService::ORDER_TYPE_1) {
                 $pickupCount += 1;
             } else {
                 $pieCount += 1;
             }
+            $signOrderNoList[] = $dbOrder['order_no'];
         }
-        $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['status' => BaseConstService::ORDER_STATUS_5, 'sticker_amount' => $totalStickerAmount]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('签收失败');
+        //签收成功订单
+        if (!empty($signOrderNoList)) {
+            $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no'], 'order_no' => ['in', $signOrderNoList], 'status' => BaseConstService::ORDER_STATUS_4], ['status' => BaseConstService::ORDER_STATUS_5, 'sticker_amount' => $totalStickerAmount]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('签收失败');
+            }
+        }
+        //签收失败订单
+        if (!empty($cancelOrderNoList)) {
+            $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no'], 'order_no' => ['in', $cancelOrderNoList], 'status' => BaseConstService::ORDER_STATUS_4], ['status' => BaseConstService::ORDER_STATUS_6]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('签收失败');
+            }
         }
         /********************************************3.处理站点********************************************************/
         $batchData = [
