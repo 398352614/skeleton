@@ -17,6 +17,9 @@ class BaseConstService
     const TOUR = 'TOUR';
     const BATCH_EXCEPTION = 'BE';
 
+    const TYPE_ORDER = 1;
+    const TYPE_BATCH = 2;
+
     //线路规则1-邮编2-区域
     const LINE_RULE_POST_CODE = 1;
     const LINE_RULE_AREA = 2;
