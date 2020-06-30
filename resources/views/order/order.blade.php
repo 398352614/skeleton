@@ -20,12 +20,11 @@
                 border-right: 1px solid #000;
             }
             .facial-list {
-                width: 1036px;
-                height: 1470px;
+                width: 888px;
+                height: 1365px;
                 box-sizing: border-box;
                 border: 1px solid #000;
                 overflow: hidden;
-                margin-bottom: 50px;
             }
             .facial-list .company-name {
                 padding: 15px;

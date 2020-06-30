@@ -51,7 +51,7 @@ trait PrintTrait
                 $html .= view($view, ['data' => $data])->render();
             }
             $snappyPdf = SnappyPdf::loadHTML($html);
-            $snappyPdf->setPaper('A4')->save($newFilePath, true);
+            $snappyPdf->setPaper('A5')->save($newFilePath, true);
             unset($snappyPdf);
         } catch (\Exception $ex) {
             throw new BusinessLogicException($ex->getMessage());
