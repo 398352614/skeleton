@@ -96,8 +96,6 @@ class Tour extends BaseModel
         'created_at',
         'updated_at',
         'lave_distance',
-        'expect_time_human',
-        'actual_time_human',
     ];
 
     /**

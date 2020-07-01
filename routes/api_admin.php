@@ -320,13 +320,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'CountryController@destroy');
     });
 
-    //来源管理
-    Route::prefix('source')->group(function () {
-        Route::get('/', 'SourceController@index');
-        Route::post('/', 'SourceController@store');
-        Route::delete('/{id}', 'SourceController@destroy');
-    });
-
     //公共接口
     Route::prefix('common')->group(function () {
         //获取具体地址经纬度
