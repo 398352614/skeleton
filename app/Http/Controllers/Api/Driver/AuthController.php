@@ -35,7 +35,6 @@ class AuthController extends Controller
             'password' => $request['password'],
         ];
 
-
         if (empty(Driver::query()->where($this->username(),$request['username'])->first())){
             throw new BusinessLogicException('邮箱未注册，请先注册');
         }
@@ -102,6 +101,7 @@ class AuthController extends Controller
 
     /**
      * @return array
+     * @throws BusinessLogicException
      */
     public function refresh()
     {
@@ -111,6 +111,7 @@ class AuthController extends Controller
     /**
      * @param $token
      * @return array
+     * @throws BusinessLogicException
      */
     protected function respondWithToken($params)
     {
@@ -159,7 +160,7 @@ class AuthController extends Controller
      */
     protected function username()
     {
-        $username = request()->get('email');
+        $username = request()->get('username');
 
         if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
             return 'email';
@@ -227,7 +228,7 @@ class AuthController extends Controller
 //        $request->validate([
 //            'email' => 'required|email',
 //        ]);
-        if (empty(Driver::query()->where($this->username(),$request['email'])->first())){
+        if (empty(Driver::query()->where('email',$request['email'])->first())){
             throw new BusinessLogicException('用户不存在，请检查用户名');
         }
 

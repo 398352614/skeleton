@@ -27,6 +27,7 @@ class RegisterController extends BaseController
     {
         $this->service = $service;
     }
+
     /**
      * @api {POST}  api/merchant/register 商家端:注册
      * @apiName register
@@ -74,14 +75,14 @@ class RegisterController extends BaseController
             new BusinessLogicException('该名称已注册，请直接登录')
         );
         return DB::transaction(function () use ($data) {
-            $merchant=Merchant::create([
-                'company_id'=>Company::query()->where('company_code',$data['company_code'])->value('id'),
-                'name'  => $data['name'],
-                'email'  => $data['email'],
-                'password'  => Hash::make($data['password']),
+            $merchant = Merchant::create([
+                'company_id' => Company::query()->where('company_code', $data['company_code'])->value('id'),
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
             ]);
             $id = $merchant->id;
-            $merchantApi=$this->service->getMerchantApiService()->create([
+            $merchantApi = $this->service->getMerchantApiService()->create([
                 'merchant_id' => $id,
                 'key' => Hashids::encode(time() . $id),
                 'secret' => Hashids::connection('alternative')->encode(time() . $id)
@@ -93,6 +94,10 @@ class RegisterController extends BaseController
     }
 
     /**
+     * @param Request $request
+     * @return string
+     * @throws BusinessLogicException
+     * @throws \Throwable
      * @api {POST}  api/merchant/register/apply 商家端:注册验证码
      * @apiName register-apply
      * @apiGroup user-register
@@ -147,7 +152,7 @@ class RegisterController extends BaseController
             'email' => 'required|email',
         ]);*/
 
-        if (empty(Merchant::query()->where($this->username(),$request['email'])->first())){
+        if (empty(Merchant::query()->where($this->username(), $request['email'])->first())) {
             throw new BusinessLogicException('用户不存在，请检查用户名');
         }
 
@@ -248,8 +253,8 @@ class RegisterController extends BaseController
 
     /**
      * 获取验证码
-     * @param  string  $mail
-     * @param  string  $use
+     * @param string $mail
+     * @param string $use
      * @return string
      */
     protected static function makeVerifyCode(string $mail, string $use = 'REGISTER'): string
@@ -263,8 +268,8 @@ class RegisterController extends BaseController
 
     /**
      * 获取验证码
-     * @param  string  $mail
-     * @param  string  $use
+     * @param string $mail
+     * @param string $use
      * @return string
      * @package string $use
      */
@@ -275,8 +280,8 @@ class RegisterController extends BaseController
 
     /**
      * 删除验证码
-     * @param  string  $mail
-     * @param  string  $use
+     * @param string $mail
+     * @param string $use
      * @return bool
      */
     public static function deleteVerifyCode(string $mail, string $use = 'REGISTER'): bool
@@ -286,8 +291,8 @@ class RegisterController extends BaseController
 
     /**
      * 请求验证码发送
-     * @param  string  $email
-     * @param  string  $use
+     * @param string $email
+     * @param string $use
      * @return string
      * @throws BusinessLogicException
      */
