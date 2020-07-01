@@ -36,7 +36,7 @@ class BaseModel extends Model
         if (!auth()->user()) {
             //未授权用户的情况下
             $companyId = self::getCompanyId();
-        } elseif (in_array('company_id', Schema::getColumnListing($this->getTable()))) {
+        } elseif (in_array('company_id', $this->getFillable())) {
             $companyId = auth()->user()->company_id;
         }
         //填充company_id
@@ -57,7 +57,7 @@ class BaseModel extends Model
     {
         return function ($model) {
             /**@var \Illuminate\Database\Eloquent\Model $model */
-            $columns = Schema::getColumnListing($model->getTable());
+            $columns = $model->getFillable();
             if (in_array('company_id', $columns)) {
                 if (!isset($model->company_id) || $model->company_id === null) {
                     $model->company_id = auth()->user() ? auth()->user()->company_id : self::getCompanyId();

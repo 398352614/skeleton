@@ -72,7 +72,7 @@ trait TourTrait
 
     public static function afterBatchSign($tour, $batch)
     {
-        $orderList = Order::query()->where('batch_no', $batch['batch_no'])->where('status', BaseConstService::ORDER_STATUS_5)->get()->toArray();
+        $orderList = Order::query()->where('batch_no', $batch['batch_no'])->whereIn('status', [BaseConstService::ORDER_STATUS_5, BaseConstService::ORDER_STATUS_6])->get()->toArray();
         OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_DELIVERED);
         self::dealBatchEvent($tour, $batch);
         event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $orderList));

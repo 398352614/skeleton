@@ -56,10 +56,10 @@ class Warehouse extends BaseModel
         'city',
         'street',
         'address',
+        'lon',
+        'lat',
         'created_at',
         'updated_at',
-        'lat',
-        'lon'
     ];
 
     /**

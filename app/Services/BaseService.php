@@ -245,7 +245,7 @@ class BaseService
     public function create($data)
     {
         $this->query = $this->model::query();
-        return $this->query->create(Arr::only($data, Schema::getColumnListing($this->model->getTable())));
+        return $this->query->create(Arr::only($data, $this->model->getFillable()));
     }
 
     public function insertAll($data)
@@ -257,7 +257,7 @@ class BaseService
     public function insertGetId($data)
     {
         $this->query = $this->model::query();
-        if (in_array('company_id', Schema::getColumnListing($this->model->getTable())) && !isset($data['company_id'])) {
+        if (in_array('company_id', $this->model->getFillable()) && !isset($data['company_id'])) {
             $data['company_id'] = auth()->user()->company_id;
         }
         $data['created_at'] = $data['updated_at'] = now();
@@ -274,7 +274,7 @@ class BaseService
     {
         $this->query = $this->model::query();
         SearchTrait::buildQuery($this->query, $where);
-        $rowCount = $this->query->update(Arr::only($data, Schema::getColumnListing($this->model->getTable())));
+        $rowCount = $this->query->update(Arr::only($data, $this->model->getFillable()));
         $this->query = $this->model::query();
         return $rowCount;
     }
@@ -289,7 +289,7 @@ class BaseService
     {
         $this->query = $this->model::query();
         $query = $this->query->findOrFail($id);
-        $rowCount = $query->update(Arr::only($data, Arr::except(Schema::getColumnListing($this->model->getTable()), ['company_id', 'order_no', 'batch_no', 'tour_no'])));
+        $rowCount = $query->update(Arr::only($data, Arr::except($this->model->getFillable(), ['company_id', 'order_no', 'batch_no', 'tour_no'])));
         $this->query = $this->model::query();
         return $rowCount;
     }
@@ -412,6 +412,7 @@ class BaseService
         }
         return $isToArray ? $info->toArray() : $info;
     }
+
 
     /**
      * @param $name
