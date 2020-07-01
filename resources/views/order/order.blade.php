@@ -130,9 +130,9 @@
             <div class="address bottom-line">
                 <div class="address-obj right-line">{{__('收货方')}}</div>
                 <div class="address-info">
-                    <div>{{__('姓名').'：'.$data['sender_fullname']}}</div>
-                    <div>{{__('电话').'：'.$data['sender_phone']}}</div>
-                    <div>{{__('地址').'：'.$data['sender_address']}}</div>
+                    <div>{{__('姓名').'：'.$data['receiver_fullname']}}</div>
+                    <div>{{__('电话').'：'.$data['receiver_phone']}}</div>
+                    <div>{{__('地址').'：'.$data['receiver_address']}}</div>
                 </div>
             </div>
             <div class="destination bottom-line">
