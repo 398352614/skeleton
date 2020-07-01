@@ -549,12 +549,16 @@ class BaseLineService extends BaseService
     private function maxBatchCheck(array $info, array $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 3);
-        if (intval($info['expect_pickup_quantity']) + intval($orderCount['pickup_count']) > intval($line['pickup_max_count'])) {
-            throw new BusinessLogicException('当前线路已达到最大取件订单数量');
-        };
-        if (intval($info['expect_pie_quantity']) + intval($orderCount['pie_count']) > intval($line['pie_max_count'])) {
-            throw new BusinessLogicException('当前线路已达到最大派件订单数量');
-        };
+        if(intval($info['expect_pickup_quantity']) > 0){
+            if (intval($info['expect_pickup_quantity']) + intval($orderCount['pickup_count']) > intval($line['pickup_max_count'])) {
+                throw new BusinessLogicException('当前线路已达到最大取件订单数量');
+            };
+        }
+        if(intval($info['expect_pie_quantity']) > 0){
+            if (intval($info['expect_pie_quantity']) + intval($orderCount['pie_count']) > intval($line['pie_max_count'])) {
+                throw new BusinessLogicException('当前线路已达到最大派件订单数量');
+            };
+        }
         return;
     }
 }
