@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        \App\Console\Commands\BackupDatabase::class
     ];
 
     /**
@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('telescope:prune --hours=1')->daily()->onOneServer();
+        //$schedule->command('db:backup')->dailyAt('1:00')->onOneServer(); //每天12点和24点执行任务
     }
 
     /**

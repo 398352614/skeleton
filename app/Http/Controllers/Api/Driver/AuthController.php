@@ -159,7 +159,7 @@ class AuthController extends Controller
      */
     protected function username()
     {
-        $username = request()->get('username');
+        $username = request()->get('email');
 
         if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
             return 'email';
@@ -227,7 +227,7 @@ class AuthController extends Controller
 //        $request->validate([
 //            'email' => 'required|email',
 //        ]);
-        if (empty(Driver::query()->where($this->username(),$request['username'])->first())){
+        if (empty(Driver::query()->where($this->username(),$request['email'])->first())){
             throw new BusinessLogicException('用户不存在，请检查用户名');
         }
 
