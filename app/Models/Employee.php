@@ -56,6 +56,27 @@ class Employee extends Authenticatable implements JWTSubject
     ];
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'company_id',
+        'email',
+        'username',
+        'phone',
+        'encrypt',
+        'password',
+        'fullname',
+        'auth_group_id',
+        'institution_id',
+        'remark',
+        'forbid_login',
+        'created_at',
+        'updated_at',
+    ];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
