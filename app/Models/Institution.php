@@ -21,6 +21,18 @@ class Institution extends BaseModel
      */
     protected $hidden = [];
 
+    protected $fillable = [
+        'name',
+        'phone',
+        'contacts',
+        'country',
+        'address',
+        'company_id',
+        'parent',
+        'created_at',
+        'updated_at',
+    ];
+
     /**
      * The attributes that should be mutated to dates.
      *
