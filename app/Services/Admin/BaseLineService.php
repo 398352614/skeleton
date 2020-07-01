@@ -258,7 +258,11 @@ class BaseLineService extends BaseService
         } else {
             $lineRangeList = $this->getLineAreaService()->getList(['line_id' => $params], ['*'], false)->toArray();
         }
-        return $lineRangeList ?? [];
+        $lineRangeList = collect($lineRangeList)->groupBy('schedule')->all();
+        foreach ($lineRangeList as $v){
+            $newLineRangeList[]=$v[0];
+        }
+        return $newLineRangeList ?? [];
     }
 
     /**
