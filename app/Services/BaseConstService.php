@@ -136,7 +136,7 @@ class BaseConstService
     const TOUR_STATUS_4 = 4;
     const TOUR_STATUS_5 = 5;
 
-    //取件线路状态状态：1-未取派2-取派中-3-取派完成
+    //取件线路面向用户状态：1-未取派2-取派中-3-取派完成
     const MERCHANT_TOUR_STATUS_1 = 1;
     const MERCHANT_TOUR_STATUS_2 = 2;
     const MERCHANT_TOUR_STATUS_3 = 3;
@@ -163,6 +163,12 @@ class BaseConstService
     const BATCH_DELIVERING = 4;
     const BATCH_CHECKOUT = 5;
     const BATCH_CANCEL = 6;
+
+    //面向用户-站点状态:1-未取派2-取派中3-签收成功4-取派失败
+    const MERCHANT_BATCH_STATUS_1 = 1;
+    const MERCHANT_BATCH_STATUS_2 = 2;
+    const MERCHANT_BATCH_STATUS_3 = 3;
+    const MERCHANT_BATCH_STATUS_4 = 4;
 
     //batch exception状态1-未处理2-已处理
     const BATCH_EXCEPTION_1 = 1;
