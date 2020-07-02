@@ -14,13 +14,7 @@ use App\Http\Validate\BaseValidate;
 class TransportPriceValidate extends BaseValidate
 {
     public $customAttributes = [
-        'name' => '名称',
-        'starting_price' => '起步价',
-        'remark' => '特殊说明',
-        'status' => '状态',
-        'km' => '公里',
-        'weight' => '重量',
-        'special_time' => '时间点'
+
     ];
 
 

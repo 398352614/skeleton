@@ -43,7 +43,7 @@ class OrderService extends BaseService
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
-        'tour_no' => ['like', 'tour_no']
+        'tour_no' => ['like', 'tour_no'],
     ];
 
     public $headings = [
@@ -257,10 +257,29 @@ class OrderService extends BaseService
         return parent::count($where);
     }
 
+    /**
+     * 获取所有线路
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getLineList(){
+        return $this->getLineService()->getList();
+    }
 
     public function getPageList()
     {
+        if (!empty($this->formData['line_id'])) {
+            $batchList = $this->getBatchService()->getList(['line_id'=>$this->formData['line_id']],['*'],false)->pluck('batch_no')->toArray();
+            if(!empty($batchList)){
+                $this->filters['batch_no'] = ['in',$batchList];
+            }
+        }
         $list = parent::getPageList();
+        $tourNoList = $list->where('tour_no','<>','')->pluck('tour_no')->toArray();
+        $tour = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false);
+        foreach ($list as $k => $v) {
+            $list[$k]['line_id'] = $tour->where('tour_no', $v['tour_no'])->first()['line_id'] ?? '';
+            $list[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
+        }
         foreach ($list as &$order) {
             $batchException = $this->getBatchExceptionService()->getInfo(['batch_no' => $order['batch_no']], ['id', 'batch_no', 'stage'], false, ['created_at' => 'desc']);
             $order['exception_stage_name'] = !empty($batchException) ? ConstTranslateTrait::batchExceptionStageList($batchException['stage']) : __('正常');
@@ -1188,7 +1207,7 @@ class OrderService extends BaseService
             $orderList[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
         }
         $orderList = collect($orderList)->toArray();
-        foreach ($orderList as $v){
+        foreach ($orderList as $v) {
             $cellData[] = array_only_fields_sort($v, $this->headings);
         }
         if (empty($cellData)) {

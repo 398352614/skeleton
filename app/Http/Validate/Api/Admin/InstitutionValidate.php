@@ -7,12 +7,7 @@ use App\Http\Validate\BaseValidate;
 class InstitutionValidate extends BaseValidate
 {
     public $customAttributes = [
-        'name' => '机构名称',
-        'country' => '所在国家/城市',
-        'contacts' => '负责人',
-        'phone' => '联系电话',
-        'address' => '详细地址',
-        'parent_id' => '父节点ID',
+
     ];
 
 

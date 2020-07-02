@@ -7,11 +7,7 @@ use App\Http\Validate\BaseValidate;
 class BatchValidate extends BaseValidate
 {
     public $customAttributes = [
-        'tour_no' => '取件线路编号',
-        'execution_date' => '取派日期',
-        'cancel_type' => '取消取派类型',
-        'cancel_remark' => '取消取派内容',
-        'cancel_picture' => '取消取派图片',
+
     ];
 
 

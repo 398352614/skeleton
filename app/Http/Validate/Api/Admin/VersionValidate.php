@@ -14,6 +14,7 @@ use App\Http\Validate\BaseValidate;
 class VersionValidate extends BaseValidate
 {
     public $customAttributes = [
+
     ];
 
 

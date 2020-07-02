@@ -14,11 +14,7 @@ use App\Http\Validate\BaseValidate;
 class CommonValidate extends BaseValidate
 {
     public $customAttributes = [
-        'country' => '国家',
-        'post_code' => '邮编',
-        'house_number' => '门牌号',
-        'city' => '城市',
-        'street' => '街道',
+
     ];
 
 

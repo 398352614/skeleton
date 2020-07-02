@@ -14,17 +14,7 @@ use App\Http\Validate\BaseValidate;
 class WareHouseValidate extends BaseValidate
 {
     public $customAttributes = [
-        'name' => '名称',
-        'fullname' => '联系人',
-        'phone' => '手机号',
-        'country' => '国家',
-        'post_code' => '邮编',
-        'house_number' => '门牌号',
-        'city' => '城市',
-        'street' => '街道',
-        'address' => '地址',
-        'lon' => '经度',
-        'lat' => '纬度'
+
     ];
 
 

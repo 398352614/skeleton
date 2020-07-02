@@ -15,31 +15,7 @@ use App\Http\Validate\BaseValidate;
 class DriverValidate extends BaseValidate
 {
     public $customAttributes = [
-        'email'                         => '用户邮箱',
-        'password'                      => '密码',
-        'confirm_password'              => '密码',
-        'fullname'                      => '姓名',
-        'gender'                        => '性别',
-        'birthday'                      => '生日',
-        'phone'                         => '手机',
-        'duty_paragraph'                => '税号',
-        'address'                       => '邮编',
-        'country'                       => '国家',
-        'lisence_number'                => '驾照编号',
-        'lisence_valid_date'            => '有效期',
-        'lisence_type'                  => '驾照类型',
-        'lisence_material'              => '驾照材料',
-        'lisence_material_name'              => '驾照材料名',
-        'government_material'           => '政府信件',
-        'government_material_name'           => '政府信件名',
-        'avatar'                        => '头像',
-        'bank_name'                     => '银行名称',
-        'iban'                          => 'IBAN',
-        'bic'                           => 'BIC',
-        'crop_type'                     => '合作类型',
-        'is_locked'                     => '是否锁定',
-        'new_password'                  => '新密码',
-        'confirm_new_password'          => '新密码确认',
+
     ];
 
     public $rules = [

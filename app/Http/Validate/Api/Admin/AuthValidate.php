@@ -9,11 +9,7 @@ use App\Http\Validate\BaseValidate;
 class AuthValidate extends BaseValidate
 {
     public $customAttributes = [
-        'username' => '用户名',
-        'password' => '密码',
-        'origin_password'=>'旧密码',
-        'new_password'=>'新密码',
-        'new_confirm_password'=>'新密码确认'
+
     ];
 
     public $rules = [
