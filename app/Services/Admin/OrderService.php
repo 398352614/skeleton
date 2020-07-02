@@ -257,17 +257,24 @@ class OrderService extends BaseService
         return parent::count($where);
     }
 
+    /**
+     * 获取所有线路
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getLineList(){
+        return $this->getLineService()->getList();
+    }
 
     public function getPageList()
     {
         if (!empty($this->formData['line_id'])) {
-            $tourList = $this->getTourService()->getList(['line_id'=>$this->formData['line_id']],['*'],false)->pluck('tour_no')->toArray();
+            $batchList = $this->getBatchService()->getList(['line_id'=>$this->formData['line_id']],['*'],false)->pluck('batch_no')->toArray();
             if(!empty($tourList)){
-                $this->filters['tour_no'] = ['in',$tourList];
+                $this->filters['batch_no'] = ['in',$batchList];
             }
         }
         $list = parent::getPageList();
-        $tourNoList = $list->pluck('tour_no')->toArray();
+        $tourNoList = $list->where('tour_no','<>','')->pluck('tour_no')->toArray();
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false);
         foreach ($list as $k => $v) {
             $list[$k]['line_id'] = $tour->where('tour_no', $v['tour_no'])->first()['line_id'] ?? '';
