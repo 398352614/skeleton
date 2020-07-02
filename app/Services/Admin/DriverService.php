@@ -61,7 +61,7 @@ class DriverService extends BaseService
             'birthday' => $this->formData['birthday'] ?? null,
             'phone' => $this->formData['phone'], // $this->formData['phone_first'] . $this->formData['phone_last'],
             'duty_paragraph' => $this->formData['duty_paragraph'],
-            'address' => $this->formData['address'],
+            'address' => $this->formData['address'] ?? '',
             'country' => CompanyTrait::getCountry(),
             'lisence_number' => $this->formData['lisence_number'] ?? '',
             'lisence_valid_date' => $this->formData['lisence_valid_date'] ?? null,
