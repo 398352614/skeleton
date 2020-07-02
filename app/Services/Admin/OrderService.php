@@ -269,7 +269,7 @@ class OrderService extends BaseService
     {
         if (!empty($this->formData['line_id'])) {
             $batchList = $this->getBatchService()->getList(['line_id'=>$this->formData['line_id']],['*'],false)->pluck('batch_no')->toArray();
-            if(!empty($tourList)){
+            if(!empty($batchList)){
                 $this->filters['batch_no'] = ['in',$batchList];
             }
         }
