@@ -14,8 +14,11 @@ use App\Http\Validate\BaseValidate;
 class FeeValidate extends BaseValidate
 {
     public $customAttributes = [
+        'name' => '名称',
         'code' => '编码',
-    ];
+        'amount' => '费用',
+        'status' => '状态',
+        ];
 
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:fee,id,company_id',

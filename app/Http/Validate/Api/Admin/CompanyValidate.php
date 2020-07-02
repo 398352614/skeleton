@@ -7,11 +7,7 @@ use App\Http\Validate\BaseValidate;
 class CompanyValidate extends BaseValidate
 {
     public $customAttributes = [
-        'name' => '公司名称',
-        'country' => '所在国家',
-        'contacts' => '公司联系人',
-        'phone' => '公司电话',
-        'address' => '公司地址',
+
     ];
 
 

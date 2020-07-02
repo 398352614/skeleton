@@ -14,7 +14,7 @@ use App\Http\Validate\BaseValidate;
 class BatchExceptionValidate extends BaseValidate
 {
     public $customAttributes = [
-        'deal_remark'=>'处理内容'
+
     ];
 
 

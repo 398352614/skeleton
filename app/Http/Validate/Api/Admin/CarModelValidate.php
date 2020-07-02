@@ -14,6 +14,10 @@ use App\Http\Validate\BaseValidate;
 class CarModelValidate extends BaseValidate
 {
 
+    public $customAttributes = [
+
+    ];
+
     public $rules = [
         'cn_name' => 'required|string|max:50|uniqueIgnore:car_model,id,company_id,brand_id',
         'en_name' => 'required|string|max:50|uniqueIgnore:car_model,id,company_id,brand_id',

@@ -13,6 +13,10 @@ use App\Http\Validate\BaseValidate;
 
 class PrintTemplateValidate extends BaseValidate
 {
+    public $customAttributes = [
+
+    ];
+
     public $rules = [
         'type' => 'required|integer|in:1,2'
     ];

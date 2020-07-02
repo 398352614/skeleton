@@ -14,8 +14,7 @@ use App\Http\Validate\BaseValidate;
 class RouteTrackingValidate extends BaseValidate
 {
     public $customAttributes = [
-        'driver_id' => '司机ID',
-        'tour_no' => '车辆ID',
+
     ];
 
 
