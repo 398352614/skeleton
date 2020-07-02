@@ -1183,12 +1183,9 @@ class OrderService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $orderList->pluck('tour_no')->toArray()]]);
-        if ($tour->isEmpty()) {
-            throw new BusinessLogicException('数据不存在');
-        }
         foreach ($orderList as $k => $v) {
             $orderList[$k]['merchant_name'] = $merchant->where('id', $v['merchant_id'])->first()['name'];
-            $orderList[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'];
+            $orderList[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
         }
         $orderList = collect($orderList)->toArray();
         foreach ($orderList as $v){
