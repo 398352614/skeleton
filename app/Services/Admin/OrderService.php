@@ -1173,7 +1173,7 @@ class OrderService extends BaseService
      */
     public function orderExport($ids)
     {
-        $ids = json_decode($ids, true);
+        $ids = explode_id_string($ids);
         $orderList = $this->getList(['id' => ['in', $ids]]);
         $merchant = $this->getMerchantService()->getList(['id' => ['in', $orderList->pluck('merchant_id')->toArray()]]);
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $orderList->pluck('tour_no')->toArray()]]);
