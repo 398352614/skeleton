@@ -217,9 +217,19 @@ class OrderController extends BaseController
      * 批量打印
      * @return array
      * @throws BusinessLogicException
+     * @throws \Throwable
      */
     public function orderPrintAll()
     {
         return $this->service->orderPrintAll($this->data['id_list']);
+    }
+
+    /**
+     * 订单导出
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function orderExport(){
+        return $this->service->orderExport($this->data['ids']);
     }
 }

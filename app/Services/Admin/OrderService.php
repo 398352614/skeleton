@@ -23,6 +23,7 @@ use App\Services\OrderNoRuleService;
 use App\Traits\BarcodeTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use App\Traits\PrintTrait;
@@ -32,7 +33,7 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderService extends BaseService
 {
-    use ImportTrait, LocationTrait;
+    use ImportTrait, LocationTrait, ExportTrait;
 
     public $filterRules = [
         'type' => ['=', 'type'],
@@ -43,6 +44,20 @@ class OrderService extends BaseService
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
         'tour_no' => ['like', 'tour_no']
+    ];
+
+    public $headings = [
+        'order_no',
+        'merchant_name',
+        'status',
+        'out_order_no',
+        'receiver_post_code',
+        'receiver_house_number',
+        'execution_date',
+        'driver_name',
+        'batch_no',
+        'tour_no',
+        'line_name',
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -201,10 +216,10 @@ class OrderService extends BaseService
      */
     public function orderCount($params)
     {
-        if(!array_key_exists('type',$params)){
+        if (!array_key_exists('type', $params)) {
             throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
         }
-        if(!empty($params['type']) && !in_array($params['type'],[BaseConstService::ORDER_TYPE_1,BaseConstService::ORDER_NATURE_2])){
+        if (!empty($params['type']) && !in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_NATURE_2])) {
             throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
         }
         return [
@@ -216,7 +231,7 @@ class OrderService extends BaseService
             'singed' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_5),
             'cancel_count' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_6),
             'delete_count' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_7),
-            'exception_count' => $this->singleOrderCount($params['type'],null, BaseConstService::ORDER_EXCEPTION_LABEL_2),
+            'exception_count' => $this->singleOrderCount($params['type'], null, BaseConstService::ORDER_EXCEPTION_LABEL_2),
         ];
     }
 
@@ -1148,5 +1163,29 @@ class OrderService extends BaseService
         }
         $url = PrintTrait::tPrintAll($orderList, $orderView, 'order', null);
         return $url;
+    }
+
+    /**
+     * 订单导出
+     * @param $ids
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function orderExport($ids)
+    {
+        $ids = json_decode($ids, true);
+        $orderList = $this->getList(['id' => ['in', $ids]]);
+        $merchant = $this->getMerchantService()->getList(['id' => ['in', $orderList->pluck('merchant_id')->toArray()]]);
+        $tour = $this->getTourService()->getList(['tour_no' => ['in', $orderList->pluck('tour_no')->toArray()]]);
+        foreach ($orderList as $k => $v) {
+            $orderList[$k]['merchant_name'] = collect($merchant)->where('id', $v['merchant_id'])->first()['name'];
+            $orderList[$k]['line_name'] = collect($tour)->where('tour_no', $v['tour_no'])->first()['line_name'];
+
+        }
+        $orderList = collect($orderList)->toArray();
+        $cellData = array_only_fields_sort($orderList, $this->headings);
+        $dir = 'orderOut';
+        $name = date('YmdHis') . auth()->user()->id;
+        return $this->excelExport($name, $this->headings, $cellData, $dir);
     }
 }
