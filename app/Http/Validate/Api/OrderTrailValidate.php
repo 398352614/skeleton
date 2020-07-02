@@ -9,9 +9,7 @@ use App\Http\Validate\BaseValidate;
 class OrderTrailValidate extends BaseValidate
 {
     public $customAttributes = [
-        'order_no' => '订单编号',
-        'content' => '内容',
-        'create_at' => '创建时间',
+
     ];
 
 

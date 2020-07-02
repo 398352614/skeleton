@@ -14,9 +14,7 @@ use App\Http\Validate\BaseValidate;
 class RouteTrackingValidate extends BaseValidate
 {
     public $customAttributes = [
-        'lon' => '经度',
-        'lat' => '纬度',
-        'time' =>'时间',
+
     ];
 
 

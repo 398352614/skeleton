@@ -14,7 +14,7 @@ use App\Http\Validate\BaseValidate;
 class TestValidate extends BaseValidate
 {
     public $customAttributes = [
-        'name' => '名称',
+
     ];
 
     public $rules = [
