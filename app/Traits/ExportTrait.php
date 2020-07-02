@@ -46,7 +46,7 @@ trait ExportTrait
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
         $path ='public\\admin\\excel\\'.$subPath . DIRECTORY_SEPARATOR . $name.'.xlsx';
         try {
-            $rowCount=Excel::store(new BaseExport($params,$headings,$name),$path);
+            $rowCount=Excel::store(new BaseExport($params,$headings,$name,$dir),$path);
         } catch (\Exception $ex) {
             throw new BusinessLogicException('表格导出失败，请重新操作');
         }
