@@ -1,4 +1,7 @@
 {
+    "用户不存在，请检查用户名": "The user account doesn't exist,please check the user account",
+    "邮箱未注册，请先注册": "Email is not registered, please register first",
+    "取派失败": "Failed",
     "快件类型": "Courier type",
     "代收货款": "Replace amount",
     "物品信息": "Item information",
@@ -17,7 +20,6 @@
     "€": "EUR",
     "￥": "CNY",
     "$": "USD",
-
     "订单取派类型有误，无法获取统计数据": "The type of order is incorrect,can't get the statistical data",
     "请先删除该机构下的所有成员": "Please delete the member under this institution",
     "当前取件线路的材料代码不正确": "The code of material is incorrect",

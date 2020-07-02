@@ -16,6 +16,7 @@ use App\Services\BaseService;
 use App\Services\BaseServices\XLDirectionService;
 use App\Services\GoogleApiService;
 use App\Services\OrderNoRuleService;
+use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
@@ -59,6 +60,35 @@ class TourService extends BaseService
         'expect_pie_quantity',
         'express_first_no_one',
         'express_first_no_two',
+    ];
+
+    protected $tourHeadings=[
+        'tour_no',
+        'line_name',
+        'driver_name',
+        'execution_date',
+        'expect_pie_package_quantity',
+        'actual_pie_package_quantity',
+        'expect_pickup_package_quantity',
+        'actual_pickup_package_quantity',
+        'expect_material_quantity',
+        'actual_material_quantity',
+        'receiver_fullname',
+        'receiver_phone',
+        'receiver_post_code',
+        'receiver_address',
+        'expect_pie_quantity',
+        'actual_pie_quantity',
+        'expect_pickup_quantity',
+        'actual_pickup_quantity',
+        'expect_pie_package_quantity',
+        'actual_pie_package_quantity',
+        'expect_pickup_package_quantity',
+        'actual_pickup_package_quantity',
+        'expect_material_quantity',
+        'actual_material_quantity',
+        'status',
+        'actual_arrive_time'
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -131,6 +161,16 @@ class TourService extends BaseService
     private function getOrderNoRuleService()
     {
         return self::getInstance(OrderNoRuleService::class);
+    }
+
+    /**
+     * 材料服务
+     * @return MaterialService
+     */
+    private function getMaterialService()
+    {
+        return self::getInstance(MaterialService::class);
+
     }
 
     /**
@@ -746,7 +786,7 @@ class TourService extends BaseService
     public function getBatchCountInfo($id)
     {
         $info = parent::getInfo(['id' => $id], ['*'], true);
-        if(empty($info)){
+        if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
@@ -842,7 +882,9 @@ class TourService extends BaseService
     /**
      * 导出站点地图
      * @param $id
+     * @return array
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function mapExport($id)
     {
@@ -881,5 +923,111 @@ class TourService extends BaseService
             $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
         }
         return $arrCount;
+    }
+
+    /**
+     * 导出取件线路
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function tourExport($id)
+    {
+        //取出数据
+        $cellData = [];
+        $statusToMerchantStatus = [
+            BaseConstService::BATCH_WAIT_ASSIGN => BaseConstService::MERCHANT_BATCH_STATUS_1,
+            BaseConstService::BATCH_ASSIGNED => BaseConstService::MERCHANT_BATCH_STATUS_1,
+            BaseConstService::BATCH_WAIT_OUT => BaseConstService::MERCHANT_BATCH_STATUS_1,
+            BaseConstService::BATCH_DELIVERING => BaseConstService::MERCHANT_BATCH_STATUS_2,
+            BaseConstService::BATCH_CHECKOUT => BaseConstService::MERCHANT_BATCH_STATUS_3,
+            BaseConstService::BATCH_CANCEL => BaseConstService::MERCHANT_BATCH_STATUS_4
+        ];
+
+        $tour = $this->query->where('id', '=', $id)->first();
+        if (empty($tour)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $tour['expect_pie_package_quantity'] = 0;
+        $tour['actual_pie_package_quantity'] = 0;
+        $tour['expect_pickup_package_quantity'];
+        $tour['actual_pickup_package_quantity'] = 0;
+        $tour['expect_material_quantity'] = 0;
+        $tour['actual_material_quantity'] = 0;
+
+        $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
+        if (empty($packageList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        if (empty($batchList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
+        if (empty($orderList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
+        for ($i = 0; $i < count($batchList); $i++) {
+            $batchList[$i]['expect_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->all());
+            $batchList[$i]['actual_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->where('status', BaseConstService::PACKAGE_STATUS_5)->all());
+            $batchList[$i]['expect_pickup_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_1)->where('batch_no', $batchList[$i]['batch_no'])->all());
+            $batchList[$i]['actual_pickup_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_1)->where('batch_no', $batchList[$i]['batch_no'])->where('status', BaseConstService::PACKAGE_STATUS_5)->all());
+            $batchList[$i]['expect_material_quantity'] = count(collect($materialList)->where('batch_no', $batchList[$i]['batch_no'])->all());
+            $batchList[$i]['actual_material_quantity'] = count(collect($materialList)->where('batch_no', $batchList[$i]['batch_no'])->where('status', BaseConstService::PACKAGE_STATUS_5)->all());
+            $batchList[$i]['status'] = __(ConstTranslateTrait::merchantBatchStatusList($statusToMerchantStatus[$batchList[$i]['status']]));
+            $tour['expect_pie_package_quantity'] += $batchList[$i]['expect_pie_package_quantity'];
+            $tour['actual_pie_package_quantity'] += $batchList[$i]['actual_pie_package_quantity'];
+            $tour['expect_pickup_package_quantity'] += $batchList[$i]['expect_pickup_package_quantity'];
+            $tour['actual_pickup_package_quantity'] += $batchList[$i]['actual_pickup_package_quantity'];
+            $tour['expect_material_quantity'] += $batchList[$i]['expect_material_quantity'];
+            $tour['actual_material_quantity'] += $batchList[$i]['actual_material_quantity'];
+        }
+
+        for ($i = 0; $i < count($batchList); $i++) {
+            $cellData[$i][0] = '';
+            $cellData[$i][1] = '';
+            $cellData[$i][2] = '';
+            $cellData[$i][3] = '';
+            $cellData[$i][4] = '';
+            $cellData[$i][5] = '';
+            $cellData[$i][6] = '';
+            $cellData[$i][7] = '';
+            $cellData[$i][8] = '';
+            $cellData[$i][9] = '';
+            $cellData[$i][10] = $batchList[$i]['receiver_fullname'];
+            $cellData[$i][11] = $batchList[$i]['receiver_phone'];
+            $cellData[$i][12] = $batchList[$i]['receiver_post_code'];
+            $cellData[$i][13] = $batchList[$i]['receiver_address'];
+            $cellData[$i][14] = $batchList[$i]['expect_pie_quantity'];
+            $cellData[$i][15] = $batchList[$i]['actual_pie_quantity'];
+            $cellData[$i][16] = $batchList[$i]['expect_pickup_quantity'];
+            $cellData[$i][17] = $batchList[$i]['actual_pickup_quantity'];
+            $cellData[$i][18] = $batchList[$i]['expect_pie_package_quantity'];
+            $cellData[$i][19] = $batchList[$i]['actual_pie_package_quantity'];
+            $cellData[$i][20] = $batchList[$i]['expect_pickup_package_quantity'];
+            $cellData[$i][21] = $batchList[$i]['actual_pickup_package_quantity'];
+            $cellData[$i][22] = $batchList[$i]['expect_material_quantity'];
+            $cellData[$i][23] = $batchList[$i]['actual_material_quantity'];
+            $cellData[$i][24] = $batchList[$i]['status'];
+            $cellData[$i][25] = $batchList[$i]['actual_arrive_time'];
+        }
+        $cellData[0][0] = $tour['tour_no'];
+        $cellData[0][1] = $tour['line_name'];
+        $cellData[0][2] = $tour['driver_name'];
+        $cellData[0][3] = $tour['execution_date'];
+        $cellData[0][4] = $tour['expect_pie_package_quantity'];
+        $cellData[0][5] = $tour['actual_pie_package_quantity'];
+        $cellData[0][6] = $tour['expect_pickup_package_quantity'];
+        $cellData[0][7] = $tour['actual_pickup_package_quantity'];
+        $cellData[0][8] = $tour['expect_material_quantity'];
+        $cellData[0][9] = $tour['actual_material_quantity'];
+
+        for ($i = 0; $i < count($cellData); $i++) {
+            $cellData[$i] = array_values($cellData[$i]);
+        }
+        $dir = 'tour';
+        $name = date('Ymd') . $tour['tour_no'].auth()->user()->id;
+        return $this->excelExport($name, $this->tourHeadings, $cellData, $dir);
     }
 }

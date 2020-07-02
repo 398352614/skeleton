@@ -52,6 +52,7 @@ use Illuminate\Support\Facades\App;
  * @method static merchantStatusList($args = null)
  * @method static driverEventList($args = null)
  * @method static merchantTourStatusList($args = null)
+ * @method static merchantBatchStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -159,6 +160,14 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_DELIVERING => '取派中',
         BaseConstService::BATCH_CHECKOUT => '已签收',
         BaseConstService::BATCH_CANCEL => '取消取派',
+    ];
+
+    //batch 批次状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派
+    public static $merchantBatchStatusList = [
+        BaseConstService::MERCHANT_BATCH_STATUS_1 => '未取派',
+        BaseConstService::MERCHANT_BATCH_STATUS_2 => '取派中',
+        BaseConstService::MERCHANT_BATCH_STATUS_3 => '已签收',
+        BaseConstService::MERCHANT_BATCH_STATUS_4 => '取派失败',
     ];
 
     //batch exception 状态1-未处理2-已处理

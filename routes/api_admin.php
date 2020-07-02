@@ -84,6 +84,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/assignListTour', 'OrderController@assignListTour');
         //批量打印
         Route::get('/orderPrintAll', 'OrderController@orderPrintAll');
+        //订单导出表格
+        Route::get('/order-excel', 'OrderController@orderExport');
     });
 
 
@@ -191,6 +193,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/excel', 'TourController@batchExport'); //导出投递站点excel
         Route::get('/{id}/txt', 'TourController@cityExport'); //导出投递城市txt
         Route::get('/{id}/png', 'TourController@mapExport'); //导出站点地图png
+        Route::get('/{id}/tour-excel', 'TourController@tourExport'); //导出任务报告
     });
 
     //取件线路-司机
