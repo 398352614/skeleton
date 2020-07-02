@@ -132,6 +132,7 @@ class OrderValidate extends BaseValidate
         'destroy' => ['remark'],
         'removeListFromBatch' => ['id_list'],
         'orderPrintAll' => ['id_list'],
+        'orderExport'=>['id_list']
     ];
 
     public $message = [
