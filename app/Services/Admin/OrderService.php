@@ -1174,16 +1174,29 @@ class OrderService extends BaseService
     public function orderExport($ids)
     {
         $ids = explode_id_string($ids);
-        $orderList = $this->getList(['id' => ['in', $ids]]);
+        $orderList = $this->getList(['id' => ['in', $ids]], ['*'], false);
+        if ($orderList->isEmpty()) {
+            throw new BusinessLogicException('数据不存在');
+        }
         $merchant = $this->getMerchantService()->getList(['id' => ['in', $orderList->pluck('merchant_id')->toArray()]]);
+        if ($merchant->isEmpty()) {
+            throw new BusinessLogicException('数据不存在');
+        }
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $orderList->pluck('tour_no')->toArray()]]);
+        if ($tour->isEmpty()) {
+            throw new BusinessLogicException('数据不存在');
+        }
         foreach ($orderList as $k => $v) {
-            $orderList[$k]['merchant_name'] = collect($merchant)->where('id', $v['merchant_id'])->first()['name'];
-            $orderList[$k]['line_name'] = collect($tour)->where('tour_no', $v['tour_no'])->first()['line_name'];
-
+            $orderList[$k]['merchant_name'] = $merchant->where('id', $v['merchant_id'])->first()['name'];
+            $orderList[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'];
         }
         $orderList = collect($orderList)->toArray();
-        $cellData = array_only_fields_sort($orderList, $this->headings);
+        foreach ($orderList as $v){
+            $cellData[] = array_only_fields_sort($v, $this->headings);
+        }
+        if (empty($cellData)) {
+            throw new BusinessLogicException('数据不存在');
+        }
         $dir = 'orderOut';
         $name = date('YmdHis') . auth()->user()->id;
         return $this->excelExport($name, $this->headings, $cellData, $dir);
