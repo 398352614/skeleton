@@ -14,9 +14,8 @@ use App\Http\Validate\BaseValidate;
 class MerchantApiValidate extends BaseValidate
 {
     public $customAttributes = [
-        'url' => 'url',
-        'white_ip_list' => '白名单',
-        'status' => '状态'
+
+
     ];
 
     public $rules = [

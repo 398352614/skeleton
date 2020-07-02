@@ -14,9 +14,7 @@ use App\Http\Validate\BaseValidate;
 class UploadValidate extends BaseValidate
 {
     public $customAttributes = [
-        'image' => '图片',
-        'file' => '文件',
-        'dir'=>'目录'
+
     ];
 
 

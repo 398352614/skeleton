@@ -9,13 +9,7 @@ use App\Http\Validate\BaseValidate;
 class RegisterValidate extends BaseValidate
 {
     public $customAttributes = [
-        'name' => '商家名称',
-        'email' => '邮箱',
-        'password' => '密码',
-        'confirm_password' => '密码确认',
-        'code' => '验证码',
-        'new_password' => '新密码',
-        'confirm_new_password' => '新密码确认'
+
     ];
 
     public $rules = [

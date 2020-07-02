@@ -14,39 +14,7 @@ use App\Http\Validate\BaseValidate;
 class OrderValidate extends BaseValidate
 {
     public $customAttributes = [
-        'batch_no' => '站点编号',
-        'execution_date' => '取派日期',
-        'out_order_no' => '外部订单号',
-        'express_first_no' => '快递单号1',
-        'express_second_no' => '快递单号2',
-        'list_mode' => '清单模式',
-        'type' => '类型',
-        'out_user_id' => '外部客户ID',
-        'nature' => '性质',
-        'settlement_type' => '结算方式',
-        'settlement_amount' => '结算金额',
-        'replace_amount' => '代收款',
-        'delivery' => '自提',
-        'sender_fullname' => '发件人',
-        'sender_phone' => '发件人电话',
-        'sender_country' => '发件人国家',
-        'sender_post_code' => '发件人邮编',
-        'sender_house_number' => '发件人门牌号',
-        'sender_city' => '发件人城市',
-        'sender_street' => '发件人街道',
-        'sender_address' => '发件人详细地址',
-        'receiver_fullname' => '收件人',
-        'receiver_phone' => '收件人电话',
-        'receiver_country' => '收件人国家',
-        'receiver_post_code' => '收件人邮编',
-        'receiver_house_number' => '收件人门牌号',
-        'receiver_city' => '收件人城市',
-        'receiver_street' => '收件人街道',
-        'receiver_address' => '收件人详细地址',
-        'special_remark' => '特殊事项',
-        'remark' => '其余备注',
-        'lon' => '经度',
-        'lat' => '纬度'
+
     ];
 
     public $rules = [
