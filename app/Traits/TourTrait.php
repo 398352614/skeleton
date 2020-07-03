@@ -15,6 +15,7 @@ use App\Events\TourDriver\BackWarehouse;
 use App\Events\TourDriver\OutWarehouse;
 use App\Events\TourNotify\CancelBatch;
 use App\Events\TourNotify\NextBatch;
+use App\Jobs\UpdateLineCountTime;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
@@ -42,6 +43,9 @@ trait TourTrait
         if (!empty($nextBatch)) {
             event(new NextBatch($tour, $nextBatch->toArray()));
         }
+
+        //智能调度
+        dispatch(new UpdateLineCountTime($tour['tour_no']));
     }
 
     public static function afterBatchArrived($tour, $batch)

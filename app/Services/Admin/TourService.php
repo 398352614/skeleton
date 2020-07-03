@@ -637,26 +637,26 @@ class TourService extends BaseService
     /**
      * 更新批次配送顺序
      */
-    public function updateBatchIndex()
+    public function updateBatchIndex($data)
     {
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
         // set_time_limit(240);
 
-        app('log')->info('更新线路传入的参数为:', $this->formData);
+        app('log')->info('更新线路传入的参数为:', $data);
 
-        $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
+        $tour = Tour::where('tour_no', $data['tour_no'])->firstOrFail();
 
         throw_if(
-            $tour->batchs->count() != count($this->formData['batch_ids']),
+            $tour->batchs->count() != count($data['batch_ids']),
             new BusinessLogicException('线路的站点数量不正确')
         );
 
         //此处的所有 batchids 应该经过验证!
-        $nextBatch = $this->getNextBatchAndUpdateIndex($this->formData['batch_ids']);
+        $nextBatch = $this->getNextBatchAndUpdateIndex($data['batch_ids']);
 
         TourLog::create([
-            'tour_no' => $this->formData['tour_no'],
+            'tour_no' => $data['tour_no'],
             'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
@@ -669,20 +669,20 @@ class TourService extends BaseService
     /**
      * 自动优化线路任务
      */
-    public function autoOpTour()
+    public function autoOpTour($data)
     {
         //需要先判断当前 tour 是否被锁定状态!!! 中间件或者 validate 验证规则???
         // set_time_limit(240);
 
-        $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
+        $tour = Tour::where('tour_no', $data['tour_no'])->firstOrFail();
         $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
         if (!$nextBatch) {
-            $nextBatch = Batch::where('tour_no', $this->formData['tour_no'])->first();
+            $nextBatch = Batch::where('tour_no', $data['tour_no'])->first();
             // self::setTourLock($this->formData['tour_no'], 0);
         }
 
         TourLog::create([
-            'tour_no' => $this->formData['tour_no'],
+            'tour_no' => $data['tour_no'],
             'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
