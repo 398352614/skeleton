@@ -651,6 +651,40 @@ class TourService extends BaseService
     }
 
     /**
+     * 验证签收
+     * @param $id
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function checkBatchSign($id, $params)
+    {
+        list($tour, $batch) = $this->checkBatchLock($id, $params);
+        $stickerAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::STICKER]);
+        //贴单费统计
+        $packageList = collect($params['package_list'])->unique('id')->keyBy('id')->toArray();
+        $packageIdList = array_keys($packageList);
+        $totalStickerAmount = 0.00;
+        $packageList = $this->getPackageService()->getList(['id' => ['in', $packageIdList], 'batch_no' => $batch['batch_no'], 'status' => BaseConstService::PACKAGE_STATUS_4], ['id', 'order_no', 'batch_no', 'type'], false)->toArray();
+        foreach ($packageList as $packageId => $package) {
+            if ((intval($package['type']) == BaseConstService::ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['sticker_no'])) {
+                $totalStickerAmount += $stickerAmount;
+            }
+        }
+        $orderNoList = array_unique(array_column($packageList, 'order_no'));
+        //代收货款统计
+        $totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['order_no' => ['in', $orderNoList]]);
+        //运费统计
+        $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['order_no' => ['in', $orderNoList]]);
+        return [
+            'total_sticker_amount' => $totalStickerAmount,
+            'total_replace_amount' => $totalReplaceAmount,
+            'total_settlement_amount' => $totalSettlementAmount,
+            'total_amount' => $totalStickerAmount + $totalReplaceAmount + $totalSettlementAmount,
+        ];
+    }
+
+    /**
      * 站点签收
      * @param $id
      * @param $params
@@ -670,19 +704,15 @@ class TourService extends BaseService
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list']);
         /*******************************************1.处理站点下的包裹*************************************************/
         $totalStickerAmount = $this->dealPackageList($batch, $params['package_list'] ?? []);
-        //验证贴单费用
-        if (bccomp($params['total_sticker_amount'], $totalStickerAmount) !== 0) {
-            throw new BusinessLogicException('5001', 5001);
-        }
         /****************************************2.处理站点下的所有订单************************************************/
         $pickupCount = $pieCount = 0;
-        $signOrderNoList = $cancelOrderNoList = [];
+        $signOrderList = $cancelOrderList = [];
         $dbOrderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['*'], false)->toArray();
         foreach ($dbOrderList as $dbOrder) {
             //若不存在取派完成的包裹,则认为订单取派失败
             $packageCount = $this->getPackageService()->count(['order_no' => $dbOrder['order_no'], 'status' => BaseConstService::PACKAGE_STATUS_5]);
             if ($packageCount == 0) {
-                $cancelOrderNoList[] = $dbOrder['order_no'];
+                $cancelOrderList[] = $dbOrder;
                 continue;
             }
             //若存在取派完成的包裹,则认为i订单取派完成;
@@ -691,18 +721,25 @@ class TourService extends BaseService
             } else {
                 $pieCount += 1;
             }
-            $signOrderNoList[] = $dbOrder['order_no'];
+            $signOrderList[] = $dbOrder;
         }
+        $totalAmount = [
+            'total_sticker_amount' => $totalStickerAmount,
+            'total_replace_amount' => array_sum(array_column($signOrderList, 'replace_amount')),
+            'total_settlement_amount' => array_sum(array_column($signOrderList, 'settlement_amount')),
+        ];
+        //金额验证
+        $this->checkBatchSignAmount($params, $totalAmount);
         //签收成功订单
-        if (!empty($signOrderNoList)) {
-            $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no'], 'order_no' => ['in', $signOrderNoList], 'status' => BaseConstService::ORDER_STATUS_4], ['status' => BaseConstService::ORDER_STATUS_5, 'sticker_amount' => $totalStickerAmount]);
+        if (!empty($signOrderList)) {
+            $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no'], 'order_no' => ['in', array_column($signOrderList, 'order_no')], 'status' => BaseConstService::ORDER_STATUS_4], ['status' => BaseConstService::ORDER_STATUS_5, 'sticker_amount' => $totalStickerAmount]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('签收失败');
             }
         }
         //签收失败订单
-        if (!empty($cancelOrderNoList)) {
-            $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no'], 'order_no' => ['in', $cancelOrderNoList], 'status' => BaseConstService::ORDER_STATUS_4], ['status' => BaseConstService::ORDER_STATUS_6]);
+        if (!empty($cancelOrderList)) {
+            $rowCount = $this->getOrderService()->update(['batch_no' => $batch['batch_no'], 'order_no' => ['in', array_column($cancelOrderList, 'order_no')], 'status' => BaseConstService::ORDER_STATUS_4], ['status' => BaseConstService::ORDER_STATUS_6]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('签收失败');
             }
@@ -712,30 +749,50 @@ class TourService extends BaseService
             'status' => BaseConstService::BATCH_CHECKOUT,
             'actual_pickup_quantity' => $pickupCount,
             'actual_pie_quantity' => $pieCount,
-            'sticker_amount' => $totalStickerAmount,
             'signature' => $params['signature'],
             'pay_type' => $params['pay_type'],
             'pay_picture' => $params['pay_picture']
         ];
-        $rowCount = $this->getBatchService()->updateById($batch['id'], $batchData);
+        $rowCount = $this->getBatchService()->updateById($batch['id'], array_merge($batchData, $totalAmount));
         if ($rowCount === false) {
             throw new BusinessLogicException('签收失败');
         }
         /*****************************************4.更新取件线路信息***************************************************/
-        $replaceAmount = $this->getBatchService()->sum('replace_amount', ['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT]);
-        $settlementAmount = $this->getBatchService()->sum('settlement_amount', ['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT]);
         $tourData = [
             'actual_pickup_quantity' => intval($tour['actual_pickup_quantity']) + $pickupCount,
             'actual_pie_quantity' => intval($tour['actual_pie_quantity']) + $pieCount,
-            'sticker_amount' => $tour['sticker_amount'] + $totalStickerAmount,
-            'replace_amount' => $replaceAmount,
-            'settlement_amount' => $settlementAmount
+            'sticker_amount' => $tour['sticker_amount'] + $totalStickerAmount
         ];
         $rowCount = parent::updateById($id, $tourData);
         if ($rowCount === false) {
             throw new BusinessLogicException('签收失败');
         }
+        //重新统计金额
+        $this->reCountActualAmountByNo($tour['tour_no']);
+
         TourTrait::afterBatchSign($tour, $batch);
+    }
+
+    /**
+     * 验证签收金额
+     * @param $params
+     * @param $totalStickerAmount
+     * @throws BusinessLogicException
+     */
+    private function checkBatchSignAmount($params, $dbParams)
+    {
+        //验证贴单费用
+        if (bccomp($params['total_sticker_amount'], $dbParams['total_sticker_amount']) !== 0) {
+            throw new BusinessLogicException('5001', 5001);
+        }
+        //验证代收货款
+        if (bccomp($params['total_replace_amount'], $dbParams['total_replace_amount']) !== 0) {
+            throw new BusinessLogicException('总计代收货款不正确');
+        }
+        //验证结算费用(运费)
+        if (bccomp($params['total_settlement_amount'], $dbParams['total_settlement_amount']) !== 0) {
+            throw new BusinessLogicException('总计运费不正确');
+        }
     }
 
     /**
@@ -864,7 +921,7 @@ class TourService extends BaseService
                 }
                 $surplusQuantity = TourMaterial::query()->where('tour_no', $tour['tour_no'])->where('code', $v['code'])->first()['surplus_quantity'];
                 if (intval($v['actual_quantity']) > $surplusQuantity) {
-                    throw new BusinessLogicException('剩余材料只剩[:count]个，请重新选择材料数量', 301, ['count' => $surplusQuantity]);
+                    throw new BusinessLogicException('剩余材料只剩[:count]个，请重新选择材料数量', 3001, ['count' => $surplusQuantity]);
                 }
             }
         }
@@ -1019,5 +1076,20 @@ class TourService extends BaseService
         }
         $info = array_values($info);
         return $info;
+    }
+
+    /**
+     * 重新统计金额
+     * @param $tourNo
+     * @throws BusinessLogicException
+     */
+    public function reCountActualAmountByNo($tourNo)
+    {
+        $totalActualReplaceAmount = $this->getOrderService()->sum('replace_amount', ['tour_no' => $tourNo, 'status' => BaseConstService::ORDER_STATUS_5]);
+        $totalActualSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['tour_no' => $tourNo, 'status' => BaseConstService::ORDER_STATUS_5]);
+        $rowCount = parent::update(['tour_no' => $tourNo], ['replace_amount' => $totalActualReplaceAmount, 'settlement_amount' => $totalActualSettlementAmount]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('金额统计失败');
+        }
     }
 }

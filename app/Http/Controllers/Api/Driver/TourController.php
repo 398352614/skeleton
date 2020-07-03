@@ -153,6 +153,17 @@ class TourController extends BaseController
     }
 
     /**
+     * 签收验证
+     * @param $id
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function checkBatchSign($id)
+    {
+        return $this->service->checkBatchSign($id, $this->data);
+    }
+
+    /**
      * 站点 签收
      * @param $id
      * @throws \App\Exceptions\BusinessLogicException

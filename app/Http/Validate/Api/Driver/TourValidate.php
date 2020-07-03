@@ -49,7 +49,6 @@ class TourValidate extends BaseValidate
         'begin_signature_third_pic' => 'nullable|string|max:250',
         'cancel_order_id_list' => 'nullable|string',
         'out_order_id_list' => 'nullable|string',
-        'total_sticker_amount' => 'required|numeric',
         'order_count' => 'required|integer',
         //异常上报
         'stage' => 'required|integer|in:1,2',
@@ -64,6 +63,9 @@ class TourValidate extends BaseValidate
         'signature' => 'required|string|max:250',
         'pay_type' => 'required|integer|in:1,2',
         'pay_picture' => 'nullable|required_if:pay_type,2|string|max:250',
+        'total_sticker_amount' => 'required|numeric',
+        'total_replace_amount' => 'required|numeric',
+        'total_settlement_amount' => 'required|numeric',
         //入库
         'end_signature' => 'required|string|max:250',
         'end_signature_remark' => 'nullable|string|max:250',
@@ -106,13 +108,20 @@ class TourValidate extends BaseValidate
         'getBatchInfo' => ['batch_id'],
         'batchException' => ['batch_id', 'stage', 'type', 'exception_remark', 'picture'],
         'batchCancel' => ['batch_id', 'cancel_type', 'cancel_remark', 'cancel_picture'],
+        'checkBatchSign' => [
+            'batch_id', 'package_list', 'material_list',
+            //包裹列表
+            'package_list.*.id', 'package_list.*.sticker_no',
+            //材料列表
+            'material_list.*.order_no', 'material_list.*.code', 'material_list.*.actual_quantity',
+        ],
         'batchSign' => [
             'batch_id', 'package_list', 'material_list', 'signature', 'pay_type', 'pay_picture',
             //包裹列表
             'package_list.*.id', 'package_list.*.sticker_no',
             //材料列表
             'material_list.*.order_no', 'material_list.*.code', 'material_list.*.actual_quantity',
-            'total_sticker_amount'
+            'total_sticker_amount', 'total_replace_amount', 'total_settlement_amount'
         ],
         'inWarehouse' => ['end_signature', 'end_signature_remark']
     ];

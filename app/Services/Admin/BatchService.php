@@ -239,6 +239,8 @@ class BatchService extends BaseService
             throw new BusinessLogicException('订单加入站点失败!');
         }
         $batch = $batch->getOriginal();
+        //重新统计金额
+        $this->reCountAmountByNo($batchNo);
         return $batch;
     }
 
@@ -253,20 +255,16 @@ class BatchService extends BaseService
     {
         //锁定站点
         $batch = parent::getInfoLock(['id' => $batch['id']], ['*'], false);
-        $replaceAmount = empty($order['replace_amount']) ? 0.00 : $order['replace_amount'];
-        $settlementAmount = empty($order['settlement_amount']) ? 0.00 : $order['settlement_amount'];
         $data = (intval($order['type']) === 1) ? [
-            'expect_pickup_quantity' => intval($batch['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($batch['expect_pie_quantity']) + 1,
-            'replace_amount' => $batch['replace_amount'] + $replaceAmount,
-            'settlement_amount' => $batch['settlement_amount'] + $settlementAmount
+            'expect_pickup_quantity' => intval($batch['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($batch['expect_pie_quantity']) + 1
         ];
         $rowCount = parent::updateById($batch['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单加入站点失败!');
         }
-
         $batch = array_merge($batch->toArray(), $data);
-
+        //重新统计金额
+        $this->reCountAmountByNo($batch['batch_no']);
         return $batch;
     }
 
@@ -295,9 +293,7 @@ class BatchService extends BaseService
             'receiver_street' => $order['receiver_street'],
             'receiver_address' => $order['receiver_address'],
             'receiver_lon' => $order['lon'],
-            'receiver_lat' => $order['lat'],
-            'replace_amount' => empty($order['replace_amount']) ? 0.00 : $order['replace_amount'],
-            'settlement_amount' => empty($order['settlement_amount']) ? 0.00 : $order['settlement_amount']
+            'receiver_lat' => $order['lat']
         ];
         if (intval($order['type']) === 1) {
             $data['expect_pickup_quantity'] = 1;
@@ -347,15 +343,12 @@ class BatchService extends BaseService
             }
         }
         //代收款费用
-        $diffReplaceAmount = $order['replace_amount'] - $dbOrder['replace_amount'];
-        $diffSettlementAmount = $order['settlement_amount'] - $dbOrder['settlement_amount'];
-        $rowCount = parent::updateById($info['id'], array_merge($data, [
-            'replace_amount' => $info['replace_amount'] + $diffReplaceAmount,
-            'settlement_amount' => $info['settlement_amount'] + $diffSettlementAmount
-        ]));
+        $rowCount = parent::updateById($info['id'], array_merge($data));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
+        //重新统计金额
+        $this->reCountAmountByNo($info['batch_no']);
         //取件线路修订单信息
         $this->getTourService()->updateAboutOrderByOrder($dbOrder, $order);
     }
@@ -445,9 +438,9 @@ class BatchService extends BaseService
             $rowCount = parent::delete(['id' => $info['id']]);
         } else {
             $data = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
-            $data['settlement_amount'] = $info['settlement_amount'] - $order['settlement_amount'];
-            $data['replace_amount'] = $info['replace_amount'] - $order['replace_amount'];
             $rowCount = parent::updateById($info['id'], $data);
+            //重新统计金额
+            $this->reCountAmountByNo($info['batch_no']);
         }
         if ($rowCount === false) {
             throw new BusinessLogicException('站点移除订单失败，请重新操作');
@@ -554,12 +547,12 @@ class BatchService extends BaseService
             'actual_pickup_quantity' => DB::raw('actual_pickup_quantity+' . $batch['actual_pickup_quantity']),
             'expect_pie_quantity' => DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']),
             'actual_pie_quantity' => DB::raw('actual_pie_quantity+' . $batch['actual_pie_quantity']),
-            'replace_amount' => DB::raw('replace_amount+' . $batch['replace_amount']),
-            'settlement_amount' => DB::raw('settlement_amount+' . $batch['settlement_amount']),
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
+        //重新统计金额
+        $this->reCountAmountByNo($dbBatch['batch_no']);
         //删除站点
         $rowCount = parent::delete(['id' => $batch['id']]);
         if ($rowCount === false) {
@@ -670,7 +663,22 @@ class BatchService extends BaseService
      */
     public function getLineList()
     {
-        $list = $this->getLineService()->query->where('rule','=',CompanyTrait::getLineRule())->paginate();
+        $list = $this->getLineService()->query->where('rule', '=', CompanyTrait::getLineRule())->paginate();
         return $list ?? [];
+    }
+
+    /**
+     * 重新统计金额
+     * @param $batchNo
+     * @throws BusinessLogicException
+     */
+    public function reCountAmountByNo($batchNo)
+    {
+        $totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['batch_no' => $batchNo]);
+        $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['batch_no' => $batchNo]);
+        $rowCount = parent::update(['batch_no' => $batchNo], ['replace_amount' => $totalReplaceAmount, 'settlement_amount' => $totalSettlementAmount]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('金额统计失败');
+        }
     }
 }

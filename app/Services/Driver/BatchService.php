@@ -9,7 +9,9 @@
 namespace App\Services\Driver;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
+use App\Services\BaseConstService;
 use App\Services\BaseService;
 
 class BatchService extends BaseService
@@ -18,6 +20,4 @@ class BatchService extends BaseService
     {
         parent::__construct($batch);
     }
-
-
 }
