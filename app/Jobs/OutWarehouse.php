@@ -99,14 +99,14 @@ class OutWarehouse implements ShouldQueue
                 $tourService->autoOpTour(['tour_no' => $this->tour_no]);
             }
             /****************************************2.触发司机出库****************************************************/
-            $tour = DB::table('tour')->where('tour_no', $this->tour_no)->first();
+            $tour = DB::table('tour')->where('tour_no', $this->tour_no)->first()->toArray();
             Log::info('tour:' . json_encode($tour));
             $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
-            event(new \App\Events\TourNotify\OutWarehouse($tour->toArray(), $batchList, $this->orderList));
+            event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $this->orderList));
             /**************************************3.通知下一个站点事件************************************************/
             $nextBatch = TourTrait::getNextBatch($this->tour_no);
             if (!empty($nextBatch)) {
-                event(new NextBatch($tour->toArray(), $nextBatch->toArray()));
+                event(new NextBatch($tour, $nextBatch->toArray()));
             }
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getFile());
