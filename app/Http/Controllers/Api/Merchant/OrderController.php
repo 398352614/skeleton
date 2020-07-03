@@ -173,6 +173,7 @@ class OrderController extends OrderBaseController
     /**
      * 删除订单
      * @param $id
+     * @return mixed
      * @throws BusinessLogicException
      */
     public function destroy($id)
