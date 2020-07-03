@@ -6,6 +6,7 @@ use App\Events\TourNotify\NextBatch;
 use App\Models\Batch;
 use App\Models\Material;
 use App\Models\Package;
+use App\Models\Tour;
 use App\Services\Admin\TourService;
 use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
@@ -99,7 +100,7 @@ class OutWarehouse implements ShouldQueue
                 $tourService->autoOpTour(['tour_no' => $this->tour_no]);
             }
             /****************************************2.触发司机出库****************************************************/
-            $tour = DB::table('tour')->where('tour_no', $this->tour_no)->first()->getOriginal();
+            $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
             Log::info('tour:' . json_encode($tour));
             $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
             event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $this->orderList));
