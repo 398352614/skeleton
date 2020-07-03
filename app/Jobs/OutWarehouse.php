@@ -2,12 +2,16 @@
 
 namespace App\Jobs;
 
+use App\Events\TourNotify\NextBatch;
 use App\Models\Batch;
 use App\Models\Material;
 use App\Models\Package;
+use App\Models\Tour;
 use App\Services\Admin\TourService;
+use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
+use App\Traits\TourTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -19,7 +23,7 @@ use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use WebSocket\Client;
 
-class UpdateLineCountTime implements ShouldQueue
+class OutWarehouse implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
@@ -55,14 +59,18 @@ class UpdateLineCountTime implements ShouldQueue
 
     public $tour_no;
 
+    public $orderList;
+
 
     /**
      * UpdateLineCountTime constructor.
      * @param $tourNo
+     * @param $orderList ;
      */
-    public function __construct($tourNo)
+    public function __construct($tourNo, $orderList)
     {
         $this->tour_no = $tourNo;
+        $this->orderList = $orderList;
     }
 
 
@@ -73,6 +81,7 @@ class UpdateLineCountTime implements ShouldQueue
     public function handle()
     {
         try {
+            /*****************************************1.智能调度*******************************************************/
             $tour = DB::table('tour')->where('tour_no', $this->tour_no)->first();
             $company = CompanyTrait::getCompany($tour->company_id);
             request()->headers->set('X-Uuid', $company['company_code']);
@@ -90,7 +99,19 @@ class UpdateLineCountTime implements ShouldQueue
             } else {
                 $tourService->autoOpTour(['tour_no' => $this->tour_no]);
             }
+            /****************************************2.触发司机出库****************************************************/
+            $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
+            Log::info('tour:' . json_encode($tour));
+            $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
+            event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $this->orderList));
+            /**************************************3.通知下一个站点事件************************************************/
+            $nextBatch = TourTrait::getNextBatch($this->tour_no);
+            if (!empty($nextBatch)) {
+                event(new NextBatch($tour, $nextBatch->toArray()));
+            }
         } catch (\Exception $ex) {
+            Log::channel('job-daily')->error('智能调度错误:' . $ex->getFile());
+            Log::channel('job-daily')->error('智能调度错误:' . $ex->getLine());
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getMessage());
             return false;
         }

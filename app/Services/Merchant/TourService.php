@@ -145,7 +145,7 @@ class TourService extends BaseService
                 Carbon::parse($this->formData['end_date'])->endOfDay()
             ]);
         }
-        $tourNoList = $orderQuery->groupBy('tour_no')->limit($this->per_page)->pluck('tour_no')->toArray();
+        $tourNoList = $orderQuery->groupBy('tour_no')->pluck('tour_no')->toArray();
         $this->query->whereIn('tour_no', $tourNoList);
         if (!empty($this->formData['merchant_status'])) {
             if ($this->formData['merchant_status'] == BaseConstService::MERCHANT_TOUR_STATUS_1) {

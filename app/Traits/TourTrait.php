@@ -15,7 +15,6 @@ use App\Events\TourDriver\BackWarehouse;
 use App\Events\TourDriver\OutWarehouse;
 use App\Events\TourNotify\CancelBatch;
 use App\Events\TourNotify\NextBatch;
-use App\Jobs\UpdateLineCountTime;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
@@ -33,19 +32,8 @@ trait TourTrait
         !empty($orderList) && OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_DELIVERING);
         //触发司机出库1
         event(new OutWarehouse($tour));
-        //触发司机出库事件2
-        $newOrderList = array_merge($cancelOrderList, $orderList);
-        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
-        event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $newOrderList));
-
-        //通知下一个站点事件
-        $nextBatch = self::getNextBatch($tour['tour_no']);
-        if (!empty($nextBatch)) {
-            event(new NextBatch($tour, $nextBatch->toArray()));
-        }
-
-        //智能调度
-        dispatch(new UpdateLineCountTime($tour['tour_no']));
+        //智能调度-之后再进行出库通知
+        dispatch(new \App\Jobs\OutWarehouse($tour['tour_no'], array_merge($cancelOrderList, $orderList)));
     }
 
     public static function afterBatchArrived($tour, $batch)
@@ -123,7 +111,7 @@ trait TourTrait
         }
     }
 
-    private static function getNextBatch($tourNo)
+    public static function getNextBatch($tourNo)
     {
         return $nextBatch = Batch::query()->where('tour_no', $tourNo)->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first(['batch_no', 'expect_arrive_time', 'expect_time', 'expect_distance']);
     }
