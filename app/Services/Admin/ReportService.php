@@ -145,26 +145,34 @@ class ReportService extends BaseService
         $info['cash_total_amount'] = 0;
         $info['cash_sticker_count'] = 0;
         foreach ($orderList as $k => $v) {
-            $orderList[$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
-            $orderList[$k]['settlement_amount'] = intval($v['settlement_amount']);
-            $orderList[$k]['replace_amount'] = intval($v['replace_amount']);
-            $orderList[$k]['sticker_amount'] = intval($v['sticker_amount']);
-            $orderList[$k]['total_amount'] = intval($v['settlement_amount']) + intval($v['replace_amount']) + intval($v['sticker_amount']);
+            $orderList[$k]['package_list'] = array_values(collect($packageList)->where('order_no', $v['order_no'])->all());
+            $orderList[$k]['expect_settlement_amount'] = intval($v['settlement_amount']);
+            $orderList[$k]['expect_replace_amount'] = intval($v['replace_amount']);
+            $orderList[$k]['expect_sticker_amount'] = intval($v['sticker_amount']);
+            $orderList[$k]['expect_total_amount'] = intval($v['settlement_amount']) + intval($v['replace_amount']) + intval($v['sticker_amount']);
+
             if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
+                $orderList[$k]['actual_settlement_amount'] = intval($v['settlement_amount']);
+                $orderList[$k]['actual_replace_amount'] = intval($v['replace_amount']);
+                $orderList[$k]['actual_sticker_amount'] = intval($v['sticker_amount']);
+                $orderList[$k]['actual_total_amount'] = intval($v['settlement_amount']) + intval($v['replace_amount']) + intval($v['sticker_amount']);
+
                 $v['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'];
                 if ($v['pay_type'] == BaseConstService::BATCH_PAY_TYPE_2) {
                     $info['card_settlement_amount'] += intval($v['settlement_amount']);
                     $info['card_replace_amount'] += intval($v['replace_amount']);
                     $info['card_sticker_amount'] += intval($v['sticker_amount']);
-                    $info['card_total_amount'] += intval($orderList[$k]['total_amount']);
+                    $info['card_total_amount'] += intval($orderList[$k]['actual_total_amount']);
                     $info['card_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
                 } else {
                     $info['cash_settlement_amount'] += intval($v['settlement_amount']);
                     $info['cash_replace_amount'] += intval($v['replace_amount']);
                     $info['cash_sticker_amount'] += intval($v['sticker_amount']);
-                    $info['cash_total_amount'] += intval($orderList[$k]['total_amount']);
+                    $info['cash_total_amount'] += intval($orderList[$k]['actual_total_amount']);
                     $info['cash_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
                 }
+            } else {
+                $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount'] = $orderList[$k]['actual_sticker_amount'] = $orderList[$k]['actual_replace_amount'] = 0;
             }
         }
         foreach ($packageList as $k => $v) {

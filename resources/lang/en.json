@@ -1,4 +1,5 @@
 {
+    "地址数据不正确，请重新选择地址": "The address is incorrect,please choose another address",
     "用户不存在，请检查用户名": "The user account doesn't exist,please check the user account",
     "邮箱未注册，请先注册": "Email is not registered, please register first",
     "取派失败": "Failed",
