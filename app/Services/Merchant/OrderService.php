@@ -18,6 +18,7 @@ use App\Http\Validate\Api\Merchant\OrderImportValidate;
 use App\Http\Validate\BaseValidate;
 use App\Models\Order;
 use App\Models\OrderImportLog;
+use App\Services\Merchant\RouteTrackingService;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
@@ -174,6 +175,15 @@ class OrderService extends BaseService
     }
 
     /**
+     * 线路追踪 服务
+     * @return RouteTrackingService
+     */
+    public function getRouteTrackingService()
+    {
+        return self::getInstance(RouteTrackingService::class);
+    }
+
+    /**
      * 查询初始化
      * @return array
      */
@@ -193,10 +203,10 @@ class OrderService extends BaseService
      */
     public function orderCount($params)
     {
-        if(!array_key_exists('type',$params)){
+        if (!array_key_exists('type', $params)) {
             throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
         }
-        if(!empty($params['type']) && !in_array($params['type'],[BaseConstService::ORDER_TYPE_1,BaseConstService::ORDER_NATURE_2])){
+        if (!empty($params['type']) && !in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_NATURE_2])) {
             throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
         }
         return [
@@ -208,7 +218,7 @@ class OrderService extends BaseService
             'singed' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_5),
             'cancel_count' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_6),
             'delete_count' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_7),
-            'exception_count' => $this->singleOrderCount($params['type'],null, BaseConstService::ORDER_EXCEPTION_LABEL_2),
+            'exception_count' => $this->singleOrderCount($params['type'], null, BaseConstService::ORDER_EXCEPTION_LABEL_2),
         ];
     }
 
@@ -581,7 +591,7 @@ class OrderService extends BaseService
         }
         //填充地址
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
-            $fields=['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'];
+            $fields = ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'];
             $params['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($params, $fields)));
         }
         //若存在外部订单号,则判断是否存在已预约的订单号
@@ -1208,11 +1218,31 @@ class OrderService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $batch = $this->getBatchService()->getInfo(['batch_no' => $info->batch_no], ['expect_distance', 'actual_distance', 'expect_time', 'actual_time', 'expect_arrive_time', 'actual_arrive_time'], false);
+        $batch = $this->getBatchService()->getInfo(['batch_no' => $info->batch_no], ['*'], false);
         if (empty($batch)) {
             throw new BusinessLogicException('数据不存在');
         }
-        return Arr::only($batch->toArray(), ['expect_distance', 'actual_distance', 'expect_time', 'actual_time', 'expect_arrive_time', 'actual_arrive_time']);
+        $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $batch->tour_no], ['lon', 'lat'], false) ?? '';
+        if (empty($routeTracking)) {
+            $routeTracking = $this->getTourService()->getInfo(['tour_no' => $batch->tour_no], ['*'], false);
+            $routeTracking['lon'] = $routeTracking['warehouse_lon'];
+            $routeTracking['lat'] = $routeTracking['warehouse_lat'];
+        }
+
+        return [
+            'expect_distance' => $batch['expect_distance'] ?? 0,
+            'actual_distance' => $batch['actual_distance'] ?? 0,
+            'expect_time' => $batch['expect_time'] ?? 0,
+            'actual_time' => $batch['actual_time'] ?? 0,
+            'expect_arrive_time' => $batch['expect_arrive_time'] ?? '',
+            'actual_arrive_time' => $batch['actual_arrive_time'] ?? '',
+            'receiver_lon' => $batch['receiver_lon'] ?? '',
+            'receiver_lat' => $batch['receiver_lat'] ?? '',
+
+            'driver_lon' => $routeTracking['lon'] ?? '',
+            'driver_lat' => $routeTracking['lat'] ?? '',
+
+        ];
     }
 
 }

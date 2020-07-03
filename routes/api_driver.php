@@ -33,7 +33,7 @@ Route::namespace('Api\Driver')->middleware([])->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::namespace('Api\Driver')->middleware(['companyValidate:driver','auth:driver'])->group(function () {
+Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driver'])->group(function () {
     Route::post('logout', 'AuthController@logout');
     Route::get('me', 'AuthController@me');
     Route::put('my-password', 'AuthController@updatePassword');
@@ -118,6 +118,8 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver','auth:drive
         Route::put('/{id}/batchException', 'TourController@batchException');
         //站点 取消取派
         Route::put('/{id}/batchCancel', 'TourController@batchCancel');
+        //站点 签收验证
+        Route::put('/{id}/checkBatchSign', 'TourController@checkBatchSign');
         //站点 签收
         Route::put('/{id}/batchSign', 'TourController@batchSign');
         //获取取件线路统计数据
