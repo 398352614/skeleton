@@ -14,7 +14,7 @@ use App\Http\Validate\BaseValidate;
 class CountryValidate extends BaseValidate
 {
     public $customAttributes = [
-        'short' => '简称',
+
     ];
 
 

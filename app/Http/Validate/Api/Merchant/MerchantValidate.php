@@ -14,19 +14,8 @@ use App\Http\Validate\BaseValidate;
 class MerchantValidate extends BaseValidate
 {
     public $customAttributes = [
-        'type' => '类型',
-        'name' => '全称',
-        'email' => '邮箱',
-        'country' => '国家',
-        'settlement_type' => '结算方式',
-        'merchant_group_id' => '商户组ID',
-        'contacter' => '联系人',
-        'phone' => '电话',
-        'address' => '联系地址',
-        'avatar' => '头像',
-        'status' => '状态',
-        'password' => '密码',
-        'confirm_password' => '密码确认',
+
+
     ];
 
 

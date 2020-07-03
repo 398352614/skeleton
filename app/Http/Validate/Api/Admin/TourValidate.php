@@ -14,8 +14,7 @@ use App\Http\Validate\BaseValidate;
 class TourValidate extends BaseValidate
 {
     public $customAttributes = [
-        'driver_id' => '司机ID',
-        'car_id' => '车辆ID',
+
     ];
 
 

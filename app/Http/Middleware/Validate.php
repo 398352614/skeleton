@@ -62,7 +62,7 @@ class Validate
             /************************************验证规则获取 end******************************************************/
             /********************************************数据验证 start************************************************/
             //验证
-            $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), $this->validate->customAttributes, $request);
+            $this->validate($data, $rules, array_merge(BaseValidate::$baseMessage, $this->validate->message), $this->validate->customAttributes ?? [], $request);
             /*********************************************数据验证 end*************************************************/
         } catch (\Exception $ex) {
             throw new BusinessLogicException($ex->getMessage(), $ex->getCode());

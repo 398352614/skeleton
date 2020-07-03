@@ -14,9 +14,7 @@ use App\Http\Validate\BaseValidate;
 class MerchantGroupValidate extends BaseValidate
 {
     public $customAttributes = [
-        'transport_price_id' => '运价ID',
-        'name' => '名称',
-        'is_default' => '是否默认'
+
     ];
 
 

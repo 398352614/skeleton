@@ -7,7 +7,7 @@ use App\Http\Validate\BaseValidate;
 class MemorandumValidate extends BaseValidate
 {
     public $customAttributes = [
-        'content' => '内容',
+
     ];
 
 

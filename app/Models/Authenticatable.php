@@ -29,7 +29,7 @@ class Authenticatable extends BaseUser
     {
         return function ($model) {
             /**@var \Illuminate\Database\Eloquent\Model $model */
-            if (in_array('company_id', $this->getFillable())) {
+            if (in_array('company_id', Schema::getColumnListing($model->getTable()))) {
                 if (!isset($model->company_id) || $model->company_id === null) {
                     $model->company_id = auth()->user() ? auth()->user()->company_id : self::getCompanyId();
                 }

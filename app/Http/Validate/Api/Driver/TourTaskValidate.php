@@ -7,8 +7,7 @@ use App\Http\Validate\BaseValidate;
 class TourTaskValidate extends BaseValidate
 {
     public $customAttributes = [
-        'batch_id' => '站点ID',
-        'order_id' => '订单ID',
+
     ];
 
 

@@ -86,6 +86,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/orderPrintAll', 'OrderController@orderPrintAll');
         //订单导出表格
         Route::get('/order-excel', 'OrderController@orderExport');
+        //获取所有线路（邮编及区域）
+        Route::get('/get-line', 'OrderController@getLineList');
     });
 
 
@@ -157,7 +159,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/assign-tour', 'BatchController@assignToTour');            //分配站点至取件线路
         Route::delete('/{id}/removeFromTour', 'BatchController@removeFromTour');     //移除站点
         Route::get('/{id}/get-date', 'BatchController@getLineDate'); //获取可分配路线日期
-        Route::get('/get-line', 'BatchController@getLineList'); //获取可分配路线日期
+        Route::get('/get-line', 'BatchController@getLineList'); //根据线路规则获取线路
     });
 
     //物流状态管理

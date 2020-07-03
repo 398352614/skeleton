@@ -6,15 +6,7 @@ use App\Http\Validate\BaseValidate;
 class EmployeeValidate extends BaseValidate
 {
     public $customAttributes = [
-        'fullname' => '姓名',
-        'username' => '用户名',
-        'email'  => '邮箱',
-        'phone'  => '手机号码',
-        'remark' => '备注',
-        'group_id' => '用户组',
-        'institution_id' => '组织机构',
-        'password' => '密码',
-        'confirm_password' => '确认密码',
+
     ];
 
 

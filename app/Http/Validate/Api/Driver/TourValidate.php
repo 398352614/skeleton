@@ -10,29 +10,7 @@ use App\Http\Validate\BaseValidate;
 class TourValidate extends BaseValidate
 {
     public $customAttributes = [
-        'remark' => '内容',
-        'car_id' => '车辆ID',
-        'batch_id' => '站点ID',
-        'begin_signature' => '出库签名',
-        'begin_signature_remark' => '出库备注',
-        'begin_signature_first_pic' => '出库图片1',
-        'begin_signature_second_pic' => '出库图片2',
-        'begin_signature_third_pic' => '出库图片1',
-        'stage' => '状态',
-        'type' => '类型',
-        'exception_remark' => '异常内容',
-        'picture' => '图片',
-        'cancel_type' => '取消取派类型',
-        'cancel_remark' => '取消取派内容',
-        'cancel_picture' => '取消取派图片',
-        'cancel_order_id_list' => '取消订单ID列表',
-        'out_order_id_list' => '出库订单ID列表',
-        'signature' => '客户签名',
-        'pay_type' => '支付方式',
-        'pay_picture' => '支付图片',
-        'end_signature' => '入库签名',
-        'end_signature_remark' => '入库备注',
-        'order_count' => '订单数量'
+
 
     ];
 

@@ -14,16 +14,7 @@ use App\Http\Validate\BaseValidate;
 class LineValidate extends BaseValidate
 {
     public $customAttributes = [
-        'name' => '名称',
-        'country' => '国家',
-        'warehouse_id' => '仓库ID',
-        'pickup_max_count' => '取件最大订单量',
-        'pie_max_count' => '派件最大订单量',
-        'is_increment' => '是否新增取件线路',
-        'order_deadline' => '当天下单截止时间',
-        'appointment_days' => '可预约天数',
-        'remark' => '备注',
-        'work_day_list' => '工作日',
+
     ];
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:line,id,company_id',
