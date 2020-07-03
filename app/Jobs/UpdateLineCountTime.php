@@ -6,6 +6,7 @@ use App\Models\Batch;
 use App\Models\Material;
 use App\Models\Package;
 use App\Services\Admin\TourService;
+use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -72,6 +73,9 @@ class UpdateLineCountTime implements ShouldQueue
     public function handle()
     {
         try {
+            $tour = DB::table('tour')->where('tour_no', $this->tour_no)->first();
+            $company = CompanyTrait::getCompany($tour->company_id);
+            request()->headers->set('X-Uuid', $company->company_code);
             /**@var TourService $tourService */
             $tourService = FactoryInstanceTrait::getInstance(TourService::class);
             $batchList = Batch::query()->where('tour_no', $this->tour_no)->get(['id', 'sort_id'])->toArray();
