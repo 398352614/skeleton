@@ -108,6 +108,8 @@ class OutWarehouse implements ShouldQueue
                 event(new NextBatch($tour->toArray(), $nextBatch->toArray()));
             }
         } catch (\Exception $ex) {
+            Log::channel('job-daily')->error('智能调度错误:' . $ex->getFile());
+            Log::channel('job-daily')->error('智能调度错误:' . $ex->getLine());
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getMessage());
             return false;
         }
