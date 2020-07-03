@@ -725,7 +725,7 @@ class TourService extends BaseService
             }
             $signOrderList[] = $dbOrder;
             //更新订单贴单费
-            $rowCount = $this->getOrderService()->update(['order_no' => $dbOrder['order_no']], ['sticker_amount' => $orderStickerAmountList[$dbOrder['order_no']]]);
+            $rowCount = $this->getOrderService()->update(['order_no' => $dbOrder['order_no']], ['sticker_amount' => $orderStickerAmountList[$dbOrder['order_no']] ?? 0.00]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('签收失败');
             }
