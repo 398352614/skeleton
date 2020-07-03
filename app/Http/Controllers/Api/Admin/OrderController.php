@@ -231,7 +231,7 @@ class OrderController extends BaseController
      * @throws BusinessLogicException
      */
     public function orderExport(){
-        return $this->service->orderExport($this->data['id_list']);
+        return $this->service->orderExport($this->data);
     }
 
     /**

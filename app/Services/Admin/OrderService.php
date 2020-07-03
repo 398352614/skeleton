@@ -261,18 +261,19 @@ class OrderService extends BaseService
      * 获取所有线路
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getLineList(){
+    public function getLineList()
+    {
         return $this->getLineService()->getList();
     }
 
     public function getPageList()
     {
         if (!empty($this->formData['line_id'])) {
-            $batchList = $this->getBatchService()->getList(['line_id'=>$this->formData['line_id']],['*'],false)->pluck('batch_no')->toArray();
-                $this->filters['batch_no'] = ['in',$batchList];
+            $batchList = $this->getBatchService()->getList(['line_id' => $this->formData['line_id']], ['*'], false)->pluck('batch_no')->toArray();
+            $this->filters['batch_no'] = ['in', $batchList];
         }
         $list = parent::getPageList();
-        $tourNoList = $list->where('tour_no','<>','')->pluck('tour_no')->toArray();
+        $tourNoList = $list->where('tour_no', '<>', '')->pluck('tour_no')->toArray();
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false);
         foreach ($list as $k => $v) {
             $list[$k]['line_id'] = $tour->where('tour_no', $v['tour_no'])->first()['line_id'] ?? '';
@@ -1184,14 +1185,15 @@ class OrderService extends BaseService
 
     /**
      * 订单导出
-     * @param $ids
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderExport($ids)
+    public function orderExport()
     {
-        $ids = explode_id_string($ids);
-        $orderList = $this->getList(['id' => ['in', $ids]], ['*'], false);
+        $orderList = $this->getPageList();
+        if($orderList->hasMorePages()){
+            throw new BusinessLogicException('数据量过大无法导出，订单数不得超过200');
+        }
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
