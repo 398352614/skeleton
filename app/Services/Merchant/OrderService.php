@@ -562,7 +562,10 @@ class OrderService extends BaseService
                 $params['lon'] = $location['lon'];
             }
         }
-        //获取经纬度
+        if (empty($params['lat']) || empty($params['lon'])) {
+            throw new BusinessLogicException('地址数据不正确，请重新选择地址');
+        }
+            //获取经纬度
         $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
         $params['receiver_country'] = CompanyTrait::getCountry();
@@ -638,6 +641,7 @@ class OrderService extends BaseService
      * 批量导入验证
      * @param $params
      * @return mixed
+     * @throws BusinessLogicException
      */
     public function importCheckByList($params)
     {
