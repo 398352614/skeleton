@@ -18,6 +18,7 @@ class CompanyConfigValidate extends BaseValidate
         'currency_unit' => 'required|string|max:50',
         'volume_unit' => 'required|string|max:50',
         'map' => 'required|string|max:50',
+        'show_type'=>'required|integer|in:1,2'
     ];
 
     public $scene = [
@@ -28,6 +29,7 @@ class CompanyConfigValidate extends BaseValidate
             'currency_unit',
             'volume_unit',
             'map',
+            'show_type'
         ],
     ];
 }
