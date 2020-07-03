@@ -75,7 +75,7 @@ class UpdateLineCountTime implements ShouldQueue
         try {
             $tour = DB::table('tour')->where('tour_no', $this->tour_no)->first();
             $company = CompanyTrait::getCompany($tour->company_id);
-            request()->headers->set('X-Uuid', $company->company_code);
+            request()->headers->set('X-Uuid', $company['company_code']);
             /**@var TourService $tourService */
             $tourService = FactoryInstanceTrait::getInstance(TourService::class);
             $batchList = Batch::query()->where('tour_no', $this->tour_no)->get(['id', 'sort_id'])->toArray();
