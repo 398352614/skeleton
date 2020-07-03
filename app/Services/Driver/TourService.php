@@ -677,10 +677,10 @@ class TourService extends BaseService
         //运费统计
         $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['order_no' => ['in', $orderNoList]]);
         return [
-            'total_sticker_amount' => $totalStickerAmount,
-            'total_replace_amount' => $totalReplaceAmount,
-            'total_settlement_amount' => $totalSettlementAmount,
-            'total_amount' => $totalStickerAmount + $totalReplaceAmount + $totalSettlementAmount,
+            'total_sticker_amount' => number_format($totalStickerAmount, 2),
+            'total_replace_amount' => number_format($totalReplaceAmount, 2),
+            'total_settlement_amount' => number_format($totalSettlementAmount, 2),
+            'total_amount' => number_format($totalStickerAmount + $totalReplaceAmount + $totalSettlementAmount, 2),
         ];
     }
 

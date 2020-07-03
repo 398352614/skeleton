@@ -92,7 +92,7 @@ class TourController extends BaseController
      */
     public function updateBatchIndex()
     {
-        return $this->service->updateBatchIndex();
+        return $this->service->updateBatchIndex($this->data);
     }
 
     /**
@@ -113,7 +113,7 @@ class TourController extends BaseController
      */
     public function autoOpTour()
     {
-        return $this->service->autoOpTour();
+        return $this->service->autoOpTour($this->data);
     }
 
     /**
@@ -251,7 +251,8 @@ class TourController extends BaseController
      * @return mixed
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function tourExport($id){
+    public function tourExport($id)
+    {
         return $this->service->tourExport($id);
     }
 }
