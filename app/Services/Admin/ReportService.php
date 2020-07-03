@@ -145,7 +145,6 @@ class ReportService extends BaseService
         $info['cash_total_amount'] = 0;
         $info['cash_sticker_count'] = 0;
         foreach ($orderList as $k => $v) {
-            $orderList[$k]['package_list'] = array_values(collect($packageList)->where('order_no', $v['order_no'])->all());
             $orderList[$k]['expect_settlement_amount'] = intval($v['settlement_amount']);
             $orderList[$k]['expect_replace_amount'] = intval($v['replace_amount']);
             $orderList[$k]['expect_sticker_amount'] = intval($v['sticker_amount']);
@@ -183,7 +182,7 @@ class ReportService extends BaseService
         /**********************************************获取入库信息****************************************************/
         $inWarehouseInfo = $this->getInWarehouseInfo($info, $warehouseInfo, $packageList, $tourMaterialList);
         /********************************************获取取件站点信息**************************************************/
-        $detailList = $this->getBatchInfoList($batchList, $orderList, $materialList);
+        $detailList = $this->getBatchInfoList($batchList, $orderList, $materialList, $packageList);
         $info['out_warehouse'] = $outWarehouseInfo;
         $info['detail_list'] = $detailList;
         $info['in_warehouse'] = $inWarehouseInfo;
@@ -252,9 +251,10 @@ class ReportService extends BaseService
      * @param $batchList
      * @param $orderList
      * @param $materialList
+     * @param $packageList
      * @return array
      */
-    private function getBatchInfoList($batchList, $orderList, $materialList)
+    private function getBatchInfoList($batchList, $orderList, $materialList, $packageList)
     {
         $newBatchList = [];
 
@@ -293,6 +293,7 @@ class ReportService extends BaseService
                 'actual_time_human' => $batch['actual_time_human'],
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
+            $newBatchList[$key]['package_list'] = collect($packageList)->where('batch_no',$batch['batch_no']);
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
         }
         return $newBatchList;
