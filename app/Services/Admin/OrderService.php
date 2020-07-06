@@ -197,6 +197,16 @@ class OrderService extends BaseService
     }
 
     /**
+     * 区域 服务
+     * @return LineAreaService
+     */
+    private function getLineAreaService()
+    {
+        return self::getInstance(LineAreaService::class);
+
+    }
+
+    /**
      * 查询初始化
      * @return array
      */
@@ -260,10 +270,22 @@ class OrderService extends BaseService
     /**
      * 获取所有线路
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws BusinessLogicException
      */
     public function getLineList()
     {
-        return $this->getLineService()->getList();
+        if (CompanyTrait::getCompany()['show_type'] == BaseConstService::ALL_SHOW) {
+            $info = $this->getLineRangeService()->getList([], ['*'], false);
+        } else {
+            $info = $this->getLineAreaService()->getList([], ['*'], false);
+        }
+        $lineId = $info->pluck('line_id')->toArray();
+        if (empty($lineId)) {
+            throw new BusinessLogicException('没有找到线路');
+        }
+        $data = $this->getLineService()->getList(['id' => ['in', $lineId]], ['name'], false);
+        $data = collect($data)->where();
+        return $data ?? [];
     }
 
     public function getPageList()
@@ -896,7 +918,7 @@ class OrderService extends BaseService
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
-        ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($info['order_no'], $params['execution_date']));
+        ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($info['order_no'], $params['execution_date'], ['line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
         return 'true';
     }
 
@@ -1244,7 +1266,7 @@ class OrderService extends BaseService
     public function orderExport()
     {
         $orderList = $this->getPageList();
-        if($orderList->hasMorePages()){
+        if ($orderList->hasMorePages()) {
             throw new BusinessLogicException('数据量过大无法导出，订单数不得超过200');
         }
         if ($orderList->isEmpty()) {
@@ -1255,11 +1277,12 @@ class OrderService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $orderList->pluck('tour_no')->toArray()]]);
+        $orderList = $orderList->toArray(request());
         foreach ($orderList as $k => $v) {
-            $orderList[$k]['merchant_name'] = $merchant->where('id', $v['merchant_id'])->first()['name'];
+            $orderList[$k]['merchant_name'] = $v['merchant_id_name'];
             $orderList[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
+            $orderList[$k]['status'] = $v['status_name'];
         }
-        $orderList = collect($orderList)->toArray();
         foreach ($orderList as $v) {
             $cellData[] = array_only_fields_sort($v, $this->headings);
         }

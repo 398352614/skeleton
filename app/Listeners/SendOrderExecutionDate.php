@@ -87,7 +87,11 @@ class SendOrderExecutionDate implements ShouldQueue
             //推送
             $this->postData($url, [
                 'type' => $event->notifyType(),
-                'data' => ['order_no' => $event->order_no, 'execution_date' => $event->execution_date]
+                'data' => [
+                    'order_no' => $event->order_no,
+                    'execution_date' => $event->execution_date,
+                    'line' => $event->tour
+                ]
             ]);
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());

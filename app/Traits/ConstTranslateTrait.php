@@ -53,6 +53,7 @@ use Illuminate\Support\Facades\App;
  * @method static driverEventList($args = null)
  * @method static merchantTourStatusList($args = null)
  * @method static merchantBatchStatusList($args = null)
+ * @method static showTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -321,6 +322,11 @@ trait ConstTranslateTrait
     public static $feeLevelList = [
         BaseConstService::FEE_LEVEL_1 => '系统级',
         BaseConstService::FEE_LEVEL_2 => '自定义'
+    ];
+
+    public static $showTypeList =[
+        BaseConstService::ALL_SHOW =>'全部展示',
+        BaseConstService::LINE_RULE_SHOW =>'全部展示',
     ];
 
     /**

@@ -300,6 +300,9 @@ class BaseConstService
     const DRIVER_EVENT_BATCH_DEPART = 3;
     const DRIVER_EVENT_BACK_WAREHOUSE = 4;
 
+    //展示方式1-全部展示2-按线路规则展示
+    const ALL_SHOW = 1;
+    const LINE_RULE_SHOW = 2;
 
     //worker 组名
     const WORKER_GROUP_ADMIN = 'admin';
