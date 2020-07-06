@@ -1265,6 +1265,12 @@ class OrderService extends BaseService
         if (empty($batch)) {
             throw new BusinessLogicException('数据不存在');
         }
+        //处理预计耗时
+        if (!empty($batch->expect_arrive_time)) {
+            $expectTime = strtotime($batch->expect_arrive_time) - time();
+        } else {
+            $expectTime = 0;
+        }
         $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $batch->tour_no], ['lon', 'lat'], false) ?? '';
         if (empty($routeTracking)) {
             $routeTracking = $this->getTourService()->getInfo(['tour_no' => $batch->tour_no], ['*'], false);
@@ -1275,7 +1281,7 @@ class OrderService extends BaseService
         return [
             'expect_distance' => $batch['expect_distance'] ?? 0,
             'actual_distance' => $batch['actual_distance'] ?? 0,
-            'expect_time' => $batch['expect_time'] ?? 0,
+            'expect_time' => ($expectTime >= 0) ? $expectTime : 0,
             'actual_time' => $batch['actual_time'] ?? 0,
             'expect_arrive_time' => $batch['expect_arrive_time'] ?? '',
             'actual_arrive_time' => $batch['actual_arrive_time'] ?? '',
