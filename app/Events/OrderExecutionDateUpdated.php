@@ -19,18 +19,21 @@ class OrderExecutionDateUpdated
 
     public $execution_date;
 
+    public $tour;
+
     /**
      * Create a new event instance.
      *
      * @param $orderNo
      * @param $executionDate
-     * @param $merchantId
+     * @param $tour
      * @return void
      */
-    public function __construct($orderNo, $executionDate)
+    public function __construct($orderNo, $executionDate, $tour)
     {
         $this->order_no = $orderNo;
         $this->execution_date = $executionDate;
+        $this->tour = $tour;
     }
 
     public function notifyType(): string

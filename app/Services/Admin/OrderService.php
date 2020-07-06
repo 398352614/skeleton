@@ -896,7 +896,7 @@ class OrderService extends BaseService
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
-        ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($info['order_no'], $params['execution_date']));
+        ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($info['order_no'], $params['execution_date'], ['line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
         return 'true';
     }
 
@@ -1244,7 +1244,7 @@ class OrderService extends BaseService
     public function orderExport()
     {
         $orderList = $this->getPageList();
-        if($orderList->hasMorePages()){
+        if ($orderList->hasMorePages()) {
             throw new BusinessLogicException('数据量过大无法导出，订单数不得超过200');
         }
         if ($orderList->isEmpty()) {
