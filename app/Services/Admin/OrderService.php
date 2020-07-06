@@ -283,8 +283,7 @@ class OrderService extends BaseService
         if (empty($lineId)) {
             throw new BusinessLogicException('没有找到线路');
         }
-        $data = $this->getLineService()->getList(['id' => ['in', $lineId]], ['name'], false);
-        $data = collect($data)->where();
+        $data = $this->getLineService()->getList(['id' => ['in', $lineId]], ['id','name'], false);
         return $data ?? [];
     }
 
