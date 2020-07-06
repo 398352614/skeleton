@@ -261,18 +261,19 @@ class OrderService extends BaseService
      * 获取所有线路
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getLineList(){
+    public function getLineList()
+    {
         return $this->getLineService()->getList();
     }
 
     public function getPageList()
     {
         if (!empty($this->formData['line_id'])) {
-            $batchList = $this->getBatchService()->getList(['line_id'=>$this->formData['line_id']],['*'],false)->pluck('batch_no')->toArray();
-                $this->filters['batch_no'] = ['in',$batchList];
+            $batchList = $this->getBatchService()->getList(['line_id' => $this->formData['line_id']], ['*'], false)->pluck('batch_no')->toArray();
+            $this->filters['batch_no'] = ['in', $batchList];
         }
         $list = parent::getPageList();
-        $tourNoList = $list->where('tour_no','<>','')->pluck('tour_no')->toArray();
+        $tourNoList = $list->where('tour_no', '<>', '')->pluck('tour_no')->toArray();
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false);
         foreach ($list as $k => $v) {
             $list[$k]['line_id'] = $tour->where('tour_no', $v['tour_no'])->first()['line_id'] ?? '';
@@ -343,6 +344,10 @@ class OrderService extends BaseService
         $this->addAllItemList($params, $batch, $tour);
         //自动记录
         $this->record($params);
+        //重新统计站点金额
+        $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
+        //重新统计取件线路金额
+        $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         //订单轨迹-订单创建
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_CREATED);
         //订单轨迹-订单加入站点
@@ -353,7 +358,10 @@ class OrderService extends BaseService
             'order_no' => $params['order_no'],
             'batch_no' => $batch['batch_no'],
             'tour_no' => $tour['tour_no'],
-            'line_name' => $tour['line_name']
+            'line' => [
+                'line_id' => $tour['line_id'],
+                'line_name' => $tour['line_name'],
+            ]
         ];
     }
 
@@ -738,6 +746,10 @@ class OrderService extends BaseService
         }
         //新增包裹列表和材料列表
         $this->addAllItemList($data, $batch, $tour);
+        //重新统计站点金额
+        $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
+        //重新统计取件线路金额
+        $this->getTourService()->reCountAmountByNo($tour['tour_no']);
     }
 
 
@@ -769,6 +781,10 @@ class OrderService extends BaseService
         //站点移除订单,添加新的订单
         if (!empty($dbInfo['batch_no'])) {
             $this->getBatchService()->removeOrder($dbInfo);
+            //重新统计站点金额
+            $this->getBatchService()->reCountAmountByNo($dbInfo['batch_no']);
+            //重新统计取件线路金额
+            !empty($dbInfo['tour_no']) && $this->getTourService()->reCountAmountByNo($dbInfo['tour_no']);
         }
         list($batch, $tour) = $this->getBatchService()->join($data, $line);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
@@ -864,12 +880,20 @@ class OrderService extends BaseService
         /********************************************2.从旧站点移除****************************************************/
         if (!empty($info['batch_no'])) {
             $this->getBatchService()->removeOrder($info);
+            //重新统计站点金额
+            $this->getBatchService()->reCountAmountByNo($info['batch_no']);
+            //重新统计取件线路金额
+            !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
         }
         /*******************************************3.加入新站点*******************************************************/
         $batchNo = !empty($params['batch_no']) ? $params['batch_no'] : null;
         list($batch, $tour) = $this->getBatchService()->join($info, $line, $batchNo);
         /*********************************4.填充取件批次编号和取件线路编号*********************************************/
         $this->fillBatchTourInfo($info, $batch, $tour);
+        //重新统计站点金额
+        $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
+        //重新统计取件线路金额
+        $this->getTourService()->reCountAmountByNo($tour['tour_no']);
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
         ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($info['order_no'], $params['execution_date']));
@@ -903,6 +927,11 @@ class OrderService extends BaseService
             throw new BusinessLogicException('移除失败,请重新操作');
         }
         $this->getBatchService()->removeOrder($info);
+        //重新统计站点金额
+        !empty($info['batch_no']) && $this->getBatchService()->reCountAmountByNo($info['batch_no']);
+        //重新统计取件线路金额
+        !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
+
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_BATCH, $info);
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR, $info);
     }
@@ -945,6 +974,10 @@ class OrderService extends BaseService
         }
         foreach ($orderList as $order) {
             $this->getBatchService()->removeOrder($order);
+            //重新统计站点金额
+            !empty($order['batch_no']) && $this->getBatchService()->reCountAmountByNo($order['batch_no']);
+            //重新统计取件线路金额
+            !empty($order['tour_no']) && $this->getTourService()->reCountAmountByNo($order['tour_no']);
         }
         OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_REMOVE_BATCH);
     }
@@ -982,7 +1015,13 @@ class OrderService extends BaseService
         if (!empty($info['batch_no'])) {
             $this->getBatchService()->removeOrder($info);
         }
+        //重新统计站点金额
+        !empty($info['batch_no']) && $this->getBatchService()->reCountAmountByNo($info['batch_no']);
+        //重新统计取件线路金额
+        !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
+
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_DELETE);
+        return 'true';
     }
 
 
@@ -1022,6 +1061,11 @@ class OrderService extends BaseService
         list($batch, $tour) = $this->getBatchService()->join($order, $line);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
         $this->fillBatchTourInfo($order, $batch, $tour);
+        //重新统计站点金额
+        $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
+        //重新统计取件线路金额
+        $this->getTourService()->reCountAmountByNo($tour['tour_no']);
+
         //订单轨迹-订单加入站点
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
         //订单轨迹-订单加入取件线路
@@ -1094,9 +1138,19 @@ class OrderService extends BaseService
         data_set($orderList, '*.execution_date', $tour['execution_date']);
         foreach ($orderList as $order) {
             $this->removeFromBatch($order['id']);
+            //重新统计站点金额
+            !empty($order['batch_no']) && $this->getBatchService()->reCountAmountByNo($order['batch_no']);
+            //重新统计取件线路金额
+            !empty($order['tour_no']) && $this->getTourService()->reCountAmountByNo($order['tour_no']);
+            //分配至新的取件线路
             list($batch, $tour) = $this->getBatchService()->join($order, $line, null, $tour, true);
             /**********************************填充取件批次编号和取件线路编号**********************************************/
             $this->fillBatchTourInfo($order, $batch, $tour);
+            //重新统计站点金额
+            $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
+            //重新统计取件线路金额
+            $this->getTourService()->reCountAmountByNo($batch['tour_no']);
+
             OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
             OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR, $tour);
         }

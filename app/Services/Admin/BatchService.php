@@ -203,7 +203,7 @@ class BatchService extends BaseService
     private function hasSameBatch($order, $line, $batchNo = null, $tour = [], $isAddOrder = false)
     {
         $where = $this->getBatchWhere($order);
-        $where['line_id'] = $line['id'];
+        $where = Arr::add($where, 'line_id', $line['id']);
         !empty($tour['tour_no']) && $where['tour_no'] = $tour['tour_no'];
         $isAddOrder && $where['status'] = ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]];
         if (!empty($batchNo)) {
@@ -239,8 +239,6 @@ class BatchService extends BaseService
             throw new BusinessLogicException('订单加入站点失败!');
         }
         $batch = $batch->getOriginal();
-        //重新统计金额
-        $this->reCountAmountByNo($batchNo);
         return $batch;
     }
 
@@ -263,8 +261,6 @@ class BatchService extends BaseService
             throw new BusinessLogicException('订单加入站点失败!');
         }
         $batch = array_merge($batch->toArray(), $data);
-        //重新统计金额
-        $this->reCountAmountByNo($batch['batch_no']);
         return $batch;
     }
 
@@ -347,8 +343,6 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
-        //重新统计金额
-        $this->reCountAmountByNo($info['batch_no']);
         //取件线路修订单信息
         $this->getTourService()->updateAboutOrderByOrder($dbOrder, $order);
     }
@@ -439,8 +433,6 @@ class BatchService extends BaseService
         } else {
             $data = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
             $rowCount = parent::updateById($info['id'], $data);
-            //重新统计金额
-            $this->reCountAmountByNo($info['batch_no']);
         }
         if ($rowCount === false) {
             throw new BusinessLogicException('站点移除订单失败，请重新操作');
@@ -510,7 +502,7 @@ class BatchService extends BaseService
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         $dbExecutionDate = $info['execution_date'];
         //如果是在同一条线路并且在同一个日期,则不变
-        if (($params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date']) && !empty($info['tour_no'])) {
+        if (!empty($params['line_id'] && $params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date']) && !empty($info['tour_no'])) {
             return 'true';
         }
         $info['execution_date'] = $params['execution_date'];
@@ -525,6 +517,11 @@ class BatchService extends BaseService
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
             ($dbExecutionDate != $params['execution_date']) && event(new OrderExecutionDateUpdated($order['order_no'], $params['execution_date']));
         }
+        //重新统计站点金额
+        $this->reCountAmountByNo($info['batch_no']);
+        //重新统计取件线路金额
+        !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
+
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
         return 'true';
     }
@@ -546,13 +543,11 @@ class BatchService extends BaseService
             'expect_pickup_quantity' => DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']),
             'actual_pickup_quantity' => DB::raw('actual_pickup_quantity+' . $batch['actual_pickup_quantity']),
             'expect_pie_quantity' => DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']),
-            'actual_pie_quantity' => DB::raw('actual_pie_quantity+' . $batch['actual_pie_quantity']),
+            'actual_pie_quantity' => DB::raw('actual_pie_quantity+' . $batch['actual_pie_quantity'])
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
-        //重新统计金额
-        $this->reCountAmountByNo($dbBatch['batch_no']);
         //删除站点
         $rowCount = parent::delete(['id' => $batch['id']]);
         if ($rowCount === false) {
@@ -621,6 +616,9 @@ class BatchService extends BaseService
         }
         //将站点从取件线路移除
         $this->getTourService()->removeBatch($info);
+        //重新统计取件线路金额
+        !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
+
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
     }
 

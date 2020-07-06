@@ -271,8 +271,6 @@ class TourService extends BaseService
         if ($tour === false) {
             throw new BusinessLogicException('站点加入取件线路失败，请重新操作！');
         }
-        //重新统计金额
-        $this->reCountAmountByNo($tourNo);
         return $tour->getOriginal();
     }
 
@@ -294,8 +292,6 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败，请重新操作！');
         }
-        //重新统计金额
-        $this->reCountAmountByNo($tour['tour_no']);
         $tour = array_merge($tour, $data);
         return $tour;
     }
@@ -326,8 +322,6 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
-        //重新统计金额
-        $this->reCountAmountByNo($info['tour_no']);
     }
 
 
@@ -347,8 +341,6 @@ class TourService extends BaseService
         } else {
             $data = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
             $rowCount = parent::updateById($info['id'], $data);
-            //重新统计金额
-            $this->reCountAmountByNo($info['tour_no']);
         }
         if ($rowCount === false) {
             throw new BusinessLogicException('取件移除订单失败，请重新操作');
@@ -371,8 +363,6 @@ class TourService extends BaseService
         } else {
             $data = ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - $batch['expect_pickup_quantity'], 'expect_pie_quantity' => $info['expect_pie_quantity'] - $batch['expect_pie_quantity']];
             $rowCount = parent::updateById($info['id'], $data);
-            //重新统计金额
-            $this->reCountAmountByNo($info['tour_no']);
         }
         if ($rowCount === false) {
             throw new BusinessLogicException('取件移除站点失败，请重新操作');
