@@ -34,7 +34,7 @@ class NextBatch extends ATourNotify
         //更新预计耗时
         if (!empty($this->batch['expect_arrive_time'])) {
             $expectTime = strtotime($this->batch['expect_arrive_time']) - time();
-            $this->batch['expect_time'] = $expectTime;
+            $this->batch['expect_time'] = $expectTime > 0 ? $expectTime : 0;
         } else {
             $this->batch['expect_time'] = 0;
         }
