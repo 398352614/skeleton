@@ -1238,14 +1238,15 @@ class OrderService extends BaseService
 
     /**
      * 订单导出
-     * @param $ids
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderExport($ids)
+    public function orderExport()
     {
-        $ids = explode_id_string($ids);
-        $orderList = $this->getList(['id' => ['in', $ids]], ['*'], false);
+        $orderList = $this->getPageList();
+        if($orderList->hasMorePages()){
+            throw new BusinessLogicException('数据量过大无法导出，订单数不得超过200');
+        }
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
