@@ -31,6 +31,13 @@ class NextBatch extends ATourNotify
         $orderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
         Log::info('order-list:' . json_encode($orderList));
         $batchList = [];
+        //更新预计耗时
+        if (!empty($this->batch['expect_arrive_time'])) {
+            $expectTime = strtotime($this->batch['expect_arrive_time']) - time();
+            $this->batch['expect_time'] = $expectTime;
+        } else {
+            $this->batch['expect_time'] = 0;
+        }
         foreach ($orderList as $merchantId => $merchantOrderList) {
             $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
         }
