@@ -49,6 +49,7 @@ class CompanyConfig extends BaseModel
         'company_id',
         'address_template_id',
         'line_rule',
+        'show_type',
         'weight_unit',
         'currency_unit',
         'volume_unit',
