@@ -52,7 +52,7 @@ class CacheCompany extends Command
             if (!empty($companyId)) {
                 $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name']);
                 $company = Company::query()->where('id', $companyId)->first();
-                $companyConfig = !empty($company->companyConfig) ? Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'line_rule', 'weight_unit', 'currency_unit', 'volume_unit', 'map']) : [];
+                $companyConfig = !empty($company->companyConfig) ? Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'line_rule','show_type', 'weight_unit', 'currency_unit', 'volume_unit', 'map']) : [];
                 $company = array_merge(
                     Arr::only($company->getAttributes(), ['id', 'name', 'company_code']),
                     $companyConfig,
