@@ -74,9 +74,7 @@ class HomeService extends BaseService
         $graph = $this->thisWeekCount();
 
         return [
-            //'no_take_order' => $noTakeOrder,
-            'assign_order' => $assignOrder,
-            'wait_out_order' => $waitOutOrder,
+            'preparing_order' => $noTakeOrder + $assignOrder + $waitOutOrder,
             'taking_order' => $takingOrder,
             'signed_order' => $signedOrder,
             'cancel_order' => $cancelOrder,
