@@ -302,7 +302,7 @@ class ReportService extends BaseService
                 'actual_time_human' => $batch['actual_time_human'],
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
-            $newBatchList[$key]['package_list'] = collect($packageList)->where('batch_no', $batch['batch_no']);
+            $newBatchList[$key]['package_list'] = collect($packageList)->where('batch_no', $batch['batch_no'])->toArray();
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
         }
         return $newBatchList;
