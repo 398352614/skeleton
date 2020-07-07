@@ -96,7 +96,9 @@ class UpdateDriverCountTime implements ShouldQueue
                 }
             }
         } catch (\Exception $ex) {
-            Log::channel('job-daily')->error($ex->getMessage());
+            Log::channel('job-daily')->error('更新线路失败:' . $ex->getFile());
+            Log::channel('job-daily')->error('更新线路失败:' . $ex->getLine());
+            Log::channel('job-daily')->error('更新线路失败:' . $ex->getMessage());
             throw new BusinessLogicException('更新线路失败');
         }
         return;
