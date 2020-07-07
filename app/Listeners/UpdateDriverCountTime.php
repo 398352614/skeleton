@@ -81,7 +81,7 @@ class UpdateDriverCountTime implements ShouldQueue
 
                 $res = $this->apiClient->PushDriverLocation($data);
                 if ($event->queue == true) {
-                    sleep(1.5);
+                    sleep(1);
                 }
                 app('log')->info('更新司机位置的结果为:', $res ?? []);
 

@@ -9,6 +9,7 @@
 namespace App\Events\TourNotify;
 
 use App\Events\Interfaces\ATourNotify;
+use App\Models\Batch;
 use App\Models\Order;
 use App\Services\BaseConstService;
 use Illuminate\Support\Facades\Log;
@@ -28,6 +29,8 @@ class NextBatch extends ATourNotify
 
     public function getDataList(): array
     {
+        sleep(0.5);
+        $this->batch = Batch::query()->where('batch_no', $this->batch['batch_no'])->first(['batch_no', 'expect_arrive_time', 'expect_time', 'expect_distance'])->toArray();
         $orderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
         Log::info('order-list:' . json_encode($orderList));
         $batchList = [];
