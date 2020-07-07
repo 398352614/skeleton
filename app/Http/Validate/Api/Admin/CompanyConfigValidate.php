@@ -15,6 +15,7 @@ class CompanyConfigValidate extends BaseValidate
         'line_rule' => 'required|integer|in:1,2',
         'address_template_id' => 'required|integer|in:1,2',
         'weight_unit' => 'required|string|max:50',
+        'show_type' => 'nullable|string|max:50',
         'currency_unit' => 'required|string|max:50',
         'volume_unit' => 'required|string|max:50',
         'map' => 'required|string|max:50',
@@ -28,6 +29,7 @@ class CompanyConfigValidate extends BaseValidate
             'weight_unit',
             'currency_unit',
             'volume_unit',
+            'show_type',
             'map',
             'show_type'
         ],
