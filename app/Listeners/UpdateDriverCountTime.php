@@ -92,7 +92,7 @@ class UpdateDriverCountTime implements ShouldQueue
 
                 //通知下一个站点事件
                 if ($event->notifyNextBatch == true) {
-                    event(new NextBatch($tour, ['batch_no' => $nextBatchNo]));
+                    event(new NextBatch($tour->toArray(), ['batch_no' => $nextBatchNo]));
                 }
             }
         } catch (\Exception $ex) {
