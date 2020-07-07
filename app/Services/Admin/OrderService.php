@@ -274,16 +274,18 @@ class OrderService extends BaseService
      */
     public function getLineList()
     {
-        if (CompanyTrait::getCompany()['show_type'] == BaseConstService::ALL_SHOW) {
+        if (CompanyTrait::getCompany()['show_type'] == BaseConstService::LINE_RULE_SHOW && CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
             $info = $this->getLineRangeService()->getList([], ['*'], false);
-        } else {
+        } elseif (CompanyTrait::getCompany()['show_type'] == BaseConstService::LINE_RULE_SHOW && CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
             $info = $this->getLineAreaService()->getList([], ['*'], false);
+        }else{
+            $info = $this->getLineService()->getList([], ['*'], false);
         }
         $lineId = $info->pluck('line_id')->toArray();
         if (empty($lineId)) {
             throw new BusinessLogicException('没有找到线路');
         }
-        $data = $this->getLineService()->getList(['id' => ['in', $lineId]], ['id','name'], false);
+        $data = $this->getLineService()->getList(['id' => ['in', $lineId]], ['id', 'name'], false);
         return $data ?? [];
     }
 
