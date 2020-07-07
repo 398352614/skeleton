@@ -6,6 +6,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
+use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\CompanyTrait;
@@ -18,16 +19,28 @@ class HomeService extends BaseService
         parent::__construct($order);
     }
 
+    /**
+     * 司机 服务
+     * @return DriverService
+     */
     private function getDriverService()
     {
         return self::getInstance(DriverService::class);
     }
 
+    /**
+     * 车辆 服务
+     * @return CarService
+     */
     private function getCarService()
     {
         return self::getInstance(CarService::class);
     }
 
+    /**
+     * 取件线路 服务
+     * @return TourService
+     */
     private function getTourService()
     {
         return self::getInstance(TourService::class);
@@ -50,7 +63,11 @@ class HomeService extends BaseService
         //司机及车辆统计
         $carSum = $this->getCarService()->count();//车辆总数
         $driverSum = $this->getDriverService()->count();//司机总数
-        $assignCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_2]);//已分配
+        //已分配车辆数
+        $assignCar = Tour::query()->whereNotNull('car_id')->where('execution_date', $date)->where('status', 'in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2])->count();
+        $assignDriver = Tour::query()->where('execution_date', $date)->where('status', BaseConstService::TOUR_STATUS_2)->count();
+
+        //$assignCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_2]);//已分配
         $waitOutCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_3]);//待出库
         $takingCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_4]);//配送中
         $signedCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_5]);//配送完成
@@ -64,11 +81,24 @@ class HomeService extends BaseService
             'signed_order' => $signedOrder,
             'cancel_order' => $cancelOrder,
             'exception_order' => $exceptionOrder,
-            'car_sum' => $carSum,
-            'driver_sum' => $driverSum,
-            'outing_car' => $assignCar + $waitOutCar,
-            'taking_car' => $takingCar,
-            'signed_car' => $signedCar,
+
+            //司机统计
+            'sum_driver' => $driverSum,
+            //'preparing_driver' => $assignDriver + $waitOutCar,
+            //'taking_driver' => $takingCar,
+            //'signed_driver' => $signedCar,
+            'working_driver' => $assignCar + $waitOutCar + $takingCar + $signedCar,
+            'free_driver' => $driverSum - $assignCar - $waitOutCar - $takingCar - $signedCar,
+
+            //车辆统计
+            'sum_car' => $carSum,
+            //'preparing_car' => $assignCar + $waitOutCar,
+            //'taking_car' => $takingCar,
+            //'signed_car' => $signedCar,
+            'working_car' => $assignCar + $waitOutCar + $takingCar + $signedCar,
+            'free_car' => $carSum - $assignCar - $waitOutCar - $takingCar - $signedCar,
+
+            //表格
             'graph' => $graph,
         ];
 
@@ -110,13 +140,14 @@ class HomeService extends BaseService
     }
 
     //订单统计
-    public function ordercount(Carbon $day, $no)
+    public function orderCount(Carbon $day, $no)
     {
         $countInfo = [];
         for ($i = $no; $i >= 1; $i--) {
             $date = $day->format('Y-m-d');
-            $ordercount = $this->count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_5]);
-            $countInfo[$i] = ['date' => $date, 'ordercount' => $ordercount];
+            $actualCount = $this->count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_5]);
+            $expectCount = $this->count(['execution_date' => $date, 'status' => ['<>', BaseConstService::ORDER_STATUS_7]]);
+            $countInfo[$i] = ['date' => $date, 'actual_count' => $actualCount, 'expect_count' => $expectCount];
             $day = $day->subDay();
         }
         $countInfo = array_values(collect(array_values($countInfo))->sortBy('date')->toArray());
