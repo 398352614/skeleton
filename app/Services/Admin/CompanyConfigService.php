@@ -52,7 +52,7 @@ class CompanyConfigService extends BaseService
         }
         $rowCount = $this->query->updateOrCreate(['company_id' => auth()->user()->company_id], [
             'line_rule' => $params['line_rule'],
-            'show_type' => $params['show_type'],
+            'show_type' => $params['show_type'] ?? 1,
             'address_template_id' => $params['address_template_id'],
             'show_type' => $params['show_type'],
             'weight_unit' => $params['weight_unit'],
