@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\AfterDriverLocationUpdated;
+use App\Events\TourNotify\NextBatch;
 use App\Exceptions\BusinessLogicException;
 use App\Services\GoogleApiService;
 use App\Traits\UpdateTourTimeAndDistanceTrait;
@@ -87,6 +88,11 @@ class UpdateDriverCountTime implements ShouldQueue
 
                 if (!$this->updateTourTimeAndDistance($tour)) {
                     throw new BusinessLogicException('更新线路失败');
+                }
+
+                //通知下一个站点事件
+                if ($event->notifyNextBatch == true) {
+                    event(new NextBatch($tour, ['batch_no' => $nextBatchNo]));
                 }
             }
         } catch (\Exception $ex) {

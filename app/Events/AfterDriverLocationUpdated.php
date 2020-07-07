@@ -26,6 +26,8 @@ class AfterDriverLocationUpdated
 
     public $queue;
 
+    public $notifyNextBatch;
+
 
     /**
      * AfterDriverLocationUpdated constructor.
@@ -33,13 +35,15 @@ class AfterDriverLocationUpdated
      * @param $nextBatchNo
      * @param null $location
      * @param bool $queue 是否加入队列
+     * @param bool $notifyNextBatch 是否通知下一家客户
      */
-    public function __construct(Tour $tour, $nextBatchNo, $location = null, $queue = false)
+    public function __construct(Tour $tour, $nextBatchNo, $location = null, $queue = false, $notifyNextBatch = false)
     {
         $this->tour = $tour;
         $this->location = $location;
         $this->nextBatchNo = $nextBatchNo;
         $this->queue = $queue;
+        $this->notifyNextBatch = $notifyNextBatch;
     }
 
     /**

@@ -29,8 +29,7 @@ class NextBatch extends ATourNotify
 
     public function getDataList(): array
     {
-        sleep(0.5);
-        $this->batch = Batch::query()->where('batch_no', $this->batch['batch_no'])->first(['batch_no', 'expect_arrive_time', 'expect_time', 'expect_distance'])->toArray();
+        $this->batch = Batch::query()->where('batch_no', $this->batch['batch_no'])->first(self::$batchFields)->toArray();
         $orderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
         Log::info('order-list:' . json_encode($orderList));
         $batchList = [];

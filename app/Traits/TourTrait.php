@@ -50,15 +50,10 @@ trait TourTrait
     {
         data_set($orderList, '*.status', BaseConstService::ORDER_STATUS_6);
         OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
-        self::dealBatchEvent($tour, $batch);
-
+        //取消取派通知
         event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $orderList));
-
-        //通知下一个站点事件
-        $nextBatch = self::getNextBatch($tour['tour_no']);
-        if (!empty($nextBatch)) {
-            event(new NextBatch($tour, $nextBatch->toArray()));
-        }
+        //处理站点
+        self::dealBatchEvent($tour, $batch);
     }
 
 
@@ -75,14 +70,10 @@ trait TourTrait
             OrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::ORDER_STATUS_6], BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
         }
         unset($groupOrderList);
-        self::dealBatchEvent($tour, $batch);
+        //签收通知
         event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $orderList));
-
-        //通知下一个站点事件
-        $nextBatch = self::getNextBatch($tour['tour_no']);
-        if (!empty($nextBatch)) {
-            event(new NextBatch($tour, $nextBatch->toArray()));
-        }
+        //处理站点
+        self::dealBatchEvent($tour, $batch);
     }
 
     public static function afterBackWarehouse($tour)
@@ -103,11 +94,12 @@ trait TourTrait
     {
         //触发司机离开站点
         event(new BatchDepart($batch));
-        //触发站点预计到达时间
+        //若存在下一个站点
         $nextBatch = self::getNextBatch($tour['tour_no']);
-        $location = ['latitude' => $batch['receiver_lat'], 'longitude' => $batch['receiver_lon']];
         if (!empty($nextBatch)) {
-            event(new AfterDriverLocationUpdated(Tour::where('tour_no', $tour['tour_no'])->first(), $nextBatch->batch_no, $location, true));
+            $location = ['latitude' => $batch['receiver_lat'], 'longitude' => $batch['receiver_lon']];
+            //更新站点预计和司机位置
+            event(new AfterDriverLocationUpdated(Tour::where('tour_no', $tour['tour_no'])->first(), $nextBatch->batch_no, $location, true, true));
         }
     }
 
