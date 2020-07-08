@@ -566,6 +566,7 @@ class TourService extends BaseService
         $batch['order_list'] = $orderList;
         $batch['material_list'] = $materialList;
         $batch['tour_id'] = $tour['id'];
+        $batch['actual_total_amount'] = number_format(round($batch['sticker_amount'] + $batch['actual_replace_amount'] + $batch['actual_settlement_amount'], 2), 2);
         return $batch;
     }
 
