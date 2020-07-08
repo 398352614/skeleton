@@ -506,7 +506,7 @@ class TourService extends BaseService
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
         //获取所有订单列表
-        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'execution_date', 'type','mask_code', 'batch_no', 'order_no', 'status'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'execution_date', 'type', 'mask_code', 'batch_no', 'order_no', 'status'], false)->toArray();
         //$orderList = array_create_group_index($orderList, 'type');
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
@@ -548,7 +548,7 @@ class TourService extends BaseService
     public function getBatchInfo($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no','mask_code', 'type', 'batch_no', 'status'], false);
+        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'mask_code', 'type', 'batch_no', 'status'], false);
         $orderList = collect($orderList)->map(function ($order, $key) {
             /**@var Order $order */
             return collect(Arr::add($order->toArray(), 'status_name', $order->status_name));
@@ -793,11 +793,11 @@ class TourService extends BaseService
             throw new BusinessLogicException('5001', 5001);
         }
         //验证代收货款
-        if (bccomp($params['total_replace_amount'], $dbParams['replace_amount']) !== 0) {
+        if (bccomp($params['total_replace_amount'], $dbParams['actual_replace_amount']) !== 0) {
             throw new BusinessLogicException('总计代收货款不正确');
         }
         //验证结算费用(运费)
-        if (bccomp($params['total_settlement_amount'], $dbParams['settlement_amount']) !== 0) {
+        if (bccomp($params['total_settlement_amount'], $dbParams['actual_settlement_amount']) !== 0) {
             throw new BusinessLogicException('总计运费不正确');
         }
     }
