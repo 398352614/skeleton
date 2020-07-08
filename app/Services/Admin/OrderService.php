@@ -274,16 +274,20 @@ class OrderService extends BaseService
      */
     public function getLineList()
     {
-        if (CompanyTrait::getCompany()['show_type'] == BaseConstService::ALL_SHOW) {
+        if (CompanyTrait::getCompany()['show_type'] == BaseConstService::LINE_RULE_SHOW && CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
             $info = $this->getLineRangeService()->getList([], ['*'], false);
-        } else {
+            $lineId = $info->pluck('line_id')->toArray();
+        } elseif (CompanyTrait::getCompany()['show_type'] == BaseConstService::LINE_RULE_SHOW && CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
             $info = $this->getLineAreaService()->getList([], ['*'], false);
+            $lineId = $info->pluck('line_id')->toArray();
+        }else{
+            $info = $this->getLineService()->getList([], ['*'], false);
+            $lineId = $info->pluck('id')->toArray();
         }
-        $lineId = $info->pluck('line_id')->toArray();
         if (empty($lineId)) {
             throw new BusinessLogicException('没有找到线路');
         }
-        $data = $this->getLineService()->getList(['id' => ['in', $lineId]], ['id','name'], false);
+        $data = $this->getLineService()->getList(['id' => ['in', $lineId]], ['id', 'name'], false);
         return $data ?? [];
     }
 
@@ -660,7 +664,7 @@ class OrderService extends BaseService
         //若存在包裹列表,则新增包裹列表
         if (!empty($params['package_list'])) {
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
-                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'weight', 'expect_quantity', 'remark']);
+                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no','feature_logo', 'weight', 'expect_quantity', 'remark']);
                 return $collectItem->put('order_no', $params['order_no'])->put('batch_no', $batch['batch_no'])->put('tour_no', $tour['tour_no']);
             })->toArray();
             data_set($packageList, '*.status', $status);
