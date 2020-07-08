@@ -1101,9 +1101,9 @@ class TourService extends BaseService
      */
     public function reCountActualAmountByNo($tourNo)
     {
-        $totalActualReplaceAmount = $this->getOrderService()->sum('replace_amount', ['tour_no' => $tourNo, 'status' => BaseConstService::ORDER_STATUS_5]);
-        $totalActualSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['tour_no' => $tourNo, 'status' => BaseConstService::ORDER_STATUS_5]);
-        $rowCount = parent::update(['tour_no' => $tourNo], ['replace_amount' => $totalActualReplaceAmount, 'settlement_amount' => $totalActualSettlementAmount]);
+        $totalActualReplaceAmount = $this->getOrderService()->sum('actual_replace_amount', ['tour_no' => $tourNo, 'status' => BaseConstService::ORDER_STATUS_5]);
+        $totalActualSettlementAmount = $this->getOrderService()->sum('actual_settlement_amount', ['tour_no' => $tourNo, 'status' => BaseConstService::ORDER_STATUS_5]);
+        $rowCount = parent::update(['tour_no' => $tourNo], ['actual_replace_amount' => $totalActualReplaceAmount, 'actual_settlement_amount' => $totalActualSettlementAmount]);
         if ($rowCount === false) {
             throw new BusinessLogicException('金额统计失败');
         }
