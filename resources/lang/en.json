@@ -1,7 +1,4 @@
 {
-    "常温": "Normal",
-    "冷冻": "Refrigeration",
-    "风房": "Ventilation",
     "数据量过大无法导出，订单数不得超过200": "The data is too large,the number of orders must not exceed 200",
     "地址数据不正确，请重新选择地址": "The address is incorrect,please choose another address",
     "用户不存在，请检查用户名": "The user account doesn't exist,please check the user account",
