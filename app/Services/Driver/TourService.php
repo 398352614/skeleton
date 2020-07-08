@@ -731,9 +731,9 @@ class TourService extends BaseService
             }
         }
         $totalAmount = [
-            'total_sticker_amount' => $totalStickerAmount,
-            'total_replace_amount' => array_sum(array_column($signOrderList, 'replace_amount')),
-            'total_settlement_amount' => array_sum(array_column($signOrderList, 'settlement_amount')),
+            'sticker_amount' => $totalStickerAmount,
+            'actual_replace_amount' => array_sum(array_column($signOrderList, 'replace_amount')),
+            'actual_settlement_amount' => array_sum(array_column($signOrderList, 'settlement_amount')),
         ];
         //金额验证
         $this->checkBatchSignAmount($params, $totalAmount);
@@ -853,7 +853,7 @@ class TourService extends BaseService
                 if (intval($dbPackage['type']) === BaseConstService::ORDER_TYPE_1) {
                     if (!empty($packageList[$dbPackage['id']]['sticker_no'])) {
                         $totalStickerAmount += $stickerAmount;
-                        if(empty($orderStickerAmount[$dbPackage['order_no']])){
+                        if (empty($orderStickerAmount[$dbPackage['order_no']])) {
                             $orderStickerAmount[$dbPackage['order_no']] = 0;
                         }
                         $orderStickerAmount[$dbPackage['order_no']] += $stickerAmount;
