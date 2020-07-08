@@ -277,7 +277,7 @@ class OrderService extends BaseService
         $data['nature_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderNatureList);
         $data['settlement_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSettlementTypeList);
         $data['type'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderTypeList);
-        $data['feature_logo_list'] = [__('常温'), __('冷冻'), __('风房')];
+        $data['feature_logo_list'] = ['常温', '冷冻', '风房'];
         return $data;
     }
 
