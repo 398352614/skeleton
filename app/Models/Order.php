@@ -55,6 +55,7 @@ class Order extends BaseModel
         'out_order_no',
         'express_first_no',
         'express_second_no',
+        'mask_code',
         'source',
         'list_mode',
         'type',

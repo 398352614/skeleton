@@ -23,6 +23,7 @@ class OrderResource extends JsonResource
             'order_no' => $this->order_no,
             'source' => $this->source,
             'source_name' => $this->source_name,
+            'mask_code'=>$this->mask_code,
             'list_mode' => $this->list_mode,
             'type' => $this->type,
             'type_name' => $this->type_name,

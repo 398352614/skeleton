@@ -506,7 +506,7 @@ class TourService extends BaseService
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
         //获取所有订单列表
-        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'execution_date', 'type', 'batch_no', 'order_no', 'status'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'execution_date', 'type','mask_code', 'batch_no', 'order_no', 'status'], false)->toArray();
         //$orderList = array_create_group_index($orderList, 'type');
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
@@ -548,7 +548,7 @@ class TourService extends BaseService
     public function getBatchInfo($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'type', 'batch_no', 'status'], false);
+        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no','mask_code', 'type', 'batch_no', 'status'], false);
         $orderList = collect($orderList)->map(function ($order, $key) {
             /**@var Order $order */
             return collect(Arr::add($order->toArray(), 'status_name', $order->status_name));
@@ -853,7 +853,7 @@ class TourService extends BaseService
                 if (intval($dbPackage['type']) === BaseConstService::ORDER_TYPE_1) {
                     if (!empty($packageList[$dbPackage['id']]['sticker_no'])) {
                         $totalStickerAmount += $stickerAmount;
-                        if(empty($orderStickerAmount[$dbPackage['order_no']])){
+                        if (empty($orderStickerAmount[$dbPackage['order_no']])) {
                             $orderStickerAmount[$dbPackage['order_no']] = 0;
                         }
                         $orderStickerAmount[$dbPackage['order_no']] += $stickerAmount;

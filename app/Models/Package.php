@@ -54,6 +54,7 @@ class Package extends BaseModel
         'name',
         'express_first_no',
         'express_second_no',
+        'feature_logo',
         'out_order_no',
         'weight',
         'expect_quantity',
