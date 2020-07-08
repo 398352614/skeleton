@@ -858,8 +858,11 @@ class TourService extends BaseService
                             $orderStickerAmount[$dbPackage['order_no']] = 0;
                         }
                         $orderStickerAmount[$dbPackage['order_no']] += $stickerAmount;
+                        $packageStickerAmount = $stickerAmount;
+                    } else {
+                        $packageStickerAmount = 0.00;
                     }
-                    $packageData = ['actual_quantity' => 1, 'status' => $status, 'sticker_amount' => $stickerAmount, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no'] ?? ''];
+                    $packageData = ['actual_quantity' => 1, 'status' => $status, 'sticker_amount' => $packageStickerAmount, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no'] ?? ''];
                 } else {
                     $packageData = ['actual_quantity' => 1, 'status' => $status];
                 }
