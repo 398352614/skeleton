@@ -27,6 +27,7 @@ class OrderInfoResource extends JsonResource
             'out_order_no' => $this->out_order_no,
             'express_first_no' => $this->express_first_no,
             'express_second_no' => $this->express_second_no,
+            'mask_code' => $this->mask_code,
             'source' => $this->source,
             'source_name' => $this->source_name,
             'list_mode' => $this->list_mode,

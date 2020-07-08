@@ -195,6 +195,7 @@ class BaseConstService
     //站点支付类型1-现金支付2-银行支付
     const BATCH_PAY_TYPE_1 = 1;
     const BATCH_PAY_TYPE_2 = 2;
+    const BATCH_PAY_TYPE_3 = 3;
 
     //driver 司机合作类型
     const DRIVER_HIRE = 1;
