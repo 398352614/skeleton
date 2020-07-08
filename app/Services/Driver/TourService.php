@@ -789,15 +789,15 @@ class TourService extends BaseService
     private function checkBatchSignAmount($params, $dbParams)
     {
         //验证贴单费用
-        if (bccomp($params['total_sticker_amount'], $dbParams['total_sticker_amount']) !== 0) {
+        if (bccomp($params['total_sticker_amount'], $dbParams['sticker_amount']) !== 0) {
             throw new BusinessLogicException('5001', 5001);
         }
         //验证代收货款
-        if (bccomp($params['total_replace_amount'], $dbParams['total_replace_amount']) !== 0) {
+        if (bccomp($params['total_replace_amount'], $dbParams['replace_amount']) !== 0) {
             throw new BusinessLogicException('总计代收货款不正确');
         }
         //验证结算费用(运费)
-        if (bccomp($params['total_settlement_amount'], $dbParams['total_settlement_amount']) !== 0) {
+        if (bccomp($params['total_settlement_amount'], $dbParams['settlement_amount']) !== 0) {
             throw new BusinessLogicException('总计运费不正确');
         }
     }
