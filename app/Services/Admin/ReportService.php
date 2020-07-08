@@ -145,6 +145,7 @@ class ReportService extends BaseService
         $info['cash_total_amount'] = 0;
         $info['cash_sticker_count'] = 0;
         foreach ($orderList as $k => $v) {
+            //更新订单统计
             $orderList[$k]['expect_settlement_amount'] = intval($v['settlement_amount']);
             $orderList[$k]['expect_replace_amount'] = intval($v['replace_amount']);
             $orderList[$k]['expect_sticker_amount'] = intval($v['sticker_amount']);
@@ -158,21 +159,12 @@ class ReportService extends BaseService
 
                 $v['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'];
                 if ($v['pay_type'] == BaseConstService::BATCH_PAY_TYPE_2) {
-                    $info['card_settlement_amount'] += intval($v['settlement_amount']);
-                    $info['card_replace_amount'] += intval($v['replace_amount']);
-                    $info['card_sticker_amount'] += intval($v['sticker_amount']);
-                    $info['card_total_amount'] += intval($orderList[$k]['actual_total_amount']);
                     if (!empty($orderList[$k]['package_list'])) {
                         $info['card_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
-
                     } else {
                         $info['card_sticker_count'] = 0;
                     }
                 } else {
-                    $info['cash_settlement_amount'] += intval($v['settlement_amount']);
-                    $info['cash_replace_amount'] += intval($v['replace_amount']);
-                    $info['cash_sticker_amount'] += intval($v['sticker_amount']);
-                    $info['cash_total_amount'] += intval($orderList[$k]['actual_total_amount']);
                     if (!empty($orderList[$k]['package_list'])) {
                         $info['cash_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
                     } else {
@@ -183,6 +175,22 @@ class ReportService extends BaseService
                 $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount'] = $orderList[$k]['actual_sticker_amount'] = $orderList[$k]['actual_replace_amount'] = 0;
             }
         }
+        foreach ($batchList as $k => $v) {
+            $batchList[$k]['actual_total_amount'] = number_format(round(intval($v['actual_settlement_amount']) + intval($v['actual_replace_amount'] + intval($v['sticker_amount'])), 2), 2);;
+            //更新取件线路统计
+            if ($v['pay_type'] == BaseConstService::BATCH_PAY_TYPE_2) {
+                $info['card_settlement_amount'] += intval($v['actual_settlement_amount']);
+                $info['card_replace_amount'] += intval($v['actual_replace_amount']);
+                $info['card_sticker_amount'] += intval($v['sticker_amount']);
+                $info['card_total_amount'] += $batchList[$k]['actual_total_amount'];
+            } else {
+                $info['cash_settlement_amount'] += intval($v['settlement_amount']);
+                $info['cash_replace_amount'] += intval($v['replace_amount']);
+                $info['cash_sticker_amount'] += intval($v['sticker_amount']);
+                $info['cash_total_amount'] += $batchList[$k]['actual_total_amount'];
+            }
+        }
+        //将订单的外部订单号赋值给其所有包裹
         foreach ($packageList as $k => $v) {
             $packageList[$k]['out_order_no'] = collect($orderList)->where('order_no', $v['order_no'])->first()['out_order_no'];
         }
@@ -283,9 +291,9 @@ class ReportService extends BaseService
                 'address' => $batch['receiver_address'],
                 'expect_quantity' => $batch['expect_pickup_quantity'] + $batch['expect_pie_quantity'],
                 'sticker_amount' => intval($batch['sticker_amount']),
-                'replace_amount' => intval($batch['replace_amount']),
-                'settlement_amount' => intval($batch['settlement_amount']),
-                'total_amount' => intval($batch['settlement_amount']) + intval($batch['sticker_amount']) + intval($batch['replace_amount']),
+                'replace_amount' => intval($batch['actual_replace_amount']),
+                'settlement_amount' => intval($batch['actual_settlement_amount']),
+                'total_amount' => intval($batch['actual_settlement_amount']) + intval($batch['sticker_amount']) + intval($batch['actual_replace_amount']),
                 'cancel_type' => $batch['cancel_type'],
                 'cancel_remark' => $batch['cancel_remark'],
                 'pay_picture' => $batch['pay_picture'],
