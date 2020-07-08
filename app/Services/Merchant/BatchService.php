@@ -419,7 +419,15 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
+
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+
+        //取消取派通知
+        if (!empty($info['tour_no'])) {
+            $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+            $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => BaseConstService::ORDER_STATUS_6], ['*'], false)->toArray();
+            event(new \App\Events\TourNotify\CancelBatch($tour, $info, $orderList));
+        }
     }
 
     /**
