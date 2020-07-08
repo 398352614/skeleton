@@ -14,7 +14,7 @@ class AlterOrderAddColumnMaskCode extends Migration
     public function up()
     {
         Schema::table('order', function (Blueprint $table) {
-            $table->string('musk_code')->default('')->after('express_second_no')->comment('掩码');
+            $table->string('mask_code')->default('')->after('express_second_no')->comment('掩码');
         });
     }
 
@@ -26,7 +26,7 @@ class AlterOrderAddColumnMaskCode extends Migration
     public function down()
     {
         Schema::table('order', function (Blueprint $table) {
-            $table->dropColumn('musk_code');
+            $table->dropColumn('mask_code');
         });
     }
 }
