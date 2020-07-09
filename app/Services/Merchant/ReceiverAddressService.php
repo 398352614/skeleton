@@ -108,7 +108,19 @@ class ReceiverAddressService extends BaseService
     public function check(&$data, $id = null)
     {
         $data['receiver_country'] = CompanyTrait::getCountry();
-        if (CompanyTrait::getAddressTemplateId() == 1 || empty($params['receiver_address'])) {
+        $fields = ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'];
+        //当修改时，若数据未修改，则不处理
+        if (!empty($id)) {
+            $dbInfo = parent::getInfo(['id' => $id], ['*'], false);
+            if (empty($dbInfo)) {
+                throw new BusinessLogicException('数据不存在');
+            }
+            //若数据未修改,则返回成功
+            if (empty(array_diff(Arr::only($dbInfo->toArray(), $fields), Arr::only($data, $fields)))) {
+                $data['receiver_address'] = $dbInfo->receiver_address;
+            }
+        }
+        if (empty($data['receiver_address'])) {
             $data['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
         }
         //判断是否唯一
