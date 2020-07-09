@@ -293,9 +293,7 @@ class TourService extends BaseService
         //取消取派订单和包裹
         $cancelOrderList = [];
         if (!empty($params['cancel_order_id_list'])) {
-            $cancelOrderIdList = array_filter(explode(',', $params['cancel_order_id_list']), function ($value) {
-                return is_numeric($value);
-            });
+            $cancelOrderIdList = explode_id_string($params['cancel_order_id_list'], ',');
             if (!empty($cancelOrderIdList)) {
                 $rowCount = $this->getOrderService()->update(['id' => ['in', $cancelOrderIdList], 'tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_6]);
                 if ($rowCount === false) {
@@ -308,11 +306,6 @@ class TourService extends BaseService
                     throw new BusinessLogicException('出库失败');
                 }
             }
-        }
-        //判断是否存在不可出库且待出库的订单
-        $disableOutOrder = $this->getOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3, 'out_status' => BaseConstService::ORDER_OUT_STATUS_2], ['id', 'order_no'], false);
-        if (!empty($disableOutOrder)) {
-            throw new BusinessLogicException('订单[:order_no]不可出库', 1000, ['order_no' => $disableOutOrder->order_no]);
         }
         //订单更换状态
         $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_4]);
@@ -454,6 +447,15 @@ class TourService extends BaseService
                     throw new BusinessLogicException('当前取件线路的材料数量不正确');
                 }
             }
+        }
+        //判断是否存在不可出库且待出库的订单
+        $disableWhere = ['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3, 'out_status' => BaseConstService::ORDER_OUT_STATUS_2];
+        if (!empty($params['cancel_order_id_list'])) {
+            $disableWhere['id'] = ['not in', explode_id_string($params['cancel_order_id_list'], ',')];
+        }
+        $disableOutOrder = $this->getOrderService()->getInfo($disableWhere, ['id', 'order_no'], false);
+        if (!empty($disableOutOrder)) {
+            throw new BusinessLogicException('订单[:order_no]不可出库', 1000, ['order_no' => $disableOutOrder->order_no]);
         }
         //验证材料数量
         return $tour;
