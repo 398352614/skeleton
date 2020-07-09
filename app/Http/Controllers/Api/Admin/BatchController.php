@@ -7,6 +7,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\BatchService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 /**
  * Class BatchController
@@ -96,13 +97,36 @@ class BatchController extends BaseController
     }
 
     /**
+     * 批量分配站点至取件线路
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function assignListToTour()
+    {
+        $idList = $this->data['id_list'];
+        $data = Arr::except($this->data, ['id_list']);
+        return $this->service->assignListToTour($idList, $data);
+    }
+
+    /**
      * 移除站点
      * @param $id
+     * @return mixed
      * @throws BusinessLogicException
      */
     public function removeFromTour($id)
     {
         return $this->service->removeFromTour($id);
+    }
+
+    /**
+     * 批量移除站点
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function removeListFromTour()
+    {
+        return $this->service->removeListFromTour($this->data['id_list']);
     }
 
     /**

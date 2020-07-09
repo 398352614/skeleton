@@ -535,6 +535,22 @@ class BatchService extends BaseService
     }
 
     /**
+     * 批量分配站点到取件线路
+     * @param $idList
+     * @param $params
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function assignListToTour($idList, $params)
+    {
+        $idList = explode_id_string($idList, ',');
+        foreach ($idList as $id) {
+            $this->assignToTour($id, $params);
+        }
+        return 'true';
+    }
+
+    /**
      * 合并两个站点
      *
      * @param $tour
@@ -594,13 +610,14 @@ class BatchService extends BaseService
     /**
      * 从取件线路移除站点
      * @param $id
+     * @return mixed
      * @throws BusinessLogicException
      */
     public function removeFromTour($id)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         if (empty($info['tour_no'])) {
-            throw new BusinessLogicException('当前站点已经移除，不能重复操作');
+            return 'true';
         }
         //修改站点
         $rowCount = parent::updateById($id, ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::BATCH_WAIT_ASSIGN]);
@@ -628,6 +645,22 @@ class BatchService extends BaseService
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
 
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
+        return 'true';
+    }
+
+    /**
+     * 批量删除
+     * @param $idList
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function removeListFromTour($idList)
+    {
+        $idList = explode_id_string($idList, ',');
+        foreach ($idList as $id) {
+            $this->removeFromTour($id);
+        }
+        return 'true';
     }
 
     /**
