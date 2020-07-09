@@ -1029,7 +1029,7 @@ class OrderService extends BaseService
             $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false);
         }
         if (!empty($info['batch_no'])) {
-            $batch = $this->getTourService()->getInfo(['batch_no' => $info['batch_no']], ['*'], false);
+            $batch = $this->getBatchService()->getInfo(['batch_no' => $info['batch_no']], ['*'], false);
         }
         //若当前订单已取消取派了,在直接返回成功，不再删除
         if (intval($info['status']) == BaseConstService::ORDER_STATUS_6) {
