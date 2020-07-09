@@ -74,15 +74,15 @@ class SenderAddressService extends BaseService
     private function check(&$data, $id = null)
     {
         $data['sender_country'] = CompanyTrait::getCountry();
+        if (CompanyTrait::getAddressTemplateId() == 1 || empty($params['sender_address'])) {
+            $data['sender_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['sender_country', 'sender_city', 'sender_street', 'sender_post_code', 'sender_house_number'])));
+        }
         //判断是否唯一
         $where = $this->getUniqueWhere($data);
         !empty($id) && $where = Arr::add($where, 'id', ['<>', $id]);
         $info = parent::getInfo($where, ['*'], false);
         if (!empty($info)) {
             throw new BusinessLogicException('发货方地址已存在，不能重复添加');
-        }
-        if (CompanyTrait::getAddressTemplateId() == 1  || empty($params['sender_address'])) {
-            $data['sender_address'] = implode(' ', array_filter(Arr::only($data, ['sender_country', 'sender_city', 'sender_street', 'sender_post_code', 'sender_house_number'])));
         }
     }
 

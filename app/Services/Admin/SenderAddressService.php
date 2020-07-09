@@ -90,15 +90,15 @@ class SenderAddressService extends BaseService
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['sender_address'])) {
+            $data['sender_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['sender_country', 'sender_city', 'sender_street', 'sender_post_code', 'sender_house_number'])));
+        }
         //判断是否唯一
         $where = $this->getUniqueWhere($data);
         !empty($id) && $where = Arr::add($where, 'id', ['<>', $id]);
         $info = parent::getInfo($where, ['*'], false);
         if (!empty($info)) {
             throw new BusinessLogicException('发货方地址已存在，不能重复添加');
-        }
-        if ((CompanyTrait::getAddressTemplateId() == 1)  || empty($params['sender_address'])) {
-            $data['sender_address'] = implode(' ', array_filter(Arr::only($data, ['sender_country', 'sender_city', 'sender_street', 'sender_post_code', 'sender_house_number'])));
         }
     }
 
