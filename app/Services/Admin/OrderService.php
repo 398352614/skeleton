@@ -1063,7 +1063,7 @@ class OrderService extends BaseService
             $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no'], 'status' => BaseConstService::PACKAGE_STATUS_7], ['order_no', 'express_first_no'], false)->toArray();
             data_set($packageList, '*.status', BaseConstService::PACKAGE_STATUS_6);
             $order['package_list'] = $packageList;
-            event(new \App\Events\TourNotify\CancelBatch($tour, $batch, [$order]));
+            event(new \App\Events\TourNotify\CancelBatch($tour->toArray(), $batch->toArray(), [$order]));
         }
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_DELETE);
