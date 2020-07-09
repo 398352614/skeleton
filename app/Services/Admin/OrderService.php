@@ -280,7 +280,7 @@ class OrderService extends BaseService
         } elseif (CompanyTrait::getCompany()['show_type'] == BaseConstService::LINE_RULE_SHOW && CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
             $info = $this->getLineAreaService()->getList([], ['*'], false);
             $lineId = $info->pluck('line_id')->toArray();
-        }else{
+        } else {
             $info = $this->getLineService()->getList([], ['*'], false);
             $lineId = $info->pluck('id')->toArray();
         }
@@ -334,7 +334,7 @@ class OrderService extends BaseService
         $data['nature_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderNatureList);
         $data['settlement_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSettlementTypeList);
         $data['type'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderTypeList);
-        $data['feature_logo_list'] = ['常温', '雪花', '风扇'];
+        $data['feature_logo_list'] = ['常温', '雪花', '风扇', '预售'];
         return $data;
     }
 
@@ -662,10 +662,16 @@ class OrderService extends BaseService
     private function addAllItemList($params, $batch, $tour)
     {
         $status = $tour['status'] ?? BaseConstService::PACKAGE_STATUS_1;
+        $relationship = ['雪花' => '冷冻', '风扇' => '风房'];
+        foreach ($params['package_list'] as $k => $v) {
+            if (in_array($params['package_list'][$k]['feature_logo'], array_keys($relationship))) {
+                $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']];
+            }
+        }
         //若存在包裹列表,则新增包裹列表
         if (!empty($params['package_list'])) {
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
-                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no','feature_logo', 'weight', 'expect_quantity', 'remark']);
+                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark']);
                 return $collectItem->put('order_no', $params['order_no'])->put('batch_no', $batch['batch_no'])->put('tour_no', $tour['tour_no']);
             })->toArray();
             data_set($packageList, '*.status', $status);
