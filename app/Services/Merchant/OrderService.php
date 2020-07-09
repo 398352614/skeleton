@@ -11,6 +11,7 @@
 namespace App\Services\Merchant;
 
 use App\Events\OrderExecutionDateUpdated;
+use App\Events\TourNotify\CancelBatch;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
@@ -1163,6 +1164,12 @@ class OrderService extends BaseService
         !empty($info['batch_no']) && $this->getBatchService()->reCountAmountByNo($info['batch_no']);
         //重新统计取件线路金额
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
+        //以取消取派方式推送商城
+        if (!empty($info['tour_no']) && !empty($info['batch_no'])) {
+            $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+            $batch = $this->getBatchService()->getInfo(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
+            event(new \App\Events\TourNotify\CancelBatch($tour, $batch, [$info]));
+        }
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_DELETE);
         return 'true';
