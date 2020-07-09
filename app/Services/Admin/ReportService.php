@@ -179,17 +179,25 @@ class ReportService extends BaseService
             $batchList[$k]['actual_total_amount'] = number_format(round(($v['actual_settlement_amount'] + $v['actual_replace_amount'] + $v['sticker_amount']), 2), 2);
             //更新取件线路统计
             if ($v['pay_type'] == BaseConstService::BATCH_PAY_TYPE_2) {
-                $info['card_settlement_amount'] += number_format(round($v['actual_settlement_amount'], 2), 2);
-                $info['card_replace_amount'] += number_format(round($v['actual_replace_amount'], 2), 2);
-                $info['card_sticker_amount'] += number_format(round($v['sticker_amount'], 2), 2);
-                $info['card_total_amount'] += number_format(round($batchList[$k]['actual_total_amount'], 2), 2);
+                $info['card_settlement_amount'] += floatval($v['actual_settlement_amount']);
+                $info['card_replace_amount'] += floatval($v['actual_replace_amount']);
+                $info['card_sticker_amount'] += floatval($v['sticker_amount']);
+                $info['card_total_amount'] += floatval($batchList[$k]['actual_total_amount']);
             } else {
-                $info['cash_settlement_amount'] += number_format(round($v['actual_settlement_amount'], 2), 2);
-                $info['cash_replace_amount'] += number_format(round($v['actual_replace_amount'], 2), 2);
-                $info['cash_sticker_amount'] += number_format(round($v['sticker_amount'], 2), 2);
-                $info['cash_total_amount'] += number_format(round($batchList[$k]['actual_total_amount'], 2), 2);
+                $info['cash_settlement_amount'] += floatval($v['actual_settlement_amount']);
+                $info['cash_replace_amount'] += floatval($v['actual_replace_amount']);
+                $info['cash_sticker_amount'] += floatval($v['sticker_amount']);
+                $info['cash_total_amount'] += floatval($batchList[$k]['actual_total_amount']);
             }
         }
+        $info['card_settlement_amount'] = number_format(round($info['card_settlement_amount'],2),2);
+        $info['card_replace_amount'] = number_format(round($info['card_replace_amount'],2), 2);
+        $info['card_sticker_amount'] = number_format(round($info['card_sticker_amount'],2), 2);
+        $info['card_total_amount'] = number_format(round($info['card_total_amount'],2), 2);
+        $info['cash_settlement_amount'] = number_format(round($info['cash_settlement_amount'],2), 2);
+        $info['cash_replace_amount'] = number_format(round($info['cash_replace_amount'],2), 2);
+        $info['cash_sticker_amount'] = number_format(round($info['cash_sticker_amount'],2), 2);
+        $info['cash_total_amount'] = number_format(round($info['cash_total_amount'],2), 2);
         //将订单的外部订单号赋值给其所有包裹
         foreach ($packageList as $k => $v) {
             $packageList[$k]['out_order_no'] = collect($orderList)->where('order_no', $v['order_no'])->first()['out_order_no'];
