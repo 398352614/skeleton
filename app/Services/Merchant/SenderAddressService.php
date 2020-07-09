@@ -74,7 +74,7 @@ class SenderAddressService extends BaseService
     private function check(&$data, $id = null)
     {
         $data['sender_country'] = CompanyTrait::getCountry();
-        if (CompanyTrait::getAddressTemplateId() == 1 || empty($params['sender_address'])) {
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['sender_address'])) {
             $data['sender_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['sender_country', 'sender_city', 'sender_street', 'sender_post_code', 'sender_house_number'])));
         }
         //判断是否唯一

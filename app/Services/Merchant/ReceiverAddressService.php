@@ -108,7 +108,7 @@ class ReceiverAddressService extends BaseService
     public function check(&$data, $id = null)
     {
         $data['receiver_country'] = CompanyTrait::getCountry();
-        if (CompanyTrait::getAddressTemplateId() == 1 || empty($params['receiver_address'])) {
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['receiver_address'])) {
             $data['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
         }
         //判断是否唯一

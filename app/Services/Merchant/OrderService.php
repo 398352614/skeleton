@@ -780,7 +780,7 @@ class OrderService extends BaseService
         $status = $tour['status'] ?? BaseConstService::PACKAGE_STATUS_1;
         $relationship = ['雪花' => '冷冻', '风扇' => '风房'];
         foreach ($params['package_list'] as $k => $v) {
-            if (in_array($params['package_list'][$k]['feature_logo'], array_keys($relationship))) {
+            if (!empty($params['package_list'][$k]['feature_logo']) && in_array($params['package_list'][$k]['feature_logo'], array_keys($relationship))) {
                 $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']];
             }
         }
