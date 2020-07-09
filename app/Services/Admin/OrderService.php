@@ -1053,9 +1053,10 @@ class OrderService extends BaseService
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
         //以取消取派方式推送商城
         if (!empty($info['tour_no']) && !empty($info['batch_no'])) {
+            $order = parent::getInfo(['id' => $info['id']], ['*'], false)->toArray();
             $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
             $batch = $this->getBatchService()->getInfo(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
-            event(new \App\Events\TourNotify\CancelBatch($tour, $batch, [$info]));
+            event(new \App\Events\TourNotify\CancelBatch($tour, $batch, [$order]));
         }
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_DELETE);
