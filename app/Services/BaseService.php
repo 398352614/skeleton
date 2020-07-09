@@ -226,7 +226,6 @@ class BaseService
         SearchTrait::buildQuery($this->query, $where);
         $data = $this->query->first($selectFields);
         if (empty($data)) {
-            $sql = $this->query->toSql();
             $this->query = $this->model::query();
             return [];
         };
