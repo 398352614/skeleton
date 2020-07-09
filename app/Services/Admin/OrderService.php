@@ -1025,6 +1025,12 @@ class OrderService extends BaseService
     public function destroy($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]);
+        if (!empty($info['tour_no'])) {
+            $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false);
+        }
+        if (!empty($info['batch_no'])) {
+            $batch = $this->getTourService()->getInfo(['batch_no' => $info['batch_no']], ['*'], false);
+        }
         //若当前订单已取消取派了,在直接返回成功，不再删除
         if (intval($info['status']) == BaseConstService::ORDER_STATUS_6) {
             return 'true';
@@ -1052,13 +1058,11 @@ class OrderService extends BaseService
         //重新统计取件线路金额
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
         //以取消取派方式推送商城
-        if (!empty($info['tour_no']) && !empty($info['batch_no'])) {
+        if (!empty($tour) && !empty($batch)) {
             $order = array_merge($info, ['status' => BaseConstService::ORDER_STATUS_6]);
             $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no'], 'status' => BaseConstService::PACKAGE_STATUS_7], ['order_no', 'express_first_no'], false)->toArray();
             data_set($packageList, '*.status', BaseConstService::PACKAGE_STATUS_6);
             $order['package_list'] = $packageList;
-            $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
-            $batch = $this->getBatchService()->getInfo(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
             event(new \App\Events\TourNotify\CancelBatch($tour, $batch, [$order]));
         }
 
