@@ -70,9 +70,7 @@ class HomeService extends BaseService
         //$assignCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_2]);//已分配
         $waitOutCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_3]);//待出库
         $takingCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_4]);//配送中
-        $signedCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_5]);//配送完成
         $graph = $this->thisWeekCount();
-
         return [
             'preparing_order' => $noTakeOrder + $assignOrder + $waitOutOrder,
             'taking_order' => $takingOrder,
@@ -85,16 +83,16 @@ class HomeService extends BaseService
             //'preparing_driver' => $assignDriver + $waitOutCar,
             //'taking_driver' => $takingCar,
             //'signed_driver' => $signedCar,
-            'working_driver' => $assignCar + $waitOutCar + $takingCar + $signedCar,
-            'free_driver' => $driverSum - $assignCar - $waitOutCar - $takingCar - $signedCar,
+            'working_driver' => $assignDriver + $waitOutCar + $takingCar,
+            'free_driver' => $driverSum - $assignCar - $waitOutCar - $takingCar,
 
             //车辆统计
             'sum_car' => $carSum,
             //'preparing_car' => $assignCar + $waitOutCar,
             //'taking_car' => $takingCar,
             //'signed_car' => $signedCar,
-            'working_car' => $assignCar + $waitOutCar + $takingCar + $signedCar,
-            'free_car' => $carSum - $assignCar - $waitOutCar - $takingCar - $signedCar,
+            'working_car' => $assignCar + $waitOutCar + $takingCar,
+            'free_car' => $carSum - $assignCar - $waitOutCar - $takingCar,
 
             //表格
             'graph' => $graph,
