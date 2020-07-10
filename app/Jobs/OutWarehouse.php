@@ -87,7 +87,7 @@ class OutWarehouse implements ShouldQueue
             request()->headers->set('X-Uuid', $company['company_code']);
             /**@var TourService $tourService */
             $tourService = FactoryInstanceTrait::getInstance(TourService::class);
-            $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get(['id', 'sort_id'])->toArray();
+            $batchList = Batch::query()->where('tour_no', $this->tour_no)->orderBy('status')->orderBy('sort_id')->get(['id', 'sort_id'])->toArray();
             $sortBatch = Arr::first($batchList, function ($batch) {
                 return $batch['sort_id'] != 1000;
             });
