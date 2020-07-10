@@ -663,13 +663,13 @@ class OrderService extends BaseService
     {
         $status = $tour['status'] ?? BaseConstService::PACKAGE_STATUS_1;
         $relationship = ['雪花' => '冷冻', '风扇' => '风房'];
-        foreach ($params['package_list'] as $k => $v) {
-            if (!empty($params['package_list'][$k]['feature_logo']) && in_array($params['package_list'][$k]['feature_logo'], array_keys($relationship))) {
-                $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']];
-            }
-        }
         //若存在包裹列表,则新增包裹列表
         if (!empty($params['package_list'])) {
+            foreach ($params['package_list'] as $k => $v) {
+                if (!empty($params['package_list'][$k]['feature_logo']) && in_array($params['package_list'][$k]['feature_logo'], array_keys($relationship))) {
+                    $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']];
+                }
+            }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
                 $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark']);
                 return $collectItem->put('order_no', $params['order_no'])->put('batch_no', $batch['batch_no'])->put('tour_no', $tour['tour_no']);
