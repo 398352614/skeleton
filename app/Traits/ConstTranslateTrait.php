@@ -54,6 +54,7 @@ use Illuminate\Support\Facades\App;
  * @method static merchantTourStatusList($args = null)
  * @method static merchantBatchStatusList($args = null)
  * @method static showTypeList($args = null)
+ * @method static merchantPackageStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -118,7 +119,7 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_STATUS_7 => '回收站',
     ];
 
-    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    //包裹状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     public static $packageStatusList = [
         BaseConstService::ORDER_STATUS_1 => '待分配',
         BaseConstService::ORDER_STATUS_2 => '已分配',
@@ -127,6 +128,15 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_STATUS_5 => '已完成',
         BaseConstService::ORDER_STATUS_6 => '取消取派',
         BaseConstService::ORDER_STATUS_7 => '回收站',
+    ];
+
+    //商户端包裹状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    public static $merchantPackageStatusList = [
+        BaseConstService::MERCHANT_PACKAGE_STATUS_1 => '未取派',
+        BaseConstService::MERCHANT_PACKAGE_STATUS_2 => '取派中',
+        BaseConstService::MERCHANT_PACKAGE_STATUS_3 => '已完成',
+        BaseConstService::MERCHANT_PACKAGE_STATUS_4 => '取消取派',
+        BaseConstService::MERCHANT_PACKAGE_STATUS_5 => '回收站',
     ];
 
     //订单异常标签1-正常2-异常
