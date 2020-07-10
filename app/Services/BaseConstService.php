@@ -15,6 +15,8 @@ class BaseConstService
     const ORDER = 'ORDER';
     const BATCH = 'BATCH';
     const TOUR = 'TOUR';
+    const PACKAGE = 'PACKAGE';
+    const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
 
     const TYPE_ORDER = 1;
@@ -111,6 +113,13 @@ class BaseConstService
     const PACKAGE_STATUS_5 = 5;
     const PACKAGE_STATUS_6 = 6;
     const PACKAGE_STATUS_7 = 7;
+
+    //商户端包裹列表1-未取派4-取派中5-已签收6-取消取派7-回收站
+    const MERCHANT_PACKAGE_STATUS_1 = 1;
+    const MERCHANT_PACKAGE_STATUS_2 = 2;
+    const MERCHANT_PACKAGE_STATUS_3 = 3;
+    const MERCHANT_PACKAGE_STATUS_4 = 4;
+    const MERCHANT_PACKAGE_STATUS_5 = 5;
 
 
     //订单异常标签1-正常2-异常
