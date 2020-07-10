@@ -88,6 +88,7 @@ class OutWarehouse implements ShouldQueue
             /**@var TourService $tourService */
             $tourService = FactoryInstanceTrait::getInstance(TourService::class);
             $batchList = Batch::query()->where('tour_no', $this->tour_no)->orderBy('status','desc')->orderBy('sort_id')->get(['id', 'sort_id'])->toArray();
+            Log::info('batch_list:'.json_encode($batchList,JSON_UNESCAPED_UNICODE));
             $sortBatch = Arr::first($batchList, function ($batch) {
                 return $batch['sort_id'] != 1000;
             });
