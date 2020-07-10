@@ -620,12 +620,12 @@ class BatchService extends BaseService
             return 'true';
         }
         //修改站点
-        $rowCount = parent::updateById($id, ['tour_no' => '', 'driver_id' => null, 'driver_name' => '','execution_date'=>null, 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::BATCH_WAIT_ASSIGN]);
+        $rowCount = parent::updateById($id, ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'execution_date' => null, 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::BATCH_WAIT_ASSIGN]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
         //修改订单
-        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
+        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'driver_id' => null, 'execution_date' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
