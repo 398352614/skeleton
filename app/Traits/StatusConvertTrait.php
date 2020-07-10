@@ -13,33 +13,44 @@ use App\Services\BaseConstService;
 
 trait StatusConvertTrait
 {
+
     /**
      * 取件线路状态映射
      * @param array $params
+     * @param string $type
      * @return array
      */
-    public static function statusConvert(array $params)
+    public static function statusConvert(array $params, $type = BaseConstService::PACKAGE)
     {
-            $tourConvertList = [
-                BaseConstService::TOUR_STATUS_1 => BaseConstService::MERCHANT_TOUR_STATUS_1,
-                BaseConstService::TOUR_STATUS_2 => BaseConstService::MERCHANT_TOUR_STATUS_1,
-                BaseConstService::TOUR_STATUS_3 => BaseConstService::MERCHANT_TOUR_STATUS_1,
-                BaseConstService::TOUR_STATUS_4 => BaseConstService::MERCHANT_TOUR_STATUS_2,
-                BaseConstService::TOUR_STATUS_5 => BaseConstService::MERCHANT_TOUR_STATUS_3,
-            ];
-            if (!empty($params) && collect($params[0])->has('status')) {
-                for ($i = 0, $j = count($params); $i < $j; $i++) {
-                    //如果是前五个状态就翻译，否则不翻译
-                    if (in_array($params[$i]['status'], $tourConvertList)) {
-                        $params[$i]['merchant_status'] = $tourConvertList[$params[$i]['status']];
-                        $params[$i]['merchant_status_name'] = ConstTranslateTrait::merchantTourStatusList($params[$i]['merchant_status']);
-                    } else {
-                        $params[$i]['merchant_status'] = $params[$i]['status'];
-                        $params[$i]['merchant_status_name'] = ConstTranslateTrait::tourStatusList($params[$i]['status']);
-                    }
+        if ($type == BaseConstService::PACKAGE) {
+            return self::statusConvertByType($params, self::$packageConvertList);
+        } else {
+            return $params;
+        }
 
+    }
+
+    public static function statusConvertByType($params, $data)
+    {
+        if (!empty($params) && collect($params[0])->has('status')) {
+            for ($i = 0, $j = count($params); $i < $j; $i++) {
+                if (in_array($params[$i]['status'], array_keys($data))) {
+                    $params[$i]['merchant_status'] = $data[$params[$i]['status']];
+                    $params[$i]['merchant_status_name'] = ConstTranslateTrait::merchantPackageStatusList($params[$i]['merchant_status']);
                 }
             }
+        }
         return $params;
     }
+
+    static $packageConvertList = [
+        BaseConstService::PACKAGE_STATUS_1 => BaseConstService::MERCHANT_PACKAGE_STATUS_1,
+        BaseConstService::PACKAGE_STATUS_2 => BaseConstService::MERCHANT_PACKAGE_STATUS_1,
+        BaseConstService::PACKAGE_STATUS_3 => BaseConstService::MERCHANT_PACKAGE_STATUS_1,
+        BaseConstService::PACKAGE_STATUS_4 => BaseConstService::MERCHANT_PACKAGE_STATUS_2,
+        BaseConstService::PACKAGE_STATUS_5 => BaseConstService::MERCHANT_PACKAGE_STATUS_3,
+        BaseConstService::PACKAGE_STATUS_6 => BaseConstService::MERCHANT_PACKAGE_STATUS_4,
+        BaseConstService::PACKAGE_STATUS_7 => BaseConstService::MERCHANT_PACKAGE_STATUS_5,
+    ];
+
 }
