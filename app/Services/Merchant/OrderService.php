@@ -11,6 +11,7 @@
 namespace App\Services\Merchant;
 
 use App\Events\OrderExecutionDateUpdated;
+use App\Events\TourNotify\CancelBatch;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
@@ -1137,6 +1138,12 @@ class OrderService extends BaseService
     public function destroy($id, $params)
     {
         $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_6]);
+        if (!empty($info['tour_no'])) {
+            $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false);
+        }
+        if (!empty($info['batch_no'])) {
+            $batch = $this->getBatchService()->getInfo(['batch_no' => $info['batch_no']], ['*'], false);
+        }
         //若当前订单已取消取派了,在直接返回成功，不再删除
         if (intval($info['status']) == BaseConstService::ORDER_STATUS_6) {
             return 'true';
@@ -1163,6 +1170,14 @@ class OrderService extends BaseService
         !empty($info['batch_no']) && $this->getBatchService()->reCountAmountByNo($info['batch_no']);
         //重新统计取件线路金额
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
+        //以取消取派方式推送商城
+        if (!empty($tour) && !empty($batch)) {
+            $order = array_merge($info, ['status' => BaseConstService::ORDER_STATUS_6]);
+            $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no'], 'status' => BaseConstService::PACKAGE_STATUS_7], ['order_no', 'express_first_no'], false)->toArray();
+            data_set($packageList, '*.status', BaseConstService::PACKAGE_STATUS_6);
+            $order['package_list'] = $packageList;
+            event(new \App\Events\TourNotify\CancelBatch($tour->toArray(), $batch->toArray(), [$order]));
+        }
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_DELETE);
         return 'true';
