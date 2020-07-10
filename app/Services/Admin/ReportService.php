@@ -16,6 +16,7 @@ use App\Models\TourMaterial;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\StatusConvertTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
@@ -26,6 +27,8 @@ use Illuminate\Support\Facades\DB;
  */
 class ReportService extends BaseService
 {
+    use StatusConvertTrait;
+
     public $filterRules = [
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_name' => ['like', 'driver_name'],
@@ -118,6 +121,7 @@ class ReportService extends BaseService
         $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'sticker_no'], false)->toArray();
         //获取当前取件线路上的所有包裹
         $packageList = $this->getPackageService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+        $packageList = self::statusConvert($packageList);
         //获取当前取件线路上的所有材料
         $materialList = $this->getMaterialService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         //获取站点的取件材料汇总
@@ -146,7 +150,7 @@ class ReportService extends BaseService
         $info['cash_sticker_count'] = 0;
         foreach ($orderList as $k => $v) {
             //更新订单统计
-            $orderList[$k]['package_list']=collect($packageList)->where('order_no',$v['order_no'])->all();
+            $orderList[$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
             $orderList[$k]['expect_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
             $orderList[$k]['expect_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
             $orderList[$k]['expect_sticker_amount'] = number_format(round($v['sticker_amount'], 2), 2);
@@ -191,14 +195,14 @@ class ReportService extends BaseService
                 $info['cash_total_amount'] += floatval($batchList[$k]['actual_total_amount']);
             }
         }
-        $info['card_settlement_amount'] = number_format(round($info['card_settlement_amount'],2),2);
-        $info['card_replace_amount'] = number_format(round($info['card_replace_amount'],2), 2);
-        $info['card_sticker_amount'] = number_format(round($info['card_sticker_amount'],2), 2);
-        $info['card_total_amount'] = number_format(round($info['card_total_amount'],2), 2);
-        $info['cash_settlement_amount'] = number_format(round($info['cash_settlement_amount'],2), 2);
-        $info['cash_replace_amount'] = number_format(round($info['cash_replace_amount'],2), 2);
-        $info['cash_sticker_amount'] = number_format(round($info['cash_sticker_amount'],2), 2);
-        $info['cash_total_amount'] = number_format(round($info['cash_total_amount'],2), 2);
+        $info['card_settlement_amount'] = number_format(round($info['card_settlement_amount'], 2), 2);
+        $info['card_replace_amount'] = number_format(round($info['card_replace_amount'], 2), 2);
+        $info['card_sticker_amount'] = number_format(round($info['card_sticker_amount'], 2), 2);
+        $info['card_total_amount'] = number_format(round($info['card_total_amount'], 2), 2);
+        $info['cash_settlement_amount'] = number_format(round($info['cash_settlement_amount'], 2), 2);
+        $info['cash_replace_amount'] = number_format(round($info['cash_replace_amount'], 2), 2);
+        $info['cash_sticker_amount'] = number_format(round($info['cash_sticker_amount'], 2), 2);
+        $info['cash_total_amount'] = number_format(round($info['cash_total_amount'], 2), 2);
         //将订单的外部订单号赋值给其所有包裹
         foreach ($packageList as $k => $v) {
             $packageList[$k]['out_order_no'] = collect($orderList)->where('order_no', $v['order_no'])->first()['out_order_no'];
