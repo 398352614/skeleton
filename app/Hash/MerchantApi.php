@@ -4,6 +4,7 @@ namespace App\Hash;
 
 use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 use Illuminate\Hashing\AbstractHasher;
+use Illuminate\Support\Facades\Log;
 
 class MerchantApi extends AbstractHasher implements HasherContract
 {
@@ -20,6 +21,7 @@ class MerchantApi extends AbstractHasher implements HasherContract
         krsort($options);
         $str = join('&', $this->dotParams($options, []));
         $sign = strtoupper(md5(urldecode($str . $value)));
+        Log::info('sign;' . $sign);
         return $sign;
     }
 
