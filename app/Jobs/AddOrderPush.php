@@ -86,6 +86,7 @@ class AddOrderPush implements ShouldQueue
             $client = new Client('wss://' . config('tms.push_url') . '/?token=' . $this->token);
             $client->send(json_encode($message, JSON_UNESCAPED_UNICODE));
             $client->close();
+            Log::info('加单推送成功');
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error('加单错误:' . $ex->getMessage());
             return false;

@@ -86,8 +86,10 @@ class SendNotify2Merchant implements ShouldQueue
             if (empty($merchantList)) return true;
             foreach ($dataList as $merchantId => $data) {
                 $postData = ['type' => $notifyType, 'data' => $data];
-                $this->postData($merchantList[$merchantId]['url'], $postData);
+                $res = $this->postData($merchantList[$merchantId]['url'], $postData);
+                Log::info($merchantId . '-商户通知成功返回:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             }
+            Log::info('取件线路通知成功:' . $notifyType);
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
         }
@@ -120,6 +122,7 @@ class SendNotify2Merchant implements ShouldQueue
         $res = $this->curl->post($url, $postData);
         if (empty($res) || empty($res['code']) || ($res['code'] != 200)) {
             app('log')->info('send notify failure');
+            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('发送失败');
         }
     }
