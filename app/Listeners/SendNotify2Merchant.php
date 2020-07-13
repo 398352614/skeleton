@@ -120,7 +120,7 @@ class SendNotify2Merchant implements ShouldQueue
     public function postData(string $url, array $postData)
     {
         $res = $this->curl->post($url, $postData);
-        if (empty($res) || empty($res['code']) || ($res['code'] != 200)) {
+        if (empty($res) || empty($res['code']) || ($res['code'] != 200) || empty($res['ret']) || (intval($res['ret']) == 1)) {
             app('log')->info('send notify failure');
             Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('发送失败');
