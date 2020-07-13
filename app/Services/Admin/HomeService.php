@@ -84,7 +84,7 @@ class HomeService extends BaseService
             //'taking_driver' => $takingCar,
             //'signed_driver' => $signedCar,
             'working_driver' => $assignDriver + $waitOutCar + $takingCar,
-            'free_driver' => $driverSum - $assignCar - $waitOutCar - $takingCar,
+            'free_driver' => $driverSum - $assignDriver - $waitOutCar - $takingCar,
 
             //车辆统计
             'sum_car' => $carSum,
