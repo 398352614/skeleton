@@ -59,6 +59,9 @@ class MerchantApi extends AbstractHasher implements HasherContract
     public function dotParams($params, $newParams)
     {
         foreach ($params as $key => $val) {
+            if (isJson($val)) {
+                $val = json_decode($val, true);
+            }
             if (is_array($val)) {
                 $newParams = $this->dotParams($val, $newParams);
             } else {
