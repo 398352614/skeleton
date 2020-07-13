@@ -87,15 +87,15 @@ class OutWarehouse implements ShouldQueue
             request()->headers->set('X-Uuid', $company['company_code']);
             /**@var TourService $tourService */
             $tourService = FactoryInstanceTrait::getInstance(TourService::class);
-            $batchList = Batch::query()->where('tour_no', $this->tour_no)->whereIn('status',[BaseConstService::BATCH_CANCEL,BaseConstService::BATCH_CHECKOUT])->get(['id', 'sort_id'])->toArray();
-            $ingBatchList = Batch::query()->where('tour_no', $this->tour_no)->whereNotIn('status',[BaseConstService::BATCH_CANCEL,BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get(['id', 'sort_id'])->toArray();
-            $batchList  = array_merge($batchList,$ingBatchList);
-            Log::info('batch_list:'.json_encode($batchList,JSON_UNESCAPED_UNICODE));
+            $batchList = Batch::query()->where('tour_no', $this->tour_no)->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->get(['id', 'sort_id'])->toArray();
+            $ingBatchList = Batch::query()->where('tour_no', $this->tour_no)->whereNotIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get(['id', 'sort_id'])->toArray();
+            $batchList = array_merge($batchList, $ingBatchList);
+            Log::info('batch_list:' . json_encode($batchList, JSON_UNESCAPED_UNICODE));
             $sortBatch = Arr::first($batchList, function ($batch) {
                 return $batch['sort_id'] != 1000;
             });
             if (!empty($sortBatch)) {
-                Log::info('batch_ids:'.json_encode(array_column($batchList, 'id'),JSON_UNESCAPED_UNICODE));
+                Log::info('batch_ids:' . json_encode(array_column($batchList, 'id'), JSON_UNESCAPED_UNICODE));
                 $tourService->updateBatchIndex(['tour_no' => $this->tour_no, 'batch_ids' => array_column($batchList, 'id')]);
             } else {
                 $tourService->autoOpTour(['tour_no' => $this->tour_no]);
@@ -110,6 +110,7 @@ class OutWarehouse implements ShouldQueue
             if (!empty($nextBatch)) {
                 event(new NextBatch($tour, $nextBatch->toArray()));
             }
+            Log::info('出库成功');
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getFile());
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getLine());

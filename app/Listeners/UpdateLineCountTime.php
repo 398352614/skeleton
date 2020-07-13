@@ -50,5 +50,6 @@ class UpdateLineCountTime
         if (!$this->updateTourTimeAndDistance($tour)) {
             throw new BusinessLogicException('更新线路失败');
         }
+        Log::info('取件线路预计耗时和里程更新成功');
     }
 }

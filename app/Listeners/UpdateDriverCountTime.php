@@ -94,6 +94,8 @@ class UpdateDriverCountTime implements ShouldQueue
                 if ($event->notifyNextBatch == true) {
                     event(new NextBatch($tour->toArray(), ['batch_no' => $nextBatchNo]));
                 }
+
+                Log::info('司机位置和各站点预计耗时和里程更新成功');
             }
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error('更新线路失败:' . $ex->getFile());

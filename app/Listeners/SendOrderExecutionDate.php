@@ -85,7 +85,7 @@ class SendOrderExecutionDate implements ShouldQueue
             $url = $this->getUrlByMerchantId($merchantId);
             if (empty($url)) return true;
             //推送
-            $this->postData($url, [
+            $res = $this->postData($url, [
                 'type' => $event->notifyType(),
                 'data' => [
                     'order_no' => $event->order_no,
@@ -93,6 +93,7 @@ class SendOrderExecutionDate implements ShouldQueue
                     'line' => $event->tour
                 ]
             ]);
+            Log::info('订单取派日期修改通知成功:' . json_encode($res, JSON_UNESCAPED_UNICODE));
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
         }
