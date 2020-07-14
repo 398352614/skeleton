@@ -41,6 +41,7 @@ class OrderValidate extends BaseValidate
         'lat' => 'nullable|string|max:50',
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
+        'out_status'=>'sometimes|integer|in:1,2',
         //包裹列表
         'package_list.*.name' => 'nullable|string|max:50',
         'package_list.*.weight' => 'nullable|numeric|gte:0',
