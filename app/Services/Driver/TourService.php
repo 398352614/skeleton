@@ -531,7 +531,13 @@ class TourService extends BaseService
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
         $now = now();
-        $actualTime = strtotime($now) - strtotime($tour['begin_time']);
+        //查找当前取件线路中最新完成的站点
+        $lastCompleteBatch = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no'], 'status' => ['in', BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]], ['actual_arrive_time'], false, ['actual_arrive_time', 'desc']);
+        if (!empty($lastCompleteBatch) && !empty($lastCompleteBatch->actual_arrive_time)) {
+            $actualTime = strtotime($now) - strtotime($lastCompleteBatch->actual_arrive_time);
+        } else {
+            $actualTime = strtotime($now) - strtotime($tour['begin_time']);
+        }
         $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => $now, 'actual_time' => $actualTime, 'actual_distance' => $batch['expect_distance']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('更新到达时间失败，请重新操作');
