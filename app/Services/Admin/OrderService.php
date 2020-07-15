@@ -623,7 +623,7 @@ class OrderService extends BaseService
                     $tour = $this->getTourService()->getInfo(['tour_no' => $dbOrder->tour_no], ['line_id', 'line_name'], false);
                     $data['line'] = !empty($tour) ? $tour->toArray() : [];
                 }
-                throw new BusinessLogicException('外部订单号已存在', 1002, $data);
+                throw new BusinessLogicException('外部订单号已存在', 1002, [], $data);
             }
         }
     }
