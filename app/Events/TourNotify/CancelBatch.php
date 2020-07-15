@@ -10,6 +10,7 @@ namespace App\Events\TourNotify;
 
 
 use App\Events\Interfaces\ATourNotify;
+use App\Models\Material;
 use App\Models\Order;
 use App\Models\Package;
 use App\Services\BaseConstService;
@@ -36,13 +37,17 @@ class CancelBatch extends ATourNotify
 
     public function getDataList(): array
     {
-        $packageList = Package::query()->whereIn('order_no', array_column($this->orderList, 'order_no'))->get(['order_no', 'express_first_no', 'status'])->toArray();
+        $orderNoList = array_column($this->orderList, 'order_no');
+        $packageList = Package::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'express_first_no', 'status'])->toArray();
         $packageList = array_create_group_index($packageList, 'order_no');
-        $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList) {
+        $materialList = Material::query()->whereNotIn('order_no', $orderNoList)->get(['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
+        $materialList = array_create_group_index($materialList, 'order_no');
+        $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList, $materialList) {
             $order['package_list'] = $packageList[$order['order_no']] ?? [];
+            $order['material_list'] = $materialList[$order['order_no']] ?? [];
             return collect($order);
         })->toArray();
-        unset($packageList);
+        unset($packageList, $materialList);
         $orderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
         $batchList = [];
         foreach ($orderList as $merchantId => $merchantOrderList) {

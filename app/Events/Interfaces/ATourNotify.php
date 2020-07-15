@@ -30,7 +30,7 @@ abstract class ATourNotify
     ];
 
     public static $orderFields = [
-        'merchant_id', 'tour_no', 'batch_no', 'order_no', 'status'
+        'merchant_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status'
     ];
 
     public function __construct($tour, $batch, $batchList, $orderList)
