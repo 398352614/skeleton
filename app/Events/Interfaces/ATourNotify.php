@@ -22,7 +22,7 @@ abstract class ATourNotify
 
     public $orderList;
 
-    public static $tourFields = ['line_name', 'tour_no', 'execution_date', 'expect_distance', 'expect_time'];
+    public static $tourFields = ['line_name', 'tour_no', 'execution_date', 'expect_distance', 'expect_time', 'driver_id', 'driver_name', 'driver_phone', 'car_id', 'car_no'];
 
     public static $batchFields = [
         'tour_no', 'batch_no', 'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
