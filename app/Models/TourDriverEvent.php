@@ -54,6 +54,7 @@ class TourDriverEvent extends BaseModel
         'icon_id',
         'icon_path',
         'tour_no',
+        'batch_no',
         'route_tracking_id',
         'created_at',
         'updated_at',

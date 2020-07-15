@@ -32,6 +32,15 @@ class RouteTrackingService extends BaseService
     }
 
     /**
+     * 站点 服务
+     * @return BatchService
+     */
+    public function getBatchService()
+    {
+        return self::getInstance(BatchService::class);
+    }
+
+    /**
      * 线路追踪
      * @return array
      * @throws BusinessLogicException
@@ -41,7 +50,7 @@ class RouteTrackingService extends BaseService
         $tour = null;
         $info = [];
         $content = [];
-        if ($this->formData['driver_id'] ?? null) {
+        if (!empty($this->formData['driver_id'])) {
             $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
         } else {
             $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
@@ -49,15 +58,24 @@ class RouteTrackingService extends BaseService
         if (!$tour) {
             throw new BusinessLogicException('没找到相关进行中的线路');
         }
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id');
         $routeTracking = $tour->routeTracking->toArray();
         if (!empty($routeTracking)) {
             foreach ($routeTracking as $k => $v) {
                 if (!empty($v['tour_driver_event_id'])) {
                     $routeTracking[$k]['event'] = array_values($tour->tourDriverEvent->where('id', $v['tour_driver_event_id'])
-                        ->map(function ($item) {
+                        ->map(function ($item) use ($batchList) {
                             $item['time'] = date_format($item['created_at'], "Y-m-d H:i:s");
                             $item['type'] = 'station';
-                            return $item->only('content', 'time', 'type', 'address');
+                            if (!empty($item['batch_no'])) {
+                                $batch = $batchList->where('batch_no', $item['batch_no'])->first();
+                                $item['receiver_fullname'] = $batch['receiver_fullname'];
+                                $item['sort_id'] = $batch['sort_id'];
+                            } else {
+                                $item['receiver_fullname'] = '';
+                                $item['sort_id'] = 0;
+                            }
+                            return $item->only('content', 'time', 'type', 'address', 'batch_no', 'receiver_fullname', 'sort_id');
                         })->toArray());
                     $routeTracking[$k]['address'] = $routeTracking[$k]['event'][0]['address'];
                 }
@@ -79,18 +97,18 @@ class RouteTrackingService extends BaseService
                     }
                     //合并
                     if (!empty($routeTracking[$i - 1]['event'])) {
-                        $routeTracking[$i]['event'] = array_merge($routeTracking[$i]['event'], $routeTracking[$i - 1]['event']);
+                        $routeTracking[$i]['event'] = array_merge($routeTracking[$i - 1]['event'], $routeTracking[$i]['event']);
                     }
                     if (!empty($routeTracking[$i - 1]['address'])) {
                         $routeTracking[$i]['address'] = $routeTracking[$i - 1]['address'];
                     }
                     if (!empty($routeTracking[$i]['event']) && !empty(collect($routeTracking[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'])) {
-                        $routeTracking[$i]['event'] = array_merge(collect($routeTracking[$i]['event'])->groupBy('type')->sortByDesc('time')->toArray()['stop'][0], collect($routeTracking[$i]['event'])->groupBy('type')->toArray()['station'] ?? []);
+                        $routeTracking[$i]['event'] = array_merge([collect($routeTracking[$i]['event'])->groupBy('type')->sortByDesc('time')->toArray()['stop'][0]], collect($routeTracking[$i]['event'])->groupBy('type')->toArray()['station'] ?? []);
                     } elseif (!empty($routeTracking[$i]['event'])) {
                         $routeTracking[$i]['event'] = collect($routeTracking[$i]['event'])->groupBy('type')->toArray()['station'] ?? [];
                     }
-                    $routeTracking = Arr::except($routeTracking, [$i - 1]);
-                    $info = Arr::except($info, [$i - 1]);
+                    $routeTracking = Arr::except($routeTracking, $i - 1);
+                    $info = Arr::except($info, $i - 1);
                 } else {
                     $routeTracking[$i]['stopTime'] = 0;
                 }
@@ -102,17 +120,14 @@ class RouteTrackingService extends BaseService
                     $info[$i]['event'] = [];
                 }
             }
-            if(!empty($routeTracking[0])){
+            if (!empty($routeTracking[0])) {
                 $info[0] = Arr::except($routeTracking[0], ['stopTime', 'created_at', 'updated_at', 'time', 'tour_driver_event_id', 'driver_id']);
             }
             $info = array_values(collect($info)->sortBy('time_human')->toArray());
         }
         return success('', [
+            'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
             'route_tracking' => $info,
-            'driver' => $tour->driver,
-            'tour_event' => $tour->tourDriverEvent,
-            'time_consuming' => '',
-            'distance_consuming' => '',
         ]);
     }
 

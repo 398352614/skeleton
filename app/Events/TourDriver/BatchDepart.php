@@ -29,13 +29,20 @@ class BatchDepart implements ITourDriver
         $this->batch = $batch;
     }
 
-
     /**
      * 获取当前司机事件的 tour_no
      */
     public function getTourNo(): string
     {
         return $this->batch['tour_no'];
+    }
+
+    /**
+     * 获取当前司机事件的 tour_no
+     */
+    public function getBatchNo(): string
+    {
+        return $this->batch['batch_no'];
     }
 
     /**

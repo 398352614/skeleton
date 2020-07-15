@@ -29,6 +29,14 @@ class BackWarehouse implements ITourDriver
         return $this->tour['tour_no'];
     }
 
+    /**
+     * 获取当前司机事件的 tour_no
+     */
+    public function getBatchNo(): string
+    {
+        return '';
+    }
+
     public function getLocation(): array
     {
         return [
