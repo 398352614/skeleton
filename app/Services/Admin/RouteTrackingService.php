@@ -73,7 +73,7 @@ class RouteTrackingService extends BaseService
                                 $item['sort_id'] = $batch['sort_id'];
                             } else {
                                 $item['receiver_fullname'] = '';
-                                $item['sort_id'] = 0;
+                                $item['sort_id'] = 1000;
                             }
                             return $item->only('content', 'time', 'type', 'address', 'batch_no', 'receiver_fullname', 'sort_id');
                         })->toArray());
@@ -94,6 +94,8 @@ class RouteTrackingService extends BaseService
                             'type' => 'stop',
                         ];
                         $routeTracking[$i]['event'] = array_merge($routeTracking[$i - 1]['event'] ?? [], [collect($content[$i])->sortByDesc('time')->first()]);
+                    }else{
+                        $routeTracking[$i]['event']=$routeTracking[$i]['event'] ?? [];
                     }
                     //合并
                     if (!empty($routeTracking[$i - 1]['event'])) {
