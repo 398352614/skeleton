@@ -49,7 +49,7 @@ trait UpdateTourTimeAndDistanceTrait
                 $max_distance = max($max_distance, $res['distance']);
             }
 
-            if ($tour->expect_time == 0) { // 只有未更新过的线路需要更新期望时间和距离
+            if (in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])) { // 只有未更新过的线路需要更新期望时间和距离
                 $tour->expect_time = $max_time;
                 $tour->expect_distance = $max_distance;
                 $tour->save();
