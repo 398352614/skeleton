@@ -75,9 +75,15 @@ class RouteTrackingService extends BaseService
                                 $item['receiver_fullname'] = '';
                                 $item['sort_id'] = 1000;
                             }
-                            return $item->only('content', 'time', 'type', 'address', 'batch_no', 'receiver_fullname', 'sort_id');
+                            return $item->only('content', 'time', 'type');
                         })->toArray());
-                    $routeTracking[$k]['address'] = $routeTracking[$k]['event'][0]['address'];
+                    $routeTracking[$k]['address'] = collect($routeTracking[$k]['event'])->whereNotNull('address')->first()['address'];
+                    $routeTracking[$k]['sort_id'] = collect($routeTracking[$k]['event'])->whereNotNull('address')->first()['sort_id'];
+                    $routeTracking[$k]['receiver_fullname'] = collect($routeTracking[$k]['event'])->whereNotNull('receiver_fullname')->first()['receiver_fullname'];
+                }else{
+                    $routeTracking[$k]['address']='';
+                    $routeTracking[$k]['sort_id']=1000;
+                    $routeTracking[$k]['receiver_fullname'] ='';
                 }
             }
             $routeTracking = collect($routeTracking)->sortBy('time_human')->toArray();
@@ -91,7 +97,7 @@ class RouteTrackingService extends BaseService
                         $content[$i][] = [
                             'content' => __("司机已在此停留[:time]分钟", ['time' => $routeTracking[$i]['stopTime']]),
                             'time' => $routeTracking[$i]['time_human'],
-                            'type' => 'stop',
+                            'type' => 'stop'
                         ];
                         $routeTracking[$i]['event'] = array_merge($routeTracking[$i - 1]['event'] ?? [], [collect($content[$i])->sortByDesc('time')->first()]);
                     } else {
@@ -127,6 +133,13 @@ class RouteTrackingService extends BaseService
                 }
                 if (empty($info[$i]['event'])) {
                     $info[$i]['event'] = [];
+                }
+                if(!empty(collect($info[$i]['event'])->where('type','station')->first())){
+                    $info[$i]['type']='station';
+                }elseif(!empty(collect($info[$i]['event'])->where('type','stop')->first())){
+                    $info[$i]['type']='stop';
+                }else{
+                    $info[$i]['type']='';
                 }
             }
         }
