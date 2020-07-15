@@ -618,7 +618,12 @@ class OrderService extends BaseService
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = parent::getInfo($where, ['id'], false);
             if (!empty($dbOrder)) {
-                throw new BusinessLogicException('外部订单号已存在');
+                $data = ['order_no' => $dbOrder->order_no, 'batch_no' => $dbOrder->batch_no ?? '', 'tour_no' => $dbOrder->tour_no ?? ''];
+                if (!empty($dbOrder->tour_no)) {
+                    $tour = $this->getTourService()->getInfo(['tour_no' => $dbOrder->tour_no], ['line_id', 'line_name'], false);
+                    $data['line'] = !empty($tour) ? $tour->toArray() : [];
+                }
+                throw new BusinessLogicException('外部订单号已存在', 1002, $data);
             }
         }
     }
