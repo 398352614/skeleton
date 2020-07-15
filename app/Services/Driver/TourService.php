@@ -948,7 +948,7 @@ class TourService extends BaseService
                 }
                 $surplusQuantity = TourMaterial::query()->where('tour_no', $tour['tour_no'])->where('code', $v['code'])->first()['surplus_quantity'];
                 if (intval($v['actual_quantity']) > $surplusQuantity) {
-                    throw new BusinessLogicException('剩余材料只剩[:count]个，请重新选择材料数量', 3001, ['count' => $surplusQuantity]);
+                    throw new BusinessLogicException('材料[:code]只剩[:count]个，请重新选择材料数量', 3001, ['code' => $v['code'], 'count' => $surplusQuantity]);
                 }
             }
         }
