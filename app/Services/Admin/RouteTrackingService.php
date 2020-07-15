@@ -77,9 +77,9 @@ class RouteTrackingService extends BaseService
                             }
                             return $item->only('content', 'time', 'type');
                         })->toArray());
-                    $routeTracking[$k]['address'] = collect($routeTracking[$k]['event'])->whereNotNull('address')->first()['address'];
-                    $routeTracking[$k]['sort_id'] = collect($routeTracking[$k]['event'])->whereNotNull('address')->first()['sort_id'];
-                    $routeTracking[$k]['receiver_fullname'] = collect($routeTracking[$k]['event'])->whereNotNull('receiver_fullname')->first()['receiver_fullname'];
+                    $routeTracking[$k]['address'] = collect($routeTracking[$k]['event'])->whereNotNull('address')->first()['address'] ?? '';
+                    $routeTracking[$k]['sort_id'] = collect($routeTracking[$k]['event'])->whereNotNull('sort_id')->first()['sort_id'] ?? 1000;
+                    $routeTracking[$k]['receiver_fullname'] = collect($routeTracking[$k]['event'])->whereNotNull('receiver_fullname')->first()['receiver_fullname'] ?? '';
                 }else{
                     $routeTracking[$k]['address']='';
                     $routeTracking[$k]['sort_id']=1000;
