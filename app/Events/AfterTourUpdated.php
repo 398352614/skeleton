@@ -25,7 +25,8 @@ class AfterTourUpdated
     /**
      * Create a new event instance.
      *
-     * @return void
+     * @param Tour $tour
+     * @param $nextBatch
      */
     public function __construct(Tour $tour, $nextBatch)
     {
@@ -36,7 +37,7 @@ class AfterTourUpdated
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return Channel|array
      */
     public function broadcastOn()
     {

@@ -50,6 +50,14 @@ class BatchArrived implements ITourDriver
     }
 
     /**
+     * 获取当前司机事件的 tour_no
+     */
+    public function getBatchNo(): string
+    {
+        return $this->batch['batch_no'];
+    }
+
+    /**
      * 获取线路司机事件文本
      */
     public function getContent(): string
