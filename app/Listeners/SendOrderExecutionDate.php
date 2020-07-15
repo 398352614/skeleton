@@ -17,6 +17,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class SendOrderExecutionDate implements ShouldQueue
@@ -90,7 +91,9 @@ class SendOrderExecutionDate implements ShouldQueue
                 'data' => [
                     'order_no' => $event->order_no,
                     'execution_date' => $event->execution_date,
-                    'line' => $event->tour
+                    'batch_no' => $event->batch_no,
+                    'tour_no' => $event->tour['tour_no'],
+                    'line' => Arr::except($event->tour, ['tour_no'])
                 ]
             ]);
             Log::info('订单取派日期修改通知成功:' . json_encode($res, JSON_UNESCAPED_UNICODE));

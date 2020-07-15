@@ -19,6 +19,8 @@ class OrderExecutionDateUpdated
 
     public $execution_date;
 
+    public $batch_no;
+
     public $tour;
 
     /**
@@ -26,13 +28,15 @@ class OrderExecutionDateUpdated
      *
      * @param $orderNo
      * @param $executionDate
+     * @param $batchNo
      * @param $tour
      * @return void
      */
-    public function __construct($orderNo, $executionDate, $tour)
+    public function __construct($orderNo, $executionDate, $batchNo, $tour)
     {
         $this->order_no = $orderNo;
         $this->execution_date = $executionDate;
+        $this->batch_no = $batchNo;
         $this->tour = $tour;
     }
 
