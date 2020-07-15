@@ -94,8 +94,8 @@ class RouteTrackingService extends BaseService
                             'type' => 'stop',
                         ];
                         $routeTracking[$i]['event'] = array_merge($routeTracking[$i - 1]['event'] ?? [], [collect($content[$i])->sortByDesc('time')->first()]);
-                    }else{
-                        $routeTracking[$i]['event']=$routeTracking[$i]['event'] ?? [];
+                    } else {
+                        $routeTracking[$i]['event'] = $routeTracking[$i]['event'] ?? [];
                     }
                     //合并
                     if (!empty($routeTracking[$i - 1]['event'])) {
@@ -115,6 +115,13 @@ class RouteTrackingService extends BaseService
                     $routeTracking[$i]['stopTime'] = 0;
                 }
                 $info[$i] = Arr::except($routeTracking[$i], ['stopTime', 'created_at', 'updated_at', 'time', 'tour_driver_event_id', 'driver_id']);
+            }
+            if (!empty($routeTracking[0])) {
+                $info[0] = Arr::except($routeTracking[0], ['stopTime', 'created_at', 'updated_at', 'time', 'tour_driver_event_id', 'driver_id']);
+            }
+
+            $info = array_values(collect($info)->sortBy('time_human')->toArray());
+            for ($i = 0, $j = count($info); $i < $j; $i++) {
                 if (empty($info[$i]['address'])) {
                     $info[$i]['address'] = "";
                 }
@@ -122,10 +129,6 @@ class RouteTrackingService extends BaseService
                     $info[$i]['event'] = [];
                 }
             }
-            if (!empty($routeTracking[0])) {
-                $info[0] = Arr::except($routeTracking[0], ['stopTime', 'created_at', 'updated_at', 'time', 'tour_driver_event_id', 'driver_id']);
-            }
-            $info = array_values(collect($info)->sortBy('time_human')->toArray());
         }
         return success('', [
             'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
