@@ -616,12 +616,12 @@ class OrderService extends BaseService
         if (!empty($params['out_order_no'])) {
             $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7]]];
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
-            $dbOrder = parent::getInfo($where, ['id'], false);
+            $dbOrder = parent::getInfo($where, ['id', 'order_no', 'batch_no', 'tour_no'], false);
             if (!empty($dbOrder)) {
                 $data = ['order_no' => $dbOrder->order_no, 'batch_no' => $dbOrder->batch_no ?? '', 'tour_no' => $dbOrder->tour_no ?? ''];
                 if (!empty($dbOrder->tour_no)) {
                     $tour = $this->getTourService()->getInfo(['tour_no' => $dbOrder->tour_no], ['line_id', 'line_name'], false);
-                    $data['line'] = !empty($tour) ? $tour->toArray() : [];
+                    !empty($tour) && $data['line'] = ['line_id' => $tour->line_id, 'line_name' => $tour->line_name];
                 }
                 throw new BusinessLogicException('外部订单号已存在', 1002, [], $data);
             }
