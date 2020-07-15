@@ -1051,7 +1051,7 @@ class OrderService extends BaseService
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
-        event(new OrderExecutionDateUpdated($info['order_no'], $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
+        event(new OrderExecutionDateUpdated($info['order_no'], $info['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
     }
 
     /**

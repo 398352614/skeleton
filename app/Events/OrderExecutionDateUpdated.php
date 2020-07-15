@@ -17,6 +17,8 @@ class OrderExecutionDateUpdated
 
     public $order_no;
 
+    public $out_order_no;
+
     public $execution_date;
 
     public $batch_no;
@@ -27,14 +29,16 @@ class OrderExecutionDateUpdated
      * Create a new event instance.
      *
      * @param $orderNo
+     * @param $outOrderNo
      * @param $executionDate
      * @param $batchNo
      * @param $tour
      * @return void
      */
-    public function __construct($orderNo, $executionDate, $batchNo, $tour)
+    public function __construct($orderNo, $outOrderNo, $executionDate, $batchNo, $tour)
     {
         $this->order_no = $orderNo;
+        $this->out_order_no = $outOrderNo;
         $this->execution_date = $executionDate;
         $this->batch_no = $batchNo;
         $this->tour = $tour;

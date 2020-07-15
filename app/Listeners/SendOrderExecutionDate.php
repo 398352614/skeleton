@@ -90,6 +90,7 @@ class SendOrderExecutionDate implements ShouldQueue
                 'type' => $event->notifyType(),
                 'data' => [
                     'order_no' => $event->order_no,
+                    'out_order_no' => $event->out_order_no,
                     'execution_date' => $event->execution_date,
                     'batch_no' => $event->batch_no,
                     'tour_no' => $event->tour['tour_no'],
