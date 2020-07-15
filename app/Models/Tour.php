@@ -138,27 +138,17 @@ class Tour extends BaseModel
         return empty($this->actual_time) ? null : CarbonInterval::second($this->actual_time)->cascade()->forHumans();
     }
 
-    /**
-     * 一个线路任务存在多个批次(站点)
-     */
-    public function batchs()
+    public function getMerchantStatusAttribute()
     {
-        return $this->hasMany(Batch::class, 'tour_no', 'tour_no');
-    }
-
-    public function routeTracking()
-    {
-        return $this->hasMany(RouteTracking::class, 'tour_no', 'tour_no');
-    }
-
-    public function tourDriverEvent()
-    {
-        return $this->hasMany(TourDriverEvent::class, 'tour_no', 'tour_no');
-    }
-
-    public function driver()
-    {
-        return $this-> belongsTo(Driver::class, 'driver_id', 'id');
+        if (!empty($this->status)) {
+            if (in_array($this->status, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])) {
+                return BaseConstService::MERCHANT_TOUR_STATUS_1;
+            } else {
+                return $this->status - 2;
+            }
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -179,15 +169,32 @@ class Tour extends BaseModel
         ];
     }
 
-    public function getMerchantStatusAttribute(){
-        if(in_array($this->status,[BaseConstService::TOUR_STATUS_1,BaseConstService::TOUR_STATUS_2,BaseConstService::TOUR_STATUS_3])){
-            return BaseConstService::MERCHANT_TOUR_STATUS_1;
-        }else{
-            return $this->status-2;
-        }
-    }
-
-    public function getMerchantStatusNameAttribute(){
+    public function getMerchantStatusNameAttribute()
+    {
         return empty($this->merchant_status) ? null : ConstTranslateTrait::merchantTourStatusList($this->merchant_status);
     }
+
+    /**
+     * 一个线路任务存在多个批次(站点)
+     */
+    public function batchs()
+    {
+        return $this->hasMany(Batch::class, 'tour_no', 'tour_no');
+    }
+
+    public function routeTracking()
+    {
+        return $this->hasMany(RouteTracking::class, 'tour_no', 'tour_no');
+    }
+
+    public function tourDriverEvent()
+    {
+        return $this->hasMany(TourDriverEvent::class, 'tour_no', 'tour_no');
+    }
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'driver_id', 'id');
+    }
+
 }
