@@ -158,7 +158,7 @@ class Tour extends BaseModel
 
     public function driver()
     {
-        return $this->belongsTo(Driver::class, 'driver_id', 'id');
+        return $this-> belongsTo(Driver::class, 'driver_id', 'id');
     }
 
     /**
