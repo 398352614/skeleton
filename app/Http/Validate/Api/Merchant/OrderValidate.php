@@ -59,7 +59,6 @@ class OrderValidate extends BaseValidate
         'material_list.*.remark' => 'nullable|string|max:250',
 
         'order_no' => 'nullable|string|max:50',
-        'out_status' => 'required|integer|in:1,2'
     ];
 
     public $scene = [

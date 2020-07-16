@@ -600,14 +600,7 @@ class OrderService extends BaseService
             $this->getPackageService()->checkAllUnique($packageList, $orderNo);
         }
         //验证材料列表
-        if (!empty($params['material_list'])) {
-            $materialList = $params['material_list'];
-            $codeList = array_column($materialList, 'code');
-            if (count(array_unique($codeList)) !== count($codeList)) {
-                $repeatCodeList = implode(',', array_diff_assoc($codeList, array_unique($codeList)));
-                throw new BusinessLogicException('材料代码[:code]有重复！不能添加订单', 1000, ['code' => $repeatCodeList]);
-            }
-        }
+        !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
             $params['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
@@ -1096,14 +1089,7 @@ class OrderService extends BaseService
         }
         /********************************************恢复之前验证材料**************************************************/
         $materialList = $this->getMaterialService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
-        if (!empty($materialList)) {
-            $outOrderNoList = array_column($materialList, 'out_order_no');
-            foreach ($outOrderNoList as $item) {
-                if (!empty($item)) {
-                    $this->getMaterialService()->checkAllUniqueByOutOrderNoList($item, $order['order_no']);
-                }
-            }
-        }
+        !empty($materialList) && $this->getMaterialService()->checkAllUnique($materialList);
         /**********************************************订单恢复********************************************************/
         $order['execution_date'] = $params['execution_date'];
         $order['status'] = BaseConstService::ORDER_STATUS_1;

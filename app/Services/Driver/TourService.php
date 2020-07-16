@@ -820,7 +820,7 @@ class TourService extends BaseService
     private function dealMaterialList($tour, $materialList)
     {
         foreach ($materialList as $material) {
-            $rowCount = $this->getMaterialService()->update(['order_no' => $material['order_no'], 'code' => $material['code']], ['actual_quantity' => $material['actual_quantity']]);
+            $rowCount = $this->getMaterialService()->update(['order_no' => $material['order_no'], 'out_order_no' => $material['out_order_no'] ?? '', 'code' => $material['code']], ['actual_quantity' => $material['actual_quantity']]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('材料处理失败');
             }

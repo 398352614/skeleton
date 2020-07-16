@@ -133,7 +133,7 @@ class SendOrderExecutionDate implements ShouldQueue
     }
 
     /**
-     * 发送通知
+     * 发送通知-1
      * @param string $url
      * @param array $postData
      * @throws BusinessLogicException
@@ -141,6 +141,22 @@ class SendOrderExecutionDate implements ShouldQueue
     public function postData(string $url, array $postData)
     {
         $res = $this->curl->post($url, $postData);
+        if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
+            app('log')->info('send notify failure');
+            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            throw new BusinessLogicException('发送失败');
+        }
+    }
+
+    /**
+     * 发送通知-2
+     * @param array $merchant
+     * @param array $postData
+     * @throws BusinessLogicException
+     */
+    public function merchantPostData(array $merchant, array $postData)
+    {
+        $res = $this->curl->merchantPostJson($merchant, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
             Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));

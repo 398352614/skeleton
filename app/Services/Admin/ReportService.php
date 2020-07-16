@@ -118,7 +118,7 @@ class ReportService extends BaseService
             'address' => $info['warehouse_address'],
         ];
         //获取当前取件线路上的所有订单
-        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'sticker_no'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type','out_user_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'sticker_no'], false)->toArray();
         //获取当前取件线路上的所有包裹
         $packageList = $this->getPackageService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         $packageList = self::statusConvert($packageList);
