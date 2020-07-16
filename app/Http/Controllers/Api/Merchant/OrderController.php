@@ -114,6 +114,16 @@ class OrderController extends OrderBaseController
         return $this->service->updateById($id, $this->data);
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function updateByApi($id)
+    {
+        return $this->service->updateByApi($id, $this->data);
+    }
+
 
     /**
      * 通过订单，获取可分配的线路的取派日期

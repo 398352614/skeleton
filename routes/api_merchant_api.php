@@ -17,9 +17,10 @@ use Illuminate\Support\Facades\Route;
 //认证
 Route::namespace('Api\Merchant')->middleware(['auth:merchant_api'])->group(function () {
     Route::post('me', 'AuthController@me');
-    Route::post('order', 'OrderController@store');
-    Route::post('cancel-order', 'OrderController@destroy');
-    Route::post('order-out-status', 'OrderController@updateOutStatus');
-    Route::post('post-code-date-list', 'LineController@getDateListByPostCode');
-    Route::post('order-dispatch-info', 'OrderController@getOrderDispatchInfo');
+    Route::post('order', 'OrderController@store');//新增订单
+    Route::post('cancel-order', 'OrderController@destroy');//删除订单
+    Route::post('order-out-status', 'OrderController@updateOutStatus');//出库
+    Route::post('post-code-date-list', 'LineController@getDateListByPostCode');//获取可选日期
+    Route::post('order-dispatch-info', 'OrderController@getOrderDispatchInfo');//派送情况
+    Route::post('update-order', 'OrderController@updateByApi');//修改订单
 });

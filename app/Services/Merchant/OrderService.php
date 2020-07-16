@@ -32,6 +32,7 @@ use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class OrderService extends BaseService
@@ -812,7 +813,6 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('订单材料新增失败！');
             }
         }
-
     }
 
     /**
@@ -907,6 +907,64 @@ class OrderService extends BaseService
         ($isChangeBatch === true) && event(new OrderExecutionDateUpdated($dbInfo['order_no'], $dbInfo['out_order_no'], $data['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
     }
 
+    /**
+     * 通过API修改（电话，取派日期）
+     * @param $id
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updateByApi($id, $data)
+    {
+        $this->checkByApi($data);
+        /*************************************************订单修改******************************************************/
+        //获取信息
+        $dbInfo = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        //验证
+        $data = array_merge($dbInfo, $data);
+        /******************************更换站点***************************************/
+        $this->getBatchService()->updateAboutOrderByOrder($dbInfo, $data);
+        //修改
+        $rowCount = parent::updateById($dbInfo['id'], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
+        if (!empty($data['tour_no'])) {
+            $tour = $this->getTourService()->getInfo(['tour_no' => $data['tour_no']], ['*'], false);
+        }
+        return [
+            'order_no' => $data['order_no'],
+            'batch_no' => $data['batch_no'] ?? '',
+            'tour_no' => $data['tour_no'] ?? '',
+            'line' => [
+                'line_id' => $tour['line_id'] ?? '',
+                'line_name' => $tour['line_name'] ?? '',
+            ]
+        ];
+    }
+
+    /**
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function checkByApi(&$data)
+    {
+        $column = [
+            'receiver_phone',
+            'execution_date'
+        ];
+        $data = Arr::only($data, $column);
+        if (empty($data)) {
+            throw new BusinessLogicException('所传字段不正确');
+        }
+        foreach ($data as $v) {
+            if (empty($v)) {
+                throw new BusinessLogicException('所传字段不正确');
+            }
+        }
+        return $data;
+    }
 
     /**
      * 判断是否需要更换站点
@@ -1304,6 +1362,7 @@ class OrderService extends BaseService
             'driver_lon' => $routeTracking['lon'] ?? '',
             'driver_lat' => $routeTracking['lat'] ?? '',
 
+            'out_order_no' => $info['out_order_no'] ?? ''
         ];
     }
 
