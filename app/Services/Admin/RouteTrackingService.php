@@ -64,6 +64,7 @@ class RouteTrackingService extends BaseService
             $routeTracking = array_chunk($routeTracking, 100, false);
             foreach ($routeTracking as $k => $v) {
                 $data = array_merge($data, $this->showByPart($tour, $batchList, $v));
+                $routeTracking[$k] = null;
             }
         } else {
             $data = $this->showByPart($tour, $batchList, $routeTracking);
@@ -146,7 +147,7 @@ class RouteTrackingService extends BaseService
             if (!empty($routeTracking[0])) {
                 $info[0] = Arr::except($routeTracking[0], ['stopTime', 'created_at', 'updated_at', 'time', 'tour_driver_event_id', 'driver_id']);
             }
-
+            $routeTracking=null;
             $info = array_values(collect($info)->sortBy('time_human')->toArray());
             for ($i = 0, $j = count($info); $i < $j; $i++) {
                 if (empty($info[$i]['address'])) {
@@ -176,6 +177,8 @@ class RouteTrackingService extends BaseService
                 }
             }
         }
+        $tour = null;
+        $batchList = null;
         return $info;
     }
 
