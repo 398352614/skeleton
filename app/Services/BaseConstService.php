@@ -58,7 +58,7 @@ class BaseConstService
     const LOCATION_DISTANCE_RANGE = 0.000001 * 1000;
 
     //停留记录时间
-    const STOP_TIME = 30;
+    const STOP_TIME = 20;
 
     //1-启用2-禁用
     const ON = 1;
