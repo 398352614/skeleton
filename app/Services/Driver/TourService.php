@@ -938,17 +938,23 @@ class TourService extends BaseService
             throw new BusinessLogicException('当前站点不属于当前取件线路');
         }
         if (!empty($params['material_list'])) {
-            foreach ($params['material_list'] as $v) {
-                $expectQuantity = $this->getMaterialService()->getInfo(['tour_no' => $tour['tour_no'], 'code' => $v['code']], ['*'], false);
-                if (empty($expectQuantity)) {
+            foreach ($params['material_list'] as $k => $v) {
+                $expectQuantity[$k] = $this->getMaterialService()->getInfo(['order_no' => $v['order_no'], 'code' => $v['code']], ['*'], false);
+                if (empty($expectQuantity[$k])) {
                     throw new BusinessLogicException('当前取件线路的材料代码不正确');
                 }
-                if (intval($v['actual_quantity']) > intval($expectQuantity['expect_quantity'])) {
+                if (intval($v['actual_quantity']) > intval($expectQuantity[$k]['expect_quantity'])) {
                     throw new BusinessLogicException('材料数量不得超过预计材料数量');
                 }
-                $surplusQuantity = TourMaterial::query()->where('tour_no', $tour['tour_no'])->where('code', $v['code'])->first()['surplus_quantity'];
-                if (intval($v['actual_quantity']) > $surplusQuantity) {
-                    throw new BusinessLogicException('材料[:code]只剩[:count]个，请重新选择材料数量', 3001, ['code' => $v['code'], 'count' => $surplusQuantity]);
+                $surplusQuantity = TourMaterial::query()->where('tour_no', $tour['tour_no'])->where('code', $v['code'])->first();
+                $surplusQuantity[$v['code']] = $surplusQuantity ? $surplusQuantity['surplus_quantity'] : 0;
+                if (empty($sumActualQuantity[$v['code']])) {
+                    $sumActualQuantity[$v['code']] = intval($v['actual_quantity']);
+                } else {
+                    $sumActualQuantity[$v['code']] = $sumActualQuantity[$v['code']] + intval($v['actual_quantity']);
+                }
+                if ($sumActualQuantity[$v['code']] > $surplusQuantity[$v['code']]) {
+                    throw new BusinessLogicException('材料[:code]只剩[:count]个，请重新选择材料数量', 3001, ['code' => $v['code'], 'count' => $surplusQuantity[$v['code']]]);
                 }
             }
         }
