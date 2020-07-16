@@ -47,10 +47,8 @@ class RouteTrackingService extends BaseService
      */
     public function show()
     {
+        $data = [];
         $tour = null;
-        $info = [];
-        $content = [];
-        $batchNo = '';
         if (!empty($this->formData['driver_id'])) {
             $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
         } else {
@@ -61,6 +59,24 @@ class RouteTrackingService extends BaseService
         }
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id');
         $routeTracking = $tour->routeTracking->toArray();
+
+        if (count($routeTracking) > 100) {
+            $routeTracking = array_chunk($routeTracking, 100, true);
+        }
+        foreach ($routeTracking as $k => $v) {
+            $data[] = $this->showByPart($tour, $batchList, $v);
+        }
+        return [
+            'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
+            'route_tracking' => $data
+        ];
+    }
+
+    public function showByPart($tour, $batchList, $routeTracking)
+    {
+        $info = [];
+        $content = [];
+        $batchNo = '';
         if (!empty($routeTracking)) {
             foreach ($routeTracking as $k => $v) {
                 if (!empty($v['tour_driver_event_id'])) {
@@ -157,10 +173,7 @@ class RouteTrackingService extends BaseService
                 }
             }
         }
-        return success('', [
-            'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
-            'route_tracking' => $info,
-        ]);
+        return $info;
     }
 
     /**
