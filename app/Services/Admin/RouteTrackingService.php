@@ -61,11 +61,14 @@ class RouteTrackingService extends BaseService
         $routeTracking = $tour->routeTracking->toArray();
 
         if (count($routeTracking) > 100) {
-            $routeTracking = array_chunk($routeTracking, 100, true);
+            $routeTracking = array_chunk($routeTracking, 100, false);
+            foreach ($routeTracking as $k => $v) {
+                $data = array_merge($data, $this->showByPart($tour, $batchList, $v));
+            }
+        } else {
+            $data = $this->showByPart($tour, $batchList, $routeTracking);
         }
-        foreach ($routeTracking as $k => $v) {
-            $data[] = $this->showByPart($tour, $batchList, $v);
-        }
+
         return [
             'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
             'route_tracking' => $data
