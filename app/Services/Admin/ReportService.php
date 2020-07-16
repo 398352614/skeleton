@@ -321,6 +321,7 @@ class ReportService extends BaseService
                 'actual_time' => $batch['actual_time'],
                 'expect_time_human' => $batch['expect_time_human'],
                 'actual_time_human' => $batch['actual_time_human'],
+                'sort_id'=>$batch['sort_id']
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
             $newBatchList[$key]['package_list'] = array_values(collect($packageList)->where('batch_no', $batch['batch_no'])->toArray());
