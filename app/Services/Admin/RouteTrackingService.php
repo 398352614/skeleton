@@ -130,6 +130,9 @@ class RouteTrackingService extends BaseService
                 if (empty($info[$i]['receiver_fullname'])) {
                     $info[$i]['receiver_fullname'] = "";
                 }
+                if (empty($info[$i]['sort_id'])) {
+                    $info[$i]['sort_id'] = 1000;
+                }
                 if (empty($info[$i]['event'])) {
                     $info[$i]['event'] = [];
                 }
