@@ -60,8 +60,8 @@ class RouteTrackingService extends BaseService
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id');
         $routeTracking = $tour->routeTracking->toArray();
 
-        if (count($routeTracking) > 30) {
-            $routeTracking = array_chunk($routeTracking, 30, false);
+        if (count($routeTracking) > 100) {
+                $routeTracking = array_chunk($routeTracking, 100, false);
             foreach ($routeTracking as $k => $v) {
                 $data = array_merge($data, $this->showByPart($tour, $batchList, $v));
                 $routeTracking[$k] = null;
