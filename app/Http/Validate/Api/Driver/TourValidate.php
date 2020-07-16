@@ -52,7 +52,7 @@ class TourValidate extends BaseValidate
         'material_list.*.order_no' => 'required_with:material_list|string|max:50',
         'material_list.*.name' => 'nullable|string|max:50',
         'material_list.*.code' => 'required_with:material_list|string|max:50',
-        'material_list.*.out_order_no' => 'required_with:material_list|string|max:50',
+        'material_list.*.out_order_no' => 'nullable|string|max:50',
         'material_list.*.expect_quantity' => 'required_with:material_list|integer|gte:material_list.*.expect_quantity',
         'material_list.*.actual_quantity' => 'required_with:material_list|integer',
 
