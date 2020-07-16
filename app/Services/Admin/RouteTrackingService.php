@@ -50,7 +50,7 @@ class RouteTrackingService extends BaseService
         $tour = null;
         $info = [];
         $content = [];
-        $batchNo='';
+        $batchNo = '';
         if (!empty($this->formData['driver_id'])) {
             $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
         } else {
@@ -73,10 +73,10 @@ class RouteTrackingService extends BaseService
                     $batchNo = collect($routeTracking[$k]['event'])->whereNotNull('batch_no')->first()['batch_no'];
                 }
                 if (!empty($batchNo) && empty($routeTracking[$k]['address'])) {
-                    $routeTracking[$k]['address']=$batchList->where('batch_no',$batchNo)->first()['receiver_address'];
+                    $routeTracking[$k]['address'] = $batchList->where('batch_no', $batchNo)->first()->toArray()['receiver_address'] ?? '';
                 }
                 if (!empty($batchNo) && empty($routeTracking[$k]['receiver_name'])) {
-                    $routeTracking[$k]['receiver_fullname']=$batchList->where('batch_no',$batchNo)->first()['receiver_fullname'];
+                    $routeTracking[$k]['receiver_fullname'] = $batchList->where('batch_no', $batchNo)->first()->toArray()['receiver_fullname'] ?? '';
                 }
             }
             $routeTracking = collect($routeTracking)->sortBy('time_human')->toArray();
