@@ -14,6 +14,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourBatchResource;
 use App\Models\Batch;
 use App\Models\Order;
+use App\Models\Package;
 use App\Models\Tour;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
@@ -27,6 +28,7 @@ use App\Services\OrderTrailService;
 use App\Services\Traits\TourRedisLockTrait;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class TourService
@@ -713,6 +715,10 @@ class TourService extends BaseService
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list']);
         /*******************************************1.处理站点下的包裹*************************************************/
         $info = $this->dealPackageList($batch, $params['package_list'] ?? []);
+        
+        $packageList = Package::query()->where('batch_no', $batch['batch_no'])->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount'])->toArray();
+        Log::info('assign-batch-begin-package_list', $packageList);
+
         $totalStickerAmount = $info['totalStickerAmount'];
         $orderStickerAmountList = $info['orderStickerAmount'];
         /****************************************2.处理站点下的所有订单************************************************/
@@ -760,6 +766,8 @@ class TourService extends BaseService
                 throw new BusinessLogicException('签收失败');
             }
         }
+        $packageList = Package::query()->where('batch_no', $batch['batch_no'])->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount'])->toArray();
+        Log::info('assign-batch-middle-package_list', $packageList);
         /********************************************3.处理站点********************************************************/
         $batchData = [
             'status' => BaseConstService::BATCH_CHECKOUT,
@@ -785,6 +793,9 @@ class TourService extends BaseService
         }
         //重新统计金额
         $this->reCountActualAmountByNo($tour['tour_no']);
+
+        $packageList = Package::query()->where('batch_no', $batch['batch_no'])->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount'])->toArray();
+        Log::info('assign-batch-end-package_list', $packageList);
 
         TourTrait::afterBatchSign($tour, $batch);
     }

@@ -17,9 +17,11 @@ use App\Events\TourNotify\CancelBatch;
 use App\Events\TourNotify\NextBatch;
 use App\Models\Batch;
 use App\Models\Order;
+use App\Models\Package;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
+use Illuminate\Support\Facades\Log;
 
 trait TourTrait
 {
@@ -74,6 +76,10 @@ trait TourTrait
         unset($groupOrderList);
         //签收通知
         event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $orderList));
+
+        $packageList = Package::query()->whereIn('order_no', array_column($orderList, 'order_no'))->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount'])->toArray();
+        Log::info('afterBatchSign-package_list', $packageList);
+
         //处理站点
         self::dealBatchEvent($tour, $batch);
     }
