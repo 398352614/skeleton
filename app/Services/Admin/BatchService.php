@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\BatchResource;
@@ -466,11 +467,10 @@ class BatchService extends BaseService
 
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
 
-        //取消取派通知
-        if (!empty($info['tour_no'])) {
-            $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
-            $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => BaseConstService::ORDER_STATUS_6], ['*'], false)->toArray();
-            event(new \App\Events\TourNotify\CancelBatch($tour, $info, $orderList));
+        //取消通知
+        $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => BaseConstService::ORDER_STATUS_6], ['order_no', 'out_order_no'], false)->toArray();
+        foreach ($orderList as $order) {
+            event(new OrderCancel($order['order_no'], $order['out_order_no']));
         }
     }
 

@@ -290,6 +290,7 @@ class BaseConstService
     const NOTIFY_CANCEL_BATCH = 'assign-batch';         //取消派送站点通知(也叫签收)
     const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回仓库通知
     const NOTIFY_ORDER_EXECUTION_DATE_UPDATE = 'update-execution-date'; //修改取派日期通知
+    const NOTIFY_ORDER_CANCEL = 'cancel-order';     //订单取消通知
 
     //商户类型
     const MERCHANT_TYPE_1 = 1;

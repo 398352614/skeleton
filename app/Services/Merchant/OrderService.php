@@ -10,6 +10,7 @@
 
 namespace App\Services\Merchant;
 
+use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Events\TourNotify\CancelBatch;
 use App\Exceptions\BusinessLogicException;
@@ -901,6 +902,9 @@ class OrderService extends BaseService
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
         //重新统计取件线路金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
+
+        //更换取派日期通知
+        ($isChangeBatch === true) && event(new OrderExecutionDateUpdated($dbInfo['order_no'], $dbInfo['out_order_no'], $data['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
     }
 
 
@@ -1140,12 +1144,6 @@ class OrderService extends BaseService
     public function destroy($id, $params)
     {
         $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_6]);
-        if (!empty($info['tour_no'])) {
-            $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false);
-        }
-        if (!empty($info['batch_no'])) {
-            $batch = $this->getBatchService()->getInfo(['batch_no' => $info['batch_no']], ['*'], false);
-        }
         //若当前订单已取消取派了,在直接返回成功，不再删除
         if (intval($info['status']) == BaseConstService::ORDER_STATUS_6) {
             return 'true';
@@ -1172,16 +1170,12 @@ class OrderService extends BaseService
         !empty($info['batch_no']) && $this->getBatchService()->reCountAmountByNo($info['batch_no']);
         //重新统计取件线路金额
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
-        //以取消取派方式推送商城
-        if (!empty($tour) && !empty($batch)) {
-            $order = array_merge($info, ['status' => BaseConstService::ORDER_STATUS_6]);
-            $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no'], 'status' => BaseConstService::PACKAGE_STATUS_7], ['order_no', 'express_first_no'], false)->toArray();
-            data_set($packageList, '*.status', BaseConstService::PACKAGE_STATUS_6);
-            $order['package_list'] = $packageList;
-            event(new \App\Events\TourNotify\CancelBatch($tour->toArray(), $batch->toArray(), [$order]));
-        }
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_DELETE);
+
+        //以取消取派方式推送商城
+        event(new OrderCancel($info['order_no'], $info['out_order_no']));
+
         return 'true';
     }
 
