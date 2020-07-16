@@ -939,7 +939,7 @@ class TourService extends BaseService
         }
         if (!empty($params['material_list'])) {
             foreach ($params['material_list'] as $k => $v) {
-                $expectQuantity[$k] = $this->getMaterialService()->getInfo(['order_no' => $v['order_no'], 'code' => $v['code']], ['*'], false);
+                $expectQuantity[$k] = $this->getMaterialService()->getInfo(['order_no' => $v['order_no'], 'out_order_no' => $v['out_order_no'] ?? '', 'code' => $v['code']], ['*'], false);
                 if (empty($expectQuantity[$k])) {
                     throw new BusinessLogicException('当前取件线路的材料代码不正确');
                 }
