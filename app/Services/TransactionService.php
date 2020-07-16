@@ -71,8 +71,14 @@ class TransactionService
                 throw new BusinessLogicException($method . '方法未定义', 8001);
             }
             $return = call_user_func_array([$this->service, $method], $param);
-            // 提交事物
-            DB::commit();
+            //若是测试,直接回滚
+            $isTest = app('request')->header('test');
+            if ($isTest == 1) {
+                DB::rollBack();
+            } else {
+                // 提交事物
+                DB::commit();
+            }
         } catch (BusinessLogicException $e) {
             // 回滚事物
             DB::rollBack();
