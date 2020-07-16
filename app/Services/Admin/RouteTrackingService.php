@@ -50,6 +50,7 @@ class RouteTrackingService extends BaseService
         $tour = null;
         $info = [];
         $content = [];
+        $batchNo='';
         if (!empty($this->formData['driver_id'])) {
             $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
         } else {
@@ -69,8 +70,8 @@ class RouteTrackingService extends BaseService
                             $item['type'] = 'station';
                             return $item->only('content', 'time', 'type', 'batch_no');
                         })->toArray());
+                    $batchNo = collect($routeTracking[$k]['event'])->whereNotNull('batch_no')->first()['batch_no'];
                 }
-                $batchNo = collect($routeTracking[$k]['event'])->whereNotNull('batch_no')->first()['batch_no'];
                 if (empty($routeTracking[$k]['address'])) {
                     $routeTracking[$k]['address']=$batchList->where('batch_no',$batchNo)->first()['receiver_address'];
                 }
