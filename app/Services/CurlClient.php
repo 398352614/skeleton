@@ -59,7 +59,7 @@ class CurlClient
 
     public function post($url, $params, $next = 0, $auth = null)
     {
-        Log::info('post 请求url', $url);
+        Log::info('post 请求url', ['url' => $url]);
         Log::info('post 请求数据', $params);
         try {
             if ($auth) {
@@ -94,7 +94,7 @@ class CurlClient
 
     public function postJson($url, $params, $next = 0, $auth = null)
     {
-        Log::info('post-json 请求url', $url);
+        Log::info('post-json 请求url', ['url' => $url]);
         Log::info('post-json 请求数据', $params);
         try {
             //php 7.4兼容
