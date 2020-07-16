@@ -67,23 +67,15 @@ class RouteTrackingService extends BaseService
                         ->map(function ($item) use ($batchList) {
                             $item['time'] = date_format($item['created_at'], "Y-m-d H:i:s");
                             $item['type'] = 'station';
-                            if (!empty($item['batch_no'])) {
-                                $batch = $batchList->where('batch_no', $item['batch_no'])->first();
-                                $item['receiver_fullname'] = $batch['receiver_fullname'];
-                                $item['sort_id'] = $batch['sort_id'];
-                            } else {
-                                $item['receiver_fullname'] = '';
-                                $item['sort_id'] = 1000;
-                            }
-                            return $item->only('content', 'time', 'type');
+                            return $item->only('content', 'time', 'type', 'batch_no');
                         })->toArray());
-                    $routeTracking[$k]['address'] = collect($routeTracking[$k]['event'])->whereNotNull('address')->first()['address'] ?? '';
-                    $routeTracking[$k]['sort_id'] = collect($routeTracking[$k]['event'])->whereNotNull('sort_id')->first()['sort_id'] ?? 1000;
-                    $routeTracking[$k]['receiver_fullname'] = collect($routeTracking[$k]['event'])->whereNotNull('receiver_fullname')->first()['receiver_fullname'] ?? '';
-                }else{
-                    $routeTracking[$k]['address']='';
-                    $routeTracking[$k]['sort_id']=1000;
-                    $routeTracking[$k]['receiver_fullname'] ='';
+                }
+                $batchNo = collect($routeTracking[$k]['event'])->whereNotNull('batch_no')->first()['batch_no'];
+                if (empty($routeTracking[$k]['address'])) {
+                    $routeTracking[$k]['address']=$batchList->where('batch_no',$batchNo)->first()['receiver_address'];
+                }
+                if (empty($routeTracking[$k]['receiver_name'])) {
+                    $routeTracking[$k]['receiver_fullname']=$batchList->where('batch_no',$batchNo)->first()['receiver_fullname'];
                 }
             }
             $routeTracking = collect($routeTracking)->sortBy('time_human')->toArray();
@@ -131,15 +123,18 @@ class RouteTrackingService extends BaseService
                 if (empty($info[$i]['address'])) {
                     $info[$i]['address'] = "";
                 }
+                if (empty($info[$i]['receiver_fullname'])) {
+                    $info[$i]['receiver_fullname'] = "";
+                }
                 if (empty($info[$i]['event'])) {
                     $info[$i]['event'] = [];
                 }
-                if(!empty(collect($info[$i]['event'])->where('type','station')->first())){
-                    $info[$i]['type']='station';
-                }elseif(!empty(collect($info[$i]['event'])->where('type','stop')->first())){
-                    $info[$i]['type']='stop';
-                }else{
-                    $info[$i]['type']='';
+                if (!empty(collect($info[$i]['event'])->where('type', 'station')->first())) {
+                    $info[$i]['type'] = 'station';
+                } elseif (!empty(collect($info[$i]['event'])->where('type', 'stop')->first())) {
+                    $info[$i]['type'] = 'stop';
+                } else {
+                    $info[$i]['type'] = '';
                 }
             }
         }
