@@ -49,6 +49,7 @@ trait TourTrait
     public static function afterBatchCancel($tour, $batch, $orderList)
     {
         data_set($orderList, '*.status', BaseConstService::ORDER_STATUS_6);
+        data_set($batch, 'status', BaseConstService::ORDER_STATUS_6);
         OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
         //取消取派通知
         event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $orderList));
@@ -59,6 +60,7 @@ trait TourTrait
 
     public static function afterBatchSign($tour, $batch)
     {
+        data_set($batch, 'status', BaseConstService::ORDER_STATUS_5);
         $orderList = Order::query()->where('batch_no', $batch['batch_no'])->whereIn('status', [BaseConstService::ORDER_STATUS_5, BaseConstService::ORDER_STATUS_6])->get()->toArray();
         $groupOrderList = array_create_group_index($orderList, 'status');
         //若存在签收成功的订单列表,则记录
