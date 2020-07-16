@@ -81,6 +81,12 @@ class RouteTrackingService extends BaseService
                 if (!empty($batchNo) && empty($routeTracking[$k]['sort_id'])) {
                     $routeTracking[$k]['sort_id'] = $batchList->where('batch_no', $batchNo)->first()->toArray()['sort_id'] ?? 1000;
                 }
+                if (!empty($batchNo) && empty($routeTracking[$k]['expect_arrive_time'])) {
+                    $routeTracking[$k]['expect_arrive_time'] = $batchList->where('batch_no', $batchNo)->first()->toArray()['expect_arrive_time'] ?? '';
+                }
+                if (!empty($batchNo) && empty($routeTracking[$k]['actual_arrive_time'])) {
+                    $routeTracking[$k]['actual_arrive_time'] = $batchList->where('batch_no', $batchNo)->first()->toArray()['actual_arrive_time'] ?? '';
+                }
             }
             $routeTracking = collect($routeTracking)->sortBy('time_human')->toArray();
             $routeTracking[0]['stopTime'] = 0;
@@ -129,6 +135,12 @@ class RouteTrackingService extends BaseService
                 }
                 if (empty($info[$i]['receiver_fullname'])) {
                     $info[$i]['receiver_fullname'] = "";
+                }
+                if (empty($info[$i]['actual_arrive_time'])) {
+                    $info[$i]['actual_arrive_time'] = "";
+                }
+                if (empty($info[$i]['expect_distance'])) {
+                    $info[$i]['expect_distance'] = "";
                 }
                 if (empty($info[$i]['sort_id'])) {
                     $info[$i]['sort_id'] = 1000;
