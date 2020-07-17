@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\Interfaces\ATourNotify;
+use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
@@ -76,7 +77,7 @@ class SendOrderCancel implements ShouldQueue
      * @return bool
      * @throws BusinessLogicException
      */
-    public function handle(OrderExecutionDateUpdated $event)
+    public function handle(OrderCancel $event)
     {
         try {
             //获取商户ID
