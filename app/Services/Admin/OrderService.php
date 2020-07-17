@@ -749,6 +749,9 @@ class OrderService extends BaseService
         /*************************************************订单修改******************************************************/
         //获取信息
         $dbInfo = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        if (intval($dbInfo['source']) === BaseConstService::ORDER_SOURCE_3) {
+            throw new BusinessLogicException('第三方订单不能修改');
+        }
         //验证
         $this->check($data, $dbInfo['order_no']);
         $data = Arr::add($data, 'order_no', $dbInfo['order_no']);
