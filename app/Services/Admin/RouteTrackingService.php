@@ -64,7 +64,7 @@ class RouteTrackingService extends BaseService
             $routeTrackingList[$k]=$this->makeStopEvent($v);
         }
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], [
-            'batch_no', 'receiver_fullname', 'receiver_address', 'receiver_lon', 'receiver_lat', 'expect_arrive_time', 'expect_arrive_time', 'sort_id'], false)->all();
+            'batch_no', 'receiver_fullname', 'receiver_address', 'receiver_lon', 'receiver_lat', 'expect_arrive_time', 'actual_arrive_time', 'sort_id'], false)->all();
         foreach ($batchList as $k => $v) {
             $tourEvent = TourDriverEvent::query()->where('batch_no', $v['batch_no'])->get()->toArray();
             if (!empty($tourEvent)) {
