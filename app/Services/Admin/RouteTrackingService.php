@@ -47,10 +47,8 @@ class RouteTrackingService extends BaseService
      */
     public function show()
     {
+        $data = [];
         $tour = null;
-        $info = [];
-        $content = [];
-        $batchNo = '';
         if (!empty($this->formData['driver_id'])) {
             $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
         } else {
@@ -61,6 +59,28 @@ class RouteTrackingService extends BaseService
         }
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id');
         $routeTracking = $tour->routeTracking->toArray();
+
+        if (count($routeTracking) > 100) {
+                $routeTracking = array_chunk($routeTracking, 100, false);
+            foreach ($routeTracking as $k => $v) {
+                $data = array_merge($data, $this->showByPart($tour, $batchList, $v));
+                $routeTracking[$k] = null;
+            }
+        } else {
+            $data = $this->showByPart($tour, $batchList, $routeTracking);
+        }
+
+        return [
+            'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
+            'route_tracking' => $data
+        ];
+    }
+
+    public function showByPart($tour, $batchList, $routeTracking)
+    {
+        $info = [];
+        $content = [];
+        $batchNo = '';
         if (!empty($routeTracking)) {
             foreach ($routeTracking as $k => $v) {
                 if (!empty($v['tour_driver_event_id'])) {
@@ -127,7 +147,7 @@ class RouteTrackingService extends BaseService
             if (!empty($routeTracking[0])) {
                 $info[0] = Arr::except($routeTracking[0], ['stopTime', 'created_at', 'updated_at', 'time', 'tour_driver_event_id', 'driver_id']);
             }
-
+            $routeTracking=null;
             $info = array_values(collect($info)->sortBy('time_human')->toArray());
             for ($i = 0, $j = count($info); $i < $j; $i++) {
                 if (empty($info[$i]['address'])) {
@@ -157,10 +177,9 @@ class RouteTrackingService extends BaseService
                 }
             }
         }
-        return success('', [
-            'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
-            'route_tracking' => $info,
-        ]);
+        $tour = null;
+        $batchList = null;
+        return $info;
     }
 
     /**
