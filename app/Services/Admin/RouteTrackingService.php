@@ -68,7 +68,7 @@ class RouteTrackingService extends BaseService
         foreach ($batchList as $k => $v) {
             $tourEvent = TourDriverEvent::query()->where('batch_no', $v['batch_no'])->get()->toArray();
             if (!empty($tourEvent)) {
-                $batchList[$k]['content'] = $tourEvent;
+                $batchList[$k]['event'] = $tourEvent;
             }
         }
         $batchList = collect($batchList)->whereNotNull('content')->all();
@@ -77,7 +77,7 @@ class RouteTrackingService extends BaseService
             'receiver_lon' => $tour['warehouse_lon'],
             'receiver_lat' => $tour['warehouse_lat'],
             'receiver_fullname' => $tour['warehouse_name'],
-            'content' => [collect($info)->sortBy('id')->first()
+            'event' => [collect($info)->sortBy('id')->first()
         ]]];
         $batchList = array_merge($out, array_values($batchList));
         if ($tour['status'] == 5) {
@@ -85,7 +85,7 @@ class RouteTrackingService extends BaseService
                 'receiver_lon' => $tour['warehouse_lon'],
                 'receiver_lat' => $tour['warehouse_lat'],
                 'receiver_fullname' => $tour['warehouse_name'],
-                'content' => [
+                'event' => [
                     collect($info)->sortByDesc('id')->first()]
             ]];
             $batchList = array_merge(array_values($batchList), $in);
