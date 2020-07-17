@@ -274,6 +274,7 @@ class TourService extends BaseService
      * 出库
      * @param $id
      * @param $params
+     * @return array
      * @throws BusinessLogicException
      */
     public function outWarehouse($id, $params)
@@ -333,7 +334,7 @@ class TourService extends BaseService
                 throw new BusinessLogicException('出库失败');
             }
         }
-        TourTrait::afterOutWarehouse($tour, $cancelOrderList);
+        return [$tour, $cancelOrderList];
     }
 
     /**
@@ -628,6 +629,7 @@ class TourService extends BaseService
      * 站点取消取派
      * @param $id
      * @param $params
+     * @return array
      * @throws BusinessLogicException
      */
     public function batchCancel($id, $params)
@@ -657,7 +659,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
-        TourTrait::afterBatchCancel($tour, $batch, $cancelOrderList);
+        return [$tour, $batch, $cancelOrderList];
     }
 
     /**
@@ -698,6 +700,7 @@ class TourService extends BaseService
      * 站点签收
      * @param $id
      * @param $params
+     * @return array
      * @throws BusinessLogicException
      */
     public function batchSign($id, $params)
@@ -787,7 +790,8 @@ class TourService extends BaseService
         //重新统计金额
         $this->reCountActualAmountByNo($tour['tour_no']);
 
-        TourTrait::afterBatchSign($tour, $batch);
+        return [$tour, $batch];
+
     }
 
     /**
