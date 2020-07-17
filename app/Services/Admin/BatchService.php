@@ -464,6 +464,11 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
+        //包裹取消取派
+        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['status' => BaseConstService::PACKAGE_STATUS_6]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取消取派失败，请重新操作');
+        }
 
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
 
