@@ -22,6 +22,7 @@ class TourController extends BaseController
 {
     public function __construct(TourService $service)
     {
+        //, 'outWarehouse', 'batchCancel', 'batchSign'
         parent::__construct($service, ['updateBatchIndex']);
     }
 

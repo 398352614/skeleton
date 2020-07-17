@@ -333,7 +333,6 @@ class TourService extends BaseService
                 throw new BusinessLogicException('出库失败');
             }
         }
-
         TourTrait::afterOutWarehouse($tour, $cancelOrderList);
     }
 
