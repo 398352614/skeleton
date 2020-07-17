@@ -71,7 +71,7 @@ class RouteTrackingService extends BaseService
                 $batchList[$k]['event'] = $tourEvent;
             }
         }
-        $batchList = collect($batchList)->whereNotNull('content')->all();
+        $batchList = collect($batchList)->whereNotNull('event')->all();
         $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
         $out = [[
             'receiver_lon' => $tour['warehouse_lon'],
