@@ -60,45 +60,47 @@ class RouteTrackingService extends BaseService
             throw new BusinessLogicException('没找到相关进行中的线路');
         }
         $routeTrackingList = $tour->routeTracking->toArray();
-        /*        foreach ($routeTrackingList as $k => $routeTracking) {
-                    $routeTrackingList[$k] = $this->makeStopEvent($routeTracking);
-                    if (!empty($routeTracking['tour_driver_event_id'])) {
-                        $batchList[$k] = $tour->tourDriverEvent->where('id', $routeTracking['tour_driver_event_id'])->first();
-                        if (!empty($batchList[$k]['batch_no'])) {
-                            $batchList[$k]['batch'] = $this->getBatchService()->getinfo(['batch_no' => $batchList[$k]['batch_no']], ['*'], false);
-                        }
-                    }
-                }*/
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']],['*'],false)->all();
+        foreach ($routeTrackingList as $k =>$v){
+            $routeTrackingList[$k]=$this->makeStopEvent($v);
+        }
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], [
+            'batch_no', 'receiver_fullname', 'receiver_address', 'receiver_lon', 'receiver_lat', 'expect_arrive_time', 'expect_arrive_time', 'sort_id'], false)->all();
         foreach ($batchList as $k => $v) {
-            $tourEvent = TourDriverEvent::query()->where('batch_no', $v['batch_no'])->get();
-            if (!$tourEvent->isEmpty()) {
+            $tourEvent = TourDriverEvent::query()->where('batch_no', $v['batch_no'])->get()->toArray();
+            if (!empty($tourEvent)) {
                 $batchList[$k]['content'] = $tourEvent;
-            }else{
-                $batchList[$k]['content']=[];
             }
         }
-        /* if (!empty($routeTrackingList[$k]['event']['batch_no'])) {
-             $batch[$k] = collect($batchList)->where('batch_no', $routeTrackingList[$k]['event']['batch_no'])->first();
-             if (!empty($batch[$k])) {
-                 $routeTrackingList[$k]['address'] = $batch[$k]['receiver_address'];
-                 $routeTrackingList[$k]['receiver_fullname'] = $batch[$k]['receiver_fullname'];
-                 $routeTrackingList[$k]['actual_arrive_time'] = $batch[$k]['actual_arrive_time'];
-                 $routeTrackingList[$k]['expect_arrive_time'] = $batch[$k]['expect_arrive_time'];
-                 $routeTrackingList[$k]['batch_no'] = $batch[$k]['batch_no'];
-             }
-         }*/
+        $batchList = collect($batchList)->whereNotNull('content')->all();
+        $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
+        $out = [[
+            'receiver_lon' => $tour['warehouse_lon'],
+            'receiver_lat' => $tour['warehouse_lat'],
+            'receiver_fullname' => $tour['warehouse_name'],
+            'content' => [collect($info)->sortBy('id')->first()
+        ]]];
+        $batchList = array_merge($out, array_values($batchList));
+        if ($tour['status'] == 5) {
+            $in = [[
+                'receiver_lon' => $tour['warehouse_lon'],
+                'receiver_lat' => $tour['warehouse_lat'],
+                'receiver_fullname' => $tour['warehouse_name'],
+                'content' => [
+                    collect($info)->sortByDesc('id')->first()]
+            ]];
+            $batchList = array_merge(array_values($batchList), $in);
+        }
         return [
             'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
             'route_tracking' => $routeTrackingList,
-            'tour_event' => $batchList
+            'tour_event' => $batchList,
         ];
     }
 
     public function makeStopEvent($routeTracking)
     {
         if (!empty($routeTracking['stop_time'] && $routeTracking['stop_time'] > BaseConstService::STOP_TIME)) {
-            $routeTracking['event']['content'] = __("司机已在此停留[:time]分钟", ['time' => $routeTracking['stopTime']]);
+            $routeTracking['event']['content'] = __("司机已在此停留[:time]分钟", ['time' => $routeTracking['stop_time']]);
             $routeTracking['event']['time'] = $routeTracking['time_human'];
             $routeTracking['event']['type'] = 'stop';
         }
