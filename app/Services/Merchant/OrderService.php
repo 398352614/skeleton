@@ -1251,6 +1251,9 @@ class OrderService extends BaseService
     {
         $orderCollection = $this->getInfoByIdOfStatus($id, false, BaseConstService::ORDER_STATUS_7);
         $order = $orderCollection->toArray();
+        if (intval($order['source']) === BaseConstService::ORDER_SOURCE_3) {
+            throw new BusinessLogicException('第三方订单不允许恢复');
+        }
         /********************************************恢复之前验证包裹**************************************************/
         $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
         if (!empty($packageList)) {
