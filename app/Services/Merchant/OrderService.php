@@ -919,7 +919,7 @@ class OrderService extends BaseService
      */
     public function updateByApi($id, $data)
     {
-        $this->checkByApi($data);
+        $data = $this->checkByApi($data);
         /*************************************************订单修改******************************************************/
         //获取信息
         $dbInfo = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
@@ -948,17 +948,19 @@ class OrderService extends BaseService
 
     /**
      * @param $data
+     * @return array
      * @throws BusinessLogicException
      */
-    public function checkByApi(&$data)
+    public function checkByApi($data)
     {
         if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
-            $data = Arr::only($data, 'execution_date');
-        } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
             $data = Arr::only($data, 'receiver_phone');
+        } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
+            $data = Arr::only($data, 'execution_date');
         } elseif (empty($data['receiver_phone']) && empty($data['execution_date'])) {
             throw new BusinessLogicException('电话或取派日期必填其一');
         }
+        return $data;
     }
 
     /**
