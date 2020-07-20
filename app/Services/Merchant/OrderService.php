@@ -961,11 +961,6 @@ class OrderService extends BaseService
         if (empty($data)) {
             throw new BusinessLogicException('所传字段不正确');
         }
-        foreach ($data as $v) {
-            if (empty($v)) {
-                throw new BusinessLogicException('所传字段不正确');
-            }
-        }
         return $data;
     }
 
