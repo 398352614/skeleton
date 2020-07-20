@@ -58,7 +58,7 @@ class BaseConstService
     const LOCATION_DISTANCE_RANGE = 0.000001 * 1000;
 
     //停留记录时间
-    const STOP_TIME = 20;
+    const STOP_TIME = 2;
 
     //坐标点上限
     const LOCATION_LIMIT = 100;
