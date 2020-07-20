@@ -948,19 +948,17 @@ class OrderService extends BaseService
 
     /**
      * @param $data
-     * @return array
      * @throws BusinessLogicException
      */
     public function checkByApi(&$data)
     {
-        $column = [
-            'receiver_phone',
-            'execution_date'
-        ];
-        if (empty($data['receiver_phone']) && empty($data['execution_date'])) {
+        if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
+            $data = Arr::only($data, 'execution_date');
+        } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
+            $data = Arr::only($data, 'receiver_phone');
+        } elseif (empty($data['receiver_phone']) && empty($data['execution_date'])) {
             throw new BusinessLogicException('电话或取派日期必填其一');
         }
-        return $data;
     }
 
     /**
