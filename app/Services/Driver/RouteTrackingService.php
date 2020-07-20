@@ -66,6 +66,7 @@ class RouteTrackingService extends BaseService
      */
     public function moveCheck($tracking, $firstTracking)
     {
+
         if (abs($tracking['lon'] - $firstTracking['lon']) < BaseConstService::LOCATION_DISTANCE_RANGE &&
             abs($tracking['lat'] - $firstTracking['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE) {
             $stopTime = $firstTracking['stop_time'] + abs($tracking['time'] - $firstTracking['time']);
@@ -75,7 +76,7 @@ class RouteTrackingService extends BaseService
             }
         } else {
             $tracking['tour_driver_event_id'] = null;
-            $row = $this->insertAll($tracking);
+            $row = $this->create($tracking);
             if ($row == false) {
                 throw new BusinessLogicException('操作失败');
             }
