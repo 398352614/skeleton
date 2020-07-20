@@ -78,7 +78,7 @@ class RouteTrackingService extends BaseService
                         $routeTracking[$i]['event'] = array_merge($routeTracking[$i - 1]['event'] ?? [], [collect($content[$i])->sortByDesc('time')->first()]);
                     }
                     //合并
-                    if (!empty($routeTracking[$i - 1]['event'])) {
+                    if (!empty($routeTracking[$i - 1]['event']) && !empty($routeTracking[$i]['event'])) {
                         $routeTracking[$i]['event'] = array_merge($routeTracking[$i]['event'], $routeTracking[$i - 1]['event']);
                     }
                     if (!empty($routeTracking[$i - 1]['address'])) {
