@@ -42,6 +42,15 @@ class RouteTrackingService extends BaseService
     }
 
     /**
+     * 订单 服务
+     * @return OrderService
+     */
+    public function getOrderService()
+    {
+        return self::getInstance(OrderService::class);
+    }
+
+    /**
      * 线路追踪
      * @return array
      * @throws BusinessLogicException
@@ -62,6 +71,7 @@ class RouteTrackingService extends BaseService
         foreach ($routeTrackingList as $k => $v) {
             $routeTrackingList[$k] = $this->makeStopEvent($v);
         }
+        $this->getBatchList($this->formData['tour_no']);
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], [
             'batch_no', 'receiver_fullname', 'receiver_address', 'receiver_lon', 'receiver_lat', 'expect_arrive_time', 'actual_arrive_time', 'sort_id'], false)->all();
         foreach ($batchList as $k => $v) {
@@ -96,6 +106,16 @@ class RouteTrackingService extends BaseService
         ];
     }
 
+    public function getBatchList($params)
+    {
+        $batchList = [];
+        $batchNoList = $this->getOrderService()->query->where('merchant_id', auth()->user()->merchant_id)->where('tour_no', $params)->pluck('batch_no');
+        if (!empty($batchNoList)) {
+            $batchList = $this->getBatchService()->getList(['batch_no' => ['in', $batchNoList]]);
+        }
+        return $batchList;
+    }
+
     /**
      * 制造停点
      * @param $routeTracking
@@ -104,9 +124,9 @@ class RouteTrackingService extends BaseService
     public function makeStopEvent($routeTracking)
     {
         if (!empty($routeTracking['stop_time'] && $routeTracking['stop_time'] > BaseConstService::STOP_TIME)) {
-            $routeTracking['event']['content'] = __("司机已在此停留[:time]分钟", ['time' => $routeTracking['stop_time']]);
-            $routeTracking['event']['time'] = $routeTracking['time_human'];
-            $routeTracking['event']['type'] = 'stop';
+            $routeTracking['event'][0]['content'] = __("司机已在此停留[:time]分钟", ['time' => $routeTracking['stop_time']]);
+            $routeTracking['event'][0]['time'] = $routeTracking['time_human'];
+            $routeTracking['event'][0]['type'] = 'stop';
         }
         return $routeTracking;
     }
