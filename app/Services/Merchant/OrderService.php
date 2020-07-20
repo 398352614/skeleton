@@ -957,9 +957,8 @@ class OrderService extends BaseService
             'receiver_phone',
             'execution_date'
         ];
-        $data = Arr::only($data, $column);
-        if (empty($data)) {
-            throw new BusinessLogicException('所传字段不正确');
+        if (empty($data['receiver_phone']) && empty($data['execution_date'])) {
+            throw new BusinessLogicException('电话或取派日期必填其一');
         }
         return $data;
     }
