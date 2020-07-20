@@ -105,9 +105,9 @@ class RouteTrackingService extends BaseService
     public function makeStopEvent($routeTracking)
     {
         if (!empty($routeTracking['stop_time'] && $routeTracking['stop_time'] > BaseConstService::STOP_TIME)) {
-            $routeTracking['event']['content'] = __("司机已在此停留[:time]分钟", ['time' => $routeTracking['stop_time']]);
-            $routeTracking['event']['time'] = $routeTracking['time_human'];
-            $routeTracking['event']['type'] = 'stop';
+            $routeTracking['event'][0]['content'] = __("司机已在此停留[:time]分钟", ['time' => $routeTracking['stop_time']]);
+            $routeTracking['event'][0]['time'] = $routeTracking['time_human'];
+            $routeTracking['event'][0]['type'] = 'stop';
         }
         return $routeTracking;
     }
