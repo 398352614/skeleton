@@ -60,6 +60,9 @@ class BaseConstService
     //停留记录时间
     const STOP_TIME = 20;
 
+    //坐标点上限
+    const LOCATION_LIMIT = 100;
+
     //1-启用2-禁用
     const ON = 1;
     const OFF = 2;
