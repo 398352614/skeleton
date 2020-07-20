@@ -1227,9 +1227,10 @@ class OrderService extends BaseService
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_DELETE);
-
-        //以取消取派方式推送商城
-        event(new OrderCancel($info['order_no'], $info['out_order_no']));
+        if ((!empty($params['no_push']) && $params['no_push'] == 0) || empty($params['no_push'])) {
+            //以取消取派方式推送商城
+            event(new OrderCancel($info['order_no'], $info['out_order_no']));
+        }
 
         return 'true';
     }
