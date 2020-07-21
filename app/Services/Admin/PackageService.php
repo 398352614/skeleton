@@ -46,15 +46,6 @@ class PackageService extends BaseService
             if (!empty($firstPackage)) {
                 throw new BusinessLogicException('快递单号1[:express_no]已存在在快递单号2中', 1000, ['express_no' => $firstPackage['express_first_no']]);
             }
-            $expressFirstNoCountList = array_count_values($expressFirstNoList);
-            $secondPackage = Arr::first($packageList, function ($package) use ($expressFirstNoCountList) {
-                if (empty($package['express_second_no']) || empty($expressFirstNoCountList[$package['express_second_no']])) return false;
-                if (($expressFirstNoCountList[$package['express_second_no']] == 1) && ($package['express_first_no'] == $package['express_second_no'])) return false;
-                return true;
-            });
-            if (!empty($secondPackage)) {
-                throw new BusinessLogicException('快递单号2[:express_no]已存在在快递单号1中', 1000, ['express_no' => $firstPackage['express_second_no']]);
-            }
         }
         //验证外部标识/快递单号1/快递单号2
         $this->checkAllUnique($packageList, $orderNo);
