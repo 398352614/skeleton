@@ -683,6 +683,11 @@ class TourService extends BaseService
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
+        $batchList = $this->getBatchService()->getList(['tour_no' => $data['tour_no']]);
+        $batchList = $batchList->sortBy('sort_id')->all();
+        foreach ($batchList as $k => $v) {
+            $this->getBatchService()->updateById($v['id'],['sort_id'=>$k + 1]);
+        }
         return '修改线路成功';
     }
 
