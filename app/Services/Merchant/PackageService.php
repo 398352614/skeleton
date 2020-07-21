@@ -49,7 +49,7 @@ class PackageService extends BaseService
                 //第三方特殊处理
                 if (auth()->user()->getAttribute('is_api') == true) {
                     $order = $this->getOrderService()->getInfo(['order_no' => $dbPackage['order_no']])['order_no'];
-                    $errorMsg = '订单['.$order.']:' . $errorMsg;
+                    $errorMsg = '订单[' . $order . ']:' . $errorMsg;
                 }
                 throw new BusinessLogicException($errorMsg);
             }
@@ -99,6 +99,9 @@ class PackageService extends BaseService
      */
     public function showByApi($params)
     {
+        if (empty($params['express_first_no']) && empty($params['express_second_no']) && empty($params['out_order_no'])) {
+            throw new BusinessLogicException('查询字段至少一个不为空');
+        }
         if (!empty($params['express_first_no'])) {
             $this->query->where('express_first_no', '=', $params['express_first_no']);
         }
@@ -118,6 +121,7 @@ class PackageService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         return [
+            'express_first_no' => $params['express_first_no'],
             'order_no' => $info[0]['order_no'],
             'out_order_no' => $order['out_order_no']
         ];
