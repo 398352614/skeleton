@@ -59,6 +59,7 @@ class RouteTrackingService extends BaseService
         $tracking['driver_id'] = auth()->user()->id;
         $tracking['tour_no'] = $tour->tour_no;
         $tracking['time'] = strtotime($tracking['time']);
+        $tracking['stop_time'] = 0;
         return $this->moveCheck($tracking, $firstTracking);
     }
 
