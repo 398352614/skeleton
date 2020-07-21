@@ -104,8 +104,8 @@ class RouteTrackingService extends BaseService
      */
     public function makeStopEvent($routeTracking)
     {
-        if (!empty($routeTracking['stop_time'] && $routeTracking['stop_time'] > BaseConstService::STOP_TIME)) {
-            $routeTracking['event'][0]['content'] = __("司机已在此停留[:time]分钟", ['time' => round($routeTracking['stop_time']/60)]);
+        if (!empty($routeTracking['stop_time'] && $routeTracking['stop_time'] / 60 > BaseConstService::STOP_TIME)) {
+            $routeTracking['event'][0]['content'] = __("司机已在此停留[:time]分钟", ['time' => round($routeTracking['stop_time'] / 60)]);
             $routeTracking['event'][0]['time'] = $routeTracking['time_human'];
             $routeTracking['event'][0]['type'] = 'stop';
         }
@@ -129,6 +129,8 @@ class RouteTrackingService extends BaseService
                     $result[] = $data[$i];
                 }
             }
+        } else {
+            $result = $data;
         }
         return $result;
     }
