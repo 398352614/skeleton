@@ -35,13 +35,5 @@ class TourDriver
             'address'   => $event->getAddress(),
             'batch_no'   => $event->getBatchNo()
         ]);
-        RouteTracking::create([
-            'lon' => $location['lon'],
-            'lat' => $location['lat'],
-            'tour_no'   => $event->getTourNo(),
-            'driver_id' => $event->getDriverId(),
-            'time' =>time(),
-            'tour_driver_event_id'=>$tourDriverEvent->id,
-        ]);
     }
 }
