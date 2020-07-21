@@ -5,17 +5,25 @@ namespace App\Services\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\PackageResource;
 use App\Models\Package;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use http\Env\Request;
 
 class PackageService extends BaseService
 {
     public function __construct(Package $package)
     {
-        parent::__construct($package);
+        parent::__construct($package, PackageResource::class, PackageResource::class);
 
     }
+
+    public $filterRules = [
+        'express_first_no' => ['=', 'express_first_no'],
+        'express_second_no' => ['=', 'express_second_no'],
+        'out_order_no' => ['=', 'out_order_no'],
+    ];
 
     /**
      * 列表包裹验证唯一
@@ -38,11 +46,14 @@ class PackageService extends BaseService
                 if (!empty($package['out_order_no'])) {
                     $errorMsg .= __('包裹外部标识[:out_order_no]已存在;', ['out_order_no' => $package['out_order_no']]);
                 }
+                //第三方特殊处理
+                if (auth()->user()->getAttribute('is_api') == true) {
+                    $order = $this->getOrderService()->getInfo(['order_no' => $dbPackage['order_no']])['order_no'];
+                    $errorMsg = '订单['.$order.']:' . $errorMsg;
+                }
                 throw new BusinessLogicException($errorMsg);
             }
         }
-
-
     }
 
     /**
@@ -78,5 +89,46 @@ class PackageService extends BaseService
         });
         $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
         return !empty($result) ? $result->toArray() : [];
+    }
+
+    /**
+     * 查询包裹信息
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function showByApi($params)
+    {
+        if (!empty($params['express_first_no'])) {
+            $this->query->where('express_first_no', '=', $params['express_first_no']);
+        }
+        if (!empty($params['express_second_no'])) {
+            $this->query->where('express_second_no', '=', $params['express_second_no']);
+        }
+        if (!empty($params['out_order_no'])) {
+            $this->query->where('out_order_no', '=', $params['out_order_no']);
+        }
+        $this->query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7]);
+        $info = $this->getPageList()->toArray(request());
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $order = $this->getOrderService()->getInfo(['order_no' => $info[0]['order_no']]);
+        if (empty($order)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return [
+            'order_no' => $info[0]['order_no'],
+            'out_order_no' => $order['out_order_no']
+        ];
+    }
+
+    /**
+     * 订单服务
+     * @return OrderService
+     */
+    public function getOrderService()
+    {
+        return self::getInstance(OrderService::class);
     }
 }
