@@ -39,12 +39,10 @@ trait UpdateTourTimeAndDistanceTrait
             foreach ($data['loc_res'] as $key => $res) {
                 $tourBatch = Batch::where('batch_no', str_replace($tour->tour_no, '', $key))->where('tour_no', $tour->tour_no)->first();
                 //若站点未签收,则智能调度
-                if (in_array(intval($tourBatch->status), [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])) {
-                    $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', $data['timestamp'] + $res['time']);
-                    $tourBatch->expect_distance = $res['distance'];
-                    $tourBatch->expect_time = $res['time'];
-                    $tourBatch->save();
-                }
+                $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', $data['timestamp'] + $res['time']);
+                $tourBatch->expect_distance = $res['distance'];
+                $tourBatch->expect_time = $res['time'];
+                $tourBatch->save();
                 $max_time = max($max_time, $res['time']);
                 $max_distance = max($max_distance, $res['distance']);
             }
@@ -64,8 +62,10 @@ trait UpdateTourTimeAndDistanceTrait
             return true;
         } catch (\Exception $e) {
             self::setTourLock($tour->tour_no, 0);
-            app('log')->info('错误-----:' . $e->getMessage());
-            throw new BusinessLogicException($e->getMessage());
+            app('log')->info('updateTourTimeAndDistance错误-----:' . $e->getFile());
+            app('log')->info('updateTourTimeAndDistance错误-----:' . $e->getLine());
+            app('log')->info('updateTourTimeAndDistance错误-----:' . $e->getMessage());
+            throw new BusinessLogicException('更新线路信息失败，请稍后重试');
         }
     }
 }
