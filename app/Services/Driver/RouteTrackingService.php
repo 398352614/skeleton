@@ -8,6 +8,7 @@ use App\Models\RouteTracking;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use Illuminate\Support\Facades\Log;
 
 class RouteTrackingService extends BaseService
 {
@@ -72,7 +73,8 @@ class RouteTrackingService extends BaseService
     {
         if (!empty($firstTracking) && abs($tracking['lon'] - $firstTracking['lon']) < BaseConstService::LOCATION_DISTANCE_RANGE &&
             abs($tracking['lat'] - $firstTracking['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE) {
-            $stopTime = $firstTracking['stop_time'] + $tracking['time'] - $firstTracking['time'];
+            Log::info('时间',['time'=>$tracking['time'],'first_time'=> $firstTracking['time'],'diff_time'=>$tracking['time'] - $firstTracking['time']]);
+            $stopTime = $firstTracking['stop_time'] + abs($tracking['time'] - $firstTracking['time']);
             $row = parent::update(['id' => $firstTracking['id']], ['stop_time' => $stopTime]);
             if ($row == false) {
                 throw new BusinessLogicException('操作失败');
