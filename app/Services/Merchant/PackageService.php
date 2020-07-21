@@ -47,7 +47,7 @@ class PackageService extends BaseService
                     $errorMsg .= __('包裹外部标识[:out_order_no]已存在;', ['out_order_no' => $package['out_order_no']]);
                 }
                 //第三方特殊处理
-                if (auth()->user()->is_api == true) {
+                if (auth()->user()->getAttribute('is_api') == true) {
                     $order = $this->getOrderService()->getInfo(['order_no' => $dbPackage['order_no']])['order_no'];
                     $errorMsg = '订单['.$order.']:' . $errorMsg;
                 }
