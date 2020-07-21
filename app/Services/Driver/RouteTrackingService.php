@@ -52,7 +52,10 @@ class RouteTrackingService extends BaseService
             throw new BusinessLogicException('当前司机不存在派送中线路');
         }
         $tracking = collect($params['location_list'])->sortBy('time')->toArray()[0];
-        $firstTracking = $this->getInfo(['tour_no' => $tour->tour_no], ['*'], false, ['time' => 'desc'])->toArray();
+        $firstTracking = $this->getInfo(['tour_no' => $tour->tour_no], ['*'], false, ['time' => 'desc']);
+        if (!empty($firstTracking)) {
+            $firstTracking = $firstTracking->toArray();
+        }
         $tracking['driver_id'] = auth()->user()->id;
         $tracking['tour_no'] = $tour->tour_no;
         $tracking['time'] = strtotime($tracking['time']);
@@ -66,8 +69,7 @@ class RouteTrackingService extends BaseService
      */
     public function moveCheck($tracking, $firstTracking)
     {
-
-        if (abs($tracking['lon'] - $firstTracking['lon']) < BaseConstService::LOCATION_DISTANCE_RANGE &&
+        if (!empty($firstTracking) && abs($tracking['lon'] - $firstTracking['lon']) < BaseConstService::LOCATION_DISTANCE_RANGE &&
             abs($tracking['lat'] - $firstTracking['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE) {
             $stopTime = $firstTracking['stop_time'] + abs($tracking['time'] - $firstTracking['time']);
             $row = parent::update(['id' => $firstTracking['id']], ['stop_time' => $stopTime]);
