@@ -22,9 +22,8 @@ trait UpdateTourTimeAndDistanceTrait
         try {
             self::setTourLock($tour->tour_no, 1);
             $info = $this->apiClient->LineInfo($tour->tour_no);
-            if (!$info || $info['ret'] == 0) { // 返回错误的情况下直接返回
-                //app('log')->info('更新动作失败,错误信息为:' . $info['msg']);
-                Log::info('更新动作失败,错误信息', $info);
+            if (empty($info['ret']) || (!empty($info['ret']) && ($info['ret'] == 0))) { // 返回错误的情况下直接返回
+                Log::info('更新动作失败,错误信息', $info ?? []);
                 self::setTourLock($tour->tour_no, 0);
                 return false;
             }
