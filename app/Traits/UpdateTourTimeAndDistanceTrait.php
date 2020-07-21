@@ -8,6 +8,7 @@ use App\Models\Tour;
 use App\Models\TourLog;
 use App\Services\BaseConstService;
 use App\Services\Traits\TourRedisLockTrait;
+use Illuminate\Support\Facades\Log;
 
 trait UpdateTourTimeAndDistanceTrait
 {
@@ -22,7 +23,8 @@ trait UpdateTourTimeAndDistanceTrait
             self::setTourLock($tour->tour_no, 1);
             $info = $this->apiClient->LineInfo($tour->tour_no);
             if (!$info || $info['ret'] == 0) { // 返回错误的情况下直接返回
-                app('log')->info('更新动作失败,错误信息为:' . $info['msg']);
+                //app('log')->info('更新动作失败,错误信息为:' . $info['msg']);
+                Log::info('更新动作失败,错误信息', $info);
                 self::setTourLock($tour->tour_no, 0);
                 return false;
             }
