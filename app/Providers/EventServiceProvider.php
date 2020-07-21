@@ -11,6 +11,7 @@ use App\Events\TourDriver\BatchDepart;
 use App\Events\TourDriver\OutWarehouse;
 use App\Listeners\CountTourTimeAndDistance;
 use App\Listeners\SendNotify2Merchant;
+use App\Listeners\SendOrderCancel;
 use App\Listeners\SendOrderExecutionDate;
 use App\Listeners\TourDriver;
 use App\Listeners\UpdateDriverCountTime;
@@ -81,6 +82,9 @@ class EventServiceProvider extends ServiceProvider
         /*********************************取派日期修改通知****************************************/
         \App\Events\OrderExecutionDateUpdated::class => [
             SendOrderExecutionDate::class
+        ],
+        \App\Events\OrderCancel::class => [
+            SendOrderCancel::class
         ]
     ];
 

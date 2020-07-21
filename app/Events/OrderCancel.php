@@ -11,7 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class OrderExecutionDateUpdated
+class OrderCancel
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,34 +19,22 @@ class OrderExecutionDateUpdated
 
     public $out_order_no;
 
-    public $execution_date;
-
-    public $batch_no;
-
-    public $tour;
-
     /**
      * Create a new event instance.
      *
      * @param $orderNo
      * @param $outOrderNo
-     * @param $executionDate
-     * @param $batchNo
-     * @param $tour
      * @return void
      */
-    public function __construct($orderNo, $outOrderNo, $executionDate, $batchNo, $tour)
+    public function __construct($orderNo, $outOrderNo)
     {
         $this->order_no = $orderNo;
         $this->out_order_no = $outOrderNo;
-        $this->execution_date = $executionDate;
-        $this->batch_no = $batchNo;
-        $this->tour = $tour;
     }
 
     public function notifyType(): string
     {
-        return BaseConstService::NOTIFY_ORDER_EXECUTION_DATE_UPDATE;
+        return BaseConstService::NOTIFY_ORDER_CANCEL;
     }
 
     /**

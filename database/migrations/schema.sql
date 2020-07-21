@@ -4,7 +4,6 @@
  Source Server         : dev
  Source Server Type    : MySQL
  Source Server Version : 50722
- Source Host           : 192.168.0.208:3306
  Source Schema         : tms-api
 
  Target Server Type    : MySQL

@@ -6,7 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Models\RouteTracking;
 use App\Models\Tour;
-use App\Services\Admin\RouteTrackingService;
+use App\Services\Merchant\RouteTrackingService;
 use App\Services\BaseConstService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;

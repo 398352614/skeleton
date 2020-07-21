@@ -23,6 +23,10 @@ class UpdateLineCountTime
      */
     public $apiClient;
 
+    public $times = 3;
+
+    public $delay = 2;
+
     /**
      * Create the event listener.
      *
@@ -45,10 +49,15 @@ class UpdateLineCountTime
         $tour = $event->tour; // 获取事件对应的线路
         $res = $this->apiClient->UpdateTour($tour, $event->nextBatch);
         app('log')->info('更新线路的返回结果为:' . json_encode($res, JSON_UNESCAPED_UNICODE));
-        sleep(2);
-
-        if (!$this->updateTourTimeAndDistance($tour)) {
-            throw new BusinessLogicException('更新线路失败');
+        sleep(1);
+        $bool = false;
+        for ($i = 1; $i <= $this->times; $i++) {
+            $bool = $this->updateTourTimeAndDistance($tour);
+            if ($bool) break;
+            sleep($this->delay);
+        }
+        if (!$bool) {
+            throw new BusinessLogicException('更新线路失败，请稍后重试');
         }
         Log::info('取件线路预计耗时和里程更新成功');
     }

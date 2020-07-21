@@ -224,6 +224,12 @@ class BaseService
     public function getInfo($where, $selectFields = ['*'], $isResource = true, $orderFields = [])
     {
         SearchTrait::buildQuery($this->query, $where);
+        if (!empty($orderFields)) {
+            $keyArr = array_keys($orderFields);
+            foreach ($keyArr as $key) {
+                $this->query->orderBy($key, $orderFields[$key]);
+            }
+        }
         $data = $this->query->first($selectFields);
         if (empty($data)) {
             $this->query = $this->model::query();
@@ -231,12 +237,6 @@ class BaseService
         };
         if ($isResource) {
             $data = $this->infoResource::make($data)->toArray(request());
-        }
-        if (!empty($orderFields)) {
-            $keyArr = array_keys($orderFields);
-            foreach ($keyArr as $key) {
-                $this->query->orderBy($key, $orderFields[$key]);
-            }
         }
         $this->query = $this->model::query();
         return $data;

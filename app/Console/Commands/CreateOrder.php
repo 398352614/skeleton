@@ -17,11 +17,11 @@ class CreateOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'order:create 
+    protected $signature = 'order:create
                                             {--times= : times}
-                                            {--merchant_id= : merchant id} 
-                                            {--execution_date= : execution date} 
-                                            {--material_count= : material count} 
+                                            {--merchant_id= : merchant id}
+                                            {--execution_date= : execution date}
+                                            {--material_count= : material count}
                                             {--package_count= : package count}';
 
     /**
@@ -213,6 +213,7 @@ class CreateOrder extends Command
                 'out_order_no' => $j . 'O' . $faker->randomNumber(5, true),
                 'weight' => $faker->randomFloat(2, 0, 100),
                 'expect_quantity' => 1,
+                'feature_logo' => Arr::random(['常温','冰冻','风房']),
                 'remark' => $faker->sentences(1, true)];
         }
         for ($k = 0; $k < $maCount; $k++) {

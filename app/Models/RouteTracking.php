@@ -52,6 +52,7 @@ class RouteTracking extends BaseModel
         'tour_no',
         'driver_id',
         'time',
+        'stop_time',
         'tour_driver_event_id',
         'created_at',
         'updated_at',

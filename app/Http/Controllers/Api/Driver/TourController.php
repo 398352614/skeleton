@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Driver;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Driver\TourService;
+use App\Traits\TourTrait;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -84,7 +85,9 @@ class TourController extends BaseController
      */
     public function outWarehouse($id)
     {
-        return $this->service->outWarehouse($id, $this->data);
+        list($tour, $cancelOrderList) = $this->service->outWarehouse($id, $this->data);
+        TourTrait::afterOutWarehouse($tour, $cancelOrderList);
+        return;
     }
 
     /**
@@ -149,7 +152,9 @@ class TourController extends BaseController
      */
     public function batchCancel($id)
     {
-        return $this->service->batchCancel($id, $this->data);
+        list($tour, $batch, $cancelOrderList) = $this->service->batchCancel($id, $this->data);
+        TourTrait::afterBatchCancel($tour, $batch, $cancelOrderList);
+        return;
     }
 
     /**
@@ -170,7 +175,9 @@ class TourController extends BaseController
      */
     public function batchSign($id)
     {
-        return $this->service->batchSign($id, $this->data);
+        list($tour, $batch) = $this->service->batchSign($id, $this->data);
+        TourTrait::afterBatchSign($tour, $batch);
+        return;
     }
 
     /**

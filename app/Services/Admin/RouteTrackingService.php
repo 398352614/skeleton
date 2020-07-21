@@ -4,8 +4,10 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\RouteTrackingResource;
+use App\Listeners\TourDriver;
 use App\Models\RouteTracking;
 use App\Models\Tour;
+use App\Models\TourDriverEvent;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
@@ -32,6 +34,15 @@ class RouteTrackingService extends BaseService
     }
 
     /**
+     * 站点 服务
+     * @return BatchService
+     */
+    public function getBatchService()
+    {
+        return self::getInstance(BatchService::class);
+    }
+
+    /**
      * 线路追踪
      * @return array
      * @throws BusinessLogicException
@@ -39,9 +50,7 @@ class RouteTrackingService extends BaseService
     public function show()
     {
         $tour = null;
-        $info = [];
-        $content = [];
-        if ($this->formData['driver_id'] ?? null) {
+        if (!empty($this->formData['driver_id'])) {
             $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
         } else {
             $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
@@ -49,71 +58,81 @@ class RouteTrackingService extends BaseService
         if (!$tour) {
             throw new BusinessLogicException('没找到相关进行中的线路');
         }
-        $routeTracking = $tour->routeTracking->toArray();
-        if (!empty($routeTracking)) {
-            foreach ($routeTracking as $k => $v) {
-                if (!empty($v['tour_driver_event_id'])) {
-                    $routeTracking[$k]['event'] = array_values($tour->tourDriverEvent->where('id', $v['tour_driver_event_id'])
-                        ->map(function ($item) {
-                            $item['time'] = date_format($item['created_at'], "Y-m-d H:i:s");
-                            $item['type'] = 'station';
-                            return $item->only('content', 'time', 'type', 'address');
-                        })->toArray());
-                    $routeTracking[$k]['address'] = $routeTracking[$k]['event'][0]['address'];
-                }
-            }
-            $routeTracking = collect($routeTracking)->sortBy('time_human')->toArray();
-            $routeTracking[0]['stopTime'] = 0;
-            for ($i = 1, $j = count($routeTracking); $i < $j; $i++) {
-                if (abs($routeTracking[$i]['lon'] - $routeTracking[$i - 1]['lon']) < BaseConstService::LOCATION_DISTANCE_RANGE &&
-                    abs($routeTracking[$i]['lat'] - $routeTracking[$i - 1]['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE) {
-                    $routeTracking[$i]['stopTime'] = round($routeTracking[$i - 1]['stopTime'] + abs($routeTracking[$i]['time'] - $routeTracking[$i - 1]['time']) / 60);
-                    //造停点事件
-                    if ($routeTracking[$i]['stopTime'] >= BaseConstService::STOP_TIME) {
-                        $content[$i][] = [
-                            'content' => __("司机已在此停留[:time]分钟", ['time' => $routeTracking[$i]['stopTime']]),
-                            'time' => $routeTracking[$i]['time_human'],
-                            'type' => 'stop',
-                        ];
-                        $routeTracking[$i]['event'] = array_merge($routeTracking[$i - 1]['event'] ?? [], [collect($content[$i])->sortByDesc('time')->first()]);
-                    }
-                    //合并
-                    if (!empty($routeTracking[$i - 1]['event']) && !empty($routeTracking[$i]['event'])) {
-                        $routeTracking[$i]['event'] = array_merge($routeTracking[$i]['event'], $routeTracking[$i - 1]['event']);
-                    }
-                    if (!empty($routeTracking[$i - 1]['address'])) {
-                        $routeTracking[$i]['address'] = $routeTracking[$i - 1]['address'];
-                    }
-                    if (!empty($routeTracking[$i]['event']) && !empty(collect($routeTracking[$i]['event'])->groupBy('type')->sortByDesc('time')['stop'])) {
-                        $routeTracking[$i]['event'] = array_merge(collect($routeTracking[$i]['event'])->groupBy('type')->sortByDesc('time')->toArray()['stop'][0], collect($routeTracking[$i]['event'])->groupBy('type')->toArray()['station'] ?? []);
-                    } elseif (!empty($routeTracking[$i]['event'])) {
-                        $routeTracking[$i]['event'] = collect($routeTracking[$i]['event'])->groupBy('type')->toArray()['station'] ?? [];
-                    }
-                    $routeTracking = Arr::except($routeTracking, [$i - 1]);
-                    $info = Arr::except($info, [$i - 1]);
-                } else {
-                    $routeTracking[$i]['stopTime'] = 0;
-                }
-                $info[$i] = Arr::except($routeTracking[$i], ['stopTime', 'created_at', 'updated_at', 'time', 'tour_driver_event_id', 'driver_id']);
-                if (empty($info[$i]['address'])) {
-                    $info[$i]['address'] = "";
-                }
-                if (empty($info[$i]['event'])) {
-                    $info[$i]['event'] = [];
-                }
-            }
-            if(!empty($routeTracking[0])){
-                $info[0] = Arr::except($routeTracking[0], ['stopTime', 'created_at', 'updated_at', 'time', 'tour_driver_event_id', 'driver_id']);
-            }
-            $info = array_values(collect($info)->sortBy('time_human')->toArray());
+        $routeTrackingList = $tour->routeTracking->toArray();
+        $routeTrackingList = $this->reduceData($routeTrackingList);
+        foreach ($routeTrackingList as $k => $v) {
+            $routeTrackingList[$k] = $this->makeStopEvent($v);
         }
-        return success('', [
-            'route_tracking' => $info,
-            'driver' => $tour->driver,
-            'tour_event' => $tour->tourDriverEvent,
-            'time_consuming' => '',
-            'distance_consuming' => '',
-        ]);
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], [
+            'batch_no', 'receiver_fullname', 'receiver_address', 'receiver_lon', 'receiver_lat', 'expect_arrive_time', 'actual_arrive_time', 'sort_id'], false)->all();
+        foreach ($batchList as $k => $v) {
+            $tourEvent = TourDriverEvent::query()->where('batch_no', $v['batch_no'])->get()->toArray();
+            if (!empty($tourEvent)) {
+                $batchList[$k]['event'] = $tourEvent;
+            }
+        }
+        $batchList = collect($batchList)->whereNotNull('event')->all();
+        $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
+        $out = [[
+            'receiver_lon' => $tour['warehouse_lon'],
+            'receiver_lat' => $tour['warehouse_lat'],
+            'receiver_fullname' => $tour['warehouse_name'],
+            'event' => [collect($info)->sortBy('id')->first()
+            ]]];
+        $batchList = array_merge($out, array_values($batchList));
+        if ($tour['status'] == 5) {
+            $in = [[
+                'receiver_lon' => $tour['warehouse_lon'],
+                'receiver_lat' => $tour['warehouse_lat'],
+                'receiver_fullname' => $tour['warehouse_name'],
+                'event' => [
+                    collect($info)->sortByDesc('id')->first()]
+            ]];
+            $batchList = array_merge(array_values($batchList), $in);
+        }
+        return [
+            'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
+            'route_tracking' => $routeTrackingList,
+            'tour_event' => $batchList,
+        ];
+    }
+
+    /**
+     * 制造停点
+     * @param $routeTracking
+     * @return mixed
+     */
+    public function makeStopEvent($routeTracking)
+    {
+        if (!empty($routeTracking['stop_time'] && $routeTracking['stop_time'] / 60 > BaseConstService::STOP_TIME)) {
+            $routeTracking['event'][0]['content'] = __("司机已在此停留[:time]分钟", ['time' => round($routeTracking['stop_time'] / 60)]);
+            $routeTracking['event'][0]['time'] = $routeTracking['time_human'];
+            $routeTracking['event'][0]['type'] = 'stop';
+        }
+        return $routeTracking;
+    }
+
+    /**
+     * 间隔抽点
+     * @param $data
+     * @return array|int
+     */
+    public function reduceData($data)
+    {
+        $result = [];
+        $stop = collect($data)->where('stop_time')->all();
+        $count = count($data) - count($stop);
+        $time = $count / BaseConstService::LOCATION_LIMIT;
+        if ($time > 0) {
+            for ($i = 0, $j = $count; $i < $j; $i++) {
+                if (!empty($data[$i]['stop_time']) || $i % ($time + 1) == 0) {
+                    $result[] = $data[$i];
+                }
+            }
+        } else {
+            $result = $data;
+        }
+        return $result;
     }
 
     /**

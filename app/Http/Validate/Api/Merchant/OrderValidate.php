@@ -24,7 +24,7 @@ class OrderValidate extends BaseValidate
         'list_mode' => 'sometimes|required|in:1,2',
         'type' => 'required|integer|in:1,2',
         'out_user_id' => 'nullable|integer',
-        'mask_code'=>'nullable|string|max:50',
+        'mask_code' => 'nullable|string|max:50',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
         'settlement_type' => 'required|in:1,2',
         'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
@@ -41,7 +41,7 @@ class OrderValidate extends BaseValidate
         'lat' => 'nullable|string|max:50',
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
-        'out_status'=>'sometimes|integer|in:1,2',
+        'out_status' => 'sometimes|integer|in:1,2',
         //包裹列表
         'package_list.*.name' => 'nullable|string|max:50',
         'package_list.*.weight' => 'nullable|numeric|gte:0',
@@ -59,7 +59,6 @@ class OrderValidate extends BaseValidate
         'material_list.*.remark' => 'nullable|string|max:250',
 
         'order_no' => 'nullable|string|max:50',
-        'out_status' => 'required|integer|in:1,2'
     ];
 
     public $scene = [
@@ -80,7 +79,7 @@ class OrderValidate extends BaseValidate
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
         'update' => [
-            'merchant_id', 'execution_date','mask_code',
+            'merchant_id', 'execution_date', 'mask_code',
             'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             //'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',

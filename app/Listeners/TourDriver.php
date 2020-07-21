@@ -21,7 +21,7 @@ class TourDriver
     /**
      * Handle the event.
      *
-     * @param  TourDriver  $event
+     * @param ITourDriver $event
      * @return void
      */
     public function handle(ITourDriver $event)
@@ -32,15 +32,8 @@ class TourDriver
             'tour_no'   => $event->getTourNo(),
             'lat'       =>  $location['lat'],
             'lon'       =>  $location['lon'],
-            'address'   => $event->getAddress()
-        ]);
-        RouteTracking::create([
-            'lon' => $location['lon'],
-            'lat' => $location['lat'],
-            'tour_no'   => $event->getTourNo(),
-            'driver_id' => $event->getDriverId(),
-            'time' =>time(),
-            'tour_driver_event_id'=>$tourDriverEvent->id,
+            'address'   => $event->getAddress(),
+            'batch_no'   => $event->getBatchNo()
         ]);
     }
 }

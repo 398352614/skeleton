@@ -9,7 +9,9 @@
 
 namespace App\Services;
 
+use App\Hash\MerchantApi;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class CurlClient
 {
@@ -57,6 +59,8 @@ class CurlClient
 
     public function post($url, $params, $next = 0, $auth = null)
     {
+        Log::info('post 请求url', ['url' => $url]);
+        Log::info('post 请求数据', $params);
         try {
             if ($auth) {
                 $response = $this->http->post($url, ['auth' => $auth, 'form_params' => $params]);
@@ -76,7 +80,7 @@ class CurlClient
         }
         if ($response->getStatusCode() == 200) {
             $bodyData = $response->getBody();
-            $responseData = json_decode((string) $bodyData, true);
+            $responseData = json_decode((string)$bodyData, true);
             if (!$responseData) {
                 app('log')->info('请求地址' . $url . '返回不是json数组' . $bodyData . ',参数', $params);
                 return null;
@@ -90,6 +94,8 @@ class CurlClient
 
     public function postJson($url, $params, $next = 0, $auth = null)
     {
+        Log::info('post-json 请求url', ['url' => $url]);
+        Log::info('post-json 请求数据', $params);
         try {
             //php 7.4兼容
             //https://cloud.tencent.com/developer/article/1489213
@@ -116,11 +122,11 @@ class CurlClient
             app('log')->info('请求地址' . $url . '出错，重新推送,参数', $params);
             app("log")->error($e->getMessage());
             app("log")->error($e->getTraceAsString());
-            return $this->post($url, $params, $next);
+            return $this->postJson($url, $params, $next, $auth);
         }
         if ($response->getStatusCode() == 200) {
             $bodyData = $response->getBody();
-            $responseData = json_decode((string) $bodyData, true);
+            $responseData = json_decode((string)$bodyData, true);
             if (!$responseData) {
                 app('log')->info('请求地址' . $url . '返回不是json数组' . $bodyData . ',参数', $params);
                 return null;
@@ -130,6 +136,23 @@ class CurlClient
             app('log')->info('请求地址' . $url . '失败', $params);
             return null;
         }
+    }
+
+    /**
+     * 商户接口请求
+     * @param $merchant
+     * @param $params
+     * @param int $next
+     * @param null $auth
+     * @return mixed|null
+     */
+    public function merchantPostJson($merchant, $params, $next = 0, $auth = null)
+    {
+        $data = [
+            'key' => $merchant['key'], 'time' => time(), 'data' => $params,
+            'sign' => (new MerchantApi())->make($merchant['secret'], $params),
+        ];
+        return $this->postJson($merchant['url'], $data, $next, $auth);
     }
 
     public function get($url)
@@ -157,7 +180,7 @@ class CurlClient
 
         if ($res->getStatusCode() == 200) {
             $bodyData = $res->getBody();
-            $responseData = json_decode((string) $bodyData, true);
+            $responseData = json_decode((string)$bodyData, true);
             return $responseData;
         } else {
             return null;

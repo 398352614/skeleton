@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\BatchResource;
@@ -463,14 +464,18 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
+        //包裹取消取派
+        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['status' => BaseConstService::PACKAGE_STATUS_6]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取消取派失败，请重新操作');
+        }
 
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
 
-        //取消取派通知
-        if (!empty($info['tour_no'])) {
-            $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
-            $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => BaseConstService::ORDER_STATUS_6], ['*'], false)->toArray();
-            event(new \App\Events\TourNotify\CancelBatch($tour, $info, $orderList));
+        //取消通知
+        $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => BaseConstService::ORDER_STATUS_6], ['order_no', 'out_order_no'], false)->toArray();
+        foreach ($orderList as $order) {
+            event(new OrderCancel($order['order_no'], $order['out_order_no']));
         }
     }
 
@@ -523,7 +528,7 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
-            event(new OrderExecutionDateUpdated($order['order_no'], $params['execution_date'], ['line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
+            event(new OrderExecutionDateUpdated($order['order_no'], $order['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
         }
         //重新统计站点金额
         $this->reCountAmountByNo($info['batch_no']);

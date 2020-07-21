@@ -138,6 +138,42 @@ class Tour extends BaseModel
         return empty($this->actual_time) ? null : CarbonInterval::second($this->actual_time)->cascade()->forHumans();
     }
 
+    public function getMerchantStatusAttribute()
+    {
+        if (!empty($this->status)) {
+            if (in_array($this->status, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])) {
+                return BaseConstService::MERCHANT_TOUR_STATUS_1;
+            } else {
+                return $this->status - 2;
+            }
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * 获取司机位置属性
+     */
+    public function getDriverLocationAttribute()
+    {
+        if ($this->routeTracking->count()) {
+            $sorted = $this->routeTracking->sortByDesc('created_at');
+            return [
+                'latitude' => $sorted[0]->lat,
+                'longitude' => $sorted[0]->lon,
+            ];
+        }
+        return [
+            'latitude' => $this->warehouse_lat,
+            'longitude' => $this->warehouse_lon,
+        ];
+    }
+
+    public function getMerchantStatusNameAttribute()
+    {
+        return empty($this->merchant_status) ? null : ConstTranslateTrait::merchantTourStatusList($this->merchant_status);
+    }
+
     /**
      * 一个线路任务存在多个批次(站点)
      */
@@ -161,33 +197,4 @@ class Tour extends BaseModel
         return $this->belongsTo(Driver::class, 'driver_id', 'id');
     }
 
-    /**
-     * 获取司机位置属性
-     */
-    public function getDriverLocationAttribute()
-    {
-        if ($this->routeTracking->count()) {
-            $sorted = $this->routeTracking->sortByDesc('created_at');
-            return [
-                'latitude' => $sorted[0]->lat,
-                'longitude' => $sorted[0]->lon,
-            ];
-        }
-        return [
-            'latitude' => $this->warehouse_lat,
-            'longitude' => $this->warehouse_lon,
-        ];
-    }
-
-    public function getMerchantStatusAttribute(){
-        if(in_array($this->status,[BaseConstService::TOUR_STATUS_1,BaseConstService::TOUR_STATUS_2,BaseConstService::TOUR_STATUS_3])){
-            return BaseConstService::MERCHANT_TOUR_STATUS_1;
-        }else{
-            return $this->status-2;
-        }
-    }
-
-    public function getMerchantStatusNameAttribute(){
-        return empty($this->merchant_status) ? null : ConstTranslateTrait::merchantTourStatusList($this->merchant_status);
-    }
 }

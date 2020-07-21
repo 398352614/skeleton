@@ -10,6 +10,7 @@
 
 namespace App\Services\Admin;
 
+use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
@@ -589,25 +590,9 @@ class OrderService extends BaseService
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
         //验证包裹列表
-        if (!empty($params['package_list'])) {
-            $packageList = $params['package_list'];
-            $expressNoList = array_filter(array_merge(array_column($packageList, 'express_first_no'), array_column($packageList, 'express_second_no')));
-            if (count(array_unique($expressNoList)) !== count($expressNoList)) {
-                $repeatExpressNoList = implode(',', array_diff_assoc($expressNoList, array_unique($expressNoList)));
-                throw new BusinessLogicException('快递单号[:express_no]有重复！不能添加订单', 1000, ['express_no' => $repeatExpressNoList]);
-            }
-            //验证外部标识/快递单号1/快递单号2
-            $this->getPackageService()->checkAllUnique($packageList, $orderNo);
-        }
+        !empty($params['package_list']) && $this->getPackageService()->check($params['package_list']);
         //验证材料列表
-        if (!empty($params['material_list'])) {
-            $materialList = $params['material_list'];
-            $codeList = array_column($materialList, 'code');
-            if (count(array_unique($codeList)) !== count($codeList)) {
-                $repeatCodeList = implode(',', array_diff_assoc($codeList, array_unique($codeList)));
-                throw new BusinessLogicException('材料代码[:code]有重复！不能添加订单', 1000, ['code' => $repeatCodeList]);
-            }
-        }
+        !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
             $params['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
@@ -616,9 +601,18 @@ class OrderService extends BaseService
         if (!empty($params['out_order_no'])) {
             $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7]]];
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
-            $dbOrder = parent::getInfo($where, ['id'], false);
+            $dbOrder = parent::getInfo($where, ['id', 'order_no', 'batch_no', 'tour_no'], false);
             if (!empty($dbOrder)) {
-                throw new BusinessLogicException('外部订单号已存在');
+                $data = ['order_no' => $dbOrder->order_no, 'batch_no' => $dbOrder->batch_no ?? '', 'tour_no' => $dbOrder->tour_no ?? ''];
+                if (!empty($dbOrder->tour_no)) {
+                    $tour = $this->getTourService()->getInfo(['tour_no' => $dbOrder->tour_no], ['line_id', 'line_name'], false);
+                    if (empty($tour)) {
+                        $data['line'] = [];
+                    } else {
+                        $data['line'] = ['line_id' => $tour->line_id, 'line_name' => $tour->line_name];
+                    }
+                }
+                throw new BusinessLogicException('外部订单号已存在', 1002, [], $data);
             }
         }
     }
@@ -746,6 +740,9 @@ class OrderService extends BaseService
         /*************************************************订单修改******************************************************/
         //获取信息
         $dbInfo = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        if (intval($dbInfo['source']) === BaseConstService::ORDER_SOURCE_3) {
+            throw new BusinessLogicException('第三方订单不能修改');
+        }
         //验证
         $this->check($data, $dbInfo['order_no']);
         $data = Arr::add($data, 'order_no', $dbInfo['order_no']);
@@ -782,6 +779,9 @@ class OrderService extends BaseService
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
         //重新统计取件线路金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
+
+        //更换取派日期通知
+        //($isChangeBatch === true) && event(new OrderExecutionDateUpdated($dbInfo['order_no'], $dbInfo['out_order_no'], $data['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
     }
 
 
@@ -928,7 +928,7 @@ class OrderService extends BaseService
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
-        event(new OrderExecutionDateUpdated($info['order_no'], $params['execution_date'], ['line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
+        event(new OrderExecutionDateUpdated($info['order_no'], $info['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
         return 'true';
     }
 
@@ -1025,12 +1025,6 @@ class OrderService extends BaseService
     public function destroy($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]);
-        if (!empty($info['tour_no'])) {
-            $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false);
-        }
-        if (!empty($info['batch_no'])) {
-            $batch = $this->getBatchService()->getInfo(['batch_no' => $info['batch_no']], ['*'], false);
-        }
         //若当前订单已取消取派了,在直接返回成功，不再删除
         if (intval($info['status']) == BaseConstService::ORDER_STATUS_6) {
             return 'true';
@@ -1057,16 +1051,12 @@ class OrderService extends BaseService
         !empty($info['batch_no']) && $this->getBatchService()->reCountAmountByNo($info['batch_no']);
         //重新统计取件线路金额
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
-        //以取消取派方式推送商城
-        if (!empty($tour) && !empty($batch)) {
-            $order = array_merge($info, ['status' => BaseConstService::ORDER_STATUS_6]);
-            $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no'], 'status' => BaseConstService::PACKAGE_STATUS_7], ['order_no', 'express_first_no'], false)->toArray();
-            data_set($packageList, '*.status', BaseConstService::PACKAGE_STATUS_6);
-            $order['package_list'] = $packageList;
-            event(new \App\Events\TourNotify\CancelBatch($tour->toArray(), $batch->toArray(), [$order]));
-        }
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_DELETE);
+
+        //以取消取派方式推送商城
+        event(new OrderCancel($info['order_no'], $info['out_order_no']));
+
         return 'true';
     }
 
@@ -1080,21 +1070,15 @@ class OrderService extends BaseService
     public function recovery($id, $params)
     {
         $order = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::ORDER_STATUS_7);
+        if (intval($order['source']) === BaseConstService::ORDER_SOURCE_3) {
+            throw new BusinessLogicException('第三方订单不允许恢复');
+        }
         /********************************************恢复之前验证包裹**************************************************/
         $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
-        if (!empty($packageList)) {
-            $this->getPackageService()->checkAllUnique($packageList, $order['order_no']);
-        }
+        !empty($packageList) && $this->getPackageService()->check($packageList, $order['order_no']);
         /********************************************恢复之前验证材料**************************************************/
         $materialList = $this->getMaterialService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
-        if (!empty($materialList)) {
-            $outOrderNoList = array_column($materialList, 'out_order_no');
-            foreach ($outOrderNoList as $item) {
-                if (!empty($item)) {
-                    $this->getMaterialService()->checkAllUniqueByOutOrderNoList($item, $order['order_no']);
-                }
-            }
-        }
+        !empty($materialList) && $this->getMaterialService()->checkAllUnique($materialList);
         /**********************************************订单恢复********************************************************/
         $order['execution_date'] = $params['execution_date'];
         $order['status'] = BaseConstService::ORDER_STATUS_1;

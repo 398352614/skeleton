@@ -75,7 +75,7 @@ class OrderController extends OrderBaseController
     {
         if (auth()->user()->getAttribute('is_api') == true) {
             $orderSource = BaseConstService::ORDER_SOURCE_3;
-            $this->data['out_status'] = BaseConstService::ORDER_OUT_STATUS_2;
+            $this->data['out_status'] = !empty($this->data['out_status']) ? $this->data['out_status'] : BaseConstService::ORDER_OUT_STATUS_2;
         } else {
             $orderSource = BaseConstService::ORDER_SOURCE_1;
             $this->data['out_status'] = BaseConstService::ORDER_OUT_STATUS_1;
@@ -112,6 +112,16 @@ class OrderController extends OrderBaseController
     public function update($id)
     {
         return $this->service->updateById($id, $this->data);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function updateByApi($id)
+    {
+        return $this->service->updateByApi($id, $this->data);
     }
 
 

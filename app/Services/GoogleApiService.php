@@ -51,15 +51,15 @@ class GoogleApiService
 
         foreach ($tourBatchs as $key => $batch) {
             $batchs[] = [
-                "latitude"      =>  $batch->location->latitude,
-                "longitude"     =>  $batch->location->longitude,
-                "code"          =>  $batch->location_code
+                "latitude" => $batch->location->latitude,
+                "longitude" => $batch->location->longitude,
+                "code" => $batch->location_code
             ];
         }
 
         $params = [
-            'code'          =>  $tour->code,
-            'location'      =>  $batchs,
+            'code' => $tour->code,
+            'location' => $batchs,
         ];
 
         app('log')->info('初始化线路传送给 api 端的参数为:', $params);
@@ -108,24 +108,24 @@ class GoogleApiService
         $driver_location = $tour->driver_location;
         $driver_location['code'] = $tour->tour_no . 'driver_location';
         $batchs = [$driver_location]; // 将司机位置放在序列中的第一位
-
+        //->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->orderBy('sort_id', 'asc')->get();
 
         foreach ($orderBatchs as $key => $batch) {
             $batchs[] = [
-                "latitude"      =>  $batch->receiver_lat,
-                "longitude"     =>  $batch->receiver_lon,
-                "code"          =>  $batch->batch_no,
-                "gather_sn"     =>  ['a'],
+                "latitude" => $batch->receiver_lat,
+                "longitude" => $batch->receiver_lon,
+                "code" => $batch->batch_no,
+                "gather_sn" => ['a'],
             ];
         }
 
         $params = [
-            'code'          =>  $tour->tour_no,
-            'latitude'      =>  (string)$driver_location['latitude'],
-            'longitude'      =>  (string)$driver_location['longitude'],
-            'target_code'   =>  $nextCode,
-            'location'      =>  $batchs,
+            'code' => $tour->tour_no,
+            'latitude' => (string)$driver_location['latitude'],
+            'longitude' => (string)$driver_location['longitude'],
+            'target_code' => $nextCode,
+            'location' => $batchs,
         ];
 
         app('log')->info('更新线路传送给 api 端的参数为:', $params);

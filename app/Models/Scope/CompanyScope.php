@@ -118,6 +118,7 @@ class CompanyScope implements Scope
                 && !($model instanceof OrderTrail)
                 && !($model instanceof TourDriverEvent)
                 && !($model instanceof RouteTracking)
+                && !($model instanceof Driver)
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
             }

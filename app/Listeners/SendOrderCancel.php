@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\Interfaces\ATourNotify;
+use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
@@ -20,7 +21,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-class SendOrderExecutionDate implements ShouldQueue
+class SendOrderCancel implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
@@ -36,7 +37,7 @@ class SendOrderExecutionDate implements ShouldQueue
      *
      * @var string|null
      */
-    public $queue = 'execution-date-notify';
+    public $queue = 'order-cancel-notify';
 
 
     /**
@@ -76,7 +77,7 @@ class SendOrderExecutionDate implements ShouldQueue
      * @return bool
      * @throws BusinessLogicException
      */
-    public function handle(OrderExecutionDateUpdated $event)
+    public function handle(OrderCancel $event)
     {
         try {
             //获取商户ID
@@ -88,16 +89,9 @@ class SendOrderExecutionDate implements ShouldQueue
             //推送
             $res = $this->postData($url, [
                 'type' => $event->notifyType(),
-                'data' => [
-                    'order_no' => $event->order_no,
-                    'out_order_no' => $event->out_order_no,
-                    'execution_date' => $event->execution_date,
-                    'batch_no' => $event->batch_no,
-                    'tour_no' => $event->tour['tour_no'],
-                    'line' => Arr::except($event->tour, ['tour_no'])
-                ]
+                'data' => ['order_no' => $event->order_no, 'out_order_no' => $event->out_order_no]
             ]);
-            Log::info('订单取派日期修改通知成功:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::info('订单取消:' . json_encode($res, JSON_UNESCAPED_UNICODE));
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
         }

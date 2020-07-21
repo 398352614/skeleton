@@ -8,6 +8,7 @@ use App\Models\RouteTracking;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use Illuminate\Support\Facades\Log;
 
 class RouteTrackingService extends BaseService
 {
@@ -25,15 +26,15 @@ class RouteTrackingService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    public function store($params){
-        $params['time']=strtotime(date("Y-m-d H:i:s"),$params['time']);
-        $params['driver_id']=auth()->user()->id;
+    public function store($params)
+    {
+        $params['time'] = strtotime(date("Y-m-d H:i:s"), $params['time']);
+        $params['driver_id'] = auth()->user()->id;
         $tour = Tour::query()->where('driver_id', $params['driver_id'])->where('status', BaseConstService::TOUR_STATUS_4)->first();
-        if($tour === false){
+        if ($tour === false) {
             throw new BusinessLogicException('当前司机不存在派送中线路');
         }
-        $params['tour_no']=$tour->tour_no;
-        $params['time']=time();
+        $params['tour_no'] = $tour->tour_no;
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('采集位置失败');
@@ -45,17 +46,44 @@ class RouteTrackingService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    public function createByList($params){
-        $data=$params['location_list'];
+    public function createByList($params)
+    {
         $tour = Tour::query()->where('driver_id', auth()->user()->id)->where('status', BaseConstService::TOUR_STATUS_4)->first();
-        if(empty($tour)){
+        if (empty($tour)) {
             throw new BusinessLogicException('当前司机不存在派送中线路');
         }
-        for($i=0,$j=count($data);$i<$j;$i++){
-            $data[$i]['driver_id']=auth()->user()->id;
-            $data[$i]['tour_no']=$tour->tour_no;
-            $data[$i]['time']=strtotime($data[$i]['time']);
+        $tracking = collect($params['location_list'])->sortBy('time')->toArray()[0];
+        $firstTracking = $this->getInfo(['tour_no' => $tour->tour_no], ['*'], false, ['time' => 'desc']);
+        if (!empty($firstTracking)) {
+            $firstTracking = $firstTracking->toArray();
         }
-        parent::insertAll($data);
+        $tracking['driver_id'] = auth()->user()->id;
+        $tracking['tour_no'] = $tour->tour_no;
+        $tracking['time'] = strtotime($tracking['time']);
+        $tracking['stop_time'] = 0;
+        return $this->moveCheck($tracking, $firstTracking);
+    }
+
+    /**
+     * @param $tracking
+     * @param $firstTracking
+     * @throws BusinessLogicException
+     */
+    public function moveCheck($tracking, $firstTracking)
+    {
+        if (!empty($firstTracking) && abs($tracking['lon'] - $firstTracking['lon']) < BaseConstService::LOCATION_DISTANCE_RANGE &&
+            abs($tracking['lat'] - $firstTracking['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE) {
+            $stopTime = $firstTracking['stop_time'] + abs($tracking['time'] - $firstTracking['time']);
+            $row = parent::update(['id' => $firstTracking['id']], ['stop_time' => $stopTime, 'time' => $tracking['time']]);
+            if ($row == false) {
+                throw new BusinessLogicException('操作失败');
+            }
+        } else {
+            $tracking['tour_driver_event_id'] = null;
+            $row = $this->create($tracking);
+            if ($row == false) {
+                throw new BusinessLogicException('操作失败');
+            }
+        }
     }
 }

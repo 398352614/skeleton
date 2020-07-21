@@ -24,9 +24,12 @@ class BusinessLogicException extends Exception
 
     public $replace = [];
 
-    public function __construct($message = "", $code = 1000, $replace = [], Throwable $previous = null)
+    public $data = '';
+
+    public function __construct($message = "", $code = 1000, $replace = [], $data = '', Throwable $previous = null)
     {
         $this->replace = $replace;
+        $this->data = $data;
         parent::__construct($message, $code, $previous);
     }
 
@@ -43,6 +46,6 @@ class BusinessLogicException extends Exception
 
     public function render($request)
     {
-        return response()->json($this->responseFormat($this->getCode(), '', $this->getMessage(), $this->replace));
+        return response()->json($this->responseFormat($this->getCode(), $this->data, $this->getMessage(), $this->replace));
     }
 }
