@@ -19,6 +19,7 @@ use App\Services\OrderNoRuleService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
+use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
@@ -650,14 +651,19 @@ class TourService extends BaseService
             'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
-
+        $batchList = $this->getBatchService()->getList(['tour_no' => $data['tour_no']]);
+        $batchList = $batchList->sortBy('sort_id')->all();
+        foreach ($batchList as $k => $v) {
+            $this->getBatchService()->updateById($v['id'],['sort_id'=>$k + 1]);
+        }
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
-
         return '修改线路成功';
     }
 
     /**
      * 自动优化线路任务
+     * @param $data
+     * @return string
      */
     public function autoOpTour($data)
     {
@@ -676,9 +682,7 @@ class TourService extends BaseService
             'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
-
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
-
         return '修改线路成功';
     }
 

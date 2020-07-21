@@ -16,7 +16,6 @@ class PackageService extends BaseService
     public function __construct(Package $package)
     {
         parent::__construct($package, PackageResource::class, PackageResource::class);
-
     }
 
     public $filterRules = [
