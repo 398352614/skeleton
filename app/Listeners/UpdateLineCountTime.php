@@ -44,7 +44,7 @@ class UpdateLineCountTime
         app('log')->info('更新线路出发事件进入此处');
         $tour = $event->tour; // 获取事件对应的线路
         //$res = $this->apiClient->UpdateTour($tour, $event->nextBatch);
-        app('log')->info('更新线路的返回结果为:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+        //app('log')->info('更新线路的返回结果为:' . json_encode($res, JSON_UNESCAPED_UNICODE));
         //sleep(2);
 
         if (!$this->updateTourTimeAndDistance($tour)) {
