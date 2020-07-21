@@ -677,6 +677,10 @@ class TourService extends BaseService
             throw new BusinessLogicException('该取件线路不在取派中，无法进行追踪');
         }
         $info['batchs'] = $this->getBatchService()->getList(['batch_no' => ['in', $batchNoList]], ['*'], true)->toArray(request()) ?? [];
+        $info['batchs'] = collect($info['batchs'])->sortBy('sort_id')->all();
+        foreach ($info['batchs'] as $k => $v) {
+            $info['batchs'][$k]['sort_id'] = $k + 1;
+        }
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         return $info;
     }

@@ -137,6 +137,10 @@ class ReportService extends BaseService
         }
         //获取所有的站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
+        $batchList = collect($batchList)->sortBy('sort_id')->all();
+        foreach ($batchList as $k => $v) {
+            $batchList[$k]['sort_id'] = $k + 1;
+        }
         //统计站点的各费用
         $info['card_settlement_amount'] = 0;
         $info['card_replace_amount'] = 0;
