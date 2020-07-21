@@ -71,7 +71,7 @@ class RouteTrackingService extends BaseService
                 $batchList[$k]['event'] = $tourEvent;
             }
         }
-        $batchList = collect($batchList)->whereNotNull('event')->sortBy('actual_arrive_time')->all();
+        $batchList = collect($batchList)->whereNotNull('event')->all();
         $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
         $out = [[
             'receiver_lon' => $tour['warehouse_lon'],
@@ -105,7 +105,7 @@ class RouteTrackingService extends BaseService
     public function makeStopEvent($routeTracking)
     {
         if (!empty($routeTracking['stop_time'] && $routeTracking['stop_time'] > BaseConstService::STOP_TIME)) {
-            $routeTracking['event'][0]['content'] = __("司机已在此停留[:time]分钟", ['time' => round($routeTracking['stop_time']/60,2)]);
+            $routeTracking['event'][0]['content'] = __("司机已在此停留[:time]分钟", ['time' => round($routeTracking['stop_time']/60)]);
             $routeTracking['event'][0]['time'] = $routeTracking['time_human'];
             $routeTracking['event'][0]['type'] = 'stop';
         }
