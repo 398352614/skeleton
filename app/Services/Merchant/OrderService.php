@@ -581,16 +581,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
         //验证包裹列表
-        if (!empty($params['package_list'])) {
-            $packageList = $params['package_list'];
-            $expressNoList = array_filter(array_merge(array_column($packageList, 'express_first_no'), array_column($packageList, 'express_second_no')));
-            if (count(array_unique($expressNoList)) !== count($expressNoList)) {
-                $repeatExpressNoList = implode(',', array_diff_assoc($expressNoList, array_unique($expressNoList)));
-                throw new BusinessLogicException('快递单号[:express_no]有重复！不能添加订单', 1000, ['express_no' => $repeatExpressNoList]);
-            }
-            //验证外部标识/快递单号1/快递单号2
-            $this->getPackageService()->checkAllUnique($packageList, $orderNo);
-        }
+        !empty($params['package_list']) && $this->getPackageService()->check($params['package_list']);
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
@@ -1251,9 +1242,7 @@ class OrderService extends BaseService
         }
         /********************************************恢复之前验证包裹**************************************************/
         $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
-        if (!empty($packageList)) {
-            $this->getPackageService()->checkAllUnique($packageList, $order['order_no']);
-        }
+        !empty($packageList) && $this->getPackageService()->check($packageList, $order['order_no']);
         /********************************************恢复之前验证材料**************************************************/
         $materialList = $this->getMaterialService()->getList(['order_no' => $order['order_no']], ['*'], false)->toArray();
         !empty($materialList) && $this->getMaterialService()->checkAllUnique($materialList);

@@ -8,6 +8,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Package;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use Illuminate\Support\Arr;
 
 class PackageService extends BaseService
 {
@@ -15,6 +16,50 @@ class PackageService extends BaseService
     {
         parent::__construct($package);
     }
+
+    /**
+     * 验证
+     * @param $packageList
+     * @param null $orderNo
+     * @throws BusinessLogicException
+     */
+    public function check($packageList, $orderNo = null)
+    {
+        $expressFirstNoList = array_column($packageList, 'express_first_no');
+        if (count($expressFirstNoList) !== count(array_unique($expressFirstNoList))) {
+            $repeatExpressFirstNoList = implode(',', array_diff_assoc($expressFirstNoList, array_unique($expressFirstNoList)));
+            throw new BusinessLogicException('快递单号[:express_no]有重复！不能添加订单', 1000, ['express_no' => $repeatExpressFirstNoList]);
+        }
+        //存在快递单号2,则验证
+        $expressSecondNoList = array_filter(array_column($packageList, 'express_second_no'));
+        if (!empty($expressSecondNoList)) {
+            if (count($expressSecondNoList) !== count(array_unique($expressSecondNoList))) {
+                $repeatExpressSecondNoList = implode(',', array_diff_assoc($expressSecondNoList, array_unique($expressSecondNoList)));
+                throw new BusinessLogicException('快递单号2[:express_no]有重复！不能添加订单', 1000, ['express_no' => $repeatExpressSecondNoList]);
+            }
+            $expressSecondNoCountList = array_count_values($expressSecondNoList);
+            $firstPackage = Arr::first($packageList, function ($package) use ($expressSecondNoCountList) {
+                if (empty($expressSecondNoCountList[$package['express_first_no']])) return false;
+                if (($expressSecondNoCountList[$package['express_first_no']] == 1) && (!empty($package['express_second_no']) && ($package['express_first_no'] == $package['express_second_no']))) return false;
+                return true;
+            });
+            if (!empty($firstPackage)) {
+                throw new BusinessLogicException('快递单号1[:express_no]已存在在快递单号2中', 1000, ['express_no' => $firstPackage['express_first_no']]);
+            }
+            $expressFirstNoCountList = array_count_values($expressFirstNoList);
+            $secondPackage = Arr::first($packageList, function ($package) use ($expressFirstNoCountList) {
+                if (empty($package['express_second_no']) || empty($expressFirstNoCountList[$package['express_second_no']])) return false;
+                if (($expressFirstNoCountList[$package['express_second_no']] == 1) && ($package['express_first_no'] == $package['express_second_no'])) return false;
+                return true;
+            });
+            if (!empty($secondPackage)) {
+                throw new BusinessLogicException('快递单号2[:express_no]已存在在快递单号1中', 1000, ['express_no' => $firstPackage['express_second_no']]);
+            }
+        }
+        //验证外部标识/快递单号1/快递单号2
+        $this->checkAllUnique($packageList, $orderNo);
+    }
+
 
     /**
      * 列表包裹验证唯一
