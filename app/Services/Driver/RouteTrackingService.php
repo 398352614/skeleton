@@ -73,9 +73,8 @@ class RouteTrackingService extends BaseService
     {
         if (!empty($firstTracking) && abs($tracking['lon'] - $firstTracking['lon']) < BaseConstService::LOCATION_DISTANCE_RANGE &&
             abs($tracking['lat'] - $firstTracking['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE) {
-            Log::info('时间',['time'=>$tracking['time'],'first_time'=> $firstTracking['time'],'diff_time'=>$tracking['time'] - $firstTracking['time']]);
             $stopTime = $firstTracking['stop_time'] + abs($tracking['time'] - $firstTracking['time']);
-            $row = parent::update(['id' => $firstTracking['id']], ['stop_time' => $stopTime]);
+            $row = parent::update(['id' => $firstTracking['id']], ['stop_time' => $stopTime, 'time' => $tracking['time']]);
             if ($row == false) {
                 throw new BusinessLogicException('操作失败');
             }
