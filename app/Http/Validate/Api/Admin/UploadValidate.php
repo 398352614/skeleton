@@ -26,7 +26,7 @@ class UploadValidate extends BaseValidate
 
     public $scene = [
         'imageUpload' => ['image', 'image.file', 'dir'],
-        'fileUpload' => ['file', 'file.file', 'dir'],
+        'fileUpload' => ['dir'],
     ];
 
     public $message = [

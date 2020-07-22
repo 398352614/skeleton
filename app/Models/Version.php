@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class version extends Model
+class Version extends Model
 {
     /**
      * 版本

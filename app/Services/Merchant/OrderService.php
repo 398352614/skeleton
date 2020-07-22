@@ -1356,4 +1356,33 @@ class OrderService extends BaseService
         ];
     }
 
+    /**
+     * 查询包裹信息
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function showByApi($params)
+    {
+        if (empty($params['order_no']) && empty($params['out_order_no'])) {
+            throw new BusinessLogicException('查询字段至少一个不为空');
+        }
+        if (!empty($params['order_no'])) {
+            $this->query->where('order_no', '=', $params['order_no']);
+        }
+        if (!empty($params['out_order_no'])) {
+            $this->query->where('out_order_no', '=', $params['out_order_no']);
+        }
+        $this->query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7]);
+        $info = $this->getPageList()->toArray(request());
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $data = parent::getInfo(['order_no' => $info[0]['order_no']], ['merchant_id','order_no', 'batch_no', 'tour_no', 'status'], false);
+        $data['package_list'] = $this->getPackageService()->getList(['order_no' => $info[0]['order_no']], ['name','order_no','express_first_no','express_second_no','out_order_no','expect_quantity','actual_quantity','status','sticker_no','sticker_amount'], false);
+        $data['material_list'] = $this->getMaterialService()->getList(['order_no' => $info[0]['order_no']], ['order_no','name','code','out_order_no','expect_quantity','actual_quantity'], false);
+        $data=array_only_fields_sort($data,['merchant_id','tour_no','batch_no','order_no','status','package_list','material_list']);
+        return $data;
+    }
+
 }
