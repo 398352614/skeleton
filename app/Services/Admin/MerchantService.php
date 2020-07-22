@@ -204,4 +204,15 @@ class MerchantService extends BaseService
         return $this->excelExport('merchant', $this->headings, $cellData, 'merchant');
     }
 
+    /**
+     * 获取商户列表
+     * @param $where
+     * @return mixed
+     */
+    public function getMerchantPageList($where)
+    {
+        $this->filters = $where;
+        return parent::getPageList();
+    }
+
 }
