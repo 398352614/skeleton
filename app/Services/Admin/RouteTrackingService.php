@@ -51,9 +51,9 @@ class RouteTrackingService extends BaseService
     {
         $tour = null;
         if (!empty($this->formData['driver_id'])) {
-            $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
+            $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->where('status', 'in', [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5])->first();
         } else {
-            $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
+            $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->where('status', 'in', [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5])->first();
         }
         if (!$tour) {
             throw new BusinessLogicException('没找到相关进行中的线路');
@@ -75,7 +75,7 @@ class RouteTrackingService extends BaseService
                 $batchList[$k]['event'] = $tourEvent;
             }
         }
-        $batchList = collect($batchList)->whereNotNull('event')->all();
+        $batchList = collect($batchList)->whereNotNull('event')->sortBy('actual_arrive_time')->all();
         $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
         $out = [[
             'receiver_lon' => $tour['warehouse_lon'],
