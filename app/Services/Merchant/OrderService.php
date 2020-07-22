@@ -1378,9 +1378,10 @@ class OrderService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = parent::getInfo(['order_no' => $info[0]['order_no']], ['*'], false);
-        $data['package_list'] = $this->getPackageService()->getList(['order_no' => $info[0]['order_no']], ['*'], false);
-        $data['material_list'] = $this->getMaterialService()->getList(['order_no' => $info[0]['order_no']], ['*'], false);
+        $data = parent::getInfo(['order_no' => $info[0]['order_no']], ['merchant_id','order_no', 'batch_no', 'tour_no', 'status'], false);
+        $data['package_list'] = $this->getPackageService()->getList(['order_no' => $info[0]['order_no']], ['name','order_no','express_first_no','express_second_no','out_order_no','expect_quantity','actual_quantity','status','sticker_no','sticker_amount'], false);
+        $data['material_list'] = $this->getMaterialService()->getList(['order_no' => $info[0]['order_no']], ['order_no','name','code','out_order_no','expect_quantity','actual_quantity'], false);
+        $data=array_only_fields_sort($data,['merchant_id','tour_no','batch_no','order_no','status','package_list','material_list']);
         return $data;
     }
 
