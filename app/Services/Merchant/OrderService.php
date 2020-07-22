@@ -586,7 +586,7 @@ class OrderService extends BaseService
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
-            $fields = ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'];
+            $fields = ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code'];
             $params['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($params, $fields)));
         }
         //若存在外部订单号,则判断是否存在已预约的订单号

@@ -92,7 +92,7 @@ class WareHouseService extends BaseService
         //填充地址
         $params['country'] = CompanyTrait::getCountry();
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['address'])) {
-            $params['address'] = implode(' ', array_only_fields_sort($params, ['country', 'city', 'street', 'post_code', 'house_number']));
+            $params['address'] = implode(' ', array_only_fields_sort($params, ['country', 'city', 'street', 'house_number', 'post_code']));
         }
     }
 
