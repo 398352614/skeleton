@@ -1356,4 +1356,30 @@ class OrderService extends BaseService
         ];
     }
 
+    /**
+     * 查询包裹信息
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function showByApi($params)
+    {
+        if (empty($params['order_no']) && empty($params['out_order_no'])) {
+            throw new BusinessLogicException('查询字段至少一个不为空');
+        }
+        if (!empty($params['order_no'])) {
+            $this->query->where('order_no', '=', $params['order_no']);
+        }
+        if (!empty($params['out_order_no'])) {
+            $this->query->where('out_order_no', '=', $params['out_order_no']);
+        }
+        $this->query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7]);
+        $info = $this->getPageList()->toArray(request());
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return [
+            'status'=> $info[0]['status']];
+    }
+
 }
