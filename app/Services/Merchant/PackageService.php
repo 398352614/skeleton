@@ -160,7 +160,8 @@ class PackageService extends BaseService
         return [
             'express_first_no' => $params['express_first_no'],
             'order_no' => $info[0]['order_no'],
-            'out_order_no' => $order['out_order_no']
+            'out_order_no' => $order['out_order_no'],
+            'status'=>$order['status']
         ];
     }
 
