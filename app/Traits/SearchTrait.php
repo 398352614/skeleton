@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Traits;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;

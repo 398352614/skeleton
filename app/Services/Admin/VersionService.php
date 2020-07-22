@@ -7,12 +7,12 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\VersionResource;
-use App\Models\version;
+use App\Models\Version;
 use App\Services\BaseService;
 
 class VersionService extends BaseService
 {
-    public function __construct(version $version)
+    public function __construct(Version $version)
     {
         parent::__construct($version, VersionResource::class);
     }

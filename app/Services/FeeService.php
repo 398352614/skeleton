@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Fee;
+use App\Traits\SearchTrait;
 
 class FeeService
 {

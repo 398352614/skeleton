@@ -7,6 +7,7 @@ use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
 use App\Models\BaseModel;
 use App\Traits\FactoryInstanceTrait;
+use App\Traits\SearchTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
