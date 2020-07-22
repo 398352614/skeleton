@@ -454,6 +454,19 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'FeeController@destroy');    //删除
     });
 
+    //放假管理
+    Route::prefix('holiday')->group(function () {
+        Route::get('/', 'HolidayController@index');             //列表查询
+        Route::get('/{id}', 'HolidayController@show');          //详情
+        Route::post('/', 'HolidayController@store');            //新增
+        Route::put('/{id}', 'HolidayController@update');        //修改
+        Route::delete('/{id}', 'HolidayController@destroy');    //删除
+
+        Route::get('/merchantIndex', 'HolidayController@merchantIndex');                //获取商户列表
+        Route::post('/storeMerchantList', 'HolidayController@storeMerchantList');       //新增商户列表
+        Route::delete('/{id}/destroyMerchant', 'HolidayController@destroyMerchant');    //删除商户
+    });
+
 
     //worker
     Route::prefix('worker')->group(function () {
