@@ -24,5 +24,5 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant_api'])->group(funct
     Route::post('order-dispatch-info', 'OrderController@getOrderDispatchInfo');//派送情况
     Route::post('order-update-phone-date', 'OrderController@updateByApi');//修改订单
     Route::post('package-info', 'PackageController@showByApi');//包裹查询
-    Route::post('order-info', 'OrderController@showByApi');//订单查询
+    Route::post('order-info-status', 'OrderController@showByApi');//订单查询
 });
