@@ -108,8 +108,8 @@ class GoogleApiService
         $driver_location = $tour->driver_location;
         $driver_location['code'] = $tour->tour_no . 'driver_location';
         $batchs = [$driver_location]; // 将司机位置放在序列中的第一位
-        //->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])
-        $orderBatchs = Batch::where('tour_no', $tour->tour_no)->orderBy('sort_id', 'asc')->get();
+
+        $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
 
         foreach ($orderBatchs as $key => $batch) {
             $batchs[] = [

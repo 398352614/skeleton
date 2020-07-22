@@ -25,7 +25,7 @@ class UpdateLineCountTime
 
     public $times = 3;
 
-    public $delay = 2;
+    public $delay = 1;
 
     /**
      * Create the event listener.
