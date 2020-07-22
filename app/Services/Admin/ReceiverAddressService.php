@@ -123,7 +123,7 @@ class ReceiverAddressService extends BaseService
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
-            $data['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_post_code', 'receiver_house_number'])));
+            $data['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code'])));
         }
         //判断是否唯一
         $where = $this->getUniqueWhere($data);

@@ -91,7 +91,7 @@ class SenderAddressService extends BaseService
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['sender_address'])) {
-            $data['sender_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['sender_country', 'sender_city', 'sender_street', 'sender_post_code', 'sender_house_number'])));
+            $data['sender_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['sender_country', 'sender_city', 'sender_street', 'sender_house_number', 'sender_post_code'])));
         }
         //判断是否唯一
         $where = $this->getUniqueWhere($data);

@@ -164,7 +164,7 @@ if (!function_exists('explode_id_string')) {
     }
 }
 
-if (!function_exists('fields_sort')) {
+if (!function_exists('array_only_fields_sort')) {
 
     /**
      * 字段排序
