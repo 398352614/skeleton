@@ -214,6 +214,7 @@ class OrderController extends OrderBaseController
     /**
      * 批量检查
      * @return array
+     * @throws BusinessLogicException
      */
     public function importCheckByList()
     {
@@ -248,5 +249,14 @@ class OrderController extends OrderBaseController
     public function getOrderDispatchInfo($id)
     {
         return $this->service->getOrderDispatchInfo($id);
+    }
+
+    /**
+     * API订单查询
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function showByApi(){
+        return $this->service->showByApi($this->data);
     }
 }
