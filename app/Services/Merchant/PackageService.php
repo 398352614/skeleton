@@ -81,10 +81,12 @@ class PackageService extends BaseService
                 }
                 //第三方特殊处理
                 if (auth()->user()->getAttribute('is_api') == true) {
-                    $order = $this->getOrderService()->getInfo(['order_no' => $dbPackage['order_no']])['order_no'];
-                    $errorMsg = '订单[' . $order . ']:' . $errorMsg;
+                    $order = $this->getOrderService()->getInfo(['order_no' => $dbPackage['order_no']]);
+                    $errorMsg = '订单[' . $order['order_no'] . ']:' . $errorMsg;
+                    throw new BusinessLogicException($errorMsg,1005,[],['order_no'=>$dbPackage['order_no'],'out_order_no'=>$order['out_order_no']]);
+                }else{
+                    throw new BusinessLogicException($errorMsg,1000);
                 }
-                throw new BusinessLogicException($errorMsg);
             }
         }
     }
