@@ -85,7 +85,7 @@ class PackageService extends BaseService
                 //第三方特殊处理
                 $order = DB::table('order')->where('order_no', $dbPackage['order_no'])->whereNotIn('status', [BaseConstService::ORDER_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
                 if (auth()->user()->getAttribute('is_api') == true && !empty($order)) {
-                    throw new BusinessLogicException($errorMsg, 1005, [], ['batch_no' => $order->batch_no, 'order_no' => $dbPackage['order_no'], 'out_order_no' => $order->out_order_no]);
+                    throw new BusinessLogicException($errorMsg, 1005, [], ['batch_no' => $order->batch_no, 'order_no' => $dbPackage['order_no'], 'out_order_no' => $order->out_order_no, 'status' => $order->status]);
                 } else {
                     throw new BusinessLogicException($errorMsg, 1000);
                 }
