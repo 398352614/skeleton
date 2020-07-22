@@ -455,7 +455,7 @@ class BatchService extends BaseService
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         //站点取消取派
         $data = Arr::only($params, ['cancel_type', 'cancel_remark', 'cancel_picture']);
-        $rowCount = parent::updateById($info['id'], Arr::add($data, 'status', BaseConstService::BATCH_CANCEL));
+        $rowCount = parent::updateById($info['id'], array_merge($data, ['status' => BaseConstService::BATCH_CANCEL, 'expect_arrive_time' => null, 'expect_distance' => null, 'expect_time' => 0]));
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }

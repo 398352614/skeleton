@@ -329,7 +329,7 @@ class TourService extends BaseService
             $order = $this->getOrderService()->getInfo(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['id'], false);
             if (!empty($order)) continue;
             //取消取派站点
-            $rowCount = $this->getBatchService()->update(['id' => $batch['id'], 'status' => BaseConstService::BATCH_DELIVERING], ['status' => BaseConstService::BATCH_CANCEL]);
+            $rowCount = $this->getBatchService()->update(['id' => $batch['id'], 'status' => BaseConstService::BATCH_DELIVERING], ['status' => BaseConstService::BATCH_CANCEL, 'expect_arrive_time' => null, 'expect_distance' => null, 'expect_time' => 0]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('出库失败');
             }
