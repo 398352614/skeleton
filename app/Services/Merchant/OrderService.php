@@ -1378,8 +1378,10 @@ class OrderService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        return [
-            'status'=> $info[0]['status']];
+        $data = parent::getInfo(['order_no' => $info[0]['order_no']], ['*'], false);
+        $data['package_list'] = $this->getPackageService()->getList(['order_no' => $info[0]['order_no']], ['*'], false);
+        $data['material_list'] = $this->getMaterialService()->getList(['order_no' => $info[0]['order_no']], ['*'], false);
+        return $data;
     }
 
 }
