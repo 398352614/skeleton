@@ -19,6 +19,7 @@ use App\Services\OrderNoRuleService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
+use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
@@ -650,14 +651,14 @@ class TourService extends BaseService
             'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
-
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
-
         return '修改线路成功';
     }
 
     /**
      * 自动优化线路任务
+     * @param $data
+     * @return string
      */
     public function autoOpTour($data)
     {
@@ -676,9 +677,7 @@ class TourService extends BaseService
             'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
-
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
-
         return '修改线路成功';
     }
 
@@ -792,6 +791,10 @@ class TourService extends BaseService
         $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
+        }
+        $info['batchs'] = collect($info['batchs'])->sortBy('sort_id')->all();
+        foreach ($info['batchs'] as $k => $v) {
+            $info['batchs'][$k]['sort_id'] = $k + 1;
         }
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         return $info;
