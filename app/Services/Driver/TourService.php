@@ -307,7 +307,7 @@ class TourService extends BaseService
                 //如果订单中还存在材料要派送,则派送
                 foreach ($cancelOrderList as $cancelOrder) {
                     $where = ['tour_no' => $tour['tour_no'], 'order_no' => $cancelOrder['order_no'], 'status' => BaseConstService::ORDER_STATUS_3];
-                    $materialQuantity = $this->getMaterialService()->sum('expect_quantity', ['tour_no' => $tour['tour_no'], 'order_no' => $cancelOrder]);
+                    $materialQuantity = $this->getMaterialService()->sum('expect_quantity', ['tour_no' => $tour['tour_no'], 'order_no' => $cancelOrder['order_no']]);
                     if ($materialQuantity == 0) {
                         $rowCount = $this->getOrderService()->update($where, ['status' => BaseConstService::ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
                         $cancelOrderBatchNoList[] = $cancelOrder['order_no'];
