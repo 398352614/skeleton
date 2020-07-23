@@ -774,7 +774,9 @@ class TourService extends BaseService
     /**
      * 导出站点地图
      * @param $id
+     * @return array
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function batchPng($id)
     {

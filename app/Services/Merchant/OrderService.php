@@ -908,28 +908,55 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function updateByApi($id, $data)
+    public function updateByApi($data)
     {
+        $id = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray()['id'];
         $data = $this->checkByApi($data);
+        $data['order_no'] = $this->formData['data']['order_no'];
         /*************************************************订单修改******************************************************/
         //获取信息
         $dbInfo = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $dbInfo['package_list'] = $this->getPackageService()->getList(['order_no' => $data['order_no']], ['*'], false)->toArray();
+        $dbInfo['material_list'] = $this->getMaterialService()->getList(['order_no' => $data['order_no']], ['*'], false)->toArray();
         //验证
         $data = array_merge($dbInfo, $data);
+        unset($data['tour_no'], $data['batch_no']);
         /******************************更换站点***************************************/
-        $this->getBatchService()->updateAboutOrderByOrder($dbInfo, $data);
+        $line = $this->fillSender($data);
+        list($batch, $tour) = $this->changeBatch($dbInfo, $data, $line);
+
         //修改
         $rowCount = parent::updateById($dbInfo['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
-        if (!empty($data['tour_no'])) {
-            $tour = $this->getTourService()->getInfo(['tour_no' => $data['tour_no']], ['*'], false);
+
+        /*********************************************更换清单列表***************************************************/
+        //删除包裹列表
+        $rowCount = $this->getPackageService()->delete(['order_no' => $dbInfo['order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
+        //删除材料列表
+        $rowCount = $this->getMaterialService()->delete(['order_no' => $dbInfo['order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
+        //新增包裹列表和材料列表
+        $this->addAllItemList($data, $batch, $tour);
+        //重新统计站点金额
+        $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
+        //重新统计取件线路金额
+        $this->getTourService()->reCountAmountByNo($tour['tour_no']);
+
+        $order = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray();
+        if (!empty($order['tour_no'])) {
+            $tour = $this->getTourService()->getInfo(['tour_no' => $order['tour_no']], ['*'], false);
         }
         return [
             'order_no' => $data['order_no'],
-            'batch_no' => $data['batch_no'] ?? '',
-            'tour_no' => $data['tour_no'] ?? '',
+            'batch_no' => $order['batch_no'] ?? '',
+            'tour_no' => $order['tour_no'] ?? '',
             'line' => [
                 'line_id' => $tour['line_id'] ?? '',
                 'line_name' => $tour['line_name'] ?? '',
@@ -945,9 +972,9 @@ class OrderService extends BaseService
     public function checkByApi($data)
     {
         if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
-            $data = Arr::only($data, 'receiver_phone');
+            $data = Arr::only($data, ['receiver_phone']);
         } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
-            $data = Arr::only($data, 'execution_date');
+            $data = Arr::only($data, ['execution_date']);
         } elseif (empty($data['receiver_phone']) && empty($data['execution_date'])) {
             throw new BusinessLogicException('电话或取派日期必填其一');
         }
@@ -1378,10 +1405,10 @@ class OrderService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = parent::getInfo(['order_no' => $info[0]['order_no']], ['merchant_id','order_no', 'batch_no', 'tour_no', 'status'], false);
-        $data['package_list'] = $this->getPackageService()->getList(['order_no' => $info[0]['order_no']], ['name','order_no','express_first_no','express_second_no','out_order_no','expect_quantity','actual_quantity','status','sticker_no','sticker_amount'], false);
-        $data['material_list'] = $this->getMaterialService()->getList(['order_no' => $info[0]['order_no']], ['order_no','name','code','out_order_no','expect_quantity','actual_quantity'], false);
-        $data=array_only_fields_sort($data,['merchant_id','tour_no','batch_no','order_no','status','package_list','material_list']);
+        $data = parent::getInfo(['order_no' => $info[0]['order_no']], ['merchant_id', 'order_no', 'batch_no', 'tour_no', 'status'], false);
+        $data['package_list'] = $this->getPackageService()->getList(['order_no' => $info[0]['order_no']], ['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount'], false);
+        $data['material_list'] = $this->getMaterialService()->getList(['order_no' => $info[0]['order_no']], ['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'], false);
+        $data = array_only_fields_sort($data, ['merchant_id', 'tour_no', 'batch_no', 'order_no', 'status', 'package_list', 'material_list']);
         return $data;
     }
 
