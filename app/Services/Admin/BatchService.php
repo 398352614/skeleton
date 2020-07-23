@@ -450,24 +450,28 @@ class BatchService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    public function cancel($id, $params)
+    public function cancel($id)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
-        //站点取消取派
-        $data = Arr::only($params, ['cancel_type', 'cancel_remark', 'cancel_picture']);
-        $rowCount = parent::updateById($info['id'], array_merge($data, ['status' => BaseConstService::BATCH_CANCEL, 'expect_arrive_time' => null, 'expect_distance' => null, 'expect_time' => 0]));
+        //站点删除
+        $rowCount = parent::delete(['id' => $info['id']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //订单取消取派
-        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], Arr::add($data, 'status', BaseConstService::ORDER_STATUS_6));
+        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['status' => BaseConstService::ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //包裹取消取派
-        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['status' => BaseConstService::PACKAGE_STATUS_6]);
+        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['status' => BaseConstService::PACKAGE_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
+        }
+        //若存在取件线路编号,则移除站点
+        if (!empty($info['tour_no'])) {
+            $this->getTourService()->removeBatch($info);
+            $this->getTourService()->reCountAmountByNo($info['tour_no']);
         }
 
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
