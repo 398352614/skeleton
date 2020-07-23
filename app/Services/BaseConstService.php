@@ -19,6 +19,10 @@ class BaseConstService
     const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
 
+    //1降序，2升序
+    const SORT_BY_TIME_1 = 1;
+    const SORT_BY_TIME_2 = 2;
+
     const TYPE_ORDER = 1;
     const TYPE_BATCH = 2;
 

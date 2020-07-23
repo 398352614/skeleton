@@ -808,10 +808,10 @@ class OrderService extends BaseService
 
     /**
      * 填充站点信息和取件线路信息
-     * @param $id
+     * @param $order
      * @param $batch
      * @param $tour
-     * @param bool 是否需要填充包裹和材料
+     * @param bool $isFillItem
      * @throws BusinessLogicException
      */
     public function fillBatchTourInfo($order, $batch, $tour, $isFillItem = true)
@@ -908,10 +908,8 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function updateByApi($data)
+    public function updateDatePhone($id, $data)
     {
-        $id = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray()['id'];
-        $data = $this->checkByApi($data);
         $data['order_no'] = $this->formData['data']['order_no'];
         /*************************************************订单修改******************************************************/
         //获取信息
@@ -969,16 +967,43 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function checkByApi($data)
+    public function updateByApi($data)
     {
+        $info = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray();
+        
         if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
             $data = Arr::only($data, ['receiver_phone']);
+            $this->updatePhone($info['id'], $data);
         } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
             $data = Arr::only($data, ['execution_date']);
+            $this->updateDatePhone($info['id'], $data);
         } elseif (empty($data['receiver_phone']) && empty($data['execution_date'])) {
             throw new BusinessLogicException('电话或取派日期必填其一');
+        } else {
+            $data = Arr::only($data, ['execution_date', 'receiver_phone']);
+            $this->updateDatePhone($info['id'], $data);
         }
         return $data;
+    }
+
+    /**
+     * @param $id
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updatePhone($id, $data)
+    {
+        $dbInfo = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_3,BaseConstService::ORDER_STATUS_4,BaseConstService::ORDER_STATUS_5]);
+        return [
+            'order_no' => $data['order_no'],
+            'batch_no' => $order['batch_no'] ?? '',
+            'tour_no' => $order['tour_no'] ?? '',
+            'line' => [
+                'line_id' => $tour['line_id'] ?? '',
+                'line_name' => $tour['line_name'] ?? '',
+            ]
+        ];
     }
 
     /**
