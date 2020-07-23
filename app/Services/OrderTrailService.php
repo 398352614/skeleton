@@ -28,45 +28,45 @@ class OrderTrailService extends BaseService
     public static function storeByTour($tour, int $action)
     {
         $orderList = Order::query()->select(self::$selectFields)->where('tour_no', $tour['tour_no'])->get()->toArray();
-        !empty($orderList) && self::storeAllByOrderList($orderList, $action,$tour);
+        !empty($orderList) && self::storeAllByOrderList($orderList, $action, $tour);
     }
 
     public static function storeByBatch($batch, int $action)
     {
         $orderList = Order::query()->select(self::$selectFields)->where('batch_no', $batch['batch_no'])->get()->toArray();
-        !empty($orderList) && self::storeAllByOrderList($orderList, $action,$batch);
+        !empty($orderList) && self::storeAllByOrderList($orderList, $action, $batch);
     }
 
 
-    public static function storeAllByOrderList(array $orderList, int $action,$params =null)
+    public static function storeAllByOrderList(array $orderList, int $action, $params = null)
     {
         foreach ($orderList as $key => $order) {
             self::OrderStatusChangeCreateTrail($order, $action, $params ?? $order);
         }
     }
 
-    public static function OrderStatusChangeCreateTrail(array $order, int $action,$params =[])
+    public static function OrderStatusChangeCreateTrail(array $order, int $action, $params = [])
     {
         //根据不同的类型生成不同的content
         $content = '';
         switch ($action) {
             case BaseConstService::ORDER_TRAIL_CREATED:                 // 订单创建
-                $content = sprintf("订单创建成功,订单号[%s]",$order['order_no']);
+                $content = sprintf("订单创建成功,订单号[%s]", $order['order_no']);
                 break;
             case BaseConstService::ORDER_TRAIL_JOIN_BATCH:               // 加入站点
-                $content = sprintf("订单已加入站点[%s]",$params['batch_no']);
+                $content = sprintf("订单已加入站点[%s]", $params['batch_no']);
                 break;
             case BaseConstService::ORDER_TRAIL_REMOVE_BATCH:             //移除站点
-                $content = sprintf("订单从站点[%s]中移除",$params['batch_no']);
+                $content = sprintf("订单从站点[%s]中移除", $params['batch_no']);
                 break;
             case BaseConstService::ORDER_TRAIL_JOIN_TOUR:                //加入取件线路
-                $content = sprintf("订单加入取件线路[%s]",$params['tour_no']);
+                $content = sprintf("订单加入取件线路[%s]", $params['tour_no']);
                 break;
             case BaseConstService::ORDER_TRAIL_REMOVE_TOUR:              //加入取件线路
-                $content = sprintf("订单从取件线路[%s]移除",$params['tour_no']);
+                $content = sprintf("订单从取件线路[%s]移除", $params['tour_no']);
                 break;
             case BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER:            // 已分配司机
-                $content = sprintf("订单分配司机，司机姓名[%s]，联系方式[%s]",$params['driver_name'],$params['driver_phone']);
+                $content = sprintf("订单分配司机，司机姓名[%s]，联系方式[%s]", $params['driver_name'], $params['driver_phone']);
                 break;
             case BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER:     // 已分配司机
                 $content = '取消分配司机';
@@ -113,11 +113,11 @@ class OrderTrailService extends BaseService
      */
     public function getNoPageList()
     {
-        if(empty($this->formData['order_no'])){
+        if (empty($this->formData['order_no'])) {
             throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查单号是否正确');
         }
-        $info =parent::getList(['order_no' => $this->formData['order_no']]);
-        if($info->isEmpty()){
+        $info = parent::getList(['order_no' => $this->formData['order_no']]);
+        if ($info->isEmpty()) {
             throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查单号是否正确');
         }
         return $info;
