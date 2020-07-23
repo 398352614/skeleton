@@ -66,6 +66,7 @@ class RouteTrackingService extends BaseService
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], [
             'batch_no', 'receiver_fullname', 'receiver_address', 'receiver_lon', 'receiver_lat', 'expect_arrive_time', 'actual_arrive_time', 'sort_id'], false)->all();
         $batchList = collect($batchList)->sortBy('sort_id')->all();
+        $batchList=array_values($batchList);
         foreach ($batchList as $k => $v) {
             $batchList[$k]['sort_id'] = $k + 1;
         }
