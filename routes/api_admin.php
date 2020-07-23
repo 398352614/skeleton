@@ -76,6 +76,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/removeListFromBatch', 'OrderController@removeListFromBatch');
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
+        //批量删除
+        Route::delete('/list', 'OrderController@destroyByList');
         //恢复
         Route::put('/{id}/recovery', 'OrderController@recovery');
         //彻底删除

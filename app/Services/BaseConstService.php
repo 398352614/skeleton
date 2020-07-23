@@ -50,7 +50,6 @@ class BaseConstService
     const FEE_LEVEL_1 = 1;
     const FEE_LEVEL_2 = 2;
 
-
     //编号规则最大长度
     const ORDER_NO_RULE_LENGTH = 13;
 
