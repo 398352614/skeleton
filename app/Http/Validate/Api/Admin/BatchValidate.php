@@ -22,7 +22,7 @@ class BatchValidate extends BaseValidate
     ];
 
     public $scene = [
-        'cancel' => ['cancel_type', 'cancel_remark', 'cancel_picture'],
+        //'cancel' => ['cancel_type', 'cancel_remark', 'cancel_picture'],
         'getTourList' => ['execution_date'],
         'assignToTour' => ['execution_date', 'line_id'],
         'removeListFromTour' => ['id_list'],

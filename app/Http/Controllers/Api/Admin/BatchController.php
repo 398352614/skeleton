@@ -71,7 +71,7 @@ class BatchController extends BaseController
      */
     public function cancel($id)
     {
-        return $this->service->cancel($id, $this->data);
+        return $this->service->cancel($id);
     }
 
     /**
