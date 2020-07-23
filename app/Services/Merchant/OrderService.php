@@ -903,17 +903,17 @@ class OrderService extends BaseService
 
     /**
      * 通过API修改（电话，取派日期）
-     * @param $id
+     * @param $info
      * @param $data
      * @return array
      * @throws BusinessLogicException
      */
-    public function updateDatePhone($id, $data)
+    public function updateDatePhone($info, $data)
     {
         $data['order_no'] = $this->formData['data']['order_no'];
         /*************************************************订单修改******************************************************/
         //获取信息
-        $dbInfo = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $dbInfo = $this->getInfoByIdOfStatus($info['id'], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $dbInfo['package_list'] = $this->getPackageService()->getList(['order_no' => $data['order_no']], ['*'], false)->toArray();
         $dbInfo['material_list'] = $this->getMaterialService()->getList(['order_no' => $data['order_no']], ['*'], false)->toArray();
         //验证
@@ -969,36 +969,48 @@ class OrderService extends BaseService
      */
     public function updateByApi($data)
     {
-        $info = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray();
-        
+        //数据处理
         if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
             $data = Arr::only($data, ['receiver_phone']);
-            $this->updatePhone($info['id'], $data);
         } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
             $data = Arr::only($data, ['execution_date']);
-            $this->updateDatePhone($info['id'], $data);
         } elseif (empty($data['receiver_phone']) && empty($data['execution_date'])) {
             throw new BusinessLogicException('电话或取派日期必填其一');
+        }
+        //分类
+        $info = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray();
+        $orderList = parent::getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
+        if ($info['status'] < BaseConstService::ORDER_STATUS_3) {
+            $this->updateDatePhone($info, $data);
+        } elseif (in_array($info['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]) && count($orderList) == 1 & empty($data['execution_date'])) {
+            $this->updatePhone($info, $data);
         } else {
-            $data = Arr::only($data, ['execution_date', 'receiver_phone']);
-            $this->updateDatePhone($info['id'], $data);
+            throw new BusinessLogicException('该状态无法进行此操作');
         }
         return $data;
     }
 
     /**
-     * @param $id
+     * @param $info
      * @param $data
      * @return array
      * @throws BusinessLogicException
      */
-    public function updatePhone($id, $data)
+    public function updatePhone($info, $data)
     {
-        $dbInfo = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_3,BaseConstService::ORDER_STATUS_4,BaseConstService::ORDER_STATUS_5]);
+        $row = parent::updateById($info['id'], $data);
+        if ($row === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $batch = $this->getBatchService()->update(['batch_no' => $info['batch_no']], $data);
+        if ($batch === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $tour=$this->getTourService()->getInfo(['tour_no'=>$info['tour_no']],['*'],false);
         return [
-            'order_no' => $data['order_no'],
-            'batch_no' => $order['batch_no'] ?? '',
-            'tour_no' => $order['tour_no'] ?? '',
+            'order_no' => $info['order_no'],
+            'batch_no' => $info['batch_no'] ?? '',
+            'tour_no' => $info['tour_no'] ?? '',
             'line' => [
                 'line_id' => $tour['line_id'] ?? '',
                 'line_name' => $tour['line_name'] ?? '',
