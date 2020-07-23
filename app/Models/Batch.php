@@ -93,7 +93,6 @@ class Batch extends BaseModel
         'signature',
         'pay_type',
         'pay_picture',
-        'is_out',
         'created_at',
         'updated_at',
     ];
