@@ -305,14 +305,15 @@ class TourService extends BaseService
                     throw new BusinessLogicException('出库失败');
                 }
                 //如果订单中还存在材料要派送,则派送
-                foreach ($cancelOrderList as $cancelOrder) {
+                foreach ($cancelOrderList as $key => $cancelOrder) {
                     $where = ['tour_no' => $tour['tour_no'], 'order_no' => $cancelOrder['order_no'], 'status' => BaseConstService::ORDER_STATUS_3];
-                    $materialQuantity = $this->getMaterialService()->sum('expect_quantity', ['tour_no' => $tour['tour_no'], 'order_no' => $cancelOrder]);
+                    $materialQuantity = $this->getMaterialService()->sum('expect_quantity', ['tour_no' => $tour['tour_no'], 'order_no' => $cancelOrder['order_no']]);
                     if ($materialQuantity == 0) {
                         $rowCount = $this->getOrderService()->update($where, ['status' => BaseConstService::ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
-                        $cancelOrderBatchNoList[] = $cancelOrder['order_no'];
+                        $cancelOrderBatchNoList[] = $cancelOrder['batch_no'];
                     } else {
                         $rowCount = $this->getOrderService()->update($where, ['status' => BaseConstService::ORDER_STATUS_4]);
+                        unset($cancelOrderList[$key]);
                     }
                     if ($rowCount === false) {
                         throw new BusinessLogicException('出库失败');
@@ -346,6 +347,7 @@ class TourService extends BaseService
         }
         //重新统计取件线路金额
         $this->reCountAmountByNo($tour['tour_no']);
+        $cancelOrderList = $this->getOrderService()->getList(['order_no' => ['in', array_column(array_values($cancelOrderList), 'order_no')]], ['*'], false)->toArray();
         return [$tour, $cancelOrderList];
     }
 

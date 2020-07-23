@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Events\TourNotify\NextBatch;
+use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
 use App\Models\Material;
 use App\Models\Package;
@@ -94,11 +95,15 @@ class OutWarehouse implements ShouldQueue
             $sortBatch = Arr::first($batchList, function ($batch) {
                 return $batch['sort_id'] != 1000;
             });
-            if (!empty($sortBatch)) {
-                Log::info('batch_ids:' . json_encode(array_column($batchList, 'id'), JSON_UNESCAPED_UNICODE));
-                $tourService->updateBatchIndex(['tour_no' => $this->tour_no, 'batch_ids' => array_column($batchList, 'id')]);
-            } else {
-                $tourService->autoOpTour(['tour_no' => $this->tour_no]);
+            try {
+                if (!empty($sortBatch)) {
+                    Log::info('batch_ids:' . json_encode(array_column($batchList, 'id'), JSON_UNESCAPED_UNICODE));
+                    $tourService->updateBatchIndex(['tour_no' => $this->tour_no, 'batch_ids' => array_column($batchList, 'id')]);
+                } else {
+                    $tourService->autoOpTour(['tour_no' => $this->tour_no]);
+                }
+            } catch (BusinessLogicException $exception) {
+                Log::info('智能调度失败:' . $exception->getMessage());
             }
             /****************************************2.触发司机出库****************************************************/
             $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
