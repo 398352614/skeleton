@@ -50,6 +50,10 @@ class BaseConstService
     const FEE_LEVEL_1 = 1;
     const FEE_LEVEL_2 = 2;
 
+    //是否出库1-是2-否
+    const IS_OUT_1 = 1;
+    const IS_OUT_2 = 2;
+
 
     //编号规则最大长度
     const ORDER_NO_RULE_LENGTH = 13;

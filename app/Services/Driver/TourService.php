@@ -289,7 +289,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('出库失败');
         }
         //站点更换状态
-        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_WAIT_OUT], ['status' => BaseConstService::BATCH_DELIVERING]);
+        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_WAIT_OUT], ['status' => BaseConstService::BATCH_DELIVERING, 'is_out' => BaseConstService::IS_OUT_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
@@ -329,7 +329,7 @@ class TourService extends BaseService
             $order = $this->getOrderService()->getInfo(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['id'], false);
             if (!empty($order)) continue;
             //取消取派站点
-            $rowCount = $this->getBatchService()->update(['id' => $batch['id'], 'status' => BaseConstService::BATCH_DELIVERING], ['status' => BaseConstService::BATCH_CANCEL, 'expect_arrive_time' => null, 'expect_distance' => null, 'expect_time' => 0]);
+            $rowCount = $this->getBatchService()->update(['id' => $batch['id'], 'status' => BaseConstService::BATCH_DELIVERING], ['status' => BaseConstService::BATCH_CANCEL, 'expect_arrive_time' => null, 'expect_distance' => null, 'expect_time' => 0, 'is_out' => BaseConstService::IS_OUT_2]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('出库失败');
             }
