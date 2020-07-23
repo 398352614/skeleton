@@ -340,7 +340,7 @@ class TourService extends BaseService
             $order = $this->getOrderService()->getInfo(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['id'], false);
             if (!empty($order)) continue;
             //若在出库前，没有订单派送，则删除站点
-            $rowCount = $this->getBatchService()->delete(['tour_no' => $tour['tour_no'], 'batch_no' => $batch['id']]);
+            $rowCount = $this->getBatchService()->delete(['tour_no' => $tour['tour_no'], 'id' => $batch['id']]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('出库失败');
             }
