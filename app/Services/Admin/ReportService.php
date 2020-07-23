@@ -118,7 +118,7 @@ class ReportService extends BaseService
             'address' => $info['warehouse_address'],
         ];
         //获取当前取件线路上的所有订单
-        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type','out_user_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'sticker_no'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'out_user_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'sticker_no'], false)->toArray();
         //获取当前取件线路上的所有包裹
         $packageList = $this->getPackageService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         $packageList = self::statusConvert($packageList);
@@ -136,11 +136,11 @@ class ReportService extends BaseService
             }
         }
         //获取所有的站点
-        $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
+        $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false, [], ['actual_arrive_time' => 'asc', 'sort_id' => 'asc'])->toArray();
         foreach ($batchList as $k => $v) {
             $batchList[$k]['sort_id'] = $k + 1;
         }
-        if($info['status'] == BaseConstService::TOUR_STATUS_5){
+        if ($info['status'] == BaseConstService::TOUR_STATUS_5) {
             $batchList = collect($batchList)->sortBy('actual_arrive_time')->all();
         }
         //统计站点的各费用
@@ -327,7 +327,7 @@ class ReportService extends BaseService
                 'actual_time' => $batch['actual_time'],
                 'expect_time_human' => $batch['expect_time_human'],
                 'actual_time_human' => $batch['actual_time_human'],
-                'sort_id'=>$batch['sort_id']
+                'sort_id' => $batch['sort_id']
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
             $newBatchList[$key]['package_list'] = array_values(collect($packageList)->where('batch_no', $batch['batch_no'])->toArray());
