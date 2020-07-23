@@ -194,7 +194,7 @@ class TourService extends BaseService
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
             unset($this->filters['status']);
         }
-        if($this->formData['sortByTime'] == 2){
+        if($this->formData['sort_by_time'] == BaseConstService::SORT_BY_TIME_2){
             $this->query->orderBy('begin_time','desc');
         }else{
             $this->query->orderBy('begin_time');
