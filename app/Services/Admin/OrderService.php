@@ -1029,7 +1029,11 @@ class OrderService extends BaseService
         if (intval($info['status']) == BaseConstService::ORDER_STATUS_6) {
             return 'true';
         }
-        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_7, 'remark' => $params['remark'] ?? '', 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
+        $data = ['status' => BaseConstService::ORDER_STATUS_7, 'execution_date' => null, 'batch_no' => '', 'tour_no' => ''];
+        if (!empty($params['remark'])) {
+            $data = array_merge($data, ['remark' => $params['remark']]);
+        }
+        $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单删除失败，请重新操作');
         }
@@ -1060,6 +1064,28 @@ class OrderService extends BaseService
         return 'true';
     }
 
+    /**
+     * 批量删除
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function destroyByList($params)
+    {
+        $log=null;
+        $ids = explode_id_string($params['id_list']);
+        $orderList=parent::getList(['id'=>['in',$ids]],['*'],false);
+        foreach ($ids as $v) {
+            try {
+                $this->destroy($v, null);
+            }catch (BusinessLogicException $e){
+                $orderNo=$orderList->where('id',$v)->first()->order_no;
+                $log .='['.$orderNo.']'.$e->getMessage().';';
+            }
+        }
+        if(!empty($log)){
+            throw new BusinessLogicException($log);
+        }
+    }
 
     /**
      * 订单恢复

@@ -185,6 +185,15 @@ class OrderController extends BaseController
     }
 
     /**
+     * 批量删除订单
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function destroyByList(){
+        return $this->service->destroyByList($this->data);
+    }
+
+    /**
      * 恢复
      * @param $id
      * @throws BusinessLogicException
