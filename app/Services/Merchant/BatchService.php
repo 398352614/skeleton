@@ -460,6 +460,7 @@ class BatchService extends BaseService
 
 
     /**
+     * 分配至线路
      * @param $id
      * @param $params
      * @return mixed
@@ -489,8 +490,8 @@ class BatchService extends BaseService
         $this->reCountAmountByNo($info['batch_no']);
         //重新统计取件线路金额
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
-
-        OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
+        $batch['tour_no'] = parent::getInfo(['batch_no' => $batch['batch_no']])->toArray()['tour_no'];
+        OrderTrailService::storeByBatch($batch, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
         return 'true';
     }
 
@@ -526,8 +527,8 @@ class BatchService extends BaseService
 
     /**
      * 填充站点信息和取件线路信息
-     * @param $id
      * @param $batch
+     * @param $line
      * @param $tour
      * @throws BusinessLogicException
      */
