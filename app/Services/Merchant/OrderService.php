@@ -401,8 +401,7 @@ class OrderService extends BaseService
 
     /**
      * 订单批量新增
-     * @param $list
-     * @param $name
+     * @param $params
      * @return mixed
      * @throws BusinessLogicException
      */
@@ -938,6 +937,7 @@ class OrderService extends BaseService
     public function updatePhoneDateByApi($data)
     {
         //数据处理
+        $info = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray();
         if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
             $data = Arr::only($data, ['receiver_phone']);
         } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
@@ -946,15 +946,13 @@ class OrderService extends BaseService
             throw new BusinessLogicException('电话或取派日期必填其一');
         }
         //分类
-        $info = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray();
         if ($info['status'] < BaseConstService::ORDER_STATUS_3) {
-            $this->updateDatePhone($info, $data);
+            return $this->updateDatePhone($info, $data);
         } elseif (in_array($info['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]) && empty($data['execution_date'])) {
-            $this->updatePhone($info, $data);
+            return $this->updatePhone($info, $data);
         } else {
             throw new BusinessLogicException('该状态无法进行此操作');
         }
-        return $data;
     }
 
     /**
