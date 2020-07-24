@@ -964,18 +964,18 @@ class OrderService extends BaseService
      */
     public function updateDatePhone($info, $data)
     {
-        $data['order_no'] = $this->formData['data']['order_no'];
+        $newData['order_no'] = $this->formData['data']['order_no'];
         /*************************************************订单修改******************************************************/
         //获取信息
         $dbInfo = $this->getInfoByIdOfStatus($info['id'], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
-        $dbInfo['package_list'] = $this->getPackageService()->getList(['order_no' => $data['order_no']], ['*'], false)->toArray();
-        $dbInfo['material_list'] = $this->getMaterialService()->getList(['order_no' => $data['order_no']], ['*'], false)->toArray();
+        $dbInfo['package_list'] = $this->getPackageService()->getList(['order_no' => $newData['order_no']], ['*'], false)->toArray();
+        $dbInfo['material_list'] = $this->getMaterialService()->getList(['order_no' => $newData['order_no']], ['*'], false)->toArray();
         //验证
-        $data = array_merge($dbInfo, $data);
-        unset($data['tour_no'], $data['batch_no']);
+        $newData = array_merge($dbInfo, $newData);
+        unset($newData['tour_no'], $newData['batch_no']);
         /******************************更换站点***************************************/
-        $line = $this->fillSender($data);
-        list($batch, $tour) = $this->changeBatch($dbInfo, $data, $line);
+        $line = $this->fillSender($newData);
+        list($batch, $tour) = $this->changeBatch($dbInfo, $newData, $line);
 
         //修改
         $rowCount = parent::updateById($dbInfo['id'], $data);
@@ -995,18 +995,18 @@ class OrderService extends BaseService
             throw new BusinessLogicException('修改失败，请重新操作');
         }
         //新增包裹列表和材料列表
-        $this->addAllItemList($data, $batch, $tour);
+        $this->addAllItemList($newData, $batch, $tour);
         //重新统计站点金额
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
         //重新统计取件线路金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
 
-        $order = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray();
+        $order = parent::getInfo(['order_no' => $newData['order_no']], ['*'], false)->toArray();
         if (!empty($order['tour_no'])) {
             $tour = $this->getTourService()->getInfo(['tour_no' => $order['tour_no']], ['*'], false);
         }
         return [
-            'order_no' => $data['order_no'],
+            'order_no' => $newData['order_no'],
             'batch_no' => $order['batch_no'] ?? '',
             'tour_no' => $order['tour_no'] ?? '',
             'line' => [
