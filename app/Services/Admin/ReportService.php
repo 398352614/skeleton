@@ -140,7 +140,6 @@ class ReportService extends BaseService
         foreach ($batchList as $k => $v) {
             $batchList[$k]['sort_id'] = $k + 1;
         }
-        $batchList = collect($batchList)->sortBy('actual_arrive_time')->all();
         //统计站点的各费用
         $info['card_settlement_amount'] = 0;
         $info['card_replace_amount'] = 0;
@@ -331,6 +330,7 @@ class ReportService extends BaseService
             $newBatchList[$key]['package_list'] = array_values(collect($packageList)->where('batch_no', $batch['batch_no'])->toArray());
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
         }
+        $newBatchList = collect($newBatchList)->sortBy('actual_arrive_time')->all();
         return $newBatchList;
     }
 }
