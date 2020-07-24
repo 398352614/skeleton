@@ -84,6 +84,7 @@ return [
         "actual_pickup_package_quantity" => "Actual Pickup Package Quantity",
         "expect_material_quantity" => "Expect Material Quantity",
         "actual_material_quantity" => "Actual Material Quantity",
+        "receiver_out_user_id" => "Receiver ID",
         "receiver_fullname" => "Receiver Name",
         "receiver_phone" => "Receiver Phone",
         "receiver_post_code" => "Receiver Postcode",

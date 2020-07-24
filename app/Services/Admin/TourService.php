@@ -74,6 +74,7 @@ class TourService extends BaseService
         'actual_pickup_package_quantity',
         'expect_material_quantity',
         'actual_material_quantity',
+        'receiver_out_user_id',
         'receiver_fullname',
         'receiver_phone',
         'receiver_post_code',
@@ -962,7 +963,7 @@ class TourService extends BaseService
         }
         $tour['expect_pie_package_quantity'] = 0;
         $tour['actual_pie_package_quantity'] = 0;
-        $tour['expect_pickup_package_quantity'];
+        $tour['expect_pickup_package_quantity'] =0;
         $tour['actual_pickup_package_quantity'] = 0;
         $tour['expect_material_quantity'] = 0;
         $tour['actual_material_quantity'] = 0;
@@ -981,6 +982,7 @@ class TourService extends BaseService
         }
         $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
         for ($i = 0; $i < count($batchList); $i++) {
+            $batchList[$i]['out_user_id']=collect($orderList)->where('batch_no',$batchList[$i]['batch_no'])->first() ? collect($orderList)->where('batch_no',$batchList[$i]['batch_no'])->first()['out_user_id'] : '';
             $batchList[$i]['expect_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->all());
             $batchList[$i]['actual_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->where('status', BaseConstService::PACKAGE_STATUS_5)->all());
             $batchList[$i]['expect_pickup_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_1)->where('batch_no', $batchList[$i]['batch_no'])->all());
@@ -1007,22 +1009,23 @@ class TourService extends BaseService
             $cellData[$i][7] = '';
             $cellData[$i][8] = '';
             $cellData[$i][9] = '';
-            $cellData[$i][10] = $batchList[$i]['receiver_fullname'];
-            $cellData[$i][11] = $batchList[$i]['receiver_phone'];
-            $cellData[$i][12] = $batchList[$i]['receiver_post_code'];
-            $cellData[$i][13] = $batchList[$i]['receiver_address'];
-            $cellData[$i][14] = $batchList[$i]['expect_pie_quantity'];
-            $cellData[$i][15] = $batchList[$i]['actual_pie_quantity'];
-            $cellData[$i][16] = $batchList[$i]['expect_pickup_quantity'];
-            $cellData[$i][17] = $batchList[$i]['actual_pickup_quantity'];
-            $cellData[$i][18] = $batchList[$i]['expect_pie_package_quantity'];
-            $cellData[$i][19] = $batchList[$i]['actual_pie_package_quantity'];
-            $cellData[$i][20] = $batchList[$i]['expect_pickup_package_quantity'];
-            $cellData[$i][21] = $batchList[$i]['actual_pickup_package_quantity'];
-            $cellData[$i][22] = $batchList[$i]['expect_material_quantity'];
-            $cellData[$i][23] = $batchList[$i]['actual_material_quantity'];
-            $cellData[$i][24] = $batchList[$i]['status'];
-            $cellData[$i][25] = $batchList[$i]['actual_arrive_time'];
+            $cellData[$i][10] = $batchList[$i]['out_user_id'];
+            $cellData[$i][11] = $batchList[$i]['receiver_fullname'];
+            $cellData[$i][12] = $batchList[$i]['receiver_phone'];
+            $cellData[$i][13] = $batchList[$i]['receiver_post_code'];
+            $cellData[$i][14] = $batchList[$i]['receiver_address'];
+            $cellData[$i][15] = $batchList[$i]['expect_pie_quantity'];
+            $cellData[$i][16] = $batchList[$i]['actual_pie_quantity'];
+            $cellData[$i][17] = $batchList[$i]['expect_pickup_quantity'];
+            $cellData[$i][18] = $batchList[$i]['actual_pickup_quantity'];
+            $cellData[$i][19] = $batchList[$i]['expect_pie_package_quantity'];
+            $cellData[$i][20] = $batchList[$i]['actual_pie_package_quantity'];
+            $cellData[$i][21] = $batchList[$i]['expect_pickup_package_quantity'];
+            $cellData[$i][22] = $batchList[$i]['actual_pickup_package_quantity'];
+            $cellData[$i][23] = $batchList[$i]['expect_material_quantity'];
+            $cellData[$i][24] = $batchList[$i]['actual_material_quantity'];
+            $cellData[$i][25] = $batchList[$i]['status'];
+            $cellData[$i][26] = $batchList[$i]['actual_arrive_time'];
         }
         $cellData[0][0] = $tour['tour_no'];
         $cellData[0][1] = $tour['line_name'];

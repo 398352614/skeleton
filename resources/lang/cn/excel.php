@@ -85,6 +85,7 @@ return [
         "actual_pickup_package_quantity" => "实际取件包裹",
         "expect_material_quantity" => "预计派送材料",
         "actual_material_quantity" => "实际派送材料",
+        "receiver_out_user_id" => "客户ID",
         "receiver_fullname" => "客户姓名",
         "receiver_phone" => "客户电话",
         "receiver_post_code" => "客户邮编",
