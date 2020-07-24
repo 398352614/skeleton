@@ -36,7 +36,8 @@ trait TourTrait
         //触发司机出库1
         event(new OutWarehouse($tour));
         //智能调度-之后再进行出库通知
-        \App\Jobs\OutWarehouse::withChain([new NextBatchT()])->dispatch($tour['tour_no'], array_merge($cancelOrderList, $orderList))->afterResponse();
+        //->afterResponse()
+        \App\Jobs\OutWarehouse::withChain([new NextBatchT()])->dispatch($tour['tour_no'], array_merge($cancelOrderList, $orderList));
     }
 
     public static function afterBatchArrived($tour, $batch)
