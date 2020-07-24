@@ -44,7 +44,7 @@ trait TourTrait
                 }
                 Log::info('end-next-batch');
                 return true;
-            }])->dispatch()->afterResponse();
+            }])->dispatch()->onConnection('redis')->onQueue('update-line-time')->afterResponse();
         } catch (\Exception $ex) {
             Log::info($ex->getMessage());
         }
