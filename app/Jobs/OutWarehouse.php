@@ -26,7 +26,21 @@ use WebSocket\Client;
 
 class OutWarehouse implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, SerializesModels;
+
+    /**
+     * 任务连接名称。
+     *
+     * @var string|null
+     */
+    public $connection = 'redis';
+
+    /**
+     * 任务发送到的队列的名称.
+     *
+     * @var string|null
+     */
+    public $queue = 'update-line-time';
 
     /**
      * 任务可以执行的最大秒数 (超时时间)。
