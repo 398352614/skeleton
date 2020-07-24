@@ -274,6 +274,35 @@ class OrderService extends BaseService
         return $info;
     }
 
+    /**
+     * 查询包裹信息
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function showByApi($params)
+    {
+        if (empty($params['order_no']) && empty($params['out_order_no'])) {
+            throw new BusinessLogicException('查询字段至少一个不为空');
+        }
+        if (!empty($params['order_no'])) {
+            $this->query->where('order_no', '=', $params['order_no']);
+        }
+        if (!empty($params['out_order_no'])) {
+            $this->query->where('out_order_no', '=', $params['out_order_no']);
+        }
+        $this->query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7]);
+        $info = $this->getPageList()->toArray(request());
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $data = parent::getInfo(['order_no' => $info[0]['order_no']], ['merchant_id', 'order_no', 'batch_no', 'tour_no', 'status'], false);
+        $data['package_list'] = $this->getPackageService()->getList(['order_no' => $info[0]['order_no']], ['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount'], false);
+        $data['material_list'] = $this->getMaterialService()->getList(['order_no' => $info[0]['order_no']], ['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'], false);
+        $data = array_only_fields_sort($data, ['merchant_id', 'tour_no', 'batch_no', 'order_no', 'status', 'package_list', 'material_list']);
+        return $data;
+    }
+
     public function initStore()
     {
         $data = [];
@@ -372,8 +401,7 @@ class OrderService extends BaseService
 
     /**
      * 订单批量新增
-     * @param $list
-     * @param $name
+     * @param $params
      * @return mixed
      * @throws BusinessLogicException
      */
@@ -902,6 +930,32 @@ class OrderService extends BaseService
     }
 
     /**
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updatePhoneDateByApi($data)
+    {
+        //数据处理
+        $info = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray();
+        if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
+            $data = Arr::only($data, ['receiver_phone']);
+        } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
+            $data = Arr::only($data, ['execution_date']);
+        } elseif (empty($data['receiver_phone']) && empty($data['execution_date'])) {
+            throw new BusinessLogicException('电话或取派日期必填其一');
+        }
+        //分类
+        if ($info['status'] < BaseConstService::ORDER_STATUS_3) {
+            return $this->updateDatePhone($info, $data);
+        } elseif (in_array($info['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]) && empty($data['execution_date'])) {
+            return $this->updatePhone($info, $data);
+        } else {
+            throw new BusinessLogicException('该状态无法进行此操作');
+        }
+    }
+
+    /**
      * 通过API修改（电话，取派日期）
      * @param $info
      * @param $data
@@ -963,34 +1017,6 @@ class OrderService extends BaseService
     }
 
     /**
-     * @param $data
-     * @return array
-     * @throws BusinessLogicException
-     */
-    public function updateByApi($data)
-    {
-        //数据处理
-        if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
-            $data = Arr::only($data, ['receiver_phone']);
-        } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
-            $data = Arr::only($data, ['execution_date']);
-        } elseif (empty($data['receiver_phone']) && empty($data['execution_date'])) {
-            throw new BusinessLogicException('电话或取派日期必填其一');
-        }
-        //分类
-        $info = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray();
-        $orderList = parent::getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
-        if ($info['status'] < BaseConstService::ORDER_STATUS_3) {
-            $this->updateDatePhone($info, $data);
-        } elseif (in_array($info['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]) && count($orderList) == 1 & empty($data['execution_date'])) {
-            $this->updatePhone($info, $data);
-        } else {
-            throw new BusinessLogicException('该状态无法进行此操作');
-        }
-        return $data;
-    }
-
-    /**
      * @param $info
      * @param $data
      * @return array
@@ -998,7 +1024,7 @@ class OrderService extends BaseService
      */
     public function updatePhone($info, $data)
     {
-        $row = parent::updateById($info['id'], $data);
+        $row = parent::update(['batch_no' => $info['batch_no']], $data);
         if ($row === false) {
             throw new BusinessLogicException('操作失败');
         }
@@ -1006,7 +1032,7 @@ class OrderService extends BaseService
         if ($batch === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $tour=$this->getTourService()->getInfo(['tour_no'=>$info['tour_no']],['*'],false);
+        $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false);
         return [
             'order_no' => $info['order_no'],
             'batch_no' => $info['batch_no'] ?? '',

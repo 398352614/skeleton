@@ -121,7 +121,7 @@ class OrderController extends OrderBaseController
      */
     public function updateByApi()
     {
-        return $this->service->updateByApi($this->data);
+        return $this->service->updatePhoneDateByApi($this->data);
     }
 
 

@@ -140,7 +140,6 @@ class ReportService extends BaseService
         foreach ($batchList as $k => $v) {
             $batchList[$k]['sort_id'] = $k + 1;
         }
-        $batchList = collect($batchList)->sortBy('actual_arrive_time')->all();
         //统计站点的各费用
         $info['card_settlement_amount'] = 0;
         $info['card_replace_amount'] = 0;
@@ -325,12 +324,15 @@ class ReportService extends BaseService
                 'actual_time' => $batch['actual_time'],
                 'expect_time_human' => $batch['expect_time_human'],
                 'actual_time_human' => $batch['actual_time_human'],
-                'sort_id' => $batch['sort_id']
+                'sort_id' => $batch['sort_id'],
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
             $newBatchList[$key]['package_list'] = array_values(collect($packageList)->where('batch_no', $batch['batch_no'])->toArray());
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
         }
+        $arriveBatchList = array_values(collect($newBatchList)->whereNotNull('actual_arrive_time')->sortBy('actual_arrive_time')->all());
+        $notArriveBatchList = array_values(collect($newBatchList)->whereNull('actual_arrive_time')->all());
+        $newBatchList = array_merge($arriveBatchList, $notArriveBatchList);
         return $newBatchList;
     }
 }
