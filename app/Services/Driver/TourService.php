@@ -719,7 +719,7 @@ class TourService extends BaseService
      */
     public function batchSign($id, $params)
     {
-        list($tour, $batch) = $this->checkBatchLock($id, $params);
+        list($tour, $batch, $dbMaterialList) = $this->checkBatchLock($id, $params);
         if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_4) {
             throw new BusinessLogicException('取件线路当前状态不允许站点签收');
         }
@@ -728,7 +728,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('站点当前状态不能签收');
         }
         /*******************************************1.处理站点下的材料*************************************************/
-        !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list']);
+        !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list'], $dbMaterialList);
         /*******************************************1.处理站点下的包裹*************************************************/
         $info = $this->dealPackageList($batch, $params['package_list'] ?? []);
         $totalStickerAmount = $info['totalStickerAmount'];
@@ -834,23 +834,22 @@ class TourService extends BaseService
      * 处理签收时的材料
      * @param $tour
      * @param $materialList
+     * @param $dbMaterialList
      * @throws BusinessLogicException
      */
-    private function dealMaterialList($tour, $materialList)
+    private function dealMaterialList($tour, $materialList, $dbMaterialList)
     {
+        $dbMaterialList = array_create_index($dbMaterialList, 'id');
         foreach ($materialList as $material) {
-            $rowCount = $this->getMaterialService()->update(['order_no' => $material['order_no'], 'out_order_no' => $material['out_order_no'] ?? '', 'code' => $material['code']], ['actual_quantity' => $material['actual_quantity']]);
+            $actualQuantity = intval($material['actual_quantity']);
+            $rowCount = $this->getMaterialService()->update(['id' => $material['id']], $actualQuantity);
             if ($rowCount === false) {
                 throw new BusinessLogicException('材料处理失败');
-            }
-        }
-        $materialList = collect($materialList)->groupBy('code')->toArray();
-        foreach ($materialList as $materialItemList) {
-            $quantity = collect($materialItemList)->sum('actual_quantity');
+            };
             $rowCount = $this->tourMaterialModel->newQuery()
                 ->where('tour_no', '=', $tour['tour_no'])
-                ->where('code', '=', $materialItemList[0]['code'])
-                ->update(['finish_quantity' => DB::raw("finish_quantity+$quantity"), 'surplus_quantity' => DB::raw("surplus_quantity-$quantity")]);
+                ->where('code', '=', $dbMaterialList[$material['id']]['code'])
+                ->update(['finish_quantity' => DB::raw("finish_quantity+$actualQuantity"), 'surplus_quantity' => DB::raw("surplus_quantity-$actualQuantity")]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('材料处理失败');
             }
@@ -956,28 +955,30 @@ class TourService extends BaseService
         if ($batch['tour_no'] != $tour['tour_no']) {
             throw new BusinessLogicException('当前站点不属于当前取件线路');
         }
+        $materialList = [];
         if (!empty($params['material_list'])) {
-            foreach ($params['material_list'] as $k => $v) {
-                $expectQuantity[$k] = $this->getMaterialService()->getInfo(['order_no' => $v['order_no'], 'out_order_no' => $v['out_order_no'] ?? '', 'code' => $v['code']], ['*'], false);
-                if (empty($expectQuantity[$k])) {
-                    throw new BusinessLogicException('当前取件线路的材料代码不正确');
+            $pageMaterialList = array_create_index($params['material_list'], 'id');
+            $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no'], 'batch_no' => $batch['batch_no'], 'id' => ['in', array_column($params['material_list'], 'id')]], ['*'], false)->toArray();
+            $tourMaterialList = $this->tourMaterialModel->newQuery()->where('tour_no', $tour['tour_no'])->whereIn('code', array_column($materialList, 'code'))->get()->toArray();
+            $tourMaterialList = array_create_index($tourMaterialList, 'code');
+            foreach ($materialList as $materialId => $material) {
+                if (empty($tourMaterialList[$material['code']])) {
+                    throw new BusinessLogicException('未从仓库取材料[:code]', 1000, ['code' => $material['code']]);
                 }
-                if (intval($v['actual_quantity']) > intval($expectQuantity[$k]['expect_quantity'])) {
+                if (intval($pageMaterialList[$materialId]['actual_quantity']) > intval($material['expect_quantity'])) {
                     throw new BusinessLogicException('材料数量不得超过预计材料数量');
                 }
-                $surplusQuantity = TourMaterial::query()->where('tour_no', $tour['tour_no'])->where('code', $v['code'])->first();
-                $surplusQuantity[$v['code']] = $surplusQuantity ? $surplusQuantity['surplus_quantity'] : 0;
-                if (empty($sumActualQuantity[$v['code']])) {
-                    $sumActualQuantity[$v['code']] = intval($v['actual_quantity']);
+                if (empty($sumActualQuantity[$material['code']])) {
+                    $sumActualQuantity[$material['code']] = intval($pageMaterialList[$materialId]['actual_quantity']);
                 } else {
-                    $sumActualQuantity[$v['code']] = $sumActualQuantity[$v['code']] + intval($v['actual_quantity']);
+                    $sumActualQuantity[$material['code']] = $sumActualQuantity[$material['code']] + intval($pageMaterialList[$materialId]['actual_quantity']);
                 }
-                if ($sumActualQuantity[$v['code']] > $surplusQuantity[$v['code']]) {
-                    throw new BusinessLogicException('材料[:code]只剩[:count]个，请重新选择材料数量', 3001, ['code' => $v['code'], 'count' => $surplusQuantity[$v['code']]]);
+                if ($sumActualQuantity[$material['code']] > $tourMaterialList[$material['code']]['surplus_quantity']) {
+                    throw new BusinessLogicException('材料[:code]只剩[:count]个，请重新选择材料数量', 3001, ['code' => $material['code'], 'count' => $tourMaterialList[$material['code']]['surplus_quantity']]);
                 }
             }
         }
-        return [$tour, $batch];
+        return [$tour, $batch, $materialList];
     }
 
     /**
