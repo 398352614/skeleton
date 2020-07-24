@@ -15,6 +15,7 @@ use App\Events\TourDriver\BackWarehouse;
 use App\Events\TourDriver\OutWarehouse;
 use App\Events\TourNotify\CancelBatch;
 use App\Events\TourNotify\NextBatch;
+use App\Jobs\NextBatchT;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Package;
@@ -35,13 +36,7 @@ trait TourTrait
         //触发司机出库1
         event(new OutWarehouse($tour));
         //智能调度-之后再进行出库通知
-        \App\Jobs\OutWarehouse::withChain([function () use ($tour) {
-            $nextBatch = TourTrait::getNextBatch($tour['tour_no']);
-            if (!empty($nextBatch)) {
-                event(new NextBatch($tour, $nextBatch->toArray()));
-            }
-            return true;
-        }])->dispatch($tour['tour_no'], array_merge($cancelOrderList, $orderList))->afterResponse();
+        \App\Jobs\OutWarehouse::withChain([new NextBatchT()])->dispatch($tour['tour_no'], array_merge($cancelOrderList, $orderList))->afterResponse();
     }
 
     public static function afterBatchArrived($tour, $batch)
