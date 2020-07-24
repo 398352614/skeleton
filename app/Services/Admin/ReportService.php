@@ -325,13 +325,12 @@ class ReportService extends BaseService
                 'expect_time_human' => $batch['expect_time_human'],
                 'actual_time_human' => $batch['actual_time_human'],
                 'sort_id' => $batch['sort_id'],
-                'actual_arrive_time_timestamp'=>strtotime($batch['actual_arrive_time'])
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
             $newBatchList[$key]['package_list'] = array_values(collect($packageList)->where('batch_no', $batch['batch_no'])->toArray());
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
         }
-        $newBatchList = collect($newBatchList)->sortBy('actual_arrive_time_timestamp')->all();
+        $newBatchList = array_values(collect($newBatchList)->sortBy('actual_arrive_time')->all());
         return $newBatchList;
     }
 }
