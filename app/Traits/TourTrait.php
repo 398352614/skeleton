@@ -41,7 +41,7 @@ trait TourTrait
                 event(new NextBatch($tour, $nextBatch->toArray()));
             }
             return true;
-        }])->dispatch()->afterResponse();
+        }])->dispatch($tour['tour_no'], array_merge($cancelOrderList, $orderList))->afterResponse();
     }
 
     public static function afterBatchArrived($tour, $batch)
