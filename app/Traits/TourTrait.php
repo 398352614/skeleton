@@ -35,13 +35,13 @@ trait TourTrait
         //触发司机出库1
         event(new OutWarehouse($tour));
         //智能调度-之后再进行出库通知
-        dispatch(new \App\Jobs\OutWarehouse($tour['tour_no'], array_merge($cancelOrderList, $orderList)))->withChain([function () use ($tour) {
+        \App\Jobs\OutWarehouse::withChain([function () use ($tour) {
             $nextBatch = TourTrait::getNextBatch($tour['tour_no']);
             if (!empty($nextBatch)) {
                 event(new NextBatch($tour, $nextBatch->toArray()));
             }
             return true;
-        }]);
+        }])->dispatch()->afterResponse();
     }
 
     public static function afterBatchArrived($tour, $batch)
