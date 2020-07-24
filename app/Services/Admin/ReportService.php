@@ -330,7 +330,9 @@ class ReportService extends BaseService
             $newBatchList[$key]['package_list'] = array_values(collect($packageList)->where('batch_no', $batch['batch_no'])->toArray());
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
         }
-        $newBatchList = array_values(collect($newBatchList)->sortBy('actual_arrive_time')->all());
+        $arriveBatchList = array_values(collect($newBatchList)->whereNotNull('actual_arrive_time')->sortBy('actual_arrive_time')->all());
+        $notArriveBatchList = array_values(collect($newBatchList)->whereNull('actual_arrive_time')->all());
+        $newBatchList = array_merge($arriveBatchList, $notArriveBatchList);
         return $newBatchList;
     }
 }
