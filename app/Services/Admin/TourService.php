@@ -195,9 +195,9 @@ class TourService extends BaseService
             unset($this->filters['status']);
         }
         if(!empty($this->formData['sort_by_time']) && $this->formData['sort_by_time'] == BaseConstService::SORT_BY_TIME_2){
-            $this->query->orderBy('begin_time','desc');
+            $this->query->orderBy('execution_date','desc');
         }else{
-            $this->query->orderBy('begin_time');
+            $this->query->orderBy('execution_date');
         }
         return parent::getPageList();
     }
