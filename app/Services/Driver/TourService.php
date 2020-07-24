@@ -842,7 +842,7 @@ class TourService extends BaseService
         $dbMaterialList = array_create_index($dbMaterialList, 'id');
         foreach ($materialList as $material) {
             $actualQuantity = intval($material['actual_quantity']);
-            $rowCount = $this->getMaterialService()->update(['id' => $material['id']], $actualQuantity);
+            $rowCount = $this->getMaterialService()->update(['id' => $material['id']], ['actual_quantity' => $actualQuantity]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('材料处理失败');
             };
