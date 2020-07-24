@@ -609,7 +609,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
         //验证包裹列表
-        !empty($params['package_list']) && $this->getPackageService()->check($params['package_list']);
+        !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $orderNo);
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
