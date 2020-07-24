@@ -26,7 +26,7 @@ use WebSocket\Client;
 
 class OutWarehouse implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * 任务连接名称。
@@ -73,8 +73,6 @@ class OutWarehouse implements ShouldQueue
         $this->tour_no = $tourNo;
         $this->orderList = $orderList;
     }
-
-
 
 
     /**
