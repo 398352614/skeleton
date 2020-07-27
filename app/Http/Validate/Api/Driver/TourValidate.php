@@ -96,6 +96,9 @@ class TourValidate extends BaseValidate
             'package_list.*.id', 'package_list.*.sticker_no',
             //材料列表
             'material_list.*.id', 'material_list.*.actual_quantity',
+
+            'auth_fullname', 'auth_birth_date'
+
         ],
         'batchSign' => [
             'batch_id', 'package_list', 'material_list', 'signature', 'pay_type', 'pay_picture',
@@ -103,7 +106,9 @@ class TourValidate extends BaseValidate
             'package_list.*.id', 'package_list.*.sticker_no',
             //材料列表
             'material_list.*.id', 'material_list.*.actual_quantity',
-            'total_sticker_amount', 'total_replace_amount', 'total_settlement_amount'
+            'total_sticker_amount', 'total_replace_amount', 'total_settlement_amount',
+            
+            'auth_fullname', 'auth_birth_date'
         ],
         'inWarehouse' => ['end_signature', 'end_signature_remark']
     ];

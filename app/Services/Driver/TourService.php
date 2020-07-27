@@ -579,6 +579,10 @@ class TourService extends BaseService
         })->toArray();
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
+        $authPackage = collect($packageList)->first(function ($package) {
+            return (intval($package['status']) == BaseConstService::BATCH_DELIVERING) && (intval($package['is_auth']) == BaseConstService::IS_AUTH_1);
+        });
+        $batch['is_auth'] = !empty($authPackage) ? BaseConstService::IS_AUTH_1 : BaseConstService::IS_AUTH_2;
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
         $orderList = array_map(function ($order) use ($packageList) {
