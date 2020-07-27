@@ -45,6 +45,7 @@ class OrderService extends BaseService
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
         'tour_no' => ['like', 'tour_no'],
+        'batch_no' => ['like', 'batch_no'],
     ];
 
     public $headings = [
@@ -294,12 +295,12 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
+        $list = parent::getPageList();
         if (!empty($this->formData['line_id'])) {
             $batchList = $this->getBatchService()->getList(['line_id' => $this->formData['line_id']], ['*'], false)->pluck('batch_no')->toArray();
-            $this->filters['batch_no'] = ['in', $batchList];
+            $list = $list->whereIn('batch_no', $batchList)->all();
         }
-        $list = parent::getPageList();
-        $tourNoList = $list->where('tour_no', '<>', '')->pluck('tour_no')->toArray();
+        $tourNoList = collect($list)->where('tour_no', '<>', '')->pluck('tour_no')->toArray();
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false);
         foreach ($list as $k => $v) {
             $list[$k]['line_id'] = $tour->where('tour_no', $v['tour_no'])->first()['line_id'] ?? '';
