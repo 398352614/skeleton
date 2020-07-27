@@ -19,6 +19,10 @@ class BaseConstService
     const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
 
+    //是否
+    const YES = 1;
+    const NO = 2;
+
     //是否需要验证
     const IS_AUTH_1 = 1;
     const IS_AUTH_2 = 2;
@@ -211,10 +215,11 @@ class BaseConstService
     const BATCH_EXCEPTION_STAGE_2_TYPE_2 = 2;
     const BATCH_EXCEPTION_STAGE_2_TYPE_3 = 3;
 
-    //站点支付类型1-现金支付2-银行支付
+    //站点支付类型1-现金支付2-银行支付3-第三方支付4-无需支付
     const BATCH_PAY_TYPE_1 = 1;
     const BATCH_PAY_TYPE_2 = 2;
     const BATCH_PAY_TYPE_3 = 3;
+    const BATCH_PAY_TYPE_4 = 4;
 
     //driver 司机合作类型
     const DRIVER_HIRE = 1;
