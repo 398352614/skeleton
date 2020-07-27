@@ -116,6 +116,11 @@ class ReportService extends BaseService
             'house_number' => $info['warehouse_house_number'],
             'city' => $info['warehouse_city'],
             'address' => $info['warehouse_address'],
+            'warehouse_expect_time' => $info['warehouse_expect_time'],
+            'warehouse_expect_distance' => $info['warehouse_expect_distance'],
+            'warehouse_expect_arrive_time' => $info['warehouse_expect_arrive_time'],
+
+
         ];
         //获取当前取件线路上的所有订单
         $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'out_user_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'sticker_no'], false)->toArray();

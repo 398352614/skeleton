@@ -119,7 +119,12 @@ class GoogleApiService
                 "gather_sn" => ['a'],
             ];
         }
-
+        $batchs[] = [
+            "latitude" => $tour->warehouse_lat,
+            "longitude" => $tour->warehouse_lon,
+            "code" => $tour->tour_no,
+            "gather_sn" => ['a'],
+        ];
         $params = [
             'code' => $tour->tour_no,
             'latitude' => (string)$driver_location['latitude'],
@@ -127,9 +132,7 @@ class GoogleApiService
             'target_code' => $nextCode,
             'location' => $batchs,
         ];
-
         app('log')->info('更新线路传送给 api 端的参数为:', $params);
-
         $res = $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
 
         return $res;
