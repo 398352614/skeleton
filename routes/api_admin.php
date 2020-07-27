@@ -465,7 +465,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'HolidayController@destroy');    //删除
 
         Route::get('/merchantIndex', 'HolidayController@merchantIndex');                //获取商户列表
-        Route::post('/storeMerchantList', 'HolidayController@storeMerchantList');       //新增商户列表
+        Route::post('/{id}/storeMerchantList', 'HolidayController@storeMerchantList');       //新增商户列表
         Route::delete('/{id}/destroyMerchant', 'HolidayController@destroyMerchant');    //删除商户
     });
 

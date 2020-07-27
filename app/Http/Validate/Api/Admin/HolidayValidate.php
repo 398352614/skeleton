@@ -13,9 +13,9 @@ class HolidayValidate extends BaseValidate
 
     public $rules = [
         'name' => 'required|string|max:100|uniqueIgnore:company,id',
-        'date_list' => 'required|string|checkIdList:100',
+        'date_list' => 'required|string',
         'status' => 'required|integer|in:1,2',
-        'merchant_id_list' => 'required|string|checkIdList:100',
+        'merchant_id_list' => 'required|string|checkIdList:10',
         'merchant_id' => 'required|integer'
     ];
 

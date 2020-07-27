@@ -14,7 +14,7 @@ class HolidayResource extends JsonResource
             'company_id' => $this->company_id,
             'name' => $this->name,
             'status' => $this->status,
-            'date_list' => implode(', ', $this->holidayDate->pluck('date')),
+            'date_list' => implode(',', $this->holidayDate->pluck('date')->toArray()),
             'merchant_list' => $this->merchantHoliday->isEmpty() ? [] : $this->getMerchantList($this->merchantHoliday->pluck('merchant_id')),
             'created_at' => (string)$this->created_at,
         ];

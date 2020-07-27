@@ -30,7 +30,7 @@ return [
     ],
     'boolean' => ':attribute字符必须是 true 或false, 1 或 0 ',
     'confirmed' => ':attribute 二次确认不匹配',
-    'check_id_list' => '请选择至少一个订单',
+    'check_id_list' => '请输入至少一个结果',
     'date' => ':attribute 必须是一个合法的日期',
     'date_format' => ':attribute 与给定的格式 :format 不符合',
     'different' => ':attribute 必须不同于 :other',

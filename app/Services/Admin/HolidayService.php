@@ -16,6 +16,7 @@ use App\Models\HolidayDate;
 use App\Models\Merchant;
 use App\Models\MerchantHoliday;
 use App\Services\BaseService;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
 /**
@@ -60,13 +61,16 @@ class HolidayService extends BaseService
     {
         $dateList = $this->check($params);
         //新增放假
-        $id = parent::insertGetId(['name' => $params['sname']]);
+        $id = parent::insertGetId(['name' => $params['name']]);
         if ($id === 0) {
             throw new BusinessLogicException('新增失败');
         }
         //新增放假日期列表
-        data_set($dateList, '*.holiday_id', $id);
-        $rowCount = $this->holidayDateModel->insertAll($dateList);
+        $holidayDateList = [];
+        foreach ($dateList as $date) {
+            $holidayDateList[] = ['date' => $date, 'holiday_id' => $id];
+        }
+        $rowCount = $this->holidayDateModel->insertAll($holidayDateList);
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败');
         }
@@ -91,8 +95,12 @@ class HolidayService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
-        data_set($dateList, '*.holiday_id', $id);
-        $rowCount = $this->holidayDateModel->insertAll($dateList);
+        //新增放假日期列表
+        $holidayDateList = [];
+        foreach ($dateList as $date) {
+            $holidayDateList[] = ['date' => $date, 'holiday_id' => $id];
+        }
+        $rowCount = $this->holidayDateModel->insertAll($holidayDateList);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
@@ -145,7 +153,6 @@ class HolidayService extends BaseService
      */
     public function merchantIndex()
     {
-        if (empty($merchantList)) return [];
         $merchantIdList = $this->merchantHoliday->newQuery()->pluck('merchant_id')->toArray();
         return $this->getMerchantService()->getMerchantPageList(['merchant_id' => ['not in', $merchantIdList]]);
     }
@@ -165,11 +172,21 @@ class HolidayService extends BaseService
         $merchantIdList = explode_id_string($merchantIdList);
         $merchantHoliday = $this->merchantHoliday->newQuery()->whereIn('merchant_id', $merchantIdList)->first();
         if (!empty($merchantHoliday)) {
-            throw new BusinessLogicException('商户已分配');
+            throw new BusinessLogicException('商户ID为[:id]已分配', 1000, ['id' => $merchantHoliday->merchant_id]);
+        }
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIdList]], ['id'], false)->keyBy('id')->toArray();
+        $noMerchantId = Arr::first($merchantIdList, function ($merchantId) use ($merchantList) {
+            return empty($merchantList[$merchantId]);
+        });
+        if (!empty($noMerchantId)) {
+            throw new BusinessLogicException('ID为[:id]的商户不存在', 1000, ['id' => $noMerchantId]);
+        }
+        $merchantHolidayList = [];
+        foreach ($merchantIdList as $merchantId) {
+            $merchantHolidayList[] = ['merchant_id' => $merchantId, 'holiday_id' => $id];
         }
         //新增商户列表
-        data_set($merchantIdList, '*.holiday_id', $id);
-        $rowCount = $this->merchantHoliday->insertAll($merchantIdList);
+        $rowCount = $this->merchantHoliday->insertAll($merchantHolidayList);
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败');
         }
