@@ -154,7 +154,7 @@ class HolidayService extends BaseService
     public function merchantIndex()
     {
         $merchantIdList = $this->merchantHoliday->newQuery()->pluck('merchant_id')->toArray();
-        return $this->getMerchantService()->getMerchantPageList(['merchant_id' => ['not in', $merchantIdList]]);
+        return $this->getMerchantService()->getMerchantPageList(['id' => ['not in', $merchantIdList]]);
     }
 
     /**
