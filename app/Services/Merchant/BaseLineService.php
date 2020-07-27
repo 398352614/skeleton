@@ -431,7 +431,7 @@ class BaseLineService extends BaseService
         if (Carbon::today()->addDays($line['appointment_days'])->lt($info['execution_date'] . ' 00:00:00')) {
             throw new BusinessLogicException('预约日期已超过可预约时间范围');
         }
-        //判断是否是放假日期
+        //判断是否是放假日期-管理员端不用限制
         $merchantHoliday = MerchantHoliday::query()->where(['merchant_id' => auth()->user()->id])->first(['holiday_id']);
         if (empty($merchantHoliday)) return;
         $holidayDate = HolidayDate::query()->where('holiday_id', $merchantHoliday->holiday_id)->where('date', $info['execution_date'])->first();
