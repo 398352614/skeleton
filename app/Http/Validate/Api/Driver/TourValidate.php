@@ -107,7 +107,7 @@ class TourValidate extends BaseValidate
             //材料列表
             'material_list.*.id', 'material_list.*.actual_quantity',
             'total_sticker_amount', 'total_replace_amount', 'total_settlement_amount',
-            
+
             'auth_fullname', 'auth_birth_date'
         ],
         'inWarehouse' => ['end_signature', 'end_signature_remark']
