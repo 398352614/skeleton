@@ -32,6 +32,9 @@ class MerchantValidate extends BaseValidate
         'status' => 'required|integer|in:1,2',
         'password' => 'required|string|max:100',
         'confirm_password' => 'required|string|same:password',
+        'advance_days' => 'nullable|integer',
+        'appointment_days' => 'nullable|integer',
+        'delay_time' => 'nullable|integer',
     ];
 
     public $scene = [
@@ -47,6 +50,9 @@ class MerchantValidate extends BaseValidate
             'address',
             'avatar',
             'status',
+            'advance_days',
+            'appointment_days',
+            'delay_time',
         ],
         'update' => [
             'type',
@@ -60,6 +66,9 @@ class MerchantValidate extends BaseValidate
             'address',
             'avatar',
             'status',
+            'advance_days',
+            'appointment_days',
+            'delay_time',
         ],
         'updatePassword' => [
             'password', 'confirm_password'

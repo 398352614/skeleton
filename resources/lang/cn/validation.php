@@ -416,6 +416,8 @@ return [
         'end_signature' => '入库签名',
         'end_signature_remark' => '入库备注',
 
+        'advance_days' => '下单提前天数',
+        'delay_time' => '延后时间(分钟)',
         'merchant_group_id' => '商户组ID',
         'status' => '状态',
         'transport_price_id' => '运价ID',
@@ -472,12 +474,12 @@ return [
         "start_string_index" => "前缀计数",
 
         //轨迹表
-        'time'=>'时间',
+        'time' => '时间',
 
         //费用表
-        'level'=>'级别',
-        'amount'=>'费用',
-        'total_sticker_amount'=>'贴单总费用'
+        'level' => '级别',
+        'amount' => '费用',
+        'total_sticker_amount' => '贴单总费用'
 
     ],
 ];

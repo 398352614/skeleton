@@ -391,7 +391,10 @@ class BaseLineService extends BaseService
     private function deadlineCheck($info, $line)
     {
         if (date('Y-m-d') == $info['execution_date']) {
-            if (time() > strtotime($info['execution_date'] . ' ' . $line['order_deadline'])) {
+            //只有商户端须要,延后时间
+            $time = Carbon::parse(now());
+            !empty(auth()->user()->delay_time) && $time->addSeconds(auth()->user()->delay_time * 60);
+            if ($time->getTimestamp() > strtotime($info['execution_date'] . ' ' . $line['order_deadline'])) {
                 throw new BusinessLogicException('当天下单已超过截止时间');
             }
         }
@@ -427,8 +430,13 @@ class BaseLineService extends BaseService
      */
     private function appointmentDayCheck($info, $line)
     {
+        //只有商户端须要,可预约日期取商户和线路中最小的
+        $appointmentDays = $line['appointment_days'];
+        if (!empty(auth()->user()->appointment_days) && (auth()->user()->appointment_days < $appointmentDays)) {
+            $appointmentDays = auth()->user()->appointment_days;
+        }
         //判断预约日期是否在可预约日期范围内
-        if (Carbon::today()->addDays($line['appointment_days'])->lt($info['execution_date'] . ' 00:00:00')) {
+        if (Carbon::today()->addDays($appointmentDays)->lt($info['execution_date'] . ' 00:00:00')) {
             throw new BusinessLogicException('预约日期已超过可预约时间范围');
         }
         //判断是否是放假日期-管理员端不用限制
@@ -437,6 +445,10 @@ class BaseLineService extends BaseService
         $holidayDate = HolidayDate::query()->where('holiday_id', $merchantHoliday->holiday_id)->where('date', $info['execution_date'])->first();
         if (!empty($holidayDate)) {
             throw new BusinessLogicException('该预约日期是放假日期，不可预约');
+        }
+        //提前下单天数判断
+        if (!empty(auth()->user()->advance_days) && Carbon::today()->addDays(auth()->user()->advance_days)->gt($info['execution_date'] . ' 00:00:00')) {
+            throw new BusinessLogicException('当前预约必须提前[:days]预约', 1000, ['days' => auth()->user()->advance_days]);
         }
         return;
     }
