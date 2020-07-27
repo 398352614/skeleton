@@ -463,6 +463,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::post('/', 'HolidayController@store');            //新增
         Route::put('/{id}', 'HolidayController@update');        //修改
         Route::delete('/{id}', 'HolidayController@destroy');    //删除
+        //启用/禁用
+        Route::put('/{id}/status', 'HolidayController@status');
 
         Route::get('/merchantIndex', 'HolidayController@merchantIndex');                //获取商户列表
         Route::post('/{id}/storeMerchantList', 'HolidayController@storeMerchantList');       //新增商户列表

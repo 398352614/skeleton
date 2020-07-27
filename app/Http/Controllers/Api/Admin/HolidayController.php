@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\HolidayService;
 
@@ -63,6 +64,18 @@ class HolidayController extends BaseController
     {
         return $this->service->destroy($id);
     }
+
+    /**
+     * 状态-启用/禁用
+     * @param $id
+     * @return
+     * @throws BusinessLogicException
+     */
+    public function status($id)
+    {
+        return $this->service->status($id, $this->data);
+    }
+
 
     public function merchantIndex()
     {

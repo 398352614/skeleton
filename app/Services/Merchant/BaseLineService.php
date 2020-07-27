@@ -442,7 +442,7 @@ class BaseLineService extends BaseService
         //判断是否是放假日期-管理员端不用限制
         $merchantHoliday = MerchantHoliday::query()->where(['merchant_id' => auth()->user()->id])->first(['holiday_id']);
         if (empty($merchantHoliday)) return;
-        $holidayDate = HolidayDate::query()->where('holiday_id', $merchantHoliday->holiday_id)->where('date', $info['execution_date'])->first();
+        $holidayDate = HolidayDate::query()->where('holiday_id', $merchantHoliday->holiday_id)->where('status', BaseConstService::ON)->where('date', $info['execution_date'])->first();
         if (!empty($holidayDate)) {
             throw new BusinessLogicException('该预约日期是放假日期，不可预约');
         }

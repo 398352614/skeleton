@@ -88,6 +88,7 @@ class MerchantController extends BaseController
     /**
      * 状态-启用/禁用
      * @param $id
+     * @return
      * @throws BusinessLogicException
      */
     public function status($id)

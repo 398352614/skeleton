@@ -332,6 +332,7 @@ class BaseService
      * 启用/禁用
      * @param $id
      * @param $data
+     * @return
      * @throws BusinessLogicException
      */
     public function status($id, $data)
@@ -340,6 +341,7 @@ class BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，清重新操作');
         }
+        return 'true';
     }
 
 

@@ -16,12 +16,13 @@ class HolidayValidate extends BaseValidate
         'date_list' => 'required|string',
         'status' => 'required|integer|in:1,2',
         'merchant_id_list' => 'required|string|checkIdList:10',
-        'merchant_id' => 'required|integer'
+        'merchant_id' => 'required|integer',
     ];
 
     public $scene = [
         'store' => ['name', 'date_list'],
         'update' => ['name', 'date_list'],
+        'status' => ['status'],
         'storeMerchantList' => ['merchant_id_list'],
         'destroyMerchant' => ['merchant_id']
     ];
