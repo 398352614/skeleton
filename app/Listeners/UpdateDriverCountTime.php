@@ -53,7 +53,7 @@ class UpdateDriverCountTime implements ShouldQueue
      * 更新预计到达时间
      *
      * @param AfterDriverLocationUpdated $event
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function handle(AfterDriverLocationUpdated $event)
     {
