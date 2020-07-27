@@ -11,7 +11,9 @@ namespace App\Services\Merchant;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\LineResource;
+use App\Models\HolidayDate;
 use App\Models\Line;
+use App\Models\MerchantHoliday;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\CompanyTrait;
@@ -69,7 +71,6 @@ class BaseLineService extends BaseService
     {
         return self::getInstance(TourService::class);
     }
-
 
     /**
      * 新增
@@ -411,7 +412,7 @@ class BaseLineService extends BaseService
                 $this->maxBatchCheck($params, $line);
             } elseif ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::ORDER_TYPE_1) {
                 $this->pickupMaxCheck($params, $line);
-            } elseif ($orderOrBatch === 1 && intval($params['type']) ===  BaseConstService::ORDER_TYPE_2) {
+            } elseif ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::ORDER_TYPE_2) {
                 $this->pieMaxCheck($params, $line);
             }
         }
@@ -429,6 +430,13 @@ class BaseLineService extends BaseService
         //判断预约日期是否在可预约日期范围内
         if (Carbon::today()->addDays($line['appointment_days'])->lt($info['execution_date'] . ' 00:00:00')) {
             throw new BusinessLogicException('预约日期已超过可预约时间范围');
+        }
+        //判断是否是放假日期
+        $merchantHoliday = MerchantHoliday::query()->where(['merchant_id' => auth()->user()->id])->first(['holiday_id']);
+        if (empty($merchantHoliday)) return;
+        $holidayDate = HolidayDate::query()->where('holiday_id', $merchantHoliday->holiday_id)->where('date', $info['execution_date'])->first();
+        if (!empty($holidayDate)) {
+            throw new BusinessLogicException('该预约日期是放假日期，不可预约');
         }
         return;
     }
@@ -475,12 +483,12 @@ class BaseLineService extends BaseService
     private function maxBatchCheck(array $info, array $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 3);
-        if(intval($info['expect_pickup_quantity']) > 0){
+        if (intval($info['expect_pickup_quantity']) > 0) {
             if (intval($info['expect_pickup_quantity']) + intval($orderCount['pickup_count']) > intval($line['pickup_max_count'])) {
                 throw new BusinessLogicException('当前线路已达到最大取件订单数量');
             };
         }
-        if(intval($info['expect_pie_quantity']) > 0){
+        if (intval($info['expect_pie_quantity']) > 0) {
             if (intval($info['expect_pie_quantity']) + intval($orderCount['pie_count']) > intval($line['pie_max_count'])) {
                 throw new BusinessLogicException('当前线路已达到最大派件订单数量');
             };

@@ -18,6 +18,8 @@ use App\Models\Country;
 use App\Models\Driver;
 use App\Models\Employee;
 use App\Models\Fee;
+use App\Models\Holiday;
+use App\Models\HolidayDate;
 use App\Models\KilometresCharging;
 use App\Models\Line;
 use App\Models\LineArea;
@@ -70,7 +72,7 @@ class CompanyScope implements Scope
 
         //如果是司机端
         if ($user instanceof Driver) {
-            if(!($model) instanceof Company){
+            if (!($model) instanceof Company) {
                 $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
             }
             //车辆模型和司机无关
@@ -119,6 +121,8 @@ class CompanyScope implements Scope
                 && !($model instanceof TourDriverEvent)
                 && !($model instanceof RouteTracking)
                 && !($model instanceof Driver)
+                && !($model instanceof Holiday)
+                && !($model instanceof HolidayDate)
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
             }
