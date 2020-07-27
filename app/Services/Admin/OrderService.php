@@ -665,7 +665,7 @@ class OrderService extends BaseService
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
-                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark']);
+                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark', 'is_auth']);
                 return $collectItem->put('order_no', $params['order_no'])->put('batch_no', $batch['batch_no'])->put('tour_no', $tour['tour_no']);
             })->toArray();
             data_set($packageList, '*.status', $status);

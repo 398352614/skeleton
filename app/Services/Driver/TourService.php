@@ -730,7 +730,7 @@ class TourService extends BaseService
         /*******************************************1.处理站点下的材料*************************************************/
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list'], $dbMaterialList);
         /*******************************************1.处理站点下的包裹*************************************************/
-        $info = $this->dealPackageList($batch, $params['package_list'] ?? []);
+        $info = $this->dealPackageList($batch, $params);
         $totalStickerAmount = $info['totalStickerAmount'];
         $orderStickerAmountList = $info['orderStickerAmount'];
         /****************************************2.处理站点下的所有订单************************************************/
@@ -859,12 +859,13 @@ class TourService extends BaseService
     /**
      * 处理签收时的包裹列表
      * @param $batch
-     * @param $packageList
+     * @param $params
      * @return array
      * @throws BusinessLogicException
      */
-    private function dealPackageList($batch, $packageList)
+    private function dealPackageList($batch, $params)
     {
+        $packageList = $params['package_list'] ?? [];
         $orderStickerAmount = [];
         $stickerAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::STICKER]);
         /***************************************2.处理站点下的所有包裹*************************************************/
@@ -875,7 +876,7 @@ class TourService extends BaseService
         foreach ($dbPackageList as $dbPackage) {
             //判断是否签收
             if (in_array(intval($dbPackage['id']), $packageIdList)) {
-                $status = BaseConstService::ORDER_STATUS_5;
+                $packageData = ['status' => BaseConstService::ORDER_STATUS_5, 'auth_fullname' => $params['auth_fullname'] ?? '', 'auth_birth_date' => $params['auth_birth_date'] ?? null];
                 //判断取件或派件
                 if (intval($dbPackage['type']) === BaseConstService::ORDER_TYPE_1) {
                     if (!empty($packageList[$dbPackage['id']]['sticker_no'])) {
@@ -888,9 +889,9 @@ class TourService extends BaseService
                     } else {
                         $packageStickerAmount = 0.00;
                     }
-                    $packageData = ['actual_quantity' => 1, 'status' => $status, 'sticker_amount' => $packageStickerAmount, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no'] ?? ''];
+                    $packageData = array_merge($packageData, ['actual_quantity' => 1, 'sticker_amount' => $packageStickerAmount, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no'] ?? '']);
                 } else {
-                    $packageData = ['actual_quantity' => 1, 'status' => $status];
+                    $packageData = array_merge($packageData, ['actual_quantity' => 1]);
                 }
             } else {
                 $packageData = ['status' => BaseConstService::ORDER_STATUS_6];
@@ -955,6 +956,7 @@ class TourService extends BaseService
         if ($batch['tour_no'] != $tour['tour_no']) {
             throw new BusinessLogicException('当前站点不属于当前取件线路');
         }
+        //验证材料列表
         $materialList = [];
         if (!empty($params['material_list'])) {
             $pageMaterialList = array_create_index($params['material_list'], 'id');
@@ -977,6 +979,13 @@ class TourService extends BaseService
                 if ($sumActualQuantity[$material['code']] > $tourMaterialList[$material['code']]['surplus_quantity']) {
                     throw new BusinessLogicException('材料[:code]只剩[:count]个，请重新选择材料数量', 3001, ['code' => $material['code'], 'count' => $tourMaterialList[$material['code']]['surplus_quantity']]);
                 }
+            }
+        }
+        //验证包裹列表
+        if (!empty($params['package_list'])) {
+            $dbPackage = $this->getPackageService()->getInfo(['id' => ['in', array_column($params['package_list'], 'id')], 'tour_no' => $tour['tour_no'], 'is_auth' => BaseConstService::IS_AUTH_1], ['id'], false);
+            if (!empty($dbPackage) && (empty($params['auth_fullname']) || empty($params['auth_birth_date']))) {
+                throw new BusinessLogicException('存在需要身份验证的包裹，请填些身份验证信息', 1000);
             }
         }
         return [$tour, $batch, $materialList];

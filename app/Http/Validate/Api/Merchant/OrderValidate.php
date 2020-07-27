@@ -50,6 +50,7 @@ class OrderValidate extends BaseValidate
         'package_list.*.out_order_no' => 'nullable|string|max:50',
         'package_list.*.express_first_no' => 'required_with:package_list|string|max:50|regex:/^[0-9a-zA-Z]([0-9a-zA-Z-])*[0-9a-zA-Z]$/',
         'package_list.*.express_second_no' => 'nullable|string|max:50',
+        'package_list.*.is_auth' => 'sometimes|integer|in:1,2',
         //材料列表
         'material_list.*.name' => 'nullable|string|max:50',
         'material_list.*.code' => 'required_with:material_list|string|max:50',

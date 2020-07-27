@@ -44,6 +44,8 @@ class TourValidate extends BaseValidate
         'total_sticker_amount' => 'required|numeric',
         'total_replace_amount' => 'required|numeric',
         'total_settlement_amount' => 'required|numeric',
+        'auth_fullname' => 'nullable|string|max:100',
+        'auth_birth_date' => 'nullable|date|date_format:Y-m-d',
         //入库
         'end_signature' => 'required|string|max:250',
         'end_signature_remark' => 'nullable|string|max:250',

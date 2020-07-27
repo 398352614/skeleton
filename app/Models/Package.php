@@ -63,6 +63,9 @@ class Package extends BaseModel
         'sticker_no',
         'sticker_amount',
         'remark',
+        'is_auth',
+        'auth_fullname',
+        'auth_birth_date',
         'created_at',
         'updated_at'
     ];

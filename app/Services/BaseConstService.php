@@ -19,6 +19,10 @@ class BaseConstService
     const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
 
+    //是否需要验证
+    const IS_AUTH_1 = 1;
+    const IS_AUTH_2 = 2;
+
     //1降序，2升序
     const SORT_BY_TIME_1 = 1;
     const SORT_BY_TIME_2 = 2;
