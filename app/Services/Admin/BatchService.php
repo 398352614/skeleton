@@ -14,12 +14,14 @@ use App\Services\OrderNoRuleService;
 use App\Services\OrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\MapAreaTrait;
+use App\Traits\StatusConvertTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 
 class BatchService extends BaseService
 {
+    use StatusConvertTrait;
 
     public $filterRules = [
         'status' => ['=', 'status'],
@@ -311,11 +313,18 @@ class BatchService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], true);
+        $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
         $info['order_count'] = $this->getOrderService()->count(['batch_no' => $info['batch_no']]);
+        $packageList = $this->getPackageService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
+        $packageList = $this->statusConvert($packageList);
+        $materialList = $this->getMaterialService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
+        foreach ($info['orders'] as $k => $v) {
+            $info['orders'][$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
+            $info['orders'][$k]['material_list'] = collect($materialList)->where('order_no', $v['order_no'])->all();
+        }
         return $info;
     }
 

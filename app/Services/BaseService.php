@@ -9,6 +9,7 @@ use App\Models\BaseModel;
 use App\Traits\FactoryInstanceTrait;
 use App\Traits\SearchTrait;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -153,7 +154,7 @@ class BaseService
 
     /**
      * 分页列表
-     * @return mixed
+     * @return Collection
      */
     public function getPageList()
     {
@@ -168,7 +169,7 @@ class BaseService
      * @param $isResource bool 是否生成资源类
      * @param $groupFields
      * @param $orderFields
-     * @return Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return Builder[]|Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function getList($where = [], $selectFields = ['*'], $isResource = true, $groupFields = [], $orderFields = [])
     {
