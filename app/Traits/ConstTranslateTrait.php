@@ -155,7 +155,8 @@ trait ConstTranslateTrait
     public static $batchPayTypeList = [
         BaseConstService::BATCH_PAY_TYPE_1 => '现金支付',
         BaseConstService::BATCH_PAY_TYPE_2 => '银行卡支付',
-        BaseConstService::BATCH_PAY_TYPE_3 => '无需支付'
+        BaseConstService::BATCH_PAY_TYPE_3 => '第三方支付',
+        BaseConstService::BATCH_PAY_TYPE_4 => '无需支付',
     ];
 
     //站点异常标签1-正常2-异常

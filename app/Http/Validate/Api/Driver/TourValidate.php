@@ -39,7 +39,7 @@ class TourValidate extends BaseValidate
         'cancel_picture' => 'nullable|string|max:250',
         //签收
         'signature' => 'required|string|max:250',
-        'pay_type' => 'required|integer|in:1,2',
+        'pay_type' => 'required|integer|in:1,2,3,4',
         'pay_picture' => 'nullable|required_if:pay_type,2|string|max:250',
         'total_sticker_amount' => 'required|numeric',
         'total_replace_amount' => 'required|numeric',
