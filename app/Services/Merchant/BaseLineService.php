@@ -350,7 +350,7 @@ class BaseLineService extends BaseService
             for ($k = 0, $l = $line['appointment_days'] - $date; $k < $l; $k = $k + 7) {
                 $params['execution_date'] = Carbon::today()->addDays($date + $k)->format("Y-m-d");
                 try {
-                    $this->deadlineCheck($params, $line);
+                    $this->deadlineCheck($params, $line, true);
                     $this->appointmentDayCheck($params, $line);
                     $this->maxCheck($params, $line, $orderOrBatch);
                 } catch (BusinessLogicException $e) {
@@ -386,15 +386,19 @@ class BaseLineService extends BaseService
      * 当日截止时间检查
      * @param $info
      * @param $line
+     * @param $isForDate bool 是否是为了获取日期
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function deadlineCheck($info, $line)
+    private function deadlineCheck($info, $line, $isForDate = false)
     {
         if (date('Y-m-d') == $info['execution_date']) {
             //只有商户端须要,延后时间
             $time = Carbon::parse(now());
-            !empty(auth()->user()->delay_time) && $time->subMinutes(auth()->user()->delay_time);
+            //如果不是为了获取日期,则需要延后时间
+            if (($isForDate == false) && !empty(auth()->user()->delay_time)) {
+                $time->subMinutes(auth()->user()->delay_time);
+            }
             if ($time->getTimestamp() > strtotime($info['execution_date'] . ' ' . $line['order_deadline'])) {
                 throw new BusinessLogicException('当天下单已超过截止时间');
             }
