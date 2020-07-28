@@ -159,6 +159,7 @@ class ReportService extends BaseService
                 $orderList[$k]['actual_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
                 $orderList[$k]['actual_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
                 $orderList[$k]['actual_sticker_amount'] = number_format(round($v['sticker_amount'], 2), 2);
+                $orderList[$k]['actual_delivery_amount'] = number_format(round($v['delivery_amount'], 2), 2);
                 $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount']), 2), 2);
                 $orderList[$k]['sticker_count'] = count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
                 $orderList[$k]['delivery_count'] = count(collect($orderList[$k]['package_list'])->where('delivery_amount', '<>', 0)->toArray());
@@ -178,7 +179,7 @@ class ReportService extends BaseService
                     $info['api_delivery_count'] += $orderList[$k]['delivery_count'];
                 }
             } else {
-                $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount'] = $orderList[$k]['actual_sticker_amount'] = $orderList[$k]['actual_replace_amount'] = 0;
+                $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount'] = $orderList[$k]['actual_sticker_amount'] = $orderList[$k]['actual_replace_amount'] = 0.00;
             }
         }
         $info = $this->countByPayType($info, $batchList);
