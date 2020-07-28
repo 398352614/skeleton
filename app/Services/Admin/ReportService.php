@@ -179,7 +179,7 @@ class ReportService extends BaseService
                     $info['api_delivery_count'] += $orderList[$k]['delivery_count'];
                 }
             } else {
-                $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount'] = $orderList[$k]['actual_sticker_amount'] = $orderList[$k]['actual_replace_amount'] = 0.00;
+                $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount'] = $orderList[$k]['actual_sticker_amount'] = $orderList[$k]['actual_replace_amount'] = number_format(0.00,2);
             }
         }
         $info = $this->countByPayType($info, $batchList);
