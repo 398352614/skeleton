@@ -921,7 +921,7 @@ class TourService extends BaseService
                         $packageStickerAmount = 0.00;
                     }
                     //提货费计算
-                    if ($packageList[$dbPackage['id']]['delivery_amount'] !== 0) {
+                    if ($packageList[$dbPackage['id']]['delivery_charge'] !== BaseConstService::YES) {
                         $totalDeliveryAmount += $deliveryAmount;
                         //赋0
                         if (empty($orderDeliveryAmount[$dbPackage['order_no']])) {
