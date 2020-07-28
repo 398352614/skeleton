@@ -44,6 +44,7 @@ class BatchResource extends JsonResource
             'expect_distance' => $this->expect_distance,
             'actual_time' => $this->actual_time,
             'sticker_amount' => $this->sticker_amount,
+            'delivery_amount' => $this->delivery_amount,
             'replace_amount' => $this->replace_amount,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,

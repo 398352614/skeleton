@@ -479,7 +479,8 @@ return [
         //费用表
         'level' => '级别',
         'amount' => '费用',
-        'total_sticker_amount' => '贴单总费用'
+        'total_sticker_amount' => '贴单总费用',
+        'total_delivery_amount' => '提货总费用'
 
     ],
 ];

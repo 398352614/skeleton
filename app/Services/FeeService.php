@@ -18,7 +18,7 @@ class FeeService
     /**
      * 获取费用
      * @param $where
-     * @return array
+     * @return float
      * @throws BusinessLogicException
      */
     public static function getFeeAmount($where)

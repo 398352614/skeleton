@@ -119,9 +119,9 @@ class OrderController extends OrderBaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function updateByApi()
+    public function updateByApi($id)
     {
-        return $this->service->updatePhoneDateByApi($this->data);
+        return $this->service->updatePhoneDateByApi($id,$this->data);
     }
 
 

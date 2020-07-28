@@ -62,6 +62,7 @@ class Package extends BaseModel
         'status',
         'sticker_no',
         'sticker_amount',
+        'delivery_amount',
         'remark',
         'is_auth',
         'auth_fullname',

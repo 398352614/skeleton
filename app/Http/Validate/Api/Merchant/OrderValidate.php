@@ -100,7 +100,8 @@ class OrderValidate extends BaseValidate
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
         'updateOutStatus' => ['order_no', 'out_status'],
-        'getDateListByPostCode' => ['receiver_post_code']
+        'getDateListByPostCode' => ['receiver_post_code'],
+
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',

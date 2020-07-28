@@ -86,6 +86,7 @@ class Batch extends BaseModel
         'expect_time',
         'actual_time',
         'sticker_amount',
+        'delivery_amount',
         'replace_amount',
         'actual_replace_amount',
         'settlement_amount',

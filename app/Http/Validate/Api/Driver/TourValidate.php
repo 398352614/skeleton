@@ -42,6 +42,7 @@ class TourValidate extends BaseValidate
         'pay_type' => 'required|integer|in:1,2,3,4',
         'pay_picture' => 'nullable|required_if:pay_type,2|string|max:250',
         'total_sticker_amount' => 'required|numeric',
+        'total_delivery_amount' => 'required|numeric',
         'total_replace_amount' => 'required|numeric',
         'total_settlement_amount' => 'required|numeric',
         'auth_fullname' => 'nullable|string|max:100',
@@ -106,7 +107,7 @@ class TourValidate extends BaseValidate
             'package_list.*.id', 'package_list.*.sticker_no',
             //材料列表
             'material_list.*.id', 'material_list.*.actual_quantity',
-            'total_sticker_amount', 'total_replace_amount', 'total_settlement_amount',
+            'total_sticker_amount', 'total_delivery_amount', 'total_replace_amount', 'total_settlement_amount',
 
             'auth_fullname', 'auth_birth_date'
         ],
