@@ -32,8 +32,11 @@ class MerchantService extends BaseService
      */
     public function updateById($id, $data)
     {
-        if (!empty($params['advance_days']) && !empty($params['appointment_days']) && (intval($params['advance_days']) >= intval($params['appointment_days']))) {
+        if (!empty($data['advance_days']) && !empty($data['appointment_days']) && (intval($data['advance_days']) >= intval($data['appointment_days']))) {
             throw new BusinessLogicException('可预约天数必须大于提前下单天数');
+        }
+        if (empty($data['appointment_days'])) {
+            unset($data['appointment_days']);
         }
         $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'contacter', 'phone', 'country', 'address']));
         if ($rowCount === false) {

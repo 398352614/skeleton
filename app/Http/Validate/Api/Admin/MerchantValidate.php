@@ -32,7 +32,7 @@ class MerchantValidate extends BaseValidate
         'status' => 'required|integer|in:1,2',
         'password' => 'required|string|max:100',
         'confirm_password' => 'required|string|same:password',
-        'advance_days' => 'nullable|integer|gte:1|lte:7',
+        'advance_days' => 'nullable|integer|gte:0|lte:7',
         'appointment_days' => 'nullable|integer|gte:1|lte:30',
         'delay_time' => 'nullable|integer|gte:0|lte:60',
     ];
