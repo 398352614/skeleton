@@ -442,7 +442,7 @@ class BaseLineService extends BaseService
         }
         //提前下单天数判断
         if (!empty(auth()->user()->advance_days) && Carbon::today()->addDays(auth()->user()->advance_days)->gt($info['execution_date'] . ' 00:00:00')) {
-            throw new BusinessLogicException('当前预约必须提前[:days]预约', 1000, ['days' => auth()->user()->advance_days]);
+            throw new BusinessLogicException('当前预约必须提前[:days]天预约', 1000, ['days' => auth()->user()->advance_days]);
         }
         //判断是否是放假日期-管理员端不用限制
         $merchantHoliday = MerchantHoliday::query()->where(['merchant_id' => auth()->user()->id])->first(['holiday_id']);
