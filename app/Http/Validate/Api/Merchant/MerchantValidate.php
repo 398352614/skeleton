@@ -35,7 +35,7 @@ class MerchantValidate extends BaseValidate
         'confirm_password' => 'required|string|same:password',
         'advance_days' => 'nullable|integer|gte:1|lte:7',
         'appointment_days' => 'nullable|integer|gte:1|lte:30',
-        'delay_time' => 'nullable|integer|gte:1|lte:60',
+        'delay_time' => 'nullable|integer|gte:0|lte:60',
     ];
 
     public $scene = [
