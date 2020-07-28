@@ -142,6 +142,9 @@ class MerchantService extends BaseService
         if (empty($merchantGroup)) {
             throw new BusinessLogicException('商户组不存在');
         }
+        if (empty($params['appointment_days'])) {
+            unset($params['appointment_days']);
+        }
     }
 
     /**
