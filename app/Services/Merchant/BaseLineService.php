@@ -394,7 +394,7 @@ class BaseLineService extends BaseService
         if (date('Y-m-d') == $info['execution_date']) {
             //只有商户端须要,延后时间
             $time = Carbon::parse(now());
-            !empty(auth()->user()->delay_time) && $time->addSeconds(auth()->user()->delay_time * 60);
+            !empty(auth()->user()->delay_time) && $time->subMinutes(auth()->user()->delay_time);
             if ($time->getTimestamp() > strtotime($info['execution_date'] . ' ' . $line['order_deadline'])) {
                 throw new BusinessLogicException('当天下单已超过截止时间');
             }
