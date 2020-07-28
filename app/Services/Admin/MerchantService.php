@@ -135,6 +135,9 @@ class MerchantService extends BaseService
      */
     public function check(&$params)
     {
+        if (!empty($params['advance_days']) && !empty($params['appointment_days']) && (intval($params['advance_days']) >= intval($params['appointment_days']))) {
+            throw new BusinessLogicException('可预约天数必须大于提前下单天数');
+        }
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $params['merchant_group_id']], ['*'], false);
         if (empty($merchantGroup)) {
             throw new BusinessLogicException('商户组不存在');
