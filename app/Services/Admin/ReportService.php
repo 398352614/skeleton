@@ -152,7 +152,7 @@ class ReportService extends BaseService
             $orderList[$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
             $orderList[$k]['expect_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
             $orderList[$k]['expect_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
-            $orderList[$k]['expect_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
+            $orderList[$k]['expect_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount']), 2), 2);
             if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
                 $orderList[$k]['actual_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
                 $orderList[$k]['actual_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
@@ -175,7 +175,7 @@ class ReportService extends BaseService
                     $info['api_delivery_count'] += $orderList[$k]['delivery_count'];
                 }
             } else {
-                $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount']  = $orderList[$k]['actual_replace_amount'] = number_format(0.00,2);
+                $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount'] = $orderList[$k]['actual_replace_amount'] = number_format(0.00, 2);
             }
         }
         $info = $this->countByPayType($info, $batchList);
@@ -201,7 +201,7 @@ class ReportService extends BaseService
         $info['cash_settlement_amount'] = $info['cash_replace_amount'] = $info['cash_sticker_amount'] = $info['cash_delivery_amount'] = $info['cash_total_amount'] = 0;
         $info['api_settlement_amount'] = $info['api_replace_amount'] = $info['api_sticker_amount'] = $info['api_delivery_amount'] = $info['api_total_amount'] = 0;
         foreach ($batchList as $k => $v) {
-            $batchList[$k]['actual_total_amount'] = number_format(round(($v['actual_settlement_amount'] + $v['actual_replace_amount'] + $v['sticker_amount']), 2), 2);
+            $batchList[$k]['actual_total_amount'] = number_format(round(($v['actual_settlement_amount'] + $v['actual_replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
             //更新取件线路统计
             if ($v['pay_type'] == BaseConstService::BATCH_PAY_TYPE_1) {
                 $info['cash_settlement_amount'] += floatval($v['actual_settlement_amount']);
