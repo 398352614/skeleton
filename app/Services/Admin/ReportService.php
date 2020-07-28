@@ -152,14 +152,10 @@ class ReportService extends BaseService
             $orderList[$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
             $orderList[$k]['expect_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
             $orderList[$k]['expect_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
-            $orderList[$k]['expect_sticker_amount'] = number_format(round($v['sticker_amount'], 2), 2);
-            $orderList[$k]['expect_delivery_amount'] = number_format(round($v['delivery_amount'], 2), 2);
             $orderList[$k]['expect_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
             if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
                 $orderList[$k]['actual_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
                 $orderList[$k]['actual_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
-                $orderList[$k]['actual_sticker_amount'] = number_format(round($v['sticker_amount'], 2), 2);
-                $orderList[$k]['actual_delivery_amount'] = number_format(round($v['delivery_amount'], 2), 2);
                 $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount']), 2), 2);
                 $orderList[$k]['sticker_count'] = count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
                 $orderList[$k]['delivery_count'] = count(collect($orderList[$k]['package_list'])->where('delivery_amount', '<>', 0)->toArray());
