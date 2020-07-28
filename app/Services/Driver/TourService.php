@@ -593,7 +593,7 @@ class TourService extends BaseService
         $materialList = $this->getMaterialService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
         $batch['tour_id'] = $tour['id'];
         $batch['actual_total_amount'] = number_format(round($batch['sticker_amount'] + $batch['actual_replace_amount'] + $batch['actual_settlement_amount'], 2), 2);
-        if ($batch['sticker_amount'] + $batch['sticker_amount'] + $batch['settlement_amount'] + $batch['delivery_amount']== 0) {
+        if ($batch['sticker_amount'] + $batch['sticker_amount'] + $batch['settlement_amount'] + $batch['delivery_amount'] == 0) {
             $batch['no_need_to_pay'] = BaseConstService::YES;
         } else {
             $batch['no_need_to_pay'] = BaseConstService::NO;
@@ -720,7 +720,7 @@ class TourService extends BaseService
             'total_delivery_amount' => number_format($totalDeliveryAmount, 2),
             'total_replace_amount' => number_format($totalReplaceAmount, 2),
             'total_settlement_amount' => number_format($totalSettlementAmount, 2),
-            'total_amount' => number_format($totalStickerAmount + $totalReplaceAmount + $totalSettlementAmount, 2),
+            'total_amount' => number_format($totalStickerAmount + $totalReplaceAmount + $totalSettlementAmount + $totalDeliveryAmount, 2),
         ];
     }
 
@@ -846,7 +846,7 @@ class TourService extends BaseService
         }
         //验证提货费用
         if (bccomp($params['total_delivery_amount'], $dbParams['delivery_amount']) !== 0) {
-            throw new BusinessLogicException('5003',5003);
+            throw new BusinessLogicException('5003', 5003);
         }
         //验证代收货款
         if (bccomp($params['total_replace_amount'], $dbParams['actual_replace_amount']) !== 0) {
@@ -921,7 +921,7 @@ class TourService extends BaseService
                         $packageStickerAmount = 0.00;
                     }
                     //提货费计算
-                    if ($packageList[$dbPackage['id']]['delivery_charge'] !== BaseConstService::YES) {
+                    if ($packageList[$dbPackage['id']]['delivery_charge'] == BaseConstService::YES) {
                         $totalDeliveryAmount += $deliveryAmount;
                         //赋0
                         if (empty($orderDeliveryAmount[$dbPackage['order_no']])) {
