@@ -38,6 +38,7 @@ class AssignBatch extends ATourNotify
 
     public function getDataList(): array
     {
+        $this->batch['delivery_count'] = 0;
         $orderNoList = array_column($this->orderList, 'order_no');
         $packageList = Package::query()->whereIn('order_no', $orderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
         $packageList = array_create_group_index($packageList, 'order_no');
@@ -47,7 +48,8 @@ class AssignBatch extends ATourNotify
         $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList, $materialList) {
             $order['package_list'] = $packageList[$order['order_no']] ?? [];
             $order['material_list'] = $materialList[$order['order_no']] ?? [];
-            $order['delivery_count'] = collect($packageList)->whereNotNull('delivery_amount')->count();
+            $order['delivery_count'] = collect($packageList)->where('order_no', $order['order_no'])->whereNotNull('delivery_amount')->count();
+            $this->batch['delivery_count'] += $order['delivery_count'];
             return collect($order);
         })->toArray();
         unset($packageList, $materialList);
