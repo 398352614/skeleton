@@ -146,6 +146,7 @@ class ReportService extends BaseService
             $batchList[$k]['sort_id'] = $k + 1;
         }
         //统计站点的各费用
+        $info['card_sticker_count'] = $info['card_delivery_count'] = $info['cash_sticker_count'] = $info['cash_delivery_count'] = $info['api_sticker_count'] = $info['api_delivery_count'] = 0;
         foreach ($orderList as $k => $v) {
             //更新订单统计
             $orderList[$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
@@ -154,24 +155,27 @@ class ReportService extends BaseService
             $orderList[$k]['expect_sticker_amount'] = number_format(round($v['sticker_amount'], 2), 2);
             $orderList[$k]['expect_delivery_amount'] = number_format(round($v['delivery_amount'], 2), 2);
             $orderList[$k]['expect_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
-
             if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
                 $orderList[$k]['actual_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
                 $orderList[$k]['actual_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
                 $orderList[$k]['actual_sticker_amount'] = number_format(round($v['sticker_amount'], 2), 2);
                 $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount']), 2), 2);
-
+                $orderList[$k]['sticker_count'] = count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
+                $orderList[$k]['delivery_count'] = count(collect($orderList[$k]['package_list'])->where('delivery_amount', '<>', 0)->toArray());
                 $orderList[$k]['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'];
-                if ($orderList[$k]['pay_type'] == BaseConstService::BATCH_PAY_TYPE_2) {
+                if ($orderList[$k]['pay_type'] == BaseConstService::BATCH_PAY_TYPE_1) {
                     if (!empty($orderList[$k]['package_list'])) {
-                        $info['card_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
-                        $info['card_delivery_count'] += count(collect($orderList[$k]['package_list'])->where('delivery_amount', '<>', "")->toArray());
+                        $info['cash_sticker_count'] += $orderList[$k]['sticker_count'];
+                        $info['cash_delivery_count'] += $orderList[$k]['delivery_count'];
                     }
-                } else {
+                } elseif ($orderList[$k]['pay_type'] == BaseConstService::BATCH_PAY_TYPE_2) {
                     if (!empty($orderList[$k]['package_list'])) {
-                        $info['cash_sticker_count'] += count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', "")->toArray());
-                        $info['card_delivery_count'] += count(collect($orderList[$k]['package_list'])->where('delivery_amount', '<>', "")->toArray());
+                        $info['card_sticker_count'] += $orderList[$k]['sticker_count'];
+                        $info['card_delivery_count'] += $orderList[$k]['delivery_count'];
                     }
+                } elseif ($orderList[$k]['pay_type'] == BaseConstService::BATCH_PAY_TYPE_3) {
+                    $info['api_sticker_count'] += $orderList[$k]['sticker_count'];
+                    $info['api_delivery_count'] += $orderList[$k]['delivery_count'];
                 }
             } else {
                 $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount'] = $orderList[$k]['actual_sticker_amount'] = $orderList[$k]['actual_replace_amount'] = 0;
@@ -196,9 +200,9 @@ class ReportService extends BaseService
 
     public function countByPayType($info, $batchList)
     {
-        $info['card_settlement_amount'] = $info['card_replace_amount'] = $info['card_sticker_amount'] = $info['card_delivery_amount'] = $info['card_total_amount'] = $info['card_sticker_count'] = $info['card_delivery_count'] = 0;
-        $info['cash_settlement_amount'] = $info['cash_replace_amount'] = $info['cash_sticker_amount'] = $info['cash_delivery_amount'] = $info['cash_total_amount'] = $info['cash_sticker_count'] = $info['cash_delivery_count'] = 0;
-        $info['api_settlement_amount'] = $info['api_replace_amount'] = $info['api_sticker_amount'] = $info['api_delivery_amount'] = $info['api_total_amount'] = $info['api_sticker_count'] = $info['api_delivery_count'] = 0;
+        $info['card_settlement_amount'] = $info['card_replace_amount'] = $info['card_sticker_amount'] = $info['card_delivery_amount'] = $info['card_total_amount'] = 0;
+        $info['cash_settlement_amount'] = $info['cash_replace_amount'] = $info['cash_sticker_amount'] = $info['cash_delivery_amount'] = $info['cash_total_amount'] = 0;
+        $info['api_settlement_amount'] = $info['api_replace_amount'] = $info['api_sticker_amount'] = $info['api_delivery_amount'] = $info['api_total_amount'] = 0;
         foreach ($batchList as $k => $v) {
             $batchList[$k]['actual_total_amount'] = number_format(round(($v['actual_settlement_amount'] + $v['actual_replace_amount'] + $v['sticker_amount']), 2), 2);
             //更新取件线路统计
