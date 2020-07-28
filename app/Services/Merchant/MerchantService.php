@@ -36,7 +36,7 @@ class MerchantService extends BaseService
             throw new BusinessLogicException('可预约天数必须大于提前下单天数');
         }
         if (empty($data['appointment_days'])) {
-            unset($data['appointment_days']);
+            $params['appointment_days'] = null;
         }
         $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'contacter', 'phone', 'country', 'address']));
         if ($rowCount === false) {
