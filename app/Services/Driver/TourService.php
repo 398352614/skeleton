@@ -799,7 +799,7 @@ class TourService extends BaseService
             'pay_type' => $params['pay_type'],
             'pay_picture' => $params['pay_picture']
         ];
-        $rowCount = $this->getBatchService()->updateById($batch['id'], array_merge($batchData, $totalAmount));
+        $rowCount = $this->getBatchService()->updateById($batch['id'], array_merge($batchData, $totalAmount, ['auth_fullname' => $params['auth_fullname'] ?? '', 'auth_birth_date' => $params['auth_birth_date'] ?? null]));
         if ($rowCount === false) {
             throw new BusinessLogicException('签收失败');
         }
