@@ -930,14 +930,16 @@ class OrderService extends BaseService
     }
 
     /**
+     * @param $id
      * @param $data
      * @return array
      * @throws BusinessLogicException
      */
-    public function updatePhoneDateByApi($data)
+    public function updatePhoneDateByApi($id,$data)
     {
+        $where = [$this->getIdKeyName($id) => $id];
         //数据处理
-        $info = parent::getInfo(['order_no' => $data['order_no']], ['*'], false)->toArray();
+        $info = parent::getInfo($where, ['*'], false)->toArray();
         if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
             $data = Arr::only($data, ['receiver_phone']);
         } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
