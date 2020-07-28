@@ -706,7 +706,7 @@ class TourService extends BaseService
             if ((intval($package['type']) == BaseConstService::ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['sticker_no'])) {
                 $totalStickerAmount += $stickerAmount;
             }
-            if ((intval($package['type']) == BaseConstService::ORDER_TYPE_1) && $params['package_list'][$packageId]['delivery_charge'] == BaseConstService::YES) {
+            if ((intval($package['type']) == BaseConstService::ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['delivery_charge']) && $params['package_list'][$packageId]['delivery_charge'] == BaseConstService::YES) {
                 $totalDeliveryAmount += $deliveryAmount;
             }
         }
