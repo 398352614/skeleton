@@ -298,6 +298,15 @@ class RegisterController extends BaseController
         if ($fee === false) {
             throw new BusinessLogicException('费用初始化失败');
         }
+        $fee = Fee::create([
+            'company_id' => $company->id,
+            'name' => '提货费用',
+            'code' => BaseConstService::DELIVERY,
+            'amount' => 10.00
+        ]);
+        if ($fee === false) {
+            throw new BusinessLogicException('费用初始化失败');
+        }
     }
 
     /**

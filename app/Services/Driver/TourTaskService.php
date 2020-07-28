@@ -137,7 +137,7 @@ class TourTaskService extends BaseService
         $tour['batch_list'] = $batchList;
         $tour['order_list'] = $orderList;
         $tour['material_list'] = $materialList;
-        $tour['actual_total_amount'] = number_format(round($tour['sticker_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'], 2), 2);
+        $tour['actual_total_amount'] = number_format(round($tour['sticker_amount'] + $tour['delivery_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'], 2), 2);
         //$tour['package_list'] = $packageList;
         $tour['is_exist_special_remark'] = !empty(array_column($orderList, 'special_remark')) ? true : false;
         return $tour;

@@ -57,6 +57,7 @@ class BaseConstService
 
     //费用编码
     const STICKER = 'STICKER';
+    const DELIVERY = 'DELIVERY';
 
     //费用等级1-系统级2-自定义
     const FEE_LEVEL_1 = 1;

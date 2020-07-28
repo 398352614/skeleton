@@ -31,6 +31,7 @@ class PackageResource extends JsonResource
             'actual_quantity' => $this->actual_quantity,
             'sticker_no' => $this->sticker_no,
             'sticker_amount' => $this->sticker_amount,
+            'delivery_amount' => $this->delivery_amount,
             'remark' => $this->remark,
             'express_first_no' => $this->express_first_no,
             'express_second_no' => $this->express_second_no,

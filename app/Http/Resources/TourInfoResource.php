@@ -66,6 +66,7 @@ class TourInfoResource extends JsonResource
             'expect_pie_quantity' => $this->expect_pie_quantity,
             'actual_pie_quantity' => $this->actual_pie_quantity,
             'sticker_amount' => $this->sticker_amount,
+            'delivery_amount' => $this->delivery_amount,
             'replace_amount' => $this->replace_amount,
             'remark' => $this->remark,
             'batch_count'=>$this->batch_count,

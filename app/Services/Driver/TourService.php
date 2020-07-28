@@ -593,7 +593,7 @@ class TourService extends BaseService
         $materialList = $this->getMaterialService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
         $batch['tour_id'] = $tour['id'];
         $batch['actual_total_amount'] = number_format(round($batch['sticker_amount'] + $batch['actual_replace_amount'] + $batch['actual_settlement_amount'], 2), 2);
-        if ($batch['sticker_amount'] + $batch['sticker_amount'] + $batch['settlement_amount'] == 0) {
+        if ($batch['sticker_amount'] + $batch['sticker_amount'] + $batch['settlement_amount'] + $batch['delivery_amount'] == 0) {
             $batch['no_need_to_pay'] = BaseConstService::YES;
         } else {
             $batch['no_need_to_pay'] = BaseConstService::NO;
@@ -696,14 +696,18 @@ class TourService extends BaseService
     {
         list($tour, $batch) = $this->checkBatchLock($id, $params);
         $stickerAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::STICKER]);
+        $deliveryAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::DELIVERY]);
         //贴单费统计
         $packageList = collect($params['package_list'])->unique('id')->keyBy('id')->toArray();
         $packageIdList = array_keys($packageList);
-        $totalStickerAmount = 0.00;
+        $totalStickerAmount = $totalDeliveryAmount = 0.00;
         $packageList = $this->getPackageService()->getList(['id' => ['in', $packageIdList], 'batch_no' => $batch['batch_no'], 'status' => BaseConstService::PACKAGE_STATUS_4], ['id', 'order_no', 'batch_no', 'type'], false)->toArray();
         foreach ($packageList as $packageId => $package) {
             if ((intval($package['type']) == BaseConstService::ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['sticker_no'])) {
                 $totalStickerAmount += $stickerAmount;
+            }
+            if ((intval($package['type']) == BaseConstService::ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['delivery_charge']) && $params['package_list'][$packageId]['delivery_charge'] == BaseConstService::YES) {
+                $totalDeliveryAmount += $deliveryAmount;
             }
         }
         $orderNoList = array_unique(array_column($packageList, 'order_no'));
@@ -713,9 +717,10 @@ class TourService extends BaseService
         $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['order_no' => ['in', $orderNoList]]);
         return [
             'total_sticker_amount' => number_format($totalStickerAmount, 2),
+            'total_delivery_amount' => number_format($totalDeliveryAmount, 2),
             'total_replace_amount' => number_format($totalReplaceAmount, 2),
             'total_settlement_amount' => number_format($totalSettlementAmount, 2),
-            'total_amount' => number_format($totalStickerAmount + $totalReplaceAmount + $totalSettlementAmount, 2),
+            'total_amount' => number_format($totalStickerAmount + $totalReplaceAmount + $totalSettlementAmount + $totalDeliveryAmount, 2),
         ];
     }
 
@@ -736,7 +741,7 @@ class TourService extends BaseService
         if (intval($batch['status'] !== BaseConstService::BATCH_DELIVERING)) {
             throw new BusinessLogicException('站点当前状态不能签收');
         }
-        if ($params['pay_type'] == BaseConstService::BATCH_PAY_TYPE_4 && ($batch['replace_amount'] !== 0 || $batch['settlement_amount'] !== 0 || $batch['sticker_amount'] !== 0)) {
+        if ($params['pay_type'] == BaseConstService::BATCH_PAY_TYPE_4 && ($batch['replace_amount'] !== 0 || $batch['settlement_amount'] !== 0 || $batch['sticker_amount'] !== 0 || $batch['delivery_amount'])) {
             throw new BusinessLogicException('费用不为0，不能选择无需支付');
         }
         /*******************************************1.处理站点下的材料*************************************************/
@@ -745,6 +750,8 @@ class TourService extends BaseService
         $info = $this->dealPackageList($batch, $params);
         $totalStickerAmount = $info['totalStickerAmount'];
         $orderStickerAmountList = $info['orderStickerAmount'];
+        $totalDeliveryAmount = $info['totalDeliveryAmount'];
+        $orderDeliveryAmountList = $info['orderDeliveryAmount'];
         /****************************************2.处理站点下的所有订单************************************************/
         $pickupCount = $pieCount = 0;
         $signOrderList = $cancelOrderList = [];
@@ -763,16 +770,20 @@ class TourService extends BaseService
                 $pieCount += 1;
             }
             $signOrderList[] = $dbOrder;
-            //更新订单贴单费
-            $rowCount = $this->getOrderService()->update(['order_no' => $dbOrder['order_no']], ['sticker_amount' => $orderStickerAmountList[$dbOrder['order_no']] ?? 0.00]);
+            //更新订单贴单费及提货费
+            $rowCount = $this->getOrderService()->update(['order_no' => $dbOrder['order_no']], [
+                'sticker_amount' => $orderStickerAmountList[$dbOrder['order_no']] ?? 0.00,
+                'delivery_amount' => $orderDeliveryAmountList[$dbOrder['order_no']] ?? 0.00
+            ]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('签收失败');
             }
         }
         $totalAmount = [
             'sticker_amount' => $totalStickerAmount,
+            'delivery_amount' => $totalDeliveryAmount,
             'actual_replace_amount' => array_sum(array_column($signOrderList, 'replace_amount')),
-            'actual_settlement_amount' => array_sum(array_column($signOrderList, 'settlement_amount')),
+            'actual_settlement_amount' => array_sum(array_column($signOrderList, 'settlement_amount'))
         ];
         //金额验证
         $this->checkBatchSignAmount($params, $totalAmount);
@@ -807,7 +818,8 @@ class TourService extends BaseService
         $tourData = [
             'actual_pickup_quantity' => intval($tour['actual_pickup_quantity']) + $pickupCount,
             'actual_pie_quantity' => intval($tour['actual_pie_quantity']) + $pieCount,
-            'sticker_amount' => $tour['sticker_amount'] + $totalStickerAmount
+            'sticker_amount' => $tour['sticker_amount'] + $totalStickerAmount,
+            'delivery_amount' => $tour['delivery_amount'] + $totalDeliveryAmount
         ];
         $rowCount = parent::updateById($id, $tourData);
         if ($rowCount === false) {
@@ -823,7 +835,7 @@ class TourService extends BaseService
     /**
      * 验证签收金额
      * @param $params
-     * @param $totalStickerAmount
+     * @param $dbParams
      * @throws BusinessLogicException
      */
     private function checkBatchSignAmount($params, $dbParams)
@@ -831,6 +843,10 @@ class TourService extends BaseService
         //验证贴单费用
         if (bccomp($params['total_sticker_amount'], $dbParams['sticker_amount']) !== 0) {
             throw new BusinessLogicException('5001', 5001);
+        }
+        //验证提货费用
+        if (bccomp($params['total_delivery_amount'], $dbParams['delivery_amount']) !== 0) {
+            throw new BusinessLogicException('5003', 5003);
         }
         //验证代收货款
         if (bccomp($params['total_replace_amount'], $dbParams['actual_replace_amount']) !== 0) {
@@ -878,12 +894,13 @@ class TourService extends BaseService
     private function dealPackageList($batch, $params)
     {
         $packageList = $params['package_list'] ?? [];
-        $orderStickerAmount = [];
+        $orderStickerAmount = $orderDeliveryAmount = [];
         $stickerAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::STICKER]);
+        $deliveryAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::DELIVERY]);
         /***************************************2.处理站点下的所有包裹*************************************************/
         $packageList = collect($packageList)->unique('id')->keyBy('id')->toArray();
         $packageIdList = array_keys($packageList);
-        $totalStickerAmount = 0.00;
+        $totalStickerAmount = $totalDeliveryAmount = 0.00;
         $dbPackageList = $this->getPackageService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::PACKAGE_STATUS_4], ['id', 'order_no', 'batch_no', 'type'], false)->toArray();
         foreach ($dbPackageList as $dbPackage) {
             //判断是否签收
@@ -891,8 +908,10 @@ class TourService extends BaseService
                 $packageData = ['status' => BaseConstService::ORDER_STATUS_5, 'auth_fullname' => $params['auth_fullname'] ?? '', 'auth_birth_date' => $params['auth_birth_date'] ?? null];
                 //判断取件或派件
                 if (intval($dbPackage['type']) === BaseConstService::ORDER_TYPE_1) {
+                    //贴单费计算
                     if (!empty($packageList[$dbPackage['id']]['sticker_no'])) {
                         $totalStickerAmount += $stickerAmount;
+                        //赋0
                         if (empty($orderStickerAmount[$dbPackage['order_no']])) {
                             $orderStickerAmount[$dbPackage['order_no']] = 0;
                         }
@@ -901,7 +920,19 @@ class TourService extends BaseService
                     } else {
                         $packageStickerAmount = 0.00;
                     }
-                    $packageData = array_merge($packageData, ['actual_quantity' => 1, 'sticker_amount' => $packageStickerAmount, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no'] ?? '']);
+                    //提货费计算
+                    if ($packageList[$dbPackage['id']]['delivery_charge'] == BaseConstService::YES) {
+                        $totalDeliveryAmount += $deliveryAmount;
+                        //赋0
+                        if (empty($orderDeliveryAmount[$dbPackage['order_no']])) {
+                            $orderDeliveryAmount[$dbPackage['order_no']] = 0;
+                        }
+                        $orderDeliveryAmount[$dbPackage['order_no']] += $deliveryAmount;
+                        $packageDeliveryAmount = $deliveryAmount;
+                    } else {
+                        $packageDeliveryAmount = 0.00;
+                    }
+                    $packageData = array_merge($packageData, ['actual_quantity' => 1, 'sticker_amount' => $packageStickerAmount, 'delivery_amount' => $packageDeliveryAmount, 'sticker_no' => $packageList[$dbPackage['id']]['sticker_no'] ?? '']);
                 } else {
                     $packageData = array_merge($packageData, ['actual_quantity' => 1]);
                 }
@@ -916,6 +947,8 @@ class TourService extends BaseService
         return [
             'totalStickerAmount' => $totalStickerAmount,
             'orderStickerAmount' => $orderStickerAmount,
+            'totalDeliveryAmount' => $totalDeliveryAmount,
+            'orderDeliveryAmount' => $orderDeliveryAmount,
         ];
     }
 

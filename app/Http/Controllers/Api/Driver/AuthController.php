@@ -109,7 +109,7 @@ class AuthController extends Controller
     }
 
     /**
-     * @param $token
+     * @param $params
      * @return array
      * @throws BusinessLogicException
      */
@@ -136,7 +136,11 @@ class AuthController extends Controller
     {
         //获取贴单费用
         $stickerAmount = FeeService::getFeeAmount(['company_id' => $companyId, 'code' => BaseConstService::STICKER]);
-        return ['sticker_amount' => $stickerAmount];
+        $deliveryAmount = FeeService::getFeeAmount(['company_id' => $companyId, 'code' => BaseConstService::DELIVERY]);
+        return [
+            'sticker_amount' => $stickerAmount,
+            'delivery_amount' => $deliveryAmount
+        ];
     }
 
     /**
