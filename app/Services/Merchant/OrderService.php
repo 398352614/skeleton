@@ -438,12 +438,7 @@ class OrderService extends BaseService
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         Log::info('begin-path', $params);
-        //https://dev-tms.nle-tech.com/storage/merchant/file/3/order/202007291144035f20f08322093.xlsx
-        //https://dev-tms.nle-tech.com/public/merchant/file/3/order/202007291144035f20f08322093.xlsx
-        // /app/tms/storage
-        //merchant/file
-        base_path();
-        $params['path'] = str_replace(env('APP_URL') . '/storage/merchant/file', Storage::disk('merchant_file_public'), $params['path']);
+        $params['path'] = str_replace(env('APP_URL') . '/storage/merchant/file', storage_path('app/public/merchant/file'), $params['path']);
         Log::info('end-path', $params);
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
         //表头验证
