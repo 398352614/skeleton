@@ -297,7 +297,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $data = parent::getInfo(['order_no' => $info[0]['order_no']], ['merchant_id', 'order_no', 'batch_no', 'tour_no', 'status'], false);
-        $data['package_list'] = $this->getPackageService()->getList(['order_no' => $info[0]['order_no']], ['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount','delivery_amount'], false);
+        $data['package_list'] = $this->getPackageService()->getList(['order_no' => $info[0]['order_no']], ['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount'], false);
         $data['material_list'] = $this->getMaterialService()->getList(['order_no' => $info[0]['order_no']], ['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'], false);
         $data = array_only_fields_sort($data, ['merchant_id', 'tour_no', 'batch_no', 'order_no', 'status', 'package_list', 'material_list']);
         return $data;
@@ -436,7 +436,9 @@ class OrderService extends BaseService
         //文件读取
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
+        Log::info('begin-path', $params);
         $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
+        Log::info('end-path', $params);
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
         //表头验证
         $headings = array_values(__('excel.order'));
@@ -935,7 +937,7 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function updatePhoneDateByApi($id,$data)
+    public function updatePhoneDateByApi($id, $data)
     {
         $where = [$this->getIdKeyName($id) => $id];
         //数据处理
