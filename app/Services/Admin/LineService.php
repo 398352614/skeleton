@@ -119,7 +119,7 @@ class LineService extends BaseLineService
             throw new BusinessLogicException('线路不存在');
         }
         //基础验证
-        $this->check($data, $info);
+        $this->check($data, $info->toArray());
         //邮编范围验证
         $this->getLineRangeService()->checkRange($data['item_list'], $data['country'], $data['work_day_list'], $id);
         //修改
@@ -227,7 +227,7 @@ class LineService extends BaseLineService
             throw new BusinessLogicException('线路不存在');
         }
         //基础验证
-        $this->check($data, $info);
+        $this->check($data, $info->toArray());
         //区域范围验证
         $this->getLineAreaService()->checkArea($data['coordinate_list'], $data['country'], $id);
         //修改
