@@ -436,7 +436,7 @@ class OrderService extends BaseService
         //文件读取
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
-        $params['path'] = str_replace(env('APP_URL') . '/storage/', '/public/', $params['path']);
+        $params['path'] = str_replace(env('APP_URL') . '/storage/', '/public//', $params['path']);
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
         //表头验证
         $headings = array_values(__('excel.order'));
