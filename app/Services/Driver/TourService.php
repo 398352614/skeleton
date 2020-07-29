@@ -845,7 +845,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('5001', 5001);
         }
         //验证提货费用
-        if (bccomp($params['total_delivery_amount'], $dbParams['delivery_amount']) !== 0) {
+        if (intval($params['total_delivery_amount']) !== intval($dbParams['delivery_amount'])) {
             throw new BusinessLogicException('5003', 5003);
         }
         //验证代收货款
