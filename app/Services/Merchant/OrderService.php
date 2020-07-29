@@ -33,6 +33,7 @@ use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class OrderService extends BaseService
@@ -437,7 +438,12 @@ class OrderService extends BaseService
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         Log::info('begin-path', $params);
-        $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
+        //https://dev-tms.nle-tech.com/storage/merchant/file/3/order/202007291144035f20f08322093.xlsx
+        //https://dev-tms.nle-tech.com/public/merchant/file/3/order/202007291144035f20f08322093.xlsx
+        // /app/tms/storage
+        //merchant/file
+        base_path();
+        $params['path'] = str_replace(env('APP_URL') . '/storage/merchant/file', Storage::disk('merchant_file_public'), $params['path']);
         Log::info('end-path', $params);
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
         //表头验证
