@@ -594,7 +594,8 @@ class OrderService extends BaseService
         //若是新增,则填充商户ID及国家
         if (empty($orderNo)) {
             $params['merchant_id'] = auth()->user()->id;
-            empty($params['receiver_country']) && $params['receiver_country'] = CompanyTrait::getCountry();
+            //若邮编是纯数字，则认为是比利时邮编
+            $params['receiver_country'] = is_numeric(trim($params['receiver_post_code'])) ? BaseConstService::POSTCODE_COUNTRY : CompanyTrait::getCountry();
             if (empty($params['lat']) || empty($params['lon'])) {
                 $location = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
                 $params['lat'] = $location['lat'];
@@ -607,7 +608,7 @@ class OrderService extends BaseService
         //获取经纬度
         $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
-        empty($params['receiver_country']) && $params['receiver_country'] = CompanyTrait::getCountry();
+        $params['receiver_country'] = is_numeric(trim($params['receiver_post_code'])) ? BaseConstService::POSTCODE_COUNTRY : CompanyTrait::getCountry();
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }

@@ -586,7 +586,9 @@ class OrderService extends BaseService
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在');
         }
-        empty($params['receiver_country']) && $params['receiver_country'] = CompanyTrait::getCountry();
+        //若邮编是纯数字，则认为是比利时邮编
+        $params['receiver_country'] = is_numeric(trim($params['receiver_post_code'])) ? BaseConstService::POSTCODE_COUNTRY : CompanyTrait::getCountry();
+        !empty($params['receiver_country']) && $params['receiver_country'] = CompanyTrait::getCountry();
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
