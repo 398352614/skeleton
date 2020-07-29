@@ -480,7 +480,9 @@ return [
         'level' => '级别',
         'amount' => '费用',
         'total_sticker_amount' => '贴单总费用',
-        'total_delivery_amount' => '提货总费用'
+        'total_delivery_amount' => '提货总费用',
+
+        'date_list' => '日期列表',
 
     ],
 ];
