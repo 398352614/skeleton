@@ -91,7 +91,11 @@ class ReceiverAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $this->check($data, $id);
+        $info = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $this->check($data, $info->toArray());
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
@@ -102,18 +106,18 @@ class ReceiverAddressService extends BaseService
     /**
      * 验证
      * @param $data
-     * @param null $id
+     * @param array $dbInfo
      * @throws BusinessLogicException
      */
-    public function check(&$data, $id = null)
+    public function check(&$data, $dbInfo = [])
     {
-        $data['receiver_country'] = CompanyTrait::getCountry();
+        $data['receiver_country'] = !empty($dbInfo['receiver_country']) ? $dbInfo['receiver_country'] : CompanyTrait::getCountry();
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['receiver_address'])) {
             $data['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code'])));
         }
         //判断是否唯一
         $where = $this->getUniqueWhere($data);
-        !empty($id) && $where = Arr::add($where, 'id', ['<>', $id]);
+        !empty($dbInfo['id']) && $where = Arr::add($where, 'id', ['<>', $dbInfo['id']]);
         $info = parent::getInfo($where, ['*'], false);
         if (!empty($info)) {
             throw new BusinessLogicException('收货方地址已存在，不能重复添加');

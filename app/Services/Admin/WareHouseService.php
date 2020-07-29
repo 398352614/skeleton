@@ -76,7 +76,11 @@ class WareHouseService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $this->fillData($data);
+        $info = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $this->fillData($data, $info->toArray());
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('仓库修改失败，请重新操作');
@@ -86,11 +90,12 @@ class WareHouseService extends BaseService
     /**
      * 填充数据
      * @param $params
+     * @param $dbInfo
      */
-    private function fillData(&$params)
+    private function fillData(&$params, $dbInfo = [])
     {
         //填充地址
-        $params['country'] = CompanyTrait::getCountry();
+        $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['address'])) {
             $params['address'] = implode(' ', array_only_fields_sort($params, ['country', 'city', 'street', 'house_number', 'post_code']));
         }

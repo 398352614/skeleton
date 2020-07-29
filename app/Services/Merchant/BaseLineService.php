@@ -132,7 +132,7 @@ class BaseLineService extends BaseService
      */
     public function check(&$params)
     {
-        $params['country'] = CompanyTrait::getCountry();
+        $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
             throw new BusinessLogicException('仓库不存在！');
@@ -233,13 +233,15 @@ class BaseLineService extends BaseService
      */
     private function getLineRangeByPostcode($postCode, $executionDate)
     {
+        //若邮编是纯数字，则认为是比利时邮编
+        $country = is_numeric(trim($postCode)) ? BaseConstService::POSTCODE_COUNTRY : CompanyTrait::getCountry();
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
         $lineRange = $this->getLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
-            ->where('country', CompanyTrait::getCountry());
+            ->where('country', $country);
         //若存在取派日期，则加上取派日期条件
         !empty($executionDate) && $lineRange->where('schedule', Carbon::create($executionDate)->dayOfWeek);
         $lineRange = $lineRange->first();
@@ -253,13 +255,15 @@ class BaseLineService extends BaseService
      */
     public function getLineRangeListByPostcode($postCode)
     {
+        //若邮编是纯数字，则认为是比利时邮编
+        $country = is_numeric(trim($postCode)) ? BaseConstService::POSTCODE_COUNTRY : CompanyTrait::getCountry();
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
         $lineRangeList = $this->getLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
-            ->where('country', CompanyTrait::getCountry())
+            ->where('country', $country)
             ->get()->toArray();
         return $lineRangeList ?? [];
     }

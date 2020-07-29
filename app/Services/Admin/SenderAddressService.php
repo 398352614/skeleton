@@ -78,13 +78,13 @@ class SenderAddressService extends BaseService
 
     /**
      * 联合唯一检验
-     * @param $params
-     * @param null $id
+     * @param $data
+     * @param array $dbInfo
      * @throws BusinessLogicException
      */
-    private function check(&$data, $id = null)
+    private function check(&$data, $dbInfo = [])
     {
-        $data['sender_country'] = CompanyTrait::getCountry();
+        $data['sender_country'] = !empty($dbInfo['sender_country']) ? $dbInfo['sender_country'] : CompanyTrait::getCountry();
         //验证商家是否存在
         $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id']], ['id', 'country'], false);
         if (empty($merchant)) {
@@ -95,7 +95,7 @@ class SenderAddressService extends BaseService
         }
         //判断是否唯一
         $where = $this->getUniqueWhere($data);
-        !empty($id) && $where = Arr::add($where, 'id', ['<>', $id]);
+        !empty($dbInfo['id']) && $where = Arr::add($where, 'id', ['<>', $dbInfo['id']]);
         $info = parent::getInfo($where, ['*'], false);
         if (!empty($info)) {
             throw new BusinessLogicException('发货方地址已存在，不能重复添加');
@@ -123,10 +123,11 @@ class SenderAddressService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $info = $this->check($data, $id);
-        if (!empty($info)) {
-            throw new BusinessLogicException('发货方地址已存在，不能重复添加');
+        $info = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
         }
+        $this->check($data, $info->toArray());
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('地址修改失败');

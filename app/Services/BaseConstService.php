@@ -19,6 +19,9 @@ class BaseConstService
     const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
 
+    //邮编国家
+    const POSTCODE_COUNTRY = 'BE';
+
     //是否
     const YES = 1;
     const NO = 2;

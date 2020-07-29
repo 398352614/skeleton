@@ -411,7 +411,7 @@ class OrderService extends BaseService
         $list = json_decode($params['list'], true);
         for ($i = 0; $i < count($list); $i++) {
             $list[$i] = $this->form($list[$i]);
-            $list[$i]['receiver_country'] = CompanyTrait::getCountry();
+            empty($list[$i]['receiver_country']) && $list[$i]['receiver_country'] = CompanyTrait::getCountry();
             try {
                 $this->store($list[$i], BaseConstService::ORDER_SOURCE_2);
             } catch (BusinessLogicException $e) {
@@ -478,7 +478,7 @@ class OrderService extends BaseService
             if (is_numeric($data[$i]['execution_date'])) {
                 $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             }
-            $data[$i]['receiver_country'] = CompanyTrait::getCountry();//填充收件人国家
+            empty($data[$i]['receiver_country']) && $data[$i]['receiver_country'] = CompanyTrait::getCountry();//填充收件人国家
         }
         return $data;
     }
@@ -594,7 +594,7 @@ class OrderService extends BaseService
         //若是新增,则填充商户ID及国家
         if (empty($orderNo)) {
             $params['merchant_id'] = auth()->user()->id;
-            $params['receiver_country'] = CompanyTrait::getCountry();
+            empty($params['receiver_country']) && $params['receiver_country'] = CompanyTrait::getCountry();
             if (empty($params['lat']) || empty($params['lon'])) {
                 $location = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
                 $params['lat'] = $location['lat'];
@@ -607,7 +607,7 @@ class OrderService extends BaseService
         //获取经纬度
         $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
-        $params['receiver_country'] = CompanyTrait::getCountry();
+        empty($params['receiver_country']) && $params['receiver_country'] = CompanyTrait::getCountry();
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }

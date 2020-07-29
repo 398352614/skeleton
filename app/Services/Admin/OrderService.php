@@ -515,7 +515,7 @@ class OrderService extends BaseService
                 $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             }
             $data[$i] = array_map('strval', $data[$i]);
-            $data[$i]['receiver_country'] = CompanyTrait::getCountry();//填充收件人国家
+            empty($data[$i]['receiver_country']) && $data[$i]['receiver_country'] = CompanyTrait::getCountry();//填充收件人国家
         }
         return $data;
     }
@@ -586,7 +586,7 @@ class OrderService extends BaseService
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在');
         }
-        $params['receiver_country'] = CompanyTrait::getCountry();
+        empty($params['receiver_country']) && $params['receiver_country'] = CompanyTrait::getCountry();
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
