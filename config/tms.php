@@ -11,6 +11,8 @@ return [
     'vpn' => env('VPN'),
     'push_url' => env('PUSH_URL', 'dev-tms.nle-tech.com/socket'),
     'country_path' => storage_path(env('COUNTRY_PATH')),
+    'special_merchant_id' => env('SPECIAL_MERCHANT_ID'),
+    'fake_merchant_id' => env('FAKE_MERCHANT_ID'),
 
     //缓存前缀
     'cache_prefix' => [

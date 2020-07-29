@@ -593,8 +593,12 @@ class OrderService extends BaseService
     {
         //若是新增,则填充商户ID及国家
         if (empty($orderNo)) {
-            $params['merchant_id'] = auth()->user()->id;
-            $params['receiver_country'] = CompanyTrait::getCountry();
+            if (auth()->user()->id == config('TMS.special_merchant_id') && $params['receiver_country'] == 'BZ') {
+                $params['merchant_id'] = config('TMS.fake_merchant_id');
+            } else {
+                $params['receiver_country'] = CompanyTrait::getCountry();
+                $params['merchant_id'] = auth()->user()->id;
+            }
             if (empty($params['lat']) || empty($params['lon'])) {
                 $location = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
                 $params['lat'] = $location['lat'];

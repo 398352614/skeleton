@@ -124,7 +124,12 @@ class CompanyScope implements Scope
                 && !($model instanceof Holiday)
                 && !($model instanceof HolidayDate)
             ) {
-                $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
+                if ($user->id == config('TMS.special_merchant_id')) {
+                    $array = $user->id . ',' . config('TMS.fake_merchant_id');
+                    $builder->whereIn($model->getTable() . '.merchant_id', $array);
+                } else {
+                    $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
+                }
             }
         }
     }

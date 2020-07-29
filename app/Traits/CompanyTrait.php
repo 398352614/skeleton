@@ -8,6 +8,7 @@
 
 namespace App\Traits;
 
+use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 
@@ -20,6 +21,9 @@ trait CompanyTrait
     public static function getCountry()
     {
         $company = self::getCompany();
+        if($company['id'] == config('TMS.fake_merchant_id')){
+            $company['country'] = 'BZ';
+        }
         return $company['country'] ?? '';
     }
 
