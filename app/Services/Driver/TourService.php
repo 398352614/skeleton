@@ -741,7 +741,7 @@ class TourService extends BaseService
         if (intval($batch['status'] !== BaseConstService::BATCH_DELIVERING)) {
             throw new BusinessLogicException('站点当前状态不能签收');
         }
-        if ($params['pay_type'] == BaseConstService::BATCH_PAY_TYPE_4 && ($batch['replace_amount'] !== 0 || $batch['settlement_amount'] !== 0 || $batch['sticker_amount'] !== 0 || $batch['delivery_amount'])) {
+        if ($params['pay_type'] == BaseConstService::BATCH_PAY_TYPE_4 && ($batch['replace_amount'] !== 0 || $batch['settlement_amount'] !== 0 || $batch['sticker_amount'] !== 0 || $batch['delivery_amount'] !== 0)) {
             throw new BusinessLogicException('费用不为0，不能选择无需支付');
         }
         /*******************************************1.处理站点下的材料*************************************************/
