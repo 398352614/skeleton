@@ -114,7 +114,7 @@ class LineService extends BaseLineService
      */
     public function postcodeUpdate($id, $data)
     {
-        $info = parent::getInfo(['id' => $id, 'rule' => BaseConstService::LINE_RULE_POST_CODE], ['id'], false);
+        $info = parent::getInfo(['id' => $id, 'rule' => BaseConstService::LINE_RULE_POST_CODE], ['id', 'country'], false);
         if (empty($info)) {
             throw new BusinessLogicException('线路不存在');
         }
@@ -222,7 +222,7 @@ class LineService extends BaseLineService
      */
     public function areaUpdate($id, $data)
     {
-        $info = parent::getInfo(['id' => $id, 'rule' => BaseConstService::LINE_RULE_AREA], ['id'], false);
+        $info = parent::getInfo(['id' => $id, 'rule' => BaseConstService::LINE_RULE_AREA], ['id', 'country'], false);
         if (empty($info)) {
             throw new BusinessLogicException('线路不存在');
         }

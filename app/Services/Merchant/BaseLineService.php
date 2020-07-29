@@ -127,10 +127,10 @@ class BaseLineService extends BaseService
     /**
      * 验证
      * @param $params
-     * @param $id
+     * @param $dbInfo
      * @throws BusinessLogicException
      */
-    public function check(&$params)
+    public function check(&$params, $dbInfo = [])
     {
         $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
