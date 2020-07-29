@@ -67,7 +67,7 @@ class BaseModel extends Model
             $countryList = ['country', 'receiver_country', 'sender_country'];
             $newColumns = array_flip($columns);
             foreach ($countryList as $country) {
-                if (!empty($newColumns[$country])) {
+                if (!empty($newColumns[$country]) && empty($model->$country)) {
                     $model->$country = auth()->user() ? CompanyTrait::getCountry() : null;
                 }
             }
