@@ -438,7 +438,7 @@ class OrderService extends BaseService
         $params['dir'] = 'order';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         Log::info('begin-path', $params);
-        $params['path'] = str_replace(env('APP_URL') . '/storage/merchant/file', storage_path('app/public/merchant/file'), $params['path']);
+        $params['path'] = str_replace(config('url') . '/storage/merchant/file', storage_path('app/public/merchant/file'), $params['path']);
         Log::info('end-path', $params);
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
         //表头验证

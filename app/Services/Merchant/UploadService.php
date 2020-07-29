@@ -143,7 +143,7 @@ class UploadService
         }
         return [
             'name' => $params['name'],
-            'path' => $this->fileDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name'])
+            'path' => $this->fileDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name']),
         ];
     }
 
