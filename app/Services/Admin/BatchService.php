@@ -322,8 +322,8 @@ class BatchService extends BaseService
         $packageList = $this->statusConvert($packageList);
         $materialList = $this->getMaterialService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($info['orders'] as $k => $v) {
-            $info['orders'][$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
-            $info['orders'][$k]['material_list'] = collect($materialList)->where('order_no', $v['order_no'])->all();
+            $info['orders'][$k]['package_list'] = array_values(collect($packageList)->where('order_no', $v['order_no'])->all());
+            $info['orders'][$k]['material_list'] = array_values(collect($materialList)->where('order_no', $v['order_no'])->all());
         }
         return $info;
     }
