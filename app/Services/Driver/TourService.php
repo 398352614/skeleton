@@ -592,7 +592,7 @@ class TourService extends BaseService
         //获取站点中过所有材料
         $materialList = $this->getMaterialService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
         $batch['tour_id'] = $tour['id'];
-        $batch['actual_total_amount'] = number_format(round($batch['sticker_amount'] + $batch['actual_replace_amount'] + $batch['actual_settlement_amount'], 2), 2);
+        $batch['actual_total_amount'] = number_format(round($batch['sticker_amount'] + $batch['delivery_amount'] + $batch['actual_replace_amount'] + $batch['actual_settlement_amount'], 2), 2);
         if ($batch['sticker_amount'] + $batch['sticker_amount'] + $batch['settlement_amount'] + $batch['delivery_amount'] == 0) {
             $batch['no_need_to_pay'] = BaseConstService::YES;
         } else {
