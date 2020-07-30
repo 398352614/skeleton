@@ -751,7 +751,7 @@ class OrderService extends BaseService
                 try {
                     $info = LocationTrait::getLocation($data['receiver_country'], $data['receiver_city'], $data['receiver_street'], $data['receiver_house_number'], $data['receiver_post_code']);
                 } catch (BusinessLogicException $e) {
-                    $list['log'] = __($e->getMessage());
+                    $list['log'] = __($e->getMessage(), $e->replace);
                     $list['receiver_house_number'] = __('请检查输入');
                     $list['receiver_post_code'] = __('请检查输入');
                 } catch (\Exception $e) {
@@ -790,7 +790,7 @@ class OrderService extends BaseService
             $line = $this->getLineService()->getInfoByRule($data, BaseConstService::ORDER_OR_BATCH_1);
             $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         } catch (BusinessLogicException $e) {
-            $list['log'] = __($e->getMessage());
+            $list['log'] = __($e->getMessage(), $e->replace);
         } catch (\Exception $e) {
         }
         return $list;
