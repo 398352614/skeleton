@@ -19,6 +19,7 @@ use App\Services\OrderNoRuleService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
+use Carbon\CarbonInterval;
 use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -195,9 +196,9 @@ class TourService extends BaseService
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
             unset($this->filters['status']);
         }
-        if(!empty($this->formData['sort_by_time']) && $this->formData['sort_by_time'] == BaseConstService::SORT_BY_TIME_2){
-            $this->query->orderBy('execution_date','desc');
-        }else{
+        if (!empty($this->formData['sort_by_time']) && $this->formData['sort_by_time'] == BaseConstService::SORT_BY_TIME_2) {
+            $this->query->orderBy('execution_date', 'desc');
+        } else {
             $this->query->orderBy('execution_date');
         }
         return parent::getPageList();
@@ -803,6 +804,10 @@ class TourService extends BaseService
             $info['batchs'][$k]['sort_id'] = $k + 1;
         }
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
+        $info['warehouse_actual_time'] = $info['actual_time'];
+        $info['warehouse_actual_distance'] = $info['actual_distance'] ?? 0;
+        $info['warehouse_actual_arrive_time'] = $info['end_time'];
+        $info['warehouse_actual_time_human'] = CarbonInterval::second($info['actual_time'])->cascade()->forHumans() ?? null;
         return $info;
     }
 
@@ -963,7 +968,7 @@ class TourService extends BaseService
         }
         $tour['expect_pie_package_quantity'] = 0;
         $tour['actual_pie_package_quantity'] = 0;
-        $tour['expect_pickup_package_quantity'] =0;
+        $tour['expect_pickup_package_quantity'] = 0;
         $tour['actual_pickup_package_quantity'] = 0;
         $tour['expect_material_quantity'] = 0;
         $tour['actual_material_quantity'] = 0;
@@ -982,7 +987,7 @@ class TourService extends BaseService
         }
         $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
         for ($i = 0; $i < count($batchList); $i++) {
-            $batchList[$i]['out_user_id']=collect($orderList)->where('batch_no',$batchList[$i]['batch_no'])->first() ? collect($orderList)->where('batch_no',$batchList[$i]['batch_no'])->first()['out_user_id'] : '';
+            $batchList[$i]['out_user_id'] = collect($orderList)->where('batch_no', $batchList[$i]['batch_no'])->first() ? collect($orderList)->where('batch_no', $batchList[$i]['batch_no'])->first()['out_user_id'] : '';
             $batchList[$i]['expect_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->all());
             $batchList[$i]['actual_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->where('status', BaseConstService::PACKAGE_STATUS_5)->all());
             $batchList[$i]['expect_pickup_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_1)->where('batch_no', $batchList[$i]['batch_no'])->all());
