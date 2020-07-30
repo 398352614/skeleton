@@ -48,12 +48,15 @@ class AssignBatch extends ATourNotify
         $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList, $materialList) {
             $order['package_list'] = $packageList[$order['order_no']] ?? [];
             $order['material_list'] = $materialList[$order['order_no']] ?? [];
-            $order['delivery_count'] = collect($packageList)->where('order_no', $order['order_no'])->where('delivery_amount', '<>', 0)->count();
-            $this->batch['delivery_count'] += $order['delivery_count'];
             return collect($order);
         })->toArray();
+        $orderList = $this->orderList;
+        foreach ($orderList as $k => $v) {
+            $orderList[$k]['delivery_count'] = collect($packageList)->where('order_no', $v['order_no'])->where('delivery_amount', '<>', 0)->count();
+            $this->batch['delivery_count'] += $orderList[$k]['delivery_count'];
+        }
         unset($packageList, $materialList);
-        $orderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
+        $orderList = collect($orderList)->groupBy('merchant_id')->toArray();
         $batchList = [];
         foreach ($orderList as $merchantId => $merchantOrderList) {
             $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
