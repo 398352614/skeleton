@@ -295,11 +295,11 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
-        $list = parent::getPageList();
         if (!empty($this->formData['line_id'])) {
-            $batchList = $this->getBatchService()->getList(['line_id' => $this->formData['line_id']], ['*'], false)->pluck('batch_no')->toArray();
-            $list = $list->whereIn('batch_no', $batchList)->all();
+            $tourList = $this->getTourService()->getList(['line_id' => $this->formData['line_id']])->pluck('tour_no')->toArray();
+            $this->query->whereIn('tour_no', $tourList)->where('tour_no', 'like', $this->formData['tour_no']);
         }
+        $list = parent::getPageList();
         $tourNoList = collect($list)->where('tour_no', '<>', '')->pluck('tour_no')->toArray();
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false);
         foreach ($list as $k => $v) {
