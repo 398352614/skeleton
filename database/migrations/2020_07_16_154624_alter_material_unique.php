@@ -14,6 +14,7 @@ class AlterMaterialUnique extends Migration
     public function up()
     {
         Schema::table('material', function (Blueprint $table) {
+            $table->dropIndex('order_no_name');
             $table->dropIndex('order_no_code');
             $table->unique(['order_no', 'code', 'out_order_no'], 'order_no_code_out');
         });
