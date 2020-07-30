@@ -299,7 +299,6 @@ class OrderService extends BaseService
         if (!empty($this->formData['line_id'])) {
             $batchList = $this->getBatchService()->getList(['line_id' => $this->formData['line_id']], ['*'], false)->pluck('batch_no')->toArray();
             $list = $list->whereIn('batch_no', $batchList)->all();
-            $list = array_values($list);
         }
         $tourNoList = collect($list)->where('tour_no', '<>', '')->pluck('tour_no')->toArray();
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false);

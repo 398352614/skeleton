@@ -110,6 +110,7 @@ class OutWarehouse implements ShouldQueue
             $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
             event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $this->orderList));
             /**************************************3.通知下一个站点事件************************************************/
+            sleep(5);
             $nextBatch = TourTrait::getNextBatch($this->tour_no);
             if (!empty($nextBatch)) {
                 event(new NextBatch($tour, $nextBatch->toArray()));
