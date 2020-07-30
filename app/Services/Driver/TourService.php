@@ -1032,7 +1032,7 @@ class TourService extends BaseService
         if (!empty($params['package_list'])) {
             $dbPackage = $this->getPackageService()->getInfo(['id' => ['in', array_column($params['package_list'], 'id')], 'tour_no' => $tour['tour_no'], 'is_auth' => BaseConstService::IS_AUTH_1], ['id'], false);
             if (!empty($dbPackage) && (empty($params['auth_fullname']) || empty($params['auth_birth_date']))) {
-                throw new BusinessLogicException('存在需要身份验证的包裹，请填些身份验证信息', 1000);
+                throw new BusinessLogicException('存在需要身份验证的包裹，请填写身份验证信息', 1000);
             }
         }
         return [$tour, $batch, $materialList];
