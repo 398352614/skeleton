@@ -295,9 +295,12 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
-        if (!empty($this->formData['line_id'])) {
+        if (!empty($this->formData['line_id']) && !empty($this->formData['tour_no'])) {
             $tourList = $this->getTourService()->getList(['line_id' => $this->formData['line_id']])->pluck('tour_no')->toArray();
             $this->query->whereIn('tour_no', $tourList)->where('tour_no', 'like', $this->formData['tour_no']);
+        } elseif (!empty($this->formData['line_id'])) {
+            $tourList = $this->getTourService()->getList(['line_id' => $this->formData['line_id']])->pluck('tour_no')->toArray();
+            $this->query->whereIn('tour_no', $tourList);
         }
         $list = parent::getPageList();
         $tourNoList = collect($list)->where('tour_no', '<>', '')->pluck('tour_no')->toArray();
