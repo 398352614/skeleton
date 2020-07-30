@@ -310,7 +310,7 @@ class OrderService extends BaseService
             $batchException = $this->getBatchExceptionService()->getInfo(['batch_no' => $order['batch_no']], ['id', 'batch_no', 'stage'], false, ['created_at' => 'desc']);
             $order['exception_stage_name'] = !empty($batchException) ? ConstTranslateTrait::batchExceptionStageList($batchException['stage']) : __('正常');
         }
-        return array_values($list);
+        return $list;
     }
 
     /**
