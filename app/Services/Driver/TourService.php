@@ -753,6 +753,7 @@ class TourService extends BaseService
         $orderStickerAmountList = $info['orderStickerAmount'];
         $totalDeliveryAmount = $info['totalDeliveryAmount'];
         $orderDeliveryAmountList = $info['orderDeliveryAmount'];
+        Log::info('订单下包裹提货费',$orderDeliveryAmountList);
         /****************************************2.处理站点下的所有订单************************************************/
         $pickupCount = $pieCount = 0;
         $signOrderList = $cancelOrderList = [];

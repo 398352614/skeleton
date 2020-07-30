@@ -119,8 +119,6 @@ class ReportService extends BaseService
             'warehouse_expect_time' => $info['warehouse_expect_time'],
             'warehouse_expect_distance' => $info['warehouse_expect_distance'],
             'warehouse_expect_arrive_time' => $info['warehouse_expect_arrive_time'],
-
-
         ];
         //获取当前取件线路上的所有订单
         $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'out_user_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount', 'sticker_no'], false)->toArray();
@@ -313,7 +311,6 @@ class ReportService extends BaseService
     private function getBatchInfoList($batchList, $orderList, $materialList, $packageList)
     {
         $newBatchList = [];
-
         $orderList = array_create_group_index($orderList, 'batch_no');
         //材料处理
         $materialList = collect($materialList)->groupBy('batch_no')->toArray();
