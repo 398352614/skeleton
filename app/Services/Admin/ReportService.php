@@ -341,6 +341,7 @@ class ReportService extends BaseService
                 'total_amount' => number_format(round(($batch['actual_settlement_amount'] + $batch['sticker_amount'] + $batch['delivery_amount'] + $batch['actual_replace_amount']), 2), 2),
                 'cancel_type' => $batch['cancel_type'],
                 'cancel_remark' => $batch['cancel_remark'],
+                'cancel_picture' => $batch['cancel_picture'],
                 'pay_picture' => $batch['pay_picture'],
                 'pay_type' => $batch['pay_type'],
                 'pay_type_name' => $batch['pay_type_name'],

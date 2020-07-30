@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\ReportService;
 
@@ -33,7 +34,7 @@ class ReportController extends BaseController
      * 获取详情
      * @param $id
      * @return array
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function show($id)
     {
