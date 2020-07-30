@@ -41,6 +41,9 @@ class AssignBatch extends ATourNotify
         $this->batch['delivery_count'] = 0;
         $orderNoList = array_column($this->orderList, 'order_no');
         $packageList = Package::query()->whereIn('order_no', $orderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
+        foreach ($packageList as $k => $v) {
+            $packageList[$k]['delivery_count'] = $v['delivery_amount'] ? 1 : 0;
+        }
         $packageList = array_create_group_index($packageList, 'order_no');
         Log::info('package_list', $packageList);
         $materialList = Material::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
@@ -52,9 +55,13 @@ class AssignBatch extends ATourNotify
         })->toArray();
         $orderList = $this->orderList;
         foreach ($orderList as $k => $v) {
-            $orderList[$k]['delivery_count'] = collect(array_values($packageList))->where('order_no', $v['order_no'])->where('delivery_amount', '<>', 0)->count();
+            $deliveryCountList = collect($packageList[$v['order_no']])->pluck('delivery_count')->toArray();
+            $orderList[$k]['delivery_count'] = 0;
+            foreach ($deliveryCountList as $x => $y) {
+                $orderList[$k]['delivery_count'] += $y;
+            }
             $this->batch['delivery_count'] += $orderList[$k]['delivery_count'];
-            Log::info('order',$orderList[$k]);
+            Log::info('order', $orderList[$k]);
         }
         unset($packageList, $materialList);
         $orderList = collect($orderList)->groupBy('merchant_id')->toArray();
