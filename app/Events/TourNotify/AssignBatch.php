@@ -52,7 +52,7 @@ class AssignBatch extends ATourNotify
         })->toArray();
         $orderList = $this->orderList;
         foreach ($orderList as $k => $v) {
-            $orderList[$k]['delivery_count'] = collect($packageList)->where('order_no', $v['order_no'])->where('delivery_amount', '<>', 0)->count();
+            $orderList[$k]['delivery_count'] = collect(array_values($packageList))->where('order_no', $v['order_no'])->where('delivery_amount', '<>', 0)->count();
             $this->batch['delivery_count'] += $orderList[$k]['delivery_count'];
             Log::info('order',$orderList[$k]);
         }
