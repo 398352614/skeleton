@@ -53,6 +53,7 @@ class TourInfoResource extends JsonResource
             'begin_signature_first_pic' => $this->begin_signature_first_pic,
             'begin_signature_second_pic' => $this->begin_signature_second_pic,
             'begin_signature_third_pic' => $this->begin_signature_third_pic,
+            'end_time' => $this->end_time,
             'end_signature' => $this->end_signature,
             'end_signature_remark' => $this->end_signature_remark,
             'expect_distance' => $this->expect_distance,

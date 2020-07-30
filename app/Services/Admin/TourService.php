@@ -799,15 +799,16 @@ class TourService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info['batchs'] = collect($info['batchs'])->sortBy('sort_id')->all();
-        foreach ($info['batchs'] as $k => $v) {
-            $info['batchs'][$k]['sort_id'] = $k + 1;
-        }
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         $info['warehouse_actual_time'] = $info['actual_time'];
         $info['warehouse_actual_distance'] = $info['actual_distance'] ?? 0;
         $info['warehouse_actual_arrive_time'] = $info['end_time'];
         $info['warehouse_actual_time_human'] = CarbonInterval::second($info['actual_time'])->cascade()->forHumans() ?? null;
+        $info['warehouse_expect_time_human'] = CarbonInterval::second($info['expect_time'])->cascade()->forHumans() ?? null;
+        $info['batchs'] = collect($info['batchs'])->sortBy('sort_id')->all();
+        foreach ($info['batchs'] as $k => $v) {
+            $info['batchs'][$k]['sort_id'] = $k + 1;
+        }
         return $info;
     }
 
