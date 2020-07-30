@@ -17,6 +17,7 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\StatusConvertTrait;
+use Carbon\CarbonInterval;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
@@ -119,6 +120,13 @@ class ReportService extends BaseService
             'warehouse_expect_time' => $info['warehouse_expect_time'],
             'warehouse_expect_distance' => $info['warehouse_expect_distance'],
             'warehouse_expect_arrive_time' => $info['warehouse_expect_arrive_time'],
+            'warehouse_expect_time_human' => CarbonInterval::second($info['warehouse_expect_time'])->cascade()->forHumans() ?? null,
+
+            'warehouse_actual_time' => $info['actual_time'],
+            'warehouse_actual_distance' => $info['actual_distance'] ?? 0,
+            'warehouse_actual_arrive_time' => $info['end_time'],
+            'warehouse_actual_time_human' => CarbonInterval::second($info['actual_time'])->cascade()->forHumans() ?? null,
+
         ];
         //获取当前取件线路上的所有订单
         $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'out_user_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount', 'sticker_no'], false)->toArray();

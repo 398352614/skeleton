@@ -43,6 +43,9 @@ class RouteTrackingController extends BaseController
         return $this->service->show();
     }
 
+    /**
+     * @return mixed
+     */
     public function index(){
         return $this->service->index();
     }
