@@ -154,7 +154,7 @@ class ReportService extends BaseService
             if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
                 $orderList[$k]['actual_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
                 $orderList[$k]['actual_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
-                $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount']), 2), 2);
+                $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] +$v['delivery_amount']), 2), 2);
                 $orderList[$k]['sticker_count'] = count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', ""));
                 $orderList[$k]['delivery_count'] = count(collect($orderList[$k]['package_list'])->where('delivery_amount', '<>', 0));
                 $orderList[$k]['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'];
