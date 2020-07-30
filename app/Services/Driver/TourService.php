@@ -753,7 +753,7 @@ class TourService extends BaseService
         $orderStickerAmountList = $info['orderStickerAmount'];
         $totalDeliveryAmount = $info['totalDeliveryAmount'];
         $orderDeliveryAmountList = $info['orderDeliveryAmount'];
-        Log::info('订单下包裹提货费',$orderDeliveryAmountList);
+        Log::info('订单下包裹提货费', $orderDeliveryAmountList);
         /****************************************2.处理站点下的所有订单************************************************/
         $pickupCount = $pieCount = 0;
         $signOrderList = $cancelOrderList = [];
@@ -812,7 +812,7 @@ class TourService extends BaseService
             'pay_type' => $params['pay_type'],
             'pay_picture' => $params['pay_picture']
         ];
-        $rowCount = $this->getBatchService()->updateById($batch['id'], array_merge($batchData, $totalAmount, ['auth_fullname' => $params['auth_fullname'] ?? '', 'auth_birth_date' => $params['auth_birth_date'] ?? null]));
+        $rowCount = $this->getBatchService()->updateById($batch['id'], array_merge($batchData, $totalAmount, ['auth_fullname' => $params['auth_fullname'] ?? '', 'auth_birth_date' => !empty($params['auth_birth_date']) ? $params['auth_birth_date'] : null]));
         if ($rowCount === false) {
             throw new BusinessLogicException('签收失败');
         }
@@ -907,7 +907,7 @@ class TourService extends BaseService
         foreach ($dbPackageList as $dbPackage) {
             //判断是否签收
             if (in_array(intval($dbPackage['id']), $packageIdList)) {
-                $packageData = ['status' => BaseConstService::ORDER_STATUS_5, 'auth_fullname' => $params['auth_fullname'] ?? '', 'auth_birth_date' => $params['auth_birth_date'] ?? null];
+                $packageData = ['status' => BaseConstService::ORDER_STATUS_5, 'auth_fullname' => $params['auth_fullname'] ?? '', 'auth_birth_date' => !empty($params['auth_birth_date']) ? $params['auth_birth_date'] : null];
                 //判断取件或派件
                 if (intval($dbPackage['type']) === BaseConstService::ORDER_TYPE_1) {
                     //贴单费计算
