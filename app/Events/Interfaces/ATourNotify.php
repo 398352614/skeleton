@@ -11,6 +11,7 @@ namespace App\Events\Interfaces;
 
 use App\Services\BaseConstService;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 abstract class ATourNotify
 {
@@ -48,6 +49,7 @@ abstract class ATourNotify
         !empty($orderList) && $this->orderList = collect($orderList)->map(function ($order) {
             return Arr::only($order, self::$orderFields);
         })->toArray();
+        Log::info('notify-type:' . $this->notifyType());
     }
 
     /**
