@@ -829,7 +829,7 @@ class TourService extends BaseService
         }
         //重新统计金额
         $this->reCountActualAmountByNo($tour['tour_no']);
-        $batch = $this->getBatchService()->getInfo(['batch_no' => $batch['batch_no']], ['*'], false);
+        $batch = $this->getBatchService()->getInfo(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
         return [$tour, $batch];
 
     }
