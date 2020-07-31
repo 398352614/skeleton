@@ -27,6 +27,13 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
             return [];
         });
 
+        Telescope::tag(function (IncomingEntry $entry) {
+            if ($entry->type === 'request') {
+                return ['uri:' . $entry->content['uri']];
+            }
+            return [];
+        });
+
         Telescope::filter(function (IncomingEntry $entry) {
             if ($this->app->isLocal() || ($this->app->environment() === 'development')) {
                 return true;
