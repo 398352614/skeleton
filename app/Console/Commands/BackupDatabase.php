@@ -37,7 +37,7 @@ class BackupDatabase extends Command
     {
         parent::__construct();
 
-        $this->process = new Process((array)sprintf(
+        system(sprintf(
             'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s > %s',
             config('database.connections.mysql.host'),
             config('database.connections.mysql.username'),
