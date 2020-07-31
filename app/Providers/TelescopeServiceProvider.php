@@ -25,11 +25,29 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
                 return true;
             }
 
+            Telescope::tag(function (IncomingEntry $entry) {
+                if ($entry->type === 'request') {
+                    return ['method:' . $entry->content['method']];
+                }
+                return [];
+            });
+
+            Telescope::tag(function (IncomingEntry $entry) {
+                if ($entry->type === 'request') {
+                    $reg = '/^[^\/]+?(\/[^\/]+?){2}[^\/]*/';
+                    $str = $entry->content['path'];
+                    preg_match($reg, $str, $match);
+                    return ['path:' . $match[0]];
+                }
+                return [];
+            });
+
             return $entry->isReportableException() ||
                 $entry->isFailedRequest() ||
                 $entry->isFailedJob() ||
                 $entry->isScheduledTask() ||
                 $entry->hasMonitoredTag();
+
         });
     }
 
