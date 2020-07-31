@@ -38,7 +38,7 @@ class BackupDatabase extends Command
         parent::__construct();
 
         $this->process = new Process(sprintf(
-            'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s > %s',
+            'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s | gzip > %s',
             config('database.connections.mysql.host'),
             config('database.connections.mysql.username'),
             config('database.connections.mysql.password'),
@@ -48,7 +48,7 @@ class BackupDatabase extends Command
             config('database.connections.mysql.database').'.telescope_entries_tags',
             config('database.connections.mysql.database').'.telescope_monitoring',
 
-            storage_path('backup/backup.sql')
+            storage_path('backup/backup.sql.gz')
         ));
     }
 
