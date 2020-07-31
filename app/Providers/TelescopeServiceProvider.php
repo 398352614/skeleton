@@ -29,7 +29,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         Telescope::tag(function (IncomingEntry $entry) {
             if ($entry->type === 'request') {
-                return ['path:' . $entry->content['uri']];
+                return [$entry->content['uri']];
             }
             return [];
         });
