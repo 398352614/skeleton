@@ -96,6 +96,8 @@ class Batch extends BaseModel
         'pay_picture',
         'created_at',
         'updated_at',
+        'auth_fullname',
+        'auth_birth_date'
     ];
 
     /**
