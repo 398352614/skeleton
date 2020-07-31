@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -36,10 +38,15 @@ class BackupDatabase extends Command
         parent::__construct();
 
         $this->process = new Process((array)sprintf(
-            'mysqldump -u%s -p%s %s > %s',
+            'mysqldump -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s > %s',
             config('database.connections.mysql.username'),
             config('database.connections.mysql.password'),
             config('database.connections.mysql.database'),
+
+            config('database.connections.mysql.database').'.telescope_entries',
+            config('database.connections.mysql.database').'.telescope_entries_tags',
+            config('database.connections.mysql.database').'.telescope_monitoring',
+
             storage_path('backup.sql')
         ));
     }
