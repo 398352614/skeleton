@@ -37,7 +37,7 @@ class BackupDatabase extends Command
     {
         parent::__construct();
 
-        system(sprintf(
+        $this->process = new Process(sprintf(
             'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s > %s',
             config('database.connections.mysql.host'),
             config('database.connections.mysql.username'),
@@ -59,14 +59,12 @@ class BackupDatabase extends Command
      */
     public function handle()
     {
-        $this->process->mustRun();
-
-        /*try {
+        try {
             $this->process->mustRun();
 
             $this->info('The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
             $this->error('The backup process has been failed.');
-        }*/
+        }
     }
 }
