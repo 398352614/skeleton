@@ -974,7 +974,7 @@ class OrderService extends BaseService
         $dbInfo['package_list'] = $this->getPackageService()->getList(['order_no' => $newData['order_no']], ['*'], false)->toArray();
         $dbInfo['material_list'] = $this->getMaterialService()->getList(['order_no' => $newData['order_no']], ['*'], false)->toArray();
         //验证
-        unset($newData['order_no'], $newData['tour_no'], $newData['batch_no']);
+        unset($newData['order_no'], $newData['tour_no'], $newData['batch_no'],$data['order_no'], $data['tour_no'], $data['batch_no']);
         /******************************更换站点***************************************/
         $line = $this->fillSender($newData);
         list($batch, $tour) = $this->changeBatch($dbInfo, $newData, $line);
