@@ -78,7 +78,7 @@ class TestController extends BaseController
      */
     public function update($id)
     {
-        return $this->service->updateById($id, $this->data);
+        return phpinfo();
     }
 
     public function destroy($id)
