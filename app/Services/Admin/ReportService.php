@@ -323,6 +323,7 @@ class ReportService extends BaseService
         //材料处理
         $materialList = collect($materialList)->groupBy('batch_no')->toArray();
         foreach ($batchList as $key => $batch) {
+            if(empty($batch['batch_no'])){continue;}
             $newBatchList[$key] = [
                 'id' => $batch['id'],
                 'batch_no' => $batch['batch_no'],
