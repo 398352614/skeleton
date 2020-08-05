@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('telescope:prune --hours=48')->daily()->onOneServer();
-        $schedule->command('db:backup')->everyFiveMinutes()->onOneServer();
+        $schedule->command('db:backup')->dailyAt('10:30')->onOneServer();
     }
 
     /**
