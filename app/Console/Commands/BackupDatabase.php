@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
@@ -36,7 +37,7 @@ class BackupDatabase extends Command
     public function __construct()
     {
         parent::__construct();
-
+        Log::info('backup database construct begin');
         $this->process = new Process(sprintf(
             'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s | gzip > %s',
             config('database.connections.mysql.host'),
@@ -44,12 +45,13 @@ class BackupDatabase extends Command
             config('database.connections.mysql.password'),
             config('database.connections.mysql.database'),
 
-            config('database.connections.mysql.database').'.telescope_entries',
-            config('database.connections.mysql.database').'.telescope_entries_tags',
-            config('database.connections.mysql.database').'.telescope_monitoring',
+            config('database.connections.mysql.database') . '.telescope_entries',
+            config('database.connections.mysql.database') . '.telescope_entries_tags',
+            config('database.connections.mysql.database') . '.telescope_monitoring',
 
             storage_path('backup/backup.sql.gz')
         ));
+        Log::info('backup database construct end');
     }
 
     /**
@@ -61,9 +63,10 @@ class BackupDatabase extends Command
     {
         try {
             $this->process->mustRun();
-
+            Log::info('The backup has been proceed successfully.');
             $this->info('The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
+            Log::info('The backup process has been failed.');
             $this->error('The backup process has been failed.');
         }
     }
