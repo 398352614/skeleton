@@ -66,7 +66,7 @@ class BackupDatabase extends Command
             Log::info('The backup has been proceed successfully.');
             $this->info('The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
-            Log::info('The backup process has been failed.');
+            Log::info($exception->getMessage());
             $this->error('The backup process has been failed.');
         }
     }
