@@ -48,6 +48,19 @@ class DriverService extends BaseService
     }
 
     /**
+     * 删除
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        $rowCount = parent::delete(['id' => $id]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('司机删除失败');
+        }
+    }
+
+    /**
      * 添加司机
      * @throws BusinessLogicException
      */

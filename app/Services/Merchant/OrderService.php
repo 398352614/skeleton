@@ -977,7 +977,7 @@ class OrderService extends BaseService
         unset($newData['tour_no'], $newData['batch_no'], $data['order_no'], $data['tour_no'], $data['batch_no']);
         /******************************更换站点***************************************/
         $line = $this->fillSender($newData);
-        list($batch, $tour) = $this->changeBatch($dbInfo, $newData, $line);
+        list($batch, $tour) = $this->changeBatch($dbInfo, $newData, $line,true);
 
         //修改
         $rowCount = parent::updateById($dbInfo['id'], $data);
@@ -986,7 +986,7 @@ class OrderService extends BaseService
         }
 
         /*********************************************更换清单列表***************************************************/
-        //删除包裹列表
+/*        //删除包裹列表
         $rowCount = $this->getPackageService()->delete(['order_no' => $dbInfo['order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
@@ -997,7 +997,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('修改失败，请重新操作');
         }
         //新增包裹列表和材料列表
-        $this->addAllItemList($newData, $batch, $tour);
+        $this->addAllItemList($newData, $batch, $tour);*/
         //重新统计站点金额
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
         //重新统计取件线路金额
@@ -1066,10 +1066,11 @@ class OrderService extends BaseService
      * @param $dbInfo
      * @param $data
      * @param $line
+     * @param bool $isFillItem
      * @return array
      * @throws BusinessLogicException
      */
-    private function changeBatch($dbInfo, $data, $line)
+    private function changeBatch($dbInfo, $data, $line,$isFillItem=false)
     {
         //站点移除订单,添加新的订单
         if (!empty($dbInfo['batch_no'])) {
@@ -1081,7 +1082,7 @@ class OrderService extends BaseService
         }
         list($batch, $tour) = $this->getBatchService()->join($data, $line);
         /**********************************填充取件批次编号和取件线路编号**********************************************/
-        $this->fillBatchTourInfo($dbInfo, $batch, $tour, false);
+        $this->fillBatchTourInfo($dbInfo, $batch, $tour, $isFillItem);
         return [$batch, $tour];
     }
 

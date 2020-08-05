@@ -95,6 +95,14 @@ class DriverController extends BaseController
     }
 
     /**
+     * @param Request $request
+     * @param $id
+     * @throws BusinessLogicException HTTP/1.1 200 OK
+     * {
+     *  "ret":1,
+     *  "msg":"查询司机",
+     *  "data":{}
+     * }
      * @api {DELETE}  api/admin/driver/{driver} 管理员端:删除司机
      * @apiName destroy
      * @apiGroup admin-driver
@@ -102,17 +110,10 @@ class DriverController extends BaseController
      * @apiVersion 1.0.0
      * @apiDescription 删除司机
      * @apiSuccessExample {json}  返回示例
-     * @throws BusinessLogicException
-     * HTTP/1.1 200 OK
-     * {
-     *  "ret":1,
-     *  "msg":"查询司机",
-     *  "data":{}
-     * }
      */
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
-        throw new BusinessLogicException('司机暂不提供删除');
+        $this->service->destroy($id);
     }
 
     /**

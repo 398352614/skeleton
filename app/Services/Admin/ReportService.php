@@ -162,7 +162,7 @@ class ReportService extends BaseService
             if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
                 $orderList[$k]['actual_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
                 $orderList[$k]['actual_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
-                $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] +$v['delivery_amount']), 2), 2);
+                $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
                 $orderList[$k]['sticker_count'] = count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', ""));
                 $orderList[$k]['delivery_count'] = count(collect($orderList[$k]['package_list'])->where('delivery_amount', '<>', 0));
                 $orderList[$k]['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'];
@@ -323,6 +323,9 @@ class ReportService extends BaseService
         //材料处理
         $materialList = collect($materialList)->groupBy('batch_no')->toArray();
         foreach ($batchList as $key => $batch) {
+            if (!array_key_exists($batch['batch_no'], $orderList)) {
+                continue;
+            }
             $newBatchList[$key] = [
                 'id' => $batch['id'],
                 'batch_no' => $batch['batch_no'],
