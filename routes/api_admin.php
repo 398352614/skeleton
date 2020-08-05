@@ -92,8 +92,21 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/get-line', 'OrderController@getLineList');
     });
 
+    Route::prefix('package')->group(function () {
+        //列表查询
+        Route::get('/', 'PackageController@index');
+        //获取详情
+        Route::get('/{id}', 'PackageController@show');
+    });
 
-    //订单导入记录管理
+    Route::prefix('material')->group(function () {
+        //列表查询
+        Route::get('/', 'MaterialController@index');
+        //获取详情
+        Route::get('/{id}', 'MaterialController@show');
+    });
+
+        //订单导入记录管理
     Route::prefix('order-import')->group(function () {
         //上传模板
         Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');

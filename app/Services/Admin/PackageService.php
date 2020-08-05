@@ -5,16 +5,71 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\PackageResource;
 use App\Models\Package;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 class PackageService extends BaseService
 {
     public function __construct(Package $package)
     {
-        parent::__construct($package);
+        parent::__construct($package, PackageResource::class, PackageResource::class);
+    }
+
+    public $filterRules = [
+        'tour_no' => ['like', 'tour_no'],
+        'batch_no' => ['like', 'batch_no'],
+        'order_no' => ['like', 'order_no'],
+        'name' => ['like', 'name'],
+        'express_first_no' => ['like', 'express_first_no'],
+        'express_second_no' => ['=', 'express_second_no'],
+        'out_order_no' => ['like', 'out_order_no'],
+        'status' => ['=', 'status']
+    ];
+
+    /**
+     * 订单服务
+     * @return OrderService
+     */
+    public function getOrderService()
+    {
+        return parent::getInstance(OrderService::class);
+    }
+
+    /**
+     * 列表查询
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getPageList()
+    {
+        if (!empty($this->formData['merchant_id']) && empty($this->formData['order_no'])) {
+            $orderList = $this->getOrderService()->getList(['merchant_id' => $this->formData['merchant_id']], ['*'], false);
+            $this->query->whereIn('order_no', $orderList);
+        } elseif (!empty($this->formData['merchant_id']) && !empty($this->formData['order_no'])) {
+            $orderList = $this->getOrderService()->getList(['merchant_id' => $this->formData['merchant_id']], ['*'], false);
+            $this->query->whereIn('order_no', $orderList)->where('order_no', 'like', $this->formData['order_no']);
+        }
+        $this->query->orderByDesc('updated_at');
+        return parent::getPageList();
+    }
+
+    /**
+     * 查看详情
+     * @param $id
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $info;
     }
 
     /**
