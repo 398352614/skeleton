@@ -28,7 +28,8 @@ class PackageService extends BaseService
         'express_first_no' => ['like', 'express_first_no'],
         'express_second_no' => ['=', 'express_second_no'],
         'out_order_no' => ['like', 'out_order_no'],
-        'status' => ['=', 'status']
+        'status' => ['=', 'status'],
+        'execution_date' => ['between', ['begin_date', 'end_date']],
     ];
 
     /**

@@ -47,9 +47,11 @@ class Material extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'merchant_id',
         'tour_no',
         'batch_no',
         'order_no',
+        'execution_date',
         'name',
         'code',
         'out_order_no',

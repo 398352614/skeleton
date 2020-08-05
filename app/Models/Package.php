@@ -47,9 +47,11 @@ class Package extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'merchant_id',
         'tour_no',
         'batch_no',
         'order_no',
+        'execution_date',
         'type',
         'name',
         'express_first_no',

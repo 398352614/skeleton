@@ -18,9 +18,11 @@ class PackageResource extends JsonResource
         return [
             'id' => $this->id,
             'company_id' => $this->company_id,
+            'merchant_id' => $this->merchant_id,
             'batch_no' => $this->batch_no,
             'tour_no' => $this->tour_no,
             'order_no' => $this->order_no,
+            'execution_date' => $this->execution_date,
             'type' => $this->type,
             'type_name' => $this->type_name,
             'name' => $this->name,
@@ -36,7 +38,6 @@ class PackageResource extends JsonResource
             'express_second_no' => $this->express_second_no,
             'status' => $this->status,
             'status_name' => $this->status_name,
-            'execution_date' => $this->execution_date,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
