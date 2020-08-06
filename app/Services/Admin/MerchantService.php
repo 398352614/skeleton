@@ -112,7 +112,7 @@ class MerchantService extends BaseService
                 return !in_array($fee['code'], $feeCodeList);
             })->toArray();
         }
-        return $feeList;
+        return array_values($feeList);
     }
 
 
