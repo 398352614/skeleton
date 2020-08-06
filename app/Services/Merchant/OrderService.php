@@ -878,7 +878,7 @@ class OrderService extends BaseService
             'batch_no' => $batch['batch_no'],
             'tour_no' => $tour['tour_no'],
             'status' => $status,
-            'execution_date' => $order['execution_date']
+            'execution_date' => $batch['execution_date']
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
@@ -888,7 +888,7 @@ class OrderService extends BaseService
             'batch_no' => $batch['batch_no'],
             'tour_no' => $tour['tour_no'],
             'status' => $status,
-            'execution_date' => $order['execution_date']
+            'execution_date' => $batch['execution_date']
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
