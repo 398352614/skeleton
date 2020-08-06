@@ -108,7 +108,7 @@ class MerchantService extends BaseService
         if (empty($feeList) || empty($merchantId)) return $feeList;
         $feeCodeList = $this->merchantFeeConfigModel->newQuery()->where('merchant_id', $merchantId)->pluck('fee_code')->toArray();
         if (!empty($feeCodeList)) {
-            $feeList = collect($feeList)->where(function ($fee, $key) use ($feeCodeList) {
+            $feeList = collect($feeList)->filter(function ($fee, $key) use ($feeCodeList) {
                 return !in_array($fee['code'], $feeCodeList);
             })->toArray();
         }
