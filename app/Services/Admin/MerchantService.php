@@ -223,7 +223,7 @@ class MerchantService extends BaseService
             MerchantGroup::query()->where('id', $data['merchant_group_id'])->increment('count');
         }
         //新增费用配置列表
-        $this->addFeeConfigList($info['id'], $data);
+        $this->addFeeConfigList($id, $data);
     }
 
     /**
