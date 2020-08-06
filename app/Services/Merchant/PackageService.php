@@ -28,14 +28,10 @@ class PackageService extends BaseService
     }
 
     public $filterRules = [
-        'express_first_no' => ['=', 'express_first_no'],
-        'express_second_no' => ['=', 'express_second_no'],
         'tour_no' => ['like', 'tour_no'],
         'batch_no' => ['like', 'batch_no'],
         'order_no' => ['like', 'order_no'],
-        'name' => ['like', 'name'],
-        'out_order_no' => ['like', 'out_order_no'],
-        'status' => ['=', 'status'],
+        'express_first_no,order_no,out_order_no' => ['like', 'keyword'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
     ];
 
