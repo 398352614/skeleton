@@ -160,7 +160,7 @@ if (!function_exists('explode_id_string')) {
         $list = array_filter($list, function ($value) {
             return is_numeric($value);
         });
-        return $list;
+        return array_unique($list);
     }
 }
 
@@ -180,7 +180,7 @@ if (!function_exists('array_only_fields_sort')) {
                 $newData[$v] = $data[$v];
             }
         } else {
-            $newData = \Illuminate\Support\Arr::only($data,$fields);
+            $newData = \Illuminate\Support\Arr::only($data, $fields);
         }
         return $newData;
     }

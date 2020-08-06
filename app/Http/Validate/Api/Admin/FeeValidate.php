@@ -18,11 +18,11 @@ class FeeValidate extends BaseValidate
         'code' => '编码',
         'amount' => '费用',
         'status' => '状态',
-        ];
+    ];
 
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:fee,id,company_id',
-        'code' => 'required|string|max:50|uniqueIgnore:fee,id,company_id',
+        'code' => 'required|string|max:50|uniqueIgnore:fee,id,company_id|regex:/[A-Z]+/',
         'amount' => 'required|numeric|gte:0',
         'status' => 'required|integer|in:1,2',
     ];

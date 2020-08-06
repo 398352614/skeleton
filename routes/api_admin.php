@@ -106,7 +106,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'MaterialController@show');
     });
 
-        //订单导入记录管理
+    //订单导入记录管理
     Route::prefix('order-import')->group(function () {
         //上传模板
         Route::post('/uploadTemplate', 'OrderImportController@uploadTemplate');
@@ -377,6 +377,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'MerchantController@show');
         //初始化
         Route::get('/init', 'MerchantController@init');
+        //获取费用列表
+        Route::get('/getFeeList', 'MerchantController@getFeeList');
         //新增
         Route::post('/', 'MerchantController@store');
         //修改
