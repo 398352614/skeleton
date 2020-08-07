@@ -113,7 +113,7 @@ class ReportService extends BaseService
         }else{
             $warehouseActualTimeHuman = null;
         }
-        if($info['warehouse_expect_time'] == 0){
+        if(!$info['warehouse_expect_time'] == 0){
             $warehouseExpectTimeHuman =CarbonInterval::second($info['warehouse_expect_time'])->cascade()->forHumans();
         }else{
             $warehouseExpectTimeHuman = null;
