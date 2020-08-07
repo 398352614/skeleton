@@ -36,6 +36,11 @@ trait UpdateTourTimeAndDistanceTrait
             $tour = Tour::where('tour_no', $tour->tour_no)->first();
             $max_time = 0;
             $max_distance = 0;
+            $warehouse=[
+                'warehouse_expect_distance'=>0,
+                'warehouse_expect_time'=>0,
+                'warehouse_expect_arrive_time'=>null
+            ];
             //若取件线路未结束，则智能调度仓库
             if (in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4])) {
                 $warehouse['warehouse_expect_arrive_time'] = date('Y-m-d H:i:s', $data['timestamp'] + $data['loc_res'][$tour->tour_no.$tour->tour_no]['time']);
@@ -61,8 +66,8 @@ trait UpdateTourTimeAndDistanceTrait
                 ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
                 || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
             ) {
-                $tour->expect_time = $max_time;
-                $tour->expect_distance = $max_distance;
+                $tour->expect_time = max($max_time, $warehouse['warehouse_expect_time']);
+                $tour->expect_distance = max($max_distance, $warehouse['warehouse_expect_distance']);
                 $tour->save();
             }
             $tour->lave_distance = $max_distance;
