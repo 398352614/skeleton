@@ -33,6 +33,15 @@ class DriverService extends BaseService
     }
 
     /**
+     * 取件线路服务
+     * @return TourService
+     */
+    public function getTourService()
+    {
+        return self::getInstance(TourService::class);
+    }
+
+    /**
      * @param $id
      * @param $data
      * @return bool|int|void
@@ -54,6 +63,12 @@ class DriverService extends BaseService
      */
     public function destroy($id)
     {
+        $tourList = $this->getTourService()->getList(['driver_id' => $id],['*'],false)->toArray();
+        foreach ($tourList as $v){
+            if (in_array($v['status'], [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_2])) {
+                throw new BusinessLogicException('仍有取派中的任务，无法删除');
+            }
+        }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('司机删除失败');
