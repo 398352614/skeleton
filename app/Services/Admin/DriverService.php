@@ -66,7 +66,7 @@ class DriverService extends BaseService
         $tourList = $this->getTourService()->getList(['driver_id' => $id],['*'],false)->toArray();
         foreach ($tourList as $v){
             if (in_array($v['status'], [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_2])) {
-                throw new BusinessLogicException('仍有取派中的任务，无法删除');
+                throw new BusinessLogicException('仍有未完成的任务，无法删除');
             }
         }
         $rowCount = parent::delete(['id' => $id]);
