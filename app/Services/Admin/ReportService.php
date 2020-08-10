@@ -142,7 +142,7 @@ class ReportService extends BaseService
         if ($info['status'] == BaseConstService::TOUR_STATUS_5) {
             $warehouseInfo['warehouse_actual_time'] = strtotime($info['end_time']) - strtotime($batch['actual_arrive_time']);
             if (!$warehouseInfo['warehouse_actual_time'] == 0) {
-                $warehouseInfo['warehouse_actual_time'] = CarbonInterval::second($info['warehouse_actual_time'])->cascade()->forHumans();
+                $warehouseInfo['warehouse_actual_time'] = CarbonInterval::second($warehouseInfo['warehouse_actual_time'])->cascade()->forHumans();
             } else {
                 $warehouseInfo['warehouse_actual_time'] = '0秒';
             }
