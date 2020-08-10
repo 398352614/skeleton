@@ -166,7 +166,7 @@ class ReportService extends BaseService
             foreach ($tourMaterialList as $v) {
                 $info['expect_material_quantity'] += $v['expect_quantity'];
                 $info['actual_material_quantity'] += $v['actual_quantity'];
-                $info['actual_material_quantity'] += $v['finish_quantity'];
+                $info['finish_material_quantity'] += $v['finish_quantity'];
             }
         }
         //获取所有的站点
