@@ -155,6 +155,9 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
+        if (intval($line['status']) === BaseConstService::OFF) {
+            throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);
+        }
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             $data = $this->getLineRangeService()->getInfo(['line_id' => $params['line_id'], 'schedule' => Carbon::create($params['execution_date'])->dayOfWeek], ['*'], false);
         } else {
@@ -168,9 +171,10 @@ class BaseLineService extends BaseService
     }
 
     /**
-     *  通过信息获得线路
+     * 通过信息获得线路
      * @param $info
      * @return mixed|string
+     * @throws BusinessLogicException
      */
     public function getLineIdByInfo($info)
     {
@@ -179,6 +183,17 @@ class BaseLineService extends BaseService
         } else {
             $coordinate = ['lat' => $info['lat'] ?? $info ['receiver_lat'], 'lon' => $info['lon'] ?? $info ['receiver_lon']];
             $lineRange = $this->getLineRangeByArea($coordinate, null);
+        }
+        if (!empty($lineRange['line_id'])) {
+            //获取线路信息
+            $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
+            if (empty($line)) {
+                throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
+            }
+            $line = $line->toArray();
+            if (intval($line['status']) === BaseConstService::OFF) {
+                throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);
+            }
         }
         return $lineRange['line_id'] ?? '';
     }
@@ -198,6 +213,9 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
+        if (intval($line['status']) === BaseConstService::OFF) {
+            throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);;
+        }
         //验证规则
         $this->checkRule($info, $line, $orderOrBatch);
         return $line;

@@ -57,6 +57,7 @@ class Line extends BaseModel
         'is_increment',
         'order_deadline',
         'appointment_days',
+        'status',
         'creator_id',
         'creator_name',
         'created_at',
