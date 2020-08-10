@@ -39,19 +39,17 @@ class MerchantController extends BaseController
      */
     public function show($id)
     {
-        $info = $this->service->getInfo(['id' => $id], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $info = $info->toArray();
-        $info['merchant_group_name'] = MerchantGroup::query()->where('id', $info['merchant_group_id'])->value('name');
-        unset($info['password']);
-        return $info;
+        return $this->service->show($id);
     }
 
     public function init()
     {
         return $this->service->init();
+    }
+
+    public function getFeeList()
+    {
+        return $this->service->getFeeList($this->data['merchant_id'] ?? null);
     }
 
     /**

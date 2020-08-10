@@ -35,6 +35,8 @@ class MerchantValidate extends BaseValidate
         'advance_days' => 'nullable|integer|gte:0|lte:7',
         'appointment_days' => 'nullable|integer|gte:1|lte:30',
         'delay_time' => 'nullable|integer|gte:0|lte:60',
+        'merchant_id' => 'nullable|integer',
+        'fee_code_list' => 'nullable|string|max:1000'
     ];
 
     public $scene = [
@@ -53,6 +55,7 @@ class MerchantValidate extends BaseValidate
             'advance_days',
             'appointment_days',
             'delay_time',
+            'fee_code_list',
         ],
         'update' => [
             'type',
@@ -69,11 +72,13 @@ class MerchantValidate extends BaseValidate
             'advance_days',
             'appointment_days',
             'delay_time',
+            'fee_code_list',
         ],
         'updatePassword' => [
             'password', 'confirm_password'
         ],
-        'status' => ['status']
+        'status' => ['status'],
+        'getFeeList' => ['merchant_id']
     ];
 }
 

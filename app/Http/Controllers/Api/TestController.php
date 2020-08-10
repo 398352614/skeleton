@@ -15,6 +15,7 @@ use App\Services\TestService;
 use App\Traits\AlphaTrait;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -31,6 +32,30 @@ class TestController extends BaseController
 
     public function index()
     {
+/*        $i = 0;
+        $info = DB::table('order')->get()->chunk(50)->toArray();
+        foreach ($info as $k) {
+            $k = collect($k)->where('batch_no', '<>', '')->all();
+            foreach ($k as $v) {
+                $batch = DB::table('batch')->where('batch_no', $v->batch_no)->first();
+                if (empty($batch)) {
+                    DB::table('order')->where('batch_no', $v->batch_no)->delete();
+                    DB::table('package')->where('batch_no', $v->batch_no)->delete();
+                    DB::table('material')->where('batch_no', $v->batch_no)->delete();
+                }
+            }
+            unset($k);
+        }
+
+        $info = DB::table('tour')->get()->toArray();
+        foreach ($info as $k) {
+            $batch = DB::table('batch')->where('tour_no', $k->tour_no)->first();
+            if (empty($batch)) {
+                DB::table('tour')->where('tour_no', $k->tour_no)->delete();
+                $i=$i+1;
+            }
+        }
+        return $i;*/
         return $this->service->getPageList();
     }
 

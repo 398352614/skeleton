@@ -108,6 +108,18 @@ class ReportService extends BaseService
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         $info['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         //组装取件线路站点信息
+        if (!$info['actual_time'] == 0) {
+            $warehouseActualTimeHuman = CarbonInterval::second($info['actual_time'])->cascade()->forHumans();
+        } else {
+            $warehouseActualTimeHuman = '0秒';
+        }
+        if (!$info['warehouse_expect_time'] == 0) {
+            $warehouseExpectTimeHuman = CarbonInterval::second($info['warehouse_expect_time'])->cascade()->forHumans();
+        } else {
+            $warehouseExpectTimeHuman = '0秒';
+        }
+        $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+        $batch = collect($batchList)->sortByDesc('actual_arrive_time')->first();
         $warehouseInfo = [
             'id' => $info['warehouse_id'],
             'name' => $info['warehouse_name'],
@@ -120,14 +132,24 @@ class ReportService extends BaseService
             'warehouse_expect_time' => $info['warehouse_expect_time'],
             'warehouse_expect_distance' => $info['warehouse_expect_distance'],
             'warehouse_expect_arrive_time' => $info['warehouse_expect_arrive_time'],
-            'warehouse_expect_time_human' => CarbonInterval::second($info['warehouse_expect_time'])->cascade()->forHumans() ?? null,
+            'warehouse_expect_time_human' => $warehouseExpectTimeHuman,
 
-            'warehouse_actual_time' => $info['actual_time'],
-            'warehouse_actual_distance' => $info['actual_distance'] ?? 0,
-            'warehouse_actual_arrive_time' => $info['end_time'],
-            'warehouse_actual_time_human' => CarbonInterval::second($info['actual_time'])->cascade()->forHumans() ?? null,
-
+            'warehouse_actual_time' => 0,
+            'warehouse_actual_distance' => 0,
+            'warehouse_actual_arrive_time' => null,
+            'warehouse_actual_time_human' => '0秒'
         ];
+        if ($info['status'] == BaseConstService::TOUR_STATUS_5) {
+            $warehouseInfo['warehouse_actual_time'] = strtotime($info['end_time']) - strtotime($batch['actual_arrive_time']);
+            if (!$warehouseInfo['warehouse_actual_time'] == 0) {
+                $warehouseInfo['warehouse_actual_time'] = CarbonInterval::second($warehouseInfo['warehouse_actual_time'])->cascade()->forHumans();
+            } else {
+                $warehouseInfo['warehouse_actual_time'] = '0秒';
+            }
+            $warehouseInfo['warehouse_actual_distance'] = $info['warehouse_expect_distance'];
+            $warehouseInfo['warehouse_actual_arrive_time'] = $info['end_time'];
+            $warehouseInfo['warehouse_actual_time_human'] = $warehouseInfo['warehouse_actual_time'];
+        }
         //获取当前取件线路上的所有订单
         $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'out_user_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount', 'sticker_no'], false)->toArray();
         //获取当前取件线路上的所有包裹

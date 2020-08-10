@@ -92,6 +92,19 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/get-line', 'OrderController@getLineList');
     });
 
+    Route::prefix('package')->group(function () {
+        //列表查询
+        Route::get('/', 'PackageController@index');
+        //获取详情
+        Route::get('/{id}', 'PackageController@show');
+    });
+
+    Route::prefix('material')->group(function () {
+        //列表查询
+        Route::get('/', 'MaterialController@index');
+        //获取详情
+        Route::get('/{id}', 'MaterialController@show');
+    });
 
     //订单导入记录管理
     Route::prefix('order-import')->group(function () {
@@ -364,6 +377,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'MerchantController@show');
         //初始化
         Route::get('/init', 'MerchantController@init');
+        //获取费用列表
+        Route::get('/getFeeList', 'MerchantController@getFeeList');
         //新增
         Route::post('/', 'MerchantController@store');
         //修改

@@ -800,11 +800,26 @@ class TourService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
-        $info['warehouse_actual_time'] = $info['actual_time'];
-        $info['warehouse_actual_distance'] = $info['actual_distance'] ?? 0;
-        $info['warehouse_actual_arrive_time'] = $info['end_time'];
-        $info['warehouse_actual_time_human'] = CarbonInterval::second($info['actual_time'])->cascade()->forHumans() ?? null;
-        $info['warehouse_expect_time_human'] = CarbonInterval::second($info['expect_time'])->cascade()->forHumans() ?? null;
+        //如果已回仓库，处理仓库相关数据
+        if ($info['status'] == BaseConstService::TOUR_STATUS_5) {
+            $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+            $batch = collect($batchList)->sortByDesc('actual_arrive_time')->first();
+            $info['warehouse_actual_time'] = strtotime($info['end_time']) - strtotime($batch['actual_arrive_time']);
+            if (!$info['warehouse_actual_time'] == 0) {
+                $warehouseActualTimeHuman = CarbonInterval::second($info['warehouse_actual_time'])->cascade()->forHumans();
+            } else {
+                $warehouseActualTimeHuman = '0秒';
+            }
+            if (!$info['warehouse_expect_time'] == 0) {
+                $warehouseExpectTimeHuman = CarbonInterval::second($info['warehouse_expect_time'])->cascade()->forHumans();
+            } else {
+                $warehouseExpectTimeHuman = '0秒';
+            }
+            $info['warehouse_actual_distance'] = $info['warehouse_expect_distance'];
+            $info['warehouse_actual_arrive_time'] = $info['end_time'];
+            $info['warehouse_actual_time_human'] = $warehouseActualTimeHuman;
+            $info['warehouse_expect_time_human'] = $warehouseExpectTimeHuman;
+        }
         $info['batchs'] = collect($info['batchs'])->sortBy('sort_id')->all();
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k]['sort_id'] = $k + 1;

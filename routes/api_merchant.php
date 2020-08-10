@@ -65,6 +65,20 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
     });
 
+    Route::prefix('package')->group(function () {
+        //列表查询
+        Route::get('/', 'PackageController@index');
+        //获取详情
+        Route::get('/{id}', 'PackageController@show');
+    });
+
+    Route::prefix('material')->group(function () {
+        //列表查询
+        Route::get('/', 'MaterialController@index');
+        //获取详情
+        Route::get('/{id}', 'MaterialController@show');
+    });
+
     //物流状态管理
     Route::prefix('order-trail')->group(function () {
         //rest api 放在最后
