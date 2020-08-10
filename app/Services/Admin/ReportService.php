@@ -162,6 +162,7 @@ class ReportService extends BaseService
         //统计预计实际材料数量
         $info['expect_material_quantity'] = 0;
         $info['actual_material_quantity'] = 0;
+        $info['finish_material_quantity'] = 0;
         if (!empty($tourMaterialList)) {
             foreach ($tourMaterialList as $v) {
                 $info['expect_material_quantity'] += $v['expect_quantity'];
