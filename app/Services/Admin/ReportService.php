@@ -109,7 +109,7 @@ class ReportService extends BaseService
         $info['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         //组装取件线路站点信息
         if (!$info['actual_time'] == 0) {
-            $warehouseActualTimeHuman = CarbonInterval::second($info['actual_time'])->cascade()->forHumans();
+            $warehouseActualTimeHuman = CarbonInterval::second($info['warehouse_actual_time'])->cascade()->forHumans();
         }else{
             $warehouseActualTimeHuman = '0秒';
         }
@@ -132,9 +132,9 @@ class ReportService extends BaseService
             'warehouse_expect_arrive_time' => $info['warehouse_expect_arrive_time'],
             'warehouse_expect_time_human' => $warehouseExpectTimeHuman,
 
-            'warehouse_actual_time' => $info['actual_time'],
-            'warehouse_actual_distance' => $info['actual_distance'] ?? 0,
-            'warehouse_actual_arrive_time' => $info['end_time'],
+            'warehouse_actual_time' => $info['warehouse_actual_time'],
+            'warehouse_actual_distance' => $info['warehouse_actual_distance'],
+            'warehouse_actual_arrive_time' => $info['warehouse_actual_arrive_time'],
             'warehouse_actual_time_human' => $warehouseActualTimeHuman
         ];
         //获取当前取件线路上的所有订单
