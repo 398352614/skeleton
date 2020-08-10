@@ -133,4 +133,12 @@ class LineController extends BaseController
         return $this->service->areaDestroy($id);
     }
 
+    /**
+     * 状态批量启用禁用
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function statusByList()
+    {
+        return $this->service->statusByList($this->data);
+    }
 }

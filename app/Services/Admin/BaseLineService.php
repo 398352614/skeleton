@@ -123,6 +123,20 @@ class BaseLineService extends BaseService
         }
     }
 
+    /**
+     * 批量启用禁用
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    public function statusByList($data)
+    {
+        $idList = explode_id_string($data['id_list']);
+        $rowCount = parent::update(['id' => ['in', $idList]], ['status' => $data['status']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+    }
+
 
     /**
      * 验证

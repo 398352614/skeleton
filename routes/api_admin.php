@@ -255,6 +255,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/area/{id}', 'LineController@areaUpdate');
         //删除
         Route::delete('/area/{id}', 'LineController@areaDestroy');
+
+        //批量修改状态
+        Route::put('/statusByList', 'LineController@statusByList');
     });
 
     //仓库管理
