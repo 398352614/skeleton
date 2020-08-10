@@ -32,13 +32,13 @@ class TestController extends BaseController
 
     public function index()
     {
-       /* $info = DB::table('order')->get()->chunk(50)->toArray();
+/*        $i = 0;
+        $info = DB::table('order')->get()->chunk(50)->toArray();
         foreach ($info as $k) {
             $k = collect($k)->where('batch_no', '<>', '')->all();
             foreach ($k as $v) {
                 $batch = DB::table('batch')->where('batch_no', $v->batch_no)->first();
                 if (empty($batch)) {
-                    dd(2);
                     DB::table('order')->where('batch_no', $v->batch_no)->delete();
                     DB::table('package')->where('batch_no', $v->batch_no)->delete();
                     DB::table('material')->where('batch_no', $v->batch_no)->delete();
@@ -46,7 +46,16 @@ class TestController extends BaseController
             }
             unset($k);
         }
-        return 1;*/
+
+        $info = DB::table('tour')->get()->toArray();
+        foreach ($info as $k) {
+            $batch = DB::table('batch')->where('tour_no', $k->tour_no)->first();
+            if (empty($batch)) {
+                DB::table('tour')->where('tour_no', $k->tour_no)->delete();
+                $i=$i+1;
+            }
+        }
+        return $i;*/
         return $this->service->getPageList();
     }
 
