@@ -10,19 +10,21 @@ class TourInfoResource extends JsonResource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'driver_location'   => $this->driver_location,
+            'driver_location' => $this->driver_location,
             'company_id' => $this->company_id,
             'tour_no' => $this->tour_no,
             'line_id' => $this->line_id,
             'line_name' => $this->line_name,
             'execution_date' => $this->execution_date,
+            'type' => $this->type,
+            'type_name' => !empty($this->type_name) ? $this->type_name : __('取派'),
             'driver_id' => $this->driver_id,
             'driver_name' => $this->driver_name,
             'driver_phone' => $this->driver_phone,
@@ -38,8 +40,8 @@ class TourInfoResource extends JsonResource
             'warehouse_country' => $this->warehouse_country,
             'warehouse_post_code' => $this->warehouse_post_code,
             'warehouse_city' => $this->warehouse_city,
-            'warehouse_street'=> $this->warehouse_street,
-            'warehouse_house_number'=> $this->warehouse_house_number,
+            'warehouse_street' => $this->warehouse_street,
+            'warehouse_house_number' => $this->warehouse_house_number,
             'warehouse_address' => $this->warehouse_address,
             'warehouse_lon' => $this->warehouse_lon,
             'warehouse_lat' => $this->warehouse_lat,
@@ -58,10 +60,10 @@ class TourInfoResource extends JsonResource
             'end_signature_remark' => $this->end_signature_remark,
             'expect_distance' => $this->expect_distance,
             'actual_distance' => $this->actual_distance,
-            'expect_time'=> $this->expect_time,
+            'expect_time' => $this->expect_time,
             'actual_time' => $this->actual_time,
-            'expect_time_human'=>$this->expect_time_human,
-            'actual_time_human'=>$this->actual_time_human,
+            'expect_time_human' => $this->expect_time_human,
+            'actual_time_human' => $this->actual_time_human,
             'expect_pickup_quantity' => $this->expect_pickup_quantity,
             'actual_pickup_quantity' => $this->actual_pickup_quantity,
             'expect_pie_quantity' => $this->expect_pie_quantity,
@@ -70,10 +72,10 @@ class TourInfoResource extends JsonResource
             'delivery_amount' => $this->delivery_amount,
             'replace_amount' => $this->replace_amount,
             'remark' => $this->remark,
-            'batch_count'=>$this->batch_count,
-            'batchs'    => BatchResource::collection($this->batchs)->sortBy('sort_id')->values(),
-            'created_at' => (string) $this->created_at,
-            'updated_at' => (string) $this->updated_at,
+            'batch_count' => $this->batch_count,
+            'batchs' => BatchResource::collection($this->batchs)->sortBy('sort_id')->values(),
+            'created_at' => (string)$this->created_at,
+            'updated_at' => (string)$this->updated_at,
         ];
     }
 }

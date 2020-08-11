@@ -98,16 +98,36 @@ return [
     ],
 
     "orderOut" => [
-        "order_no"=>"Order No",
-        "merchant_name"=>"Merchant Name",
-        "status"=>"Status",
-        "out_order_no"=>"Out Order No",
-        "receiver_post_code"=>"Receiver Post Code",
-        "receiver_house_number"=>"Receiver House Number",
-        "execution_date"=>"Execution Date",
-        "driver_name"=>"Driver Name",
-        "batch_no"=>"Batch No",
-        "tour_no"=>"Tour No",
-        "line_name"=>"Line Name",
+        "order_no" => "Order No",
+        "merchant_name" => "Merchant Name",
+        "status" => "Status",
+        "out_order_no" => "Out Order No",
+        "receiver_post_code" => "Receiver Post Code",
+        "receiver_house_number" => "Receiver House Number",
+        "execution_date" => "Execution Date",
+        "driver_name" => "Driver Name",
+        "batch_no" => "Batch No",
+        "tour_no" => "Tour No",
+        "line_name" => "Line Name",
+    ],
+
+    "plan" => [
+        'execution_date' => "Date",
+        'line_name' => "Line",
+        'driver_name' => "Driver",
+        'car_no' => "Car",
+
+        'batch_no' => "No",
+        'out_user_id' => "ID",
+        'receiver_fullname' => "Name",
+        'receiver_phone' => "Phone",
+        'receiver_address' => "Address",
+        'receiver_post_code' => "Postcode",
+        'receiver_city' => "City",
+        'merchant_name' => "Merchant",
+        'type' => "Type",
+        'package_quantity' => "Quantity",
+        'out_order_no' => "Order No.",
+        'mask_code' => "Eyecode"
     ]
 ];

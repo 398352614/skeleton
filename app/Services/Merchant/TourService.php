@@ -265,7 +265,8 @@ class TourService extends BaseService
                 'warehouse_house_number' => $warehouse['house_number'],
                 'warehouse_address' => $warehouse['address'],
                 'warehouse_lon' => $warehouse['lon'],
-                'warehouse_lat' => $warehouse['lat']
+                'warehouse_lat' => $warehouse['lat'],
+                'type' => $batch['type'],
             ], $quantity)
         );
         if ($tour === false) {
@@ -317,8 +318,7 @@ class TourService extends BaseService
                 $data['expect_pie_quantity'] = $info['expect_pie_quantity'] + 1;
             }
         }
-        //代收款费用
-        $rowCount = parent::updateById($info['id'], array_merge($data));
+        $rowCount = parent::updateById($info['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
@@ -437,7 +437,7 @@ class TourService extends BaseService
     public function getTourInfo($batch, $line, $isLock = true, $tourNo = null)
     {
         if (!empty($tourNo)) {
-            $this->query->where('tour_no', $tourNo);
+            $this->query->where('tour_no', '=', $tourNo);
         }
         //若不存在取件线路或者超过最大订单量,则新建取件线路
         if (intval($batch['expect_pickup_quantity']) > 0) {
@@ -446,7 +446,7 @@ class TourService extends BaseService
         if (intval($batch['expect_pie_quantity']) > 0) {
             $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
         }
-        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
+        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]], 'type' => $batch['type']];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         return !empty($tour) ? $tour->toArray() : [];
     }
@@ -469,6 +469,7 @@ class TourService extends BaseService
 
     /**
      * 此处要求batchIds 为有序,并且已完成或者异常的 batch 在前方,未完成的 batch 在后方
+     * @throws BusinessLogicException
      */
     public function getNextBatchAndUpdateIndex($batchIds): Batch
     {

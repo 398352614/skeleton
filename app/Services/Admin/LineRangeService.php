@@ -11,6 +11,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\LineRange;
+use App\Services\BaseConstService;
 use App\Services\BaseService;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
@@ -32,13 +33,19 @@ class LineRangeService extends BaseService
     {
         $list = parent::getList(['line_id' => ['in', $lineIdList]], ['*'], false)->toArray();
         if (empty($list)) return [];
-        foreach ($list as $key => $line) {
-            $list[$key]['range'] = $line['post_code_start'] . '-' . $line['post_code_end'];
+        foreach ($list as $key => $lineRange) {
+            $list[$key]['range'] = $lineRange['post_code_start'] . '-' . $lineRange['post_code_end'];
+            if (intval($lineRange['is_split']) == BaseConstService::ON) {
+                $list[$key]['split_line_range'] = $lineRange['post_code_start'] . '-' . $lineRange['post_code_end'];
+            } else {
+                $list[$key]['split_line_range'] = '';
+            }
         }
         $newList = [];
         $list = array_create_group_index($list, 'line_id');
         foreach ($list as $key => $lineList) {
             $newList[$key]['line_range'] = implode(';', array_column(multi_array_unique($lineList, 'range'), 'range'));
+            $newList[$key]['split_line_range'] = implode(';', array_filter(array_column(multi_array_unique($lineList, 'split_line_range'), 'split_line_range')));
             $newList[$key]['work_day_list'] = array_column($lineList, 'schedule');
         }
         return $newList;
@@ -64,6 +71,7 @@ class LineRangeService extends BaseService
                 $newRangeList[$index]['post_code_end'] = $range['post_code_end'];
                 $newRangeList[$index]['schedule'] = $workDay;
                 $newRangeList[$index]['country'] = $country;
+                $newRangeList[$index]['is_split'] = $range['is_split'] ?? BaseConstService::NO;
                 $index++;
             }
         }

@@ -57,7 +57,6 @@ class BaseConstService
     //初始密码
     const INITIAL_PASSWORD = '12345678';
 
-
     //费用编码
     const STICKER = 'STICKER';
     const DELIVERY = 'DELIVERY';
@@ -190,6 +189,16 @@ class BaseConstService
     const BATCH_DELIVERING = 4;
     const BATCH_CHECKOUT = 5;
     const BATCH_CANCEL = 6;
+
+    //站点类型 1-取件2-派件3-取派件
+    const BATCH_TYPE_1 = 1;
+    const BATCH_TYPE_2 = 2;
+    const BATCH_TYPE_3 = 3;
+
+    //取件线路类型 1-取件2-派件3-取派件
+    const TOUR_TYPE_1 = 1;
+    const TOUR_TYPE_2 = 2;
+    const TOUR_TYPE_3 = 3;
 
     //面向用户-站点状态:1-未取派2-取派中3-签收成功4-取派失败
     const MERCHANT_BATCH_STATUS_1 = 1;

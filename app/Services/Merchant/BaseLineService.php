@@ -82,7 +82,7 @@ class BaseLineService extends BaseService
      */
     public function store($params, $rule = BaseConstService::LINE_RULE_POST_CODE)
     {
-        $lineData = Arr::only($params, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark']);
+        $lineData = Arr::only($params, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'status']);
         $lineData = array_merge($lineData, ['rule' => $rule, 'creator_id' => auth()->id(), 'creator_name' => auth()->user()->fullname]);
         $lineId = parent::insertGetId($lineData);
         if ($lineId === 0) {
@@ -99,7 +99,7 @@ class BaseLineService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark']));
+        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'status']));
         if ($rowCount === false) {
             throw new BusinessLogicException('线路修改失败');
         }
@@ -154,8 +154,12 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
+        if (intval($line['status']) === BaseConstService::OFF) {
+            throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);
+        }
         //验证规则
         $this->checkRule($info, $line, $orderOrBatch);
+        $line['is_split'] = $lineRange['is_split'] ?? BaseConstService::NO;
         return $line;
     }
 
@@ -348,8 +352,12 @@ class BaseLineService extends BaseService
      */
     private function checkRuleForDate($params, $lineRange, $orderOrBatch)
     {
-        $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false)->toArray();
+        $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (!empty($line)) {
+            $line = $line->toArray();
+            if (intval($line['status']) == BaseConstService::OFF) {
+                return [];
+            }
             $date = $this->getFirstWeekDate($lineRange);
             for ($k = 0, $l = $line['appointment_days'] - $date; $k < $l; $k = $k + 7) {
                 $params['execution_date'] = Carbon::today()->addDays($date + $k)->format("Y-m-d");

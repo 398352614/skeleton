@@ -39,6 +39,13 @@ trait TourTrait
         dispatch(new \App\Jobs\OutWarehouse($tour['tour_no'], array_merge($cancelOrderList, $orderList)));
     }
 
+    public static function actualOutWarehouse($tour)
+    {
+        //触发司机出库1
+        event(new OutWarehouse($tour));
+        //智能调度-之后再进行出库通知
+    }
+
     public static function afterBatchArrived($tour, $batch)
     {
         //触发司机到达站点

@@ -21,18 +21,22 @@ class TourValidate extends BaseValidate
     public $rules = [
         'driver_id' => 'required|integer',
         'car_id' => 'required|integer',
-        'order_id_list' => 'required|string|checkIdList:20'
+        'order_id_list' => 'required|string|checkIdList:20',
+        'line_id' => 'required|integer',
+        'execution_date' => 'required|date|after_or_equal:today',
     ];
 
     public $scene = [
         'assignDriver' => ['driver_id'],
         'assignCar' => ['car_id'],
-        'getAddOrderPageList' => ['order_id_list']
+        'getAddOrderPageList' => ['order_id_list'],
+        'getLineDate' => ['line_id'],
+        'assignTourToTour' => ['execution_date', 'line_id']
     ];
 
     public $message = [
-        'driver_id.required'=>'请选择司机',
-        'car_id.required'=>'请选择车辆',
+        'driver_id.required' => '请选择司机',
+        'car_id.required' => '请选择车辆',
     ];
 }
 

@@ -99,16 +99,36 @@ return [
     ],
 
     "orderOut" => [
-        "order_no"=>"订单号",
-        "merchant_name"=>"所属商户",
-        "status"=>"订单状态",
-        "out_order_no"=>"外部订单号",
-        "receiver_post_code"=>"邮编",
-        "receiver_house_number"=>"门牌号",
-        "execution_date"=>"取派日期",
-        "driver_name"=>"派送司机",
-        "batch_no"=>"站点编号",
-        "tour_no"=>"取件线路编号",
-        "line_name"=>"线路名称",
+        "order_no" => "订单号",
+        "merchant_name" => "所属商户",
+        "status" => "订单状态",
+        "out_order_no" => "外部订单号",
+        "receiver_post_code" => "邮编",
+        "receiver_house_number" => "门牌号",
+        "execution_date" => "取派日期",
+        "driver_name" => "派送司机",
+        "batch_no" => "站点编号",
+        "tour_no" => "取件线路编号",
+        "line_name" => "线路名称",
+    ],
+
+    "plan" => [
+        'execution_date'=>"取派日期",
+        'line_name'=>"线路名称",
+        'driver_name'=>"司机姓名",
+        'car_no'=>"车牌号",
+
+        'batch_no'=>"站点编号",
+        'out_user_id'=>"外部用户ID",
+        'receiver_fullname'=>"收件人姓名",
+        'receiver_phone'=>"收件人电话",
+        'receiver_address'=>"收件人地址",
+        'receiver_post_code'=>"收件人邮编",
+        'receiver_city'=>"收件人城市",
+        'merchant_name'=>"商户名称",
+        'type'=>"取派类型",
+        'package_quantity'=>"包裹数量",
+        'out_order_no'=>"外部订单号",
+        'mask_code'=>"掩码"
     ]
 ];

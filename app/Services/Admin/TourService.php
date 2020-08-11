@@ -177,6 +177,27 @@ class TourService extends BaseService
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * 商户服务
+     * @return MerchantService
+     */
+    private function getMerchantService()
+    {
+        return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * 线路 服务
+     * @return LineService
+     */
+    private function getLineService()
+    {
+        return self::getInstance(LineService::class);
+    }
+
+    /**
+>>>>>>> develop
      * 获取可加单的取件线路列表
      * @param $orderIdList
      * @return array|mixed
@@ -399,7 +420,8 @@ class TourService extends BaseService
                 'warehouse_house_number' => $warehouse['house_number'],
                 'warehouse_address' => $warehouse['address'],
                 'warehouse_lon' => $warehouse['lon'],
-                'warehouse_lat' => $warehouse['lat']
+                'warehouse_lat' => $warehouse['lat'],
+                'type' => $batch['type'],
             ], $quantity)
         );
         if ($tour === false) {
@@ -413,7 +435,6 @@ class TourService extends BaseService
      * 加入已存在取件线路
      * @param $tour
      * @param $quantity
-     * @param $amount
      * @return mixed
      * @throws BusinessLogicException
      */
@@ -484,10 +505,15 @@ class TourService extends BaseService
     /**
      * 移除站点
      * @param $batch
+     * @return string
      * @throws BusinessLogicException
      */
     public function removeBatch($batch)
     {
+        $info = parent::getInfo(['tour_no' => $batch['tour_no']], ['id'], false);
+        if (empty($info)) {
+            return 'true';
+        }
         $info = $this->getInfoOfStatus(['tour_no' => $batch['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
         $quantity = intval($info['expect_pickup_quantity']) + intval($info['expect_pie_quantity']);
         $batchQuantity = intval($batch['expect_pickup_quantity']) + intval($batch['expect_pie_quantity']);
@@ -530,6 +556,41 @@ class TourService extends BaseService
             }
         }
         return $data;
+    }
+
+    /**
+     * 获取线路日期
+     * @param $id
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getLineDate($id, $data)
+    {
+        $params = parent::getInfo(['id' => $id], ['id'], false);
+        if (empty($params)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $batch = $this->getBatchService()->getInfo(['tour_no' => $params->tour_no], ['*'], false);
+        $data = $this->getLineService()->getScheduleListByLine($batch->toArray(), $data['line_id']);
+        return $data;
+    }
+
+    /**
+     * 线路分配
+     * @param $id
+     * @param $params
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function assignTourToTour($id, $params)
+    {
+        $info = parent::getInfo(['id' => $id], ['id', 'tour_no'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['id'], false)->toArray();
+        return $this->getBatchService()->assignListToTour(array_column($batchList, 'id'), $params);
     }
 
 
@@ -582,7 +643,7 @@ class TourService extends BaseService
         if (intval($batch['expect_pie_quantity']) > 0) {
             $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
         }
-        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
+        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]], 'type' => $batch['type']];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         return !empty($tour) ? $tour->toArray() : [];
     }
@@ -1065,5 +1126,76 @@ class TourService extends BaseService
         $dir = 'tour';
         $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
         return $this->excelExport($name, $this->tourHeadings, $cellData, $dir);
+    }
+
+    protected $planHeadings = [
+        'batch_no',
+        'out_user_id',
+        'receiver_fullname',
+        'receiver_phone',
+        'receiver_address',
+        'receiver_post_code',
+        'receiver_city',
+        'merchant_name',
+        'type',
+        'package_quantity',
+        'out_order_no',
+        'mask_code'
+    ];
+
+    /**
+     * 计划导出
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function planExport($id)
+    {
+        $tour = $this->query->where('id', '=', $id)->first();
+        if (empty($tour)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $headings = [
+            ['execution_date', $tour['execution_date']],
+            ['line_name', $tour['line_name']],
+            ['driver_name', $tour['driver_name']],
+            ['car_no', $tour['car_no']],
+            [],
+            $this->planHeadings,
+        ];
+        $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        if (empty($packageList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        if (empty($batchList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        if (empty($orderList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', collect($orderList)->pluck('merchant_id')->toArray()]], ['*'], false)->toArray();
+        foreach ($orderList as $k => $v) {
+            $orderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'];
+            $orderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
+            $orderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
+            $orderList[$k]['type'] = $orderList[$k]['type_name'];
+            $orderList[$k]['receiver_address'] = $orderList[$k]['receiver_street'] . ' ' . $orderList[$k]['receiver_house_number'];
+        }
+        $orderList = array_values(collect($orderList)->sortBy('sort_id')->toArray());
+        for ($i = 0, $j = count($orderList); $i < $j; $i++) {
+            $orderList[$i] = array_only_fields_sort($orderList[$i], $this->planHeadings);
+        }
+        $sort = [];
+        for ($i = 0, $j = count($orderList); $i < $j; $i++) {
+            if (!empty($orderList[$i + 1]) && $orderList[$i]['batch_no'] !== $orderList[$i + 1]['batch_no']) {
+                $sort = array_merge($sort, [$i + 1]);
+            }
+        }
+        $sort = array_merge($sort, [count($orderList)]);
+        $dir = 'plan';
+        $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
+        return $this->excelExport($name, $headings, $orderList, $dir, $sort);
     }
 }

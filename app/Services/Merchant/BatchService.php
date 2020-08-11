@@ -16,6 +16,7 @@ use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Services\OrderTrailService;
 use App\Traits\CompanyTrait;
+use App\Traits\ConstTranslateTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Bus;
@@ -36,7 +37,8 @@ class BatchService extends BaseService
         'receiver_post_code' => ['=', 'receiver_post_code'],
         'receiver_house_number' => ['=', 'receiver_house_number'],
         'receiver_city' => ['=', 'receiver_city'],
-        'receiver_street' => ['=', 'receiver_street']
+        'receiver_street' => ['=', 'receiver_street'],
+        'tour_no'=>['like','tour_no']
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -191,6 +193,11 @@ class BatchService extends BaseService
         $where = $this->getBatchWhere($order);
         $where = Arr::add($where, 'line_id', $line['id']);
         !empty($tour['tour_no']) && $where['tour_no'] = $tour['tour_no'];
+        if (!empty($order['is_split']) && (intval($order['is_split']) == BaseConstService::YES)) {
+            $where['type'] = $order['type'];
+        } else {
+            $where['type'] = $where['type'] = ['in', [$order['type'], BaseConstService::BATCH_TYPE_3]];
+        }
         $isAddOrder && $where['status'] = ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]];
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
@@ -283,6 +290,11 @@ class BatchService extends BaseService
         } else {
             $data['expect_pickup_quantity'] = 0;
             $data['expect_pie_quantity'] = 1;
+        }
+        if (!empty($order['is_split']) && (intval($order['is_split']) == BaseConstService::ON)) {
+            $data['type'] = $order['type'];
+        } else {
+            $data['type'] = BaseConstService::BATCH_TYPE_3;
         }
         return $data;
     }
@@ -432,7 +444,6 @@ class BatchService extends BaseService
 
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
 
-
         //取消通知
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => BaseConstService::ORDER_STATUS_6], ['order_no', 'out_order_no'], false)->toArray();
         foreach ($orderList as $order) {
@@ -476,10 +487,12 @@ class BatchService extends BaseService
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         $dbExecutionDate = $info['execution_date'];
         //如果是在同一条线路并且在同一个日期,则不变
-        if (!empty($params['line_id'] && $params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date']) && !empty($info['tour_no'])) {
+        if (!empty($params['line_id'] && $params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date']) && !empty($info['tour_no']) && (intval($info['type']) == BaseConstService::BATCH_TYPE_3)) {
             return 'true';
         }
         $info['execution_date'] = $params['execution_date'];
+        //如果分配，不管如何都变为取派
+        $info['type'] = BaseConstService::BATCH_TYPE_3;
         //获取线路信息
         $line = $this->getLineService()->getInfoByRule($info, BaseConstService::ORDER_OR_BATCH_2);
         list($tour, $batch) = $this->getTourService()->assignBatchToTour($info, $line, $params);
@@ -489,7 +502,7 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
-            event(new OrderExecutionDateUpdated($order['order_no'], $order['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
+            event(new OrderExecutionDateUpdated($order['order_no'], $order['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name'] . ConstTranslateTrait::tourTypeList($tour['type'])]));
         }
         //重新统计站点金额
         $this->reCountAmountByNo($info['batch_no']);
@@ -547,7 +560,8 @@ class BatchService extends BaseService
             'driver_name' => $tour['driver_name'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
             'car_no' => $tour['car_no'] ?? '',
-            'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN
+            'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN,
+            'type' => $tour['type'] ?? BaseConstService::BATCH_TYPE_3
         ];
         $rowCount = parent::updateById($batch['id'], $data);
         if ($rowCount === false) {
@@ -578,12 +592,12 @@ class BatchService extends BaseService
             throw new BusinessLogicException('操作失败');
         }
         //包裹移除取件线路信息
-        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '','execution_date'=>null, 'status' => BaseConstService::PACKAGE_STATUS_1]);
+        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'execution_date' => null, 'status' => BaseConstService::PACKAGE_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
         //材料移除取件线路信息
-        $rowCount = $this->getMaterialService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '','execution_date'=>null]);
+        $rowCount = $this->getMaterialService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'execution_date' => null]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }

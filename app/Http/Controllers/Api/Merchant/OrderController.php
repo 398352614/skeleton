@@ -76,6 +76,7 @@ class OrderController extends OrderBaseController
         if (auth()->user()->getAttribute('is_api') == true) {
             $orderSource = BaseConstService::ORDER_SOURCE_3;
             $this->data['out_status'] = !empty($this->data['out_status']) ? $this->data['out_status'] : BaseConstService::ORDER_OUT_STATUS_2;
+            unset($this->data['receiver_address']);
         } else {
             $orderSource = BaseConstService::ORDER_SOURCE_1;
             $this->data['out_status'] = BaseConstService::ORDER_OUT_STATUS_1;

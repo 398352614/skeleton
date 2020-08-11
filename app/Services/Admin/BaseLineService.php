@@ -125,6 +125,36 @@ class BaseLineService extends BaseService
         }
     }
 
+    /**
+     * 批量启用禁用
+     * @param $data
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function statusByList($data)
+    {
+        $idList = explode_id_string($data['id_list']);
+        //若是启用,则直接更新
+        if (intval($data['status']) == BaseConstService::ON) {
+            $rowCount = parent::update(['id' => ['in', $idList]], ['status' => $data['status']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+            return 'true';
+        }
+        //若是禁用,则需要验证是否存在取派的线路
+        foreach ($idList as $id) {
+            $tour = $this->getTourService()->getInfo(['line_id' => $id, 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['id', 'tour_no', 'line_name'], false);
+            if (!empty($tour)) {
+                throw new BusinessLogicException('线路[:line]存在取派任务线路[:tour_no]，不能操作', 1000, ['line' => $tour->line_name, 'tour_no' => $tour->tour_no]);
+            }
+            $rowCount = parent::update(['id' => $id], ['status' => $data['status']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+        }
+        return 'true';
+    }
 
     /**
      * 验证
@@ -165,7 +195,7 @@ class BaseLineService extends BaseService
         if (empty($data)) {
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
-        $this->checkRule($info, $line, $orderOrBatch);
+        $this->checkRule($info, $line, $orderOrBatch, false);
         return $line;
     }
 
@@ -200,8 +230,12 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
+        if (intval($line['status']) === BaseConstService::OFF) {
+            throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);
+        }
         //验证规则
         $this->checkRule($info, $line, $orderOrBatch);
+        $line['is_split'] = $lineRange['is_split'] ?? BaseConstService::NO;
         return $line;
     }
 
@@ -210,12 +244,15 @@ class BaseLineService extends BaseService
      * @param $info
      * @param $line
      * @param $orderOrBatch
+     * @param bool $deadLineCheck
      * @throws BusinessLogicException
      */
-    public function checkRule($info, $line, $orderOrBatch)
+    public function checkRule($info, $line, $orderOrBatch, $deadLineCheck = true)
     {
         //预约当天的，需要判断是否在下单截止日期内
-        $this->deadlineCheck($info, $line);
+        if ($deadLineCheck == true) {
+            $this->deadlineCheck($info, $line);
+        }
         //判断预约日期是否在可预约日期范围内
         $this->appointmentDayCheck($info, $line);
         //若不是新增取件线路，则当前取件线路必须再最大订单量内
@@ -245,7 +282,7 @@ class BaseLineService extends BaseService
     public function getScheduleListByLine($params, $lineId)
     {
         $lineRangeList = $this->getLineRangeListByLine($lineId);
-        return $this->getScheduleListByLineRangeList($params, $lineRangeList, BaseConstService::ORDER_OR_BATCH_2);
+        return $this->getScheduleListByLineRangeList($params, $lineRangeList, BaseConstService::ORDER_OR_BATCH_2, false);
     }
 
     /**
@@ -394,19 +431,20 @@ class BaseLineService extends BaseService
 
 
     /**
-     * 通过线路范围获取可选日期
+     * 通过线路范围列表获取可选日期列表
      * @param $params
      * @param array $lineRangeList
      * @param int $orderOrBatch
+     * @param $deadLineCheck
      * @return array
      * @throws BusinessLogicException
      */
-    public function getScheduleListByLineRangeList($params, array $lineRangeList, int $orderOrBatch)
+    public function getScheduleListByLineRangeList($params, array $lineRangeList, int $orderOrBatch, $deadLineCheck = true)
     {
         $dateList = [];
         for ($i = 0, $j = count($lineRangeList); $i < $j; $i++) {
             if (!empty($lineRangeList[$i])) {
-                $dateList = array_merge($dateList, $this->checkRuleForDate($params, $lineRangeList[$i], $orderOrBatch));
+                $dateList = array_merge($dateList, $this->checkRuleForDate($params, $lineRangeList[$i], $orderOrBatch, $deadLineCheck));
             }
         }
         asort($dateList);
@@ -422,17 +460,24 @@ class BaseLineService extends BaseService
      * @param $params
      * @param $lineRange
      * @param $orderOrBatch
+     * @param bool $deadLineCheck
      * @return array
      */
-    private function checkRuleForDate($params, $lineRange, $orderOrBatch)
+    private function checkRuleForDate($params, $lineRange, $orderOrBatch, $deadLineCheck = true)
     {
-        $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false)->toArray();
+        $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (!empty($line)) {
+            $line = $line->toArray();
+            if (intval($line['status']) == BaseConstService::OFF) {
+                return [];
+            }
             $date = $this->getFirstWeekDate($lineRange);
             for ($k = 0, $l = $line['appointment_days'] - $date; $k < $l; $k = $k + 7) {
                 $params['execution_date'] = Carbon::today()->addDays($date + $k)->format("Y-m-d");
                 try {
-                    $this->deadlineCheck($params, $line);
+                    if ($deadLineCheck == true) {
+                        $this->deadlineCheck($params, $line);
+                    }
                     $this->appointmentDayCheck($params, $line);
                     $this->maxCheck($params, $line, $orderOrBatch);
                 } catch (BusinessLogicException $e) {

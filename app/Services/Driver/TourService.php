@@ -435,13 +435,13 @@ class TourService extends BaseService
             $outOrderIdList = array_filter(explode(',', $params['out_order_id_list']), function ($value) {
                 return is_numeric($value);
             });
-            $NoOutOrder = $this->getOrderService()->getInfo(['id' => ['in', $outOrderIdList], 'status' => ['<>', BaseConstService::ORDER_STATUS_3]], ['order_no'], false);
+            $NoOutOrder = $this->getOrderService()->getInfo(['id' => ['in', $outOrderIdList],'type' => BaseConstService::ORDER_TYPE_2, 'status' => ['<>', BaseConstService::ORDER_STATUS_3]], ['order_no'], false);
             if (!empty($NoOutOrder)) {
                 throw new BusinessLogicException('订单[:order_no]已取消或已删除,不能出库,请先剔除', 1000, ['order' => $NoOutOrder->order_no]);
             }
         }
         //验证订单数量
-        $orderCount = $this->getOrderService()->count(['tour_no' => $tour['tour_no']]);
+        $orderCount = $this->getOrderService()->count(['tour_no' => $tour['tour_no'],'type'=>BaseConstService::ORDER_STATUS_2]);
         if ($orderCount != $params['order_count']) {
             throw new BusinessLogicException($orderCount, 5002);
         }
@@ -457,7 +457,7 @@ class TourService extends BaseService
             foreach ($materialList as $v) {
                 $expectQuantity = collect($expectMaterialList)->where('code', $v['code'])->first();
                 if (empty($expectQuantity)) {
-                    throw new BusinessLogicException('当前取件线路的材料代码不正确');
+                    throw new BusinessLogicException('',5004);
                 }
                 if (intval($v['actual_quantity']) > intval($expectQuantity['expect_quantity'])) {
                     throw new BusinessLogicException('当前取件线路的材料数量不正确');
