@@ -103,8 +103,8 @@ class PlanExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 $data = [];
                 for ($i = 0, $j = count($sortArray); $i < $j; $i++) {
                     if(!empty($sortArray[$i + 1])){
-                        $data[$i][0] = $sortArray[$i] + 1 + 7;
-                        $data[$i][1] = $sortArray[$i + 1] + 7;
+                        $data[$i][0] = $sortArray[$i] + 1 + 6;
+                        $data[$i][1] = $sortArray[$i + 1] + 6;
                     }
                 }
                 foreach ($data as $k => $v) {
