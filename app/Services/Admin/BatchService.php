@@ -543,6 +543,8 @@ class BatchService extends BaseService
             return 'true';
         }
         $info['execution_date'] = $params['execution_date'];
+        //如果分配，不管如何都变为取派
+        $info['type'] = BaseConstService::BATCH_TYPE_3;
         //获取线路信息
         $line = $this->getLineService()->getInfoByLineId($info, $params, BaseConstService::ORDER_OR_BATCH_2);
         list($tour, $batch) = $this->getTourService()->assignBatchToTour($info, $line, $params);
@@ -552,7 +554,7 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
-            event(new OrderExecutionDateUpdated($order['order_no'], $order['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name'] .  ConstTranslateTrait::tourTypeList($tour['type'])]));
+            event(new OrderExecutionDateUpdated($order['order_no'], $order['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name'] . ConstTranslateTrait::tourTypeList($tour['type'])]));
         }
         //重新统计站点金额
         $this->reCountAmountByNo($info['batch_no']);
