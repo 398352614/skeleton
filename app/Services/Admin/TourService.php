@@ -1146,6 +1146,7 @@ class TourService extends BaseService
                 $sort = array_merge($sort, [$i]);
             }
         }
+        $sort = array_merge($sort, [count($orderList)-1]);
         $dir = 'plan';
         $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
         return $this->excelExport($name, $headings, $orderList, $dir, $sort);
