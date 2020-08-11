@@ -45,7 +45,7 @@ class LineRangeService extends BaseService
         $list = array_create_group_index($list, 'line_id');
         foreach ($list as $key => $lineList) {
             $newList[$key]['line_range'] = implode(';', array_column(multi_array_unique($lineList, 'range'), 'range'));
-            $newList[$key]['split_line_range'] = implode(';', array_column(multi_array_unique($lineList, 'split_line_range'), 'split_line_range'));
+            $newList[$key]['split_line_range'] = implode(';', array_filter(array_column(multi_array_unique($lineList, 'split_line_range'), 'split_line_range')));
             $newList[$key]['work_day_list'] = array_column($lineList, 'schedule');
         }
         return $newList;
