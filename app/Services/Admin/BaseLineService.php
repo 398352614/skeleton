@@ -31,6 +31,8 @@ class BaseLineService extends BaseService
         'country' => ['=', 'country'],
     ];
 
+    public $orderBy = ['id' => 'asc'];
+
     public function __construct(Line $line)
     {
         parent::__construct($line, LineResource::class);
