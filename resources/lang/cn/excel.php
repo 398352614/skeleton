@@ -117,7 +117,6 @@ return [
         'line_name'=>"线路名称",
         'driver_name'=>"司机姓名",
         'car_no'=>"车牌号",
-
         'batch_no'=>"站点编号",
         'out_user_id'=>"外部用户ID",
         'receiver_fullname'=>"收件人姓名",
