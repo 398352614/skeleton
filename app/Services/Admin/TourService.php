@@ -546,6 +546,23 @@ class TourService extends BaseService
         return $data;
     }
 
+    /**
+     * 线路分配
+     * @param $id
+     * @param $params
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function assignTourToTour($id, $params)
+    {
+        $info = parent::getInfo(['id' => $id], ['id'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['id'], false)->toArray();
+        return $this->getBatchService()->assignListToTour(array_column($batchList, 'id'), $params);
+    }
+
 
     /**
      * 分配站点至取件线路
@@ -1134,7 +1151,7 @@ class TourService extends BaseService
             $orderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
             $orderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
             $orderList[$k]['type'] = $orderList[$k]['type_name'];
-            $orderList[$k]['receiver_address'] = $orderList[$k]['receiver_street'].' '.$orderList[$k]['receiver_house_number'];
+            $orderList[$k]['receiver_address'] = $orderList[$k]['receiver_street'] . ' ' . $orderList[$k]['receiver_house_number'];
         }
         $orderList = array_values(collect($orderList)->sortBy('sort_id')->toArray());
         for ($i = 0, $j = count($orderList); $i < $j; $i++) {
@@ -1146,7 +1163,7 @@ class TourService extends BaseService
                 $sort = array_merge($sort, [$i]);
             }
         }
-        $sort = array_merge($sort, [count($orderList)-1]);
+        $sort = array_merge($sort, [count($orderList) - 1]);
         $dir = 'plan';
         $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
         return $this->excelExport($name, $headings, $orderList, $dir, $sort);

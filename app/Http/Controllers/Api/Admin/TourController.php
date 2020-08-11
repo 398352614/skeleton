@@ -74,6 +74,17 @@ class TourController extends BaseController
     }
 
     /**
+     * 分配线路
+     * @param $id
+     * @return string
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function assignTourToTour($id)
+    {
+        return $this->service->assignTourToTour($id, $this->data);
+    }
+
+    /**
      * @api {POST}  api/admin/tour/update-batch-index 管理员端:更新批次的派送顺序
      * @apiName update-batch-index
      * @apiGroup admin

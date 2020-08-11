@@ -214,6 +214,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/png', 'TourController@mapExport'); //导出站点地图png
         Route::get('/{id}/tour-excel', 'TourController@tourExport'); //导出任务报告
         Route::get('/{id}/plan-excel', 'TourController@planExport'); //导出计划
+        Route::put('/{id}/assign', 'TourController@assignTourToTour');   //分配线路
     });
 
     //取件线路-司机
