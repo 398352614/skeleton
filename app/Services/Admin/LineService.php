@@ -72,7 +72,7 @@ class LineService extends BaseLineService
             throw new BusinessLogicException('线路不存在');
         }
         $info = $info->toArray();
-        $lineRangeList = $this->getLineRangeService()->getList(['line_id' => $info['id']], ['country', 'post_code_start', 'post_code_end', 'schedule'], false);
+        $lineRangeList = $this->getLineRangeService()->getList(['line_id' => $info['id']], ['country', 'post_code_start', 'post_code_end', 'schedule', 'is_split'], false);
         if ($lineRangeList->isEmpty()) {
             $info['line_range'] = [];
             $info['work_day_list'] = '';
