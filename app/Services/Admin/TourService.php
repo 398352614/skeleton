@@ -1127,6 +1127,7 @@ class TourService extends BaseService
             $orderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->get('sort_id');
             $orderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
             $orderList[$k]['package_quantity'] = collect($packageList)->where('order_no',$v['order_no'])->count();
+            $orderList[$k]['type'] = $orderList[$k]['type_name'];
         }
         $orderList = array_values(collect($orderList)->sortBy('sort_id')->toArray());
         for($i=0,$j=count($orderList);$i<$j;$i++){
