@@ -1134,7 +1134,7 @@ class TourService extends BaseService
             $orderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
             $orderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
             $orderList[$k]['type'] = $orderList[$k]['type_name'];
-            $orderList[$k]['address'] = $orderList[$k]['receiver_street'].' '.$orderList[$k]['receiver_house_number'];
+            $orderList[$k]['receiver_address'] = $orderList[$k]['receiver_street'].' '.$orderList[$k]['receiver_house_number'];
         }
         $orderList = array_values(collect($orderList)->sortBy('sort_id')->toArray());
         for ($i = 0, $j = count($orderList); $i < $j; $i++) {
@@ -1146,6 +1146,7 @@ class TourService extends BaseService
                 $sort = array_merge($sort, [$i]);
             }
         }
+        $sort = array_merge($sort, [count($orderList)-1]);
         $dir = 'plan';
         $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
         return $this->excelExport($name, $headings, $orderList, $dir, $sort);
