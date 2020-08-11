@@ -490,6 +490,8 @@ class BatchService extends BaseService
             return 'true';
         }
         $info['execution_date'] = $params['execution_date'];
+        //如果分配，不管如何都变为取派
+        $info['type'] = BaseConstService::BATCH_TYPE_3;
         //获取线路信息
         $line = $this->getLineService()->getInfoByRule($info, BaseConstService::ORDER_OR_BATCH_2);
         list($tour, $batch) = $this->getTourService()->assignBatchToTour($info, $line, $params);
