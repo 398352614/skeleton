@@ -186,6 +186,15 @@ class TourService extends BaseService
     }
 
     /**
+     * 线路 服务
+     * @return LineService
+     */
+    private function getLineService()
+    {
+        return self::getInstance(LineService::class);
+    }
+
+    /**
      * 获取可加单的取件线路列表
      * @param $orderIdList
      * @return array|mixed
@@ -543,6 +552,23 @@ class TourService extends BaseService
                 }
             }
         }
+        return $data;
+    }
+
+    /**
+     * 获取线路日期
+     * @param $id
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getLineDate($id, $data)
+    {
+        $params = parent::getInfo(['id' => $id], ['id'], false);
+        if (empty($params)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $data = $this->getLineService()->getScheduleListByLine($params, $data['line_id']);
         return $data;
     }
 
@@ -1160,7 +1186,7 @@ class TourService extends BaseService
         $sort = [];
         for ($i = 0, $j = count($orderList); $i < $j; $i++) {
             if (!empty($orderList[$i + 1]) && $orderList[$i]['batch_no'] !== $orderList[$i + 1]['batch_no']) {
-                $sort = array_merge($sort, [$i+1]);
+                $sort = array_merge($sort, [$i + 1]);
             }
         }
         $sort = array_merge($sort, [count($orderList)]);

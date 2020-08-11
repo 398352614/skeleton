@@ -30,6 +30,7 @@ class TourValidate extends BaseValidate
         'assignDriver' => ['driver_id'],
         'assignCar' => ['car_id'],
         'getAddOrderPageList' => ['order_id_list'],
+        'getLineDate' => ['line_id'],
         'assignTourToTour' => ['execution_date', 'line_id']
     ];
 

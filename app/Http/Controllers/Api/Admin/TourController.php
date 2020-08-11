@@ -74,6 +74,17 @@ class TourController extends BaseController
     }
 
     /**
+     * 获取可取派日期
+     * @param $id
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function getLineDate($id)
+    {
+        return $this->service->getLineDate($id, $this->data);
+    }
+
+    /**
      * 分配线路
      * @param $id
      * @return string
