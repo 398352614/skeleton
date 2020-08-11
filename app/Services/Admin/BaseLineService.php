@@ -197,7 +197,7 @@ class BaseLineService extends BaseService
         if (empty($data)) {
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
-        $this->checkRule($info, $line, $orderOrBatch);
+        $this->checkRule($info, $line, $orderOrBatch, false);
         return $line;
     }
 
@@ -257,12 +257,15 @@ class BaseLineService extends BaseService
      * @param $info
      * @param $line
      * @param $orderOrBatch
+     * @param bool $deadLineCheck
      * @throws BusinessLogicException
      */
-    public function checkRule($info, $line, $orderOrBatch)
+    public function checkRule($info, $line, $orderOrBatch, $deadLineCheck = true)
     {
         //预约当天的，需要判断是否在下单截止日期内
-        $this->deadlineCheck($info, $line);
+        if ($deadLineCheck == true) {
+            $this->deadlineCheck($info, $line);
+        }
         //判断预约日期是否在可预约日期范围内
         $this->appointmentDayCheck($info, $line);
         //若不是新增取件线路，则当前取件线路必须再最大订单量内
