@@ -298,7 +298,7 @@ class BaseLineService extends BaseService
     public function getScheduleListByLine($params, $lineId)
     {
         $lineRangeList = $this->getLineRangeListByLine($lineId);
-        return $this->getScheduleListByLineRangeList($params, $lineRangeList, BaseConstService::ORDER_OR_BATCH_2);
+        return $this->getScheduleListByLineRangeList($params, $lineRangeList, BaseConstService::ORDER_OR_BATCH_2, false);
     }
 
     /**
@@ -451,15 +451,16 @@ class BaseLineService extends BaseService
      * @param $params
      * @param array $lineRangeList
      * @param int $orderOrBatch
+     * @param $deadLineCheck
      * @return array
      * @throws BusinessLogicException
      */
-    public function getScheduleListByLineRangeList($params, array $lineRangeList, int $orderOrBatch)
+    public function getScheduleListByLineRangeList($params, array $lineRangeList, int $orderOrBatch, $deadLineCheck = true)
     {
         $dateList = [];
         for ($i = 0, $j = count($lineRangeList); $i < $j; $i++) {
             if (!empty($lineRangeList[$i])) {
-                $dateList = array_merge($dateList, $this->checkRuleForDate($params, $lineRangeList[$i], $orderOrBatch));
+                $dateList = array_merge($dateList, $this->checkRuleForDate($params, $lineRangeList[$i], $orderOrBatch, $deadLineCheck));
             }
         }
         asort($dateList);
@@ -475,9 +476,10 @@ class BaseLineService extends BaseService
      * @param $params
      * @param $lineRange
      * @param $orderOrBatch
+     * @param bool $deadLineCheck
      * @return array
      */
-    private function checkRuleForDate($params, $lineRange, $orderOrBatch)
+    private function checkRuleForDate($params, $lineRange, $orderOrBatch, $deadLineCheck = true)
     {
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (!empty($line)) {
@@ -489,7 +491,9 @@ class BaseLineService extends BaseService
             for ($k = 0, $l = $line['appointment_days'] - $date; $k < $l; $k = $k + 7) {
                 $params['execution_date'] = Carbon::today()->addDays($date + $k)->format("Y-m-d");
                 try {
-                    $this->deadlineCheck($params, $line);
+                    if ($deadLineCheck == true) {
+                        $this->deadlineCheck($params, $line);
+                    }
                     $this->appointmentDayCheck($params, $line);
                     $this->maxCheck($params, $line, $orderOrBatch);
                 } catch (BusinessLogicException $e) {
