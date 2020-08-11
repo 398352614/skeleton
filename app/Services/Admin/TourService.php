@@ -1147,7 +1147,7 @@ class TourService extends BaseService
         }
         $merchantList = $this->getMerchantService()->getList(['id' => ['in', collect($orderList)->pluck('merchant_id')->toArray()]], ['*'], false)->toArray();
         foreach ($orderList as $k => $v) {
-            $orderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->get('sort_id');
+            $orderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'];
             $orderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
             $orderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
             $orderList[$k]['type'] = $orderList[$k]['type_name'];
