@@ -177,8 +177,6 @@ class TourService extends BaseService
     }
 
     /**
-<<<<<<< HEAD
-=======
      * 商户服务
      * @return MerchantService
      */
@@ -197,7 +195,6 @@ class TourService extends BaseService
     }
 
     /**
->>>>>>> develop
      * 获取可加单的取件线路列表
      * @param $orderIdList
      * @return array|mixed

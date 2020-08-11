@@ -25,9 +25,20 @@ trait ExportTrait
     }
 
     public function translate($headings,$dir){
-        for($i=0,$j=count($headings);$i<$j;$i++){
-            $headings[$i]=__('excel.'.$dir.'.'.$headings[$i]);
-        };
+        if (is_array($headings[0])) {
+            $systemHeadings = array_keys(__('excel.plan'));
+            for ($i = 0, $j = count($headings); $i < $j; $i++) {
+                for ($k = 0, $l = count($headings[$i]); $k < $l; $k++) {
+                    if (in_array($headings[$i][$k], $systemHeadings)) {
+                        $headings[$i][$k] = __('excel.' . $dir . '.' . $headings[$i][$k]);
+                    }
+                }
+            }
+        } else {
+            for ($i = 0, $j = count($headings); $i < $j; $i++) {
+                $headings[$i] = __('excel.' . $dir . '.' . $headings[$i]);
+            }
+        }
         return $headings;
     }
 

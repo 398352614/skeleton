@@ -28,6 +28,8 @@ class LineValidate extends BaseValidate
         'remark' => 'nullable|string|max:250',
         'work_day_list' => 'required|string',
         'is_get_area' => 'nullable|integer|in:1,2',
+        'status' => 'required|integer|in:1,2',
+        'id_list' => 'required|string|checkIdList:100',
         //邮编列表
         'item_list.*.post_code_start' => 'required|integer|between:1000,9999',
         'item_list.*.post_code_end' => 'required|integer|between:1000,9999|gte:item_list.*.post_code_start',
@@ -42,7 +44,7 @@ class LineValidate extends BaseValidate
         /*****************************************************邮编*****************************************************/
         'postcodeStore' => [
             'name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'work_days_list',
-            'item_list.*.post_code_start', 'item_list.*.post_code_end', 'item_list.*.is_split'
+            'item_list.*.post_code_start', 'item_list.*.post_code_end', 'item_list.*.is_split', 'status'
         ],
         'postcodeUpdate' => [
             'name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'work_days_list',
@@ -52,12 +54,13 @@ class LineValidate extends BaseValidate
         'areaIndex' => ['is_get_area'],
         'areaStore' => [
             'name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark',
-            'coordinate_list', 'coordinate_list.*.lat', 'coordinate_list.*.lon'
+            'coordinate_list', 'coordinate_list.*.lat', 'coordinate_list.*.lon', 'status'
         ],
         'areaUpdate' => [
             'name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark',
-            'coordinate_list', 'coordinate_list.*.lat', 'coordinate_list.*.lon'
+            'coordinate_list', 'coordinate_list.*.lat', 'coordinate_list.*.lon', 'status'
         ],
+        'statusByList' => ['id_list', 'status']
     ];
 }
 
