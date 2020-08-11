@@ -51,6 +51,7 @@ class LineArea extends BaseModel
         'coordinate_list',
         'schedule',
         'country',
+        'is_split',
         'created_at',
         'updated_at',
     ];

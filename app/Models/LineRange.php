@@ -52,6 +52,7 @@ class LineRange extends BaseModel
         'post_code_end',
         'schedule',
         'country',
+        'is_split',
         'created_at',
         'updated_at',
     ];

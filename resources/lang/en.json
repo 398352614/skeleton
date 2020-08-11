@@ -675,5 +675,8 @@
     "接收人不存在":"",
     "关闭": "",
   "系统级": "System level",
-  "自定义": "custom"
+  "自定义": "custom",
+  "取": "Pick up",
+  "派": "Send",
+  "取派":"Pick up And Send"
 }

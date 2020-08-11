@@ -33,6 +33,7 @@ class LineResource extends JsonResource
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
             'line_range' => $this->line_range ?? '',
+            'split_line_range' => $this->split_line_range ?? '',
             'work_day_list' => !empty($this->work_day_list) ? $this->getWorkDayList($this->work_day_list) : '',
             'coordinate_list' => $this->coordinate_list ?? null,
             'status' => $this->status

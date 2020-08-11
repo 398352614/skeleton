@@ -209,6 +209,20 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_EXCEPTION_STAGE_2_TYPE_3 => '其他',
     ];
 
+    //站点类型1-取件2-派件3-取派件
+    public static $batchTypeList = [
+        BaseConstService::BATCH_TYPE_1 => '取',
+        BaseConstService::BATCH_TYPE_2 => '派',
+        BaseConstService::BATCH_TYPE_3 => '',
+    ];
+
+    //取件线路类型1-取件2-派件3-取派件
+    public static $tourTypeList = [
+        BaseConstService::TOUR_TYPE_1 => '(取)',
+        BaseConstService::TOUR_TYPE_2 => '(派)',
+        BaseConstService::TOUR_TYPE_3 => '',
+    ];
+
 
     //在途类型1-待分配-2-已分配3-待出库4-取派中5-取派完成
     public static $tourStatusList = [
@@ -336,9 +350,9 @@ trait ConstTranslateTrait
         BaseConstService::FEE_LEVEL_2 => '自定义'
     ];
 
-    public static $showTypeList =[
-        BaseConstService::ALL_SHOW =>'全部展示',
-        BaseConstService::LINE_RULE_SHOW =>'全部展示',
+    public static $showTypeList = [
+        BaseConstService::ALL_SHOW => '全部展示',
+        BaseConstService::LINE_RULE_SHOW => '全部展示',
     ];
 
     /**

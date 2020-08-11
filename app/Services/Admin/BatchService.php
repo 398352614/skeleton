@@ -208,6 +208,11 @@ class BatchService extends BaseService
         $where = $this->getBatchWhere($order);
         $where = Arr::add($where, 'line_id', $line['id']);
         !empty($tour['tour_no']) && $where['tour_no'] = $tour['tour_no'];
+        if (!empty($order['is_split']) && (intval($order['is_split']) == BaseConstService::YES)) {
+            $where['type'] = $order['type'];
+        } else {
+            $where['type'] = ['in', [$order['type'], BaseConstService::BATCH_TYPE_3]];
+        }
         $isAddOrder && $where['status'] = ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]];
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
@@ -300,6 +305,9 @@ class BatchService extends BaseService
         } else {
             $data['expect_pickup_quantity'] = 0;
             $data['expect_pie_quantity'] = 1;
+        }
+        if (!empty($order['is_split']) && (intval($order['is_split']) == BaseConstService::ON)) {
+            $data['type'] = $order['type'];
         }
         return $data;
     }
@@ -517,10 +525,10 @@ class BatchService extends BaseService
 
 
     /**
-     * 更换取件线路
+     * 分配至线路
      * @param $id
      * @param $params
-     * @return string
+     * @return mixed
      * @throws BusinessLogicException
      */
     public function assignToTour($id, $params)
@@ -541,7 +549,7 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
-            event(new OrderExecutionDateUpdated($order['order_no'], $order['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
+            event(new OrderExecutionDateUpdated($order['order_no'], $order['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name'] . $tour['type_name']]));
         }
         //重新统计站点金额
         $this->reCountAmountByNo($info['batch_no']);
@@ -599,8 +607,8 @@ class BatchService extends BaseService
 
     /**
      * 填充站点信息和取件线路信息
-     * @param $id
      * @param $batch
+     * @param $line
      * @param $tour
      * @throws BusinessLogicException
      */
@@ -647,12 +655,12 @@ class BatchService extends BaseService
             throw new BusinessLogicException('操作失败');
         }
         //包裹移除取件线路信息
-        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '','execution_date'=>null, 'status' => BaseConstService::PACKAGE_STATUS_1]);
+        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'execution_date' => null, 'status' => BaseConstService::PACKAGE_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
         //材料移除取件线路信息
-        $rowCount = $this->getMaterialService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '','execution_date'=>null,]);
+        $rowCount = $this->getMaterialService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'execution_date' => null,]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }

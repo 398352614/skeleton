@@ -53,6 +53,7 @@ class Tour extends BaseModel
         'line_id',
         'line_name',
         'execution_date',
+        'type',
         'driver_id',
         'driver_name',
         'driver_phone',
@@ -113,6 +114,7 @@ class Tour extends BaseModel
 
     protected $appends = [
         'status_name',
+        'type_name',
         'expect_time_human',
         'actual_time_human',
         'merchant_status',
@@ -125,6 +127,12 @@ class Tour extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::tourStatusList($this->type);
+    }
 
 
     public function getStatusNameAttribute()

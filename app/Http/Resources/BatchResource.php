@@ -17,6 +17,8 @@ class BatchResource extends JsonResource
             'line_name' => $this->line_name,
             'execution_date' => $this->execution_date,
             'status' => $this->status,
+            'type' => $this->type,
+            'type_name' => !empty($this->type_name) ? $this->type_name : __('取派'),
             'driver_id' => $this->driver_id,
             'driver_name' => $this->driver_name,
             'driver_phone' => $this->driver_phone,
@@ -48,9 +50,9 @@ class BatchResource extends JsonResource
             'replace_amount' => $this->replace_amount,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
-            'status_name'=> $this->status_name,
-            'exception_label_name'=> $this->exception_label_name,
-            'pay_type_name'=> $this->pay_type_name,
+            'status_name' => $this->status_name,
+            'exception_label_name' => $this->exception_label_name,
+            'pay_type_name' => $this->pay_type_name,
         ];
     }
 

@@ -54,6 +54,7 @@ class Batch extends BaseModel
         'line_name',
         'execution_date',
         'status',
+        'type',
         'exception_label',
         'cancel_type',
         'cancel_remark',
@@ -109,6 +110,7 @@ class Batch extends BaseModel
 
     protected $appends = [
         'status_name',
+        'type_name',
         'exception_label_name',
         'pay_type_name',
         'receiver_country_name',

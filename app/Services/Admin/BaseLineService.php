@@ -247,10 +247,11 @@ class BaseLineService extends BaseService
         }
         $line = $line->toArray();
         if (intval($line['status']) === BaseConstService::OFF) {
-            throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);;
+            throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);
         }
         //验证规则
         $this->checkRule($info, $line, $orderOrBatch);
+        $line['is_split'] = $lineRange['is_split'] ?? BaseConstService::NO;
         return $line;
     }
 
@@ -446,7 +447,7 @@ class BaseLineService extends BaseService
 
 
     /**
-     * 通过线路范围获取可选日期
+     * 通过线路范围列表获取可选日期列表
      * @param $params
      * @param array $lineRangeList
      * @param int $orderOrBatch
