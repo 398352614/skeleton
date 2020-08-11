@@ -291,6 +291,8 @@ class BatchService extends BaseService
         }
         if (!empty($order['is_split']) && (intval($order['is_split']) == BaseConstService::ON)) {
             $data['type'] = $order['type'];
+        } else {
+            $data['type'] = BaseConstService::BATCH_TYPE_3;
         }
         return $data;
     }
