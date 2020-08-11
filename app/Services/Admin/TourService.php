@@ -568,7 +568,7 @@ class TourService extends BaseService
         if (empty($params)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getLineService()->getScheduleListByLine($params, $data['line_id']);
+        $data = $this->getLineService()->getScheduleListByLine($params->toArray(), $data['line_id']);
         return $data;
     }
 
