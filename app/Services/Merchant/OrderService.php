@@ -904,7 +904,7 @@ class OrderService extends BaseService
      */
     public function updateById($id, $data)
     {
-        unset($data['order_no'], $data['tour_no'], $data['batch_no'], $data['merchant_id']);
+        unset($data['order_no'], $data['tour_no'], $data['batch_no']);
         /*************************************************订单修改******************************************************/
         //获取信息
         $dbInfo = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);

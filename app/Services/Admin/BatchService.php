@@ -609,8 +609,8 @@ class BatchService extends BaseService
         $data = [
             'execution_date' => $tour['execution_date'],
             'tour_no' => $tour['tour_no'],
-            'line_id' => $line['id'],
-            'line_name' => $line['name'],
+            'line_id' => $tour['line_id'],
+            'line_name' => $tour['line_name'],
             'driver_id' => $tour['driver_id'] ?? null,
             'driver_name' => $tour['driver_name'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
