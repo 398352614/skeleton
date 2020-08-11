@@ -126,15 +126,32 @@ class BaseLineService extends BaseService
     /**
      * 批量启用禁用
      * @param $data
+     * @return string
      * @throws BusinessLogicException
      */
     public function statusByList($data)
     {
         $idList = explode_id_string($data['id_list']);
-        $rowCount = parent::update(['id' => ['in', $idList]], ['status' => $data['status']]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+        //若是启用,则直接更新
+        if (intval($data['status']) == BaseConstService::ON) {
+            $rowCount = parent::update(['id' => ['in', $idList]], ['status' => $data['status']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+            return 'true';
         }
+        //若是禁用,则需要验证是否存在取派的线路
+        foreach ($idList as $id) {
+            $tour = $this->getTourService()->getInfo(['line_id' => $id, 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['id', 'tour_no', 'line_name'], false);
+            if (!empty($tour)) {
+                throw new BusinessLogicException('线路[:line]存在取派任务线路[:tour_no]，不能操作', 1000, ['line' => $tour->line_name, 'tour_no' => $tour->tour_no]);
+            }
+            $rowCount = parent::update(['id' => $id], ['status' => $data['status']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+        }
+        return 'true';
     }
 
 
