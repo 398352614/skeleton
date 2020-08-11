@@ -352,6 +352,9 @@ class BaseLineService extends BaseService
     private function checkRuleForDate($params, $lineRange, $orderOrBatch)
     {
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false)->toArray();
+        if (intval($line['status']) == BaseConstService::OFF) {
+            return [];
+        }
         if (!empty($line)) {
             $date = $this->getFirstWeekDate($lineRange);
             for ($k = 0, $l = $line['appointment_days'] - $date; $k < $l; $k = $k + 7) {
