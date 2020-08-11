@@ -78,7 +78,7 @@ class LineService extends BaseLineService
             $info['work_day_list'] = '';
         } else {
             $info['line_range'] = $lineRangeList->map(function ($lineRange, $key) {
-                return collect($lineRange)->only(['post_code_start', 'post_code_end']);
+                return collect($lineRange)->only(['post_code_start', 'post_code_end', 'is_split']);
             })->unique(function ($item) {
                 return $item['post_code_start'] . $item['post_code_end'];
             })->toArray();
