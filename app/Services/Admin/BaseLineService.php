@@ -82,7 +82,7 @@ class BaseLineService extends BaseService
      */
     public function store($params, $rule = BaseConstService::LINE_RULE_POST_CODE)
     {
-        $lineData = Arr::only($params, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark']);
+        $lineData = Arr::only($params, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'status']);
         $lineData = array_merge($lineData, ['rule' => $rule, 'creator_id' => auth()->id(), 'creator_name' => auth()->user()->fullname]);
         $lineId = parent::insertGetId($lineData);
         if ($lineId === 0) {
@@ -99,7 +99,7 @@ class BaseLineService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark']));
+        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'status']));
         if ($rowCount === false) {
             throw new BusinessLogicException('线路修改失败');
         }
@@ -120,6 +120,20 @@ class BaseLineService extends BaseService
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('线路删除失败');
+        }
+    }
+
+    /**
+     * 批量启用禁用
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    public function statusByList($data)
+    {
+        $idList = explode_id_string($data['id_list']);
+        $rowCount = parent::update(['id' => ['in', $idList]], ['status' => $data['status']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
         }
     }
 
@@ -155,6 +169,9 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
+        if (intval($line['status']) === BaseConstService::OFF) {
+            throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);
+        }
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             $data = $this->getLineRangeService()->getInfo(['line_id' => $params['line_id'], 'schedule' => Carbon::create($params['execution_date'])->dayOfWeek], ['*'], false);
         } else {
@@ -168,9 +185,10 @@ class BaseLineService extends BaseService
     }
 
     /**
-     *  通过信息获得线路
+     * 通过信息获得线路
      * @param $info
      * @return mixed|string
+     * @throws BusinessLogicException
      */
     public function getLineIdByInfo($info)
     {
@@ -179,6 +197,17 @@ class BaseLineService extends BaseService
         } else {
             $coordinate = ['lat' => $info['lat'] ?? $info ['receiver_lat'], 'lon' => $info['lon'] ?? $info ['receiver_lon']];
             $lineRange = $this->getLineRangeByArea($coordinate, null);
+        }
+        if (!empty($lineRange['line_id'])) {
+            //获取线路信息
+            $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
+            if (empty($line)) {
+                throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
+            }
+            $line = $line->toArray();
+            if (intval($line['status']) === BaseConstService::OFF) {
+                throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);
+            }
         }
         return $lineRange['line_id'] ?? '';
     }
@@ -198,6 +227,9 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
+        if (intval($line['status']) === BaseConstService::OFF) {
+            throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);;
+        }
         //验证规则
         $this->checkRule($info, $line, $orderOrBatch);
         return $line;

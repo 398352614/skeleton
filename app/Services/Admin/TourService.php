@@ -177,6 +177,15 @@ class TourService extends BaseService
     }
 
     /**
+     * 商户服务
+     * @return MerchantService
+     */
+    private function getMerchantService()
+    {
+        return self::getInstance(MerchantService::class);
+    }
+
+    /**
      * 获取可加单的取件线路列表
      * @param $orderIdList
      * @return array|mixed
@@ -1065,5 +1074,73 @@ class TourService extends BaseService
         $dir = 'tour';
         $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
         return $this->excelExport($name, $this->tourHeadings, $cellData, $dir);
+    }
+
+    protected $planHeadings = [
+        'batch_no',
+        'out_user_id',
+        'receiver_phone',
+        'receiver_address',
+        'receiver_post_code',
+        'receiver_city',
+        'merchant_name',
+        'type',
+        'package_quantity',
+        'out_order_no',
+        'mask_code'
+    ];
+
+    /**
+     * 计划导出
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function planExport($id)
+    {
+        $tour = $this->query->where('id', '=', $id)->first();
+        if (empty($tour)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $headings = [
+            ['execution_date', $tour['execution_date']],
+            ['line_name', $tour['line_name']],
+            ['driver_name', $tour['driver_name']],
+            ['car_no', $tour['car_no']],
+            [],
+            $this->planHeadings,
+        ];
+        $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        if (empty($packageList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        if (empty($batchList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        if (empty($orderList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', collect($orderList)->pluck('merchant_id')->toArray()]], ['*'], false)->toArray();
+        foreach ($orderList as $k => $v) {
+            $orderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->get('sort_id');
+            $orderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
+            $orderList[$k]['package_quantity'] = collect($packageList)->where('order_no',$v['order_no'])->count();
+            $orderList[$k]['type'] = $orderList[$k]['type_name'];
+        }
+        $orderList = array_values(collect($orderList)->sortBy('sort_id')->toArray());
+        for($i=0,$j=count($orderList);$i<$j;$i++){
+            $orderList[$i] = array_only_fields_sort($orderList[$i], $this->planHeadings);
+        }
+        $sort = [];
+        for ($i = 0, $j = count($orderList); $i < $j; $i++) {
+            if (!empty($orderList[$i + 1]) && $orderList[$i]['batch_no'] !== $orderList[$i + 1]['batch_no']) {
+                $sort = array_merge($sort, [$i]);
+            }
+        }
+        $dir = 'plan';
+        $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
+        return $this->excelExport($name, $headings, $orderList, $dir, $sort);
     }
 }

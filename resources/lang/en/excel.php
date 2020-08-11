@@ -109,5 +109,24 @@ return [
         "batch_no"=>"Batch No",
         "tour_no"=>"Tour No",
         "line_name"=>"Line Name",
-    ]
+    ],
+
+    "plan" => [
+    'execution_date'=>"Date",
+    'line_name'=>"Line",
+    'driver_name'=>"Driver",
+    'car_no'=>"Car",
+
+    'batch_no'=>"No",
+    'out_user_id'=>"ID",
+    'receiver_phone'=>"Phone",
+    'receiver_address'=>"Address",
+    'receiver_post_code'=>"Postcode",
+    'receiver_city'=>"City",
+    'merchant_name'=>"Merchant",
+    'type'=>"Type",
+    'package_quantity'=>"Quantity",
+    'out_order_no'=>"Order No.",
+    'mask_code'=>"Eyecode"
+]
 ];
