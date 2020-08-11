@@ -582,7 +582,7 @@ class TourService extends BaseService
      */
     public function assignTourToTour($id, $params)
     {
-        $info = parent::getInfo(['id' => $id], ['id'], false);
+        $info = parent::getInfo(['id' => $id], ['id', 'tour_no'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
