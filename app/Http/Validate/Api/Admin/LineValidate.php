@@ -30,7 +30,7 @@ class LineValidate extends BaseValidate
         'is_get_area' => 'nullable|integer|in:1,2',
         //邮编列表
         'item_list.*.post_code_start' => 'required|integer|between:1000,9999',
-        'item_list.*.post_code_end' => 'required|integer|between:1000,9999|gt:item_list.*.post_code_start',
+        'item_list.*.post_code_end' => 'required|integer|between:1000,9999|gte:item_list.*.post_code_start',
         'coordinate_list' => 'required',
         //区域列表
         'coordinate_list.*.lat' => 'required|string|max:30',
