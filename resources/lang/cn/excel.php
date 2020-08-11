@@ -120,6 +120,7 @@ return [
 
         'batch_no'=>"站点编号",
         'out_user_id'=>"外部用户ID",
+        'receiver_fullname'=>"收件人姓名",
         'receiver_phone'=>"收件人电话",
         'receiver_address'=>"收件人地址",
         'receiver_post_code'=>"收件人邮编",

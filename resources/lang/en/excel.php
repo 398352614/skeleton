@@ -119,6 +119,7 @@ return [
 
     'batch_no'=>"No",
     'out_user_id'=>"ID",
+    'receiver_fullname'=>"Name",
     'receiver_phone'=>"Phone",
     'receiver_address'=>"Address",
     'receiver_post_code'=>"Postcode",

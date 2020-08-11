@@ -88,9 +88,10 @@ class PlanExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 for ($i = 0, $j = count($this->headings()[5]); $i <= $j; $i++) {
                     $event->sheet->getDelegate()->getColumnDimensionByColumn($i)->setWidth('15');
                 }
+                $event->sheet->getDelegate()->getColumnDimensionByColumn($i)->setWidth('25');
                 //设置字体大小
                 $event->sheet->getDelegate()->getStyle('A1:' . $endColumn . '1')->getFont()->setSize(12);
-                //he
+                //合并
                 $sortArray = $this->sort;
                 foreach ($sortArray as $k => $v) {
                     $sortArray[$k + 1] = $v;
@@ -110,6 +111,7 @@ class PlanExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     $event->sheet->getDelegate()->mergeCells('D' . $v[0] . ':' . 'D' . $v[1]);
                     $event->sheet->getDelegate()->mergeCells('E' . $v[0] . ':' . 'E' . $v[1]);
                     $event->sheet->getDelegate()->mergeCells('F' . $v[0] . ':' . 'F' . $v[1]);
+                    $event->sheet->getDelegate()->mergeCells('G' . $v[0] . ':' . 'G' . $v[1]);
                 }
             },
         ];
