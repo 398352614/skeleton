@@ -393,7 +393,7 @@ class OrderService extends BaseService
             'tour_no' => $tour['tour_no'],
             'line' => [
                 'line_id' => $tour['line_id'],
-                'line_name' => $tour['line_name'] . $tour['type_name'],
+                'line_name' => $tour['line_name'] . ConstTranslateTrait::tourTypeList($tour['type']),
             ]
         ];
     }
@@ -810,7 +810,7 @@ class OrderService extends BaseService
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
 
         //更换取派日期通知
-        //($isChangeBatch === true) && event(new OrderExecutionDateUpdated($dbInfo['order_no'], $dbInfo['out_order_no'], $data['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name'].$tour['type_name']]));
+        //($isChangeBatch === true) && event(new OrderExecutionDateUpdated($dbInfo['order_no'], $dbInfo['out_order_no'], $data['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']. ConstTranslateTrait::tourTypeList($tour['type'])]));
     }
 
 
@@ -957,7 +957,7 @@ class OrderService extends BaseService
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
 
         OrderTrailService::OrderStatusChangeCreateTrail($info, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
-        event(new OrderExecutionDateUpdated($info['order_no'], $info['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name'] . $tour['type_name']]));
+        event(new OrderExecutionDateUpdated($info['order_no'], $info['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name'] .  ConstTranslateTrait::tourTypeList($tour['type'])]));
         return 'true';
     }
 

@@ -396,7 +396,7 @@ class OrderService extends BaseService
             'tour_no' => $tour['tour_no'],
             'line' => [
                 'line_id' => $tour['line_id'],
-                'line_name' => $tour['line_name'] . $tour['type_name'],
+                'line_name' => $tour['line_name'] . ConstTranslateTrait::tourTypeList($tour['type']),
             ]
         ];
     }
@@ -952,7 +952,7 @@ class OrderService extends BaseService
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
 
         //更换取派日期通知
-        //($isChangeBatch === true) && event(new OrderExecutionDateUpdated($dbInfo['order_no'], $dbInfo['out_order_no'], $data['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name'] . $tour['type_name']]));
+        //($isChangeBatch === true) && event(new OrderExecutionDateUpdated($dbInfo['order_no'], $dbInfo['out_order_no'], $data['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name'] .  ConstTranslateTrait::tourTypeList($tour['type'])]));
     }
 
     /**
@@ -1035,7 +1035,7 @@ class OrderService extends BaseService
             'tour_no' => $order['tour_no'] ?? '',
             'line' => [
                 'line_id' => $tour['line_id'] ?? '',
-                'line_name' => !empty($tour) ? $tour['line_name'] . $tour['type_name'] : '',
+                'line_name' => !empty($tour) ? $tour['line_name'] .  ConstTranslateTrait::tourTypeList($tour['type']) : '',
             ]
         ];
     }
@@ -1063,7 +1063,7 @@ class OrderService extends BaseService
             'tour_no' => $info['tour_no'] ?? '',
             'line' => [
                 'line_id' => $tour['line_id'] ?? '',
-                'line_name' => !empty($tour) ? $tour['line_name'] . $tour['type_name'] : '',
+                'line_name' => !empty($tour) ? $tour['line_name'] .  ConstTranslateTrait::tourTypeList($tour['type']) : '',
             ]
         ];
     }
