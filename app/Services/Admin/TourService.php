@@ -1079,6 +1079,7 @@ class TourService extends BaseService
     protected $planHeadings = [
         'batch_no',
         'out_user_id',
+        'receiver_fullname',
         'receiver_phone',
         'receiver_address',
         'receiver_post_code',
