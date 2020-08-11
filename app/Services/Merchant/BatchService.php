@@ -559,7 +559,8 @@ class BatchService extends BaseService
             'driver_name' => $tour['driver_name'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
             'car_no' => $tour['car_no'] ?? '',
-            'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN
+            'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN,
+            'type' => $tour['type'] ?? BaseConstService::BATCH_TYPE_3
         ];
         $rowCount = parent::updateById($batch['id'], $data);
         if ($rowCount === false) {
