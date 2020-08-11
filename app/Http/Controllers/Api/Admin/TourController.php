@@ -255,15 +255,4 @@ class TourController extends BaseController
     {
         return $this->service->tourExport($id);
     }
-
-    /**
-     * 导出任务计划
-     * @param $id
-     * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function planExport($id)
-    {
-        return $this->service->planExport($id);
-    }
 }

@@ -162,12 +162,10 @@ class ReportService extends BaseService
         //统计预计实际材料数量
         $info['expect_material_quantity'] = 0;
         $info['actual_material_quantity'] = 0;
-        $info['finish_material_quantity'] = 0;
         if (!empty($tourMaterialList)) {
             foreach ($tourMaterialList as $v) {
                 $info['expect_material_quantity'] += $v['expect_quantity'];
                 $info['actual_material_quantity'] += $v['actual_quantity'];
-                $info['finish_material_quantity'] += $v['finish_quantity'];
             }
         }
         //获取所有的站点
@@ -291,7 +289,6 @@ class ReportService extends BaseService
                 $materialList = $materialList->toArray();
                 $materialList[0]['expect_quantity'] = $quantity;
                 $materialList[0]['actual_quantity'] = 0;
-                $materialList[0]['finish_quantity'] = 0;
                 return $materialList[0];
             })->toArray();
         }

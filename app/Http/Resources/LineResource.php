@@ -22,20 +22,19 @@ class LineResource extends JsonResource
             'name' => $this->name,
             'country' => $this->country,
             'country_name' => $this->country_name,
-            'warehouse_id' => $this->warehouse_id,
+            'warehouse_id'=>$this->warehouse_id,
             'pickup_max_count' => $this->pickup_max_count,
             'pie_max_count' => $this->pie_max_count,
             'is_increment' => $this->is_increment,
             'order_deadline' => $this->order_deadline,
-            'appointment_days' => $this->appointment_days,
+            'appointment_days'=>$this->appointment_days,
             'creator_name' => $this->creator_name,
             'remark' => $this->remark,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
             'line_range' => $this->line_range ?? '',
             'work_day_list' => !empty($this->work_day_list) ? $this->getWorkDayList($this->work_day_list) : '',
-            'coordinate_list' => $this->coordinate_list ?? null,
-            'status' => $this->status
+            'coordinate_list' => $this->coordinate_list ?? null
         ];
     }
 
