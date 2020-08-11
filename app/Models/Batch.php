@@ -125,6 +125,10 @@ class Batch extends BaseModel
      */
     protected $dates = [];
 
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::batchTypeList($this->type);
+    }
 
     public function getStatusNameAttribute()
     {

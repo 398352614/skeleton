@@ -131,7 +131,7 @@ class Tour extends BaseModel
 
     public function getTypeNameAttribute()
     {
-        return empty($this->type) ? null : ConstTranslateTrait::tourStatusList($this->type);
+        return empty($this->type) ? null : ConstTranslateTrait::tourTypeList($this->type);
     }
 
 
