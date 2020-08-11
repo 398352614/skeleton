@@ -218,8 +218,8 @@ trait ConstTranslateTrait
 
     //取件线路类型1-取件2-派件3-取派件
     public static $tourTypeList = [
-        BaseConstService::TOUR_TYPE_1 => '(取)',
-        BaseConstService::TOUR_TYPE_2 => '(派)',
+        BaseConstService::TOUR_TYPE_1 => '取',
+        BaseConstService::TOUR_TYPE_2 => '派',
         BaseConstService::TOUR_TYPE_3 => '',
     ];
 

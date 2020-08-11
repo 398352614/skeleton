@@ -493,10 +493,15 @@ class TourService extends BaseService
     /**
      * 移除站点
      * @param $batch
+     * @return string
      * @throws BusinessLogicException
      */
     public function removeBatch($batch)
     {
+        $info = parent::getInfo(['tour_no' => $batch['tour_no']], ['id'], false);
+        if (empty($info)) {
+            return 'true';
+        }
         $info = $this->getInfoOfStatus(['tour_no' => $batch['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
         $quantity = intval($info['expect_pickup_quantity']) + intval($info['expect_pie_quantity']);
         $batchQuantity = intval($batch['expect_pickup_quantity']) + intval($batch['expect_pie_quantity']);
@@ -1127,11 +1132,11 @@ class TourService extends BaseService
         foreach ($orderList as $k => $v) {
             $orderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->get('sort_id');
             $orderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
-            $orderList[$k]['package_quantity'] = collect($packageList)->where('order_no',$v['order_no'])->count();
+            $orderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
             $orderList[$k]['type'] = $orderList[$k]['type_name'];
         }
         $orderList = array_values(collect($orderList)->sortBy('sort_id')->toArray());
-        for($i=0,$j=count($orderList);$i<$j;$i++){
+        for ($i = 0, $j = count($orderList); $i < $j; $i++) {
             $orderList[$i] = array_only_fields_sort($orderList[$i], $this->planHeadings);
         }
         $sort = [];
