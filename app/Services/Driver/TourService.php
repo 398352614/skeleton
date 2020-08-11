@@ -457,7 +457,7 @@ class TourService extends BaseService
             foreach ($materialList as $v) {
                 $expectQuantity = collect($expectMaterialList)->where('code', $v['code'])->first();
                 if (empty($expectQuantity)) {
-                    throw new BusinessLogicException('当前取件线路的材料代码不正确');
+                    throw new BusinessLogicException('',5004);
                 }
                 if (intval($v['actual_quantity']) > intval($expectQuantity['expect_quantity'])) {
                     throw new BusinessLogicException('当前取件线路的材料数量不正确');
