@@ -88,7 +88,10 @@ class PlanExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 for ($i = 0, $j = count($this->headings()[5]); $i <= $j; $i++) {
                     $event->sheet->getDelegate()->getColumnDimensionByColumn($i)->setWidth('15');
                 }
-                $event->sheet->getDelegate()->getColumnDimensionByColumn($i)->setWidth('25');
+                $event->sheet->getDelegate()->getColumnDimensionByColumn(5)->setWidth('25');
+                $event->sheet->getDelegate()->getColumnDimensionByColumn(11)->setWidth('30');
+                //设置单元格内容自动转行
+                $event->sheet->getDelegate()->getStyle($cell)->getAlignment()->setWrapText(TRUE);
                 //设置字体大小
                 $event->sheet->getDelegate()->getStyle('A1:' . $endColumn . '1')->getFont()->setSize(12);
                 //合并
