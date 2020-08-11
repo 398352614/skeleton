@@ -291,6 +291,7 @@ class ReportService extends BaseService
                 $materialList = $materialList->toArray();
                 $materialList[0]['expect_quantity'] = $quantity;
                 $materialList[0]['actual_quantity'] = 0;
+                $materialList[0]['finish_quantity'] = 0;
                 return $materialList[0];
             })->toArray();
         }
