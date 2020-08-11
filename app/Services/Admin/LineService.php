@@ -55,6 +55,7 @@ class LineService extends BaseLineService
         foreach ($list as &$line) {
             $line['line_range'] = $lineRangeList[$line['id']]['line_range'];
             $line['work_day_list'] = array_values(array_unique($lineRangeList[$line['id']]['work_day_list']));
+            $line['split_line_range'] = $lineRangeList[$line['id']]['split_line_range'];
         }
         return $list;
     }
