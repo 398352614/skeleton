@@ -55,7 +55,6 @@ class LineService extends BaseLineService
         foreach ($list as &$line) {
             $line['line_range'] = $lineRangeList[$line['id']]['line_range'];
             $line['work_day_list'] = array_values(array_unique($lineRangeList[$line['id']]['work_day_list']));
-            $line['split_line_range'] = $lineRangeList[$line['id']]['split_line_range'];
         }
         return $list;
     }
@@ -73,13 +72,13 @@ class LineService extends BaseLineService
             throw new BusinessLogicException('线路不存在');
         }
         $info = $info->toArray();
-        $lineRangeList = $this->getLineRangeService()->getList(['line_id' => $info['id']], ['country', 'post_code_start', 'post_code_end', 'schedule', 'is_split'], false);
+        $lineRangeList = $this->getLineRangeService()->getList(['line_id' => $info['id']], ['country', 'post_code_start', 'post_code_end', 'schedule'], false);
         if ($lineRangeList->isEmpty()) {
             $info['line_range'] = [];
             $info['work_day_list'] = '';
         } else {
             $info['line_range'] = $lineRangeList->map(function ($lineRange, $key) {
-                return collect($lineRange)->only(['post_code_start', 'post_code_end', 'is_split']);
+                return collect($lineRange)->only(['post_code_start', 'post_code_end']);
             })->unique(function ($item) {
                 return $item['post_code_start'] . $item['post_code_end'];
             })->toArray();

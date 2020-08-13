@@ -251,7 +251,6 @@ class BaseLineService extends BaseService
         }
         //验证规则
         $this->checkRule($info, $line, $orderOrBatch);
-        $line['is_split'] = $lineRange['is_split'] ?? BaseConstService::NO;
         return $line;
     }
 

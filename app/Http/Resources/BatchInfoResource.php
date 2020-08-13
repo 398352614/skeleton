@@ -17,8 +17,6 @@ class BatchInfoResource extends JsonResource
             'line_name' => $this->line_name,
             'execution_date' => $this->execution_date,
             'status' => $this->status,
-            'type' => $this->type,
-            'type_name' => !empty($this->type_name) ? $this->type_name : __('取派'),
             'driver_id' => $this->driver_id,
             'driver_name' => $this->driver_name,
             'driver_phone' => $this->driver_phone,

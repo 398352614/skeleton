@@ -210,11 +210,6 @@ class BatchService extends BaseService
         $where = $this->getBatchWhere($order);
         $where = Arr::add($where, 'line_id', $line['id']);
         !empty($tour['tour_no']) && $where['tour_no'] = $tour['tour_no'];
-        if (!empty($order['is_split']) && (intval($order['is_split']) == BaseConstService::YES)) {
-            $where['type'] = $order['type'];
-        } else {
-            $where['type'] = ['in', [$order['type'], BaseConstService::BATCH_TYPE_3]];
-        }
         $isAddOrder && $where['status'] = ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]];
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
@@ -307,11 +302,6 @@ class BatchService extends BaseService
         } else {
             $data['expect_pickup_quantity'] = 0;
             $data['expect_pie_quantity'] = 1;
-        }
-        if (!empty($order['is_split']) && (intval($order['is_split']) == BaseConstService::ON)) {
-            $data['type'] = $order['type'];
-        } else {
-            $data['type'] = BaseConstService::BATCH_TYPE_3;
         }
         return $data;
     }
@@ -540,12 +530,10 @@ class BatchService extends BaseService
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         $dbExecutionDate = $info['execution_date'];
         //如果是在同一条线路并且在同一个日期,则不变
-        if (!empty($params['line_id'] && $params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date']) && !empty($info['tour_no']) && (intval($info['type']) == BaseConstService::BATCH_TYPE_3)) {
+        if (!empty($params['line_id'] && $params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date']) && !empty($info['tour_no'])) {
             return 'true';
         }
         $info['execution_date'] = $params['execution_date'];
-        //如果分配，不管如何都变为取派
-        $info['type'] = BaseConstService::BATCH_TYPE_3;
         //获取线路信息
         $line = $this->getLineService()->getInfoByLineId($info, $params, BaseConstService::ORDER_OR_BATCH_2);
         list($tour, $batch) = $this->getTourService()->assignBatchToTour($info, $line, $params);
@@ -555,7 +543,7 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
-            event(new OrderExecutionDateUpdated($order['order_no'], $order['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name'] . ConstTranslateTrait::tourTypeList($tour['type'])]));
+            event(new OrderExecutionDateUpdated($order['order_no'], $order['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
         }
         //重新统计站点金额
         $this->reCountAmountByNo($info['batch_no']);
@@ -630,7 +618,6 @@ class BatchService extends BaseService
             'car_id' => $tour['car_id'] ?? null,
             'car_no' => $tour['car_no'] ?? '',
             'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN,
-            'type' => $tour['type'] ?? BaseConstService::BATCH_TYPE_3
         ];
         $rowCount = parent::updateById($batch['id'], $data);
         if ($rowCount === false) {

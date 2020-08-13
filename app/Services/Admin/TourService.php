@@ -418,7 +418,6 @@ class TourService extends BaseService
                 'warehouse_address' => $warehouse['address'],
                 'warehouse_lon' => $warehouse['lon'],
                 'warehouse_lat' => $warehouse['lat'],
-                'type' => $batch['type'],
             ], $quantity)
         );
         if ($tour === false) {
@@ -640,7 +639,7 @@ class TourService extends BaseService
         if (intval($batch['expect_pie_quantity']) > 0) {
             $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
         }
-        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]], 'type' => $batch['type']];
+        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         return !empty($tour) ? $tour->toArray() : [];
     }
