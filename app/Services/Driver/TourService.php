@@ -359,7 +359,7 @@ class TourService extends BaseService
      */
     public function actualOutWarehouse($id,$params)
     {
-        $row = parent::updateById($id, ['actual_out_status' => BaseConstService::NO,'begin_distance'=>$params['begin_distance']]);
+        $row = parent::updateById($id, ['actual_out_status' => BaseConstService::YES,'begin_distance'=>$params['begin_distance']]);
         if ($row == false) {
             throw new BusinessLogicException('实际出库失败');
         }
