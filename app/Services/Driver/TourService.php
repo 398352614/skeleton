@@ -357,9 +357,13 @@ class TourService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    public function actualOutWarehouse($id,$params)
+    public function actualOutWarehouse($id, $params)
     {
-        $row = parent::updateById($id, ['actual_out_status' => BaseConstService::YES,'begin_distance'=>$params['begin_distance']]);
+        $tour = parent::getInfo(['id' => $id], ['*'], false)->toArray();
+        if ($tour['status'] !== BaseConstService::TOUR_STATUS_3) {
+            throw new BusinessLogicException('状态错误');
+        }
+        $row = parent::updateById($id, ['actual_out_status' => BaseConstService::YES, 'begin_distance' => $params['begin_distance']]);
         if ($row == false) {
             throw new BusinessLogicException('实际出库失败');
         }
@@ -562,7 +566,7 @@ class TourService extends BaseService
     public function batchArrive($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        if($tour['actual_out_status'] == BaseConstService::NO){
+        if ($tour['actual_out_status'] == BaseConstService::NO) {
             throw new BusinessLogicException('请先确认出库');
         }
         $now = now();
@@ -1107,7 +1111,7 @@ class TourService extends BaseService
         $data = Arr::only($params, ['end_signature', 'end_signature_remark']);
         $data = Arr::add($data, 'end_time', now());
         $actualTime = strtotime($data['end_time']) - strtotime($tour['begin_time']);
-        $data = array_merge($data, ['actual_time' => $actualTime, 'actual_distance' => $tour['expect_distance'],'end_distance'=>$params['end_distance']]);
+        $data = array_merge($data, ['actual_time' => $actualTime, 'actual_distance' => $tour['expect_distance'], 'end_distance' => $params['end_distance']]);
         $rowCount = parent::updateById($tour['id'], Arr::add($data, 'status', BaseConstService::TOUR_STATUS_5));
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败，请重新操作');

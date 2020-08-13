@@ -104,6 +104,7 @@ class Tour extends BaseModel
         'created_at',
         'updated_at',
         'lave_distance',
+        'actual_out_status'
     ];
 
     /**
