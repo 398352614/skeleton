@@ -91,6 +91,18 @@ class TourController extends BaseController
     }
 
     /**
+     * 司机实际出库
+     * @param $id
+     * @return void
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function actualOutWarehouse($id)
+    {
+        $this->service->actualOutWarehouse($id,$this->data);
+        return;
+    }
+
+    /**
      * 获取站点列表
      * @param $id
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null

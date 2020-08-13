@@ -15,6 +15,7 @@ use App\Events\TourDriver\BackWarehouse;
 use App\Events\TourDriver\OutWarehouse;
 use App\Events\TourNotify\CancelBatch;
 use App\Events\TourNotify\NextBatch;
+use App\Jobs\ActualOutWarehouse;
 use App\Listeners\SendNotify2Merchant;
 use App\Models\Batch;
 use App\Models\Order;
@@ -41,9 +42,7 @@ trait TourTrait
 
     public static function actualOutWarehouse($tour)
     {
-        //触发司机出库1
-        event(new OutWarehouse($tour));
-        //智能调度-之后再进行出库通知
+        event(new ActualOutWarehouse($tour));
     }
 
     public static function afterBatchArrived($tour, $batch)
