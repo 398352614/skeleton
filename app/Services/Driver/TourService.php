@@ -360,7 +360,8 @@ class TourService extends BaseService
     public function actualOutWarehouse($id, $params)
     {
         $tour = parent::getInfo(['id' => $id], ['*'], false)->toArray();
-        if ($tour['status'] !== BaseConstService::TOUR_STATUS_4) {
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]], ['*'], false)->toArray();
+        if ($tour['status'] !== BaseConstService::TOUR_STATUS_4 || !empty($batchList)) {
             throw new BusinessLogicException('状态错误');
         }
         $row = parent::updateById($id, ['actual_out_status' => BaseConstService::YES, 'begin_distance' => $params['begin_distance']]);
