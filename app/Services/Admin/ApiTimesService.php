@@ -32,6 +32,7 @@ class ApiTimesService extends BaseService
                 $info[$x] += $v[$x];
             }
         }
+        $info = array_only_fields_sort($info, array_merge($columns, ['detail_list']));
         return $info;
     }
 
@@ -45,8 +46,8 @@ class ApiTimesService extends BaseService
                 'company_id' => $companyId,
                 $type => 1
             ]);
-        }else{
-            $this->query->where('date',$date)->where('company_id',$companyId)->increment($type);
+        } else {
+            $this->query->where('date', $date)->where('company_id', $companyId)->increment($type);
         }
     }
 }
