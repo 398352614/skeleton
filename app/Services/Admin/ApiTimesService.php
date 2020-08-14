@@ -4,6 +4,7 @@
 namespace App\Services\Admin;
 
 
+use App\Http\Resources\ApiTimesResource;
 use App\Models\ApiTimes;
 use App\Services\BaseService;
 use Illuminate\Support\Carbon;
@@ -17,12 +18,12 @@ class ApiTimesService extends BaseService
 
     public function __construct(ApiTimes $model)
     {
-        parent::__construct($model);
+        parent::__construct($model,ApiTimesResource::class,ApiTimesResource::class);
     }
 
     public function getPageList()
     {
-        $info['detail_list'] = parent::getList([], ['*'], false);
+        $info['detail_list'] = parent::getPageList()->toArray(request());
         $columns = ['directions_times', 'actual_directions_times', 'api_directions_times', 'distance_times', 'actual_distance_times', 'api_distance_times'];
         foreach ($columns as $v) {
             $info[$v] = 0;
