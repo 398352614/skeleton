@@ -39,7 +39,8 @@ class TourTaskResource extends JsonResource
             'warehouse_address' => $this->warehouse_address,
             'warehouse_lon' => $this->warehouse_lon,
             'warehouse_lat' => $this->warehouse_lat,
-            'is_exist_special_remark' => $this->is_exist_special_remark
+            'is_exist_special_remark' => $this->is_exist_special_remark,
+            'actual_out_status' => $this->actual_out_status
         ];
     }
 }

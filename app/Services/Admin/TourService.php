@@ -195,6 +195,15 @@ class TourService extends BaseService
     }
 
     /**
+     * 三方请求计数服务
+     * @return ApiTimesService
+     */
+    private function getApiTimesService()
+    {
+        return self::getInstance(ApiTimesService::class);
+    }
+
+    /**
      * 获取可加单的取件线路列表
      * @param $orderIdList
      * @return array|mixed
@@ -728,7 +737,7 @@ class TourService extends BaseService
     {
         //需要先判断当前 tour 是否被锁定状态!!! 中间件或者 validate 验证规则???
         // set_time_limit(240);
-
+        $this->getApiTimesService()->timesCount('directions_times');
         $tour = Tour::where('tour_no', $data['tour_no'])->firstOrFail();
         $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
         if (!$nextBatch) {
@@ -742,6 +751,7 @@ class TourService extends BaseService
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
+        $this->getApiTimesService()->timesCount('actual_directions_times');
         return '修改线路成功';
     }
 

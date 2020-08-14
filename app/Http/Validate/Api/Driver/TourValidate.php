@@ -28,6 +28,8 @@ class TourValidate extends BaseValidate
         'cancel_order_id_list' => 'nullable|string',
         'out_order_id_list' => 'nullable|string',
         'order_count' => 'required|integer',
+        //确认出库
+        'begin_distance'=>'required|integer|gte:0',
         //异常上报
         'stage' => 'required|integer|in:1,2',
         'type' => 'required|integer|in:1,2,3',
@@ -50,6 +52,7 @@ class TourValidate extends BaseValidate
         //入库
         'end_signature' => 'required|string|max:250',
         'end_signature_remark' => 'nullable|string|max:250',
+        'end_distance'=>'required|integer|gte:0',
 
         //材料列表
         'material_list.*.id' => 'required_with:material_list|string|max:50',
@@ -86,6 +89,7 @@ class TourValidate extends BaseValidate
             'cancel_order_id_list', 'out_order_id_list',
             'order_count'
         ],
+        'actualOutWarehouse'=>['begin_distance'],
         'getBatchOrderList' => ['batch_id'],
         'batchArrive' => ['batch_id'],
         'getBatchInfo' => ['batch_id'],
@@ -111,7 +115,7 @@ class TourValidate extends BaseValidate
 
             'auth_fullname', 'auth_birth_date'
         ],
-        'inWarehouse' => ['end_signature', 'end_signature_remark']
+        'inWarehouse' => ['end_signature', 'end_signature_remark','end_distance']
     ];
 }
 

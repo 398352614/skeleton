@@ -7,6 +7,7 @@
 namespace App\Models\Scope;
 
 use App\Models\AddressTemplate;
+use App\Models\ApiTimes;
 use App\Models\Batch;
 use App\Models\BatchException;
 use App\Models\Car;
@@ -64,6 +65,7 @@ class CompanyScope implements Scope
         if ($user instanceof Employee) {
             if (
                 !($model instanceof Company)
+                && (!($model instanceof ApiTimes))
                 && !($model instanceof AddressTemplate)
             ) {
                 $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
