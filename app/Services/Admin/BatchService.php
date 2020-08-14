@@ -37,7 +37,7 @@ class BatchService extends BaseService
         'receiver_house_number' => ['=', 'receiver_house_number'],
         'receiver_city' => ['=', 'receiver_city'],
         'receiver_street' => ['=', 'receiver_street'],
-        'tour_no'=>['like','tour_no']
+        'tour_no' => ['like', 'tour_no']
     ];
 
     public $orderBy = ['id' => 'desc'];

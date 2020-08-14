@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Batch;
 use App\Models\Tour;
+use App\Services\Admin\ApiTimesService;
+use App\Traits\FactoryInstanceTrait;
 
 class GoogleApiService
 {
@@ -65,7 +67,7 @@ class GoogleApiService
         app('log')->info('初始化线路传送给 api 端的参数为:', $params);
 
         $res = $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
-
+        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times');
         return $res;
     }
 
@@ -134,7 +136,7 @@ class GoogleApiService
         ];
         app('log')->info('更新线路传送给 api 端的参数为:', $params);
         $res = $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
-
+        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times');
         return $res;
     }
 }

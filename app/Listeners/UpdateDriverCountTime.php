@@ -5,7 +5,9 @@ namespace App\Listeners;
 use App\Events\AfterDriverLocationUpdated;
 use App\Events\TourNotify\NextBatch;
 use App\Exceptions\BusinessLogicException;
+use App\Services\Admin\ApiTimesService;
 use App\Services\GoogleApiService;
+use App\Traits\FactoryInstanceTrait;
 use App\Traits\UpdateTourTimeAndDistanceTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -57,6 +59,8 @@ class UpdateDriverCountTime implements ShouldQueue
      */
     public function handle(AfterDriverLocationUpdated $event)
     {
+        $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
+        $service->timesCount('distance_times');
         try {
             app('log')->info('更新司机位置进入此处');
             $tour = $event->tour;
@@ -94,7 +98,7 @@ class UpdateDriverCountTime implements ShouldQueue
                 if ($event->notifyNextBatch == true) {
                     event(new NextBatch($tour->toArray(), ['batch_no' => $nextBatchNo]));
                 }
-
+                $service->timesCount('actual_distance_times');
                 Log::info('司机位置和各站点预计耗时和里程更新成功');
             }
         } catch (\Exception $ex) {
