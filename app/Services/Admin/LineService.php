@@ -35,6 +35,15 @@ class LineService extends BaseLineService
     }
 
     /**
+     * 商户线路范围 服务
+     * @return MerchantLineRangeService
+     */
+    public function getMerchantLineRangeService()
+    {
+        return self::getInstance(MerchantLineRangeService::class);
+    }
+
+    /**
      * 邮编-列表查询
      * @return BaseLineService|array|mixed
      */
@@ -149,6 +158,11 @@ class LineService extends BaseLineService
         $rowCount = $this->getLineRangeService()->delete(['line_id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围删除失败');
+        }
+        //删除商户线路范围
+        $rowCount = $this->getMerchantLineRangeService()->delete(['line_id' => $id]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
         }
     }
 

@@ -25,6 +25,15 @@ class LineRangeService extends BaseService
     }
 
     /**
+     * 商户线路 服务
+     * @return MerchantLineRangeService
+     */
+    public function getMerchantLineRangeService()
+    {
+        return self::getInstance(MerchantLineRangeService::class);
+    }
+
+    /**
      * 通过线路ID列表,获取线路范围列表
      * @param $lineIdList
      * @return array
@@ -72,6 +81,8 @@ class LineRangeService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围新增失败');
         }
+        //删除商户线路范围
+        $this->getMerchantLineRangeService()->deleteRange($lineId, $rangeList, $workdayList);
     }
 
 

@@ -247,6 +247,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //导入
         Route::post('/import', 'LineController@postcodeLineImport');
 
+        //商户线路范围配置
+        Route::get('/{id}/merchant-line-range', 'MerchantLineRangeController@show');
+        Route::put('/{id}/merchant-line-range', 'MerchantLineRangeController@createOrUpdate');
+
         /****************************************区域线路**************************************/
         //列表查询
         Route::get('/area', 'LineController@areaIndex');
@@ -261,6 +265,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
         //批量修改状态
         Route::put('/statusByList', 'LineController@statusByList');
+
     });
 
     //仓库管理

@@ -357,7 +357,7 @@ class OrderService extends BaseService
         //数据验证
         $this->check($params);
         //填充发件人信息
-        $line = $this->fillSender($params, true);
+        $line = $this->fillSender($params);
         //设置订单来源
         data_set($params, 'source', $orderSource);
         /*************************************************订单新增************************************************/
