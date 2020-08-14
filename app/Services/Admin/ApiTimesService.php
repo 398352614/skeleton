@@ -34,7 +34,7 @@ class ApiTimesService extends BaseService
         foreach ($columns as $v) {
             $info[$v] = 0;
         }
-        if(!empty($info['detail_list'])){
+        if(empty($info['detail_list'])){
             throw new BusinessLogicException('数据不存在');
         }
         foreach ($info['detail_list'] as $k => $v) {
