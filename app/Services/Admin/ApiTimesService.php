@@ -4,6 +4,7 @@
 namespace App\Services\Admin;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\ApiTimesResource;
 use App\Models\ApiTimes;
 use App\Services\BaseService;
@@ -21,12 +22,20 @@ class ApiTimesService extends BaseService
         parent::__construct($model,ApiTimesResource::class,ApiTimesResource::class);
     }
 
+    /**
+     * 请求数查询
+     * @return array|\Illuminate\Database\Eloquent\Collection
+     * @throws BusinessLogicException
+     */
     public function getPageList()
     {
         $info['detail_list'] = parent::getPageList()->toArray(request());
         $columns = ['directions_times', 'actual_directions_times', 'api_directions_times', 'distance_times', 'actual_distance_times', 'api_distance_times'];
         foreach ($columns as $v) {
             $info[$v] = 0;
+        }
+        if(!empty($info['detail_list'])){
+            throw new BusinessLogicException('数据不存在');
         }
         foreach ($info['detail_list'] as $k => $v) {
             foreach ($columns as $x) {
@@ -37,6 +46,9 @@ class ApiTimesService extends BaseService
         return $info;
     }
 
+    /**统计请求数
+     * @param $type
+     */
     public function timesCount($type)
     {
         $date = Carbon::today()->format('Y-m-d');
