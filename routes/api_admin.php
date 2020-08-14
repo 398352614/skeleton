@@ -502,6 +502,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //统计第三方请求次数
     Route::prefix('api-times')->group(function () {
         //绑定
-        Route::get('/', 'ApiTimesController@show');
+        Route::get('/', 'ApiTimesController@index');
     });
 });
