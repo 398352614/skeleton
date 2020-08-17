@@ -29,7 +29,7 @@ class TourController extends BaseController
      */
     public function getListJoinByLineId()
     {
-        return $this->service->getListJoinByLineId($this->data['line_id']);
+        return $this->service->getListJoinByLineId($this->data);
     }
 
     /**
