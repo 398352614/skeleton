@@ -76,8 +76,8 @@ class ActualOutWarehouse implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('确认出库开始');
         try {
-            Log::info('确认出库开始');
             /*****************************************1.智能调度*******************************************************/
             $tour = DB::table('tour')->where('tour_no', $this->tour_no)->first();
             $company = CompanyTrait::getCompany($tour->company_id);
