@@ -202,9 +202,9 @@ class MerchantLineRangeService extends BaseService
             $merchantPostCodeRangeList[] = $merchantLineRange['post_code_start'] . '-' . $merchantLineRange['post_code_end'];
         }
         $diffPostCodeRangeList = array_diff($postCodeRangeList, $merchantPostCodeRangeList);
-        if ($diffPostCodeRangeList) return;
+        if (empty($diffPostCodeRangeList)) return;
         $merchantList = $this->getMerchantService()->getList([], ['*'], false)->toArray();
-        if ($merchantList) return;
+        if (empty($merchantList)) return;
         $insetRangeList = [];
         foreach ($merchantList as $merchant) {
             foreach ($diffPostCodeRangeList as $postCodeRange) {
