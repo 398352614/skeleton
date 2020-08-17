@@ -48,6 +48,7 @@ class Batch extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'merchant_id',
         'batch_no',
         'tour_no',
         'line_id',

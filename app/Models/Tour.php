@@ -49,6 +49,7 @@ class Tour extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'merchant_id',
         'tour_no',
         'line_id',
         'line_name',
