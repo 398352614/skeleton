@@ -620,8 +620,9 @@ class TourService extends BaseService
         if (empty($tour)) {
             throw new BusinessLogicException('数据不存在');
         }
+        $tour = $tour->toArray();
         $params = Arr::add($params, 'execution_date', $params['execution_date']);
-        $params = Arr::add($params, 'merchant_id', $params['merchant_id']);
+        $params = Arr::add($params, 'merchant_id', $tour['merchant_id']);
         return $this->getBatchService()->assignListToTour(array_column($batchList, 'id'), $params);
     }
 
