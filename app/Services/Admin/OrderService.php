@@ -28,6 +28,7 @@ use App\Traits\CountryTrait;
 use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
+use App\Traits\OrderStatisticsTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
@@ -35,7 +36,7 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderService extends BaseService
 {
-    use ImportTrait, LocationTrait, CountryTrait, ExportTrait;
+    use ImportTrait, LocationTrait, CountryTrait, ExportTrait, OrderStatisticsTrait;
 
     public $filterRules = [
         'type' => ['=', 'type'],
@@ -597,6 +598,11 @@ class OrderService extends BaseService
         }
         //验证包裹列表
         !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $orderNo);
+        foreach ($params['package_list'] as $k=>$v){
+            if($params['package_list'][$k]['feature_logo'] = null){
+                $params['package_list'][$k]['feature_logo'] = '';
+            }
+        }
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
