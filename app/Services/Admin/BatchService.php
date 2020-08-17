@@ -515,8 +515,9 @@ class BatchService extends BaseService
             throw new BusinessLogicException('独立取派站点,需先选择线路类型');
         }
         //若非独立取派，则加入混合取件线路中
-        (intval($params['is_alone']) == BaseConstService::NO) && $info['merchant_id'] = 0;
-        unset($params['merchant_id']);
+        if (!empty($params['is_alone']) && (intval($params['is_alone']) == BaseConstService::NO)) {
+            $info['merchant_id'] = 0;
+        }
         $this->assignBatchToTour($info, $params);
         return 'true';
     }
