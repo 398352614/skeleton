@@ -48,6 +48,15 @@ class BatchService extends BaseService
     }
 
     /**
+     * 商户服务
+     * @return MerchantService
+     */
+    public function getMerchantService()
+    {
+        return self::getInstance(MerchantService::class);
+    }
+
+    /**
      * 线路服务
      * @return LineService
      */
@@ -125,7 +134,7 @@ class BatchService extends BaseService
             unset($this->filters['status']);
         }
         $list = parent::getPageList();
-        $merchantList = $this->getMaterialService()->getList([], ['id', 'name'], false)->toArray();
+        $merchantList = $this->getMerchantService()->getList([], ['id', 'name'], false)->toArray();
         $merchantList = array_create_index($merchantList, 'id');
         foreach ($list as &$batch) {
             if ($batch['merchant_id'] == 0) {

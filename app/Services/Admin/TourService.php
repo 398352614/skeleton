@@ -240,7 +240,7 @@ class TourService extends BaseService
             $this->query->orderBy('execution_date');
         }
         $list = parent::getPageList();
-        $merchantList = $this->getMaterialService()->getList([], ['id', 'name'], false)->toArray();
+        $merchantList = $this->getMerchantService()->getList([], ['id', 'name'], false)->toArray();
         $merchantList = array_create_index($merchantList, 'id');
         foreach ($list as &$tour) {
             if ($tour['merchant_id'] == 0) {
