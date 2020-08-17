@@ -107,7 +107,6 @@ class ActualOutWarehouse implements ShouldQueue
             if (!empty($nextBatch)) {
                 event(new NextBatch($tour, $nextBatch->toArray()));
             }
-            Log::info('出库成功');
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getFile());
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getLine());
