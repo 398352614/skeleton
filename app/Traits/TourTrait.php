@@ -36,13 +36,14 @@ trait TourTrait
         !empty($orderList) && OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_DELIVERING);
         //触发司机出库1
         event(new OutWarehouse($tour));
-        //智能调度-之后再进行出库通知
-        dispatch(new \App\Jobs\OutWarehouse($tour['tour_no'], array_merge($cancelOrderList, $orderList)));
     }
 
     public static function actualOutWarehouse($tour)
     {
         event(new ActualOutWarehouse($tour));
+        //智能调度-之后再进行出库通知
+        $orderList = Order::query()->select(['*'])->where('tour_no', $tour['tour_no'])->get()->toArray();
+        dispatch(new \App\Jobs\OutWarehouse($tour['tour_no'], $orderList));
     }
 
     public static function afterBatchArrived($tour, $batch)
