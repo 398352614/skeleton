@@ -95,8 +95,7 @@ class MaterialService extends BaseService
     public function checkAllUnique($materialList)
     {
         $uniqueCodeList = collect($materialList)->map(function ($material, $key) {
-            $outOrderNo = $material['out_order_no'] ?? '';
-            return $material['code'] . '-' . $outOrderNo;
+            return $material['code'] . '-' . ($material['out_order_no'] ?? '');
         })->toArray();
         if (count(array_unique($uniqueCodeList)) !== count($uniqueCodeList)) {
             $repeatUniqueCodeList = implode(',', array_diff_assoc($uniqueCodeList, array_unique($uniqueCodeList)));
