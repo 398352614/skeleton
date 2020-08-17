@@ -59,7 +59,6 @@ class ActualOutWarehouse implements ShouldQueue
 
     public $tour_no;
 
-    public $orderList;
 
 
     /**

@@ -53,6 +53,5 @@ class ApiTimesService extends BaseService
             }
         } catch (\Exception $e) {
         }
-
     }
 }
