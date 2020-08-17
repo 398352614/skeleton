@@ -10,6 +10,7 @@ use App\Models\Package;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
@@ -39,7 +40,7 @@ class PackageService extends BaseService
 
     /**
      * 列表查询
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function getPageList()
     {
