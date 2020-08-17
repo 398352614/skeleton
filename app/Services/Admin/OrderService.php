@@ -598,11 +598,6 @@ class OrderService extends BaseService
         }
         //验证包裹列表
         !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $orderNo);
-        foreach ($params['package_list'] as $k=>$v){
-            if($params['package_list'][$k]['feature_logo'] = null){
-                $params['package_list'][$k]['feature_logo'] = '';
-            }
-        }
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
@@ -674,7 +669,7 @@ class OrderService extends BaseService
         if (!empty($params['package_list'])) {
             foreach ($params['package_list'] as $k => $v) {
                 if (!empty($params['package_list'][$k]['feature_logo']) && in_array($params['package_list'][$k]['feature_logo'], array_keys($relationship))) {
-                    $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']] ?? '';
+                    $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']];
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $batch, $tour) {

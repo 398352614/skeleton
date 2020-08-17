@@ -603,6 +603,9 @@ class TourService extends BaseService
         })->toArray();
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
+        for($i=0,$j=count($packageList);$i<$j;$i++){
+            $packageList[$i]['feature_logo']=$packageList[$i]['feature_logo'] ?? '';
+        }
         $authPackage = collect($packageList)->first(function ($package) {
             return (intval($package['status']) == BaseConstService::BATCH_DELIVERING) && (intval($package['is_auth']) == BaseConstService::IS_AUTH_1);
         });
