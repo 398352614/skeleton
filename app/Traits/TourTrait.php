@@ -42,7 +42,7 @@ trait TourTrait
 
     public static function actualOutWarehouse($tour)
     {
-        dispatch(new ActualOutWarehouse($tour));
+        dispatch(new ActualOutWarehouse($tour['tour_no']));
     }
 
     public static function afterBatchArrived($tour, $batch)
