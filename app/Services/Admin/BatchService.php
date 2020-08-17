@@ -575,6 +575,9 @@ class BatchService extends BaseService
      */
     public function assignListToTour($idList, $params)
     {
+        if (empty($params['tour_no'])) {
+            throw new BusinessLogicException('线路编号是必须的');
+        }
         $tour = parent::getInfo(['tour_no' => $params['tour_no']], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('数据不存在');
