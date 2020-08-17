@@ -195,6 +195,28 @@ class MerchantLineRangeService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
+        //获取新增的取派日期列表
+        $merchantLineRangeList = parent::getList(['line_id' => $lineId], ['*'], false)->toArray();
+        $dbWorkdayList = array_unique(array_column($merchantLineRangeList, 'schedule'));
+        $diffWorkdayList = array_diff($workdayList, $dbWorkdayList);
+        if (!empty($diffWorkdayList)) {
+            $merchantLineRangeList = collect($merchantLineRangeList)->groupBy(function ($merchantLineRange) {
+                return $merchantLineRange['post_code_start'] . '-' . $merchantLineRange['post_code_end'];
+            })->map(function ($detailMerchantLineRangeList) {
+                $detailMerchantLineRangeList = $detailMerchantLineRangeList->toArray();
+                return collect(Arr::only($detailMerchantLineRangeList[0], ['merchant_id', 'line_id', 'post_code_start', 'post_code_end', 'country', 'is_alone']));
+            })->toArray();
+            $dataList = [];
+            foreach ($diffWorkdayList as $workday) {
+                foreach ($merchantLineRangeList as $MerchantRange) {
+                    $dataList[] = array_merge($MerchantRange, ['schedule' => $workday]);
+                }
+            }
+            $rowCount = parent::insertAll($dataList);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+        }
         //新增新的邮编的所有商户范围
         $merchantPostCodeRangeList = [];
         $merchantLineRangeList = parent::getList(['line_id' => $lineId], ['post_code_start', 'post_code_end'], false, ['post_code_start', 'post_code_end']);
