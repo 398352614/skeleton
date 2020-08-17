@@ -448,7 +448,7 @@ class TourService extends BaseService
                 'warehouse_address' => $warehouse['address'],
                 'warehouse_lon' => $warehouse['lon'],
                 'warehouse_lat' => $warehouse['lat'],
-                'merchant_id' => $line['range_merchant_id'] ?? 0
+                'merchant_id' => $batch['merchant_id'] ?? 0
             ], $quantity)
         );
         if ($tour === false) {
