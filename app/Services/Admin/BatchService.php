@@ -575,10 +575,12 @@ class BatchService extends BaseService
      */
     public function assignListToTour($idList, $params)
     {
-        $idList = explode_id_string($idList, ',');
-        if (empty($params['merchant_id'])) {
-            $params['merchant_id'] = 0;
+        $tour = parent::getInfo(['tour_no' => $params['tour_no']], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('数据不存在');
         }
+        $params['merchant_id'] = $tour->merchant_id;
+        $idList = explode_id_string($idList, ',');
         foreach ($idList as $id) {
             $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
             $this->assignBatchToTour($info, $params);
