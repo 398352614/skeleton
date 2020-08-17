@@ -59,8 +59,7 @@ class UpdateDriverCountTime implements ShouldQueue
      */
     public function handle(AfterDriverLocationUpdated $event)
     {
-        $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
-        $service->timesCount('distance_times');
+
         try {
             app('log')->info('更新司机位置进入此处');
             $tour = $event->tour;
@@ -69,6 +68,8 @@ class UpdateDriverCountTime implements ShouldQueue
 
             $this->apiClient = new GoogleApiService;
 
+            $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
+            $service->timesCount('distance_times',$tour->company_id);
             //需要验证上一次操作是否完成,不可多次修改数据,防止数据混乱
 
             if ($tour) {
@@ -98,7 +99,7 @@ class UpdateDriverCountTime implements ShouldQueue
                 if ($event->notifyNextBatch == true) {
                     event(new NextBatch($tour->toArray(), ['batch_no' => $nextBatchNo]));
                 }
-                $service->timesCount('actual_distance_times');
+                $service->timesCount('actual_distance_times',$tour->company_id);
                 Log::info('司机位置和各站点预计耗时和里程更新成功');
             }
         } catch (\Exception $ex) {
