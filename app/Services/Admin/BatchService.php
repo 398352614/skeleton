@@ -230,7 +230,7 @@ class BatchService extends BaseService
         $where = Arr::add($where, 'line_id', $line['id']);
         !empty($tour['tour_no']) && $where['tour_no'] = $tour['tour_no'];
         $isAddOrder && $where['status'] = ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]];
-        isset($line['range_merchant_id']) && $where['merchant_id'] = $line['range_merchant_id'];
+        (isset($line['range_merchant_id']) && empty($batchNo)) && $where['merchant_id'] = $line['range_merchant_id'];
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
             $dbBatch = parent::getInfo($where, ['*'], false);
