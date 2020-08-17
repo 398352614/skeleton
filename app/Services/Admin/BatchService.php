@@ -511,12 +511,16 @@ class BatchService extends BaseService
     public function assignToTour($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
-        if (intval($info['merchant_id']) != 0 && empty($params['is_alone'])) {
+        if (intval($info['merchant_id']) != 0 && empty($params['is_alone']) && empty($params['tour_no'])) {
             throw new BusinessLogicException('独立取派站点,需先选择线路类型');
         }
         //若非独立取派，则加入混合取件线路中
         if (!empty($params['is_alone']) && (intval($params['is_alone']) == BaseConstService::NO)) {
             $info['merchant_id'] = 0;
+        }
+        //若直接加入取件线路,则不判断是否独立
+        if (!empty($params['tour_no'])) {
+            unset($info['merchant_id']);
         }
         unset($params['merchant_id']);
         $this->assignBatchToTour($info, $params);
