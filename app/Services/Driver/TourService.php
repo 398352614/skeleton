@@ -282,7 +282,6 @@ class TourService extends BaseService
         $tour = $this->checkOutWarehouse($id, $params);
         $params = Arr::only($params, ['material_list', 'cancel_order_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic']);
         $params = Arr::add($params, 'status', BaseConstService::TOUR_STATUS_4);
-        $params = Arr::add($params, 'begin_time', now());
         //取件线路更换状态
         $rowCount = parent::updateById($id, $params);
         if ($rowCount === false) {
@@ -364,7 +363,7 @@ class TourService extends BaseService
         if ($tour['status'] !== BaseConstService::TOUR_STATUS_4 || !empty($batchList)) {
             throw new BusinessLogicException('状态错误');
         }
-        $row = parent::updateById($id, ['actual_out_status' => BaseConstService::YES, 'begin_distance' => $params['begin_distance']]);
+        $row = parent::updateById($id, ['actual_out_status' => BaseConstService::YES, 'begin_distance' => $params['begin_distance'], 'begin_time' => now()]);
         if ($row == false) {
             throw new BusinessLogicException('实际出库失败');
         }
