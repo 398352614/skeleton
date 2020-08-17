@@ -664,10 +664,10 @@ class TourService extends BaseService
             $this->query->where('tour_no', '=', $tourNo);
         }
         //若不存在取件线路或者超过最大订单量,则新建取件线路
-        if (intval($batch['expect_pickup_quantity']) > 0 && $isAssign == false) {
+        if ((intval($batch['expect_pickup_quantity']) > 0) && ($isAssign == false)) {
             $this->query->where(DB::raw('expect_pickup_quantity+' . intval($batch['expect_pickup_quantity'])), '<=', $line['pickup_max_count']);
         }
-        if (intval($batch['expect_pie_quantity']) > 0 && $isAssign == false) {
+        if ((intval($batch['expect_pie_quantity']) > 0) && ($isAssign == false)) {
             $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
         }
         $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];

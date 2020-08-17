@@ -354,8 +354,8 @@ class BaseLineService extends BaseService
         if (empty($lineRange)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
-        if (!empty($lineRange['is_alone']) && intval($lineRange['is_alone']) == BaseConstService::YES) {
-            $lineRange['range_merchant_id'] = $lineRange['merchant_id'];
+        if (!empty($lineRange['is_alone']) && (intval($lineRange['is_alone']) == BaseConstService::YES)) {
+            $lineRange['range_merchant_id'] = $lineRange['merchant_id'] ?? 0;
         } else {
             $lineRange['range_merchant_id'] = 0;
         }
