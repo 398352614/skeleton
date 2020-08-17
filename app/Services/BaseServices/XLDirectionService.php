@@ -66,7 +66,7 @@ class XLDirectionService
         foreach ($resp['route'] as $key => $loc) {
             $res[] = $loc['name'];
         }
-        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_directions_times');
+        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_directions_times', $locSeq[0]['company_id']);
         return $res; // 获取有序的 code 的序列
     }
 }
