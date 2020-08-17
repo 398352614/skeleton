@@ -545,7 +545,7 @@ class BatchService extends BaseService
     public function assignBatchToTour($info, $params)
     {
         $info['execution_date'] = $params['execution_date'];
-        if (!empty($params['merchant_id'])) {
+        if (isset($params['merchant_id'])) {
             $info['merchant_id'] = $params['merchant_id'];
         }
         //获取线路信息
