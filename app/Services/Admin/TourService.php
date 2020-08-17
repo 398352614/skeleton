@@ -761,8 +761,8 @@ class TourService extends BaseService
     {
         //需要先判断当前 tour 是否被锁定状态!!! 中间件或者 validate 验证规则???
         // set_time_limit(240);
-        $this->getApiTimesService()->timesCount('directions_times');
         $tour = Tour::where('tour_no', $data['tour_no'])->firstOrFail();
+        $this->getApiTimesService()->timesCount('directions_times',$tour['company_id']);
         $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
         if (!$nextBatch) {
             $nextBatch = Batch::where('tour_no', $data['tour_no'])->first();
@@ -775,7 +775,7 @@ class TourService extends BaseService
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
         event(new AfterTourUpdated($tour, $nextBatch->batch_no));
-        $this->getApiTimesService()->timesCount('actual_directions_times');
+        $this->getApiTimesService()->timesCount('actual_directions_times',$tour['company_id']);
         return '修改线路成功';
     }
 

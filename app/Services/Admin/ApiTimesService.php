@@ -37,10 +37,9 @@ class ApiTimesService extends BaseService
         return $info;
     }
 
-    public function timesCount($type)
+    public function timesCount($type,$companyId)
     {
         $date = Carbon::today()->format('Y-m-d');
-        $companyId = auth()->user()->company_id;
         if (empty(parent::getInfo(['date' => $date, 'company_id' => $companyId], ['*'], false))) {
             parent::create([
                 'date' => $date,
