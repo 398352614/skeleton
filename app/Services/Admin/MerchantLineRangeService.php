@@ -172,13 +172,14 @@ class MerchantLineRangeService extends BaseService
     }
 
     /**
-     * 删除范围
+     * 批量新增范围
      * @param $lineId
      * @param $rangeList
      * @param $workdayList
+     * @param $country
      * @throws BusinessLogicException
      */
-    public function deleteRange($lineId, $rangeList, $workdayList)
+    public function storeRangeList($lineId, $rangeList, $workdayList, $country)
     {
         //删除商户线路范围-不在取派日期中的
         $rowCount = parent::delete(['line_id' => $lineId, 'schedule' => ['not in', $workdayList]]);
@@ -191,6 +192,36 @@ class MerchantLineRangeService extends BaseService
             $postCodeRangeList[] = $range['post_code_start'] . '-' . $range['post_code_end'];
         }
         $rowCount = $this->model->newQuery()->where('line_id', $lineId)->whereNotIn(DB::raw("CONCAT(post_code_start,'-',post_code_end)"), $postCodeRangeList)->delete();
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        //新增新的邮编的所有商户范围
+        $merchantPostCodeRangeList = [];
+        $merchantLineRangeList = parent::getList(['line_id' => $lineId], ['post_code_start', 'post_code_end'], false, ['post_code_start', 'post_code_end']);
+        foreach ($merchantLineRangeList as $merchantLineRange) {
+            $merchantPostCodeRangeList[] = $merchantLineRange['post_code_start'] . '-' . $merchantLineRange['post_code_end'];
+        }
+        $diffPostCodeRangeList = array_diff($postCodeRangeList, $merchantPostCodeRangeList);
+        if ($diffPostCodeRangeList) return;
+        $merchantList = $this->getMerchantService()->getList([], ['*'], false)->toArray();
+        if ($merchantList) return;
+        $insetRangeList = [];
+        foreach ($merchantList as $merchant) {
+            foreach ($diffPostCodeRangeList as $postCodeRange) {
+                list($postCodeStart, $postCodeEnd) = explode('-', $postCodeRange);
+                foreach ($workdayList as $schedule) {
+                    $insetRangeList[] = [
+                        'merchant_id' => $merchant['id'],
+                        'line_id' => $lineId,
+                        'post_code_start' => $postCodeStart,
+                        'post_code_end' => $postCodeEnd,
+                        'schedule' => $schedule,
+                        'country' => $country
+                    ];
+                }
+            }
+        }
+        $rowCount = parent::insertAll($insetRangeList);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }

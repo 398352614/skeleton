@@ -204,6 +204,17 @@ class TourService extends BaseService
     }
 
     /**
+     * 通过线路ID 获取可加入的取件线路列表
+     * @param $lineId
+     * @return array
+     */
+    public function getListJoinByLineId($lineId)
+    {
+        $list = parent::getList(['line_id' => $lineId, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['id', 'tour_no'], false)->toArray();
+        return $list;
+    }
+
+    /**
      * 获取可加单的取件线路列表
      * @param $orderIdList
      * @return array|mixed
@@ -595,6 +606,12 @@ class TourService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['id'], false)->toArray();
+        $tour = parent::getInfo(['tour_no' => $params['tour_no']], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $params = Arr::add($params, 'execution_date', $params['execution_date']);
+        $params = Arr::add($params, 'merchant_id', $params['merchant_id']);
         return $this->getBatchService()->assignListToTour(array_column($batchList, 'id'), $params);
     }
 
@@ -648,7 +665,7 @@ class TourService extends BaseService
         if (intval($batch['expect_pie_quantity']) > 0) {
             $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
         }
-        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
+        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]], 'merchant_id' => $batch['merchant_id']];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         return !empty($tour) ? $tour->toArray() : [];
     }

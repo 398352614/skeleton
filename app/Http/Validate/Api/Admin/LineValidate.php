@@ -30,6 +30,7 @@ class LineValidate extends BaseValidate
         'is_get_area' => 'nullable|integer|in:1,2',
         'status' => 'required|integer|in:1,2',
         'id_list' => 'required|string|checkIdList:100',
+        'date' => 'required|date',
         //邮编列表
         'item_list.*.post_code_start' => 'required|integer|between:1000,9999',
         'item_list.*.post_code_end' => 'required|integer|between:1000,9999|gte:item_list.*.post_code_start',
@@ -59,7 +60,8 @@ class LineValidate extends BaseValidate
             'name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark',
             'coordinate_list', 'coordinate_list.*.lat', 'coordinate_list.*.lon', 'status'
         ],
-        'statusByList' => ['id_list', 'status']
+        'statusByList' => ['id_list', 'status'],
+        'getListByDate' => ['date']
     ];
 }
 

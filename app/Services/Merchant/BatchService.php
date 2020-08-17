@@ -38,7 +38,7 @@ class BatchService extends BaseService
         'receiver_house_number' => ['=', 'receiver_house_number'],
         'receiver_city' => ['=', 'receiver_city'],
         'receiver_street' => ['=', 'receiver_street'],
-        'tour_no'=>['like','tour_no']
+        'tour_no' => ['like', 'tour_no']
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -194,6 +194,7 @@ class BatchService extends BaseService
         $where = Arr::add($where, 'line_id', $line['id']);
         !empty($tour['tour_no']) && $where['tour_no'] = $tour['tour_no'];
         $isAddOrder && $where['status'] = ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]];
+        !empty($line['range_merchant_id']) && $where['merchant_id'] = $line['range_merchant_id'];
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
             $dbBatch = parent::getInfo($where, ['*'], false);
@@ -277,7 +278,8 @@ class BatchService extends BaseService
             'receiver_street' => $order['receiver_street'],
             'receiver_address' => $order['receiver_address'],
             'receiver_lon' => $order['lon'],
-            'receiver_lat' => $order['lat']
+            'receiver_lat' => $order['lat'],
+            'merchant_id' => $line['range_merchant_id'] ?? 0
         ];
         if (intval($order['type']) === 1) {
             $data['expect_pickup_quantity'] = 1;
@@ -466,41 +468,6 @@ class BatchService extends BaseService
 
 
     /**
-     * 分配至线路
-     * @param $id
-     * @param $params
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function assignToTour($id, $params)
-    {
-        $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
-        $dbExecutionDate = $info['execution_date'];
-        //如果是在同一条线路并且在同一个日期,则不变
-        if (!empty($params['line_id'] && $params['line_id'] == $info['line_id']) && ($params['execution_date'] == $info['execution_date']) && !empty($info['tour_no'])) {
-            return 'true';
-        }
-        $info['execution_date'] = $params['execution_date'];
-        //获取线路信息
-        $line = $this->getLineService()->getInfoByRule($info, BaseConstService::ORDER_OR_BATCH_2);
-        list($tour, $batch) = $this->getTourService()->assignBatchToTour($info, $line, $params);
-        /***********************************************填充取件线路编号************************************************/
-        $this->fillTourInfo($batch, $line, $tour);
-        /***********************************************修改订单************************************************/
-        $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
-        foreach ($orderList as $order) {
-            $this->getOrderService()->fillBatchTourInfo($order, $batch, $tour);
-            event(new OrderExecutionDateUpdated($order['order_no'], $order['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
-        }
-        //重新统计站点金额
-        $this->reCountAmountByNo($info['batch_no']);
-        //重新统计取件线路金额
-        !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
-        OrderTrailService::storeByBatch($batch, BaseConstService::ORDER_TRAIL_JOIN_TOUR);
-        return 'true';
-    }
-
-    /**
      * 合并两个站点
      *
      * @param $tour
@@ -517,7 +484,8 @@ class BatchService extends BaseService
             'expect_pickup_quantity' => DB::raw('expect_pickup_quantity+' . $batch['expect_pickup_quantity']),
             'actual_pickup_quantity' => DB::raw('actual_pickup_quantity+' . $batch['actual_pickup_quantity']),
             'expect_pie_quantity' => DB::raw('expect_pie_quantity+' . $batch['expect_pie_quantity']),
-            'actual_pie_quantity' => DB::raw('actual_pie_quantity+' . $batch['actual_pie_quantity'])
+            'actual_pie_quantity' => DB::raw('actual_pie_quantity+' . $batch['actual_pie_quantity']),
+            'merchant_id' => $tour['merchant_id']
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
@@ -542,8 +510,8 @@ class BatchService extends BaseService
         $data = [
             'execution_date' => $tour['execution_date'],
             'tour_no' => $tour['tour_no'],
-            'line_id' => $line['id'],
-            'line_name' => $line['name'],
+            'line_id' => $tour['line_id'],
+            'line_name' => $tour['line_name'],
             'driver_id' => $tour['driver_id'] ?? null,
             'driver_name' => $tour['driver_name'] ?? '',
             'car_id' => $tour['car_id'] ?? null,
@@ -566,15 +534,15 @@ class BatchService extends BaseService
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
         if (empty($info['tour_no'])) {
-            throw new BusinessLogicException('当前站点已经移除，不能重复操作');
+            return 'true';
         }
         //修改站点
-        $rowCount = parent::updateById($id, ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::BATCH_WAIT_ASSIGN]);
+        $rowCount = parent::updateById($id, ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'execution_date' => null, 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::BATCH_WAIT_ASSIGN]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
         //修改订单
-        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
+        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'driver_id' => null, 'execution_date' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
@@ -594,6 +562,7 @@ class BatchService extends BaseService
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
 
         OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
+        return 'true';
     }
 
     /**

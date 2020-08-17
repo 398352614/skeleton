@@ -15,6 +15,7 @@ use App\Http\Validate\Api\Admin\LineValidate;
 use App\Models\Line;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ImportTrait;
 use Carbon\Carbon;
@@ -41,6 +42,22 @@ class LineService extends BaseLineService
     public function getMerchantLineRangeService()
     {
         return self::getInstance(MerchantLineRangeService::class);
+    }
+
+    /**
+     * 通过日期 获取线路列表
+     * @param $date
+     * @return array
+     */
+    public function getListByDate($date)
+    {
+        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
+            $lineRangeList = $this->getLineRangeService()->getList(['schedule' => Carbon::create($date)->dayOfWeek], ['line_id'], false, ['line_id'])->toArray();
+        } else {
+            $lineRangeList = $this->getLineAreaService()->getList(['schedule' => Carbon::create($date)->dayOfWeek], ['line_id'], false, ['line_id'])->toArray();
+        }
+        $list = parent::getList(['id' => ['in', array_column($lineRangeList, 'line_id')]], ['id', 'name'], false)->toArray();
+        return $list;
     }
 
     /**
@@ -112,6 +129,21 @@ class LineService extends BaseLineService
         $lineId = $this->store($params);
         //邮编范围批量新增
         $this->getLineRangeService()->storeAll($lineId, $params['item_list'], $params['country'], $params['work_day_list']);
+    }
+
+    /**
+     * 新增商户所有线路范围
+     * @param $merchantId
+     * @throws BusinessLogicException
+     */
+    public function storeAllPostCodeLineRangeByMerchantId($merchantId)
+    {
+        $lineRangeList = $this->getLineRangeService()->getList([], ['*'], false)->toArray();
+        data_set($lineRangeList, '*.merchant_id', $merchantId);
+        $rowCount = $this->getMerchantLineRangeService()->insertAll($lineRangeList);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
     }
 
     /**

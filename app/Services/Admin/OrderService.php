@@ -357,7 +357,7 @@ class OrderService extends BaseService
         //数据验证
         $this->check($params);
         //填充发件人信息
-        $line = $this->fillSender($params);
+        $line = $this->fillSender($params, BaseConstService::YES);
         //设置订单来源
         data_set($params, 'source', $orderSource);
         /*************************************************订单新增************************************************/
@@ -626,13 +626,14 @@ class OrderService extends BaseService
     /**
      * 填充发件人信息
      * @param $params
+     * @param $merchantAlone
      * @return array
      * @throws BusinessLogicException
      */
-    private function fillSender(&$params)
+    private function fillSender(&$params, $merchantAlone = BaseConstService::NO)
     {
         //获取线路
-        $line = $this->getLineService()->getInfoByRule($params, BaseConstService::ORDER_OR_BATCH_1);
+        $line = $this->getLineService()->getInfoByRule($params, BaseConstService::ORDER_OR_BATCH_1, $merchantAlone);
         //获取仓库
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
@@ -924,7 +925,6 @@ class OrderService extends BaseService
     public function assignToBatch($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
-        $dbExecutionDate = $info['execution_date'];
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
             return 'true';
         }
@@ -1134,7 +1134,7 @@ class OrderService extends BaseService
         /**********************************************订单恢复********************************************************/
         $order['execution_date'] = $params['execution_date'];
         $order['status'] = BaseConstService::ORDER_STATUS_1;
-        $line = $this->fillSender($order, true);
+        $line = $this->fillSender($order);
         $rowCount = parent::updateById($order['id'], $order);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单恢复失败');

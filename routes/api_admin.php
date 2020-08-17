@@ -216,6 +216,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/plan-excel', 'TourController@planExport'); //导出计划
         Route::put('/{id}/assign', 'TourController@assignTourToTour');   //分配线路
         Route::get('/{id}/getLineDate', 'TourController@getLineDate');   //获取可分配日期
+        Route::get('/getListJoinByLineId', 'TourController@getListJoinByLineId');   //获取可加入的取件线路列表
+
     });
 
     //取件线路-司机
@@ -233,6 +235,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //线路管理
     Route::prefix('line')->group(function () {
+        //通过日期，获取线路列表
+        Route::get('/getListByDate', 'LineController@getListByDate');
         /****************************************邮编线路**************************************/
         //列表查询
         Route::get('/', 'LineController@postcodeIndex');

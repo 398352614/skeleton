@@ -15,6 +15,7 @@ use App\Models\Holiday;
 use App\Models\HolidayDate;
 use App\Models\Line;
 use App\Models\MerchantHoliday;
+use App\Services\Admin\MerchantLineRangeService;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\CompanyTrait;
@@ -44,6 +45,15 @@ class BaseLineService extends BaseService
     public function getLineRangeService()
     {
         return self::getInstance(LineRangeService::class);
+    }
+
+    /**
+     * 商户线路范围 服务
+     * @return MerchantLineRangeService
+     */
+    public function getMerchantLineRangeService()
+    {
+        return self::getInstance(MerchantLineRangeService::class);
     }
 
     /**
@@ -143,12 +153,13 @@ class BaseLineService extends BaseService
      * 获取线路信息
      * @param $info
      * @param $orderOrBatch
+     * @param $merchantAlone
      * @return array
      * @throws BusinessLogicException
      */
-    public function getInfoByRule($info, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
+    public function getInfoByRule($info, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1, $merchantAlone = BaseConstService::NO)
     {
-        $lineRange = $this->getLineRange($info);
+        $lineRange = $this->getLineRange($info, $merchantAlone);
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
@@ -159,6 +170,9 @@ class BaseLineService extends BaseService
         }
         //验证规则
         $this->checkRule($info, $line, $orderOrBatch);
+        if ($merchantAlone == BaseConstService::YES) {
+            $line['range_merchant_id'] = $lineRange['range_merchant_id'];
+        }
         return $line;
     }
 
@@ -198,16 +212,25 @@ class BaseLineService extends BaseService
      * @return array|mixed
      * @throws BusinessLogicException
      */
-    private function getLineRange($info)
+    private function getLineRange($info, $merchantAlone)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'], $info['execution_date']);
+            if ($merchantAlone == BaseConstService::YES) {
+                $lineRange = $this->getMerchantLineRangeByPostcode($info['receiver_post_code'], $info['execution_date'], $info['merchant_id']);
+            } else {
+                $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'], $info['execution_date']);
+            }
         } else {
             $coordinate = ['lat' => $info['lat'] ?? $info ['receiver_lat'], 'lon' => $info['lon'] ?? $info ['receiver_lon']];
             $lineRange = $this->getLineRangeByArea($coordinate, $info['execution_date']);
         }
         if (empty($lineRange)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        if (!empty($lineRange['is_alone']) && intval($lineRange['is_alone']) == BaseConstService::YES) {
+            $lineRange['range_merchant_id'] = $lineRange['merchant_id'];
+        } else {
+            $lineRange['range_merchant_id'] = 0;
         }
         return $lineRange;
     }
@@ -220,12 +243,38 @@ class BaseLineService extends BaseService
     public function getLineRangeList($params)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRangeList = $this->getLineRangeListByPostcode($params['receiver_post_code']);
+            $lineRangeList = $this->getLineRangeListByPostcode($params['receiver_post_code'], auth()->user()->id);
         } else {
             $coordinate = ['lat' => $params['lat'] ?? $params ['receiver_lat'], 'lon' => $params['lon'] ?? $params ['receiver_lon']];
             $lineRangeList = $this->getLineRangeListByArea($coordinate);
         }
         return $lineRangeList;
+    }
+
+    /**
+     * 通过邮编获得线路范围
+     * @param $postCode
+     * @param $executionDate
+     * @param $merchantId
+     * @return array
+     */
+    private function getMerchantLineRangeByPostcode($postCode, $executionDate, $merchantId = null)
+    {
+        //若邮编是纯数字，则认为是比利时邮编
+        $country = is_numeric(trim($postCode)) ? BaseConstService::POSTCODE_COUNTRY : CompanyTrait::getCountry();
+        //获取邮编数字部分
+        $postCode = explode_post_code($postCode);
+        //获取线路范围
+        $query = $this->getMerchantLineRangeService()->query
+            ->where('post_code_start', '<=', $postCode)
+            ->where('post_code_end', '>=', $postCode)
+            ->where('country', $country);
+        //若存在商户ID，则加
+        !empty($merchantId) && $query->where('merchant_id', $merchantId);
+        //若存在取派日期，则加上取派日期条件
+        !empty($executionDate) && $query->where('schedule', Carbon::create($executionDate)->dayOfWeek);
+        $query = $query->first();
+        return !empty($query) ? $query->toArray() : [];
     }
 
     /**
@@ -241,33 +290,35 @@ class BaseLineService extends BaseService
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
-        $lineRange = $this->getLineRangeService()->query
+        $query = $this->getLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);
         //若存在取派日期，则加上取派日期条件
-        !empty($executionDate) && $lineRange->where('schedule', Carbon::create($executionDate)->dayOfWeek);
-        $lineRange = $lineRange->first();
-        return !empty($lineRange) ? $lineRange->toArray() : [];
+        !empty($executionDate) && $query->where('schedule', Carbon::create($executionDate)->dayOfWeek);
+        $query = $query->first();
+        return !empty($query) ? $query->toArray() : [];
     }
 
     /**
      * 通过邮编获得线路范围列表
      * @param  $postCode
+     * @param $merchantId
      * @return array
      */
-    public function getLineRangeListByPostcode($postCode)
+    public function getLineRangeListByPostcode($postCode, $merchantId = null)
     {
         //若邮编是纯数字，则认为是比利时邮编
         $country = is_numeric(trim($postCode)) ? BaseConstService::POSTCODE_COUNTRY : CompanyTrait::getCountry();
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
-        $lineRangeList = $this->getLineRangeService()->query
+        $query = $this->getMerchantLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
-            ->where('country', $country)
-            ->get()->toArray();
+            ->where('country', $country);
+        !empty($merchantId) && $query = $query->where('merchant_id', $merchantId);
+        $lineRangeList = $query->get()->toArray();
         return $lineRangeList ?? [];
     }
 
