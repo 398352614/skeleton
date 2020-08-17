@@ -674,7 +674,7 @@ class OrderService extends BaseService
         if (!empty($params['package_list'])) {
             foreach ($params['package_list'] as $k => $v) {
                 if (!empty($params['package_list'][$k]['feature_logo']) && in_array($params['package_list'][$k]['feature_logo'], array_keys($relationship))) {
-                    $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']];
+                    $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']] ?? '';
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
