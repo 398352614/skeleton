@@ -142,6 +142,7 @@ class LineService extends BaseLineService
         data_set($lineRangeList, '*.merchant_id', $merchantId);
         foreach ($lineRangeList as $key => $lineRange) {
             unset($lineRangeList[$key]['country_name']);
+            unset($lineRangeList[$key]['id']);
         }
         $rowCount = $this->getMerchantLineRangeService()->insertAll($lineRangeList);
         if ($rowCount === false) {
