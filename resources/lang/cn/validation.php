@@ -487,5 +487,6 @@ return [
         //
         'begin_distance'=>'回仓里程',
         'end_distance'=>'出仓里程',
+        'tour_no'=>'线路编号'
     ],
 ];
