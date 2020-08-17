@@ -239,7 +239,17 @@ class TourService extends BaseService
         } else {
             $this->query->orderBy('execution_date');
         }
-        return parent::getPageList();
+        $list = parent::getPageList();
+        $merchantList = $this->getMaterialService()->getList([], ['id', 'name'], false)->toArray();
+        $merchantList = array_create_index($merchantList, 'id');
+        foreach ($list as &$tour) {
+            if ($tour['merchant_id'] == 0) {
+                $tour['merchant_id_name'] = __('多商家');
+            } else {
+                $tour['merchant_id_name'] = $merchantList[$tour['merchant_id']]['name'] ?? '';
+            }
+        }
+        return $list;
     }
 
     /**

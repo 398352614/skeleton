@@ -124,7 +124,17 @@ class BatchService extends BaseService
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
             unset($this->filters['status']);
         }
-        return parent::getPageList();
+        $list = parent::getPageList();
+        $merchantList = $this->getMaterialService()->getList([], ['id', 'name'], false)->toArray();
+        $merchantList = array_create_index($merchantList, 'id');
+        foreach ($list as &$batch) {
+            if ($batch['merchant_id'] == 0) {
+                $batch['merchant_id_name'] = __('多商家');
+            } else {
+                $batch['merchant_id_name'] = $merchantList[$batch['merchant_id']]['name'] ?? '';
+            }
+        }
+        return $list;
     }
 
     /**
