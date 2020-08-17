@@ -40,7 +40,7 @@ class ActualOutWarehouse implements ShouldQueue
      *
      * @var string|null
      */
-    public $queue = 'update-line-time-1';
+    public $queue = 'actual-out';
 
     /**
      * 任务可以执行的最大秒数 (超时时间)。
