@@ -28,6 +28,7 @@ use App\Traits\CountryTrait;
 use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
+use App\Traits\OrderStatisticsTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
@@ -35,7 +36,7 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderService extends BaseService
 {
-    use ImportTrait, LocationTrait, CountryTrait, ExportTrait;
+    use ImportTrait, LocationTrait, CountryTrait, ExportTrait, OrderStatisticsTrait;
 
     public $filterRules = [
         'type' => ['=', 'type'],
