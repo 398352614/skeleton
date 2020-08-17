@@ -930,7 +930,7 @@ class OrderService extends BaseService
             return 'true';
         }
         $info['execution_date'] = $params['execution_date'];
-        $line = $this->fillSender($info);
+        $line = $this->fillSender($info, BaseConstService::YES);
         /***********************************************1.修改*********************************************************/
         $rowCount = parent::updateById($id, $info);
         if ($rowCount === false) {
