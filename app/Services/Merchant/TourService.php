@@ -19,7 +19,6 @@ use App\Services\OrderNoRuleService;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
 use Carbon\Carbon;
-use http\Env\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
@@ -266,6 +265,7 @@ class TourService extends BaseService
                 'warehouse_address' => $warehouse['address'],
                 'warehouse_lon' => $warehouse['lon'],
                 'warehouse_lat' => $warehouse['lat'],
+                'merchant_id' => $line['range_merchant_id'] ?? 0
             ], $quantity)
         );
         if ($tour === false) {
