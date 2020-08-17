@@ -3,8 +3,10 @@
 namespace App\Services\BaseServices;
 
 use App\Services\Admin\ApiTimesService;
+use App\Services\Admin\BatchService;
 use App\Services\CurlClient;
 use App\Traits\FactoryInstanceTrait;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Route XL 路线规划服务
@@ -66,7 +68,7 @@ class XLDirectionService
         foreach ($resp['route'] as $key => $loc) {
             $res[] = $loc['name'];
         }
-        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_directions_times', $locSeq[0]['company_id']);
+        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_directions_times', DB::table('batch')->where('batch_no',$locSeq[0]['name'])->first()->toArray()['company_id']);
         return $res; // 获取有序的 code 的序列
     }
 }
