@@ -35,7 +35,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
         });
 
         Telescope::tag(function (IncomingEntry $entry) {
-            if ($entry->type === 'jobs') {
+            if ($entry->type === 'job') {
                 return [$entry->content['status']];
             }
             return [];
