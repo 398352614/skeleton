@@ -518,6 +518,7 @@ class BatchService extends BaseService
         if (!empty($params['is_alone']) && (intval($params['is_alone']) == BaseConstService::NO)) {
             $info['merchant_id'] = 0;
         }
+        unset($params['merchant_id']);
         $this->assignBatchToTour($info, $params);
         return 'true';
     }
