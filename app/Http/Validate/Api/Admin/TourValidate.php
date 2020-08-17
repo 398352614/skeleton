@@ -33,7 +33,7 @@ class TourValidate extends BaseValidate
         'getAddOrderPageList' => ['order_id_list'],
         'getLineDate' => ['line_id'],
         'assignTourToTour' => ['execution_date', 'line_id', 'tour_no'],
-        'getListJoinByLineId' => ['line_id']
+        'getListJoinByLineId' => ['line_id', 'execution_date']
     ];
 
     public $message = [

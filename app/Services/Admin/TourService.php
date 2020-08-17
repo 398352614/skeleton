@@ -208,9 +208,9 @@ class TourService extends BaseService
      * @param $lineId
      * @return array
      */
-    public function getListJoinByLineId($lineId)
+    public function getListJoinByLineId($data)
     {
-        $list = parent::getList(['line_id' => $lineId, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['id', 'tour_no'], false)->toArray();
+        $list = parent::getList(['line_id' => $data['line_id'], 'execution_date' => $data['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['id', 'tour_no'], false)->toArray();
         return $list;
     }
 
