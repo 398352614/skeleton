@@ -140,6 +140,9 @@ class LineService extends BaseLineService
     {
         $lineRangeList = $this->getLineRangeService()->getList([], ['*'], false)->toArray();
         data_set($lineRangeList, '*.merchant_id', $merchantId);
+        foreach ($lineRangeList as $key => $lineRange) {
+            unset($lineRangeList[$key]['country_name']);
+        }
         $rowCount = $this->getMerchantLineRangeService()->insertAll($lineRangeList);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
