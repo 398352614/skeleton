@@ -104,7 +104,7 @@ class LineRangeService extends BaseService
         for ($i = 0; $i <= $length - 1; $i++) {
             for ($j = $i + 1; $j <= $length - 1; $j++) {
                 if (max($rangeList[$i]['post_code_start'], $rangeList[$j]['post_code_start']) <= min($rangeList[$i]['post_code_end'], $rangeList[$j]['post_code_end'])) {
-                    throw new BusinessLogicException('邮编存在重叠,无法添加');
+                    throw new BusinessLogicException("邮编范围:post_range_1与:post_range_2存在重叠,无法添加", 1000, ['post_range_1' => $rangeList[$j]['post_code_start'] . '-' . $rangeList[$j]['post_code_end'], 'post_range_2' => $rangeList[$j]['post_code_start'] . '-' . $rangeList[$j]['post_code_end']]);
                 }
             }
         }

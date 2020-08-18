@@ -852,5 +852,6 @@
 
     "解锁 tour 的操作锁定":"Unlock the operation lock of tour",
 
-    "测试 guzzle":"Test guzzle"
+    "测试 guzzle":"Test guzzle",
+    "邮编范围:post_range_1与:post_range_2存在重叠,无法添加": "The post code range :post_range_1 and :post_range_2 overlap and cannot be added"
 }
