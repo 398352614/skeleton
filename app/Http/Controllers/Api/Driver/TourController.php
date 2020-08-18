@@ -98,7 +98,9 @@ class TourController extends BaseController
      */
     public function actualOutWarehouse($id)
     {
-        $this->service->actualOutWarehouse($id,$this->data);
+        $tour = $this->service->getInfo(['id' => $id], ['*'], false)->toArray();
+        $this->service->actualOutWarehouse($id, $this->data);
+        TourTrait::actualOutWarehouse($tour);
         return;
     }
 

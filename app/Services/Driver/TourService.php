@@ -367,8 +367,6 @@ class TourService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('实际出库失败');
         }
-        $tour = parent::getInfo(['id' => $id], ['*'], false);
-        TourTrait::actualOutWarehouse($tour);
     }
 
     /**

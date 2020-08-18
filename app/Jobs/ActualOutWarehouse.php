@@ -101,12 +101,6 @@ class ActualOutWarehouse implements ShouldQueue
             } catch (BusinessLogicException $exception) {
                 Log::info('智能调度失败:' . $exception->getMessage());
             }
-            /**************************************3.通知下一个站点事件************************************************/
-            sleep(5);
-            $nextBatch = TourTrait::getNextBatch($this->tour_no);
-            if (!empty($nextBatch)) {
-                event(new NextBatch($tour, $nextBatch->toArray()));
-            }
             Log::info('确认出库成功');
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getFile());
