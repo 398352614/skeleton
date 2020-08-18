@@ -35,7 +35,7 @@ class BaseModel extends Model
         $companyId = null;
         if (!auth()->user()) {
             //未授权用户的情况下
-            $companyId = self::getCompanyId();
+            //$companyId = self::getCompanyId();
         } elseif (in_array('company_id', $this->getFillable())) {
             $companyId = auth()->user()->company_id;
         }
