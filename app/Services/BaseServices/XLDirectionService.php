@@ -2,11 +2,13 @@
 
 namespace App\Services\BaseServices;
 
+use App\Exceptions\BusinessLogicException;
 use App\Services\Admin\ApiTimesService;
 use App\Services\Admin\BatchService;
 use App\Services\CurlClient;
 use App\Traits\FactoryInstanceTrait;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Route XL 路线规划服务
@@ -68,7 +70,12 @@ class XLDirectionService
         foreach ($resp['route'] as $key => $loc) {
             $res[] = $loc['name'];
         }
-        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_directions_times', DB::table('batch')->where('batch_no',$locSeq[0]['name'])->first()->toArray()['company_id']);
+        Log::info('请求回复',$resp);
+        $batch = DB::table('batch')->where('batch_no', $resp['route'][0]['name'])->first();
+        if(!$batch){
+            throw new BusinessLogicException('优化失败');
+        }
+        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_directions_times',$batch->toArray()['company_id']);
         return $res; // 获取有序的 code 的序列
     }
 }
