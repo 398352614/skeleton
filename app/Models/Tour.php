@@ -163,13 +163,13 @@ class Tour extends BaseModel
      */
     public function getDriverLocationAttribute()
     {
-        if ($this->routeTracking->count()) {
-            $sorted = $this->routeTracking->sortByDesc('created_at');
+/*        if ($this->routeTracking->count()) {
+            $sorted = $this->routeTracking->sortByDesc('created_at')->first();
             return [
-                'latitude' => $sorted[0]->lat,
-                'longitude' => $sorted[0]->lon,
+                'latitude' => $sorted->lat,
+                'longitude' => $sorted->lon,
             ];
-        }
+        }*/
         return [
             'latitude' => $this->warehouse_lat,
             'longitude' => $this->warehouse_lon,
