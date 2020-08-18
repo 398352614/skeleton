@@ -591,7 +591,7 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-        $params['receiver_post_code'] = trim($params['receiver_post_code']);
+        $params['receiver_post_code'] = str_replace(' ', '', $params['receiver_post_code']);
         //若是新增,则填充商户ID及国家
         if (empty($orderNo)) {
             $params['merchant_id'] = auth()->user()->id;
