@@ -71,7 +71,7 @@ class XLDirectionService
             $res[] = $loc['name'];
         }
         Log::info('请求回复',$resp);
-        $batch = DB::table('batch')->where('batch_no', $resp['route'][0]['name'])->first();
+        $batch = DB::table('batch')->where('batch_no', $resp['route'][1]['name'])->first();
         if(!$batch){
             throw new BusinessLogicException('优化失败');
         }
