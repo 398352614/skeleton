@@ -363,7 +363,7 @@ class TourService extends BaseService
         if ($tour['status'] !== BaseConstService::TOUR_STATUS_4 || !empty($batchList)) {
             throw new BusinessLogicException('状态错误');
         }
-        $row = parent::updateById($id, ['actual_out_status' => BaseConstService::YES, 'begin_distance' => $params['begin_distance'], 'begin_time' => now()]);
+        $row = parent::updateById($id, ['actual_out_status' => BaseConstService::YES, 'begin_distance' => $params['begin_distance'] * 1000, 'begin_time' => now()]);
         if ($row == false) {
             throw new BusinessLogicException('实际出库失败');
         }
@@ -1112,7 +1112,7 @@ class TourService extends BaseService
         $data = Arr::only($params, ['end_signature', 'end_signature_remark']);
         $data = Arr::add($data, 'end_time', now());
         $actualTime = strtotime($data['end_time']) - strtotime($tour['begin_time']);
-        $data = array_merge($data, ['actual_time' => $actualTime, 'actual_distance' => $tour['expect_distance'], 'end_distance' => $params['end_distance']]);
+        $data = array_merge($data, ['actual_time' => $actualTime, 'actual_distance' => $tour['expect_distance'], 'end_distance' => $params['end_distance'] * 1000]);
         $rowCount = parent::updateById($tour['id'], Arr::add($data, 'status', BaseConstService::TOUR_STATUS_5));
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败，请重新操作');
