@@ -70,12 +70,12 @@ class XLDirectionService
         foreach ($resp['route'] as $key => $loc) {
             $res[] = $loc['name'];
         }
-        Log::info('请求回复',$resp);
+        Log::info('请求回复', $resp);
         $batch = DB::table('batch')->where('batch_no', $resp['route'][1]['name'])->first();
-        if(!$batch){
+        if (!$batch) {
             throw new BusinessLogicException('优化失败');
         }
-        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_directions_times',$batch->toArray()['company_id']);
+        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_directions_times', $batch->company_id);
         return $res; // 获取有序的 code 的序列
     }
 }
