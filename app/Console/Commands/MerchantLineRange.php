@@ -48,7 +48,7 @@ class MerchantLineRange extends Command
         foreach ($merchantList as $merchant) {
             $lineRangeList = LineRange::query()->where('company_id', $merchant->company_id)->get()->toArray();
             foreach ($lineRangeList as $key => $lineRange) {
-                unset($lineRangeList[$key]['id'], $lineRangeList[$key]['country_name'], $lineRangeList[$key]['is_split']);
+                unset($lineRangeList[$key]['id'], $lineRangeList[$key]['country_name']);
             }
             data_set($lineRangeList, '*.merchant_id', $merchant->id);
             $model->insertAll($lineRangeList);
