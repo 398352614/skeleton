@@ -582,6 +582,7 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        $params['receiver_post_code'] = trim($params['receiver_post_code']);
         //获取经纬度
         $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
