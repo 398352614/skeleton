@@ -3,21 +3,21 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use Illuminate\Support\Facades\App;
 
 /**
- * 线路表
- * Class Employee
+ * 汽车表
+ * Class Car
  * @package App\Models
  */
-class LineRange extends BaseModel
+class ApiTimes extends BaseModel
 {
     /**
-     * 司机实际取件导航
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'line_range';
+    protected $table = 'api_times';
 
     /**
      * The primary key for the model.
@@ -47,11 +47,13 @@ class LineRange extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'line_id',
-        'post_code_start',
-        'post_code_end',
-        'schedule',
-        'country',
+        'date',
+        'directions_times',
+        'actual_directions_times',
+        'api_directions_times',
+        'distance_times',
+        'actual_distance_times',
+        'api_distance_times',
         'created_at',
         'updated_at',
     ];
@@ -61,9 +63,7 @@ class LineRange extends BaseModel
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be mutated to dates.
@@ -73,7 +73,7 @@ class LineRange extends BaseModel
     protected $dates = [];
 
     protected $appends = [
-        'country_name'
     ];
 
 }
+

@@ -24,6 +24,15 @@ class LineController extends BaseController
     }
 
     /**
+     * 通过日期 获取线路列表
+     * @return array
+     */
+    public function getListByDate()
+    {
+        return $this->service->getListByDate($this->data['date']);
+    }
+
+    /**
      * 邮编-列表查询
      * @return \App\Services\Admin\BaseLineService|array|mixed
      */

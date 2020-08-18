@@ -217,6 +217,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/plan-excel', 'TourController@planExport'); //导出计划
         Route::put('/{id}/assign', 'TourController@assignTourToTour');   //分配线路
         Route::get('/{id}/getLineDate', 'TourController@getLineDate');   //获取可分配日期
+        Route::get('/getListJoinByLineId', 'TourController@getListJoinByLineId');   //获取可加入的取件线路列表
+
     });
 
     //取件线路-司机
@@ -234,6 +236,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //线路管理
     Route::prefix('line')->group(function () {
+        //通过日期，获取线路列表
+        Route::get('/getListByDate', 'LineController@getListByDate');
         /****************************************邮编线路**************************************/
         //列表查询
         Route::get('/', 'LineController@postcodeIndex');
@@ -247,6 +251,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'LineController@postcodeDestroy');
         //导入
         Route::post('/import', 'LineController@postcodeLineImport');
+
+        //商户线路范围配置
+        Route::get('/{id}/merchant-line-range', 'MerchantLineRangeController@show');
+        Route::put('/{id}/merchant-line-range', 'MerchantLineRangeController@createOrUpdate');
 
         /****************************************区域线路**************************************/
         //列表查询
@@ -499,5 +507,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::prefix('worker')->group(function () {
         //绑定
         Route::post('/bind/{client_id}', 'WorkerController@bind');
+    });
+
+    //统计第三方请求次数
+    Route::prefix('api-times')->group(function () {
+        //绑定
+        Route::get('/', 'ApiTimesController@index');
     });
 });

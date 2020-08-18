@@ -5,11 +5,11 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 线路表
+ * 商户线路范围表
  * Class Employee
  * @package App\Models
  */
-class LineRange extends BaseModel
+class MerchantLineRange extends BaseModel
 {
     /**
      * 司机实际取件导航
@@ -17,7 +17,7 @@ class LineRange extends BaseModel
      *
      * @var string
      */
-    protected $table = 'line_range';
+    protected $table = 'merchant_line_range';
 
     /**
      * The primary key for the model.
@@ -47,7 +47,9 @@ class LineRange extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'merchant_id',
         'line_id',
+        'line_range_id',
         'post_code_start',
         'post_code_end',
         'schedule',
@@ -71,9 +73,5 @@ class LineRange extends BaseModel
      * @var array
      */
     protected $dates = [];
-
-    protected $appends = [
-        'country_name'
-    ];
 
 }

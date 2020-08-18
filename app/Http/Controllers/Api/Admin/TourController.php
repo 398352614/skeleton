@@ -24,6 +24,15 @@ class TourController extends BaseController
     }
 
     /**
+     * 通过线路ID 获取可加入的取件线路列表
+     * @return array
+     */
+    public function getListJoinByLineId()
+    {
+        return $this->service->getListJoinByLineId($this->data);
+    }
+
+    /**
      * 获取可加单的取件线路列表
      * @return array|mixed
      * @throws \App\Exceptions\BusinessLogicException

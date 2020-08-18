@@ -106,6 +106,8 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::put('/{id}/checkOutWarehouse', 'TourController@checkOutWarehouse');
         //司机出库
         Route::put('/{id}/outWarehouse', 'TourController@outWarehouse');
+        //司机确认出库
+        Route::put('/{id}/actual-out-warehouse', 'TourController@actualOutWarehouse');
         //获取站点列表
         Route::get('/{id}/getBatchList', 'TourController@getBatchList');
         //获取站点的订单列表

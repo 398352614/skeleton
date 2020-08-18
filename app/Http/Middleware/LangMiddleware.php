@@ -15,10 +15,12 @@ class LangMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if((app('request')->header('language')<>'en')){
-            app()->setLocale('cn');
-        } else {
+        if(app('request')->header('language') == 'nl'){
+            app()->setLocale('nl');
+        } elseif(app('request')->header('language') == 'en') {
             app()->setLocale('en');
+        }else{
+            app()->setLocale('cn');
         }
         return $next($request);
     }

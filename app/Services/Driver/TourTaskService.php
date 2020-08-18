@@ -127,6 +127,9 @@ class TourTaskService extends BaseService
         $materialList = $this->getTourMaterialList($tour);
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        for ($i = 0, $j = count($packageList); $i < $j; $i++) {
+            $packageList[$i]['feature_logo'] = $packageList[$i]['feature_logo'] ?? '';
+        }
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
         $orderList = array_map(function ($order) use ($packageList) {

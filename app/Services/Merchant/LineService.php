@@ -33,7 +33,7 @@ class LineService extends BaseLineService
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_AREA) {
             return [];
         }
-        $lineRangeList = parent::getLineRangeListByPostcode($postCode);
+        $lineRangeList = parent::getLineRangeListByPostcode($postCode, auth()->user()->id);
         $dateList = parent::getScheduleListByLineRangeList(['type' => BaseConstService::ORDER_TYPE_2], $lineRangeList, BaseConstService::ORDER_OR_BATCH_1);
         return $dateList;
     }

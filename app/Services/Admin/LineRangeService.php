@@ -25,6 +25,15 @@ class LineRangeService extends BaseService
     }
 
     /**
+     * 商户线路 服务
+     * @return MerchantLineRangeService
+     */
+    public function getMerchantLineRangeService()
+    {
+        return self::getInstance(MerchantLineRangeService::class);
+    }
+
+    /**
      * 通过线路ID列表,获取线路范围列表
      * @param $lineIdList
      * @return array
@@ -35,17 +44,11 @@ class LineRangeService extends BaseService
         if (empty($list)) return [];
         foreach ($list as $key => $lineRange) {
             $list[$key]['range'] = $lineRange['post_code_start'] . '-' . $lineRange['post_code_end'];
-            if (intval($lineRange['is_split']) == BaseConstService::ON) {
-                $list[$key]['split_line_range'] = $lineRange['post_code_start'] . '-' . $lineRange['post_code_end'];
-            } else {
-                $list[$key]['split_line_range'] = '';
-            }
         }
         $newList = [];
         $list = array_create_group_index($list, 'line_id');
         foreach ($list as $key => $lineList) {
             $newList[$key]['line_range'] = implode(';', array_column(multi_array_unique($lineList, 'range'), 'range'));
-            $newList[$key]['split_line_range'] = implode(';', array_filter(array_column(multi_array_unique($lineList, 'split_line_range'), 'split_line_range')));
             $newList[$key]['work_day_list'] = array_column($lineList, 'schedule');
         }
         return $newList;
@@ -71,7 +74,6 @@ class LineRangeService extends BaseService
                 $newRangeList[$index]['post_code_end'] = $range['post_code_end'];
                 $newRangeList[$index]['schedule'] = $workDay;
                 $newRangeList[$index]['country'] = $country;
-                $newRangeList[$index]['is_split'] = $range['is_split'] ?? BaseConstService::NO;
                 $index++;
             }
         }
@@ -79,6 +81,8 @@ class LineRangeService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围新增失败');
         }
+        //删除商户线路范围
+        $this->getMerchantLineRangeService()->storeRangeList($lineId, $rangeList, $workdayList, $country);
     }
 
 
@@ -100,7 +104,7 @@ class LineRangeService extends BaseService
         for ($i = 0; $i <= $length - 1; $i++) {
             for ($j = $i + 1; $j <= $length - 1; $j++) {
                 if (max($rangeList[$i]['post_code_start'], $rangeList[$j]['post_code_start']) <= min($rangeList[$i]['post_code_end'], $rangeList[$j]['post_code_end'])) {
-                    throw new BusinessLogicException('邮编存在重叠,无法添加');
+                    throw new BusinessLogicException("邮编范围:post_range_1与:post_range_2存在重叠,无法添加", 1000, ['post_range_1' => $rangeList[$j]['post_code_start'] . '-' . $rangeList[$j]['post_code_end'], 'post_range_2' => $rangeList[$j]['post_code_start'] . '-' . $rangeList[$j]['post_code_end']]);
                 }
             }
         }

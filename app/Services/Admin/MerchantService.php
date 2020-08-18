@@ -82,6 +82,15 @@ class MerchantService extends BaseService
     }
 
     /**
+     * 线路 服务
+     * @return LineService
+     */
+    private function getLineService()
+    {
+        return self::getInstance(LineService::class);
+    }
+
+    /**
      * 费用 服务
      * @return FeeService
      */
@@ -172,6 +181,8 @@ class MerchantService extends BaseService
         }
         //费用配置添加
         $this->addFeeConfigList($id, $params);
+        //新增商户所有线路范围
+        $this->getLineService()->storeAllPostCodeLineRangeByMerchantId($id);
     }
 
     /**

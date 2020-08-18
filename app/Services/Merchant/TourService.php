@@ -19,7 +19,6 @@ use App\Services\OrderNoRuleService;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
 use Carbon\Carbon;
-use http\Env\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
@@ -266,7 +265,7 @@ class TourService extends BaseService
                 'warehouse_address' => $warehouse['address'],
                 'warehouse_lon' => $warehouse['lon'],
                 'warehouse_lat' => $warehouse['lat'],
-                'type' => $batch['type'],
+                'merchant_id' => $batch['merchant_id'] ?? 0
             ], $quantity)
         );
         if ($tour === false) {
@@ -410,7 +409,7 @@ class TourService extends BaseService
         if (!empty($batch['tour_no'])) {
             $this->removeBatch($batch);
         }
-        $tour = $this->getTourInfo($batch, $line, true, $params['tour_no'] ?? '');
+        $tour = $this->getTourInfo($batch, $line, true, $params['tour_no'] ?? '', true);
         if (!empty($params['tour_no']) && empty($tour)) {
             throw new BusinessLogicException('当前指定取件线路不符合当前站点');
         }
@@ -431,22 +430,24 @@ class TourService extends BaseService
      * @param $line
      * @param $isLock
      * @param $tourNo
+     * @param $isAssign
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null)
+    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null, $isAssign = false)
     {
         if (!empty($tourNo)) {
             $this->query->where('tour_no', '=', $tourNo);
         }
         //若不存在取件线路或者超过最大订单量,则新建取件线路
-        if (intval($batch['expect_pickup_quantity']) > 0) {
+        if ((intval($batch['expect_pickup_quantity']) > 0) && ($isAssign == false)) {
             $this->query->where(DB::raw('expect_pickup_quantity+' . intval($batch['expect_pickup_quantity'])), '<=', $line['pickup_max_count']);
         }
-        if (intval($batch['expect_pie_quantity']) > 0) {
+        if ((intval($batch['expect_pie_quantity']) > 0) && ($isAssign == false)) {
             $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
         }
-        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]], 'type' => $batch['type']];
+        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
+        isset($batch['merchant_id']) && $where['merchant_id'] = $batch['merchant_id'];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         return !empty($tour) ? $tour->toArray() : [];
     }

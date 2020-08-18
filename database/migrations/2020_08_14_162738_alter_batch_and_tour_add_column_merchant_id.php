@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterBatchAndTourAddColumnType extends Migration
+class AlterBatchAndTourAddColumnMerchantId extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,10 @@ class AlterBatchAndTourAddColumnType extends Migration
     public function up()
     {
         Schema::table('batch', function (Blueprint $table) {
-            $table->tinyInteger('type')->default(3)->nullable()->after('status')->comment('类型1-取2-派3-取派');
+            $table->integer('merchant_id')->default(0)->nullable()->after('company_id')->comment('商户ID');
         });
         Schema::table('tour', function (Blueprint $table) {
-            $table->tinyInteger('type')->default(3)->nullable()->after('execution_date')->comment('类型1-取2-派3-取派');
+            $table->integer('merchant_id')->default(0)->nullable()->after('company_id')->comment('商户ID');
         });
     }
 
@@ -29,10 +29,10 @@ class AlterBatchAndTourAddColumnType extends Migration
     public function down()
     {
         Schema::table('batch', function (Blueprint $table) {
-            $table->dropColumn('type');
+            $table->dropColumn('merchant_id');
         });
         Schema::table('tour', function (Blueprint $table) {
-            $table->dropColumn('type');
+            $table->dropColumn('merchant_id');
         });
     }
 }

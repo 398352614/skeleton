@@ -49,11 +49,11 @@ class Tour extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'merchant_id',
         'tour_no',
         'line_id',
         'line_name',
         'execution_date',
-        'type',
         'driver_id',
         'driver_name',
         'driver_phone',
@@ -77,12 +77,14 @@ class Tour extends BaseModel
         'warehouse_expect_arrive_time',
         'status',
         'begin_time',
+        'begin_distance',
         'begin_signature',
         'begin_signature_remark',
         'begin_signature_first_pic',
         'begin_signature_second_pic',
         'begin_signature_third_pic',
         'end_time',
+        'end_distance',
         'end_signature',
         'end_signature_remark',
         'expect_distance',
@@ -103,6 +105,7 @@ class Tour extends BaseModel
         'created_at',
         'updated_at',
         'lave_distance',
+        'actual_out_status'
     ];
 
     /**
@@ -114,7 +117,6 @@ class Tour extends BaseModel
 
     protected $appends = [
         'status_name',
-        'type_name',
         'expect_time_human',
         'actual_time_human',
         'merchant_status',
@@ -127,13 +129,6 @@ class Tour extends BaseModel
      * @var array
      */
     protected $dates = [];
-
-
-    public function getTypeNameAttribute()
-    {
-        return empty($this->type) ? null : ConstTranslateTrait::tourTypeList($this->type);
-    }
-
 
     public function getStatusNameAttribute()
     {
@@ -168,12 +163,14 @@ class Tour extends BaseModel
      */
     public function getDriverLocationAttribute()
     {
-        if ($this->routeTracking->count()) {
-            $sorted = $this->routeTracking->sortByDesc('created_at');
-            return [
-                'latitude' => $sorted[0]->lat,
-                'longitude' => $sorted[0]->lon,
-            ];
+        if (config('tms.app_env') !== 'local') {
+            if ($this->routeTracking->count()) {
+                $sorted = $this->routeTracking->sortByDesc('created_at')->first();
+                return [
+                    'latitude' => $sorted->lat,
+                    'longitude' => $sorted->lon,
+                ];
+            }
         }
         return [
             'latitude' => $this->warehouse_lat,
