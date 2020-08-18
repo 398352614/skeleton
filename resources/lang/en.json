@@ -853,5 +853,83 @@
     "解锁 tour 的操作锁定":"Unlock the operation lock of tour",
 
     "测试 guzzle":"Test guzzle",
-    "邮编范围:post_range_1与:post_range_2存在重叠,无法添加": "The post code range :post_range_1 and :post_range_2 overlap and cannot be added"
+    "邮编范围:post_range_1与:post_range_2存在重叠,无法添加": "The post code range :post_range_1 and :post_range_2 overlap and cannot be added",
+
+    "加密数据:":"Encrypted data:",
+
+    "无法获取通讯ID，请稍候再试":"Unable to get communication ID, please try again later",
+
+    "企业注册失败":"Enterprise registration failure",
+    "初始化商户组失败":"Failed to initialize merchant group",
+    "初始化商户失败":"Failed to initialize merchant",
+    "初始化商户API失败":"Failed to initialize merchant API",
+    "费用初始化失败":"Cost initialization failed",
+
+    "确认出库开始":"Confirm delivery start",
+    "确认出库成功":"Confirm delivery success",
+
+    "取件线路待分配车辆,请先分配车辆":"Pick up line to be allocated vehicles, please assign vehicles first",
+
+    "包裹锁定失败,请重新操作":"Package locking failed, please operate again",
+
+    "状态错误":"Status error",
+    "实际出库失败":"Actual issue failed",
+    "未扫描包裹取消取派失败":"Failed to cancel delivery of unsealed package",
+    "材料新增失败":"Failed to add material",
+
+    "当前待分配车辆,请先分配车辆":"Current vehicles to be allocated, please assign vehicles first",
+    "订单[:order_no]已取消或已删除,不能出库,请先剔除":"Order_ No] has been cancelled or deleted, cannot be delivered out, please delete it first",
+    "材料有重复,请先合并":"There are duplicate materials, please merge them first",
+
+    "请先确认出库":"Please confirm the delivery first",
+
+    "站点当前状态不能上报异常":"The current status of the site cannot report exceptions",
+
+    "费用不为0，不能选择无需支付":"The fee is not 0. You cannot choose not to pay",
+    "订单下包裹提货费":"Delivery fee for package under order",
+    "总计代收货款不正确":"Incorrect total collection of payment",
+    "总计运费不正确":"Total freight incorrect",
+    "材料处理失败":"Material handling failure",
+    "站点不存在":"Site does not exist",
+    "当前站点不属于当前取件线路":"The current site does not belong to the current pickup line",
+    "未从仓库取材料[:code]":"Material not taken from warehouse [: Code]",
+
+    "存在需要身份验证的包裹，请填写身份验证信息":"There are packages requiring authentication. Please fill in the identification information",
+
+    "预售":"Pre sale",
+
+    "线路不存在":"The line does not exist",
+    "取件线路当前状态不能操作":"The current status of pickup line cannot be operated",
+    "当前取件线路正在派送中，取件订单加单不能包含材料":"Currently, the pickup line is in the process of delivery, and the pickup order cannot contain materials",
+    "取件数量超过线路取件订单最大值":"Pickup quantity exceeds the maximum line pickup order",
+    "订单[:order_no]的不是待分配或已分配状态，不能操作":"Order_ No] is not to be allocated or allocated and cannot be operated",
+    "派件订单不允许加单":"Delivery order cannot be added",
+    "未设置打印模板，请联系管理员设置打印模板":"No print template has been set. Please contact the administrator to set the print template",
+    "当前运价没有公里计费列表":"There is no kilometer billing list for the current freight rate",
+    "当前公里不在该运价范围内":"The current kilometer is not within the range of the freight rate",
+    "当前运价没有重量计费列表":"There is no weight billing list for the current freight rate",
+    "当前重量不在该运价范围内":"The current weight is not in the range of the freight rate",
+    "当前运价没有特殊时段计费列表":"There is no special period billing list for the current freight rate",
+    "公里区间有重叠":"There is overlap in kilometer interval",
+    "重量区间有重叠":"There is overlap in the weight range",
+    "时间段有重叠":"Overlapping time periods",
+    "仓库新增失败,请重新操作":"Failed to add warehouse, please operate again",
+    "仓库修改失败，请重新操作":"Failed to modify warehouse, please operate again",
+    "存在当前仓库的线路,请先删除线路":"There is a line in the current warehouse, please delete the line first",
+    "仓库删除失败，请重新操作":"Failed to delete the warehouse. Please operate again",
+
+    "商户不存在，请重新选择商户":"Merchant does not exist, please reselect merchant",
+
+    "仍有未完成的任务，无法删除":"There are still unfinished tasks and cannot be deleted",
+    "司机删除失败":"Driver deletion failed",
+    "新增司机失败":"New driver failed",
+
+    "区域有重叠":"There are overlapping areas",
+
+    "线路范围新增失败":"Failed to add line range",
+    "邮编范围不能为空":"Postcode range cannot be empty",
+    "系统级费用不能删除":"System level expenses cannot be deleted",
+
+    "多商家":"Multi merchant",
+    "当前司机已被分配，请选":"Current driver has been assigned, please select"
 }
