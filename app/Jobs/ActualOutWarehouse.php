@@ -77,9 +77,9 @@ class ActualOutWarehouse implements ShouldQueue
     public function handle()
     {
         Log::info('确认出库开始');
-        $tour = DB::table('tour')->where('tour_no', $this->tour_no)->first();
         try {
             /*****************************************1.智能调度*******************************************************/
+            $tour = DB::table('tour')->where('tour_no', $this->tour_no)->first();
             $company = CompanyTrait::getCompany($tour->company_id);
             request()->headers->set('X-Uuid', $company['company_code']);
             /**@var TourService $tourService */
@@ -108,6 +108,7 @@ class ActualOutWarehouse implements ShouldQueue
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getMessage());
         }
         /**************************************3.通知下一个站点事件************************************************/
+        $tour = DB::table('tour')->where('tour_no', $this->tour_no)->get();
         $nextBatch = TourTrait::getNextBatch($tour->tour_no);
         if (!empty($nextBatch)) {
             event(new NextBatch($tour->toArray(), $nextBatch->toArray()));
