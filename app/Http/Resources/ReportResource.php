@@ -24,7 +24,7 @@ class ReportResource extends JsonResource
             'actual_pickup_quantity' => $this->actual_pickup_quantity,
             'expect_pie_quantity' => $this->expect_pie_quantity,
             'actual_pie_quantity' => $this->actual_pie_quantity,
-            'batch_count' => $this->batch_count ?? 0,
+            'expect_batch_count' => $this->expect_batch_count ?? 0,
             'actual_batch_count' => $this->actual_batch_count ?? 0,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,

@@ -43,12 +43,6 @@ trait TourTrait
     {
         //智能调度
         dispatch(new \App\Jobs\ActualOutWarehouse($tour['tour_no']));
-        /**************************************3.通知下一个站点事件************************************************/
-        sleep(10);
-        $nextBatch = TourTrait::getNextBatch($tour['tour_no']);
-        if (!empty($nextBatch)) {
-            event(new NextBatch($tour, $nextBatch->toArray()));
-        }
     }
 
     public static function afterBatchArrived($tour, $batch)
