@@ -108,10 +108,10 @@ class ActualOutWarehouse implements ShouldQueue
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getMessage());
         }
         /**************************************3.通知下一个站点事件************************************************/
-        $tour = DB::table('tour')->where('tour_no', $this->tour_no)->get();
-        $nextBatch = TourTrait::getNextBatch($tour->tour_no);
+        $tour = DB::table('tour')->where('tour_no', $this->tour_no)->get()->toArray();
+        $nextBatch = TourTrait::getNextBatch($tour['tour_no']);
         if (!empty($nextBatch)) {
-            event(new NextBatch($tour->toArray(), $nextBatch->toArray()));
+            event(new NextBatch($tour, $nextBatch->toArray()));
         }
         return true;
     }
