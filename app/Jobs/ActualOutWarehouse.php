@@ -110,7 +110,7 @@ class ActualOutWarehouse implements ShouldQueue
         /**************************************3.通知下一个站点事件************************************************/
         $nextBatch = TourTrait::getNextBatch($tour->tour_no);
         if (!empty($nextBatch)) {
-            event(new NextBatch($tour, $nextBatch->toArray()));
+            event(new NextBatch($tour->toArray(), $nextBatch->toArray()));
         }
         return true;
     }
