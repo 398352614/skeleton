@@ -42,7 +42,7 @@ class AssignBatch extends ATourNotify
         $orderNoList = array_column($this->orderList, 'order_no');
         $packageList = Package::query()->whereIn('order_no', $orderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
         foreach ($packageList as $k => $v) {
-            $packageList[$k]['delivery_count'] = $v['delivery_amount'] ? 1 : 0;
+            $packageList[$k]['delivery_count'] = floatval($v['delivery_amount']) == 0.00 ? 0 : 1;
         }
         $packageList = array_create_group_index($packageList, 'order_no');
         Log::info('package_list', $packageList);
