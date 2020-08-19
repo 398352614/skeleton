@@ -243,11 +243,15 @@ class TourService extends BaseService
         $merchantList = $this->getMerchantService()->getList([], ['id', 'name'], false)->toArray();
         $merchantList = array_create_index($merchantList, 'id');
         foreach ($list as &$tour) {
+            //处理多商家
             if ($tour['merchant_id'] == 0) {
                 $tour['merchant_id_name'] = __('多商家');
             } else {
                 $tour['merchant_id_name'] = $merchantList[$tour['merchant_id']]['name'] ?? '';
             }
+            //计算站点数量
+            $tour['expect_batch_count'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->count();
+            $tour['actual_batch_count'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT], ['*'], false)->count();
         }
         return $list;
     }

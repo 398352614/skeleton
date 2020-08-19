@@ -58,6 +58,8 @@ class TourResource extends JsonResource
             'actual_pickup_quantity' => $this->actual_pickup_quantity,
             'expect_pie_quantity' => $this->expect_pie_quantity,
             'actual_pie_quantity' => $this->actual_pie_quantity,
+            'expect_batch_count' => $this->expect_batch_count ?? 0,
+            'actual_batch_count' => $this->actual_batch_count ?? 0,
             'sticker_amount' => $this->sticker_amount,
             'delivery_amount' => $this->delivery_amount,
             'replace_amount' => $this->replace_amount,

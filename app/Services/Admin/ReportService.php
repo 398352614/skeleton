@@ -84,7 +84,7 @@ class ReportService extends BaseService
         $this->query->orderByDesc('created_at');
         $list = parent::getPageList();
         foreach ($list as &$tour) {
-            $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
+            $tour['expect_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
             $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         }
         return $list;
@@ -105,8 +105,8 @@ class ReportService extends BaseService
         }
         $info = $info->toArray();
         //获取站点数量
-        $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
-        $info['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
+        $info['expect_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
+        $info['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT]);
         //组装取件线路站点信息
         if (!$info['actual_time'] == 0) {
             $warehouseActualTimeHuman = CarbonInterval::second($info['actual_time'])->cascade()->forHumans();
