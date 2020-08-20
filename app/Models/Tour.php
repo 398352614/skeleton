@@ -163,7 +163,7 @@ class Tour extends BaseModel
      */
     public function getDriverLocationAttribute()
     {
-        if (config('tms.app_env') !== 'local') {
+/*        if (config('tms.app_env') !== 'local') {
             if ($this->routeTracking->count()) {
                 $sorted = $this->routeTracking->sortByDesc('created_at')->first();
                 return [
@@ -171,7 +171,7 @@ class Tour extends BaseModel
                     'longitude' => $sorted->lon,
                 ];
             }
-        }
+        }*/
         return [
             'latitude' => $this->warehouse_lat,
             'longitude' => $this->warehouse_lon,
