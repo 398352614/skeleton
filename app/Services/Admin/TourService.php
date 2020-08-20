@@ -916,6 +916,7 @@ class TourService extends BaseService
             $info['warehouse_expect_time_human'] = $warehouseExpectTimeHuman;
         }
         $info['batchs'] = collect($info['batchs'])->sortBy('sort_id')->all();
+        $info['batchs'] = array_values($info['batchs']);
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k]['sort_id'] = $k + 1;
         }
