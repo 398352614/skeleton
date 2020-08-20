@@ -70,7 +70,7 @@ class LineService extends BaseLineService
         if (!empty($this->formData['post_code'])) {
             $postCode = explode_post_code($this->formData['post_code']);
             if (!is_numeric($postCode)) {
-                $this->query->where('post_code_start', '=', 0);
+                $this->query->where('rule', '=', 0);//保证查不到的条件
             }else{
                 $this->query->whereRaw("id IN (SELECT DISTINCT line_id FROM line_range WHERE post_code_start <= {$postCode} AND post_code_end >= {$postCode})");
             }
