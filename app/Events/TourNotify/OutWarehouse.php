@@ -48,7 +48,7 @@ class OutWarehouse extends ATourNotify
             return collect($order);
         })->toArray();
         unset($packageList);
-        $batchList = collect($this->orderList)->keyBy('batch_no')->toArray();
+        $batchList = collect($this->batchList)->keyBy('batch_no')->toArray();
         $orderList = collect($this->orderList)->groupBy(function ($order) {
             return $order['merchant_id'] . '-' . $order['batch_no'];
         })->toArray();
