@@ -138,6 +138,9 @@ class BaseConstService
     const MERCHANT_PACKAGE_STATUS_4 = 4;
     const MERCHANT_PACKAGE_STATUS_5 = 5;
 
+    //顺带包裹状态
+    const ADDITIONAL_PACKAGE_STATUS_1 = 1;
+    const ADDITIONAL_PACKAGE_STATUS_2 = 2;
 
     //订单异常标签1-正常2-异常
     const ORDER_EXCEPTION_LABEL_1 = 1;

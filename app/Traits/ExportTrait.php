@@ -9,7 +9,6 @@ use App\Exceptions\BusinessLogicException;
 use App\Exports\BaseExport;
 use App\Exports\BatchListExport;
 use App\Exports\MerchantExport;
-use App\Exports\PlanExport;
 use App\Models\Merchant;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
