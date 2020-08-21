@@ -216,14 +216,15 @@ class TourService extends BaseService
 
     /**
      * 获取可加单的取件线路列表
-     * @param $orderIdList
+     * @param $data
      * @return array|mixed
      * @throws BusinessLogicException
      */
-    public function getAddOrderPageList($orderIdList)
+    public function getAddOrderPageList($data)
     {
+        list($orderIdList, $executionDate) = [$data['order_id_list'], $data['execution_date']];
         $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
-        list($orderList, $lineId) = $this->getOrderService()->getAddOrderList($orderIdList);
+        list($orderList, $lineId) = $this->getOrderService()->getAddOrderList($orderIdList, $executionDate);
         $this->filters['line_id'] = ['=', $lineId];
         $list = parent::getPageList();
         return $list;

@@ -1190,7 +1190,18 @@ class OrderService extends BaseService
     {
         list($orderIdList, $tourNo) = [$params['id_list'], $params['tour_no']];
         /******************************************1.获取数据**********************************************************/
-        list($orderList, $lineId) = $this->getAddOrderList($orderIdList);
+        //获取取件线路信息
+        $tour = $this->getTourService()->getInfoLock(['tour_no' => $tourNo, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('取件线路当前状态不能操作');
+        }
+        $tour = $tour->toArray();
+        //获取线路信息
+        list($orderList, $lineId) = $this->getAddOrderList($orderIdList, $tour['execution_date']);
+        //判断当前线路ID是否是取件线路ID
+        if (intval($lineId) != intval($tour['line_id'])) {
+            throw new BusinessLogicException('当前线路已更换，请刷新');
+        }
         $orderList = Arr::where($orderList, function ($order) use ($tourNo) {
             return (($order['tour_no'] != $tourNo) && ($order['type'] == BaseConstService::ORDER_TYPE_1));
         });
@@ -1200,12 +1211,6 @@ class OrderService extends BaseService
             throw new BusinessLogicException('线路不存在');
         }
         $line = $line->toArray();
-        //获取取件线路信息
-        $tour = $this->getTourService()->getInfoLock(['tour_no' => $tourNo, 'line_id' => $line['id'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);
-        if (empty($tour)) {
-            throw new BusinessLogicException('取件线路当前状态不能操作');
-        }
-        $tour = $tour->toArray();
         /*******************************************2.验证*************************************************************/
         $count = 0;
         if ($tour['status'] == BaseConstService::TOUR_STATUS_4) {
@@ -1246,10 +1251,11 @@ class OrderService extends BaseService
     /**
      * 获取可加单的订单列表
      * @param $orderIdList
+     * @param $executionDate
      * @return array
      * @throws BusinessLogicException
      */
-    public function getAddOrderList($orderIdList)
+    public function getAddOrderList($orderIdList, $executionDate)
     {
         $lineId = null;
         $orderList = parent::getList(['id' => ['in', explode(',', $orderIdList)], 'type' => BaseConstService::ORDER_TYPE_1], ['*'], false)->toArray();
@@ -1261,7 +1267,7 @@ class OrderService extends BaseService
             if ($order['type'] == BaseConstService::ORDER_TYPE_2) {
                 throw new BusinessLogicException('派件订单不允许加单');
             }
-            $dbLineId = $this->getLineService()->getLineIdByInfo($order);
+            $dbLineId = $this->getLineService()->getLineIdByInfo($order, $executionDate);
             if (empty($dbLineId) || (!empty($lineId) && ($lineId != $dbLineId))) {
                 return [$orderList, 0];
             }

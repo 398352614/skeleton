@@ -216,16 +216,17 @@ class BaseLineService extends BaseService
     /**
      * 通过信息获得线路
      * @param $info
+     * @param $executionDate
      * @return mixed|string
      * @throws BusinessLogicException
      */
-    public function getLineIdByInfo($info)
+    public function getLineIdByInfo($info, $executionDate)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'], null);
+            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'], $executionDate);
         } else {
             $coordinate = ['lat' => $info['lat'] ?? $info ['receiver_lat'], 'lon' => $info['lon'] ?? $info ['receiver_lon']];
-            $lineRange = $this->getLineRangeByArea($coordinate, null);
+            $lineRange = $this->getLineRangeByArea($coordinate, $executionDate);
         }
         if (!empty($lineRange['line_id'])) {
             //获取线路信息
