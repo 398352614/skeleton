@@ -208,7 +208,8 @@ class BaseLineService extends BaseService
         if (empty($data)) {
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
-        $this->checkRule($info, $line, BaseConstService::ORDER_OR_BATCH_2, false);
+        //用于站点和取件线路分配,不受线路规则限制
+        //$this->checkRule($info, $line, BaseConstService::ORDER_OR_BATCH_2, false);
         return $line;
     }
 
