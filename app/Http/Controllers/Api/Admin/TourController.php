@@ -39,7 +39,7 @@ class TourController extends BaseController
      */
     public function getAddOrderPageList()
     {
-        return $this->service->getAddOrderPageList($this->data['order_id_list']);
+        return $this->service->getAddOrderPageList($this->data);
     }
 
     /**
