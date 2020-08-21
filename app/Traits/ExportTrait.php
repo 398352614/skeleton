@@ -26,7 +26,8 @@ trait ExportTrait
         $this->txtDisk = Storage::disk('admin_image_public');
     }
 
-    public function translate($headings,$dir){
+    public function translate($headings, $dir)
+    {
         if (is_array($headings[0])) {
             $systemHeadings = array_keys(__('excel.plan'));
             for ($i = 0, $j = count($headings); $i < $j; $i++) {
@@ -54,9 +55,9 @@ trait ExportTrait
      * @return array
      * @throws BusinessLogicException
      */
-    public function excelExport($name, $headings, $params, $dir, $sort = null)
+    public function excelExport($name, $headings, $data, $dir, $params = [])
     {
-        $headings=$this->translate($headings,$dir);
+        $headings = $this->translate($headings, $dir);
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
         $path = 'public\\admin\\excel\\' . $subPath . DIRECTORY_SEPARATOR . $name . '.xlsx';
         try {
@@ -73,8 +74,8 @@ trait ExportTrait
             throw new BusinessLogicException('表格导出失败，请重新操作');
         }
         return [
-            'name' => $name.'.xlsx',
-            'path' => Storage::disk('admin_excel_public')->url($subPath . DIRECTORY_SEPARATOR . $name.'.xlsx')
+            'name' => $name . '.xlsx',
+            'path' => Storage::disk('admin_excel_public')->url($subPath . DIRECTORY_SEPARATOR . $name . '.xlsx')
         ];
     }
 
@@ -84,11 +85,12 @@ trait ExportTrait
      * @return array
      * @throws BusinessLogicException
      */
-    public function txtExport($name,$params,$dir){
+    public function txtExport($name, $params, $dir)
+    {
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
-        $params['name'] = date('Ymd') . $params['name'].'.txt';
+        $params['name'] = date('Ymd') . $params['name'] . '.txt';
         try {
-            $rowCount = $this->txtDisk->put($subPath.DIRECTORY_SEPARATOR.$params['name'],$params['txt']);
+            $rowCount = $this->txtDisk->put($subPath . DIRECTORY_SEPARATOR . $params['name'], $params['txt']);
         } catch (\Exception $ex) {
             throw new BusinessLogicException('文档上传失败，请重新操作');
         }
