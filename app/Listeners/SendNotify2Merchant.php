@@ -87,10 +87,8 @@ class SendNotify2Merchant implements ShouldQueue
             foreach ($dataList as $merchantId => $data) {
                 $postData = ['type' => $notifyType, 'data' => $data];
                 if (empty($merchantList[$merchantId]['url'])) continue;
-                $res = $this->postData($merchantList[$merchantId]['url'], $postData);
-                Log::info($merchantId . '-商户通知成功返回:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+                $this->postData($merchantList[$merchantId]['url'], $postData);
             }
-            Log::info('取件线路通知成功:' . $notifyType);
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
         }
@@ -120,11 +118,16 @@ class SendNotify2Merchant implements ShouldQueue
      */
     public function postData(string $url, array $postData)
     {
-        $res = $this->curl->post($url, $postData);
-        if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
-            app('log')->info('send notify failure');
-            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
-            throw new BusinessLogicException('发送失败');
+        try {
+            $res = $this->curl->post($url, $postData);
+            if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
+                app('log')->info('send notify failure');
+                Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+                throw new BusinessLogicException('发送失败');
+            }
+        } catch (\Exception $ex) {
+            Log::info(json_encode($postData, JSON_UNESCAPED_UNICODE));
+            Log::info('推送失败');
         }
     }
 
