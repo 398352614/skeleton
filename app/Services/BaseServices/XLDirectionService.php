@@ -62,7 +62,7 @@ class XLDirectionService
         $resp = $this->curl->post(self::BASE_URL . 'tour/', ['locations' => $locSeq], 0);
         if (!$resp || !$resp['feasible']) {
             app('log')->info('线路规划失败或者不可靠');
-            return null;
+            return [];
         }
 
         $res = [];
