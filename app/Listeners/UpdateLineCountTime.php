@@ -23,7 +23,7 @@ class UpdateLineCountTime
      */
     public $apiClient;
 
-    public $times = 3;
+    public $times = 5;
 
     public $delay = 1;
 
