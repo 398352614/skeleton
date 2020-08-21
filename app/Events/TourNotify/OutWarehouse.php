@@ -16,6 +16,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 司机出库事件
@@ -49,9 +50,11 @@ class OutWarehouse extends ATourNotify
         })->toArray();
         unset($packageList);
         $batchList = collect($this->batchList)->keyBy('batch_no')->toArray();
+        Log::info('out-warehouse-batch-list', $batchList);
         $orderList = collect($this->orderList)->groupBy(function ($order) {
             return $order['merchant_id'] . '-' . $order['batch_no'];
         })->toArray();
+        Log::info('out-warehouse-order-list', $orderList);
         $newBatchList = [];
         foreach ($orderList as $merchantIdBatchNo => $merchantBatchList) {
             list($merchantId, $batchNo) = explode('-', $merchantIdBatchNo);
@@ -59,10 +62,12 @@ class OutWarehouse extends ATourNotify
                 $newBatchList[$merchantId][] = array_merge($batchList[$batchNo], ['merchant_id' => $merchantId, 'order_list' => $merchantBatchList]);
             }
         }
+        Log::info('out-warehouse-new-batch-list', $newBatchList);
         $tourList = [];
         foreach ($newBatchList as $merchantId => $merchantBatchList) {
             $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch_list' => $merchantBatchList]);
         }
+        Log::info('out-warehouse-tour-list', $tourList);
         return $tourList;
     }
 }
