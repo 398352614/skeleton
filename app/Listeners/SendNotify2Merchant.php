@@ -89,7 +89,6 @@ class SendNotify2Merchant implements ShouldQueue
                 if (empty($merchantList[$merchantId]['url'])) continue;
                 $this->postData($merchantList[$merchantId]['url'], $postData);
             }
-            Log::info('取件线路通知成功:' . $notifyType);
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
         }
