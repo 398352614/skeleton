@@ -21,15 +21,15 @@ class PlanExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
     protected $title;
     protected $headings;
     private $type;
-    private $sort;
+    private $params;
 
-    public function __construct($data, $headings, $title, $dir, $sort)
+    public function __construct($data, $headings, $title, $dir, $params)
     {
         $this->data = $data;
         $this->title = $title;
         $this->headings = $headings;
         $this->type = $dir;
-        $this->sort = $sort;
+        $this->params = $params;
     }
 
 
@@ -75,11 +75,11 @@ class PlanExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 // 合并单元格
                 //$event->sheet->getDelegate()->setMergeCells(['A1:'.$endColumn.'1']);
                 //设置行高
-                for ($i = 2; $i < 100; $i++) {
+/*                for ($i = 2; $i < 100; $i++) {
                     $event->sheet->getDelegate()->getRowDimension($i)->setRowHeight(16);
-                }
+                }*/
                 //设置单元格内容自动转行
-                $event->sheet->getDelegate()->getStyle($cell)->getAlignment()->setWrapText(TRUE);
+                $event->sheet->getDelegate()->getStyle('A1:G100')->getAlignment()->setWrapText(TRUE);
                 // 设置单元格内容水平靠右
                 $event->sheet->getDelegate()->getStyle($cell)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                 //设置单元格内容垂直居中
@@ -95,7 +95,7 @@ class PlanExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 //设置字体大小
                 $event->sheet->getDelegate()->getStyle('A1:' . $endColumn . '1')->getFont()->setSize(12);
                 //合并
-                $sortArray = $this->sort;
+                $sortArray = $this->params['sort'];
                 foreach ($sortArray as $k => $v) {
                     $sortArray[$k + 1] = $v;
                 }

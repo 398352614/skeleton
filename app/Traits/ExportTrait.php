@@ -9,6 +9,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Exports\BaseExport;
 use App\Exports\BatchListExport;
 use App\Exports\MerchantExport;
+use App\Exports\PlanExport;
 use App\Models\Merchant;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
@@ -47,28 +48,29 @@ trait ExportTrait
      * 表格导出
      * @param $name
      * @param $headings
-     * @param $params
+     * @param $data
      * @param $dir
+     * @param array $params
      * @return array
      * @throws BusinessLogicException
      */
-    public function excelExport($name, $headings, $params, $dir, $sort = null)
+    public function excelExport($name, $headings, $data, $dir, $params = [])
     {
         $headings = $this->translate($headings, $dir);
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
         $path = 'public\\admin\\excel\\' . $subPath . DIRECTORY_SEPARATOR . $name . '.xlsx';
-/*        try {*/
+        try {
             if ($dir == 'plan') {
-                $rowCount = Excel::store(new PlanExport($params, $headings, $name, $dir,$sort), $path);
+                $rowCount = Excel::store(new PlanExport($data, $headings, $name, $dir, $params), $path);
             } else {
-                $rowCount = Excel::store(new BaseExport($params, $headings, $name, $dir), $path);
+                $rowCount = Excel::store(new BaseExport($data, $headings, $name, $dir), $path);
             }
-/*        } catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             throw new BusinessLogicException('表格导出失败，请重新操作');
         }
         if ($rowCount === false) {
             throw new BusinessLogicException('表格导出失败，请重新操作');
-        }*/
+        }
         return [
             'name' => $name . '.xlsx',
             'path' => Storage::disk('admin_excel_public')->url($subPath . DIRECTORY_SEPARATOR . $name . '.xlsx')

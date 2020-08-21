@@ -11,6 +11,7 @@ use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
 use App\Models\TourLog;
+use App\Models\TourMaterial;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\BaseServices\XLDirectionService;
@@ -1176,7 +1177,9 @@ class TourService extends BaseService
         'type',
         'package_quantity',
         'out_order_no',
-        'mask_code'
+        'mask_code',
+        'material_code_list',
+        'material_expect_quantity_list'
     ];
 
     /**
@@ -1199,8 +1202,9 @@ class TourService extends BaseService
             [],
             $this->planHeadings,
         ];
+        $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
-        if (empty($packageList)) {
+        if (empty($materialList) && empty($packageList)) {
             throw new BusinessLogicException('数据不存在');
         }
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
@@ -1218,6 +1222,8 @@ class TourService extends BaseService
             $orderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
             $orderList[$k]['type'] = $orderList[$k]['type_name'];
             $orderList[$k]['receiver_address'] = $orderList[$k]['receiver_street'] . ' ' . $orderList[$k]['receiver_house_number'];
+            $orderList[$k]['material_code_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
+            $orderList[$k]['material_expect_quantity_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('expect_quantity')->toArray());
         }
         $orderList = array_values(collect($orderList)->sortBy('sort_id')->toArray());
         for ($i = 0, $j = count($orderList); $i < $j; $i++) {
@@ -1229,9 +1235,33 @@ class TourService extends BaseService
                 $sort = array_merge($sort, [$i + 1]);
             }
         }
-        $sort = array_merge($sort, [count($orderList)]);
+        $params['sort'] = array_merge($sort, [count($orderList)]);
+        $data = $orderList;
+        $count = count($orderList);
+        //材料总计
+        $tourMaterial = [];
+        foreach ($materialList as $k => $v) {
+            if (empty($tourMaterial[$v['code']])) {
+                $tourMaterial[$v['code']] = 0;
+            }
+            $tourMaterial[$v['code']] += $v['expect_quantity'];
+        }
+        $newTourMaterial = [];
+        foreach ($tourMaterial as $k => $v) {
+            $newTourMaterial[$k]['code'] = $k;
+            $newTourMaterial[$k]['quantity'] = $v;
+        }
+        $newTourMaterial = array_values($newTourMaterial);
+        $data[$count] = ['batch_no' => ' '];
+        $data[$count + 1] = ['batch_no' => __('材料汇总')];
+        $data[$count + 2] = ['batch_no' => __('材料代码'), 'out_user_id' => __('材料数量')];
+
+        foreach ($newTourMaterial as $k => $v) {
+            $data[$k + $count + 3]['batch_no'] = $v['code'];
+            $data[$k + $count + 3]['out_user_id'] = $v['quantity'];
+        }
         $dir = 'plan';
         $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
-        return $this->excelExport($name, $headings, $orderList, $dir, $sort);
+        return $this->excelExport($name, $headings, $data, $dir, $params);
     }
 }

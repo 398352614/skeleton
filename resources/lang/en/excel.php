@@ -128,6 +128,8 @@ return [
     'type'=>"Type",
     'package_quantity'=>"Quantity",
     'out_order_no'=>"Order No.",
-    'mask_code'=>"Eyecode"
+    'mask_code'=>"Eyecode",
+    'material_code_list'=>'Material Code',
+    'material_expect_quantity_list'=>'Material Quantity'
 ]
 ];
