@@ -67,6 +67,7 @@ class OutWarehouse extends ATourNotify
         foreach ($newBatchList as $merchantId => $merchantBatchList) {
             $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch_list' => $merchantBatchList]);
         }
+        Log::info('out-warehouse-tour-list', $tourList);
         return $tourList;
     }
 }
