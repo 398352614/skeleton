@@ -13,6 +13,7 @@ use App\Exports\PlanExport;
 use App\Models\Merchant;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -65,6 +66,7 @@ trait ExportTrait
                 $rowCount = Excel::store(new BaseExport($data, $headings, $name, $dir), $path);
             }
         } catch (\Exception $ex) {
+            Log::info($ex->getMessage());
             throw new BusinessLogicException('表格导出失败，请重新操作');
         }
         if ($rowCount === false) {
