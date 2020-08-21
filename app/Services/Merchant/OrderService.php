@@ -1439,6 +1439,8 @@ class OrderService extends BaseService
         if (empty($batch)) {
             throw new BusinessLogicException('数据不存在');
         }
+        $batchList = $this->getBatchService()->getList(['tour_no' => $batch['tour_no']], ['*'], false);
+        $count = $batchList->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
         //处理预计耗时
         if (!empty($batch->expect_arrive_time)) {
             $expectTime = strtotime($batch->expect_arrive_time) - time();
@@ -1461,10 +1463,9 @@ class OrderService extends BaseService
             'actual_arrive_time' => $batch['actual_arrive_time'] ?? '',
             'receiver_lon' => $batch['receiver_lon'] ?? '',
             'receiver_lat' => $batch['receiver_lat'] ?? '',
-
             'driver_lon' => $routeTracking['lon'] ?? '',
             'driver_lat' => $routeTracking['lat'] ?? '',
-
+            'rest_batch' => $count,
             'out_order_no' => $info['out_order_no'] ?? ''
         ];
     }

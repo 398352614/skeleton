@@ -106,6 +106,13 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'MaterialController@show');
     });
 
+    Route::prefix('additional-package')->group(function () {
+        //列表查询
+        Route::get('/', 'AdditionalPackageController@index');
+        //获取详情
+        Route::get('/{id}', 'AdditionalPackageController@show');
+    });
+
     //订单导入记录管理
     Route::prefix('order-import')->group(function () {
         //上传模板

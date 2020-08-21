@@ -128,6 +128,8 @@ return [
         'type'=>"取派类型",
         'package_quantity'=>"包裹数量",
         'out_order_no'=>"外部订单号",
-        'mask_code'=>"掩码"
+        'mask_code'=>"掩码",
+        'material_code_list'=>'材料代码',
+        'material_expect_quantity_list'=>'材料数量'
     ]
 ];

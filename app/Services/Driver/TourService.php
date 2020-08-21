@@ -18,6 +18,7 @@ use App\Models\Package;
 use App\Models\Tour;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
+use App\Services\Admin\AdditionalPackageService;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\FeeService;
@@ -122,6 +123,15 @@ class TourService extends BaseService
     public function getTourTaskService()
     {
         return self::getInstance(TourTaskService::class);
+    }
+
+    /**
+     * 顺带包裹 服务
+     * @return AdditionalPackageService
+     */
+    public function getAdditionalPackageService()
+    {
+        return self::getInstance(AdditionalPackageService::class);
     }
 
     /**
@@ -778,6 +788,8 @@ class TourService extends BaseService
         $totalDeliveryAmount = $info['totalDeliveryAmount'];
         $orderDeliveryAmountList = $info['orderDeliveryAmount'];
         Log::info('订单下包裹提货费', $orderDeliveryAmountList);
+        /****************************************2.处理站点下的顺带包裹************************************************/
+        !empty($params['additional_package_list']) && $this->dealAdditionalPackageList($batch, $params['additional_package_list']);
         /****************************************2.处理站点下的所有订单************************************************/
         $pickupCount = $pieCount = 0;
         $signOrderList = $cancelOrderList = [];
@@ -978,6 +990,24 @@ class TourService extends BaseService
         ];
     }
 
+    public function dealAdditionalPackageList($batch, $params)
+    {
+        foreach ($params as $k => $v) {
+            $params['batch_no'] = $batch['batch_no'];
+            $params['receiver_fullname'] = $batch['receiver_fullname'];
+            $params['receiver_phone'] = $batch['receiver_phone'];
+            $params['receiver_country'] = $batch['receiver_country'];
+            $params['receiver_post_code'] = $batch['receiver_post_code'];
+            $params['receiver_house_number'] = $batch['receiver_house_number'];
+            $params['receiver_city'] = $batch['receiver_city'];
+            $params['receiver_street'] = $batch['receiver_street'];
+            $params['receiver_address'] = $batch['receiver_address'];
+            $params['receiver_lon'] = $batch['receiver_lon'];
+            $params['receiver_lat'] = $batch['receiver_lat'];
+            $params['status'] = BaseConstService::ADDITIONAL_PACKAGE_STATUS_1;
+        }
+        $this->getAdditionalPackageService()->insertAll($params);
+    }
 
     /**
      * 验证-站点

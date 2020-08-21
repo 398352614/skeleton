@@ -117,17 +117,19 @@ return [
         'driver_name' => "Driver",
         'car_no' => "Car",
 
-        'batch_no' => "No",
-        'out_user_id' => "ID",
-        'receiver_fullname' => "Name",
-        'receiver_phone' => "Phone",
-        'receiver_address' => "Address",
-        'receiver_post_code' => "Postcode",
-        'receiver_city' => "City",
-        'merchant_name' => "Merchant",
-        'type' => "Type",
-        'package_quantity' => "Quantity",
-        'out_order_no' => "Order No.",
-        'mask_code' => "Eyecode"
-    ]
+    'batch_no'=>"No",
+    'out_user_id'=>"ID",
+    'receiver_fullname'=>"Name",
+    'receiver_phone'=>"Phone",
+    'receiver_address'=>"Address",
+    'receiver_post_code'=>"Postcode",
+    'receiver_city'=>"City",
+    'merchant_name'=>"Merchant",
+    'type'=>"Type",
+    'package_quantity'=>"Quantity",
+    'out_order_no'=>"Order No.",
+    'mask_code'=>"Eyecode",
+    'material_code_list'=>'Material Code',
+    'material_expect_quantity_list'=>'Material Quantity'
+]
 ];
