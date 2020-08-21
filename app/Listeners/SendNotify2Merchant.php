@@ -87,8 +87,7 @@ class SendNotify2Merchant implements ShouldQueue
             foreach ($dataList as $merchantId => $data) {
                 $postData = ['type' => $notifyType, 'data' => $data];
                 if (empty($merchantList[$merchantId]['url'])) continue;
-                $res = $this->postData($merchantList[$merchantId]['url'], $postData);
-                Log::info($merchantId . '-商户通知成功返回:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+                $this->postData($merchantList[$merchantId]['url'], $postData);
             }
             Log::info('取件线路通知成功:' . $notifyType);
         } catch (\Exception $ex) {
