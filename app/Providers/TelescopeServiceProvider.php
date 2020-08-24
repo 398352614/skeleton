@@ -20,6 +20,29 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         $this->hideSensitiveRequestDetails();
 
+
+        Telescope::tag(function (IncomingEntry $entry) {
+            if ($entry->type === 'request') {
+                return [$entry->content['uri']];
+            }
+            return [];
+        });
+
+        Telescope::tag(function (IncomingEntry $entry) {
+            if ($entry->type === 'request') {
+                return [$entry->recordedAt->format('H:i')];
+            }
+            return [];
+        });
+
+        Telescope::tag(function (IncomingEntry $entry) {
+            if ($entry->type === 'request') {
+                return [$entry->recordedAt->format('H:i')];
+            }
+            return [];
+        });
+
+
         Telescope::tag(function (IncomingEntry $entry) {
             if ($entry->type === 'request') {
                 return ['method:' . $entry->content['method']];
@@ -27,9 +50,18 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
             return [];
         });
 
+
+
+        Telescope::tag(function (IncomingEntry $entry) {
+            if ($entry->type === 'job') {
+                return [$entry->content['data']['data'] ? $entry->content['data']['data'][0]['type'] : []];
+            }
+            return [];
+        });
+
         Telescope::tag(function (IncomingEntry $entry) {
             if ($entry->type === 'request') {
-                return [$entry->content['uri']];
+                return [$entry->content['response']['msg']];
             }
             return [];
         });

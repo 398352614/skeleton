@@ -23,6 +23,8 @@ abstract class ATourNotify
 
     public $orderList;
 
+    public $type;
+
     public static $tourFields = ['line_name', 'tour_no', 'execution_date', 'expect_distance', 'expect_time', 'driver_id', 'driver_name', 'driver_phone', 'car_id', 'car_no'];
 
     public static $batchFields = [
@@ -49,6 +51,7 @@ abstract class ATourNotify
         !empty($orderList) && $this->orderList = collect($orderList)->map(function ($order) {
             return Arr::only($order, self::$orderFields);
         })->toArray();
+        $this->type=$this->notifyType();
         Log::info('notify-type:' . $this->notifyType());
     }
 

@@ -636,7 +636,7 @@ class TourService extends BaseService
             $batch['no_need_to_pay'] = BaseConstService::NO;
         }
         $additionalPackageList = DB::table('additional_package')->where('batch_no', $batch['batch_no'])->get();
-        $batch['additional_package_count']=count($additionalPackageList);
+        $batch['additional_package_count'] = count($additionalPackageList);
         $batch['additional_package_list'] = $additionalPackageList ?? [];
         $batch['order_list'] = $orderList;
         $batch['material_list'] = $materialList;
@@ -1004,22 +1004,25 @@ class TourService extends BaseService
 
     public function dealAdditionalPackageList($batch, $params)
     {
+        $data=[];
         foreach ($params as $k => $v) {
-            $params[$k]['batch_no'] = $batch['batch_no'];
-            $params[$k]['receiver_fullname'] = $batch['receiver_fullname'];
-            $params[$k]['execution_date'] = $batch['execution_date'];
-            $params[$k]['receiver_phone'] = $batch['receiver_phone'];
-            $params[$k]['receiver_country'] = $batch['receiver_country'];
-            $params[$k]['receiver_post_code'] = $batch['receiver_post_code'];
-            $params[$k]['receiver_house_number'] = $batch['receiver_house_number'];
-            $params[$k]['receiver_city'] = $batch['receiver_city'];
-            $params[$k]['receiver_street'] = $batch['receiver_street'];
-            $params[$k]['receiver_address'] = $batch['receiver_address'];
-            $params[$k]['receiver_lon'] = $batch['receiver_lon'];
-            $params[$k]['receiver_lat'] = $batch['receiver_lat'];
-            $params[$k]['status'] = BaseConstService::ADDITIONAL_PACKAGE_STATUS_1;
+            $data[$k]['merchant_id']=$params[$k]['merchant_id'];
+            $data[$k]['package_no']=$params[$k]['package_no'];
+            $data[$k]['batch_no'] = $batch['batch_no'];
+            $data[$k]['receiver_fullname'] = $batch['receiver_fullname'];
+            $data[$k]['execution_date'] = $batch['execution_date'];
+            $data[$k]['receiver_phone'] = $batch['receiver_phone'];
+            $data[$k]['receiver_country'] = $batch['receiver_country'];
+            $data[$k]['receiver_post_code'] = $batch['receiver_post_code'];
+            $data[$k]['receiver_house_number'] = $batch['receiver_house_number'];
+            $data[$k]['receiver_city'] = $batch['receiver_city'];
+            $data[$k]['receiver_street'] = $batch['receiver_street'];
+            $data[$k]['receiver_address'] = $batch['receiver_address'];
+            $data[$k]['receiver_lon'] = $batch['receiver_lon'];
+            $data[$k]['receiver_lat'] = $batch['receiver_lat'];
+            $data[$k]['status'] = BaseConstService::ADDITIONAL_PACKAGE_STATUS_1;
         }
-        $this->getAdditionalPackageService()->insertAll($params);
+        $this->getAdditionalPackageService()->insertAll($data);
     }
 
     /**
@@ -1043,6 +1046,9 @@ class TourService extends BaseService
         $batch = $batch->toArray();
         if ($batch['tour_no'] != $tour['tour_no']) {
             throw new BusinessLogicException('当前站点不属于当前取件线路');
+        }
+        if (!empty($params['additional_package_list']) && (!collect($params['additional_package_list'][0])->has('merchant_id') || !collect($params['additional_package_list'][0])->has('name'))) {
+            throw new BusinessLogicException('顺带包裹格式不正确');
         }
 
         return [$tour, $batch];
