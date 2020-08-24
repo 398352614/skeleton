@@ -1454,7 +1454,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $rowCount = $this->getPackageService()->delete(['order_no' => $info['order_no']]);
+        $rowCount = $this->getMaterialService()->delete(['order_no' => $info['order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
