@@ -635,6 +635,9 @@ class TourService extends BaseService
         } else {
             $batch['no_need_to_pay'] = BaseConstService::NO;
         }
+        $additionalPackageList = DB::table('additional_package')->where('batch_no', $batch['batch_no'])->get();
+        $batch['additional_package_count']=count($additionalPackageList);
+        $batch['additional_package_list'] = $additionalPackageList ?? [];
         $batch['order_list'] = $orderList;
         $batch['material_list'] = $materialList;
         return $batch;
@@ -869,6 +872,12 @@ class TourService extends BaseService
         //重新统计金额
         $this->reCountActualAmountByNo($tour['tour_no']);
         $batch = $this->getBatchService()->getInfo(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
+        $additionalPackageList = $this->getAdditionalPackageService()->getList(['batch_no' => $batch['batch_no']], ['package_no', 'merchant_id'], false);
+        if (!empty($additionalPackageList)) {
+            $batch['additional_package_list'] = $additionalPackageList->toArray();
+        } else {
+            $batch['additional_package_list'] = [];
+        }
         return [$tour, $batch];
 
     }

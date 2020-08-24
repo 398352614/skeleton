@@ -10,6 +10,7 @@ namespace App\Events\TourNotify;
 
 
 use App\Events\Interfaces\ATourNotify;
+use App\Models\AdditionalPackage;
 use App\Models\Material;
 use App\Models\Order;
 use App\Models\Package;
@@ -71,9 +72,17 @@ class AssignBatch extends ATourNotify
         foreach ($orderList as $merchantId => $merchantOrderList) {
             $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
         }
+        //顺带包裹
+        $additionalPackageList = AdditionalPackage::query()->whereIn('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no']);
+        if (!empty($additionalPackageList)) {
+            $additionalPackageList = $additionalPackageList->groupBy('merchant_id')->toArray();
+        } else {
+            $additionalPackageList = [];
+        }
+        Log::info('顺带包裹', $additionalPackageList);
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
-            $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch]);
+            $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch, 'additional_package_list' => $additionalPackageList[$merchantId]]);
         }
         return $tourList;
     }
