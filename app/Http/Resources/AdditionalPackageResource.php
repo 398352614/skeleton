@@ -13,6 +13,7 @@ class AdditionalPackageResource extends JsonResource
         return [
             'company_id'=>$this->company_id,
             'merchant_id'=>$this->merchant_id,
+            'merchant_name'=>$this->merchant_name,
             'batch_no'=>$this->batch_no,
             'package_no'=>$this->package_no,
             'execution_date'=>$this->execution_date,

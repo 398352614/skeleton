@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use Illuminate\Support\Facades\DB;
 
 /**
  *  顺带包裹表
@@ -51,9 +52,7 @@ class AdditionalPackage extends BaseModel
         'batch_no',
         'package_no',
         'execution_date',
-
         'status',
-
         'receiver_fullname',
         'receiver_phone',
         'receiver_country',
@@ -77,4 +76,13 @@ class AdditionalPackage extends BaseModel
     protected $hidden = [
 
     ];
+
+    protected $appends = [
+        'merchant_name',
+    ];
+
+    public function getMerchantNameAttribute()
+    {
+        return empty($this->merchant_id) ? '' : DB::table('merchant')->where('id','=', $this->merchant_id)->first()->name;
+    }
 }
