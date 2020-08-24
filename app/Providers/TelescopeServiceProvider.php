@@ -27,17 +27,20 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
                     return [
                         $entry->recordedAt->format('H:i'),
                         $entry->content['queue'],
+                        $entry->content['uri'],
                         $entry->content['data']['data'] ? $entry->content['data']['data'][0]['type'] : []
                     ];
                 }else{
                     return [
                         $entry->recordedAt->format('H:i'),
                         $entry->content['queue'],
+                        $entry->content['uri']
                     ];
                 }
             }
             if ($entry->type === 'request') {
-                return [$entry->content['uri'],
+                return [
+                    $entry->content['uri'],
                     $entry->recordedAt->format('H:i'),
                     $entry->content['response']['msg'],
                     'method:' . $entry->content['method']
