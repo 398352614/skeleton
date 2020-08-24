@@ -20,18 +20,22 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         $this->hideSensitiveRequestDetails();
 
-
-        //任务 类型标签
-        Telescope::tag(function (IncomingEntry $entry) {
-            if ($entry->type === 'job') {
-                return [$entry->recordedAt->format('H:i'),
-                    $entry->content['data']['data'] ? $entry->content['data']['data'][0]['type'] : []];
-            }
-            return [];
-        });
-
         //请求 报错
         Telescope::tag(function (IncomingEntry $entry) {
+            if ($entry->type === 'job') {
+                if($entry->content['queue'] == 'queues:tour-notify'){
+                    return [
+                        $entry->recordedAt->format('H:i'),
+                        $entry->content['queue'],
+                        $entry->content['data']['data'] ? $entry->content['data']['data'][0]['type'] : []
+                    ];
+                }else{
+                    return [
+                        $entry->recordedAt->format('H:i'),
+                        $entry->content['queue'],
+                    ];
+                }
+            }
             if ($entry->type === 'request') {
                 return [$entry->content['uri'],
                     $entry->recordedAt->format('H:i'),
