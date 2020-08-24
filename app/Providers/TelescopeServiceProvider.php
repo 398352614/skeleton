@@ -21,47 +21,23 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
         $this->hideSensitiveRequestDetails();
 
 
-        Telescope::tag(function (IncomingEntry $entry) {
-            if ($entry->type === 'request') {
-                return [$entry->content['uri']];
-            }
-            return [];
-        });
-
-        Telescope::tag(function (IncomingEntry $entry) {
-            if ($entry->type === 'request') {
-                return [$entry->recordedAt->format('H:i')];
-            }
-            return [];
-        });
-
-        Telescope::tag(function (IncomingEntry $entry) {
-            if ($entry->type === 'request') {
-                return [$entry->recordedAt->format('H:i')];
-            }
-            return [];
-        });
-
-
-        Telescope::tag(function (IncomingEntry $entry) {
-            if ($entry->type === 'request') {
-                return ['method:' . $entry->content['method']];
-            }
-            return [];
-        });
-
-
-
+        //任务 类型标签
         Telescope::tag(function (IncomingEntry $entry) {
             if ($entry->type === 'job') {
-                return [$entry->content['data']['data'] ? $entry->content['data']['data'][0]['type'] : []];
+                return [$entry->recordedAt->format('H:i'),
+                    $entry->content['data']['data'] ? $entry->content['data']['data'][0]['type'] : []];
             }
             return [];
         });
 
+        //请求 报错
         Telescope::tag(function (IncomingEntry $entry) {
             if ($entry->type === 'request') {
-                return [$entry->content['response']['msg']];
+                return [$entry->content['uri'],
+                    $entry->recordedAt->format('H:i'),
+                    $entry->content['response']['msg'],
+                    'method:' . $entry->content['method']
+                ];
             }
             return [];
         });
