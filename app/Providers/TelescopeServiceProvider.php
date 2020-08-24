@@ -25,26 +25,25 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
             if ($entry->type === 'request') {
                 return [
-                    $entry->content['uri'],
+                    $entry->content['uri'] ?? null,
                     $entry->recordedAt->format('H:i'),
-                    $entry->content['response']['msg'],
-                    $entry->content['method']
-                ];
+                    $entry->content['response']['msg'] ?? null,
+                    $entry->content['method'] ?? null                ];
             }
 
             if ($entry->type === 'job') {
                 if ($entry->content['queue'] == 'queues:tour-notify') {
                     return [
                         $entry->recordedAt->format('H:i'),
-                        $entry->content['queue'],
-                        $entry->content['uri'],
+                        $entry->content['queue'] ?? null,
+                        $entry->content['uri'] ?? null,
                         $entry->content['data']['data'] ? $entry->content['data']['data'][0]['type'] : []
                     ];
                 } else {
                     return [
                         $entry->recordedAt->format('H:i'),
-                        $entry->content['queue'],
-                        $entry->content['uri']
+                        $entry->content['queue'] ?? null,
+                        $entry->content['uri'] ?? null
                     ];
                 }
             }
