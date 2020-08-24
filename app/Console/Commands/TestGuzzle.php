@@ -137,7 +137,7 @@ class TestGuzzle extends Command
         }
     }
 }', true);
-        $res = $curl->post($url, $params, 3);
+        $res = $curl->post($url, $params, 1);
 
         dd($res);
     }
