@@ -73,7 +73,7 @@ class AssignBatch extends ATourNotify
             $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
         }
         //顺带包裹
-        $additionalPackageList = AdditionalPackage::query()->whereIn('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no']);
+        $additionalPackageList = AdditionalPackage::query()->where('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no']);
         if (!empty($additionalPackageList)) {
             $additionalPackageList = $additionalPackageList->groupBy('merchant_id')->toArray();
         } else {
