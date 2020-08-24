@@ -67,7 +67,6 @@ trait ExportTrait
                 $rowCount = Excel::store(new BaseExport($data, $headings, $name, $dir), $path);
             }
         } catch (\Exception $ex) {
-            Log::info($ex->getMessage());
             throw new BusinessLogicException('表格导出失败，请重新操作');
         }
         if ($rowCount === false) {

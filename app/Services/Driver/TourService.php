@@ -993,18 +993,19 @@ class TourService extends BaseService
     public function dealAdditionalPackageList($batch, $params)
     {
         foreach ($params as $k => $v) {
-            $params['batch_no'] = $batch['batch_no'];
-            $params['receiver_fullname'] = $batch['receiver_fullname'];
-            $params['receiver_phone'] = $batch['receiver_phone'];
-            $params['receiver_country'] = $batch['receiver_country'];
-            $params['receiver_post_code'] = $batch['receiver_post_code'];
-            $params['receiver_house_number'] = $batch['receiver_house_number'];
-            $params['receiver_city'] = $batch['receiver_city'];
-            $params['receiver_street'] = $batch['receiver_street'];
-            $params['receiver_address'] = $batch['receiver_address'];
-            $params['receiver_lon'] = $batch['receiver_lon'];
-            $params['receiver_lat'] = $batch['receiver_lat'];
-            $params['status'] = BaseConstService::ADDITIONAL_PACKAGE_STATUS_1;
+            $params[$k]['batch_no'] = $batch['batch_no'];
+            $params[$k]['receiver_fullname'] = $batch['receiver_fullname'];
+            $params[$k]['execution_date'] = $batch['execution_date'];
+            $params[$k]['receiver_phone'] = $batch['receiver_phone'];
+            $params[$k]['receiver_country'] = $batch['receiver_country'];
+            $params[$k]['receiver_post_code'] = $batch['receiver_post_code'];
+            $params[$k]['receiver_house_number'] = $batch['receiver_house_number'];
+            $params[$k]['receiver_city'] = $batch['receiver_city'];
+            $params[$k]['receiver_street'] = $batch['receiver_street'];
+            $params[$k]['receiver_address'] = $batch['receiver_address'];
+            $params[$k]['receiver_lon'] = $batch['receiver_lon'];
+            $params[$k]['receiver_lat'] = $batch['receiver_lat'];
+            $params[$k]['status'] = BaseConstService::ADDITIONAL_PACKAGE_STATUS_1;
         }
         $this->getAdditionalPackageService()->insertAll($params);
     }
