@@ -1481,7 +1481,7 @@ class OrderService extends BaseService
             $materialList = $params['material_list'] ?? [];
             foreach ($materialList as $material) {
                 $dbTourMaterial = $this->tourMaterialModel->newQuery()->where('tour_no', $info['tour_no'])->where('code', $material['code'])->first();
-                if (empty($dbMaterial)) {
+                if (empty($dbTourMaterial)) {
                     $rowCount = $this->tourMaterialModel->newQuery()->create([
                         'tour_no' => $info['tour_no'],
                         'name' => $material['name'],
