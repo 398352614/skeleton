@@ -47,6 +47,12 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
                     ];
                 }
             }
+            if($entry->type === 'log'){
+                return [
+                    $entry->recordedAt->format('H:i'),
+                    $entry->content['level']
+                ];
+            }
 
             return [];
         });
