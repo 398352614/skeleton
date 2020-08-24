@@ -1440,7 +1440,7 @@ class OrderService extends BaseService
     public function updateItemList($id, $params)
     {
         $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]);
-        if (empty($params['package_list']) || empty($params['material_list'])) {
+        if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
         //验证包裹列表
