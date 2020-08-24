@@ -54,7 +54,6 @@ class OrderValidate extends BaseValidate
         //材料列表
         'material_list.*.name' => 'nullable|string|max:50',
         'material_list.*.code' => 'required_with:material_list|string|max:50',
-        //'material_list.*.code' => 'required_with:material_list|string|max:50',
         'material_list.*.out_order_no' => 'nullable|string|max:50',
         'material_list.*.expect_quantity' => 'required_with:material_list|integer|gte:0',
         'material_list.*.remark' => 'nullable|string|max:250',
@@ -101,7 +100,11 @@ class OrderValidate extends BaseValidate
         'destroy' => ['remark'],
         'updateOutStatus' => ['order_no', 'out_status'],
         'getDateListByPostCode' => ['receiver_post_code'],
-
+        'updateItemList' => [
+            //包裹列表
+            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
+            //材料列表
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark']
     ];
     public $message = [
         'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',

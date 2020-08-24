@@ -20,6 +20,7 @@ use App\Http\Validate\Api\Merchant\OrderImportValidate;
 use App\Http\Validate\BaseValidate;
 use App\Models\Order;
 use App\Models\OrderImportLog;
+use App\Models\TourMaterial;
 use App\Services\Merchant\RouteTrackingService;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
@@ -36,9 +37,16 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * Class OrderService
+ * @package App\Services\Merchant
+ * @property TourMaterial $tourMaterialModel
+ */
 class OrderService extends BaseService
 {
     use ImportTrait, LocationTrait, CountryTrait;
+
+    public $tourMaterialModel;
 
     public $filterRules = [
         'type' => ['=', 'type'],
@@ -53,9 +61,10 @@ class OrderService extends BaseService
 
     public $orderBy = ['id' => 'desc'];
 
-    public function __construct(Order $order)
+    public function __construct(Order $order, TourMaterial $tourMaterial)
     {
         parent::__construct($order, OrderResource::class, OrderInfoResource::class);
+        $this->tourMaterialModel = $tourMaterial;
     }
 
 
@@ -1419,6 +1428,72 @@ class OrderService extends BaseService
         $rowCount = parent::updateById($info['id'], ['out_status' => $params['out_status']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
+        }
+    }
+
+    /**
+     * 修改订单明细列表
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function updateItemList($id, $params)
+    {
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]);
+        if (empty($params['package_list']) || empty($params['material_list'])) {
+            throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
+        }
+        //验证包裹列表
+        !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $info['order_no']);
+        //验证材料列表
+        !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
+        //获取包裹
+        $dbMaterialList = $this->getMaterialService()->getList(['order_no' => $info['order_no']], ['*'], false)->toArray();
+        //删除包裹和材料
+        $rowCount = $this->getPackageService()->delete(['order_no' => $info['order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $rowCount = $this->getPackageService()->delete(['order_no' => $info['order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        //新增包裹和材料
+        $info['package_list'] = $params['package_list'] ?? [];
+        $info['material_list'] = $params['material_list'] ?? [];
+        $this->addAllItemList($info, ['batch_no' => $info['batch_no']], ['tour_no' => $info['tour_no'], 'status' => $info['status']]);
+        //若司机已出库,则处理取件线路中对应材料数量
+        if (intval($info['status']) === BaseConstService::ORDER_STATUS_4) {
+            foreach ($dbMaterialList as $dbMaterial) {
+                $dbTourMaterial = $this->tourMaterialModel->newQuery()->where('tour_no', $info['tour_no'])->where('code', $dbMaterial['code'])->first();
+                if (!empty($dbTourMaterial)) {
+                    $diffExpectQuantity = $dbTourMaterial->expect_quantity - $dbMaterial['expect_quantity'];
+                    if ($diffExpectQuantity == 0) {
+                        $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->delete();
+                    } else {
+                        $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $diffExpectQuantity]);
+                    }
+                    if ($rowCount === false) {
+                        throw new BusinessLogicException('材料处理失败');
+                    }
+                }
+            }
+            $materialList = $params['material_list'] ?? [];
+            foreach ($materialList as $material) {
+                $dbTourMaterial = $this->tourMaterialModel->newQuery()->where('tour_no', $info['tour_no'])->where('code', $material['code'])->first();
+                if (empty($dbMaterial)) {
+                    $rowCount = $this->tourMaterialModel->newQuery()->create([
+                        'tour_no' => $info['tour_no'],
+                        'name' => $material['name'],
+                        'expect_quantity' => $material['expect_quantity']
+                    ]);
+                } else {
+                    $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $dbTourMaterial->expect_quantity + $materialList['expect_quantity']]);
+                }
+                if ($rowCount === false) {
+                    throw new BusinessLogicException('材料处理失败');
+                }
+            }
         }
     }
 

@@ -122,7 +122,17 @@ class OrderController extends OrderBaseController
      */
     public function updateByApi($id)
     {
-        return $this->service->updatePhoneDateByApi($id,$this->data);
+        return $this->service->updatePhoneDateByApi($id, $this->data);
+    }
+
+    /**
+     * 修改订单清单
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function updateItemList($id)
+    {
+        return $this->service->updateItemList($id, $this->data);
     }
 
 
@@ -257,7 +267,8 @@ class OrderController extends OrderBaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function showByApi(){
+    public function showByApi()
+    {
         return $this->service->showByApi($this->data);
     }
 }

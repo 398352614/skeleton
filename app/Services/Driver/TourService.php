@@ -487,6 +487,9 @@ class TourService extends BaseService
                 if (empty($expectQuantity)) {
                     throw new BusinessLogicException('', 5004);
                 }
+                if ($expectQuantity['expect_quantity'] != $v['expect_quantity']) {
+                    throw new BusinessLogicException('', 5004);
+                }
                 if (intval($v['actual_quantity']) > intval($expectQuantity['expect_quantity'])) {
                     throw new BusinessLogicException('当前取件线路的材料数量不正确');
                 }
