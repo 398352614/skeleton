@@ -117,6 +117,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Country)
                 && !($model instanceof MerchantGroup)
                 && !($model instanceof Merchant)
+                && (!($model instanceof TourMaterial))
                 && !($model instanceof BatchException)
                 && !($model instanceof Package)
                 && !($model instanceof Material)
