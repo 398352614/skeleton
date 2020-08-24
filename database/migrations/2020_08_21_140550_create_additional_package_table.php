@@ -20,6 +20,7 @@ class CreateAdditionalPackageTable extends Migration
             $table->integer('merchant_id')->default(null)->nullable()->comment('商户ID');
             $table->string('batch_no')->default('')->nullable()->comment('站点编号');
             $table->string('package_no')->default('')->nullable()->comment('包裹编号');
+            $table->date('execution_date')->default(null)->nullable()->comment('顺带日期');
             $table->string('receiver_fullname', 50)->default('')->nullable()->comment('收件人姓名');
             $table->string('receiver_phone', 50)->default('')->nullable()->comment('收件人电话');
             $table->string('receiver_country', 50)->default('')->nullable()->comment('收件人国家');
@@ -38,6 +39,7 @@ class CreateAdditionalPackageTable extends Migration
             $table->index('company_id', 'company_id');
             $table->index('merchant_id', 'merchant_id');
             $table->index('package_no', 'package_no');
+            $table->index('execution_date', 'execution_date');
         });
     }
 
