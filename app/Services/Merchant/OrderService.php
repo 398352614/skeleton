@@ -1311,7 +1311,7 @@ class OrderService extends BaseService
      */
     public function destroy($id, $params)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_6]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7]);
         //若当前订单已取消取派了,在直接返回成功，不再删除
         if (in_array(intval($info['status']), [BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7])) {
             return 'true';
