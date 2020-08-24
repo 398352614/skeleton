@@ -23,6 +23,7 @@ class AdditionalPackageService extends BaseService
 
     public function getPageList()
     {
+        $this->query->orderByDesc('created_at');
         return parent::getPageList();
     }
 }
