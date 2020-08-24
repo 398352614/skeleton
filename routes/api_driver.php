@@ -155,4 +155,10 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         //获取所有费用
         Route::get('getAllFeeList', 'FeeController@getAllFeeList');
     });
+
+    //商户管理
+    Route::prefix('merchant')->group(function () {
+        //获取所有费用
+        Route::get('/', 'MerchantController@index');
+    });
 });
