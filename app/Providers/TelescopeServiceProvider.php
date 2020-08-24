@@ -20,24 +20,10 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         $this->hideSensitiveRequestDetails();
 
-        //请求 报错
+        //请求 标签
         Telescope::tag(function (IncomingEntry $entry) {
-            if ($entry->type === 'job') {
-                if($entry->content['queue'] == 'queues:tour-notify'){
-                    return [
-                        $entry->recordedAt->format('H:i'),
-                        $entry->content['queue'],
-                        $entry->content['uri'],
-                        $entry->content['data']['data'] ? $entry->content['data']['data'][0]['type'] : []
-                    ];
-                }else{
-                    return [
-                        $entry->recordedAt->format('H:i'),
-                        $entry->content['queue'],
-                        $entry->content['uri']
-                    ];
-                }
-            }elseif ($entry->type === 'request') {
+
+            if ($entry->type === 'request') {
                 return [
                     $entry->content['uri'],
                     $entry->recordedAt->format('H:i'),
@@ -45,6 +31,24 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
                     $entry->content['method']
                 ];
             }
+
+            if ($entry->type === 'job') {
+                if ($entry->content['queue'] == 'queues:tour-notify') {
+                    return [
+                        $entry->recordedAt->format('H:i'),
+                        $entry->content['queue'],
+                        $entry->content['uri'],
+                        $entry->content['data']['data'] ? $entry->content['data']['data'][0]['type'] : []
+                    ];
+                } else {
+                    return [
+                        $entry->recordedAt->format('H:i'),
+                        $entry->content['queue'],
+                        $entry->content['uri']
+                    ];
+                }
+            }
+
             return [];
         });
 
