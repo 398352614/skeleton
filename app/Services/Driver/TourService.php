@@ -1126,7 +1126,7 @@ class TourService extends BaseService
         $tour = $tour->toArray();
         $batchList = $this->getBatchService()->getList(['tour_no'=>$tour['tour_no']], ['*'], false);
         //顺带包裹信息
-        $additionalPackageList = DB::table('additional_package')->where('batch_no', ['in', $batchList->pluck('batch_no')->toArray()])->get();
+        $additionalPackageList = DB::table('additional_package')->whereIn('batch_no', $batchList->pluck('batch_no')->toArray())->get();
         if (!empty($additionalPackageList)) {
             $additionalPackageList = $additionalPackageList->toArray();
         } else {
