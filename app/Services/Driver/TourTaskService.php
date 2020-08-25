@@ -121,7 +121,7 @@ class TourTaskService extends BaseService
         //获取所有站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
         //顺带包裹信息
-        $additionalPackageList = DB::table('additional_package')->whereIn('batch_no', $batchList->pluck('batch_no')->toArray())->get();
+        $additionalPackageList = AdditionalPackage::query()->whereIn('batch_no', $batchList->pluck('batch_no')->toArray())->get();
         if (!empty($additionalPackageList)) {
             $additionalPackageList = $additionalPackageList->toArray();
         } else {
