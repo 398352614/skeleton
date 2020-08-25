@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api\Driver;
 
 
 use App\Http\Controllers\BaseController;
+use App\Services\BaseConstService;
 use App\Services\Driver\MerchantService;
 
 /**
@@ -19,12 +20,16 @@ use App\Services\Driver\MerchantService;
  */
 class MerchantController extends BaseController
 {
+    /**
+     * MerchantController constructor.
+     * @param MerchantService $service
+     */
     public function __construct(MerchantService $service)
     {
         parent::__construct($service);
     }
 
     public function index(){
-        return $this->service->getList([],['*'],false);
+        return $this->service->getList(['status'=>BaseConstService::MERCHANT_STATUS_1],['*'],false);
     }
 }
