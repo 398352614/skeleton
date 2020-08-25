@@ -120,9 +120,19 @@ class TourTaskService extends BaseService
         $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
         //获取所有站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
-        foreach ($batchList as $k => $v) {
-            $batchList['additional_package_count'] = DB::table('additional_package')->where('batch_no', $v['batch_no'])->count();
+        //顺带包裹信息
+        $additionalPackageList = DB::table('additional_package')->where('batch_no', ['in',$batchList->pluck('batch_no')->toArray()])->get();
+        if (!empty($additionalPackageList)) {
+            $additionalPackageList = $additionalPackageList->toArray();
+        } else {
+            $additionalPackageList = [];
         }
+        foreach ($batchList as $k => $v) {
+            $batchList[$k]['additional_package_list'] = collect($additionalPackageList)->where('batch_no', $v['batch_no'])->all();
+            $batchList[$k]['additional_package_count'] = count($batchList[$k]['additional_package_list']);
+        }
+        $tour['additional_package_list'] = $additionalPackageList;
+        $tour['additional_package_count'] = count($additionalPackageList);
         //获取所有订单列表
         $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         //获取所有材料列表

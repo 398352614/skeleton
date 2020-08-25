@@ -1004,10 +1004,10 @@ class TourService extends BaseService
 
     public function dealAdditionalPackageList($batch, $params)
     {
-        $data=[];
+        $data = [];
         foreach ($params as $k => $v) {
-            $data[$k]['merchant_id']=$params[$k]['merchant_id'];
-            $data[$k]['package_no']=$params[$k]['package_no'];
+            $data[$k]['merchant_id'] = $params[$k]['merchant_id'];
+            $data[$k]['package_no'] = $params[$k]['package_no'];
             $data[$k]['batch_no'] = $batch['batch_no'];
             $data[$k]['receiver_fullname'] = $batch['receiver_fullname'];
             $data[$k]['execution_date'] = $batch['execution_date'];
@@ -1124,6 +1124,16 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路不存在');
         }
         $tour = $tour->toArray();
+        $batchList = $this->getBatchService()->getList(['tour_no'=>$tour['tour_no']], ['*'], false);
+        //顺带包裹信息
+        $additionalPackageList = DB::table('additional_package')->where('batch_no', ['in', $batchList->pluck('batch_no')->toArray()])->get();
+        if (!empty($additionalPackageList)) {
+            $additionalPackageList = $additionalPackageList->toArray();
+        } else {
+            $additionalPackageList = [];
+        }
+        $tour['additional_package_list'] = $additionalPackageList;
+        $tour['additional_package_count'] = count($additionalPackageList);
         //包裹信息
         $tour['pickup_package_expect_count'] = $this->getPackageService()->sum('expect_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_TYPE_1]);
         $tour['pickup_package_actual_count'] = $this->getPackageService()->sum('actual_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::PACKAGE_STATUS_5]);
