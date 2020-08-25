@@ -636,7 +636,7 @@ class TourService extends BaseService
         } else {
             $batch['no_need_to_pay'] = BaseConstService::NO;
         }
-        $additionalPackageList = AdditionalPackage::query()->whereIn('batch_no', $batchList->pluck('batch_no')->toArray())->get();
+        $additionalPackageList = AdditionalPackage::query()->where('batch_no', $batch['batch_no'])->get();
         $batch['additional_package_count'] = count($additionalPackageList);
         $batch['additional_package_list'] = $additionalPackageList ?? [];
         $batch['order_list'] = $orderList;
@@ -1127,7 +1127,7 @@ class TourService extends BaseService
         $tour = $tour->toArray();
         $batchList = $this->getBatchService()->getList(['tour_no'=>$tour['tour_no']], ['*'], false);
         //顺带包裹信息
-        $additionalPackageList = AdditionalPackage::query()->whereIn('batch_no', $batchList->pluck('batch_no')->toArray())->get();
+        $additionalPackageList = DB::table('additional_package')->whereIn('batch_no', $batchList->pluck('batch_no')->toArray())->get();
         if (!empty($additionalPackageList)) {
             $additionalPackageList = $additionalPackageList->toArray();
         } else {
