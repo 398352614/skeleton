@@ -28,8 +28,8 @@ class AdditionalPackageResource extends JsonResource
             'receiver_address'=>$this->receiver_address,
             'receiver_lon'=>$this->receiver_lon,
             'receiver_lat'=>$this->receiver_lat,
-            'created_at'=>$this->created_at,
-            'updated_at'=>$this->updated_at,
+            'created_at'=>(string)$this->created_at,
+            'updated_at'=>(string)$this->updated_at,
         ];
     }
 }
