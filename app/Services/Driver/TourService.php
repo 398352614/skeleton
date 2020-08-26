@@ -359,7 +359,7 @@ class TourService extends BaseService
         $this->reCountAmountByNo($tour['tour_no']);
         $newCancelOrderList = $this->getOrderService()->getList(['order_no' => ['in', array_column(array_values($cancelOrderList), 'order_no')]], ['*'], false)->toArray();
         $cancelOrderList = array_create_index($cancelOrderList, 'order_no');
-        foreach ($newCancelOrderList as $newCancelOrder) {
+        foreach ($newCancelOrderList as &$newCancelOrder) {
             $newCancelOrder['batch_no'] = $cancelOrderList[$newCancelOrder['order_no']]['batch_no'] ?? '';
             $newCancelOrder['tour_no'] = $cancelOrderList[$newCancelOrder['order_no']]['tour_no'] ?? '';
         }
