@@ -45,77 +45,78 @@ class TestGuzzle extends Command
 
         $curl = new CurlClient();
         $params = json_decode('
-        {
-    "type": "assign-batch",
+       {
+    "type": "out-warehouse",
     "data": {
-        "tour_no": "TOUR00060073",
-        "line_name": "Enchede（6）",
-        "execution_date": "2020-08-22",
-        "driver_id": 24,
-        "driver_name": "ali",
-        "driver_phone": "0615277686",
-        "car_id": 25,
-        "car_no": "V-441-RJ",
-        "expect_distance": 16110,
-        "expect_time": 1203,
+        "tour_no": "TOUR00060095",
+        "line_name": "Utrecht（3）",
+        "execution_date": "2020-08-26",
+        "driver_id": 34,
+        "driver_name": "erkem",
+        "driver_phone": "0628711510",
+        "car_id": 28,
+        "car_no": "V-574-LJ",
+        "expect_distance": 253971,
+        "expect_time": 32833,
         "merchant_id": 8,
-        "batch": {
-            "batch_no": "BATCH00061110",
-            "tour_no": "TOUR00060073",
-            "status": 5,
-            "cancel_remark": "",
-            "receiver_fullname": "L zheng",
-            "receiver_phone": "0031633085585",
-            "receiver_country": "NL",
-            "receiver_post_code": "7441CN",
-            "receiver_house_number": "90",
-            "receiver_city": "Nijverdal",
-            "receiver_street": "Veldsweg",
-            "receiver_address": "NL Nijverdal Veldsweg 90 7441CN",
-            "expect_arrive_time": "2020-08-22 12:34:09",
-            "expect_distance": 113530,
-            "expect_time": 4532,
-            "signature": "https://tms.eutechne.com/storage/driver/images/6/2020-08-22/24/tour/202008222201125f417988056b4.png",
-            "pay_type": 4,
-            "pay_picture": "",
-            "auth_fullname": "",
-            "auth_birth_date": null,
-            "delivery_count": 0,
-            "merchant_id": 8,
-            "order_list": [
-                {
-                    "merchant_id": 8,
-                    "order_no": "TMS0006001123",
-                    "batch_no": "BATCH00061110",
-                    "tour_no": "TOUR00060073",
-                    "out_order_no": "341282",
-                    "status": 5,
-                    "package_list": [
-                        {
-                            "name": "PEHH9098250003",
-                            "order_no": "TMS0006001606",
-                            "express_first_no": "EAXOND230188",
-                            "express_second_no": "",
-                            "out_order_no": "MES20904584043",
-                            "expect_quantity": 1,
-                            "actual_quantity": 1,
-                            "status": 5,
-                            "sticker_no": "",
-                            "sticker_amount": "0.00",
-                            "delivery_amount": "0.00",
-                            "is_auth": 2,
-                            "auth_fullname": "",
-                            "auth_birth_date": null,
-                            "status_name": "已完成",
-                            "type_name": null,
-                            "delivery_count": 0
-                        }
-                    ],
-                    "material_list": [],
-                    "delivery_count": 0
-                }
-            ]
-        }
+        "batch_list": [
+            {
+                "batch_no": "BATCH00063274",
+                "tour_no": "TOUR00060095",
+                "status": 6,
+                "cancel_remark": "",
+                "receiver_fullname": "Tony",
+                "receiver_phone": "0031642788180",
+                "receiver_country": "NL",
+                "receiver_post_code": " 3825GP",
+                "receiver_house_number": "152",
+                "receiver_city": "Amersfoort",
+                "receiver_street": "Laakboulevard",
+                "receiver_address": "NL",
+                "expect_arrive_time": "2020-08-26 05:10:23",
+                "expect_distance": 68269,
+                "expect_time": 5508,
+                "signature": "",
+                "pay_type": 1,
+                "pay_picture": "",
+                "auth_fullname": "",
+                "auth_birth_date": null,
+                "merchant_id": "8",
+                "order_list": [
+                    {
+                        "merchant_id": 8,
+                        "order_no": "TMS0006003332",
+                        "batch_no": "BATCH00063274",
+                        "tour_no": "TOUR00060095",
+                        "out_order_no": "MES20914323036",
+                        "status": 6,
+                        "package_list": [
+                            {
+                                "order_no": "TMS0006003332",
+                                "express_first_no": "PPD31Z023491",
+                                "status": 6,
+                                "status_name": "取消取派",
+                                "type_name": null
+                            },
+                            {
+                                "order_no": "TMS0006003332",
+                                "express_first_no": "PPD31Z043491",
+                                "status": 6,
+                                "status_name": "取消取派",
+                                "type_name": null
+                            },
+                            {
+                                "order_no": "TMS0006003332",
+                                "express_first_no": "PPD31Z033491",
+                                "status": 6,
+                                "status_name": "取消取派",
+                                "type_name": null
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 }', true);
         $res = $curl->post('https://www.myeushop.com/api/tms/subscription', $params, 3);
