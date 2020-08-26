@@ -252,16 +252,6 @@ class OrderController extends OrderBaseController
     }
 
     /**
-     * 修改订单清单
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function updateItemList($id)
-    {
-        return $this->service->updateItemList($id, $this->data);
-    }
-
-    /**
      * 获取订单派送信息
      * @param $id
      * @return array
