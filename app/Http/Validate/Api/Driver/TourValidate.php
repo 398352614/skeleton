@@ -66,6 +66,10 @@ class TourValidate extends BaseValidate
         //包裹列表
         'package_list.*.id' => 'required_with:package_list|integer',
         'package_list.*.sticker_no' => 'nullable|string|max:50',
+
+        //顺带包裹列表
+        'additional_package_list.*.package_no' => 'required_with:additional_package_list|string|max:50',
+        'additional_package_list.*.merchant_id' => 'required_with:additional_package_list|integer',
     ];
 
     public $item_rules = [
@@ -112,6 +116,9 @@ class TourValidate extends BaseValidate
             //材料列表
             'material_list.*.id', 'material_list.*.actual_quantity',
             'total_sticker_amount', 'total_delivery_amount', 'total_replace_amount', 'total_settlement_amount',
+            //顺带包裹
+            'additional_package_list.*.package_no',
+            'additional_package_list.*.merchant_id',
 
             'auth_fullname', 'auth_birth_date'
         ],

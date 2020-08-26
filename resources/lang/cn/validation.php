@@ -153,6 +153,16 @@ return [
             'max' => '包裹贴单号字段必须在 :max 个字符之内',
             'string' => '包裹贴单号必须是字符串'
         ],
+        'additional_package_list.*.package_no' => [
+            'required_with' => '顺带包裹编号是必须的',
+            'max' => '包裹贴单号字段必须在 :max 个字符之内',
+            'string' => '包裹贴单号必须是字符串'
+        ],
+        'additional_package_list.*.merchant_id' => [
+            'required_with' => '商户ID是必须的',
+            'max' => '包裹贴单号字段必须在 :max 个字符之内',
+            'string' => '包裹贴单号必须是字符串'
+        ],
         //材料列表
         'material_list.*.order_no' => [
             'required_with' => '材料所属订单号是必须的',
