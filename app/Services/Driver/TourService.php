@@ -363,7 +363,7 @@ class TourService extends BaseService
             $newCancelOrder['batch_no'] = $cancelOrderList[$newCancelOrder['order_no']]['batch_no'] ?? '';
             $newCancelOrder['tour_no'] = $cancelOrderList[$newCancelOrder['order_no']]['tour_no'] ?? '';
         }
-        return [$tour, $cancelOrderList];
+        return [$tour, $newCancelOrderList];
     }
 
     /**
