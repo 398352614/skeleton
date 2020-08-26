@@ -12,6 +12,7 @@ namespace App\Services\Driver;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourBatchResource;
+use App\Models\AdditionalPackage;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Package;
@@ -485,7 +486,10 @@ class TourService extends BaseService
             foreach ($materialList as $v) {
                 $expectQuantity = collect($expectMaterialList)->where('code', $v['code'])->first();
                 if (empty($expectQuantity)) {
-                    throw new BusinessLogicException('', 5004);
+                    throw new BusinessLogicException('材料种类不正确', 5004);
+                }
+                if ($expectQuantity['expect_quantity'] != $v['expect_quantity']) {
+                    throw new BusinessLogicException('材料种类不正确', 5004);
                 }
                 if (intval($v['actual_quantity']) > intval($expectQuantity['expect_quantity'])) {
                     throw new BusinessLogicException('当前取件线路的材料数量不正确');
@@ -632,6 +636,9 @@ class TourService extends BaseService
         } else {
             $batch['no_need_to_pay'] = BaseConstService::NO;
         }
+        $additionalPackageList = AdditionalPackage::query()->where('batch_no', $batch['batch_no'])->get();
+        $batch['additional_package_count'] = count($additionalPackageList);
+        $batch['additional_package_list'] = $additionalPackageList ?? [];
         $batch['order_list'] = $orderList;
         $batch['material_list'] = $materialList;
         return $batch;
@@ -866,6 +873,12 @@ class TourService extends BaseService
         //重新统计金额
         $this->reCountActualAmountByNo($tour['tour_no']);
         $batch = $this->getBatchService()->getInfo(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
+        $additionalPackageList = $this->getAdditionalPackageService()->getList(['batch_no' => $batch['batch_no']], ['package_no', 'merchant_id'], false);
+        if (!empty($additionalPackageList)) {
+            $batch['additional_package_list'] = $additionalPackageList->toArray();
+        } else {
+            $batch['additional_package_list'] = [];
+        }
         return [$tour, $batch];
 
     }
@@ -992,21 +1005,25 @@ class TourService extends BaseService
 
     public function dealAdditionalPackageList($batch, $params)
     {
+        $data = [];
         foreach ($params as $k => $v) {
-            $params['batch_no'] = $batch['batch_no'];
-            $params['receiver_fullname'] = $batch['receiver_fullname'];
-            $params['receiver_phone'] = $batch['receiver_phone'];
-            $params['receiver_country'] = $batch['receiver_country'];
-            $params['receiver_post_code'] = $batch['receiver_post_code'];
-            $params['receiver_house_number'] = $batch['receiver_house_number'];
-            $params['receiver_city'] = $batch['receiver_city'];
-            $params['receiver_street'] = $batch['receiver_street'];
-            $params['receiver_address'] = $batch['receiver_address'];
-            $params['receiver_lon'] = $batch['receiver_lon'];
-            $params['receiver_lat'] = $batch['receiver_lat'];
-            $params['status'] = BaseConstService::ADDITIONAL_PACKAGE_STATUS_1;
+            $data[$k]['merchant_id'] = $params[$k]['merchant_id'];
+            $data[$k]['package_no'] = $params[$k]['package_no'];
+            $data[$k]['batch_no'] = $batch['batch_no'];
+            $data[$k]['receiver_fullname'] = $batch['receiver_fullname'];
+            $data[$k]['execution_date'] = $batch['execution_date'];
+            $data[$k]['receiver_phone'] = $batch['receiver_phone'];
+            $data[$k]['receiver_country'] = $batch['receiver_country'];
+            $data[$k]['receiver_post_code'] = $batch['receiver_post_code'];
+            $data[$k]['receiver_house_number'] = $batch['receiver_house_number'];
+            $data[$k]['receiver_city'] = $batch['receiver_city'];
+            $data[$k]['receiver_street'] = $batch['receiver_street'];
+            $data[$k]['receiver_address'] = $batch['receiver_address'];
+            $data[$k]['receiver_lon'] = $batch['receiver_lon'];
+            $data[$k]['receiver_lat'] = $batch['receiver_lat'];
+            $data[$k]['status'] = BaseConstService::ADDITIONAL_PACKAGE_STATUS_1;
         }
-        $this->getAdditionalPackageService()->insertAll($params);
+        $this->getAdditionalPackageService()->insertAll($data);
     }
 
     /**
@@ -1030,6 +1047,9 @@ class TourService extends BaseService
         $batch = $batch->toArray();
         if ($batch['tour_no'] != $tour['tour_no']) {
             throw new BusinessLogicException('当前站点不属于当前取件线路');
+        }
+        if (!empty($params['additional_package_list']) && (!collect($params['additional_package_list'][0])->has('merchant_id') || !collect($params['additional_package_list'][0])->has('name'))) {
+            throw new BusinessLogicException('顺带包裹格式不正确');
         }
 
         return [$tour, $batch];
@@ -1105,6 +1125,16 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路不存在');
         }
         $tour = $tour->toArray();
+        $batchList = $this->getBatchService()->getList(['tour_no'=>$tour['tour_no']], ['*'], false);
+        //顺带包裹信息
+        $additionalPackageList = DB::table('additional_package')->whereIn('batch_no', $batchList->pluck('batch_no')->toArray())->get();
+        if (!empty($additionalPackageList)) {
+            $additionalPackageList = $additionalPackageList->toArray();
+        } else {
+            $additionalPackageList = [];
+        }
+        $tour['additional_package_list'] = $additionalPackageList;
+        $tour['additional_package_count'] = count($additionalPackageList);
         //包裹信息
         $tour['pickup_package_expect_count'] = $this->getPackageService()->sum('expect_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_TYPE_1]);
         $tour['pickup_package_actual_count'] = $this->getPackageService()->sum('actual_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_TYPE_1, 'status' => BaseConstService::PACKAGE_STATUS_5]);

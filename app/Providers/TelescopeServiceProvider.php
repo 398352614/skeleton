@@ -20,17 +20,40 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
         $this->hideSensitiveRequestDetails();
 
+        //请求 标签
         Telescope::tag(function (IncomingEntry $entry) {
-            if ($entry->type === 'request') {
-                return ['method:' . $entry->content['method']];
-            }
-            return [];
-        });
 
-        Telescope::tag(function (IncomingEntry $entry) {
             if ($entry->type === 'request') {
-                return [$entry->content['uri']];
+                return [
+                    $entry->content['uri'] ?? null,
+                    $entry->recordedAt->format('H:i'),
+                    $entry->content['response']['msg'] ?? null,
+                    $entry->content['method'] ?? null                ];
             }
+
+            if ($entry->type === 'job') {
+                if ($entry->content['queue'] == 'queues:tour-notify') {
+                    return [
+                        $entry->recordedAt->format('H:i'),
+                        $entry->content['queue'] ?? null,
+                        $entry->content['uri'] ?? null,
+                        $entry->content['data']['data'] ? $entry->content['data']['data'][0]['type'] : []
+                    ];
+                } else {
+                    return [
+                        $entry->recordedAt->format('H:i'),
+                        $entry->content['queue'] ?? null,
+                        $entry->content['uri'] ?? null
+                    ];
+                }
+            }
+            if($entry->type === 'log'){
+                return [
+                    $entry->recordedAt->format('H:i'),
+                    $entry->content['level']
+                ];
+            }
+
             return [];
         });
 

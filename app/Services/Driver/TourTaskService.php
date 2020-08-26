@@ -11,6 +11,7 @@ namespace App\Services\Driver;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TourTaskResource;
+use App\Models\AdditionalPackage;
 use App\Models\Tour;
 use App\Models\TourMaterial;
 use App\Services\BaseConstService;
@@ -92,8 +93,6 @@ class TourTaskService extends BaseService
         if (empty($list)) return $list;
         $batchFields = ['id', 'batch_no', 'receiver_fullname', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address'];
         foreach ($list as &$tour) {
-            //获取站点数量
-            $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
             //获取最后一个站点的收件人信息
             $tour['last_receiver'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'asc', 'created_at' => 'asc']);
             //获取是否有特殊事项
@@ -121,6 +120,19 @@ class TourTaskService extends BaseService
         $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
         //获取所有站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
+        //顺带包裹信息
+        $additionalPackageList = AdditionalPackage::query()->whereIn('batch_no', $batchList->pluck('batch_no')->toArray())->get();
+        if (!empty($additionalPackageList)) {
+            $additionalPackageList = $additionalPackageList->toArray();
+        } else {
+            $additionalPackageList = [];
+        }
+        foreach ($batchList as $k => $v) {
+            $batchList[$k]['additional_package_list'] = collect($additionalPackageList)->where('batch_no', $v['batch_no'])->all();
+            $batchList[$k]['additional_package_count'] = count($batchList[$k]['additional_package_list']);
+        }
+        $tour['additional_package_list'] = $additionalPackageList;
+        $tour['additional_package_count'] = count($additionalPackageList);
         //获取所有订单列表
         $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         //获取所有材料列表

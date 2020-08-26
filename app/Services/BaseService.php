@@ -412,7 +412,7 @@ class BaseService
             throw new BusinessLogicException('数据不存在');
         }
         if (!in_array(intval($info['status']), Arr::wrap($status))) {
-            throw new BusinessLogicException('当前状态下不能操作');
+            throw new BusinessLogicException('当前状态是[:status_name]，不能操作', 1000, ['status_name' => $info['status_name']]);
         }
         return $isToArray ? $info->toArray() : $info;
     }

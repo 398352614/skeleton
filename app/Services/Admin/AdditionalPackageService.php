@@ -11,7 +11,7 @@ use App\Services\BaseService;
 class AdditionalPackageService extends BaseService
 {
     public $filterRules = [
-        'date' => ['between', ['begin_date', 'end_date']],
+        'execution_date' => ['between', ['begin_date', 'end_date']],
         'merchant_id' => ['=', 'merchant_id'],
         'package_no'=>['like','package_no'],
     ];
@@ -23,6 +23,7 @@ class AdditionalPackageService extends BaseService
 
     public function getPageList()
     {
+        $this->query->orderByDesc('created_at');
         return parent::getPageList();
     }
 }

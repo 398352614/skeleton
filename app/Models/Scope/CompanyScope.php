@@ -6,6 +6,7 @@
 
 namespace App\Models\Scope;
 
+use App\Models\AdditionalPackage;
 use App\Models\AddressTemplate;
 use App\Models\ApiTimes;
 use App\Models\Batch;
@@ -45,6 +46,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\Cache;
+use Matrix\Operators\Addition;
 
 class CompanyScope implements Scope
 {
@@ -79,6 +81,7 @@ class CompanyScope implements Scope
             }
             //车辆模型和司机无关
             if ((!($model instanceof Car))
+                && (!($model instanceof AdditionalPackage))
                 && (!($model instanceof OrderNoRule))
                 && (!($model instanceof CarBrand))
                 && (!($model instanceof CarModel))

@@ -72,7 +72,6 @@ class SendNotify2Merchant implements ShouldQueue
      *
      * @param ATourNotify $event
      * @return bool
-     * @throws BusinessLogicException
      */
     public function handle(ATourNotify $event)
     {

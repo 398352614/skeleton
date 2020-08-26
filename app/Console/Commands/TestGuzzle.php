@@ -92,28 +92,9 @@ class TestGuzzle extends Command
                     "status": 5,
                     "package_list": [
                         {
-                            "name": "PPD25Z025589",
-                            "order_no": "TMS0006001123",
-                            "express_first_no": "PPD25Z025589",
-                            "express_second_no": "",
-                            "out_order_no": "MES20904584043",
-                            "expect_quantity": 1,
-                            "actual_quantity": 1,
-                            "status": 5,
-                            "sticker_no": "",
-                            "sticker_amount": "0.00",
-                            "delivery_amount": "0.00",
-                            "is_auth": 2,
-                            "auth_fullname": "",
-                            "auth_birth_date": null,
-                            "status_name": "已完成",
-                            "type_name": null,
-                            "delivery_count": 0
-                        },
-                        {
-                            "name": "PPD25Z035589",
-                            "order_no": "TMS0006001123",
-                            "express_first_no": "PPD25Z035589",
+                            "name": "PEHH9098250003",
+                            "order_no": "TMS0006001606",
+                            "express_first_no": "EAXOND230188",
                             "express_second_no": "",
                             "out_order_no": "MES20904584043",
                             "expect_quantity": 1,
@@ -137,7 +118,7 @@ class TestGuzzle extends Command
         }
     }
 }', true);
-        $res = $curl->post($url, $params, 1);
+        $res = $curl->post('https://www.myeushop.com/api/tms/subscription', $params, 3);
 
         dd($res);
     }

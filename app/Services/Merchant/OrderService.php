@@ -46,6 +46,8 @@ class OrderService extends BaseService
 {
     use ImportTrait, LocationTrait, CountryTrait;
 
+    public $tourMaterialModel;
+
     public $filterRules = [
         'type' => ['=', 'type'],
         'status' => ['=', 'status'],
@@ -349,7 +351,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         if (!in_array(intval($info['status']), Arr::wrap($status))) {
-            throw new BusinessLogicException('当前订单状态不能操作');
+            throw new BusinessLogicException('当前订单状态是[:status_name]，不能操作', 1000, ['status_name' => $info['status_name']]);
         }
         return $isToArray ? $info->toArray() : $info;
     }
@@ -1309,9 +1311,9 @@ class OrderService extends BaseService
      */
     public function destroy($id, $params)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_6]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7]);
         //若当前订单已取消取派了,在直接返回成功，不再删除
-        if (intval($info['status']) == BaseConstService::ORDER_STATUS_6) {
+        if (in_array(intval($info['status']), [BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7])) {
             return 'true';
         }
         $rowCount = parent::updateById($info['id'], ['status' => BaseConstService::ORDER_STATUS_7, 'remark' => $params['remark'] ?? '', 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
@@ -1494,7 +1496,6 @@ class OrderService extends BaseService
             }
         }
     }
-
 
     /**
      * 获取订单派送信息
