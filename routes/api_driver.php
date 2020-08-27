@@ -171,7 +171,7 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         //充值
         Route::post('/','RechargeController@recharge');
         //充值验证
-        Route::put('/verify','RechargeController@verify');
+        Route::post('/verify','RechargeController@verify');
         //获取外部用户信息
         Route::get('/out-user','RechargeController@getOutUser');
     });
