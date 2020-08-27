@@ -26,7 +26,7 @@ class RechargeService extends BaseService
         'verify_status' => ['=', 'verify_status'],
         'recharge_no' => ['=', 'recharge_no'],
         'out_user_id' => ['=', 'out_user_id'],
-        'driver_name' => ['like', 'driver_name'],
+        'driver_name,merchant_id' => ['like', 'key_word'],
         'recharge_date' => ['between', ['begin_date', 'end_date']],
     ];
 
