@@ -27,10 +27,10 @@ class CreateRechargeTable extends Migration
             $table->integer('driver_id')->default(null)->nullable()->comment('司机ID');
             $table->string('driver_name', 250)->default('')->nullable()->comment('司机姓名');
             $table->decimal('recharge_amount', 16, 2)->default(0.00)->nullable()->comment('充值金额');
-            $table->string('recharge_first_pic', 250)->default(0.00)->nullable()->comment('充值图片1');
-            $table->string('recharge_second_pic', 250)->default(0.00)->nullable()->comment('充值图片2');
-            $table->string('recharge_third_pic', 250)->default(0.00)->nullable()->comment('充值图片3');
-            $table->string('signature', 250)->default(0.00)->nullable()->comment('充值签名');
+            $table->string('recharge_first_pic', 250)->default('')->nullable()->comment('充值图片1');
+            $table->string('recharge_second_pic', 250)->default('')->nullable()->comment('充值图片2');
+            $table->string('recharge_third_pic', 250)->default('')->nullable()->comment('充值图片3');
+            $table->string('signature', 250)->default('')->nullable()->comment('充值签名');
             $table->string('remark', 250)->default('')->nullable()->comment('备注');
             $table->tinyInteger('driver_verify_status')->default(1)->nullable()->comment('验证状态1-未验证2-已验证');
             $table->tinyInteger('status')->default(1)->nullable()->comment('状态1-充值中2-充值失败3-充值成功');
