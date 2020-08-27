@@ -146,7 +146,7 @@ class SyncOrderStatus implements ShouldQueue
      */
     public function merchantPostData(array $merchant, array $postData)
     {
-        $res = $this->curl->merchantPostJson($merchant, $postData);
+        $res = $this->curl->merchantPost($merchant, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
             Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));

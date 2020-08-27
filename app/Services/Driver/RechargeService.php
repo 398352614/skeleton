@@ -96,7 +96,7 @@ class RechargeService extends BaseService
         $data['type'] = 'recharge-validuser';
         //请求第三方
         $curl = new CurlClient();
-        $res = $curl->merchantPostJson($merchant, $data);
+        $res = $curl->merchantPost($merchantApi, $data);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['out_user_id']) || empty($res['data']['phone'])) {
             throw new BusinessLogicException('客户不存在，请检查客户编码是否正确');
         } else {
@@ -163,10 +163,11 @@ class RechargeService extends BaseService
         if ($info['driver_verify_status'] == BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_2) {
             throw new BusinessLogicException('手机尾号验证未通过，请重新提交');
         }
-        if($params['out_user_id'] !== $info['out_user_id'] || $params['out_user_name'] !== $info['out_user_name'] ){
+        if ($params['out_user_id'] !== $info['out_user_id'] || $params['out_user_name'] !== $info['out_user_name']) {
             throw new BusinessLogicException('用户信息不正确，请重新充值');
         }
-        $data['data'] = Arr::only(collect($params)->toArray(), ['out_user_id', 'out_user_name', 'merchant_id', 'out_user_name', 'recharge_screenshot_url', 'recharge_amount', 'recharge_no']);
+        $data['data'] = Arr::only(collect($params)->toArray(), ['out_user_id', 'out_user_name', 'merchant_id', 'out_user_name', 'signature', 'recharge_amount', 'recharge_no']);
+        $data['data']['recharge_screenshot_url'] = 'signature';
         $data['type'] = 'recharge-process';
         //请求第三方
         $curl = new CurlClient();
@@ -178,7 +179,7 @@ class RechargeService extends BaseService
         if (empty($merchantApi['url']) || empty($merchantApi['secret']) || empty($merchantApi['key'])) {
             throw new BusinessLogicException('该商户未开启充值业务');
         }
-        $res = $curl->merchantPostJson($merchant, $data);
+        $res = $curl->merchantPost($merchant, $data);
         /*        $res['data']['ret']=1;
                 $res['data']['transaction_number']=110;*/
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['transaction_number'])) {
