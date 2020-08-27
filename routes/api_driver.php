@@ -158,7 +158,21 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
 
     //商户管理
     Route::prefix('merchant')->group(function () {
-        //获取所有费用
+        //获取所有商户
         Route::get('/', 'MerchantController@index');
+    });
+
+    //充值管理
+    Route::prefix('recharge')->group(function (){
+        //充值查询
+        Route::get('/','RechargeController@index');
+        //充值详情
+        Route::get('/{id}','RechargeController@show');
+        //充值
+        Route::post('/','RechargeController@recharge');
+        //充值验证
+        Route::put('/verify','RechargeController@verify');
+        //获取外部用户信息
+        Route::get('/out-user','RechargeController@getOutUser');
     });
 });

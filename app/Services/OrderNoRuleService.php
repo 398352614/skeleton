@@ -71,7 +71,7 @@ class OrderNoRuleService extends BaseService
         $data = Arr::only($data, ['prefix', 'int_length', 'string_length', 'status']);
         $this->check($data, $id);
         $info = parent::getInfo(['id' => $id], ['*'], false);
-        if(empty($info)){
+        if (empty($info)) {
             throw new BusinessLogicException('操作失败');
         }
         if ($info['string_length'] != $data['string_length']) {
@@ -92,8 +92,8 @@ class OrderNoRuleService extends BaseService
      */
     private function check($params, $id = null)
     {
-        if(strlen($params['prefix']) + $params['int_length'] + $params['string_length'] > BaseConstService::ORDER_NO_RULE_LENGTH){
-            throw new BusinessLogicException("单号规则总长度不得超过:length位",1000,['length' => BaseConstService::ORDER_NO_RULE_LENGTH]);
+        if (strlen($params['prefix']) + $params['int_length'] + $params['string_length'] > BaseConstService::ORDER_NO_RULE_LENGTH) {
+            throw new BusinessLogicException("单号规则总长度不得超过:length位", 1000, ['length' => BaseConstService::ORDER_NO_RULE_LENGTH]);
         }
     }
 
@@ -206,6 +206,20 @@ class OrderNoRuleService extends BaseService
             throw new BusinessLogicException('单号生成失败，请重新操作');
         }
         return $orderNo;
+    }
+
+    /**
+     * 创建充值单号
+     * @return int
+     * @throws BusinessLogicException
+     */
+    public function createRechargeNo()
+    {
+        try {
+            return random_int(100000000000, 999999999999);
+        } catch (\Exception $e) {
+            throw new BusinessLogicException('单号生成失败，请重新操作');
+        }
     }
 
 }

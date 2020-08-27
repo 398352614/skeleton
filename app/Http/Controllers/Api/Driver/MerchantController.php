@@ -30,6 +30,6 @@ class MerchantController extends BaseController
     }
 
     public function index(){
-        return $this->service->getList(['status'=>BaseConstService::MERCHANT_STATUS_1],['*'],false);
+        return $this->service->getMerchantList();
     }
 }

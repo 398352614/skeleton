@@ -21,12 +21,17 @@ class MerchantService extends BaseService
 {
     public $filterRules = [
         'name' => ['like', 'name'],
-        'merchant_group_id' => ['=', 'merchant_group_id'],
+        'recharge_status' => ['=', 'recharge_status'],
         'status' => ['=', 'status']
     ];
 
     public function __construct(Merchant $merchant)
     {
         parent::__construct($merchant, MerchantResource::class);
+    }
+
+    public function getMerchantList()
+    {
+        return parent::setFilter()->getList([], ['*'], false);
     }
 }

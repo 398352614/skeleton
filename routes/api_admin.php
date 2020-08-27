@@ -520,4 +520,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //绑定
         Route::get('/', 'ApiTimesController@index');
     });
+
+    //充值管理
+    Route::prefix('recharge')->group(function () {
+        //充值查询
+        Route::get('/', 'RechargeController@index');
+        //充值详情
+        Route::get('/{id}', 'RechargeController@show');
+        //充值审核
+        Route::put('/{id}', 'RechargeController@verify');
+    });
 });

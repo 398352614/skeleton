@@ -28,7 +28,9 @@ use App\Models\LineArea;
 use App\Models\LineRange;
 use App\Models\Material;
 use App\Models\Merchant;
+use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
+use App\Models\MerchantRecharge;
 use App\Models\Order;
 use App\Models\OrderNoRule;
 use App\Models\OrderTrail;
@@ -82,6 +84,8 @@ class CompanyScope implements Scope
             //车辆模型和司机无关
             if ((!($model instanceof Car))
                 && (!($model instanceof AdditionalPackage))
+                && (!($model instanceof MerchantApi))
+                && (!($model instanceof MerchantRecharge))
                 && (!($model instanceof OrderNoRule))
                 && (!($model instanceof CarBrand))
                 && (!($model instanceof CarModel))

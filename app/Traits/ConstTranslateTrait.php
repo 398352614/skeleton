@@ -55,6 +55,8 @@ use Illuminate\Support\Facades\App;
  * @method static merchantBatchStatusList($args = null)
  * @method static showTypeList($args = null)
  * @method static merchantPackageStatusList($args = null)
+ * @method static rechargeStatusList($args = null)
+ * @method static verifyStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -338,6 +340,17 @@ trait ConstTranslateTrait
     public static $showTypeList = [
         BaseConstService::ALL_SHOW => '全部展示',
         BaseConstService::LINE_RULE_SHOW => '全部展示',
+    ];
+
+    public static $rechargeStatusList = [
+        BaseConstService::RECHARGE_STATUS_1 => '充值中',
+        BaseConstService::RECHARGE_STATUS_2 => '充值失败',
+        BaseConstService::RECHARGE_STATUS_3 => '充值完成',
+    ];
+
+    public static $verifyStatusList = [
+        BaseConstService::VERIFY_STATUS_1 => '未审核',
+        BaseConstService::VERIFY_STATUS_2 => '已审核',
     ];
 
     /**
