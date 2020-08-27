@@ -50,9 +50,9 @@ class RegisterController extends BaseController
     {
         $data = $request->all();
 
-/*        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
-            throw new BusinessLogicException('验证码错误');
-        }*/
+        /*        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
+                    throw new BusinessLogicException('验证码错误');
+                }*/
 
         RegisterController::deleteVerifyCode($data['email']);
 
@@ -132,7 +132,13 @@ class RegisterController extends BaseController
         ];
         $rules = collect($rules)->map(function ($rule, $type) use ($company) {
             $prefix = $rule . substr('000' . $company->id, -4, 4);
-            $length = ($type == BaseConstService::ORDER_NO_TYPE) ? 6 : 4;
+            if ($type == BaseConstService::ORDER_NO_TYPE) {
+                $length = 6;
+            } elseif ($type == BaseConstService::RECHARGE_NO_TYPE) {
+                $length = 7;
+            } else {
+                $length = 4;
+            }
             return collect([
                 'company_id' => $company->id,
                 'type' => $type,
@@ -342,7 +348,7 @@ class RegisterController extends BaseController
         /*$request->validate([
             'email' => 'required|email',
         ]);*/
-        if (empty(Employee::query()->where($this->username(),$request['email'])->first())){
+        if (empty(Employee::query()->where($this->username(), $request['email'])->first())) {
             throw new BusinessLogicException('用户不存在，请检查用户名');
         }
 
