@@ -1383,6 +1383,6 @@ class OrderService extends BaseService
             $order['package_list'] = $packageList[$orderNo] ?? [];
             $order['material_list'] = $materialList[$orderNo] ?? [];
         }
-        dispatch_now(new \App\Jobs\SyncOrderStatus($orderList));
+        dispatch(new \App\Jobs\SyncOrderStatus($orderList));
     }
 }
