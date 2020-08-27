@@ -1372,7 +1372,7 @@ class OrderService extends BaseService
         $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
         $orderNoList = array_column($orderList, 'order_no');
         //获取包裹列表
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'out_order_no', 'name', 'type', 'express_first_no', 'status'], false)->toArray();
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'], false)->toArray();
         $packageList = array_create_group_index($packageList, 'order_no');
         //获取材料列表
         $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'], false)->toArray();
