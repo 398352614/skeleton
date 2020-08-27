@@ -426,7 +426,7 @@ class TourService extends BaseService
      */
     private function insertMaterialList($tour, $materialList)
     {
-        data_fill($materialList, ' *.name', '');
+        data_fill($materialList, '*.name', '');
         $materialList = collect($materialList)->map(function ($material, $key) use ($tour) {
             $material = Arr::only($material, ['expect_quantity', 'actual_quantity', 'code', 'name']);
             $material = Arr::add($material, 'tour_no', $tour['tour_no']);
