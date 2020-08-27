@@ -41,6 +41,14 @@ class CreateRechargeTable extends Migration
             $table->string('verify_remark', 2)->default('')->nullable()->comment('审核备注');
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
+
+            $table->index('company_id', 'company_id');
+            $table->index('merchant_id', 'merchant_id');
+            $table->index('recharge_no', 'recharge_no');
+            $table->index('status', 'status');
+            $table->index('verify_status', 'verify_status');
+            $table->index('out_user_id', 'out_user_id');
+            $table->index('driver_name', 'driver_name');
         });
     }
 

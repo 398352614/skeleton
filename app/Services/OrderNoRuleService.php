@@ -52,7 +52,6 @@ class OrderNoRuleService extends BaseService
         //若字母长度不为0,则生成开始字符索引
         $params['start_string_index'] = str_repeat('A', $params['string_length']);
         $params['max_no'] = $params['prefix'] . str_repeat('Z', $params['string_length']) . str_repeat('9', $params['int_length']);
-        $this->check($params);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
@@ -94,6 +93,10 @@ class OrderNoRuleService extends BaseService
     {
         if (strlen($params['prefix']) + $params['int_length'] + $params['string_length'] > BaseConstService::ORDER_NO_RULE_LENGTH) {
             throw new BusinessLogicException("单号规则总长度不得超过:length位", 1000, ['length' => BaseConstService::ORDER_NO_RULE_LENGTH]);
+        }
+        $info = parent::getInfo(['type' => $params['type'], 'prefix' => $params['prefix']], ['*'], false);
+        if (!empty($info) && $info['id'] !== $id) {
+            throw new BusinessLogicException('前缀与其他用户重复，请更改前缀');
         }
     }
 
@@ -215,7 +218,7 @@ class OrderNoRuleService extends BaseService
      */
     public function createRechargeNo()
     {
-        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::BATCH_EXCEPTION_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
+        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::RECHARGE_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('充值单号规则不存在或已被禁用，请先联系后台管理员');
         }
