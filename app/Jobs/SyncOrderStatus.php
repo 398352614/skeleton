@@ -42,7 +42,7 @@ class SyncOrderStatus implements ShouldQueue
      *
      * @var string|null
      */
-    public $queue = 'sync-order';
+    public $queue = 'sync-order-status';
 
     /**
      * 任务可以执行的最大秒数 (超时时间)。
