@@ -98,11 +98,10 @@ class RechargeService extends BaseService
         $curl = new CurlClient();
         $res = $curl->merchantPost($merchantApi, $data);
         Log::info('返回值', $res);
-        if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['out_user_id']) || empty($res['data']['phone']|| empty($res['data']['email']) )) {
+        if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['out_user_id']) || empty($res['data']['phone'] || empty($res['data']['email']))) {
             throw new BusinessLogicException('客户不存在，请检查客户编码是否正确');
         } else {
             $params['recharge_no'] = $this->getOrderNoRuleService()->createRechargeNo();
-            $params['recharge_date'] = Carbon::today()->format('Y-m-d');
             $params['status'] = BaseConstService::RECHARGE_VERIFY_STATUS_1;
             $params['driver_name'] = auth()->user()->fullname;
             $params['out_user_name'] = $res['data']['email'];
@@ -117,7 +116,7 @@ class RechargeService extends BaseService
         $phoneHead = str_replace(substr($params['out_user_phone'], -4), '', $params['out_user_phone']);
         return [
             'out_user_id' => $params['out_user_id'],
-            'email'=>$params['out_user_name'],
+            'email' => $params['out_user_name'],
             'phone_head' => $phoneHead,
             'recharge_no' => $row->getAttributes()['recharge_no']
         ];
@@ -193,7 +192,12 @@ class RechargeService extends BaseService
             }
             throw new BusinessLogicException('充值失败');
         } else {
-            $row = parent::update(['id' => $info['id']], ['status' => BaseConstService::RECHARGE_STATUS_3, 'transaction_number' => $res['data']['transaction_number']]);
+            $row = parent::update(['id' => $info['id']], [
+                'status' => BaseConstService::RECHARGE_STATUS_3,
+                'transaction_number' => $res['data']['transaction_number'],
+                'recharge_time' => now(),
+                'recharge_date' => Carbon::today()->format('Y-m-d')
+            ]);
             if ($row == false) {
                 Log::info('充值成功，充值记录失败', $res);
             }
