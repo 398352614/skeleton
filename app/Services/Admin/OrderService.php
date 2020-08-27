@@ -1372,10 +1372,10 @@ class OrderService extends BaseService
         $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
         $orderNoList = array_column($orderList, 'order_no');
         //获取包裹列表
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'out_order_no', 'name', 'type', 'express_first_no', 'status'], false)->toArray();
         $packageList = array_create_group_index($packageList, 'order_no');
         //获取材料列表
-        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false);
+        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'], false)->toArray();
         $materialList = array_create_group_index($materialList, 'order_no');
         //组合数据
         foreach ($orderList as &$order) {
@@ -1383,6 +1383,6 @@ class OrderService extends BaseService
             $order['package_list'] = $packageList[$orderNo] ?? [];
             $order['material_list'] = $materialList[$orderNo] ?? [];
         }
-        dispatch(new \App\Jobs\SyncOrderStatus($orderList));
+        dispatch_now(new \App\Jobs\SyncOrderStatus($orderList));
     }
 }

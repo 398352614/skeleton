@@ -59,12 +59,15 @@ class SyncOrderStatus implements ShouldQueue
      */
     public $tries = 3;
 
+    /**
+     * @var CurlClient $curl
+     */
     public $curl;
 
     public $orderList;
 
     public static $orderFields = [
-        'merchant_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'status_name'
+        'merchant_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'status_name', 'package_list', 'material_list'
     ];
 
 
@@ -92,9 +95,9 @@ class SyncOrderStatus implements ShouldQueue
         $notifyType = $this->notifyType();
         if (empty($merchantList)) return true;
         $this->curl = new CurlClient();
-        $merchantOrderList = collect($this->orderList)->groupBy('merchant_id');
+        $merchantOrderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
         foreach ($merchantOrderList as $merchantId => $orderList) {
-            $postData = ['type' => $notifyType, 'data' => $orderList];
+            $postData = ['type' => $notifyType, 'data' => ['order_list' => $orderList]];
             $this->postData($merchantList[$merchantId]['url'], $postData);
         }
         return true;
