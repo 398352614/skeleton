@@ -931,5 +931,46 @@
     "系统级费用不能删除":"System level expenses cannot be deleted",
 
     "多商家":"Multi merchant",
-    "当前司机已被分配，请选":"Current driver has been assigned, please select"
+    "当前司机已被分配，请选":"Current driver has been assigned, please select",
+
+
+    "充值单号规则":"Recharge order number rule",
+
+    "充值中":"Recharging",
+    "充值失败":"Recharge failed",
+    "充值完成":"Recharge completed",
+    "未审核":"Not reviewed",
+    "已审核":"Reviewed",
+
+    "推送失败":"Push failed",
+
+    "顺带包裹":"By package",
+
+    "前缀与其他用户重复，请更改前缀":"The prefix is the same as another user. Please change the prefix",
+
+    "充值单号规则不存在或已被禁用，请先联系后台管理员":"The recharge order number rule does not exist or has been disabled. Please contact the background administrator first",
+
+    "该商户未开启充值业务":"The merchant did not open recharge service",
+    "返回值":"Return value",
+    "客户不存在，请检查客户编码是否正确":"The customer does not exist, please check whether the customer code is correct",
+    "拉取第三方用户信息失败":"Failed to pull third party user information",
+    "充值信息丢失，请重新充值":"Recharge information lost, please recharge again",
+    "充值已完成，请勿重复充值":"Recharge completed, please do not recharge again",
+    "验证失败，请重新输入":"Verification failed, please re-enter",
+    "验证失败":"Validation failed",
+    "充值信息已失效，请重新充值":"Recharge information is invalid, please recharge again",
+    "手机尾号验证未通过，请重新提交":"Mobile phone tail number verification failed, please submit again",
+    "用户信息不正确，请重新充值":"The user information is incorrect, please recharge again",
+    "充值失败，充值记录失败":"Recharge failed, recharge record failed",
+    "充值成功，充值记录失败":"Recharge successful, recharge record failed",
+
+    "材料种类不正确":"Incorrect material type",
+
+    "顺带包裹格式不正确":"Package format is not correct",
+
+    "当前线路已更换，请刷新":"The current line has been replaced, please refresh",
+
+    "当前时间不在该运价范围内":"The current time is not within the range of the freight rate",
+
+    "实际金额不能大于充值金额":"The actual amount cannot be greater than the recharge amount"
 }

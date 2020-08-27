@@ -449,7 +449,7 @@ class TourService extends BaseService
      */
     public function checkOutWarehouse($id, $params)
     {
-        $tour = parent::getInfoLock(['id' => $id], [' * '], false);
+        $tour = parent::getInfoLock(['id' => $id], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }
