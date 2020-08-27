@@ -18,7 +18,7 @@ class BaseConstService
     const PACKAGE = 'PACKAGE';
     const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
-    const RECHARGE = 'RECHARGE';
+    const RECHARGE = '';
 
     //邮编国家
     const POSTCODE_COUNTRY = 'BE';
