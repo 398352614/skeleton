@@ -17,6 +17,7 @@ class RechargeResource extends JsonResource
             'merchant_name' => $this->merchant_name,
             'recharge_no' => $this->recharge_no,
             'transaction_number' => $this->transaction_number,
+            'driver_name' => $this->driver_name,
             'out_user_id' => $this->out_user_id,
             'out_user_name' => $this->out_user_name,
             'recharge_date' => $this->recharge_date,
