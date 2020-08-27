@@ -97,13 +97,15 @@ class RechargeService extends BaseService
         //请求第三方
         $curl = new CurlClient();
         $res = $curl->merchantPost($merchantApi, $data);
-        if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['out_user_id']) || empty($res['data']['phone'])) {
+        Log::info('返回值', $res);
+        if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['out_user_id']) || empty($res['data']['phone']|| empty($res['data']['email']) )) {
             throw new BusinessLogicException('客户不存在，请检查客户编码是否正确');
         } else {
             $params['recharge_no'] = $this->getOrderNoRuleService()->createRechargeNo();
             $params['recharge_date'] = Carbon::today()->format('Y-m-d');
             $params['status'] = BaseConstService::RECHARGE_VERIFY_STATUS_1;
             $params['driver_name'] = auth()->user()->fullname;
+            $params['out_user_name'] = $res['data']['email'];
             $params['out_user_id'] = $res['data']['out_user_id'];
             $params['out_user_phone'] = $res['data']['phone'];
             $params['driver_verify_status'] = BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_1;
@@ -115,6 +117,7 @@ class RechargeService extends BaseService
         $phoneHead = str_replace(substr($params['out_user_phone'], -4), '', $params['out_user_phone']);
         return [
             'out_user_id' => $params['out_user_id'],
+            'email'=>$params['out_user_name'],
             'phone_head' => $phoneHead,
             'recharge_no' => $row->getAttributes()['recharge_no']
         ];
@@ -180,6 +183,7 @@ class RechargeService extends BaseService
             throw new BusinessLogicException('该商户未开启充值业务');
         }
         $res = $curl->merchantPost($merchant, $data);
+        Log::info('返回值', $res);
         /*        $res['data']['ret']=1;
                 $res['data']['transaction_number']=110;*/
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['transaction_number'])) {
