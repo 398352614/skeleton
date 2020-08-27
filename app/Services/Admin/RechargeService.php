@@ -11,6 +11,7 @@ use App\Models\Recharge;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
+use Illuminate\Support\Carbon;
 
 
 /**
@@ -91,7 +92,13 @@ class RechargeService extends BaseService
         if ($info['verify_status'] == BaseConstService::RECHARGE_VERIFY_STATUS_2) {
             throw new BusinessLogicException('该充值已审核');
         }
-        $row = parent::updateById($id, ['verify_recharge_amount' => $params['verify_recharge_amount'], 'verify_remark' => $params['verify_remark'], 'verify_status' => BaseConstService::RECHARGE_VERIFY_STATUS_2]);
+        $row = parent::updateById($id, [
+            'verify_recharge_amount' => $params['verify_recharge_amount'],
+            'verify_remark' => $params['verify_remark'],
+            'verify_status' => BaseConstService::RECHARGE_VERIFY_STATUS_2,
+            'verify_date'=>Carbon::today()->format('Y-m-d'),
+            'verify_time'=>now()
+        ]);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
