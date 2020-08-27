@@ -523,7 +523,7 @@ class TourService extends BaseService
      */
     public function getBatchList($id)
     {
-        $tour = parent::getInfo(['id' => $id], [' * '], false);
+        $tour = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }
