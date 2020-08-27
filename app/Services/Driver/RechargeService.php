@@ -83,7 +83,7 @@ class RechargeService extends BaseService
      */
     public function getOutUser($params)
     {
-        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'], 'status' => BaseConstService::RECHARGE_STATUS_1], ['*'], false)->toArray();
+        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'], 'status' => BaseConstService::RECHARGE_STATUS_1], ['*'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('该商户未开启充值业务');
         }
