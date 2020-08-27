@@ -154,7 +154,7 @@ class RechargeService extends BaseService
      */
     public function recharge($params)
     {
-        $params = Arr::only($params, ['out_user_id', 'out_user_name', 'recharge_no', 'merchant_id', 'recharge_amount', 'signature', 'recharge_first_pic', 'recharge_second_pic', 'recharge_third_pic']);
+        $params = Arr::only($params, ['out_user_id', 'out_user_name', 'recharge_no', 'merchant_id', 'recharge_amount', 'signature', 'recharge_first_pic', 'recharge_second_pic', 'recharge_third_pic','remark']);
         $info = parent::getInfoLock(['recharge_no' => $params['recharge_no']], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('充值信息已失效，请重新充值');
@@ -192,12 +192,12 @@ class RechargeService extends BaseService
             }
             throw new BusinessLogicException('充值失败');
         } else {
-            $row = parent::update(['id' => $info['id']], [
+            $row = parent::update(['id' => $info['id']], array_merge($params,[
                 'status' => BaseConstService::RECHARGE_STATUS_3,
                 'transaction_number' => $res['data']['transaction_number'],
                 'recharge_time' => now(),
-                'recharge_date' => Carbon::today()->format('Y-m-d')
-            ]);
+                'recharge_date' => Carbon::today()->format('Y-m-d'),
+            ]));
             if ($row == false) {
                 Log::info('充值成功，充值记录失败', $res);
             }
