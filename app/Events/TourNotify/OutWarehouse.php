@@ -60,6 +60,8 @@ class OutWarehouse extends ATourNotify
             list($merchantId, $batchNo) = explode('-', $merchantIdBatchNo);
             if (!empty($batchList[$batchNo])) {
                 $newBatchList[$merchantId][] = array_merge($batchList[$batchNo], ['merchant_id' => $merchantId, 'order_list' => $merchantBatchList]);
+            } else {
+                $newBatchList[$merchantId][] = array_merge(Arr::only($merchantBatchList[0], self::$batchFields), ['merchant_id' => $merchantId, 'order_list' => $merchantBatchList]);
             }
         }
         Log::info('out-warehouse-new-batch-list', $newBatchList);

@@ -1,24 +1,32 @@
 <?php
 
-namespace App\Listeners;
+namespace App\Jobs;
 
-use App\Events\Interfaces\ATourNotify;
+use App\Events\TourNotify\NextBatch;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
-use App\Models\Merchant;
+use App\Models\Material;
 use App\Models\MerchantApi;
-use App\Models\Order;
+use App\Models\Package;
 use App\Models\Tour;
+use App\Services\Admin\TourService;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use App\Traits\CompanyTrait;
+use App\Traits\FactoryInstanceTrait;
+use App\Traits\TourTrait;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use WebSocket\Client;
 
-class SendNotify2Merchant implements ShouldQueue
+class SyncOrderStatus implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
@@ -34,7 +42,14 @@ class SendNotify2Merchant implements ShouldQueue
      *
      * @var string|null
      */
-    public $queue = 'tour-notify';
+    public $queue = 'sync-order';
+
+    /**
+     * 任务可以执行的最大秒数 (超时时间)。
+     *
+     * @var int
+     */
+    public $timeout = 30;
 
 
     /**
@@ -45,51 +60,45 @@ class SendNotify2Merchant implements ShouldQueue
     public $tries = 3;
 
     /**
-     * 任务可以执行的最大秒数 (超时时间)。
-     *
-     * @var int
-     */
-    public $timeout = 30;
-
-    /**
-     * @var CurlClient
+     * @var CurlClient $curl
      */
     public $curl;
 
+    public $orderList;
+
+    public static $orderFields = [
+        'merchant_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'status_name', 'package_list', 'material_list'
+    ];
+
+
     /**
-     * Create the event listener.
-     * @param $curlClient
-     * @return void
+     * UpdateLineCountTime constructor.
+     * @param $tourNo
+     * @param $orderList ;
      */
-    public function __construct(CurlClient $curlClient)
+    public function __construct(array $orderList)
     {
-        $this->curl = $curlClient;
+        $this->orderList = collect($orderList)->map(function ($order) {
+            return Arr::only($order, self::$orderFields);
+        })->toArray();
     }
 
 
     /**
-     * Handle the event
-     *
-     * @param ATourNotify $event
+     * Execute the job.
      * @return bool
+     * @throws BusinessLogicException
      */
-    public function handle(ATourNotify $event)
+    public function handle()
     {
-        try {
-            $dataList = $event->getDataList();
-            $notifyType = $event->notifyType();
-            Log::info('notify-type:' . $notifyType);
-            Log::info('dataList:' . json_encode($dataList, JSON_UNESCAPED_UNICODE));
-            if (empty($dataList)) return true;
-            $merchantList = $this->getMerchantList(array_column($dataList, 'merchant_id'));
-            if (empty($merchantList)) return true;
-            foreach ($dataList as $merchantId => $data) {
-                $postData = ['type' => $notifyType, 'data' => $data];
-                if (empty($merchantList[$merchantId]['url'])) continue;
-                $this->postData($merchantList[$merchantId]['url'], $postData);
-            }
-        } catch (\Exception $ex) {
-            Log::channel('job-daily')->error($ex->getMessage());
+        $merchantList = $this->getMerchantList(array_column($this->orderList, 'merchant_id'));
+        $notifyType = $this->notifyType();
+        if (empty($merchantList)) return true;
+        $this->curl = new CurlClient();
+        $merchantOrderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
+        foreach ($merchantOrderList as $merchantId => $orderList) {
+            $postData = ['type' => $notifyType, 'data' => ['order_list' => $orderList]];
+            $this->postData($merchantList[$merchantId]['url'], $postData);
         }
         return true;
     }
@@ -143,5 +152,10 @@ class SendNotify2Merchant implements ShouldQueue
             Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('发送失败');
         }
+    }
+
+    public function notifyType()
+    {
+        return BaseConstService::NOTIFY_SYNC_ORDER_STATUS;
     }
 }

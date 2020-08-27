@@ -456,18 +456,19 @@ class BatchService extends BaseService
     public function cancel($id)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
+        $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]]], ['*'], false)->toArray();
         //站点删除
         $rowCount = parent::delete(['id' => $info['id']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //订单取消取派
-        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['status' => BaseConstService::ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]]], ['status' => BaseConstService::ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //包裹取消取派
-        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['status' => BaseConstService::PACKAGE_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2]]], ['status' => BaseConstService::PACKAGE_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
@@ -477,10 +478,9 @@ class BatchService extends BaseService
             $this->getTourService()->reCountAmountByNo($info['tour_no']);
         }
 
-        OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+        OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
 
         //取消通知
-        $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => BaseConstService::ORDER_STATUS_6], ['order_no', 'out_order_no'], false)->toArray();
         foreach ($orderList as $order) {
             event(new OrderCancel($order['order_no'], $order['out_order_no']));
         }

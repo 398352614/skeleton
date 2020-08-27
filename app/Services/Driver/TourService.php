@@ -357,8 +357,13 @@ class TourService extends BaseService
         }
         //重新统计取件线路金额
         $this->reCountAmountByNo($tour['tour_no']);
-        $cancelOrderList = $this->getOrderService()->getList(['order_no' => ['in', array_column(array_values($cancelOrderList), 'order_no')]], ['*'], false)->toArray();
-        return [$tour, $cancelOrderList];
+        $newCancelOrderList = $this->getOrderService()->getList(['order_no' => ['in', array_column(array_values($cancelOrderList), 'order_no')]], ['*'], false)->toArray();
+        $cancelOrderList = array_create_index($cancelOrderList, 'order_no');
+        foreach ($newCancelOrderList as &$newCancelOrder) {
+            $newCancelOrder['batch_no'] = $cancelOrderList[$newCancelOrder['order_no']]['batch_no'] ?? '';
+            $newCancelOrder['tour_no'] = $cancelOrderList[$newCancelOrder['order_no']]['tour_no'] ?? '';
+        }
+        return [$tour, $newCancelOrderList];
     }
 
     /**

@@ -42,7 +42,7 @@ class OrderService extends BaseService
         'type' => ['=', 'type'],
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'order_no,out_order_no' => ['like', 'keyword'],
+        'order_no,out_order_no,out_user_id' => ['like', 'keyword'],
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
@@ -1359,5 +1359,30 @@ class OrderService extends BaseService
         $dir = 'orderOut';
         $name = date('YmdHis') . auth()->user()->id;
         return $this->excelExport($name, $this->headings, $cellData, $dir);
+    }
+
+    /**
+     * 同步订单状态列表
+     * @param $idList
+     */
+    public function synchronizeStatusList($idList)
+    {
+        //获取订单列表
+        $idList = explode_id_string($idList);
+        $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
+        $orderNoList = array_column($orderList, 'order_no');
+        //获取包裹列表
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'out_order_no', 'name', 'type', 'express_first_no', 'status'], false)->toArray();
+        $packageList = array_create_group_index($packageList, 'order_no');
+        //获取材料列表
+        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'], false)->toArray();
+        $materialList = array_create_group_index($materialList, 'order_no');
+        //组合数据
+        foreach ($orderList as &$order) {
+            $orderNo = $order['order_no'];
+            $order['package_list'] = $packageList[$orderNo] ?? [];
+            $order['material_list'] = $materialList[$orderNo] ?? [];
+        }
+        dispatch(new \App\Jobs\SyncOrderStatus($orderList));
     }
 }
