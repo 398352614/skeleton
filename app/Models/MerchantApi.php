@@ -54,7 +54,8 @@ class MerchantApi extends Authenticatable
         'white_ip_list',
         'status',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'recharge_status'
     ];
 
     /**
