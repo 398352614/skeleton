@@ -243,7 +243,7 @@ class TourService extends BaseService
         }
         $tour = $tour->toArray();
         //查看当前车辆是否已被分配给其他取件线路
-        $otherTour = parent::getInfo(['id' => ['<>', $id], 'car_id' => $params['car_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
+        $otherTour = parent::getInfo(['id' => ['<>', $id], 'car_id' => $params['car_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5], 'driver_id' => ['<>', null]], ['*'], false);
         if (!empty($otherTour)) {
             throw new BusinessLogicException('当前车辆已被分配，请选择其他车辆');
         }
