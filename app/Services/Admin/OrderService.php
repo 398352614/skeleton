@@ -1378,7 +1378,7 @@ class OrderService extends BaseService
         $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'], false)->toArray();
         $materialList = array_create_group_index($materialList, 'order_no');
         //获取站点列表
-        $batchNoList = array_column($orderList, 'status');
+        $batchNoList = array_column($orderList, 'batch_no');
         $batchList = $this->getBatchService()->getList(['batch_no' => ['in', $batchNoList]], ['*'], false)->toArray();
         $batchList = array_create_index($batchList, 'batch_no');
         //组合数据
