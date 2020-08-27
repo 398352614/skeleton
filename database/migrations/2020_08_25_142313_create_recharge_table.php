@@ -35,7 +35,7 @@ class CreateRechargeTable extends Migration
             $table->tinyInteger('driver_verify_status')->default(1)->nullable()->comment('验证状态1-未验证2-已验证');
             $table->tinyInteger('status')->default(1)->nullable()->comment('状态1-充值中2-充值失败3-充值成功');
             $table->tinyInteger('verify_status')->default(1)->nullable()->comment('审核状态1-未审核2-已审核');
-            $table->decimal('verify_recharge_amount', 2)->default(0.00)->nullable()->comment('实际金额');
+            $table->decimal('verify_recharge_amount', 50,2)->default(0.00)->nullable()->comment('实际金额');
             $table->date('verify_date')->default(null)->nullable()->comment('审核日期');
             $table->dateTime('verify_time')->default(null)->nullable()->comment('审核时间');
             $table->string('verify_remark', 2)->default('')->nullable()->comment('审核备注');
