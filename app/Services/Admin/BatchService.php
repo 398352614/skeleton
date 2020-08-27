@@ -456,7 +456,7 @@ class BatchService extends BaseService
     public function cancel($id)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
-        $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]]], ['order_no', 'out_order_no'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]]], ['*'], false)->toArray();
         //站点删除
         $rowCount = parent::delete(['id' => $info['id']]);
         if ($rowCount === false) {
