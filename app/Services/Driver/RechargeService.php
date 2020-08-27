@@ -57,6 +57,7 @@ class RechargeService extends BaseService
      */
     public function getPageList()
     {
+        $this->query->where(['status'=>BaseConstService::RECHARGE_STATUS_3]);
         return parent::getPageList();
     }
 
