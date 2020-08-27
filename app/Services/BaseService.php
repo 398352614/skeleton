@@ -127,7 +127,7 @@ class BaseService
     public function getPaginate()
     {
         if ($this->validatePaginate())
-            $this->per_page = $this->request->input('per_page');
+            $this->per_page = $this->request->input('per_page', 200);
         return $this->query->paginate($this->per_page);
     }
 
