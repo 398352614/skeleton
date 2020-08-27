@@ -1402,6 +1402,6 @@ class OrderService extends BaseService
             $order['car_id'] = $tourList[$order['tour_no']]['car_id'] ?? null;
             $order['car_no'] = $tourList[$order['tour_no']]['car_no'] ?? '';
         }
-        dispatch(new \App\Jobs\SyncOrderStatus($orderList));
+        dispatch_now(new \App\Jobs\SyncOrderStatus($orderList));
     }
 }
