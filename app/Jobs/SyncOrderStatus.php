@@ -69,6 +69,7 @@ class SyncOrderStatus implements ShouldQueue
     public static $orderFields = [
         'merchant_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'status_name',
         'delivery_count', 'cancel_remark', 'signature', 'pay_type',
+        'line_id', 'line_name', 'driver_id', 'driver_name', 'driver_phone', 'car_id', 'car_no',
         'package_list', 'material_list'
     ];
 

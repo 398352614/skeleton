@@ -1381,6 +1381,10 @@ class OrderService extends BaseService
         $batchNoList = array_column($orderList, 'batch_no');
         $batchList = $this->getBatchService()->getList(['batch_no' => ['in', $batchNoList]], ['*'], false)->toArray();
         $batchList = array_create_index($batchList, 'batch_no');
+        //获取取件线路列表
+        $tourNoList = array_column($orderList, 'tour_no');
+        $tourList = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false)->toArray();
+        $tourList = array_create_index($tourList, 'tour_no');
         //组合数据
         foreach ($orderList as &$order) {
             $orderNo = $order['order_no'];
@@ -1390,7 +1394,14 @@ class OrderService extends BaseService
             $order['cancel_remark'] = $batchList[$order['batch_no']]['cancel_remark'] ?? '';
             $order['signature'] = $batchList[$order['batch_no']]['signature'] ?? '';
             $order['pay_type'] = $batchList[$order['batch_no']]['pay_type'] ?? null;
+            $order['line_id'] = $tourList[$order['tour_no']]['line_id'] ?? null;
+            $order['line_name'] = $tourList[$order['tour_no']]['line_name'] ?? '';
+            $order['driver_id'] = $tourList[$order['tour_no']]['driver_id'] ?? null;
+            $order['driver_name'] = $tourList[$order['tour_no']]['driver_name'] ?? '';
+            $order['driver_phone'] = $tourList[$order['tour_no']]['driver_phone'] ?? '';
+            $order['car_id'] = $tourList[$order['tour_no']]['car_id'] ?? null;
+            $order['car_no'] = $tourList[$order['tour_no']]['car_no'] ?? '';
         }
-        dispatch(new \App\Jobs\SyncOrderStatus($orderList));
+        dispatch_now(new \App\Jobs\SyncOrderStatus($orderList));
     }
 }
