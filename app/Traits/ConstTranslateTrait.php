@@ -66,6 +66,7 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_NO_TYPE => '站点编号规则',
         BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
         BaseConstService::TOUR_NO_TYPE => '取件线路编号规则',
+        BaseConstService::RECHARGE_NO_TYPE => '充值单号规则',
     ];
 
     //线路分配规则
