@@ -149,7 +149,9 @@ class CurlClient
     public function merchantPostJson($merchant, $params, $next = 0, $auth = null)
     {
         $data = [
-            'key' => $merchant['key'], 'time' => time(), 'data' => $params,
+            'key' => $merchant['key'],
+            'time' => time(),
+            'data' => $params,
             'sign' => (new MerchantApi())->make($merchant['secret'], $params),
         ];
         return $this->postJson($merchant['url'], $data, $next, $auth);

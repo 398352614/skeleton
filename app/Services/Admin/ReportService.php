@@ -33,7 +33,10 @@ class ReportService extends BaseService
     public $filterRules = [
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_name' => ['like', 'driver_name'],
-        'tour_no' => ['like', 'tour_no']
+        'tour_no' => ['like', 'tour_no'],
+        'status' => ['=', 'status'],
+        'line_name' => ['like', 'line_name'],
+        'line_name,driver_name' => ['like', 'key_word'],
     ];
 
     private $tourMaterialModel;
