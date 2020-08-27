@@ -25,7 +25,7 @@ class MerchantApiValidate extends BaseValidate
     ];
 
     public $scene = [
-        'update' => ['url', 'white_ip_list', 'status'],
+        'update' => ['url', 'white_ip_list', 'status','recharge_status'],
     ];
 }
 
