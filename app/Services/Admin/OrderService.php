@@ -1377,11 +1377,19 @@ class OrderService extends BaseService
         //获取材料列表
         $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'], false)->toArray();
         $materialList = array_create_group_index($materialList, 'order_no');
+        //获取站点列表
+        $batchNoList = array_column($orderList, 'status');
+        $batchList = $this->getBatchService()->getList(['batch_no' => ['in', $batchNoList]], ['*'], false)->toArray();
+        $batchList = array_create_index($batchList, 'batch_no');
         //组合数据
         foreach ($orderList as &$order) {
             $orderNo = $order['order_no'];
             $order['package_list'] = $packageList[$orderNo] ?? [];
             $order['material_list'] = $materialList[$orderNo] ?? [];
+            $order['delivery_count'] = (floatval($order['delivery_amount']) == 0) ? 0 : 1;
+            $order['cancel_remark'] = $batchList[$order['batch_no']]['cancel_remark'] ?? '';
+            $order['signature'] = $batchList[$order['batch_no']]['signature'] ?? '';
+            $order['pay_type'] = $batchList[$order['batch_no']]['pay_type'] ?? null;
         }
         dispatch(new \App\Jobs\SyncOrderStatus($orderList));
     }
