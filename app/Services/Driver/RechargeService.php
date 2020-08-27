@@ -170,6 +170,7 @@ class RechargeService extends BaseService
             throw new BusinessLogicException('用户信息不正确，请重新充值');
         }
         $data['data'] = Arr::only(collect($params)->toArray(), ['out_user_id', 'out_user_name', 'merchant_id', 'out_user_name', 'signature', 'recharge_amount', 'recharge_no']);
+        $data['data']['driver_name'] = $info['driver_name'];
         $data['data']['recharge_screenshot_url'] = $data['data']['signature'];
         $data['data']=Arr::except($data['data'],'signature');
         $data['type'] = 'recharge-process';
