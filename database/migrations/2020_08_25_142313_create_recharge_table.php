@@ -21,7 +21,7 @@ class CreateRechargeTable extends Migration
             $table->string('transaction_number', 50)->default('')->nullable()->comment('外部充值单号');
             $table->string('out_user_id', 250)->default('')->nullable()->comment('外部用户ID');
             $table->string('out_user_name', 250)->default('')->nullable()->comment('外部用户名');
-            $table->integer('out_user_phone')->default(null)->nullable()->comment('外部用户电话');
+            $table->string('out_user_phone',250)->default(null)->nullable()->comment('外部用户电话');
             $table->date('recharge_date')->default(null)->nullable()->comment('充值日期');
             $table->dateTime('recharge_time')->default(null)->nullable()->comment('充值时间');
             $table->integer('driver_id')->default(null)->nullable()->comment('司机ID');
