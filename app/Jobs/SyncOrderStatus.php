@@ -63,6 +63,10 @@ class SyncOrderStatus implements ShouldQueue
 
     public $orderList;
 
+    public static $orderFields = [
+        'merchant_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'status_name'
+    ];
+
 
     /**
      * UpdateLineCountTime constructor.
@@ -71,8 +75,9 @@ class SyncOrderStatus implements ShouldQueue
      */
     public function __construct(array $orderList)
     {
-        $this->orderList = $orderList;
-        $this->curl = new CurlClient();
+        $this->orderList = collect($orderList)->map(function ($order) {
+            return Arr::only($order, self::$orderFields);
+        })->toArray();
     }
 
 
@@ -86,6 +91,7 @@ class SyncOrderStatus implements ShouldQueue
         $merchantList = $this->getMerchantList(array_column($this->orderList, 'merchant_id'));
         $notifyType = $this->notifyType();
         if (empty($merchantList)) return true;
+        $this->curl = new CurlClient();
         $merchantOrderList = collect($this->orderList)->groupBy('merchant_id');
         foreach ($merchantOrderList as $merchantId => $orderList) {
             $postData = ['type' => $notifyType, 'data' => $orderList];

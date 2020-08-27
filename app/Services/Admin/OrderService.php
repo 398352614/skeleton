@@ -16,7 +16,6 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
 use App\Jobs\AddOrderPush;
-use App\Jobs\SyncOrderStatus;
 use App\Models\Order;
 use App\Models\OrderImportLog;
 use App\Services\BaseConstService;
@@ -1384,6 +1383,6 @@ class OrderService extends BaseService
             $order['package_list'] = $packageList[$orderNo] ?? [];
             $order['material_list'] = $materialList[$orderNo] ?? [];
         }
-        dispatch(new SyncOrderStatus($orderList));
+        dispatch(new \App\Jobs\SyncOrderStatus($orderList));
     }
 }
