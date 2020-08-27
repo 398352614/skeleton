@@ -90,6 +90,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/order-excel', 'OrderController@orderExport');
         //获取所有线路（邮编及区域）
         Route::get('/get-line', 'OrderController@getLineList');
+        //同步订单状态列表
+        Route::post('synchronize-status-list', 'OrderController@synchronizeStatusList');
     });
 
     Route::prefix('package')->group(function () {
