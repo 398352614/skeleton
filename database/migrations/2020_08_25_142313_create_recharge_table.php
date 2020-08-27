@@ -38,7 +38,7 @@ class CreateRechargeTable extends Migration
             $table->decimal('verify_recharge_amount', 50,2)->default(0.00)->nullable()->comment('实际金额');
             $table->date('verify_date')->default(null)->nullable()->comment('审核日期');
             $table->dateTime('verify_time')->default(null)->nullable()->comment('审核时间');
-            $table->string('verify_remark', 2)->default('')->nullable()->comment('审核备注');
+            $table->string('verify_remark', 250)->default('')->nullable()->comment('审核备注');
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
 
