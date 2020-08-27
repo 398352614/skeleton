@@ -23,7 +23,7 @@ class RechargeResource extends JsonResource
             'recharge_date' => $this->recharge_date,
             'recharge_time' => $this->recharge_time,
             'recharge_amount' => $this->recharge_amount,
-            'remerk' => $this->remerk,
+            'remark' => $this->remark,
             'status' => $this->status,
             'verify_recharge_amount' => $this->verify_recharge_amount,
             'verify_status' => $this->verify_status,
