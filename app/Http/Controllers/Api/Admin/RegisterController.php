@@ -50,9 +50,9 @@ class RegisterController extends BaseController
     {
         $data = $request->all();
 
-        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
+/*        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
             throw new BusinessLogicException('验证码错误');
-        }
+        }*/
 
         RegisterController::deleteVerifyCode($data['email']);
 
@@ -128,6 +128,7 @@ class RegisterController extends BaseController
             BaseConstService::ORDER_NO_TYPE => BaseConstService::TMS,
             BaseConstService::TOUR_NO_TYPE => BaseConstService::TOUR,
             BaseConstService::BATCH_EXCEPTION_NO_TYPE => BaseConstService::BATCH_EXCEPTION,
+            BaseConstService::RECHARGE_NO_TYPE => BaseConstService::RECHARGE,
         ];
         $rules = collect($rules)->map(function ($rule, $type) use ($company) {
             $prefix = $rule . substr('000' . $company->id, -4, 4);

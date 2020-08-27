@@ -18,6 +18,7 @@ class BaseConstService
     const PACKAGE = 'PACKAGE';
     const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
+    const RECHARGE = 'RECHARGE';
 
     //邮编国家
     const POSTCODE_COUNTRY = 'BE';
@@ -53,6 +54,8 @@ class BaseConstService
     const TOUR_NO_TYPE = 'tour';
     //站点编号类型
     const BATCH_EXCEPTION_NO_TYPE = 'batch_exception';
+    //充值单号类型
+    const RECHARGE_NO_TYPE = 'recharge';
 
     //初始密码
     const INITIAL_PASSWORD = '12345678';
