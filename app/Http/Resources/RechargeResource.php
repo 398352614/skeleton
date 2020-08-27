@@ -29,6 +29,7 @@ class RechargeResource extends JsonResource
             'verify_status' => $this->verify_status,
             'verify_date' => $this->verify_date,
             'verify_time' => $this->verify_time,
+            'verify_remark' => $this->verify_remark,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
             'status_name'=>$this->status_name,
