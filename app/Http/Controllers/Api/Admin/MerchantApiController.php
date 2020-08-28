@@ -28,7 +28,7 @@ class MerchantApiController extends BaseController
      */
     public function show($merchantId)
     {
-        $info = $this->service->getInfo(['merchant_id' => $merchantId], ['*'], false);
+        $info = $this->service->getInfo(['id' => $merchantId], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
