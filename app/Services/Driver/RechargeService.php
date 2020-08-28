@@ -57,7 +57,7 @@ class RechargeService extends BaseService
      */
     public function getPageList()
     {
-        $this->query->where(['status'=>BaseConstService::RECHARGE_STATUS_3]);
+        $this->query->where(['status' => BaseConstService::RECHARGE_STATUS_3]);
         return parent::getPageList();
     }
 
@@ -155,7 +155,7 @@ class RechargeService extends BaseService
      */
     public function recharge($params)
     {
-        $params = Arr::only($params, ['out_user_id', 'out_user_name', 'recharge_no', 'merchant_id', 'recharge_amount', 'signature', 'recharge_first_pic', 'recharge_second_pic', 'recharge_third_pic','remark']);
+        $params = Arr::only($params, ['out_user_id', 'out_user_name', 'recharge_no', 'merchant_id', 'recharge_amount', 'signature', 'recharge_first_pic', 'recharge_second_pic', 'recharge_third_pic', 'remark']);
         $info = parent::getInfoLock(['recharge_no' => $params['recharge_no']], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('充值信息已失效，请重新充值');
@@ -173,7 +173,7 @@ class RechargeService extends BaseService
         $data['data']['driver_name'] = $info['driver_name'];
         $data['data']['out_user_phone'] = $info['out_user_phone'];
         $data['data']['recharge_screenshot_url'] = $data['data']['signature'];
-        $data['data']=Arr::except($data['data'],'signature');
+        $data['data'] = Arr::except($data['data'], 'signature');
         $data['type'] = 'recharge-process';
         //请求第三方
         $curl = new CurlClient();
@@ -195,8 +195,10 @@ class RechargeService extends BaseService
                 Log::info('充值失败，充值记录失败', $res);
             }
             throw new BusinessLogicException('充值失败');
+        } elseif ($res['ret'] = 3) {
+            throw new BusinessLogicException('充值请求已过期，请重新充值');
         } else {
-            $row = parent::update(['id' => $info['id']], array_merge($params,[
+            $row = parent::update(['id' => $info['id']], array_merge($params, [
                 'status' => BaseConstService::RECHARGE_STATUS_3,
                 'transaction_number' => $res['data']['transaction_number'],
                 'recharge_time' => now(),
