@@ -316,6 +316,9 @@ class BaseConstService
     const NOTIFY_ORDER_EXECUTION_DATE_UPDATE = 'update-execution-date'; //修改取派日期通知
     const NOTIFY_ORDER_CANCEL = 'cancel-order';     //订单取消通知
     const NOTIFY_SYNC_ORDER_STATUS = 'sync-order-status';   //同步订单状态
+    const NOTIFY_RECHARGE_PROCESS = 'recharge-process';   //同步订单状态
+    const NOTIFY_RECHARGE_VALIDUSER = 'recharge-validuser';   //同步订单状态
+
 
     //商户类型
     const MERCHANT_TYPE_1 = 1;
