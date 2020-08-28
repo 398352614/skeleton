@@ -195,7 +195,7 @@ class RechargeService extends BaseService
                 Log::info('充值失败，充值记录失败', $res);
             }
             throw new BusinessLogicException('充值失败');
-        } elseif ($res['ret'] = 3) {
+        } elseif ($res['ret'] == 3) {
             throw new BusinessLogicException('充值请求已过期，请重新充值');
         } else {
             $row = parent::update(['id' => $info['id']], array_merge($params, [
