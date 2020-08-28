@@ -42,7 +42,7 @@ class MerchantApiController extends BaseController
      */
     public function update($id)
     {
-        $rowCount = $this->service->update(['id' => $id], Arr::only($this->data, ['url', 'white_ip_list', 'status']));
+        $rowCount = $this->service->update(['id' => $id], Arr::only($this->data, ['url', 'white_ip_list', 'status','recharge_status']));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
