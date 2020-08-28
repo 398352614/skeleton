@@ -153,7 +153,7 @@ class CurlClient
             [
                 'key' => $merchant['key'],
                 'time' => time(),
-                'sign' => (new MerchantApi())->make($merchant['secret'], $params),
+                'sign' => (new MerchantApi())->make($merchant['secret'], $params['data'] ?? []),
             ]);
         return $this->postJson($merchant['url'], $data, $next, $auth);
     }
