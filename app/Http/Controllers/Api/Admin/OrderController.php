@@ -189,7 +189,8 @@ class OrderController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function destroyByList(){
+    public function destroyByList()
+    {
         return $this->service->destroyByList($this->data);
     }
 
@@ -239,7 +240,8 @@ class OrderController extends BaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderExport(){
+    public function orderExport()
+    {
         return $this->service->orderExport($this->data);
     }
 
@@ -247,7 +249,16 @@ class OrderController extends BaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function getLineList(){
+    public function getLineList()
+    {
         return $this->service->getLineList();
+    }
+
+    /**
+     * 同步订单状态列表
+     */
+    public function synchronizeStatusList()
+    {
+        return $this->service->synchronizeStatusList($this->data['id_list']);
     }
 }

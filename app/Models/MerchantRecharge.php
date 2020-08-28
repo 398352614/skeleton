@@ -1,23 +1,24 @@
 <?php
 
+
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
+
+use Illuminate\Support\Facades\DB;
 
 /**
- * 商户api表
- * Class Employee
+ * 充值
+ * Class Recharge
  * @package App\Models
  */
-class MerchantApi extends Authenticatable
-{
-    /**
-     * 司机实际取件导航
-     * The table associated with the model.
-     *
-     * @var string
-     */
-    protected $table = 'merchant_api';
+class MerchantRecharge extends BaseModel
+{    /**
+ *
+ * The table associated with the model.
+ *
+ * @var string
+ */
+    protected $table = 'merchant_recharge';
 
     /**
      * The primary key for the model.
@@ -48,14 +49,11 @@ class MerchantApi extends Authenticatable
     protected $fillable = [
         'company_id',
         'merchant_id',
-        'key',
-        'secret',
         'url',
-        'white_ip_list',
         'status',
+
         'created_at',
         'updated_at',
-        'recharge_status'
     ];
 
     /**
@@ -67,22 +65,13 @@ class MerchantApi extends Authenticatable
 
     ];
 
-    /**
-     * The attributes that should be mutated to dates.
-     *
-     * @var array
-     */
-    protected $dates = [];
+    protected $appends = [
+        'merchant_name',
+    ];
 
-    /**
-     * Get the password for the user.
-     *
-     * @return string
-     */
-    public function getAuthPassword()
+    public function getMerchantNameAttribute()
     {
-        return $this->secret;
+        return empty($this->merchant_id) ? '' : DB::table('merchant')->where('id','=', $this->merchant_id)->first()->name;
     }
-
 
 }

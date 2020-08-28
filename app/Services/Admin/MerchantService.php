@@ -73,6 +73,15 @@ class MerchantService extends BaseService
     }
 
     /**
+     * 商户充值api 服务
+     * @return MerchantRechargeService
+     */
+    private function getMerchantRechargeService()
+    {
+        return parent::getInstance(MerchantRechargeService::class);
+    }
+
+    /**
      * 商户组管理 服务
      * @return MerchantGroupService
      */
@@ -173,6 +182,15 @@ class MerchantService extends BaseService
             'secret' => Hashids::connection('alternative')->encode(time() . $id)
         ]);
         if ($merchantApi === false) {
+            throw new BusinessLogicException('新增失败,请重新操作');
+        }
+        //生成充值api
+        $merchantRecharge = $this->getMerchantRechargeService()->create([
+            'merchant_id' => $id,
+            'url' => '',
+            'status' => BaseConstService::MERCHANT_RECHARGE_STATUS_2
+        ]);
+        if ($merchantRecharge === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
         }
         $rowCount = MerchantGroup::query()->where('id', $params['merchant_group_id'])->increment('count');

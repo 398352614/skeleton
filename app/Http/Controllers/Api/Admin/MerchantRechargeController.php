@@ -1,21 +1,23 @@
 <?php
 
+
 namespace App\Http\Controllers\Api\Admin;
+
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\MerchantApiService;
+use App\Services\Admin\MerchantRechargeService;
 use Illuminate\Support\Arr;
 
 /**
- * 商户api
+ * 商户充值api
  * Class OrderController
  * @package App\Http\Controllers\Api\Admin
- * @property MerchantApiService $service
+ * @property MerchantRechargeService $service
  */
-class MerchantApiController extends BaseController
+class MerchantRechargeController extends BaseController
 {
-    public function __construct(MerchantApiService $service)
+    public function __construct(MerchantRechargeService $service)
     {
         parent::__construct($service);
     }
@@ -37,12 +39,12 @@ class MerchantApiController extends BaseController
 
     /**
      * 修改
-     * @param $id(此处前端传给我的是merchant_api表的id)
+     * @param $merchantId
      * @throws BusinessLogicException
      */
-    public function update($id)
+    public function update($merchantId)
     {
-        $rowCount = $this->service->update(['id' => $id], Arr::only($this->data, ['url', 'white_ip_list', 'status','recharge_status']));
+        $rowCount = $this->service->update(['merchant_id' => $merchantId], Arr::only($this->data, ['url', 'white_ip_list', 'status']));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }

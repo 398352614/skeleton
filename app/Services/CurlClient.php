@@ -142,16 +142,19 @@ class CurlClient
      * 商户接口请求
      * @param $merchant
      * @param $params
+     * @param $type
      * @param int $next
      * @param null $auth
      * @return mixed|null
      */
-    public function merchantPostJson($merchant, $params, $next = 0, $auth = null)
+    public function merchantPost($merchant, $params, $next = 0, $auth = null)
     {
-        $data = [
-            'key' => $merchant['key'], 'time' => time(), 'data' => $params,
-            'sign' => (new MerchantApi())->make($merchant['secret'], $params),
-        ];
+        $data = array_merge($params,
+            [
+                'key' => $merchant['key'],
+                'time' => time(),
+                'sign' => (new MerchantApi())->make($merchant['secret'], $params['data'] ?? []),
+            ]);
         return $this->postJson($merchant['url'], $data, $next, $auth);
     }
 

@@ -103,6 +103,7 @@ class OrderValidate extends BaseValidate
         'removeListFromBatch' => ['id_list'],
         'orderPrintAll' => ['id_list'],
         //'orderExport'=>['id_list']
+        'synchronizeStatusList' => ['id_list']
     ];
 
     public $message = [

@@ -24,7 +24,7 @@ class NextBatch extends ATourNotify
 
     public function notifyType(): string
     {
-        return BaseConstService::NOTIFY_NEXT_BACTH;
+        return BaseConstService::NOTIFY_NEXT_BATCH;
     }
 
     public function getDataList(): array

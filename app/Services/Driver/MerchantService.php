@@ -10,8 +10,9 @@ namespace App\Services\Driver;
 
 use App\Http\Resources\MerchantResource;
 use App\Models\Merchant;
+use App\Services\BaseConstService;
 use App\Services\BaseService;
-
+use App\Models\MerchantApi;
 
 /**
  * Class MerchantService
@@ -21,12 +22,19 @@ class MerchantService extends BaseService
 {
     public $filterRules = [
         'name' => ['like', 'name'],
-        'merchant_group_id' => ['=', 'merchant_group_id'],
-        'status' => ['=', 'status']
     ];
 
     public function __construct(Merchant $merchant)
     {
         parent::__construct($merchant, MerchantResource::class);
+    }
+
+    public function getMerchantList()
+    {
+        if (!empty($this->formData['recharge_status'])) {
+            $merchantIdList = MerchantApi::query()->where('recharge_status', $this->formData['recharge_status'])->pluck('merchant_id');
+            $this->query->whereIn('id', $merchantIdList)->where('status', BaseConstService::MERCHANT_RECHARGE_STATUS_1);
+        }
+        return parent::setFilter()->getList([], ['*'], false);
     }
 }

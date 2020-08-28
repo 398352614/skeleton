@@ -90,6 +90,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/order-excel', 'OrderController@orderExport');
         //获取所有线路（邮编及区域）
         Route::get('/get-line', 'OrderController@getLineList');
+        //同步订单状态列表
+        Route::post('synchronize-status-list', 'OrderController@synchronizeStatusList');
     });
 
     Route::prefix('package')->group(function () {
@@ -520,5 +522,15 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::prefix('api-times')->group(function () {
         //绑定
         Route::get('/', 'ApiTimesController@index');
+    });
+
+    //充值管理
+    Route::prefix('recharge')->group(function () {
+        //充值查询
+        Route::get('/', 'RechargeController@index');
+        //充值详情
+        Route::get('/{id}', 'RechargeController@show');
+        //充值审核
+        Route::put('/{id}', 'RechargeController@verify');
     });
 });

@@ -457,7 +457,7 @@ class TourService extends BaseService
         if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_3) {
             throw new BusinessLogicException('取件线路当前状态不允许出库');
         }
-        if (!empty($this->getInfo(['driver_id' => auth()->user()->id, 'status' => ['=', BaseConstService::TOUR_STATUS_4]], ['*'], false))) {
+        if (!empty($this->getInfo(['driver_id' => auth()->user()->id, 'status' => [' = ', BaseConstService::TOUR_STATUS_4]], ['*'], false))) {
             throw new BusinessLogicException('同时只能进行一个任务，请先完成其他取派中的任务');
         }
         if (empty($tour['car_id']) || empty($tour['car_no'])) {
@@ -469,7 +469,7 @@ class TourService extends BaseService
             $outOrderIdList = array_filter(explode(',', $params['out_order_id_list']), function ($value) {
                 return is_numeric($value);
             });
-            $NoOutOrder = $this->getOrderService()->getInfo(['id' => ['in', $outOrderIdList], 'type' => BaseConstService::ORDER_TYPE_2, 'status' => ['<>', BaseConstService::ORDER_STATUS_3]], ['order_no'], false);
+            $NoOutOrder = $this->getOrderService()->getInfo(['id' => ['in', $outOrderIdList], 'type' => BaseConstService::ORDER_TYPE_2, 'status' => [' <> ', BaseConstService::ORDER_STATUS_3]], ['order_no'], false);
             if (!empty($NoOutOrder)) {
                 throw new BusinessLogicException('订单[:order_no]已取消或已删除,不能出库,请先剔除', 1000, ['order' => $NoOutOrder->order_no]);
             }
@@ -931,8 +931,8 @@ class TourService extends BaseService
                 throw new BusinessLogicException('材料处理失败');
             };
             $rowCount = $this->tourMaterialModel->newQuery()
-                ->where('tour_no', '=', $tour['tour_no'])
-                ->where('code', '=', $dbMaterialList[$material['id']]['code'])
+                ->where('tour_no', ' = ', $tour['tour_no'])
+                ->where('code', ' = ', $dbMaterialList[$material['id']]['code'])
                 ->update(['finish_quantity' => DB::raw("finish_quantity+$actualQuantity"), 'surplus_quantity' => DB::raw("surplus_quantity-$actualQuantity")]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('材料处理失败');
@@ -1255,7 +1255,7 @@ class TourService extends BaseService
         $info = DB::table('tour')
             ->where('company_id', auth()->user()->company_id)
             ->where('line_id', $params['line_id'])
-            ->where('execution_date', today()->format('Y-m-d'))
+            ->where('execution_date', today()->format('Y - m - d'))
             ->pluck('tour_no')
             ->toArray();
         return $info ?? [];
@@ -1266,7 +1266,7 @@ class TourService extends BaseService
         $info = [];
         $tour = DB::table('tour')
             ->where('company_id', auth()->user()->company_id)
-            ->where('execution_date', today()->format('Y-m-d'))
+            ->where('execution_date', today()->format('Y - m - d'))
             ->get()->toArray();
         $tour = collect($tour)->groupBy('line_id')->toArray();
         foreach ($tour as $k => $v) {

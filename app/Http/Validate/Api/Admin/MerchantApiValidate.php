@@ -20,11 +20,12 @@ class MerchantApiValidate extends BaseValidate
     public $rules = [
         'url' => 'nullable|string|max:250|url',
         'white_ip_list' => 'nullable|string|max:250',
-        'status' => 'required|integer|in:1,2'
+        'status' => 'required|integer|in:1,2',
+        'recharge_status' => 'required|integer|in:1,2'
     ];
 
     public $scene = [
-        'update' => ['url', 'white_ip_list', 'status'],
+        'update' => ['url', 'white_ip_list', 'status','recharge_status'],
     ];
 }
 

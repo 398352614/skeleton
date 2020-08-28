@@ -31,7 +31,7 @@ return [
     ],
     'boolean' => 'The :attribute field must be true or false.',
     'confirmed' => 'The :attribute confirmation does not match.',
-    'check_id_list'=>'Please select at least one order',
+    'check_id_list' => 'Please select at least one order',
     'date' => 'The :attribute is not a valid date.',
     'date_equals' => 'The :attribute must be a date equal to :date.',
     'date_format' => 'The :attribute does not match the format :format.',
@@ -135,10 +135,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
-        'new_password'=>[
+        'new_password' => [
             'different' => 'The new password cannot be the same as the original password.',
-            ],
-
+        ],
     ],
 
     /*
@@ -153,7 +152,7 @@ return [
     */
 
     'attributes' => [
-        'time'=>'time',
+        'time' => 'time',
         'country' => 'country',
         'cn_name' => 'cn name',
         'en_name' => 'en name',
@@ -290,5 +289,23 @@ return [
         'url' => 'url',
         'white_ip_list' => 'white IP list',
         'coordinate_list' => 'coordinate list',
+        'package_no' => 'package no',
+        'recharge_no' => 'recharge no',
+        'transaction_number' => 'transaction number',
+        'out_user_name' => 'out_user name',
+        'out_user_phone' => 'out_user phone',
+        'recharge_date' => 'recharge date',
+        'recharge_time' => 'recharge time',
+        'driver_name' => 'driver_name',
+        'recharge_amount' => 'recharge amount',
+        'recharge_first_pic' => 'recharge first_pic',
+        'recharge_second_pic' => 'recharge second_pic',
+        'recharge_third_pic' => 'recharge third_pic',
+        'driver_verify_status' => 'driver verify_status',
+        'verify_status' => 'verify status',
+        'verify_recharge_amount' => 'verify recharge_amount',
+        'verify_date' => 'verify date',
+        'verify_time' => 'verify time',
+        'verify_remark' => 'verify remark',
     ],
 ];

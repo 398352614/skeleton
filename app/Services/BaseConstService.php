@@ -18,6 +18,7 @@ class BaseConstService
     const PACKAGE = 'PACKAGE';
     const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
+    const RECHARGE = '';
 
     //邮编国家
     const POSTCODE_COUNTRY = 'BE';
@@ -53,6 +54,8 @@ class BaseConstService
     const TOUR_NO_TYPE = 'tour';
     //站点编号类型
     const BATCH_EXCEPTION_NO_TYPE = 'batch_exception';
+    //充值单号类型
+    const RECHARGE_NO_TYPE = 'recharge';
 
     //初始密码
     const INITIAL_PASSWORD = '12345678';
@@ -305,13 +308,14 @@ class BaseConstService
 
     //通知类型
     const NOTIFY_OUT_WAREHOUSE = 'out-warehouse';       //出库通知
-    const NOTIFY_NEXT_BACTH = 'next-batch';             //下一个站点通知
+    const NOTIFY_NEXT_BATCH = 'next-batch';             //下一个站点通知
     const NOTIFY_ARRIVED_BATCH = 'arrive-batch';        //到达站点通知
     const NOTIFY_ASSIGN_BATCH = 'assign-batch';         //签收站点通知
     const NOTIFY_CANCEL_BATCH = 'assign-batch';         //取消派送站点通知(也叫签收)
     const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回仓库通知
     const NOTIFY_ORDER_EXECUTION_DATE_UPDATE = 'update-execution-date'; //修改取派日期通知
     const NOTIFY_ORDER_CANCEL = 'cancel-order';     //订单取消通知
+    const NOTIFY_SYNC_ORDER_STATUS = 'sync-order-status';   //同步订单状态
 
     //商户类型
     const MERCHANT_TYPE_1 = 1;
@@ -340,4 +344,25 @@ class BaseConstService
     const WORKER_GROUP_ADMIN = 'admin';
     const WORKER_GROUP_MERCHANT = 'merchant';
     const WORKER_GROUP_DRIVER = 'driver';
+
+    //充值状态
+    const RECHARGE_STATUS_1 = 1;
+    const RECHARGE_STATUS_2 = 2;
+    const RECHARGE_STATUS_3 = 3;
+
+    //审核状态
+    const RECHARGE_VERIFY_STATUS_1 = 1;
+    const RECHARGE_VERIFY_STATUS_2 = 2;
+
+    //商户充值API状态
+    const MERCHANT_RECHARGE_STATUS_1 = 1;
+    const MERCHANT_RECHARGE_STATUS_2 = 2;
+
+    //充值审核状态
+    const VERIFY_STATUS_1 = 1;
+    const VERIFY_STATUS_2 = 2;
+
+    //充值司机端验证状态
+    const RECHARGE_DRIVER_VERIFY_STATUS_1=1;
+    const RECHARGE_DRIVER_VERIFY_STATUS_2=2;
 }
