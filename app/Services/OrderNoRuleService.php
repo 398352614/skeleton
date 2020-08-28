@@ -67,7 +67,7 @@ class OrderNoRuleService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $data = Arr::only($data, ['prefix', 'int_length', 'string_length', 'status']);
+        $data = Arr::only($data, ['prefix', 'int_length', 'string_length', 'status','type']);
         $this->check($data, $id);
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
