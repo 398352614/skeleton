@@ -67,7 +67,7 @@ class OrderNoRuleService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $data = Arr::only($data, ['prefix', 'int_length', 'string_length', 'status']);
+        $data = Arr::only($data, ['prefix', 'int_length', 'string_length', 'status','type']);
         $this->check($data, $id);
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
@@ -94,8 +94,8 @@ class OrderNoRuleService extends BaseService
         if (strlen($params['prefix']) + $params['int_length'] + $params['string_length'] > BaseConstService::ORDER_NO_RULE_LENGTH) {
             throw new BusinessLogicException("单号规则总长度不得超过:length位", 1000, ['length' => BaseConstService::ORDER_NO_RULE_LENGTH]);
         }
-        $info = parent::getInfo(['type' => $params['type'], 'prefix' => $params['prefix']], ['*'], false);
-        if (!empty($info) && $info['id'] !== $id) {
+        $info = DB::table('order_no_rule')->where('type',$params['type'])->where('prefix',$params['prefix'])->first();
+        if (!empty($info) && $info->id !== $id) {
             throw new BusinessLogicException('前缀与其他用户重复，请更改前缀');
         }
     }
