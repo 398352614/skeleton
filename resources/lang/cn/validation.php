@@ -497,6 +497,25 @@ return [
         //
         'begin_distance'=>'回仓里程',
         'end_distance'=>'出仓里程',
-        'tour_no'=>'线路编号'
+        'tour_no'=>'线路编号',
+
+        'package_no' => '包裹编号',
+        'recharge_no' => '充值单号',
+        'transaction_number' => '外部充值号',
+        'out_user_name' => '外部用户名',
+        'out_user_phone' => '外部用户电话',
+        'recharge_date' => '充值日期',
+        'recharge_time' => '充值时间',
+        'driver_name' => '司机名',
+        'recharge_amount' => '充值金额',
+        'recharge_first_pic' => '充值图片',
+        'recharge_second_pic' => '充值图片',
+        'recharge_third_pic' => '充值图片',
+        'driver_verify_status' => '验证状态',
+        'verify_status' => '审核状态',
+        'verify_recharge_amount' => '审核金额',
+        'verify_date' => '审核日期',
+        'verify_time' => '审核时间',
+        'verify_remark' => '审核备注',
     ],
 ];
