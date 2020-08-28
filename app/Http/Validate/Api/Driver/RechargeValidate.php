@@ -16,13 +16,13 @@ class RechargeValidate extends BaseValidate
         'merchant_id' => 'required|string',
         'out_user_id' => 'required|string',
         'out_user_name' => 'required|string',
-        'recharge_amount' => 'required|numeric',
+        'recharge_amount' => 'required|numeric|gte:0.01|lte:2000',
         'recharge_no' => 'required|string|max:250',
-        'recharge_first_pic' => 'nullable|string|max:250',
+        'recharge_first_pic' => 'required|string|max:250',
         'recharge_second_pic' => 'nullable|string|max:250',
         'recharge_third_pic' => 'nullable|string|max:250',
         'signature' => 'required|string|max:250',
-        'remark' => 'nullable|string|max:250',
+        'remark' => 'required|string|max:250',
         'verify_phone_end' => 'required|string|max:250',
     ];
 

@@ -138,7 +138,6 @@ return [
         'new_password'=>[
             'different' => 'The new password cannot be the same as the original password.',
             ],
-
     ],
 
     /*
