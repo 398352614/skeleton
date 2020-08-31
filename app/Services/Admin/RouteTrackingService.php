@@ -72,7 +72,7 @@ class RouteTrackingService extends BaseService
         }
         $tourEventList = TourDriverEvent::query()->whereIn('batch_no', collect($batchList)->pluck('batch_no')->toArray())->get();
         foreach ($batchList as $k => $v) {
-            $tourEvent = $tourEventList->where('batch_no', $v['batch_no'])->first();
+            $tourEvent = $tourEventList->where('batch_no', $v['batch_no'])->all();
             if (!empty($tourEvent)) {
                 $batchList[$k]['event'] = $tourEvent;
             }
