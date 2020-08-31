@@ -1468,11 +1468,7 @@ class OrderService extends BaseService
                 $dbTourMaterial = $this->tourMaterialModel->newQuery()->where('tour_no', $info['tour_no'])->where('code', $dbMaterial['code'])->first();
                 if (!empty($dbTourMaterial)) {
                     $diffExpectQuantity = $dbTourMaterial->expect_quantity - $dbMaterial['expect_quantity'];
-                    if ($diffExpectQuantity == 0) {
-                        $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->delete();
-                    } else {
-                        $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $diffExpectQuantity]);
-                    }
+                    $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $diffExpectQuantity]);
                     if ($rowCount === false) {
                         throw new BusinessLogicException('材料处理失败');
                     }
@@ -1494,6 +1490,11 @@ class OrderService extends BaseService
                 if ($rowCount === false) {
                     throw new BusinessLogicException('材料处理失败');
                 }
+            }
+            //删除预计数量为0的取件材料
+            $rowCount = $this->tourMaterialModel->newQuery()->where('tour_no', $info['tour_no'])->where('expect_quantity', 0)->delete();
+            if ($rowCount === false) {
+                throw new BusinessLogicException('材料处理失败');
             }
         }
     }
