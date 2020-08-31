@@ -66,7 +66,6 @@ class ActualOutWarehouse extends ATourNotify
         foreach ($newBatchList as $merchantId => $merchantBatchList) {
             $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch_list' => $merchantBatchList]);
         }
-        $tourList['remark'] = '防止重复内容导致请求被拒绝';
         return $tourList;
     }
 }
