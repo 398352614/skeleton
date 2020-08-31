@@ -94,7 +94,7 @@ class RechargeService extends BaseService
         }
         $params = Arr::only($params, ['merchant_id', 'out_user_name']);
         $data['data'] = $params;
-        $data['type'] = 'recharge-validuser';
+        $data['type'] = BaseConstService::NOTIFY_RECHARGE_VALIDUSER;
         //请求第三方
         $curl = new CurlClient();
         $res = $curl->merchantPost($merchantApi, $data);
@@ -174,7 +174,7 @@ class RechargeService extends BaseService
         $data['data']['out_user_phone'] = $info['out_user_phone'];
         $data['data']['recharge_screenshot_url'] = $data['data']['signature'];
         $data['data'] = Arr::except($data['data'], 'signature');
-        $data['type'] = 'recharge-process';
+        $data['type'] = BaseConstService::NOTIFY_RECHARGE_PROCESS;
         //请求第三方
         $curl = new CurlClient();
         $merchant = MerchantApi::query()->where('merchant_id', $params['merchant_id'])->where('recharge_status', BaseConstService::MERCHANT_RECHARGE_STATUS_1)->first();

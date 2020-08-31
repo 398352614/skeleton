@@ -1485,7 +1485,8 @@ class OrderService extends BaseService
                     $rowCount = $this->tourMaterialModel->newQuery()->create([
                         'tour_no' => $info['tour_no'],
                         'name' => $material['name'],
-                        'expect_quantity' => $material['expect_quantity']
+                        'code' => $material['code'],
+                        'expect_quantity' => $material['expect_quantity'],
                     ]);
                 } else {
                     $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $dbTourMaterial->expect_quantity + $materialList['expect_quantity']]);
