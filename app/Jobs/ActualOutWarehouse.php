@@ -58,15 +58,18 @@ class ActualOutWarehouse implements ShouldQueue
     public $tries = 3;
 
     public $tour_no;
+    private $orderList;
 
 
     /**
      * UpdateLineCountTime constructor.
      * @param $tourNo
+     * @param $orderList
      */
-    public function __construct($tourNo)
+    public function __construct($tourNo,$orderList)
     {
         $this->tour_no = $tourNo;
+        $this->orderList = $orderList;
     }
 
 
@@ -106,6 +109,11 @@ class ActualOutWarehouse implements ShouldQueue
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getLine());
             Log::channel('job-daily')->error('智能调度错误:' . $ex->getMessage());
         }
+        //通知出库
+        $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
+        Log::info('tour:' . json_encode($tour));
+        $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
+        event(new \App\Events\TourNotify\ActualOutWarehouse($tour, $batchList, $this->orderList));
         /**************************************3.通知下一个站点事件************************************************/
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         $nextBatch = TourTrait::getNextBatch($tour['tour_no']);

@@ -308,6 +308,7 @@ class BaseConstService
 
     //通知类型
     const NOTIFY_OUT_WAREHOUSE = 'out-warehouse';       //出库通知
+    const NOTIFY_ACTUAL_OUT_WAREHOUSE = 'actual-out-warehouse';       //出库通知
     const NOTIFY_NEXT_BATCH = 'next-batch';             //下一个站点通知
     const NOTIFY_ARRIVED_BATCH = 'arrive-batch';        //到达站点通知
     const NOTIFY_ASSIGN_BATCH = 'assign-batch';         //签收站点通知
