@@ -64,6 +64,9 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\TourNotify\OutWarehouse::class => [
             SendNotify2Merchant::class
         ],
+        \App\Events\TourNotify\ActualOutWarehouse::class => [
+            SendNotify2Merchant::class
+        ],
         \App\Events\TourNotify\NextBatch::class => [
             SendNotify2Merchant::class
         ],
