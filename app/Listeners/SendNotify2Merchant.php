@@ -79,6 +79,7 @@ class SendNotify2Merchant implements ShouldQueue
             $dataList = $event->getDataList();
             $notifyType = $event->notifyType();
             Log::info('notify-type:' . $notifyType);
+            Log::info((string)$dataList);
             Log::info('dataList:' . json_encode($dataList, JSON_UNESCAPED_UNICODE));
             if (empty($dataList)) return true;
             $merchantList = $this->getMerchantList(array_column($dataList, 'merchant_id'));
