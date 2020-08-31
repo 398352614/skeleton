@@ -118,7 +118,7 @@ class ActualOutWarehouse implements ShouldQueue
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         $nextBatch = TourTrait::getNextBatch($tour['tour_no']);
         if (!empty($nextBatch)) {
-            event(new NextBatch($tour, $nextBatch->toArray()));
+            event(new \App\Events\TourNotify\NextBatch($tour, $nextBatch->toArray()));
         }
         return true;
     }

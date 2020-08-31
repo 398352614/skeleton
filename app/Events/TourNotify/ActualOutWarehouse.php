@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Log;
 class ActualOutWarehouse extends ATourNotify
 {
     /**
-     * OutWarehouse constructor.
+     * ActualOutWarehouse constructor.
      * @param $tour
      * @param $batchList
      * @param $orderList
