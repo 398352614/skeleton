@@ -93,6 +93,8 @@ class TourTaskService extends BaseService
         if (empty($list)) return $list;
         $batchFields = ['id', 'batch_no', 'receiver_fullname', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address'];
         foreach ($list as &$tour) {
+            //获取站点数量
+            $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
             //获取最后一个站点的收件人信息
             $tour['last_receiver'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'asc', 'created_at' => 'asc']);
             //获取是否有特殊事项
