@@ -66,7 +66,7 @@ class ActualOutWarehouse implements ShouldQueue
      * @param $tourNo
      * @param $orderList
      */
-    public function __construct($tourNo,$orderList)
+    public function __construct($tourNo, $orderList)
     {
         $this->tour_no = $tourNo;
         $this->orderList = $orderList;
