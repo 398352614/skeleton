@@ -96,7 +96,7 @@ class OrderNoRuleService extends BaseService
             throw new BusinessLogicException("单号规则总长度不得超过:length位", 1000, ['length' => BaseConstService::ORDER_NO_RULE_LENGTH]);
         }
         $info = DB::table('order_no_rule')->where('type', $params['type'])->where('prefix', $params['prefix'])->first();
-        if (!empty($info) && $info->id !== $id) {
+        if (!empty($info) && $info->id != $id) {
             throw new BusinessLogicException('前缀与其他用户重复，请更改前缀');
         }
     }
