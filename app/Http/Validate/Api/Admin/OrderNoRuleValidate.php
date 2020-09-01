@@ -8,7 +8,11 @@ class OrderNoRuleValidate extends BaseValidate
 {
 
     public $rules = [
-
+        'type' => 'required|string|max:50',
+        'prefix' => 'required|string|max:10',
+        'string_length' => 'nullable|integer',
+        'int_length' => 'required|integer',
+        'status' => 'required|integer|in:1,2'
     ];
 
     public $scene = [
