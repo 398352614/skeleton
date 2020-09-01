@@ -73,10 +73,13 @@ class OrderNoRuleService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('操作失败');
         }
-        if ($info['string_length'] != $data['string_length']) {
-            $data['start_string_index'] = str_repeat('A', $data['string_length']);
-        }
+        $info = $info->toArray();
         $data['max_no'] = $data['prefix'] . str_repeat('Z', $data['string_length']) . str_repeat('9', $data['int_length']);
+        if ($info['max_no'] != $data['max_no']) {
+            $data['start_string_index'] = str_repeat('A', $data['string_length']);
+            $data['start_index'] = 1;
+        }
+        $data = Arr::only($data, ['prefix', 'int_length', 'string_length', 'start_string_index', 'start_index', 'max_no', 'status']);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
