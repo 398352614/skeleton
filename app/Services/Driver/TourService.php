@@ -1338,7 +1338,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $tour->toArray();
-        $batchList = $this->getBatchService()->getList(['tour_no', $tour['tour_no']], ['*'], false)->pluck('sort_id')->toArray();
+        $batchList = $this->getBatchService()->getList(['tour_no'=> $tour['tour_no']], ['*'], false)->pluck('sort_id')->toArray();
         foreach ($batchList as $v) {
             if ($v !== 1000) {
                 $list[] = $v;
@@ -1370,7 +1370,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $tour->toArray();
-        $batchList = $this->getBatchService()->getList(['tour_no', $tour['tour_no']], ['*'], false)->pluck('sort_id')->toArray();
+        $batchList = $this->getBatchService()->getList(['tour_no'=> $tour['tour_no']], ['*'], false)->pluck('sort_id')->toArray();
         foreach ($batchList as $v) {
             if ($v !== 1000) {
                 $list[] = $v;
