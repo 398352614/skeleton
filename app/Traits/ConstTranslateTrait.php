@@ -58,6 +58,7 @@ use Illuminate\Support\Facades\App;
  * @method static rechargeStatusList($args = null)
  * @method static verifyStatusList($args = null)
  * @method static isSkippedList($args = null)
+ * @method static canSkipBatchList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -359,6 +360,12 @@ trait ConstTranslateTrait
         BaseConstService::IS_SKIPPED => '已跳过',
         BaseConstService::IS_NOT_SKIPPED => '未跳过',
     ];
+
+    public static $canSkipBatchList = [
+        BaseConstService::CAN_SKIP_BATCH => '是',
+        BaseConstService::CAN_NOT_SKIP_BATCH => '否',
+    ];
+
 
     /**
      * 格式化常量列表

@@ -55,6 +55,7 @@ class Line extends BaseModel
         'pickup_max_count',
         'pie_max_count',
         'is_increment',
+        'can_skip_batch',
         'order_deadline',
         'appointment_days',
         'status',
@@ -81,8 +82,12 @@ class Line extends BaseModel
     protected $dates = [];
 
     protected $appends = [
-        'country_name'
+        'country_name',
+        'can_skip_batch_name'
     ];
 
-
+    public function getCanSkipBatchNameAttribute()
+    {
+        return empty($this->can_skip_batch) ? null : ConstTranslateTrait::canSkipBatchList($this->can_skip_batch);
+    }
 }

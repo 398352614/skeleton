@@ -373,4 +373,8 @@ class BaseConstService
     //是否跳过
     const IS_SKIPPED = 1;
     const IS_NOT_SKIPPED = 2;
+
+    //能否跳过
+    const CAN_SKIP_BATCH = 1;
+    const CAN_NOT_SKIP_BATCH = 2;
 }

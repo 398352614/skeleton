@@ -363,6 +363,7 @@ return [
         'order_deadline' => '当天下单截止时间',
         'appointment_days' => '可预约天数',
         'work_day_list' => '工作日',
+        'can_skip_batch' => '能否跳过',
         //Admin-Order
         'execution_date' => '取派日期',
         'out_order_no' => '外部订单号',

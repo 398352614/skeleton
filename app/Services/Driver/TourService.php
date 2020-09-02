@@ -147,6 +147,15 @@ class TourService extends BaseService
     }
 
     /**
+     * 线路 服务
+     * @return LineService
+     */
+    public function getLineService()
+    {
+        return self::getInstance(LineService::class);
+    }
+
+    /**
      * 锁定-开始装货
      * @param $id
      * @throws BusinessLogicException
@@ -539,7 +548,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路不存在');
         }
         $batchFields = [
-            'id', 'batch_no', 'tour_no', 'status','is_skipped',
+            'id', 'batch_no', 'tour_no', 'status', 'is_skipped',
             'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
@@ -801,6 +810,13 @@ class TourService extends BaseService
         Log::info('batch', $batch);
         if (intval($params['pay_type']) == BaseConstService::BATCH_PAY_TYPE_4 && (intval($params['total_sticker_amount']) !== 0 || intval($params['total_replace_amount']) !== 0 || intval($params['total_settlement_amount']) !== 0 || intval($params['total_delivery_amount']) !== 0)) {
             throw new BusinessLogicException('费用不为0，不能选择无需支付');
+        }
+        $line=$this->getLineService()->getInfo(['id'=>$tour['line_id']],['*'],false)->toArray();
+        if($line['can_skip_batch'] == BaseConstService::CAN_NOT_SKIP_BATCH){
+            $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'sort_id' < $batch['sort_id'], 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
+            if(!empty($batchList)){
+                throw new BusinessLogicException('请按优化的站点顺序进行派送，或手动跳过之前的站点');
+            }
         }
         /*******************************************1.处理站点下的材料*************************************************/
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list'], $dbMaterialList);
@@ -1365,7 +1381,7 @@ class TourService extends BaseService
     public function batchRecovery($id, $params)
     {
         $list = [];
-        $tour = parent::getInfo(['id' => $id,'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
+        $tour = parent::getInfo(['id' => $id, 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('数据不存在');
         }

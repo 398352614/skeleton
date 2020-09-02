@@ -19,6 +19,8 @@ use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ImportTrait;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -92,7 +94,7 @@ class LineService extends BaseLineService
     /**
      * 邮编-详情
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function postcodeShow($id)
@@ -237,7 +239,7 @@ class LineService extends BaseLineService
     /**
      * 区域-详情
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function areaShow($id)
