@@ -1348,7 +1348,7 @@ class TourService extends BaseService
             $list[] = 999;
         }
         $sort = max($list) + 1;
-        $row = $this->getBatchService()->update(['id' => $params['batch_id'], 'tour_no' => $tour['tour_no']], ['is_skipped' => BaseConstService::IS_NOT_SKIPPED, 'sort_id' => $sort]);
+        $row = $this->getBatchService()->update(['id' => $params['batch_id'], 'tour_no' => $tour['tour_no']], ['is_skipped' => BaseConstService::IS_SKIPPED, 'sort_id' => $sort]);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
@@ -1380,7 +1380,7 @@ class TourService extends BaseService
             $list[] = 1001;
         }
         $sort = min($list) - 1;
-        $row = $this->getBatchService()->update(['id' => $params['batch_id'], 'tour_no' => $tour['tour_no']], ['is_skipped' => BaseConstService::IS_SKIPPED, 'sort_id' => $sort]);
+        $row = $this->getBatchService()->update(['id' => $params['batch_id'], 'tour_no' => $tour['tour_no']], ['is_skipped' => BaseConstService::IS_NOT_SKIPPED, 'sort_id' => $sort]);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
