@@ -1341,7 +1341,7 @@ class TourService extends BaseService
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         foreach ($batchList as $v) {
             if ($v['sort_id'] !== 1000 && $v['status'] == BaseConstService::BATCH_DELIVERING) {
-                $list[] = $v;
+                $list[] = $v['sort_id'];
             }
         }
         if (empty($list)) {
@@ -1373,7 +1373,7 @@ class TourService extends BaseService
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         foreach ($batchList as $v) {
             if ($v['sort_id'] !== 1000 && $v['status'] == BaseConstService::BATCH_DELIVERING) {
-                $list[] = $v;
+                $list[] = $v['sort_id'];
             }
         }
         if (empty($list)) {
