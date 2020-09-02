@@ -539,7 +539,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路不存在');
         }
         $batchFields = [
-            'id', 'batch_no', 'tour_no', 'status',
+            'id', 'batch_no', 'tour_no', 'status','is_skipped',
             'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
