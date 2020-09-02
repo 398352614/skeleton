@@ -57,6 +57,7 @@ use Illuminate\Support\Facades\App;
  * @method static merchantPackageStatusList($args = null)
  * @method static rechargeStatusList($args = null)
  * @method static verifyStatusList($args = null)
+ * @method static isSkippedList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -352,6 +353,11 @@ trait ConstTranslateTrait
     public static $verifyStatusList = [
         BaseConstService::VERIFY_STATUS_1 => '未审核',
         BaseConstService::VERIFY_STATUS_2 => '已审核',
+    ];
+
+    public static $isSkippedList = [
+        BaseConstService::IS_SKIPPED => '已跳过',
+        BaseConstService::IS_NOT_SKIPPED => '未跳过',
     ];
 
     /**

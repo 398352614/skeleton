@@ -128,6 +128,11 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::get('/{id}/getTotalInfo', 'TourController@getTotalInfo');
         //司机入库
         Route::put('/{id}/inWarehouse', 'TourController@inWarehouse');
+
+        //站点跳过
+        Route::put('/{id}/batch-skip', 'TourController@batchSkip');
+        //站点恢复
+        Route::put('/{id}/batch-recovery', 'TourController@batchRecovery');
     });
 
     //上传接口

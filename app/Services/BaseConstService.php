@@ -367,6 +367,10 @@ class BaseConstService
     const VERIFY_STATUS_2 = 2;
 
     //充值司机端验证状态
-    const RECHARGE_DRIVER_VERIFY_STATUS_1=1;
-    const RECHARGE_DRIVER_VERIFY_STATUS_2=2;
+    const RECHARGE_DRIVER_VERIFY_STATUS_1 = 1;
+    const RECHARGE_DRIVER_VERIFY_STATUS_2 = 2;
+
+    //是否跳过
+    const IS_SKIPPED = 1;
+    const IS_NOT_SKIPPED = 2;
 }

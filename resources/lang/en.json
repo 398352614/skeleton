@@ -600,7 +600,8 @@
     "充值完成":"Recharge completed",
     "未审核":"Not reviewed",
     "已审核":"Reviewed",
-
+    "已跳过": "Skipped",
+    "未跳过": "Not skipped",
     "推送失败":"Push failed",
 
     "顺带包裹":"By package",

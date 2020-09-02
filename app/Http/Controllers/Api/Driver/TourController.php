@@ -9,6 +9,7 @@
 
 namespace App\Http\Controllers\Api\Driver;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Driver\TourService;
 use App\Traits\TourTrait;
@@ -29,7 +30,7 @@ class TourController extends BaseController
     /**
      * 锁定-开始装货
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function lock($id)
     {
@@ -39,7 +40,7 @@ class TourController extends BaseController
     /**
      * 解锁
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function unlock($id)
     {
@@ -49,7 +50,7 @@ class TourController extends BaseController
     /**
      * 备注
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function remark($id)
     {
@@ -59,7 +60,7 @@ class TourController extends BaseController
     /**
      * 更换车辆
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function changeCar($id)
     {
@@ -70,7 +71,7 @@ class TourController extends BaseController
      * 出库前验证
      * @param $id
      * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function checkOutWarehouse($id)
     {
@@ -81,7 +82,7 @@ class TourController extends BaseController
     /**
      * 司机出库
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function outWarehouse($id)
     {
@@ -94,7 +95,7 @@ class TourController extends BaseController
      * 司机实际出库
      * @param $id
      * @return void
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function actualOutWarehouse($id)
     {
@@ -108,7 +109,7 @@ class TourController extends BaseController
      * 获取站点列表
      * @param $id
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function getBatchList($id)
     {
@@ -119,7 +120,7 @@ class TourController extends BaseController
      * 获取站点的订单列表
      * @param $id
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function getBatchOrderList($id)
     {
@@ -130,7 +131,7 @@ class TourController extends BaseController
     /**
      * 到达站点
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function batchArrive($id)
     {
@@ -141,7 +142,7 @@ class TourController extends BaseController
      * 获取站点详情
      * @param $id
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function getBatchInfo($id)
     {
@@ -152,7 +153,7 @@ class TourController extends BaseController
      * 站点 异常上报
      * @param $id
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function batchException($id)
     {
@@ -162,7 +163,7 @@ class TourController extends BaseController
     /**
      * 站点 取消取派
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function batchCancel($id)
     {
@@ -175,7 +176,7 @@ class TourController extends BaseController
      * 签收验证
      * @param $id
      * @return array
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function checkBatchSign($id)
     {
@@ -185,7 +186,7 @@ class TourController extends BaseController
     /**
      * 站点 签收
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function batchSign($id)
     {
@@ -198,7 +199,7 @@ class TourController extends BaseController
      * 获取取件线路统计数据
      * @param $id
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function getTotalInfo($id)
     {
@@ -208,7 +209,7 @@ class TourController extends BaseController
     /**
      * 司机入库
      * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function inWarehouse($id)
     {
@@ -234,7 +235,7 @@ class TourController extends BaseController
      */
     public function updateBatchIndex()
     {
-        return $this->service->updateBatchIndex();
+        return $this->service->updateBatchIndex($this->data);
     }
 
     /**
@@ -244,5 +245,25 @@ class TourController extends BaseController
     public function getTourList()
     {
         return $this->service->getTourList();
+    }
+
+    /**
+     * 站点跳过
+     * @param $id
+     * @return void
+     * @throws BusinessLogicException
+     */
+    public function batchSkip($id){
+        return $this->service->batchSkip($id,$this->data);
+    }
+
+    /**
+     * 站点恢复
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function batchRecovery($id){
+        return $this->service->batchRecovery($id,$this->data);
     }
 }

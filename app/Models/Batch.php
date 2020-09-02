@@ -66,6 +66,7 @@ class Batch extends BaseModel
         'car_id',
         'car_no',
         'sort_id',
+        'is_skipped',
         'expect_pickup_quantity',
         'actual_pickup_quantity',
         'expect_pie_quantity',
@@ -115,6 +116,7 @@ class Batch extends BaseModel
         'receiver_country_name',
         'expect_time_human',
         'actual_time_human',
+        'is_skipped_name'
     ];
 
     /**
@@ -152,5 +154,10 @@ class Batch extends BaseModel
     public function getActualTimeHumanAttribute()
     {
         return empty($this->actual_time) ? null : CarbonInterval::second($this->actual_time)->cascade()->forHumans();
+    }
+
+    public function getIsSkippedNameAttribute()
+    {
+        return empty($this->is_skipped) ? null : ConstTranslateTrait::isSkippedList($this->is_skipped);
     }
 }
