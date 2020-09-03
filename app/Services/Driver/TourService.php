@@ -821,7 +821,7 @@ class TourService extends BaseService
                 throw new BusinessLogicException('请按优化的站点顺序进行派送，或手动跳过之前的站点');
             }
         }
-        if ($batch['is_skipped' == BaseConstService::IS_SKIPPED]) {
+        if ($batch['is_skipped'] == BaseConstService::IS_SKIPPED) {
             throw new BusinessLogicException('此站点已被跳过，请先恢复站点');
         }
         /*******************************************1.处理站点下的材料*************************************************/
