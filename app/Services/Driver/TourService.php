@@ -813,7 +813,7 @@ class TourService extends BaseService
         }
         $line=$this->getLineService()->getInfo(['id'=>$tour['line_id']],['*'],false)->toArray();
         if($line['can_skip_batch'] == BaseConstService::CAN_NOT_SKIP_BATCH){
-            $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'sort_id' < $batch['sort_id'], 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
+            $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'sort_id' =>['<',$batch['sort_id']], 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
             if(!empty($batchList)){
                 throw new BusinessLogicException('请按优化的站点顺序进行派送，或手动跳过之前的站点');
             }
