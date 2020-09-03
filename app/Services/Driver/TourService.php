@@ -811,9 +811,13 @@ class TourService extends BaseService
         if (intval($params['pay_type']) == BaseConstService::BATCH_PAY_TYPE_4 && (intval($params['total_sticker_amount']) !== 0 || intval($params['total_replace_amount']) !== 0 || intval($params['total_settlement_amount']) !== 0 || intval($params['total_delivery_amount']) !== 0)) {
             throw new BusinessLogicException('费用不为0，不能选择无需支付');
         }
-        $line = $this->getLineService()->getInfo(['id' => $tour['line_id']], ['*'], false)->toArray();
-        if ($line['can_skip_batch'] == BaseConstService::CAN_NOT_SKIP_BATCH) {
+        $line = $this->getLineService()->getInfo(['id' => $tour['line_id']], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('线路已删除，请联系管理员');
+        }
+        if ($line->can_skip_batch == BaseConstService::CAN_NOT_SKIP_BATCH) {
             $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'sort_id' => ['<', $batch['sort_id']], 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
+            Log::info($batchList);
             if ($batchList->isNotEmpty()) {
                 throw new BusinessLogicException('请按优化的站点顺序进行派送，或手动跳过之前的站点');
             }
