@@ -66,7 +66,7 @@ class ThirdPartyLogService extends BaseService
             case BaseConstService::NOTIFY_ASSIGN_BATCH:
                 $orderNoList = array_column($postData['batch']['order_list'], 'order_no');
                 break;
-            case BaseConstService::NOTIFY_ORDER_CANCEL:
+            case BaseConstService::NOTIFY_ORDER_CANCEL || BaseConstService::NOTIFY_STORE_ORDER:
                 $orderNoList[] = $postData['order_no'];
                 break;
             default:
