@@ -11,20 +11,39 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Fee;
+use App\Models\Order;
 use App\Models\ThirdPartyLog;
 use App\Traits\SearchTrait;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class ThirdPartyLogService
+ * @package App\Services
+ * @property Order $orderModel
+ */
 class ThirdPartyLogService extends BaseService
 {
+    public $orderModel;
+
     public function __construct(ThirdPartyLog $model, $resource = null, $infoResource = null)
     {
         parent::__construct($model, $resource, $infoResource);
+        $this->orderModel = new Order();
     }
 
-    public function index($orderNo)
+    /**
+     * 日志列表
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function index($id)
     {
-        return parent::getList(['order_no' => $orderNo], ['*'], false)->toArray();
+        $order = $this->orderModel::query()->where('id', $id)->first();
+        if (empty($order)) {
+            throw new BusinessLogicException('订单不存在');
+        }
+        return parent::getList(['order_no' => $order->order_no], ['*'], false)->toArray();
     }
 
 

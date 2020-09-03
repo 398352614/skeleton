@@ -17,8 +17,8 @@ class ThirdPartyLogController extends BaseController
         parent::__construct($service);
     }
 
-    public function index($orderNo)
+    public function index($id)
     {
-        return $this->service->index($orderNo);
+        return $this->service->index($id);
     }
 }

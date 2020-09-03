@@ -92,6 +92,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/get-line', 'OrderController@getLineList');
         //同步订单状态列表
         Route::post('synchronize-status-list', 'OrderController@synchronizeStatusList');
+        //订单第三方对接日志
+        Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
     });
 
     Route::prefix('package')->group(function () {
