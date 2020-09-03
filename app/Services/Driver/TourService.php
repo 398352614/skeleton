@@ -26,6 +26,8 @@ use App\Services\BaseService;
 use App\Services\FeeService;
 use App\Services\OrderNoRuleService;
 use App\Traits\TourTrait;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use App\Services\Traits\TourRedisLockTrait;
@@ -464,7 +466,7 @@ class TourService extends BaseService
      * 验证-出库
      * @param $id
      * @param $params
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
     public function checkOutWarehouse($id, $params)
@@ -538,7 +540,7 @@ class TourService extends BaseService
     /**
      * 取件线路中的站点列表
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
     public function getBatchList($id)
@@ -552,7 +554,9 @@ class TourService extends BaseService
             'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], $batchFields, false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        $batchList = Batch::query()->where('tour_no', $this->tour_no)->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get(['id', 'sort_id'])->toArray();
+        $ingBatchList = Batch::query()->where('tour_no', $this->tour_no)->whereNotIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get(['id', 'sort_id'])->toArray();
+        $batchList = array_merge($ingBatchList,$batchList);
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['batch_no', 'type', DB::raw('SUM(`expect_quantity`) as expect_quantity'), DB::raw('SUM(`actual_quantity`) as actual_quantity')], false, ['batch_no', 'type'])->toArray();
         $packageList = collect($packageList)->groupBy('batch_no')->map(function ($itemPackageList) {
             return collect($itemPackageList)->keyBy('type');
@@ -574,7 +578,7 @@ class TourService extends BaseService
      * 达到时-获取站点的订单列表
      * @param $id
      * @param $params
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
     public function getBatchOrderList($id, $params)
@@ -598,6 +602,7 @@ class TourService extends BaseService
      * 站点到达 主要处理到达时间和里程
      * @param $id
      * @param $params
+     * @return Builder[]|\Illuminate\Database\Eloquent\Collection|AnonymousResourceCollection
      * @throws BusinessLogicException
      */
     public function batchArrive($id, $params)
@@ -629,6 +634,8 @@ class TourService extends BaseService
             throw new BusinessLogicException('更新到达时间失败，请重新操作');
         }
         TourTrait::afterBatchArrived($tour, $batch);
+        $specialRemarkList = $this->getOrderService()->getList(['batch_no' =>$batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'special_remark'], false);
+        return $specialRemarkList;
     }
 
 
@@ -636,7 +643,7 @@ class TourService extends BaseService
      * 到达后-站点详情
      * @param $id
      * @param $params
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
     public function getBatchInfo($id, $params)
@@ -1157,7 +1164,7 @@ class TourService extends BaseService
     /**
      * 获取取件线路统计数据
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
     public function getTotalInfo($id)
