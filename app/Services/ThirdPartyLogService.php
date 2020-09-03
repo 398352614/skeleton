@@ -10,7 +10,9 @@ namespace App\Services;
 
 
 use App\Exceptions\BusinessLogicException;
+use App\Models\Company;
 use App\Models\Fee;
+use App\Models\Merchant;
 use App\Models\Order;
 use App\Models\ThirdPartyLog;
 use App\Traits\SearchTrait;
@@ -75,11 +77,17 @@ class ThirdPartyLogService extends BaseService
                 $orderNoList = [];
         }
         if (empty($content) || empty($orderNoList)) return;
+        $now = now();
+        $merchant = Merchant::query()->where('id', $merchantId)->first();
+        if (empty($merchant)) return;
         foreach ($orderNoList as $orderNo) {
             $dataList[] = [
-                'order_no' => $orderNo,
+                'company_id' => $merchant->company_id,
                 'merchant_id' => $merchantId,
-                'content' => $content
+                'order_no' => $orderNo,
+                'content' => $content,
+                'created_at' => $now,
+                'updated_at' => $now
             ];
         }
         ThirdPartyLog::query()->insert($dataList);
