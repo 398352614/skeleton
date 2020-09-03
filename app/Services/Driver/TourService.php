@@ -603,6 +603,16 @@ class TourService extends BaseService
     public function batchArrive($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
+        $line = $this->getLineService()->getInfo(['id' => $tour['line_id']], ['*'], false);
+        if(empty($line)){
+            throw new BusinessLogicException('线路已删除，请联系管理员');
+        }
+        if ($line->can_skip_batch == BaseConstService::CAN_NOT_SKIP_BATCH) {
+            $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'sort_id' => ['<', $batch['sort_id']], 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
+            if ($batchList->isNotEmpty()) {
+                throw new BusinessLogicException('请按优化的站点顺序进行派送，或手动跳过之前的站点');
+            }
+        }
         if ($tour['actual_out_status'] == BaseConstService::NO) {
             throw new BusinessLogicException('请先确认出库');
         }
@@ -814,12 +824,6 @@ class TourService extends BaseService
         $line = $this->getLineService()->getInfo(['id' => $tour['line_id']], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('线路已删除，请联系管理员');
-        }
-        if ($line->can_skip_batch == BaseConstService::CAN_NOT_SKIP_BATCH) {
-            $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'sort_id' => ['<', $batch['sort_id']], 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
-            if ($batchList->isNotEmpty()) {
-                throw new BusinessLogicException('请按优化的站点顺序进行派送，或手动跳过之前的站点');
-            }
         }
         if ($batch['is_skipped'] == BaseConstService::IS_SKIPPED) {
             throw new BusinessLogicException('此站点已被跳过，请先恢复站点');
