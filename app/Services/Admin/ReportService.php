@@ -123,7 +123,7 @@ class ReportService extends BaseService
             $warehouseExpectTimeHuman = '0秒';
         }
         $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
-        $batch = collect($batchList)->sortByDesc('actual_arrive_time')->first();
+        $batch = collect($batchList)->sortBy('sort_id')->sortByDesc('actual_arrive_time')->first();
         $warehouseInfo = [
             'id' => $info['warehouse_id'],
             'name' => $info['warehouse_name'],
@@ -176,6 +176,7 @@ class ReportService extends BaseService
         }
         //获取所有的站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
+        $batchList = array_values($batchList);
         foreach ($batchList as $k => $v) {
             $batchList[$k]['sort_id'] = $k + 1;
         }
