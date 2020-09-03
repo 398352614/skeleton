@@ -51,7 +51,7 @@ abstract class ATourNotify
         !empty($orderList) && $this->orderList = collect($orderList)->map(function ($order) {
             return Arr::only($order, self::$orderFields);
         })->toArray();
-        $this->type=$this->notifyType();
+        $this->type = $this->notifyType();
         Log::info('notify-type:' . $this->notifyType());
     }
 
@@ -66,4 +66,15 @@ abstract class ATourNotify
      * @return array
      */
     abstract public function getDataList(): array;
+
+    /**
+     * 获取第三方对接内容
+     * @param $status
+     * @param string $msg
+     * @return string
+     */
+    public function getThirdPartyContent(bool $status, string $msg = ''): string
+    {
+        return '';
+    }
 }

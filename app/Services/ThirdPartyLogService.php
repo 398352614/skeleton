@@ -48,41 +48,25 @@ class ThirdPartyLogService extends BaseService
 
 
     /**
-     * @param array $postData
-     * @param int $merchantId
-     * @param $notifyType
-     * @param bool $pushStatus
-     * @param string $msg
+     * 批量新增
+     * @param array $merchantId
+     * @param int $postData
+     * @param string $notifyType
+     * @param string $content
      */
-    public static function storeAll(int $merchantId, array $postData, string $notifyType, $pushStatus = true, string $msg = '')
+    public static function storeAll(int $merchantId, array $postData, string $notifyType, string $content)
     {
-        $content = '';
         $orderNoList = [];
         $dataList = [];
         switch ($notifyType) {
             case BaseConstService::NOTIFY_OUT_WAREHOUSE:
                 $orderNoList = array_column(array_column($postData['batch_list'], 'order_list'), 'order_no');
-                if ($pushStatus == true) {
-                    $content = '出库推送成功';
-                } else {
-                    $content = '出库推送失败,失败原因:' . $msg;
-                }
                 break;
             case BaseConstService::NOTIFY_ASSIGN_BATCH:
                 $orderNoList = array_column($postData['batch']['order_list'], 'order_no');
-                if ($pushStatus == true) {
-                    $content = '签收推送成功';
-                } else {
-                    $content = '签收推送失败,失败原因:' . $msg;
-                }
                 break;
             case BaseConstService::NOTIFY_ORDER_CANCEL:
-                $orderNo = $postData['order_no'];
-                if ($pushStatus == true) {
-                    $content = '取消订单推送成功';
-                } else {
-                    $content = '取消订单推送成功,失败原因:' . $msg;
-                }
+                $orderNoList[] = $postData['order_no'];
                 break;
             default:
                 $content = '';

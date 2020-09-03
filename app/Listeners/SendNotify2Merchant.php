@@ -88,7 +88,7 @@ class SendNotify2Merchant implements ShouldQueue
                 $postData = ['type' => $notifyType, 'data' => $data];
                 if (empty($merchantList[$merchantId]['url'])) continue;
                 list($pushStatus, $msg) = $this->postData($merchantList[$merchantId]['url'], $postData);
-                ThirdPartyLogService::storeAll($merchantId, $postData, $notifyType, $pushStatus, $msg);
+                ThirdPartyLogService::storeAll($merchantId, $postData, $notifyType, $event->getThirdPartyContent($pushStatus, $msg));
             }
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
@@ -124,7 +124,7 @@ class SendNotify2Merchant implements ShouldQueue
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
             Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
-            return [false, $res['msg'] ?? '服务器内部错误',];
+            return [false, $res['msg'] ?? '服务器内部错误'];
         }
         return [true, ''];
     }

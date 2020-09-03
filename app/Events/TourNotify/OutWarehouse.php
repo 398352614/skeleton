@@ -72,4 +72,20 @@ class OutWarehouse extends ATourNotify
         Log::info('out-warehouse-tour-list', $tourList);
         return $tourList;
     }
+
+    /**
+     * 获取第三方对接内容
+     * @param bool $status
+     * @param string $msg
+     * @return string
+     */
+    public function getThirdPartyContent(bool $status, string $msg = ''): string
+    {
+        if ($status == true) {
+            $content = '推送出库成功';
+        } else {
+            $content = '出库推送失败,失败原因:' . $msg;
+        }
+        return $content;
+    }
 }

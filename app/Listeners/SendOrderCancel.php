@@ -93,7 +93,7 @@ class SendOrderCancel implements ShouldQueue
                 'type' => $event->notifyType(),
                 'data' => $postData
             ]);
-            ThirdPartyLogService::storeAll($merchantId, $postData, $event->notifyType(), $pushStatus, $msg);
+            ThirdPartyLogService::storeAll($merchantId, $postData, $event->notifyType(), $event->getThirdPartyContent($pushStatus, $msg));
             Log::info('订单取消');
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
@@ -142,7 +142,7 @@ class SendOrderCancel implements ShouldQueue
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
             Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
-            return [false, $res['msg'] ?? '服务器内部错误',];
+            return [false, $res['msg'] ?? '服务器内部错误'];
         }
         return [true, ''];
     }
@@ -162,4 +162,6 @@ class SendOrderCancel implements ShouldQueue
             throw new BusinessLogicException('发送失败');
         }
     }
+
+
 }
