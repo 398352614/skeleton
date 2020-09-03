@@ -82,7 +82,7 @@ class OutWarehouse extends ATourNotify
     public function getThirdPartyContent(bool $status, string $msg = ''): string
     {
         if ($status == true) {
-            $content = '推送出库成功';
+            $content = '出库推送成功';
         } else {
             $content = '出库推送失败,失败原因:' . $msg;
         }

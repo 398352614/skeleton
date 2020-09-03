@@ -68,4 +68,20 @@ class ActualOutWarehouse extends ATourNotify
         }
         return $tourList;
     }
+
+    /**
+     * 获取第三方对接内容
+     * @param bool $status
+     * @param string $msg
+     * @return string
+     */
+    public function getThirdPartyContent(bool $status, string $msg = ''): string
+    {
+        if ($status == true) {
+            $content = '确定出库,预计到达时间推送成功';
+        } else {
+            $content = '确定出库,预计到达时间推送失败,失败原因:' . $msg;
+        }
+        return $content;
+    }
 }
