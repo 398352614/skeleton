@@ -319,6 +319,7 @@ class BaseConstService
     const NOTIFY_SYNC_ORDER_STATUS = 'sync-order-status';   //同步订单状态
     const NOTIFY_RECHARGE_PROCESS = 'recharge-process';   //同步订单状态
     const NOTIFY_RECHARGE_VALIDUSER = 'recharge-validuser';   //同步订单状态
+    const NOTIFY_STORE_ORDER = 'store-order';               //订单新增
 
 
     //商户类型
