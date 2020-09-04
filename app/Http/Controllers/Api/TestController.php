@@ -61,6 +61,7 @@ class TestController extends BaseController
 
     public function show($id)
     {
+        $aaa;
         $url = 'http://api.map.baidu.com/batch';
         $list = [
             [
