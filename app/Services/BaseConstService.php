@@ -376,6 +376,11 @@ class BaseConstService
     const IS_NOT_SKIPPED = 2;
 
     //能否跳过
-    const CAN_SKIP_BATCH = 1;
-    const CAN_NOT_SKIP_BATCH = 2;
+    const CAN_NOT_SKIP_BATCH = 1;
+    const CAN_SKIP_BATCH = 2;
+
+    //语言
+    const CN = 'cn';
+    const EN = 'en';
+    const NL = 'nl';
 }

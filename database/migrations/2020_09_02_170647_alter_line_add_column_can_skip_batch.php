@@ -14,7 +14,7 @@ class AlterLineAddColumnCanSkipBatch extends Migration
     public function up()
     {
         Schema::table('line', function (Blueprint $table) {
-            $table->tinyInteger('can_skip_batch')->default(2)->nullable()->after('is_increment')->comment('站点能否跳过1-可以2-不能');
+            $table->tinyInteger('can_skip_batch')->default(1)->nullable()->after('is_increment')->comment('站点能否跳过1-不能2-可以');
         });
     }
 
