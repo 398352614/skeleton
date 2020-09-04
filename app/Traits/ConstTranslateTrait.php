@@ -363,8 +363,8 @@ trait ConstTranslateTrait
     ];
 
     public static $canSkipBatchList = [
-        BaseConstService::CAN_SKIP_BATCH => '是',
-        BaseConstService::CAN_NOT_SKIP_BATCH => '否',
+        BaseConstService::CAN_NOT_SKIP_BATCH => '不能跳过',
+        BaseConstService::CAN_SKIP_BATCH => '可以跳过',
     ];
 
     public static $languageList = [
