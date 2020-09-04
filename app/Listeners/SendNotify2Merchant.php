@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\AfterDriverLocationUpdated;
 use App\Events\Interfaces\ATourNotify;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
@@ -143,5 +144,14 @@ class SendNotify2Merchant implements ShouldQueue
             Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('发送失败');
         }
+    }
+
+    /**
+     * 确定监听器是否应加入队列
+     * @return bool
+     */
+    public function shouldQueue()
+    {
+        return false;
     }
 }
