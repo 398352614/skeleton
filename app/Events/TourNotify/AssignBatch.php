@@ -82,7 +82,8 @@ class AssignBatch extends ATourNotify
         Log::info('顺带包裹', $additionalPackageList);
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
-            $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch, 'additional_package_list' => $additionalPackageList[$merchantId] ?? []]);
+            $batch['additional_package_list'] = $additionalPackageList[$merchantId] ?? [];
+            $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch]);
         }
         return $tourList;
     }

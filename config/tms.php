@@ -12,6 +12,9 @@ return [
     'push_url' => env('PUSH_URL', 'dev-tms.nle-tech.com/socket'),
     'country_path' => storage_path(env('COUNTRY_PATH')),
     'app_env'=>env('APP_ENV'),
+    'baidu_id'=>env('BAIDU_ID'),
+    'baidu_key'=>env('BAIDU_KEY'),
+    'baidu_url'=>env('BAIDU_URL'),
 
     //缓存前缀
     'cache_prefix' => [
