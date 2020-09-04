@@ -61,7 +61,6 @@ class TestController extends BaseController
 
     public function show($id)
     {
-        $aaa;
         $url = 'http://api.map.baidu.com/batch';
         $list = [
             [
@@ -73,7 +72,7 @@ class TestController extends BaseController
                 "url" => "/geocoding/v3/?address=重庆市沙坪坝区学城大道62号&ak=你的ak&output=json"
             ]
         ];
-        $client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Clients();
         $res = $client->request('POST', $url, [
             'form_params' => json_encode(['reqs' => $list])
         ]);
