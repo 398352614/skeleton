@@ -24,6 +24,7 @@ class BatchInfoResource extends JsonResource
             'car_id' => $this->car_id,
             'car_no' => $this->car_no,
             'sort_id' => $this->sort_id,
+            'is_skipped' => $this->is_skipped,
             'expect_pickup_quantity' => $this->expect_pickup_quantity,
             'actual_pickup_quantity' => $this->actual_pickup_quantity,
             'expect_pie_quantity' => $this->expect_pie_quantity,

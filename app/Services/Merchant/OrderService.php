@@ -25,6 +25,7 @@ use App\Services\Merchant\RouteTrackingService;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
+use App\Services\ThirdPartyLogService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
@@ -398,6 +399,8 @@ class OrderService extends BaseService
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_BATCH, $batch);
         //订单轨迹-订单加入取件线路
         OrderTrailService::OrderStatusChangeCreateTrail($order, BaseConstService::ORDER_TRAIL_JOIN_TOUR, $tour);
+        //订单第三方日志记录
+        ($orderSource == BaseConstService::ORDER_SOURCE_3) && ThirdPartyLogService::storeAll(auth()->user()->id, ['order_no' => $params['order_no']], BaseConstService::NOTIFY_STORE_ORDER, '订单预约成功，外部订单号:' . $params['out_order_no'] . '，预约线路:' . $tour['line_name'] . '，预约日期:' . $params['execution_date']);
         return [
             'order_no' => $params['order_no'],
             'batch_no' => $batch['batch_no'],
@@ -649,6 +652,7 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('外部订单号已存在', 1002, [], $data);
             }
         }
+        $params['out_order_no'] = $params['out_order_no'] ?? '';
     }
 
     /**

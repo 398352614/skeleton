@@ -82,7 +82,7 @@ class AssignBatch extends ATourNotify
         Log::info('顺带包裹', $additionalPackageList);
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
-            $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch, 'additional_package_list' => $additionalPackageList[$merchantId] ??[]]);
+            $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch, 'additional_package_list' => $additionalPackageList[$merchantId] ?? []]);
         }
         return $tourList;
     }
@@ -102,5 +102,21 @@ class AssignBatch extends ATourNotify
             $order['package_list'] = $packageList[$order['order_no']] ?? '';
         }
         return $orderList;
+    }
+
+    /**
+     * 获取第三方对接内容
+     * @param bool $status
+     * @param string $msg
+     * @return string
+     */
+    public function getThirdPartyContent(bool $status, string $msg = ''): string
+    {
+        if ($status == true) {
+            $content = '签收推送成功';
+        } else {
+            $content = '签收推送失败,失败原因:' . $msg;
+        }
+        return $content;
     }
 }

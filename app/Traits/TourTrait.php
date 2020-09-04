@@ -15,6 +15,7 @@ use App\Events\TourDriver\BackWarehouse;
 use App\Events\TourDriver\OutWarehouse;
 use App\Events\TourNotify\CancelBatch;
 use App\Events\TourNotify\NextBatch;
+use App\Jobs\ActualOutWarehouse;
 use App\Listeners\SendNotify2Merchant;
 use App\Models\Batch;
 use App\Models\Order;
@@ -41,8 +42,9 @@ trait TourTrait
 
     public static function actualOutWarehouse($tour)
     {
+        $orderList = Order::query()->select(['*'])->where('tour_no', $tour['tour_no'])->get()->toArray();
         //智能调度
-        dispatch(new \App\Jobs\ActualOutWarehouse($tour['tour_no']));
+        dispatch(new ActualOutWarehouse($tour['tour_no'], $orderList));
     }
 
     public static function afterBatchArrived($tour, $batch)

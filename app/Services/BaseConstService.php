@@ -308,6 +308,7 @@ class BaseConstService
 
     //通知类型
     const NOTIFY_OUT_WAREHOUSE = 'out-warehouse';       //出库通知
+    const NOTIFY_ACTUAL_OUT_WAREHOUSE = 'actual-out-warehouse';       //出库通知
     const NOTIFY_NEXT_BATCH = 'next-batch';             //下一个站点通知
     const NOTIFY_ARRIVED_BATCH = 'arrive-batch';        //到达站点通知
     const NOTIFY_ASSIGN_BATCH = 'assign-batch';         //签收站点通知
@@ -318,6 +319,7 @@ class BaseConstService
     const NOTIFY_SYNC_ORDER_STATUS = 'sync-order-status';   //同步订单状态
     const NOTIFY_RECHARGE_PROCESS = 'recharge-process';   //同步订单状态
     const NOTIFY_RECHARGE_VALIDUSER = 'recharge-validuser';   //同步订单状态
+    const NOTIFY_STORE_ORDER = 'store-order';               //订单新增
 
 
     //商户类型
@@ -366,6 +368,19 @@ class BaseConstService
     const VERIFY_STATUS_2 = 2;
 
     //充值司机端验证状态
-    const RECHARGE_DRIVER_VERIFY_STATUS_1=1;
-    const RECHARGE_DRIVER_VERIFY_STATUS_2=2;
+    const RECHARGE_DRIVER_VERIFY_STATUS_1 = 1;
+    const RECHARGE_DRIVER_VERIFY_STATUS_2 = 2;
+
+    //是否跳过
+    const IS_SKIPPED = 1;
+    const IS_NOT_SKIPPED = 2;
+
+    //能否跳过
+    const CAN_NOT_SKIP_BATCH = 1;
+    const CAN_SKIP_BATCH = 2;
+
+    //语言
+    const CN = 'cn';
+    const EN = 'en';
+    const NL = 'nl';
 }

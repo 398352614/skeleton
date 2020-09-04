@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\AfterDriverLocationUpdated;
 use App\Events\Interfaces\ATourNotify;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
@@ -11,6 +12,7 @@ use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use App\Services\ThirdPartyLogService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -86,7 +88,8 @@ class SendNotify2Merchant implements ShouldQueue
             foreach ($dataList as $merchantId => $data) {
                 $postData = ['type' => $notifyType, 'data' => $data];
                 if (empty($merchantList[$merchantId]['url'])) continue;
-                $this->postData($merchantList[$merchantId]['url'], $postData);
+                list($pushStatus, $msg) = $this->postData($merchantList[$merchantId]['url'], $postData);
+                ThirdPartyLogService::storeAll($merchantId, $data, $notifyType, $event->getThirdPartyContent($pushStatus, $msg));
             }
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
@@ -113,20 +116,18 @@ class SendNotify2Merchant implements ShouldQueue
      * 发送通知-1
      * @param string $url
      * @param array $postData
+     * @return array $res
      * @throws BusinessLogicException
      */
     public function postData(string $url, array $postData)
     {
-        try {
-            $res = $this->curl->post($url, $postData);
-            if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
-                app('log')->info('send notify failure');
-                Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
-            }
-        } catch (\Exception $ex) {
-            Log::info(json_encode($postData, JSON_UNESCAPED_UNICODE));
-            Log::info('推送失败');
+        $res = $this->curl->post($url, $postData);
+        if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
+            app('log')->info('send notify failure');
+            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            return [false, $res['msg'] ?? '服务器内部错误'];
         }
+        return [true, ''];
     }
 
     /**

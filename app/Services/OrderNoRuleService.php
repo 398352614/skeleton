@@ -92,7 +92,7 @@ class OrderNoRuleService extends BaseService
      * @param null $id
      * @throws BusinessLogicException
      */
-    private function check($params, $id = null)
+    private function check(&$params, $id = null)
     {
         $params['string_length'] = empty($params['string_length']) ? 0 : $params['string_length'];
         if (strlen($params['prefix']) + $params['int_length'] + $params['string_length'] > BaseConstService::ORDER_NO_RULE_LENGTH) {

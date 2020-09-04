@@ -13,6 +13,7 @@ use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use App\Services\ThirdPartyLogService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -87,11 +88,13 @@ class SendOrderCancel implements ShouldQueue
             $url = $this->getUrlByMerchantId($merchantId);
             if (empty($url)) return true;
             //推送
-            $res = $this->postData($url, [
+            $postData = ['order_no' => $event->order_no, 'out_order_no' => $event->out_order_no];
+            list($pushStatus, $msg) = $this->postData($url, [
                 'type' => $event->notifyType(),
-                'data' => ['order_no' => $event->order_no, 'out_order_no' => $event->out_order_no]
+                'data' => $postData
             ]);
-            Log::info('订单取消:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            ThirdPartyLogService::storeAll($merchantId, $postData, $event->notifyType(), $event->getThirdPartyContent($pushStatus, $msg));
+            Log::info('订单取消');
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
         }
@@ -130,6 +133,7 @@ class SendOrderCancel implements ShouldQueue
      * 发送通知-1
      * @param string $url
      * @param array $postData
+     * @return array $res
      * @throws BusinessLogicException
      */
     public function postData(string $url, array $postData)
@@ -138,8 +142,9 @@ class SendOrderCancel implements ShouldQueue
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
             Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
-            throw new BusinessLogicException('发送失败');
+            return [false, $res['msg'] ?? '服务器内部错误'];
         }
+        return [true, ''];
     }
 
     /**
@@ -157,4 +162,6 @@ class SendOrderCancel implements ShouldQueue
             throw new BusinessLogicException('发送失败');
         }
     }
+
+
 }

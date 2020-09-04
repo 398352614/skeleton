@@ -38,7 +38,7 @@ class CancelBatch extends ATourNotify
     public function getDataList(): array
     {
         $orderNoList = array_column($this->orderList, 'order_no');
-        $packageList = Package::query()->whereIn('order_no', $orderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount','delivery_amount'])->toArray();
+        $packageList = Package::query()->whereIn('order_no', $orderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount'])->toArray();
         $packageList = array_create_group_index($packageList, 'order_no');
         $materialList = Material::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
         $materialList = array_create_group_index($materialList, 'order_no');
@@ -75,5 +75,21 @@ class CancelBatch extends ATourNotify
             $order['package_list'] = $packageList[$order['order_no']] ?? '';
         }
         return $orderList;
+    }
+
+    /**
+     * 获取第三方对接内容
+     * @param bool $status
+     * @param string $msg
+     * @return string
+     */
+    public function getThirdPartyContent(bool $status, string $msg = ''): string
+    {
+        if ($status == true) {
+            $content = '取消取派推送成功';
+        } else {
+            $content = '取消取派推送失败,失败原因:' . $msg;
+        }
+        return $content;
     }
 }

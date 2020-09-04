@@ -57,6 +57,9 @@ use Illuminate\Support\Facades\App;
  * @method static merchantPackageStatusList($args = null)
  * @method static rechargeStatusList($args = null)
  * @method static verifyStatusList($args = null)
+ * @method static isSkippedList($args = null)
+ * @method static canSkipBatchList($args = null)
+ * @method static languageList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -353,6 +356,23 @@ trait ConstTranslateTrait
         BaseConstService::VERIFY_STATUS_1 => '未审核',
         BaseConstService::VERIFY_STATUS_2 => '已审核',
     ];
+
+    public static $isSkippedList = [
+        BaseConstService::IS_SKIPPED => '已跳过',
+        BaseConstService::IS_NOT_SKIPPED => '未跳过',
+    ];
+
+    public static $canSkipBatchList = [
+        BaseConstService::CAN_NOT_SKIP_BATCH => '不能跳过',
+        BaseConstService::CAN_SKIP_BATCH => '可以跳过',
+    ];
+
+    public static $languageList = [
+        BaseConstService::CN => '汉语',
+        BaseConstService::EN => '英语',
+        BaseConstService::NL => '荷兰语',
+    ];
+
 
     /**
      * 格式化常量列表

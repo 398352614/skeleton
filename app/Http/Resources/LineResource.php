@@ -22,6 +22,7 @@ class LineResource extends JsonResource
             'name' => $this->name,
             'country' => $this->country,
             'country_name' => $this->country_name,
+            'can_skip_batch'=>$this->can_skip_batch,
             'warehouse_id' => $this->warehouse_id,
             'pickup_max_count' => $this->pickup_max_count,
             'pie_max_count' => $this->pie_max_count,

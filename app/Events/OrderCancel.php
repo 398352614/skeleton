@@ -38,6 +38,22 @@ class OrderCancel
     }
 
     /**
+     * 获取第三方对接内容
+     * @param bool $status
+     * @param string $msg
+     * @return string
+     */
+    public function getThirdPartyContent(bool $status, string $msg = ''): string
+    {
+        if ($status == true) {
+            $content = '取消订单推送成功';
+        } else {
+            $content = '取消订单推送失败,失败原因:' . $msg;
+        }
+        return $content;
+    }
+
+    /**
      * Get the channels the event should broadcast on.
      *
      * @return \Illuminate\Broadcasting\Channel|array

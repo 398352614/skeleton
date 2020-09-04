@@ -92,7 +92,7 @@ class BaseLineService extends BaseService
      */
     public function store($params, $rule = BaseConstService::LINE_RULE_POST_CODE)
     {
-        $lineData = Arr::only($params, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'status']);
+        $lineData = Arr::only($params, ['name', 'country', 'warehouse_id', 'can_skip_batch', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'status']);
         $lineData = array_merge($lineData, ['rule' => $rule, 'creator_id' => auth()->id(), 'creator_name' => auth()->user()->fullname]);
         $lineId = parent::insertGetId($lineData);
         if ($lineId === 0) {
@@ -109,7 +109,7 @@ class BaseLineService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'status']));
+        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'status']));
         if ($rowCount === false) {
             throw new BusinessLogicException('线路修改失败');
         }
