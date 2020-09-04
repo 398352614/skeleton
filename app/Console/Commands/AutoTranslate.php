@@ -54,16 +54,16 @@ class AutoTranslate extends Command
     public function handle()
     {
         Log::info('The translation begin.');
-        /*        try {*/
+                try {
         foreach (array_keys(ConstTranslateTrait::$languageList) as $v) {
             if ($v !== 'cn') {
                 $this->phpToText($v);
             }
         }
         $this->info('The translation success.');
-        /*        } catch (Exception $e) {
+                } catch (Exception $e) {
                     $this->info('The translation fail:' . $e->getMessage());
-                }*/
+                }
         return;
     }
 
