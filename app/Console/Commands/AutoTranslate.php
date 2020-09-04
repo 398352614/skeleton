@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AutoTranslate extends Command
 {
@@ -75,7 +76,7 @@ class AutoTranslate extends Command
     {
         $txt = '';
         $path = app_path(); // 需要转换的文件路径。
-        $toPath = app_path('resources/lang/' . $language . '.json');  // 最终要放到的位置。
+        $toPath = base_path('resources/lang/' . $language . '.json');  // 最终要放到的位置。
         $stringArr = $this->get_filenamesbydir($path);
         foreach ($stringArr as $name => $content) {
             $txt = $txt . PHP_EOL . $name . PHP_EOL . PHP_EOL . $content;
@@ -83,17 +84,20 @@ class AutoTranslate extends Command
         $allChinese = $this->findChinese($txt);
         $oldChinese = array_keys(json_decode(file_get_contents('resources/lang/' . $language . '.json'), true));
         $transChinese = array_diff($allChinese, $oldChinese);
-        for ($i = 0, $j = count($transChinese); $i < $j; $i++) {
-            $txt .= $transChinese[$i] . "\n";
+        $transTxt = '';
+        foreach ($transChinese as $k => $v) {
+            $transTxt .= $v . "\n";
         }
-        $result = $this->translate($txt, $language);
+        $result = $this->translate($transTxt, $language);
+        $json = '';
+        $oldJson = file_get_contents('resources/lang/' . $language . '.json');
         for ($i = 0, $j = count($result); $i < $j; $i++) {
-            $result .= '"' . $result[$i]['src'] . '":"' . $result[$i]['dst'] . '",' . "\n";
+            $json .= '"' . $result[$i]['src'] . '":"' . $result[$i]['dst'] . '",' . "\n";
         }
-        dd($result);
-        $file = fopen($toPath, "x");
-        $row = file_put_contents($toPath, $txt, FILE_APPEND);
-        fclose($file);
+        $json=Str::replaceLast(',','',$json);
+        $oldJson = str_replace('}', '', $oldJson);
+        $oldJson = $oldJson .','. $json . '}';
+        $row = file_put_contents($toPath, $oldJson);
         if (!empty($row)) {
             return 'success';
         }
@@ -160,10 +164,10 @@ class AutoTranslate extends Command
      */
     private function translate(string $txt, $language)
     {
-        $info = $this->translateApi($txt, 'cn', $language);
+        $info = $this->translateApi($txt, 'zh', $language);
         if (!empty($info['error_code'])) {
             if ($info['error_code'] == 58000) {
-                throw new Exception($_SERVER['SERVER_ADDR']);
+                throw new Exception('IP不对');
             }
             throw new Exception('API错误码:' . $info['error_code']);
         }
@@ -198,8 +202,7 @@ class AutoTranslate extends Command
     public function buildSign($query, $appID, $salt, $secKey)
     {
         $str = $appID . $query . $salt . $secKey;
-        $ret = md5($str);
-        return $ret;
+        return md5($str);
     }
 
     //发起网络请求
