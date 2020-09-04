@@ -43,7 +43,7 @@ trait UpdateTourTimeAndDistanceTrait
             ];
             //若取件线路未结束，则智能调度仓库
             if (in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4])) {
-                $warehouse['warehouse_expect_arrive_time'] = date('Y-m-d H:i:s', $data['timestamp'] + $data['loc_res'][$tour->tour_no . $tour->tour_no]['time']);
+                $warehouse['warehouse_expect_arrive_time'] = date('Y-m-d H:i:s', time() + $data['loc_res'][$tour->tour_no . $tour->tour_no]['time']);
                 $warehouse['warehouse_expect_distance'] = $data['loc_res'][$tour->tour_no . $tour->tour_no]['distance'];
                 $warehouse['warehouse_expect_time'] = $data['loc_res'][$tour->tour_no . $tour->tour_no]['time'];
                 Tour::query()->where('tour_no', $tour->tour_no)->update($warehouse);
@@ -53,7 +53,7 @@ trait UpdateTourTimeAndDistanceTrait
                 $tourBatch = Batch::where('batch_no', str_replace($tour->tour_no, '', $key))->where('tour_no', $tour->tour_no)->first();
                 //若站点未签收,则智能调度
                 if (!empty($tourBatch) && in_array(intval($tourBatch->status), [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])) {
-                    $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', $data['timestamp'] + $res['time']);
+                    $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', time() + $res['time']);
                     $tourBatch->expect_distance = $res['distance'];
                     $tourBatch->expect_time = $res['time'];
                     $tourBatch->save();

@@ -20,6 +20,7 @@ class MessageService
      */
     public function reportToWechat($body = '')
     {
+        return;
         $app = app('wechat.work');
         if (empty($app)) {
             return;
