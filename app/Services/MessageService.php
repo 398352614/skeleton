@@ -21,7 +21,7 @@ class MessageService
     public function reportToWechat($body = '')
     {
         $app = app('wechat.work');
-        if (empty($app->messenger)) {
+        if (empty($app)) {
             return;
         }
         $requestUri = request()->url();
