@@ -65,6 +65,7 @@ class ThirdPartyLogService extends BaseService
             case BaseConstService::NOTIFY_OUT_WAREHOUSE :
             case BaseConstService::NOTIFY_ACTUAL_OUT_WAREHOUSE:
                 $orderList = array_column($postData['batch_list'], 'order_list');
+                Log::info('third-order-list', $orderList);
                 $orderNoList = array_column($orderList[0], 'order_no');
                 break;
             case BaseConstService::NOTIFY_ASSIGN_BATCH:
