@@ -497,7 +497,7 @@ class TourService extends BaseService
             }
         }
         //验证订单数量
-        $orderCount = $this->getOrderService()->count(['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_STATUS_2]);
+        $orderCount = $this->getOrderService()->count(['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_TYPE_2]);
         if ($orderCount != $params['order_count']) {
             throw new BusinessLogicException($orderCount, 5002);
         }
@@ -555,7 +555,7 @@ class TourService extends BaseService
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
         $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->get()->toArray();
-        $ingBatchList = Batch::query()->where('tour_no',  $tour['tour_no'])->whereNotIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get()->toArray();
+        $ingBatchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereNotIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get()->toArray();
         $batchList = array_merge($batchList, $ingBatchList);
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['batch_no', 'type', DB::raw('SUM(`expect_quantity`) as expect_quantity'), DB::raw('SUM(`actual_quantity`) as actual_quantity')], false, ['batch_no', 'type'])->toArray();
         $packageList = collect($packageList)->groupBy('batch_no')->map(function ($itemPackageList) {
@@ -609,7 +609,7 @@ class TourService extends BaseService
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
         $line = $this->getLineService()->getInfo(['id' => $tour['line_id']], ['*'], false);
-        if(empty($line)){
+        if (empty($line)) {
             throw new BusinessLogicException('线路已删除，请联系管理员');
         }
         if ($line->can_skip_batch == BaseConstService::CAN_NOT_SKIP_BATCH) {
@@ -634,7 +634,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('更新到达时间失败，请重新操作');
         }
         TourTrait::afterBatchArrived($tour, $batch);
-        $specialRemarkList = $this->getOrderService()->getList(['batch_no' =>$batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'special_remark'], false);
+        $specialRemarkList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'special_remark'], false);
         return $specialRemarkList;
     }
 

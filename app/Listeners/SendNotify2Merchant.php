@@ -145,13 +145,4 @@ class SendNotify2Merchant implements ShouldQueue
             throw new BusinessLogicException('发送失败');
         }
     }
-
-    /**
-     * 确定监听器是否应加入队列
-     * @return bool
-     */
-    public function shouldQueue()
-    {
-        return false;
-    }
 }
