@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Services\MessageService;
 use App\Traits\ResponseTrait;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
@@ -40,6 +41,12 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        if (($exception->getCode() == 0) && $this->shouldReport($exception)) {
+            //企业微信报错
+            $body = $exception->getMessage() . ' in ' . $exception->getFile() . ':' . $exception->getLine();
+            (new MessageService())->reportToWechat($body);
+            app('log')->info('报错时参数' . json_encode(request()->input()));
+        }
         parent::report($exception);
     }
 
