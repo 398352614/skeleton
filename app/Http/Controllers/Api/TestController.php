@@ -72,7 +72,7 @@ class TestController extends BaseController
                 "url" => "/geocoding/v3/?address=重庆市沙坪坝区学城大道62号&ak=你的ak&output=json"
             ]
         ];
-        $client = new \GuzzleHttp\Clients();
+        $client = new \GuzzleHttp\Client();
         $res = $client->request('POST', $url, [
             'form_params' => json_encode(['reqs' => $list])
         ]);
