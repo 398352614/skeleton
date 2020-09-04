@@ -479,7 +479,7 @@ class TourService extends BaseService
         if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_3) {
             throw new BusinessLogicException('取件线路当前状态不允许出库');
         }
-        if (!empty($this->getInfo(['driver_id' => auth()->user()->id, 'status' => [' = ', BaseConstService::TOUR_STATUS_4]], ['*'], false))) {
+        if (!empty($this->getInfo(['driver_id' => auth()->user()->id, 'status' => ['=', BaseConstService::TOUR_STATUS_4]], ['*'], false))) {
             throw new BusinessLogicException('同时只能进行一个任务，请先完成其他取派中的任务');
         }
         if (empty($tour['car_id']) || empty($tour['car_no'])) {
@@ -975,8 +975,8 @@ class TourService extends BaseService
                 throw new BusinessLogicException('材料处理失败');
             };
             $rowCount = $this->tourMaterialModel->newQuery()
-                ->where('tour_no', ' = ', $tour['tour_no'])
-                ->where('code', ' = ', $dbMaterialList[$material['id']]['code'])
+                ->where('tour_no', '=', $tour['tour_no'])
+                ->where('code', '=', $dbMaterialList[$material['id']]['code'])
                 ->update(['finish_quantity' => DB::raw("finish_quantity+$actualQuantity"), 'surplus_quantity' => DB::raw("surplus_quantity-$actualQuantity")]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('材料处理失败');

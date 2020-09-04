@@ -59,6 +59,7 @@ use Illuminate\Support\Facades\App;
  * @method static verifyStatusList($args = null)
  * @method static isSkippedList($args = null)
  * @method static canSkipBatchList($args = null)
+ * @method static languageList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -364,6 +365,12 @@ trait ConstTranslateTrait
     public static $canSkipBatchList = [
         BaseConstService::CAN_SKIP_BATCH => '是',
         BaseConstService::CAN_NOT_SKIP_BATCH => '否',
+    ];
+
+    public static $languageList = [
+        BaseConstService::CN => '汉语',
+        BaseConstService::EN => '英语',
+        BaseConstService::NL => '荷兰语',
     ];
 
 

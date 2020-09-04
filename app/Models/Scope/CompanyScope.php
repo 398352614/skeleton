@@ -72,14 +72,14 @@ class CompanyScope implements Scope
                 && (!($model instanceof ApiTimes))
                 && !($model instanceof AddressTemplate)
             ) {
-                $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
+                $builder->whereRaw($model->getTable() . '.company_id' . '=' . $user->company_id);
             }
         }
 
         //如果是司机端
         if ($user instanceof Driver) {
             if (!($model) instanceof Company) {
-                $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
+                $builder->whereRaw($model->getTable() . '.company_id' . '=' . $user->company_id);
             }
             //车辆模型和司机无关
             if ((!($model instanceof Car))
@@ -101,13 +101,13 @@ class CompanyScope implements Scope
                 && (!($model instanceof Company))
                 && (!($model instanceof CompanyConfig))
             ) {
-                $builder->whereRaw($model->getTable() . '.driver_id' . ' = ' . $user->id);
+                $builder->whereRaw($model->getTable() . '.driver_id' . '=' . $user->id);
             }
         }
 
         //如果是商家端
         if ($user instanceof Merchant) {
-            $builder->whereRaw($model->getTable() . '.company_id' . ' = ' . $user->company_id);
+            $builder->whereRaw($model->getTable() . '.company_id' . '=' . $user->company_id);
             if (!($model instanceof Batch)
                 && !($model instanceof CompanyConfig)
                 && !($model instanceof Tour)
@@ -134,7 +134,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Holiday)
                 && !($model instanceof HolidayDate)
             ) {
-                $builder->whereRaw($model->getTable() . '.merchant_id' . ' = ' . $user->id);
+                $builder->whereRaw($model->getTable() . '.merchant_id' . '=' . $user->id);
             }
         }
     }
