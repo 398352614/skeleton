@@ -9,10 +9,11 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "ext-curl": "*",
         "ext-json": "*",
         "aws/aws-sdk-php": "~3.0",
         "barryvdh/laravel-snappy": "^0.4.7",
-        "doctrine/dbal": "2.*",
+        "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.0",
         "firebase/php-jwt": "^3.0",
         "guzzlehttp/guzzle": "^6.3",
@@ -31,7 +32,7 @@
         "tymon/jwt-auth": "^1.0.0-rc.5",
         "vinkla/hashids": "^7.0",
         "workerman/gateway-worker": "^3.0",
-      "ext-curl": "*"
+        "ext-mysql": "*"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
