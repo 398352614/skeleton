@@ -641,7 +641,7 @@ class TourService extends BaseService
 
         foreach ($data['loc_res'] as $key => $res) {
             $tourBatch = Batch::where('batch_no', str_replace($this->formData['line_code'], '', $key))->where('tour_no', $this->formData['line_code'])->first();
-            $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', $data['timestamp'] + $res['time']);
+            $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', time() + $res['time']);
             $tourBatch->expect_distance = $res['distance'];
             $tourBatch->save();
             $max_time = max($max_time, $res['time']);
