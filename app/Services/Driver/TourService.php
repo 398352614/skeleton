@@ -554,7 +554,7 @@ class TourService extends BaseService
             'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
-        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->get()->toArray();
+        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get()->toArray();
         $ingBatchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereNotIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get()->toArray();
         $batchList = array_merge($batchList, $ingBatchList);
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['batch_no', 'type', DB::raw('SUM(`expect_quantity`) as expect_quantity'), DB::raw('SUM(`actual_quantity`) as actual_quantity')], false, ['batch_no', 'type'])->toArray();
