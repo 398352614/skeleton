@@ -87,6 +87,7 @@ class Merchant extends Authenticatable implements JWTSubject
 
     protected $appends = [
         'settlement_type_name',
+        'additional_status_name',
         'status_name',
         'type_name',
         'country_name'
