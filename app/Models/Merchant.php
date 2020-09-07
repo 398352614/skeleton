@@ -61,6 +61,7 @@ class Merchant extends Authenticatable implements JWTSubject
         'address',
         'avatar',
         'status',
+        'additional_status',
         'advance_days',
         'appointment_days',
         'delay_time',
@@ -95,6 +96,11 @@ class Merchant extends Authenticatable implements JWTSubject
     public function getSettlementTypeNameAttribute()
     {
         return empty($this->settlement_type) ? null : ConstTranslateTrait::merchantSettlementTypeList($this->settlement_type);
+    }
+
+    public function additional_package_status()
+    {
+        return empty($this->additional_status) ? null : ConstTranslateTrait::merchantAdditionalStatusList($this->additional_status);
     }
 
     public function getStatusNameAttribute()

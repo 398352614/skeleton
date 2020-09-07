@@ -61,6 +61,7 @@ use Illuminate\Support\Facades\App;
  * @method static isSkippedList($args = null)
  * @method static canSkipBatchList($args = null)
  * @method static languageList($args = null)
+ * @method static merchantAdditionalStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -378,6 +379,11 @@ trait ConstTranslateTrait
         BaseConstService::CN => '汉语',
         BaseConstService::EN => '英语',
         BaseConstService::NL => '荷兰语',
+    ];
+
+    public static $merchantAdditionalStatusList = [
+        BaseConstService::MERCHANT_ADDITIONAL_STATUS_1 => '开启',
+        BaseConstService::MERCHANT_ADDITIONAL_STATUS_2 => '禁用'
     ];
 
 

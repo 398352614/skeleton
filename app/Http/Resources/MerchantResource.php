@@ -34,6 +34,7 @@ class MerchantResource extends JsonResource
             'address' => $this->address,
             'avatar' => $this->avatar,
             'status' => $this->status,
+            'additional_status' => $this->additional_status,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
