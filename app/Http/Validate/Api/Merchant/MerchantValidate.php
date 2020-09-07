@@ -49,7 +49,7 @@ class MerchantValidate extends BaseValidate
             'advance_days',
             'appointment_days',
             'delay_time',
-            'additional_status'
+            //'additional_status'
         ]
     ];
 }
