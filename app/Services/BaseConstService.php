@@ -383,4 +383,8 @@ class BaseConstService
     const CN = 'cn';
     const EN = 'en';
     const NL = 'nl';
+
+    //商户端顺带功能状态
+    const MERCHANT_ADDITIONAL_STATUS_1 = 1;
+    const MERCHANT_ADDITIONAL_STATUS_2 = 2;
 }
