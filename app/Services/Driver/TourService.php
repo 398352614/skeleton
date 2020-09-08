@@ -158,6 +158,15 @@ class TourService extends BaseService
     }
 
     /**
+     * 商户服务
+     * @return MerchantService
+     */
+    public function getMerchantService()
+    {
+        return self::getInstance(MerchantService::class);
+    }
+
+    /**
      * 锁定-开始装货
      * @param $id
      * @throws BusinessLogicException
@@ -554,7 +563,7 @@ class TourService extends BaseService
             'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
-        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get()->toArray();
+        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('actual_arrive_time')->get()->toArray();
         $ingBatchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereNotIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get()->toArray();
         $batchList = array_merge($batchList, $ingBatchList);
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['batch_no', 'type', DB::raw('SUM(`expect_quantity`) as expect_quantity'), DB::raw('SUM(`actual_quantity`) as actual_quantity')], false, ['batch_no', 'type'])->toArray();
@@ -1054,6 +1063,13 @@ class TourService extends BaseService
 
     public function dealAdditionalPackageList($batch, $params)
     {
+        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
+        if(empty($merchant)){
+            throw new BusinessLogicException('商户不存在，无法顺带包裹');
+        }
+        if($merchant['additional_status'] == BaseConstService::MERCHANT_ADDITIONAL_STATUS_2){
+            throw new BusinessLogicException('商户未开启顺带包裹服务');
+        }
         $data = [];
         foreach ($params as $k => $v) {
             $data[$k]['merchant_id'] = $params[$k]['merchant_id'];
