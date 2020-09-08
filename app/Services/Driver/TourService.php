@@ -1073,7 +1073,7 @@ class TourService extends BaseService
         $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIDList]], ['*'], false)->toArray();
         $data = [];
         foreach ($params as $k => $v) {
-            $merchant = collect($merchantList)->where('merchant_id', $v['merchant_id'])->first();
+            $merchant = collect($merchantList)->where('id', $v['merchant_id'])->first();
             if (empty($merchant)) {
                 throw new BusinessLogicException('商户不存在，无法顺带包裹');
             }
