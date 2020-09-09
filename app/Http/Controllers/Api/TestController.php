@@ -74,7 +74,7 @@ class TestController extends BaseController
         ];
         $client = new \GuzzleHttp\Client();
         $res = $client->request('POST', $url, [
-            'form_params' => json_encode(['reqs' => $list])
+            'form_params' => ['reqs' => $list]
         ]);
         $body = $res->getBody();
         $stringBody = (string)$body;

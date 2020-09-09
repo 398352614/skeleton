@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
  * Class Recharge
  * @package App\Models
  */
-class Recharge extends BaseModel
+class RechargeStatistics extends BaseModel
 {
     /**
      *
@@ -20,7 +20,7 @@ class Recharge extends BaseModel
      *
      * @var string
      */
-    protected $table = 'recharge';
+    protected $table = 'recharge_statistics';
 
     /**
      * The primary key for the model.
@@ -51,28 +51,15 @@ class Recharge extends BaseModel
     protected $fillable = [
         'company_id',
         'merchant_id',
-        'recharge_statistics_id',
-        'recharge_no',
-        'transaction_number',
-        'out_user_id',
-        'out_user_name',
-        'out_user_phone',
         'recharge_date',
-        'recharge_time',
         'driver_id',
         'driver_name',
-        'recharge_amount',
-        'recharge_first_pic',
-        'recharge_second_pic',
-        'recharge_third_pic',
-        'signature',
-        'remark',
+        'total_recharge_amount',
+        'recharge_count',
         'status',
-        'verify_status',
-        'driver_verify_status',
-        'verify_recharge_amount',
-        'verify_time',
         'verify_date',
+        'verify_time',
+        'verify_recharge_amount',
         'verify_remark',
         'created_at',
         'updated_at',
@@ -90,7 +77,6 @@ class Recharge extends BaseModel
     protected $appends = [
         'merchant_name',
         'status_name',
-        'verify_status_name'
     ];
 
     public function getMerchantNameAttribute()
@@ -100,11 +86,6 @@ class Recharge extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::rechargeStatusList($this->status);
-    }
-
-    public function getVerifyStatusNameAttribute()
-    {
-        return empty($this->verify_status) ? null : ConstTranslateTrait::verifyStatusList($this->verify_status);
+        return empty($this->status) ? null : ConstTranslateTrait::verifyStatusList($this->status);
     }
 }

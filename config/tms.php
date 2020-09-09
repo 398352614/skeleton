@@ -25,5 +25,6 @@ return [
     'cache_tags' => [
         'company' => 'company',
         'address_template' => 'address_template',
-    ]
+    ],
+    'wechat_push'=>env('WECHAT_PUSH')
 ];

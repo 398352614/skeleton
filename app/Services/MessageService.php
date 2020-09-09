@@ -20,7 +20,9 @@ class MessageService
      */
     public function reportToWechat($body = '')
     {
-        return;
+        if (!config('tms.wechat_push')) {
+            return;
+        }
         $app = app('wechat.work');
         if (empty($app)) {
             return;

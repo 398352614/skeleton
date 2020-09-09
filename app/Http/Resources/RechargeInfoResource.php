@@ -14,6 +14,7 @@ class RechargeInfoResource extends JsonResource
             'id' => $this->id,
             'company_id' => $this->company_id,
             'merchant_id' => $this->merchant_id,
+            'recharge_statistics_id' => $this->recharge_statistics_id,
             'merchant_name' => $this->merchant_name,
             'recharge_no' => $this->recharge_no,
             'transaction_number' => $this->transaction_number,
@@ -30,15 +31,9 @@ class RechargeInfoResource extends JsonResource
             'signature' => $this->signature,
             'remark' => $this->remark,
             'status' => $this->status,
-            'verify_status' => $this->verify_status,
-            'verify_remark' => $this->verify_remark,
-            'verify_date' => $this->verify_date,
-            'verify_time' => $this->verify_time,
-            'verify_recharge_amount' => $this->verify_recharge_amount,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
             'status_name'=>$this->status_name,
-            'verify_status_name'=>$this->verify_status_name
         ];
     }
 }

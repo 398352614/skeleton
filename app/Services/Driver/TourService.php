@@ -27,6 +27,7 @@ use App\Services\FeeService;
 use App\Services\OrderNoRuleService;
 use App\Traits\TourTrait;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
@@ -155,6 +156,15 @@ class TourService extends BaseService
     public function getLineService()
     {
         return self::getInstance(LineService::class);
+    }
+
+    /**
+     * 商户服务
+     * @return MerchantService
+     */
+    public function getMerchantService()
+    {
+        return self::getInstance(MerchantService::class);
     }
 
     /**
@@ -466,7 +476,7 @@ class TourService extends BaseService
      * 验证-出库
      * @param $id
      * @param $params
-     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function checkOutWarehouse($id, $params)
@@ -540,7 +550,7 @@ class TourService extends BaseService
     /**
      * 取件线路中的站点列表
      * @param $id
-     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function getBatchList($id)
@@ -554,7 +564,7 @@ class TourService extends BaseService
             'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address',
             'expect_arrive_time', 'actual_arrive_time', 'expect_pickup_quantity', 'actual_pickup_quantity', 'expect_pie_quantity', 'actual_pie_quantity', 'receiver_lon', 'receiver_lat'
         ];
-        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->get()->toArray();
+        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('actual_arrive_time')->get()->toArray();
         $ingBatchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereNotIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get()->toArray();
         $batchList = array_merge($batchList, $ingBatchList);
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['batch_no', 'type', DB::raw('SUM(`expect_quantity`) as expect_quantity'), DB::raw('SUM(`actual_quantity`) as actual_quantity')], false, ['batch_no', 'type'])->toArray();
@@ -578,7 +588,7 @@ class TourService extends BaseService
      * 达到时-获取站点的订单列表
      * @param $id
      * @param $params
-     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function getBatchOrderList($id, $params)
@@ -643,7 +653,7 @@ class TourService extends BaseService
      * 到达后-站点详情
      * @param $id
      * @param $params
-     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function getBatchInfo($id, $params)
@@ -1052,10 +1062,24 @@ class TourService extends BaseService
         ];
     }
 
+    /**
+     * @param $batch
+     * @param $params
+     * @throws BusinessLogicException
+     */
     public function dealAdditionalPackageList($batch, $params)
     {
+        $merchantIDList = collect($params)->pluck('merchant_id')->toArray();
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIDList]], ['*'], false)->toArray();
         $data = [];
         foreach ($params as $k => $v) {
+            $merchant = collect($merchantList)->where('id', $v['merchant_id'])->first();
+            if (empty($merchant)) {
+                throw new BusinessLogicException('商户不存在，无法顺带包裹');
+            }
+            if ($merchant['additional_status'] == BaseConstService::MERCHANT_ADDITIONAL_STATUS_2) {
+                throw new BusinessLogicException('商户未开启顺带包裹服务');
+            }
             $data[$k]['merchant_id'] = $params[$k]['merchant_id'];
             $data[$k]['package_no'] = $params[$k]['package_no'];
             $data[$k]['batch_no'] = $batch['batch_no'];
@@ -1164,7 +1188,7 @@ class TourService extends BaseService
     /**
      * 获取取件线路统计数据
      * @param $id
-     * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function getTotalInfo($id)

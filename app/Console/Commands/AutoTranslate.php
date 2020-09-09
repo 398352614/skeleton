@@ -54,16 +54,16 @@ class AutoTranslate extends Command
     public function handle()
     {
         Log::info('The translation begin.');
-        /*        try {*/
+                try {
         foreach (array_keys(ConstTranslateTrait::$languageList) as $v) {
             if ($v !== 'cn') {
                 $this->phpToText($v);
             }
         }
         $this->info('The translation success.');
-        /*        } catch (Exception $e) {
+                } catch (Exception $e) {
                     $this->info('The translation fail:' . $e->getMessage());
-                }*/
+                }
         return;
     }
 
@@ -88,18 +88,20 @@ class AutoTranslate extends Command
         foreach ($transChinese as $k => $v) {
             $transTxt .= $v . "\n";
         }
-        $result = $this->translate($transTxt, $language);
-        $json = '';
-        $oldJson = file_get_contents('resources/lang/' . $language . '.json');
-        for ($i = 0, $j = count($result); $i < $j; $i++) {
-            $json .= '"' . $result[$i]['src'] . '":"' . $result[$i]['dst'] . '",' . "\n";
-        }
-        $json=Str::replaceLast(',','',$json);
-        $oldJson = str_replace('}', '', $oldJson);
-        $oldJson = $oldJson .','. $json . '}';
-        $row = file_put_contents($toPath, $oldJson);
-        if (!empty($row)) {
-            return 'success';
+        if($transTxt !== ''){
+            $result = $this->translate($transTxt, $language);
+            $json = '';
+            $oldJson = file_get_contents('resources/lang/' . $language . '.json');
+            for ($i = 0, $j = count($result); $i < $j; $i++) {
+                $json .= '"' . $result[$i]['src'] . '":"' . $result[$i]['dst'] . '",' . "\n";
+            }
+            $json=Str::replaceLast(',','',$json);
+            $oldJson = str_replace('}', '', $oldJson);
+            $oldJson = $oldJson .','. $json . '}';
+            $row = file_put_contents($toPath, $oldJson);
+            if (!empty($row)) {
+                return 'success';
+            }
         }
         return 'fail';
     }
