@@ -157,7 +157,7 @@ class TestGuzzle extends Command
         "additional_package_list": []
     }
 }', true);
-        $res = $curl->post('https://www.myeushop.com/api/tms/subscription', $params, 3);
+        $res = $curl->post('https://www.myeushop.com/api/tms/subscription', $params, 2);
 
         dd($res);
     }
