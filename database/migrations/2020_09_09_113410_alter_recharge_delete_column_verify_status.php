@@ -19,7 +19,7 @@ class AlterRechargeDeleteColumnVerifyStatus extends Migration
             $table->dropColumn('verify_date');
             $table->dropColumn('verify_time');
             $table->dropColumn('verify_remark');
-            $table->integer('recharge_statistics_id')->default(null)->nullable()->comment('充值统计ID');
+            $table->integer('recharge_statistics_id')->after('recharge_no')->default(null)->nullable()->comment('充值统计ID');
         });
     }
 
