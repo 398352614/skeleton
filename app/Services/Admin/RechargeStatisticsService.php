@@ -105,7 +105,8 @@ class RechargeStatisticsService extends BaseService
             'verify_remark' => $params['verify_remark'],
             'status' => BaseConstService::RECHARGE_VERIFY_STATUS_2,
             'verify_date' => Carbon::today()->format('Y-m-d'),
-            'verify_time' => now()
+            'verify_time' => now(),
+            'verify_name' =>auth()->user()->username
         ]);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
