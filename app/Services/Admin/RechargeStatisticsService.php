@@ -94,7 +94,7 @@ class RechargeStatisticsService extends BaseService
         if ($info['recharge_date'] == Carbon::today()->format('Y-m-d')) {
             throw new BusinessLogicException('当日充值未完结，请次日审核');
         }
-        if (floatval($params['verify_recharge_amount']) > floatval($info['recharge_amount'])) {
+        if (floatval($params['verify_recharge_amount']) > floatval($info['total_recharge_amount'])) {
             throw new BusinessLogicException('实际金额不能大于充值金额');
         }
         if ($info['status'] == BaseConstService::RECHARGE_VERIFY_STATUS_2) {
