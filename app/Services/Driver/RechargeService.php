@@ -221,7 +221,7 @@ class RechargeService extends BaseService
             //充值统计
             $info = $info->toArray();
             $rechargeStatisticsId = $this->getRechargeStatisticsService()->rechargeStatistics($info);
-            $row = parent::updateById(['id' => $info['id']], ['recharge_statistics_id' => $rechargeStatisticsId]);
+            $row = parent::updateById($info['id'], ['recharge_statistics_id' => $rechargeStatisticsId]);
             if ($row == false) {
                 throw new BusinessLogicException('充值统计失败');
             }
