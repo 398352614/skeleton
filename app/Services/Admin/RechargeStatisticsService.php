@@ -28,7 +28,7 @@ class RechargeStatisticsService extends BaseService
     public $filterRules = [
         'merchant_id' => ['like', 'merchant_id'],
         'status' => ['=', 'status'],
-        'driver_name,out_user_id' => ['like', 'key_word'],
+        'driver_name' => ['like', 'key_word'],
         'recharge_date' => ['between', ['begin_date', 'end_date']],
     ];
 
