@@ -772,6 +772,9 @@ class TourService extends BaseService
         $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
         if (!$nextBatch) {
             $nextBatch = Batch::where('tour_no', $data['tour_no'])->first();
+            if (empty($nextBatch)) {
+                return '修改线路成功';
+            }
             // self::setTourLock($this->formData['tour_no'], 0);
         }
 
@@ -905,7 +908,7 @@ class TourService extends BaseService
         //如果已回仓库，处理仓库相关数据
         if ($info['status'] == BaseConstService::TOUR_STATUS_5) {
             $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
-            if(empty($batchList)){
+            if (empty($batchList)) {
                 throw new BusinessLogicException('数据不存在');
             }
             $batch = collect($batchList)->sortByDesc('actual_arrive_time')->first();
