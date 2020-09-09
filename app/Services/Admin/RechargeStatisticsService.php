@@ -103,7 +103,7 @@ class RechargeStatisticsService extends BaseService
         $row = parent::updateById($id, [
             'verify_recharge_amount' => $params['verify_recharge_amount'],
             'verify_remark' => $params['verify_remark'],
-            'verify_status' => BaseConstService::RECHARGE_VERIFY_STATUS_2,
+            'status' => BaseConstService::RECHARGE_VERIFY_STATUS_2,
             'verify_date' => Carbon::today()->format('Y-m-d'),
             'verify_time' => now()
         ]);
