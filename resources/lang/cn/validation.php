@@ -518,5 +518,6 @@ return [
         'verify_date' => '审核日期',
         'verify_time' => '审核时间',
         'verify_remark' => '审核备注',
+        'additional_status' => '顺带功能',
     ],
 ];

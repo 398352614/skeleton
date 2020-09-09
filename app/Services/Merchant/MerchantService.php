@@ -38,7 +38,7 @@ class MerchantService extends BaseService
         if (empty($data['appointment_days'])) {
             $params['appointment_days'] = null;
         }
-        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'contacter', 'phone', 'country', 'address']));
+        $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'contacter', 'phone', 'country', 'address','additional_status']));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
