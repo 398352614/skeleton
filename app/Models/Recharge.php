@@ -51,6 +51,7 @@ class Recharge extends BaseModel
     protected $fillable = [
         'company_id',
         'merchant_id',
+        'recharge_statistics_id',
         'recharge_no',
         'transaction_number',
         'out_user_id',

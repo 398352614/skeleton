@@ -219,8 +219,12 @@ class RechargeService extends BaseService
                 Log::info('充值成功，充值记录失败', $res);
             }
             //充值统计
-            $info=$info->toArray();
-            $this->getRechargeStatisticsService()->rechargeStatistics($info);
+            $info = $info->toArray();
+            $rechargeStatisticsId = $this->getRechargeStatisticsService()->rechargeStatistics($info);
+            $row = parent::updateById(['id' => $info['id']], ['recharge_statistics_id' => $rechargeStatisticsId]);
+            if ($row == false) {
+                throw new BusinessLogicException('充值统计失败');
+            }
             return;
         }
     }
