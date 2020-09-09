@@ -9,6 +9,8 @@ use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use function GuzzleHttp\Psr7\str;
+
 class AutoValidate extends Command
 {
     /**
@@ -52,15 +54,21 @@ class AutoValidate extends Command
         return;
     }
 
-    public function autoValidate(){
-        $data=[];
-        $row=[];
-        $table='batch';
-        $tables=DB::select('show tables');
-        foreach ($tables as $k=>$v){
-            dd(mysql_fetch_array($v));
-            $row[]=DB::select("SHOW FULL COLUMNS FROM ".$v);
+    public function autoValidate()
+    {
+        $data = [];
+        $row = [];
+        $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
+        foreach ($tables as $k => $v) {
+            $row = array_merge($row, DB::select("SHOW FULL COLUMNS FROM `{$v}`"));
         }
-        dd($row);
+        foreach ($row as $k => $v) {
+            $v = collect($v)->toArray();
+            $data[$v['Field']] = $v['Comment'];
+        }
+        foreach ($data as $k => $v) {
+            $data[$k] = explode('1-', $v)[0];
+        }
+        dd($data);
     }
 }

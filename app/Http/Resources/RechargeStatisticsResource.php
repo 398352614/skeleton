@@ -17,6 +17,7 @@ class RechargeStatisticsResource extends JsonResource
             'merchant_name' => $this->merchant_name,
             'driver_id' => $this->driver_id,
             'driver_name' => $this->driver_name,
+            'recharge_date' => $this->recharge_date,
             'total_recharge_amount'=>$this->total_recharge_amount,
             'status' => $this->status,
             'verify_recharge_amount' => $this->verify_recharge_amount,
