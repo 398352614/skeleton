@@ -75,7 +75,7 @@ class RechargeStatisticsService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info['recharge_list'] = $this->getRechargeService()->getList(['recharge_statistics_id' => $id]);
+        $info['recharge_list'] = $this->getRechargeService()->getList(['recharge_statistics_id' => $id,'status'=>BaseConstService::RECHARGE_STATUS_3]);
         return $info;
     }
 
