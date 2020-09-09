@@ -46,6 +46,7 @@ class RechargeStatisticsService extends BaseService
     /**
      * 充值统计
      * @param $data
+     * @return mixed
      * @throws BusinessLogicException
      */
     public function rechargeStatistics($data)
@@ -66,6 +67,6 @@ class RechargeStatisticsService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('纳入当日充值统计失败');
         }
-        return;
+        return $info['id'];
     }
 }

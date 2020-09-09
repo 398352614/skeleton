@@ -71,11 +71,11 @@ class RechargeStatisticsService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id' => $id],['*'],false);
+        $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info['recharge_list'] = $this->getRechargeService()->getList(['driver_id' => $info['driver_id'], 'recharge_date' => $info['recharge_date'], 'merchant_id' => $info['merchant_id']]);
+        $info['recharge_list'] = $this->getRechargeService()->getList(['recharge_statistics_id' => $id]);
         return $info;
     }
 
