@@ -22,6 +22,7 @@ class MerchantService extends BaseService
 {
     public $filterRules = [
         'name' => ['like', 'name'],
+        'additional_status' => ['=', 'additional_status']
     ];
 
     public function __construct(Merchant $merchant)
