@@ -52,6 +52,14 @@ class RechargeService extends BaseService
     }
 
     /**
+     * @return RechargeStatisticsService
+     */
+    public function getRechargeStatisticsService()
+    {
+        return self::getInstance(RechargeStatisticsService::class);
+    }
+
+    /**
      * 充值记录列表
      * @return \Illuminate\Database\Eloquent\Collection
      */
@@ -108,6 +116,7 @@ class RechargeService extends BaseService
             $params['out_user_name'] = $res['data']['email'];
             $params['out_user_id'] = $res['data']['out_user_id'];
             $params['out_user_phone'] = $res['data']['phone'];
+            $params['recharge_date'] = Carbon::today()->format('Y-m-d');
             $params['driver_verify_status'] = BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_1;
             $row = parent::create($params);
             if ($row == false) {
@@ -155,6 +164,7 @@ class RechargeService extends BaseService
      */
     public function recharge($params)
     {
+        //获取并验证数据
         $params = Arr::only($params, ['out_user_id', 'out_user_name', 'recharge_no', 'merchant_id', 'recharge_amount', 'signature', 'recharge_first_pic', 'recharge_second_pic', 'recharge_third_pic', 'remark']);
         $info = parent::getInfoLock(['recharge_no' => $params['recharge_no']], ['*'], false);
         if (empty($info)) {
@@ -169,6 +179,7 @@ class RechargeService extends BaseService
         if ($params['out_user_id'] !== $info['out_user_id'] || $params['out_user_name'] !== $info['out_user_name']) {
             throw new BusinessLogicException('用户信息不正确，请重新充值');
         }
+        //数据组装
         $data['data'] = Arr::only(collect($params)->toArray(), ['out_user_id', 'out_user_name', 'merchant_id', 'out_user_name', 'signature', 'recharge_amount', 'recharge_no']);
         $data['data']['driver_name'] = $info['driver_name'];
         $data['data']['out_user_phone'] = $info['out_user_phone'];
@@ -207,6 +218,9 @@ class RechargeService extends BaseService
             if ($row == false) {
                 Log::info('充值成功，充值记录失败', $res);
             }
+            //充值统计
+            $info=$info->toArray();
+            $this->getRechargeStatisticsService()->rechargeStatistics($info);
             return;
         }
     }

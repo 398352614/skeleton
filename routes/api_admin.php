@@ -527,11 +527,15 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //充值管理
     Route::prefix('recharge')->group(function () {
+        //充值统计查询
+        Route::get('/statistics', 'RechargeStatisticsController@index');
+        //充值统计查询
+        Route::get('/statistics/{id}', 'RechargeStatisticsController@show');
         //充值查询
         Route::get('/', 'RechargeController@index');
         //充值详情
         Route::get('/{id}', 'RechargeController@show');
         //充值审核
-        Route::put('/{id}', 'RechargeController@verify');
+        Route::put('/{id}', 'RechargeStatisticsController@verify');
     });
 });
