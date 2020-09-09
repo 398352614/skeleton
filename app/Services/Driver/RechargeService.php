@@ -65,7 +65,7 @@ class RechargeService extends BaseService
      */
     public function getPageList()
     {
-        $this->query->where(['status' => BaseConstService::RECHARGE_STATUS_3])->orderByDesc('updated_at');
+        $this->query->where('company_id', auth()->user()->company_id)->where('driver_id', auth()->user()->id)->where(['status' => BaseConstService::RECHARGE_STATUS_3])->orderByDesc('updated_at');
         return parent::getPageList();
     }
 
@@ -77,7 +77,7 @@ class RechargeService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id' => $id]);
+        $info = parent::getInfo(['id' => $id, 'driver_id' => auth()->user()->id, 'company_id' => auth()->user()->company_id]);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
