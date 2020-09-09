@@ -1489,7 +1489,7 @@ class OrderService extends BaseService
                         'expect_quantity' => $material['expect_quantity'],
                     ]);
                 } else {
-                    $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $dbTourMaterial->expect_quantity + $materialList['expect_quantity']]);
+                    $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $dbTourMaterial->expect_quantity + $material['expect_quantity']]);
                 }
                 if ($rowCount === false) {
                     throw new BusinessLogicException('材料处理失败');
