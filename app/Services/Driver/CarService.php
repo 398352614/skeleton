@@ -28,7 +28,7 @@ class CarService extends BaseService
     public function getPageList()
     {
         if (!empty($this->formData['tour_no'])) {
-            $tour = Tour::query()->where(['tour_no'], $this->formData['tour_no'])->first();
+            $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
             if (empty($tour)) {
                 throw new BusinessLogicException('数据不存在');
             }
