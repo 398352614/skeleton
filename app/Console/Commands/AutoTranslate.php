@@ -164,7 +164,7 @@ class AutoTranslate extends Command
      * @return array
      * @throws Exception
      */
-    private function translate(string $txt, $language)
+    public function translate(string $txt, $language)
     {
         $info = $this->translateApi($txt, 'zh', $language);
         if (!empty($info['error_code'])) {

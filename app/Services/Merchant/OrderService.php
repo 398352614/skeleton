@@ -1528,7 +1528,7 @@ class OrderService extends BaseService
         } else {
             $expectTime = 0;
         }
-        $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $batch->tour_no], ['lon', 'lat'], false) ?? '';
+        $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $batch->tour_no], ['lon', 'lat'], false, ['id' => 'desc']) ?? '';
         if (empty($routeTracking)) {
             $routeTracking = $this->getTourService()->getInfo(['tour_no' => $batch->tour_no], ['*'], false);
             $routeTracking['lon'] = $routeTracking['warehouse_lon'];
