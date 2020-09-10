@@ -274,8 +274,13 @@ class TourService extends BaseService
             throw new BusinessLogicException('取件线路不存在或当前状态不允许分配车辆');
         }
         $tour = $tour->toArray();
-        //查看当前车辆是否已被分配给其他取件线路
-        $otherTour = parent::getInfo(['id' => ['<>', $id], 'car_id' => $params['car_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5], 'driver_id' => ['<>', null]], ['*'], false);
+        //查看当前车辆是否已被分配给其他取件线路(由于model会自动加上driver_id条件,所以此处不用model)
+        $otherTour = DB::table('tour')
+            ->where('id', '<>', $id)
+            ->where('car_id', '=', $params['car_id'])
+            ->where('execution_date', '=', $tour['execution_date'])
+            ->where('status', '<>', BaseConstService::TOUR_STATUS_5)
+            ->first();
         if (!empty($otherTour)) {
             throw new BusinessLogicException('当前车辆已被分配，请选择其他车辆');
         }
