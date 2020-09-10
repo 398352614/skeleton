@@ -75,35 +75,4 @@ class RechargeService extends BaseService
         }
         return $info;
     }
-
-    /**
-     * 审核
-     * @param $id
-     * @param $params
-     * @throws BusinessLogicException
-     */
-    public function verify($id, $params)
-    {
-        $info = parent::getInfoLock(['id' => $id], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        if (floatval($params['verify_recharge_amount']) > floatval($info['recharge_amount'])) {
-            throw new BusinessLogicException('实际金额不能大于充值金额');
-        }
-        if ($info['verify_status'] == BaseConstService::RECHARGE_VERIFY_STATUS_2) {
-            throw new BusinessLogicException('该充值已审核');
-        }
-        $row = parent::updateById($id, [
-            'verify_recharge_amount' => $params['verify_recharge_amount'],
-            'verify_remark' => $params['verify_remark'],
-            'verify_status' => BaseConstService::RECHARGE_VERIFY_STATUS_2,
-            'verify_date'=>Carbon::today()->format('Y-m-d'),
-            'verify_time'=>now()
-        ]);
-        if ($row == false) {
-            throw new BusinessLogicException('操作失败');
-        }
-        return;
-    }
 }

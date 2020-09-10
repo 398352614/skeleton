@@ -87,6 +87,7 @@ class Merchant extends Authenticatable implements JWTSubject
 
     protected $appends = [
         'settlement_type_name',
+        'additional_status_name',
         'status_name',
         'type_name',
         'country_name'
@@ -98,7 +99,7 @@ class Merchant extends Authenticatable implements JWTSubject
         return empty($this->settlement_type) ? null : ConstTranslateTrait::merchantSettlementTypeList($this->settlement_type);
     }
 
-    public function additional_package_status()
+    public function getAdditionalStatusNameAttribute()
     {
         return empty($this->additional_status) ? null : ConstTranslateTrait::merchantAdditionalStatusList($this->additional_status);
     }

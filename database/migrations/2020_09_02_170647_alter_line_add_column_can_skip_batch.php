@@ -27,5 +27,6 @@ class AlterLineAddColumnCanSkipBatch extends Migration
     {
         Schema::table('line', function (Blueprint $table) {
             $table->dropColumn('can_skip_batch');
-        });    }
+        });
+    }
 }

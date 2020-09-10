@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\App;
  * @method static orderSourceList($arg = null)
  * @method static orderTypeList($args = null)
  * @method static orderSettlementTypeList($args = null)
+ * @method static orderOutStatusList($args = null)
  * @method static orderStatusList($args = null)
  * @method static packageStatusList($args = null)
  * @method static orderExceptionLabelList($args = null)
@@ -124,6 +125,12 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_STATUS_5 => '已完成',
         BaseConstService::ORDER_STATUS_6 => '取消取派',
         BaseConstService::ORDER_STATUS_7 => '回收站',
+    ];
+
+    //订单可出库状态1-是2-否
+    public static $orderOutStatusList = [
+        BaseConstService::ORDER_OUT_STATUS_1 => '是',
+        BaseConstService::ORDER_OUT_STATUS_2 => '否'
     ];
 
     //包裹状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站

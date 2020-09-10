@@ -35,6 +35,7 @@ use App\Models\Order;
 use App\Models\OrderNoRule;
 use App\Models\OrderTrail;
 use App\Models\Package;
+use App\Models\Recharge;
 use App\Models\RouteTracking;
 use App\Models\SpecialTimeCharging;
 use App\Models\Tour;
@@ -100,6 +101,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof Country))
                 && (!($model instanceof Company))
                 && (!($model instanceof CompanyConfig))
+                && (!($model instanceof Recharge))
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . '=' . $user->id);
             }

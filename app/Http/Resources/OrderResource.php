@@ -32,6 +32,8 @@ class OrderResource extends JsonResource
             'express_second_no' => $this->express_second_no,
             'status' => $this->status,
             'status_name' => $this->status_name,
+            'out_status' => $this->out_status,
+            'out_status_name' => $this->out_status_name,
             'execution_date' => $this->execution_date,
             'batch_no' => $this->batch_no,
             'tour_no' => $this->tour_no,
