@@ -30,6 +30,6 @@ class LineController extends BaseController
      */
     public function getDateListByPostCode()
     {
-        return $this->service->getDateListByPostCode($this->data['receiver_post_code']);
+        return $this->service->getDateListByPostCode($this->data);
     }
 }
