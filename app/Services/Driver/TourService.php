@@ -624,6 +624,9 @@ class TourService extends BaseService
     public function batchArrive($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
+        if ($batch['status'] !== BaseConstService::BATCH_DELIVERING) {
+            throw new BusinessLogicException('状态不正确');
+        }
         $line = $this->getLineService()->getInfo(['id' => $tour['line_id']], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('线路已删除，请联系管理员');
