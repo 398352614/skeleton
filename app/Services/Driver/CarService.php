@@ -35,7 +35,7 @@ class CarService extends BaseService
             $carIdList = DB::table('tour')
                 ->where('company_id', auth()->user()->company_id)
                 ->where('driver_id', '<>', null)
-                ->where('execution_date', '<>', $tour['execution_date'])
+                ->where('execution_date', $tour['execution_date'])
                 ->where('status', '<>', BaseConstService::TOUR_STATUS_5)
                 ->pluck('car_id')->toArray();
             $this->query->whereNotIn('id', $carIdList);
