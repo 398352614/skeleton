@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Traits\ConstTranslateTrait;
 use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -74,11 +75,17 @@ class AutoValidate extends Command
         }
         $array = include "/Users/whoyummy/Documents/tms-api/resources/lang/cn/validation.php";
         $attributes = $array['attributes'];
-        $result = array_diff($attributes, $data);
-        for ($i = 0, $j = count($result); $i < $j; $i++) {
-            $json .= '"' . $result[$i]['src'] . '":"' . $result[$i]['dst'] . '",' . "\n";
+        $key = array_keys($attributes);
+        $result = Arr::except($data, $key);
+        foreach ($result as $k => $v) {
+            $json .= '"' . $k . '"=>"' . $v . '",' . "\n";
         }
-        $json=Str::replaceLast(',','',$json);
-
+        $oldJson = Str::replaceLast('];', '', file_get_contents('resources/lang/cn/validation.php'));
+        $oldJson = Str::replaceLast(']', '', $oldJson);
+        $oldJson = $oldJson . $json . ']' . "\n" . '];';
+        $row = file_put_contents('resources/lang/cn/validation.php', $oldJson);
+        if (!empty($row)) {
+            return 'success';
+        }
     }
 }
