@@ -24,7 +24,7 @@ class LineService extends BaseLineService
 
     /**
      * 获取日期列表
-     * @param $postCode
+     * @param $params
      * @return array
      * @throws BusinessLogicException
      */
