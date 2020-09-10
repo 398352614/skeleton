@@ -28,7 +28,7 @@ class RechargeStatisticsService extends BaseService
     public $filterRules = [
         'merchant_id' => ['like', 'merchant_id'],
         'status' => ['=', 'status'],
-        'driver_name,out_user_id' => ['like', 'key_word'],
+        'driver_name' => ['like', 'key_word'],
         'recharge_date' => ['between', ['begin_date', 'end_date']],
     ];
 
@@ -75,7 +75,7 @@ class RechargeStatisticsService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info['recharge_list'] = $this->getRechargeService()->getList(['recharge_statistics_id' => $id]);
+        $info['recharge_list'] = $this->getRechargeService()->getList(['recharge_statistics_id' => $id,'status'=>BaseConstService::RECHARGE_STATUS_3]);
         return $info;
     }
 
@@ -94,7 +94,7 @@ class RechargeStatisticsService extends BaseService
         if ($info['recharge_date'] == Carbon::today()->format('Y-m-d')) {
             throw new BusinessLogicException('当日充值未完结，请次日审核');
         }
-        if (floatval($params['verify_recharge_amount']) > floatval($info['recharge_amount'])) {
+        if (floatval($params['verify_recharge_amount']) > floatval($info['total_recharge_amount'])) {
             throw new BusinessLogicException('实际金额不能大于充值金额');
         }
         if ($info['status'] == BaseConstService::RECHARGE_VERIFY_STATUS_2) {
@@ -103,9 +103,10 @@ class RechargeStatisticsService extends BaseService
         $row = parent::updateById($id, [
             'verify_recharge_amount' => $params['verify_recharge_amount'],
             'verify_remark' => $params['verify_remark'],
-            'verify_status' => BaseConstService::RECHARGE_VERIFY_STATUS_2,
+            'status' => BaseConstService::RECHARGE_VERIFY_STATUS_2,
             'verify_date' => Carbon::today()->format('Y-m-d'),
-            'verify_time' => now()
+            'verify_time' => now(),
+            'verify_name' =>auth()->user()->username
         ]);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');

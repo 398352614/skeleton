@@ -536,6 +536,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //充值详情
         Route::get('/{id}', 'RechargeController@show');
         //充值审核
-        Route::put('/{id}', 'RechargeStatisticsController@verify');
+        Route::put('/statistics/{id}', 'RechargeStatisticsController@verify');
     });
 });

@@ -61,6 +61,7 @@ class RechargeStatistics extends BaseModel
         'verify_time',
         'verify_recharge_amount',
         'verify_remark',
+        'verify_name',
         'created_at',
         'updated_at',
     ];

@@ -6,14 +6,14 @@ namespace App\Http\Validate\Api\Admin;
 
 use App\Http\Validate\BaseValidate;
 
-class RechargeValidate extends BaseValidate
+class RechargeStatisticsValidate extends BaseValidate
 {
     public $customAttributes = [
 
     ];
 
     public $rules = [
-        'verify_recharge_amount' => 'required|numeric',
+        'verify_recharge_amount' => 'required|numeric|gte:0',
         'verify_remark' => 'nullable|string|max:250',
     ];
 

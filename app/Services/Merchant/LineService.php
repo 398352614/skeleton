@@ -24,20 +24,17 @@ class LineService extends BaseLineService
 
     /**
      * 获取日期列表
-     * @param $postCode
+     * @param $params
      * @return array
      * @throws BusinessLogicException
      */
-    public function getDateListByPostCode($postCode)
+    public function getDateListByPostCode($params)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_AREA) {
             return [];
         }
-        if ((intval(auth()->user()->id) == BaseConstService::ERP_MERCHANT_ID_1) || (intval(auth()->user()->id) == BaseConstService::ERP_MERCHANT_ID_2)) {
-            $type = BaseConstService::ORDER_TYPE_1;
-        } else {
-            $type = BaseConstService::ORDER_TYPE_2;
-        }
+        $postCode = $params['receiver_post_code'];
+        $type = !empty($params['type']) ? intval($params['type']) : BaseConstService::ORDER_TYPE_2;
         $lineRangeList = parent::getLineRangeListByPostcode($postCode, auth()->user()->id);
         $dateList = parent::getScheduleListByLineRangeList(['type' => $type], $lineRangeList, BaseConstService::ORDER_OR_BATCH_1);
         return $dateList;
