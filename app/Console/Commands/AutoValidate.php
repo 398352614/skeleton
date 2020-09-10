@@ -104,5 +104,25 @@ class AutoValidate extends Command
             $oldJson = $oldJson .','. $json . ']' . "\n" . '];';
             file_put_contents('resources/lang/en/validation.php', $oldJson);
         }
+        foreach (array_keys(ConstTranslateTrait::$languageList) as $v) {
+            if ($v !== 'cn') {
+                $this->translate($json, $v);
+            }
+        }
+    }
+
+
+    public function translate($params, $language)
+    {
+            $data=[];
+            $transTxt = '';
+            foreach ($params as $k => $v) {
+                $transTxt .= $v . "\n";
+            }
+            if ($params !== '') {
+                $translate = new AutoTranslate();
+                $data = $translate->translate($params, $language);
+            }
+            dd($data);
     }
 }
