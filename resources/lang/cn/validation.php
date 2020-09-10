@@ -663,6 +663,6 @@ return [
         "change_log" => "更新日志",
         "to_id" => "用户ID",
         "data" => "数据",
-        "company_auth" => "是否需要验证公司权限",
+        "company_auth" => "是否需要验证公司权限"
     ]
 ];

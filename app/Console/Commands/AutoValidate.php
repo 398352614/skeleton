@@ -77,15 +77,32 @@ class AutoValidate extends Command
         $attributes = $array['attributes'];
         $key = array_keys($attributes);
         $result = Arr::except($data, $key);
-        foreach ($result as $k => $v) {
-            $json .= '"' . $k . '"=>"' . $v . '",' . "\n";
+        if (!empty($result)) {
+            foreach ($result as $k => $v) {
+                $json .= '"' . $k . '"=>"' . $v . '",' . "\n";
+            }
+            $oldJson = Str::replaceLast('];', '', file_get_contents('resources/lang/cn/validation.php'));
+            $oldJson = Str::replaceLast(']', '', $oldJson);
+            $oldJson = $oldJson . $json . ']' . "\n" . '];';
+            file_put_contents('resources/lang/cn/validation.php', $oldJson);
+
+
         }
-        $oldJson = Str::replaceLast('];', '', file_get_contents('resources/lang/cn/validation.php'));
-        $oldJson = Str::replaceLast(']', '', $oldJson);
-        $oldJson = $oldJson . $json . ']' . "\n" . '];';
-        $row = file_put_contents('resources/lang/cn/validation.php', $oldJson);
-        if (!empty($row)) {
-            return 'success';
+        $json = '';
+        $params = [];
+        $array = include "/Users/whoyummy/Documents/tms-api/resources/lang/en/validation.php";
+        $diff = Arr::except($data, array_keys($array['attributes']));
+        if(!empty($diff)){
+            foreach ($diff as $k => $v) {
+                $params[$k] = str_replace('_', ' ', $k);
+            }
+            foreach ($params as $k => $v) {
+                $json .= '"' . $k . '"=>"' . $v . '",' . "\n";
+            }
+            $oldJson = Str::replaceLast('];', '', file_get_contents('resources/lang/en/validation.php'));
+            $oldJson = Str::replaceLast(']', '', $oldJson);
+            $oldJson = $oldJson .','. $json . ']' . "\n" . '];';
+            file_put_contents('resources/lang/en/validation.php', $oldJson);
         }
     }
 }
