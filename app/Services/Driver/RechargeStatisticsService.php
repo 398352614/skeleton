@@ -62,7 +62,7 @@ class RechargeStatisticsService extends BaseService
             $info = $row->getAttributes();
         }
         $data['total_recharge_amount'] = $this->getRechargeService()->getList($where, ['*'], false)->sum('recharge_amount');
-        $data['recharge_count'] = $this->getRechargeService()->getList($where, ['*'], false)->count();
+        $data['recharge_count'] = $this->getRechargeService()->getList(array_merge($where,['status'=>BaseConstService::RECHARGE_STATUS_3]), ['*'], false)->count();
         $row = parent::updateById($info['id'], Arr::only($data, ['total_recharge_amount', 'recharge_count']));
         if ($row == false) {
             throw new BusinessLogicException('纳入当日充值统计失败');

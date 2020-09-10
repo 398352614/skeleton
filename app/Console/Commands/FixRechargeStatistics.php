@@ -84,6 +84,7 @@ class FixRechargeStatistics extends Command
                     ->where('driver_id', $v['driver_id'])
                     ->count();
                 DB::table('recharge_statistics')->where('id', $info['id'])->update(['total_recharge_amount' => $totalRechargeAmount, 'recharge_count' => $rechargeCount]);
+                DB::table('recharge')->where('id', $v['id'])->update(['recharge_statistics_id' => $info['id']]);
             }
         } catch (\Exception $e) {
             $this->info('fix fail:' . $e);

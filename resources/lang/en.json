@@ -681,5 +681,12 @@
     "六娃": "Six children",
     "六娃家": "Liuwa family",
     "七娃": "Qiwa",
-    "七娃家": "Qiwa family"
+    "七娃家": "Qiwa family",
+    "开启": "open",
+    "纳入当日充值统计失败": "Failed to include recharge statistics on the same day",
+    "充值统计失败": "Recharge statistics failed",
+    "商户不存在，无法顺带包裹": "The merchant does not exist, and the package cannot be brought along",
+    "商户未开启顺带包裹服务": "Merchant does not open package service",
+    "当日充值未完结，请次日审核": "Recharge is not finished on the same day, please check the next day",
+    "该充值已审核,请勿重复审核": "The recharge has been approved, please do not repeat the audit"
 }

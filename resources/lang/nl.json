@@ -559,4 +559,12 @@
     "冰冻": "bevroren",
     "解锁 tour 的操作锁定": "Open het operationeel slot van de tour",
     "测试 guzzle": "Test guzzle"
+
+,"开启":"open",
+"纳入当日充值统计失败":"Niet in geslaagd om oplaadstatistieken op dezelfde dag op te nemen",
+"充值统计失败":"Statistieken inzake oplading zijn mislukt",
+"商户不存在，无法顺带包裹":"De koopman bestaat niet, en het pakket kan niet worden meegenomen",
+"商户未开启顺带包裹服务":"De handelaar opent geen pakketdienst",
+"当日充值未完结，请次日审核":"Recharge is niet klaar op dezelfde dag, controleer de volgende dag",
+"该充值已审核,请勿重复审核":"De oplage is goedgekeurd, gelieve de audit niet te herhalen"
 }
