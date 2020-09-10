@@ -35,10 +35,13 @@ class CarService extends BaseService
             $carIdList = DB::table('tour')
                 ->where('company_id', auth()->user()->company_id)
                 ->where('driver_id', '<>', null)
+                ->where('car_id', '<>', null)
                 ->where('execution_date', $tour['execution_date'])
                 ->where('status', '<>', BaseConstService::TOUR_STATUS_5)
                 ->pluck('car_id')->toArray();
-            $this->query->whereNotIn('id', $carIdList);
+            if (!empty($carIdList)) {
+                $this->query->whereNotIn('id', $carIdList);
+            }
         }
         $this->query->where('is_locked', '=', BaseConstService::DRIVER_TO_NORMAL);
         return parent::getPageList();
