@@ -276,6 +276,7 @@ class TourService extends BaseService
         $tour = $tour->toArray();
         //查看当前车辆是否已被分配给其他取件线路(由于model会自动加上driver_id条件,所以此处不用model)
         $otherTour = DB::table('tour')
+            ->where('company_id', '<>', auth()->user()->company_id)
             ->where('id', '<>', $id)
             ->where('car_id', '=', $params['car_id'])
             ->where('execution_date', '=', $tour['execution_date'])
