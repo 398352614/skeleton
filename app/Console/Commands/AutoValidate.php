@@ -9,6 +9,8 @@ use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use function Composer\Autoload\includeFile;
 use function GuzzleHttp\Psr7\str;
 
 class AutoValidate extends Command
@@ -58,6 +60,7 @@ class AutoValidate extends Command
     {
         $data = [];
         $row = [];
+        $json = '';
         $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
         foreach ($tables as $k => $v) {
             $row = array_merge($row, DB::select("SHOW FULL COLUMNS FROM `{$v}`"));
@@ -69,6 +72,13 @@ class AutoValidate extends Command
         foreach ($data as $k => $v) {
             $data[$k] = explode('1-', $v)[0];
         }
-        dd($data);
+        $array = include "/Users/whoyummy/Documents/tms-api/resources/lang/cn/validation.php";
+        $attributes = $array['attributes'];
+        $result = array_diff($attributes, $data);
+        for ($i = 0, $j = count($result); $i < $j; $i++) {
+            $json .= '"' . $result[$i]['src'] . '":"' . $result[$i]['dst'] . '",' . "\n";
+        }
+        $json=Str::replaceLast(',','',$json);
+
     }
 }
