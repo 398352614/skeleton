@@ -14,7 +14,7 @@ class VersionController extends BaseController
 
     public function check(){
         //找到最新的版本并返回
-        $info =Version::query()->orderBy('created_at','desc')->first();
+        $info =Version::query()->orderBy('version','desc')->first();
         return $info;
     }
 

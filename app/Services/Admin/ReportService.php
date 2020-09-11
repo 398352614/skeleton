@@ -123,6 +123,9 @@ class ReportService extends BaseService
             $warehouseExpectTimeHuman = '0秒';
         }
         $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+        if (empty($batchList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
         $batch = collect($batchList)->sortBy('sort_id')->sortByDesc('actual_arrive_time')->first();
         $warehouseInfo = [
             'id' => $info['warehouse_id'],
