@@ -51,7 +51,7 @@ class SendNotify2Merchant implements ShouldQueue
      *
      * @var int
      */
-    public $timeout = 30;
+    public $timeout = 90;
 
     /**
      * @var CurlClient
