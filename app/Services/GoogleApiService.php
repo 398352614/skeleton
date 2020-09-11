@@ -67,7 +67,7 @@ class GoogleApiService
         app('log')->info('初始化线路传送给 api 端的参数为:', $params);
 
         $res = $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
-        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times',$tour->company_id);
+        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         return $res;
     }
 
@@ -109,6 +109,7 @@ class GoogleApiService
         $api = '/api/update-line';
         $driver_location = $tour->driver_location;
         $driver_location['code'] = $tour->tour_no . 'driver_location';
+        $driver_location['gather_sn'] = ['a'];
         $batchs = [$driver_location]; // 将司机位置放在序列中的第一位
 
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
@@ -136,7 +137,7 @@ class GoogleApiService
         ];
         app('log')->info('更新线路传送给 api 端的参数为:', $params);
         $res = $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
-        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times',$tour->company_id);
+        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         return $res;
     }
 }
