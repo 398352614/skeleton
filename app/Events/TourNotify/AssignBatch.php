@@ -64,7 +64,6 @@ class AssignBatch extends ATourNotify
                 }
             }
             $this->batch['delivery_count'] += $orderList[$k]['delivery_count'];
-            Log::info('order', $orderList[$k]);
         }
         unset($packageList, $materialList);
         $orderList = collect($orderList)->groupBy('merchant_id')->toArray();
@@ -79,7 +78,6 @@ class AssignBatch extends ATourNotify
         } else {
             $additionalPackageList = [];
         }
-        Log::info('顺带包裹', $additionalPackageList);
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
             $batch['additional_package_list'] = $additionalPackageList[$merchantId] ?? [];
