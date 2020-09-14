@@ -82,7 +82,7 @@ class AssignBatch extends ATourNotify
             $this->batch['delivery_count'] += $additionalPackageList[$k]['delivery_count'];
         }
         if (!empty($additionalPackageList)) {
-            $additionalPackageList = $additionalPackageList->toArray();
+            $additionalPackageList = $additionalPackageList->groupBy('merchant_id')->toArray();
         } else {
             $additionalPackageList = [];
         }
