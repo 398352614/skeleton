@@ -84,7 +84,7 @@ class AssignBatch extends ATourNotify
         }
         //处理顺带包裹提货数
         foreach ($additionalPackageList as $k => $v) {
-            Log::info($additionalPackageList[$k]['delivery_amount']);
+            Log::info($additionalPackageList[$k]);
             $additionalPackageList[$k]['delivery_count'] = floatval($additionalPackageList[$k]['delivery_amount']) == 0.00 ? 0 : 1;
             $this->batch['delivery_count'] += $additionalPackageList[$k]['delivery_count'];
         }
