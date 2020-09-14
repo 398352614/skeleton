@@ -79,7 +79,6 @@ class AssignBatch extends ATourNotify
         $additionalPackageList = AdditionalPackage::query()->where('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no', 'delivery_amount', 'sticker_no', 'sticker_amount']);
         //处理顺带包裹提货数
         foreach ($additionalPackageList as $k => $v) {
-            Log::info($additionalPackageList);
             $additionalPackageList[$k]['delivery_count'] = floatval($additionalPackageList[$k]['delivery_amount']) == 0.00 ? 0 : 1;
             $this->batch['delivery_count'] += $additionalPackageList[$k]['delivery_count'];
         }
