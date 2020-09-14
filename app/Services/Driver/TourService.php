@@ -1098,6 +1098,9 @@ class TourService extends BaseService
             $data[$k]['package_no'] = $params[$k]['package_no'];
             $data[$k]['sticker_no'] = $params[$k]['sticker_no'];
             $data[$k]['batch_no'] = $batch['batch_no'];
+            $data[$k]['tour_no'] = $batch['tour_no'];
+            $data[$k]['line_id'] = $batch['line_id'];
+            $data[$k]['line_name'] = $batch['line_name'];
             $data[$k]['receiver_fullname'] = $batch['receiver_fullname'];
             $data[$k]['execution_date'] = $batch['execution_date'];
             $data[$k]['receiver_phone'] = $batch['receiver_phone'];

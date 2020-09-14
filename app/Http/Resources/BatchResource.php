@@ -52,6 +52,8 @@ class BatchResource extends JsonResource
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
             'status_name' => $this->status_name,
+            'additional_package_list' => $this->additional_package_list ?? [],
+            'additional_package_count' => $this->additional_package_count ?? 0,
             'exception_label_name' => $this->exception_label_name,
             'pay_type_name' => $this->pay_type_name,
         ];

@@ -11,6 +11,7 @@ class AdditionalPackageResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id'=>$this->id,
             'company_id'=>$this->company_id,
             'merchant_id'=>$this->merchant_id,
             'merchant_name'=>$this->merchant_name,

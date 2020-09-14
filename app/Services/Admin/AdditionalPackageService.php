@@ -4,16 +4,18 @@
 namespace App\Services\Admin;
 
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\AdditionalPackageResource;
 use App\Models\AdditionalPackage;
 use App\Services\BaseService;
+use Illuminate\Support\Arr;
 
 class AdditionalPackageService extends BaseService
 {
     public $filterRules = [
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'merchant_id' => ['=', 'merchant_id'],
-        'package_no'=>['like','package_no'],
+        'package_no' => ['like', 'package_no'],
     ];
 
     public function __construct(AdditionalPackage $model)
@@ -21,9 +23,45 @@ class AdditionalPackageService extends BaseService
         parent::__construct($model, AdditionalPackageResource::class);
     }
 
+    /**
+     * 站点 服务
+     * @return BatchService
+     */
+    public function getBatchService()
+    {
+        return self::getInstance(BatchService::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws BusinessLogicException
+     */
     public function getPageList()
     {
-        $this->query->orderByDesc('created_at');
-        return parent::getPageList();
+        $info = parent::getList();
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $batchNo = $info->pluck('batch_no')->toArray();
+        $info = $this->getBatchService()->getAdditionalPackageList($batchNo);
+        foreach ($info as $k => $v) {
+            $info[$k]['additional_package_list'] = parent::getList(['batch_no' => $v['batch_no']]);
+            $info[$k]['additional_package_count'] = parent::count(['batch_no' => $v['batch_no']]);
+        }
+        return $info;
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $batch = $this->getBatchService()->getInfo(['id'=> $id]);
+        if(empty($batch)){
+            throw new BusinessLogicException('数据不存在');
+        }
+        return parent::getList(['batch_no'=>$batch['batch_no']]);
     }
 }

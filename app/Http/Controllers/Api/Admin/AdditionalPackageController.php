@@ -15,4 +15,9 @@ class AdditionalPackageController extends BaseController
     public function index(){
         return $this->service->getPageList();
     }
+
+    public function show($id){
+        return $this->service->show($id);
+    }
+
 }

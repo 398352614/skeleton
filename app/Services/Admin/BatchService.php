@@ -147,6 +147,15 @@ class BatchService extends BaseService
     }
 
     /**
+     * 顺带包裹 服务
+     * @return AdditionalPackageService
+     */
+    public function getAdditionalPackageService()
+    {
+        return self::getInstance(AdditionalPackageService::class);
+    }
+
+    /**
      * 线路基础 服务
      * @return BaseLineService
      */
@@ -762,5 +771,12 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('金额统计失败');
         }
+    }
+
+    public function getAdditionalPackageList($batchNo)
+    {
+        $this->query->whereIn('batch_no', $batchNo)->orderByDesc('updated_at');
+        $info = $this->getPageList();
+        return $info;
     }
 }
