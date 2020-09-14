@@ -70,7 +70,8 @@ class TourValidate extends BaseValidate
         //顺带包裹列表
         'additional_package_list.*.package_no' => 'required_with:additional_package_list|string|max:50',
         'additional_package_list.*.merchant_id' => 'required_with:additional_package_list|integer',
-
+        'additional_package_list.*.sticker_no' => 'nullable|string|max:250',
+        'additional_package_list.*.delivery_charge' => 'required_with:additional_package_list|integer|in:0,1',
         //跳过
         'is_skipped' => 'required|integer|in:1,2',
     ];
@@ -122,6 +123,8 @@ class TourValidate extends BaseValidate
             //顺带包裹
             'additional_package_list.*.package_no',
             'additional_package_list.*.merchant_id',
+            'additional_package_list.*.sticker_no',
+            'additional_package_list.*.delivery_charge',
 
             'auth_fullname', 'auth_birth_date'
         ],
