@@ -77,11 +77,6 @@ class AssignBatch extends ATourNotify
         }
         //顺带包裹
         $additionalPackageList = AdditionalPackage::query()->where('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no', 'delivery_amount', 'sticker_no', 'sticker_amount']);
-        if (!empty($additionalPackageList)) {
-            $additionalPackageList = $additionalPackageList->groupBy('merchant_id')->toArray();
-        } else {
-            $additionalPackageList = [];
-        }
         //处理顺带包裹提货数
         foreach ($additionalPackageList as $k => $v) {
             Log::info($additionalPackageList);
