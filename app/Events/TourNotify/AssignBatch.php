@@ -75,17 +75,16 @@ class AssignBatch extends ATourNotify
         foreach ($orderList as $merchantId => $merchantOrderList) {
             $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
         }
-        //顺带包裹
+        //处理顺带包裹提货数
         $additionalPackageList = AdditionalPackage::query()->where('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no', 'delivery_amount', 'sticker_no', 'sticker_amount']);
+        foreach ($additionalPackageList as $k => $v) {
+            $additionalPackageList[$k]['delivery_count'] = floatval($additionalPackageList[$k]['delivery_amount']) == 0.00 ? 0 : 1;
+            $this->batch['delivery_count'] += $additionalPackageList[$k]['delivery_count'];
+        }
         if (!empty($additionalPackageList)) {
             $additionalPackageList = $additionalPackageList->toArray();
         } else {
             $additionalPackageList = [];
-        }
-        //处理顺带包裹提货数
-        foreach ($additionalPackageList as $k => $v) {
-            $additionalPackageList[$k]['delivery_count'] = floatval($additionalPackageList[$k]['delivery_amount']) == 0.00 ? 0 : 1;
-            $this->batch['delivery_count'] += $additionalPackageList[$k]['delivery_count'];
         }
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
