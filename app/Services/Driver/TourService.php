@@ -1092,7 +1092,11 @@ class TourService extends BaseService
             if ($merchant['additional_status'] == BaseConstService::MERCHANT_ADDITIONAL_STATUS_2) {
                 throw new BusinessLogicException('商户未开启顺带包裹服务');
             }
-            $data[$k]['sticker_amount'] = $v['sticker_no'] ? $stickerAmount : 0;
+            if (!empty($v['sticker_no'])) {
+                $data[$k]['sticker_amount'] = $stickerAmount;
+            } else {
+                $data[$k]['sticker_amount'] = 0;
+            }
             $data[$k]['delivery_amount'] = $v['delivery_charge'] == BaseConstService::YES ? $deliveryAmount : 0;
             $data[$k]['merchant_id'] = $params[$k]['merchant_id'];
             $data[$k]['package_no'] = $params[$k]['package_no'];
