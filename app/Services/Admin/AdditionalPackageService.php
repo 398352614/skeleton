@@ -8,6 +8,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\AdditionalPackageResource;
 use App\Models\AdditionalPackage;
 use App\Services\BaseService;
+use App\Traits\SearchTrait;
 use Illuminate\Support\Arr;
 
 class AdditionalPackageService extends BaseService
@@ -38,7 +39,8 @@ class AdditionalPackageService extends BaseService
      */
     public function getPageList()
     {
-        $info = parent::getList();
+        parent::buildQuery($this->query, $this->filters);
+        $info=$this->query->get();
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -58,10 +60,10 @@ class AdditionalPackageService extends BaseService
      */
     public function show($id)
     {
-        $batch = $this->getBatchService()->getInfo(['id'=> $id]);
-        if(empty($batch)){
+        $batch = $this->getBatchService()->getInfo(['id' => $id]);
+        if (empty($batch)) {
             throw new BusinessLogicException('数据不存在');
         }
-        return parent::getList(['batch_no'=>$batch['batch_no']]);
+        return parent::getList(['batch_no' => $batch['batch_no']]);
     }
 }
