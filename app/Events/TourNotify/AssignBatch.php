@@ -70,16 +70,17 @@ class AssignBatch extends ATourNotify
             $this->batch['delivery_count'] += $orderList[$k]['delivery_count'];
         }
         unset($packageList, $materialList);
-        $orderList = collect($orderList)->groupBy('merchant_id')->toArray();
-        $batchList = [];
-        foreach ($orderList as $merchantId => $merchantOrderList) {
-            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
-        }
+
         //处理顺带包裹提货数
         $additionalPackageList = AdditionalPackage::query()->where('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no', 'delivery_amount', 'sticker_no', 'sticker_amount']);
         foreach ($additionalPackageList as $k => $v) {
             $additionalPackageList[$k]['delivery_count'] = floatval($additionalPackageList[$k]['delivery_amount']) == 0.00 ? 0 : 1;
             $this->batch['delivery_count'] += $additionalPackageList[$k]['delivery_count'];
+        }
+        $orderList = collect($orderList)->groupBy('merchant_id')->toArray();
+        $batchList = [];
+        foreach ($orderList as $merchantId => $merchantOrderList) {
+            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
         }
         if (!empty($additionalPackageList)) {
             $additionalPackageList = $additionalPackageList->groupBy('merchant_id')->toArray();
