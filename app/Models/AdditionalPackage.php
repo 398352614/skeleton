@@ -50,9 +50,15 @@ class AdditionalPackage extends BaseModel
         'company_id',
         'merchant_id',
         'batch_no',
+        'tour_no',
+        'line_id',
+        'line_name',
         'package_no',
         'execution_date',
         'status',
+        'sticker_no',
+        'sticker_amount',
+        'delivery_amount',
         'receiver_fullname',
         'receiver_phone',
         'receiver_country',
@@ -63,7 +69,6 @@ class AdditionalPackage extends BaseModel
         'receiver_address',
         'receiver_lon',
         'receiver_lat',
-
         'created_at',
         'updated_at',
     ];

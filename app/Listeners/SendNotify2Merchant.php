@@ -51,7 +51,7 @@ class SendNotify2Merchant implements ShouldQueue
      *
      * @var int
      */
-    public $timeout = 30;
+    public $timeout = 90;
 
     /**
      * @var CurlClient
@@ -83,7 +83,7 @@ class SendNotify2Merchant implements ShouldQueue
             Log::info('notify-type:' . $notifyType);
             Log::info('dataList:' . json_encode($dataList, JSON_UNESCAPED_UNICODE));
             if (empty($dataList)) return true;
-            $merchantList = $this->getMerchantList(array_column($dataList, 'merchant_id'));
+            $merchantList = $this->getMerchantList(array_keys($dataList));
             if (empty($merchantList)) return true;
             foreach ($dataList as $merchantId => $data) {
                 $postData = ['type' => $notifyType, 'data' => $data];
@@ -91,6 +91,8 @@ class SendNotify2Merchant implements ShouldQueue
                 list($pushStatus, $msg) = $this->postData($merchantList[$merchantId]['url'], $postData);
                 ThirdPartyLogService::storeAll($merchantId, $data, $notifyType, $event->getThirdPartyContent($pushStatus, $msg));
             }
+        } catch (\ErrorException $ex) {
+            Log::channel('job-daily')->error($ex->getMessage());
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
         }

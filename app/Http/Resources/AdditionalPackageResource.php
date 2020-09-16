@@ -11,12 +11,16 @@ class AdditionalPackageResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id'=>$this->id,
             'company_id'=>$this->company_id,
             'merchant_id'=>$this->merchant_id,
             'merchant_name'=>$this->merchant_name,
             'batch_no'=>$this->batch_no,
             'package_no'=>$this->package_no,
             'execution_date'=>$this->execution_date,
+            'sticker_no'=>$this->sticker_no,
+            'sticker_amount'=>$this->sticker_amount,
+            'delivery_amount'=>$this->delivery_amount,
             'status'=>$this->status,
             'receiver_fullname'=>$this->receiver_fullname,
             'receiver_phone'=>$this->receiver_phone,
