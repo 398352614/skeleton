@@ -50,9 +50,9 @@ class RegisterController extends BaseController
     {
         $data = $request->all();
 
-        /*        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
+                if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
                     throw new BusinessLogicException('验证码错误');
-                }*/
+                }
 
         RegisterController::deleteVerifyCode($data['email']);
 
