@@ -844,9 +844,9 @@ class TourService extends BaseService
             throw new BusinessLogicException('站点当前状态不能签收');
         }
         Log::info('batch', $batch);
-        if (!empty($params['additional_package_list']) && intval($params['pay_type']) == BaseConstService::BATCH_PAY_TYPE_4) {
-            foreach ($params['additional_package_list'] as $v) {
-                if ($v['sticker_no'] !== '' || $v['delivery_charge'] == BaseConstService::YES) {
+        if(!empty($params['additional_package_list'])){
+            foreach ($params['additional_package_list'] as $v){
+                if($v['sticker_no'] !== '' || $v['delivery_charge'] == BaseConstService::YES){
                     throw new BusinessLogicException('顺带包裹费用不为0，不能选择无需支付');
                 }
             }
