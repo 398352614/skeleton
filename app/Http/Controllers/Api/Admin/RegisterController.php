@@ -61,6 +61,11 @@ class RegisterController extends BaseController
             new BusinessLogicException('账号已注册，请直接登录')
         );
 
+        throw_if(
+            Company::where('email', $data['email'])->count(),
+            new BusinessLogicException('账号已注册，请直接登录')
+        );
+
         DB::transaction(function () use ($data) {
 
             $lastCompany = Company::lockForUpdate()->orderBy('created_at', 'desc')->first();
