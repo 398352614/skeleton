@@ -846,7 +846,7 @@ class TourService extends BaseService
         Log::info('batch', $batch);
         if(!empty($params['additional_package_list'])){
             foreach ($params['additional_package_list'] as $v){
-                if(!empty($v['sticker_no']) || $v['delivery_charge'] == BaseConstService::YES){
+                if($v['sticker_no'] !== '' || $v['delivery_charge'] == BaseConstService::YES){
                     throw new BusinessLogicException('顺带包裹费用不为0，不能选择无需支付');
                 }
             }
