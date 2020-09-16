@@ -568,4 +568,8 @@
 "当日充值未完结，请次日审核":"Recharge is niet klaar op dezelfde dag, controleer de volgende dag",
 "该充值已审核,请勿重复审核":"De oplage is goedgekeurd, gelieve de audit niet te herhalen"
 ,"状态不正确":"De status is niet correct"
+,"司机不存在":"De bestuurder bestaat niet",
+"出库里程数小于该车上次入库里程数，请重新填写":"De kilometerstand uit het magazijn is minder dan de kilometerstand van het voertuig in de laatste keer, gelieve opnieuw in te vullen",
+"车辆里程记录失败，请重试":"De kilometerstand van het voertuig is mislukt, probeer het opnieuw",
+"顺带包裹费用不为0，不能选择无需支付":"Het pakket vergoeding is niet 0. U kunt niet kiezen om niet te betalen"
 }
