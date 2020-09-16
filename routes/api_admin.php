@@ -36,13 +36,15 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
 
     //主页统计
-    Route::prefix('home')->group(function () {
+    Route::prefix('statistics')->group(function () {
         Route::get('/', 'HomeController@home');
-        Route::get('/this-week-count', 'HomeController@thisWeekCount');
-        Route::get('/last-week-count', 'HomeController@lastWeekCount');
-        Route::get('/this-month-count', 'HomeController@thisMonthCount');
-        Route::get('/last-month-count', 'HomeController@lastMonthCount');
-        Route::get('/period-count', 'HomeController@periodCount');
+        Route::get('/this-week', 'HomeController@thisWeekCount');
+        Route::get('/last-week', 'HomeController@lastWeekCount');
+        Route::get('/this-month', 'HomeController@thisMonthCount');
+        Route::get('/last-month', 'HomeController@lastMonthCount');
+        Route::get('/period', 'HomeController@periodCount');
+        Route::get('/merchant', 'HomeController@merchantCount');
+        Route::get('/merchant-total', 'HomeController@merchantTotalCount');
     });
 
 
@@ -170,6 +172,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
         Route::get('/track', 'RouteTrackingController@show')->name('car.track-show');  // 车辆追踪
         Route::get('/all-track', 'RouteTrackingController@index')->name('car.track-index');  // 所有车辆追踪
+        Route::get('/{id}/distance', 'CarController@distanceExport')->name('car.distance');  // 导出里程
 
         // $router->post('car/lock', 'CarInfoController@lock');
     });

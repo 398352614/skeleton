@@ -205,4 +205,15 @@ class CarController extends BaseController
         return $this->modelService->create($request->all());
     }
 
+    /**
+     * 车辆历程导出
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function distanceExport($id)
+    {
+        return $this->service->distanceExport($id, $this->data);
+    }
+
 }

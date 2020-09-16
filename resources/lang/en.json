@@ -688,7 +688,9 @@
     "商户不存在，无法顺带包裹": "The merchant does not exist, and the package cannot be brought along",
     "商户未开启顺带包裹服务": "Merchant does not open package service",
     "当日充值未完结，请次日审核": "Recharge is not finished on the same day, please check the next day",
-    "该充值已审核,请勿重复审核": "The recharge has been approved, please do not repeat the audit"
-
-,"状态不正确":"The status is not correct"
+    "该充值已审核,请勿重复审核": "The recharge has been approved, please do not repeat the audit",
+    "状态不正确": "The status is not correct",
+    "顺带包裹费用不为0，不能选择无需支付": "The package fee is not 0. You cannot choose not to pay",
+    "该车辆该日无里程记录": "The vehicle has no mileage record on that day",
+    "合计": "total"
 }

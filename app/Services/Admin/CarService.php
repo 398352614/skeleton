@@ -9,11 +9,24 @@ use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\ExportTrait;
 
 class CarService extends BaseService
 {
+    use ExportTrait;
+
     public $filterRules = [
         'status' => ['=', 'status'],
+    ];
+
+    public $headings = [
+        'car_no',
+        'driver_name',
+        'execution_date',
+        'begin_distance',
+        'end_distance',
+        'expect_distance',
+        'handmade_actual_distance',
     ];
 
     public function __construct(Car $car)
@@ -112,8 +125,8 @@ class CarService extends BaseService
      */
     public function destroy($id)
     {
-        $tourList = $this->getTourService()->getList(['car_id' => $id],['*'],false)->toArray();
-        foreach ($tourList as $v){
+        $tourList = $this->getTourService()->getList(['car_id' => $id], ['*'], false)->toArray();
+        foreach ($tourList as $v) {
             if (in_array($v['status'], [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_2])) {
                 throw new BusinessLogicException('仍有未完成的任务，无法删除');
             }
@@ -136,4 +149,36 @@ class CarService extends BaseService
         }
         return parent::getPageList();
     }
+
+    /**
+     * @param $id
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function distanceExport($id, $params)
+    {
+        $car = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($car)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $data = $this->getTourService()->getList(['car_no' => $car['car_no'], 'execution_date' => $params['execution_date']], ['*'], false);
+        if (empty($data)) {
+            throw new BusinessLogicException('该车辆该日无里程记录');
+        }
+        foreach ($data as $k => $v) {
+            $data[$k]['handmade_actual_distance'] = $v['end_distance'] - $v['begin_distance'];
+        }
+        $cellData=[];
+        foreach ($data as $v) {
+            $cellData[] = array_only_fields_sort($v, $this->headings);
+        }
+        if (empty($cellData)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $dir = 'carDistance';
+        $name = date('YmdHis') . auth()->user()->id;
+        return $this->excelExport($name, $this->headings, $cellData, $dir);
+    }
+
 }

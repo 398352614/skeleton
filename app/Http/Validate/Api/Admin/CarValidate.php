@@ -34,7 +34,7 @@ class CarValidate extends BaseValidate
         'relate_material' => 'nullable|string',
         'relate_material_name' => 'nullable|string',
         'is_locked' => 'required|integer|in:1,2',
-
+        'execution_date' => 'required|date',
         'cn_name' => 'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
         'en_name' => 'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
         'brand_id' => ['required'],
@@ -78,6 +78,9 @@ class CarValidate extends BaseValidate
         ],
         'lock' => [
             'is_locked',
+        ],
+        'distanceExport'=>[
+            'execution_date',
         ]
     ];
 }

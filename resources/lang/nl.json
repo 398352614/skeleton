@@ -374,7 +374,6 @@
     "员工删除失败": "Verwijdering van werknemers mislukt",
     "多商家": "Meerhandelaar",
     "当前司机已被分配，请选": "Huidige bestuurder is toegewezen, kies",
-
     "表格导出失败，请重新操作": "Kon de tabel niet exporteren. Probeer het opnieuw",
     "充值单号规则": "Regel van het oplaadnummer",
     "充值中": "Opladen",
@@ -558,14 +557,16 @@
     "七娃家": "Qiwa familie.",
     "冰冻": "bevroren",
     "解锁 tour 的操作锁定": "Open het operationeel slot van de tour",
-    "测试 guzzle": "Test guzzle"
-
-,"开启":"open",
-"纳入当日充值统计失败":"Niet in geslaagd om oplaadstatistieken op dezelfde dag op te nemen",
-"充值统计失败":"Statistieken inzake oplading zijn mislukt",
-"商户不存在，无法顺带包裹":"De koopman bestaat niet, en het pakket kan niet worden meegenomen",
-"商户未开启顺带包裹服务":"De handelaar opent geen pakketdienst",
-"当日充值未完结，请次日审核":"Recharge is niet klaar op dezelfde dag, controleer de volgende dag",
-"该充值已审核,请勿重复审核":"De oplage is goedgekeurd, gelieve de audit niet te herhalen"
-,"状态不正确":"De status is niet correct"
+    "测试 guzzle": "Test guzzle",
+    "开启": "open",
+    "纳入当日充值统计失败": "Niet in geslaagd om oplaadstatistieken op dezelfde dag op te nemen",
+    "充值统计失败": "Statistieken inzake oplading zijn mislukt",
+    "商户不存在，无法顺带包裹": "De koopman bestaat niet, en het pakket kan niet worden meegenomen",
+    "商户未开启顺带包裹服务": "De handelaar opent geen pakketdienst",
+    "当日充值未完结，请次日审核": "Recharge is niet klaar op dezelfde dag, controleer de volgende dag",
+    "该充值已审核,请勿重复审核": "De oplage is goedgekeurd, gelieve de audit niet te herhalen",
+    "状态不正确": "De status is niet correct",
+    "顺带包裹费用不为0，不能选择无需支付": "Het pakket vergoeding is niet 0. U kunt niet kiezen om niet te betalen",
+    "该车辆该日无里程记录": "Het voertuig heeft geen kilometerstand op die dag",
+    "合计": "totaal"
 }
