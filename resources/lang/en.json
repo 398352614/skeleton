@@ -688,11 +688,10 @@
     "商户不存在，无法顺带包裹": "The merchant does not exist, and the package cannot be brought along",
     "商户未开启顺带包裹服务": "Merchant does not open package service",
     "当日充值未完结，请次日审核": "Recharge is not finished on the same day, please check the next day",
-    "该充值已审核,请勿重复审核": "The recharge has been approved, please do not repeat the audit"
-
-,"状态不正确":"The status is not correct"
-,"司机不存在":"The driver does not exist",
-"出库里程数小于该车上次入库里程数，请重新填写":"The mileage out of the warehouse is less than the mileage of the vehicle in the last time, please fill in again",
-"车辆里程记录失败，请重试":"Vehicle mileage record failed, please try again",
-"顺带包裹费用不为0，不能选择无需支付":"Can not choose ”no payment“ because there is cost on EXTRA parcels"
+    "该充值已审核,请勿重复审核": "The recharge has been approved, please do not repeat the audit",
+    "状态不正确": "The status is not correct",
+    "司机不存在": "The driver does not exist",
+    "出库里程数小于该车上次入库里程数，请重新填写": "The mileage out of the warehouse is less than the mileage of the vehicle in the last time, please fill in again",
+    "车辆里程记录失败，请重试": "Vehicle mileage record failed, please try again",
+    "顺带包裹费用不为0，不能选择无需支付": "Can not choose ”no payment“ because there is cost on EXTRA parcels"
 }
