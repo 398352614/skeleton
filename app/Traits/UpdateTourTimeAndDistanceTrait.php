@@ -56,7 +56,6 @@ trait UpdateTourTimeAndDistanceTrait
                     $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', time() + $res['time']);
                     $tourBatch->expect_distance = $res['distance'];
                     $tourBatch->expect_time = $res['time'];
-                    $tourBatch->save();
                 }
                 //更新出库预计
                 if ($tour['actual_out_status'] == BaseConstService::YES && $tourBatch['status'] == BaseConstService::BATCH_DELIVERING) {
@@ -71,6 +70,7 @@ trait UpdateTourTimeAndDistanceTrait
                         $tourBatch->out_expect_time = $res['time'];
                     }
                 }
+                $tourBatch->save();
                 $max_time = max($max_time, $res['time']);
                 $max_distance = max($max_distance, $res['distance']);
             }
