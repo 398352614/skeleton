@@ -93,7 +93,9 @@ class TourService extends BaseService
         'expect_material_quantity',
         'actual_material_quantity',
         'status',
-        'actual_arrive_time'
+        'actual_arrive_time',
+        'expect_arrive_time',
+        'out_arrive_expect_time',
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -1105,6 +1107,8 @@ class TourService extends BaseService
             $cellData[$i][24] = $batchList[$i]['actual_material_quantity'];
             $cellData[$i][25] = $batchList[$i]['status'];
             $cellData[$i][26] = $batchList[$i]['actual_arrive_time'];
+            $cellData[$i][27] = $batchList[$i]['expect_arrive_time'];
+            $cellData[$i][28] = $batchList[$i]['out_expect_arrive_time'];
         }
         $cellData[0][0] = $tour['tour_no'];
         $cellData[0][1] = $tour['line_name'];

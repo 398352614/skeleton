@@ -48,6 +48,7 @@ class Car extends BaseModel
     protected $fillable = [
         'company_id',
         'car_no',
+        'distance',
         'outgoing_time',
         'car_brand_id',
         'car_model_id',

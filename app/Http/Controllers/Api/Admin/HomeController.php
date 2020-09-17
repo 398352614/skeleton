@@ -67,4 +67,17 @@ class HomeController extends BaseController
     public function periodCount(){
         return $this->service->periodCount($this->data);
     }
+
+    public function merchantCount(){
+        return $this->service->merchantCount();
+    }
+
+    /**
+     * 商户总计
+     * @return array
+     */
+    public function merchantTotalCount()
+    {
+        return $this->service->merchantTotalCount();
+    }
 }
