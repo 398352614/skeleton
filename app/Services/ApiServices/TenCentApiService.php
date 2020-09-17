@@ -187,6 +187,7 @@ class TenCentApiService
      * @param $from
      * @param $to
      * @return mixed|null
+     * @throws BusinessLogicException
      */
     protected function getDistance($url, $from, $to)
     {
@@ -196,7 +197,8 @@ class TenCentApiService
         $url = $url . '?' . $query;
         $res = $this->client->get($url);
         if (!isset($res['status']) || ($res['status'] != 0)) {
-            return null;
+            Log::info('tencent-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            throw new BusinessLogicException('teCent-api请求报错');
         }
         return $res;
     }
