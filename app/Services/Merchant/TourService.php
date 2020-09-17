@@ -14,8 +14,9 @@ use App\Models\TourLog;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\BaseServices\XLDirectionService;
-use App\Services\GoogleApiService;
+use App\Services\ApiServices\GoogleApiService;
 use App\Services\OrderNoRuleService;
+use App\Services\ApiServices\TourOptimizationService;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
 use Carbon\Carbon;
@@ -538,12 +539,6 @@ class TourService extends BaseService
         // set_time_limit(240);
 
         $tour = Tour::where('tour_no', $this->formData['tour_no'])->firstOrFail();
-        $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
-
-        if (!$nextBatch) {
-            // self::setTourLock($this->formData['tour_no'], 0);
-            throw new BusinessLogicException('没有找到下一个目的地');
-        }
 
         TourLog::create([
             'tour_no' => $this->formData['tour_no'],
@@ -551,7 +546,7 @@ class TourService extends BaseService
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
 
-        event(new AfterTourUpdated($tour, $nextBatch->batch_no));
+        TourOptimizationService::getOpInstance($tour->company_id)->autoUpdateTour($tour);
 
         return '修改线路成功';
     }
