@@ -61,13 +61,13 @@ trait UpdateTourTimeAndDistanceTrait
                 //更新出库预计
                 if ($tour['actual_out_status'] == BaseConstService::YES && $tourBatch['status'] == BaseConstService::BATCH_DELIVERING) {
                     if (empty($tourBatch->frist_expect_arrive_time)) {
-                        $tourBatch->frist_expect_arrive_time = date('Y-m-d H:i:s', time() + $res['time']);
+                        $tourBatch->out_expect_arrive_time = date('Y-m-d H:i:s', time() + $res['time']);
                     }
                     if (empty($tourBatch->frist_expect_distance)) {
-                        $tourBatch->frist_expect_distance = $res['distance'];
+                        $tourBatch->out_expect_distance = $res['distance'];
                     }
                     if (empty($tourBatch->frist_expect_time)) {
-                        $tourBatch->frist_expect_time = $res['time'];
+                        $tourBatch->out_expect_time = $res['time'];
                     }
                 }
                 $max_time = max($max_time, $res['time']);
