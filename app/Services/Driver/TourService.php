@@ -417,7 +417,7 @@ class TourService extends BaseService
         if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_4 || !empty($batchList)) {
             throw new BusinessLogicException('状态错误');
         }
-        $car = $this->getCarService()->getInfo(['car_no', $tour['car_no']], ['*'], false);
+        $car = $this->getCarService()->getInfo(['car_no' => $tour['car_no']], ['*'], false);
         if (empty($car)) {
             throw new BusinessLogicException('司机不存在');
         }
