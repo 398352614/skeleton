@@ -1285,7 +1285,7 @@ class TourService extends BaseService
         $data = Arr::only($params, ['end_signature', 'end_signature_remark']);
         $data = Arr::add($data, 'end_time', now());
         $actualTime = strtotime($data['end_time']) - strtotime($tour['begin_time']);
-        $car = $this->getCarService()->getInfo(['car_no', $tour['car_no']], ['*'], false);
+        $car = $this->getCarService()->getInfo(['car_no' => $tour['car_no']], ['*'], false);
         if (empty($car)) {
             throw new BusinessLogicException('司机不存在');
         }
