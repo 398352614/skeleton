@@ -94,7 +94,9 @@ return [
         "expect_pickup_quantity" => "Expect Pickup Order Quantity",
         "actual_pickup_quantity" => "Actual Pickup Order Quantity",
         "status" => "Status",
-        "actual_arrive_time" => "Arrival time"
+        "actual_arrive_time" => "Arrival time",
+        "expect_time"=>"Expect Time",
+        "first_expect_time"=>"First Expect Time",
     ],
 
     "orderOut" => [

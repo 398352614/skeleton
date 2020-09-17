@@ -417,6 +417,17 @@ class TourService extends BaseService
         if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_4 || !empty($batchList)) {
             throw new BusinessLogicException('状态错误');
         }
+        $car = $this->getCarService()->getInfo(['car_no', $tour['car_no']], ['*'], false);
+        if (empty($car)) {
+            throw new BusinessLogicException('司机不存在');
+        }
+        if ($params['begin_distance'] < $car['distance']) {
+            throw new BusinessLogicException('出库里程数小于该车上次入库里程数，请重新填写');
+        }
+        $row = $this->getCarService()->update(['car_no' => $tour['car_no']], ['distance' => $params['begin_distance']]);
+        if ($row == false) {
+            throw new BusinessLogicException('车辆里程记录失败，请重试');
+        }
         $row = parent::updateById($id, ['actual_out_status' => BaseConstService::YES, 'begin_distance' => $params['begin_distance'] * 1000, 'begin_time' => now()]);
         if ($row == false) {
             throw new BusinessLogicException('实际出库失败');
@@ -1274,6 +1285,17 @@ class TourService extends BaseService
         $data = Arr::only($params, ['end_signature', 'end_signature_remark']);
         $data = Arr::add($data, 'end_time', now());
         $actualTime = strtotime($data['end_time']) - strtotime($tour['begin_time']);
+        $car = $this->getCarService()->getInfo(['car_no', $tour['car_no']], ['*'], false);
+        if (empty($car)) {
+            throw new BusinessLogicException('司机不存在');
+        }
+        if ($params['end_distance'] < $car['distance']) {
+            throw new BusinessLogicException('出库里程数小于该车上次入库里程数，请重新填写');
+        }
+        $row = $this->getCarService()->update(['car_no' => $tour['car_no']], ['distance' => $params['end_distance']]);
+        if ($row == false) {
+            throw new BusinessLogicException('车辆里程记录失败，请重试');
+        }
         $data = array_merge($data, ['actual_time' => $actualTime, 'actual_distance' => $tour['expect_distance'], 'end_distance' => $params['end_distance'] * 1000]);
         $rowCount = parent::updateById($tour['id'], Arr::add($data, 'status', BaseConstService::TOUR_STATUS_5));
         if ($rowCount === false) {

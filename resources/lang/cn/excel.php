@@ -95,7 +95,9 @@ return [
         "expect_pickup_quantity" => "预计取件订单",
         "actual_pickup_quantity" => "实际取件订单",
         "status" => "订单状态",
-        "actual_arrive_time" => "司机到达时间"
+        "actual_arrive_time" => "司机到达时间",
+        "expect_time" => "站点签收时预计到达时间",
+        "first_expect_time" => "确认出库时预计到达时间",
     ],
 
     "orderOut" => [
@@ -141,5 +143,5 @@ return [
         'end_distance' => '回库里程数',
         'expect_distance' => '预计里程数',
         'handmade_actual_distance' => '实际里程数'
-        ],
-    ];
+    ],
+];
