@@ -844,6 +844,13 @@ class TourService extends BaseService
             throw new BusinessLogicException('站点当前状态不能签收');
         }
         Log::info('batch', $batch);
+        if (!empty($params['additional_package_list']) && intval($params['pay_type']) == BaseConstService::BATCH_PAY_TYPE_4) {
+            foreach ($params['additional_package_list'] as $v) {
+                if ($v['sticker_no'] !== '' || $v['delivery_charge'] == BaseConstService::YES) {
+                    throw new BusinessLogicException('顺带包裹费用不为0，不能选择无需支付');
+                }
+            }
+        }
         if (intval($params['pay_type']) == BaseConstService::BATCH_PAY_TYPE_4 && (intval($params['total_sticker_amount']) !== 0 || intval($params['total_replace_amount']) !== 0 || intval($params['total_settlement_amount']) !== 0 || intval($params['total_delivery_amount']) !== 0)) {
             throw new BusinessLogicException('费用不为0，不能选择无需支付');
         }
@@ -876,7 +883,7 @@ class TourService extends BaseService
                 $cancelOrderList[] = $dbOrder;
                 continue;
             }
-            //若存在取派完成的包裹,则认为i订单取派完成;
+            //若存在取派完成的包裹,则认为订单取派完成;
             if (intval($dbOrder['type']) === BaseConstService::ORDER_TYPE_1) {
                 $pickupCount += 1;
             } else {
@@ -1072,12 +1079,15 @@ class TourService extends BaseService
     }
 
     /**
+     * 处理顺带包裹列表
      * @param $batch
      * @param $params
      * @throws BusinessLogicException
      */
     public function dealAdditionalPackageList($batch, $params)
     {
+        $stickerAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::STICKER]);
+        $deliveryAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::DELIVERY]);
         $merchantIDList = collect($params)->pluck('merchant_id')->toArray();
         $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIDList]], ['*'], false)->toArray();
         $data = [];
@@ -1089,9 +1099,19 @@ class TourService extends BaseService
             if ($merchant['additional_status'] == BaseConstService::MERCHANT_ADDITIONAL_STATUS_2) {
                 throw new BusinessLogicException('商户未开启顺带包裹服务');
             }
+            if (!empty($v['sticker_no'])) {
+                $data[$k]['sticker_amount'] = $stickerAmount;
+            } else {
+                $data[$k]['sticker_amount'] = 0;
+            }
+            $data[$k]['delivery_amount'] = $v['delivery_charge'] == BaseConstService::YES ? $deliveryAmount : 0;
             $data[$k]['merchant_id'] = $params[$k]['merchant_id'];
             $data[$k]['package_no'] = $params[$k]['package_no'];
+            $data[$k]['sticker_no'] = $params[$k]['sticker_no'];
             $data[$k]['batch_no'] = $batch['batch_no'];
+            $data[$k]['tour_no'] = $batch['tour_no'];
+            $data[$k]['line_id'] = $batch['line_id'];
+            $data[$k]['line_name'] = $batch['line_name'];
             $data[$k]['receiver_fullname'] = $batch['receiver_fullname'];
             $data[$k]['execution_date'] = $batch['execution_date'];
             $data[$k]['receiver_phone'] = $batch['receiver_phone'];
