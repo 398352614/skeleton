@@ -41,7 +41,7 @@ trait UpdateTourTimeAndDistanceTrait
                 'warehouse_expect_time' => 0,
                 'warehouse_expect_arrive_time' => null
             ];
-            //若取件线路未结束，则智能调度仓库
+            //若取件线路未结束，则仓库更新预计
             if (in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4])) {
                 $warehouse['warehouse_expect_arrive_time'] = date('Y-m-d H:i:s', time() + $data['loc_res'][$tour->tour_no . $tour->tour_no]['time']);
                 $warehouse['warehouse_expect_distance'] = $data['loc_res'][$tour->tour_no . $tour->tour_no]['distance'];
@@ -51,12 +51,24 @@ trait UpdateTourTimeAndDistanceTrait
             unset($data['loc_res'][$tour->tour_no . $tour->tour_no]);
             foreach ($data['loc_res'] as $key => $res) {
                 $tourBatch = Batch::where('batch_no', str_replace($tour->tour_no, '', $key))->where('tour_no', $tour->tour_no)->first();
-                //若站点未签收,则智能调度
+                //若站点未签收,则更新预计
                 if (!empty($tourBatch) && in_array(intval($tourBatch->status), [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])) {
                     $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', time() + $res['time']);
                     $tourBatch->expect_distance = $res['distance'];
                     $tourBatch->expect_time = $res['time'];
                     $tourBatch->save();
+                }
+                //更新出库预计
+                if ($tour['actual_out_status'] == BaseConstService::YES && $tourBatch['status'] == BaseConstService::BATCH_DELIVERING) {
+                    if (empty($tourBatch->frist_expect_arrive_time)) {
+                        $tourBatch->frist_expect_arrive_time = date('Y-m-d H:i:s', time() + $res['time']);
+                    }
+                    if (empty($tourBatch->frist_expect_distance)) {
+                        $tourBatch->frist_expect_distance = $res['distance'];
+                    }
+                    if (empty($tourBatch->frist_expect_time)) {
+                        $tourBatch->frist_expect_time = $res['time'];
+                    }
                 }
                 $max_time = max($max_time, $res['time']);
                 $max_distance = max($max_distance, $res['distance']);

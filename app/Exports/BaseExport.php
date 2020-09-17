@@ -243,6 +243,10 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                         'X' => 10,
                         'Y' => 10,
                         'Z' => 20,
+                        'AA' => 20,
+                        'AB' => 25,
+                        'AC' => 25,
+
                     ];
                     foreach ($column as $k => $v) {
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
