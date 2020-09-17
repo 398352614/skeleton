@@ -2,13 +2,16 @@
 
 namespace App\Http\Resources;
 
+use App\Services\CorTransferService;
+use App\Services\CorTransferTrait;
+use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BatchInfoResource extends JsonResource
 {
     public function toArray($request)
     {
-        return [
+        return array_merge([
             'id' => $this->id,
             'company_id' => $this->company_id,
             'batch_no' => $this->batch_no,
@@ -54,7 +57,20 @@ class BatchInfoResource extends JsonResource
             'exception_label_name' => $this->exception_label_name,
             'pay_type_name' => $this->pay_type_name,
             'orders' => OrderResource::collection($this->orders),
+        ], $this->corTransfer());
+    }
 
+    public function corTransfer()
+    {
+        if ((CompanyTrait::getCompany()['map'] == 'baidu') || empty($this->receiver_lat) || empty($this->receiver_lon)) {
+            $cor = [$this->receiver_lat, $this->receiver_lon];
+        } else {
+            $cor = CorTransferService::baiDuToTenCent($this->receiver_lat, $this->receiver_lon);
+            $cor = array_values($cor);
+        }
+        return [
+            'receiver_lat' => $cor[0],
+            'receiver_lon' => $cor[1],
         ];
     }
 

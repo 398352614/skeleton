@@ -47,10 +47,11 @@ class TenCentApiService
     }
 
     /**
-     * 更新tour
+     * 自动更新tour
      * @param Tour $tour
      * @param $nextCode
      * @return mixed|null
+     * @throws BusinessLogicException
      */
     public function autoUpdateTour(Tour $tour)
     {
@@ -78,34 +79,45 @@ class TenCentApiService
                 'location' => implode(',', [$batch->receiver_lat, $batch->receiver_lon])
             ];
         }
-        $res = $this->getDistance($this->url, $origin, array_column($batchs, 'location'));
-        $distance = $time = 0;
-        $nowTime = time();
-        foreach ($res['result']['elements'] as $key => $element) {
-            $distance += $element['distance'];
-            $time += $element['duration'] * 60;
-            $data = [
-                'expect_distance' => $distance,
-                'expect_time' => $time,
-                'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time),
-                'sort_id' => $keyIndex
-            ];
-            Batch::query()->where('batch_no', $batchs[$res['result']['optimal_order'][$key] - 1]['batch_no'])->update($data);
-            $keyIndex++;
+        try {
+            $res = $this->getDistance($this->url, $origin, array_column($batchs, 'location'));
+            $distance = $time = 0;
+            $nowTime = time();
+            foreach ($res['result']['elements'] as $key => $element) {
+                $distance += $element['distance'];
+                $time += $element['duration'] * 60;
+                $data = [
+                    'expect_distance' => $distance,
+                    'expect_time' => $time,
+                    'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time),
+                    'sort_id' => $keyIndex
+                ];
+                Batch::query()->where('batch_no', $batchs[$res['result']['optimal_order'][$key] - 1]['batch_no'])->update($data);
+                $keyIndex++;
+            }
+            /*********************************2.获取最后一个站点到仓库的距离和时间*****************************************/
+            $lastPointIndex = last($res['result']['optimal_order']);
+            $backWarehouseElement = $this->distanceMatrix([$batchs[$lastPointIndex - 1]['location'], $tour->driver_location]);
+            $backElement = $backWarehouseElement[0][1];
+            Tour::query()->where('tour_no', $tour->tour_no)->update([
+                'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration'] * 60),
+                'warehouse_expect_distance' => $distance + $backElement['distance'],
+                'warehouse_expect_time' => $time + $backElement['duration']
+            ]);
+        } catch (BusinessLogicException $exception) {
+            throw new BusinessLogicException('线路自动更新失败');
         }
-        /*********************************2.获取最后一个站点到仓库的距离和时间*****************************************/
-        $lastPointIndex = last($res['result']['optimal_order']);
-        $backWarehouseElement = $this->distanceMatrix([$batchs[$lastPointIndex - 1]['location'], $tour->driver_location]);
-        $backElement = $backWarehouseElement[0][1];
-        Tour::query()->where('tour_no', $tour->tour_no)->update([
-            'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration'] * 60),
-            'warehouse_expect_distance' => $distance + $backElement['distance'],
-            'warehouse_expect_time' => $time + $backElement['duration']
-        ]);
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         return $res;
     }
 
+    /**
+     * 更新线路
+     * @param Tour $tour
+     * @param $nextCode
+     * @param array $driverLocation
+     * @throws BusinessLogicException
+     */
     public function updateTour(Tour $tour, $nextCode, $driverLocation = [])
     {
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
@@ -115,30 +127,42 @@ class TenCentApiService
         if (empty($driverLocation)) {
             $driverLocation = ['latitude' => $tour->warehouse_lat, 'longitude' => $tour->warehouse_lon];
         }
-        $res = $this->distanceMatrix(array_merge([$driverLocation], array_values($orderBatchs)));
-        $distance = $time = 0;
-        $nowTime = time();
-        $key = 0;
-        foreach ($orderBatchs as $batchNo => $batch) {
-            $distance += $res[$key][$key + 1]['distance'];
-            $time += $res[$key][$key + 1]['duration'];
-            Batch::query()->where('batch_no', $batchNo)->update([
-                'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time),
-                'expect_distance' => $distance,
-                'expect_time' => $time
+        try {
+            $res = $this->distanceMatrix(array_merge([$driverLocation], array_values($orderBatchs)));
+            $distance = $time = 0;
+            $nowTime = time();
+            $key = 0;
+            foreach ($orderBatchs as $batchNo => $batch) {
+                $distance += $res[$key][$key + 1]['distance'];
+                $time += $res[$key][$key + 1]['duration'];
+                Batch::query()->where('batch_no', $batchNo)->update([
+                    'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time),
+                    'expect_distance' => $distance,
+                    'expect_time' => $time
+                ]);
+                $key++;
+            }
+            /*********************************2.获取最后一个站点到仓库的距离和时间*****************************************/
+            $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_lcoation]);
+            $backElement = $backWarehouseElement[0][1];
+            Tour::query()->where('tour_no', $tour->tour_no)->update([
+                'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']),
+                'warehouse_expect_distance' => $distance + $backElement['distance'],
+                'warehouse_expect_time' => $time + $backElement['duration']
             ]);
-            $key++;
+        } catch (BusinessLogicException $exception) {
+            throw new BusinessLogicException('线路更新失败');
         }
-        /*********************************2.获取最后一个站点到仓库的距离和时间*****************************************/
-        $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_lcoation]);
-        $backElement = $backWarehouseElement[0][1];
-        Tour::query()->where('tour_no', $tour->tour_no)->update([
-            'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']),
-            'warehouse_expect_distance' => $distance + $backElement['distance'],
-            'warehouse_expect_time' => $time + $backElement['duration']
-        ]);
     }
 
+    /**
+     * 更新司机位置
+     * @param Tour $tour
+     * @param $driverLocation
+     * @param $nextBatchNo
+     * @param bool $queue
+     * @throws BusinessLogicException
+     */
     public function updateDriverLocation(Tour $tour, $driverLocation, $nextBatchNo, $queue = false)
     {
         $this->updateTour($tour, $nextBatchNo, $driverLocation);
@@ -148,6 +172,7 @@ class TenCentApiService
      * 计算距离
      * @param array $points
      * @return array
+     * @throws BusinessLogicException
      */
     public function distanceMatrix(array $points)
     {

@@ -9,10 +9,10 @@
 namespace App\Services;
 
 
-trait CorTransferTrait
+class CorTransferService
 {
     //百度转腾讯坐标转换  $a = Latitude , $b = Longitude
-    function baiDuToTeCent($lat, $lon)
+    public static function baiDuToTenCent($lat, $lon)
     {
         $x = (double)$lon - 0.0065;
         $y = (double)$lat - 0.006;
@@ -30,7 +30,7 @@ trait CorTransferTrait
     }
 
     //腾讯转百度坐标转换  $a = Latitude , $b = Longitude
-    function TeCentToBaiDu($lat, $lon)
+    public static function TenCentToBaiDu($lat, $lon)
     {
         $x = (double)$lon;
         $y = (double)$lat;
