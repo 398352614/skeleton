@@ -163,6 +163,15 @@ return [
             'max' => '商户ID字段必须在 :max 个字符之内',
             'string' => '商户ID必须是字符串'
         ],
+        'additional_package_list.*.sticker_no' => [
+            'max' => '贴单号字段必须在 :max 个字符之内',
+            'string' => '贴单号必须是字符串'
+        ],
+        'additional_package_list.*.delivery_charge' => [
+            'required_with' => '是否提货字段是必须的',
+            'in' => '选定的 是否提货字段 是无效的',
+            'integer' => '是否提货字段必须是数字'
+        ],
         //材料列表
         'material_list.*.order_no' => [
             'required_with' => '材料所属订单号是必须的',
@@ -663,10 +672,6 @@ return [
         "change_log" => "更新日志",
         "to_id" => "用户ID",
         "data" => "数据",
-        "company_auth" => "是否需要验证公司权限",
-    
-
-
-
-]
+        "company_auth" => "是否需要验证公司权限"
+    ]
 ];
