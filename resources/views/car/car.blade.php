@@ -53,30 +53,6 @@
             padding: 20px;
 
         }
-
-        /* 照片 */
-        .img-list {
-            width: 90%;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        .img-list > div {
-            width: 321px;
-            height: 321px;
-            margin: 20px 0;
-            border: 1px #000 solid;
-        }
-        img {
-            width: 128px;
-            height: 128px;
-            margin: 96px auto;
-        }
-
-        .page-no {
-            text-align: center;
-        }
     </style>
 </head>
 
