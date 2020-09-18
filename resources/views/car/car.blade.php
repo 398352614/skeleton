@@ -107,20 +107,13 @@
 
         <!-- 照片 -->
         <div class="img-list">
-            <img src="/var/www/html/api/storage/app/public/admin/file/3/driver/202004071716375e8c44f5769d3.png" width="100px" />
+
+            @foreach($data['url_list'] as $key=>$v)
+                <div>
+                    <img src=$v width="100px"/>
+                </div>
+                @endforeach
         </div>
-        {{--<script>
-            let arr = ["/var/www/html/api/storage/app/public/admin/file/3/driver/202004071716375e8c44f5769d3.png"];
-            arr.forEach(el => {
-                let div = document.createElement('div');
-                let img = document.createElement('img');
-                let imgList = document.getElementsByClassName('img-list');
-                img.src = el;
-                img.style.width = '120px';
-                div.appendChild(img);
-                imgList[0].appendChild(div);
-            })
-        </script>--}}
     </div>
 </div>
 </body>
