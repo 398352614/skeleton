@@ -11,6 +11,7 @@ use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use App\Traits\PrintTrait;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class CarService extends BaseService
@@ -201,6 +202,7 @@ class CarService extends BaseService
         foreach ($data['url_list'] as $k => $v) {
             $data['url_list'][$k] = str_replace(env('APP_URL'), storage_path(), $v);
         }
+        Log::info('info',$data['url_list']);
         $url = PrintTrait::tPrint($data, 'car.car', 'car', null);
         return [
             'name' => $data['car_no'],

@@ -111,10 +111,9 @@
         </div>
     </div>
 </div>
-</body>
+
 <script>
     let arr = @json($data['url_list']);
-    arr = JSON.parse(arr);
     arr.forEach(el => {
         let div = document.createElement('div');
         let img = document.createElement('img');
@@ -126,5 +125,5 @@
 
     })
 </script>
-
+</body>
 </html>
