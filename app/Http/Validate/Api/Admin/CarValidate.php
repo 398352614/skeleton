@@ -37,7 +37,11 @@ class CarValidate extends BaseValidate
         'execution_date' => 'required|date',
         'cn_name' => 'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
         'en_name' => 'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
-        'brand_id' => ['required'],
+        'brand_id' => 'required',
+
+        //包裹列表
+        'relate_material_list.*.material_name' => 'required_with:relate_material_list|string|max:50',
+        'relate_material_list.*.material_url' => 'required_with:relate_material_list|string|max:250',
     ];
     public $scene = [
         //保存
@@ -56,7 +60,10 @@ class CarValidate extends BaseValidate
             'repair',
             'remark',
             'relate_material',
-            'relate_material_name'
+            'relate_material_name',
+            //包裹列表
+            'relate_material_list.*.material_name',
+            'relate_material_list.*.material_url',
         ],
         'update' => [
             'car_no',
@@ -73,8 +80,10 @@ class CarValidate extends BaseValidate
             'repair',
             'remark',
             'relate_material',
-            'relate_material_name'
-
+            'relate_material_name',
+            //包裹列表
+            'relate_material_list.*.material_name',
+            'relate_material_list.*.material_url',
         ],
         'lock' => [
             'is_locked',

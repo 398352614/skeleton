@@ -10,10 +10,12 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
+use App\Traits\PrintTrait;
+use Illuminate\Support\Facades\Storage;
 
 class CarService extends BaseService
 {
-    use ExportTrait;
+    use ExportTrait, PrintTrait;
 
     public $filterRules = [
         'status' => ['=', 'status'],
@@ -72,6 +74,7 @@ class CarService extends BaseService
             'remark' => $this->formData['remark'] ?? '',
             'relate_material' => $this->formData['relate_material'] ?? '',
             'relate_material_name' => $this->formData['relate_material_name'] ?? '',
+            'relate_material_list' => $this->formData['relate_material_list'] ?? '',
         ]);
     }
 
@@ -98,6 +101,7 @@ class CarService extends BaseService
             'remark' => $this->formData['remark'],
             'relate_material' => $this->formData['relate_material'] ?? '',
             'relate_material_name' => $this->formData['relate_material_name'] ?? '',
+            'relate_material_list' => $this->formData['relate_material_list'] ?? '',
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改车辆失败');
@@ -162,14 +166,11 @@ class CarService extends BaseService
         if (empty($car)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = $this->getTourService()->getList(['car_no' => $car['car_no'], 'execution_date' => $params['execution_date']], ['*'], false);
-        if (empty($data)) {
-            throw new BusinessLogicException('该车辆该日无里程记录');
-        }
+        $data = $this->getTourService()->getList(['car_no' => $car['car_no'], 'status' => BaseConstService::TOUR_STATUS_5, 'execution_date' => $params['execution_date']], ['*'], false);
         foreach ($data as $k => $v) {
             $data[$k]['handmade_actual_distance'] = $v['end_distance'] - $v['begin_distance'];
         }
-        $cellData=[];
+        $cellData = [];
         foreach ($data as $v) {
             $cellData[] = array_only_fields_sort($v, $this->headings);
         }
@@ -179,6 +180,30 @@ class CarService extends BaseService
         $dir = 'carDistance';
         $name = date('YmdHis') . auth()->user()->id;
         return $this->excelExport($name, $this->headings, $cellData, $dir);
+    }
+
+    /**
+     * 车辆信息导出
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     * @throws \Throwable
+     */
+    public function infoExport($id)
+    {
+        $data = [];
+        $info = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $data['car_no'] = $info->car_no;
+        $data['url_list'] = collect(json_decode($info->relate_material_list))->pluck('url')->toArray();
+        dd($data);
+        $url = PrintTrait::tPrint($data, 'car.car', 'car', null);
+        return [
+            'name' => $data['car_no'],
+            'path' => $url
+        ];
     }
 
 }

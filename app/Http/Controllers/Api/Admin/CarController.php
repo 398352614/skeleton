@@ -216,4 +216,14 @@ class CarController extends BaseController
         return $this->service->distanceExport($id, $this->data);
     }
 
+    /**
+     * 车辆信息导出
+     * @param $id
+     * @return void
+     */
+    public function infoExport($id)
+    {
+        return $this->service->infoExport($id);
+    }
+
 }

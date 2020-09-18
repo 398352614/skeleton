@@ -59,4 +59,37 @@ trait PrintTrait
         $url = Storage::disk('public_pdf')->url(DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName);
         return $url;
     }
+
+    /**
+     * 单项打印
+     * @param $data
+     * @param $view
+     * @param $dir
+     * @param null $fileName
+     * @return mixed
+     * @throws BusinessLogicException
+     * @throws \Throwable
+     */
+    public static function tPrint($data, $view, $dir, $fileName = null)
+    {
+        empty($fileName) && $fileName = self::getFileName();
+        $dir = self::getDir($dir);
+        try {
+            $newFilePath = storage_path('app/public/pdf') . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName;
+            /** @var PdfFaker $snappyPdf */
+            $html = view($view, ['data' => $data])->render();
+            $snappyPdf = SnappyPdf::loadHTML($html);
+            $snappyPdf->setOptions([
+                'footer-center' => '页面 [page]',
+                'footer-font-size' => 8,
+                'footer-spacing' => 5
+            ]);
+            $snappyPdf->setPaper('A4')->save($newFilePath, true);
+            unset($snappyPdf);
+        } catch (\Exception $ex) {
+            throw new BusinessLogicException($ex->getMessage());
+        }
+        $url = Storage::disk('public_pdf')->url(DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName);
+        return $url;
+    }
 }
