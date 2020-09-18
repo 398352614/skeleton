@@ -68,6 +68,7 @@
         }
 
         .img-list > div {
+            display: inline-block;
             width: 321px;
             height: 321px;
             margin-bottom: 20px;
