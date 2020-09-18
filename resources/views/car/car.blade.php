@@ -11,7 +11,7 @@
 
     <!-- js/css -->
     <style>
-        html, body {
+        html, body{
             width: 100%;
             height: 100%;
             /* padding: 0px; */
@@ -25,7 +25,6 @@
             margin: 0px;
             text-align: center;
         }
-
         .content {
             width: 888px;
             height: 1260px;
@@ -38,7 +37,6 @@
             font-weight: bold;
             margin: 20px 0;
         }
-
         /* 表格 */
         .tb {
             width: 80%;
@@ -46,11 +44,9 @@
             display: table;
             border: 1px #000 solid;
         }
-
         .tb-r {
             display: table-row;
         }
-
         .tb-r > div {
             display: table-cell;
             border: 1px #000 solid;
@@ -66,14 +62,12 @@
             justify-content: space-between;
             flex-wrap: wrap;
         }
-
         .img-list > div {
             width: 321px;
             height: 321px;
-            margin-bottom: 20px;
+            margin: 20px 0;
             border: 1px #000 solid;
         }
-
         img {
             width: 128px;
             height: 128px;
@@ -99,31 +93,22 @@
                 <div>司机签名</div>
             </div>
             <div class="tb-r">
-                <div></div>
-                <div>{{$data['car_no']}}</div>
-                <div></div>
+                <div>888</div>
+                <div>777</div>
+                <div>666</div>
             </div>
         </div>
 
         <!-- 照片 -->
         <div class="img-list">
-            <div class="page-no">1</div>
+            <div>
+                <img src="https://dev-tms.nle-tech.com/storage/pdf/car/3/75d645d00af30e3606350805e26e49a5.pdf" />
+            </div>
         </div>
+
+        <div class="page-no">1</div>
     </div>
 </div>
 </body>
-<script>
-    let arr = @json($data['url_list']);
-    arr.forEach(el => {
-        let div = document.createElement('div');
-        let img = document.createElement('img');
-        let imgList = document.getElementsByClassName('img-list');
-
-        img.src = el;
-        div.appendChild(img);
-        imgList[0].appendChild(div);
-
-    })
-</script>
 
 </html>
