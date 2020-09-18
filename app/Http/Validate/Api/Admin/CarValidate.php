@@ -88,7 +88,7 @@ class CarValidate extends BaseValidate
         'lock' => [
             'is_locked',
         ],
-        'distanceExport'=>[
+        'distanceExport' => [
             'execution_date',
         ]
     ];
