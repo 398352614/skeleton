@@ -102,7 +102,7 @@
         <!-- 照片 -->
         <div class="img-list">
             <div>
-                <img src="https://dev-tms.nle-tech.com/storage/admin/file/3/driver/202004291340365ea91354aaeb8.png" />
+                <img src="https://dev-tms.nle-tech.com/storage/admin/barcode/tms1212123.png" />
             </div>
         </div>
     </div>
