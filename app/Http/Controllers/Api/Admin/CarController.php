@@ -219,7 +219,9 @@ class CarController extends BaseController
     /**
      * 车辆信息导出
      * @param $id
-     * @return void
+     * @return array
+     * @throws BusinessLogicException
+     * @throws \Throwable
      */
     public function infoExport($id)
     {
