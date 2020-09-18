@@ -390,7 +390,7 @@ class BaseLineService extends BaseService
     private function getMerchantLineRangeByPostcode($postCode, $executionDate, $merchantId = null)
     {
         //若邮编是纯数字，则认为是比利时邮编
-        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY : CompanyTrait::getCountry();
+        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
@@ -415,7 +415,7 @@ class BaseLineService extends BaseService
     private function getLineRangeByPostcode($postCode, $executionDate)
     {
         //若邮编是纯数字，则认为是比利时邮编
-        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY : CompanyTrait::getCountry();
+        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
@@ -438,7 +438,7 @@ class BaseLineService extends BaseService
     public function getLineRangeListByPostcode($postCode, $merchantId = null)
     {
         //若邮编是纯数字，则认为是比利时邮编
-        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY : CompanyTrait::getCountry();
+        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围

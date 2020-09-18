@@ -21,7 +21,7 @@ class BaseConstService
     const RECHARGE = '';
 
     //邮编国家
-    const POSTCODE_COUNTRY = 'BE';
+    const POSTCODE_COUNTRY_BE = 'BE';
 
     //是否
     const YES = 1;
