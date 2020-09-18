@@ -84,7 +84,7 @@ trait PrintTrait
                 'footer-font-size' => 8,
                 'footer-spacing' => 5
             ]);
-            $snappyPdf->setPaper('A4')->save($newFilePath, true);
+            $snappyPdf->save($newFilePath, true);
             unset($snappyPdf);
         } catch (\Exception $ex) {
             throw new BusinessLogicException($ex->getMessage());

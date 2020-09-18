@@ -105,8 +105,6 @@
                 <img src="https://dev-tms.nle-tech.com/storage/admin/file/3/driver/202004291340365ea91354aaeb8.png" />
             </div>
         </div>
-
-        <div class="page-no">1</div>
     </div>
 </div>
 </body>
