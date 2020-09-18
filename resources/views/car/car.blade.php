@@ -11,7 +11,7 @@
 
     <!-- js/css -->
     <style>
-        html, body{
+        html, body {
             width: 100%;
             height: 100%;
             /* padding: 0px; */
@@ -25,6 +25,7 @@
             margin: 0px;
             text-align: center;
         }
+
         .content {
             width: 888px;
             height: 1260px;
@@ -37,6 +38,7 @@
             font-weight: bold;
             margin: 20px 0;
         }
+
         /* 表格 */
         .tb {
             width: 80%;
@@ -44,9 +46,11 @@
             display: table;
             border: 1px #000 solid;
         }
+
         .tb-r {
             display: table-row;
         }
+
         .tb-r > div {
             display: table-cell;
             border: 1px #000 solid;
@@ -56,8 +60,28 @@
 
         /* 照片 */
         .img-list {
-            width: 888px;
-            height: 888px;
+            width: 90%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .img-list > div {
+            width: 321px;
+            height: 321px;
+            margin: 20px 0;
+            border: 1px #000 solid;
+        }
+
+        img {
+            width: 128px;
+            height: 128px;
+            margin: 96px auto;
+        }
+
+        .page-no {
+            text-align: center;
         }
     </style>
 </head>
@@ -84,9 +108,11 @@
         <!-- 照片 -->
         <div class="img-list">
             <div>
-                <img src="https://dev-tms.nle-tech.com/storage/admin/barcode/tms1212123.png" width="100px"/>
+                <img src="/app/tms-dev/www/api/storage/app/public/admin/file/3/driver/202003311549455e82f6190f9c1.png"/>
             </div>
         </div>
+
+        <div class="page-no">1</div>
     </div>
 </div>
 </body>
