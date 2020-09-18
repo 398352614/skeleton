@@ -107,9 +107,24 @@
 
         <!-- 照片 -->
         <div class="img-list">
-        <div class="page-no">1</div>
+            <div class="page-no">1</div>
+        </div>
     </div>
 </div>
 </body>
+<script>
+    let arr = @json($data['url_list']);
+    arr = JSON.parse(arr);
+    arr.forEach(el => {
+        let div = document.createElement('div');
+        let img = document.createElement('img');
+        let imgList = document.getElementsByClassName('img-list');
+
+        img.src = el;
+        div.appendChild(img);
+        imgList[0].appendChild(div);
+
+    })
+</script>
 
 </html>

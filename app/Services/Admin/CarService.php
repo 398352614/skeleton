@@ -198,7 +198,6 @@ class CarService extends BaseService
         }
         $data['car_no'] = $info->car_no;
         $data['url_list'] = collect(json_decode($info->relate_material_list))->pluck('url')->toArray();
-        dd($data);
         $url = PrintTrait::tPrint($data, 'car.car', 'car', null);
         return [
             'name' => $data['car_no'],
