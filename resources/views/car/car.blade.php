@@ -53,6 +53,13 @@
             padding: 20px;
 
         }
+
+        /* 照片 */
+        img {
+            width: 128px;
+            height: 128px;
+            margin: 96px auto;
+        }
     </style>
 </head>
 
