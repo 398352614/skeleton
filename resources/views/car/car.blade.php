@@ -102,7 +102,7 @@
         <!-- 照片 -->
         <div class="img-list">
             <div>
-                <img src="https://dev-tms.nle-tech.com/storage/admin/barcode/tms1212123.png" />
+                <img src="https://dev-tms.nle-tech.com/storage/admin/barcode/tms1212123.png" width="100px"/>
             </div>
         </div>
     </div>
