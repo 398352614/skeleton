@@ -107,12 +107,11 @@
 
         <!-- 照片 -->
         <div class="img-list">
-
             @foreach($data['url_list'] as $key=>$v)
                 <div>
-                    <img src=$v width="100px"/>
+                    <img src="{{$v}}" width="100px"/>
                 </div>
-                @endforeach
+            @endforeach
         </div>
     </div>
 </div>
