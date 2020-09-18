@@ -28,7 +28,6 @@
 
         .content {
             width: 888px;
-            height: 1260px;
             border: 1px #000 solid;
             overflow: hidden;
         }
