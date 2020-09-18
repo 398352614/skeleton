@@ -55,10 +55,9 @@
         }
 
         /* 照片 */
-        img {
-            width: 128px;
-            height: 128px;
-            margin: 96px auto;
+        .img-list {
+            width: 888px;
+            height: 888px;
         }
     </style>
 </head>
