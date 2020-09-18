@@ -78,6 +78,7 @@ trait PrintTrait
             $newFilePath = storage_path('app/public/pdf') . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $fileName;
             /** @var PdfFaker $snappyPdf */
             $html = view($view, ['data' => $data])->render();
+            dd($html);
             $snappyPdf = SnappyPdf::loadHTML($html);
             $snappyPdf->setOptions([
                 'footer-center' => '页面 [page]',
