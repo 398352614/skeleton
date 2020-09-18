@@ -107,18 +107,9 @@
 
         <!-- 照片 -->
         <div class="img-list">
-            <script>
-                let arr = @json($data['url_list']);
-                arr.forEach(el => {
-                    let div = document.createElement('div');
-                    let img = document.createElement('img');
-                    let imgList = document.getElementsByClassName('img-list');
-                    img.src = el;
-                    div.appendChild(img);
-                    imgList[0].appendChild(div);
-                })
-            </script>
+            <img src="/var/www/html/api/storage/app/public/admin/file/3/driver/202004071716375e8c44f5769d3.png" width="100px" />
         </div>
+
     </div>
 </div>
 </body>
