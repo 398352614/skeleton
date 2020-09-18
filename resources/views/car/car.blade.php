@@ -108,7 +108,7 @@
         <!-- 照片 -->
         <div class="img-list">
             <div>
-                <img src="/app/tms-dev/www/api/storage/app/public/admin/file/3/driver/202003311549455e82f6190f9c1.png"/>
+                <img src="/var/www/html/api/storage/app/public/admin/file/3/driver/202003311549455e82f6190f9c1.png"/>
             </div>
         </div>
 
