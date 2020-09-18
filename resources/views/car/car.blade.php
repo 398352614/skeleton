@@ -102,7 +102,7 @@
         <!-- 照片 -->
         <div class="img-list">
             <div>
-                <img src="https://dev-tms.nle-tech.com/storage/pdf/car/3/75d645d00af30e3606350805e26e49a5.pdf" />
+                <img src="https:\/\/dev-tms.nle-tech.com\/storage\/admin\/file\/3\/driver\/202004291340365ea91354aaeb8.png" />
             </div>
         </div>
 
