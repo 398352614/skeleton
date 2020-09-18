@@ -109,8 +109,7 @@
         <div class="img-list">
         </div>
         <script>
-            let arr = ['/var/www/html/api/storage/app/public/admin/file/3/driver/202004071716375e8c44f5769d3.png'
-            ];
+            let arr = ["/var/www/html/api/storage/app/public/admin/file/3/driver/202004071716375e8c44f5769d3.png"];
             arr.forEach(el => {
                 let div = document.createElement('div');
                 let img = document.createElement('img');
