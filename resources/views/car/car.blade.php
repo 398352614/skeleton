@@ -107,11 +107,9 @@
 
         <!-- 照片 -->
         <div class="img-list">
-{{--
             <img src="/var/www/html/api/storage/app/public/admin/file/3/driver/202004071716375e8c44f5769d3.png" width="100px" />
---}}
         </div>
-        <script>
+        {{--<script>
             let arr = ["/var/www/html/api/storage/app/public/admin/file/3/driver/202004071716375e8c44f5769d3.png"];
             arr.forEach(el => {
                 let div = document.createElement('div');
@@ -122,7 +120,7 @@
                 div.appendChild(img);
                 imgList[0].appendChild(div);
             })
-        </script>
+        </script>--}}
     </div>
 </div>
 </body>

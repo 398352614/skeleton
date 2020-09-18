@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "ext-curl": "*",
         "ext-json": "*",
         "aws/aws-sdk-php": "~3.0",
         "barryvdh/laravel-snappy": "^0.4.7",
@@ -16,6 +17,7 @@
         "fideloper/proxy": "^4.0",
         "firebase/php-jwt": "^3.0",
         "guzzlehttp/guzzle": "^6.3",
+        "intervention/image": "^2.5",
         "jiaxincui/closure-table": "^2.1",
         "laravel/framework": "6.18.27",
         "laravel/tinker": "^1.0",
@@ -30,8 +32,7 @@
         "textalk/websocket": "1.2.*",
         "tymon/jwt-auth": "^1.0.0-rc.5",
         "vinkla/hashids": "^7.0",
-        "workerman/gateway-worker": "^3.0",
-      "ext-curl": "*"
+        "workerman/gateway-worker": "^3.0"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
