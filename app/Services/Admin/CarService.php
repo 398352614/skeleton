@@ -200,7 +200,6 @@ class CarService extends BaseService
         $data['url_list'] = collect(json_decode($info->relate_material_list))->pluck('url')->toArray();
         foreach ($data['url_list'] as $k => $v) {
             $data['url_list'][$k]=str_replace(env('APP_URL'), storage_path(), $v);
-            dd(storage_path(),$data['url_list'][$k]);
         }
         $url = PrintTrait::tPrint($data, 'car.car', 'car', null);
         return [
