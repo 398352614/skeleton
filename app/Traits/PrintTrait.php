@@ -80,7 +80,7 @@ trait PrintTrait
             $html = view($view, ['data' => $data])->render();
             $snappyPdf = SnappyPdf::loadHTML($html);
             $snappyPdf->setOptions([
-                'footer-center' => '页面 [page]',
+                'footer-center' => '[page]',
                 'footer-font-size' => 8,
                 'footer-spacing' => 5
             ]);

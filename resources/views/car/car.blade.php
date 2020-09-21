@@ -26,11 +26,7 @@
             text-align: center;
         }
 
-        .content {
-            width: 888px;
-            border: 1px #000 solid;
-            overflow: hidden;
-        }
+
 
         .tit {
             font-size: 24px;
@@ -80,23 +76,20 @@
             margin: 96px auto;
         }
 
-        .page-no {
-            text-align: center;
-        }
     </style>
 </head>
 
 <body>
 <div class="container">
     <div class="content">
-        <div class="tit">车辆信息管理</div>
+        <div class="tit">{{__("车辆信息管理")}}</div>
 
         <!-- 表格 -->
         <div class="tb">
             <div class="tb-r">
-                <div>导出日期</div>
-                <div>车牌号</div>
-                <div>司机签名</div>
+                <div>{{__("导出日期")}}</div>
+                <div>{{__("车牌号")}}</div>
+                <div>{{__("司机签名")}}</div>
             </div>
             <div class="tb-r">
                 <div></div>
