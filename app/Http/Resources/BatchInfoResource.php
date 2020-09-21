@@ -45,6 +45,7 @@ class BatchInfoResource extends JsonResource
             'receiver_lat' => $this->receiver_lat,
             'expect_arrive_time' => $this->expect_arrive_time,
             'actual_arrive_time' => $this->actual_arrive_time,
+            'sign_time'=>$this->sign_time,
             'expect_distance' => $this->expect_distance,
             'actual_time' => $this->actual_time,
             'out_expect_arrive_time' => $this->out_expect_arrive_time,

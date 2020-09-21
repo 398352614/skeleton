@@ -653,9 +653,9 @@ class TourService extends BaseService
         }
         $now = now();
         //查找当前取件线路中最新完成的站点
-        $lastCompleteBatch = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]], ['actual_arrive_time'], false, ['actual_arrive_time' => 'desc']);
-        if (!empty($lastCompleteBatch) && !empty($lastCompleteBatch->actual_arrive_time)) {
-            $actualTime = strtotime($now) - strtotime($lastCompleteBatch->actual_arrive_time);
+        $lastCompleteBatch = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]], ['actual_arrive_time'], false, ['sign_time' => 'desc']);
+        if (!empty($lastCompleteBatch) && !empty($lastCompleteBatch->sign_time)) {
+            $actualTime = strtotime($now) - strtotime($lastCompleteBatch->sign_time);
         } else {
             $actualTime = strtotime($now) - strtotime($tour['begin_time']);
         }
@@ -938,6 +938,7 @@ class TourService extends BaseService
             'actual_pickup_quantity' => $pickupCount,
             'actual_pie_quantity' => $pieCount,
             'signature' => $params['signature'],
+            'sign_time' => now(),
             'pay_type' => $params['pay_type'],
             'pay_picture' => $params['pay_picture']
         ];

@@ -102,7 +102,8 @@ class Batch extends BaseModel
         'auth_birth_date',
         'out_expect_time',
         'out_expect_distance',
-        'out_expect_arrive_time'
+        'out_expect_arrive_time',
+        'sign_time'
     ];
 
     /**
