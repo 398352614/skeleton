@@ -40,8 +40,8 @@ class CarValidate extends BaseValidate
         'brand_id' => 'required',
 
         //包裹列表
-        'relate_material_list.*.material_name' => 'required_with:relate_material_list|string|max:50',
-        'relate_material_list.*.material_url' => 'required_with:relate_material_list|string|max:250',
+        'relate_material_list.*.name' => 'nullable|string|max:50',
+        'relate_material_list.*.url' => 'nullable|string|max:250',
     ];
     public $scene = [
         //保存

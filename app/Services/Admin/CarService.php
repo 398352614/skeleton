@@ -163,20 +163,16 @@ class CarService extends BaseService
      */
     public function distanceExport($id, $params)
     {
-        $car = parent::getInfo(['id' => $id], ['*'], false);
-        if (empty($car)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $data = $this->getTourService()->getList(['car_no' => $car['car_no'], 'status' => BaseConstService::TOUR_STATUS_5, 'execution_date' => $params['execution_date']], ['*'], false);
-        foreach ($data as $k => $v) {
-            $data[$k]['handmade_actual_distance'] = $v['end_distance'] - $v['begin_distance'];
-        }
         $cellData = [];
-        foreach ($data as $v) {
-            $cellData[] = array_only_fields_sort($v, $this->headings);
-        }
-        if (empty($cellData)) {
-            throw new BusinessLogicException('数据不存在');
+        $car = parent::getInfo(['id' => $id], ['*'], false);
+        if (!empty($car)) {
+            $data = $this->getTourService()->getList(['car_no' => $car['car_no'], 'status' => BaseConstService::TOUR_STATUS_5, 'execution_date' => $params['execution_date']], ['*'], false);
+            foreach ($data as $k => $v) {
+                $data[$k]['handmade_actual_distance'] = $v['end_distance'] - $v['begin_distance'];
+            }
+            foreach ($data as $v) {
+                $cellData[] = array_only_fields_sort($v, $this->headings);
+            }
         }
         $dir = 'carDistance';
         $name = date('YmdHis') . auth()->user()->id;
