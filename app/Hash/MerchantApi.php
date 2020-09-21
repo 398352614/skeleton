@@ -20,7 +20,6 @@ class MerchantApi extends AbstractHasher implements HasherContract
         $options = array_filter($options);
         krsort($options);
         $query = $this->dotParams($options, []);
-        Log::info('加密数据:', $query);
         $str = join('&', $query);
         $sign = strtoupper(md5(urldecode($str . $value)));
         Log::info('sign;' . $sign);

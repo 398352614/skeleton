@@ -32,13 +32,14 @@ class RouteTrackingService extends BaseService
         $params['driver_id'] = auth()->user()->id;
         $tour = Tour::query()->where('driver_id', $params['driver_id'])->where('status', BaseConstService::TOUR_STATUS_4)->first();
         if ($tour === false) {
-            throw new BusinessLogicException('当前司机不存在派送中线路');
+            return 'true';
         }
         $params['tour_no'] = $tour->tour_no;
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('采集位置失败');
         }
+        Log::info('route-tracking-tour-no', ['tour_no' => $tour->tour_no]);
     }
 
     /**
@@ -50,7 +51,7 @@ class RouteTrackingService extends BaseService
     {
         $tour = Tour::query()->where('driver_id', auth()->user()->id)->where('status', BaseConstService::TOUR_STATUS_4)->first();
         if (empty($tour)) {
-            throw new BusinessLogicException('当前司机不存在派送中线路');
+            return 'true';
         }
         $tracking = collect($params['location_list'])->sortBy('time')->toArray()[0];
         $firstTracking = $this->getInfo(['tour_no' => $tour->tour_no], ['*'], false, ['time' => 'desc']);
@@ -85,5 +86,6 @@ class RouteTrackingService extends BaseService
                 throw new BusinessLogicException('操作失败');
             }
         }
+        Log::info('route-tracking-tour-no', ['tour_no' => $tracking['tour_no']]);
     }
 }
