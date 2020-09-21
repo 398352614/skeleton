@@ -78,13 +78,9 @@ class CarController extends BaseController
     }
 
     /**
-     * @throws
-     * HTTP/1.1 200 OK
-     * {
-     *  "ret":1,
-     *  "msg":"查询司机",
-     *  "data":{}
-     * }
+     * @param $id
+     * @return
+     * @throws BusinessLogicException
      * @api {GET}  api/admin/car/{car} 管理员端:查询车辆详情
      * @apiName show
      * @apiGroup admin-car
@@ -95,11 +91,7 @@ class CarController extends BaseController
      */
     public function show($id)
     {
-        $info = $this->service->getInfo(['id' => $id], ['*'], true);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        return $info;
+        return $this->service->show($id);
     }
 
     /**

@@ -152,7 +152,11 @@ class CarService extends BaseService
             }
             $this->query->where('is_locked', '=', BaseConstService::DRIVER_TO_NORMAL);
         }
-        return parent::getPageList();
+        $info = parent::getPageList();
+        foreach ($info as $k => $v) {
+            $info[$k]['relate_material_list'] = json_decode($info[$k]['relate_material_list']);
+        }
+        return $info;
     }
 
     /**
@@ -196,13 +200,29 @@ class CarService extends BaseService
         $data['car_no'] = $info->car_no;
         $data['url_list'] = collect(json_decode($info->relate_material_list))->pluck('url')->toArray();
         foreach ($data['url_list'] as $k => $v) {
-            $data['url_list'][$k] = str_replace(env('APP_URL') .'/storage', storage_path('app/public'), $v);
+            $data['url_list'][$k] = str_replace(env('APP_URL') . '/storage', storage_path('app/public'), $v);
         }
         $url = PrintTrait::tPrint($data, 'car.car', 'car', null);
         return [
             'name' => $data['car_no'],
             'path' => $url
         ];
+    }
+
+    /**
+     * 车辆查询
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], true);
+        $info['relate_material_list'] = json_decode($info['relate_material_list']);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $info;
     }
 
 }
