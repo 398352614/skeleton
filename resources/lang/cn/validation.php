@@ -252,6 +252,14 @@ return [
             'integer' => '邮编列表起始邮编必须是整数',
             'between' => '邮编列表起始邮编范围必须的:min-:max之间'
         ],
+        'relate_material_list.*.name' => [
+            'string' => '材料名必须是字符串',
+            'max' => '材料名长度不能超过:max'
+        ],
+        'relate_material_list.*.url' => [
+            'string' => '材料名必须是字符串',
+            'max' => '材料名长度不能超过:max'
+        ],
         'item_list.*.post_code_end' => [
             'required' => '邮编列表截止邮编是必须的',
             'integer' => '邮编列表截止邮编必须是整数',
