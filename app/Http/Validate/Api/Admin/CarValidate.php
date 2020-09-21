@@ -26,7 +26,7 @@ class CarValidate extends BaseValidate
         'insurance_company' => 'nullable|string|max:50',
         'insurance_type' => 'nullable|string|max:50',
         'month_insurance' => 'nullable|numeric|gte:0',
-        'rent_start_date' => 'nullable|date_format:Y-m-d',
+        'rent_start_date' => 'nullable',
         'rent_end_date' => 'nullable|date_format:Y-m-d',
         'rent_month_fee' => 'nullable|numeric|gte:0',
         'repair' => 'nullable|integer|in:1,2',
