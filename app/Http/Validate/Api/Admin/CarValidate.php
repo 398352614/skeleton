@@ -89,7 +89,8 @@ class CarValidate extends BaseValidate
             'is_locked',
         ],
         'distanceExport' => [
-            'execution_date',
+            'begin_date',
+            'end_date'
         ]
     ];
 }

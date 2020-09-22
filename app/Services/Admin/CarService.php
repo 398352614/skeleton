@@ -170,7 +170,7 @@ class CarService extends BaseService
         $cellData = [];
         $car = parent::getInfo(['id' => $id], ['*'], false);
         if (!empty($car)) {
-            $data = $this->getTourService()->getList(['car_no' => $car['car_no'], 'status' => BaseConstService::TOUR_STATUS_5, 'execution_date' => $params['execution_date']], ['*'], false);
+            $data = $this->getTourService()->getList(['car_no' => $car['car_no'], 'status' => BaseConstService::TOUR_STATUS_5, 'execution_date' => ['between', [$params['begin_date'], $params['end_date']]]], ['*'], false);
             foreach ($data as $k => $v) {
                 $data[$k]['handmade_actual_distance'] = $v['end_distance'] - $v['begin_distance'];
             }
