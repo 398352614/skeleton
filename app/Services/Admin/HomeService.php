@@ -283,7 +283,7 @@ class HomeService extends BaseService
             $total['pie_order'] += $data[$k]['pie_order'];
             $total['cancel_order'] += $data[$k]['cancel_order'];
             $total['additional_package'] += $data[$k]['additional_package'];
-            $total['total_recharge'] += number_format(round($data[$k]['card_delivery_amount'], 2), 2);
+            $total['total_recharge'] += $data[$k]['total_recharge'];
         }
         $data[] = $total;
         return $data;
