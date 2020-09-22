@@ -88,7 +88,7 @@ class HomeService extends BaseService
         $signedOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_5]);//已完成
         $cancelOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_6]);//取消取派
 
-        $NoOutOrder = parent::count(['execution_date' => $date, 'out_status' => BaseConstService::ORDER_OUT_STATUS_2]);//不能出库
+        $NoOutOrder = parent::count(['execution_date' => $date, 'status' => ['<>', BaseConstService::ORDER_STATUS_7], 'out_status' => BaseConstService::ORDER_OUT_STATUS_2]);//不能出库
         $exceptionOrder = parent::count(['execution_date' => $date, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);//异常
         //取件线路
         $tour = $this->getTourService()->count(['execution_date' => $date]);
@@ -125,6 +125,7 @@ class HomeService extends BaseService
     /**
      * 本周订单统计
      * @return array
+     * @throws \Exception
      */
     public function thisWeekCount()
     {
@@ -139,6 +140,7 @@ class HomeService extends BaseService
     /**
      * 上周订单统计
      * @return array
+     * @throws \Exception
      */
     public function lastWeekCount()
     {
@@ -150,6 +152,7 @@ class HomeService extends BaseService
     /**
      * 本月订单统计
      * @return array
+     * @throws \Exception
      */
     public function thisMonthCount()
     {
@@ -161,6 +164,7 @@ class HomeService extends BaseService
     /**
      * 上月订单统计
      * @return array
+     * @throws \Exception
      */
     public function lastMonthCount()
     {
