@@ -261,7 +261,7 @@ class HomeService extends BaseService
     public function merchantCount()
     {
         $data = [];
-        $total = ['merchant_name' => __('合计'), 'total_order' => 0, 'pickup_order' => 0, 'pie_order' => 0, 'cancel_order' => 0, 'additional_package' => 0, 'total_recharge' => 0];
+        $total = ['merchant_name' => __('合计'), 'total_order' => 0, 'pickup_order' => 0, 'pie_order' => 0, 'cancel_order' => 0, 'additional_package' => 0, 'total_recharge' => 0.00];
         $merchantList = $this->getMerchantService()->getList();
         $additionalPackageList = DB::table('additional_package')->where('company_id', auth()->user()->company_id)->get();
         if (!empty($additionalPackageList)) {
@@ -285,6 +285,7 @@ class HomeService extends BaseService
             $total['additional_package'] += $data[$k]['additional_package'];
             $total['total_recharge'] += $data[$k]['total_recharge'];
         }
+        $total['total_recharge']=number_format($total['total_recharge'],2);
         $data[] = $total;
         return $data;
     }
