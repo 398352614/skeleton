@@ -1107,7 +1107,7 @@ class TourService extends BaseService
             $cellData[$i][24] = $batchList[$i]['actual_material_quantity'];
             $cellData[$i][25] = $batchList[$i]['status'];
             $cellData[$i][26] = $batchList[$i]['actual_arrive_time'];
-            $cellData[$i][27] = $batchList[$i]['expect_arrive_time'];
+            $cellData[$i][27] = $tour['status'] == BaseConstService::TOUR_STATUS_5 ? $batchList[$i]['expect_arrive_time'] : null;
             $cellData[$i][28] = $batchList[$i]['out_expect_arrive_time'];
         }
         $cellData[0][0] = $tour['tour_no'];
