@@ -177,11 +177,13 @@ class HomeService extends BaseService
      */
     public function orderCountByMerchant(Carbon $day, $no)
     {
+        $newDay=$day;
         $data = [];
         $merchantList = $this->getMerchantService()->getList();
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
-            $data[$k]['graph'] = $this->orderCount($day, $no, $v['id']);
+            $data[$k]['graph'] = $this->orderCount($newDay, $no, $v['id']);
+            $newDay=$day;
         }
         return $data;
     }
