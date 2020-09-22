@@ -222,6 +222,7 @@ class TenCentApiService
         $url = $url . '?' . $query;
         $res = $this->client->get($url);
         if (!isset($res['status']) || ($res['status'] != 0)) {
+            Log::info('tencent-api请求url', ['url' => $url]);
             Log::info('tencent-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('teCent-api请求报错');
         }
