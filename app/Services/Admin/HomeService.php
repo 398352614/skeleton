@@ -88,7 +88,7 @@ class HomeService extends BaseService
         $signedOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_5]);//已完成
         $cancelOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_6]);//取消取派
 
-        $NoOutOrder = parent::count(['execution_date' => $date, 'status' => ['in',[BaseConstService::ORDER_STATUS_1,BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_3,BaseConstService::ORDER_STATUS_4]], 'out_status' => BaseConstService::ORDER_OUT_STATUS_2]);//不能出库
+        $NoOutOrder = parent::count(['execution_date' => $date, 'status' => ['in',[BaseConstService::ORDER_STATUS_1,BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_3,BaseConstService::ORDER_STATUS_4,BaseConstService::ORDER_STATUS_5]], 'out_status' => BaseConstService::ORDER_OUT_STATUS_2]);//不能出库
         $exceptionOrder = parent::count(['execution_date' => $date, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);//异常
         //取件线路
         $tour = $this->getTourService()->count(['execution_date' => $date]);
