@@ -48,7 +48,6 @@ class CarValidate extends BaseValidate
         //保存
         'store' => [
             'car_no',
-            'outgoing_time',
             'car_brand_id',
             'car_model_id',
             'ownership_type',
@@ -68,7 +67,6 @@ class CarValidate extends BaseValidate
         ],
         'update' => [
             'car_no',
-            'outgoing_time',
             'car_brand_id',
             'car_model_id',
             'ownership_type',
