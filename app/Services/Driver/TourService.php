@@ -779,7 +779,8 @@ class TourService extends BaseService
             throw new BusinessLogicException('站点当前状态不能取消取派');
         }
         //站点取消取派
-        $data = Arr::only($params, ['cancel_type', 'cancel_remark', 'cancel_picture']);
+        $params['sign_time']=now();
+        $data = Arr::only($params, ['cancel_type', 'cancel_remark', 'cancel_picture','sign_time']);
         $rowCount = $this->getBatchService()->updateById($batch['id'], Arr::add($data, 'status', BaseConstService::BATCH_CANCEL));
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
