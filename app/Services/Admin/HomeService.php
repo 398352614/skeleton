@@ -284,7 +284,7 @@ class HomeService extends BaseService
             $total['cancel_order'] += $data[$k]['cancel_order'];
             $total['additional_package'] += $data[$k]['additional_package'];
             $total['total_recharge'] += $data[$k]['total_recharge'];
-            $data[$k]['total_recharge'] = number_format($data[$k]['total_recharge'],2);
+            $data[$k]['total_recharge'] = number_format($data[$k]['total_recharge'], 2);
         }
         $total['total_recharge'] = number_format($total['total_recharge'], 2);
         $data[] = $total;
@@ -299,7 +299,7 @@ class HomeService extends BaseService
     {
         $data = [];
         $merchantList = $this->getMerchantService()->getList();
-        $orderList = parent::getList(['status' => ['<>', BaseConstService::ORDER_STATUS_7]], ['*'], false);
+        $orderList = parent::getList(['execution_date' => Carbon::today()->format('Y-m-d'), 'status' => ['<>', BaseConstService::ORDER_STATUS_7]], ['*'], false);
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['order'] = collect($orderList)->where('merchant_id', $v['id'])->count();
