@@ -95,7 +95,7 @@ class HomeService extends BaseService
         //司机及车辆
         $carSum = $this->getCarService()->count();//车辆总数
         $driverSum = $this->getDriverService()->count();//司机总数
-        $assignCar = Tour::query()->whereNotNull('car_id')->where('execution_date', $date)->whereIn('status',[BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2])->count();
+        $assignCar = Tour::query()->whereNotNull('car_id')->where('execution_date', $date)->whereIn('status', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2])->count();
         $assignDriver = Tour::query()->where('execution_date', $date)->where('status', BaseConstService::TOUR_STATUS_2)->count();
         $waitOutCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_3]);//待出库
         $takingCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_4]);//配送中
@@ -261,7 +261,7 @@ class HomeService extends BaseService
     public function merchantCount()
     {
         $data = [];
-        $total = ['merchant_name' => __('合计'), 'total_order' => 0, 'pickup_order' => 0, 'pie_order' => 0, 'cancel_order' => 0, 'additional_package' => 0, 'total_recharge' => 0.00];
+        $total = ['merchant_name' => __('合计'), 'total_order' => 0, 'pickup_order' => 0, 'pie_order' => 0, 'cancel_order' => 0, 'additional_package' => 0, 'total_recharge' => 0];
         $merchantList = $this->getMerchantService()->getList();
         $additionalPackageList = DB::table('additional_package')->where('company_id', auth()->user()->company_id)->get();
         if (!empty($additionalPackageList)) {
@@ -271,6 +271,7 @@ class HomeService extends BaseService
         }
         $collection = parent::getList(['status' => ['<>', BaseConstService::ORDER_STATUS_7]], ['id'], false);
         foreach ($merchantList as $k => $v) {
+            $merchantList[$k]['total_recharge'] = number_format($merchantList[$k]['total_recharge'], 2);
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['total_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->count();
             $data[$k]['pickup_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->where('type', BaseConstService::ORDER_TYPE_1)->count();
@@ -285,7 +286,7 @@ class HomeService extends BaseService
             $total['additional_package'] += $data[$k]['additional_package'];
             $total['total_recharge'] += $data[$k]['total_recharge'];
         }
-        $total['total_recharge']=number_format($total['total_recharge'],2);
+        $total['total_recharge'] = number_format($total['total_recharge'], 2);
         $data[] = $total;
         return $data;
     }
