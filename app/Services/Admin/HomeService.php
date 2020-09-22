@@ -95,7 +95,7 @@ class HomeService extends BaseService
         //司机及车辆
         $carSum = $this->getCarService()->count();//车辆总数
         $driverSum = $this->getDriverService()->count();//司机总数
-        $assignCar = Tour::query()->whereNotNull('car_id')->where('execution_date', $date)->where('status', 'in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2])->count();
+        $assignCar = Tour::query()->whereNotNull('car_id')->where('execution_date', $date)->whereIn('status',[BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2])->count();
         $assignDriver = Tour::query()->where('execution_date', $date)->where('status', BaseConstService::TOUR_STATUS_2)->count();
         $waitOutCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_3]);//待出库
         $takingCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_4]);//配送中
