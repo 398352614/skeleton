@@ -153,7 +153,7 @@ class HomeService extends BaseService
      */
     public function thisMonthCount()
     {
-        $day = Carbon::today();
+        $day = \Illuminate\Support\Carbon::today();
         $no = $day->day;
         return $this->orderCountByMerchant($day, $no);
     }
@@ -164,7 +164,7 @@ class HomeService extends BaseService
      */
     public function lastMonthCount()
     {
-        $day = Carbon::today()->subMonth()->endOfMonth();
+        $day = \Illuminate\Support\Carbon::today()->subMonth()->endOfMonth();
         $no = $day->daysInMonth;
         return $this->orderCountByMerchant($day, $no);
     }
@@ -276,7 +276,7 @@ class HomeService extends BaseService
             $data[$k]['pickup_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->where('type', BaseConstService::ORDER_TYPE_1)->count();
             $data[$k]['pie_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->where('type', BaseConstService::ORDER_TYPE_2)->count();
             $data[$k]['cancel_order'] = $collection->where('merchant_id', $v['id'])->where('status', BaseConstService::ORDER_STATUS_6)->count();
-            $data[$k]['additional_package'] = collect($additionalPackageList)->where('merchant_id', $v['id'])->count();
+            $data[$k]['additional_package'] = collect($additionalPackageList)->where('status',BaseConstService::RECHARGE_STATUS_3)->where('merchant_id', $v['id'])->count();
             $data[$k]['total_recharge'] = $this->getRechargeStatisticsService()->sum('total_recharge_amount', ['merchant_id' => $v['id']]);
             $total['total_order'] += $data[$k]['total_order'];
             $total['pickup_order'] += $data[$k]['pickup_order'];
