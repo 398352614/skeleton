@@ -271,7 +271,6 @@ class HomeService extends BaseService
         }
         $collection = parent::getList(['status' => ['<>', BaseConstService::ORDER_STATUS_7]], ['id'], false);
         foreach ($merchantList as $k => $v) {
-            $merchantList[$k]['total_recharge'] = number_format($merchantList[$k]['total_recharge'], 2);
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['total_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->count();
             $data[$k]['pickup_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->where('type', BaseConstService::ORDER_TYPE_1)->count();
@@ -285,6 +284,7 @@ class HomeService extends BaseService
             $total['cancel_order'] += $data[$k]['cancel_order'];
             $total['additional_package'] += $data[$k]['additional_package'];
             $total['total_recharge'] += $data[$k]['total_recharge'];
+            $data[$k]['total_recharge'] = number_format($data[$k]['total_recharge'],2);
         }
         $total['total_recharge'] = number_format($total['total_recharge'], 2);
         $data[] = $total;
