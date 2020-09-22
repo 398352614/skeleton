@@ -269,10 +269,10 @@ class HomeService extends BaseService
         } else {
             $additionalPackageList = [];
         }
-        $collection = parent::getList(['status' => ['<>', BaseConstService::ORDER_STATUS_7]], ['id'], false);
+        $collection = parent::getList(['status' => ['<>', BaseConstService::ORDER_STATUS_7]], ['*'], false);
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
-            $data[$k]['total_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->count();
+            $data[$k]['total_order'] = $collection->where('merchant_id', $v['id'])->count();
             $data[$k]['pickup_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->where('type', BaseConstService::ORDER_TYPE_1)->count();
             $data[$k]['pie_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->where('type', BaseConstService::ORDER_TYPE_2)->count();
             $data[$k]['cancel_order'] = $collection->where('merchant_id', $v['id'])->where('status', BaseConstService::ORDER_STATUS_6)->count();
