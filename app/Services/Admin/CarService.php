@@ -198,7 +198,7 @@ class CarService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $data['car_no'] = $info->car_no;
-        $data['url_list'] = collect(json_decode($info->relate_material_list))->pluck('url')->toArray();
+        $data['url_list'] = collect(json_decode($info->relate_material_list))->pluck('material_url')->toArray();
         foreach ($data['url_list'] as $k => $v) {
             $data['url_list'][$k] = str_replace(env('APP_URL') . '/storage', storage_path('app/public'), $v);
         }
