@@ -28,8 +28,8 @@ class CarService extends BaseService
         'execution_date',
         'begin_distance',
         'end_distance',
-        'handmade_actual_distance',
         'expect_distance',
+        'handmade_actual_distance',
     ];
 
     public function __construct(Car $car)

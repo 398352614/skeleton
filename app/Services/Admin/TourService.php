@@ -94,8 +94,8 @@ class TourService extends BaseService
         'actual_material_quantity',
         'status',
         'actual_arrive_time',
-        'expect_arrive_time',
         'out_arrive_expect_time',
+        'expect_arrive_time',
     ];
 
     public $orderBy = ['id' => 'desc'];
