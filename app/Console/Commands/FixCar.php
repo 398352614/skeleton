@@ -46,7 +46,7 @@ class FixCar extends Command
             $car = DB::table('car')->get()->toArray() ?? [];
             foreach ($car as $k => $v) {
                 if (!empty($v->relate_material)) {
-                    $materialList = ['name' => $v->relate_material_name, 'url' => $v->relate_material];
+                    $materialList = ['material_name' => $v->relate_material_name, 'material_url' => $v->relate_material];
                     DB::table('car')->where('id', $v->id)->update(['relate_material_list' => [$materialList]]);
                 }
             }
