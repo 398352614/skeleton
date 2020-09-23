@@ -94,7 +94,9 @@ return [
         "expect_pickup_quantity" => "Expect Pickup Order Quantity",
         "actual_pickup_quantity" => "Actual Pickup Order Quantity",
         "status" => "Status",
-        "actual_arrive_time" => "Arrival time"
+        "actual_arrive_time" => "Arrival time",
+        "expect_arrive_time"=>"Expect Arrive Time",
+        "out_arrive_expect_time"=>"Out Expect Arrive Time",
     ],
 
     "orderOut" => [
@@ -117,19 +119,29 @@ return [
         'driver_name' => "Driver",
         'car_no' => "Car",
 
-    'batch_no'=>"No",
-    'out_user_id'=>"ID",
-    'receiver_fullname'=>"Name",
-    'receiver_phone'=>"Phone",
-    'receiver_address'=>"Address",
-    'receiver_post_code'=>"Postcode",
-    'receiver_city'=>"City",
-    'merchant_name'=>"Merchant",
-    'type'=>"Type",
-    'package_quantity'=>"Quantity",
-    'out_order_no'=>"Order No.",
-    'mask_code'=>"Eyecode",
-    'material_code_list'=>'Material Code',
-    'material_expect_quantity_list'=>'Material Quantity'
-]
+        'batch_no' => "No",
+        'out_user_id' => "ID",
+        'receiver_fullname' => "Name",
+        'receiver_phone' => "Phone",
+        'receiver_address' => "Address",
+        'receiver_post_code' => "Postcode",
+        'receiver_city' => "City",
+        'merchant_name' => "Merchant",
+        'type' => "Type",
+        'package_quantity' => "Quantity",
+        'out_order_no' => "Order No.",
+        'mask_code' => "Eyecode",
+        'material_code_list' => 'Material Code',
+        'material_expect_quantity_list' => 'Material Quantity'
+    ],
+
+    "carDistance"=>[
+        'car_no'=>'Number Plate',
+        'driver_name'=>'Driver',
+        'execution_date'=>'Execution Date',
+        'begin_distance'=>'Starting Distance',
+        'end_distance'=>'End Distance',
+        'expect_distance'=>'Expect Distance',
+        'handmade_actual_distance'=>'Actual Distance',
+    ]
 ];

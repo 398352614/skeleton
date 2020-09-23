@@ -6,7 +6,8 @@ use App\Events\AfterDriverLocationUpdated;
 use App\Events\TourNotify\NextBatch;
 use App\Exceptions\BusinessLogicException;
 use App\Services\Admin\ApiTimesService;
-use App\Services\GoogleApiService;
+use App\Services\ApiServices\GoogleApiService;
+use App\Services\ApiServices\TourOptimizationService;
 use App\Traits\FactoryInstanceTrait;
 use App\Traits\UpdateTourTimeAndDistanceTrait;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -61,47 +62,19 @@ class UpdateDriverCountTime implements ShouldQueue
     {
 
         try {
-            app('log')->info('更新司机位置进入此处');
             $tour = $event->tour;
-            $driverLocation = $event->location; // 司机位置数组
-            $nextBatchNo = $event->nextBatchNo; // 下一个站点的唯一标识
-
-            $this->apiClient = new GoogleApiService;
-
+            $driverLocation = $event->location;
+            $nextBatchNo = $event->nextBatchNo;
+            TourOptimizationService::getOpInstance($tour->company_id)->updateDriverLocation($tour, $driverLocation, $nextBatchNo, $event->queue);
             $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
-            $service->timesCount('distance_times',$tour->company_id);
-            //需要验证上一次操作是否完成,不可多次修改数据,防止数据混乱
-
-            if ($tour) {
-                app('log')->info('存在在途任务,更新');
-                if (!$driverLocation) {
-                    //此处需要考虑事件没有传入司机位置的情况,此时查找司机位置
-                }
-
-                $data = [
-                    "latitude" => $driverLocation['latitude'],
-                    "longitude" => $driverLocation['longitude'],
-                    "target_code" => $nextBatchNo,
-                    "line_code" => $tour->tour_no,
-                ];
-
-                $res = $this->apiClient->PushDriverLocation($data);
-                if ($event->queue == true) {
-                    sleep(1);
-                }
-                app('log')->info('更新司机位置的结果为:', $res ?? []);
-
-                if (!$this->updateTourTimeAndDistance($tour)) {
-                    throw new BusinessLogicException('更新线路失败');
-                }
-
-                //通知下一个站点事件
-                if ($event->notifyNextBatch == true) {
-                    event(new NextBatch($tour->toArray(), ['batch_no' => $nextBatchNo]));
-                }
-                $service->timesCount('actual_distance_times',$tour->company_id);
-                Log::info('司机位置和各站点预计耗时和里程更新成功');
+            $service->timesCount('distance_times', $tour->company_id);
+            //通知下一个站点事件
+            if ($event->notifyNextBatch == true) {
+                event(new NextBatch($tour->toArray(), ['batch_no' => $nextBatchNo]));
             }
+            $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
+            $service->timesCount('actual_distance_times', $tour->company_id);
+            Log::info('司机位置和各站点预计耗时和里程更新成功');
         } catch (\Exception $ex) {
             Log::channel('job-daily')->error('更新线路失败:' . $ex->getFile());
             Log::channel('job-daily')->error('更新线路失败:' . $ex->getLine());

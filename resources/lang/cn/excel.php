@@ -95,7 +95,9 @@ return [
         "expect_pickup_quantity" => "预计取件订单",
         "actual_pickup_quantity" => "实际取件订单",
         "status" => "订单状态",
-        "actual_arrive_time" => "司机到达时间"
+        "actual_arrive_time" => "司机到达时间",
+        "expect_arrive_time" => "站点签收时预计到达时间",
+        "out_arrive_expect_time" => "确认出库时预计到达时间",
     ],
 
     "orderOut" => [
@@ -113,23 +115,33 @@ return [
     ],
 
     "plan" => [
-        'execution_date'=>"取派日期",
-        'line_name'=>"线路名称",
-        'driver_name'=>"司机姓名",
-        'car_no'=>"车牌号",
-        'batch_no'=>"站点编号",
-        'out_user_id'=>"外部用户ID",
-        'receiver_fullname'=>"收件人姓名",
-        'receiver_phone'=>"收件人电话",
-        'receiver_address'=>"收件人地址",
-        'receiver_post_code'=>"收件人邮编",
-        'receiver_city'=>"收件人城市",
-        'merchant_name'=>"商户名称",
-        'type'=>"取派类型",
-        'package_quantity'=>"包裹数量",
-        'out_order_no'=>"外部订单号",
-        'mask_code'=>"掩码",
-        'material_code_list'=>'材料代码',
-        'material_expect_quantity_list'=>'材料数量'
-    ]
+        'execution_date' => "取派日期",
+        'line_name' => "线路名称",
+        'driver_name' => "司机姓名",
+        'car_no' => "车牌号",
+        'batch_no' => "站点编号",
+        'out_user_id' => "外部用户ID",
+        'receiver_fullname' => "收件人姓名",
+        'receiver_phone' => "收件人电话",
+        'receiver_address' => "收件人地址",
+        'receiver_post_code' => "收件人邮编",
+        'receiver_city' => "收件人城市",
+        'merchant_name' => "商户名称",
+        'type' => "取派类型",
+        'package_quantity' => "包裹数量",
+        'out_order_no' => "外部订单号",
+        'mask_code' => "掩码",
+        'material_code_list' => '材料代码',
+        'material_expect_quantity_list' => '材料数量'
+    ],
+
+    "carDistance" => [
+        'car_no' => '车牌号',
+        'driver_name' => '司机名',
+        'execution_date' => '取派日期',
+        'begin_distance' => '出库里程数',
+        'end_distance' => '回库里程数',
+        'expect_distance' => '预计里程数',
+        'handmade_actual_distance' => '实际里程数'
+    ],
 ];

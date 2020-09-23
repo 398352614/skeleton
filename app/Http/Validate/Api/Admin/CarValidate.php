@@ -26,7 +26,7 @@ class CarValidate extends BaseValidate
         'insurance_company' => 'nullable|string|max:50',
         'insurance_type' => 'nullable|string|max:50',
         'month_insurance' => 'nullable|numeric|gte:0',
-        'rent_start_date' => 'nullable|date_format:Y-m-d',
+        'rent_start_date' => 'nullable',
         'rent_end_date' => 'nullable|date_format:Y-m-d',
         'rent_month_fee' => 'nullable|numeric|gte:0',
         'repair' => 'nullable|integer|in:1,2',
@@ -34,16 +34,20 @@ class CarValidate extends BaseValidate
         'relate_material' => 'nullable|string',
         'relate_material_name' => 'nullable|string',
         'is_locked' => 'required|integer|in:1,2',
-
+        'begin_date' => 'required|date',
+        'end_date' => 'required|date',
         'cn_name' => 'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
         'en_name' => 'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
-        'brand_id' => ['required'],
+        'brand_id' => 'required',
+
+        //包裹列表
+        'relate_material_list.*.name' => 'nullable|string|max:50',
+        'relate_material_list.*.url' => 'nullable|string|max:250',
     ];
     public $scene = [
         //保存
         'store' => [
             'car_no',
-            'outgoing_time',
             'car_brand_id',
             'car_model_id',
             'ownership_type',
@@ -56,11 +60,13 @@ class CarValidate extends BaseValidate
             'repair',
             'remark',
             'relate_material',
-            'relate_material_name'
+            'relate_material_name',
+            //包裹列表
+            'relate_material_list.*.material_name',
+            'relate_material_list.*.material_url',
         ],
         'update' => [
             'car_no',
-            'outgoing_time',
             'car_brand_id',
             'car_model_id',
             'ownership_type',
@@ -73,11 +79,17 @@ class CarValidate extends BaseValidate
             'repair',
             'remark',
             'relate_material',
-            'relate_material_name'
-
+            'relate_material_name',
+            //包裹列表
+            'relate_material_list.*.material_name',
+            'relate_material_list.*.material_url',
         ],
         'lock' => [
             'is_locked',
+        ],
+        'distanceExport' => [
+            'begin_date',
+            'end_date'
         ]
     ];
 }

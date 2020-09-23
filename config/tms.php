@@ -1,9 +1,6 @@
 <?php
 
 return [
-    'api_url' => env('API_URL'),
-    'api_key' => env('API_KEY'),
-    'api_secret' => env('API_SECRET'),
     'map_url' => env('MAP_URL'),
     'map_key' => env('MAP_KEY'),
     'messager_key' => env('MESSAGER_KEY'),
@@ -11,10 +8,21 @@ return [
     'vpn' => env('VPN'),
     'push_url' => env('PUSH_URL', 'dev-tms.nle-tech.com/socket'),
     'country_path' => storage_path(env('COUNTRY_PATH')),
-    'app_env'=>env('APP_ENV'),
-    'baidu_id'=>env('BAIDU_ID'),
-    'baidu_key'=>env('BAIDU_KEY'),
-    'baidu_url'=>env('BAIDU_URL'),
+    'app_env' => env('APP_ENV'),
+
+    //百度
+    'baidu_id' => env('BAIDU_ID'),
+    'baidu_key' => env('BAIDU_KEY'),
+    'baidu_url' => env('BAIDU_URL'),
+
+    //谷歌地图API
+    'api_url' => env('API_URL'),
+    'api_key' => env('API_KEY'),
+    'api_secret' => env('API_SECRET'),
+    //腾讯地图API
+    'tencent_api_url' => env('TENCENT_API_URL'),
+    'tencent_api_key' => env('TENCENT_API_KEY'),
+    'tencent_distance_matrix_api_url' => env('TENCENT_DISTANCE_MATRIX_API_URL'),
 
     //缓存前缀
     'cache_prefix' => [
@@ -26,5 +34,5 @@ return [
         'company' => 'company',
         'address_template' => 'address_template',
     ],
-    'wechat_push'=>env('WECHAT_PUSH')
+    'wechat_push' => env('WECHAT_PUSH')
 ];

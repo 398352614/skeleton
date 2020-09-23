@@ -86,7 +86,6 @@ class MerchantApiGuard implements Guard
         $data = request()->input('data');
         request()->offsetUnset('data');
         request()->merge($data);
-        Log::info('request-data-2:' . json_encode(request()->all(), JSON_UNESCAPED_UNICODE));
         return true;
     }
 

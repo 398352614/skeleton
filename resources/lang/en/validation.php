@@ -475,5 +475,12 @@ return [
         "to_id" => "to id",
         "data" => "data",
         "company_auth" => "company auth",
+
+
+        "sign_time" => "sign time",
+        "out_expect_arrive_time" => "out expect arrive time",
+        "out_expect_distance" => "out expect distance",
+        "out_expect_time" => "out expect time",
+        "relate_material_list" => "relate material list",
     ]
 ];

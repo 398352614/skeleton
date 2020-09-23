@@ -15,8 +15,9 @@ use App\Models\TourMaterial;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\BaseServices\XLDirectionService;
-use App\Services\GoogleApiService;
+use App\Services\ApiServices\GoogleApiService;
 use App\Services\OrderNoRuleService;
+use App\Services\ApiServices\TourOptimizationService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
@@ -92,7 +93,9 @@ class TourService extends BaseService
         'expect_material_quantity',
         'actual_material_quantity',
         'status',
-        'actual_arrive_time'
+        'actual_arrive_time',
+        'out_arrive_expect_time',
+        'expect_arrive_time',
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -762,78 +765,26 @@ class TourService extends BaseService
      * 自动优化线路任务
      * @param $data
      * @return string
+     * @throws BusinessLogicException
      */
     public function autoOpTour($data)
     {
-        //需要先判断当前 tour 是否被锁定状态!!! 中间件或者 validate 验证规则???
         // set_time_limit(240);
         $tour = Tour::where('tour_no', $data['tour_no'])->firstOrFail();
-        $this->getApiTimesService()->timesCount('directions_times', $tour->company_id);
-        $nextBatch = $this->autoOpIndex($tour); // 自动优化排序值并获取下一个目的地
-        if (!$nextBatch) {
-            $nextBatch = Batch::where('tour_no', $data['tour_no'])->first();
-            if (empty($nextBatch)) {
-                return '修改线路成功';
-            }
-            // self::setTourLock($this->formData['tour_no'], 0);
+        if ($tour->status == BaseConstService::TOUR_STATUS_5) {
+            throw new BusinessLogicException('取件线路已完成，不能优化');
         }
-
+        $this->getApiTimesService()->timesCount('directions_times', $tour->company_id);
         TourLog::create([
             'tour_no' => $data['tour_no'],
             'action' => BaseConstService::TOUR_LOG_UPDATE_LINE,
             'status' => BaseConstService::TOUR_LOG_PENDING,
         ]);
-        event(new AfterTourUpdated($tour, $nextBatch->batch_no));
         $this->getApiTimesService()->timesCount('actual_directions_times', $tour->company_id);
+
+        TourOptimizationService::getOpInstance($tour->company_id)->autoUpdateTour($tour);
+
         return '修改线路成功';
-    }
-
-    public function autoOpIndex(Tour $tour)
-    {
-        $key = 1;
-        if ($tour->status != BaseConstService::TOUR_STATUS_4) { // 未取派的情况下,所有 batch 都是未取派的
-            $batchs = $tour->batchs;
-        } else {
-            $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->get()->sortByDesc('sort_id'); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
-            foreach ($preBatchs as $preBatch) {
-                $preBatch->update(['sort_id' => $key]);
-                $key++;
-            }
-            $batchs = $tour->batchs()->where('status', BaseConstService::BATCH_DELIVERING)->get();
-        }
-
-        $batchNos = [];
-
-        //必须大于等于 2 才调用优化接口
-        if (count($batchs) >= 2) {
-            $driverLoc = [
-                'batch_no' => 'driver_location',
-                'receiver_lat' => $tour->driver_location['latitude'],
-                'receiver_lon' => $tour->driver_location['longitude'],
-            ];
-            app('log')->debug('查看当前 batch 总数为:' . count($batchs) . '当前的 batch 为:', $batchs->toArray());
-            app('log')->debug('整合后的数据为:', array_merge([$driverLoc], $batchs->toArray()));
-
-            $batchNos = $this->directionClient->GetRoute(array_merge([$driverLoc], $batchs->toArray()));
-
-            throw_unless(
-                $batchNos,
-                new BusinessLogicException('优化线路失败')
-            );
-        }
-
-        $nextBatch = null;
-
-        app('log')->info('当前返回的值为:' . json_encode($batchNos));
-
-        foreach ($batchNos as $k => $batchNo) {
-            Batch::where('batch_no', $batchNo)->update(['sort_id' => $key + $k]);
-            if (!$nextBatch) {
-                $nextBatch = Batch::where('batch_no', $batchNo)->first();
-            }
-        }
-
-        return $nextBatch;
     }
 
     /**
@@ -1102,7 +1053,7 @@ class TourService extends BaseService
         if (empty($packageList)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['actual_arrive_time' => 'asc', 'created_at' => 'asc'])->toArray();
         if (empty($batchList)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -1156,6 +1107,8 @@ class TourService extends BaseService
             $cellData[$i][24] = $batchList[$i]['actual_material_quantity'];
             $cellData[$i][25] = $batchList[$i]['status'];
             $cellData[$i][26] = $batchList[$i]['actual_arrive_time'];
+            $cellData[$i][27] = $batchList[$i]['out_expect_arrive_time'];
+            $cellData[$i][28] = $tour['status'] == BaseConstService::TOUR_STATUS_5 ? $batchList[$i]['expect_arrive_time'] : null;
         }
         $cellData[0][0] = $tour['tour_no'];
         $cellData[0][1] = $tour['line_name'];

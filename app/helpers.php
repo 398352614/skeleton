@@ -203,3 +203,17 @@ if (!function_exists('array_key_prefix')) {
         return $arr;
     }
 }
+
+if (!function_exists('post_code_be')) {
+
+    /**
+     * 比利时邮编判断
+     * @param $postCode
+     * @return bool
+     */
+    function post_code_be($postCode)
+    {
+        $postCode = trim($postCode);
+        return (is_numeric($postCode) && (\Illuminate\Support\Str::length($postCode) == 4));
+    }
+}

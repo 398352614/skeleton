@@ -374,7 +374,6 @@
     "员工删除失败": "Verwijdering van werknemers mislukt",
     "多商家": "Meerhandelaar",
     "当前司机已被分配，请选": "Huidige bestuurder is toegewezen, kies",
-
     "表格导出失败，请重新操作": "Kon de tabel niet exporteren. Probeer het opnieuw",
     "充值单号规则": "Regel van het oplaadnummer",
     "充值中": "Opladen",
@@ -572,4 +571,10 @@
 "出库里程数小于该车上次入库里程数，请重新填写":"De kilometerstand uit het magazijn is minder dan de kilometerstand van het voertuig in de laatste keer, gelieve opnieuw in te vullen",
 "车辆里程记录失败，请重试":"De kilometerstand van het voertuig is mislukt, probeer het opnieuw",
 "顺带包裹费用不为0，不能选择无需支付":"Het pakket vergoeding is niet 0. U kunt niet kiezen om niet te betalen"
+
+,"出库里程数过大，请重新填写":"De kilometerteller is te groot, vul opnieuw in.",
+"取件线路已完成，不能优化":"De ophaallijn is voltooid en kan niet worden geoptimaliseerd",
+"合计":"totaal",
+"线路自动更新失败":"Automatische lijnupdate is mislukt",
+"线路更新失败":"Opdracht van de lijn mislukt"
 }

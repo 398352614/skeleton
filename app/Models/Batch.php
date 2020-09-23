@@ -99,7 +99,11 @@ class Batch extends BaseModel
         'created_at',
         'updated_at',
         'auth_fullname',
-        'auth_birth_date'
+        'auth_birth_date',
+        'out_expect_time',
+        'out_expect_distance',
+        'out_expect_arrive_time',
+        'sign_time'
     ];
 
     /**
@@ -115,6 +119,7 @@ class Batch extends BaseModel
         'pay_type_name',
         'receiver_country_name',
         'expect_time_human',
+        'out_expect_time_human',
         'actual_time_human',
         'is_skipped_name'
     ];
@@ -149,6 +154,11 @@ class Batch extends BaseModel
     public function getExpectTimeHumanAttribute()
     {
         return empty($this->expect_time) ? null : CarbonInterval::second($this->expect_time)->cascade()->forHumans();
+    }
+
+    public function getOutExpectTimeHumanAttribute()
+    {
+        return empty($this->out_expect_time) ? null : CarbonInterval::second($this->out_expect_time)->cascade()->forHumans();
     }
 
     public function getActualTimeHumanAttribute()

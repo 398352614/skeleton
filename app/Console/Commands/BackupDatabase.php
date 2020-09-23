@@ -37,7 +37,6 @@ class BackupDatabase extends Command
     public function __construct()
     {
         parent::__construct();
-        Log::info('backup database construct begin');
         $this->process = new Process(sprintf(
             'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s | gzip > %s',
             config('database.connections.mysql.host'),
@@ -51,7 +50,6 @@ class BackupDatabase extends Command
 
             storage_path('backup/backup.sql.gz')
         ));
-        Log::info('backup database construct end');
     }
 
     /**
