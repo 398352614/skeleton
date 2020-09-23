@@ -1294,7 +1294,7 @@ class TourService extends BaseService
         if ($params['end_distance'] < $car['distance']) {
             throw new BusinessLogicException('出库里程数小于该车上次入库里程数，请重新填写');
         }
-        if ($params['end_distance'] > $car['distance'] + 100000) {
+        if ($params['end_distance'] > $car['distance'] + 1000000) {
             throw new BusinessLogicException('出库里程数过大，请重新填写');
         }
         $row = $this->getCarService()->update(['car_no' => $tour['car_no']], ['distance' => $params['end_distance']]);
