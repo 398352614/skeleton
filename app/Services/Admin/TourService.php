@@ -922,7 +922,7 @@ class TourService extends BaseService
         $firstDate = Carbon::create($params['year'], $params['month'])->format('Y-m-d');
         $lastDate = Carbon::create($params['year'], $params['month'])->endOfMonth()->format('Y-m-d');
         $cellData = [];
-        $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false);
+        $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false,[],['execution_date'=>'asc']);
         $orderList = $this->getOrderService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::ORDER_STATUS_5], ['*'], false);
         foreach ($tourList as $k => $v) {
             $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
