@@ -957,8 +957,6 @@ class TourService extends BaseService
             $cellData[$k] = array_only_fields_sort($cellData[$k], $this->batchHeadings);
         }
         $headings = [[$params['year'] . '-' . $params['month']], $this->batchHeadings];
-        $cellData[-1]['date'] = $params['year'] . '-' . $params['month'];
-        $cellData = array_values($cellData);
         $dir = 'batchCount';
         $name = date('Ymd') . auth()->user()->company_id;
         return $this->excelExport($name, $headings, $cellData, $dir);
