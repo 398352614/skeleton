@@ -143,5 +143,17 @@ return [
         'end_distance'=>'End Distance',
         'expect_distance'=>'Expect Distance',
         'handmade_actual_distance'=>'Actual Distance',
+    ],
+
+    'batchCount' => [
+        'date' => 'Date',
+        'driver' => 'Driver',
+        'total_batch_count' => 'Total Pick ups',
+        'erp_batch_count' => 'Only Parcels',
+        'mes_batch_count' => 'Only MES',
+        'mix_batch_count' => 'Both',
+        'erp_batch_percent' => 'Only Parcels %',
+        'mes_batch_percent' => 'Only MES %',
+        'mix_batch_percent' => 'Other %',
     ]
 ];

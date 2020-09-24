@@ -144,4 +144,16 @@ return [
         'expect_distance' => '预计里程数',
         'handmade_actual_distance' => '实际里程数'
     ],
+
+    'batchCount' => [
+        'date' => '日期',
+        'driver' => '司机',
+        'total_batch_count' => '站点总数',
+        'erp_batch_count' => 'ERP站点数',
+        'mes_batch_count' => '商城站点数',
+        'mix_batch_count' => '混合站点数',
+        'erp_batch_percent' => 'ERP占比',
+        'mes_batch_percent' => '商城占比',
+        'mix_batch_percent' => '混合占比',
+    ]
 ];
