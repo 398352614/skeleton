@@ -1053,7 +1053,7 @@ class TourService extends BaseService
         if (empty($packageList)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['actual_arrive_time' => 'asc', 'created_at' => 'asc'])->toArray();
         if (empty($batchList)) {
             throw new BusinessLogicException('数据不存在');
         }

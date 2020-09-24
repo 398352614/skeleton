@@ -27,7 +27,6 @@
         }
 
 
-
         .tit {
             font-size: 24px;
             font-weight: bold;
@@ -37,7 +36,7 @@
         /* 表格 */
         .tb {
             width: 80%;
-            margin: 0 auto 20px;
+            margin: 0 auto 75px;
             display: table;
             border: 1px #000 solid;
         }
@@ -64,16 +63,16 @@
 
         .img-list > div {
             display: inline-block;
-            width: 321px;
-            height: 321px;
-            margin-bottom: 20px;
+            width: 360px;
+            height: 270px;
+            margin-bottom: 75px ;
             border: 1px #000 solid;
         }
 
         img {
-            width: 128px;
-            height: 128px;
-            margin: 96px auto;
+            width: 100%;
+            height: 100%;
+            /*margin: 96px auto;*/
         }
 
     </style>

@@ -698,4 +698,10 @@
     "导出日期": "Export date",
     "车牌号": "Number plate",
     "司机签名": "Driver's signature"
+
+,"出库里程数过大，请重新填写":"The mileage is too large, please fill in again",
+"取件线路已完成，不能优化":"The pickup line has been completed and cannot be optimized",
+"合计":"total",
+"线路自动更新失败":"Automatic line update failed",
+"线路更新失败":"Line update failed"
 }

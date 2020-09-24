@@ -680,6 +680,13 @@ return [
         "change_log" => "更新日志",
         "to_id" => "用户ID",
         "data" => "数据",
-        "company_auth" => "是否需要验证公司权限"
-    ]
+        "company_auth" => "是否需要验证公司权限",
+
+
+"sign_time"=>"签收时间",
+"out_expect_arrive_time"=>"出库预计时间",
+"out_expect_distance"=>"出库预计里程",
+"out_expect_time"=>"出库预计耗时",
+"relate_material_list"=>"文件列表",
+]
 ];

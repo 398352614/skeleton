@@ -653,7 +653,7 @@ class TourService extends BaseService
         }
         $now = now();
         //查找当前取件线路中最新完成的站点
-        $lastCompleteBatch = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]], ['actual_arrive_time'], false, ['sign_time' => 'desc']);
+        $lastCompleteBatch = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no'], 'status' => ['in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]], ['actual_arrive_time', 'sign_time'], false, ['sign_time' => 'desc']);
         if (!empty($lastCompleteBatch) && !empty($lastCompleteBatch->sign_time)) {
             $actualTime = strtotime($now) - strtotime($lastCompleteBatch->sign_time);
         } else {
@@ -779,8 +779,8 @@ class TourService extends BaseService
             throw new BusinessLogicException('站点当前状态不能取消取派');
         }
         //站点取消取派
-        $params['sign_time']=now();
-        $data = Arr::only($params, ['cancel_type', 'cancel_remark', 'cancel_picture','sign_time']);
+        $params['sign_time'] = now();
+        $data = Arr::only($params, ['cancel_type', 'cancel_remark', 'cancel_picture', 'sign_time']);
         $rowCount = $this->getBatchService()->updateById($batch['id'], Arr::add($data, 'status', BaseConstService::BATCH_CANCEL));
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
@@ -1293,6 +1293,9 @@ class TourService extends BaseService
         }
         if ($params['end_distance'] < $car['distance']) {
             throw new BusinessLogicException('出库里程数小于该车上次入库里程数，请重新填写');
+        }
+        if ($params['end_distance'] > $car['distance'] + 1000000) {
+            throw new BusinessLogicException('出库里程数过大，请重新填写');
         }
         $row = $this->getCarService()->update(['car_no' => $tour['car_no']], ['distance' => $params['end_distance']]);
         if ($row == false) {

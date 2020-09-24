@@ -172,7 +172,10 @@ class CarService extends BaseService
         if (!empty($car)) {
             $data = $this->getTourService()->getList(['car_no' => $car['car_no'], 'status' => BaseConstService::TOUR_STATUS_5, 'execution_date' => ['between', [$params['begin_date'], $params['end_date']]]], ['*'], false);
             foreach ($data as $k => $v) {
-                $data[$k]['handmade_actual_distance'] = $v['end_distance'] - $v['begin_distance'];
+                $data[$k]['begin_distance'] = intval($data[$k]['begin_distance'] / 1000);
+                $data[$k]['end_distance'] = intval($data[$k]['end_distance'] / 1000);
+                $data[$k]['expect_distance'] = intval($data[$k]['expect_distance'] / 1000);
+                $data[$k]['handmade_actual_distance'] = intval($v['end_distance'] - $v['begin_distance']);
             }
             foreach ($data as $v) {
                 $cellData[] = array_only_fields_sort($v, $this->headings);

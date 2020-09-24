@@ -184,15 +184,6 @@ class MerchantService extends BaseService
         if ($merchantApi === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
         }
-        //生成充值api
-        $merchantRecharge = $this->getMerchantRechargeService()->create([
-            'merchant_id' => $id,
-            'url' => '',
-            'status' => BaseConstService::MERCHANT_RECHARGE_STATUS_2
-        ]);
-        if ($merchantRecharge === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
-        }
         $rowCount = MerchantGroup::query()->where('id', $params['merchant_group_id'])->increment('count');
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败');
