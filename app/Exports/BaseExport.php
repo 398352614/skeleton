@@ -257,13 +257,13 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     $column = [
                         'A' => 20,
                         'B' => 30,
-                        'C' => 15,
-                        'D' => 15,
-                        'E' => 15,
-                        'F' => 15,
-                        'G' => 15,
-                        'H' => 15,
-                        'I' => 15,
+                        'C' => 20,
+                        'D' => 20,
+                        'E' => 20,
+                        'F' => 20,
+                        'G' => 20,
+                        'H' => 20,
+                        'I' => 20,
                     ];
                     // 合并单元格
                     $event->sheet->getDelegate()->setMergeCells(['A1:'.$endColumn.'1']);
