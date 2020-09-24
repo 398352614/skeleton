@@ -73,7 +73,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 // 合并单元格
                 //$event->sheet->getDelegate()->setMergeCells(['A1:'.$endColumn.'1']);
                 //设置行高
-                for($i=2;$i<100;$i++){
+                for ($i = 2; $i < 100; $i++) {
                     $event->sheet->getDelegate()->getRowDimension($i)->setRowHeight(16);
                 }
                 //设置单元格内容自动转行
@@ -253,7 +253,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     }
                 }
                 /*********************************取件报告导出*****************************/
-                if($this->type == 'batchCount'){
+                if ($this->type == 'batchCount') {
                     $column = [
                         'A' => 20,
                         'B' => 30,
@@ -266,8 +266,8 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                         'I' => 20,
                     ];
                     // 合并单元格
-                    $event->sheet->getDelegate()->setMergeCells(['A1:'.$endColumn.'1']);
-                    $event->sheet->getDelegate()->getStyle('A1')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+                    $event->sheet->getDelegate()->setMergeCells(['A1:' . $endColumn . '1']);
+                    $event->sheet->getDelegate()->getStyle('A1:' . $endColumn . '1')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                     foreach ($column as $k => $v) {
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                     }
