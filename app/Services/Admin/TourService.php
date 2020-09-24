@@ -942,9 +942,9 @@ class TourService extends BaseService
             }
 
             if ($cellData[$k]['total_batch_count'] !== 0) {
-                $cellData[$k]['erp_batch_percent'] = $cellData[$k]['erp_batch_count'] / $cellData[$k]['total_batch_count'];
-                $cellData[$k]['mes_batch_percent'] = $cellData[$k]['mes_batch_count'] / $cellData[$k]['total_batch_count'];
-                $cellData[$k]['mix_batch_percent'] = $cellData[$k]['mix_batch_count'] / $cellData[$k]['total_batch_count'];
+                $cellData[$k]['erp_batch_percent'] = round($cellData[$k]['erp_batch_count']*100 / $cellData[$k]['total_batch_count'],2);
+                $cellData[$k]['mes_batch_percent'] = round($cellData[$k]['mes_batch_count']*100 / $cellData[$k]['total_batch_count'],2);
+                $cellData[$k]['mix_batch_percent'] = round($cellData[$k]['mix_batch_count']*100 / $cellData[$k]['total_batch_count'],2);
             } else {
                 $cellData[$k]['erp_batch_percent'] = $cellData[$k]['mes_batch_percent'] = $cellData[$k]['mix_batch_percent'] = 0;
             }
