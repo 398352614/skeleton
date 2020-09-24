@@ -98,6 +98,14 @@ class BaseConstService
     const SATURDAY = 6;
     const SUNDAY = 0;
 
+    //临时处理 正式服-商户ID(有用到，请勿删除)
+    const ERP_MERCHANT_ID_1 = 7;
+    const SHOP_MERCHANT_ID_2 = 8;
+
+    //临时处理 开发服-商户ID(有用到，请勿删除)
+    const ERP_MERCHANT_ID_2 = 65;
+    const SHOP_MERCHANT_ID_1 = 3;
+
     //订单类型1-取2-派
     const ORDER_TYPE_1 = 1;
     const ORDER_TYPE_2 = 2;

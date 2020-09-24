@@ -248,9 +248,9 @@ class TourController extends BaseController
      * @return mixed
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function batchExport($id)
+    public function batchExport()
     {
-        return $this->service->batchExport($id);
+        return $this->service->batchExport($this->data);
     }
 
     /**

@@ -21,6 +21,7 @@ use App\Services\ApiServices\TourOptimizationService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
+use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
@@ -64,6 +65,18 @@ class TourService extends BaseService
         'expect_pie_quantity',
         'express_first_no_one',
         'express_first_no_two',
+    ];
+
+    protected $batchHeadings = [
+        'date',
+        'driver',
+        'total_batch_count',
+        'erp_batch_count',
+        'mes_batch_count',
+        'mix_batch_count',
+        'erp_batch_percent',
+        'mes_batch_percent',
+        'mix_batch_percent'
     ];
 
     protected $tourHeadings = [
@@ -900,52 +913,52 @@ class TourService extends BaseService
 
     /**
      * 导出站点表格
-     * @param $id
+     * @param $params
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function batchExport($id)
+    public function batchExport($params)
     {
-        //取出数据
+        $firstDate = Carbon::create($params['year'], $params['month'])->format('Y-m-d');
+        $lastDate = Carbon::create($params['year'], $params['month'])->endOfMonth()->format('Y-m-d');
         $cellData = [];
-        $tour_no = $this->query->where('id', '=', $id)->value('tour_no');
-        if (empty($tour_no)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $info = $this->getBatchService()->getList(['tour_no' => $tour_no], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        //整理结构
-        for ($i = 0; $i < count($info); $i++) {
-            $orderInfo = $this->getOrderService()->getList(['batch_no' => $info[$i]['batch_no']], ['*'], false);
-            if (empty($orderInfo)) {
-                throw new BusinessLogicException('数据不存在');
+        $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false);
+        $batchList = $this->getBatchService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::BATCH_CHECKOUT], ['*'], false);
+        $orderList = $this->getOrderService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::ORDER_STATUS_5], ['*'], false);
+        foreach ($tourList as $k => $v) {
+            $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
+            $cellData[$k]['driver'] = $v['line_name'] . ' ' . $v['driver_name'];
+            $cellData[$k]['total_batch_count'] = $batchList->where('tour_no', $v['tour_no'])->count();
+            $batch[$k] = $orderList->where('tour_no', $v['tour_no'])->groupBy('batch_no')->toArray();
+            $cellData[$k]['erp_batch_count'] = $cellData[$k]['mes_batch_count'] = $cellData[$k]['mix_batch_count'] = 0;
+            $cellData[$k]['erp_batch'] = $cellData[$k]['mes_batch'] = $cellData[$k]['mix_batch'] = [];
+            foreach ($orderList->where('tour_no', $v['tour_no']) as $x => $y) {
+                if ($y['merchant_id'] == (config('tms.env') == 'local' ? BaseConstService::ERP_MERCHANT_ID_2 : BaseConstService::ERP_MERCHANT_ID_1)) {
+                    $cellData[$k]['erp_batch'][] = $y['batch_no'];
+                } elseif ($y['merchant_id'] == (config('tms.env') == 'local' ? BaseConstService::SHOP_MERCHANT_ID_1 : BaseConstService::SHOP_MERCHANT_ID_2)) {
+                    $cellData[$k]['mes_batch'][] = $y['batch_no'];
+                } elseif (in_array($y['merchant_id'], config('tms.env') == 'local' ?
+                    [BaseConstService::ERP_MERCHANT_ID_1, BaseConstService::SHOP_MERCHANT_ID_2] :
+                    [BaseConstService::ERP_MERCHANT_ID_2, BaseConstService::SHOP_MERCHANT_ID_1]
+                )) {
+                    $cellData[$k]['mix_batch'][] = $y['batch_no'];
+                }
             }
-            $packageInfo = $this->getPackageService()->getList(['order_no' => $orderInfo[0]['order_no']], ['*'], false);
-            if (empty($packageInfo)) {
-                throw new BusinessLogicException('数据不存在');
+            $cellData[$k]['erp_batch_count'] = count(array_unique($cellData[$k]['erp_batch']));
+            $cellData[$k]['mes_batch_count'] = count(array_unique($cellData[$k]['mes_batch']));
+            $cellData[$k]['mix_batch_count'] = count(array_unique($cellData[$k]['mix_batch']));
+            if ($cellData[$k]['total_batch_count'] !== 0) {
+                $cellData[$k]['erp_batch_percent'] = round($cellData[$k]['erp_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
+                $cellData[$k]['mes_batch_percent'] = round($cellData[$k]['mes_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
+                $cellData[$k]['mix_batch_percent'] = round($cellData[$k]['mix_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
+            } else {
+                $cellData[$k]['erp_batch_percent'] = $cellData[$k]['mes_batch_percent'] = $cellData[$k]['mix_batch_percent'] = 0;
             }
-            $cellData[$i][0] = $i + 1;
-            $cellData[$i][1] = $info[$i]['receiver_fullname'];
-            $cellData[$i][2] = $info[$i]['receiver_phone'];
-            $cellData[$i][3] = $orderInfo[0]['out_user_id'] ?? '';
-            $cellData[$i][4] = $info[$i]['receiver_street'] . ' ' . $info[$i]['receiver_house_number'];
-            $cellData[$i][5] = $info[$i]['receiver_post_code'];
-            $cellData[$i][6] = $info[$i]['receiver_city'];
-            $cellData[$i][7] = $orderInfo[0]['merchant_id_name'];
-            $cellData[$i][8] = $info[$i]['expect_pickup_quantity'];
-            $cellData[$i][9] = $info[$i]['expect_pie_quantity'];
-            $cellData[$i][10] = $packageInfo[0]['express_first_no'] ?? "";
-            $cellData[$i][11] = $packageInfo[1]['express_first_no'] ?? "";
+            $cellData[$k] = array_only_fields_sort($cellData[$k], $this->batchHeadings);
         }
-        for ($i = 0; $i < count($cellData); $i++) {
-            $cellData[$i] = array_values($cellData[$i]);
-        }
-        $cellData = array_reverse($cellData);
-        $dir = 'batchList';
-        $name = date('Ymd') . $tour_no . auth()->user()->company_id;
-        return $this->excelExport($name, $this->headings, $cellData, $dir);
+        $dir = 'batchCount';
+        $name = date('Ymd') . auth()->user()->company_id;
+        return $this->excelExport($name, $this->batchHeadings, $cellData, $dir);
     }
 
     /**
