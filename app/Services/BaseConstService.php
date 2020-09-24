@@ -102,7 +102,7 @@ class BaseConstService
     const ERP_MERCHANT_ID_1 = 7;
     const SHOP_MERCHANT_ID_2 = 8;
 
-    //临时处理 开发服-商户ID
+    //临时处理 开发服-商户ID(有用到，请勿删除)
     const ERP_MERCHANT_ID_2 = 65;
     const SHOP_MERCHANT_ID_1 = 3;
 

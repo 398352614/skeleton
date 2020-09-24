@@ -34,5 +34,6 @@ return [
         'company' => 'company',
         'address_template' => 'address_template',
     ],
-    'wechat_push' => env('WECHAT_PUSH')
+    'wechat_push' => env('WECHAT_PUSH'),
+    'env'=>env('APP_ENV'),
 ];

@@ -931,24 +931,27 @@ class TourService extends BaseService
             $cellData[$k]['total_batch_count'] = $batchList->where('tour_no', $v['tour_no'])->count();
             $batch[$k] = $orderList->where('tour_no', $v['tour_no'])->groupBy('batch_no')->toArray();
             $cellData[$k]['erp_batch_count'] = $cellData[$k]['mes_batch_count'] = $cellData[$k]['mix_batch_count'] = 0;
-            $cellData[$k]['erp_batch']=$cellData[$k]['mes_batch']=$cellData[$k]['mix_batch']=[];
-            foreach ($orderList->where('tour_no',$v['tour_no']) as $x => $y) {
-                if ($y['merchant_id'] == BaseConstService::ERP_MERCHANT_ID_1) {
+            $cellData[$k]['erp_batch'] = $cellData[$k]['mes_batch'] = $cellData[$k]['mix_batch'] = [];
+            foreach ($orderList->where('tour_no', $v['tour_no']) as $x => $y) {
+                if ($y['merchant_id'] == (config('tms.env') == 'local' ? BaseConstService::ERP_MERCHANT_ID_2 : BaseConstService::ERP_MERCHANT_ID_1)) {
                     $cellData[$k]['erp_batch'][] = $y['batch_no'];
-                } elseif ($y['merchant_id'] == BaseConstService::SHOP_MERCHANT_ID_2) {
+                } elseif ($y['merchant_id'] == (config('tms.env') == 'local' ? BaseConstService::SHOP_MERCHANT_ID_1 : BaseConstService::SHOP_MERCHANT_ID_2)) {
                     $cellData[$k]['mes_batch'][] = $y['batch_no'];
-                } elseif(in_array($y['merchant_id'],[BaseConstService::ERP_MERCHANT_ID_1,BaseConstService::SHOP_MERCHANT_ID_2])) {
+                } elseif (in_array($y['merchant_id'], config('tms.env') == 'local' ?
+                    [BaseConstService::ERP_MERCHANT_ID_1, BaseConstService::SHOP_MERCHANT_ID_2] :
+                    [BaseConstService::ERP_MERCHANT_ID_2, BaseConstService::SHOP_MERCHANT_ID_1]
+                )) {
                     $cellData[$k]['mix_batch'][] = $y['batch_no'];
                 }
             }
-            $cellData[$k]['erp_batch_count']=count(array_unique($cellData[$k]['erp_batch']));
-            $cellData[$k]['mes_batch_count']=count(array_unique($cellData[$k]['mes_batch']));
-            $cellData[$k]['mix_batch_count']=count(array_unique($cellData[$k]['mix_batch']));
-            unset($cellData[$k]['erp_batch'],$cellData[$k]['mes_batch'],$cellData[$k]['mix_batch']);
+            $cellData[$k]['erp_batch_count'] = count(array_unique($cellData[$k]['erp_batch']));
+            $cellData[$k]['mes_batch_count'] = count(array_unique($cellData[$k]['mes_batch']));
+            $cellData[$k]['mix_batch_count'] = count(array_unique($cellData[$k]['mix_batch']));
+            unset($cellData[$k]['erp_batch'], $cellData[$k]['mes_batch'], $cellData[$k]['mix_batch']);
             if ($cellData[$k]['total_batch_count'] !== 0) {
-                $cellData[$k]['erp_batch_percent'] = round($cellData[$k]['erp_batch_count']*100 / $cellData[$k]['total_batch_count'],2);
-                $cellData[$k]['mes_batch_percent'] = round($cellData[$k]['mes_batch_count']*100 / $cellData[$k]['total_batch_count'],2);
-                $cellData[$k]['mix_batch_percent'] = round($cellData[$k]['mix_batch_count']*100 / $cellData[$k]['total_batch_count'],2);
+                $cellData[$k]['erp_batch_percent'] = round($cellData[$k]['erp_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
+                $cellData[$k]['mes_batch_percent'] = round($cellData[$k]['mes_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
+                $cellData[$k]['mix_batch_percent'] = round($cellData[$k]['mix_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
             } else {
                 $cellData[$k]['erp_batch_percent'] = $cellData[$k]['mes_batch_percent'] = $cellData[$k]['mix_batch_percent'] = 0;
             }
