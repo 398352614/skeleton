@@ -954,7 +954,7 @@ class TourService extends BaseService
             } else {
                 $cellData[$k]['erp_batch_percent'] = $cellData[$k]['mes_batch_percent'] = $cellData[$k]['mix_batch_percent'] = 0;
             }
-            $cellData[$k] = array_only_fields_sort($cellData, $this->batchHeadings);
+            $cellData[$k] = array_only_fields_sort($cellData[$k], $this->batchHeadings);
         }
         $dir = 'batchCount';
         $name = date('Ymd') . auth()->user()->company_id;
