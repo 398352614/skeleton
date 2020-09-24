@@ -177,6 +177,16 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         // $router->post('car/lock', 'CarInfoController@lock');
     });
 
+    //设备管理
+    Route::prefix('device')->group(function () {
+        Route::get('/', 'DeviceController@index');
+        Route::post('/', 'DeviceController@store');
+        Route::put('/{id}', 'DeviceController@update');
+        Route::delete('/{id}', 'DeviceController@destroy');
+        Route::put('/{id}/bind', 'DeviceController@bind');      //绑定
+        Route::put('/{id}/unBind', 'DeviceController@unBind');  //解绑
+    });
+
     //站点管理
     Route::prefix('batch')->group(function () {
         //rest api 放在最后

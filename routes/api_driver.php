@@ -66,6 +66,16 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::get('/{id}/getSpecialRemark', 'TourTaskController@getSpecialRemark');
     });
 
+    //设备管理
+    Route::prefix('device')->group(function () {
+        //获取详情
+        Route::get('/show', 'DeviceController@show');
+        //绑定
+        Route::put('/bind', 'DeviceController@bind');
+        //解绑
+        Route::put('/unBind', 'DeviceController@unBind');
+    });
+
     //车辆管理
     Route::prefix('car')->group(function () {
         //列表查询
@@ -168,16 +178,16 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     });
 
     //充值管理
-    Route::prefix('recharge')->group(function (){
+    Route::prefix('recharge')->group(function () {
         //充值查询
-        Route::get('/','RechargeController@index');
+        Route::get('/', 'RechargeController@index');
         //充值详情
-        Route::get('/{id}','RechargeController@show');
+        Route::get('/{id}', 'RechargeController@show');
         //充值
-        Route::post('/','RechargeController@recharge');
+        Route::post('/', 'RechargeController@recharge');
         //充值验证
-        Route::post('/verify','RechargeController@verify');
+        Route::post('/verify', 'RechargeController@verify');
         //获取外部用户信息
-        Route::get('/out-user','RechargeController@getOutUser');
+        Route::get('/out-user', 'RechargeController@getOutUser');
     });
 });

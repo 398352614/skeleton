@@ -9,6 +9,7 @@ namespace App\Http\Controllers\Api\Driver;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Api\Admin\RegisterController;
 use App\Http\Controllers\Controller;
+use App\Models\Device;
 use App\Models\Driver;
 use App\Models\Employee;
 use App\Services\BaseConstService;
@@ -35,7 +36,7 @@ class AuthController extends Controller
             'password' => $request['password'],
         ];
 
-        if (empty(Driver::query()->where($this->username(),$request['username'])->first())){
+        if (empty(Driver::query()->where($this->username(), $request['username'])->first())) {
             throw new BusinessLogicException('邮箱未注册，请先注册');
         }
 
@@ -122,7 +123,8 @@ class AuthController extends Controller
             'messager_token' => $params['messager_token'],
             'token_type' => 'bearer',
             'expires_in' => auth('driver')->factory()->getTTL() * 60,
-            'company_config' => $this->getCompanyConfig(auth('driver')->user()->company_id)
+            'company_config' => $this->getCompanyConfig(auth('driver')->user()->company_id),
+            'is_bind' => $this->isBindDevice(auth('driver')->user()->id)
         ];
     }
 
@@ -141,6 +143,17 @@ class AuthController extends Controller
             'sticker_amount' => $stickerAmount,
             'delivery_amount' => $deliveryAmount
         ];
+    }
+
+    /**
+     * 是否绑定设备
+     * @param $driverId
+     * @return bool
+     */
+    private function isBindDevice($driverId)
+    {
+        $device = Device::query()->where('driver_id', $driverId)->first();
+        return !empty($device) ? 1 : 2;
     }
 
     /**
@@ -232,7 +245,7 @@ class AuthController extends Controller
 //        $request->validate([
 //            'email' => 'required|email',
 //        ]);
-        if (empty(Driver::query()->where('email',$request['email'])->first())){
+        if (empty(Driver::query()->where('email', $request['email'])->first())) {
             throw new BusinessLogicException('用户不存在，请检查用户名');
         }
 

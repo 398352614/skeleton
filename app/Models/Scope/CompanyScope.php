@@ -17,6 +17,7 @@ use App\Models\CarModel;
 use App\Models\Company;
 use App\Models\CompanyConfig;
 use App\Models\Country;
+use App\Models\Device;
 use App\Models\Driver;
 use App\Models\Employee;
 use App\Models\Fee;
@@ -102,6 +103,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof Company))
                 && (!($model instanceof CompanyConfig))
                 && (!($model instanceof Recharge))
+                && (!($model instanceof Device))
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . '=' . $user->id);
             }
