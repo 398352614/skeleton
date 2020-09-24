@@ -265,8 +265,6 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                         'H' => 15,
                         'I' => 15,
                     ];
-                    // 合并单元格
-                    $event->sheet->getDelegate()->setMergeCells(['A1:'.$endColumn.'1']);
                     foreach ($column as $k => $v) {
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                     }
