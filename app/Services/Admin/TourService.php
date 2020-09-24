@@ -944,6 +944,7 @@ class TourService extends BaseService
             $cellData[$k]['erp_batch_count']=count(array_unique($cellData[$k]['erp_batch']));
             $cellData[$k]['mes_batch_count']=count(array_unique($cellData[$k]['mes_batch']));
             $cellData[$k]['mix_batch_count']=count(array_unique($cellData[$k]['mix_batch']));
+            unset($cellData[$k]['erp_batch'],$cellData[$k]['mes_batch'],$cellData[$k]['mes_batch']);
             if ($cellData[$k]['total_batch_count'] !== 0) {
                 $cellData[$k]['erp_batch_percent'] = round($cellData[$k]['erp_batch_count']*100 / $cellData[$k]['total_batch_count'],2);
                 $cellData[$k]['mes_batch_percent'] = round($cellData[$k]['mes_batch_count']*100 / $cellData[$k]['total_batch_count'],2);
