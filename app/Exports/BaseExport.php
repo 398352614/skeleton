@@ -256,14 +256,14 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 if($this->type == 'batchCount'){
                     $column = [
                         'A' => 20,
-                        'B' => 25,
-                        'C' => 10,
-                        'D' => 10,
-                        'E' => 10,
-                        'F' => 10,
-                        'G' => 10,
-                        'H' => 10,
-                        'I' => 10,
+                        'B' => 30,
+                        'C' => 15,
+                        'D' => 15,
+                        'E' => 15,
+                        'F' => 15,
+                        'G' => 15,
+                        'H' => 15,
+                        'I' => 15,
                     ];
                     foreach ($column as $k => $v) {
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
