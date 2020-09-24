@@ -928,8 +928,8 @@ class TourService extends BaseService
             $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
             $cellData[$k]['driver'] = $v['line_name'] . ' ' . $v['driver_name'];
             $batch[$k] = $orderList->where('tour_no', $v['tour_no'])->groupBy('batch_no')->toArray();
-            $cellData[$k]['erp_batch_count'] = $cellData[$k]['mes_batch_count'] = $cellData[$k]['mix_batch_count'] = 0;
-            $cellData[$k]['erp_batch'] = $cellData[$k]['mes_batch'] = $cellData[$k]['mix_batch'] = [];
+            $cellData[$k]['erp_batch_count'] = $cellData[$k]['mes_batch_count'] = $cellData[$k]['mix_batch_count'] = $cellData[$k]['total_batch_count'] = 0;
+            $cellData[$k]['erp_batch'] = $cellData[$k]['mes_batch'] = $cellData[$k]['mix_batch'] = $cellData[$k]['total_batch'] = [];
             foreach ($orderList->where('tour_no', $v['tour_no']) as $x => $y) {
                 if ($y['merchant_id'] == (config('tms.env') == 'local' ? BaseConstService::ERP_MERCHANT_ID_2 : BaseConstService::ERP_MERCHANT_ID_1)) {
                     $cellData[$k]['erp_batch'][] = $y['batch_no'];
