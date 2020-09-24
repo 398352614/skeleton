@@ -252,11 +252,28 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                     }
                 }
-/*                if($this->type === 'orderOut'){
-                    for ($i = 0, $j = count($this->headings()); $i <= $j; $i++) {
-                        $event->sheet->getDelegate()->getColumnDimensionByColumn($i)->setWidth('15');
+                /*********************************取件报告导出*****************************/
+                if($this->type == 'batchCount'){
+                    $column = [
+                        'A' => 20,
+                        'B' => 25,
+                        'C' => 10,
+                        'D' => 10,
+                        'E' => 10,
+                        'F' => 10,
+                        'G' => 10,
+                        'H' => 10,
+                        'I' => 10,
+                    ];
+                    foreach ($column as $k => $v) {
+                        $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                     }
-                }*/
+                }
+                /*                if($this->type === 'orderOut'){
+                                    for ($i = 0, $j = count($this->headings()); $i <= $j; $i++) {
+                                        $event->sheet->getDelegate()->getColumnDimensionByColumn($i)->setWidth('15');
+                                    }
+                                }*/
             },
         ];
     }
