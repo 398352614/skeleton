@@ -270,7 +270,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     foreach ($column as $k => $v) {
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                     }
-                    $event->sheet->getDelegate()->getStyle('A1:A2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    $event->sheet->getDelegate()->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 }
                 /*                if($this->type === 'orderOut'){
                                     for ($i = 0, $j = count($this->headings()); $i <= $j; $i++) {
