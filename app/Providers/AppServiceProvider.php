@@ -2,11 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\CurlClient;
-use App\Services\GoogleApiService;
-use App\Services\ReisService;
 use Illuminate\Routing\UrlGenerator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -21,26 +17,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('reis', function ($app) {
-            return new ReisService($app);
-        });
-
-        $this->app->singleton('curl', function ($app) {
-            return new CurlClient($app);
-        });
-
-        $this->app->bind(CurlClient::class, function ($app) {
-            return new CurlClient($app);
-        });
-
-        $this->app->bind(ReisService::class, function ($app) {
-            return new ReisService($app);
-        });
-
-        $this->app->bind(GoogleApiService::class, function ($app) {
-            return new GoogleApiService($app);
-        });
-
         if ($this->app->isLocal() || ($this->app->environment() === 'development')) {
             $this->app->register(TelescopeServiceProvider::class);
         }

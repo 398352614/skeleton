@@ -19,6 +19,9 @@ return [
     'api_url' => env('API_URL'),
     'api_key' => env('API_KEY'),
     'api_secret' => env('API_SECRET'),
+    'routexl_api_key' => env('ROUTEXL_API_KEY'),
+    'routexl_api_secret' => env('ROUTEXL_API_SECRET'),
+
     //腾讯地图API
     'tencent_api_url' => env('TENCENT_API_URL'),
     'tencent_api_key' => env('TENCENT_API_KEY'),

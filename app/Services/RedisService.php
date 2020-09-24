@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Redis;
 
-class ReisService
+class RedisService
 {
     /**
      * 获取数据
