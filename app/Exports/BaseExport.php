@@ -267,10 +267,10 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     ];
                     // 合并单元格
                     $event->sheet->getDelegate()->setMergeCells(['A1:' . $endColumn . '1']);
-                    $event->sheet->getDelegate()->getStyle('A1:' . $endColumn . '1')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                     foreach ($column as $k => $v) {
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                     }
+                    $event->sheet->getDelegate()->getStyle('A1:A2')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 }
                 /*                if($this->type === 'orderOut'){
                                     for ($i = 0, $j = count($this->headings()); $i <= $j; $i++) {
