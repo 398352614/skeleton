@@ -937,7 +937,7 @@ class TourService extends BaseService
                     $cellData[$k]['erp_batch'][] = $y['batch_no'];
                 } elseif ($y['merchant_id'] == BaseConstService::SHOP_MERCHANT_ID_2) {
                     $cellData[$k]['mes_batch'][] = $y['batch_no'];
-                } else {
+                } elseif(in_array($y['merchant_id'],[BaseConstService::ERP_MERCHANT_ID_1,BaseConstService::SHOP_MERCHANT_ID_2])) {
                     $cellData[$k]['mix_batch'][] = $y['batch_no'];
                 }
             }
