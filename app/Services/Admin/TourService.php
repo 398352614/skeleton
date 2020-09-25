@@ -920,7 +920,14 @@ class TourService extends BaseService
     public function batchExport($params)
     {
         $firstDate = Carbon::create($params['year'], $params['month'])->format('Y-m-d');
-        $lastDate = Carbon::create($params['year'], $params['month'])->endOfMonth()->format('Y-m-d');
+        $today = Carbon::today();
+        if ($today->year > $params['year'] || ($today->year == $params & $today->month > $params['month'])) {
+            throw new BusinessLogicException('只能选择本月之前的月份');
+        } elseif ($today->year == $params['year'] && $today->month == $params['month']) {
+            $lastDate = $today->format('Y-m-d');
+        } else {
+            $lastDate = Carbon::create($params['year'], $params['month'])->endOfMonth()->format('Y-m-d');
+        }
         $cellData = [];
         $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false, [], ['execution_date' => 'asc']);
         $orderList = $this->getOrderService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::ORDER_STATUS_5], ['*'], false);
@@ -939,8 +946,8 @@ class TourService extends BaseService
                 $cellData[$k]['total_batch'][] = $y['batch_no'];
             }
             $cellData[$k]['mix_batch_count'] = count(array_intersect(array_unique($cellData[$k]['erp_batch']), array_unique($cellData[$k]['mes_batch'])));
-            $cellData[$k]['erp_batch_count'] = count(array_unique($cellData[$k]['erp_batch']))-$cellData[$k]['mix_batch_count'];
-            $cellData[$k]['mes_batch_count'] = count(array_unique($cellData[$k]['mes_batch']))-$cellData[$k]['mix_batch_count'];
+            $cellData[$k]['erp_batch_count'] = count(array_unique($cellData[$k]['erp_batch'])) - $cellData[$k]['mix_batch_count'];
+            $cellData[$k]['mes_batch_count'] = count(array_unique($cellData[$k]['mes_batch'])) - $cellData[$k]['mix_batch_count'];
             $cellData[$k]['total_batch_count'] = count(array_unique($cellData[$k]['total_batch']));
             if ($cellData[$k]['total_batch_count'] !== 0) {
                 $cellData[$k]['erp_batch_percent'] = round($cellData[$k]['erp_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
