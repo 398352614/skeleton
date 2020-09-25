@@ -179,7 +179,9 @@ return [
         //App\Providers\TelescopeServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        Vinkla\Hashids\HashidsServiceProvider::class
+        Vinkla\Hashids\HashidsServiceProvider::class,
+
+        App\Providers\ExServiceProvider::class
 
     ],
 
