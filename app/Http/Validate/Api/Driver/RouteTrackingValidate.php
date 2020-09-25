@@ -19,7 +19,7 @@ class RouteTrackingValidate extends BaseValidate
 
 
     public $rules = [
-        'device_number' => 'required|string|max:50',
+        //'device_number' => 'required|string|max:50',
         'location_list.*.lon' => 'required|string',
         'location_list.*.lat' => 'required|string',
         'location_list.*.time' => 'required|date_format:Y-m-d H:i:s',
@@ -27,7 +27,7 @@ class RouteTrackingValidate extends BaseValidate
     ];
 
     public $scene = [
-        'storeByList' => ['device_number', 'location_list.*.lon', 'location_list.*.lat', 'location_list.*.time', 'location_list'],
+        'storeByList' => [/*'device_number', */'location_list.*.lon', 'location_list.*.lat', 'location_list.*.time', 'location_list'],
     ];
 
     public $message = [
