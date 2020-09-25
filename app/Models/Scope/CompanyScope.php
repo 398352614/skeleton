@@ -85,6 +85,7 @@ class CompanyScope implements Scope
             }
             //车辆模型和司机无关
             if ((!($model instanceof Car))
+                && (!($model instanceof Driver))
                 && (!($model instanceof AdditionalPackage))
                 && (!($model instanceof MerchantApi))
                 && (!($model instanceof MerchantRecharge))

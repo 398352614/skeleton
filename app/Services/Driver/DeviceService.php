@@ -23,7 +23,10 @@ class DeviceService extends BaseService
     public function show()
     {
         $device = parent::getInfo(['driver_id' => auth()->user()->id], ['*'], false);
-        return !empty($device) ? $device->toArray() : [];
+        if (empty($device)) return [];
+        $device = $device->toArray();
+        unset($device['driver']);
+        return $device;
     }
 
     /**
