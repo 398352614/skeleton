@@ -86,7 +86,11 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth('driver')->user());
+        $user = auth('driver')->user();
+        $device = Device::query()->where('driver_id', $user->id)->first();
+        $user = $user->getAttributes();
+        $user['is_bind'] = !empty($device) ? 1 : 2;
+        return response()->json($user);
     }
 
     /**

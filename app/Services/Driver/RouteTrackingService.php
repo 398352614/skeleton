@@ -60,8 +60,8 @@ class RouteTrackingService extends BaseService
     public function createByList($params)
     {
         //验证当前账号是否绑定指定设备
-        $device = $this->getDeviceService()->getInfo(['number' => $params['device_number'], 'driver_id' => auth()->user()->id], ['*'], false);
-        if (empty($device)) return 'true';
+        //$device = $this->getDeviceService()->getInfo(['number' => $params['device_number'], 'driver_id' => auth()->user()->id], ['*'], false);
+        //if (empty($device)) return 'true';
 
         $tour = Tour::query()->where('driver_id', auth()->user()->id)->where('status', BaseConstService::TOUR_STATUS_4)->first();
         if (empty($tour)) {
