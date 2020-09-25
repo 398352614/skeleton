@@ -10,11 +10,18 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\DeviceResource;
+use App\Http\Resources\DriverResource;
 use App\Models\Device;
+use App\Models\Driver;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
 
+/**
+ * Class DeviceService
+ * @package App\Services\Admin
+ * @property Driver $driverModel
+ */
 class DeviceService extends BaseService
 {
     public $filterRules = [
@@ -24,6 +31,7 @@ class DeviceService extends BaseService
 
     public function __construct(Device $model)
     {
+        $this->driverModel = new Driver();
         parent::__construct($model, DeviceResource::class);
     }
 
@@ -34,6 +42,15 @@ class DeviceService extends BaseService
     private function getTourService()
     {
         return self::getInstance(TourService::class);
+    }
+
+    /**
+     * 司机 服务
+     * @return DriverService
+     */
+    private function getDriverService()
+    {
+        return self::getInstance(DriverService::class);
     }
 
     /**
@@ -51,6 +68,15 @@ class DeviceService extends BaseService
         $device = $device->toArray();
         unset($device['driver']);
         return $device;
+    }
+
+    public function getDriverPageList()
+    {
+        $perPage = $this->request->input('per_page', 10);
+        $deviceList = parent::getList(['driver_id' => ['<>', null]], ['driver_id'], false)->toArray();
+        $query = $this->driverModel::query();
+        !empty($deviceList) && $query->whereIn('id', array_column($deviceList, 'driver_id'));
+        return DriverResource::collection($query->paginate($perPage));
     }
 
     /**

@@ -40,6 +40,11 @@ class DeviceController extends BaseController
         return $this->service->show($id);
     }
 
+    public function getDriverPageList()
+    {
+        return $this->service->getDriverPageList();
+    }
+
     /**
      * 新增
      * @return \App\Services\BaseService|\Illuminate\Database\Eloquent\Model
