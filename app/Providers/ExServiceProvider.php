@@ -33,9 +33,9 @@ class ExServiceProvider extends ServiceProvider implements DeferrableProvider
             return new TenCentApiService();
         });
 
-        $this->app->singleton('message-service', function ($app) {
-            return new MessageService();
-        });
+//        $this->app->singleton('message-service', function ($app) {
+//            return new MessageService();
+//        });
     }
 
     public function provides()
