@@ -30,8 +30,18 @@ class DeviceController extends BaseController
     }
 
     /**
+     * 获取详情
+     * @param $id
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function show($id)
+    {
+        return $this->service->show($id);
+    }
+
+    /**
      * 新增
-     *
      * @return \App\Services\BaseService|\Illuminate\Database\Eloquent\Model
      * @throws \App\Exceptions\BusinessLogicException
      */

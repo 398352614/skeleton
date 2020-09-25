@@ -180,6 +180,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //设备管理
     Route::prefix('device')->group(function () {
         Route::get('/', 'DeviceController@index');
+        Route::get('/{id}', 'DeviceController@show');
         Route::post('/', 'DeviceController@store');
         Route::put('/{id}', 'DeviceController@update');
         Route::delete('/{id}', 'DeviceController@destroy');

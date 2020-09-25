@@ -70,11 +70,23 @@ class Device extends BaseModel
     protected $dates = [];
 
     protected $appends = [
+        'driver_id_name'
     ];
 
     public function driver()
     {
         return $this->belongsTo(Driver::class, 'driver_id', 'id');
+    }
+
+    public function getDriverIdNameAttribute()
+    {
+        if (empty($this->driver) || empty($this->driver)) return null;
+        return $this->driver->fullname;
+    }
+
+    public function getStatusNameAttribute()
+    {
+        return empty($this->status) ? null : ConstTranslateTrait::deviceStatusList($this->status);
     }
 
 }

@@ -37,6 +37,23 @@ class DeviceService extends BaseService
     }
 
     /**
+     * 获取详情
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $device = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($device)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $device = $device->toArray();
+        unset($device['driver']);
+        return $device;
+    }
+
+    /**
      * 新增
      * @param $params
      * @throws BusinessLogicException

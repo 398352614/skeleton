@@ -42,6 +42,7 @@ use Illuminate\Support\Facades\App;
  * @method static carRepairList($args = null)
  * @method static driverTypeList($args = null)
  * @method static driverStatusList($args = null)
+ * @method static deviceStatusList($args = null)
  * @method static adminImageDirList($args = null)
  * @method static driverImageDirList($args = null)
  * @method static adminFileDirList($args = null)
@@ -276,6 +277,12 @@ trait ConstTranslateTrait
     public static $driverStatusList = [
         BaseConstService::DRIVER_TO_NORMAL => '正常',
         BaseConstService::DRIVER_TO_LOCK => '锁定',
+    ];
+
+    //设备状态
+    public static $deviceStatusList = [
+        BaseConstService::DEVICE_STATUS_1 => '在线',
+        BaseConstService::DEVICE_STATUS_2 => '离线',
     ];
 
     //管理员端 图片目录

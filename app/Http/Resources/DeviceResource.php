@@ -15,7 +15,7 @@ class DeviceResource extends JsonResource
             'company_id' => $this->company_id,
             'driver_id' => $this->driver_id,
             'number' => $this->number,
-            'driver_name' => $this->driver_id_name,
+            'driver_name' => !empty($this->driver_id) ? $this->driver_id_name : __('否'),
             'status' => $this->status,
             'status_name' => $this->status_name,
             'mode' => $this->mode,

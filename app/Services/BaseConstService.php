@@ -246,6 +246,10 @@ class BaseConstService
     const DRIVER_TO_NORMAL = 1;
     const DRIVER_TO_LOCK = 2;
 
+    //设备状态1-在线2-离线
+    const DEVICE_STATUS_1 = 1;
+    const DEVICE_STATUS_2 = 2;
+
     //车辆状态
     const CAR_TO_NORMAL = 1;
     const CAR_TO_LOCK = 2;
