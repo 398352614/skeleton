@@ -935,17 +935,12 @@ class TourService extends BaseService
                     $cellData[$k]['erp_batch'][] = $y['batch_no'];
                 } elseif ($y['merchant_id'] == (config('tms.env') == 'local' ? BaseConstService::SHOP_MERCHANT_ID_1 : BaseConstService::SHOP_MERCHANT_ID_2)) {
                     $cellData[$k]['mes_batch'][] = $y['batch_no'];
-                } elseif (in_array($y['merchant_id'], config('tms.env') == 'local' ?
-                    [BaseConstService::ERP_MERCHANT_ID_1, BaseConstService::SHOP_MERCHANT_ID_2] :
-                    [BaseConstService::ERP_MERCHANT_ID_2, BaseConstService::SHOP_MERCHANT_ID_1]
-                )) {
-                    $cellData[$k]['mix_batch'][] = $y['batch_no'];
                 }
                 $cellData[$k]['total_batch'][] = $y['batch_no'];
             }
-            $cellData[$k]['erp_batch_count'] = count(array_unique($cellData[$k]['erp_batch']));
-            $cellData[$k]['mes_batch_count'] = count(array_unique($cellData[$k]['mes_batch']));
-            $cellData[$k]['mix_batch_count'] = count(array_unique($cellData[$k]['mix_batch']));
+            $cellData[$k]['mix_batch_count'] = count(array_intersect(array_unique($cellData[$k]['erp_batch']), array_unique($cellData[$k]['mes_batch'])));
+            $cellData[$k]['erp_batch_count'] = count(array_unique($cellData[$k]['erp_batch']))-$cellData[$k]['mix_batch_count'];
+            $cellData[$k]['mes_batch_count'] = count(array_unique($cellData[$k]['mes_batch']))-$cellData[$k]['mix_batch_count'];
             $cellData[$k]['total_batch_count'] = count(array_unique($cellData[$k]['total_batch']));
             if ($cellData[$k]['total_batch_count'] !== 0) {
                 $cellData[$k]['erp_batch_percent'] = round($cellData[$k]['erp_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
