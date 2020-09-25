@@ -73,7 +73,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 // 合并单元格
                 //$event->sheet->getDelegate()->setMergeCells(['A1:'.$endColumn.'1']);
                 //设置行高
-                for($i=2;$i<100;$i++){
+                for ($i = 2; $i < 100; $i++) {
                     $event->sheet->getDelegate()->getRowDimension($i)->setRowHeight(16);
                 }
                 //设置单元格内容自动转行
@@ -253,21 +253,24 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     }
                 }
                 /*********************************取件报告导出*****************************/
-                if($this->type == 'batchCount'){
+                if ($this->type == 'batchCount') {
                     $column = [
                         'A' => 20,
                         'B' => 30,
-                        'C' => 15,
-                        'D' => 15,
-                        'E' => 15,
-                        'F' => 15,
-                        'G' => 15,
-                        'H' => 15,
-                        'I' => 15,
+                        'C' => 20,
+                        'D' => 20,
+                        'E' => 20,
+                        'F' => 20,
+                        'G' => 20,
+                        'H' => 20,
+                        'I' => 20,
                     ];
+                    // 合并单元格
+                    $event->sheet->getDelegate()->MergeCells('A1:' . $endColumn . '1');
                     foreach ($column as $k => $v) {
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                     }
+                    $event->sheet->getDelegate()->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                 }
                 /*                if($this->type === 'orderOut'){
                                     for ($i = 0, $j = count($this->headings()); $i <= $j; $i++) {

@@ -922,16 +922,14 @@ class TourService extends BaseService
         $firstDate = Carbon::create($params['year'], $params['month'])->format('Y-m-d');
         $lastDate = Carbon::create($params['year'], $params['month'])->endOfMonth()->format('Y-m-d');
         $cellData = [];
-        $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false);
-        $batchList = $this->getBatchService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::BATCH_CHECKOUT], ['*'], false);
+        $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false, [], ['execution_date' => 'asc']);
         $orderList = $this->getOrderService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::ORDER_STATUS_5], ['*'], false);
         foreach ($tourList as $k => $v) {
             $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
             $cellData[$k]['driver'] = $v['line_name'] . ' ' . $v['driver_name'];
-            $cellData[$k]['total_batch_count'] = $batchList->where('tour_no', $v['tour_no'])->count();
             $batch[$k] = $orderList->where('tour_no', $v['tour_no'])->groupBy('batch_no')->toArray();
-            $cellData[$k]['erp_batch_count'] = $cellData[$k]['mes_batch_count'] = $cellData[$k]['mix_batch_count'] = 0;
-            $cellData[$k]['erp_batch'] = $cellData[$k]['mes_batch'] = $cellData[$k]['mix_batch'] = [];
+            $cellData[$k]['erp_batch_count'] = $cellData[$k]['mes_batch_count'] = $cellData[$k]['mix_batch_count'] = $cellData[$k]['total_batch_count'] = 0;
+            $cellData[$k]['erp_batch'] = $cellData[$k]['mes_batch'] = $cellData[$k]['mix_batch'] = $cellData[$k]['total_batch'] = [];
             foreach ($orderList->where('tour_no', $v['tour_no']) as $x => $y) {
                 if ($y['merchant_id'] == (config('tms.env') == 'local' ? BaseConstService::ERP_MERCHANT_ID_2 : BaseConstService::ERP_MERCHANT_ID_1)) {
                     $cellData[$k]['erp_batch'][] = $y['batch_no'];
@@ -943,10 +941,12 @@ class TourService extends BaseService
                 )) {
                     $cellData[$k]['mix_batch'][] = $y['batch_no'];
                 }
+                $cellData[$k]['total_batch'][] = $y['batch_no'];
             }
             $cellData[$k]['erp_batch_count'] = count(array_unique($cellData[$k]['erp_batch']));
             $cellData[$k]['mes_batch_count'] = count(array_unique($cellData[$k]['mes_batch']));
             $cellData[$k]['mix_batch_count'] = count(array_unique($cellData[$k]['mix_batch']));
+            $cellData[$k]['total_batch_count'] = count(array_unique($cellData[$k]['total_batch']));
             if ($cellData[$k]['total_batch_count'] !== 0) {
                 $cellData[$k]['erp_batch_percent'] = round($cellData[$k]['erp_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
                 $cellData[$k]['mes_batch_percent'] = round($cellData[$k]['mes_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
@@ -956,9 +956,10 @@ class TourService extends BaseService
             }
             $cellData[$k] = array_only_fields_sort($cellData[$k], $this->batchHeadings);
         }
+        $headings = [[$params['year'] . '-' . $params['month']], $this->batchHeadings];
         $dir = 'batchCount';
         $name = date('Ymd') . auth()->user()->company_id;
-        return $this->excelExport($name, $this->batchHeadings, $cellData, $dir);
+        return $this->excelExport($name, $headings, $cellData, $dir);
     }
 
     /**
