@@ -24,7 +24,9 @@ class TourValidate extends BaseValidate
         'order_id_list' => 'required|string|checkIdList:20',
         'line_id' => 'required|integer',
         'execution_date' => 'required|date|after_or_equal:today',
-        'tour_no' => 'required|string'
+        'tour_no' => 'required|string',
+        'year' => 'required|integer',
+        'month' => 'required|integer|lte:12',
     ];
 
     public $scene = [
@@ -33,7 +35,8 @@ class TourValidate extends BaseValidate
         'getAddOrderPageList' => ['order_id_list', 'execution_date'],
         'getLineDate' => ['line_id'],
         'assignTourToTour' => ['execution_date', 'line_id', 'tour_no'],
-        'getListJoinByLineId' => ['line_id', 'execution_date']
+        'getListJoinByLineId' => ['line_id', 'execution_date'],
+        'batchExport'=>['year','month']
     ];
 
     public $message = [
