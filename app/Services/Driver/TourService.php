@@ -518,9 +518,9 @@ class TourService extends BaseService
             $outOrderIdList = array_filter(explode(',', $params['out_order_id_list']), function ($value) {
                 return is_numeric($value);
             });
-            $NoOutOrder = $this->getOrderService()->getInfo(['id' => ['in', $outOrderIdList], 'type' => BaseConstService::ORDER_TYPE_2, 'status' => [' <> ', BaseConstService::ORDER_STATUS_3]], ['order_no'], false);
+            $NoOutOrder = $this->getOrderService()->getInfo(['id' => ['in', $outOrderIdList], 'type' => BaseConstService::ORDER_TYPE_2, 'status' => ['<>', BaseConstService::ORDER_STATUS_3]], ['order_no'], false);
             if (!empty($NoOutOrder)) {
-                throw new BusinessLogicException('订单[:order_no]已取消或已删除,不能出库,请先剔除', 1000, ['order' => $NoOutOrder->order_no]);
+                throw new BusinessLogicException('订单[:order_no]已取消或已删除,不能出库,请先剔除', 1000, ['order_no' => $NoOutOrder->order_no]);
             }
         }
         //验证订单数量
