@@ -924,7 +924,7 @@ class TourService extends BaseService
         if ($today->year > $params['year'] || ($today->year == $params & $today->month > $params['month'])) {
             throw new BusinessLogicException('只能选择本月之前的月份');
         } elseif ($today->year == $params['year'] && $today->month == $params['month']) {
-            $lastDate = $today->format('Y-m-d');
+            $lastDate = $today->subDay()->format('Y-m-d');
         } else {
             $lastDate = Carbon::create($params['year'], $params['month'])->endOfMonth()->format('Y-m-d');
         }
