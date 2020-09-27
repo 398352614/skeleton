@@ -577,4 +577,18 @@
 "合计":"totaal",
 "线路自动更新失败":"Automatische lijnupdate is mislukt",
 "线路更新失败":"Opdracht van de lijn mislukt"
+,"在线":"on-line",
+"离线":"off-line",
+"河北省石家庄市":"Shijiazhuang City, provincie Hebei",
+"设备号":"Nummer uitrusting",
+"型号":"model",
+"司机ID":"ID bestuurder",
+"模式":"patroon",
+"操作失败，请重新操作":"Operatie mislukt, probeer het opnieuw.",
+"此设备已绑定司机[:driver_name]，请先解绑":"Dit apparaat is aan de bestuurder gebonden [: bestuurdersblad uNaam, maak het eerst los.",
+"打折村":"Dorp korting",
+"海鲜预售":"voorverkoop van zeevruchten",
+"该设备已绑定司机[:driver_name]":"Het apparaat is aan de bestuurder gebonden [: Driver]-serverNaam",
+"正在进行线路任务，请先解绑设备":"Het apparaat is aan de gang.",
+"只能选择本月之前的月份":"Slechts maanden voor deze maand kunnen worden geselecteerd"
 }

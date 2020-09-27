@@ -699,11 +699,22 @@
     "车辆信息管理": "Vehicle information management",
     "导出日期": "Export date",
     "车牌号": "Number plate",
-    "司机签名": "Driver's signature"
-
-,"出库里程数过大，请重新填写":"The mileage is too large, please fill in again",
-"取件线路已完成，不能优化":"The pickup line has been completed and cannot be optimized",
-"合计":"total",
-"线路自动更新失败":"Automatic line update failed",
-"线路更新失败":"Line update failed"
+    "司机签名": "Driver's signature",
+    "出库里程数过大，请重新填写": "The mileage is too large, please fill in again",
+    "取件线路已完成，不能优化": "The pickup line has been completed and cannot be optimized",
+    "合计": "total",
+    "线路自动更新失败": "Automatic line update failed",
+    "线路更新失败": "Line update failed",
+    "在线": "on-line",
+    "离线": "off-line",
+    "河北省石家庄市": "Shijiazhuang City, Hebei Province",
+    "设备号": "Equipment number",
+    "型号": "model",
+    "司机ID": "Driver ID",
+    "模式": "pattern",
+    "操作失败，请重新操作": "Operation failed. Please try again",
+    "此设备已绑定司机[:driver_name]，请先解绑": "This device has been bound to driver [:driver_name], please untie it first",
+    "该设备已绑定司机[:driver_name]": "The device has been bound to driver [:driver_name]",
+    "正在进行线路任务，请先解绑设备": "The device is in progress. Please untie the equipment",
+    "只能选择本月之前的月份": "Only months before this month can be selected"
 }

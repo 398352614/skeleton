@@ -16,7 +16,6 @@ use App\Jobs\UpdateTour;
 use App\Models\AdditionalPackage;
 use App\Models\Batch;
 use App\Models\Order;
-use App\Models\Package;
 use App\Models\Tour;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
