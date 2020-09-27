@@ -8,6 +8,7 @@ return [
     'vpn' => env('VPN'),
     'push_url' => env('PUSH_URL', 'dev-tms.nle-tech.com/socket'),
     'country_path' => storage_path(env('COUNTRY_PATH')),
+    'postcode_path' => storage_path(env('POSTCODE_PATH')),
     'app_env' => env('APP_ENV'),
 
     //百度

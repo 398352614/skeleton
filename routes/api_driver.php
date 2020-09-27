@@ -80,6 +80,8 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     Route::prefix('car')->group(function () {
         //列表查询
         Route::get('/', 'CarController@index');
+        //详情
+        Route::get('/{id}', 'CarController@show');
     });
 
     //异常管理

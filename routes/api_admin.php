@@ -391,6 +391,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('getCountryList', 'CommonController@getCountryList');
         //获取指定国家地址
         Route::get('getCountryAddress/{country}', 'CommonController@getCountryAddress');
+
+        Route::get('get-postcode', 'CommonController@getPostcode');
     });
 
     //上传接口
