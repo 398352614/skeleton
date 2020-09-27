@@ -11,7 +11,7 @@ namespace App\Providers;
 
 use App\Services\ApiServices\GoogleApiService;
 use App\Services\ApiServices\TenCentApiService;
-use App\Services\RedisService;
+use App\Services\MessageService;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,15 +28,15 @@ class ExServiceProvider extends ServiceProvider implements DeferrableProvider
             return new TenCentApiService();
         });
 
-//        $this->app->singleton('message-service', function ($app) {
-//            return new MessageService();
-//        });
+        $this->app->singleton('message-service', function ($app) {
+            return new MessageService();
+        });
 
     }
 
     public function provides()
     {
-        return ['google-api', 'tencent-api'];
+        return ['message-service', 'google-api', 'tencent-api'];
     }
 
 }
