@@ -75,7 +75,7 @@ class DeviceService extends BaseService
         $perPage = $this->request->input('per_page', 10);
         $deviceList = parent::getList(['driver_id' => ['<>', null]], ['driver_id'], false)->toArray();
         $query = $this->driverModel::query();
-        !empty($deviceList) && $query->whereIn('id', array_column($deviceList, 'driver_id'));
+        !empty($deviceList) && $query->whereNotIn('id', array_column($deviceList, 'driver_id'));
         return DriverResource::collection($query->paginate($perPage));
     }
 
