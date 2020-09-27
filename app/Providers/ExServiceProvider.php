@@ -21,10 +21,6 @@ class ExServiceProvider extends ServiceProvider implements DeferrableProvider
 
     public function register()
     {
-        $this->app->singleton('redis-service', function ($app) {
-            return new RedisService();
-        });
-
         $this->app->singleton('google-api', function ($app) {
             return new GoogleApiService();
         });
@@ -33,11 +29,15 @@ class ExServiceProvider extends ServiceProvider implements DeferrableProvider
             return new TenCentApiService();
         });
 
+//        $this->app->singleton('message-service', function ($app) {
+//            return new MessageService();
+//        });
+
     }
 
     public function provides()
     {
-        return ['redis-service', 'curl', 'google-api', 'tencent-api'];
+        return ['curl', 'google-api', 'tencent-api'];
     }
 
 }

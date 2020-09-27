@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\MessageService;
+use App\Services\RedisService;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
@@ -18,8 +19,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('message-service', function ($app) {
-            return new MessageService();
+
+        $this->app->singleton('redis-service', function ($app) {
+            return new RedisService();
         });
 
         if ($this->app->isLocal() || ($this->app->environment() === 'development')) {
