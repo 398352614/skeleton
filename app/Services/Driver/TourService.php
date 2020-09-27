@@ -423,9 +423,9 @@ class TourService extends BaseService
         if (empty($car)) {
             throw new BusinessLogicException('司机不存在');
         }
-        if ($params['begin_distance'] < $car['distance']) {
+/*        if ($params['begin_distance'] < $car['distance']) {
             throw new BusinessLogicException('出库里程数小于该车上次入库里程数，请重新填写');
-        }
+        }*/
         $row = $this->getCarService()->update(['car_no' => $tour['car_no']], ['distance' => $params['begin_distance']]);
         if ($row == false) {
             throw new BusinessLogicException('车辆里程记录失败，请重试');
