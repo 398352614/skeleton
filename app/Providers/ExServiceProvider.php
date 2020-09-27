@@ -37,7 +37,7 @@ class ExServiceProvider extends ServiceProvider implements DeferrableProvider
 
     public function provides()
     {
-        return ['curl', 'google-api', 'tencent-api'];
+        return ['google-api', 'tencent-api'];
     }
 
 }
