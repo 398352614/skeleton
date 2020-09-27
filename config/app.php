@@ -183,7 +183,7 @@ return [
 
         Vinkla\Hashids\HashidsServiceProvider::class,
 
-        App\Providers\ExServiceProvider::class,
+        //App\Providers\ExServiceProvider::class,
     ],
 
     /*
