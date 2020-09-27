@@ -182,6 +182,9 @@ class TourService extends BaseService
         if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_2) {
             throw new BusinessLogicException('取件线路当前状态不允许装货');
         }
+        if (!empty($this->getInfo(['driver_id' => auth()->user()->id, 'status' => ['=', BaseConstService::TOUR_STATUS_4]], ['*'], false))) {
+            throw new BusinessLogicException('同时只能进行一个任务，请先完成其他取派中的任务');
+        }
         if (empty($tour['car_id']) || empty($tour['car_no'])) {
             throw new BusinessLogicException('取件线路待分配车辆,请先分配车辆');
         }
