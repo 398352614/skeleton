@@ -23,4 +23,9 @@ class CarController extends BaseController
     {
         return $this->service->getPageList();
     }
+
+    public function show($id)
+    {
+        return $this->service->getInfo(['id'=>$id],['*'],false);
+    }
 }
