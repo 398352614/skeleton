@@ -33,14 +33,11 @@ class ExServiceProvider extends ServiceProvider implements DeferrableProvider
             return new TenCentApiService();
         });
 
-//        $this->app->singleton('message-service', function ($app) {
-//            return new MessageService();
-//        });
     }
 
     public function provides()
     {
-        return ['redis-service', 'curl', 'google-api', 'tencent-api', 'message-service'];
+        return ['redis-service', 'curl', 'google-api', 'tencent-api'];
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\MessageService;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
@@ -17,6 +18,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton('message-service', function ($app) {
+            return new MessageService();
+        });
+
         if ($this->app->isLocal() || ($this->app->environment() === 'development')) {
             $this->app->register(TelescopeServiceProvider::class);
         }
