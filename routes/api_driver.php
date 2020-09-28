@@ -32,9 +32,6 @@ Route::namespace('Api\Driver')->middleware([])->group(function () {
 | 认证接口
 |--------------------------------------------------------------------------
 */
-Route::namespace('Api\Driver')->middleware('companyValidate:driver')->group(function () {
-    Route::post('logout', 'AuthController@logout');
-});
 Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driver'])->group(function () {
     Route::post('logout', 'AuthController@logout');
     Route::get('me', 'AuthController@me');
