@@ -57,6 +57,9 @@ trait ExportTrait
      */
     public function excelExport($name, $headings, $data, $dir, $params = [])
     {
+        if($dir=='batchCount'){
+            $headings[1]=$this->translate($headings[1],$dir);
+        }
         $headings = $this->translate($headings, $dir);
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
         $path = 'public\\admin\\excel\\' . $subPath . DIRECTORY_SEPARATOR . $name . '.xlsx';

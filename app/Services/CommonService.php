@@ -13,6 +13,7 @@ use App\Models\Country;
 use App\Traits\CompanyTrait;
 use App\Traits\CountryAddressTrait;
 use App\Traits\LocationTrait;
+use App\Traits\PostcodeTrait;
 use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
@@ -59,5 +60,10 @@ class CommonService
     public function getCountryAddress($country)
     {
         return CountryAddressTrait::getCountry($country);
+    }
+
+    public function getPostcode(array $all)
+    {
+        return PostcodeTrait::getPostcode($all);
     }
 }

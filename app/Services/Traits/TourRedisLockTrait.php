@@ -9,15 +9,15 @@ trait TourRedisLockTrait
      */
     public static function getTourLock(string $tourNo): int
     {
-        $lock = app('reis')->get('tourUpdateOpration' . $tourNo);
+        $lock = app('redis-service')->get('tourUpdateOpration' . $tourNo);
         if ($lock === null) {
             return 0;
         }
-        return (int) $lock;
+        return (int)$lock;
     }
 
     public static function setTourLock(string $tourNo, int $value)
     {
-        return app('reis')->put('tourUpdateOpration' . $tourNo, $value);
+        return app('redis-service')->put('tourUpdateOpration' . $tourNo, $value);
     }
 }

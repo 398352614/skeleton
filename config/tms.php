@@ -8,6 +8,7 @@ return [
     'vpn' => env('VPN'),
     'push_url' => env('PUSH_URL', 'dev-tms.nle-tech.com/socket'),
     'country_path' => storage_path(env('COUNTRY_PATH')),
+    'postcode_path' => storage_path(env('POSTCODE_PATH')),
     'app_env' => env('APP_ENV'),
 
     //百度
@@ -19,6 +20,9 @@ return [
     'api_url' => env('API_URL'),
     'api_key' => env('API_KEY'),
     'api_secret' => env('API_SECRET'),
+    'routexl_api_key' => env('ROUTEXL_API_KEY'),
+    'routexl_api_secret' => env('ROUTEXL_API_SECRET'),
+
     //腾讯地图API
     'tencent_api_url' => env('TENCENT_API_URL'),
     'tencent_api_key' => env('TENCENT_API_KEY'),
@@ -34,5 +38,6 @@ return [
         'company' => 'company',
         'address_template' => 'address_template',
     ],
-    'wechat_push' => env('WECHAT_PUSH')
+    'wechat_push' => env('WECHAT_PUSH'),
+    'env'=>env('APP_ENV'),
 ];

@@ -30,13 +30,7 @@ class XLDirectionService
     public function __construct()
     {
         $this->curl = new CurlClient();
-        $this->curl->setAuth([
-            'JackyLu',
-            'NLE19901212!'
-        ]);
-        // $this->auth = [
-
-        // ];
+        $this->curl->setAuth([config('tms.routexl_api_key'), config('tms.routexl_api_secret')]);
     }
 
     /**

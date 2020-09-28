@@ -74,6 +74,10 @@ class TourValidate extends BaseValidate
         'additional_package_list.*.delivery_charge' => 'nullable|integer|in:1,2',
         //跳过
         'is_skipped' => 'required|integer|in:1,2',
+
+        //导出站点表格
+        'year'=>'required|integer',
+        'month'=>'required|integer'
     ];
 
     public $item_rules = [

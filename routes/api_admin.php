@@ -172,9 +172,21 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
         Route::get('/track', 'RouteTrackingController@show')->name('car.track-show');  // 车辆追踪
         Route::get('/all-track', 'RouteTrackingController@index')->name('car.track-index');  // 所有车辆追踪
-        Route::get('/{id}/distance', 'CarController@distanceExport')->name('car.distance');  // 导出里程
-        Route::get('/{id}/info', 'CarController@infoExport')->name('car.info');  // 导出里程
+        Route::get('/{id}/distance-excel', 'CarController@distanceExport')->name('car.distance');  // 导出里程
+        Route::get('/{id}/info-pdf', 'CarController@infoExport')->name('car.info');  // 导出里程
         // $router->post('car/lock', 'CarInfoController@lock');
+    });
+
+    //设备管理
+    Route::prefix('device')->group(function () {
+        Route::get('/driver-index', 'DeviceController@getDriverPageList');
+        Route::get('/', 'DeviceController@index');
+        Route::get('/{id}', 'DeviceController@show');
+        Route::post('/', 'DeviceController@store');
+        Route::put('/{id}', 'DeviceController@update');
+        Route::delete('/{id}', 'DeviceController@destroy');
+        Route::put('/{id}/bind', 'DeviceController@bind');      //绑定
+        Route::put('/{id}/unBind', 'DeviceController@unBind');  //解绑
     });
 
     //站点管理
@@ -223,7 +235,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/assignCar', 'TourController@assignCar');                     //分配车辆
         Route::put('/{id}/cancelAssignCar', 'TourController@cancelAssignCar');         //取消分配车辆
         Route::put('/{id}/unlock', 'TourController@unlock');         //取消待出库
-        Route::get('/{id}/excel', 'TourController@batchExport'); //导出投递站点excel
+        Route::get('/batch-excel', 'TourController@batchExport'); //导出投递站点excel
         Route::get('/{id}/txt', 'TourController@cityExport'); //导出投递城市txt
         Route::get('/{id}/png', 'TourController@mapExport'); //导出站点地图png
         Route::get('/{id}/tour-excel', 'TourController@tourExport'); //导出任务报告
@@ -380,6 +392,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('getCountryList', 'CommonController@getCountryList');
         //获取指定国家地址
         Route::get('getCountryAddress/{country}', 'CommonController@getCountryAddress');
+
+        Route::get('get-postcode', 'CommonController@getPostcode');
     });
 
     //上传接口

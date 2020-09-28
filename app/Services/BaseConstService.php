@@ -98,11 +98,11 @@ class BaseConstService
     const SATURDAY = 6;
     const SUNDAY = 0;
 
-    //临时处理 正式服-商户ID
+    //临时处理 正式服-商户ID(有用到，请勿删除)
     const ERP_MERCHANT_ID_1 = 7;
     const SHOP_MERCHANT_ID_2 = 8;
 
-    //临时处理 开发服-商户ID
+    //临时处理 开发服-商户ID(有用到，请勿删除)
     const ERP_MERCHANT_ID_2 = 65;
     const SHOP_MERCHANT_ID_1 = 3;
 
@@ -245,6 +245,10 @@ class BaseConstService
     //driver 司机状态
     const DRIVER_TO_NORMAL = 1;
     const DRIVER_TO_LOCK = 2;
+
+    //设备状态1-在线2-离线
+    const DEVICE_STATUS_1 = 1;
+    const DEVICE_STATUS_2 = 2;
 
     //车辆状态
     const CAR_TO_NORMAL = 1;
