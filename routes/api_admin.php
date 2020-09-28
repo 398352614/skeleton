@@ -172,7 +172,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
         Route::get('/track', 'RouteTrackingController@show')->name('car.track-show');  // 车辆追踪
         Route::get('/all-track', 'RouteTrackingController@index')->name('car.track-index');  // 所有车辆追踪
-        Route::get('/{id}/distance-excel', 'CarController@distanceExport')->name('car.distance');  // 导出里程
+        Route::get('/{id}/distance', 'CarController@distanceExport')->name('car.distance');  // 导出里程
         Route::get('/{id}/info', 'CarController@infoExport')->name('car.info');  // 导出里程
         // $router->post('car/lock', 'CarInfoController@lock');
     });
