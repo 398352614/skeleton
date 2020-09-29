@@ -16,6 +16,7 @@ trait UpdateTourTimeAndDistanceTrait
 
     public function updateTourTimeAndDistance($tour): bool
     {
+        set_time_limit(600);
         if (self::getTourLock($tour->tour_no) == 1) {
             throw new BusinessLogicException('当前 tour 正在操作中,请稍后操作');
         }
