@@ -237,8 +237,7 @@ class TourController extends BaseController
      */
     public function unlockRedis(Request $request)
     {
-        self::setTourLock($request->tour_no, 0);
-        return '1';
+        return self::setTourLock($request->tour_no, 0);
     }
 
 
