@@ -99,7 +99,7 @@ class AuthController extends Controller
     public function logout()
     {
         DB::table('driver')->where('email', '=', auth('driver')->user()->email)->update(['messager' => '']);
-        auth('driver')->logout();
+        ##auth('driver')->logout();
 
         return '注销成功！';
     }
