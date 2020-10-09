@@ -71,6 +71,7 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('uniqueIgnore', 'App\\Http\\Validate\\BaseValidate@uniqueIgnore');
         Validator::extend('checkIdList', 'App\\Http\\Validate\\BaseValidate@checkIdList');
         Validator::extend('checkAddress', 'App\\Http\\Validate\\BaseValidate@checkAddress');
+        Validator::extend('checkSpecialChar', 'App\\Http\\Validate\\BaseValidate@checkSpecialChar');
 
         JWTGuard::macro('setUserNull', function () {
             $this->user = null;

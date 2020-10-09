@@ -877,7 +877,7 @@ class TourService extends BaseService
         }
         /*******************************************1.处理站点下的材料*************************************************/
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list'], $dbMaterialList);
-        /*******************************************1.处理站点下的包裹*************************************************/
+        /*******************************************2.处理站点下的包裹*************************************************/
         $info = $this->dealPackageList($batch, $params);
         $totalStickerAmount = $info['totalStickerAmount'];
         $orderStickerAmountList = $info['orderStickerAmount'];

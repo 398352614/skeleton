@@ -47,7 +47,7 @@ class TourValidate extends BaseValidate
         'total_delivery_amount' => 'required|numeric',
         'total_replace_amount' => 'required|numeric',
         'total_settlement_amount' => 'required|numeric',
-        'auth_fullname' => 'nullable|string|max:100',
+        'auth_fullname' => 'nullable|string|checkSpecialChar|max:100',
         'auth_birth_date' => 'nullable|date|date_format:Y-m-d',
         //入库
         'end_signature' => 'required|string|max:250',
@@ -76,8 +76,8 @@ class TourValidate extends BaseValidate
         'is_skipped' => 'required|integer|in:1,2',
 
         //导出站点表格
-        'year'=>'required|integer',
-        'month'=>'required|integer'
+        'year' => 'required|integer',
+        'month' => 'required|integer'
     ];
 
     public $item_rules = [
@@ -133,7 +133,7 @@ class TourValidate extends BaseValidate
             'auth_fullname', 'auth_birth_date'
         ],
         'inWarehouse' => ['end_signature', 'end_signature_remark', 'end_distance'],
-        'batchSkip'=>['batch_id'],
+        'batchSkip' => ['batch_id'],
     ];
 }
 

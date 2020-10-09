@@ -87,6 +87,7 @@ return [
     'unique' => ':attribute 已存在',
     'url' => ':attribute 无效的格式',
     'unique_ignore' => ':attribute 已存在',
+    'check_special_char'=>':attribute 存在特殊字符',
 
     /*
     |--------------------------------------------------------------------------
