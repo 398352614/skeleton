@@ -23,7 +23,7 @@ class CreateDeviceTable extends Migration
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
 
-            $table->unique('number', 'number');
+            $table->unique(['number', 'company_id'], 'number_company');
             $table->index('company_id', 'company_id');
             $table->index('driver_id', 'driver_id');
         });
