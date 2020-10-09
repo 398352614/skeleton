@@ -143,7 +143,7 @@ class TenCentApiService
                 $key++;
             }
             /*********************************2.获取最后一个站点到仓库的距离和时间*****************************************/
-            $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_lcoation]);
+            $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
             $backElement = $backWarehouseElement[0][1];
             Tour::query()->where('tour_no', $tour->tour_no)->update([
                 'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']),
@@ -216,8 +216,8 @@ class TenCentApiService
      */
     protected function getDistance($url, $from, $to)
     {
-        $from = is_array($from) ? implode(';', $from) : $from;
-        $to = implode(';', $to);
+        $from = is_array($from) ? implode(';', array_filter($from)) : $from;
+        $to = implode(';', array_filter($to));
         $query = "mode=driving&from={$from}&to={$to}&key={$this->key}";
         $url = $url . '?' . $query;
         $res = $this->client->get($url);
