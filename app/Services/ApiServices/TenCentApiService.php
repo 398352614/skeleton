@@ -102,7 +102,9 @@ class TenCentApiService
             Tour::query()->where('tour_no', $tour->tour_no)->update([
                 'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration'] * 60),
                 'warehouse_expect_distance' => $distance + $backElement['distance'],
-                'warehouse_expect_time' => $time + $backElement['duration']
+                'warehouse_expect_time' => $time + $backElement['duration'],
+                'expect_distance' => $distance,
+                'expect_time' => $time
             ]);
         } catch (BusinessLogicException $exception) {
             throw new BusinessLogicException('线路自动更新失败');
@@ -148,7 +150,9 @@ class TenCentApiService
             Tour::query()->where('tour_no', $tour->tour_no)->update([
                 'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']),
                 'warehouse_expect_distance' => $distance + $backElement['distance'],
-                'warehouse_expect_time' => $time + $backElement['duration']
+                'warehouse_expect_time' => $time + $backElement['duration'],
+                'expect_distance' => $distance,
+                'expect_time' => $time
             ]);
         } catch (BusinessLogicException $exception) {
             throw new BusinessLogicException('线路更新失败');
