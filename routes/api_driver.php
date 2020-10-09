@@ -34,8 +34,9 @@ Route::namespace('Api\Driver')->middleware([])->group(function () {
 */
 
 Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driver'])->group(function () {
-    Route::post('logout', 'AuthController@logout');
+    Route::post('logout', 'AuthController@logout')->name('driver.logout');
     Route::get('me', 'AuthController@me');
+    Route::put('refresh', 'AuthController@refresh');
     Route::put('my-password', 'AuthController@updatePassword');
 
     //备忘录管理
