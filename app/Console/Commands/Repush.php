@@ -17,7 +17,7 @@ class Repush extends Command
      *
      * @var string
      */
-    protected $signature = 'repush {--order_no=: order_no}';
+    protected $signature = 'repush {--order_no= : order_no}{--tour_no= : tour_no}';
 
     /**
      * The console command description.
@@ -43,11 +43,17 @@ class Repush extends Command
      */
     public function handle()
     {
-        $orderNo = $this->option('order_no');
-        $order = Order::query()->where('order_no', $orderNo)->first()->toArray();
+        if (!empty($this->option('order_no'))) {
+            $order = Order::query()->where('order_no', $this->option('order_no'))->first()->toArray();
+            $orderList = Order::query()->where('order_no', $order['order_no'])->get()->toArray();
+        } elseif (!empty($this->option('tour_no'))) {
+            $order = Order::query()->where('tour_no', $this->option('tour_no'))->first()->toArray();
+            $orderList = Order::query()->where('tour_no', $order['tour_no'])->get()->toArray();
+        }else{
+            return;
+        }
         $tour = Tour::query()->where('tour_no', $order['tour_no'])->first()->toArray();
         $batch = Batch::query()->where('batch_no', $order['batch_no'])->first()->toArray();
-        $orderList = Order::query()->where('order_no', $order['order_no'])->get()->toArray();
         //签收通知
         event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $orderList));
     }
