@@ -217,3 +217,24 @@ if (!function_exists('post_code_be')) {
         return (is_numeric($postCode) && (\Illuminate\Support\Str::length($postCode) == 4));
     }
 }
+
+if (!function_exists('have_special_char')) {
+
+    /** 判断是否有表情字符
+     * @param $str
+     * @return bool
+     */
+    function have_special_char($str)
+    {
+        $length = mb_strlen($str);
+        $array = [];
+        for ($i = 0; $i < $length; $i++) {
+            $array[] = mb_substr($str, $i, 1, 'utf-8');
+            if (strlen($array[$i]) >= 4) {
+                return true;
+
+            }
+        }
+        return false;
+    }
+}

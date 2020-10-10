@@ -100,10 +100,27 @@ class BaseValidate
      * @param $validator
      * @return bool
      */
-    public function checkAddress($attribute, $value, $parameters, $validator){
-        if(empty($value) && CompanyTrait::getAddressTemplateId() == 2){
+    public function checkAddress($attribute, $value, $parameters, $validator)
+    {
+        if (empty($value) && CompanyTrait::getAddressTemplateId() == 2) {
             return false;
         }
         return true;
     }
+
+    /**
+     * 验证字段是否包含特殊字符
+     * @param $attribute
+     * @param $value
+     * @param $parameters
+     * @param $validator
+     * @return bool
+     */
+    public function checkSpecialChar($attribute, $value, $parameters, $validator)
+    {
+        if (have_special_char($value)) return false;
+        return true;
+    }
+
+
 }

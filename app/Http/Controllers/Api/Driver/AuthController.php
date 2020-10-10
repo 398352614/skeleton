@@ -98,10 +98,8 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        DB::table('driver')->where('email', '=', auth('driver')->user()->email)->update(['messager' => '']);
-        ##auth('driver')->logout();
-
-        return '注销成功！';
+        auth('driver')->logout();
+        return 'true';
     }
 
     /**
@@ -110,7 +108,12 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth('driver')->refresh());
+        $token = auth('driver')->refresh();
+        $messageToken = auth('driver')->user()->messager;
+        if (empty($messageToken)) {
+            $messageToken = $this->getMessagerToken() ?? '';
+        }
+        return $this->respondWithToken(['token' => $token, 'messager_token' => $messageToken]);
     }
 
     /**
