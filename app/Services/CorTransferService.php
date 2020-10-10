@@ -30,7 +30,7 @@ class CorTransferService
     }
 
     //腾讯转百度坐标转换  $a = Latitude , $b = Longitude
-    public static function TenCentToBaiDu($lat, $lon)
+    public static function tenCentToBaiDu($lat, $lon)
     {
         $x = (double)$lon;
         $y = (double)$lat;

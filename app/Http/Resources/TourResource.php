@@ -3,13 +3,15 @@
 namespace App\Http\Resources;
 
 use App\Services\BaseConstService;
+use App\Services\CorTransferService;
+use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TourResource extends JsonResource
 {
     public function toArray($request)
     {
-        return [
+        return array_merge([
             'id' => $this->id,
             'company_id' => $this->company_id,
             'merchant_id' => $this->merchant_id,
@@ -36,8 +38,6 @@ class TourResource extends JsonResource
             'warehouse_street' => $this->warehouse_street,
             'warehouse_house_number' => $this->warehouse_house_number,
             'warehouse_address' => $this->warehouse_address,
-            'warehouse_lon' => $this->warehouse_lon,
-            'warehouse_lat' => $this->warehouse_lat,
             'warehouse_expect_time' => $this->warehouse_expect_time,
             'warehouse_expect_distance' => $this->warehouse_expect_distance,
             'warehouse_expect_arrive_time' => $this->warehouse_expect_arrive_time,
@@ -66,6 +66,23 @@ class TourResource extends JsonResource
             'remark' => $this->remark,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
+        ], $this->corTransfer());
+    }
+
+    public function corTransfer()
+    {
+        if (empty($this->warehouse_lat) || empty($this->warehouse_lon)) {
+            return ['warehouse_lat' => $this->warehouse_lat, 'warehouse_lon' => $this->warehouse_lon,];
+        }
+        if ((CompanyTrait::getCompany()['map'] == 'baidu')) {
+            $cor = CorTransferService::tenCentToBaiDu($this->warehouse_lat, $this->warehouse_lon);
+            $cor = array_values($cor);
+        } else {
+            $cor = [$this->warehouse_lat, $this->warehouse_lon];
+        }
+        return [
+            'warehouse_lat' => $cor[0],
+            'warehouse_lon' => $cor[1],
         ];
     }
 }
