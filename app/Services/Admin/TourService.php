@@ -871,7 +871,7 @@ class TourService extends BaseService
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         //如果已回仓库，处理仓库相关数据
         if ($info['status'] == BaseConstService::TOUR_STATUS_5) {
-            $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+            $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'])->toArray();
             if (empty($batchList)) {
                 throw new BusinessLogicException('数据不存在');
             }
