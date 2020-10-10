@@ -109,6 +109,8 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::post('/update-batch-index', 'TourController@updateBatchIndex')->middleware('checktourredislock');
         //锁定-开始装货
         Route::put('/{id}/lock', 'TourController@lock');
+        //延迟
+        Route::post('/{id}/delay', 'TourController@delay');
         //锁定-开始装货
         Route::put('/{id}/unlock', 'TourController@unlock');
         //备注

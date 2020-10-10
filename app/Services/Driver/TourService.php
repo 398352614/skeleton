@@ -17,9 +17,11 @@ use App\Models\AdditionalPackage;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
+use App\Models\TourDelay;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
 use App\Services\Admin\AdditionalPackageService;
+use App\Services\Admin\TourDelayService;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\FeeService;
@@ -31,6 +33,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use App\Services\Traits\TourRedisLockTrait;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -146,6 +149,15 @@ class TourService extends BaseService
     public function getTourService()
     {
         return self::getInstance(\App\Services\Admin\TourService::class);
+    }
+
+    /**
+     * 延迟服务
+     * @return TourDelayService
+     */
+    public function getTourDelayService()
+    {
+        return self::getInstance(TourDelayService::class);
     }
 
     /**
@@ -423,9 +435,9 @@ class TourService extends BaseService
         if (empty($car)) {
             throw new BusinessLogicException('司机不存在');
         }
-/*        if ($params['begin_distance'] < $car['distance']) {
-            throw new BusinessLogicException('出库里程数小于该车上次入库里程数，请重新填写');
-        }*/
+        /*        if ($params['begin_distance'] < $car['distance']) {
+                    throw new BusinessLogicException('出库里程数小于该车上次入库里程数，请重新填写');
+                }*/
         $row = $this->getCarService()->update(['car_no' => $tour['car_no']], ['distance' => $params['begin_distance']]);
         if ($row == false) {
             throw new BusinessLogicException('车辆里程记录失败，请重试');
@@ -1293,12 +1305,12 @@ class TourService extends BaseService
         if (empty($car)) {
             throw new BusinessLogicException('司机不存在');
         }
-/*        if ($params['end_distance'] < $car['distance']) {
-            throw new BusinessLogicException('出库里程数小于该车上次入库里程数，请重新填写');
-        }*/
-/*        if ($params['end_distance'] > $car['distance'] + 1000000) {
-            throw new BusinessLogicException('出库里程数过大，请重新填写');
-        }*/
+        /*        if ($params['end_distance'] < $car['distance']) {
+                    throw new BusinessLogicException('出库里程数小于该车上次入库里程数，请重新填写');
+                }*/
+        /*        if ($params['end_distance'] > $car['distance'] + 1000000) {
+                    throw new BusinessLogicException('出库里程数过大，请重新填写');
+                }*/
         $row = $this->getCarService()->update(['car_no' => $tour['car_no']], ['distance' => $params['end_distance']]);
         if ($row == false) {
             throw new BusinessLogicException('车辆里程记录失败，请重试');
@@ -1502,5 +1514,54 @@ class TourService extends BaseService
         $tour['batch_ids'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
         dispatch(new UpdateTour($tour['tour_no'], $tour['batch_ids']));
     }
+
+    /**
+     * 延迟
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function delay($id, $params)
+    {
+        $tour = parent::getInfo(['id' => $id, 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        //站点处理
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
+        if (empty($batchList)) {
+            return;
+        }
+        foreach ($batchList as $k => $v) {
+            $time = $this->getBatchService()->getInfo(['batch_no' => $v['batch_no']], ['*'], false)->toArray()['expect_arrive_time'];
+            $row = $this->getBatchService()->update(['batch_no' => $v['batch_no']], ['expect_arrive_time' => Carbon::create($time)->addMinutes(intval($params['delay_time']))->format('Y-m-d H:i:s')]);
+            if ($row == false) {
+                throw new BusinessLogicException('延迟失败');
+            }
+        }
+        //取件线路处理
+        $row = parent::updateById($id, ['warehouse_expect_arrive_time' => Carbon::create($tour['warehouse_expect_arrive_time'])->addMinutes(intval($params['delay_time']))->format('Y-m-d H:i:s')]);
+        if ($row == false) {
+            throw new BusinessLogicException('延迟处理失败');
+        }
+        //延迟记录
+        $row = $this->getTourDelayService()->create([
+            'company_id' => $tour['company_id'],
+            'tour_no' => $tour['tour_no'],
+            'execution_date' => $tour['execution_date'],
+            'line_id' => $tour['line_id'],
+            'line_name' => $tour['line_name'],
+            'driver_id' => $tour['driver_id'],
+            'driver_name' => $tour['driver_name'],
+            'delay_time' => $params['delay_time'],
+            'delay_type' => $params['delay_type'],
+            'delay_remark' => $params['delay_remark']
+        ]);
+        if ($row == false) {
+            throw new BusinessLogicException('延迟记录失败');
+        }
+        return;
+    }
+
 
 }
