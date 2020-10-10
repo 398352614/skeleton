@@ -89,5 +89,6 @@ class companyValidate extends Middleware
         'AuthController@logout',
         'AuthController@me',
         'AuthController@updatePassword',
+        'AuthController@refresh',
     ];
 }

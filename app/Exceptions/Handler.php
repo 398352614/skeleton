@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class Handler extends ExceptionHandler
 {
@@ -66,6 +67,10 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof AuthenticationException) {
+            return response()->json($this->responseFormat(10401, '', '用户认证失败'));
+        }
+
+        if ($exception instanceof TokenExpiredException) {
             return response()->json($this->responseFormat(10401, '', '用户认证失败'));
         }
 
