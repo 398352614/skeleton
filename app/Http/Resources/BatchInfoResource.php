@@ -45,7 +45,7 @@ class BatchInfoResource extends JsonResource
             'receiver_lat' => $this->receiver_lat,
             'expect_arrive_time' => $this->expect_arrive_time,
             'actual_arrive_time' => $this->actual_arrive_time,
-            'sign_time'=>$this->sign_time,
+            'sign_time' => $this->sign_time,
             'expect_distance' => $this->expect_distance,
             'actual_time' => $this->actual_time,
             'out_expect_arrive_time' => $this->out_expect_arrive_time,
@@ -67,11 +67,14 @@ class BatchInfoResource extends JsonResource
 
     public function corTransfer()
     {
-        if ((CompanyTrait::getCompany()['map'] == 'baidu') || empty($this->receiver_lat) || empty($this->receiver_lon)) {
-            $cor = [$this->receiver_lat, $this->receiver_lon];
-        } else {
-            $cor = CorTransferService::baiDuToTenCent($this->receiver_lat, $this->receiver_lon);
+        if (empty($this->receiver_lat) || empty($this->receiver_lon)) {
+            return ['receiver_lat' => $this->receiver_lat, 'receiver_lon' => $this->receiver_lon,];
+        }
+        if ((CompanyTrait::getCompany()['map'] == 'baidu')) {
+            $cor = CorTransferService::tenCentToBaiDu($this->receiver_lat, $this->receiver_lon);
             $cor = array_values($cor);
+        } else {
+            $cor = [$this->receiver_lat, $this->receiver_lon];
         }
         return [
             'receiver_lat' => $cor[0],
