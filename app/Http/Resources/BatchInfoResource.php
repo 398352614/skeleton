@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use App\Services\CorTransferService;
-use App\Services\CorTransferTrait;
 use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
