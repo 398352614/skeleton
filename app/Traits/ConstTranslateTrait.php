@@ -63,6 +63,7 @@ use Illuminate\Support\Facades\App;
  * @method static canSkipBatchList($args = null)
  * @method static languageList($args = null)
  * @method static merchantAdditionalStatusList($args = null)
+ * @method static tourDelayTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -391,6 +392,13 @@ trait ConstTranslateTrait
     public static $merchantAdditionalStatusList = [
         BaseConstService::MERCHANT_ADDITIONAL_STATUS_1 => '开启',
         BaseConstService::MERCHANT_ADDITIONAL_STATUS_2 => '禁用'
+    ];
+
+    public static $tourDelayTypeList = [
+        BaseConstService::TOUR_DELAY_TYPE_1 => '用餐休息',
+        BaseConstService::TOUR_DELAY_TYPE_2 => '交通堵塞',
+        BaseConstService::TOUR_DELAY_TYPE_3 => '更换行车路线',
+        BaseConstService::TOUR_DELAY_TYPE_4 => '其他'
     ];
 
 

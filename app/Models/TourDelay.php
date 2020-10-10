@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 取件线路材料表
  * Class Employee
@@ -64,7 +66,7 @@ class TourDelay extends BaseModel
      * @var array
      */
     protected $hidden = [
-
+        'delay_type_name'
     ];
 
     /**
@@ -73,4 +75,12 @@ class TourDelay extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    /**
+     * @return null |null
+     */
+    public function getDelayTypeNameAttribute()
+    {
+        return empty($this->delay_type) ? null : ConstTranslateTrait::tourDelayTypeList($this->delay_type);
+    }
 }
