@@ -119,6 +119,7 @@ return [
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
     'unique_ignore' => 'The :attribute field must be unique.',
+    'check_special_char' => 'The :attribute has special character',
 
     /*
     |--------------------------------------------------------------------------
