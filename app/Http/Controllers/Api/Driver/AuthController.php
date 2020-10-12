@@ -109,8 +109,8 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        $token = auth('driver')->getRequest()->getToken();
-        Log::info('token', ['token' => $token]);
+        //$token = auth('driver')->getRequest()->getToken();
+        //Log::info('token', ['token' => $token]);
         $token = auth('driver')->refresh();
         $messageToken = auth('driver')->user()->messager;
         if (empty($messageToken)) {
