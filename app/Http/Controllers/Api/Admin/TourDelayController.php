@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\TourDelayService;
 use App\Services\Admin\TourDriverService;
+use App\Traits\ConstTranslateTrait;
 
 /**
  * Class TourDriverController
@@ -25,8 +26,21 @@ class TourDelayController extends BaseController
         parent::__construct($service, $exceptMethods);
     }
 
+    /**
+     * 查询
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function index()
     {
         return $this->service->getPageList();
+    }
+
+    /**
+     * 获取字典
+     * @return mixed
+     */
+    public function init()
+    {
+        return $this->service->init();
     }
 }
