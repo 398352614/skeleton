@@ -18,6 +18,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use RongCloud\RongCloud;
 
 class AuthController extends Controller
@@ -108,6 +109,8 @@ class AuthController extends Controller
      */
     public function refresh()
     {
+        $token = auth('driver')->getRequest()->getToken();
+        Log::info('token', ['token' => $token]);
         $token = auth('driver')->refresh();
         $messageToken = auth('driver')->user()->messager;
         if (empty($messageToken)) {
