@@ -678,6 +678,7 @@ class TourService extends BaseService
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k]['sort_id'] = $k + 1;
         }
+        $info['batchs'] = array_values($info['batchs']);
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         return $info;
     }
