@@ -612,6 +612,11 @@ class TourService extends BaseService
         $tour['batch_count'] = count($batchList);
         $tour['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT]);
         $tour['batch_list'] = $batchList;
+        //获取延迟次数
+        $tour['total_delay_amount'] = $this->getTourDelayService()->count(['tour_no' => $tour['tour_no']]);
+        //获取延时时间
+        $tour['total_delay_time'] =intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']]));
+        $tour['total_delay_time_human'] =round(intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']])) / 60) .__('分钟');
         return TourBatchResource::make($tour)->toArray(request());
     }
 

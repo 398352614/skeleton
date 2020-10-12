@@ -43,6 +43,15 @@ class RouteTrackingService extends BaseService
     }
 
     /**
+     * 司机事件 服务
+     * @return TourDriverService
+     */
+    public function getTourDriverService()
+    {
+        return self::getInstance(TourDriverService::class);
+    }
+
+    /**
      * 线路追踪
      * @return array
      * @throws BusinessLogicException
@@ -58,21 +67,28 @@ class RouteTrackingService extends BaseService
         if (!$tour) {
             throw new BusinessLogicException('没找到相关进行中的线路');
         }
-        $routeTrackingList = $tour->routeTracking->toArray();
+        $routeTrackingList = parent::getList(['tour_no' => $tour['tour_no']], ['*'], true);
+        if (empty($routeTrackingList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $routeTrackingList = $routeTrackingList->toArray(request());
         $routeTrackingList = $this->reduceData($routeTrackingList);
         foreach ($routeTrackingList as $k => $v) {
             $routeTrackingList[$k] = $this->makeStopEvent($v);
         }
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], [
-            'batch_no', 'receiver_fullname', 'receiver_address', 'receiver_lon', 'receiver_lat', 'expect_arrive_time', 'actual_arrive_time', 'sort_id'], false)->all();
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], true)->all();
         $batchList = collect($batchList)->sortBy('sort_id')->all();
         $batchList = array_values($batchList);
         foreach ($batchList as $k => $v) {
             $batchList[$k]['sort_id'] = $k + 1;
+            $batchList[$k] = array_only_fields_sort($batchList[$k], ['batch_no', 'receiver_fullname', 'receiver_address', 'receiver_lon', 'receiver_lat', 'expect_arrive_time', 'actual_arrive_time', 'sort_id']);
         }
-        $tourEventList = TourDriverEvent::query()->whereIn('batch_no', collect($batchList)->pluck('batch_no')->toArray())->get();
+        $tourEventList = $this->getTourDriverService()->getList(['tour_no' => $tour['tour_no']]);
+        if (empty($tourEventList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
         foreach ($batchList as $k => $v) {
-            $tourEvent = $tourEventList->where('batch_no', $v['batch_no'])->all();
+            $tourEvent = $tourEventList->where('batch_no', $v['batch_no'])->first();
             if (!empty($tourEvent)) {
                 $batchList[$k]['event'] = $tourEvent;
             }
@@ -110,7 +126,7 @@ class RouteTrackingService extends BaseService
      */
     public function makeStopEvent($routeTracking)
     {
-        if (!empty($routeTracking['stop_time'] && $routeTracking['stop_time'] / 60 > BaseConstService::STOP_TIME)) {
+        if (!empty($routeTracking['stop_time']) && $routeTracking['stop_time'] / 60 > BaseConstService::STOP_TIME) {
             $routeTracking['event'][0]['content'] = __("司机已在此停留[:time]分钟", ['time' => round($routeTracking['stop_time'] / 60)]);
             $routeTracking['event'][0]['time'] = $routeTracking['time_human'];
             $routeTracking['event'][0]['type'] = 'stop';

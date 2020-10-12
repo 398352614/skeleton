@@ -6,7 +6,7 @@
  * Time: 17:02
  */
 
-namespace App\Services\Admin;
+namespace App\Services\Merchant;
 
 
 use App\Http\Resources\TourDriverEventResource;
