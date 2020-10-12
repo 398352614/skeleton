@@ -39,6 +39,7 @@ class TourDelayService extends BaseService
      * @return mixed
      */
     public function init(){
-        return $data['tour_delay_list'] = ConstTranslateTrait::tourDelayTypeList();
+         $data['tour_delay_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::tourDelayTypeList());
+        return $data;
     }
 }
