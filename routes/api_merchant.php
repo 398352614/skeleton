@@ -151,6 +151,8 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('getLocation', 'CommonController@getLocation');
         //获取所有国家列表
         Route::get('getCountryList', 'CommonController@getCountryList');
+
+        Route::get('get-postcode', 'CommonController@getPostcode');
     });
 
     //取件线路
