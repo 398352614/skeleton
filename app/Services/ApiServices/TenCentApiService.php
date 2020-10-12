@@ -109,8 +109,8 @@ class TenCentApiService
                 ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
                 || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
             ) {
-                $tourData['expect_distance'] = $distance;
-                $tourData['expect_time'] = $time;
+                $tourData['expect_distance'] = $distance + $backElement['distance'];
+                $tourData['expect_time'] = $time + $backElement['duration'];
             }
             Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
