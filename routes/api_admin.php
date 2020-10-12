@@ -253,6 +253,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //取件线路-司机
     Route::prefix('delay')->group(function () {
+        Route::get('/init', 'TourDelayController@init');
         Route::get('/', 'TourDelayController@index');
     });
 

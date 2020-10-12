@@ -19,6 +19,7 @@ class TourDelayResource extends JsonResource
             'driver_id' => $this->driver_id,
             'driver_name' => $this->driver_name,
             'delay_time' => $this->delay_time,
+            'delay_time_human' => $this->delay_time_human,
             'delay_type' => $this->delay_type,
             'delay_type_name' => $this->delay_type_name,
             'delay_remark' => $this->delay_remark,

@@ -25,7 +25,7 @@ class CreateTourDelayTable extends Migration
             $table->string('driver_name',50)->default('')->nullable()->comment('司机名称');
 
             $table->integer('delay_time')->default(0)->nullable()->comment('延迟时间');
-            $table->tinyInteger('delay_type')->default(4)->nullable()->comment('延迟原因1-用餐休息2-交通堵塞3-更换行车路线4-其他');
+            $table->tinyInteger('delay_type')->default(4)->nullable()->comment('延迟类型1-用餐休息2-交通堵塞3-更换行车路线4-其他');
             $table->string('delay_remark')->default('')->nullable()->comment('延迟备注');
 
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');

@@ -1553,7 +1553,7 @@ class TourService extends BaseService
             'line_name' => $tour['line_name'],
             'driver_id' => $tour['driver_id'],
             'driver_name' => $tour['driver_name'],
-            'delay_time' => $params['delay_time'],
+            'delay_time' => $params['delay_time'] * 60,
             'delay_type' => $params['delay_type'],
             'delay_remark' => $params['delay_remark']
         ]);

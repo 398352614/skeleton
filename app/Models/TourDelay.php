@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use Carbon\CarbonInterval;
 
 /**
  * 取件线路材料表
@@ -66,7 +67,8 @@ class TourDelay extends BaseModel
      * @var array
      */
     protected $hidden = [
-        'delay_type_name'
+        'delay_type_name',
+        'delay_time_human'
     ];
 
     /**
@@ -82,5 +84,10 @@ class TourDelay extends BaseModel
     public function getDelayTypeNameAttribute()
     {
         return empty($this->delay_type) ? null : ConstTranslateTrait::tourDelayTypeList($this->delay_type);
+    }
+
+    public function getDelayTimeHumanAttribute()
+    {
+        return empty($this->delay_time) ? null : CarbonInterval::second($this->delay_time)->cascade()->forHumans();
     }
 }
