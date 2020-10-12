@@ -112,6 +112,7 @@ class TenCentApiService
                 $tourData['expect_distance'] = $distance + $backElement['distance'];
                 $tourData['expect_time'] = $time + $backElement['duration'];
             }
+            Log::info('auto-tour-data', $tourData);
             Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
             throw new BusinessLogicException('线路自动更新失败');
@@ -167,6 +168,7 @@ class TenCentApiService
                 $tourData['expect_distance'] = $distance + $backElement['distance'];
                 $tourData['expect_time'] = $time + $backElement['duration'];
             }
+            Log::info('tour-data', $tourData);
             Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
             throw new BusinessLogicException('线路更新失败');
