@@ -31,8 +31,8 @@ class TourDriverEventResource extends JsonResource
             'batch_no' => $this->batch_no,
             'tour_no' => $this->tour_no,
             'route_tracking_id' => $this->route_tracking_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => (string)$this->created_at,
+            'updated_at' => (string)$this->updated_at,
 
         ], $this->corTransfer());
     }
