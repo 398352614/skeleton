@@ -69,6 +69,7 @@ class CommonService
         return PostcodeTrait::getPostcode($all);
     }
 
+    
     /**
      * 地址字段组合
      * @param $data
