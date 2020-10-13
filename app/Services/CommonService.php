@@ -69,7 +69,7 @@ class CommonService
         return PostcodeTrait::getPostcode($all);
     }
 
-    
+
     /**
      * 地址字段组合
      * @param $data
@@ -78,7 +78,7 @@ class CommonService
      */
     public static function addressFieldsSortCombine($data, $fields)
     {
-        $countryKey = Arr::only($fields, function ($keyValue) {
+        $countryKey = Arr::first($fields, function ($keyValue) {
             return in_array($keyValue, ['country', 'receiver_country', 'sender_country']);
         });
         if (!empty($countryKey) && !empty($data[$countryKey]) && (app()->getLocale() == 'cn') && ($data[$countryKey] == 'CN')) {
