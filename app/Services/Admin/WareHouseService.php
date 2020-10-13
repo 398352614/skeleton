@@ -13,6 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\WareHouseResource;
 use App\Models\Warehouse;
 use App\Services\BaseService;
+use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
@@ -97,7 +98,7 @@ class WareHouseService extends BaseService
         //填充地址
         $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['address'])) {
-            $params['address'] = implode(' ', array_only_fields_sort($params, ['country', 'city', 'street', 'house_number', 'post_code']));
+            $params['address'] = CommonService::addressFieldsSortCombine($params, ['country', 'city', 'street', 'house_number', 'post_code']);
         }
     }
 

@@ -15,8 +15,10 @@ use App\Traits\CountryAddressTrait;
 use App\Traits\LocationTrait;
 use App\Traits\PostcodeTrait;
 use Doctrine\DBAL\Driver\OCI8\Driver;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 
 class CommonService
@@ -65,5 +67,23 @@ class CommonService
     public function getPostcode(array $all)
     {
         return PostcodeTrait::getPostcode($all);
+    }
+
+    /**
+     * 地址字段组合
+     * @param $data
+     * @param $fields
+     * @return string
+     */
+    public static function addressFieldsSortCombine($data, $fields)
+    {
+        $countryKey = Arr::only($fields, function ($keyValue) {
+            return in_array($keyValue, ['country', 'receiver_country', 'sender_country']);
+        });
+        if (!empty($countryKey) && !empty($data[$countryKey]) && (app()->getLocale() == 'cn') && ($data[$countryKey] == 'CN')) {
+            $data[$countryKey] = '中国';
+        }
+        $address = implode(' ', array_filter(array_only_fields_sort($data, $fields)));
+        return $address;
     }
 }
