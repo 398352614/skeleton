@@ -20,7 +20,7 @@ class TourDelayService extends BaseService
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_name' => ['like', 'driver_name'],
         'line_name' => ['like', 'line_name'],
-        'delay_type' => ['=', 'type'],
+        'delay_type' => ['=', 'delay_type'],
         'tour_no' => ['like', 'tour_no']
     ];
 
