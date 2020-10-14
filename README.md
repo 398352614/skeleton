@@ -19,7 +19,7 @@ laravel版本：6.18.27
 ### 4. 相关材料
   
 正式服管理员端地址：[https://tms-admin.eutechne.com](https://tms-admin.eutechne.com)  
-正式服商户端地址：[https://tms-business.eutechne.com/](https://tms-business.eutechne.com/)  
+正式服商户端地址：[https://tms-business.eutechne.com](https://tms-business.eutechne.com)  
 开发服管理员端地址：[https://dev-tms-admin.nle-tech.com](https://dev-tms-admin.nle-tech.com)  
 开发服商户端地址：[https://dev-tms-business.nle-tech.com](https://dev-tms-business.nle-tech.com)  
   
@@ -103,8 +103,16 @@ sudo supervisord -c /etc/supervisor/supervisord.conf
 ## 三、使用说明
 ### 1. 项目结构
 #### 1.1 内部连接
-TMS项目后端与管理员端，商户端，司机端进行连接，其中管理员端与商户端为网页端，司机端为安卓端。
+TMS项目后端与管理员端，商户端，司机端进行连接，其中管理员端与商户端为网页端，司机端为安卓端。  
+开发服管理员端接口地址：[https://dev-tms.nle-tech.com/api/admin](https://dev-tms.nle-tech.com/api/admin)  
+正式服管理员端接口地址：[https://tms-admin.eutechne.com/api/admin](https://tms-admin.eutechne.com/api/admin)  
+开发服商户端接口地址：[https://dev-tms.nle-tech.com/api/merchant](https://dev-tms.nle-tech.com/api/merchant)  
+正式服商户端接口地址：[https://tms-admin.eutechne.com/api/merchant](https://tms-admin.eutechne.com/api/merchant)  
+开发服司机端接口地址：[https://dev-tms.nle-tech.com/api/driver](https://dev-tms.nle-tech.com/api/driver)  
+正式服司机端接口地址：[https://tms-admin.eutechne.com/api/driver](https://tms-admin.eutechne.com/api/driver)  
 #### 1.2 外部连接
-TMS项目目前通过API与欧亚商城和ERP相连，并
+TMS项目对外提供第三方接口，供对接系统使用，目前仅对接ERP和欧亚商城。
+开发服第三方接口地址：[https://dev-tms.nle-tech.com/api/driver](https://dev-tms.nle-tech.com/api/driver)  
+正式服第三方接口地址：[https://tms-admin.eutechne.com/api/driver](https://tms-admin.eutechne.com/api/driver)  
 ### 2. 业务流程
 ### 3. 特殊说明

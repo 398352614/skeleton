@@ -92,7 +92,7 @@ class RouteTrackingService extends BaseService
         foreach ($batchList as $k => $v) {
             $tourEvent = $tourEventList->where('batch_no', $v['batch_no'])->all();
             if (!empty($tourEvent)) {
-                $batchList[$k]['event'][] = $tourEvent;
+                $batchList[$k]['event'] = array_merge($batchList[$k]['event'], $tourEvent);
             }
         }
         $batchList = collect($batchList)->whereNotNull('event')->sortBy('actual_arrive_time')->all();
