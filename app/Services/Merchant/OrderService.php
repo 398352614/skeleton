@@ -1534,7 +1534,6 @@ class OrderService extends BaseService
             $routeTracking['lon'] = $routeTracking['warehouse_lon'];
             $routeTracking['lat'] = $routeTracking['warehouse_lat'];
         }
-
         return [
             'expect_distance' => $batch['expect_distance'] ?? 0,
             'actual_distance' => $batch['actual_distance'] ?? 0,
