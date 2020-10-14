@@ -1533,7 +1533,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         //站点处理
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_DELIVERING], ['*'], false);
         if (empty($batchList)) {
             return;
         }
