@@ -615,8 +615,8 @@ class TourService extends BaseService
         //获取延迟次数
         $tour['total_delay_amount'] = $this->getTourDelayService()->count(['tour_no' => $tour['tour_no']]);
         //获取延时时间
-        $tour['total_delay_time'] =intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']]));
-        $tour['total_delay_time_human'] =round(intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']])) / 60) .__('分钟');
+        $tour['total_delay_time'] = intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']]));
+        $tour['total_delay_time_human'] = round(intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']])) / 60) . __('分钟');
         return TourBatchResource::make($tour)->toArray(request());
     }
 
@@ -1538,14 +1538,23 @@ class TourService extends BaseService
             return;
         }
         foreach ($batchList as $k => $v) {
-            $time = $this->getBatchService()->getInfo(['batch_no' => $v['batch_no']], ['*'], false)->toArray()['expect_arrive_time'];
-            $row = $this->getBatchService()->update(['batch_no' => $v['batch_no']], ['expect_arrive_time' => Carbon::create($time)->addMinutes(intval($params['delay_time']))->format('Y-m-d H:i:s')]);
+            $batch = $this->getBatchService()->getInfo(['batch_no' => $v['batch_no']], ['*'], false)->toArray();
+            if (empty($batch)) {
+                throw new BusinessLogicException('数据不存在');
+            }
+            $row = $this->getBatchService()->update(['batch_no' => $v['batch_no']], [
+                'expect_arrive_time' => Carbon::create($batch['expect_arrive_time'])->addMinutes(intval($params['delay_time']))->format('Y-m-d H:i:s'),
+                'expect_time' => $batch['expect_time'] + $params['delay_time'] * 60
+            ]);
             if ($row == false) {
                 throw new BusinessLogicException('延迟失败');
             }
         }
         //取件线路处理
-        $row = parent::updateById($id, ['warehouse_expect_arrive_time' => Carbon::create($tour['warehouse_expect_arrive_time'])->addMinutes(intval($params['delay_time']))->format('Y-m-d H:i:s')]);
+        $row = parent::updateById($id, [
+                'warehouse_expect_arrive_time' => Carbon::create($tour['warehouse_expect_arrive_time'])->addMinutes(intval($params['delay_time']))->format('Y-m-d H:i:s'),
+                'warehouse_expect_time' => $tour['warehouse_expect_time'] + $params['delay_time'] * 60]
+        );
         if ($row == false) {
             throw new BusinessLogicException('延迟处理失败');
         }
