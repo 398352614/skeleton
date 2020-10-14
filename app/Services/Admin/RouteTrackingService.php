@@ -67,6 +67,7 @@ class RouteTrackingService extends BaseService
         if (!$tour) {
             throw new BusinessLogicException('没找到相关进行中的线路');
         }
+        //获取轨迹
         $routeTrackingList = parent::getList(['tour_no' => $tour['tour_no']], ['*'], true);
         if (empty($routeTrackingList)) {
             throw new BusinessLogicException('数据不存在');
@@ -76,6 +77,7 @@ class RouteTrackingService extends BaseService
         foreach ($routeTrackingList as $k => $v) {
             $routeTrackingList[$k] = $this->makeStopEvent($v);
         }
+        //获取事件
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], true)->all();
         $batchList = collect($batchList)->sortBy('sort_id')->all();
         $batchList = array_values($batchList);
@@ -95,7 +97,7 @@ class RouteTrackingService extends BaseService
         }
         $batchList = collect($batchList)->whereNotNull('event')->sortBy('actual_arrive_time')->all();
         $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
-        //出库
+        //插入出库事件
         $out = [[
             'receiver_lon' => $tour['warehouse_lon'],
             'receiver_lat' => $tour['warehouse_lat'],
@@ -103,6 +105,7 @@ class RouteTrackingService extends BaseService
             'event' => [collect($info)->sortBy('id')->first()
             ]]];
         $batchList = array_merge($out, array_values($batchList));
+        //插入入库事件
         if ($tour['status'] == 5) {
             $in = [[
                 'receiver_lon' => $tour['warehouse_lon'],
