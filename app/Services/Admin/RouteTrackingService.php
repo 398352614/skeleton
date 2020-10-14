@@ -88,13 +88,14 @@ class RouteTrackingService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         foreach ($batchList as $k => $v) {
-            $tourEvent = $tourEventList->where('batch_no', $v['batch_no'])->first();
+            $tourEvent = $tourEventList->where('batch_no', $v['batch_no'])->all();
             if (!empty($tourEvent)) {
                 $batchList[$k]['event'][] = $tourEvent;
             }
         }
         $batchList = collect($batchList)->whereNotNull('event')->sortBy('actual_arrive_time')->all();
         $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
+        //出库
         $out = [[
             'receiver_lon' => $tour['warehouse_lon'],
             'receiver_lat' => $tour['warehouse_lat'],
