@@ -110,9 +110,25 @@ TMS项目后端与管理员端，商户端，司机端进行连接，其中管�
 正式服商户端接口地址：[https://tms-admin.eutechne.com/api/merchant](https://tms-admin.eutechne.com/api/merchant)  
 开发服司机端接口地址：[https://dev-tms.nle-tech.com/api/driver](https://dev-tms.nle-tech.com/api/driver)  
 正式服司机端接口地址：[https://tms-admin.eutechne.com/api/driver](https://tms-admin.eutechne.com/api/driver)  
-#### 1.2 外部连接
-TMS项目对外提供第三方接口，供对接系统使用，目前仅对接ERP和欧亚商城。
-开发服第三方接口地址：[https://dev-tms.nle-tech.com/api/driver](https://dev-tms.nle-tech.com/api/driver)  
-正式服第三方接口地址：[https://tms-admin.eutechne.com/api/driver](https://tms-admin.eutechne.com/api/driver)  
+#### 1.2 业务外部连接
+TMS项目可通过API与其他系统进行交互，目前仅对接ERP和欧亚商城。
+##### 1.2.1 响应
+第三方系统可以通过请求以下接口进行订单新增等主动操作，TMS系统会进行响应。
+开发服第三方接口地址：[https://dev-tms.nle-tech.com/api/merchant_api](https://dev-tms.nle-tech.com/api/merchant_api)  
+正式服第三方接口地址：[https://tms-admin.eutechne.com/api/merchant_api](https://tms-admin.eutechne.com/api/merchant_api)  
+##### 1.2.2 推送
+TMS系统可以在公司配置-商家配置中的API授权菜单中，设置第三方接收URL。TMS系统会将信息推送到此地址。
+
+#### 1.3 功能外部连接
+TMS系统目前利用到的第三方接口有谷歌地图API，腾讯地图API，postcode.nl，公司内部的谷歌API服务(暂行办法)。智能优化，距离计算等功能的正常运作需要以上第三方接口生效。
+谷歌地图API地址：[https://maps.googleapis.com/maps/api/](https://maps.googleapis.com/maps/api/)  
+谷歌地图API文档：[https://developers.google.com/maps/documentation](https://developers.google.com/maps/documentation)  
+腾讯地图API地址：[https://apis.map.qq.com/ws/distance/v1/optimal_order](https://apis.map.qq.com/ws/distance/v1/optimal_order)  
+腾讯地图API文档：[https://lbs.qq.com/](https://lbs.qq.com/)  
+公司内部的谷歌API服务：[https://tms.exss.io](https://tms.exss.io)  
+postcode.nl网站API地址：[https://api.postcode.nl/rest](https://api.postcode.nl/rest)  
+
+
+
 ### 2. 业务流程
 ### 3. 特殊说明
