@@ -1420,12 +1420,13 @@ class OrderService extends BaseService
         if ($order['status'] !== BaseConstService::ORDER_STATUS_5) {
             throw new BusinessLogicException('只有已完成的订单才能无效化');
         }
-        $packageList = $this->getPackageService()->getList(['order_no' => $order], ['*'], false);
-        if (empty($packageList)) {
+        $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']], ['*'], false);
+        if ($packageList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
         $packageList = $packageList->toArray();
         foreach ($packageList as $k => $v) {
+            $v['out_order_no'] = str_replace('OLD', '', $v['out_order_no']);
             $row = $this->getPackageService()->updateById($v['id'], ['out_order_no' => $v['out_order_no'] . 'OLD']);
             if ($row == false) {
                 throw new BusinessLogicException('操作失败');
