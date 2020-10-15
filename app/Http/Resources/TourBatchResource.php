@@ -33,6 +33,9 @@ class TourBatchResource extends JsonResource
             'actual_batch_count' => $this->actual_batch_count,
             'warehouse_phone'=>$this->warehouse_phone,
             'batch_list' => $this->batch_list,
+            'total_delay_amount' => $this->total_delay_amount,
+            'total_delay_time' => $this->total_delay_time,
+            'total_delay_time_human' => $this->total_delay_time_human,
         ];
     }
 }

@@ -591,4 +591,11 @@
 "该设备已绑定司机[:driver_name]":"Het apparaat is aan de bestuurder gebonden [: Driver]-serverNaam",
 "正在进行线路任务，请先解绑设备":"Het apparaat is aan de gang.",
 "只能选择本月之前的月份":"Slechts maanden voor deze maand kunnen worden geselecteerd"
+,"用餐休息":"Pauze maaltijden",
+"交通堵塞":"verkeersopstoppingen",
+"更换行车路线":"Wijziging van route",
+"延迟失败":"Vertraging mislukt",
+"延迟处理失败":"Vertraging van de verwerking mislukt",
+"延迟记录失败":"Vertraging is mislukt"
+,"分钟":"minuut"
 }

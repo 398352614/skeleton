@@ -14,6 +14,7 @@ use App\Http\Resources\ReceiverAddressResource;
 use App\Models\Merchant;
 use App\Models\ReceiverAddress;
 use App\Services\BaseService;
+use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 
@@ -113,7 +114,7 @@ class ReceiverAddressService extends BaseService
     {
         $data['receiver_country'] = !empty($dbInfo['receiver_country']) ? $dbInfo['receiver_country'] : CompanyTrait::getCountry();
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['receiver_address'])) {
-            $data['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code'])));
+            $data['receiver_address'] = CommonService::addressFieldsSortCombine($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code']);
         }
         //判断是否唯一
         $where = $this->getUniqueWhere($data);

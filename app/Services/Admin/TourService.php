@@ -872,10 +872,11 @@ class TourService extends BaseService
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         //如果已回仓库，处理仓库相关数据
         if ($info['status'] == BaseConstService::TOUR_STATUS_5) {
-            $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+            $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'],false);
             if (empty($batchList)) {
                 throw new BusinessLogicException('数据不存在');
             }
+            $batchList=$batchList->toArray();
             $batch = collect($batchList)->sortByDesc('actual_arrive_time')->first();
             $info['warehouse_actual_time'] = strtotime($info['end_time']) - strtotime($batch['actual_arrive_time']);
             if (!$info['warehouse_actual_time'] == 0) {
@@ -898,6 +899,7 @@ class TourService extends BaseService
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k]['sort_id'] = $k + 1;
         }
+        $info['batchs'] = array_values($info['batchs']);
         return $info;
     }
 

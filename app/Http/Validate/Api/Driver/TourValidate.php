@@ -77,7 +77,12 @@ class TourValidate extends BaseValidate
 
         //导出站点表格
         'year' => 'required|integer',
-        'month' => 'required|integer'
+        'month' => 'required|integer',
+
+        //延迟
+        'delay_time' => 'required|integer',
+        'delay_type' => 'required|integer|in:1,2,3,4',
+        'delay_remark' => 'required|string|max:250'
     ];
 
     public $item_rules = [

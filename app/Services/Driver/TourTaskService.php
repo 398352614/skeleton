@@ -14,6 +14,7 @@ use App\Http\Resources\TourTaskResource;
 use App\Models\AdditionalPackage;
 use App\Models\Tour;
 use App\Models\TourMaterial;
+use App\Services\Admin\TourDelayService;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
@@ -77,6 +78,15 @@ class TourTaskService extends BaseService
     private function getMaterialService()
     {
         return self::getInstance(MaterialService::class);
+    }
+
+    /**
+     * 延迟 服务
+     * @return TourDelayService
+     */
+    private function getTourDelayService()
+    {
+        return self::getInstance(TourDelayService::class);
     }
 
     /**
@@ -151,6 +161,11 @@ class TourTaskService extends BaseService
             return $order;
         }, $orderList);
         //数据填充
+        //获取延迟次数
+        $tour['total_delay_amount'] = $this->getTourDelayService()->count(['tour_no' => $tour['tour_no']]);
+        //获取延时时间
+        $tour['total_delay_time'] =intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']]));
+        $tour['total_delay_time_human'] =round(intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']])) / 60) .__('分钟');
         $tour['batch_list'] = $batchList;
         $tour['order_list'] = $orderList;
         $tour['material_list'] = $materialList;

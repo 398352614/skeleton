@@ -7,6 +7,7 @@ use App\Models\Merchant;
 use App\Models\SenderAddress;
 use App\Services\BaseService;
 use App\Http\Resources\SenderAddressResource;
+use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 
@@ -75,7 +76,7 @@ class SenderAddressService extends BaseService
     {
         $data['sender_country'] = !empty($dbInfo['sender_country']) ? $dbInfo['sender_country'] : CompanyTrait::getCountry();
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['sender_address'])) {
-            $data['sender_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['sender_country', 'sender_city', 'sender_street', 'sender_house_number', 'sender_post_code'])));
+            $data['sender_address'] = CommonService::addressFieldsSortCombine($data, ['sender_country', 'sender_city', 'sender_street', 'sender_house_number', 'sender_post_code']);
         }
         //判断是否唯一
         $where = $this->getUniqueWhere($data);

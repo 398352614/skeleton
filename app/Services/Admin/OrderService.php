@@ -20,6 +20,7 @@ use App\Models\Order;
 use App\Models\OrderImportLog;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
+use App\Services\CommonService;
 use App\Services\OrderNoRuleService;
 use App\Traits\BarcodeTrait;
 use App\Traits\CompanyTrait;
@@ -602,7 +603,7 @@ class OrderService extends BaseService
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
-            $params['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code'])));
+            $params['receiver_address'] = CommonService::addressFieldsSortCombine($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code']);
         }
         //若存在外部订单号,则判断是否存在已预约的订单号
         if (!empty($params['out_order_no'])) {

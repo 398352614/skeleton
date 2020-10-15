@@ -266,4 +266,14 @@ class TourController extends BaseController
     public function batchRecovery($id){
         return $this->service->batchRecovery($id,$this->data);
     }
+
+    /**
+     * 延迟
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function delay($id){
+        return $this->service->delay($id,$this->data);
+    }
 }

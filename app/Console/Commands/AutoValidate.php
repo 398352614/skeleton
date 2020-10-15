@@ -101,7 +101,7 @@ class AutoValidate extends Command
             }
             $oldJson = Str::replaceLast('];', '', file_get_contents('resources/lang/en/validation.php'));
             $oldJson = Str::replaceLast(']', '', $oldJson);
-            $oldJson = $oldJson .','. $json . ']' . "\n" . '];';
+            $oldJson = $oldJson . $json . ']' . "\n" . '];';
             file_put_contents('resources/lang/en/validation.php', $oldJson);
         }
     }

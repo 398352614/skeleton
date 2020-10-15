@@ -717,4 +717,12 @@
     "该设备已绑定司机[:driver_name]": "The device has been bound to driver [:driver_name]",
     "正在进行线路任务，请先解绑设备": "The device is in progress. Please untie the equipment",
     "只能选择本月之前的月份": "Only months before this month can be selected"
+
+,"用餐休息":"Meal break",
+"交通堵塞":"traffic jam",
+"更换行车路线":"Route change",
+"延迟失败":"Delay failed",
+"延迟处理失败":"Delay processing failed",
+"延迟记录失败":"Delay logging failed"
+,"分钟":"minute"
 }

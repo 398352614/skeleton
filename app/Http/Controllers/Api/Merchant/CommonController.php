@@ -46,4 +46,8 @@ class CommonController
         return $this->service->getCountryList();
     }
 
+    public function getPostcode(Request $request)
+    {
+        return $this->service->getPostcode($request->all());
+    }
 }

@@ -2,13 +2,15 @@
 
 namespace App\Http\Resources;
 
+use App\Services\CorTransferService;
+use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BatchResource extends JsonResource
 {
     public function toArray($request)
     {
-        return [
+        return array_merge([
             'id' => $this->id,
             'company_id' => $this->company_id,
             'merchant_id' => $this->merchant_id,
@@ -40,11 +42,9 @@ class BatchResource extends JsonResource
             'receiver_city' => $this->receiver_city,
             'receiver_street' => $this->receiver_street,
             'receiver_address' => $this->receiver_address,
-            'receiver_lon' => $this->receiver_lon,
-            'receiver_lat' => $this->receiver_lat,
             'expect_arrive_time' => $this->expect_arrive_time,
             'actual_arrive_time' => $this->actual_arrive_time,
-            'sign_time'=>$this->sign_time,
+            'sign_time' => $this->sign_time,
             'expect_distance' => $this->expect_distance,
             'actual_time' => $this->actual_time,
             'out_expect_arrive_time' => $this->out_expect_arrive_time,
@@ -61,6 +61,23 @@ class BatchResource extends JsonResource
             'additional_package_count' => $this->additional_package_count ?? 0,
             'exception_label_name' => $this->exception_label_name,
             'pay_type_name' => $this->pay_type_name,
+        ], $this->corTransfer());
+    }
+
+    public function corTransfer()
+    {
+        if (empty($this->receiver_lat) || empty($this->receiver_lon)) {
+            return ['receiver_lat' => $this->receiver_lat, 'receiver_lon' => $this->receiver_lon,];
+        }
+        if ((CompanyTrait::getCompany()['map'] == 'baidu')) {
+            $cor = CorTransferService::tenCentToBaiDu($this->receiver_lat, $this->receiver_lon);
+            $cor = array_values($cor);
+        } else {
+            $cor = [$this->receiver_lat, $this->receiver_lon];
+        }
+        return [
+            'receiver_lat' => $cor[0],
+            'receiver_lon' => $cor[1],
         ];
     }
 

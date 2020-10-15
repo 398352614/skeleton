@@ -483,5 +483,11 @@ return [
         "out_expect_distance" => "out expect distance",
         "out_expect_time" => "out expect time",
         "relate_material_list" => "relate material list",
-    ]
+
+
+"number"=>"number",
+"mode"=>"mode",
+"delay_type"=>"delay type",
+"delay_remark"=>"delay remark",
+]
 ];

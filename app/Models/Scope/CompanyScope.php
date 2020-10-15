@@ -40,6 +40,7 @@ use App\Models\Recharge;
 use App\Models\RouteTracking;
 use App\Models\SpecialTimeCharging;
 use App\Models\Tour;
+use App\Models\TourDelay;
 use App\Models\TourDriverEvent;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
@@ -95,6 +96,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof Material))
                 && (!($model instanceof Package))
                 && (!($model instanceof TourMaterial))
+                && (!($model instanceof TourDelay))
                 && (!($model instanceof Merchant))
                 && (!($model instanceof TourLog))
                 && (!($model instanceof Fee))

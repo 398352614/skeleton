@@ -689,5 +689,11 @@ return [
 "out_expect_distance"=>"出库预计里程",
 "out_expect_time"=>"出库预计耗时",
 "relate_material_list"=>"文件列表",
+
+
+"number"=>"设备型号",
+"mode"=>"模式",
+"delay_type"=>"延迟类型",
+"delay_remark"=>"延迟备注",
 ]
 ];

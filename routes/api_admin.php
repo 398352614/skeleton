@@ -252,6 +252,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{tour_no}', 'TourDriverController@getListByTourNo');
     });
 
+    //取件线路-司机
+    Route::prefix('delay')->group(function () {
+        Route::get('/init', 'TourDelayController@init');
+        Route::get('/', 'TourDelayController@index');
+    });
+
     //任务报告
     Route::prefix('report')->group(function () {
         //列表查询

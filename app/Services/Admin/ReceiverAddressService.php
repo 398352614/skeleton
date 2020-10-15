@@ -14,6 +14,7 @@ use App\Http\Resources\ReceiverAddressResource;
 use App\Models\Merchant;
 use App\Models\ReceiverAddress;
 use App\Services\BaseService;
+use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 
@@ -126,8 +127,8 @@ class ReceiverAddressService extends BaseService
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
-            $data['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code'])));
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['receiver_address'])) {
+            $data['receiver_address'] = CommonService::addressFieldsSortCombine($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code']);
         }
         //判断是否唯一
         $where = $this->getUniqueWhere($data);

@@ -21,6 +21,7 @@ use App\Http\Validate\BaseValidate;
 use App\Models\Order;
 use App\Models\OrderImportLog;
 use App\Models\TourMaterial;
+use App\Services\CommonService;
 use App\Services\Merchant\RouteTrackingService;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
@@ -631,8 +632,7 @@ class OrderService extends BaseService
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
-            $fields = ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code'];
-            $params['receiver_address'] = implode(' ', array_filter(array_only_fields_sort($params, $fields)));
+            $params['receiver_address'] = CommonService::addressFieldsSortCombine($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code']);
         }
         //若存在外部订单号,则判断是否存在已预约的订单号
         if (!empty($params['out_order_no'])) {
@@ -1534,7 +1534,6 @@ class OrderService extends BaseService
             $routeTracking['lon'] = $routeTracking['warehouse_lon'];
             $routeTracking['lat'] = $routeTracking['warehouse_lat'];
         }
-
         return [
             'expect_distance' => $batch['expect_distance'] ?? 0,
             'actual_distance' => $batch['actual_distance'] ?? 0,

@@ -99,13 +99,21 @@ class TenCentApiService
             $lastPointIndex = last($res['result']['optimal_order']);
             $backWarehouseElement = $this->distanceMatrix([$batchs[$lastPointIndex - 1]['location'], $tour->driver_location]);
             $backElement = $backWarehouseElement[0][1];
-            Tour::query()->where('tour_no', $tour->tour_no)->update([
+            $tourData = [
                 'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration'] * 60),
                 'warehouse_expect_distance' => $distance + $backElement['distance'],
-                'warehouse_expect_time' => $time + $backElement['duration'],
-                'expect_distance' => $distance,
-                'expect_time' => $time
-            ]);
+                'warehouse_expect_time' => $time + $backElement['duration']
+            ];
+            // 只有未更新过的线路需要更新期望时间和距离
+            if (
+                ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
+                || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
+            ) {
+                $tourData['expect_distance'] = $distance + $backElement['distance'];
+                $tourData['expect_time'] = $time + $backElement['duration'];
+            }
+            Log::info('auto-tour-data', $tourData);
+            Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
             throw new BusinessLogicException('线路自动更新失败');
         }
@@ -147,13 +155,21 @@ class TenCentApiService
             /*********************************2.获取最后一个站点到仓库的距离和时间*****************************************/
             $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
             $backElement = $backWarehouseElement[0][1];
-            Tour::query()->where('tour_no', $tour->tour_no)->update([
+            $tourData = [
                 'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']),
                 'warehouse_expect_distance' => $distance + $backElement['distance'],
-                'warehouse_expect_time' => $time + $backElement['duration'],
-                'expect_distance' => $distance,
-                'expect_time' => $time
-            ]);
+                'warehouse_expect_time' => $time + $backElement['duration']
+            ];
+            // 只有未更新过的线路需要更新期望时间和距离
+            if (
+                ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
+                || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
+            ) {
+                $tourData['expect_distance'] = $distance + $backElement['distance'];
+                $tourData['expect_time'] = $time + $backElement['duration'];
+            }
+            Log::info('tour-data', $tourData);
+            Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
             throw new BusinessLogicException('线路更新失败');
         }

@@ -399,4 +399,10 @@ class BaseConstService
     //商户端顺带功能状态
     const MERCHANT_ADDITIONAL_STATUS_1 = 1;
     const MERCHANT_ADDITIONAL_STATUS_2 = 2;
+
+    //delay 延迟类型  1-用餐休息 2-交通堵塞 3-更换行车路线 4-其他
+    const TOUR_DELAY_TYPE_1 = 1;
+    const TOUR_DELAY_TYPE_2 = 2;
+    const TOUR_DELAY_TYPE_3 = 3;
+    const TOUR_DELAY_TYPE_4 = 4;
 }
