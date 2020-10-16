@@ -94,7 +94,10 @@ class GisService
     public static function wgs84ToGcj02($lng, $lat)
     {
         if (static::outOfChina($lat, $lng)) {
-            return null;
+            return array(
+                'lat' => $lat,
+                'lng' => $lng
+            );
         }
         $dLat = static::transformLat($lng - 105.0, $lat - 35.0);
         $dLon = static::transformLng($lng - 105.0, $lat - 35.0);
