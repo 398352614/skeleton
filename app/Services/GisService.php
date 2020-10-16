@@ -93,7 +93,7 @@ class GisService
      */
     public static function wgs84ToGcj02($lng, $lat)
     {
-        if (static::outOfChina($lat, $lng)) {
+        if (static::outOfChina($lng, $lat)) {
             return array(
                 'lat' => $lat,
                 'lng' => $lng
