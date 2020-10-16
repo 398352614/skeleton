@@ -1,4 +1,4 @@
-# NLE-TMS后端开发文档
+# NLE-TMS后端技术文档
 [toc]
 ## 一、项目介绍
 ### 1. 概述
@@ -253,7 +253,7 @@ php artisan unlock:tour {tour_no}
 该文件储存环境配置路径，所有业务代码只能通过该文件访问.env里的环境配置。这样做是为了安全性与统一管理。
 该目录下存放即时通讯相关代码。
 #### 4.3 设计通例
-##### 4.3.1 Serivce相互之间的调用
+##### 4.3.1 Service相互之间的调用
 在一个service中，通过getInstance方法构造单例，从而调用其他service。controller等其他类大多数无法进行同级调用。
 ##### 4.3.2 基类继承
 在service目录下，有一个BaseService作为基类，该类中存有较为通用的方法。其他所有service类都继承这个基类，又根据业务需求分别拥有特殊方法。并且，可以通过复写基类中的方法对其通用方法进行定制。既可以减少代码重复性，又不缺乏灵活性。除了service，其他所有的类都可以以此方法构建通用基类，提高代码复用率。如果某一类service除了BaseService外，仍然有较多相同代码，可以在BaseService与Serice之间再加一层通用类，例如由于按区域分配订单与按邮编分配订单这两个服务，拥有部分共同的处理步骤，所以在AreaService与BaseService之间，新建BaseLineService。
