@@ -1405,4 +1405,32 @@ class OrderService extends BaseService
         }
         dispatch(new \App\Jobs\SyncOrderStatus($orderList));
     }
+
+    /**
+     * 无效化已完成订单
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function neutralize($id)
+    {
+        $order = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($order)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if ($order['status'] !== BaseConstService::ORDER_STATUS_5) {
+            throw new BusinessLogicException('只有已完成的订单才能无效化');
+        }
+        $packageList = $this->getPackageService()->getList(['order_no' => $order], ['*'], false);
+        if (empty($packageList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $packageList = $packageList->toArray();
+        foreach ($packageList as $k => $v) {
+            $row = $this->getPackageService()->updateById($v['id'], ['out_order_no' => $v['out_order_no'] . 'OLD']);
+            if ($row == false) {
+                throw new BusinessLogicException('操作失败');
+            }
+        }
+        return;
+    }
 }

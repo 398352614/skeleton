@@ -261,4 +261,13 @@ class OrderController extends BaseController
     {
         return $this->service->synchronizeStatusList($this->data['id_list']);
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function neutralize($id){
+        return $this->service->neutralize($id);
+    }
 }
