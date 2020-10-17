@@ -258,4 +258,7 @@ php artisan unlock:tour {tour_no}
 ##### 4.3.2 基类继承
 在service目录下，有一个BaseService作为基类，该类中存有较为通用的方法。其他所有service类都继承这个基类，又根据业务需求分别拥有特殊方法。并且，可以通过复写基类中的方法对其通用方法进行定制。既可以减少代码重复性，又不缺乏灵活性。除了service，其他所有的类都可以以此方法构建通用基类，提高代码复用率。如果某一类service除了BaseService外，仍然有较多相同代码，可以在BaseService与Serice之间再加一层通用类，例如由于按区域分配订单与按邮编分配订单这两个服务，拥有部分共同的处理步骤，所以在AreaService与BaseService之间，新建BaseLineService。
 ##### 4.3.3 上传文件目录结构
-用户上传的文件在app/pubilc/storage目录下，根据不同端分为admin，driver，merchant三个文件夹，在此之下再根据文件类型分文件夹，例如，barcode，excel，flie等。结构形如app/public/storage/admin/excel。一般情况下不要改变该结构，不要在文件类型目录下再建更多子目录，那样做的话会难以管理。
+用户上传的文件在app/public/storage目录下，根据不同端分为admin，driver，merchant三个文件夹，在此之下再根据文件类型分文件夹，例如，barcode，excel，flie等。结构形如app/public/storage/admin/excel。一般情况下不要改变该结构，不要在文件类型目录下再建更多子目录，那样做的话会难以管理。
+火，冰，雷，水
+香菱，重云，丽莎，砂糖
+皇女，温蒂，芭芭拉，女仆

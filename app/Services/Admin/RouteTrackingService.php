@@ -96,7 +96,7 @@ class RouteTrackingService extends BaseService
                 $batchList[$k]['event'] = array_merge($batchList[$k]['event'], $tourEvent);
             }
         }
-        $batchList = collect($batchList)->whereNotNull('event')->sortBy('actual_arrive_time')->all();
+        $batchList = collect($batchList)->whereNotNull('event')->where('event','<>',[])->sortBy('actual_arrive_time')->all();
         $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
         //插入出库事件
         $out = [[
