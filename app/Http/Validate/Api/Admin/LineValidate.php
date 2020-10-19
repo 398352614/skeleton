@@ -37,29 +37,29 @@ class LineValidate extends BaseValidate
         'item_list.*.post_code_end' => 'required|integer|between:1000,9999|gte:item_list.*.post_code_start',
         'coordinate_list' => 'required',
         //区域列表
-        'coordinate_list.*.lat' => 'required|string|max:30',
-        'coordinate_list.*.lon' => 'required|string|max:30',
+        'coordinate_list.*.*.lat' => 'required|string|max:30',
+        'coordinate_list.*.*.lon' => 'required|string|max:30',
     ];
 
     public $scene = [
         /*****************************************************邮编*****************************************************/
         'postcodeStore' => [
-            'name', 'country','can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'work_days_list',
+            'name', 'country', 'can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'work_days_list',
             'item_list.*.post_code_start', 'item_list.*.post_code_end', 'status'
         ],
         'postcodeUpdate' => [
-            'name', 'country','can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'work_days_list',
+            'name', 'country', 'can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'work_days_list',
             'item_list.*.post_code_start', 'item_list.*.post_code_end', 'status'
         ],
         /*****************************************************区域*****************************************************/
         'areaIndex' => ['is_get_area'],
         'areaStore' => [
-            'name', 'country','can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark',
-            'coordinate_list', 'coordinate_list.*.lat', 'coordinate_list.*.lon', 'status'
+            'name', 'country', 'can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark',
+            'coordinate_list', 'coordinate_list.*.*.lat', 'coordinate_list.*.*.lon', 'status'
         ],
         'areaUpdate' => [
-            'name', 'country', 'can_skip_batch','warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark',
-            'coordinate_list', 'coordinate_list.*.lat', 'coordinate_list.*.lon', 'status'
+            'name', 'country', 'can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark',
+            'coordinate_list', 'coordinate_list.*.*.lat', 'coordinate_list.*.*.lon', 'status'
         ],
         'statusByList' => ['id_list', 'status'],
         'getListByDate' => ['date']

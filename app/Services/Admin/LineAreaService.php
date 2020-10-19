@@ -32,14 +32,27 @@ class LineAreaService extends BaseService
      */
     public function checkArea($coordinateList, $country, $id = null)
     {
+        //判断页面区域是否有重叠
+        $areaCount = count($coordinateList);
+        for ($i = 0; $i <= $areaCount - 1; $i++) {
+            for ($j = $i + 1; $j <= $areaCount; $j++) {
+                $status = MapAreaTrait::TwoAreasOverlap($coordinateList[$i], $coordinateList[$j]);
+                if ($status) {
+                    throw new BusinessLogicException('区域[:i]和区域[:j]有重叠', 1000, ['i' => $i + 1, 'j' => $j + 1]);
+                }
+            }
+        }
+        //判断页面区域和已存在区域是否有重叠
         $where = ['country' => $country];
         !empty($id) && data_set($where, 'line_id', ['<>', $id]);
-
         $dbList = parent::getList($where, ['line_id', 'coordinate_list', 'country'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
         foreach ($dbList as $dbLineArea) {
-            $status = MapAreaTrait::TwoAreasOverlap($coordinateList, json_decode($dbLineArea['coordinate_list'], true));
-            if ($status) {
-                throw new BusinessLogicException('区域有重叠');
+            $dbCoordinateList = json_decode($dbLineArea['coordinate_list'], true);
+            foreach ($coordinateList as $key => $coordinateItemList) {
+                $status = MapAreaTrait::TwoAreasOverlap($coordinateItemList, $dbCoordinateList);
+                if ($status) {
+                    throw new BusinessLogicException('区域[:key]部分区域已存在', 1000, ['key' => $key + 1]);
+                }
             }
         }
     }
@@ -57,12 +70,14 @@ class LineAreaService extends BaseService
         $dataList = [];
         $weekdayList = array_keys(ConstTranslateTrait::$weekList);
         foreach ($weekdayList as $weekday) {
-            $dataList[] = [
-                'line_id' => $lineId,
-                'coordinate_list' => json_encode($coordinateList, JSON_UNESCAPED_UNICODE),
-                'schedule' => $weekday,
-                'country' => $country
-            ];
+            foreach ($coordinateList as $coordinateItemList) {
+                $dataList[] = [
+                    'line_id' => $lineId,
+                    'coordinate_list' => json_encode($coordinateItemList, JSON_UNESCAPED_UNICODE),
+                    'schedule' => $weekday,
+                    'country' => $country
+                ];
+            }
         }
         $rowCount = parent::insertAll($dataList);
         if ($rowCount === false) {
