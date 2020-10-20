@@ -49,10 +49,12 @@ trait UpdateTourTimeAndDistanceTrait
                 Tour::query()->where('tour_no', $tour->tour_no)->update($warehouse);
             }
             unset($data['loc_res'][$tour->tour_no . $tour->tour_no]);
+            $max_time = $max_distance = 0;
             foreach ($data['loc_res'] as $key => $res) {
                 $tourBatch = Batch::where('batch_no', str_replace($tour->tour_no, '', $key))->where('tour_no', $tour->tour_no)->first();
+                if (empty($tourBatch)) continue;
                 //若站点未签收,则更新预计
-                if (!empty($tourBatch) && in_array(intval($tourBatch->status), [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])) {
+                if (in_array(intval($tourBatch->status), [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])) {
                     $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', time() + $res['time']);
                     $tourBatch->expect_distance = $res['distance'];
                     $tourBatch->expect_time = $res['time'];
