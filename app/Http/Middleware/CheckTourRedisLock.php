@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\BusinessLogicException;
-use App\Services\Traits\TourRedisLockTrait;
+use App\Traits\TourRedisLockTrait;
 use Closure;
 use Exception;
 

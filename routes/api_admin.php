@@ -391,6 +391,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //公共接口
     Route::prefix('common')->group(function () {
+        //字典
+        Route::get('/dictionary', 'CommonController@dictionary');
         //获取具体地址经纬度
         Route::get('getLocation', 'CommonController@getLocation');
         //获取所有国家列表

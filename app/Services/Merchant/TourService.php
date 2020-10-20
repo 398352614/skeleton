@@ -5,8 +5,8 @@ namespace App\Services\Merchant;
 use App\Events\AfterTourInit;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\TourInfoResource;
-use App\Http\Resources\TourResource;
+use App\Http\Resources\Api\Merchant\TourInfoResource;
+use App\Http\Resources\Api\Merchant\TourResource;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
@@ -23,7 +23,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
-use App\Services\Traits\TourRedisLockTrait;
+use App\Traits\TourRedisLockTrait;
 
 class TourService extends BaseService
 {

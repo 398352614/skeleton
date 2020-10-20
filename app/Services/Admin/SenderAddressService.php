@@ -6,7 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Merchant;
 use App\Models\SenderAddress;
 use App\Services\BaseService;
-use App\Http\Resources\SenderAddressResource;
+use App\Http\Resources\Api\Admin\SenderAddressResource;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;

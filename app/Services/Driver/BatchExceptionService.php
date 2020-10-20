@@ -10,7 +10,7 @@ namespace App\Services\Driver;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\BatchExceptionResource;
+use App\Http\Resources\Api\Driver\BatchExceptionResource;
 use App\Models\BatchException;
 use App\Services\BaseConstService;
 use App\Services\BaseService;

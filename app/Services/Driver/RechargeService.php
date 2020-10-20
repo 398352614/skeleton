@@ -5,8 +5,8 @@ namespace App\Services\Driver;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\RechargeInfoResource;
-use App\Http\Resources\RechargeResource;
+use App\Http\Resources\Api\Driver\RechargeInfoResource;
+use App\Http\Resources\Api\Driver\RechargeResource;
 use App\Models\Recharge;
 use App\Services\BaseConstService;
 use App\Services\BaseService;

@@ -5,7 +5,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\PackageResource;
+use App\Http\Resources\Api\Admin\PackageResource;
 use App\Models\Package;
 use App\Services\BaseConstService;
 use App\Services\BaseService;

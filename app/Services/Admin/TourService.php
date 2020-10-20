@@ -5,8 +5,8 @@ namespace App\Services\Admin;
 use App\Events\AfterTourInit;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\TourInfoResource;
-use App\Http\Resources\TourResource;
+use App\Http\Resources\Api\Admin\TourInfoResource;
+use App\Http\Resources\Api\Admin\TourResource;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
@@ -27,7 +27,8 @@ use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
-use App\Services\Traits\TourRedisLockTrait;
+use App\Traits\TourRedisLockTrait;
+use Illuminate\Support\Facades\Log;
 
 class TourService extends BaseService
 {
@@ -933,6 +934,7 @@ class TourService extends BaseService
         $cellData = [];
         $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false, [], ['execution_date' => 'asc']);
         $orderList = $this->getOrderService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::ORDER_STATUS_5], ['*'], false);
+        Log::info(count($orderList));
         foreach ($tourList as $k => $v) {
             $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
             $cellData[$k]['driver'] = $v['line_name'] . ' ' . $v['driver_name'];

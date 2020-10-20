@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Merchant\TourService;
-use App\Services\Traits\TourRedisLockTrait;
+use App\Traits\TourRedisLockTrait;
 use Illuminate\Http\Request;
 
 /**

@@ -3,7 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\CarResource;
+use App\Http\Resources\Api\Admin\CarResource;
 use App\Models\Car;
 use App\Models\Tour;
 use App\Services\BaseConstService;

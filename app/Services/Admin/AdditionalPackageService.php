@@ -5,7 +5,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\AdditionalPackageResource;
+use App\Http\Resources\Api\Admin\AdditionalPackageResource;
 use App\Models\AdditionalPackage;
 use App\Services\BaseService;
 use App\Traits\SearchTrait;

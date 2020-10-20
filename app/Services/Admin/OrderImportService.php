@@ -10,8 +10,8 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\OrderImportInfoResource;
-use App\Http\Resources\OrderImportResource;
+use App\Http\Resources\Api\Admin\OrderImportInfoResource;
+use App\Http\Resources\Api\Admin\OrderImportResource;
 use App\Models\OrderImportLog;
 use App\Services\BaseService;
 use App\Traits\ExportTrait;

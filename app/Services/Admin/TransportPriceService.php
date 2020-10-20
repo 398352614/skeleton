@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\TransportPriceResource;
+use App\Http\Resources\Api\Admin\TransportPriceResource;
 use App\Models\KilometresCharging;
 use App\Models\OrderItem;
 use App\Models\SpecialTimeCharging;

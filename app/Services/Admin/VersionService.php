@@ -6,7 +6,7 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\VersionResource;
+use App\Http\Resources\Api\Admin\VersionResource;
 use App\Models\Version;
 use App\Services\BaseService;
 

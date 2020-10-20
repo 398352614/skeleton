@@ -10,7 +10,7 @@ namespace App\Services\Driver;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\MemorandumResource;
+use App\Http\Resources\Api\Driver\MemorandumResource;
 use App\Models\Memorandum;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;

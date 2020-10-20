@@ -4,7 +4,7 @@
 namespace App\Services\Admin;
 
 
-use App\Http\Resources\TourDelayResource;
+use App\Http\Resources\Api\Admin\TourDelayResource;
 use App\Models\TourDelay;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;

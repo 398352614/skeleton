@@ -2,8 +2,8 @@
 
 namespace App\Services\Admin;
 
-use App\Http\Resources\CarBrandResource;
-use App\Http\Resources\CarResource;
+use App\Http\Resources\Api\Admin\Api\Admin\CarBrandResource;
+use App\Http\Resources\Api\Admin\CarResource;
 use App\Models\Car;
 use App\Models\CarBrand;
 use App\Services\BaseConstService;

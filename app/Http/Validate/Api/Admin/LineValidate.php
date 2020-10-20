@@ -16,6 +16,7 @@ class LineValidate extends BaseValidate
     public $customAttributes = [
 
     ];
+
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:line,id,company_id',
         'country' => 'nullable|string|max:50',

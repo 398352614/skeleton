@@ -5,7 +5,7 @@ namespace App\Services\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\PackageResource;
+use App\Http\Resources\Api\Merchant\PackageResource;
 use App\Models\Order;
 use App\Models\Package;
 use App\Services\BaseConstService;

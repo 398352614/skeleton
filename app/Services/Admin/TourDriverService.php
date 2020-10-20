@@ -9,7 +9,7 @@
 namespace App\Services\Admin;
 
 
-use App\Http\Resources\TourDriverEventResource;
+use App\Http\Resources\Api\Admin\TourDriverEventResource;
 use App\Models\Batch;
 use App\Models\TourDriverEvent;
 use App\Services\BaseService;

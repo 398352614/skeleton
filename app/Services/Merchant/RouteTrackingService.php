@@ -3,7 +3,7 @@
 namespace App\Services\Merchant;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\RouteTrackingResource;
+use App\Http\Resources\Api\Merchant\RouteTrackingResource;
 use App\Models\RouteTracking;
 use App\Models\Tour;
 use App\Models\TourDriverEvent;

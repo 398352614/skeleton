@@ -9,8 +9,8 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\DeviceResource;
-use App\Http\Resources\DriverResource;
+use App\Http\Resources\Api\Admin\DeviceResource;
+use App\Http\Resources\Api\Admin\DriverResource;
 use App\Models\Device;
 use App\Models\Driver;
 use App\Services\BaseConstService;

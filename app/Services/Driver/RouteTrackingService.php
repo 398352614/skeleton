@@ -3,7 +3,7 @@
 namespace App\Services\Driver;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\RouteTrackingResource;
+use App\Http\Resources\Api\Driver\RouteTrackingResource;
 use App\Models\RouteTracking;
 use App\Models\Tour;
 use App\Services\BaseConstService;

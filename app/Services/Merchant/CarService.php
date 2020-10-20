@@ -3,7 +3,7 @@
 namespace App\Services\Merchant;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\CarResource;
+use App\Http\Resources\Api\Merchant\CarResource;
 use App\Models\Car;
 use App\Models\Tour;
 use App\Services\BaseConstService;

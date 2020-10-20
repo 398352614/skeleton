@@ -10,7 +10,7 @@ namespace App\Services\Driver;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\TourTaskResource;
+use App\Http\Resources\Api\Driver\TourTaskResource;
 use App\Models\AdditionalPackage;
 use App\Models\Tour;
 use App\Models\TourMaterial;

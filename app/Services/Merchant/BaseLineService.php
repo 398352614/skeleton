@@ -10,7 +10,7 @@ namespace App\Services\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\LineResource;
+use App\Http\Resources\Api\Merchant\LineResource;
 use App\Models\Holiday;
 use App\Models\HolidayDate;
 use App\Models\Line;

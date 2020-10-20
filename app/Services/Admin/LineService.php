@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\LineResource;
+use App\Http\Resources\Api\Admin\LineResource;
 use App\Http\Validate\Api\Admin\LineValidate;
 use App\Models\Line;
 use App\Services\BaseConstService;

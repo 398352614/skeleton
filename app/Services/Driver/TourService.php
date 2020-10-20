@@ -11,7 +11,7 @@ namespace App\Services\Driver;
 
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\TourBatchResource;
+use App\Http\Resources\Api\Driver\TourBatchResource;
 use App\Jobs\UpdateTour;
 use App\Models\AdditionalPackage;
 use App\Models\Batch;
@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
-use App\Services\Traits\TourRedisLockTrait;
+use App\Traits\TourRedisLockTrait;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;

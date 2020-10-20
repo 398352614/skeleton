@@ -10,7 +10,7 @@ namespace App\Services\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\MerchantGroupResource;
+use App\Http\Resources\Api\Merchant\MerchantGroupResource;
 use App\Models\MerchantGroup;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
