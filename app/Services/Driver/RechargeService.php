@@ -36,30 +36,6 @@ class RechargeService extends BaseService
     }
 
     /**
-     * @return MerchantService
-     */
-    public function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * @return OrderNoRuleService
-     */
-    public function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
-    /**
-     * @return RechargeStatisticsService
-     */
-    public function getRechargeStatisticsService()
-    {
-        return self::getInstance(RechargeStatisticsService::class);
-    }
-
-    /**
      * 充值记录列表
      * @return \Illuminate\Database\Eloquent\Collection
      */

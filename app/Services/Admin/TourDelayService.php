@@ -4,9 +4,9 @@
 namespace App\Services\Admin;
 
 
-use App\Http\Resources\Api\Admin\Api\Admin\TourDelayResource;
+use App\Http\Resources\Api\Admin\TourDelayResource;
 use App\Models\TourDelay;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\ConstTranslateTrait;
 
 class TourDelayService extends BaseService

@@ -5,13 +5,13 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\Admin\RechargeInfoResource;
-use App\Http\Resources\Api\Admin\Api\Admin\RechargeResource;
-use App\Http\Resources\Api\Admin\Api\Admin\RechargeStatisticsResource;
+use App\Http\Resources\Api\Admin\RechargeInfoResource;
+use App\Http\Resources\Api\Admin\RechargeResource;
+use App\Http\Resources\Api\Admin\RechargeStatisticsResource;
 use App\Models\Recharge;
 use App\Models\RechargeStatistics;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Services\OrderNoRuleService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -35,22 +35,6 @@ class RechargeStatisticsService extends BaseService
     public function __construct(RechargeStatistics $rechargeStatistics)
     {
         parent::__construct($rechargeStatistics, RechargeStatisticsResource::class, RechargeStatisticsResource::class);
-    }
-
-    /**
-     * @return MerchantService
-     */
-    public function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * @return RechargeService
-     */
-    public function getRechargeService()
-    {
-        return self::getInstance(RechargeService::class);
     }
 
     /**

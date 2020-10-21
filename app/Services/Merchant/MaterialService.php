@@ -29,14 +29,6 @@ class MaterialService extends BaseService
     ];
 
     /**
-     * 订单服务
-     * @return OrderService
-     */
-    public function getOrderService()
-    {
-        return parent::getInstance(OrderService::class);
-    }
-    /**
      * 列表查询
      * @return Collection
      */

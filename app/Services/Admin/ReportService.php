@@ -10,11 +10,11 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\Admin\ReportResource;
+use App\Http\Resources\Api\Admin\ReportResource;
 use App\Models\Tour;
 use App\Models\TourMaterial;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\StatusConvertTrait;
 use Carbon\CarbonInterval;
@@ -45,42 +45,6 @@ class ReportService extends BaseService
     {
         parent::__construct($tour, ReportResource::class);
         $this->tourMaterialModel = $tourMaterial;
-    }
-
-    /**
-     * 站点服务
-     * @return BatchService
-     */
-    private function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 订单 服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 材料服务
-     * @return MaterialService
-     */
-    private function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
     }
 
     public function getPageList()

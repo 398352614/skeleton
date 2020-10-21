@@ -45,51 +45,6 @@ class TourTaskService extends BaseService
     }
 
     /**
-     * 站点 服务
-     * @return BatchService
-     */
-    private function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 订单 服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 材料 服务
-     * @return MaterialService
-     */
-    private function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
-    }
-
-    /**
-     * 延迟 服务
-     * @return TourDelayService
-     */
-    private function getTourDelayService()
-    {
-        return self::getInstance(TourDelayService::class);
-    }
-
-    /**
      * 获取任务列表
      * @return mixed
      */

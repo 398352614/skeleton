@@ -24,42 +24,6 @@ class RouteTrackingService extends BaseService
     }
 
     /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    public function getTourService()
-    {
-        return self::getInstance(TourService::class);
-    }
-
-    /**
-     * 站点 服务
-     * @return BatchService
-     */
-    public function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 订单 服务
-     * @return OrderService
-     */
-    public function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 司机事件 服务
-     * @return TourDriverService
-     */
-    public function getTourDriverService()
-    {
-        return self::getInstance(TourDriverService::class);
-    }
-
-    /**
      * 线路追踪
      * @return array
      * @throws BusinessLogicException

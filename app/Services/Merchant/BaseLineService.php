@@ -39,51 +39,6 @@ class BaseLineService extends BaseService
     }
 
     /**
-     * 邮编线路范围 服务
-     * @return LineRangeService
-     */
-    public function getLineRangeService()
-    {
-        return self::getInstance(LineRangeService::class);
-    }
-
-    /**
-     * 商户线路范围 服务
-     * @return MerchantLineRangeService
-     */
-    public function getMerchantLineRangeService()
-    {
-        return self::getInstance(MerchantLineRangeService::class);
-    }
-
-    /**
-     * 区域线路范围 服务
-     * @return LineAreaService
-     */
-    public function getLineAreaService()
-    {
-        return self::getInstance(LineAreaService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    public function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
-    }
-
-    /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    private function getTourService()
-    {
-        return self::getInstance(TourService::class);
-    }
-
-    /**
      * 新增
      * @param $params
      * @param $rule

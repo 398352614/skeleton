@@ -10,12 +10,12 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\Admin\HolidayResource;
+use App\Http\Resources\Api\Admin\HolidayResource;
 use App\Models\Holiday;
 use App\Models\HolidayDate;
 use App\Models\Merchant;
 use App\Models\MerchantHoliday;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 
@@ -36,15 +36,6 @@ class HolidayService extends BaseService
         parent::__construct($model, HolidayResource::class, HolidayResource::class);
         $this->holidayDateModel = $holidayDate;
         $this->merchantHoliday = $merchantHoliday;
-    }
-
-    /**
-     * 商户 服务
-     * @return MerchantService
-     */
-    private function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
     }
 
     public function show($id)

@@ -35,15 +35,6 @@ class RechargeStatisticsService extends BaseService
     }
 
     /**
-     * 充值服务
-     * @return RechargeService
-     */
-    public function getRechargeService()
-    {
-        return self::getInstance(RechargeService::class);
-    }
-
-    /**
      * 充值统计
      * @param $data
      * @return mixed

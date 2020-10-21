@@ -36,15 +36,6 @@ class PackageService extends BaseService
     ];
 
     /**
-     * 订单服务
-     * @return OrderService
-     */
-    public function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
      * 列表查询
      * @return \Illuminate\Database\Eloquent\Collection
      */

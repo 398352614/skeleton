@@ -10,11 +10,11 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\Admin\MerchantGroupResource;
+use App\Http\Resources\Api\Admin\MerchantGroupResource;
 use App\Models\MerchantGroup;
 use App\Models\TransportPrice;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use Illuminate\Support\Arr;
 
 class MerchantGroupService extends BaseService
@@ -26,25 +26,6 @@ class MerchantGroupService extends BaseService
     {
         parent::__construct($merchantGroup, MerchantGroupResource::class);
     }
-
-    /**
-     * 商户管理
-     * @return MerchantService
-     */
-    private function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * 运价管理 服务
-     * @return TransportPriceService
-     */
-    private function getTransportPriceService()
-    {
-        return self::getInstance(TransportPriceService::class);
-    }
-
 
     /**
      * 新增

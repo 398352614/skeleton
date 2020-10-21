@@ -40,15 +40,6 @@ class TransportPriceService extends BaseService
         $this->specialTimeChargingModel = $specialTimeCharging;
     }
 
-    /**
-     * 商户组 服务
-     * @return MerchantGroupService
-     */
-    private function getMerchantGroupService()
-    {
-        return self::getInstance(MerchantGroupService::class);
-    }
-
     /**运价方案详情
      * @return array
      * @throws BusinessLogicException

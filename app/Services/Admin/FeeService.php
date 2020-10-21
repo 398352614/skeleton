@@ -10,10 +10,10 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\Admin\Api\Admin\FeeResource;
+use App\Http\Resources\Api\Admin\Api\Admin\FeeResource;
 use App\Models\Fee;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Arr;
 

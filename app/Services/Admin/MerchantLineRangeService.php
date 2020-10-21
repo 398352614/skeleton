@@ -10,11 +10,11 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\Admin\FeeResource;
+use App\Http\Resources\Api\Admin\FeeResource;
 use App\Models\Fee;
 use App\Models\MerchantLineRange;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -24,33 +24,6 @@ class MerchantLineRangeService extends BaseService
     public function __construct(MerchantLineRange $model)
     {
         parent::__construct($model, null);
-    }
-
-    /**
-     * 线路服务
-     * @return LineService
-     */
-    public function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 线路范围服务
-     * @return LineRangeService
-     */
-    public function getLineRangeService()
-    {
-        return self::getInstance(LineRangeService::class);
-    }
-
-    /**
-     * 商户 服务
-     * @return MerchantService
-     */
-    public function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
     }
 
     /**

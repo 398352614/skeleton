@@ -10,9 +10,9 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\Admin\CountryResource;
+use App\Http\Resources\Api\Admin\CountryResource;
 use App\Models\Country;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\CountryTrait;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
@@ -23,52 +23,6 @@ class CountryService extends BaseService
     {
         parent::__construct($country, CountryResource::class);
     }
-
-    /**
-     * 订单 服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 收件人地址 服务
-     * @return ReceiverAddressService
-     */
-    private function getReceiverAddressService()
-    {
-        return self::getInstance(ReceiverAddressService::class);
-    }
-
-    /**
-     * 发件人地址 服务
-     * @return SenderAddressService
-     */
-    private function getSenderAddressService()
-    {
-        return self::getInstance(SenderAddressService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    private function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
-    }
-
-    /**
-     * 线路 服务
-     * @return LineService
-     */
-    private function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
 
     /**
      * 列表查询

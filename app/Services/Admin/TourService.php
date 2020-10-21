@@ -5,15 +5,15 @@ namespace App\Services\Admin;
 use App\Events\AfterTourInit;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\Admin\TourInfoResource;
-use App\Http\Resources\Api\Admin\Api\Admin\TourResource;
+use App\Http\Resources\Api\Admin\TourInfoResource;
+use App\Http\Resources\Api\Admin\TourResource;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Services\BaseServices\XLDirectionService;
 use App\Services\ApiServices\GoogleApiService;
 use App\Services\OrderNoRuleService;
@@ -119,106 +119,6 @@ class TourService extends BaseService
         parent::__construct($tour, TourResource::class, TourInfoResource::class);
         $this->apiClient = $client;
         $this->directionClient = $directionClient;
-    }
-
-    /**
-     * 站点 服务
-     * @return BatchService
-     */
-    private function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 订单服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 司机 服务
-     * @return DriverService
-     */
-    private function getDriverService()
-    {
-        return self::getInstance(DriverService::class);
-    }
-
-    /**
-     * 车辆 服务
-     * @return CarService
-     */
-    private function getCarService()
-    {
-        return self::getInstance(CarService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    private function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
-    }
-
-    /**
-     * 单号规则 服务
-     * @return OrderNoRuleService
-     */
-    private function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
-    /**
-     * 材料服务
-     * @return MaterialService
-     */
-    private function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
-
-    }
-
-    /**
-     * 商户服务
-     * @return MerchantService
-     */
-    private function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * 线路 服务
-     * @return LineService
-     */
-    private function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 三方请求计数服务
-     * @return ApiTimesService
-     */
-    private function getApiTimesService()
-    {
-        return self::getInstance(ApiTimesService::class);
     }
 
     /**

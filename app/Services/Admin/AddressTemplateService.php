@@ -9,7 +9,7 @@
 namespace App\Services\Admin;
 
 use App\Models\AddressTemplate;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 
 class AddressTemplateService extends BaseService
 {

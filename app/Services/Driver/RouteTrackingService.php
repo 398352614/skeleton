@@ -23,15 +23,6 @@ class RouteTrackingService extends BaseService
     }
 
     /**
-     * 设备 服务
-     * @return DeviceService
-     */
-    private function getDeviceService()
-    {
-        return self::getInstance(DeviceService::class);
-    }
-
-    /**
      * @param $params
      * @return string
      * @throws BusinessLogicException

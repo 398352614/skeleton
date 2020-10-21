@@ -5,10 +5,10 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\Admin\PackageResource;
+use App\Http\Resources\Api\Admin\PackageResource;
 use App\Models\Package;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -28,15 +28,6 @@ class PackageService extends BaseService
         'express_first_no,order_no,out_order_no' => ['like', 'keyword'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
     ];
-
-    /**
-     * 订单服务
-     * @return OrderService
-     */
-    public function getOrderService()
-    {
-        return parent::getInstance(OrderService::class);
-    }
 
     /**
      * 列表查询

@@ -70,69 +70,6 @@ class TourService extends BaseService
         $this->directionClient = $directionClient;
     }
 
-    /**
-     * 站点 服务
-     * @return BatchService
-     */
-    private function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 订单服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 司机 服务
-     * @return DriverService
-     */
-    private function getDriverService()
-    {
-        return self::getInstance(DriverService::class);
-    }
-
-    /**
-     * 车辆 服务
-     * @return CarService
-     */
-    private function getCarService()
-    {
-        return self::getInstance(CarService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    private function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
-    }
-
-    /**
-     * 单号规则 服务
-     * @return OrderNoRuleService
-     */
-    private function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
     public function getPageList()
     {
         $orderQuery = $this->getOrderService()->query->whereNotNull('tour_no');

@@ -10,11 +10,11 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\Admin\LineResource;
+use App\Http\Resources\Api\Admin\LineResource;
 use App\Http\Validate\Api\Admin\LineValidate;
 use App\Models\Line;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ImportTrait;
@@ -30,20 +30,6 @@ class LineService extends BaseLineService
     public function __construct(Line $line)
     {
         parent::__construct($line);
-    }
-
-    public function getUploadService()
-    {
-        return self::getInstance(UploadService::class);
-    }
-
-    /**
-     * 商户线路范围 服务
-     * @return MerchantLineRangeService
-     */
-    public function getMerchantLineRangeService()
-    {
-        return self::getInstance(MerchantLineRangeService::class);
     }
 
     /**
