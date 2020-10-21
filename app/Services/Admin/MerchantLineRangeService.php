@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\FeeResource;
+use App\Http\Resources\Api\Admin\Api\Admin\FeeResource;
 use App\Models\Fee;
 use App\Models\MerchantLineRange;
 use App\Services\BaseConstService;

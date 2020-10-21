@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\MerchantResource;
+use App\Http\Resources\Api\Admin\Api\Admin\MerchantResource;
 use App\Models\Merchant;
 use App\Models\MerchantFeeConfig;
 use App\Models\MerchantGroup;

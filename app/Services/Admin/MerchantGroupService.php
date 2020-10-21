@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\MerchantGroupResource;
+use App\Http\Resources\Api\Admin\Api\Admin\MerchantGroupResource;
 use App\Models\MerchantGroup;
 use App\Models\TransportPrice;
 use App\Services\BaseConstService;

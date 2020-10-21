@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\ReportResource;
+use App\Http\Resources\Api\Admin\Api\Admin\ReportResource;
 use App\Models\Tour;
 use App\Models\TourMaterial;
 use App\Services\BaseConstService;

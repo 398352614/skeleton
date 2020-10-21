@@ -5,7 +5,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\MaterialResource;
+use App\Http\Resources\Api\Admin\Api\Admin\MaterialResource;
 use App\Models\Material;
 use App\Models\Package;
 use App\Services\BaseService;

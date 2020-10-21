@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\ReceiverAddressResource;
+use App\Http\Resources\Api\Admin\Api\Admin\ReceiverAddressResource;
 use App\Models\Merchant;
 use App\Models\ReceiverAddress;
 use App\Services\BaseService;

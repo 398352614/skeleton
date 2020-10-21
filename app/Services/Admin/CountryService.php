@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\CountryResource;
+use App\Http\Resources\Api\Admin\Api\Admin\CountryResource;
 use App\Models\Country;
 use App\Services\BaseService;
 use App\Traits\CountryTrait;

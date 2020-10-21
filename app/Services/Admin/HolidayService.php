@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\HolidayResource;
+use App\Http\Resources\Api\Admin\Api\Admin\HolidayResource;
 use App\Models\Holiday;
 use App\Models\HolidayDate;
 use App\Models\Merchant;

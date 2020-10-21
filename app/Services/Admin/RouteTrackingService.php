@@ -3,7 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\RouteTrackingResource;
+use App\Http\Resources\Api\Admin\Api\Admin\RouteTrackingResource;
 use App\Listeners\TourDriver;
 use App\Models\RouteTracking;
 use App\Models\Tour;

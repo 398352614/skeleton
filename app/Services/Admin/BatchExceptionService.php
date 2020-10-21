@@ -10,8 +10,8 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\BatchExceptionResource;
-use App\Http\Resources\Api\Admin\BatchResource;
+use App\Http\Resources\Api\Admin\Api\Admin\BatchExceptionResource;
+use App\Http\Resources\Api\Admin\Api\Admin\BatchResource;
 use App\Models\BatchException;
 use App\Services\BaseConstService;
 use App\Services\BaseService;

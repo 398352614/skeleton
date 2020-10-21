@@ -3,8 +3,8 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\DriverResource;
-use App\Http\Resources\Api\Admin\TourResource;
+use App\Http\Resources\Api\Admin\Api\Admin\DriverResource;
+use App\Http\Resources\Api\Admin\Api\Admin\TourResource;
 use App\Models\Driver;
 use App\Models\Tour;
 use App\Services\BaseConstService;

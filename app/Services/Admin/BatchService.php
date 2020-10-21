@@ -5,7 +5,7 @@ namespace App\Services\Admin;
 use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\Api\AdminBatchResource;
+use App\Http\Resources\Api\Admin\BatchResource;
 use App\Http\Resources\Api\Admin\BatchInfoResource;
 use App\Models\Batch;
 use App\Services\BaseConstService;
