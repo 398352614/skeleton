@@ -26,7 +26,7 @@ use Carbon\CarbonInterval;
 use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use App\Services\OrderTrailService;
+use App\Services\TrackingOrderTrailService;
 use App\Services\Traits\TourRedisLockTrait;
 
 class TourService extends BaseService
@@ -302,7 +302,7 @@ class TourService extends BaseService
         $tour['driver_id'] = $driver['id'];
         $tour['driver_name'] = $driver['fullname'];
         $tour['driver_phone'] = $driver['phone'];
-        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_ASSIGN_DRIVER);
+        TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_ASSIGN_DRIVER);
     }
 
     /**
@@ -317,7 +317,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机取消分配失败，请重新操作');
         }
-        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_CANCEL_ASSIGN_DRIVER);
+        TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_ASSIGN_DRIVER);
     }
 
 
@@ -414,7 +414,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
-        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_UN_LOCK);
+        TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_UN_LOCK);
     }
 
 

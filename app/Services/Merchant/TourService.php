@@ -22,7 +22,7 @@ use App\Traits\LocationTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use App\Services\OrderTrailService;
+use App\Services\TrackingOrderTrailService;
 use App\Services\Traits\TourRedisLockTrait;
 
 class TourService extends BaseService
@@ -210,7 +210,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
-        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_UN_LOCK);
+        TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_UN_LOCK);
     }
 
 

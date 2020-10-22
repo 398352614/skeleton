@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
-use App\Services\OrderTrailService;
+use App\Services\TrackingOrderTrailService;
 use App\Services\Traits\TourRedisLockTrait;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -219,7 +219,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('包裹锁定失败,请重新操作');
         }
-        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_LOCK);
+        TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_LOCK);
     }
 
     /**
@@ -257,7 +257,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆取消分配失败，请重新操作');
         }
-        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_UN_LOCK);
+        TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_UN_LOCK);
     }
 
 

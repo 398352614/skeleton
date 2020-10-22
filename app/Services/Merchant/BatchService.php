@@ -14,7 +14,7 @@ use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
-use App\Services\OrderTrailService;
+use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use Carbon\Carbon;
@@ -435,7 +435,7 @@ class BatchService extends BaseService
             $this->getTourService()->reCountAmountByNo($info['tour_no']);
         }
 
-        OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+        TrackingOrderTrailService::storeAllByOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
 
         //取消通知
         foreach ($orderList as $order) {
@@ -562,7 +562,7 @@ class BatchService extends BaseService
         //重新统计取件线路金额
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
 
-        OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_REMOVE_TOUR);
+        TrackingOrderTrailService::storeByBatch($info, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR);
         return 'true';
     }
 

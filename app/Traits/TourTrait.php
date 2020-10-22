@@ -22,7 +22,7 @@ use App\Models\Order;
 use App\Models\Package;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\OrderTrailService;
+use App\Services\TrackingOrderTrailService;
 use Illuminate\Support\Facades\Log;
 
 trait TourTrait
@@ -30,10 +30,10 @@ trait TourTrait
     public static function afterOutWarehouse($tour, $cancelOrderList)
     {
         //取消派送订单，取派失败
-        !empty($cancelOrderList) && OrderTrailService::storeAllByOrderList($cancelOrderList, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+        !empty($cancelOrderList) && TrackingOrderTrailService::storeAllByOrderList($cancelOrderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
         //派送订单
         $orderList = Order::query()->select(['*'])->where('tour_no', $tour['tour_no'])->whereNotIn('order_no', array_column($cancelOrderList, 'order_no'))->get()->toArray();
-        !empty($orderList) && OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_DELIVERING);
+        !empty($orderList) && TrackingOrderTrailService::storeAllByOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_DELIVERING);
         //触发司机出库1
         event(new OutWarehouse($tour));
         //出库通知
@@ -61,7 +61,7 @@ trait TourTrait
     {
         data_set($orderList, '*.status', BaseConstService::ORDER_STATUS_6);
         data_set($batch, 'status', BaseConstService::ORDER_STATUS_6);
-        OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+        TrackingOrderTrailService::storeAllByOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
         //取消取派通知
         event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $orderList));
         //处理站点
@@ -75,11 +75,11 @@ trait TourTrait
         $groupOrderList = array_create_group_index($orderList, 'status');
         //若存在签收成功的订单列表,则记录
         if (!empty($groupOrderList[BaseConstService::ORDER_STATUS_5])) {
-            OrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::ORDER_STATUS_5], BaseConstService::ORDER_TRAIL_DELIVERED);
+            TrackingOrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::ORDER_STATUS_5], BaseConstService::TRACKING_ORDER_TRAIL_DELIVERED);
         }
         //若存在签收失败的订单列表,则记录
         if (!empty($groupOrderList[BaseConstService::ORDER_STATUS_6])) {
-            OrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::ORDER_STATUS_6], BaseConstService::ORDER_TRAIL_CANCEL_DELIVER);
+            TrackingOrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::ORDER_STATUS_6], BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
         }
         unset($groupOrderList);
         //签收通知

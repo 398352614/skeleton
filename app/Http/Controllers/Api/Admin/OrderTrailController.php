@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
-use App\Services\OrderTrailService;
+use App\Services\TrackingOrderTrailService;
 use Illuminate\Http\Request;
 
 class OrderTrailController extends BaseController
 {
     /**
-     * @var OrderTrailService
+     * @var TrackingOrderTrailService
      */
     public $service;
 
-    public function __construct(OrderTrailService $service)
+    public function __construct(TrackingOrderTrailService $service)
     {
         $this->service = $service;
     }
@@ -28,6 +29,7 @@ class OrderTrailController extends BaseController
      * @apiDescription 车辆列表
      * @apiParam {String}   order_no         需要查看的订单编号
      * @apiSuccessExample {json}  返回示例
+     * @throws BusinessLogicException
      * HTTP/1.1 200 OK
      * {
      *  "ret":1,
@@ -37,6 +39,6 @@ class OrderTrailController extends BaseController
      */
     public function index()
     {
-        return $this->service->getNoPageList();
+        return $this->service->getTrackingNoPageList();
     }
 }
