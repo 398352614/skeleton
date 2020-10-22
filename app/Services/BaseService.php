@@ -3,8 +3,6 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\OrderInfoResource;
-use App\Http\Resources\OrderResource;
 use App\Models\BaseModel;
 use App\Traits\FactoryInstanceTrait;
 use App\Traits\SearchTrait;
