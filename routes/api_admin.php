@@ -89,7 +89,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //批量打印
         Route::get('/orderPrintAll', 'OrderController@orderPrintAll');
         //订单导出表格
-        Route::get('/order-excel', 'OrderController@orderExport');
+        Route::post('/order-excel', 'OrderController@orderExport');
         //获取所有线路（邮编及区域）
         Route::get('/get-line', 'OrderController@getLineList');
         //同步订单状态列表

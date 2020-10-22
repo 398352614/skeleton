@@ -1195,7 +1195,8 @@ class OrderService extends BaseService
      */
     public function orderExport($ids)
     {
-        $orderList = parent::getList(['id' => ['in', $ids], ['*'], false]);
+        $ids=explode(',',$ids);
+        $orderList = parent::getList(['id' => ['in', $ids]], ['*'], false);
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
