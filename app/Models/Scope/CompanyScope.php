@@ -31,6 +31,7 @@ use App\Models\Material;
 use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
+use App\Models\MerchantLineRange;
 use App\Models\MerchantRecharge;
 use App\Models\Order;
 use App\Models\OrderNoRule;
@@ -140,6 +141,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Driver)
                 && !($model instanceof Holiday)
                 && !($model instanceof HolidayDate)
+                && !($model instanceof MerchantLineRange)
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . '=' . $user->id);
             }
