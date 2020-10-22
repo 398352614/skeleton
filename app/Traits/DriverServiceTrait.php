@@ -4,8 +4,8 @@
 namespace App\Traits;
 
 
-use App\Services\Admin\AdditionalPackageService;
-use App\Services\Admin\TourDelayService;
+use App\Services\Driver\AdditionalPackageService;
+use App\Services\Driver\TourDelayService;
 use App\Services\Driver\BatchExceptionService;
 use App\Services\Driver\BatchService;
 use App\Services\Driver\CarService;
