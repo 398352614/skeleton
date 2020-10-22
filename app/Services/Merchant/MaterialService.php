@@ -6,7 +6,7 @@ namespace App\Services\Merchant;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Material;
-use App\Services\Admin\OrderService;
+use App\Services\Admin\Merchant\OrderService;
 use App\Services\BaseService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
