@@ -5,7 +5,7 @@ namespace App\Services\Merchant;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Merchant;
 use App\Models\SenderAddress;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use App\Http\Resources\Api\Merchant\SenderAddressResource;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;

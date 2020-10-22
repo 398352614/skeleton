@@ -13,7 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Merchant\OrderImportInfoResource;
 use App\Http\Resources\Api\Merchant\OrderImportResource;
 use App\Models\OrderImportLog;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use App\Traits\ExportTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;

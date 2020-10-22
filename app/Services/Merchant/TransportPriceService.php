@@ -15,7 +15,7 @@ use App\Models\KilometresCharging;
 use App\Models\SpecialTimeCharging;
 use App\Models\TransportPrice;
 use App\Models\WeightCharging;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 
 
 /**

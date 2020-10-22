@@ -8,7 +8,7 @@ use App\Http\Resources\Api\Merchant\TourResource;
 use App\Models\Driver;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 

@@ -12,7 +12,7 @@ use App\Models\Order;
 use App\Models\Tour;
 use App\Models\TourLog;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use App\Services\BaseServices\XLDirectionService;
 use App\Services\ApiServices\GoogleApiService;
 use App\Services\OrderNoRuleService;

@@ -13,7 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Merchant\MerchantGroupResource;
 use App\Models\MerchantGroup;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use Illuminate\Support\Arr;
 
 class MerchantGroupService extends BaseService

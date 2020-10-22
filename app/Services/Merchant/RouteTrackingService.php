@@ -8,7 +8,7 @@ use App\Models\RouteTracking;
 use App\Models\Tour;
 use App\Models\TourDriverEvent;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use Illuminate\Support\Arr;
 
 class RouteTrackingService extends BaseService

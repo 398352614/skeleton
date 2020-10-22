@@ -9,7 +9,7 @@
 namespace App\Services\Merchant;
 
 use App\Models\BatchException;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 
 class BatchExceptionService extends BaseService
 {

@@ -11,7 +11,7 @@ namespace App\Services\Merchant;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Merchant;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use Illuminate\Support\Arr;
 
 

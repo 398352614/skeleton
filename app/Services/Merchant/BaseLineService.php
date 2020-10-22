@@ -15,7 +15,6 @@ use App\Models\Holiday;
 use App\Models\HolidayDate;
 use App\Models\Line;
 use App\Models\MerchantHoliday;
-use App\Services\Merchant\LineRangeService;
 use App\Services\BaseConstService;
 use App\Services\Merchant\BaseService;
 use App\Traits\CompanyTrait;

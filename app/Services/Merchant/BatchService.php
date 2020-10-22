@@ -12,7 +12,7 @@ use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Services\OrderTrailService;
 use App\Traits\CompanyTrait;
