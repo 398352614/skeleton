@@ -7,7 +7,7 @@ use App\Http\Resources\Api\Driver\RouteTrackingResource;
 use App\Models\RouteTracking;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+
 use Illuminate\Support\Facades\Log;
 
 class RouteTrackingService extends BaseService
