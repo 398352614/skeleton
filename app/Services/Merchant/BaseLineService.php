@@ -15,9 +15,9 @@ use App\Models\Holiday;
 use App\Models\HolidayDate;
 use App\Models\Line;
 use App\Models\MerchantHoliday;
-use App\Services\Admin\Merchant\MerchantLineRangeService;
+use App\Services\Merchant\LineRangeService;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
@@ -220,7 +220,7 @@ class BaseLineService extends BaseService
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
-        $query = $this->getMerchantLineRangeService()->query
+        $query = $this->getLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);
