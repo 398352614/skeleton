@@ -12,7 +12,6 @@ namespace App\Services\Merchant;
 
 use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
-use App\Events\TourNotify\CancelBatch;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Merchant\OrderInfoResource;
 use App\Http\Resources\Api\Merchant\OrderResource;
@@ -23,7 +22,6 @@ use App\Models\OrderImportLog;
 use App\Models\TourMaterial;
 use App\Services\CommonService;
 use App\Services\BaseConstService;
-use App\Services\Merchant\BaseService;
 use App\Services\ThirdPartyLogService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;

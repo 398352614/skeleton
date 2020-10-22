@@ -219,7 +219,7 @@ class BaseLineService extends BaseService
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
-        $query = $this->getLineRangeService()->query
+        $query = $this->getMerchantLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);
