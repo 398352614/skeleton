@@ -242,7 +242,7 @@ class OrderController extends BaseController
      */
     public function orderExport()
     {
-        return $this->service->orderExport($this->data);
+        return $this->service->orderExport($this->data['id_list']);
     }
 
     /**

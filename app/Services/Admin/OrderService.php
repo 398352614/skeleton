@@ -1189,24 +1189,25 @@ class OrderService extends BaseService
 
     /**
      * 订单导出
+     * @param $ids
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderExport()
+    public function orderExport($ids)
     {
-        $orderList = $this->getPageList();
-        if ($orderList->hasMorePages()) {
-            throw new BusinessLogicException('数据量过大无法导出，订单数不得超过200');
-        }
+        $orderList = parent::getList(['id' => ['in', $ids], ['*'], false]);
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
+        }
+        if ($orderList->count() > 200) {
+            throw new BusinessLogicException('数据量过大无法导出，订单数不得超过200');
         }
         $merchant = $this->getMerchantService()->getList(['id' => ['in', $orderList->pluck('merchant_id')->toArray()]]);
         if ($merchant->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $orderList->pluck('tour_no')->toArray()]]);
-        $orderList = $orderList->toArray(request());
+        $orderList = $orderList->toArray();
         foreach ($orderList as $k => $v) {
             $orderList[$k]['merchant_name'] = $v['merchant_id_name'];
             $orderList[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
