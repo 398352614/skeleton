@@ -51,6 +51,8 @@ class RechargeStatistics extends BaseModel
     protected $fillable = [
         'company_id',
         'merchant_id',
+        'tour_no',
+        'execution_date',
         'recharge_date',
         'driver_id',
         'driver_name',

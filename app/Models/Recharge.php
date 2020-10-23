@@ -53,6 +53,8 @@ class Recharge extends BaseModel
         'merchant_id',
         'recharge_statistics_id',
         'recharge_no',
+        'tour_no',
+        'execution_date',
         'transaction_number',
         'out_user_id',
         'out_user_name',
