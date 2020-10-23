@@ -84,9 +84,6 @@ class RechargeService extends BaseService
         if($orderList->isEmpty()){
             throw new BusinessLogicException('数据不存在');
         }
-        if(in_array($params['merchant_id'],$orderList->pluck('merchant_id')->toArray())){
-            throw new BusinessLogicException('只有取派中的取件线路相关用户才能充值');
-        }
         $params = Arr::only($params, ['merchant_id', 'out_user_name']);
         $data['data'] = $params;
         $data['type'] = BaseConstService::NOTIFY_RECHARGE_VALIDUSER;
