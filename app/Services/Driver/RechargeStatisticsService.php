@@ -42,12 +42,11 @@ class RechargeStatisticsService extends BaseService
      */
     public function rechargeStatistics($data)
     {
-        $where = ['driver_id' => auth()->user()->id, 'recharge_date' => $data['recharge_date'], 'merchant_id' => $data['merchant_id'], 'tour_no' => $data['tour_no'], 'execution_date' => $data['execution_date']];
+        $where = ['driver_id' => auth()->user()->id,'merchant_id' => $data['merchant_id'], 'tour_no' => $data['tour_no'], 'execution_date' => $data['execution_date']];
         $info = parent::getInfo($where, ['*'], false);
         if (empty($info)) {
             $where = array_merge($where, [
                 'driver_name' => auth()->user()->fullname,
-                'recharge_date' => Carbon::today()->format('Y-m-d')
                 ]);
             $row = parent::create($where);
             if ($row == false) {

@@ -80,13 +80,20 @@ class RechargeService extends BaseService
         if(empty($tour)){
             throw new BusinessLogicException('线路未出库，无法进行现金充值');
         }
+        $orderList=$this->getOrderService()->getList(['tour_no'=>$tour['tour_no']],['*'],false);
+        if($orderList->isEmpty()){
+            throw new BusinessLogicException('数据不存在');
+        }
+        if(in_array($params['merchant_id'],$orderList->pluck('merchant_id')->toArray())){
+            throw new BusinessLogicException('只有取派中的取件线路相关用户才能充值');
+        }
         $params = Arr::only($params, ['merchant_id', 'out_user_name']);
         $data['data'] = $params;
         $data['type'] = BaseConstService::NOTIFY_RECHARGE_VALIDUSER;
         //请求第三方
         $curl = new CurlClient();
         $res = $curl->merchantPost($merchantApi, $data);
-        Log::info('返回值', $res);
+        Log::info('返回值', $res ?? []);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['out_user_id']) || empty($res['data']['phone'] || empty($res['data']['email']))) {
             throw new BusinessLogicException('客户不存在，请检查客户编码是否正确');
         } else {
