@@ -76,6 +76,10 @@ class RechargeService extends BaseService
         if (empty($merchantApi['url']) || empty($merchantApi['secret']) || empty($merchantApi['key'])) {
             throw new BusinessLogicException('该商户未开启充值业务');
         }
+        $tour = $this->getTourService()->getInfo(['driver_id' => auth()->user()->id, 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
+        if(empty($tour)){
+            throw new BusinessLogicException('线路未出库，无法进行现金充值');
+        }
         $params = Arr::only($params, ['merchant_id', 'out_user_name']);
         $data['data'] = $params;
         $data['type'] = BaseConstService::NOTIFY_RECHARGE_VALIDUSER;
@@ -94,6 +98,8 @@ class RechargeService extends BaseService
             $params['out_user_phone'] = $res['data']['phone'];
             $params['recharge_date'] = Carbon::today()->format('Y-m-d');
             $params['driver_verify_status'] = BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_1;
+            $params['tour_no']=$tour['tour_no'];
+            $params['execution_date']=$tour['execution_date'];
             $row = parent::create($params);
             if ($row == false) {
                 throw new BusinessLogicException('拉取第三方用户信息失败');
@@ -149,9 +155,9 @@ class RechargeService extends BaseService
         if ($info['status'] == BaseConstService::RECHARGE_STATUS_3) {
             throw new BusinessLogicException('充值已完成，请勿重复充值');
         }
-        if ($info['driver_verify_status'] == BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_2) {
-            throw new BusinessLogicException('手机尾号验证未通过，请重新提交');
-        }
+        /*        if ($info['driver_verify_status'] == BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_2) {
+                    throw new BusinessLogicException('手机尾号验证未通过，请重新提交');
+                }*/
         if ($params['out_user_id'] !== $info['out_user_id'] || $params['out_user_name'] !== $info['out_user_name']) {
             throw new BusinessLogicException('用户信息不正确，请重新充值');
         }

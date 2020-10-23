@@ -4,7 +4,7 @@
 namespace App\Traits;
 
 
-use App\Services\Admin\MerchantLineRangeService;
+use App\Services\Merchant\MerchantLineRangeService;
 use App\Services\Merchant\BatchExceptionService;
 use App\Services\Merchant\BatchService;
 use App\Services\Merchant\CarService;

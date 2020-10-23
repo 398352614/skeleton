@@ -3,9 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Models\Merchant;
 use App\Models\SenderAddress;
-use App\Services\Admin\BaseService;
 use App\Http\Resources\Api\Admin\SenderAddressResource;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
@@ -24,14 +22,6 @@ class SenderAddressService extends BaseService
         parent::__construct($senderAddress, SenderAddressResource::class, SenderAddressResource::class);
     }
 
-    /**
-     * 商户 服务
-     * @return MerchantService
-     */
-    private function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
 
     /**
      * 获取唯一性条件
