@@ -803,7 +803,7 @@ class TourService extends BaseService
         $info['batchs'] = array_values($info['batchs']);
         $status = [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2, BaseConstService::PACKAGE_STATUS_3, BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5];
         $info['expect_pickup_package_quantity'] = $this->getPackageService()->count(['tour_no' => $info['tour_no'], 'type' => BaseConstService::PACKAGE_TYPE_1, 'status' => ['in', [$status]]]);
-        $info['expect_pie_package_quantity'] = $this->getPackageService()->count(['tour_no' => $info['tour_no'], 'type' => BaseConstService::PACKAGE_TYPE_1, 'status' => ['in', [$status]]]);
+        $info['expect_pie_package_quantity'] = $this->getPackageService()->count(['tour_no' => $info['tour_no'], 'type' => BaseConstService::PACKAGE_TYPE_2, 'status' => ['in', [$status]]]);
         return $info;
     }
 
