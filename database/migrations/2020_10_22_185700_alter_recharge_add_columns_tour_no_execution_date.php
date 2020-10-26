@@ -36,10 +36,16 @@ class AlterRechargeAddColumnsTourNoExecutionDate extends Migration
     public function down()
     {
         Schema::table('recharge', function (Blueprint $table) {
-
+            $table->dropColumn('tour_no');
+            $table->dropColumn('execution_date');
+            $table->dropColumn('line_id');
+            $table->dropColumn('line_name');
         });
         Schema::table('recharge_statistics', function (Blueprint $table) {
-
+            $table->dropColumn('tour_no');
+            $table->dropColumn('execution_date');
+            $table->dropColumn('line_id');
+            $table->dropColumn('line_name');
         });
     }
 }
