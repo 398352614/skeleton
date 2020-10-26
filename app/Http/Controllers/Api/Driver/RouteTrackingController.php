@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Driver;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Driver\RouteTrackingService;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class RouteTrackingController extends BaseController
 
     /**
      * 单条采集位置
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function store()
     {
@@ -31,7 +32,7 @@ class RouteTrackingController extends BaseController
     /**
      * 批量采集位置
      * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function storeByList(){
         return $this->service->createBylist($this->data);

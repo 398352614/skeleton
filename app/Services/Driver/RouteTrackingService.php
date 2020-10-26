@@ -60,6 +60,9 @@ class RouteTrackingService extends BaseService
      */
     public function createByList($params)
     {
+        if(empty($params['device_number'])){
+            return true;
+        }
         //验证当前账号是否绑定指定设备
         $device = $this->getDeviceService()->getInfo(['number' => $params['device_number'], 'driver_id' => auth()->user()->id], ['*'], false);
         if (empty($device)) return 'true';
