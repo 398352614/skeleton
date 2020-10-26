@@ -51,7 +51,10 @@ class FixRecharge extends Command
                     DB::table('recharge')->where('id', $rechargeList[$k]['id'])->update(
                         [
                             'tour_no' => $rechargeList[$k]['tour_list'][0]->tour_no,
-                            'execution_date' => $rechargeList[$k]['tour_list'][0]->execution_date]);
+                            'execution_date' => $rechargeList[$k]['tour_list'][0]->execution_date,
+                            'line_id' => $rechargeList[$k]['tour_list'][0]->line_id,
+                            'line_name' => $rechargeList[$k]['tour_list'][0]->line_name
+                        ]);
                 }
             }
         } catch (\Exception $e) {
