@@ -50,23 +50,23 @@ class TrackingOrderTrailService extends BaseService
         //根据不同的类型生成不同的content
         $content = '';
         switch ($action) {
-            case BaseConstService::Tracking_ORDER_TRAIL_CREATED:                 // 订单创建
-                $content = sprintf("订单创建成功,订单号[%s]", $order['order_no']);
+            case BaseConstService::TRACKING_ORDER_TRAIL_CREATED:                 // 运单创建
+                $content = sprintf("运单创建成功,运单号[%s]", $order['order_no']);
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH:               // 加入站点
-                $content = sprintf("订单已加入站点[%s]", $params['batch_no']);
+                $content = sprintf("运单已加入站点[%s]", $params['batch_no']);
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH:             //移除站点
-                $content = sprintf("订单从站点[%s]中移除", $params['batch_no']);
+                $content = sprintf("运单从站点[%s]中移除", $params['batch_no']);
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR:                //加入取件线路
-                $content = sprintf("订单加入取件线路[%s]", $params['tour_no']);
+                $content = sprintf("运单加入取件线路[%s]", $params['tour_no']);
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR:              //加入取件线路
-                $content = sprintf("订单从取件线路[%s]移除", $params['tour_no']);
+                $content = sprintf("运单从取件线路[%s]移除", $params['tour_no']);
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_ASSIGN_DRIVER:            // 已分配司机
-                $content = sprintf("订单分配司机，司机姓名[%s]，联系方式[%s]", $params['driver_name'], $params['driver_phone']);
+                $content = sprintf("运单分配司机，司机姓名[%s]，联系方式[%s]", $params['driver_name'], $params['driver_phone']);
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_ASSIGN_DRIVER:     // 已分配司机
                 $content = '取消分配司机';
@@ -75,22 +75,22 @@ class TrackingOrderTrailService extends BaseService
                 $content = '包裹已收入网点';
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_LOCK:                     // 待出库
-                $content = '订单装货中';
+                $content = '运单装货中';
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_UN_LOCK:                 // 取消待出库
-                $content = '订单取消装货';
+                $content = '运单取消装货';
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_DELIVERING:               // 派送中
-                $content = '订单派送中';
+                $content = '运单派送中';
                 break;
-            case BaseConstService::TRACKING_ORDER_TRAIL_DELIVERED:                // 订单已投递
+            case BaseConstService::TRACKING_ORDER_TRAIL_DELIVERED:                // 运单已投递
                 $content = '派件成功';
                 break;
-            case BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER:           // 订单已取消取派
+            case BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER:           // 运单已取消取派
                 $content = '取消派件';
                 break;
-            case BaseConstService::TRACKING_ORDER_TRAIL_DELETE:                   // 订单已被删除
-                $content = '订单已被删除';
+            case BaseConstService::TRACKING_ORDER_TRAIL_DELETE:                   // 运单已被删除
+                $content = '运单已被删除';
                 break;
 
             default:

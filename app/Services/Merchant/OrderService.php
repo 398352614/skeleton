@@ -226,13 +226,13 @@ class OrderService extends BaseService
         }
         return [
             'all_count' => $this->singleOrderCount($params['type']),
-            'no_take' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_1),
-            'assign' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_2),
-            'wait_out' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_3),
-            'taking' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_4),
-            'singed' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_5),
-            'cancel_count' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_6),
-            'delete_count' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_7),
+            'no_take' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_1),
+            'assign' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_2),
+            'wait_out' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_3),
+            'taking' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_4),
+            'singed' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_5),
+            'cancel_count' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_6),
+            'delete_count' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_7),
             'exception_count' => $this->singleOrderCount($params['type'], null, BaseConstService::ORDER_EXCEPTION_LABEL_2),
         ];
     }
@@ -345,7 +345,7 @@ class OrderService extends BaseService
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    private function getInfoByIdOfStatus($id, $isToArray = true, $status = BaseConstService::ORDER_STATUS_1, $isLock = true)
+    private function getInfoByIdOfStatus($id, $isToArray = true, $status = BaseConstService::TRACKING_ORDER_STATUS_1, $isLock = true)
     {
         $where = [$this->getIdKeyName($id) => $id];
         $info = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
@@ -636,7 +636,7 @@ class OrderService extends BaseService
         }
         //若存在外部订单号,则判断是否存在已预约的订单号
         if (!empty($params['out_order_no'])) {
-            $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7]]];
+            $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7]]];
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = parent::getInfo($where, ['id', 'order_no', 'batch_no', 'tour_no'], false);
             if (!empty($dbOrder)) {
@@ -665,7 +665,7 @@ class OrderService extends BaseService
     private function fillSender(&$params, $merchantAlone = BaseConstService::NO)
     {
         //获取线路
-        $line = $this->getLineService()->getInfoByRule($params, BaseConstService::ORDER_OR_BATCH_1, $merchantAlone);
+        $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
         //获取仓库
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
@@ -802,7 +802,7 @@ class OrderService extends BaseService
         }
         //检查仓库
         try {
-            $line = $this->getLineService()->getInfoByRule($data, BaseConstService::ORDER_OR_BATCH_1);
+            $line = $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
             $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         } catch (BusinessLogicException $e) {
             $list['log'] = __($e->getMessage(), $e->replace);
@@ -872,7 +872,7 @@ class OrderService extends BaseService
      */
     public function fillBatchTourInfo($order, $batch, $tour, $isFillItem = true)
     {
-        $status = $tour['status'] ?? BaseConstService::ORDER_STATUS_1;
+        $status = $tour['status'] ?? BaseConstService::TRACKING_ORDER_STATUS_1;
         $rowCount = parent::updateById($order['id'], [
             'execution_date' => $batch['execution_date'],
             'batch_no' => $batch['batch_no'],
@@ -922,7 +922,7 @@ class OrderService extends BaseService
         unset($data['order_no'], $data['tour_no'], $data['batch_no']);
         /*************************************************订单修改******************************************************/
         //获取信息
-        $dbInfo = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $dbInfo = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
         if (intval($dbInfo['source']) === BaseConstService::ORDER_SOURCE_3) {
             throw new BusinessLogicException('第三方订单不能修改');
         }
@@ -975,7 +975,7 @@ class OrderService extends BaseService
      */
     public function updatePhoneDateByApi($id, $data)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
         if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
             $data = Arr::only($data, ['receiver_phone']);
         } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
@@ -984,9 +984,9 @@ class OrderService extends BaseService
             throw new BusinessLogicException('电话或取派日期必填其一');
         }
         //分类
-        if ($info['status'] < BaseConstService::ORDER_STATUS_3) {
+        if ($info['status'] < BaseConstService::TRACKING_ORDER_STATUS_3) {
             return $this->updateDatePhone($info, $data);
-        } elseif (in_array($info['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]) && empty($data['execution_date'])) {
+        } elseif (in_array($info['status'], [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]) && empty($data['execution_date'])) {
             return $this->updatePhone($info, $data);
         } else {
             throw new BusinessLogicException('该状态无法进行此操作');
@@ -1190,7 +1190,7 @@ class OrderService extends BaseService
      */
     public function assignToBatch($id, $params)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
             throw new BusinessLogicException('当前订单已存在分配的站点中！');
         }
@@ -1230,12 +1230,12 @@ class OrderService extends BaseService
      */
     public function removeFromBatch($id)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
         if (empty($info['batch_no'])) {
             throw new BusinessLogicException('已从站点移除!');
         }
         //订单移除站点和取件线路信息
-        $rowCount = parent::updateById($info['id'], ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1, 'execution_date' => null]);
+        $rowCount = parent::updateById($info['id'], ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1, 'execution_date' => null]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
@@ -1271,7 +1271,7 @@ class OrderService extends BaseService
         if (empty($orderList)) {
             throw new BusinessLogicException('所有订单的当前状态不能操作，只允许待分配或已分配状态的订单操作');
         }
-        $statusList = [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2];
+        $statusList = [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2];
         $orderList = Arr::where($orderList, function ($order) use ($statusList) {
             if (!in_array($order['status'], $statusList)) {
                 throw new BusinessLogicException('订单[:order_no]的当前状态不能操作,只允许待分配或已分配状态的订单操作', 1000, ['order_no' => $order['order_no']]);
@@ -1281,7 +1281,7 @@ class OrderService extends BaseService
         $orderNoList = array_column($orderList, 'order_no');
         $where = ['order_no' => ['in', $orderNoList]];
         //订单移除站点和取件线路信息
-        $rowCount = parent::update($where, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::ORDER_STATUS_1]);
+        $rowCount = parent::update($where, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
@@ -1315,12 +1315,12 @@ class OrderService extends BaseService
      */
     public function destroy($id, $params)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7]);
         //若当前订单已取消取派了,在直接返回成功，不再删除
-        if (in_array(intval($info['status']), [BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7])) {
+        if (in_array(intval($info['status']), [BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7])) {
             return 'true';
         }
-        $rowCount = parent::updateById($info['id'], ['status' => BaseConstService::ORDER_STATUS_7, 'remark' => $params['remark'] ?? '', 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
+        $rowCount = parent::updateById($info['id'], ['status' => BaseConstService::TRACKING_ORDER_STATUS_7, 'remark' => $params['remark'] ?? '', 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单删除失败，请重新操作');
         }
@@ -1361,7 +1361,7 @@ class OrderService extends BaseService
      */
     public function recovery($id, $params)
     {
-        $orderCollection = $this->getInfoByIdOfStatus($id, false, BaseConstService::ORDER_STATUS_7);
+        $orderCollection = $this->getInfoByIdOfStatus($id, false, BaseConstService::TRACKING_ORDER_STATUS_7);
         $order = $orderCollection->toArray();
         if (intval($order['source']) === BaseConstService::ORDER_SOURCE_3) {
             throw new BusinessLogicException('第三方订单不允许恢复');
@@ -1374,7 +1374,7 @@ class OrderService extends BaseService
         !empty($materialList) && $this->getMaterialService()->checkAllUnique($materialList);
         /**********************************************订单恢复********************************************************/
         $order['execution_date'] = $params['execution_date'];
-        $order['status'] = BaseConstService::ORDER_STATUS_1;
+        $order['status'] = BaseConstService::TRACKING_ORDER_STATUS_1;
         $line = $this->fillSender($order);
         $rowCount = parent::updateById($order['id'], $order);
         if ($rowCount === false) {
@@ -1403,7 +1403,7 @@ class OrderService extends BaseService
      */
     public function actualDestroy($id)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, BaseConstService::ORDER_STATUS_7);
+        $info = $this->getInfoByIdOfStatus($id, true, BaseConstService::TRACKING_ORDER_STATUS_7);
         $rowCount = parent::delete(['id' => $info['id']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('彻底删除失败，请重新操作');
@@ -1428,7 +1428,7 @@ class OrderService extends BaseService
      */
     public function updateOutStatus($id, $params)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]);
         $rowCount = parent::updateById($info['id'], ['out_status' => $params['out_status']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
@@ -1443,7 +1443,7 @@ class OrderService extends BaseService
      */
     public function updateItemList($id, $params)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]);
+        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]);
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
@@ -1467,7 +1467,7 @@ class OrderService extends BaseService
         $info['material_list'] = $params['material_list'] ?? [];
         $this->addAllItemList($info, ['batch_no' => $info['batch_no']], ['tour_no' => $info['tour_no'], 'status' => $info['status']]);
         //若司机已出库,则处理取件线路中对应材料数量
-        if (intval($info['status']) === BaseConstService::ORDER_STATUS_4) {
+        if (intval($info['status']) === BaseConstService::TRACKING_ORDER_STATUS_4) {
             foreach ($dbMaterialList as $dbMaterial) {
                 $dbTourMaterial = $this->tourMaterialModel->newQuery()->where('tour_no', $info['tour_no'])->where('code', $dbMaterial['code'])->first();
                 if (!empty($dbTourMaterial)) {

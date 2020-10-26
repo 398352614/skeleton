@@ -63,19 +63,19 @@ Trait OrderStatisticsTrait
         $data = [
             'expect_pickup_quantity' => $baseData
                 ->where('type', '=', BaseConstService::ORDER_TYPE_1)
-                ->where('status', '<>', BaseConstService::ORDER_STATUS_7)
+                ->where('status', '<>', BaseConstService::TRACKING_ORDER_STATUS_7)
                 ->count(),
             'actual_pickup_quantity' => $baseData
                 ->where('type', '=', BaseConstService::ORDER_TYPE_1)
-                ->where('status', '=', BaseConstService::ORDER_STATUS_5)
+                ->where('status', '=', BaseConstService::TRACKING_ORDER_STATUS_5)
                 ->count(),
             'expect_pie_quantity' => $baseData
                 ->where('type', '=', BaseConstService::ORDER_TYPE_2)
-                ->where('status', '<>', BaseConstService::ORDER_STATUS_7)
+                ->where('status', '<>', BaseConstService::TRACKING_ORDER_STATUS_7)
                 ->count(),
             'actual_pie_quantity' => $baseData
                 ->where('type', '=', BaseConstService::ORDER_TYPE_2)
-                ->where('status', '=', BaseConstService::ORDER_STATUS_5)
+                ->where('status', '=', BaseConstService::TRACKING_ORDER_STATUS_5)
                 ->count(),
         ];
         $row = DB::table($type)->sharedLock()->where($type . '_no', '=', $params)->update($data);

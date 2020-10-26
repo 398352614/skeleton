@@ -59,8 +59,8 @@ trait TourTrait
 
     public static function afterBatchCancel($tour, $batch, $orderList)
     {
-        data_set($orderList, '*.status', BaseConstService::ORDER_STATUS_6);
-        data_set($batch, 'status', BaseConstService::ORDER_STATUS_6);
+        data_set($orderList, '*.status', BaseConstService::TRACKING_ORDER_STATUS_6);
+        data_set($batch, 'status', BaseConstService::TRACKING_ORDER_STATUS_6);
         TrackingOrderTrailService::storeAllByOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
         //取消取派通知
         event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $orderList));
@@ -71,15 +71,15 @@ trait TourTrait
 
     public static function afterBatchSign($tour, $batch)
     {
-        $orderList = Order::query()->where('batch_no', $batch['batch_no'])->whereIn('status', [BaseConstService::ORDER_STATUS_5, BaseConstService::ORDER_STATUS_6])->get()->toArray();
+        $orderList = Order::query()->where('batch_no', $batch['batch_no'])->whereIn('status', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])->get()->toArray();
         $groupOrderList = array_create_group_index($orderList, 'status');
         //若存在签收成功的订单列表,则记录
-        if (!empty($groupOrderList[BaseConstService::ORDER_STATUS_5])) {
-            TrackingOrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::ORDER_STATUS_5], BaseConstService::TRACKING_ORDER_TRAIL_DELIVERED);
+        if (!empty($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_5])) {
+            TrackingOrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_5], BaseConstService::TRACKING_ORDER_TRAIL_DELIVERED);
         }
         //若存在签收失败的订单列表,则记录
-        if (!empty($groupOrderList[BaseConstService::ORDER_STATUS_6])) {
-            TrackingOrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::ORDER_STATUS_6], BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
+        if (!empty($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_6])) {
+            TrackingOrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_6], BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
         }
         unset($groupOrderList);
         //签收通知

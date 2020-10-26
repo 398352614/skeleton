@@ -191,7 +191,7 @@ class ReportService extends BaseService
             $orderList[$k]['expect_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
             $orderList[$k]['expect_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
             $orderList[$k]['expect_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount']), 2), 2);
-            if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
+            if ($v['status'] == BaseConstService::TRACKING_ORDER_STATUS_5) {
                 $orderList[$k]['actual_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
                 $orderList[$k]['actual_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
                 $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);

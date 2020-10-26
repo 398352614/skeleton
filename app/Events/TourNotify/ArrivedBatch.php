@@ -56,7 +56,7 @@ class ArrivedBatch extends ATourNotify
      */
     public function getOrderList($batchNo)
     {
-        $orderList = Order::query()->where('batch_no', $batchNo)->where('status', BaseConstService::ORDER_STATUS_4)->get();
+        $orderList = Order::query()->where('batch_no', $batchNo)->where('status', BaseConstService::TRACKING_ORDER_STATUS_4)->get();
         return $orderList->toArray();
     }
 }

@@ -104,7 +104,7 @@ class AssignBatch extends ATourNotify
      */
     public function getOrderAndPackageList($batchNo)
     {
-        $orderList = Order::query()->where('batch_no', $batchNo)->where('status', BaseConstService::ORDER_STATUS_5)->get()->toArray();
+        $orderList = Order::query()->where('batch_no', $batchNo)->where('status', BaseConstService::TRACKING_ORDER_STATUS_5)->get()->toArray();
         $packageList = Package::query()->whereIn('order_no', array_column($orderList, 'order_no'))->get()->toArray();
         $packageList = collect($packageList)->groupBy('order_no')->toArray();
         foreach ($orderList as &$order) {

@@ -201,7 +201,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('站点取消锁定失败，请重新操作');
         }
         //订单 处理
-        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_2]);
+        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['status' => BaseConstService::TRACKING_ORDER_STATUS_2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('订单取消锁定失败，请重新操作');
         }

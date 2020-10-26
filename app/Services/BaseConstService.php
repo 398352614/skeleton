@@ -56,6 +56,8 @@ class BaseConstService
     const BATCH_EXCEPTION_NO_TYPE = 'batch_exception';
     //充值单号类型
     const RECHARGE_NO_TYPE = 'recharge';
+    //运单类型
+    const TRACKING_NO_TYPE = 'tracking_order';
 
     //初始密码
     const INITIAL_PASSWORD = '12345678';
@@ -106,9 +108,10 @@ class BaseConstService
     const ERP_MERCHANT_ID_2 = 65;
     const SHOP_MERCHANT_ID_1 = 3;
 
-    //订单类型1-取2-派
+    //订单类型1-取2-派3-取派
     const ORDER_TYPE_1 = 1;
     const ORDER_TYPE_2 = 2;
+    const ORDER_TYPE_3 = 3;
 
     //订单出库状态1-可出库2-不可出库
     const ORDER_OUT_STATUS_1 = 1;
@@ -123,14 +126,24 @@ class BaseConstService
     const ORDER_SETTLEMENT_TYPE_1 = 1;
     const ORDER_SETTLEMENT_TYPE_2 = 2;
 
-    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    //运单类型1-取2-派
+    const TRACKING_ORDER_TYPE_1 = 1;
+    const TRACKING_ORDER_TYPE_2 = 2;
+
+    //订单状态1-待取派2-取派中3-取派完成4-回收站
     const ORDER_STATUS_1 = 1;
     const ORDER_STATUS_2 = 2;
     const ORDER_STATUS_3 = 3;
     const ORDER_STATUS_4 = 4;
-    const ORDER_STATUS_5 = 5;
-    const ORDER_STATUS_6 = 6;
-    const ORDER_STATUS_7 = 7;
+
+    //运单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    const TRACKING_ORDER_STATUS_1 = 1;
+    const TRACKING_ORDER_STATUS_2 = 2;
+    const TRACKING_ORDER_STATUS_3 = 3;
+    const TRACKING_ORDER_STATUS_4 = 4;
+    const TRACKING_ORDER_STATUS_5 = 5;
+    const TRACKING_ORDER_STATUS_6 = 6;
+    const TRACKING_ORDER_STATUS_7 = 7;
 
 
     //包裹列表1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
@@ -165,9 +178,9 @@ class BaseConstService
     const IS_INCREMENT_1 = 1;
     const IS_INCREMENT_2 = 2;
 
-    //订单/站点 1-订单2-站点
-    const ORDER_OR_BATCH_1 = 1;
-    const ORDER_OR_BATCH_2 = 2;
+    //订单/站点 1-运单2-站点
+    const TRACKING_ORDER_OR_BATCH_1 = 1;
+    const TRACKING_ORDER_OR_BATCH_2 = 2;
 
     //取件线路状态状态：1-待分配2-已分配-3-待出库4-取派中5-取派完成
     const TOUR_STATUS_1 = 1;

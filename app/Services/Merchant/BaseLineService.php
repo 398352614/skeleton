@@ -157,7 +157,7 @@ class BaseLineService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getInfoByRule($info, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1, $merchantAlone = BaseConstService::NO)
+    public function getInfoByRule($info, $orderOrBatch = BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone = BaseConstService::NO)
     {
         $lineRange = $this->getLineRange($info, $merchantAlone);
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
@@ -200,7 +200,7 @@ class BaseLineService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getScheduleList($params, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
+    public function getScheduleList($params, $orderOrBatch = BaseConstService::TRACKING_ORDER_OR_BATCH_1)
     {
         $lineRangeList = $this->getLineRangeList($params);
         return $this->getScheduleListByLineRangeList($params, $lineRangeList, $orderOrBatch);

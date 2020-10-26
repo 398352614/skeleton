@@ -120,13 +120,13 @@ trait ConstTranslateTrait
 
     //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     public static $orderStatusList = [
-        BaseConstService::ORDER_STATUS_1 => '待分配',
-        BaseConstService::ORDER_STATUS_2 => '已分配',
-        BaseConstService::ORDER_STATUS_3 => '待出库',
-        BaseConstService::ORDER_STATUS_4 => '取派中',
-        BaseConstService::ORDER_STATUS_5 => '已完成',
-        BaseConstService::ORDER_STATUS_6 => '取消取派',
-        BaseConstService::ORDER_STATUS_7 => '回收站',
+        BaseConstService::TRACKING_ORDER_STATUS_1 => '待分配',
+        BaseConstService::TRACKING_ORDER_STATUS_2 => '已分配',
+        BaseConstService::TRACKING_ORDER_STATUS_3 => '待出库',
+        BaseConstService::TRACKING_ORDER_STATUS_4 => '取派中',
+        BaseConstService::TRACKING_ORDER_STATUS_5 => '已完成',
+        BaseConstService::TRACKING_ORDER_STATUS_6 => '取消取派',
+        BaseConstService::TRACKING_ORDER_STATUS_7 => '回收站',
     ];
 
     //订单可出库状态1-是2-否
@@ -137,13 +137,13 @@ trait ConstTranslateTrait
 
     //包裹状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     public static $packageStatusList = [
-        BaseConstService::ORDER_STATUS_1 => '待分配',
-        BaseConstService::ORDER_STATUS_2 => '已分配',
-        BaseConstService::ORDER_STATUS_3 => '待出库',
-        BaseConstService::ORDER_STATUS_4 => '取派中',
-        BaseConstService::ORDER_STATUS_5 => '已完成',
-        BaseConstService::ORDER_STATUS_6 => '取消取派',
-        BaseConstService::ORDER_STATUS_7 => '回收站',
+        BaseConstService::TRACKING_ORDER_STATUS_1 => '待分配',
+        BaseConstService::TRACKING_ORDER_STATUS_2 => '已分配',
+        BaseConstService::TRACKING_ORDER_STATUS_3 => '待出库',
+        BaseConstService::TRACKING_ORDER_STATUS_4 => '取派中',
+        BaseConstService::TRACKING_ORDER_STATUS_5 => '已完成',
+        BaseConstService::TRACKING_ORDER_STATUS_6 => '取消取派',
+        BaseConstService::TRACKING_ORDER_STATUS_7 => '回收站',
     ];
 
     //商户端包裹状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
