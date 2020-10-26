@@ -19,6 +19,7 @@ class TourDelayService extends BaseService
     public $filterRules = [
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_name' => ['like', 'driver_name'],
+        'driver_id' => ['=', 'driver_id'],
         'line_name' => ['like', 'line_name'],
         'delay_type' => ['=', 'delay_type'],
         'tour_no' => ['like', 'tour_no']

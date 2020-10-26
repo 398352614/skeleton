@@ -25,6 +25,7 @@ class BatchService extends BaseService
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_name' => ['like', 'driver_name'],
+        'driver_id' => ['=', 'driver_id'],
         'line_id,line_name' => ['like', 'line_keyword'],
         'batch_no' => ['like', 'keyword'],
         'receiver_fullname' => ['=', 'receiver_fullname'],
