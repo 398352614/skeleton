@@ -62,4 +62,14 @@ class UploadController extends Controller
     {
         return $this->service->fileUpload(request()->all());
     }
+
+    /**
+     * 文件下载
+     * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function fileDownload()
+    {
+        return $this->service->fileDownload(request()->all());
+    }
 }

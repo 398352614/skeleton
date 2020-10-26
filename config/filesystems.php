@@ -103,6 +103,14 @@ return [
             'visibility' => 'public',
         ],
 
+        //管理员端-打印模板
+        'admin_file_storage' => [
+            'driver' => 'local',
+            'root' => storage_path('app/backup'),
+            'url' => env('APP_URL').'/storage/backup',
+            'visibility' => 'public',
+        ],
+
         //司机端-图片
         'driver_image_public' => [
             'driver' => 'local',
