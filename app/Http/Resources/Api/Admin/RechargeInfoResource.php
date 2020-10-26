@@ -16,6 +16,8 @@ class RechargeInfoResource extends JsonResource
             'merchant_id' => $this->merchant_id,
             'tour_no' => $this->tour_no,
             'execution_date' => (string)$this->execution_date,
+            'line_id' => $this->line_id,
+            'line_name' => $this->line_name,
             'recharge_statistics_id' => $this->recharge_statistics_id,
             'merchant_name' => $this->merchant_name,
             'recharge_no' => $this->recharge_no,

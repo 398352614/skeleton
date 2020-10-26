@@ -63,6 +63,8 @@ class Recharge extends BaseModel
         'recharge_time',
         'driver_id',
         'driver_name',
+        'line_id',
+        'line_name',
         'recharge_amount',
         'recharge_first_pic',
         'recharge_second_pic',

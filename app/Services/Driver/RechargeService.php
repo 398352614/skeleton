@@ -104,6 +104,8 @@ class RechargeService extends BaseService
             $params['driver_verify_status'] = BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_1;
             $params['tour_no']=$tour['tour_no'];
             $params['execution_date']=$tour['execution_date'];
+            $params['line_id']=$tour['line_id'];
+            $params['line_name']=$tour['line_name'];
             $row = parent::create($params);
             if ($row == false) {
                 throw new BusinessLogicException('拉取第三方用户信息失败');

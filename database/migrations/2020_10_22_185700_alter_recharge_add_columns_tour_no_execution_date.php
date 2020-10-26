@@ -16,10 +16,15 @@ class AlterRechargeAddColumnsTourNoExecutionDate extends Migration
         Schema::table('recharge', function (Blueprint $table) {
             $table->string('tour_no')->default('')->nullable()->after('recharge_no')->comment('取件线路编号');
             $table->date('execution_date')->default(null)->nullable()->after('tour_no')->comment('取派日期');
+            $table->string('line_id')->default('')->nullable()->after('execution_date')->comment('线路ID');
+            $table->string('line_name')->default('')->nullable()->after('line_id')->comment('线路名');
+
         });
         Schema::table('recharge_statistics', function (Blueprint $table) {
             $table->string('tour_no')->default('')->nullable()->after('merchant_id')->comment('取件线路编号');
             $table->date('execution_date')->default(null)->nullable()->after('tour_no')->comment('取派日期');
+            $table->string('line_id')->default('')->nullable()->after('execution_date')->comment('线路ID');
+            $table->string('line_name')->default('')->nullable()->after('line_id')->comment('线路名');
         });
     }
 
@@ -31,12 +36,10 @@ class AlterRechargeAddColumnsTourNoExecutionDate extends Migration
     public function down()
     {
         Schema::table('recharge', function (Blueprint $table) {
-            $table->dropColumn('tour_no');
-            $table->dropColumn('execution_date');
+
         });
         Schema::table('recharge_statistics', function (Blueprint $table) {
-            $table->dropColumn('tour_no');
-            $table->dropColumn('execution_date');
+
         });
     }
 }

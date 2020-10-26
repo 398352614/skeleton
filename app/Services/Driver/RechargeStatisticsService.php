@@ -42,12 +42,14 @@ class RechargeStatisticsService extends BaseService
      */
     public function rechargeStatistics($data)
     {
-        $where = ['driver_id' => auth()->user()->id,'merchant_id' => $data['merchant_id'], 'tour_no' => $data['tour_no'], 'execution_date' => $data['execution_date']];
+        $where = ['driver_id' => auth()->user()->id, 'merchant_id' => $data['merchant_id'], 'tour_no' => $data['tour_no'], 'execution_date' => $data['execution_date']];
         $info = parent::getInfo($where, ['*'], false);
         if (empty($info)) {
             $where = array_merge($where, [
-                'driver_name' => auth()->user()->fullname,
-                ]);
+                'driver_name' => $data['driver_name'],
+                'line_id' => $data['line_id'],
+                'line_name' => $data['line_name']
+            ]);
             $row = parent::create($where);
             if ($row == false) {
                 throw new BusinessLogicException('纳入当日充值统计失败');
