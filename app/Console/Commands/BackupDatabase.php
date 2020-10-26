@@ -48,7 +48,7 @@ class BackupDatabase extends Command
             config('database.connections.mysql.database') . '.telescope_entries_tags',
             config('database.connections.mysql.database') . '.telescope_monitoring',
 
-            storage_path('backup/backup.sql.gz')
+            storage_path('app/backup/backup.sql.gz')
         ));
     }
 
