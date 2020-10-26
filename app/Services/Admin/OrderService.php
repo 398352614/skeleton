@@ -13,13 +13,13 @@ namespace App\Services\Admin;
 use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\OrderInfoResource;
-use App\Http\Resources\OrderResource;
+use App\Http\Resources\Api\Admin\OrderInfoResource;
+use App\Http\Resources\Api\Admin\OrderResource;
 use App\Jobs\AddOrderPush;
 use App\Models\Order;
 use App\Models\OrderImportLog;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Services\CommonService;
 use App\Services\OrderNoRuleService;
 use App\Traits\BarcodeTrait;
@@ -49,6 +49,7 @@ class OrderService extends BaseService
         'source' => ['=', 'source'],
         'tour_no' => ['like', 'tour_no'],
         'batch_no' => ['like', 'batch_no'],
+        'receiver_post_code'=>['like','receiver_post_code']
     ];
 
     public $headings = [
@@ -70,145 +71,6 @@ class OrderService extends BaseService
     public function __construct(Order $order)
     {
         parent::__construct($order, OrderResource::class, OrderInfoResource::class);
-    }
-
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 材料服务
-     * @return MaterialService
-     */
-    public function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
-    }
-
-
-    /**
-     * 单号规则 服务
-     * @return OrderNoRuleService
-     */
-    private function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
-    /**
-     * 站点异常 服务
-     * @return BatchExceptionService
-     */
-    private function getBatchExceptionService()
-    {
-        return self::getInstance(BatchExceptionService::class);
-    }
-
-    /**
-     * 站点(取件批次) 服务
-     * @return BatchService
-     */
-    public function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    public function getTourService()
-    {
-        return self::getInstance(TourService::class);
-    }
-
-
-    /**
-     * 发件人地址 服务
-     * @return SenderAddressService
-     */
-    public function getSenderAddressService()
-    {
-        return self::getInstance(SenderAddressService::class);
-    }
-
-    /**
-     * 收人地址 服务
-     * @return ReceiverAddressService
-     */
-    public function getReceiverAddressService()
-    {
-        return self::getInstance(ReceiverAddressService::class);
-    }
-
-    /**
-     * 线路 服务
-     * @return LineService
-     */
-    public function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 线路范围 服务
-     * @return LineRangeService
-     */
-    public function getLineRangeService()
-    {
-        return self::getInstance(LineRangeService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    public function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
-    }
-
-    /**
-     * 上传 服务
-     * @return mixed
-     */
-    public function getUploadService()
-    {
-        return self::getInstance(UploadService::class);
-    }
-
-    /**
-     * 商户 服务
-     * @return MerchantService
-     */
-    private function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * 打印模板 服务
-     * @return PrintTemplateService
-     */
-    private function getPrintTemplateService()
-    {
-        return self::getInstance(PrintTemplateService::class);
-    }
-
-    /**
-     * 区域 服务
-     * @return LineAreaService
-     */
-    private function getLineAreaService()
-    {
-        return self::getInstance(LineAreaService::class);
-
     }
 
     /**
@@ -1328,24 +1190,26 @@ class OrderService extends BaseService
 
     /**
      * 订单导出
+     * @param $ids
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderExport()
+    public function orderExport($ids)
     {
-        $orderList = $this->getPageList();
-        if ($orderList->hasMorePages()) {
-            throw new BusinessLogicException('数据量过大无法导出，订单数不得超过200');
-        }
+        $ids=explode(',',$ids);
+        $orderList = parent::getList(['id' => ['in', $ids]], ['*'], false);
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
+        }
+        if ($orderList->count() > 200) {
+            throw new BusinessLogicException('数据量过大无法导出，订单数不得超过200');
         }
         $merchant = $this->getMerchantService()->getList(['id' => ['in', $orderList->pluck('merchant_id')->toArray()]]);
         if ($merchant->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $orderList->pluck('tour_no')->toArray()]]);
-        $orderList = $orderList->toArray(request());
+        $orderList = $orderList->toArray();
         foreach ($orderList as $k => $v) {
             $orderList[$k]['merchant_name'] = $v['merchant_id_name'];
             $orderList[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';

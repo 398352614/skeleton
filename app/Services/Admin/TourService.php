@@ -5,15 +5,15 @@ namespace App\Services\Admin;
 use App\Events\AfterTourInit;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\TourInfoResource;
-use App\Http\Resources\TourResource;
+use App\Http\Resources\Api\Admin\TourInfoResource;
+use App\Http\Resources\Api\Admin\TourResource;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Services\BaseServices\XLDirectionService;
 use App\Services\ApiServices\GoogleApiService;
 use App\Services\OrderNoRuleService;
@@ -27,7 +27,8 @@ use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Services\OrderTrailService;
-use App\Services\Traits\TourRedisLockTrait;
+use App\Traits\TourRedisLockTrait;
+use Illuminate\Support\Facades\Log;
 
 class TourService extends BaseService
 {
@@ -49,6 +50,7 @@ class TourService extends BaseService
         'line_name' => ['like', 'line_name'],
         'tour_no' => ['like', 'tour_no'],
         'driver_name' => ['like', 'driver_name'],
+        'driver_id' => ['=', 'driver_id'],
         'line_name,driver_name' => ['like', 'key_word'],
     ];
 
@@ -118,106 +120,6 @@ class TourService extends BaseService
         parent::__construct($tour, TourResource::class, TourInfoResource::class);
         $this->apiClient = $client;
         $this->directionClient = $directionClient;
-    }
-
-    /**
-     * 站点 服务
-     * @return BatchService
-     */
-    private function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 订单服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 司机 服务
-     * @return DriverService
-     */
-    private function getDriverService()
-    {
-        return self::getInstance(DriverService::class);
-    }
-
-    /**
-     * 车辆 服务
-     * @return CarService
-     */
-    private function getCarService()
-    {
-        return self::getInstance(CarService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    private function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
-    }
-
-    /**
-     * 单号规则 服务
-     * @return OrderNoRuleService
-     */
-    private function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
-    /**
-     * 材料服务
-     * @return MaterialService
-     */
-    private function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
-
-    }
-
-    /**
-     * 商户服务
-     * @return MerchantService
-     */
-    private function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * 线路 服务
-     * @return LineService
-     */
-    private function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 三方请求计数服务
-     * @return ApiTimesService
-     */
-    private function getApiTimesService()
-    {
-        return self::getInstance(ApiTimesService::class);
     }
 
     /**
@@ -871,11 +773,11 @@ class TourService extends BaseService
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         //如果已回仓库，处理仓库相关数据
         if ($info['status'] == BaseConstService::TOUR_STATUS_5) {
-            $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'],false);
+            $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
             if (empty($batchList)) {
                 throw new BusinessLogicException('数据不存在');
             }
-            $batchList=$batchList->toArray();
+            $batchList = $batchList->toArray();
             $batch = collect($batchList)->sortByDesc('actual_arrive_time')->first();
             $info['warehouse_actual_time'] = strtotime($info['end_time']) - strtotime($batch['actual_arrive_time']);
             if (!$info['warehouse_actual_time'] == 0) {
@@ -899,6 +801,9 @@ class TourService extends BaseService
             $info['batchs'][$k]['sort_id'] = $k + 1;
         }
         $info['batchs'] = array_values($info['batchs']);
+        $status = [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2, BaseConstService::PACKAGE_STATUS_3, BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5];
+        $info['expect_pickup_package_quantity'] = $this->getPackageService()->count(['tour_no' => $info['tour_no'], 'type' => BaseConstService::PACKAGE_TYPE_1, 'status' => ['in', [$status]]]);
+        $info['expect_pie_package_quantity'] = $this->getPackageService()->count(['tour_no' => $info['tour_no'], 'type' => BaseConstService::PACKAGE_TYPE_2, 'status' => ['in', [$status]]]);
         return $info;
     }
 
@@ -933,6 +838,7 @@ class TourService extends BaseService
         $cellData = [];
         $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false, [], ['execution_date' => 'asc']);
         $orderList = $this->getOrderService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::ORDER_STATUS_5], ['*'], false);
+        Log::info(count($orderList));
         foreach ($tourList as $k => $v) {
             $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
             $cellData[$k]['driver'] = $v['line_name'] . ' ' . $v['driver_name'];

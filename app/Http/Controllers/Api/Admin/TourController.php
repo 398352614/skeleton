@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\BaseController;
 use App\Http\Controllers\Controller;
 use App\Services\Admin\TourService;
-use App\Services\Traits\TourRedisLockTrait;
+use App\Traits\TourRedisLockTrait;
 use Illuminate\Http\Request;
 
 /**

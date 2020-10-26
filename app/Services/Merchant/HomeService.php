@@ -7,7 +7,7 @@ namespace App\Services\Merchant;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use Carbon\Carbon;
 class HomeService extends BaseService
 {

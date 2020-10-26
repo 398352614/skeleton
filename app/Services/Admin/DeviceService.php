@@ -9,12 +9,12 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\DeviceResource;
-use App\Http\Resources\DriverResource;
+use App\Http\Resources\Api\Admin\DeviceResource;
+use App\Http\Resources\Api\Admin\DriverResource;
 use App\Models\Device;
 use App\Models\Driver;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use Illuminate\Support\Arr;
 
 /**
@@ -33,24 +33,6 @@ class DeviceService extends BaseService
     {
         $this->driverModel = new Driver();
         parent::__construct($model, DeviceResource::class);
-    }
-
-    /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    private function getTourService()
-    {
-        return self::getInstance(TourService::class);
-    }
-
-    /**
-     * 司机 服务
-     * @return DriverService
-     */
-    private function getDriverService()
-    {
-        return self::getInstance(DriverService::class);
     }
 
     /**

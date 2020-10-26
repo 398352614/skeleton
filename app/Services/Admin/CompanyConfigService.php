@@ -12,7 +12,7 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Models\CompanyConfig;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Facades\Artisan;
 
@@ -21,15 +21,6 @@ class CompanyConfigService extends BaseService
     public function __construct(CompanyConfig $companyConfig)
     {
         parent::__construct($companyConfig);
-    }
-
-    /**
-     * 地址模板 服务
-     * @return AddressTemplateService
-     */
-    private function getAddressTemplateService()
-    {
-        return self::getInstance(AddressTemplateService::class);
     }
 
     public function getAddressTemplateList()

@@ -5,11 +5,11 @@ namespace App\Services\Driver;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\RechargeInfoResource;
-use App\Http\Resources\RechargeResource;
+use App\Http\Resources\Api\Driver\RechargeInfoResource;
+use App\Http\Resources\Api\Driver\RechargeResource;
 use App\Models\Recharge;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+
 use App\Services\CurlClient;
 use App\Services\OrderNoRuleService;
 use Illuminate\Support\Arr;
@@ -33,30 +33,6 @@ class RechargeService extends BaseService
     public function __construct(Recharge $recharge)
     {
         parent::__construct($recharge, RechargeResource::class, RechargeInfoResource::class);
-    }
-
-    /**
-     * @return MerchantService
-     */
-    public function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * @return OrderNoRuleService
-     */
-    public function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
-    /**
-     * @return RechargeStatisticsService
-     */
-    public function getRechargeStatisticsService()
-    {
-        return self::getInstance(RechargeStatisticsService::class);
     }
 
     /**
@@ -100,13 +76,21 @@ class RechargeService extends BaseService
         if (empty($merchantApi['url']) || empty($merchantApi['secret']) || empty($merchantApi['key'])) {
             throw new BusinessLogicException('该商户未开启充值业务');
         }
+        $tour = $this->getTourService()->getInfo(['driver_id' => auth()->user()->id, 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
+        if(empty($tour)){
+            throw new BusinessLogicException('线路未出库，无法进行现金充值');
+        }
+        $orderList=$this->getOrderService()->getList(['tour_no'=>$tour['tour_no']],['*'],false);
+        if($orderList->isEmpty()){
+            throw new BusinessLogicException('数据不存在');
+        }
         $params = Arr::only($params, ['merchant_id', 'out_user_name']);
         $data['data'] = $params;
         $data['type'] = BaseConstService::NOTIFY_RECHARGE_VALIDUSER;
         //请求第三方
         $curl = new CurlClient();
         $res = $curl->merchantPost($merchantApi, $data);
-        Log::info('返回值', $res);
+        Log::info('返回值', $res ?? []);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['out_user_id']) || empty($res['data']['phone'] || empty($res['data']['email']))) {
             throw new BusinessLogicException('客户不存在，请检查客户编码是否正确');
         } else {
@@ -118,6 +102,10 @@ class RechargeService extends BaseService
             $params['out_user_phone'] = $res['data']['phone'];
             $params['recharge_date'] = Carbon::today()->format('Y-m-d');
             $params['driver_verify_status'] = BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_1;
+            $params['tour_no']=$tour['tour_no'];
+            $params['execution_date']=$tour['execution_date'];
+            $params['line_id']=$tour['line_id'];
+            $params['line_name']=$tour['line_name'];
             $row = parent::create($params);
             if ($row == false) {
                 throw new BusinessLogicException('拉取第三方用户信息失败');
@@ -173,9 +161,9 @@ class RechargeService extends BaseService
         if ($info['status'] == BaseConstService::RECHARGE_STATUS_3) {
             throw new BusinessLogicException('充值已完成，请勿重复充值');
         }
-        if ($info['driver_verify_status'] == BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_2) {
-            throw new BusinessLogicException('手机尾号验证未通过，请重新提交');
-        }
+        /*        if ($info['driver_verify_status'] == BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_2) {
+                    throw new BusinessLogicException('手机尾号验证未通过，请重新提交');
+                }*/
         if ($params['out_user_id'] !== $info['out_user_id'] || $params['out_user_name'] !== $info['out_user_name']) {
             throw new BusinessLogicException('用户信息不正确，请重新充值');
         }

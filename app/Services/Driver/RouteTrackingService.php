@@ -3,11 +3,11 @@
 namespace App\Services\Driver;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\RouteTrackingResource;
+use App\Http\Resources\Api\Driver\RouteTrackingResource;
 use App\Models\RouteTracking;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+
 use Illuminate\Support\Facades\Log;
 
 class RouteTrackingService extends BaseService
@@ -20,15 +20,6 @@ class RouteTrackingService extends BaseService
     public function __construct(RouteTracking $tracking)
     {
         parent::__construct($tracking, RouteTrackingResource::class, RouteTrackingResource::class);
-    }
-
-    /**
-     * 设备 服务
-     * @return DeviceService
-     */
-    private function getDeviceService()
-    {
-        return self::getInstance(DeviceService::class);
     }
 
     /**
@@ -60,6 +51,9 @@ class RouteTrackingService extends BaseService
      */
     public function createByList($params)
     {
+        if(empty($params['device_number'])){
+            return true;
+        }
         //验证当前账号是否绑定指定设备
         $device = $this->getDeviceService()->getInfo(['number' => $params['device_number'], 'driver_id' => auth()->user()->id], ['*'], false);
         if (empty($device)) return 'true';

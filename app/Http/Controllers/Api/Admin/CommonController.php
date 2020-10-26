@@ -60,4 +60,11 @@ class CommonController
     {
         return $this->service->getPostcode($request->all());
     }
+
+    /**
+     * @return array
+     */
+    public function dictionary(){
+        return $this->service->dictionary();
+    }
 }

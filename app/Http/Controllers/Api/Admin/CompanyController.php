@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Resources\CompanyInfoResource;
+use App\Http\Resources\Api\Admin\CompanyInfoResource;
 use App\Services\Admin\CompanyService;
 use Illuminate\Http\Request;
 

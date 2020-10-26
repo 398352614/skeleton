@@ -10,7 +10,7 @@ namespace App\Services\Merchant;
 
 
 use App\Models\LineRange;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 
 class LineRangeService extends BaseService
 {

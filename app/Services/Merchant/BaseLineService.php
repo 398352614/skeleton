@@ -10,14 +10,13 @@ namespace App\Services\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\LineResource;
+use App\Http\Resources\Api\Merchant\LineResource;
 use App\Models\Holiday;
 use App\Models\HolidayDate;
 use App\Models\Line;
 use App\Models\MerchantHoliday;
-use App\Services\Admin\MerchantLineRangeService;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
@@ -36,51 +35,6 @@ class BaseLineService extends BaseService
     public function __construct(Line $line)
     {
         parent::__construct($line, LineResource::class);
-    }
-
-    /**
-     * 邮编线路范围 服务
-     * @return LineRangeService
-     */
-    public function getLineRangeService()
-    {
-        return self::getInstance(LineRangeService::class);
-    }
-
-    /**
-     * 商户线路范围 服务
-     * @return MerchantLineRangeService
-     */
-    public function getMerchantLineRangeService()
-    {
-        return self::getInstance(MerchantLineRangeService::class);
-    }
-
-    /**
-     * 区域线路范围 服务
-     * @return LineAreaService
-     */
-    public function getLineAreaService()
-    {
-        return self::getInstance(LineAreaService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    public function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
-    }
-
-    /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    private function getTourService()
-    {
-        return self::getInstance(TourService::class);
     }
 
     /**

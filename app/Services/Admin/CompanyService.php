@@ -5,7 +5,7 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Company;
 use App\Models\Scope\CompanyScope;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use Illuminate\Support\Facades\Artisan;
 
 /**

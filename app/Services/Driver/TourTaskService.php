@@ -10,13 +10,13 @@ namespace App\Services\Driver;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\TourTaskResource;
+use App\Http\Resources\Api\Driver\TourTaskResource;
 use App\Models\AdditionalPackage;
 use App\Models\Tour;
 use App\Models\TourMaterial;
 use App\Services\Admin\TourDelayService;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
@@ -42,51 +42,6 @@ class TourTaskService extends BaseService
     {
         parent::__construct($tour, TourTaskResource::class);
         $this->tourMaterialModel = $tourMaterial;
-    }
-
-    /**
-     * 站点 服务
-     * @return BatchService
-     */
-    private function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 订单 服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 材料 服务
-     * @return MaterialService
-     */
-    private function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
-    }
-
-    /**
-     * 延迟 服务
-     * @return TourDelayService
-     */
-    private function getTourDelayService()
-    {
-        return self::getInstance(TourDelayService::class);
     }
 
     /**

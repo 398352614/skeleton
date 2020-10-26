@@ -40,4 +40,6 @@ return [
     ],
     'wechat_push' => env('WECHAT_PUSH'),
     'env'=>env('APP_ENV'),
+    'excel'=>env('EXCEL'),
+    'admin_id'=>env('ADMIN_ID')
 ];

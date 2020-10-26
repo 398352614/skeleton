@@ -10,11 +10,11 @@ namespace App\Services\Driver;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\BatchInfoResource;
-use App\Http\Resources\BatchResource;
+use App\Http\Resources\Api\Driver\BatchInfoResource;
+use App\Http\Resources\Api\Driver\BatchResource;
 use App\Models\Batch;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+
 
 class BatchService extends BaseService
 {

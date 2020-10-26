@@ -12,7 +12,7 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Models\LineRange;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -22,15 +22,6 @@ class LineRangeService extends BaseService
     public function __construct(LineRange $lineRange)
     {
         parent::__construct($lineRange);
-    }
-
-    /**
-     * 商户线路 服务
-     * @return MerchantLineRangeService
-     */
-    public function getMerchantLineRangeService()
-    {
-        return self::getInstance(MerchantLineRangeService::class);
     }
 
     /**

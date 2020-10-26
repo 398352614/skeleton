@@ -77,6 +77,23 @@ class UploadService
     }
 
     /**
+     * @param array $all
+     * @return
+     * @throws BusinessLogicException
+     */
+    public function fileDownload(array $all)
+    {
+        if (!auth()->user()->id == config('tms.admin_id')) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if ($all['dir'] == config('tms.excel')) {
+            return Storage::disk('admin_file_storage')->url('backup.sql.gz');
+        } else {
+            throw new BusinessLogicException('数据不存在');
+        }
+    }
+
+    /**
      * 获得相对路径
      * @param string $url
      * @return string
@@ -131,14 +148,14 @@ class UploadService
     {
         $subPath = $this->getFileDir($params['dir']);
         $params['name'] = $this->makeRuleName($params['file']);
-        if($params['dir']==='package') {
-            $params['name'] =date('YmdHis') . '.apk';
+        if ($params['dir'] === 'package') {
+            $params['name'] = date('YmdHis') . '.apk';
         }
-        if($params['dir']==='template') {
-            $params['name'] ='order_import_template.xlsx';
+        if ($params['dir'] === 'template') {
+            $params['name'] = 'order_import_template.xlsx';
         }
-        if($params['dir']==='line') {
-            $params['name'] ='line.csv';
+        if ($params['dir'] === 'line') {
+            $params['name'] = 'line.csv';
         }
         try {
             $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);

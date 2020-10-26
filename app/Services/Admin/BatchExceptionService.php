@@ -10,11 +10,11 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\BatchExceptionResource;
-use App\Http\Resources\BatchResource;
+use App\Http\Resources\Api\Admin\BatchExceptionResource;
+use App\Http\Resources\Api\Admin\BatchResource;
 use App\Models\BatchException;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use Illuminate\Support\Carbon;
 
 class BatchExceptionService extends BaseService
@@ -28,24 +28,6 @@ class BatchExceptionService extends BaseService
     public function __construct(BatchException $batchException)
     {
         parent::__construct($batchException, BatchExceptionResource::class);
-    }
-
-    /**
-     * 站点管理 管理
-     * @return BatchService
-     */
-    private function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 订单管理 服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
     }
 
     /**

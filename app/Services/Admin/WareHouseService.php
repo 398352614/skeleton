@@ -10,9 +10,9 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\WareHouseResource;
+use App\Http\Resources\Api\Admin\WareHouseResource;
 use App\Models\Warehouse;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use App\Traits\LocationTrait;
@@ -28,15 +28,6 @@ class WareHouseService extends BaseService
     public function __construct(Warehouse $warehouse)
     {
         parent::__construct($warehouse, WareHouseResource::class, WareHouseResource::class);
-    }
-
-    /**
-     * 线路 服务
-     * @return LineService
-     */
-    public function getLineService()
-    {
-        return self::getInstance(LineService::class);
     }
 
     /**

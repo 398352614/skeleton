@@ -10,12 +10,12 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\MerchantResource;
+use App\Http\Resources\Api\Admin\MerchantResource;
 use App\Models\Merchant;
 use App\Models\MerchantFeeConfig;
 use App\Models\MerchantGroup;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
@@ -61,51 +61,6 @@ class MerchantService extends BaseService
     {
         parent::__construct($merchant, MerchantResource::class);
         $this->merchantFeeConfigModel = new MerchantFeeConfig();
-    }
-
-    /**
-     * 商户api 服务
-     * @return MerchantApiService
-     */
-    private function getMerchantApiService()
-    {
-        return parent::getInstance(MerchantApiService::class);
-    }
-
-    /**
-     * 商户充值api 服务
-     * @return MerchantRechargeService
-     */
-    private function getMerchantRechargeService()
-    {
-        return parent::getInstance(MerchantRechargeService::class);
-    }
-
-    /**
-     * 商户组管理 服务
-     * @return MerchantGroupService
-     */
-    private function getMerchantGroupService()
-    {
-        return self::getInstance(MerchantGroupService::class);
-    }
-
-    /**
-     * 线路 服务
-     * @return LineService
-     */
-    private function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 费用 服务
-     * @return FeeService
-     */
-    private function getFeeService()
-    {
-        return self::getInstance(FeeService::class);
     }
 
     public function init()

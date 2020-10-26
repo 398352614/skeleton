@@ -10,7 +10,7 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\OrderNoRuleResource;
+use App\Http\Resources\Api\OrderNoRuleResource;
 use App\Models\OrderNoRule;
 use App\Traits\AlphaTrait;
 use App\Traits\ConstTranslateTrait;

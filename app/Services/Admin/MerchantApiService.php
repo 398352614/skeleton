@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 
 use App\Models\MerchantApi;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 
 class MerchantApiService extends BaseService
 {
