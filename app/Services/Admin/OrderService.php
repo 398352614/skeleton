@@ -49,6 +49,7 @@ class OrderService extends BaseService
         'source' => ['=', 'source'],
         'tour_no' => ['like', 'tour_no'],
         'batch_no' => ['like', 'batch_no'],
+        'receiver_post_code'=>['like','receiver_post_code']
     ];
 
     public $headings = [
