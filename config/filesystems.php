@@ -106,7 +106,7 @@ return [
         //管理员端-打印模板
         'admin_file_storage' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/backup'),
+            'root' => storage_path('app/backup'),
             'url' => env('APP_URL').'/storage/backup',
             'visibility' => 'public',
         ],
