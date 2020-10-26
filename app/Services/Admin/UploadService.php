@@ -83,10 +83,9 @@ class UploadService
      */
     public function fileDownload(array $all)
     {
-        if (auth()->user()->id == config('tms.admin_id')) {
+        if (!auth()->user()->id == config('tms.admin_id')) {
             throw new BusinessLogicException('数据不存在');
         }
-        dd($all);
         if ($all['dir'] == config('tms.excel')) {
             return Storage::disk('admin_file_storage')->url('backup.sql.gz');
         } else {

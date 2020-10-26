@@ -413,7 +413,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //文件上传
         Route::post('fileUpload', 'UploadController@fileUpload');
         //下载
-        Route::get('file-download','UploadController@fileDownload');
+        Route::post('file-download','UploadController@fileDownload');
     });
 
     //路线追踪相关
