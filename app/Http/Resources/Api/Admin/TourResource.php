@@ -5,13 +5,10 @@ namespace App\Http\Resources\Api\Admin;
 use App\Services\BaseConstService;
 use App\Services\GisService;
 use App\Traits\CompanyTrait;
-use App\Traits\corTransferTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TourResource extends JsonResource
 {
-    use corTransferTrait;
-
     public function toArray($request)
     {
         return array_merge([
