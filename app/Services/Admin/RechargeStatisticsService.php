@@ -43,7 +43,7 @@ class RechargeStatisticsService extends BaseService
      */
     public function getPageList()
     {
-        $this->query->orderByDesc('recharge_date');
+        $this->query->orderByDesc('execution_date');
         return parent::getPageList();
     }
 

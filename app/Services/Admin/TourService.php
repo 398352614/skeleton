@@ -797,7 +797,17 @@ class TourService extends BaseService
         }
         $info['batchs'] = collect($info['batchs'])->sortBy('sort_id')->all();
         $info['batchs'] = array_values($info['batchs']);
+        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
         foreach ($info['batchs'] as $k => $v) {
+            $info['batchs'][$k]=collect($info['batchs'][$k])->toArray();
+            $order = $orderList->where('batch_no', $v['batch_no'])->sortBy('merchant_id')->all();
+            if (empty($order)) {
+                throw new BusinessLogicException('数据不存在');
+            } elseif (count($order) == 1) {
+                $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'];
+            } else {
+                $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'].' '.__('等');
+            }
             $info['batchs'][$k]['sort_id'] = $k + 1;
         }
         $info['batchs'] = array_values($info['batchs']);

@@ -598,4 +598,8 @@
 "延迟处理失败":"Vertraging van de verwerking mislukt",
 "延迟记录失败":"Vertraging is mislukt"
 ,"分钟":"minuut"
+,"中国":"China",
+"线路未出库，无法进行现金充值":"De lijn is niet uit voorraad en kan niet worden opgeladen in contanten",
+"只有已完成的订单才能无效化":"Alleen voltooide orders kunnen ongeldig worden verklaard",
+"等":"enz."
 }

@@ -725,4 +725,8 @@
 "延迟处理失败":"Delay processing failed",
 "延迟记录失败":"Delay logging failed"
 ,"分钟":"minute"
+,"中国":"China",
+"线路未出库，无法进行现金充值":"The line is not out of stock and cannot be recharged in cash",
+"只有已完成的订单才能无效化":"Only completed orders can be invalidated",
+"等":"etc."
 }
