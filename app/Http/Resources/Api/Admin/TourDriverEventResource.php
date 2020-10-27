@@ -33,24 +33,6 @@ class TourDriverEventResource extends JsonResource
             'route_tracking_id' => $this->route_tracking_id,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
-
-        ], $this->corTransfer());
-    }
-
-    public function corTransfer()
-    {
-        if (empty($this->lat) || empty($this->lon)) {
-            return ['lat' => $this->lat, 'lon' => $this->lon,];
-        }
-        if ((CompanyTrait::getCompany()['map'] == 'baidu')) {
-            $cor = GisService::wgs84ToBd09($this->lon, $this->lat);
-            $cor = array_values($cor);
-        } else {
-            $cor = [$this->lat, $this->lon];
-        }
-        return [
-            'lat' => $cor[0],
-            'lon' => $cor[1],
-        ];
+        ], GisService::corTransfer(['lon'=>$this->lon,'lat'=>$this->lat]));
     }
 }

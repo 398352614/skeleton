@@ -61,24 +61,6 @@ class BatchInfoResource extends JsonResource
             'exception_label_name' => $this->exception_label_name,
             'pay_type_name' => $this->pay_type_name,
             'orders' => OrderResource::collection($this->orders),
-        ], $this->corTransfer());
+        ], GisService::corTransfer(['receiver_lon'=>$this->receiver_lon,'receiver_lat'=>$this->receiver_lat]));
     }
-
-    public function corTransfer()
-    {
-        if (empty($this->receiver_lat) || empty($this->receiver_lon)) {
-            return ['receiver_lat' => $this->receiver_lat, 'receiver_lon' => $this->receiver_lon,];
-        }
-        if ((CompanyTrait::getCompany()['map'] == 'baidu')) {
-            $cor = GisService::wgs84ToBd09($this->receiver_lon, $this->receiver_lat);
-            $cor = array_values($cor);
-        } else {
-            $cor = [$this->receiver_lat, $this->receiver_lon];
-        }
-        return [
-            'receiver_lat' => $cor[0],
-            'receiver_lon' => $cor[1],
-        ];
-    }
-
 }

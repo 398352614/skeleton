@@ -5,10 +5,13 @@ namespace App\Http\Resources\Api\Admin;
 use App\Services\BaseConstService;
 use App\Services\GisService;
 use App\Traits\CompanyTrait;
+use App\Traits\corTransferTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TourResource extends JsonResource
 {
+    use corTransferTrait;
+
     public function toArray($request)
     {
         return array_merge([
@@ -66,23 +69,6 @@ class TourResource extends JsonResource
             'remark' => $this->remark,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
-        ], $this->corTransfer());
-    }
-
-    public function corTransfer()
-    {
-        if (empty($this->warehouse_lat) || empty($this->warehouse_lon)) {
-            return ['warehouse_lat' => $this->warehouse_lat, 'warehouse_lon' => $this->warehouse_lon,];
-        }
-        if ((CompanyTrait::getCompany()['map'] == 'baidu')) {
-            $cor = GisService::wgs84ToBd09($this->warehouse_lon, $this->warehouse_lat);
-            $cor = array_values($cor);
-        } else {
-            $cor = [$this->warehouse_lat, $this->warehouse_lon];
-        }
-        return [
-            'warehouse_lat' => $cor[0],
-            'warehouse_lon' => $cor[1],
-        ];
+        ], GisService::corTransfer(['warehouse_lon'=>$this->warehouse_lon,'warehouse_lat'=>$this->warehouse_lat]));
     }
 }

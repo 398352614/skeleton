@@ -9,6 +9,8 @@
 namespace App\Services;
 
 
+use App\Traits\CompanyTrait;
+
 /**
  * https://github.com/pokeyou/GpsPositionTransform
  * WGS84坐标系(World Geodetic System)--数据库存的：即地球坐标系，国际上通用的坐标系。设备一般包含GPS芯片或者北斗芯片获取的经纬度为WGS84地理坐标系,谷歌地图采用的是WGS84地理坐标系（中国范围除外）
@@ -41,18 +43,18 @@ class GisService
         $maxlat = $latitude + rad2deg($distance / $radius);
         $minlat = $latitude - rad2deg($distance / $radius);
         // longitude boundaries (longitude gets smaller when latitude increases)
-        $maxlng = $longitude +
+        $maxlon = $longitude +
             rad2deg($distance / $radius / cos(deg2rad($latitude)));
-        $minlng = $longitude -
+        $minlon = $longitude -
             rad2deg($distance / $radius / cos(deg2rad($latitude)));
         return array(
             array(
+                'lon' => $minlon,
                 'lat' => $minlat,
-                'lng' => $minlng
             ),
             array(
-                'lat' => $maxlat,
-                'lng' => $maxlng
+                'lon' => $maxlon,
+                'lat' => $maxlat
             )
         );
     }
@@ -60,25 +62,25 @@ class GisService
     /**
      * get distance by longitude and latitude
      *
-     * @param mixed $lng1
+     * @param mixed $lon1
      * @param mixed $lat1
-     * @param mixed $lng2
+     * @param mixed $lon2
      * @param mixed $lat2
      * @return int meter
      */
-    static function distance($lng1, $lat1, $lng2, $lat2)
+    static function distance($lon1, $lat1, $lon2, $lat2)
     {
         // convert latitude/longitude degrees for both coordinates
         // to radians: radian = degree * π / 180
         $lat1 = deg2rad($lat1);
-        $lng1 = deg2rad($lng1);
+        $lon1 = deg2rad($lon1);
         $lat2 = deg2rad($lat2);
-        $lng2 = deg2rad($lng2);
+        $lon2 = deg2rad($lon2);
 
         // calculate great-circle distance
         $distance = acos(
             sin($lat1) * sin($lat2) +
-            cos($lat1) * cos($lat2) * cos($lng1 - $lng2));
+            cos($lat1) * cos($lat2) * cos($lon1 - $lon2));
 
         // distance in human-readable format:
         // earth's radius in km = ~6371
@@ -87,20 +89,20 @@ class GisService
 
     /**
      * wgs84 转 gcj02
-     * @param mixed $lng
+     * @param mixed $lon
      * @param mixed $lat
      * @return array
      */
-    public static function wgs84ToGcj02($lng, $lat)
+    public static function wgs84ToGcj02($lon, $lat)
     {
-        if (static::outOfChina($lng, $lat)) {
+        if (static::outOfChina($lon, $lat)) {
             return array(
                 'lat' => $lat,
-                'lng' => $lng
+                'lon' => $lon
             );
         }
-        $dLat = static::transformLat($lng - 105.0, $lat - 35.0);
-        $dLon = static::transformLng($lng - 105.0, $lat - 35.0);
+        $dLat = static::transformLat($lon - 105.0, $lat - 35.0);
+        $dLon = static::transformlon($lon - 105.0, $lat - 35.0);
         $radLat = $lat / 180.0 * static::$pi;
         $magic = sin($radLat);
         $magic = 1 - static::$ee * $magic * $magic;
@@ -110,59 +112,59 @@ class GisService
         $dLon = ($dLon * 180.0) /
             (static::$a / $sqrtMagic * cos($radLat) * static::$pi);
         $mgLat = $lat + $dLat;
-        $mgLon = $lng + $dLon;
+        $mgLon = $lon + $dLon;
         return array(
-            'lat' => $mgLat,
-            'lng' => $mgLon
+            'lon' => $mgLon,
+            'lat' => $mgLat
         );
     }
 
     /**
      * gcj02 转 wgs84
-     * @param mixed $lng
+     * @param mixed $lon
      * @param mixed $lat
      * @return array
      */
-    public static function gcj02ToWgs84($lng, $lat)
+    public static function gcj02ToWgs84($lon, $lat)
     {
-        $gps_arr = static::transform($lng, $lat);
-        $lontitude = $lng * 2 - $gps_arr['lon'];
+        $gps_arr = static::transform($lon, $lat);
+        $lontitude = $lon * 2 - $gps_arr['lon'];
         $latitude = $lat * 2 - $gps_arr['lat'];
         return array(
             'lat' => $latitude,
-            'lng' => $lontitude
+            'lon' => $lontitude
         );
     }
 
     /**
      * gcj02 转 bd09
-     * @param mixed $lng
+     * @param mixed $lon
      * @param mixed $lat
      * @return array
      */
-    public static function gcj02ToBd09($lng, $lat)
+    public static function gcj02ToBd09($lon, $lat)
     {
-        $x = $lng;
+        $x = $lon;
         $y = $lat;
         $z = sqrt($x * $x + $y * $y) + 0.00002 * sin($y * static::$pi);
         $theta = atan2($y, $x) + 0.000003 * cos($x * static::$pi);
         $bd_lon = $z * cos($theta) + 0.0065;
         $bd_lat = $z * sin($theta) + 0.006;
         return array(
-            'lat' => $bd_lat,
-            'lng' => $bd_lon
+            'lon' => $bd_lon,
+            'lat' => $bd_lat
         );
     }
 
     /**
      * bd09 转 Gcj02
-     * @param mixed $lng
+     * @param mixed $lon
      * @param mixed $lat
      * @return array
      */
-    public static function bd09ToGcj02($lng, $lat)
+    public static function bd09ToGcj02($lon, $lat)
     {
-        $x = $lng - 0.0065;
+        $x = $lon - 0.0065;
         $y = $lat - 0.006;
         $z = sqrt($x * $x + $y * $y) - 0.00002 * sin($y * static::$pi);
         $theta = atan2($y, $x) - 0.000003 * cos($x * static::$pi);
@@ -170,45 +172,45 @@ class GisService
         $gg_lat = $z * sin($theta);
         return array(
             'lat' => $gg_lat,
-            'lng' => $gg_lon
+            'lon' => $gg_lon
         );
     }
 
     /**
      * bd09 转 wgs84
-     * @param $lng
+     * @param $lon
      * @param $lat
      * @return array
      */
-    public static function bd09ToWgs84($lng, $lat)
+    public static function bd09ToWgs84($lon, $lat)
     {
-        $gcj02_arr = static::bd09ToGcj02($lng, $lat);
-        $map84_arr = static::gcj02ToWgs84($gcj02_arr['lng'], $gcj02_arr['lat']);
+        $gcj02_arr = static::bd09ToGcj02($lon, $lat);
+        $map84_arr = static::gcj02ToWgs84($gcj02_arr['lon'], $gcj02_arr['lat']);
         return $map84_arr;
     }
 
     /**
      * wgs84 转 bd09
-     * @param $lng
+     * @param $lon
      * @param $lat
      * @return array
      */
-    public static function wgs84ToBd09($lng, $lat)
+    public static function wgs84ToBd09($lon, $lat)
     {
-        $gcj02_arr = static::wgs84ToGcj02($lng, $lat);
-        $bd09_arr = static::gcj02ToBd09($gcj02_arr['lng'], $gcj02_arr['lat']);
+        $gcj02_arr = static::wgs84ToGcj02($lon, $lat);
+        $bd09_arr = static::gcj02ToBd09($gcj02_arr['lon'], $gcj02_arr['lat']);
         return $bd09_arr;
     }
 
     /**
      * 判断是否是在中国
-     * @param $lng
+     * @param $lon
      * @param $lat
      * @return bool
      */
-    private static function outOfChina($lng, $lat)
+    private static function outOfChina($lon, $lat)
     {
-        if (($lng < 72.004 || $lng > 137.8347) &&
+        if (($lon < 72.004 || $lon > 137.8347) &&
             ($lat < 0.8293 || $lat > 55.8271))
             return true;
         return false;
@@ -217,20 +219,20 @@ class GisService
 
     /**
      * 坐标转换
-     * @param $lng
+     * @param $lon
      * @param $lat
      * @return array
      */
-    private static function transform($lng, $lat)
+    private static function transform($lon, $lat)
     {
-        if (static::outOfChina($lng, $lat)) {
+        if (static::outOfChina($lon, $lat)) {
             return array(
-                'lat' => $lat,
-                'lng' => $lng
+                'lon' => $lon,
+                'lat' => $lat
             );
         }
-        $dLat = static::transformLat($lng - 105.0, $lat - 35.0);
-        $dLon = static::transformLng($lng - 105.0, $lat - 35.0);
+        $dLat = static::transformLat($lon - 105.0, $lat - 35.0);
+        $dLon = static::transformlon($lon - 105.0, $lat - 35.0);
         $radLat = $lat / 180.0 * static::$pi;
         $magic = sin($radLat);
         $magic = 1 - static::$ee * $magic * $magic;
@@ -240,10 +242,10 @@ class GisService
         $dLon = ($dLon * 180.0) /
             (static::$a / $sqrtMagic * cos($radLat) * static::$pi);
         $mgLat = $lat + $dLat;
-        $mgLon = $lng + $dLon;
+        $mgLon = $lon + $dLon;
         return array(
-            'lat' => $mgLat,
-            'lng' => $mgLon
+            'lon' => $mgLon,
+            'lat' => $mgLat
         );
     }
 
@@ -253,7 +255,7 @@ class GisService
      * @param $y
      * @return float|int
      */
-    private static function transformLng($x, $y)
+    private static function transformlon($x, $y)
     {
         $ret = 300.0 + $x + 2.0 * $y + 0.1 * $x * $x + 0.1 * $x * $y +
             0.1 * sqrt(abs($x));
@@ -283,5 +285,18 @@ class GisService
         $ret += (160.0 * sin($y / 12.0 * static::$pi) +
                 320 * sin($y * static::$pi / 30.0)) * 2.0 / 3.0;
         return $ret;
+    }
+
+    public static function corTransfer($params)
+    {
+        $key = array_keys($params);
+        $value = array_values($params);
+        if (!empty($cor[0]) && !empty($cor[1]) && (CompanyTrait::getCompany()['map'] == 'baidu')) {
+            $value = array_values(GisService::wgs84ToBd09($value[0], $value[1]));
+        }
+        return [
+            $key[0] => $value[0],
+            $key[1] => $value[1],
+        ];
     }
 }

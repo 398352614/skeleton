@@ -23,23 +23,6 @@ class RouteTrackingResource extends JsonResource
             'driver_id' => $this->driver_id,
             'tour_driver_event_id' => $this->tour_driver_event_id,
             'time' => $this->time,
-        ], $this->corTransfer());
-    }
-
-    public function corTransfer()
-    {
-        if (empty($this->lat) || empty($this->lon)) {
-            return ['lat' => $this->lat, 'lon' => $this->lon,];
-        }
-        if ((CompanyTrait::getCompany()['map'] == 'baidu')) {
-            $cor = GisService::wgs84ToBd09($this->lon, $this->lat);
-            $cor = array_values($cor);
-        } else {
-            $cor = [$this->lat, $this->lon];
-        }
-        return [
-            'lat' => $cor[0],
-            'lon' => $cor[1],
-        ];
+        ], GisService::corTransfer(['lon'=>$this->lon,'lat'=>$this->lat]));
     }
 }
