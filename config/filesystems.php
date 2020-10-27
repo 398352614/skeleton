@@ -111,6 +111,14 @@ return [
             'visibility' => 'public',
         ],
 
+        //司机端-图片
+        'driver_image_public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/driver/images'),
+            'url' => env('APP_URL').'/storage/driver/images',
+            'visibility' => 'public',
+        ],
+
         //司机端-文件
         'driver_file_public' => [
             'driver' => 'local',
