@@ -80,6 +80,7 @@ class UploadService
      * @param array $all
      * @return
      * @throws BusinessLogicException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function fileDownload(array $all)
     {
@@ -87,7 +88,7 @@ class UploadService
             throw new BusinessLogicException('数据不存在');
         }
         if ($all['dir'] == config('tms.excel')) {
-            return Storage::disk('admin_file_storage')->url('backup.sql.gz');
+            return Storage::disk('admin_file_storage')->get('backup.sql.gz');
         } else {
             throw new BusinessLogicException('数据不存在');
         }
