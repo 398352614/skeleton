@@ -415,6 +415,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('getFileDirList', 'UploadController@getFileDirList');
         //文件上传
         Route::post('fileUpload', 'UploadController@fileUpload');
+        //下载
+        Route::post('file-download','UploadController@fileDownload');
     });
 
     //路线追踪相关

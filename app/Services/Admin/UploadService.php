@@ -77,6 +77,24 @@ class UploadService
     }
 
     /**
+     * @param array $all
+     * @return
+     * @throws BusinessLogicException
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function fileDownload(array $all)
+    {
+        if (!auth()->user()->id == config('tms.admin_id')) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if ($all['dir'] == config('tms.excel')) {
+            return Storage::disk('admin_file_storage')->download('backup.sql.gz');
+        } else {
+            throw new BusinessLogicException('数据不存在');
+        }
+    }
+
+    /**
      * 获得相对路径
      * @param string $url
      * @return string
