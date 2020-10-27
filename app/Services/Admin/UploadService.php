@@ -90,7 +90,7 @@ class UploadService
         if ($all['dir'] == config('tms.excel')) {
             return Storage::disk('admin_file_storage')->download('backup.sql.gz');
         } else {
-            throw new BusinessLogicException('数据不存在');
+            throw new BusinessLogicException('操作失败');
         }
     }
 
