@@ -291,7 +291,7 @@ class GisService
     {
         $key = array_keys($params);
         $value = array_values($params);
-        if (!empty($cor[0]) && !empty($cor[1]) && (CompanyTrait::getCompany()['map'] == 'baidu')) {
+        if (!empty($value[0]) && !empty($value[1]) && (CompanyTrait::getCompany()['map'] == 'baidu')) {
             $value = array_values(GisService::wgs84ToBd09($value[0], $value[1]));
         }
         return [
