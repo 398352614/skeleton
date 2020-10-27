@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\Api\Admin;
 
-use App\Services\CorTransferService;
+use App\Services\GisService;
 use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -70,7 +70,7 @@ class BatchResource extends JsonResource
             return ['receiver_lat' => $this->receiver_lat, 'receiver_lon' => $this->receiver_lon,];
         }
         if ((CompanyTrait::getCompany()['map'] == 'baidu')) {
-            $cor = CorTransferService::tenCentToBaiDu($this->receiver_lat, $this->receiver_lon);
+            $cor = GisService::wgs84ToBd09($this->receiver_lon, $this->receiver_lat);
             $cor = array_values($cor);
         } else {
             $cor = [$this->receiver_lat, $this->receiver_lon];

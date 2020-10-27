@@ -5,9 +5,10 @@
 
 namespace App\Http\Resources\Api\Merchant;
 
-use App\Services\CorTransferService;
+use App\Services\GisService;
 use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Arr;
 
 class TourDriverEventResource extends JsonResource
 {
@@ -43,7 +44,7 @@ class TourDriverEventResource extends JsonResource
             return ['lat' => $this->lat, 'lon' => $this->lon,];
         }
         if ((CompanyTrait::getCompany()['map'] == 'baidu')) {
-            $cor = CorTransferService::tenCentToBaiDu($this->lat, $this->lon);
+            $cor = GisService::wgs84ToBd09($this->lon, $this->lat);
             $cor = array_values($cor);
         } else {
             $cor = [$this->lat, $this->lon];

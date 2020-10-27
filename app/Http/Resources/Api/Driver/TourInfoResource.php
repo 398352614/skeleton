@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Api\Driver;
 
 use App\Services\BaseConstService;
-use App\Services\CorTransferService;
+use App\Services\GisService;
 use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -87,7 +87,7 @@ class TourInfoResource extends JsonResource
             return ['warehouse_lat' => $this->warehouse_lat, 'warehouse_lon' => $this->warehouse_lon,];
         }
         if ((CompanyTrait::getCompany()['map'] == 'baidu')) {
-            $cor = CorTransferService::tenCentToBaiDu($this->warehouse_lat, $this->warehouse_lon);
+            $cor = GisService::wgs84ToBd09($this->warehouse_lon, $this->warehouse_lat);
             $cor = array_values($cor);
         } else {
             $cor = [$this->warehouse_lat, $this->warehouse_lon];
