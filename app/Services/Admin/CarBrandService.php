@@ -2,7 +2,7 @@
 
 namespace App\Services\Admin;
 
-use App\Http\Resources\Api\Admin\Api\Admin\CarBrandResource;
+use App\Http\Resources\Api\Admin\CarBrandResource;
 use App\Http\Resources\Api\Admin\CarResource;
 use App\Models\Car;
 use App\Models\CarBrand;

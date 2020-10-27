@@ -43,6 +43,7 @@ class FixRecharge extends Command
     {
         $this->info('fix begin');
         try {
+            //处理流水表
             $rechargeList = DB::table('recharge')->get()->toArray();
             foreach ($rechargeList as $k => $v) {
                 $rechargeList[$k] = collect($rechargeList[$k])->toArray();
@@ -54,6 +55,21 @@ class FixRecharge extends Command
                             'execution_date' => $rechargeList[$k]['tour_list'][0]->execution_date,
                             'line_id' => $rechargeList[$k]['tour_list'][0]->line_id,
                             'line_name' => $rechargeList[$k]['tour_list'][0]->line_name
+                        ]);
+                }
+            }
+            //处理统计表
+            $rechargeStatisticsList = DB::table('recharge_statistics')->get()->toArray();
+            foreach ($rechargeStatisticsList as $k => $v) {
+                $rechargeStatisticsList[$k] = collect($rechargeStatisticsList[$k])->toArray();
+                $rechargeStatisticsList[$k]['tour_list'] = DB::table('tour')->where('execution_date', $rechargeStatisticsList[$k]['recharge_date'])->where('driver_id', $rechargeStatisticsList[$k]['driver_id'])->get();
+                if (count($rechargeStatisticsList[$k]['tour_list']) == 1) {
+                    DB::table('recharge_statistics')->where('id', $rechargeStatisticsList[$k]['id'])->update(
+                        [
+                            'tour_no' => $rechargeStatisticsList[$k]['tour_list'][0]->tour_no,
+                            'execution_date' => $rechargeStatisticsList[$k]['tour_list'][0]->execution_date,
+                            'line_id' => $rechargeStatisticsList[$k]['tour_list'][0]->line_id,
+                            'line_name' => $rechargeStatisticsList[$k]['tour_list'][0]->line_name
                         ]);
                 }
             }
