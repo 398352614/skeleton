@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use App\Traits\SearchTrait;
+use Illuminate\Support\Facades\App;
 
 /**
  * 运单表
@@ -108,5 +110,37 @@ class TrackingOrder extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    private function getRelationQuery($where, $table, $tableWhere)
+    {
+        $where = array_merge(array_key_prefix($where, $this->table . '.'), array_key_prefix($tableWhere, $table . '.'));
+        $query = $this->newQuery()->with($table);
+        SearchTrait::buildQuery($query, $where);
+        return $query;
+    }
+
+    public function getOrder($where = [], $orderWhere = [], $selectFields = ['*'])
+    {
+        $orderTable = Order::query()->newModelInstance()->getTable();
+        $query = $this->getRelationQuery($where, $orderTable, $orderWhere);
+        return $query->first($selectFields);
+    }
+
+    public function getOrderList($where = [], $orderWhere = [], $selectFields = ['*'])
+    {
+        $orderTable = Order::query()->newModelInstance()->getTable();
+        $query = $this->getRelationQuery($where, $orderTable, $orderWhere);
+        return $query->get($selectFields);
+    }
+
+    public function getPackageList($where = [], $selectFields = ['*'])
+    {
+        $this->newQuery()->with('order')->where('order_no', 'TMS')->get();
+    }
+
+    public function getMaterialList($where = [], $selectFields = ['*'])
+    {
+        $this->newQuery()->with('order')->where('order_no', 'TMS')->get();
+    }
 
 }
