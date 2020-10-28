@@ -804,30 +804,19 @@ class TourService extends BaseService
             $info['batchs'][$k]['out_user_id'] = '';
             if (count($orderList) > 1) {
                 if (in_array(config('tms.erp_merchant_id'), collect($orderList)->pluck('merchant_id')->toArray())) {
-                    $order = array_values(collect($orderList)->where('merchant_id', config('tms.erp_merchant_id'))->where('out_user_id', '<>', '')->all());
-                    if (empty($order)) {
-                        $info['batchs'][$k]['out_user_id'] = '';
-                    } elseif (count(collect($order)->groupBy('out_user_id')) == 1) {
-                        $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'];
-                    } else {
-                        $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'] . ' ' . __('等');
-                    }
+                    $order = collect($orderList)->where('merchant_id', config('tms.erp_merchant_id'))->where('out_user_id', '<>', '')->first();
                 } elseif (in_array(config('tms.eushop_merchant_id'), collect($orderList)->pluck('merchant_id')->toArray())) {
                     $order = collect($orderList)->where('merchant_id', config('tms.eushop_merchant_id'))->where('out_user_id', '<>', '')->first();
-                    if (empty($order)) {
-                        $info['batchs'][$k]['out_user_id'] = '';
-                    } else {
-                        $info['batchs'][$k]['out_user_id'] = $order['out_user_id'] . ' ' . __('等');
-                    }
                 } else {
                     $order = collect($orderList)->where('out_user_id', '<>', '')->first();
-                    if (empty($order)) {
-                        $info['batchs'][$k]['out_user_id'] = '';
-                    } else {
-                        $info['batchs'][$k]['out_user_id'] = $order['out_user_id'] . ' ' . __('等');
-                    }
                 }
-
+                if (empty($order)) {
+                    $info['batchs'][$k]['out_user_id'] = '';
+                } elseif (count(collect($orderList)->pluck('out_user_id')) == 1) {
+                    $info['batchs'][$k]['out_user_id'] = $order['out_user_id'];
+                } else {
+                    $info['batchs'][$k]['out_user_id'] = $order['out_user_id'] . ' ' . __('等');
+                }
             } elseif (count($orderList) == 1) {
                 $info['batchs'][$k]['out_user_id'] = $orderList[0]['out_user_id'];
             }
