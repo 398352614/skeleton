@@ -1408,7 +1408,6 @@ class TourService extends BaseService
             throw new BusinessLogicException('操作失败');
         }
         $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id')->groupBy('sort_id')->toArray();
-        asort($newBatchList);
         $newBatchList=array_values($newBatchList);
         $tour['batch_ids'] = [];
         foreach ($newBatchList as $k => $v) {
