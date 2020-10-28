@@ -1367,7 +1367,8 @@ class TourService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->groupBy('sort_id');
+        $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->groupBy('sort_id')->toArray();
+        asort($newBatchList);
         $tour['batch_ids'] = [];
         foreach ($newBatchList as $k => $v) {
             if (count($v) == 1) {
@@ -1407,7 +1408,8 @@ class TourService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->groupBy('sort_id');
+        $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->groupBy('sort_id')->toArray();
+        asort($newBatchList);
         $tour['batch_ids'] = [];
         foreach ($newBatchList as $k => $v) {
             if (count($v) == 1) {
