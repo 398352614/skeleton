@@ -800,7 +800,7 @@ class TourService extends BaseService
         $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k] = collect($info['batchs'][$k])->toArray();
-            $orderList = $orderList->where('batch_no', $v['batch_no'])->all();
+            $orderList = collect($orderList)->where('batch_no', $v['batch_no'])->all();
             $info['batchs'][$k]['out_user_id'] = '';
             if (count($orderList) > 1) {
                 if (in_array(config('tms.erp_merchant_id'), collect($orderList)->pluck('out_user_id')->toArray())) {
