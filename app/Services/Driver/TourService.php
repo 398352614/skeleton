@@ -1367,8 +1367,7 @@ class TourService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->groupBy('sort_id')->toArray();
-        asort($newBatchList);
+        $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id')->groupBy('sort_id')->toArray();
         $tour['batch_ids'] = [];
         foreach ($newBatchList as $k => $v) {
             if (count($v) == 1) {
@@ -1377,6 +1376,7 @@ class TourService extends BaseService
                 $tour['batch_ids'] = array_merge($tour['batch_ids'], collect($v)->sortBy('status')->pluck('id')->toArray());
             }
         }
+        dd($tour['batch_ids']);
         dispatch(new UpdateTour($tour['tour_no'], $tour['batch_ids']));
     }
 
@@ -1408,8 +1408,9 @@ class TourService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->groupBy('sort_id')->toArray();
+        $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id')->groupBy('sort_id')->toArray();
         asort($newBatchList);
+        $newBatchList=array_values($newBatchList);
         $tour['batch_ids'] = [];
         foreach ($newBatchList as $k => $v) {
             if (count($v) == 1) {
