@@ -800,22 +800,23 @@ class TourService extends BaseService
         $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k] = collect($info['batchs'][$k])->toArray();
-            $order = array_values($orderList->where('batch_no', $v['batch_no'])->all());
+            $orderList = array_values($orderList->where('batch_no', $v['batch_no'])->all());
             $info['batchs'][$k]['out_user_id'] = '';
-            if (count($order) > 1) {
-                foreach ($order as $x => $y) {
-                    if ($y['merchant_id'] == config('tms.erp_merchant_id') && !empty($y['out_user_id'])) {
-                        $info['batchs'][$k]['out_user_id'] = $y['out_user_id'] . ' ' . __('等');
-                        break;
-                    } elseif ($y['merchant_id'] == config('tms.eushop_merchant_id') && !empty($y['out_user_id'])) {
-                        $info['batchs'][$k]['out_user_id'] = $y['out_user_id'] . ' ' . __('等');
-                        break;
-                    } elseif (!empty($y['out_user_id'])) {
-                        $info['batchs'][$k]['out_user_id'] = $y['out_user_id'] . ' ' . __('等');
-                    }
+            if (count($orderList) > 1) {
+                if (in_array(config('tms.erp_merchant_id'), collect($orderList)->pluck('out_user_id')->toArray())) {
+                    $order = collect($orderList)->where('merchant_id', config('tms.erp_merchant_id'))->where('out_user_id', '<>', '')->first();
+                } elseif (in_array(config('tms.eushop_merchant_id'), collect($orderList)->pluck('out_user_id')->toArray())) {
+                    $order = collect($orderList)->where('merchant_id', config('tms.eushop_merchant_id'))->where('out_user_id', '<>', '')->first();
+                } else {
+                    $order = collect($orderList)->where('out_user_id', '<>', '')->first();
                 }
-            } elseif (count($order) == 1) {
-                $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'];
+                if (empty($order)) {
+                    $info['batchs'][$k]['out_user_id'] = ' ' . __('等');
+                } else {
+                    $info['batchs'][$k]['out_user_id'] = $order['out_user_id'] . ' ' . __('等');
+                }
+            } elseif (count($orderList) == 1) {
+                $info['batchs'][$k]['out_user_id'] = $orderList[0]['out_user_id'];
             } else {
                 throw new BusinessLogicException('数据不存在');
             }
