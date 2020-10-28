@@ -801,15 +801,16 @@ class TourService extends BaseService
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k] = collect($info['batchs'][$k])->toArray();
             $order = array_values($orderList->where('batch_no', $v['batch_no'])->all());
+            $info['batchs'][$k]['out_user_id'] = '';
             if (count($order) > 1) {
                 foreach ($order as $x => $y) {
-                    if ($y['merchant_id'] == config('tms.erp_merchant_id')) {
+                    if ($y['merchant_id'] == config('tms.erp_merchant_id') && !empty($y['out_user_id'])) {
                         $info['batchs'][$k]['out_user_id'] = $v['out_user_id'] . ' ' . __('等');
                         break;
-                    } elseif ($y['merchant_id'] == config('tms.eushop_merchant_id')) {
+                    } elseif ($y['merchant_id'] == config('tms.eushop_merchant_id') && !empty($y['out_user_id'])) {
                         $info['batchs'][$k]['out_user_id'] = $v['out_user_id'] . ' ' . __('等');
                         break;
-                    } else {
+                    } elseif (!empty($y['out_user_id'])) {
                         $info['batchs'][$k]['out_user_id'] = $v['out_user_id'] . ' ' . __('等');
                     }
                 }
