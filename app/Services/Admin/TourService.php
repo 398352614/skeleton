@@ -812,7 +812,7 @@ class TourService extends BaseService
                 }
                 if (empty($order)) {
                     $info['batchs'][$k]['out_user_id'] = '';
-                } elseif (count(collect($orderList)->pluck('out_user_id')) == 1) {
+                } elseif (count(collect($orderList)->groupBy('out_user_id')) == 1) {
                     $info['batchs'][$k]['out_user_id'] = $order['out_user_id'];
                 } else {
                     $info['batchs'][$k]['out_user_id'] = $order['out_user_id'] . ' ' . __('等');
