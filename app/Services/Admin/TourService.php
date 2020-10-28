@@ -799,10 +799,20 @@ class TourService extends BaseService
         $info['batchs'] = array_values($info['batchs']);
         $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
         foreach ($info['batchs'] as $k => $v) {
-            $info['batchs'][$k]=collect($info['batchs'][$k])->toArray();
-            $order = array_values($orderList->where('batch_no', $v['batch_no'])->sortBy('merchant_id')->all());
+            $info['batchs'][$k] = collect($info['batchs'][$k])->toArray();
+            $order = array_values($orderList->where('batch_no', $v['batch_no'])->all());
             if (count($order) > 1) {
-                $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'].' '.__('等');
+                foreach ($order as $x => $y) {
+                    if ($y['merchant_id'] == config('tms.erp_merchant_id')) {
+                        $info['batchs'][$k]['out_user_id'] = $v['out_user_id'] . ' ' . __('等');
+                        break;
+                    } elseif ($y['merchant_id'] == config('tms.eushop_merchant_id')) {
+                        $info['batchs'][$k]['out_user_id'] = $v['out_user_id'] . ' ' . __('等');
+                        break;
+                    } else {
+                        $info['batchs'][$k]['out_user_id'] = $v['out_user_id'] . ' ' . __('等');
+                    }
+                }
             } elseif (count($order) == 1) {
                 $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'];
             } else {
