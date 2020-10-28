@@ -503,7 +503,7 @@
     "未扫描包裹取消取派失败": "Failed to cancel delivery of unsealed package",
     "材料新增失败": "Failed to add material",
     "当前待分配车辆,请先分配车辆": "Current vehicles to be allocated, please assign vehicles first",
-    "订单[:order_no]已取消或已删除,不能出库,请先剔除": "Order_ No] has been cancelled or deleted, cannot be delivered out, please delete it first",
+    "订单[:order_no]已取消或已删除,不能出库,请先剔除": "[Order_ No] has been cancelled or deleted, cannot be delivered out, please delete it first",
     "材料有重复,请先合并": "There are duplicate materials, please merge them first",
     "请先确认出库": "Please confirm the delivery first",
     "站点当前状态不能上报异常": "The current status of the site cannot report exceptions",
