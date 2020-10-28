@@ -384,11 +384,11 @@ class TourService extends BaseService
             if ((date('Y-m-d') == $batch['execution_date'] && time() < strtotime($batch['execution_date'] . ' ' . $line['order_deadline']) ||
                 date('Y-m-d') !== $batch['execution_date'])) {
                 //取件订单，线路最大订单量验证
-                if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
+                if ($this->formData['type'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
                     $data = $batch;
                 }
                 //派件订单，线路最大订单量验证
-                if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
+                if ($this->formData['type'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
                     $data = $batch;
                 }
             }

@@ -19,6 +19,7 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class TourTaskService
@@ -90,6 +91,15 @@ class TourTaskService extends BaseService
     }
 
     /**
+     *  运单 服务
+     * @return TrackingOrderService
+     */
+    private function getTrackingOrderService()
+    {
+        return self::getInstance(TrackingOrderService::class);
+    }
+
+    /**
      * 获取任务列表
      * @return mixed
      */
@@ -108,7 +118,7 @@ class TourTaskService extends BaseService
             //获取最后一个站点的收件人信息
             $tour['last_receiver'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'desc', 'created_at' => 'desc']);
             //获取是否有特殊事项
-            $order = $this->getOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['special_remark'], false);
+            $order = $this->getTrackingOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['special_remark']);
             $tour['is_exist_special_remark'] = !empty($order) ? true : false;
         }
         return $list;
@@ -145,40 +155,39 @@ class TourTaskService extends BaseService
         }
         $tour['additional_package_list'] = $additionalPackageList;
         $tour['additional_package_count'] = count($additionalPackageList);
-        //获取所有订单列表
-        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        //获取所有运单列表
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
         //获取所有材料列表
         $materialList = $this->getTourMaterialList($tour);
         //获取所有包裹列表
-        $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        $packageList = $this->getTrackingOrderService()->getPackageList(['tour_no' => $tour['tour_no']]);
         for ($i = 0, $j = count($packageList); $i < $j; $i++) {
             $packageList[$i]['feature_logo'] = $packageList[$i]['feature_logo'] ?? '';
         }
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
-        $orderList = array_map(function ($order) use ($packageList) {
-            $order['package_list'] = $packageList[$order['order_no']] ?? [];
-            return $order;
-        }, $orderList);
+        $trackingOrderList = array_map(function ($trackingOrder) use ($packageList) {
+            $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']] ?? [];
+            return $trackingOrder;
+        }, $trackingOrderList);
         //数据填充
         //获取延迟次数
         $tour['total_delay_amount'] = $this->getTourDelayService()->count(['tour_no' => $tour['tour_no']]);
         //获取延时时间
-        $tour['total_delay_time'] =intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']]));
-        $tour['total_delay_time_human'] =round(intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']])) / 60) .__('分钟');
+        $tour['total_delay_time'] = intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']]));
+        $tour['total_delay_time_human'] = round(intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']])) / 60) . __('分钟');
         $tour['batch_list'] = $batchList;
-        $tour['order_list'] = $orderList;
+        $tour['tracking_order_list'] = $trackingOrderList;
         $tour['material_list'] = $materialList;
         $tour['actual_total_amount'] = number_format(round($tour['sticker_amount'] + $tour['delivery_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'], 2), 2);
         //$tour['package_list'] = $packageList;
-        $tour['is_exist_special_remark'] = !empty(array_column($orderList, 'special_remark')) ? true : false;
+        $tour['is_exist_special_remark'] = !empty(array_column($trackingOrderList, 'special_remark')) ? true : false;
         return $tour;
     }
 
     /**
      * 获取材料
      * @param $tour
-     * @param $materialList
      * @return array
      */
     public function getTourMaterialList($tour)
@@ -186,12 +195,12 @@ class TourTaskService extends BaseService
         if (in_array(intval($tour['status']), [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5])) {
             $materialList = $this->tourMaterialModel->newQuery()->where('tour_no', '=', $tour['tour_no'])->get()->toArray();
         } else {
-            $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], [
+            $materialList = $this->getTrackingOrderService()->getMaterialList(['tour_no' => $tour['tour_no']], [], [
                 'name',
                 'code',
                 DB::raw('SUM(expect_quantity) as expect_quantity'),
                 DB::raw('0 as actual_quantity'),
-            ], false, ['code'])->toArray();
+            ], ['code']);
         }
         $materialList = Arr::where($materialList, function ($material) {
             return !empty($material['code']) && !empty($material['expect_quantity']);
@@ -200,7 +209,7 @@ class TourTaskService extends BaseService
     }
 
     /**
-     * 获取订单特殊事项列表
+     * 获取运单特殊事项列表
      * @param $id
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * @throws BusinessLogicException
@@ -212,8 +221,8 @@ class TourTaskService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $tour->toArray();
-        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'special_remark'], false);
-        return $orderList;
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark'], false);
+        return $trackingOrderList;
     }
 
     /**
@@ -229,23 +238,23 @@ class TourTaskService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $batch = $batch->toArray();
-        $orderList = $this->getOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'special_remark'], false);
-        return $orderList;
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark'], false);
+        return $trackingOrderList;
     }
 
     /**
      * 获取特殊事项
-     * @param $orderId
+     * @param $trackingOrderId
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function getSpecialRemark($orderId)
+    public function getSpecialRemark($trackingOrderId)
     {
-        $order = $this->getOrderService()->getInfo(['id' => $orderId], ['*'], false);
-        if (empty($order)) {
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['id' => $trackingOrderId], ['*'], false);
+        if (empty($trackingOrder)) {
             throw new BusinessLogicException('数据不存在');
         }
-        return $order->toArray()['special_remark'];
+        return $trackingOrder->toArray()['special_remark'];
     }
 
     /**
@@ -254,19 +263,19 @@ class TourTaskService extends BaseService
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getOrderList($params)
+    public function getTrackingOrderList($params)
     {
-        //获取所有订单列表
-        $orderList = $this->getOrderService()->getList(['tour_no' => $params['tour_no']], ['order_no'], false)->toArray();
+        //获取所有运单列表
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $params['tour_no']], ['order_no', 'tracking_order_no'], false);
         //获取所有包裹列表
-        $packageList = $this->getPackageService()->getList(['tour_no' => $params['tour_no']], ['order_no', 'express_first_no', 'feature_logo'], false)->toArray();
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($trackingOrderList, 'order_no')]], ['order_no', 'express_first_no', 'feature_logo']);
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
-        $orderList = array_map(function ($order) use ($packageList) {
-            $order['package_list'] = $packageList[$order['order_no']] ?? [];
-            return $order;
-        }, $orderList);
-        return $orderList ?? [];
+        $trackingOrderList = array_map(function ($trackingOrder) use ($packageList) {
+            $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']] ?? [];
+            return $trackingOrder;
+        }, $trackingOrderList);
+        return $trackingOrderList ?? [];
     }
 
 }

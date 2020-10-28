@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
 use App\Traits\SearchTrait;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
 
 /**
@@ -83,6 +84,12 @@ class TrackingOrder extends BaseModel
         'car_no',
         'status',
         'out_status',
+        'exception_label',
+        'cancel_type',
+        'cancel_remark',
+        'cancel_picture',
+        'mask_code',
+        'special_remark',
         'created_at',
         'updated_at',
     ];
@@ -111,36 +118,51 @@ class TrackingOrder extends BaseModel
      */
     protected $dates = [];
 
+    /**
+     * 获取关联查询构造器
+     * @param $where
+     * @param $table
+     * @param $tableWhere
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     private function getRelationQuery($where, $table, $tableWhere)
     {
         $where = array_merge(array_key_prefix($where, $this->table . '.'), array_key_prefix($tableWhere, $table . '.'));
-        $query = $this->newQuery()->with($table);
-        SearchTrait::buildQuery($query, $where);
+        $query = $this->newQuery()->join($table, $this->table . '.order_no', '=', $table . '.order_no');
+        !empty($where) && SearchTrait::buildQuery($query, $where);
         return $query;
+    }
+
+    /**
+     * 为字段填充表名
+     * @param $table
+     * @param $selectFields
+     * @return array
+     */
+    private function fillSelectFieldsTable($table, $selectFields)
+    {
+        if ($selectFields == ['*']) {
+            $selectFields = Order::query()->newModelInstance()->getFillable();
+        }
+        $selectFields = collect($selectFields)->transform(function ($field, $key) use ($table) {
+            return $table . '.' . $field . ' as ' . $field;
+        })->all();
+        $selectFields = Arr::prepend($selectFields, $this->table . '.tracking_order_no as tracking_order_no');
+        return $selectFields;
     }
 
     public function getOrder($where = [], $orderWhere = [], $selectFields = ['*'])
     {
         $orderTable = Order::query()->newModelInstance()->getTable();
         $query = $this->getRelationQuery($where, $orderTable, $orderWhere);
-        return $query->first($selectFields);
+        $order = $query->first($this->fillSelectFieldsTable($orderTable, $selectFields));
+        return !empty($order) ? $order->toArray() : [];
     }
 
     public function getOrderList($where = [], $orderWhere = [], $selectFields = ['*'])
     {
         $orderTable = Order::query()->newModelInstance()->getTable();
         $query = $this->getRelationQuery($where, $orderTable, $orderWhere);
-        return $query->get($selectFields);
+        return $query->get($this->fillSelectFieldsTable($orderTable, $selectFields))->toArray();
     }
-
-    public function getPackageList($where = [], $selectFields = ['*'])
-    {
-        $this->newQuery()->with('order')->where('order_no', 'TMS')->get();
-    }
-
-    public function getMaterialList($where = [], $selectFields = ['*'])
-    {
-        $this->newQuery()->with('order')->where('order_no', 'TMS')->get();
-    }
-
 }

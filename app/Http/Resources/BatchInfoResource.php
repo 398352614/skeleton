@@ -56,7 +56,7 @@ class BatchInfoResource extends JsonResource
             'replace_amount' => $this->replace_amount,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
-            'order_count' => $this->order_count ?? null,
+            'tracking_order_count' => $this->tracking_order_count ?? null,
             'status_name' => $this->status_name,
             'exception_label_name' => $this->exception_label_name,
             'pay_type_name' => $this->pay_type_name,

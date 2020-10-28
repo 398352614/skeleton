@@ -80,7 +80,7 @@ class TourTaskController extends BaseController
      * @throws \App\Exceptions\BusinessLogicException
      */
     public function getOrderList(){
-        return $this->service->getOrderList($this->data);
+        return $this->service->getTrackingOrderList($this->data);
     }
 
 

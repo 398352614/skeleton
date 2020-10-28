@@ -85,6 +85,15 @@ class BatchService extends BaseService
     }
 
     /**
+     * 运单 服务
+     * @return TrackingOrderService
+     */
+    private function getTrackingOrderService()
+    {
+        return self::getInstance(TrackingOrderService::class);
+    }
+
+    /**
      * 订单 服务
      * @return OrderService
      */
@@ -304,7 +313,7 @@ class BatchService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info['order_count'] = $this->getOrderService()->count(['batch_no' => $info['batch_no']]);
+        $info['tracking_order_count'] = $this->getTrackingOrderService()->count(['batch_no' => $info['batch_no']]);
         return $info;
     }
 
