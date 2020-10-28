@@ -800,7 +800,7 @@ class TourService extends BaseService
         $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k]=collect($info['batchs'][$k])->toArray();
-            $order = $orderList->where('batch_no', $v['batch_no'])->sortBy('merchant_id')->all();
+            $order = array_values($orderList->where('batch_no', $v['batch_no'])->sortBy('merchant_id')->all());
             if (count($order) > 1) {
                 $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'].' '.__('等');
             } elseif (count($order) == 1) {
