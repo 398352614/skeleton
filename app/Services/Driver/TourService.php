@@ -1376,7 +1376,6 @@ class TourService extends BaseService
                 $tour['batch_ids'] = array_merge($tour['batch_ids'], collect($v)->sortBy('status')->pluck('id')->toArray());
             }
         }
-        dd($tour['batch_ids']);
         dispatch(new UpdateTour($tour['tour_no'], $tour['batch_ids']));
     }
 
