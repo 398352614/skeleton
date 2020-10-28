@@ -1402,7 +1402,7 @@ class TourService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $tour['batch_ids'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        $tour['batch_ids'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
         Log::info('站点排序', $tour['batch_ids']);
         dispatch(new UpdateTour($tour['tour_no'], $tour['batch_ids']));
     }
