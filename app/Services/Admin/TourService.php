@@ -801,12 +801,12 @@ class TourService extends BaseService
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k]=collect($info['batchs'][$k])->toArray();
             $order = $orderList->where('batch_no', $v['batch_no'])->sortBy('merchant_id')->all();
-            if (empty($order)) {
-                throw new BusinessLogicException('数据不存在');
+            if (count($order) > 1) {
+                $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'].' '.__('等');
             } elseif (count($order) == 1) {
                 $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'];
             } else {
-                $info['batchs'][$k]['out_user_id'] = $order[0]['out_user_id'].' '.__('等');
+                throw new BusinessLogicException('数据不存在');
             }
             $info['batchs'][$k]['sort_id'] = $k + 1;
         }
