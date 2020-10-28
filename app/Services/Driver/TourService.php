@@ -61,7 +61,6 @@ class TourService extends BaseService
     }
 
 
-
     /**
      * 锁定-开始装货
      * @param $id
@@ -1400,7 +1399,9 @@ class TourService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $tour['batch_ids'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
+        $assignedBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
+        $deliveryBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_DELIVERING], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
+        $tour['batch_ids'] = array_merge($assignedBatchList, $deliveryBatchList);
         dispatch(new UpdateTour($tour['tour_no'], $tour['batch_ids']));
     }
 
