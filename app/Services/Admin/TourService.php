@@ -805,13 +805,13 @@ class TourService extends BaseService
             if (count($order) > 1) {
                 foreach ($order as $x => $y) {
                     if ($y['merchant_id'] == config('tms.erp_merchant_id') && !empty($y['out_user_id'])) {
-                        $info['batchs'][$k]['out_user_id'] = $v['out_user_id'] . ' ' . __('等');
+                        $info['batchs'][$k]['out_user_id'] = $y['out_user_id'] . ' ' . __('等');
                         break;
                     } elseif ($y['merchant_id'] == config('tms.eushop_merchant_id') && !empty($y['out_user_id'])) {
-                        $info['batchs'][$k]['out_user_id'] = $v['out_user_id'] . ' ' . __('等');
+                        $info['batchs'][$k]['out_user_id'] = $y['out_user_id'] . ' ' . __('等');
                         break;
                     } elseif (!empty($y['out_user_id'])) {
-                        $info['batchs'][$k]['out_user_id'] = $v['out_user_id'] . ' ' . __('等');
+                        $info['batchs'][$k]['out_user_id'] = $y['out_user_id'] . ' ' . __('等');
                     }
                 }
             } elseif (count($order) == 1) {
