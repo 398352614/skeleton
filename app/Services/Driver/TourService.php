@@ -1367,9 +1367,15 @@ class TourService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $assignedBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => ['<', BaseConstService::BATCH_CHECKOUT]], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
-        $deliveryBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => ['>=', BaseConstService::BATCH_CHECKOUT]], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
-        $tour['batch_ids'] = array_merge($assignedBatchList, $deliveryBatchList);
+        $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->groupBy('sort_id');
+        $tour['batch_ids'] = [];
+        foreach ($newBatchList as $k => $v) {
+            if (count($v) == 1) {
+                $tour['batch_ids'][] = $v[0]['id'];
+            } else {
+                $tour['batch_ids'] = array_merge($tour['batch_ids'], collect($v)->sortBy('status')->pluck('id')->toArray());
+            }
+        }
         dispatch(new UpdateTour($tour['tour_no'], $tour['batch_ids']));
     }
 
@@ -1401,9 +1407,15 @@ class TourService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $assignedBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => ['<', BaseConstService::BATCH_CHECKOUT]], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
-        $deliveryBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => ['>=', BaseConstService::BATCH_CHECKOUT]], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
-        $tour['batch_ids'] = array_merge($assignedBatchList, $deliveryBatchList);
+        $newBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->groupBy('sort_id');
+        $tour['batch_ids'] = [];
+        foreach ($newBatchList as $k => $v) {
+            if (count($v) == 1) {
+                $tour['batch_ids'][] = $v[0]['id'];
+            } else {
+                $tour['batch_ids'] = array_merge($tour['batch_ids'], collect($v)->sortBy('status')->pluck('id')->toArray());
+            }
+        }
         dispatch(new UpdateTour($tour['tour_no'], $tour['batch_ids']));
     }
 
