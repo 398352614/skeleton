@@ -17,10 +17,7 @@ use App\Services\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Arr;
 
 class BaseLineService extends BaseService
 {

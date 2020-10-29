@@ -90,7 +90,12 @@ class TrackingOrderService extends BaseService
         return self::getInstance(OrderNoRuleService::class);
     }
 
-
+    /**
+     * 新增
+     * @param $params
+     * @return string
+     * @throws BusinessLogicException
+     */
     public function store($params)
     {
         //填充发件人信息

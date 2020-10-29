@@ -6,10 +6,10 @@ use App\Traits\ConstTranslateTrait;
 
 /**
  * 订单轨迹表
- * Class OrderTrail
+ * Class TrackingOrderTrail
  * @package App\Models
  */
-class OrderTrail extends BaseModel
+class TrackingOrderTrail extends BaseModel
 {
     /**
      * 司机实际取件导航
@@ -17,7 +17,7 @@ class OrderTrail extends BaseModel
      *
      * @var string
      */
-    protected $table = 'order_trail';
+    protected $table = 'tracking_order_trail';
 
     /**
      * The primary key for the model.

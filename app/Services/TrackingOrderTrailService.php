@@ -5,11 +5,7 @@ namespace App\Services;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderTrailResource;
 use App\Models\Order;
-use App\Models\OrderTrail;
-use App\Services\BaseConstService;
-use App\Services\BaseService;
-use Illuminate\Database\Eloquent\Collection;
-use phpDocumentor\Reflection\Types\Parent_;
+use App\Models\TrackingOrderTrail;
 
 class TrackingOrderTrailService extends BaseService
 {
@@ -20,9 +16,9 @@ class TrackingOrderTrailService extends BaseService
         'order_no' => ['=', 'order_no'],
     ];
 
-    public function __construct(OrderTrail $orderTrail)
+    public function __construct(TrackingOrderTrail $trackingOrderTrail)
     {
-        parent::__construct($orderTrail, OrderTrailResource::class, OrderTrailResource::class);
+        parent::__construct($trackingOrderTrail, OrderTrailResource::class, OrderTrailResource::class);
     }
 
     public static function storeByTour($tour, int $action)
@@ -104,7 +100,7 @@ class TrackingOrderTrailService extends BaseService
             'content' => $content,
         ];
         !empty($order['merchant_id']) && $data['merchant_id'] = $order['merchant_id'];
-        OrderTrail::query()->create($data);
+        TrackingOrderTrail::query()->create($data);
     }
 
     /**

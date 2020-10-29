@@ -183,9 +183,18 @@ class TourService extends BaseService
      * 商户服务
      * @return MerchantService
      */
-    public function getMerchantService()
+    private function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * 仓库 服务
+     * @return WareHouseService
+     */
+    private function getWareHouseService()
+    {
+        return self::getInstance(WareHouseService::class);
     }
 
     /**
@@ -1513,6 +1522,118 @@ class TourService extends BaseService
 
 
     /**
+     * 站点加入取件线路
+     * @param $batch
+     * @param $line
+     * @param $order
+     * @param $tour
+     * @return BaseService|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function join($batch, $line, $order, $tour = [])
+    {
+        $tour = !empty($tour) ? $tour : $this->getTourInfo($batch, $line);
+        //加入取件线路
+        $quantity = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
+        $tour = !empty($tour) ? $this->joinExistTour($tour, $quantity) : $this->joinNewTour($batch, $line, $quantity);
+        return $tour;
+    }
+
+    /**
+     * 加入新的取件线路
+     * @param $line
+     * @param $batch
+     * @param $quantity
+     * @return BaseService|array|\Illuminate\Database\Eloquent\Model|mixed
+     * @throws BusinessLogicException
+     */
+    private function joinNewTour($batch, $line, $quantity)
+    {
+        //获取仓库信息
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        if (empty($warehouse)) {
+            throw new BusinessLogicException('仓库不存在！');
+        }
+        $warehouse = $warehouse->toArray();
+        $tourNo = $this->getOrderNoRuleService()->createTourNo();
+        $tour = parent::create(
+            array_merge([
+                'tour_no' => $tourNo,
+                'line_id' => $line['id'],
+                'line_name' => $line['name'],
+                'execution_date' => $batch['execution_date'],
+                'warehouse_id' => $warehouse['id'],
+                'warehouse_name' => $warehouse['fullname'],
+                'warehouse_phone' => $warehouse['phone'],
+                'warehouse_country' => $warehouse['country'],
+                'warehouse_post_code' => $warehouse['post_code'],
+                'warehouse_city' => $warehouse['city'],
+                'warehouse_street' => $warehouse['street'],
+                'warehouse_house_number' => $warehouse['house_number'],
+                'warehouse_address' => $warehouse['address'],
+                'warehouse_lon' => $warehouse['lon'],
+                'warehouse_lat' => $warehouse['lat'],
+                'merchant_id' => $batch['merchant_id'] ?? 0
+            ], $quantity)
+        );
+        if ($tour === false) {
+            throw new BusinessLogicException('站点加入取件线路失败，请重新操作！');
+        }
+        return $tour->getOriginal();
+    }
+
+    /**
+     * 加入已存在取件线路
+     * @param $tour
+     * @param $quantity
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function joinExistTour($tour, $quantity)
+    {
+        $data = [
+            'expect_pickup_quantity' => !empty($quantity['expect_pickup_quantity']) ? $tour['expect_pickup_quantity'] + $quantity['expect_pickup_quantity'] : $tour['expect_pickup_quantity'],
+            'expect_pie_quantity' => !empty($quantity['expect_pie_quantity']) ? $tour['expect_pie_quantity'] + $quantity['expect_pie_quantity'] : $tour['expect_pie_quantity'],
+        ];
+        $rowCount = parent::updateById($tour['id'], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('站点加入取件线路失败，请重新操作！');
+        }
+        $tour = array_merge($tour, $data);
+        return $tour;
+    }
+
+    /**
+     * 获取取件线路信息
+     * @param $batch
+     * @param $line
+     * @param $isLock
+     * @param $tourNo
+     * @param $isAssign
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null, $isAssign = false)
+    {
+        $this->query->where('driver_id', '<>', null);
+        if (!empty($tourNo)) {
+            $this->query->where('tour_no', '=', $tourNo);
+        }
+        //若不存在取件线路或者超过最大运单量,则新建取件线路
+        if ((intval($batch['expect_pickup_quantity']) > 0) && ($isAssign == false)) {
+            $this->query->where(DB::raw('expect_pickup_quantity+' . intval($batch['expect_pickup_quantity'])), '<=', $line['pickup_max_count']);
+        }
+        if ((intval($batch['expect_pie_quantity']) > 0) && ($isAssign == false)) {
+            $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
+        }
+        $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
+        isset($batch['merchant_id']) && $where['merchant_id'] = $batch['merchant_id'];
+        $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
+        return !empty($tour) ? $tour->toArray() : [];
+    }
+
+
+    /**
      * 统计运单数量
      *
      * @param $info
@@ -1524,16 +1645,15 @@ class TourService extends BaseService
     {
         $arrCount = [];
         if ($type === 1) {
-            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['<>', null]]);
         } elseif ($type === 2) {
-            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['<>', null]]);
         } else {
-            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
-            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['<>', null]]);
+            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['<>', null]]);
         }
         return $arrCount;
     }
-
 
 
 }

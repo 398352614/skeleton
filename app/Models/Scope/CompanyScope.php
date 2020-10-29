@@ -31,10 +31,10 @@ use App\Models\Material;
 use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
+use App\Models\MerchantLineRange;
 use App\Models\MerchantRecharge;
 use App\Models\Order;
 use App\Models\OrderNoRule;
-use App\Models\OrderTrail;
 use App\Models\Package;
 use App\Models\Recharge;
 use App\Models\RouteTracking;
@@ -44,6 +44,8 @@ use App\Models\TourDelay;
 use App\Models\TourDriverEvent;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
+use App\Models\TrackingOrder;
+use App\Models\TrackingOrderTrail;
 use App\Models\TransportPrice;
 use App\Models\Warehouse;
 use App\Models\WeightCharging;
@@ -101,8 +103,14 @@ class CompanyScope implements Scope
                 && (!($model instanceof Merchant))
                 && (!($model instanceof TourLog))
                 && (!($model instanceof Fee))
+                && (!($model instanceof Warehouse))
                 && (!($model instanceof Line))
+                && (!($model instanceof LineRange))
+                && (!($model instanceof MerchantLineRange))
+                && (!($model instanceof LineArea))
+                && (!($model instanceof TrackingOrder))
                 && (!($model instanceof Order))
+                && (!($model instanceof TrackingOrderTrail))
                 && (!($model instanceof Country))
                 && (!($model instanceof Company))
                 && (!($model instanceof CompanyConfig))
@@ -136,7 +144,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Material)
                 && !($model instanceof OrderNoRule)
                 && !($model instanceof Warehouse)
-                && !($model instanceof OrderTrail)
+                && !($model instanceof TrackingOrderTrail)
                 && !($model instanceof TourDriverEvent)
                 && !($model instanceof RouteTracking)
                 && !($model instanceof Driver)

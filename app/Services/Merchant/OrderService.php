@@ -395,7 +395,7 @@ class OrderService extends BaseService
         //重新统计取件线路金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         //订单轨迹-订单创建
-        TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($order, BaseConstService::Tracking_ORDER_TRAIL_CREATED);
+        TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($order, BaseConstService::TRACKING_ORDER_TRAIL_CREATED);
         //订单轨迹-订单加入站点
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($order, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
         //订单轨迹-订单加入取件线路
