@@ -200,16 +200,6 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('站点取消锁定失败，请重新操作');
         }
-        //订单 处理
-        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['status' => BaseConstService::TRACKING_ORDER_STATUS_2]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('订单取消锁定失败，请重新操作');
-        }
-        //包裹 处理
-        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_2]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('车辆取消分配失败，请重新操作');
-        }
         TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_UN_LOCK);
     }
 
@@ -227,7 +217,7 @@ class TourService extends BaseService
     {
         $tour = !empty($tour) ? $tour : $this->getTourInfo($batch, $line);
         //加入取件线路
-        $quantity = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
+        $quantity = (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $tour = !empty($tour) ? $this->joinExistTour($tour, $quantity) : $this->joinNewTour($batch, $line, $quantity);
         return $tour;
     }
@@ -310,7 +300,7 @@ class TourService extends BaseService
         //若订单类型改变,则站点统计数量改变
         $data = [];
         if (intval($dbOrder['type']) !== intval($order['type'])) {
-            if (intval($order['type']) === BaseConstService::ORDER_TYPE_1) {
+            if (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) {
                 $data['expect_pickup_quantity'] = $info['expect_pickup_quantity'] + 1;
                 $data['expect_pie_quantity'] = $info['expect_pie_quantity'] - 1;
             } else {
@@ -339,7 +329,7 @@ class TourService extends BaseService
         if ($quantity - 1 <= 0) {
             $rowCount = parent::delete(['id' => $info['id']]);
         } else {
-            $data = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
+            $data = (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
             $rowCount = parent::updateById($info['id'], $data);
         }
         if ($rowCount === false) {
@@ -384,11 +374,11 @@ class TourService extends BaseService
             if ((date('Y-m-d') == $batch['execution_date'] && time() < strtotime($batch['execution_date'] . ' ' . $line['order_deadline']) ||
                 date('Y-m-d') !== $batch['execution_date'])) {
                 //取件订单，线路最大订单量验证
-                if ($this->formData['type'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
+                if ($this->formData['type'] = BaseConstService::TRACKING_ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
                     $data = $batch;
                 }
                 //派件订单，线路最大订单量验证
-                if ($this->formData['type'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
+                if ($this->formData['type'] = BaseConstService::TRACKING_ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
                     $data = $batch;
                 }
             }

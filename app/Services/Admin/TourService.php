@@ -435,7 +435,7 @@ class TourService extends BaseService
     {
         $tour = !empty($tour) ? $tour : $this->getTourInfo($batch, $line);
         //加入取件线路
-        $quantity = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
+        $quantity = (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $tour = !empty($tour) ? $this->joinExistTour($tour, $quantity) : $this->joinNewTour($batch, $line, $quantity);
         return $tour;
     }
@@ -519,7 +519,7 @@ class TourService extends BaseService
         if ($quantity - 1 <= 0) {
             $rowCount = parent::delete(['id' => $info['id']]);
         } else {
-            $data = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
+            $data = (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
             $rowCount = parent::updateById($info['id'], $data);
         }
         if ($rowCount === false) {
@@ -571,11 +571,11 @@ class TourService extends BaseService
                 if ((date('Y-m-d') == $batch['execution_date'] && time() < strtotime($batch['execution_date'] . ' ' . $line['order_deadline']) ||
                     date('Y-m-d') !== $batch['execution_date'])) {
                     //取件运单，线路最大运单量验证
-                    if ($batch['status'] = BaseConstService::ORDER_TYPE_1 && $tour[$i]['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
+                    if ($batch['status'] = BaseConstService::TRACKING_ORDER_TYPE_1 && $tour[$i]['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
                         $data[$i] = $tour[$i];
                     }
                     //派件运单，线路最大运单量验证
-                    if ($batch['status'] = BaseConstService::ORDER_TYPE_2 && $tour[$i]['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
+                    if ($batch['status'] = BaseConstService::TRACKING_ORDER_TYPE_2 && $tour[$i]['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
                         $data[$i] = $tour[$i];
                     }
                 }
@@ -1059,10 +1059,10 @@ class TourService extends BaseService
         $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
         for ($i = 0; $i < count($batchList); $i++) {
             $batchList[$i]['out_user_id'] = collect($orderList)->where('batch_no', $batchList[$i]['batch_no'])->first() ? collect($orderList)->where('batch_no', $batchList[$i]['batch_no'])->first()['out_user_id'] : '';
-            $batchList[$i]['expect_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->all());
-            $batchList[$i]['actual_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->where('status', BaseConstService::PACKAGE_STATUS_5)->all());
-            $batchList[$i]['expect_pickup_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_1)->where('batch_no', $batchList[$i]['batch_no'])->all());
-            $batchList[$i]['actual_pickup_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::ORDER_TYPE_1)->where('batch_no', $batchList[$i]['batch_no'])->where('status', BaseConstService::PACKAGE_STATUS_5)->all());
+            $batchList[$i]['expect_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->all());
+            $batchList[$i]['actual_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->where('status', BaseConstService::PACKAGE_STATUS_3)->all());
+            $batchList[$i]['expect_pickup_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_1)->where('batch_no', $batchList[$i]['batch_no'])->all());
+            $batchList[$i]['actual_pickup_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_1)->where('batch_no', $batchList[$i]['batch_no'])->where('status', BaseConstService::PACKAGE_STATUS_3)->all());
             $batchList[$i]['expect_material_quantity'] = collect($materialList)->where('batch_no', $batchList[$i]['batch_no'])->pluck('expect_quantity')->sum();
             $batchList[$i]['actual_material_quantity'] = collect($materialList)->where('batch_no', $batchList[$i]['batch_no'])->pluck('actual_quantity')->sum();
             $batchList[$i]['status'] = __(ConstTranslateTrait::merchantBatchStatusList($statusToMerchantStatus[$batchList[$i]['status']]));

@@ -164,7 +164,7 @@ class PackageService extends BaseService
                 $query->where($key, '=', $value, 'or');
             }
         });
-        $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
+        $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5])->first();
         return !empty($result) ? $result->toArray() : [];
     }
 }

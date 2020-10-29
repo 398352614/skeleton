@@ -221,7 +221,7 @@ class OrderService extends BaseService
         if (!array_key_exists('type', $params)) {
             throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
         }
-        if (!empty($params['type']) && !in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_NATURE_2])) {
+        if (!empty($params['type']) && !in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
             throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
         }
         return [
@@ -303,7 +303,7 @@ class OrderService extends BaseService
         if (!empty($params['out_order_no'])) {
             $this->query->where('out_order_no', '=', $params['out_order_no']);
         }
-        $this->query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7]);
+        $this->query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5]);
         $info = $this->getPageList()->toArray(request());
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
@@ -320,7 +320,7 @@ class OrderService extends BaseService
         $data = [];
         $data['nature_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderNatureList);
         $data['settlement_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSettlementTypeList);
-        $data['type'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderTypeList);
+        $data['type'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderTypeList);
         $data['feature_logo_list'] = ['常温', '雪花', '风扇'];
         return $data;
     }
@@ -471,7 +471,7 @@ class OrderService extends BaseService
         }
         //$id = $this->orderImportLog($params);
         //数据处理
-        $typeList = array_flip(ConstTranslateTrait::$orderTypeList);
+        $typeList = array_flip(ConstTranslateTrait::$trackingOrderTypeList);
         $settlementList = array_flip(ConstTranslateTrait::$orderSettlementTypeList);
         $deliveryList = ['是' => 1, '否' => 2, 'Yes' => 1, 'No' => 2];
         $itemList = array_flip(ConstTranslateTrait::$orderNatureList);
@@ -788,7 +788,7 @@ class OrderService extends BaseService
             if (!empty($data['item_type_' . ($j + 1)])) {
                 if ($data['item_type_' . ($j + 1)] === 1) {
                     $package[$j] = $data['item_number_' . ($j + 1)];
-                    $result[$j] = DB::table('package')->where('express_first_no', $data['item_number_' . ($j + 1)])->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
+                    $result[$j] = DB::table('package')->where('express_first_no', $data['item_number_' . ($j + 1)])->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5])->first();
                     if (!empty($result[$j])) {
                         $list['item_number_' . ($j + 1)] = __('物品') . ($j + 1) . __('编号有重复');
                     }
@@ -836,7 +836,6 @@ class OrderService extends BaseService
                     ->put('tour_no', $tour['tour_no'])
                     ->put('merchant_id', $params['merchant_id'])
                     ->put('execution_date', $params['execution_date'])
-                    ->put('status', $tour['status'] ?? BaseConstService::PACKAGE_STATUS_1)
                     ->put('type', $params['type']);
             })->toArray();
             $rowCount = $this->getPackageService()->insertAll($packageList);
@@ -1239,11 +1238,6 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
-        //包裹移除站点和取件线路信息
-        $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_1]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('移除失败,请重新操作');
-        }
         //材料移除站点和取件线路信息
         $rowCount = $this->getMaterialService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '']);
         if ($rowCount === false) {
@@ -1285,11 +1279,6 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
-        //包裹移除站点和取件线路信息
-        $rowCount = $this->getPackageService()->update($where, ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_1]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('移除失败,请重新操作');
-        }
         //材料移除站点和取件线路信息
         $rowCount = $this->getMaterialService()->update($where, ['tour_no' => '', 'batch_no' => '']);
         if ($rowCount === false) {
@@ -1325,7 +1314,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('订单删除失败，请重新操作');
         }
         //包裹移除站点和取件线路信息
-        $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '', 'execution_date' => null, 'status' => BaseConstService::PACKAGE_STATUS_7]);
+        $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '', 'execution_date' => null, 'status' => BaseConstService::PACKAGE_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }

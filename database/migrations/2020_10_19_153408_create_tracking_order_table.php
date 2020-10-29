@@ -33,6 +33,8 @@ class CreateTrackingOrderTable extends Migration
             $table->string('sender_city', 50)->default('')->nullable()->comment('发件人城市');
             $table->string('sender_street', 50)->default('')->nullable()->comment('发件人街道');
             $table->string('sender_address', 50)->default('')->nullable()->comment('发件人地址');
+            $table->string('sender_lon', 50)->default('')->nullable()->comment('收件人经度');
+            $table->string('sender_lat', 50)->default('')->nullable()->comment('收件人纬度');
             $table->string('receiver_fullname', 50)->default('')->nullable()->comment('收件人姓名');
             $table->string('receiver_phone', 50)->default('')->nullable()->comment('收件人手机号码');
             $table->string('receiver_country', 50)->default('')->nullable()->comment('收件人国家');
@@ -41,8 +43,8 @@ class CreateTrackingOrderTable extends Migration
             $table->string('receiver_city', 50)->default('')->nullable()->comment('收件人城市');
             $table->string('receiver_street', 50)->default('')->nullable()->comment('收件人街道');
             $table->string('receiver_address', 50)->default('')->nullable()->comment('收件人地址');
-            $table->string('lon', 50)->default('')->nullable()->comment('收件人经度');
-            $table->string('lat', 50)->default('')->nullable()->comment('收件人纬度');
+            $table->string('receiver_lon', 50)->default('')->nullable()->comment('收件人经度');
+            $table->string('receiver_lat', 50)->default('')->nullable()->comment('收件人纬度');
             $table->integer('driver_id')->default(null)->nullable()->comment('司机ID');
             $table->string('driver_name', 50)->default('')->nullable()->comment('司机姓名');
             $table->string('driver_phone', 50)->default('')->nullable()->comment('司机电话');
@@ -50,7 +52,7 @@ class CreateTrackingOrderTable extends Migration
             $table->string('car_no', 50)->default('')->nullable()->comment('车牌号');
             $table->smallInteger('status')->default(1)->nullable()->comment('运单状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站');
             $table->smallInteger('out_status')->default(1)->nullable()->comment('是否可出库:1-是2-否');
-            $table->tinyInteger('exception_label')->default('')->nullable()->comment('标签1-正常2-异常');
+            $table->tinyInteger('exception_label')->default(1)->nullable()->comment('标签1-正常2-异常');
             $table->smallInteger('cancel_type')->default(null)->nullable()->comment('取消取派-类型1-派送失败(客户不在家)2-另约时间3-其他');
             $table->string('cancel_remark', 50)->default('')->nullable()->comment('取消取派-具体内容');
             $table->string('cancel_picture', 50)->default('')->nullable()->comment('取消取派-图片');

@@ -329,7 +329,7 @@ class BatchService extends BaseService
         //若订单类型改变,则站点统计数量改变
         $data = [];
         if (intval($dbOrder['type']) !== intval($order['type'])) {
-            if (intval($order['type']) === BaseConstService::ORDER_TYPE_1) {
+            if (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) {
                 $data['expect_pickup_quantity'] = $info['expect_pickup_quantity'] + 1;
                 $data['expect_pie_quantity'] = $info['expect_pie_quantity'] - 1;
             } else {
@@ -374,11 +374,11 @@ class BatchService extends BaseService
                     if ((date('Y-m-d') == $info[$i]['execution_date'] && time() < strtotime($info[$i]['execution_date'] . ' ' . $line['order_deadline']) ||
                         date('Y-m-d') !== $info[$i]['execution_date'])) {
                         //取件订单，线路最大订单量验证
-                        if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $info[$i]['expect_pickup_quantity'] < $line['pickup_max_count']) {
+                        if ($this->formData['status'] = BaseConstService::TRACKING_ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $info[$i]['expect_pickup_quantity'] < $line['pickup_max_count']) {
                             $data[$i] = $info[$i];
                         }
                         //派件订单，线路最大订单量验证
-                        if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $info[$i]['expect_pie_quantity'] < $line['pie_max_count']) {
+                        if ($this->formData['status'] = BaseConstService::TRACKING_ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $info[$i]['expect_pie_quantity'] < $line['pie_max_count']) {
                             $data[$i] = $info[$i];
                         }
                     }
@@ -401,7 +401,7 @@ class BatchService extends BaseService
         if ($quantity - 1 <= 0) {
             $rowCount = parent::delete(['id' => $info['id']]);
         } else {
-            $data = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
+            $data = (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
             $rowCount = parent::updateById($info['id'], $data);
         }
         if ($rowCount === false) {
@@ -425,16 +425,6 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]]], ['*'], false)->toArray();
         //站点删除
         $rowCount = parent::delete(['id' => $info['id']]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('取消取派失败，请重新操作');
-        }
-        //订单取消取派
-        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('取消取派失败，请重新操作');
-        }
-        //包裹取消取派
-        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2]]], ['status' => BaseConstService::PACKAGE_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
@@ -550,16 +540,6 @@ class BatchService extends BaseService
         $rowCount = parent::updateById($id, ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'execution_date' => null, 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::BATCH_WAIT_ASSIGN]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
-        }
-        //修改订单
-        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'driver_id' => null, 'execution_date' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
-        }
-        //包裹移除取件线路信息
-        $rowCount = $this->getPackageService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'execution_date' => null, 'status' => BaseConstService::PACKAGE_STATUS_1]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('移除失败,请重新操作');
         }
         //材料移除取件线路信息
         $rowCount = $this->getMaterialService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'execution_date' => null]);

@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\App;
  * @method static printTemplateList($args = null)
  * @method static weekList($args = null)
  * @method static orderSourceList($arg = null)
- * @method static orderTypeList($args = null)
+ * @method static trackingOrderTypeList($args = null)
  * @method static orderSettlementTypeList($args = null)
  * @method static orderOutStatusList($args = null)
  * @method static orderStatusList($args = null)
@@ -74,6 +74,7 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
         BaseConstService::TOUR_NO_TYPE => '取件线路编号规则',
         BaseConstService::RECHARGE_NO_TYPE => '充值单号规则',
+        BaseConstService::TRACKING_ORDER_NO_TYPE => '运单单号规则',
     ];
 
     //线路分配规则
@@ -100,9 +101,9 @@ trait ConstTranslateTrait
     ];
 
     //订单类型1-取2-派
-    public static $orderTypeList = [
-        BaseConstService::ORDER_TYPE_1 => '取件',
-        BaseConstService::ORDER_TYPE_2 => '派件',
+    public static $trackingOrderTypeList = [
+        BaseConstService::TRACKING_ORDER_TYPE_1 => '取件',
+        BaseConstService::TRACKING_ORDER_TYPE_2 => '派件',
     ];
 
     //订单来源1-手动添加2-批量导入3-第三方
@@ -131,8 +132,8 @@ trait ConstTranslateTrait
 
     //订单可出库状态1-是2-否
     public static $orderOutStatusList = [
-        BaseConstService::ORDER_OUT_STATUS_1 => '是',
-        BaseConstService::ORDER_OUT_STATUS_2 => '否'
+        BaseConstService::OUT_STATUS_1 => '是',
+        BaseConstService::OUT_STATUS_2 => '否'
     ];
 
     //包裹状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站

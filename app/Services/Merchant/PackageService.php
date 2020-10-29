@@ -132,7 +132,7 @@ class PackageService extends BaseService
                     $errorMsg .= __('包裹外部标识[:out_order_no]已存在;', ['out_order_no' => $package['out_order_no']]);
                 }
                 //第三方特殊处理
-                $order = DB::table('order')->where('order_no', $dbPackage['order_no'])->whereNotIn('status', [BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
+                $order = DB::table('order')->where('order_no', $dbPackage['order_no'])->whereNotIn('status', [BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::PACKAGE_STATUS_5])->first();
                 if (auth()->user()->getAttribute('is_api') == true && !empty($order)) {
                     throw new BusinessLogicException($errorMsg, 1005, [], ['batch_no' => $order->batch_no, 'order_no' => $dbPackage['order_no'], 'out_order_no' => $order->out_order_no, 'status' => $order->status]);
                 } else {
@@ -173,7 +173,7 @@ class PackageService extends BaseService
                 $query->where($key, '=', $value, 'or');
             }
         });
-        $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
+        $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5])->first();
         return !empty($result) ? $result->toArray() : [];
     }
 
@@ -197,7 +197,7 @@ class PackageService extends BaseService
         if (!empty($params['out_order_no'])) {
             $this->query->where('out_order_no', '=', $params['out_order_no']);
         }
-        $this->query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7]);
+        $this->query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5]);
         $info = $this->getPageList()->toArray(request());
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');

@@ -309,33 +309,33 @@ class BatchService extends BaseService
 
     /**
      * 填充站点新增数据
-     * @param $order
+     * @param $trackingOrder
      * @param $line
      * @param $batchNo
      * @param $lon
      * @param $lat
      * @return array
      */
-    private function fillData($order, $line, $batchNo)
+    private function fillData($trackingOrder, $line, $batchNo)
     {
         $data = [
             'batch_no' => $batchNo,
             'line_id' => $line['id'],
             'line_name' => $line['name'],
-            'execution_date' => $order['execution_date'],
-            'receiver_fullname' => $order['receiver_fullname'],
-            'receiver_phone' => $order['receiver_phone'],
-            'receiver_country' => $order['receiver_country'],
-            'receiver_post_code' => $order['receiver_post_code'],
-            'receiver_house_number' => $order['receiver_house_number'],
-            'receiver_city' => $order['receiver_city'],
-            'receiver_street' => $order['receiver_street'],
-            'receiver_address' => $order['receiver_address'],
-            'receiver_lon' => $order['lon'],
-            'receiver_lat' => $order['lat'],
+            'execution_date' => $trackingOrder['execution_date'],
+            'receiver_fullname' => $trackingOrder['receiver_fullname'],
+            'receiver_phone' => $trackingOrder['receiver_phone'],
+            'receiver_country' => $trackingOrder['receiver_country'],
+            'receiver_post_code' => $trackingOrder['receiver_post_code'],
+            'receiver_house_number' => $trackingOrder['receiver_house_number'],
+            'receiver_city' => $trackingOrder['receiver_city'],
+            'receiver_street' => $trackingOrder['receiver_street'],
+            'receiver_address' => $trackingOrder['receiver_address'],
+            'receiver_lon' => $trackingOrder['lon'],
+            'receiver_lat' => $trackingOrder['lat'],
             'merchant_id' => $line['range_merchant_id'] ?? 0
         ];
-        if (intval($order['type']) === 1) {
+        if (intval($trackingOrder['type']) === 1) {
             $data['expect_pickup_quantity'] = 1;
             $data['expect_pie_quantity'] = 0;
         } else {
@@ -365,7 +365,6 @@ class BatchService extends BaseService
         $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         //获取包裹列表
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
-        $packageList = $this->statusConvert($packageList);
         //获取材料列表
         $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         //数据组装
@@ -405,11 +404,11 @@ class BatchService extends BaseService
                     if ((date('Y-m-d') == $info[$i]['execution_date'] && time() < strtotime($info[$i]['execution_date'] . ' ' . $line['order_deadline']) ||
                         date('Y-m-d') !== $info[$i]['execution_date'])) {
                         //取件运单，线路最大运单量验证
-                        if ($this->formData['status'] = BaseConstService::ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $info[$i]['expect_pickup_quantity'] < $line['pickup_max_count']) {
+                        if ($this->formData['status'] = BaseConstService::TRACKING_ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $info[$i]['expect_pickup_quantity'] < $line['pickup_max_count']) {
                             $data[$i] = $info[$i];
                         }
                         //派件运单，线路最大运单量验证
-                        if ($this->formData['status'] = BaseConstService::ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $info[$i]['expect_pie_quantity'] < $line['pie_max_count']) {
+                        if ($this->formData['status'] = BaseConstService::TRACKING_ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $info[$i]['expect_pie_quantity'] < $line['pie_max_count']) {
                             $data[$i] = $info[$i];
                         }
                     }
@@ -432,7 +431,7 @@ class BatchService extends BaseService
         if ($quantity - 1 <= 0) {
             $rowCount = parent::delete(['id' => $info['id']]);
         } else {
-            $data = (intval($trackingOrder['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
+            $data = (intval($trackingOrder['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
             $rowCount = parent::updateById($info['id'], $data);
         }
         if ($rowCount === false) {

@@ -88,7 +88,7 @@ class HomeService extends BaseService
         $signedOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5]);//已完成
         $cancelOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_6]);//取消取派
 
-        $NoOutOrder = parent::count(['execution_date' => $date, 'status' => ['in',[BaseConstService::TRACKING_ORDER_STATUS_1,BaseConstService::TRACKING_ORDER_STATUS_2,BaseConstService::TRACKING_ORDER_STATUS_3,BaseConstService::TRACKING_ORDER_STATUS_4,BaseConstService::TRACKING_ORDER_STATUS_5]], 'out_status' => BaseConstService::ORDER_OUT_STATUS_2]);//不能出库
+        $NoOutOrder = parent::count(['execution_date' => $date, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]], 'out_status' => BaseConstService::OUT_STATUS_2]);//不能出库
         $exceptionOrder = parent::count(['execution_date' => $date, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);//异常
         //取件线路
         $tour = $this->getTourService()->count(['execution_date' => $date]);
@@ -279,9 +279,9 @@ class HomeService extends BaseService
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['total_order'] = $collection->where('merchant_id', $v['id'])->count();
-            $data[$k]['pickup_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::TRACKING_ORDER_STATUS_7)->where('type', BaseConstService::ORDER_TYPE_1)->count();
-            $data[$k]['pie_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::TRACKING_ORDER_STATUS_7)->where('type', BaseConstService::ORDER_TYPE_2)->count();
-            $data[$k]['cancel_order'] = $collection->where('merchant_id', $v['id'])->where('status', BaseConstService::TRACKING_ORDER_STATUS_6)->count();
+            $data[$k]['pickup_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_3)->where('type', BaseConstService::ORDER_TYPE_1)->count();
+            $data[$k]['pie_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_3)->where('type', BaseConstService::ORDER_TYPE_2)->count();
+            $data[$k]['cancel_order'] = $collection->where('merchant_id', $v['id'])->where('status', BaseConstService::ORDER_STATUS_3)->count();
             $data[$k]['additional_package'] = collect($additionalPackageList)->where('merchant_id', $v['id'])->count();
             $data[$k]['total_recharge'] = $this->getRechargeStatisticsService()->sum('total_recharge_amount', ['merchant_id' => $v['id']]);
             $total['total_order'] += $data[$k]['total_order'];

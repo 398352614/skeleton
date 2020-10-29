@@ -2,7 +2,7 @@
 /**
  * 订单 验证类
  * Created by PhpStorm
- * User: long
+ * User: receiver_long
  * Date: 2019/12/16
  * Time: 15:06
  */
@@ -23,8 +23,9 @@ class OrderValidate extends BaseValidate
         'out_order_no' => 'nullable|string|max:50',
         'mask_code' => "nullable|string|max:50",
         'execution_date' => 'required|date|after_or_equal:today',
+        'second_execution_date' => 'required_if:type,3|date|after_or_equal:today',
         'list_mode' => 'sometimes|required|in:1,2',
-        'type' => 'required|integer|in:1,2',
+        'type' => 'required|integer|in:1,2,3',
         'out_user_id' => 'nullable|integer',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
         'settlement_type' => 'required|in:1,2',
@@ -38,8 +39,17 @@ class OrderValidate extends BaseValidate
         'receiver_city' => 'required|string|max:50',
         'receiver_street' => 'required|string|max:50',
         'receiver_address' => 'checkAddress|nullable|string|max:250',
-        'lon' => 'required|string|max:50',
-        'lat' => 'required|string|max:50',
+        'receiver_lon' => 'required|string|max:50',
+        'receiver_lat' => 'required|string|max:50',
+        'sender_fullname' => 'required_if:type,3|string|max:50',
+        'sender_phone' => 'required_if:type,3|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'sender_post_code' => 'required_if:type,3|string|max:50',
+        'sender_house_number' => 'required_if:type,3|string|max:50',
+        'sender_city' => 'required_if:type,3|string|max:50',
+        'sender_street' => 'required_if:type,3|string|max:50',
+        'sender_address' => 'checkAddress|nullable|string|max:250',
+        'sender_lon' => 'required_if:type,3|string|max:50',
+        'sender_lat' => 'required_if:type,3|string|max:50',
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
         'out_status' => 'sometimes|integer|in:1,2',
@@ -68,13 +78,13 @@ class OrderValidate extends BaseValidate
             'merchant_id', 'execution_date',
             'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
-            //'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
-            //'sender_city', 'sender_street', 'sender_address',
+            'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
+            'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat',
             //收货人信息
             'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address',
             //备注
-            'special_remark', 'remark', 'lon', 'lat',
+            'special_remark', 'remark', 'receiver_lon', 'receiver_lat',
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
             //材料列表
@@ -84,13 +94,13 @@ class OrderValidate extends BaseValidate
             'merchant_id', 'execution_date',
             'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
-            //'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
-            // 'sender_city', 'sender_street', 'sender_address',
+            'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
+            'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat',
             //收货人信息
             'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
             'receiver_city', 'receiver_street', 'receiver_address',
             //备注
-            'special_remark', 'remark', 'lon', 'lat',
+            'special_remark', 'remark', 'receiver_lon', 'receiver_lat',
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
             //材料列表

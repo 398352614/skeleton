@@ -13,6 +13,7 @@ class BaseConstService
 {
     const TMS = 'TMS';
     const ORDER = 'ORDER';
+    const TRACKING_ORDER = 'YD';
     const BATCH = 'BATCH';
     const TOUR = 'TOUR';
     const PACKAGE = 'PACKAGE';
@@ -48,6 +49,8 @@ class BaseConstService
 
     //订单号编号类型
     const ORDER_NO_TYPE = 'order';
+    //运单类型
+    const TRACKING_ORDER_NO_TYPE = 'tracking_order';
     //站点编号类型
     const BATCH_NO_TYPE = 'batch';
     //取件线路编号类型
@@ -56,8 +59,6 @@ class BaseConstService
     const BATCH_EXCEPTION_NO_TYPE = 'batch_exception';
     //充值单号类型
     const RECHARGE_NO_TYPE = 'recharge';
-    //运单类型
-    const TRACKING_NO_TYPE = 'tracking_order';
 
     //初始密码
     const INITIAL_PASSWORD = '12345678';
@@ -114,8 +115,8 @@ class BaseConstService
     const ORDER_TYPE_3 = 3;
 
     //订单出库状态1-可出库2-不可出库
-    const ORDER_OUT_STATUS_1 = 1;
-    const ORDER_OUT_STATUS_2 = 2;
+    const OUT_STATUS_1 = 1;
+    const OUT_STATUS_2 = 2;
 
     //订单来源1-手动添加2-批量导入3-第三方
     const ORDER_SOURCE_1 = 1;
@@ -130,11 +131,12 @@ class BaseConstService
     const TRACKING_ORDER_TYPE_1 = 1;
     const TRACKING_ORDER_TYPE_2 = 2;
 
-    //订单状态1-待取派2-取派中3-取派完成4-回收站
+    //订单状态1-待取派2-取派中3-取派完成4-取派失败5-回收站
     const ORDER_STATUS_1 = 1;
     const ORDER_STATUS_2 = 2;
     const ORDER_STATUS_3 = 3;
     const ORDER_STATUS_4 = 4;
+    const ORDER_STATUS_5 = 5;
 
     //运单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     const TRACKING_ORDER_STATUS_1 = 1;
@@ -146,16 +148,14 @@ class BaseConstService
     const TRACKING_ORDER_STATUS_7 = 7;
 
 
-    //包裹列表1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    //包裹列表1-未取派2-取派中3-已签收4-取派失败5-回收站
     const PACKAGE_STATUS_1 = 1;
     const PACKAGE_STATUS_2 = 2;
     const PACKAGE_STATUS_3 = 3;
     const PACKAGE_STATUS_4 = 4;
     const PACKAGE_STATUS_5 = 5;
-    const PACKAGE_STATUS_6 = 6;
-    const PACKAGE_STATUS_7 = 7;
 
-    //商户端包裹列表1-未取派4-取派中5-已签收6-取消取派7-回收站
+    //商户端包裹列表1-未取派2-取派中3-已签收4-取派失败5-回收站
     const MERCHANT_PACKAGE_STATUS_1 = 1;
     const MERCHANT_PACKAGE_STATUS_2 = 2;
     const MERCHANT_PACKAGE_STATUS_3 = 3;

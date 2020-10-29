@@ -29,7 +29,6 @@ use App\Traits\CountryTrait;
 use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
-use App\Traits\OrderStatisticsTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use App\Services\TrackingOrderTrailService;
@@ -37,7 +36,7 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderService extends BaseService
 {
-    use ImportTrait, LocationTrait, CountryTrait, ExportTrait, OrderStatisticsTrait;
+    use ImportTrait, LocationTrait, CountryTrait, ExportTrait;
 
     public $filterRules = [
         'type' => ['=', 'type'],
@@ -243,19 +242,16 @@ class OrderService extends BaseService
         if (!array_key_exists('type', $params)) {
             throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
         }
-        if (!empty($params['type']) && !in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_NATURE_2])) {
+        if (!empty($params['type']) && !in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
             throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
         }
         return [
             'all_count' => $this->singleOrderCount($params['type']),
-            'no_take' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_1),
-            'assign' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_2),
-            'wait_out' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_3),
-            'taking' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_4),
-            'singed' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_5),
-            'cancel_count' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_6),
-            'delete_count' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_7),
-            'exception_count' => $this->singleOrderCount($params['type'], null, BaseConstService::ORDER_EXCEPTION_LABEL_2),
+            'no_take' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_1),
+            'taking' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_2),
+            'singed' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_3),
+            'cancel_count' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_4),
+            'delete_count' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_5),
         ];
     }
 
@@ -281,50 +277,9 @@ class OrderService extends BaseService
         return parent::count($where);
     }
 
-    /**
-     * 获取所有线路
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     * @throws BusinessLogicException
-     */
-    public function getLineList()
-    {
-        if (CompanyTrait::getCompany()['show_type'] == BaseConstService::LINE_RULE_SHOW && CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
-            $info = $this->getLineRangeService()->getList([], ['*'], false);
-            $lineId = $info->pluck('line_id')->toArray();
-        } elseif (CompanyTrait::getCompany()['show_type'] == BaseConstService::LINE_RULE_SHOW && CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
-            $info = $this->getLineAreaService()->getList([], ['*'], false);
-            $lineId = $info->pluck('line_id')->toArray();
-        } else {
-            $info = $this->getLineService()->getList([], ['*'], false);
-            $lineId = $info->pluck('id')->toArray();
-        }
-        if (!empty($lineId)) {
-            $data = $this->getLineService()->getList(['id' => ['in', $lineId]], ['id', 'name'], false);
-        }
-        return $data ?? [];
-    }
-
     public function getPageList()
     {
-        if (!empty($this->formData['line_id']) && !empty($this->formData['tour_no'])) {
-            $tourList = $this->getTourService()->getList(['line_id' => $this->formData['line_id']])->pluck('tour_no')->toArray();
-            $this->query->whereIn('tour_no', $tourList)->where('tour_no', 'like', $this->formData['tour_no']);
-        } elseif (!empty($this->formData['line_id'])) {
-            $tourList = $this->getTourService()->getList(['line_id' => $this->formData['line_id']])->pluck('tour_no')->toArray();
-            $this->query->whereIn('tour_no', $tourList);
-        }
-        $list = parent::getPageList();
-        $tourNoList = collect($list)->where('tour_no', '<>', '')->pluck('tour_no')->toArray();
-        $tour = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false);
-        foreach ($list as $k => $v) {
-            $list[$k]['line_id'] = $tour->where('tour_no', $v['tour_no'])->first()['line_id'] ?? '';
-            $list[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
-        }
-        foreach ($list as &$order) {
-            $batchException = $this->getBatchExceptionService()->getInfo(['batch_no' => $order['batch_no']], ['id', 'batch_no', 'stage'], false, ['created_at' => 'desc']);
-            $order['exception_stage_name'] = !empty($batchException) ? ConstTranslateTrait::batchExceptionStageList($batchException['stage']) : __('正常');
-        }
-        return $list;
+        return parent::getPageList();
     }
 
     /**
@@ -349,7 +304,7 @@ class OrderService extends BaseService
         $data = [];
         $data['nature_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderNatureList);
         $data['settlement_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSettlementTypeList);
-        $data['type'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderTypeList);
+        $data['type'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderTypeList);
         $data['feature_logo_list'] = ['常温', '雪花', '风扇', '预售', '打折村', '海鲜预售'];
         return $data;
     }
@@ -376,12 +331,9 @@ class OrderService extends BaseService
         }
         //生成运单
         $this->getTrackingOrderService()->storeByOrder($order);
-        $status = 1;
         //新增订单明细列表
-        $this->addAllItemList($order->getAttributes(), $status);
-        return [
-            'order_no' => $params['order_no'],
-        ];
+        $this->addAllItemList($order->getAttributes());
+        return ['order_no' => $params['order_no']];
     }
 
     /**
@@ -486,7 +438,7 @@ class OrderService extends BaseService
         }
         //$id = $this->orderImportLog($params);
         //数据处理
-        $typeList = array_flip(ConstTranslateTrait::$orderTypeList);
+        $typeList = array_flip(ConstTranslateTrait::$trackingOrderTypeList);
         $settlementList = array_flip(ConstTranslateTrait::$orderSettlementTypeList);
         $deliveryList = ['是' => 1, '否' => 2, 'Yes' => 1, 'No' => 2];
         $itemList = array_flip(ConstTranslateTrait::$orderNatureList);
@@ -571,22 +523,16 @@ class OrderService extends BaseService
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
             $params['receiver_address'] = CommonService::addressFieldsSortCombine($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code']);
         }
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['sender_address'])) {
+            $params['sender_address'] = CommonService::addressFieldsSortCombine($params, ['sender_country', 'sender_city', 'sender_street', 'sender_house_number', 'sender_post_code']);
+        }
         //若存在外部订单号,则判断是否存在已预约的订单号
         if (!empty($params['out_order_no'])) {
-            $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7]]];
+            $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = parent::getInfo($where, ['id', 'order_no', 'batch_no', 'tour_no'], false);
             if (!empty($dbOrder)) {
-                $data = ['order_no' => $dbOrder->order_no, 'batch_no' => $dbOrder->batch_no ?? '', 'tour_no' => $dbOrder->tour_no ?? ''];
-                if (!empty($dbOrder->tour_no)) {
-                    $tour = $this->getTourService()->getInfo(['tour_no' => $dbOrder->tour_no], ['line_id', 'line_name'], false);
-                    if (empty($tour)) {
-                        $data['line'] = [];
-                    } else {
-                        $data['line'] = ['line_id' => $tour->line_id, 'line_name' => $tour->line_name];
-                    }
-                }
-                throw new BusinessLogicException('外部订单号已存在', 1002, [], $data);
+                throw new BusinessLogicException('外部订单号已存在', 1002);
             }
         }
     }
@@ -595,7 +541,7 @@ class OrderService extends BaseService
      * 添加货物列表
      * @throws BusinessLogicException
      */
-    private function addAllItemList($params, $status = 1)
+    private function addAllItemList($params, $status = BaseConstService::ORDER_STATUS_1)
     {
         $relationship = ['雪花' => '冷冻', '风扇' => '风房'];
         //若存在包裹列表,则新增包裹列表

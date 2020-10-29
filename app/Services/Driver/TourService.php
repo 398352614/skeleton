@@ -484,13 +484,13 @@ class TourService extends BaseService
             $outTrackingOrderIdList = array_filter(explode(',', $params['out_tracking_order_id_list']), function ($value) {
                 return is_numeric($value);
             });
-            $noOutTrackingOrder = $this->getTrackingOrderService()->getInfo(['id' => ['in', $outTrackingOrderIdList], 'type' => BaseConstService::ORDER_TYPE_2, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_3]], ['order_no'], false);
+            $noOutTrackingOrder = $this->getTrackingOrderService()->getInfo(['id' => ['in', $outTrackingOrderIdList], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_3]], ['order_no'], false);
             if (!empty($noOutTrackingOrder)) {
                 throw new BusinessLogicException('运单[:tracking_order_no]已取消或已删除,不能出库,请先剔除', 1000, ['tracking_order_no' => $noOutTrackingOrder->tracking_order_no]);
             }
         }
         //验证订单数量
-        $trackingOrderCount = $this->getTrackingOrderService()->count(['tour_no' => $tour['tour_no'], 'type' => BaseConstService::ORDER_TYPE_2]);
+        $trackingOrderCount = $this->getTrackingOrderService()->count(['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2]);
         if ($trackingOrderCount != $params['tracking_order_count']) {
             throw new BusinessLogicException($trackingOrderCount, 5002);
         }
@@ -517,7 +517,7 @@ class TourService extends BaseService
             }
         }
         //判断是否存在不可出库且待出库的订单
-        $disableWhere = ['tour_no' => $tour['tour_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3, 'out_status' => BaseConstService::ORDER_OUT_STATUS_2];
+        $disableWhere = ['tour_no' => $tour['tour_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3, 'out_status' => BaseConstService::OUT_STATUS_2];
         if (!empty($params['cancel_tracking_order_id_list'])) {
             $disableWhere['id'] = ['not in', explode_id_string($params['cancel_tracking_order_id_list'], ',')];
         }
@@ -549,10 +549,10 @@ class TourService extends BaseService
             return collect($itemPackageList)->keyBy('type');
         })->toArray();
         $batchList = array_map(function ($batch) use ($packageList) {
-            $batch['expect_pickup_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['expect_quantity'] ?? "0";
-            $batch['actual_pickup_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['actual_quantity'] ?? "0";
-            $batch['expect_pie_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['expect_quantity'] ?? "0";
-            $batch['actual_pie_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['actual_quantity'] ?? "0";
+            $batch['expect_pickup_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::TRACKING_ORDER_TYPE_1]['expect_quantity'] ?? "0";
+            $batch['actual_pickup_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::TRACKING_ORDER_TYPE_1]['actual_quantity'] ?? "0";
+            $batch['expect_pie_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::TRACKING_ORDER_TYPE_2]['expect_quantity'] ?? "0";
+            $batch['actual_pie_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::TRACKING_ORDER_TYPE_2]['actual_quantity'] ?? "0";
             return $batch;
         }, $batchList);
         $tour['batch_count'] = count($batchList);
@@ -778,10 +778,10 @@ class TourService extends BaseService
         $orderNoList = array_column($trackingOrderList, 'order_no');
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList], 'id' => ['in', $packageIdList], 'status' => BaseConstService::PACKAGE_STATUS_2], ['id', 'order_no', 'batch_no', 'type'], false);
         foreach ($packageList as $packageId => $package) {
-            if ((intval($package['type']) == BaseConstService::ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['sticker_no'])) {
+            if ((intval($package['type']) == BaseConstService::TRACKING_ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['sticker_no'])) {
                 $totalStickerAmount += $stickerAmount;
             }
-            if ((intval($package['type']) == BaseConstService::ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['delivery_charge']) && $params['package_list'][$packageId]['delivery_charge'] == BaseConstService::YES) {
+            if ((intval($package['type']) == BaseConstService::TRACKING_ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['delivery_charge']) && $params['package_list'][$packageId]['delivery_charge'] == BaseConstService::YES) {
                 $totalDeliveryAmount += $deliveryAmount;
             }
         }
@@ -1197,9 +1197,9 @@ class TourService extends BaseService
         $tour['additional_package_count'] = count($additionalPackageList);
         //包裹信息
         $tour['pickup_package_expect_count'] = $this->getTrackingOrderService()->getPackageFieldSum('expect_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1]);
-        $tour['pickup_package_actual_count'] = $this->getTrackingOrderService()->getPackageFieldSum('actual_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1, 'status' => BaseConstService::PACKAGE_STATUS_5]);
+        $tour['pickup_package_actual_count'] = $this->getTrackingOrderService()->getPackageFieldSum('actual_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1, 'status' => BaseConstService::PACKAGE_STATUS_3]);
         $tour['pie_package_expect_count'] = $this->getTrackingOrderService()->getPackageFieldSum('expect_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2]);
-        $tour['pie_package_actual_count'] = $this->getTrackingOrderService()->getPackageFieldSum('actual_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => BaseConstService::PACKAGE_STATUS_5]);
+        $tour['pie_package_actual_count'] = $this->getTrackingOrderService()->getPackageFieldSum('actual_quantity', ['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => BaseConstService::PACKAGE_STATUS_3]);
         //材料信息
         $tour['material_expect_count'] = $this->tourMaterialModel->newQuery()->where('tour_no', $tour['tour_no'])->sum('expect_quantity');
         $tour['material_actual_count'] = $this->tourMaterialModel->newQuery()->where('tour_no', $tour['tour_no'])->sum('finish_quantity');
@@ -1266,7 +1266,9 @@ class TourService extends BaseService
             $trackingOrder['receiver_lon'] = $order['sender_lon'];
             $trackingOrder['receiver_lat'] = $order['sender_lat'];
             $trackingOrder['type'] = BaseConstService::TRACKING_ORDER_TYPE_2;
+            $trackingOrder['execution_date'] = $order['second_execution_date'];
             $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'out_user_id', 'out_order_no', 'order_no', 'pie_execution_date', 'mask_code', 'special_remark']));
+            $this->getTrackingOrderService()->store($trackingOrder);
         }
         TourTrait::afterBackWarehouse($tour);
     }
@@ -1534,7 +1536,7 @@ class TourService extends BaseService
     {
         $tour = !empty($tour) ? $tour : $this->getTourInfo($batch, $line);
         //加入取件线路
-        $quantity = (intval($order['type']) === BaseConstService::ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
+        $quantity = (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $tour = !empty($tour) ? $this->joinExistTour($tour, $quantity) : $this->joinNewTour($batch, $line, $quantity);
         return $tour;
     }
