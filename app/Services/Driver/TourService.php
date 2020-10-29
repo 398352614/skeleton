@@ -11,7 +11,7 @@ namespace App\Services\Driver;
 
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\TourBatchResource;
+use App\Http\Resources\Api\Driver\TourBatchResource;
 use App\Jobs\UpdateTour;
 use App\Models\AdditionalPackage;
 use App\Models\Batch;
@@ -23,7 +23,6 @@ use App\Models\TourMaterial;
 use App\Services\Admin\AdditionalPackageService;
 use App\Services\Admin\TourDelayService;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
 use App\Services\FeeService;
 use App\Services\OrderNoRuleService;
 use App\Traits\TourTrait;
@@ -32,7 +31,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
-use App\Services\Traits\TourRedisLockTrait;
+use App\Traits\TourRedisLockTrait;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -61,122 +60,6 @@ class TourService extends BaseService
         $this->tourMaterialModel = $tourMaterial;
     }
 
-    /**
-     * 车辆 服务
-     * @return CarService
-     */
-    private function getCarService()
-    {
-        return self::getInstance(CarService::class);
-    }
-
-    /**
-     * 站点 服务
-     * @return BatchService
-     */
-    private function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 站点异常 服务
-     * @return BatchExceptionService
-     */
-    private function getBatchExceptionService()
-    {
-        return self::getInstance(BatchExceptionService::class);
-    }
-
-    /**
-     * 订单 服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 材料 服务
-     * @return MaterialService
-     */
-    private function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
-    }
-
-    /**
-     * 单号规则 服务
-     * @return OrderNoRuleService
-     */
-    private function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
-    /**
-     * 任务 服务
-     * @return TourTaskService
-     */
-    public function getTourTaskService()
-    {
-        return self::getInstance(TourTaskService::class);
-    }
-
-    /**
-     * 顺带包裹 服务
-     * @return AdditionalPackageService
-     */
-    public function getAdditionalPackageService()
-    {
-        return self::getInstance(AdditionalPackageService::class);
-    }
-
-    /**
-     * 取件线路服务
-     * @return TourService
-     */
-    public function getTourService()
-    {
-        return self::getInstance(\App\Services\Admin\TourService::class);
-    }
-
-    /**
-     * 延迟服务
-     * @return TourDelayService
-     */
-    public function getTourDelayService()
-    {
-        return self::getInstance(TourDelayService::class);
-    }
-
-    /**
-     * 线路 服务
-     * @return LineService
-     */
-    public function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 商户服务
-     * @return MerchantService
-     */
-    public function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
 
     /**
      * 锁定-开始装货
@@ -1485,6 +1368,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('操作失败');
         }
         $tour['batch_ids'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
+        Log::info('站点排序', $tour['batch_ids']);
         dispatch(new UpdateTour($tour['tour_no'], $tour['batch_ids']));
     }
 
@@ -1517,6 +1401,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('操作失败');
         }
         $tour['batch_ids'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id')->pluck('id')->toArray();
+        Log::info('站点排序', $tour['batch_ids']);
         dispatch(new UpdateTour($tour['tour_no'], $tour['batch_ids']));
     }
 

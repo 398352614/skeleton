@@ -10,12 +10,12 @@ namespace App\Services\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\TransportPriceResource;
+use App\Http\Resources\Api\Merchant\TransportPriceResource;
 use App\Models\KilometresCharging;
 use App\Models\SpecialTimeCharging;
 use App\Models\TransportPrice;
 use App\Models\WeightCharging;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 
 
 /**
@@ -38,15 +38,6 @@ class TransportPriceService extends BaseService
         $this->kilometresChargingModel = $kilometresCharging;
         $this->weightChargingModel = $weightCharging;
         $this->specialTimeChargingModel = $specialTimeCharging;
-    }
-
-    /**
-     * 商户组 服务
-     * @return MerchantGroupService
-     */
-    private function getMerchantGroupService()
-    {
-        return self::getInstance(MerchantGroupService::class);
     }
 
     /**运价方案详情

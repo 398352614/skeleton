@@ -8,7 +8,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -17,60 +17,6 @@ class HomeService extends BaseService
     public function __construct(Order $order)
     {
         parent::__construct($order);
-    }
-
-    /**
-     * 司机 服务
-     * @return DriverService
-     */
-    private function getDriverService()
-    {
-        return self::getInstance(DriverService::class);
-    }
-
-    /**
-     * 车辆 服务
-     * @return CarService
-     */
-    private function getCarService()
-    {
-        return self::getInstance(CarService::class);
-    }
-
-    /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    private function getTourService()
-    {
-        return self::getInstance(TourService::class);
-    }
-
-    /**
-     * 商户 服务
-     * @return MerchantService
-     */
-    public function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * 顺带包裹 服务
-     * @return AdditionalPackageService
-     */
-    public function getAdditionalPackageService()
-    {
-        return self::getInstance(AdditionalPackageService::class);
-    }
-
-    /**
-     * 充值统计 服务
-     * @return RechargeStatisticsService
-     */
-    public function getRechargeStatisticsService()
-    {
-        return self::getInstance(RechargeStatisticsService::class);
     }
 
     /**

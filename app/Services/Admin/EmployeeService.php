@@ -3,10 +3,10 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\CarResource;
-use App\Http\Resources\EmployeeListResource;
+use App\Http\Resources\Api\Admin\CarResource;
+use App\Http\Resources\Api\Admin\EmployeeListResource;
 use App\Models\Employee;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 
 class EmployeeService extends BaseService
 {

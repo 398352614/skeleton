@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\Traits\TourRedisLockTrait;
+use App\Traits\TourRedisLockTrait;
 use Illuminate\Console\Command;
 
 class UnlockTourOp extends Command

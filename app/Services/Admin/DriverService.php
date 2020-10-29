@@ -3,12 +3,12 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\DriverResource;
-use App\Http\Resources\TourResource;
+use App\Http\Resources\Api\Admin\DriverResource;
+use App\Http\Resources\Api\Admin\TourResource;
 use App\Models\Driver;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
@@ -30,15 +30,6 @@ class DriverService extends BaseService
     //新增
     public function store($params)
     {
-    }
-
-    /**
-     * 取件线路服务
-     * @return TourService
-     */
-    public function getTourService()
-    {
-        return self::getInstance(TourService::class);
     }
 
     /**

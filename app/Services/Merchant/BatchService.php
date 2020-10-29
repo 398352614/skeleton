@@ -5,14 +5,14 @@ namespace App\Services\Merchant;
 use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\BatchResource;
-use App\Http\Resources\BatchInfoResource;
-use App\Http\Resources\TourResource;
+use App\Http\Resources\Api\Merchant\BatchResource;
+use App\Http\Resources\Api\Merchant\BatchInfoResource;
+use App\Http\Resources\Api\Merchant\TourResource;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Services\OrderTrailService;
 use App\Traits\CompanyTrait;
@@ -46,69 +46,6 @@ class BatchService extends BaseService
     public function __construct(Batch $batch)
     {
         parent::__construct($batch, BatchResource::class, BatchInfoResource::class);
-    }
-
-    /**
-     * 线路服务
-     * @return LineService
-     */
-    public function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 线路范围 服务
-     * @return LineRangeService
-     */
-    public function getLineRangeService()
-    {
-        return self::getInstance(LineRangeService::class);
-    }
-
-    /**
-     * 单号规则 服务
-     * @return OrderNoRuleService
-     */
-    public function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
-    /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    public function getTourService()
-    {
-        return self::getInstance(TourService::class);
-    }
-
-    /**
-     * 订单 服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 材料 服务
-     * @return MaterialService
-     */
-    private function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
     }
 
     public function getPageList()

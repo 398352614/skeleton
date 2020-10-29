@@ -5,9 +5,9 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\AdditionalPackageResource;
+use App\Http\Resources\Api\Admin\AdditionalPackageResource;
 use App\Models\AdditionalPackage;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\SearchTrait;
 use Illuminate\Support\Arr;
 
@@ -24,14 +24,6 @@ class AdditionalPackageService extends BaseService
         parent::__construct($model, AdditionalPackageResource::class);
     }
 
-    /**
-     * 站点 服务
-     * @return BatchService
-     */
-    public function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection

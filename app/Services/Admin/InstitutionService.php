@@ -8,7 +8,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Institution;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use Illuminate\Database\Eloquent\Model;
 
 class InstitutionService extends BaseService

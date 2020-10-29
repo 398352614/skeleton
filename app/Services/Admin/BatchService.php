@@ -5,20 +5,17 @@ namespace App\Services\Admin;
 use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\BatchResource;
-use App\Http\Resources\BatchInfoResource;
+use App\Http\Resources\Api\Admin\BatchResource;
+use App\Http\Resources\Api\Admin\BatchInfoResource;
 use App\Models\Batch;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Services\OrderTrailService;
 use App\Traits\CompanyTrait;
-use App\Traits\ConstTranslateTrait;
-use App\Traits\MapAreaTrait;
 use App\Traits\StatusConvertTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
 
 class BatchService extends BaseService
 {
@@ -28,6 +25,7 @@ class BatchService extends BaseService
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'driver_name' => ['like', 'driver_name'],
+        'driver_id' => ['=', 'driver_id'],
         'line_id,line_name' => ['like', 'line_keyword'],
         'batch_no' => ['like', 'keyword'],
         'receiver_fullname' => ['=', 'receiver_fullname'],
@@ -47,87 +45,6 @@ class BatchService extends BaseService
         parent::__construct($batch, BatchResource::class, BatchInfoResource::class);
     }
 
-    /**
-     * 商户服务
-     * @return MerchantService
-     */
-    public function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * 线路服务
-     * @return LineService
-     */
-    public function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 线路范围 服务
-     * @return LineRangeService
-     */
-    public function getLineRangeService()
-    {
-        return self::getInstance(LineRangeService::class);
-    }
-
-    /**
-     * 线路区域 服务
-     * @return LineAreaService
-     */
-    public function getLineAreaService()
-    {
-        return self::getInstance(LineAreaService::class);
-    }
-
-    /**
-     * 单号规则 服务
-     * @return OrderNoRuleService
-     */
-    public function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
-    /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    public function getTourService()
-    {
-        return self::getInstance(TourService::class);
-    }
-
-    /**
-     * 订单 服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 材料 服务
-     * @return MaterialService
-     */
-    private function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
-    }
-
     public function getPageList()
     {
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
@@ -144,24 +61,6 @@ class BatchService extends BaseService
             }
         }
         return $list;
-    }
-
-    /**
-     * 顺带包裹 服务
-     * @return AdditionalPackageService
-     */
-    public function getAdditionalPackageService()
-    {
-        return self::getInstance(AdditionalPackageService::class);
-    }
-
-    /**
-     * 线路基础 服务
-     * @return BaseLineService
-     */
-    public function getBaseLineService()
-    {
-        return self::getInstance(BaseLineService::class);
     }
 
     /**

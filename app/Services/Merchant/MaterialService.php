@@ -6,8 +6,8 @@ namespace App\Services\Merchant;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Material;
-use App\Services\Admin\OrderService;
-use App\Services\BaseService;
+use App\Services\Admin\Merchant\OrderService;
+use App\Services\Merchant\BaseService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -28,14 +28,6 @@ class MaterialService extends BaseService
         'execution_date' => ['between', ['begin_date', 'end_date']],
     ];
 
-    /**
-     * 订单服务
-     * @return OrderService
-     */
-    public function getOrderService()
-    {
-        return parent::getInstance(OrderService::class);
-    }
     /**
      * 列表查询
      * @return Collection

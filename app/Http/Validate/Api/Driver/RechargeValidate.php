@@ -23,7 +23,7 @@ class RechargeValidate extends BaseValidate
         'recharge_third_pic' => 'nullable|string|max:250',
         'signature' => 'required|string|max:250',
         'remark' => 'nullable|string|max:250',
-        'verify_phone_end' => 'required|string|max:250',
+        'verify_phone_end' => 'nullable|string|max:250',
     ];
 
     public $scene = [

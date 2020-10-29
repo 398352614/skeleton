@@ -11,7 +11,7 @@ namespace App\Services\Merchant;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Line;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Carbon;
 

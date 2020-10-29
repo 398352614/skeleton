@@ -3,13 +3,13 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\RouteTrackingResource;
+use App\Http\Resources\Api\Admin\RouteTrackingResource;
 use App\Listeners\TourDriver;
 use App\Models\RouteTracking;
 use App\Models\Tour;
 use App\Models\TourDriverEvent;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use Illuminate\Support\Arr;
 
 class RouteTrackingService extends BaseService
@@ -22,33 +22,6 @@ class RouteTrackingService extends BaseService
     public function __construct(RouteTracking $tracking)
     {
         parent::__construct($tracking, RouteTrackingResource::class, RouteTrackingResource::class);
-    }
-
-    /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    public function getTourService()
-    {
-        return self::getInstance(TourService::class);
-    }
-
-    /**
-     * 站点 服务
-     * @return BatchService
-     */
-    public function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 司机事件 服务
-     * @return TourDriverService
-     */
-    public function getTourDriverService()
-    {
-        return self::getInstance(TourDriverService::class);
     }
 
     /**

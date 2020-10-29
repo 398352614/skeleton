@@ -3,13 +3,9 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\OrderTrailResource;
+use App\Http\Resources\Api\OrderTrailResource;
 use App\Models\Order;
 use App\Models\OrderTrail;
-use App\Services\BaseConstService;
-use App\Services\BaseService;
-use Illuminate\Database\Eloquent\Collection;
-use phpDocumentor\Reflection\Types\Parent_;
 
 class OrderTrailService extends BaseService
 {

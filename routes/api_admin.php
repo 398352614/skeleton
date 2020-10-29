@@ -34,7 +34,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::post('logout', 'AuthController@logout');
     Route::put('my-password', 'AuthController@updatePassword');
 
-
     //主页统计
     Route::prefix('statistics')->group(function () {
         Route::get('/', 'HomeController@home');
@@ -89,7 +88,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //批量打印
         Route::get('/orderPrintAll', 'OrderController@orderPrintAll');
         //订单导出表格
-        Route::get('/order-excel', 'OrderController@orderExport');
+        Route::post('/order-excel', 'OrderController@orderExport');
         //获取所有线路（邮编及区域）
         Route::get('/get-line', 'OrderController@getLineList');
         //同步订单状态列表
@@ -395,6 +394,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //公共接口
     Route::prefix('common')->group(function () {
+        //字典
+        Route::get('/dictionary', 'CommonController@dictionary');
         //获取具体地址经纬度
         Route::get('getLocation', 'CommonController@getLocation');
         //获取所有国家列表

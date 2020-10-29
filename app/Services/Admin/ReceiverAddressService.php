@@ -10,10 +10,10 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\ReceiverAddressResource;
+use App\Http\Resources\Api\Admin\ReceiverAddressResource;
 use App\Models\Merchant;
 use App\Models\ReceiverAddress;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
@@ -30,15 +30,6 @@ class ReceiverAddressService extends BaseService
     public function __construct(ReceiverAddress $receiverAddress)
     {
         parent::__construct($receiverAddress, ReceiverAddressResource::class, ReceiverAddressResource::class);
-    }
-
-    /**
-     * 商户 服务
-     * @return MerchantService
-     */
-    private function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
     }
 
     /**

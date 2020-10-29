@@ -6,24 +6,15 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\VersionResource;
+use App\Http\Resources\Api\Admin\VersionResource;
 use App\Models\Version;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 
 class VersionService extends BaseService
 {
     public function __construct(Version $version)
     {
         parent::__construct($version, VersionResource::class);
-    }
-
-    /**
-     * 获取上传服务
-     * @return mixed
-     */
-    public function getUploadService()
-    {
-        return self::getInstance(UploadService::class);
     }
 
     /**

@@ -3,11 +3,11 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\CarResource;
+use App\Http\Resources\Api\Admin\CarResource;
 use App\Models\Car;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use App\Traits\PrintTrait;
@@ -35,15 +35,6 @@ class CarService extends BaseService
     public function __construct(Car $car)
     {
         parent::__construct($car, CarResource::class, CarResource::class);
-    }
-
-    /**
-     * 取件线路服务
-     * @return TourService
-     */
-    public function getTourService()
-    {
-        return self::getInstance(TourService::class);
     }
 
     public function init()

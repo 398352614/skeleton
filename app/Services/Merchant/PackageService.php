@@ -5,11 +5,11 @@ namespace App\Services\Merchant;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\PackageResource;
+use App\Http\Resources\Api\Merchant\PackageResource;
 use App\Models\Order;
 use App\Models\Package;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Merchant\BaseService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -34,15 +34,6 @@ class PackageService extends BaseService
         'express_first_no,order_no,out_order_no' => ['like', 'keyword'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
     ];
-
-    /**
-     * 订单服务
-     * @return OrderService
-     */
-    public function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
-    }
 
     /**
      * 列表查询

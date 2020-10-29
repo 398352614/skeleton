@@ -5,13 +5,13 @@ namespace App\Services\Admin;
 
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\RechargeInfoResource;
-use App\Http\Resources\RechargeResource;
-use App\Http\Resources\RechargeStatisticsResource;
+use App\Http\Resources\Api\Admin\RechargeInfoResource;
+use App\Http\Resources\Api\Admin\RechargeResource;
+use App\Http\Resources\Api\Admin\RechargeStatisticsResource;
 use App\Models\Recharge;
 use App\Models\RechargeStatistics;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
+use App\Services\Admin\BaseService;
 use App\Services\OrderNoRuleService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -38,28 +38,12 @@ class RechargeStatisticsService extends BaseService
     }
 
     /**
-     * @return MerchantService
-     */
-    public function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * @return RechargeService
-     */
-    public function getRechargeService()
-    {
-        return self::getInstance(RechargeService::class);
-    }
-
-    /**
      * 充值列表
      * @return Collection
      */
     public function getPageList()
     {
-        $this->query->orderByDesc('recharge_date');
+        $this->query->orderByDesc('execution_date');
         return parent::getPageList();
     }
 
