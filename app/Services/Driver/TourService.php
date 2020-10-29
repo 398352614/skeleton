@@ -1242,6 +1242,23 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败，请重新操作');
         }
+        //存在取派订单且取件运单成功的，生成派件运单
+        $orderList = $this->getTrackingOrderService()->getOrderList(['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5], ['type' => BaseConstService::ORDER_TYPE_3, 'status' => BaseConstService::ORDER_STATUS_2]);
+        foreach ($orderList as $order) {
+            $trackingOrder = [];
+            $trackingOrder['receiver_fullname'] = $order['sender_fullname'];
+            $trackingOrder['receiver_phone'] = $order['sender_phone'];
+            $trackingOrder['receiver_country'] = $order['sender_country'];
+            $trackingOrder['receiver_post_code'] = $order['sender_post_code'];
+            $trackingOrder['receiver_house_number'] = $order['sender_house_number'];
+            $trackingOrder['receiver_city'] = $order['sender_city'];
+            $trackingOrder['receiver_street'] = $order['sender_street'];
+            $trackingOrder['receiver_address'] = $order['sender_address'];
+            $trackingOrder['receiver_lon'] = $order['sender_lon'];
+            $trackingOrder['receiver_lat'] = $order['sender_lat'];
+            $trackingOrder['type'] = BaseConstService::TRACKING_ORDER_TYPE_2;
+            $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'out_user_id', 'out_order_no', 'order_no', 'pie_execution_date', 'mask_code', 'special_remark']));
+        }
         TourTrait::afterBackWarehouse($tour);
     }
 
@@ -1493,6 +1510,30 @@ class TourService extends BaseService
         }
         return;
     }
+
+
+    /**
+     * 统计运单数量
+     *
+     * @param $info
+     * @param $line
+     * @param int $type 1-取件2-派件3-取件和派件
+     * @return array
+     */
+    public function sumOrderCount($info, $line, $type = 1)
+    {
+        $arrCount = [];
+        if ($type === 1) {
+            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+        } elseif ($type === 2) {
+            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+        } else {
+            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date']]);
+        }
+        return $arrCount;
+    }
+
 
 
 }
