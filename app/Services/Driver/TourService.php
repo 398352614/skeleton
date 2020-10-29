@@ -1380,7 +1380,6 @@ class TourService extends BaseService
      */
     public function batchRecovery($id, $params)
     {
-        $list = [];
         $tour = parent::getInfo(['id' => $id, 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('数据不存在');
