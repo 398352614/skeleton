@@ -29,7 +29,7 @@ class AlterOrderBatchTourTable extends Migration
             $table->date('second_execution_date')->default(null)->nullable()->after('execution_date')->comment('取派订单类型中的派件日期');
         });
         Schema::table('package', function (Blueprint $table) {
-            $table->string('tracking_order_no', 50)->default('')->nullable()->comment('运单号');
+            $table->dropColumn('batch_no');
             $table->dropColumn('tour_no');
         });
     }

@@ -58,40 +58,20 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/', 'OrderController@index');
         //获取详情
         Route::get('/{id}', 'OrderController@show');
+        //获取订单的运单列表
+        Route::get('/{id}/getTrackingOrderList', 'OrderController@getTrackingOrderList');
         //新增初始化
         Route::get('/initStore', 'OrderController@initStore');
         //新增
         Route::post('/', 'OrderController@store');
         //修改
         Route::put('/{id}', 'OrderController@update');
-        //获取可分配路线日期
-        Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
-        //获取可分配路线日期(新增)
-        Route::get('/get-date', 'OrderController@getDate');
-        //获取可分配的站点列表
-        Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
-        //分配至站点
-        Route::put('/{id}/assignToBatch', 'OrderController@assignToBatch');
-        //从站点移除
-        Route::delete('/{id}/removeFromBatch', 'OrderController@removeFromBatch');
-        //批量订单从站点移除
-        Route::delete('/removeListFromBatch', 'OrderController@removeListFromBatch');
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
-        //批量删除
-        Route::delete('/list', 'OrderController@destroyByList');
-        //恢复
-        Route::put('/{id}/recovery', 'OrderController@recovery');
-        //彻底删除
-        Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
-        //批量订单分配至指定取件线路
-        Route::put('/assignListTour', 'OrderController@assignListTour');
         //批量打印
         Route::get('/orderPrintAll', 'OrderController@orderPrintAll');
         //订单导出表格
         Route::get('/order-excel', 'OrderController@orderExport');
-        //获取所有线路（邮编及区域）
-        Route::get('/get-line', 'OrderController@getLineList');
         //同步订单状态列表
         Route::post('synchronize-status-list', 'OrderController@synchronizeStatusList');
         //订单第三方对接日志
@@ -133,6 +113,57 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/log', 'OrderImportController@index');
         //记录详情
         Route::get('/log/{id}', 'OrderImportController@show');
+    });
+
+
+    //订单管理
+    Route::prefix('tracking-order')->group(function () {
+        //订单统计
+        Route::get('/count', 'OrderController@ordercount');
+        //查询初始化
+        Route::get('/initIndex', 'OrderController@initIndex');
+        //列表查询
+        Route::get('/', 'OrderController@index');
+        //获取详情
+        Route::get('/{id}', 'OrderController@show');
+        //新增初始化
+        Route::get('/initStore', 'OrderController@initStore');
+        //新增
+        Route::post('/', 'OrderController@store');
+        //修改
+        Route::put('/{id}', 'OrderController@update');
+        //获取可分配路线日期
+        Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
+        //获取可分配路线日期(新增)
+        Route::get('/get-date', 'OrderController@getDate');
+        //获取可分配的站点列表
+        Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
+        //分配至站点
+        Route::put('/{id}/assignToBatch', 'OrderController@assignToBatch');
+        //从站点移除
+        Route::delete('/{id}/removeFromBatch', 'OrderController@removeFromBatch');
+        //批量订单从站点移除
+        Route::delete('/removeListFromBatch', 'OrderController@removeListFromBatch');
+        //删除
+        Route::delete('/{id}', 'OrderController@destroy');
+        //批量删除
+        Route::delete('/list', 'OrderController@destroyByList');
+        //恢复
+        Route::put('/{id}/recovery', 'OrderController@recovery');
+        //彻底删除
+        Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
+        //批量订单分配至指定取件线路
+        Route::put('/assignListTour', 'OrderController@assignListTour');
+        //批量打印
+        Route::get('/orderPrintAll', 'OrderController@orderPrintAll');
+        //订单导出表格
+        Route::get('/order-excel', 'OrderController@orderExport');
+        //获取所有线路（邮编及区域）
+        Route::get('/get-line', 'OrderController@getLineList');
+        //同步订单状态列表
+        Route::post('synchronize-status-list', 'OrderController@synchronizeStatusList');
+        //订单第三方对接日志
+        Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
     });
 
     //司机管理

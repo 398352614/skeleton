@@ -22,8 +22,10 @@ use Illuminate\Support\Facades\App;
  * @method static weekList($args = null)
  * @method static orderSourceList($arg = null)
  * @method static trackingOrderTypeList($args = null)
+ * @method static orderTypeList($args = null)
  * @method static orderSettlementTypeList($args = null)
- * @method static orderOutStatusList($args = null)
+ * @method static outStatusList($args = null)
+ * @method static trackingOrderStatusList($args = null)
  * @method static orderStatusList($args = null)
  * @method static packageStatusList($args = null)
  * @method static orderExceptionLabelList($args = null)
@@ -100,10 +102,11 @@ trait ConstTranslateTrait
         BaseConstService::SUNDAY => '星期日',
     ];
 
-    //订单类型1-取2-派
-    public static $trackingOrderTypeList = [
-        BaseConstService::TRACKING_ORDER_TYPE_1 => '取件',
-        BaseConstService::TRACKING_ORDER_TYPE_2 => '派件',
+    //订单类型1-取件2-派件3-取派
+    public static $orderTypeList = [
+        BaseConstService::ORDER_TYPE_1 => '取件',
+        BaseConstService::ORDER_TYPE_2 => '派件',
+        BaseConstService::ORDER_TYPE_3 => '取派件'
     ];
 
     //订单来源1-手动添加2-批量导入3-第三方
@@ -119,8 +122,22 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_SETTLEMENT_TYPE_2 => '到付',
     ];
 
-    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     public static $orderStatusList = [
+        BaseConstService::ORDER_STATUS_1 => '待取派',
+        BaseConstService::ORDER_STATUS_2 => '取派中',
+        BaseConstService::ORDER_STATUS_3 => '已完成',
+        BaseConstService::ORDER_STATUS_4 => '取派失败',
+        BaseConstService::ORDER_STATUS_5 => '回收站',
+    ];
+
+    //运单类型1-取2-派
+    public static $trackingOrderTypeList = [
+        BaseConstService::TRACKING_ORDER_TYPE_1 => '取件',
+        BaseConstService::TRACKING_ORDER_TYPE_2 => '派件',
+    ];
+
+    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    public static $trackingOrderStatusList = [
         BaseConstService::TRACKING_ORDER_STATUS_1 => '待分配',
         BaseConstService::TRACKING_ORDER_STATUS_2 => '已分配',
         BaseConstService::TRACKING_ORDER_STATUS_3 => '待出库',
@@ -131,7 +148,7 @@ trait ConstTranslateTrait
     ];
 
     //订单可出库状态1-是2-否
-    public static $orderOutStatusList = [
+    public static $outStatusList = [
         BaseConstService::OUT_STATUS_1 => '是',
         BaseConstService::OUT_STATUS_2 => '否'
     ];

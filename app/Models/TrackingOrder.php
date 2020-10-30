@@ -120,6 +120,33 @@ class TrackingOrder extends BaseModel
      */
     protected $dates = [];
 
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::trackingOrderTypeList($this->type);
+    }
+
+    public function getStatusNameAttribute()
+    {
+        return empty($this->status) ? null : ConstTranslateTrait::trackingOrderStatusList($this->status);
+    }
+
+    public function getOutStatusNameAttribute()
+    {
+        return empty($this->out_status) ? null : ConstTranslateTrait::outStatusList($this->out_status);
+    }
+
+    public function getMerchantIdNameAttribute()
+    {
+        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+        return $this->merchant->name;
+    }
+
+
+    public function merchant()
+    {
+        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+    }
+
     /**
      * 获取关联查询构造器
      * @param $where

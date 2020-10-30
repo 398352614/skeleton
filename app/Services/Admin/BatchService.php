@@ -331,8 +331,8 @@ class BatchService extends BaseService
             'receiver_city' => $trackingOrder['receiver_city'],
             'receiver_street' => $trackingOrder['receiver_street'],
             'receiver_address' => $trackingOrder['receiver_address'],
-            'receiver_lon' => $trackingOrder['lon'],
-            'receiver_lat' => $trackingOrder['lat'],
+            'receiver_lon' => $trackingOrder['receiver_lon'],
+            'receiver_lat' => $trackingOrder['receiver_lat'],
             'merchant_id' => $line['range_merchant_id'] ?? 0
         ];
         if (intval($trackingOrder['type']) === 1) {
@@ -737,8 +737,9 @@ class BatchService extends BaseService
      */
     public function reCountAmountByNo($batchNo)
     {
-        $totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['batch_no' => $batchNo]);
-        $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['batch_no' => $batchNo]);
+        //$totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['batch_no' => $batchNo]);
+        //$totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['batch_no' => $batchNo]);
+        $totalReplaceAmount = $totalSettlementAmount = 0.00;
         $rowCount = parent::update(['batch_no' => $batchNo], ['replace_amount' => $totalReplaceAmount, 'settlement_amount' => $totalSettlementAmount]);
         if ($rowCount === false) {
             throw new BusinessLogicException('金额统计失败');

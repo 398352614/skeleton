@@ -50,8 +50,7 @@ class Order extends BaseModel
         'merchant_id',
         'order_no',
         'execution_date',
-        'batch_no',
-        'tour_no',
+        'second_execution_date',
         'out_order_no',
         'express_first_no',
         'express_second_no',
@@ -78,6 +77,8 @@ class Order extends BaseModel
         'sender_city',
         'sender_street',
         'sender_address',
+        'sender_lon',
+        'sender_lat',
         'receiver_fullname',
         'receiver_phone',
         'receiver_country',
@@ -86,17 +87,11 @@ class Order extends BaseModel
         'receiver_city',
         'receiver_street',
         'receiver_address',
-        'lon',
-        'lat',
+        'receiver_lon',
+        'receiver_lat',
         'special_remark',
         'remark',
         'unique_code',
-        'driver_id',
-        'driver_name',
-        'driver_phone',
-        'car_id',
-        'car_no',
-        'sticker_no',
         'sticker_amount',
         'delivery_amount',
         'out_status',
@@ -136,7 +131,7 @@ class Order extends BaseModel
 
     public function getTypeNameAttribute()
     {
-        return empty($this->type) ? null : ConstTranslateTrait::trackingOrderTypeList($this->type);
+        return empty($this->type) ? null : ConstTranslateTrait::orderTypeList($this->type);
     }
 
     public function getStatusNameAttribute()
@@ -146,7 +141,7 @@ class Order extends BaseModel
 
     public function getOutStatusNameAttribute()
     {
-        return empty($this->out_status) ? null : ConstTranslateTrait::orderOutStatusList($this->out_status);
+        return empty($this->out_status) ? null : ConstTranslateTrait::outStatusList($this->out_status);
     }
 
     public function getExceptionLabelNameAttribute()

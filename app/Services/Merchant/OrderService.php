@@ -206,7 +206,7 @@ class OrderService extends BaseService
     {
         $data = [];
         $data['source_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSourceList);
-        $data['status_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderStatusList);
+        $data['status_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderStatusList);
         return $data;
     }
 

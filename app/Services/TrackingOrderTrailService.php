@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderTrailResource;
-use App\Models\Order;
+use App\Models\TrackingOrder;
 use App\Models\TrackingOrderTrail;
 
 class TrackingOrderTrailService extends BaseService
@@ -13,6 +13,7 @@ class TrackingOrderTrailService extends BaseService
     public static $selectFields = ['company_id', 'merchant_id', 'order_no'];
 
     public $filterRules = [
+        'tracking_order_no' => ['=', 'tracking_order_no'],
         'order_no' => ['=', 'order_no'],
     ];
 
@@ -23,31 +24,31 @@ class TrackingOrderTrailService extends BaseService
 
     public static function storeByTour($tour, int $action)
     {
-        $orderList = Order::query()->select(self::$selectFields)->where('tour_no', $tour['tour_no'])->get()->toArray();
-        !empty($orderList) && self::storeAllByOrderList($orderList, $action, $tour);
+        $trackingOrderList = TrackingOrder::query()->select(self::$selectFields)->where('tour_no', $tour['tour_no'])->get()->toArray();
+        !empty($trackingOrderList) && self::storeAllByOrderList($trackingOrderList, $action, $tour);
     }
 
     public static function storeByBatch($batch, int $action)
     {
-        $orderList = Order::query()->select(self::$selectFields)->where('batch_no', $batch['batch_no'])->get()->toArray();
-        !empty($orderList) && self::storeAllByOrderList($orderList, $action, $batch);
+        $trackingOrderList = TrackingOrder::query()->select(self::$selectFields)->where('batch_no', $batch['batch_no'])->get()->toArray();
+        !empty($trackingOrderList) && self::storeAllByOrderList($trackingOrderList, $action, $batch);
     }
 
 
-    public static function storeAllByOrderList(array $orderList, int $action, $params = null)
+    public static function storeAllByOrderList(array $trackingOrderList, int $action, $params = null)
     {
-        foreach ($orderList as $key => $order) {
-            self::TrackingOrderStatusChangeCreateTrail($order, $action, $params ?? $order);
+        foreach ($trackingOrderList as $key => $trackingOrder) {
+            self::TrackingOrderStatusChangeCreateTrail($trackingOrder, $action, $params ?? $trackingOrder);
         }
     }
 
-    public static function TrackingOrderStatusChangeCreateTrail(array $order, int $action, $params = [])
+    public static function TrackingOrderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [])
     {
         //根据不同的类型生成不同的content
         $content = '';
         switch ($action) {
             case BaseConstService::TRACKING_ORDER_TRAIL_CREATED:                 // 运单创建
-                $content = sprintf("运单创建成功,运单号[%s]", $order['order_no']);
+                $content = sprintf("运单创建成功,运单号[%s]", $trackingOrder['tracking_order_no']);
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH:               // 加入站点
                 $content = sprintf("运单已加入站点[%s]", $params['batch_no']);
@@ -94,12 +95,13 @@ class TrackingOrderTrailService extends BaseService
                 break;
         }
         $data = [
-            'company_id' => $order['company_id'],
-            'order_no' => $order['order_no'],
-            'merchant_id' => $order['merchant_id'],
+            'company_id' => $trackingOrder['company_id'],
+            'tracking_order_no' => $trackingOrder['tracking_order_no'],
+            'order_no' => $trackingOrder['order_no'],
+            'merchant_id' => $trackingOrder['merchant_id'],
             'content' => $content,
         ];
-        !empty($order['merchant_id']) && $data['merchant_id'] = $order['merchant_id'];
+        !empty($trackingOrder['merchant_id']) && $data['merchant_id'] = $trackingOrder['merchant_id'];
         TrackingOrderTrail::query()->create($data);
     }
 
@@ -109,12 +111,12 @@ class TrackingOrderTrailService extends BaseService
      */
     public function getTrackingNoPageList()
     {
-        if (empty($this->formData['order_no'])) {
-            throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查单号是否正确');
+        if (empty($this->formData['tracking_order_no'])) {
+            throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查运单号是否正确');
         }
-        $info = parent::getList(['order_no' => $this->formData['order_no']]);
+        $info = parent::getList(['tracking_order_no' => $this->formData['tracking_order_no']]);
         if ($info->isEmpty()) {
-            throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查单号是否正确');
+            throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查运单号是否正确');
         }
         return $info;
     }

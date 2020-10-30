@@ -46,8 +46,6 @@ class OrderService extends BaseService
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
-        'tour_no' => ['like', 'tour_no'],
-        'batch_no' => ['like', 'batch_no'],
     ];
 
     public $headings = [
@@ -239,19 +237,14 @@ class OrderService extends BaseService
      */
     public function orderCount($params)
     {
-        if (!array_key_exists('type', $params)) {
-            throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
-        }
-        if (!empty($params['type']) && !in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
-            throw new BusinessLogicException('订单取派类型有误，无法获取统计数据');
-        }
+        $type = $params['type'] ?? 0;
         return [
-            'all_count' => $this->singleOrderCount($params['type']),
-            'no_take' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_1),
-            'taking' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_2),
-            'singed' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_3),
-            'cancel_count' => $this->singleOrderCount($params['type'], BaseConstService::ORDER_STATUS_4),
-            'delete_count' => $this->singleOrderCount($params['type'], BaseConstService::TRACKING_ORDER_STATUS_5),
+            'all_count' => $this->singleOrderCount($type),
+            'no_take' => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_1),
+            'taking' => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_2),
+            'singed' => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_3),
+            'cancel_count' => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_4),
+            'delete_count' => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_5),
         ];
     }
 
@@ -290,13 +283,28 @@ class OrderService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], true);
-        if (empty($info)) {
+        $dbOrder = parent::getInfo(['id' => $id], ['*'], true);
+        if (empty($dbOrder)) {
             throw new BusinessLogicException('订单不存在！');
         }
-        $info['package_list'] = $this->getPackageService()->getList(['order_no' => $info['order_no']], ['*'], false);
-        $info['material_list'] = $this->getMaterialService()->getList(['order_no' => $info['order_no']], ['*'], false);
-        return $info;
+        $dbOrder['package_list'] = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+        $dbOrder['material_list'] = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+        return $dbOrder;
+    }
+
+    /**
+     * 获取订单的运单列表
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getTrackingOrderList($id)
+    {
+        $dbOrder = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($dbOrder)) {
+            throw new BusinessLogicException('订单不存在！');
+        }
+        return $this->getTrackingOrderService()->getList(['order_no' => $dbOrder->order_no], ['*'], true);
     }
 
     public function initStore()
@@ -304,7 +312,7 @@ class OrderService extends BaseService
         $data = [];
         $data['nature_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderNatureList);
         $data['settlement_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSettlementTypeList);
-        $data['type'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderTypeList);
+        $data['type'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderTypeList);
         $data['feature_logo_list'] = ['常温', '雪花', '风扇', '预售', '打折村', '海鲜预售'];
         return $data;
     }
@@ -332,7 +340,7 @@ class OrderService extends BaseService
         //生成运单
         $this->getTrackingOrderService()->storeByOrder($order);
         //新增订单明细列表
-        $this->addAllItemList($order->getAttributes());
+        $this->addAllItemList($params);
         return ['order_no' => $params['order_no']];
     }
 
@@ -583,54 +591,6 @@ class OrderService extends BaseService
     }
 
     /**
-     * 填充站点信息和取件线路信息
-     * @param $order
-     * @param $batch
-     * @param $tour
-     * @param bool $isFillItem
-     * @throws BusinessLogicException
-     */
-    public function fillBatchTourInfo($order, $batch, $tour, $isFillItem = true)
-    {
-        $status = $tour['status'] ?? BaseConstService::TRACKING_ORDER_STATUS_1;
-        $rowCount = parent::updateById($order['id'], [
-            'execution_date' => $batch['execution_date'],
-            'batch_no' => $batch['batch_no'],
-            'tour_no' => $tour['tour_no'],
-            'driver_id' => $tour['driver_id'] ?? null,
-            'driver_name' => $tour['driver_name'] ?? '',
-            'driver_phone' => $tour['driver_phone'] ?? '',
-            'car_id' => $tour['car_id'] ?? null,
-            'car_no' => $tour['car_no'] ?? '',
-            'status' => $status,
-        ]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
-        }
-        if ($isFillItem === false) return;
-        //填充包裹
-        $rowCount = $this->getPackageService()->update(['order_no' => $order['order_no']], [
-            'batch_no' => $batch['batch_no'],
-            'tour_no' => $tour['tour_no'],
-            'status' => $status,
-            'execution_date' => $batch['execution_date']
-        ]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
-        }
-        //填充材料
-        $rowCount = $this->getMaterialService()->update(['order_no' => $order['order_no']], [
-            'batch_no' => $batch['batch_no'],
-            'tour_no' => $tour['tour_no'],
-            'status' => $status,
-            'execution_date' => $batch['execution_date']
-        ]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
-        }
-    }
-
-    /**
      * 修改
      * @param $id
      * @param $data
@@ -644,6 +604,9 @@ class OrderService extends BaseService
         $dbOrder = $this->getInfoOfStatus(['id' => $id], true);
         if (intval($dbOrder['source']) === BaseConstService::ORDER_SOURCE_3) {
             throw new BusinessLogicException('第三方订单不能修改');
+        }
+        if ($dbOrder['type'] != $data['type']) {
+            throw new BusinessLogicException('订单类型不能修改');
         }
         //验证
         $this->check($data, $dbOrder['order_no']);
@@ -668,21 +631,23 @@ class OrderService extends BaseService
         //新增包裹列表和材料列表
         $this->addAllItemList($data);
         /******************************判断是否需要更换站点(取派日期+收货方地址 验证)***************************************/
-        $this->checkIsChangeTrackingOrder($dbOrder, $data) && $this->getTrackingOrderService()->updateByOrder($data);
+        $this->getTrackingOrderService()->updateByOrder($data);
     }
 
     /**
-     * 判断是否需要更换站点
-     * @param $dbOrder
-     * @param $order
-     * @return bool
+     * 删除
+     * @param $id
+     * @throws BusinessLogicException
      */
-    private function checkIsChangeTrackingOrder($dbOrder, $order)
+    public function destroy($id)
     {
-        $fields = ['type', 'execution_date', 'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
-        $newDbOrder = Arr::only($dbOrder, $fields);
-        $newOrder = Arr::only($order, $fields);
-        return empty(array_diff($newDbOrder, $newOrder)) ? false : true;
+        //获取信息
+        $dbOrder = $this->getInfoOfStatus(['id' => $id], true);
+        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_5]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+        $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
     }
 
     /**
