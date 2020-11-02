@@ -11,6 +11,7 @@ namespace App\Services;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Country;
 use App\Traits\CompanyTrait;
+use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryAddressTrait;
 use App\Traits\LocationTrait;
 use App\Traits\PostcodeTrait;
@@ -86,5 +87,17 @@ class CommonService
         }
         $address = implode(' ', array_filter(array_only_fields_sort($data, $fields)));
         return $address;
+    }
+
+
+    public function dictionary()
+    {
+        $data=[];
+        $reflection = new \ReflectionClass(ConstTranslateTrait::class);
+        $result = collect($reflection->getProperties())->pluck('name')->toArray();
+        foreach ($result as $k => $v) {
+            $data[$v] = ConstTranslateTrait::formatList(ConstTranslateTrait::$$v);
+        }
+        return $data;
     }
 }
