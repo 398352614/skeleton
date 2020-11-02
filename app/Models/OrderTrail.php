@@ -5,11 +5,11 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 运单轨迹表
+ * 订单轨迹表
  * Class TrackingOrderTrail
  * @package App\Models
  */
-class TrackingOrderTrail extends BaseModel
+class OrderTrail extends BaseModel
 {
     /**
      * 司机实际取件导航
@@ -17,7 +17,7 @@ class TrackingOrderTrail extends BaseModel
      *
      * @var string
      */
-    protected $table = 'tracking_order_trail';
+    protected $table = 'order_trail';
 
     /**
      * The primary key for the model.
@@ -49,7 +49,6 @@ class TrackingOrderTrail extends BaseModel
         'company_id',
         'merchant_id',
         'order_no',
-        'tracking_order_no',
         'content',
         'created_at',
         'updated_at',

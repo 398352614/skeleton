@@ -78,6 +78,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
     });
 
+    //订单轨迹管理
+    Route::prefix('order-trail')->group(function () {
+        //列表查询
+        Route::get('/{order_no}', 'OrderController@index');
+    });
+
     Route::prefix('package')->group(function () {
         //列表查询
         Route::get('/', 'PackageController@index');
@@ -137,6 +143,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/removeListFromBatch', 'TrackingOrderController@removeListFromBatch');
         //批量运单分配至指定取件线路
         Route::put('/assignListTour', 'TrackingOrderController@assignListTour');
+    });
+
+    //物流状态管理
+    Route::prefix('tracking-order-trail')->group(function () {
+        //rest api 放在最后
+        Route::get('/{tracking_order_no}', 'TrackingOrderTrailController@index')->name('tracking-order-trail.index');
     });
 
     //司机管理
@@ -209,11 +221,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/get-line', 'BatchController@getLineList'); //根据线路规则获取线路
     });
 
-    //物流状态管理
-    Route::prefix('tracking-order-trail')->group(function () {
-        //rest api 放在最后
-        Route::get('/', 'TrackingOrderTrailController@index')->name('tracking-order-trail.index');
-    });
 
     //站点 异常管理
     Route::prefix('batch-exception')->group(function () {

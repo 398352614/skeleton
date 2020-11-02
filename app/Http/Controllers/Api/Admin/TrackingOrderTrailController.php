@@ -1,44 +1,34 @@
 <?php
+/**
+ * 运单轨迹
+ */
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Services\TrackingOrderTrailService;
-use Illuminate\Http\Request;
 
+/**
+ * Class TrackingOrderTrailController
+ * @package App\Http\Controllers\Api\Admin
+ * @property TrackingOrderTrailService $service
+ */
 class TrackingOrderTrailController extends BaseController
 {
-    /**
-     * @var TrackingOrderTrailService
-     */
-    public $service;
-
     public function __construct(TrackingOrderTrailService $service)
     {
-        $this->service = $service;
+        parent::__construct($service);
     }
 
+
     /**
-     * @api {GET}  api/admin/ order-trail 管理员端:车辆列表
-     * @apiName index
-     * @apiGroup admin-car
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 车辆列表
-     * @apiParam {String}   order_no         需要查看的订单编号
-     * @apiSuccessExample {json}  返回示例
-     * @throws BusinessLogicException
-     * HTTP/1.1 200 OK
-     * {
-     *  "ret":1,
-     *  "msg":"查询司机",
-     *  "data":{}
-     * }
+     * 运单轨迹
+     * @param $trackingOrderNo
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws \App\Exceptions\BusinessLogicException
      */
-    public function index()
+    public function index($trackingOrderNo)
     {
-        return $this->service->getTrackingNoPageList();
+        return $this->service->index($trackingOrderNo);
     }
 }

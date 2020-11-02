@@ -107,18 +107,13 @@ class TrackingOrderTrailService extends BaseService
 
     /**
      * 物流信息追踪
+     * @param $trackingOrderNo
+     * @return array
      * @throws BusinessLogicException
      */
-    public function getTrackingNoPageList()
+    public function index($trackingOrderNo)
     {
-        if (empty($this->formData['tracking_order_no'])) {
-            throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查运单号是否正确');
-        }
-        $info = parent::getList(['tracking_order_no' => $this->formData['tracking_order_no']]);
-        if ($info->isEmpty()) {
-            throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查运单号是否正确');
-        }
-        return $info;
+        return parent::getList(['tracking_order_no' => $trackingOrderNo], ['*'], false);
     }
 
     public function create($data)
