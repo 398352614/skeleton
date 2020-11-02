@@ -13,12 +13,12 @@ class TourTaskValidate extends BaseValidate
 
     public $rules = [
         'batch_id' => 'required|integer',
-        'order_id' => 'required|integer',
+        'tracking_order_id' => 'required|integer'
     ];
 
     public $scene = [
         'getBatchSpecialRemarkList' => ['batch_id'],
-        'getSpecialRemark' => ['order_id'],
+        'getSpecialRemark' => ['tracking_order_id']
     ];
 }
 

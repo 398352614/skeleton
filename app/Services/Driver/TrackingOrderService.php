@@ -181,12 +181,4 @@ class TrackingOrderService extends BaseService
         return $this->getPackageService()->sum($PackageField, $packageWhere);
     }
 
-    public function getMaterialList($where, $materialWhere = [], $selectFields = ['*'], $materialGroupFields = [])
-    {
-        $orderList = $this->model->getOrderList($where, [], ['order_no']);
-        if (empty($orderList)) return [];
-        $materialWhere['order_no'] = ['in', array_column($orderList, 'order_no')];
-        return $this->getMaterialService()->getList($materialWhere, $selectFields, false, $materialGroupFields)->toArray();
-    }
-
 }

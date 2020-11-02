@@ -117,20 +117,21 @@ class TourController extends BaseController
     }
 
     /**
-     * 获取站点的订单列表
+     * 获取站点的运单列表
      * @param $id
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getBatchOrderList($id)
+    public function getBatchTrackingOrderList($id)
     {
-        return $this->service->getBatchOrderList($id, $this->data);
+        return $this->service->getBatchTrackingOrderList($id, $this->data);
     }
 
 
     /**
      * 到达站点
      * @param $id
+     * @return Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * @throws BusinessLogicException
      */
     public function batchArrive($id)
@@ -253,8 +254,9 @@ class TourController extends BaseController
      * @return void
      * @throws BusinessLogicException
      */
-    public function batchSkip($id){
-        return $this->service->batchSkip($id,$this->data);
+    public function batchSkip($id)
+    {
+        return $this->service->batchSkip($id, $this->data);
     }
 
     /**
@@ -263,8 +265,9 @@ class TourController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function batchRecovery($id){
-        return $this->service->batchRecovery($id,$this->data);
+    public function batchRecovery($id)
+    {
+        return $this->service->batchRecovery($id, $this->data);
     }
 
     /**
@@ -273,7 +276,8 @@ class TourController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function delay($id){
-        return $this->service->delay($id,$this->data);
+    public function delay($id)
+    {
+        return $this->service->delay($id, $this->data);
     }
 }

@@ -195,12 +195,12 @@ class TourTaskService extends BaseService
         if (in_array(intval($tour['status']), [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5])) {
             $materialList = $this->tourMaterialModel->newQuery()->where('tour_no', '=', $tour['tour_no'])->get()->toArray();
         } else {
-            $materialList = $this->getTrackingOrderService()->getMaterialList(['tour_no' => $tour['tour_no']], [], [
+            $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], [
                 'name',
                 'code',
                 DB::raw('SUM(expect_quantity) as expect_quantity'),
                 DB::raw('0 as actual_quantity'),
-            ], ['code']);
+            ], false, ['code']);
         }
         $materialList = Arr::where($materialList, function ($material) {
             return !empty($material['code']) && !empty($material['expect_quantity']);
@@ -258,15 +258,19 @@ class TourTaskService extends BaseService
     }
 
     /**
-     * 获取订单列表
-     * @param $params
+     * 获取运单列表
+     * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getTrackingOrderList($params)
+    public function getTrackingOrderList($id)
     {
+        $tour = parent::getInfo(['id' => $id], ['tour_no'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('取件线路不存在');
+        }
         //获取所有运单列表
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $params['tour_no']], ['order_no', 'tracking_order_no'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour->tour_no], ['order_no', 'tracking_order_no'], false);
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($trackingOrderList, 'order_no')]], ['order_no', 'express_first_no', 'feature_logo']);
         $packageList = array_create_group_index($packageList, 'order_no');

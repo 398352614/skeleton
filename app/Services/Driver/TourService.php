@@ -573,16 +573,16 @@ class TourService extends BaseService
      * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
-    public function getBatchOrderList($id, $params)
+    public function getBatchTrackingOrderList($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        //获取所有订单列表
-        $orderList = $this->getTrackingOrderService()->getOrderList(['batch_no' => $batch['batch_no']], [], ['id', 'execution_date', 'type', 'mask_code', 'batch_no', 'order_no', 'status']);
+        //获取所有运单列表
+        $orderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'execution_date', 'type', 'mask_code', 'batch_no', 'order_no', 'status'], false);
         //$orderList = array_create_group_index($orderList, 'type');
         //获取所有包裹列表
         $packageList = $this->getTrackingOrderService()->getPackageList(['batch_no' => $batch['batch_no']]);
         //获取所有材料列表
-        $materialList = $this->getTrackingOrderService()->getMaterialList(['batch_no' => $batch['batch_no']]);
+        $materialList = $this->getMaterialService()->getList(['batch_no' => $batch['batch_no']], ['*'], false);
         $batch['order_list'] = $orderList;
         $batch['package_list'] = $packageList;
         $batch['material_list'] = $materialList;
@@ -665,7 +665,7 @@ class TourService extends BaseService
             return $trackingOrder;
         }, $trackingOrderList);
         //获取站点中过所有材料
-        $materialList = $this->getTrackingOrderService()->getMaterialList(['batch_no' => $batch['batch_no']]);
+        $materialList = $this->getMaterialService()->getList(['batch_no' => $batch['batch_no']], ['*'], false);
         $batch['tour_id'] = $tour['id'];
         $batch['actual_total_amount'] = number_format(round($batch['sticker_amount'] + $batch['delivery_amount'] + $batch['actual_replace_amount'] + $batch['actual_settlement_amount'], 2), 2);
         if ($batch['sticker_amount'] + $batch['sticker_amount'] + $batch['settlement_amount'] + $batch['delivery_amount'] == 0) {
@@ -1141,7 +1141,7 @@ class TourService extends BaseService
         $materialList = [];
         if (!empty($params['material_list'])) {
             $pageMaterialList = array_create_index($params['material_list'], 'id');
-            $materialList = $this->getTrackingOrderService()->getMaterialList(['tour_no' => $tour['tour_no'], 'batch_no' => $batch['batch_no']], ['id' => ['in', array_column($params['material_list'], 'id')]]);
+            $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no'], 'batch_no' => $batch['batch_no'], 'id' => ['in', array_column($params['material_list'], 'id')]], ['*'], false);
             $materialList = array_create_index($materialList, 'id');
             $tourMaterialList = $this->tourMaterialModel->newQuery()->where('tour_no', $tour['tour_no'])->whereIn('code', array_column($materialList, 'code'))->get()->toArray();
             $tourMaterialList = array_create_index($tourMaterialList, 'code');
