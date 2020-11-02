@@ -19,8 +19,6 @@ class TrackingOrderResource extends JsonResource
             'type' => $this->type,
             'type_name' => $this->type_name,
             'out_user_id' => $this->out_user_id,
-            'express_first_no' => $this->express_first_no,
-            'express_second_no' => $this->express_second_no,
             'status' => $this->status,
             'status_name' => $this->status_name,
             'out_status' => $this->out_status,

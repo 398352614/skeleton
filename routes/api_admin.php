@@ -115,40 +115,28 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/log/{id}', 'OrderImportController@show');
     });
 
-    //订单管理
+    //运单管理
     Route::prefix('tracking-order')->group(function () {
         //查询初始化
         Route::get('/initIndex', 'TrackingOrderController@initIndex');
-        //订单统计
+        //运单统计
         Route::get('/count', 'TrackingOrderController@trackingOrderCount');
         //获取线路列表
         Route::get('/get-line', 'TrackingOrderController@getLineList');
         //列表查询
         Route::get('/', 'TrackingOrderController@index');
         //获取可分配路线日期
-        Route::get('/{id}/getTourDate', 'TrackingOrderController@getTourDate');
-        //获取可分配路线日期(新增)
-        Route::get('/get-date', 'TrackingOrderController@getDate');
+        Route::get('/{id}/get-able-date-list', 'TrackingOrderController@getAbleDateList');
         //获取可分配的站点列表
-        Route::get('/{id}/getBatchPageListByOrder', 'TrackingOrderController@getBatchPageListByOrder');
+        Route::get('/{id}/get-able-batch-list', 'TrackingOrderController@getAbleBatchList');
         //分配至站点
         Route::put('/{id}/assignToBatch', 'TrackingOrderController@assignToBatch');
         //从站点移除
         Route::delete('/{id}/removeFromBatch', 'TrackingOrderController@removeFromBatch');
-        //批量订单从站点移除
+        //批量运单从站点移除
         Route::delete('/removeListFromBatch', 'TrackingOrderController@removeListFromBatch');
-        //删除
-        Route::delete('/{id}', 'TrackingOrderController@destroy');
-        //批量删除
-        Route::delete('/list', 'TrackingOrderController@destroyByList');
-        //批量订单分配至指定取件线路
+        //批量运单分配至指定取件线路
         Route::put('/assignListTour', 'TrackingOrderController@assignListTour');
-        //批量打印
-        Route::get('/orderPrintAll', 'TrackingOrderController@orderPrintAll');
-        //订单导出表格
-        Route::get('/order-excel', 'TrackingOrderController@orderExport');
-        //订单第三方对接日志
-        Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
     });
 
     //司机管理

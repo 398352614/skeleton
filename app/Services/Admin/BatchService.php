@@ -383,7 +383,7 @@ class BatchService extends BaseService
      * @param $trackingOrder
      * @return array
      */
-    public function getPageListByTrackingOrder($trackingOrder)
+    public function getListByTrackingOrder($trackingOrder)
     {
         //通过运单获取可能站点
         $data = [];
