@@ -654,35 +654,6 @@ class OrderService extends BaseService
     }
 
     /**
-     * 通过订单获得可选日期
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getTourDate($id)
-    {
-        $params = parent::getInfo(['id' => $id], ['*'], true);
-        if (empty($params)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $data = $this->getLineService()->getScheduleList($params);
-        return $data;
-    }
-
-    /**
-     * 通过地址获得可选日期
-     * @param $params
-     * @return array
-     * @throws BusinessLogicException
-     */
-    public function getDate($params)
-    {
-        $this->validate($params);
-        $data = $this->getLineService()->getScheduleList($params);
-        return $data;
-    }
-
-    /**
      * 获取可选日期验证
      * @param $info
      * @throws BusinessLogicException
