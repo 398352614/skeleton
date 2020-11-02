@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Services\TrackingOrderTrailService;
 use Illuminate\Http\Request;
 
-class OrderTrailController extends BaseController
+class TrackingOrderTrailController extends BaseController
 {
     /**
      * @var TrackingOrderTrailService

@@ -50,10 +50,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //订单管理
     Route::prefix('order')->group(function () {
-        //订单统计
-        Route::get('/count', 'OrderController@ordercount');
         //查询初始化
         Route::get('/initIndex', 'OrderController@initIndex');
+        //订单统计
+        Route::get('/count', 'OrderController@ordercount');
         //列表查询
         Route::get('/', 'OrderController@index');
         //获取详情
@@ -115,53 +115,38 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/log/{id}', 'OrderImportController@show');
     });
 
-
     //订单管理
     Route::prefix('tracking-order')->group(function () {
-        //订单统计
-        Route::get('/count', 'OrderController@ordercount');
         //查询初始化
-        Route::get('/initIndex', 'OrderController@initIndex');
+        Route::get('/initIndex', 'TrackingOrderController@initIndex');
+        //订单统计
+        Route::get('/count', 'TrackingOrderController@trackingOrderCount');
+        //获取线路列表
+        Route::get('/get-line', 'TrackingOrderController@getLineList');
         //列表查询
-        Route::get('/', 'OrderController@index');
-        //获取详情
-        Route::get('/{id}', 'OrderController@show');
-        //新增初始化
-        Route::get('/initStore', 'OrderController@initStore');
-        //新增
-        Route::post('/', 'OrderController@store');
-        //修改
-        Route::put('/{id}', 'OrderController@update');
+        Route::get('/', 'TrackingOrderController@index');
         //获取可分配路线日期
-        Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
+        Route::get('/{id}/getTourDate', 'TrackingOrderController@getTourDate');
         //获取可分配路线日期(新增)
-        Route::get('/get-date', 'OrderController@getDate');
+        Route::get('/get-date', 'TrackingOrderController@getDate');
         //获取可分配的站点列表
-        Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
+        Route::get('/{id}/getBatchPageListByOrder', 'TrackingOrderController@getBatchPageListByOrder');
         //分配至站点
-        Route::put('/{id}/assignToBatch', 'OrderController@assignToBatch');
+        Route::put('/{id}/assignToBatch', 'TrackingOrderController@assignToBatch');
         //从站点移除
-        Route::delete('/{id}/removeFromBatch', 'OrderController@removeFromBatch');
+        Route::delete('/{id}/removeFromBatch', 'TrackingOrderController@removeFromBatch');
         //批量订单从站点移除
-        Route::delete('/removeListFromBatch', 'OrderController@removeListFromBatch');
+        Route::delete('/removeListFromBatch', 'TrackingOrderController@removeListFromBatch');
         //删除
-        Route::delete('/{id}', 'OrderController@destroy');
+        Route::delete('/{id}', 'TrackingOrderController@destroy');
         //批量删除
-        Route::delete('/list', 'OrderController@destroyByList');
-        //恢复
-        Route::put('/{id}/recovery', 'OrderController@recovery');
-        //彻底删除
-        Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
+        Route::delete('/list', 'TrackingOrderController@destroyByList');
         //批量订单分配至指定取件线路
-        Route::put('/assignListTour', 'OrderController@assignListTour');
+        Route::put('/assignListTour', 'TrackingOrderController@assignListTour');
         //批量打印
-        Route::get('/orderPrintAll', 'OrderController@orderPrintAll');
+        Route::get('/orderPrintAll', 'TrackingOrderController@orderPrintAll');
         //订单导出表格
-        Route::get('/order-excel', 'OrderController@orderExport');
-        //获取所有线路（邮编及区域）
-        Route::get('/get-line', 'OrderController@getLineList');
-        //同步订单状态列表
-        Route::post('synchronize-status-list', 'OrderController@synchronizeStatusList');
+        Route::get('/order-excel', 'TrackingOrderController@orderExport');
         //订单第三方对接日志
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
     });
@@ -237,9 +222,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     });
 
     //物流状态管理
-    Route::prefix('order-trail')->group(function () {
+    Route::prefix('tracking-order-trail')->group(function () {
         //rest api 放在最后
-        Route::get('/', 'OrderTrailController@index')->name('order-trail.index');
+        Route::get('/', 'TrackingOrderTrailController@index')->name('tracking-order-trail.index');
     });
 
     //站点 异常管理

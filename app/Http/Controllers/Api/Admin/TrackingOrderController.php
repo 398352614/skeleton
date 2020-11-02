@@ -26,4 +26,39 @@ class TrackingOrderController extends BaseController
     {
         parent::__construct($service);
     }
+
+
+    /**
+     * 查询初始化
+     * @return array
+     */
+    public function initIndex()
+    {
+        return $this->service->initIndex();
+    }
+
+    /**
+     * 运单统计
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function trackingOrderCount()
+    {
+        return $this->service->trackingOrderCount($this->data);
+    }
+
+    /**
+     * 线路列表
+     * @return array|Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getLineList()
+    {
+        return $this->service->getLineList();
+    }
+
+    public function index()
+    {
+        return $this->service->getPageList();
+    }
+
 }

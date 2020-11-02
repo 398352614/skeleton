@@ -38,7 +38,6 @@ class TrackingOrderService extends BaseService
         'order_no,out_order_no,out_user_id' => ['like', 'keyword'],
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
-        'source' => ['=', 'source'],
         'tour_no' => ['like', 'tour_no'],
         'batch_no' => ['like', 'batch_no'],
     ];
@@ -183,6 +182,67 @@ class TrackingOrderService extends BaseService
     {
         return self::getInstance(OrderNoRuleService::class);
     }
+
+    /**
+     * 查询初始化
+     * @return array
+     */
+    public function initIndex()
+    {
+        $data = [];
+        $data['status_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderStatusList);
+        $typeList = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderTypeList);
+        array_unshift($typeList, ['id' => '0', 'name' => __('全部')]);
+        $data['type_list'] = $typeList;
+        return $data;
+    }
+
+
+    /**
+     * 订单统计
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function trackingOrderCount($params)
+    {
+        $type = $params['type'] ?? 0;
+        return [
+            'all_count' => $this->singleOrderCount($type),
+            'no_take' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_1),
+            'assign' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_2),
+            'wait_out' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_3),
+            'taking' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_4),
+            'singed' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_5),
+            'cancel_count' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_6),
+            'delete_count' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_7),
+            'exception_count' => $this->singleOrderCount($type, null, BaseConstService::ORDER_EXCEPTION_LABEL_2),
+        ];
+    }
+
+
+    /**
+     * 单项订单统计
+     * @param $type
+     * @param $status
+     * @param null $exceptionType
+     * @return int
+     */
+    public function singleOrderCount($type, $status = null, $exceptionType = null)
+    {
+        $where = [];
+        if (!empty($status)) {
+            $where = ['status' => $status];
+        }
+        if (!empty($type)) {
+            $where = array_merge($where, ['type' => $type]);
+        }
+        if (!empty($exceptionType)) {
+            $where = array_merge($where, ['exception_label' => $exceptionType]);
+        }
+        return parent::count($where);
+    }
+
 
     public function getLineList()
     {

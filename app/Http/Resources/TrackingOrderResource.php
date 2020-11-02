@@ -34,6 +34,8 @@ class TrackingOrderResource extends JsonResource
             'driver_fullname' => $this->driver_fullname,
             'batch_no' => $this->batch_no,
             'tour_no' => $this->tour_no,
+            'line_id' => $this->line_id,
+            'line_name' => $this->line_name,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
