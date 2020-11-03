@@ -99,7 +99,7 @@ return [
         "out_arrive_expect_time"=>"Out Expect Arrive Time",
     ],
 
-    "orderOut" => [
+/*    "orderOut" => [
         "order_no" => "Order No",
         "merchant_name" => "Merchant Name",
         "status" => "Status",
@@ -111,7 +111,7 @@ return [
         "batch_no" => "Batch No",
         "tour_no" => "Tour No",
         "line_name" => "Line Name",
-    ],
+    ],*/
 
     "plan" => [
         'execution_date' => "Date",
@@ -155,5 +155,49 @@ return [
         'erp_batch_percent' => 'Only Parcels %',
         'mes_batch_percent' => 'Only MES %',
         'mix_batch_percent' => 'Other %',
+    ],
+
+
+    "trackingOrderOut"=>[
+        'tracking_order_no'=>'运单号',
+        'type'=>'Type',
+        'order_no'=>'Order No',
+        'merchant_name'=>'Merchant',
+        'status'=>'Status',
+        'out_user_id'=>'Out User ID',
+        'out_order_no'=>'Out User No',
+        'receiver_post_code'=>'Post Code',
+        'receiver_house_number'=>'House Number',
+        'execution_date'=>'Date',
+        'driver_fullname'=>'Driver',
+        'batch_no'=>'Batch No',
+        'tour_no'=>'Tour No',
+        'line_name'=>'Line',
+        'created_at'=>'Creation time',
+    ],
+
+    "orderOut"=>[
+        'order_no'=>'Order No',
+        'merchant_id'=>'Merchant ID',
+        'type'=>'Type',
+        'merchant_name'=>'Merchant Name',
+        'status'=>'Status',
+        'out_user_id'=>'Out User ID',
+        'out_order_no'=>'Out Order No',
+        'sender_post_code'=>'Sender Postcode',
+        'sender_house_number'=>'Sender House Number',
+        'receiver_post_code'=>'Receiver Postcode',
+        'receiver_house_number'=>'Receiver House Number',
+        'execution_date'=>'Date',
+        'package_name'=>'Package',
+        'package_quantity'=>'Package Quantity',
+        'material_name'=>'Material',
+        'material_quantity'=>'Material Quantity',
+        'replace_amount'=>'Replace Amount',
+        'sticker_amount'=>'Sticker Amount',
+        'settlement_amount'=>'Delivery Amount',
+        'created_at'=>'Creation Time'
     ]
+
+
 ];

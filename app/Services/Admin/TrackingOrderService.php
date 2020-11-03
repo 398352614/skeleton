@@ -65,7 +65,21 @@ class TrackingOrderService extends BaseService
 
 
     public $headings = [
-
+        'tracking_order_no',
+        'type',
+        'order_no',
+        'merchant_name',
+        'status',
+        'out_user_id',
+        'out_order_no',
+        'receiver_post_code',
+        'receiver_house_number',
+        'execution_date',
+        'driver_fullname',
+        'batch_no',
+        'tour_no',
+        'line_name',
+        'created_at',
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -716,6 +730,8 @@ class TrackingOrderService extends BaseService
             $dbTrackingOrderList[$k]['merchant_name'] = $v['merchant_id_name'];
             $dbTrackingOrderList[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
             $dbTrackingOrderList[$k]['status'] = $v['status_name'];
+            $dbTrackingOrderList[$k]['type'] = $v['type_name'];
+            $dbTrackingOrderList[$k]['created_at'] = $v['created_at'];
         }
         foreach ($dbTrackingOrderList as $v) {
             $cellData[] = array_only_fields_sort($v, $this->headings);

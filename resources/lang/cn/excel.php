@@ -100,7 +100,7 @@ return [
         "out_arrive_expect_time" => "确认出库时预计到达时间",
     ],
 
-    "orderOut" => [
+/*    "orderOut" => [
         "order_no" => "订单号",
         "merchant_name" => "所属商户",
         "status" => "订单状态",
@@ -112,7 +112,7 @@ return [
         "batch_no" => "站点编号",
         "tour_no" => "取件线路编号",
         "line_name" => "线路名称",
-    ],
+    ],*/
 
     "plan" => [
         'execution_date' => "取派日期",
@@ -155,5 +155,46 @@ return [
         'erp_batch_percent' => 'ERP占比',
         'mes_batch_percent' => '商城占比',
         'mix_batch_percent' => '混合占比',
-    ]
+    ],
+
+    "trackingOrderOut"=>[
+        'tracking_order_no'=>'运单号',
+        'type'=>'运单类型',
+        'order_no'=>'订单号',
+        'merchant_name'=>'所属商户',
+        'status'=>'运单状态',
+        'out_user_id'=>'外部客户ID',
+        'out_order_no'=>'外部订单号',
+        'receiver_post_code'=>'邮编',
+        'receiver_house_number'=>'门牌号',
+        'execution_date'=>'取派日期',
+        'driver_fullname'=>'派送司机',
+        'batch_no'=>'站点编号',
+        'tour_no'=>'取件线路编号',
+        'line_name'=>'线路名称',
+        'created_at'=>'创建时间',
+    ],
+
+    "orderOut"=>[
+        'order_no'=>'订单编号',
+        'merchant_id'=>'用户编码',
+        'type'=>'订单类型',
+        'merchant_name'=>'所属商户',
+        'status'=>'订单状态',
+        'out_user_id'=>'外部客户ID',
+        'out_order_no'=>'外部订单号',
+        'sender_post_code'=>'取件邮编',
+        'sender_house_number'=>'取件门牌号',
+        'receiver_post_code'=>'派件邮编',
+        'receiver_house_number'=>'派件门牌号',
+        'execution_date'=>'取派日期',
+        'package_name'=>'包裹',
+        'package_quantity'=>'包裹数量',
+        'material_name'=>'材料',
+        'material_quantity'=>'材料数量',
+        'replace_amount'=>'运费',
+        'sticker_amount'=>'代收货款',
+        'settlement_amount'=>'贴单费',
+        'created_at'=>'创建时间'
+    ],
 ];
