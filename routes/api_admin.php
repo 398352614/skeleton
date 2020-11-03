@@ -47,7 +47,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/merchant-total', 'HomeController@merchantTotalCount');
     });
 
-
     //订单管理
     Route::prefix('order')->group(function () {
         //查询初始化
@@ -418,6 +417,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('getCountryAddress/{country}', 'CommonController@getCountryAddress');
 
         Route::get('get-postcode', 'CommonController@getPostcode');
+
+        Route::get('dictionary', 'CommonController@dictionary');
     });
 
     //上传接口

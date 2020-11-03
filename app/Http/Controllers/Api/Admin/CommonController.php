@@ -65,7 +65,8 @@ class CommonController
     /**
      * @return array
      */
-    public function dictionary(){
+    public function dictionary()
+    {
         return $this->service->dictionary();
     }
 }
