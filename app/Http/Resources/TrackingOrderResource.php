@@ -29,7 +29,7 @@ class TrackingOrderResource extends JsonResource
             'exception_label_name' => $this->exception_label_name,
             'receiver_post_code' => $this->receiver_post_code,
             'receiver_house_number' => $this->receiver_house_number,
-            'driver_fullname' => $this->driver_fullname,
+            'driver_name' => $this->driver_name,
             'batch_no' => $this->batch_no,
             'tour_no' => $this->tour_no,
             'line_id' => $this->line_id,
