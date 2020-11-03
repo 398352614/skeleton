@@ -50,7 +50,8 @@ class CarService extends BaseService
             'rent_month_fee' => $this->formData['rent_month_fee'],
             'repair' => $this->formData['repair'],
             'remark' => $this->formData['remark']??'',
-            'relate_material' => $this->formData['relate_material']??'',
+            'relate_material' => $this->formData['relate_material'] ?? '',
+            'relate_material_list' => $this->formData['relate_material_list'] ?? null,
         ]);
     }
 
@@ -83,7 +84,8 @@ class CarService extends BaseService
             'rent_month_fee' => $this->formData['rent_month_fee'],
             'repair' => $this->formData['repair'],
             'remark' => $this->formData['remark'],
-            'relate_material' => $this->formData['relate_material'],
+            'relate_material' => $this->formData['relate_material'] ?? '',
+            'relate_material_list' => $this->formData['relate_material_list'] ?? null,
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改车辆失败');
