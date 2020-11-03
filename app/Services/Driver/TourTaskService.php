@@ -156,7 +156,7 @@ class TourTaskService extends BaseService
         $tour['additional_package_list'] = $additionalPackageList;
         $tour['additional_package_count'] = count($additionalPackageList);
         //获取所有运单列表
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         //获取所有材料列表
         $materialList = $this->getTourMaterialList($tour);
         //获取所有包裹列表
@@ -200,7 +200,7 @@ class TourTaskService extends BaseService
                 'code',
                 DB::raw('SUM(expect_quantity) as expect_quantity'),
                 DB::raw('0 as actual_quantity'),
-            ], false, ['code']);
+            ], false, ['code'])->toArray();
         }
         $materialList = Arr::where($materialList, function ($material) {
             return !empty($material['code']) && !empty($material['expect_quantity']);
