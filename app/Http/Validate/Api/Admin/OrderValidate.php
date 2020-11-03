@@ -110,6 +110,7 @@ class OrderValidate extends BaseValidate
         'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
+        'destroyAll' => ['id_list'],
         'removeListFromBatch' => ['id_list'],
         'orderPrintAll' => ['id_list'],
         //'orderExport'=>['id_list']

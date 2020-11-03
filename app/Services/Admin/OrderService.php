@@ -654,6 +654,19 @@ class OrderService extends BaseService
     }
 
     /**
+     * 批量删除
+     * @param $idList
+     * @throws BusinessLogicException
+     */
+    public function destroyAll($idList)
+    {
+        $idList = explode_id_string($idList);
+        foreach ($idList as $id) {
+            $this->destroy($id);
+        }
+    }
+
+    /**
      * 获取可选日期验证
      * @param $info
      * @throws BusinessLogicException

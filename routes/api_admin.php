@@ -68,6 +68,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'OrderController@update');
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
+        //批量删除
+        Route::delete('/list', 'OrderController@destroyAll');
         //批量打印
         Route::get('/orderPrintAll', 'OrderController@orderPrintAll');
         //订单导出表格

@@ -132,6 +132,16 @@ class OrderController extends BaseController
 
 
     /**
+     * 批量删除订单
+     * @throws BusinessLogicException
+     */
+    public function destroyAll()
+    {
+        return $this->service->destroyAll($this->data['id_list']);
+    }
+
+
+    /**
      * 批量打印
      * @return array
      * @throws BusinessLogicException
