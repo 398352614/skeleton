@@ -51,7 +51,7 @@ class AuthController extends Controller
         }*/
         $params['messager_token'] = auth('driver')->user()->messager;
         if (empty($params['messager_token'])) {
-            $params['messager_token'] = $this->getMessagerToken() ?? '';
+            $params['messager_token'] = '';
         }
         $params['token'] = $token;
         return $this->respondWithToken($params);
@@ -111,7 +111,7 @@ class AuthController extends Controller
         $token = auth('driver')->refresh();
         $messageToken = auth('driver')->user()->messager;
         if (empty($messageToken)) {
-            $messageToken = $this->getMessagerToken() ?? '';
+            $messageToken = '';
         }
         return $this->respondWithToken(['token' => $token, 'messager_token' => $messageToken]);
     }

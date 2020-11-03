@@ -125,4 +125,14 @@ class TrackingOrderController extends BaseController
         return $this->service->assignListTour($this->data);
     }
 
+    /**
+     * 导出运单
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function trackingOrderExport()
+    {
+        return $this->service->trackingOrderExport();
+    }
+
 }

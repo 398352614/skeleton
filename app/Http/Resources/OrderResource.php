@@ -38,6 +38,12 @@ class OrderResource extends JsonResource
             'exception_label_name' => $this->exception_label_name,
             'receiver_post_code' => $this->receiver_post_code,
             'receiver_house_number' => $this->receiver_house_number,
+            'sender_post_code'=>$this->sender_post_code,
+            'sender_house_number'=>$this->sender_house_number,
+            'replace_amount' => $this->replace_amount,
+            'sticker_amount' => $this->sticker_amount,
+            'settlement_amount' => $this->settlement_amount,
+
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];

@@ -143,6 +143,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/removeListFromBatch', 'TrackingOrderController@removeListFromBatch');
         //批量运单分配至指定取件线路
         Route::put('/assignListTour', 'TrackingOrderController@assignListTour');
+        //批量打印
+        Route::get('/orderPrintAll', 'TrackingOrderController@orderPrintAll');
+        //运单导出表格
+        Route::get('/order-excel', 'TrackingOrderController@trackingOrderExport');
+        //运单第三方对接日志
+        Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
     });
 
     //物流状态管理

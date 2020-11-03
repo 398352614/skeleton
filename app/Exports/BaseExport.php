@@ -277,7 +277,57 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                                         $event->sheet->getDelegate()->getColumnDimensionByColumn($i)->setWidth('15');
                                     }
                                 }*/
-            },
+                if ($this->type == 'trackingOrderOut') {
+                    $column = [
+                        'A' => 15,
+                        'B' => 10,
+                        'C' => 15,
+                        'D' => 10,
+                        'E' => 10,
+                        'F' => 10,
+                        'G' => 15,
+                        'H' => 10,
+                        'I' => 10,
+                        'J' => 15,
+                        'K' => 10,
+                        'L' => 20,
+                        'M' => 15,
+                        'N' => 10,
+                        'O' => 20
+                    ];
+                    foreach ($column as $k => $v) {
+                        $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
+                    }
+                }
+                if ($this->type == 'orderOut') {
+                    $event->sheet->getDelegate()->getStyle('Q2:S200')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
+                    $column = [
+                        'A' => 15,
+                        'B' => 10,
+                        'C' => 5,
+                        'D' => 10,
+                        'E' => 10,
+                        'F' => 10,
+                        'G' => 15,
+                        'H' => 10,
+                        'I' => 10,
+                        'J' => 10,
+                        'K' => 10,
+                        'L' => 15,
+                        'M' => 15,
+                        'N' => 10,
+                        'O' => 15,
+                        'P' => 10,
+                        'Q' => 10,
+                        'R' => 10,
+                        'S' => 10,
+                        'T' => 20,
+                    ];
+                    foreach ($column as $k => $v) {
+                        $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
+                    }
+                }
+            }
         ];
     }
 }

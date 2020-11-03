@@ -50,16 +50,25 @@ class OrderService extends BaseService
 
     public $headings = [
         'order_no',
+        'merchant_id',
+        'type',
         'merchant_name',
         'status',
+        'out_user_id',
         'out_order_no',
+        'sender_post_code',
+        'sender_house_number',
         'receiver_post_code',
         'receiver_house_number',
         'execution_date',
-        'driver_name',
-        'batch_no',
-        'tour_no',
-        'line_name',
+        'package_name',
+        'package_quantity',
+        'material_name',
+        'material_quantity',
+        'replace_amount',
+        'sticker_amount',
+        'settlement_amount',
+        'created_at'
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -728,23 +737,39 @@ class OrderService extends BaseService
     public function orderExport()
     {
         $orderList = $this->getPageList();
-        if ($orderList->hasMorePages()) {
-            throw new BusinessLogicException('数据量过大无法导出，订单数不得超过200');
-        }
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
+        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
         $merchant = $this->getMerchantService()->getList(['id' => ['in', $orderList->pluck('merchant_id')->toArray()]]);
         if ($merchant->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
-        $tour = $this->getTourService()->getList(['tour_no' => ['in', $orderList->pluck('tour_no')->toArray()]]);
         $orderList = $orderList->toArray(request());
         foreach ($orderList as $k => $v) {
             $orderList[$k]['merchant_name'] = $v['merchant_id_name'];
-            $orderList[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
             $orderList[$k]['status'] = $v['status_name'];
+            $orderList[$k]['type'] = $v['type_name'];
+            $orderList[$k]['sticker_amount'] = $v['sticker_amount'] ?? 0.00;
+            $orderList[$k]['replace_amount'] = $v['replace_amount'] ?? 0.00;
+            $orderList[$k]['settlement_amount'] = $v['settlement_amount'] ?? 0.00;
+            if (!empty($packageList)) {
+                $orderList[$k]['package_name'] = implode(',', collect($packageList)->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray());
+                $orderList[$k]['package_quantity'] = count(collect($packageList)->where('order_no', $v['order_no']));
+            } else {
+                $orderList[$k]['package_name'] = [];
+                $orderList[$k]['package_quantity'] = 0;
+            }
+            if (!empty($materialList)) {
+                $orderList[$k]['material_name'] = implode(',', collect($materialList)->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray());
+                $orderList[$k]['material_quantity'] = count(collect($materialList)->where('order_no', $v['order_no']));
+            } else {
+                $orderList[$k]['material_name'] = [];
+                $orderList[$k]['material_quantity'] = 0;
+            }
         }
+        $cellData = [];
         foreach ($orderList as $v) {
             $cellData[] = array_only_fields_sort($v, $this->headings);
         }
