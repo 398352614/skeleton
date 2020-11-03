@@ -10,7 +10,7 @@ use App\Models\TrackingOrderTrail;
 class TrackingOrderTrailService extends BaseService
 {
 
-    public static $selectFields = ['company_id', 'merchant_id', 'order_no'];
+    public static $selectFields = ['company_id', 'merchant_id', 'order_no', 'tracking_order_no'];
 
     public $filterRules = [
         'tracking_order_no' => ['=', 'tracking_order_no'],
@@ -25,17 +25,17 @@ class TrackingOrderTrailService extends BaseService
     public static function storeByTour($tour, int $action)
     {
         $trackingOrderList = TrackingOrder::query()->select(self::$selectFields)->where('tour_no', $tour['tour_no'])->get()->toArray();
-        !empty($trackingOrderList) && self::storeAllByOrderList($trackingOrderList, $action, $tour);
+        !empty($trackingOrderList) && self::storeAllByTrackingOrderList($trackingOrderList, $action, $tour);
     }
 
     public static function storeByBatch($batch, int $action)
     {
         $trackingOrderList = TrackingOrder::query()->select(self::$selectFields)->where('batch_no', $batch['batch_no'])->get()->toArray();
-        !empty($trackingOrderList) && self::storeAllByOrderList($trackingOrderList, $action, $batch);
+        !empty($trackingOrderList) && self::storeAllByTrackingOrderList($trackingOrderList, $action, $batch);
     }
 
 
-    public static function storeAllByOrderList(array $trackingOrderList, int $action, $params = null)
+    public static function storeAllByTrackingOrderList(array $trackingOrderList, int $action, $params = null)
     {
         foreach ($trackingOrderList as $key => $trackingOrder) {
             self::TrackingOrderStatusChangeCreateTrail($trackingOrder, $action, $params ?? $trackingOrder);

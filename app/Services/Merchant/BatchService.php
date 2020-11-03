@@ -434,7 +434,7 @@ class BatchService extends BaseService
             $this->getTourService()->reCountAmountByNo($info['tour_no']);
         }
 
-        TrackingOrderTrailService::storeAllByOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
+        TrackingOrderTrailService::storeAllByTrackingOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
 
         //取消通知
         foreach ($orderList as $order) {

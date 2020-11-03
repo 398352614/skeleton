@@ -1291,7 +1291,7 @@ class OrderService extends BaseService
             //重新统计取件线路金额
             !empty($order['tour_no']) && $this->getTourService()->reCountAmountByNo($order['tour_no']);
         }
-        TrackingOrderTrailService::storeAllByOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH);
+        TrackingOrderTrailService::storeAllByTrackingOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH);
     }
 
 
