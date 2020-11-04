@@ -1159,7 +1159,9 @@ class TourService extends BaseService
             $this->planHeadings,
         ];
         $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
-        $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();;
+
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', collect($trackingOrderList)->pluck('order_no')->toArray()]], ['*'], false)->toArray();
         if (empty($materialList) && empty($packageList)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -1168,32 +1170,32 @@ class TourService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
-        if (empty($orderList)) {
+        if (empty($trackingOrderList)) {
             throw new BusinessLogicException('数据不存在');
         }
         $merchantList = $this->getMerchantService()->getList(['id' => ['in', collect($orderList)->pluck('merchant_id')->toArray()]], ['*'], false)->toArray();
-        foreach ($orderList as $k => $v) {
-            $orderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'];
-            $orderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
-            $orderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
-            $orderList[$k]['type'] = $orderList[$k]['type_name'];
-            $orderList[$k]['receiver_address'] = $orderList[$k]['receiver_street'] . ' ' . $orderList[$k]['receiver_house_number'];
-            $orderList[$k]['material_code_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
-            $orderList[$k]['material_expect_quantity_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('expect_quantity')->toArray());
+        foreach ($trackingOrderList as $k => $v) {
+            $trackingOrderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'];
+            $trackingOrderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
+            $trackingOrderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
+            $trackingOrderList[$k]['type'] = $trackingOrderList[$k]['type_name'];
+            $trackingOrderList[$k]['receiver_address'] = $trackingOrderList[$k]['receiver_street'] . ' ' . $trackingOrderList[$k]['receiver_house_number'];
+            $trackingOrderList[$k]['material_code_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
+            $trackingOrderList[$k]['material_expect_quantity_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('expect_quantity')->toArray());
         }
-        $orderList = array_values(collect($orderList)->sortBy('sort_id')->toArray());
-        for ($i = 0, $j = count($orderList); $i < $j; $i++) {
-            $orderList[$i] = array_only_fields_sort($orderList[$i], $this->planHeadings);
+        $trackingOrderList = array_values(collect($orderList)->sortBy('sort_id')->toArray());
+        for ($i = 0, $j = count($trackingOrderList); $i < $j; $i++) {
+            $trackingOrderList[$i] = array_only_fields_sort($trackingOrderList[$i], $this->planHeadings);
         }
         $sort = [];
-        for ($i = 0, $j = count($orderList); $i < $j; $i++) {
-            if (!empty($orderList[$i + 1]) && $orderList[$i]['batch_no'] !== $orderList[$i + 1]['batch_no']) {
+        for ($i = 0, $j = count($trackingOrderList); $i < $j; $i++) {
+            if (!empty($trackingOrderList[$i + 1]) && $trackingOrderList[$i]['batch_no'] !== $trackingOrderList[$i + 1]['batch_no']) {
                 $sort = array_merge($sort, [$i + 1]);
             }
         }
-        $params['sort'] = array_merge($sort, [count($orderList)]);
-        $data = $orderList;
-        $count = count($orderList);
+        $params['sort'] = array_merge($sort, [count($trackingOrderList)]);
+        $data = $trackingOrderList;
+        $count = count($trackingOrderList);
         //材料总计
         $tourMaterial = [];
         foreach ($materialList as $k => $v) {
