@@ -1040,11 +1040,8 @@ class TourService extends BaseService
         $tour['actual_pickup_package_quantity'] = 0;
         $tour['expect_material_quantity'] = 0;
         $tour['actual_material_quantity'] = 0;
-
-        $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
-        if (empty($packageList)) {
-            throw new BusinessLogicException('数据不存在');
-        }
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();;
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', collect($trackingOrderList)->pluck('order_no')->toArray()]], ['*'], false)->toArray();
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['actual_arrive_time' => 'asc', 'created_at' => 'asc'])->toArray();
         if (empty($batchList)) {
             throw new BusinessLogicException('数据不存在');
