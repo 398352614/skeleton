@@ -19,8 +19,8 @@ class SenderAddressValidate extends BaseValidate
         'sender_city' => 'required|string|max:50',
         'sender_street' => 'required|string|max:50',
         'sender_address' => 'checkAddress|nullable|string|max:250',
-        'sender_lon' => 'nullable|string|max:50',
-        'sender_lat' => 'nullable|string|max:50',
+        'sender_lon' => 'required|string|max:50',
+        'sender_lat' => 'required|string|max:50',
         'merchant_id' => 'required|integer',
     ];
 
