@@ -713,6 +713,7 @@ class TrackingOrderService extends BaseService
      */
     public function trackingOrderExport()
     {
+        $this->query->where('status','<>',BaseConstService::TRACKING_ORDER_STATUS_7);
         $dbTrackingOrderList = $this->getPageList();
         if ($dbTrackingOrderList->hasMorePages()) {
             throw new BusinessLogicException('数据量过大无法导出，运单数不得超过200');
