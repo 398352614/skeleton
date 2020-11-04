@@ -20,19 +20,19 @@ class ReceiverAddressValidate extends BaseValidate
         'receiver_city' => 'required|string|max:50',
         'receiver_street' => 'required|string|max:50',
         'receiver_address' => 'checkAddress|nullable|string|max:250',
-        'lon' => 'required|string|max:50',
-        'lat' => 'required|string|max:50',
-        'merchant_id'=>'required|integer',
+        'receiver_lon' => 'required|string|max:50',
+        'receiver_lat' => 'required|string|max:50',
+        'merchant_id' => 'required|integer',
     ];
 
     public $scene = [
         'store' => [
             'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
-            'receiver_city', 'receiver_street', 'receiver_address', 'lon', 'lat','merchant_id'
+            'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat', 'merchant_id'
         ],
         'update' => [
-            'receiver_fullname', 'receiver_phone','receiver_post_code', 'receiver_house_number',
-            'receiver_city', 'receiver_street', 'receiver_address', 'lon', 'lat','merchant_id'
+            'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
+            'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat', 'merchant_id'
         ]
     ];
 }

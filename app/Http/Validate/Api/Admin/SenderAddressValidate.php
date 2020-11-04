@@ -19,16 +19,16 @@ class SenderAddressValidate extends BaseValidate
         'sender_city' => 'required|string|max:50',
         'sender_street' => 'required|string|max:50',
         'sender_address' => 'checkAddress|nullable|string|max:250',
-        'lon' => 'nullable|string|max:50',
-        'lat' => 'nullable|string|max:50',
-        'merchant_id'=>'required|integer',
+        'sender_lon' => 'nullable|string|max:50',
+        'sender_lat' => 'nullable|string|max:50',
+        'merchant_id' => 'required|integer',
     ];
 
     public $scene = [
         'store' => ['sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code',
-            'sender_house_number', 'sender_city', 'sender_street', 'sender_address','lon','lat','merchant_id' ],
+            'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat', 'merchant_id'],
         'update' => ['sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code',
-            'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'lon','lat','merchant_id'],
+            'sender_house_number', 'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat', 'merchant_id'],
     ];
 }
 

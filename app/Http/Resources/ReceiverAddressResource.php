@@ -24,8 +24,8 @@ class ReceiverAddressResource extends JsonResource
             'receiver_city' => $this->receiver_city,
             'receiver_street' => $this->receiver_street,
             'receiver_address' => $this->receiver_address,
-            'lon' => $this->lon,
-            'lat' => $this->lat,
+            'receiver_lon' => $this->receiver_lon,
+            'receiver_lat' => $this->receiver_lat,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];

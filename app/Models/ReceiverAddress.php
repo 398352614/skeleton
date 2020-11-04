@@ -57,8 +57,8 @@ class ReceiverAddress extends BaseModel
         'receiver_city',
         'receiver_street',
         'receiver_address',
-        'lon',
-        'lat',
+        'receiver_lon',
+        'receiver_lat',
         'created_at',
         'updated_at',
     ];

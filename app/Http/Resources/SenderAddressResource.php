@@ -30,8 +30,8 @@ class SenderAddressResource extends JsonResource
             'sender_city' => $this->sender_city,
             'sender_street' => $this->sender_street,
             'sender_address' => $this->sender_address,
-            'lon' => $this->lon,
-            'lat' => $this->lat,
+            'sender_lon' => $this->sender_lon,
+            'sender_lat' => $this->sender_lat,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];

@@ -74,6 +74,8 @@ class SenderAddress extends BaseModel
         'sender_city',
         'sender_street',
         'sender_address',
+        'sender_lat',
+        'sender_lon',
         'created_at',
         'updated_at',
     ];
