@@ -171,7 +171,7 @@ class ReportService extends BaseService
         $orderNoList = array_column($trackingOrderList, 'order_no');
         $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
         //获取订单列表
-        $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList]], ['id', 'type', 'out_user_id','order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList]], ['id', 'type', 'out_user_id', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount'], false)->toArray();
         //获取当前取件线路上的所有包裹
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         //获取当前取件线路上的所有材料
@@ -410,7 +410,7 @@ class ReportService extends BaseService
                 'sort_id' => $batch['sort_id'],
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
-            $newBatchList[$key]['package_list'] = array_values(collect($packageList)->where('batch_no', $batch['batch_no'])->toArray());
+            $newBatchList[$key]['package_list'] = array_column($orderList[$batch['batch_no']], 'package_list');
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
         }
         $arriveBatchList = array_values(collect($newBatchList)->whereNotNull('actual_arrive_time')->sortBy('actual_arrive_time')->all());
