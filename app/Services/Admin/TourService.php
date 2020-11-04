@@ -1160,7 +1160,6 @@ class TourService extends BaseService
         ];
         $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();;
-
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', collect($trackingOrderList)->pluck('order_no')->toArray()]], ['*'], false)->toArray();
         if (empty($materialList) && empty($packageList)) {
             throw new BusinessLogicException('数据不存在');
@@ -1169,11 +1168,10 @@ class TourService extends BaseService
         if (empty($batchList)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         if (empty($trackingOrderList)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $merchantList = $this->getMerchantService()->getList(['id' => ['in', collect($orderList)->pluck('merchant_id')->toArray()]], ['*'], false)->toArray();
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', collect($trackingOrderList)->pluck('merchant_id')->toArray()]], ['*'], false)->toArray();
         foreach ($trackingOrderList as $k => $v) {
             $trackingOrderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'];
             $trackingOrderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
@@ -1183,7 +1181,7 @@ class TourService extends BaseService
             $trackingOrderList[$k]['material_code_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
             $trackingOrderList[$k]['material_expect_quantity_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('expect_quantity')->toArray());
         }
-        $trackingOrderList = array_values(collect($orderList)->sortBy('sort_id')->toArray());
+        $trackingOrderList = array_values(collect($trackingOrderList)->sortBy('sort_id')->toArray());
         for ($i = 0, $j = count($trackingOrderList); $i < $j; $i++) {
             $trackingOrderList[$i] = array_only_fields_sort($trackingOrderList[$i], $this->planHeadings);
         }
