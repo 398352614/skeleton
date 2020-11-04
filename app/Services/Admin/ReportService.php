@@ -410,7 +410,7 @@ class ReportService extends BaseService
                 'sort_id' => $batch['sort_id'],
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
-            $newBatchList[$key]['package_list'] = array_column($orderList[$batch['batch_no']], 'package_list');
+            $newBatchList[$key]['package_list'] = array_values(collect($packageList)->whereIn('order_no', array_column($orderList[$batch['batch_no']], 'order_no'))->toArray());
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
         }
         $arriveBatchList = array_values(collect($newBatchList)->whereNotNull('actual_arrive_time')->sortBy('actual_arrive_time')->all());
