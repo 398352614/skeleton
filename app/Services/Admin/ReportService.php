@@ -57,6 +57,15 @@ class ReportService extends BaseService
     }
 
     /**
+     * 运单 服务
+     * @return TrackingOrderService
+     */
+    private function getTrackingOrderService()
+    {
+        return self::getInstance(TrackingOrderService::class);
+    }
+
+    /**
      * 订单 服务
      * @return OrderService
      */
@@ -157,10 +166,14 @@ class ReportService extends BaseService
             $warehouseInfo['warehouse_actual_arrive_time'] = $info['end_time'];
             $warehouseInfo['warehouse_actual_time_human'] = $warehouseInfo['warehouse_actual_time'];
         }
-        //获取当前取件线路上的所有订单
-        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'out_user_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount', 'sticker_no'], false)->toArray();
+        //获取当前取件线路上的所有运单
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $info['tour_no']], ['tracking_order_no', 'order_no', 'tour_no', 'batch_no'], false)->toArray();
+        $orderNoList = array_column($trackingOrderList, 'order_no');
+        $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
+        //获取订单列表
+        $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList]], ['id', 'type', 'out_user_id','order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount'], false)->toArray();
         //获取当前取件线路上的所有包裹
-        $packageList = $this->getPackageService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         //获取当前取件线路上的所有材料
         $materialList = $this->getMaterialService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         //获取站点的取件材料汇总
@@ -185,6 +198,9 @@ class ReportService extends BaseService
         //统计站点的各费用
         $info['card_sticker_count'] = $info['card_delivery_count'] = $info['cash_sticker_count'] = $info['cash_delivery_count'] = $info['api_sticker_count'] = $info['api_delivery_count'] = 0;
         foreach ($orderList as $k => $v) {
+            $orderList[$k]['tracking_order_no'] = $trackingOrderList[$v['order_no']]['tracking_order_no'] ?? '';
+            $orderList[$k]['batch_no'] = $trackingOrderList[$v['order_no']]['batch_no'] ?? '';
+            $orderList[$k]['tour_no'] = $trackingOrderList[$v['order_no']]['tour_no'] ?? '';
             //更新订单统计
             $orderList[$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
             $orderList[$k]['expect_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
