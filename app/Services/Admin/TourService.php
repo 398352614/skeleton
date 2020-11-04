@@ -1046,13 +1046,12 @@ class TourService extends BaseService
         if (empty($batchList)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $orderList = $this->getOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
-        if (empty($orderList)) {
+        if (empty($trackingOrderList)) {
             throw new BusinessLogicException('数据不存在');
         }
         $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
         for ($i = 0; $i < count($batchList); $i++) {
-            $batchList[$i]['out_user_id'] = collect($orderList)->where('batch_no', $batchList[$i]['batch_no'])->first() ? collect($orderList)->where('batch_no', $batchList[$i]['batch_no'])->first()['out_user_id'] : '';
+            $batchList[$i]['out_user_id'] = collect($trackingOrderList)->where('batch_no', $batchList[$i]['batch_no'])->first() ? collect($trackingOrderList)->where('batch_no', $batchList[$i]['batch_no'])->first()['out_user_id'] : '';
             $batchList[$i]['expect_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->all());
             $batchList[$i]['actual_pie_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_2)->where('batch_no', $batchList[$i]['batch_no'])->where('status', BaseConstService::PACKAGE_STATUS_3)->all());
             $batchList[$i]['expect_pickup_package_quantity'] = count(collect($packageList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_1)->where('batch_no', $batchList[$i]['batch_no'])->all());
