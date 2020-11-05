@@ -49,6 +49,16 @@ class BatchExceptionService extends BaseService
     }
 
     /**
+     * 运单服务
+     * @return mixed
+     */
+    public function getTrackingOrderService()
+    {
+        return self::getInstance(TrackingOrderService::class);
+    }
+
+
+    /**
      * 获取详情
      * @param $id
      * @return array
@@ -100,7 +110,7 @@ class BatchExceptionService extends BaseService
         }
 
         //更新订单异常状态(异常->正常)
-        $rowCount = $this->getOrderService()->update(['batch_no' => $info['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_1]);
+        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('处理失败，请重新操作');
         }
