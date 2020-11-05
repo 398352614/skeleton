@@ -234,7 +234,9 @@ class OrderService extends BaseService
     {
         $data = [];
         $data['source_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSourceList);
-        $data['status_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderStatusList);
+        $statusList = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderStatusList);
+        array_unshift($statusList, ['id' => '0', 'name' => __('全部')]);
+        $data['status_list'] = $statusList;
         $typeList = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderTypeList);
         array_unshift($typeList, ['id' => '0', 'name' => __('全部')]);
         $data['type_list'] = $typeList;
