@@ -224,15 +224,14 @@ class TrackingOrderService extends BaseService
     {
         $type = $params['type'] ?? 0;
         return [
-            'all_count' => $this->singleOrderCount($type),
-            'no_take' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_1),
-            'assign' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_2),
-            'wait_out' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_3),
-            'taking' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_4),
-            'singed' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_5),
-            'cancel_count' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_6),
-            'delete_count' => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_7),
-            'exception_count' => $this->singleOrderCount($type, null, BaseConstService::ORDER_EXCEPTION_LABEL_2),
+            BaseConstService::TRACKING_ORDER_STATUS_0 => $this->singleOrderCount($type),
+            BaseConstService::TRACKING_ORDER_STATUS_1 => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_1),
+            BaseConstService::TRACKING_ORDER_STATUS_2 => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_2),
+            BaseConstService::TRACKING_ORDER_STATUS_3 => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_3),
+            BaseConstService::TRACKING_ORDER_STATUS_4 => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_4),
+            BaseConstService::TRACKING_ORDER_STATUS_5 => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_5),
+            BaseConstService::TRACKING_ORDER_STATUS_6 => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_6),
+            BaseConstService::TRACKING_ORDER_STATUS_7 => $this->singleOrderCount($type, BaseConstService::TRACKING_ORDER_STATUS_7),
         ];
     }
 
@@ -562,7 +561,6 @@ class TrackingOrderService extends BaseService
     }
 
 
-
     /**
      * 通过订单获得可选日期
      * @param $id
@@ -715,7 +713,7 @@ class TrackingOrderService extends BaseService
      */
     public function trackingOrderExport()
     {
-        $this->query->where('status','<>',BaseConstService::TRACKING_ORDER_STATUS_7);
+        $this->query->where('status', '<>', BaseConstService::TRACKING_ORDER_STATUS_7);
         $dbTrackingOrderList = $this->getPageList();
         if ($dbTrackingOrderList->hasMorePages()) {
             throw new BusinessLogicException('数据量过大无法导出，运单数不得超过200');

@@ -253,12 +253,12 @@ class OrderService extends BaseService
     {
         $type = $params['type'] ?? 0;
         return [
-            'all_count' => $this->singleOrderCount($type),
-            'no_take' => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_1),
-            'taking' => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_2),
-            'singed' => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_3),
-            'cancel_count' => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_4),
-            'delete_count' => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_5),
+            BaseConstService::ORDER_STATUS_0 => $this->singleOrderCount($type),
+            BaseConstService::ORDER_STATUS_1 => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_1),
+            BaseConstService::ORDER_STATUS_2 => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_2),
+            BaseConstService::ORDER_STATUS_3 => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_3),
+            BaseConstService::ORDER_STATUS_4 => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_4),
+            BaseConstService::ORDER_STATUS_5 => $this->singleOrderCount($type, BaseConstService::ORDER_STATUS_5),
         ];
     }
 

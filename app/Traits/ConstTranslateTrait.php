@@ -104,6 +104,7 @@ trait ConstTranslateTrait
 
     //订单类型1-取件2-派件3-取派
     public static $orderTypeList = [
+        BaseConstService::ORDER_TYPE_0 => '全部',
         BaseConstService::ORDER_TYPE_1 => '取件',
         BaseConstService::ORDER_TYPE_2 => '派件',
         BaseConstService::ORDER_TYPE_3 => '取派件'
@@ -122,7 +123,9 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_SETTLEMENT_TYPE_2 => '到付',
     ];
 
+    //订单状态
     public static $orderStatusList = [
+        BaseConstService::ORDER_STATUS_0 => '全部',
         BaseConstService::ORDER_STATUS_1 => '待取派',
         BaseConstService::ORDER_STATUS_2 => '取派中',
         BaseConstService::ORDER_STATUS_3 => '已完成',
@@ -132,12 +135,14 @@ trait ConstTranslateTrait
 
     //运单类型1-取2-派
     public static $trackingOrderTypeList = [
+        BaseConstService::TRACKING_ORDER_TYPE_0 => '全部',
         BaseConstService::TRACKING_ORDER_TYPE_1 => '取件',
         BaseConstService::TRACKING_ORDER_TYPE_2 => '派件',
     ];
 
     //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     public static $trackingOrderStatusList = [
+        BaseConstService::TRACKING_ORDER_STATUS_0 => '全部',
         BaseConstService::TRACKING_ORDER_STATUS_1 => '待分配',
         BaseConstService::TRACKING_ORDER_STATUS_2 => '已分配',
         BaseConstService::TRACKING_ORDER_STATUS_3 => '待出库',

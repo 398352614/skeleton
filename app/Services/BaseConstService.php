@@ -110,6 +110,7 @@ class BaseConstService
     const SHOP_MERCHANT_ID_1 = 3;
 
     //订单类型1-取2-派3-取派
+    const ORDER_TYPE_0 = 0;
     const ORDER_TYPE_1 = 1;
     const ORDER_TYPE_2 = 2;
     const ORDER_TYPE_3 = 3;
@@ -128,10 +129,12 @@ class BaseConstService
     const ORDER_SETTLEMENT_TYPE_2 = 2;
 
     //运单类型1-取2-派
+    const TRACKING_ORDER_TYPE_0 = 0;
     const TRACKING_ORDER_TYPE_1 = 1;
     const TRACKING_ORDER_TYPE_2 = 2;
 
     //订单状态1-待取派2-取派中3-取派完成4-取派失败5-回收站
+    const ORDER_STATUS_0 = 0;
     const ORDER_STATUS_1 = 1;
     const ORDER_STATUS_2 = 2;
     const ORDER_STATUS_3 = 3;
@@ -139,6 +142,7 @@ class BaseConstService
     const ORDER_STATUS_5 = 5;
 
     //运单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    const TRACKING_ORDER_STATUS_0 = 0;
     const TRACKING_ORDER_STATUS_1 = 1;
     const TRACKING_ORDER_STATUS_2 = 2;
     const TRACKING_ORDER_STATUS_3 = 3;
