@@ -204,12 +204,8 @@ class TrackingOrderService extends BaseService
     public function initIndex()
     {
         $data = [];
-        $statusList = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderStatusList);
-        array_unshift($statusList, ['id' => '0', 'name' => __('全部')]);
-        $data['status_list'] = $statusList;
-        $typeList = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderTypeList);
-        array_unshift($typeList, ['id' => '0', 'name' => __('全部')]);
-        $data['type_list'] = $typeList;
+        $data['status_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderStatusList);
+        $data['type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderTypeList);
         return $data;
     }
 
