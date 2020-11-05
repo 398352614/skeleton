@@ -97,8 +97,8 @@ class TourValidate extends BaseValidate
         'outWarehouse' => [
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.expect_quantity', 'material_list.*.actual_quantity',
-            'cancel_tracking_order_id_list', 'out_tracking_order_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic',
-            'tracking_order_count'
+            'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic',
+            'cancel_tracking_order_id_list', 'out_tracking_order_id_list', 'tracking_order_count'
         ],
         'checkOutWarehouse' => [
             //材料列表

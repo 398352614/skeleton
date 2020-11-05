@@ -384,7 +384,7 @@ class TourService extends BaseService
                 throw new BusinessLogicException('出库失败');
             }
         }
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['tracking_order_no', 'order_no'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['tracking_order_no', 'order_no'], false)->toArray();
         $orderNoList = array_column($trackingOrderList, 'order_no');
         //订单更换状态
         $rowCount = $this->getOrderService()->update(['order_no' => ['in', $orderNoList], 'status' => BaseConstService::ORDER_STATUS_1], ['status' => BaseConstService::ORDER_STATUS_2]);
@@ -778,10 +778,10 @@ class TourService extends BaseService
         $orderNoList = array_column($trackingOrderList, 'order_no');
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList], 'id' => ['in', $packageIdList], 'status' => BaseConstService::PACKAGE_STATUS_2], ['id', 'order_no', 'batch_no', 'type'], false);
         foreach ($packageList as $packageId => $package) {
-            if ((intval($package['type']) == BaseConstService::TRACKING_ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['sticker_no'])) {
+            if (!empty($params['package_list'][$packageId]['sticker_no'])) {
                 $totalStickerAmount += $stickerAmount;
             }
-            if ((intval($package['type']) == BaseConstService::TRACKING_ORDER_TYPE_1) && !empty($params['package_list'][$packageId]['delivery_charge']) && $params['package_list'][$packageId]['delivery_charge'] == BaseConstService::YES) {
+            if (!empty($params['package_list'][$packageId]['delivery_charge']) && $params['package_list'][$packageId]['delivery_charge'] == BaseConstService::YES) {
                 $totalDeliveryAmount += $deliveryAmount;
             }
         }
