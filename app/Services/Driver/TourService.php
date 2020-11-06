@@ -544,10 +544,32 @@ class TourService extends BaseService
         $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('actual_arrive_time')->get()->toArray();
         $ingBatchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereNotIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get()->toArray();
         $batchList = array_merge($batchList, $ingBatchList);
-        $packageList = $this->getTrackingOrderService()->getPackageList(['tour_no' => $tour['tour_no']], [], ['batch_no', 'type', DB::raw('SUM(`expect_quantity`) as expect_quantity'), DB::raw('SUM(`actual_quantity`) as actual_quantity')], ['batch_no', 'type']);
-        $packageList = collect($packageList)->groupBy('batch_no')->map(function ($itemPackageList) {
-            return collect($itemPackageList)->keyBy('type');
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['id', 'tracking_order_no', 'order_no', 'batch_no'], false)->toArray();
+        $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
+        $orderNoList = array_column($trackingOrderList, 'order_no');
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'type', 'expect_quantity', 'actual_quantity'], false);
+        $packageList = $packageList->map(function ($package) use ($trackingOrderList) {
+            $batchNo = $trackingOrderList[$package['order_no']]['batch_no'] ?? '';
+            return array_merge($package->toArray(), ['batch_no' => $batchNo]);
         })->toArray();
+
+        $packageList = collect($packageList)->groupBy('batch_no')->map(function ($itemPackageList) {
+            $typeItemPackageList = array_create_group_index($itemPackageList, 'type');
+            $itemPackageListTypeOne = $typeItemPackageList[BaseConstService::TRACKING_ORDER_TYPE_1] ?? [];
+            $itemPackageListTypeTwo = $typeItemPackageList[BaseConstService::TRACKING_ORDER_TYPE_2] ?? [];
+            return [
+                BaseConstService::TRACKING_ORDER_TYPE_1 => [
+                    'expect_quantity' => array_sum(array_column($itemPackageListTypeOne, 'expect_quantity')),
+                    'actual_quantity' => array_sum(array_column($itemPackageListTypeOne, 'actual_quantity'))
+                ],
+                BaseConstService::TRACKING_ORDER_TYPE_2 => [
+                    'expect_quantity' => array_sum(array_column($itemPackageListTypeTwo, 'expect_quantity')),
+                    'actual_quantity' => array_sum(array_column($itemPackageListTypeTwo, 'expect_quantity')),
+                ]
+            ];
+        })->toArray();
+
+
         $batchList = array_map(function ($batch) use ($packageList) {
             $batch['expect_pickup_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::TRACKING_ORDER_TYPE_1]['expect_quantity'] ?? "0";
             $batch['actual_pickup_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::TRACKING_ORDER_TYPE_1]['actual_quantity'] ?? "0";
