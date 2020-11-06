@@ -668,13 +668,16 @@ class TourService extends BaseService
         list($tour, $batch) = $this->checkBatch($id, $params);
         $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'tracking_order_no', 'mask_code', 'type', 'batch_no', 'status'], false);
         $trackingOrderList = collect($trackingOrderList)->map(function ($trackingOrder, $key) {
-            /**@var Order $trackingOrder */
-            return collect(Arr::add($trackingOrder->toArray(), 'status_name', $trackingOrder->status_name));
+            $trackingOrder = $trackingOrder->toArray();
+            unset($trackingOrder['merchant']);
+            return collect(Arr::add($trackingOrder, 'status_name', $trackingOrder->status_name));
         })->toArray();
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($trackingOrderList, 'order_no')]], ['*'], false)->toArray();
         for ($i = 0, $j = count($packageList); $i < $j; $i++) {
             $packageList[$i]['feature_logo'] = $packageList[$i]['feature_logo'] ?? '';
+            $packageList[$i]['status'] = $batch['status'];
+            $packageList[$i]['status_name'] = $batch['status_name'];
         }
         $authPackage = collect($packageList)->first(function ($package) {
             return (intval($package['status']) == BaseConstService::BATCH_DELIVERING) && (intval($package['is_auth']) == BaseConstService::IS_AUTH_1);

@@ -157,17 +157,24 @@ class TourTaskService extends BaseService
         $tour['additional_package_count'] = count($additionalPackageList);
         //获取所有运单列表
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        $orderNoList = array_column($trackingOrderList, 'order_no');
         //获取所有材料列表
         $materialList = $this->getTourMaterialList($tour);
         //获取所有包裹列表
-        $packageList = $this->getTrackingOrderService()->getPackageList(['tour_no' => $tour['tour_no']]);
+        $packageList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         for ($i = 0, $j = count($packageList); $i < $j; $i++) {
             $packageList[$i]['feature_logo'] = $packageList[$i]['feature_logo'] ?? '';
         }
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
         $trackingOrderList = array_map(function ($trackingOrder) use ($packageList) {
-            $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']] ?? [];
+            if (empty($packageList[$trackingOrder['order_no']])) {
+                $trackingOrder['package_list'] = [];
+                return $trackingOrder;
+            }
+            $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']];
+            data_set($trackingOrder['package_list'], '*.status', $trackingOrder['status']);
+            data_set($trackingOrder['package_list'], '*.status_name', $trackingOrder['status_name']);
             return $trackingOrder;
         }, $trackingOrderList);
         //数据填充
