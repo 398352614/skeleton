@@ -150,6 +150,10 @@ class TourService extends BaseService
         return $list;
     }
 
+    /**
+     * 取件线路查询
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getPageList()
     {
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {

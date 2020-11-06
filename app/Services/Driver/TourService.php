@@ -1380,14 +1380,13 @@ class TourService extends BaseService
      */
     public function batchRecovery($id, $params)
     {
-        $list = [];
         $tour = parent::getInfo(['id' => $id, 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $tour->toArray();
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->sortBy('sort_id');
-        $max = $batchList->where('status', BaseConstService::TOUR_STATUS_5)->sortByDesc('actual_arrive_time')->first();
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
+        $max = $batchList->where('status', BaseConstService::TOUR_STATUS_5)->sortByDesc('sort_id')->first();
         if (empty($max)) {
             $max = 0;
         } else {
