@@ -798,7 +798,7 @@ class TourService extends BaseService
         $totalStickerAmount = $totalDeliveryAmount = 0.00;
         $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no']], ['order_no'], false)->toArray();
         $orderNoList = array_column($trackingOrderList, 'order_no');
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList], 'id' => ['in', $packageIdList], 'status' => BaseConstService::PACKAGE_STATUS_2], ['id', 'order_no','type'], false);
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList], 'id' => ['in', $packageIdList], 'status' => BaseConstService::PACKAGE_STATUS_2], ['id', 'order_no', 'type'], false);
         foreach ($packageList as $packageId => $package) {
             if (!empty($params['package_list'][$packageId]['sticker_no'])) {
                 $totalStickerAmount += $stickerAmount;
@@ -1017,7 +1017,7 @@ class TourService extends BaseService
         $signTrackingOrderList = $signPackageList = [];
         $dbTrackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['id', 'tracking_order_no', 'order_no', 'type'], false);
         $dbTrackingOrderList = array_create_index($dbTrackingOrderList, 'order_no');
-        $dbPackageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($dbTrackingOrderList, 'order_no')]], ['id', 'order_no', 'batch_no', 'type'], false);
+        $dbPackageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($dbTrackingOrderList, 'order_no')]], ['id', 'order_no', 'type'], false);
         $dbPackageList = array_create_group_index($dbPackageList, 'order_no');
         foreach ($dbPackageList as $orderNo => $dbItemPackageList) {
             $orderStickerAmount = $orderDeliveryAmount = 0.00;
