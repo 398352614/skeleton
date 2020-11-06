@@ -666,11 +666,10 @@ class TourService extends BaseService
     public function getBatchInfo($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'tracking_order_no', 'mask_code', 'type', 'batch_no', 'status'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'order_no', 'tracking_order_no', 'mask_code', 'type', 'batch_no', 'status'], false)->toArray();
         $trackingOrderList = collect($trackingOrderList)->map(function ($trackingOrder, $key) {
-            $trackingOrder = $trackingOrder->toArray();
             unset($trackingOrder['merchant']);
-            return collect(Arr::add($trackingOrder, 'status_name', $trackingOrder->status_name));
+            return collect(Arr::add($trackingOrder, 'status_name', $trackingOrder['status_name']));
         })->toArray();
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($trackingOrderList, 'order_no')]], ['*'], false)->toArray();
