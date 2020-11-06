@@ -799,7 +799,10 @@ class TourService extends BaseService
             $info['warehouse_actual_time_human'] = $warehouseActualTimeHuman;
             $info['warehouse_expect_time_human'] = $warehouseExpectTimeHuman;
         }
-        $info['batchs'] = array_values(collect($info['batchs'])->sortByDesc('actual_arrive_time')->all());
+        $batchList = Batch::query()->where('tour_no', $info['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('actual_arrive_time')->get()->toArray();
+        $ingBatchList = Batch::query()->where('tour_no', $info['tour_no'])->whereNotIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->orderBy('sort_id')->get()->toArray();
+        $info['batchs'] = array_merge($batchList, $ingBatchList);
+
         $orderTotalList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k] = collect($info['batchs'][$k])->toArray();
