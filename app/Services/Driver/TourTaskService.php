@@ -106,6 +106,7 @@ class TourTaskService extends BaseService
         $materialList = $this->getTourMaterialList($tour);
         //获取所有包裹列表
         $packageList = $this->getPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        $expectPickupPackageQuantity = $actualPickupPackageQuantity = $expectPiePackageQuantity = $actualPiePackageQuantity = 0;
         for ($i = 0, $j = count($packageList); $i < $j; $i++) {
             $packageList[$i]['feature_logo'] = $packageList[$i]['feature_logo'] ?? '';
         }
@@ -119,14 +120,18 @@ class TourTaskService extends BaseService
         //获取延迟次数
         $tour['total_delay_amount'] = $this->getTourDelayService()->count(['tour_no' => $tour['tour_no']]);
         //获取延时时间
-        $tour['total_delay_time'] =intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']]));
-        $tour['total_delay_time_human'] =round(intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']])) / 60) .__('分钟');
+        $tour['total_delay_time'] = intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']]));
+        $tour['total_delay_time_human'] = round(intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']])) / 60) . __('分钟');
         $tour['batch_list'] = $batchList;
         $tour['order_list'] = $orderList;
         $tour['material_list'] = $materialList;
         $tour['actual_total_amount'] = number_format(round($tour['sticker_amount'] + $tour['delivery_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'], 2), 2);
         //$tour['package_list'] = $packageList;
         $tour['is_exist_special_remark'] = !empty(array_column($orderList, 'special_remark')) ? true : false;
+        $tour['expect_pickup_package_quantity'] = array_column($packageList, BaseConstService::ORDER_TYPE_1);
+        $tour['actual_pickup_package_quantity'] = 0;
+        $tour['expect_pie_package_quantity'] = 0;
+        $tour['actual_pie_package_quantity'] = 0;
         return $tour;
     }
 
