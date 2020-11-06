@@ -149,6 +149,10 @@ class TourService extends BaseService
         return $list;
     }
 
+    /**
+     * 取件线路查询
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getPageList()
     {
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
@@ -795,8 +799,7 @@ class TourService extends BaseService
             $info['warehouse_actual_time_human'] = $warehouseActualTimeHuman;
             $info['warehouse_expect_time_human'] = $warehouseExpectTimeHuman;
         }
-        $info['batchs'] = collect($info['batchs'])->sortBy('sort_id')->all();
-        $info['batchs'] = array_values($info['batchs']);
+        $info['batchs'] = array_values(collect($info['batchs'])->sortBy('actual_arrive_time')->all());
         $orderTotalList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k] = collect($info['batchs'][$k])->toArray();
