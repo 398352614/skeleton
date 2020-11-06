@@ -161,13 +161,14 @@ class TourTaskService extends BaseService
         //获取所有材料列表
         $materialList = $this->getTourMaterialList($tour);
         //获取所有包裹列表
-        $packageList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         for ($i = 0, $j = count($packageList); $i < $j; $i++) {
             $packageList[$i]['feature_logo'] = $packageList[$i]['feature_logo'] ?? '';
         }
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
         $trackingOrderList = array_map(function ($trackingOrder) use ($packageList) {
+            unset($trackingOrder['merchant']);
             if (empty($packageList[$trackingOrder['order_no']])) {
                 $trackingOrder['package_list'] = [];
                 return $trackingOrder;
@@ -175,6 +176,7 @@ class TourTaskService extends BaseService
             $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']];
             data_set($trackingOrder['package_list'], '*.status', $trackingOrder['status']);
             data_set($trackingOrder['package_list'], '*.status_name', $trackingOrder['status_name']);
+            data_set($trackingOrder['package_list'], '*.merchant', null);
             return $trackingOrder;
         }, $trackingOrderList);
         //数据填充
