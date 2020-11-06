@@ -798,7 +798,7 @@ class TourService extends BaseService
         $totalStickerAmount = $totalDeliveryAmount = 0.00;
         $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no']], ['order_no'], false)->toArray();
         $orderNoList = array_column($trackingOrderList, 'order_no');
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList], 'id' => ['in', $packageIdList], 'status' => BaseConstService::PACKAGE_STATUS_2], ['id', 'order_no', 'batch_no', 'type'], false);
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList], 'id' => ['in', $packageIdList], 'status' => BaseConstService::PACKAGE_STATUS_2], ['id', 'order_no','type'], false);
         foreach ($packageList as $packageId => $package) {
             if (!empty($params['package_list'][$packageId]['sticker_no'])) {
                 $totalStickerAmount += $stickerAmount;
