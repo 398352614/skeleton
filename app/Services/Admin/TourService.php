@@ -799,7 +799,8 @@ class TourService extends BaseService
             $info['warehouse_actual_time_human'] = $warehouseActualTimeHuman;
             $info['warehouse_expect_time_human'] = $warehouseExpectTimeHuman;
         }
-        $info['batchs'] = array_values(collect($info['batchs'])->sortBy('actual_arrive_time')->all());
+        $info['batchs'] = collect($info['batchs'])->sortBy('sort_id')->all();
+        $info['batchs'] = array_values($info['batchs']);
         $orderTotalList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k] = collect($info['batchs'][$k])->toArray();
