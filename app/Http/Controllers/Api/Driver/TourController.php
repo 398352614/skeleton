@@ -101,7 +101,7 @@ class TourController extends BaseController
     {
         $tour = $this->service->getInfo(['id' => $id], ['*'], false)->toArray();
         $this->service->actualOutWarehouse($id, $this->data);
-        TourTrait::actualOutWarehouse($tour);
+        //TourTrait::actualOutWarehouse($tour);
         return;
     }
 
@@ -253,8 +253,9 @@ class TourController extends BaseController
      * @return void
      * @throws BusinessLogicException
      */
-    public function batchSkip($id){
-        return $this->service->batchSkip($id,$this->data);
+    public function batchSkip($id)
+    {
+        return $this->service->batchSkip($id, $this->data);
     }
 
     /**
@@ -263,8 +264,9 @@ class TourController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function batchRecovery($id){
-        return $this->service->batchRecovery($id,$this->data);
+    public function batchRecovery($id)
+    {
+        return $this->service->batchRecovery($id, $this->data);
     }
 
     /**
@@ -273,7 +275,8 @@ class TourController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function delay($id){
-        return $this->service->delay($id,$this->data);
+    public function delay($id)
+    {
+        return $this->service->delay($id, $this->data);
     }
 }
