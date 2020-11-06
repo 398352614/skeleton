@@ -894,7 +894,7 @@ class TourService extends BaseService
                 throw new BusinessLogicException('签收失败');
             }
             $updatePackageList = $signPackageList[$trackingOrder['order_no']];
-            data_set($updatePackageList, 'status', $packageStatus);
+            data_set($updatePackageList, '*.status', $packageStatus);
             foreach ($updatePackageList as $updatePackage) {
                 $rowCount = $this->getPackageService()->update(['id' => $updatePackage['id']], $updatePackage);
                 if ($rowCount === false) {
@@ -1015,9 +1015,9 @@ class TourService extends BaseService
         $packageList = collect($packageList)->unique('id')->keyBy('id')->toArray();
         $packageIdList = array_keys($packageList);
         $signTrackingOrderList = $signPackageList = [];
-        $dbTrackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['id', 'tracking_order_no', 'order_no', 'type'], false);
+        $dbTrackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['id', 'tracking_order_no', 'order_no', 'type'], false)->toArray();
         $dbTrackingOrderList = array_create_index($dbTrackingOrderList, 'order_no');
-        $dbPackageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($dbTrackingOrderList, 'order_no')]], ['id', 'order_no', 'type'], false);
+        $dbPackageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($dbTrackingOrderList, 'order_no')]], ['id', 'order_no', 'type', 'is_auth'], false)->toArray();
         $dbPackageList = array_create_group_index($dbPackageList, 'order_no');
         foreach ($dbPackageList as $orderNo => $dbItemPackageList) {
             $orderStickerAmount = $orderDeliveryAmount = 0.00;
@@ -1052,10 +1052,7 @@ class TourService extends BaseService
                 ];
             }
         }
-        return [
-            'signTrackingOrderList' => $signTrackingOrderList,
-            'signPackageList' => $signPackageList
-        ];
+        return [$signTrackingOrderList, $signPackageList];
     }
 
     /**
