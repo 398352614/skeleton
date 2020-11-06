@@ -109,6 +109,13 @@ class TourTaskService extends BaseService
         $expectPickupPackageQuantity = $actualPickupPackageQuantity = $expectPiePackageQuantity = $actualPiePackageQuantity = 0;
         for ($i = 0, $j = count($packageList); $i < $j; $i++) {
             $packageList[$i]['feature_logo'] = $packageList[$i]['feature_logo'] ?? '';
+            if ($packageList[$i]['type'] == BaseConstService::PACKAGE_TYPE_1) {
+                $expectPickupPackageQuantity += intval($packageList[$i]['expect_quantity']);
+                $actualPickupPackageQuantity += intval($packageList[$i]['actual_quantity']);
+            } else {
+                $expectPiePackageQuantity += intval($packageList[$i]['expect_quantity']);
+                $actualPiePackageQuantity += intval($packageList[$i]['actual_quantity']);
+            }
         }
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
@@ -128,10 +135,10 @@ class TourTaskService extends BaseService
         $tour['actual_total_amount'] = number_format(round($tour['sticker_amount'] + $tour['delivery_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'], 2), 2);
         //$tour['package_list'] = $packageList;
         $tour['is_exist_special_remark'] = !empty(array_column($orderList, 'special_remark')) ? true : false;
-        $tour['expect_pickup_package_quantity'] = array_column($packageList, BaseConstService::ORDER_TYPE_1);
-        $tour['actual_pickup_package_quantity'] = 0;
-        $tour['expect_pie_package_quantity'] = 0;
-        $tour['actual_pie_package_quantity'] = 0;
+        $tour['expect_pickup_package_quantity'] = $expectPickupPackageQuantity;
+        $tour['actual_pickup_package_quantity'] = $actualPickupPackageQuantity;
+        $tour['expect_pie_package_quantity'] = $expectPiePackageQuantity;
+        $tour['actual_pie_package_quantity'] = $actualPiePackageQuantity;
         return $tour;
     }
 
