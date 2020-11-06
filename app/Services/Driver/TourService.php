@@ -650,7 +650,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('更新到达时间失败，请重新操作');
         }
-        TourTrait::afterBatchArrived($tour, $batch);
+        //TourTrait::afterBatchArrived($tour, $batch);
         $specialRemarkList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'tracking_order_no', 'order_no', 'special_remark'], false);
         return $specialRemarkList;
     }
