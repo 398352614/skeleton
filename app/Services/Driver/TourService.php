@@ -672,7 +672,7 @@ class TourService extends BaseService
             return collect(Arr::add($trackingOrder->toArray(), 'status_name', $trackingOrder->status_name));
         })->toArray();
         //获取所有包裹列表
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($trackingOrderList, 'order_no')]], ['*']);
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($trackingOrderList, 'order_no')]], ['*'])->toArray();
         for ($i = 0, $j = count($packageList); $i < $j; $i++) {
             $packageList[$i]['feature_logo'] = $packageList[$i]['feature_logo'] ?? '';
         }
