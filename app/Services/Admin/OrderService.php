@@ -355,6 +355,22 @@ class OrderService extends BaseService
     }
 
     /**
+     * 再次取派
+     * @param $id
+     */
+    public function again($id, $params)
+    {
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
+        $params = array_merge($dbOrder, $params);
+        return $this->getTrackingOrderService()->storeAgain($params);
+    }
+
+    public function end($id)
+    {
+
+    }
+
+    /**
      * 订单批量新增
      * @param $params
      * @return mixed

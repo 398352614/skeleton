@@ -368,6 +368,11 @@ class TrackingOrderService extends BaseService
         }
     }
 
+    public function storeAgain($params)
+    {
+
+    }
+
     /**
      * 通过订单号删除运单
      * 注意：取派订单删除时，因为待取派订单只会生成取件运单,所以只有一个运单
