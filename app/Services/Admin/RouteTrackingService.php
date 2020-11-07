@@ -90,8 +90,13 @@ class RouteTrackingService extends BaseService
             ]];
             $batchList = array_merge(array_values($batchList), $in);
         }
+        if (!empty($tour->driver)) {
+            $driver = Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']);
+        } else {
+            $driver = ['id'=>'', 'email'=>'', 'fullname'=>'', 'phone'=>''];
+        }
         return [
-            'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
+            'driver' => $driver,
             'route_tracking' => $routeTrackingList,
             'tour_event' => $batchList,
         ];
