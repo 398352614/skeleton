@@ -1397,8 +1397,8 @@ class TourService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         Log::info('1',$batchList->toArray());
-        $assignedBatchList = $batchList->where('status', BaseConstService::BATCH_CHECKOUT)->sortBy('sort_id')->pluck('id')->toArray();
-        $ingBatchList = $batchList->where('status', BaseConstService::BATCH_DELIVERING)->sortBy('sort_id')->pluck('id')->toArray();
+        $assignedBatchList = $batchList->where('is_skipped',BaseConstService::IS_NOT_SKIPPED)->where('status', BaseConstService::BATCH_CHECKOUT)->sortBy('sort_id')->pluck('id')->toArray();
+        $ingBatchList = $batchList->where('is_skipped',BaseConstService::IS_NOT_SKIPPED)->where('status', BaseConstService::BATCH_DELIVERING)->sortBy('sort_id')->pluck('id')->toArray();
         $newBatchList = array_merge($assignedBatchList, [$recoveryBatch], $ingBatchList);
         Log::info('站点排序1', $newBatchList);
         $tour['batch_ids'] = $newBatchList;
