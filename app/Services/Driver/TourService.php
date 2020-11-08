@@ -1396,7 +1396,6 @@ class TourService extends BaseService
         if (empty($batchList)) {
             throw new BusinessLogicException('数据不存在');
         }
-        Log::info('1', $batchList->toArray());
         $assignedBatchList = $batchList->where('is_skipped', BaseConstService::IS_NOT_SKIPPED)->where('status', BaseConstService::BATCH_CHECKOUT)->sortBy('sort_id')->pluck('id')->toArray();
         $ingBatchList = $batchList->where('is_skipped', BaseConstService::IS_NOT_SKIPPED)->where('status', BaseConstService::BATCH_DELIVERING)->sortBy('sort_id')->pluck('id')->toArray();
         $row = $this->getBatchService()->updateById($params['batch_id'], ['is_skipped' => BaseConstService::IS_NOT_SKIPPED]);
