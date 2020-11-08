@@ -1380,11 +1380,6 @@ class TourService extends BaseService
      */
     public function batchRecovery($id, $params)
     {
-        $row = $this->getBatchService()->updateById($params['batch_id'], ['is_skipped' => BaseConstService::IS_NOT_SKIPPED]);
-        if ($row == false) {
-            throw new BusinessLogicException('操作失败');
-        }
-        return;
         $recoveryBatch = $this->getBatchService()->getInfo(['id' => $params['batch_id'], 'is_skipped' => BaseConstService::IS_SKIPPED], ['*'], false);
         if (empty($recoveryBatch)) {
             throw new BusinessLogicException('数据不存在');
@@ -1409,7 +1404,6 @@ class TourService extends BaseService
             throw new BusinessLogicException('操作失败');
         }
         $newBatchList = array_merge($assignedBatchList, [$recoveryBatch], $ingBatchList);
-        Log::info('站点排序1', $newBatchList);
         $tour['batch_ids'] = $newBatchList;
         Log::info('站点排序', $tour['batch_ids']);
         dispatch(new UpdateTour($tour['tour_no'], $tour['batch_ids']));
