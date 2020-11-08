@@ -1399,7 +1399,7 @@ class TourService extends BaseService
 
         $assignedBatchList = $batchList->where('status', BaseConstService::BATCH_CHECKOUT)->sortBy('sort_id')->pluck('id')->toArray();
         $ingBatchList = $batchList->where('status', BaseConstService::BATCH_DELIVERING)->sortBy('sort_id')->pluck('id')->toArray();
-        $newBatchList = array_merge($assignedBatchList, $recoveryBatch, $ingBatchList);
+        $newBatchList = array_merge($assignedBatchList, [$recoveryBatch], $ingBatchList);
         Log::info('站点排序1', collect($newBatchList)->pluck('id')->toArray());
         $tour['batch_ids'] = collect($newBatchList)->pluck('id')->toArray();
         Log::info('站点排序', $tour['batch_ids']);
