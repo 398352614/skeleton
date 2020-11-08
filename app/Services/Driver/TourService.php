@@ -1396,7 +1396,7 @@ class TourService extends BaseService
         if (empty($batchList)) {
             throw new BusinessLogicException('数据不存在');
         }
-        Log::info('1',$batchList);
+        Log::info('1',$batchList->toArray());
         $assignedBatchList = $batchList->where('status', BaseConstService::BATCH_CHECKOUT)->sortBy('sort_id')->pluck('id')->toArray();
         $ingBatchList = $batchList->where('status', BaseConstService::BATCH_DELIVERING)->sortBy('sort_id')->pluck('id')->toArray();
         $newBatchList = array_merge($assignedBatchList, [$recoveryBatch], $ingBatchList);
