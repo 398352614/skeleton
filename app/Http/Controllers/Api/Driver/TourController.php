@@ -252,6 +252,7 @@ class TourController extends BaseController
      * @param $id
      * @return void
      * @throws BusinessLogicException
+     * @throws \Throwable
      */
     public function batchSkip($id)
     {
@@ -263,6 +264,7 @@ class TourController extends BaseController
      * @param $id
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \Throwable
      */
     public function batchRecovery($id)
     {

@@ -64,6 +64,8 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::get('/{id}/getBatchSpecialRemarkList', 'TourTaskController@getBatchSpecialRemarkList');
         //获取订单特殊事项
         Route::get('/{id}/getSpecialRemark', 'TourTaskController@getSpecialRemark');
+        //获取订单特殊事项
+        Route::get('/all-info', 'TourTaskController@getAllInfo');
     });
 
     //设备管理
