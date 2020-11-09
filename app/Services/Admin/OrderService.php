@@ -1291,7 +1291,7 @@ class OrderService extends BaseService
         $packageList = $packageList->toArray();
         foreach ($packageList as $k => $v) {
             $row = $this->getPackageService()->updateById($v['id'],
-                ['out_order_no' => $v['out_order_no'] . 'OLD',
+                [   'out_order_no' => $v['out_order_no'] !== '' ? $v['express_first_no'] . 'OLD' : '',
                     'express_first_no' => $v['express_first_no'] !== '' ? $v['express_first_no'] . 'OLD' : '',
                     'express_second_no' => $v['express_second_no'] !== '' ? $v['express_second_no'] . 'OLD' : '',
                 ]);
