@@ -765,7 +765,7 @@ class TrackingOrderService extends BaseService
      * @param $orderType
      * @return int
      */
-    private function getTypeByOrderType($orderType)
+    public function getTypeByOrderType($orderType)
     {
         return (intval($orderType) == BaseConstService::ORDER_TYPE_2) ? BaseConstService::TRACKING_ORDER_TYPE_2 : BaseConstService::TRACKING_ORDER_TYPE_1;
     }

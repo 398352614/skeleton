@@ -354,9 +354,29 @@ class OrderService extends BaseService
         return ['order_no' => $params['order_no']];
     }
 
+    public function getAgainInfo($id)
+    {
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2], false);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['create_time' => 'desc']);
+        if (empty($trackingOrder)) {
+            $trackingOrderType = $this->getTrackingOrderService()->getTypeByOrderType($dbOrder['type']);
+        } else {
+            $trackingOrder = $trackingOrder->toArray();
+            if (!in_array($trackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])) {
+                throw new BusinessLogicException('运单已生成');
+            }
+            if (($trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_5) && ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3)) {
+                $trackingOrderType = BaseConstService::TRACKING_ORDER_TYPE_1;
+            }
+        }
+    }
+
+
     /**
      * 再次取派
      * @param $id
+     * @param $params
+     * @throws BusinessLogicException
      */
     public function again($id, $params)
     {
@@ -365,6 +385,9 @@ class OrderService extends BaseService
         return $this->getTrackingOrderService()->storeAgain($params);
     }
 
+    /**
+     * @param $id
+     */
     public function end($id)
     {
 
