@@ -1396,6 +1396,7 @@ class TourService extends BaseService
         //以已完成，恢复站点，未完成站点排序
         $assignedBatchIds = $batchList->where('status', BaseConstService::BATCH_CHECKOUT)->sortBy('sort_id')->pluck('id')->toArray();
         $ingBatchIds = $batchList->where('status', BaseConstService::BATCH_DELIVERING)->sortBy('sort_id')->pluck('id')->toArray();
+        array_splice($ingBatchIds, array_search($params['batch_id'], $ingBatchIds), 1);
         $batchIds = array_merge($assignedBatchIds, [intval($params['batch_id'])], $ingBatchIds);
         Log::info('站点排序', $batchIds);
         $this->updateBatchIndex(['tour_no' => $tour['tour_no'], 'batch_ids' => $batchIds]);
