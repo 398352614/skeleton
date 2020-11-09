@@ -49,7 +49,7 @@ class OrderService extends BaseService
         'source' => ['=', 'source'],
         'tour_no' => ['like', 'tour_no'],
         'batch_no' => ['like', 'batch_no'],
-        'receiver_post_code'=>['like','receiver_post_code']
+        'receiver_post_code' => ['like', 'receiver_post_code']
     ];
 
     public $headings = [
@@ -1196,7 +1196,7 @@ class OrderService extends BaseService
      */
     public function orderExport($ids)
     {
-        $ids=explode(',',$ids);
+        $ids = explode(',', $ids);
         $orderList = parent::getList(['id' => ['in', $ids]], ['*'], false);
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
@@ -1290,7 +1290,11 @@ class OrderService extends BaseService
         }
         $packageList = $packageList->toArray();
         foreach ($packageList as $k => $v) {
-            $row = $this->getPackageService()->updateById($v['id'], ['out_order_no' => $v['out_order_no'] . 'OLD']);
+            $row = $this->getPackageService()->updateById($v['id'],
+                [   'out_order_no' => $v['out_order_no'] . 'OLD',
+                    'express_first_no' => $v['express_first_no'] . 'OLD',
+                    'express_second_no' => $v['express_second_no'] . 'OLD'
+                ]);
             if ($row == false) {
                 throw new BusinessLogicException('操作失败');
             }
