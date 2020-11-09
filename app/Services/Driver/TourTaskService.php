@@ -236,4 +236,25 @@ class TourTaskService extends BaseService
         return $orderList ?? [];
     }
 
+    /**
+     * 获取所有取件线路所有信息
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|void
+     * @throws BusinessLogicException
+     */
+    public function getAllInfo()
+    {
+        $tour = parent::getList(['status' => ['<>', BaseConstService::TOUR_STATUS_5]]);
+        if ($tour->isEmpty()) {
+            return [];
+        }
+        $tour = $tour->toArray(request());
+        foreach ($tour as $k => $v) {
+            $tour[$k]['batch_list'] = $this->getTourService()->getBatchList($v['id'])['batch_list'];
+            foreach ($tour[$k]['batch_list'] as $x => $y) {
+                $tour[$k]['batch_list'][$x]['order_list'] = $this->getTourService()->getBatchInfo($v['id'], ['batch_id' => $y['id']])['order_list'];
+            }
+        }
+        return $tour;
+    }
+
 }

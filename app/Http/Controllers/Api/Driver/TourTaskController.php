@@ -83,5 +83,13 @@ class TourTaskController extends BaseController
         return $this->service->getOrderList($this->data);
     }
 
-
+    /**
+     * 获取所有信息
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|void
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function getAllInfo()
+    {
+        return $this->service->getAllInfo();
+    }
 }

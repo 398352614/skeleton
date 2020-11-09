@@ -146,7 +146,7 @@ Trait DriverServiceTrait
      */
     public function getTourService()
     {
-        return self::getInstance(\App\Services\Admin\TourService::class);
+        return self::getInstance(TourService::class);
     }
 
     /**

@@ -50,34 +50,9 @@ class AuthController extends Controller
             throw new BusinessLogicException('账户已被锁定，暂时无法登陆');
         }*/
         $params['messager_token'] = auth('driver')->user()->messager;
-        if (empty($params['messager_token'])) {
-            $params['messager_token'] = $this->getMessagerToken() ?? '';
-        }
+
         $params['token'] = $token;
         return $this->respondWithToken($params);
-    }
-
-    /**
-     * 获取messager_token并保存
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getMessagerToken()
-    {
-        $rcloudApi = new RongCloud(config('tms.messager_key'), config('tms.messager_secret'));
-        $user_id = auth('driver')->user()->id;;//用户的id
-        $name = auth('driver')->user()->fullname;//用户名称
-        $portrait_uri = auth('driver')->user()->avatar;     //用户的头像
-        $messagerToken = $rcloudApi->getUser()->register($User = ['id' => $user_id, 'name' => $name, 'portrait' => $portrait_uri])['token'];
-        if ($messagerToken === false) {
-            throw new BusinessLogicException('无法获取通讯ID，请稍候再试');
-        }
-        //messager_token写入数据库
-        $rowCount = Driver::where('email', auth('driver')->user()->email)->update(['messager' => $messagerToken]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('通讯ID存储失败，请重新操作');
-        }
-        return $messagerToken;
     }
 
     /**
@@ -110,9 +85,6 @@ class AuthController extends Controller
     {
         $token = auth('driver')->refresh();
         $messageToken = auth('driver')->user()->messager;
-        if (empty($messageToken)) {
-            $messageToken = $this->getMessagerToken() ?? '';
-        }
         return $this->respondWithToken(['token' => $token, 'messager_token' => $messageToken]);
     }
 
