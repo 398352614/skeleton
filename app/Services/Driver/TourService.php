@@ -1366,9 +1366,9 @@ class TourService extends BaseService
         //删除该站点，在末尾加上该站点
         $batchIds = collect($batchList)->pluck('id')->toArray();
         array_splice($batchIds, array_search($params['batch_id'], $batchIds), 1);
-        array_push($batchIds, $params['batch_id']);
+        array_push($batchIds, intval($params['batch_id']));
         Log::info('站点排序', $batchIds);
-        $this->updateBatchIndex(['tour_no' =>$tour['tour_no'],'batch_ids' => $batchIds]);
+        $this->updateBatchIndex(['tour_no' => $tour['tour_no'], 'batch_ids' => $batchIds]);
     }
 
     /**
@@ -1396,9 +1396,9 @@ class TourService extends BaseService
         //以已完成，恢复站点，未完成站点排序
         $assignedBatchIds = $batchList->where('is_skipped', BaseConstService::IS_NOT_SKIPPED)->where('status', BaseConstService::BATCH_CHECKOUT)->sortBy('sort_id')->pluck('id')->toArray();
         $ingBatchIds = $batchList->where('is_skipped', BaseConstService::IS_NOT_SKIPPED)->where('status', BaseConstService::BATCH_DELIVERING)->sortBy('sort_id')->pluck('id')->toArray();
-        $batchIds = array_merge($assignedBatchIds, [$params['batch_id']], $ingBatchIds);
+        $batchIds = array_merge($assignedBatchIds, [intval($params['batch_id'])], $ingBatchIds);
         Log::info('站点排序', $batchIds);
-        $this->updateBatchIndex(['tour_no' =>$tour['tour_no'],'batch_ids' => $batchIds]);
+        $this->updateBatchIndex(['tour_no' => $tour['tour_no'], 'batch_ids' => $batchIds]);
     }
 
     /**
