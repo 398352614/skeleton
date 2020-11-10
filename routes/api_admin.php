@@ -88,7 +88,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //订单轨迹管理
     Route::prefix('order-trail')->group(function () {
         //列表查询
-        Route::get('/{order_no}', 'OrderController@index');
+        Route::get('/{order_no}', 'OrderTrailController@index');
     });
 
     Route::prefix('package')->group(function () {
