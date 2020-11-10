@@ -50,6 +50,7 @@ class TourTaskService extends BaseService
      */
     public function getPageList()
     {
+        sleep(10);
         //若状态为1000,则表示当前任务
         if (!empty($this->filters['status'][1]) && (intval($this->filters['status'][1]) === 1000)) {
             $this->filters['status'] = ['<>', BaseConstService::TOUR_STATUS_5];
@@ -249,9 +250,9 @@ class TourTaskService extends BaseService
         }
         $tour = $tour->toArray(request());
         foreach ($tour as $k => $v) {
-            $tour[$k] = array_merge($tour[$k],$this->getTourService()->getBatchList($v['id']));
+            $tour[$k] = array_merge($tour[$k], $this->getTourService()->getBatchList($v['id']));
             foreach ($tour[$k]['batch_list'] as $x => $y) {
-                $tour[$k]['batch_list'][$x] = array_merge($tour[$k]['batch_list'][$x],$this->getTourService()->getBatchInfo($v['id'], ['batch_id' => $y['id']]));
+                $tour[$k]['batch_list'][$x] = array_merge($tour[$k]['batch_list'][$x], $this->getTourService()->getBatchInfo($v['id'], ['batch_id' => $y['id']]));
             }
         }
         return $tour;
