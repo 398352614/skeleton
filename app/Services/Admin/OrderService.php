@@ -13,6 +13,7 @@ namespace App\Services\Admin;
 use App\Events\OrderCancel;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\OrderAgainResource;
 use App\Http\Resources\OrderInfoResource;
 use App\Http\Resources\OrderResource;
 use App\Jobs\AddOrderPush;
@@ -30,6 +31,7 @@ use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use App\Traits\PrintTrait;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use App\Services\TrackingOrderTrailService;
 use Illuminate\Support\Facades\Validator;
@@ -362,12 +364,14 @@ class OrderService extends BaseService
      */
     public function getAgainInfo($id)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2], false);
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_2], false);
         if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder)) {
             throw new BusinessLogicException('当前订单不支持再次派送，请联系管理员');
         }
         $dbOrder['tracking_order_type'] = $trackingOrderType;
-        return $dbOrder;
+        $dbOrder['tracking_order_type_name'] = ConstTranslateTrait::trackingOrderTypeList($trackingOrderType);
+        $resource = OrderAgainResource::make($dbOrder)->resolve();
+        return $resource;
     }
 
     /**

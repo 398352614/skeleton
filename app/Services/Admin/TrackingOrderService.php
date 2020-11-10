@@ -348,7 +348,7 @@ class TrackingOrderService extends BaseService
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
         //运单轨迹-运单加入取件线路
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
-        return true;
+        return 'true';
     }
 
     /**
@@ -407,7 +407,7 @@ class TrackingOrderService extends BaseService
             }
         }
         $trackingOrder = array_merge($address, ['type' => $trackingOrderType, 'execution_date' => $order['execution_date']]);
-        $trackingOrder = array_merge(Arr::only($order, $this->tOrderAndOrderSameFields), $trackingOrder);
+        $trackingOrder = array_merge(Arr::only($dbOrder, $this->tOrderAndOrderSameFields), $trackingOrder);
         return $this->store($trackingOrder, $dbOrder['order_no']);
     }
 
