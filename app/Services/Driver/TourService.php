@@ -368,10 +368,15 @@ class TourService extends BaseService
         $cancelTrackingOrderBatchNoList = [];
         if (!empty($params['cancel_tracking_order_id_list'])) {
             $cancelTrackingOrderIdList = explode_id_string($params['cancel_tracking_order_id_list'], ',');
-            $rowCount = $this->getTrackingOrderService()->update(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelTrackingOrderIdList], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['status' => BaseConstService::TRACKING_ORDER_STATUS_5]);
+            $rowCount = $this->getTrackingOrderService()->update(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelTrackingOrderIdList], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('出库失败');
             }
+        }
+        //运单更换状态
+        $rowCount = $this->getTrackingOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['status' => BaseConstService::TRACKING_ORDER_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('出库失败');
         }
         //若站点下所有运单都取消了，就取消取派站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'batch_no' => ['in', array_filter(array_unique($cancelTrackingOrderBatchNoList))]], ['batch_no', 'id'], false)->toArray();

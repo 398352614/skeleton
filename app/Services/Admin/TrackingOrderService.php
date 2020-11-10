@@ -313,6 +313,7 @@ class TrackingOrderService extends BaseService
      * 新增
      * @param $params
      * @param $orderNo
+     * @return bool
      * @throws BusinessLogicException
      */
     private function store($params, $orderNo)
