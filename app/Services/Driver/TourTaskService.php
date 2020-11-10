@@ -118,7 +118,7 @@ class TourTaskService extends BaseService
             //获取最后一个站点的收件人信息
             $tour['last_receiver'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'desc', 'created_at' => 'desc']);
             //获取是否有特殊事项
-            $order = $this->getTrackingOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['special_remark']);
+            $order = $this->getTrackingOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['special_remark'], false);
             $tour['is_exist_special_remark'] = !empty($order) ? true : false;
         }
         return $list;
