@@ -65,6 +65,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::post('/', 'OrderController@store');
         //修改
         Route::put('/{id}', 'OrderController@update');
+        //获取再次取派信息
+        Route::get('/{id}/getAgainInfo', 'OrderController@getAgainInfo');
+        //再次取派
+        Route::put('/{id}/again', 'OrderController@again');
+        //终止派送
+        Route::put('/{id}/end', 'OrderController@end');
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
         //批量删除

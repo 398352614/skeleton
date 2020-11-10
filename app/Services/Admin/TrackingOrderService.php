@@ -305,6 +305,18 @@ class TrackingOrderService extends BaseService
     public function storeByOrder(Order $order)
     {
         $params = $this->fillData($order);
+        $this->store($params, $order->order_no);
+        return 'true';
+    }
+
+    /**
+     * 新增
+     * @param $params
+     * @param $orderNo
+     * @throws BusinessLogicException
+     */
+    private function store($params, $orderNo)
+    {
         //填充发件人信息
         $line = $this->fillSender($params, BaseConstService::YES);
         //生成运单号
@@ -319,7 +331,7 @@ class TrackingOrderService extends BaseService
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
         $this->fillBatchTourInfo($trackingOrder, $batch, $tour);
         /*******************************************材料填充取派信息***************************************************/
-        $rowCount = $this->getMaterialService()->update(['order_no' => $order->order_no], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+        $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
@@ -335,7 +347,7 @@ class TrackingOrderService extends BaseService
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
         //运单轨迹-运单加入取件线路
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
-        return 'true';
+        return true;
     }
 
     /**
@@ -368,9 +380,34 @@ class TrackingOrderService extends BaseService
         }
     }
 
-    public function storeAgain($params)
+    /**
+     * 再次取派
+     * @param $dbOrder
+     * @param $order
+     * @param $trackingOrderType
+     * @return bool
+     * @throws BusinessLogicException
+     */
+    public function storeAgain($dbOrder, $order, $trackingOrderType)
     {
-
+        if (in_array($dbOrder['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
+            $address = Arr::only($order, ['receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lat', 'receiver_lon']);
+        } else {
+            if ($trackingOrderType == BaseConstService::TRACKING_ORDER_TYPE_1) {
+                $address = Arr::only($order, ['receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lat', 'receiver_lon']);
+            } else {
+                $address = [
+                    'receiver_country' => 'sender_country', 'receiver_fullname' => 'sender_fullname',
+                    'receiver_phone' => 'sender_phone', 'receiver_post_code' => 'sender_post_code',
+                    'receiver_house_number' => 'sender_house_number', 'receiver_city' => 'sender_city',
+                    'receiver_street' => 'sender_street', 'receiver_address' => 'sender_address',
+                    'receiver_lat' => 'sender_lat', 'receiver_lon' => 'sender_lon'
+                ];
+            }
+        }
+        $trackingOrder = array_merge($address, ['type' => $trackingOrderType, 'execution_date' => $order['execution_date']]);
+        $trackingOrder = array_merge(Arr::only($order, $this->tOrderAndOrderSameFields), $trackingOrder);
+        return $this->store($trackingOrder, $dbOrder['order_no']);
     }
 
     /**

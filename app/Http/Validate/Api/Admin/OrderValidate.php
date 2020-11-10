@@ -106,12 +106,18 @@ class OrderValidate extends BaseValidate
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
-        'getBatchPageListByOrder' => ['execution_date'],
-        'assignToBatch' => ['execution_date', 'batch_no'],
+        'again' => [
+            'tracking_order_type', 'execution_date',
+            //发货人信息
+            'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
+            'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat',
+            //收货人信息
+            'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
+            'receiver_city', 'receiver_street', 'receiver_address',
+        ],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
         'destroyAll' => ['id_list'],
-        'removeListFromBatch' => ['id_list'],
         'orderPrintAll' => ['id_list'],
         //'orderExport'=>['id_list']
         'synchronizeStatusList' => ['id_list']

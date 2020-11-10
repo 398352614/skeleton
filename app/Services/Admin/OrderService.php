@@ -354,21 +354,52 @@ class OrderService extends BaseService
         return ['order_no' => $params['order_no']];
     }
 
+    /**
+     * 获取再次取派信息
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
     public function getAgainInfo($id)
     {
         $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2], false);
-        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['create_time' => 'desc']);
-        if (empty($trackingOrder)) {
-            $trackingOrderType = $this->getTrackingOrderService()->getTypeByOrderType($dbOrder['type']);
-        } else {
-            $trackingOrder = $trackingOrder->toArray();
-            if (!in_array($trackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])) {
-                throw new BusinessLogicException('运单已生成');
-            }
-            if (($trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_5) && ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3)) {
-                $trackingOrderType = BaseConstService::TRACKING_ORDER_TYPE_1;
-            }
+        if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder)) {
+            throw new BusinessLogicException('当前订单不支持再次派送，请联系管理员');
         }
+        $dbOrder['tracking_order_type'] = $trackingOrderType;
+        return $dbOrder;
+    }
+
+    /**
+     * @param $order
+     * @return int|null
+     */
+    private function getTrackingOrderType($order)
+    {
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
+        //1.运单不存在,直接获取运单类型
+        if (empty($trackingOrder)) {
+            return $this->getTrackingOrderService()->getTypeByOrderType($order['type']);
+        }
+        $trackingOrder = $trackingOrder->toArray();
+        //2.当运单存在时，若运单不是取派完成或者取派失败,则表示已存在取派的运单
+        if (!in_array($trackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])) {
+            return null;
+        }
+        //3.当运单存在时，若运单为取派失败,则新增取派失败的运单
+        if ($trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
+            return $trackingOrder['type'];
+        }
+        //4.当运单存在时，当运单为取派完成，若订单为取件或派件,则表示不需要新增运单
+        if (in_array($order['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
+            return null;
+        }
+        //5.当运单存在时，当运单为取派完成，当订单为取派件,若运单为派件类型，则表示不需要新增运单
+        if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
+            return null;
+        }
+        //6.当运单存在时，当运单为取派完成，当订单为取派件,若运单为取件类型，则表示不需要新增运单
+        return BaseConstService::TRACKING_ORDER_TYPE_2;
     }
 
 
@@ -376,21 +407,35 @@ class OrderService extends BaseService
      * 再次取派
      * @param $id
      * @param $params
+     * @return bool
      * @throws BusinessLogicException
      */
     public function again($id, $params)
     {
         $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
-        $params = array_merge($dbOrder, $params);
-        return $this->getTrackingOrderService()->storeAgain($params);
+        $trackingOrderType = $this->getTrackingOrderType($dbOrder);
+        if ($trackingOrderType != $params['tracking_order_type']) {
+            throw new BusinessLogicException('当前订单不支持再次派送，请刷新后再操作');
+        }
+        return $this->getTrackingOrderService()->storeAgain($dbOrder, $params, $trackingOrderType);
     }
 
     /**
+     * 终止派送
      * @param $id
+     * @throws BusinessLogicException
      */
     public function end($id)
     {
-
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['tracking_order_no', 'order_no'], false, ['created_at' => 'desc']);
+        if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
+            throw new BusinessLogicException('当前订单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
+        }
+        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_3]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
     }
 
     /**
