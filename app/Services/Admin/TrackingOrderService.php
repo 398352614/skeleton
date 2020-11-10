@@ -35,7 +35,7 @@ class TrackingOrderService extends BaseService
         'type' => ['=', 'type'],
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'order_no,out_order_no,out_user_id' => ['like', 'keyword'],
+        'tracking_order_no,order_no,out_order_no,out_user_id' => ['like', 'keyword'],
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'tour_no' => ['like', 'tour_no'],
