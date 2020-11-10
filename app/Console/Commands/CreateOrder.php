@@ -49,34 +49,36 @@ class CreateOrder extends Command
      */
     public function handle(OrderController $controller)
     {
-        $times = $this->option('times') ?? 1;
-        for ($i = 0; $i < $times; $i++) {
-            $merchantId = $this->option('merchant_id') ?? 3;
-            $merchant = Merchant::query()->where('id', $merchantId)->first();
-            if (empty($merchant)) {
-                $this->error('merchant id dose not exist');
-                exit;
-            }
-            auth()->setUser($merchant);
-            $executionDate = $this->option('execution_date') ?? date('Y-m-d');
-            $paCount = $this->option('package_count') ?? 1;
-            $maCount = $this->option('material_count') ?? 1;
-            $data = array_merge(
-                $this->base($executionDate, $merchantId),
-                $this->getReceiver(),
-                $this->getSender(),
-                $this->getMaPaList($maCount, $paCount)
-            );
-            try {
-                $controller->setData($data);
-                $res = $controller->store();
-                $this->info(json_encode($res, true));
-            } catch (BusinessLogicException $exception) {
-                $this->error($exception->getMessage());
-                exit;
-            } catch (\Exception $exception) {
-                $this->error($exception->getMessage());
-                exit;
+        if (config('tms.app_env') == 'local') {
+            $times = $this->option('times') ?? 1;
+            for ($i = 0; $i < $times; $i++) {
+                $merchantId = $this->option('merchant_id') ?? 3;
+                $merchant = Merchant::query()->where('id', $merchantId)->first();
+                if (empty($merchant)) {
+                    $this->error('merchant id dose not exist');
+                    exit;
+                }
+                auth()->setUser($merchant);
+                $executionDate = $this->option('execution_date') ?? date('Y-m-d');
+                $paCount = $this->option('package_count') ?? 1;
+                $maCount = $this->option('material_count') ?? 1;
+                $data = array_merge(
+                    $this->base($executionDate, $merchantId),
+                    $this->getReceiver(),
+                    $this->getSender(),
+                    $this->getMaPaList($maCount, $paCount)
+                );
+                try {
+                    $controller->setData($data);
+                    $res = $controller->store();
+                    $this->info(json_encode($res, true));
+                } catch (BusinessLogicException $exception) {
+                    $this->error($exception->getMessage());
+                    continue;
+                } catch (\Exception $exception) {
+                    $this->error($exception->getMessage());
+                    continue;
+                }
             }
         }
     }
