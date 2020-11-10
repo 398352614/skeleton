@@ -9,6 +9,7 @@
 
 namespace App\Http\Resources;
 
+use App\Services\BaseConstService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderInfoResource extends JsonResource
@@ -33,9 +34,11 @@ class OrderInfoResource extends JsonResource
             'out_user_id' => $this->out_user_id,
             'nature' => $this->nature,
             'settlement_type' => $this->settlement_type,
+            'settlement_type_name' => $this->settlement_type_name,
             'settlement_amount' => $this->settlement_amount,
             'replace_amount' => $this->replace_amount,
             'delivery' => $this->delivery,
+            'delivery_name' => ($this->delivery == BaseConstService::YES) ? __('是') : __('否'),
             'status' => $this->status,
             'status_name' => $this->status_name,
             'sender_fullname' => $this->sender_fullname,
