@@ -122,7 +122,12 @@ class DriverService extends BaseService
     public function getPageList()
     {
         if (!empty($this->formData['tour_no'])) {
-            $date = Tour::query()->where('tour_no', $this->formData['tour_no'])->first()->toArray()['execution_date'];
+            $date = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
+            if(empty($date)){
+                $date=$date->toArray()['execution_date'];
+            }else{
+                $date='';
+            }
             $info = Tour::query()->where('execution_date', $date)->where('status', '<>', BaseConstService::TOUR_STATUS_5)->whereNotNull('driver_id')->pluck('driver_id')->toArray();
             if (!empty($info)) {
                 $this->query->whereNotIn('id', $info);
