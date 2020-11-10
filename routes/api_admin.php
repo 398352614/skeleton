@@ -131,7 +131,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //运单管理
     Route::prefix('tracking-order')->group(function () {
         //查询初始化
-        Route::get('/initIndex', 'TrackingOrderController@initIndex');
+        Route::get('/init-index', 'TrackingOrderController@initIndex');
         //运单统计
         Route::get('/count', 'TrackingOrderController@trackingOrderCount');
         //获取线路列表
