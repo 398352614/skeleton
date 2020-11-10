@@ -105,7 +105,6 @@ class TourTaskService extends BaseService
      */
     public function getPageList()
     {
-        sleep(10);
         //若状态为1000,则表示当前任务
         if (!empty($this->filters['status'][1]) && (intval($this->filters['status'][1]) === 1000)) {
             $this->filters['status'] = ['<>', BaseConstService::TOUR_STATUS_5];
