@@ -10,6 +10,7 @@ class OrderAgainResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'tracking_order_id' => $this->tracking_order_id,
             'company_id' => $this->company_id,
             'merchant_id' => $this->merchant_id,
             'merchant_id_name' => $this->merchant_id_name,

@@ -19,6 +19,7 @@ use App\Http\Resources\OrderResource;
 use App\Jobs\AddOrderPush;
 use App\Models\Order;
 use App\Models\OrderImportLog;
+use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\CommonService;
@@ -365,22 +366,24 @@ class OrderService extends BaseService
     public function getAgainInfo($id)
     {
         $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_2], false);
-        if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder)) {
+        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
+        if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder)) {
             throw new BusinessLogicException('当前订单不支持再次派送，请联系管理员');
         }
         $dbOrder['tracking_order_type'] = $trackingOrderType;
         $dbOrder['tracking_order_type_name'] = ConstTranslateTrait::trackingOrderTypeList($trackingOrderType);
+        $dbOrder['tracking_order_id'] = $dbTrackingOrder->id;
         $resource = OrderAgainResource::make($dbOrder)->resolve();
         return $resource;
     }
 
     /**
      * @param $order
+     * @param TrackingOrder
      * @return int|null
      */
-    private function getTrackingOrderType($order)
+    private function getTrackingOrderType($order, TrackingOrder $trackingOrder = null)
     {
-        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         //1.运单不存在,直接获取运单类型
         if (empty($trackingOrder)) {
             return $this->getTrackingOrderService()->getTypeByOrderType($order['type']);
@@ -417,7 +420,8 @@ class OrderService extends BaseService
     public function again($id, $params)
     {
         $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
-        $trackingOrderType = $this->getTrackingOrderType($dbOrder);
+        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
+        $trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder);
         if ($trackingOrderType != $params['tracking_order_type']) {
             throw new BusinessLogicException('当前订单不支持再次派送，请刷新后再操作');
         }
