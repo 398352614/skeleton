@@ -143,11 +143,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取可分配的站点列表
         Route::get('/{id}/get-able-batch-list', 'TrackingOrderController@getAbleBatchList');
         //分配至站点
-        Route::put('/{id}/assignToBatch', 'TrackingOrderController@assignToBatch');
+        Route::put('/{id}/assign-batch', 'TrackingOrderController@assignToBatch');
         //从站点移除
-        Route::delete('/{id}/removeFromBatch', 'TrackingOrderController@removeFromBatch');
+        Route::delete('/{id}/remove-batch', 'TrackingOrderController@removeFromBatch');
         //批量运单从站点移除
-        Route::delete('/removeListFromBatch', 'TrackingOrderController@removeListFromBatch');
+        Route::delete('/remove-batch', 'TrackingOrderController@removeListFromBatch');
         //批量运单分配至指定取件线路
         Route::put('/assignListTour', 'TrackingOrderController@assignListTour');
         //批量打印
