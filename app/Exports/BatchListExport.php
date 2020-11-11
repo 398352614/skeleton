@@ -18,7 +18,7 @@ class BatchListExport implements FromArray, WithTitle, WithEvents, WithStrictNul
     public function __construct($tour_no,$data,$headings)
     {
         $this->data =$data;
-        $this->tour_no =md5($tour_no);
+        $this->tour_no =$tour_no;
         $this->headings =$headings;
     }
 

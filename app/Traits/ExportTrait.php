@@ -65,9 +65,9 @@ trait ExportTrait
         $path = 'public\\admin\\excel\\' . $subPath . DIRECTORY_SEPARATOR . $name . '.xlsx';
         try {
             if ($dir == 'plan') {
-                $rowCount = Excel::store(new PlanExport($data, $headings, $name, $dir, $params), $path);
+                $rowCount = Excel::store(new PlanExport($data, $headings, md5($name), $dir, $params), $path);
             } else {
-                $rowCount = Excel::store(new BaseExport($data, $headings, $name, $dir), $path);
+                $rowCount = Excel::store(new BaseExport($data, $headings, md5($name), $dir), $path);
             }
         } catch (\Exception $ex) {
             throw new BusinessLogicException('表格导出失败，请重新操作');
