@@ -464,7 +464,7 @@ class OrderService extends BaseService
      */
     public function again($id, $params)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
         $trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder);
         if ($trackingOrderType != $params['tracking_order_type']) {
