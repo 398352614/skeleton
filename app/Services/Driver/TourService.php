@@ -1050,7 +1050,7 @@ class TourService extends BaseService
             if ($isSignTrackingOrder) {
                 $signTrackingOrderList[] = [
                     'id' => $dbTrackingOrderList[$orderNo]['id'],
-                    'tracking_order_no' => ['tracking_order_no'],
+                    'tracking_order_no' => $dbTrackingOrderList[$orderNo]['tracking_order_no'],
                     'order_no' => $orderNo,
                     'type' => $dbTrackingOrderList[$orderNo]['type'],
                     'sticker_amount' => $orderStickerAmount,
