@@ -361,14 +361,14 @@ class TrackingOrderService extends BaseService
         $dbTrackingOrder = parent::getInfo(['order_no' => $order['order_no']], ['*'], false);
         if (empty($dbTrackingOrder)) return;
         $dbTrackingOrder = $dbTrackingOrder->toArray();
-        //若运单状态不是待分配或已分配状态,则不能修改
-        if (!in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
-            throw new BusinessLogicException('运单状态为[:status_name],不能操作', 1000, ['status_name' => $dbTrackingOrder['status_name']]);
-        }
         //运单重新分配站点
         $trackingOrder = array_merge(Arr::only($order, $this->tOrderAndOrderSameFields), Arr::only($dbTrackingOrder, ['company_id', 'order_no', 'tracking_order_no', 'type']));
         $line = $this->fillSender($trackingOrder);
         if ($this->checkIsChange($dbTrackingOrder, $trackingOrder)) {
+            //若运单状态不是待分配或已分配状态,则不能修改
+            if (!in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
+                throw new BusinessLogicException('运单状态为[:status_name],不能操作', 1000, ['status_name' => $dbTrackingOrder['status_name']]);
+            }
             list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line);
             $trackingOrder = array_merge($trackingOrder, self::getBatchTourFillData($batch, $tour));
             TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
