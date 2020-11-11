@@ -75,7 +75,7 @@ class OrderValidate extends BaseValidate
 
     public $scene = [
         'store' => [
-            'merchant_id', 'execution_date',
+            'merchant_id', 'execution_date', 'second_execution_date',
             'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
@@ -91,7 +91,7 @@ class OrderValidate extends BaseValidate
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
         'update' => [
-            'merchant_id', 'execution_date',
+            'merchant_id', 'execution_date', 'second_execution_date',
             'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
