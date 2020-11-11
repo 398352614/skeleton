@@ -25,7 +25,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
     public function __construct($data, $headings, $title, $dir)
     {
         $this->data = $data;
-        $this->title = $title;
+        $this->title = md5($title);
         $this->headings = $headings;
         $this->type = $dir;
     }
