@@ -367,7 +367,7 @@ class TourService extends BaseService
         //取消取派运单
         if (!empty($params['cancel_tracking_order_id_list'])) {
             $cancelTrackingOrderIdList = explode_id_string($params['cancel_tracking_order_id_list'], ',');
-            $rowCount = $this->getTrackingOrderService()->update(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelTrackingOrderIdList], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
+            $rowCount = $this->getTrackingOrderService()->update(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelTrackingOrderIdList], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['batch_no' => '', 'tour_no' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('出库失败');
             }
