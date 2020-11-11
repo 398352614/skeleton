@@ -57,13 +57,12 @@ trait ExportTrait
      */
     public function excelExport($name, $headings, $data, $dir, $params = [])
     {
-        $name=md5($name);
         if($dir=='batchCount'){
             $headings[1]=$this->translate($headings[1],$dir);
         }
         $headings = $this->translate($headings, $dir);
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
-        $path = 'public\\admin\\excel\\' . $subPath . DIRECTORY_SEPARATOR . $name . '.xlsx';
+        $path = 'public\\admin\\excel\\' . $subPath . DIRECTORY_SEPARATOR . md5($name) . '.xlsx';
         try {
             if ($dir == 'plan') {
                 $rowCount = Excel::store(new PlanExport($data, $headings, $name, $dir, $params), $path);
@@ -77,8 +76,8 @@ trait ExportTrait
             throw new BusinessLogicException('表格导出失败，请重新操作');
         }
         return [
-            'name' => $name . '.xlsx',
-            'path' => Storage::disk('admin_excel_public')->url($subPath . DIRECTORY_SEPARATOR . $name . '.xlsx')
+            'name' => md5($name) . '.xlsx',
+            'path' => Storage::disk('admin_excel_public')->url($subPath . DIRECTORY_SEPARATOR . md5($name) . '.xlsx')
         ];
     }
 
