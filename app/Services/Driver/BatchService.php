@@ -261,8 +261,9 @@ class BatchService extends BaseService
      */
     public function reCountAmountByNo($batchNo)
     {
-        $totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['batch_no' => $batchNo, 'driver_id' => ['<>', null]]);
-        $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['batch_no' => $batchNo, 'driver_id' => ['<>', null]]);
+        //$totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['batch_no' => $batchNo, 'driver_id' => ['<>', null]]);
+        //$totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['batch_no' => $batchNo, 'driver_id' => ['<>', null]]);
+        $totalReplaceAmount = $totalSettlementAmount = 0.00;
         $rowCount = parent::update(['batch_no' => $batchNo, 'driver_id' => ['<>', null]], ['replace_amount' => $totalReplaceAmount, 'settlement_amount' => $totalSettlementAmount]);
         if ($rowCount === false) {
             throw new BusinessLogicException('金额统计失败');
