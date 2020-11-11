@@ -250,6 +250,7 @@ class TourTaskService extends BaseService
         $tour = $tour->toArray(request());
         foreach ($tour as $k => $v) {
             $tour[$k] = array_merge($tour[$k], $this->show($v['id']));
+            $tour[$k]['batch_list']=collect($tour[$k]['batch_list'])->toArray();
             foreach ($tour[$k]['batch_list'] as $x => $y) {
                 $tour[$k]['batch_list'][$x] = array_merge($tour[$k]['batch_list'][$x], $this->getTourService()->getBatchInfo($v['id'], ['batch_id' => $y['id']]));
             }
