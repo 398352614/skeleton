@@ -212,8 +212,8 @@ class BatchService extends BaseService
             'receiver_city' => $order['receiver_city'],
             'receiver_street' => $order['receiver_street'],
             'receiver_address' => $order['receiver_address'],
-            'receiver_lon' => $order['lon'],
-            'receiver_lat' => $order['lat'],
+            'receiver_lon' => $order['receiver_lon'],
+            'receiver_lat' => $order['receiver_lat'],
             'merchant_id' => $line['range_merchant_id'] ?? 0
         ];
         if (intval($order['type']) === 1) {
