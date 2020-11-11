@@ -87,7 +87,7 @@ return [
     'unique' => ':attribute 已存在',
     'url' => ':attribute 无效的格式',
     'unique_ignore' => ':attribute 已存在',
-    'check_special_char'=>':attribute 存在特殊字符',
+    'check_special_char' => ':attribute 存在特殊字符',
 
     /*
     |--------------------------------------------------------------------------
@@ -384,6 +384,7 @@ return [
         'can_skip_batch' => '能否跳过',
         //Admin-Order
         'execution_date' => '取派日期',
+        'second_execution_date' => '派送日期',
         'out_order_no' => '外部订单号',
         'express_first_no' => '快递单号1',
         'express_second_no' => '快递单号2',
@@ -684,16 +685,16 @@ return [
         "company_auth" => "是否需要验证公司权限",
 
 
-"sign_time"=>"签收时间",
-"out_expect_arrive_time"=>"出库预计时间",
-"out_expect_distance"=>"出库预计里程",
-"out_expect_time"=>"出库预计耗时",
-"relate_material_list"=>"文件列表",
+        "sign_time" => "签收时间",
+        "out_expect_arrive_time" => "出库预计时间",
+        "out_expect_distance" => "出库预计里程",
+        "out_expect_time" => "出库预计耗时",
+        "relate_material_list" => "文件列表",
 
 
-"number"=>"设备型号",
-"mode"=>"模式",
-"delay_type"=>"延迟类型",
-"delay_remark"=>"延迟备注",
-]
+        "number" => "设备型号",
+        "mode" => "模式",
+        "delay_type" => "延迟类型",
+        "delay_remark" => "延迟备注",
+    ]
 ];
