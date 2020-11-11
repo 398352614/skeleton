@@ -95,7 +95,7 @@ class OrderService extends BaseService
      * 材料服务
      * @return MaterialService
      */
-    public function getMaterialService()
+    private function getMaterialService()
     {
         return self::getInstance(MaterialService::class);
     }
@@ -111,19 +111,10 @@ class OrderService extends BaseService
     }
 
     /**
-     * 站点异常 服务
-     * @return BatchExceptionService
-     */
-    private function getBatchExceptionService()
-    {
-        return self::getInstance(BatchExceptionService::class);
-    }
-
-    /**
      * 站点(取件批次) 服务
      * @return BatchService
      */
-    public function getBatchService()
+    private function getBatchService()
     {
         return self::getInstance(BatchService::class);
     }
@@ -132,62 +123,25 @@ class OrderService extends BaseService
      * 取件线路 服务
      * @return TourService
      */
-    public function getTourService()
+    private function getTourService()
     {
         return self::getInstance(TourService::class);
-    }
-
-
-    /**
-     * 发件人地址 服务
-     * @return SenderAddressService
-     */
-    public function getSenderAddressService()
-    {
-        return self::getInstance(SenderAddressService::class);
     }
 
     /**
      * 收人地址 服务
      * @return ReceiverAddressService
      */
-    public function getReceiverAddressService()
+    private function getReceiverAddressService()
     {
         return self::getInstance(ReceiverAddressService::class);
-    }
-
-    /**
-     * 线路 服务
-     * @return LineService
-     */
-    public function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 线路范围 服务
-     * @return LineRangeService
-     */
-    public function getLineRangeService()
-    {
-        return self::getInstance(LineRangeService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    public function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
     }
 
     /**
      * 上传 服务
      * @return mixed
      */
-    public function getUploadService()
+    private function getUploadService()
     {
         return self::getInstance(UploadService::class);
     }
@@ -208,16 +162,6 @@ class OrderService extends BaseService
     private function getPrintTemplateService()
     {
         return self::getInstance(PrintTemplateService::class);
-    }
-
-    /**
-     * 区域 服务
-     * @return LineAreaService
-     */
-    private function getLineAreaService()
-    {
-        return self::getInstance(LineAreaService::class);
-
     }
 
     /**

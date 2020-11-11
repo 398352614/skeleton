@@ -1278,7 +1278,9 @@ class TourService extends BaseService
             throw new BusinessLogicException('司机入库失败，请重新操作');
         }
         //存在取派订单且取件运单成功的，生成派件运单
-        $orderList = $this->getTrackingOrderService()->getOrderList(['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5], ['type' => BaseConstService::ORDER_TYPE_3, 'status' => BaseConstService::ORDER_STATUS_2]);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5], ['*'], false)->toArray();
+        $orderNoList = array_column($trackingOrderList, 'order_no');
+        $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList], 'type' => BaseConstService::ORDER_TYPE_3, 'status' => BaseConstService::ORDER_STATUS_2], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $trackingOrder = [];
             $trackingOrder['receiver_fullname'] = $order['sender_fullname'];
@@ -1296,7 +1298,7 @@ class TourService extends BaseService
             $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'out_user_id', 'out_order_no', 'order_no', 'pie_execution_date', 'mask_code', 'special_remark']));
             $this->getTrackingOrderService()->store($trackingOrder);
         }
-        TourTrait::afterBackWarehouse($tour);
+        //TourTrait::afterBackWarehouse($tour);
     }
 
     /**

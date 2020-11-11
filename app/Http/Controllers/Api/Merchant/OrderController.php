@@ -158,16 +158,6 @@ class OrderController extends OrderBaseController
         return $this->service->getDate($this->data);
     }
 
-    /**
-     * 通过订单,获取可分配的站点列表
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getBatchPageListByOrder($id)
-    {
-        return $this->service->getBatchPageListByOrder($id, $this->data);
-    }
 
 
     /**
