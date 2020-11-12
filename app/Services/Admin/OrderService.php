@@ -809,7 +809,7 @@ class OrderService extends BaseService
                 $orderList[$k]['package_quantity'] = 0;
             }
             if (!empty($materialList)) {
-                $orderList[$k]['material_name'] = implode(',', collect($materialList)->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray());
+                $orderList[$k]['material_name'] = implode(',', collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
                 $orderList[$k]['material_quantity'] = count(collect($materialList)->where('order_no', $v['order_no']));
             } else {
                 $orderList[$k]['material_name'] = [];
