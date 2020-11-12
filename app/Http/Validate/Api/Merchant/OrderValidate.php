@@ -21,6 +21,7 @@ class OrderValidate extends BaseValidate
         'batch_no' => 'nullable|string|max:50',
         'out_order_no' => 'nullable|string|max:50',
         'execution_date' => 'required|date|after_or_equal:today',
+        'second_execution_date' => 'required_if:type,3|date|after_or_equal:today',
         'list_mode' => 'sometimes|required|in:1,2',
         'type' => 'required|integer|in:1,2',
         'out_user_id' => 'nullable|integer',
@@ -37,8 +38,17 @@ class OrderValidate extends BaseValidate
         'receiver_city' => 'required|string|max:50',
         'receiver_street' => 'required|string|max:50',
         'receiver_address' => 'checkAddress|nullable|string|max:250',
-        'lon' => 'nullable|string|max:50',
-        'lat' => 'nullable|string|max:50',
+        'receiver_lon' => 'nullable|string|max:50',
+        'receiver_lat' => 'nullable|string|max:50',
+        'sender_fullname' => 'required_if:type,3|string|max:50',
+        'sender_phone' => 'required_if:type,3|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'sender_post_code' => 'required_if:type,3|string|max:50',
+        'sender_house_number' => 'required_if:type,3|string|max:50',
+        'sender_city' => 'required_if:type,3|string|max:50',
+        'sender_street' => 'required_if:type,3|string|max:50',
+        'sender_address' => 'checkAddress|nullable|string|max:250',
+        'sender_lon' => 'nullable|string|max:50',
+        'sender_lat' => 'nullable|string|max:50',
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
         'out_status' => 'sometimes|integer|in:1,2',
@@ -63,39 +73,37 @@ class OrderValidate extends BaseValidate
 
     public $scene = [
         'store' => [
-            'merchant_id', 'execution_date',
+            'merchant_id', 'execution_date', 'second_execution_date',
             'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
-            //'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
-            //'sender_city', 'sender_street', 'sender_address',
+            'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
+            'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat',
             //收货人信息
             'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
-            'receiver_city', 'receiver_street', 'receiver_address',
+            'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat',
             //备注
-            'special_remark', 'remark', 'lon', 'lat',
+            'special_remark', 'remark',
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
         'update' => [
-            'merchant_id', 'execution_date', 'mask_code',
+            'merchant_id', 'execution_date', 'second_execution_date', 'mask_code',
             'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
-            //'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
-            //'sender_city', 'sender_street', 'sender_address',
+            'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
+            'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat',
             //收货人信息
             'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
-            'receiver_city', 'receiver_street', 'receiver_address',
+            'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat',
             //备注
-            'special_remark', 'remark', 'lon', 'lat',
+            'special_remark', 'remark',
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
-        'getBatchPageListByOrder' => ['execution_date'],
-        'assignToBatch' => ['execution_date', 'batch_no'],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
         'updateOutStatus' => ['order_no', 'out_status'],

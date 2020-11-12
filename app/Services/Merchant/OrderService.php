@@ -956,125 +956,27 @@ class OrderService extends BaseService
     /**
      * @param $id
      * @param $data
-     * @return array
+     * @return boolean|array
      * @throws BusinessLogicException
      */
     public function updatePhoneDateByApi($id, $data)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
-        if (!empty($data['receiver_phone']) && empty($data['execution_date'])) {
-            $data = Arr::only($data, ['receiver_phone']);
-        } elseif (empty($data['receiver_phone']) && !empty($data['execution_date'])) {
-            $data = Arr::only($data, ['execution_date']);
-        } elseif (empty($data['receiver_phone']) && empty($data['execution_date'])) {
-            throw new BusinessLogicException('电话或取派日期必填其一');
-        }
-        //分类
-        if ($info['status'] < BaseConstService::TRACKING_ORDER_STATUS_3) {
-            return $this->updateDatePhone($info, $data);
-        } elseif (in_array($info['status'], [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]) && empty($data['execution_date'])) {
-            return $this->updatePhone($info, $data);
-        } else {
+        $this->request->validate([
+            'receiver_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+            'execution_date' => 'required_without:receiver_phone|date|after_or_equal:today'
+        ]);
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
+        list($phone, $executionDate) = [$data['receiver_phone'] ?? '', $data['execution_date'] ?? null];
+        if (in_array($dbOrder['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4, BaseConstService::ORDER_STATUS_5])) {
             throw new BusinessLogicException('该状态无法进行此操作');
         }
-    }
-
-    /**
-     * 通过API修改（电话，取派日期）
-     * @param $dbInfo
-     * @param $data
-     * @return array
-     * @throws BusinessLogicException
-     */
-    public function updateDatePhone($dbInfo, $data)
-    {
-        $newData = array_merge($dbInfo, $data);
-        /*************************************************订单修改******************************************************/
-        //获取信息
-        $dbInfo['package_list'] = $this->getPackageService()->getList(['order_no' => $newData['order_no']], ['*'], false)->toArray();
-        $dbInfo['material_list'] = $this->getMaterialService()->getList(['order_no' => $newData['order_no']], ['*'], false)->toArray();
-        //验证
-        unset($newData['tour_no'], $newData['batch_no'], $data['order_no'], $data['tour_no'], $data['batch_no']);
-        /******************************更换站点***************************************/
-        $line = $this->fillSender($newData);
-        list($batch, $tour) = $this->changeBatch($dbInfo, $newData, $line, true);
-
-        //修改
-        $rowCount = parent::updateById($dbInfo['id'], $data);
+        $data = array_filter(Arr::only($data, ['receiver_phone', 'execution_date']));
+        $rowCount = parent::updateById($dbOrder['id'], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败，请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
-        //重新统计站点金额
-        $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
-        //重新统计取件线路金额
-        $this->getTourService()->reCountAmountByNo($tour['tour_no']);
-
-        $order = parent::getInfo(['order_no' => $dbInfo['order_no']], ['*'], false)->toArray();
-        if (!empty($order['tour_no'])) {
-            $tour = $this->getTourService()->getInfo(['tour_no' => $order['tour_no']], ['*'], false);
-        }
-        return [
-            'order_no' => $dbInfo['order_no'],
-            'batch_no' => $order['batch_no'] ?? '',
-            'tour_no' => $order['tour_no'] ?? '',
-            'line' => [
-                'line_id' => $tour['line_id'] ?? '',
-                'line_name' => $tour['line_name'] ?? '',
-            ]
-        ];
-    }
-
-    /**
-     * @param $info
-     * @param $data
-     * @return array
-     * @throws BusinessLogicException
-     */
-    public function updatePhone($info, $data)
-    {
-        $row = parent::update(['batch_no' => $info['batch_no']], $data);
-        if ($row === false) {
-            throw new BusinessLogicException('操作失败');
-        }
-        $batch = $this->getBatchService()->update(['batch_no' => $info['batch_no']], $data);
-        if ($batch === false) {
-            throw new BusinessLogicException('操作失败');
-        }
-        $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false);
-        return [
-            'order_no' => $info['order_no'],
-            'batch_no' => $info['batch_no'] ?? '',
-            'tour_no' => $info['tour_no'] ?? '',
-            'line' => [
-                'line_id' => $tour['line_id'] ?? '',
-                'line_name' => $tour['line_name'] ?? '',
-            ]
-        ];
-    }
-
-    /**
-     * 订单更换站点
-     * @param $dbInfo
-     * @param $data
-     * @param $line
-     * @param bool $isFillItem
-     * @return array
-     * @throws BusinessLogicException
-     */
-    private function changeBatch($dbInfo, $data, $line, $isFillItem = false)
-    {
-        //站点移除订单,添加新的订单
-        if (!empty($dbInfo['batch_no'])) {
-            $this->getBatchService()->removeTrackingOrder($dbInfo);
-            //重新统计站点金额
-            $this->getBatchService()->reCountAmountByNo($dbInfo['batch_no']);
-            //重新统计取件线路金额
-            !empty($dbInfo['tour_no']) && $this->getTourService()->reCountAmountByNo($dbInfo['tour_no']);
-        }
-        list($batch, $tour) = $this->getBatchService()->join($data, $line);
-        /**********************************填充取件批次编号和取件线路编号**********************************************/
-        $this->fillBatchTourInfo($dbInfo, $batch, $tour, $isFillItem);
-        return [$batch, $tour];
+        $this->getTrackingOrderService()->updateDateAndPhone($dbOrder, $data);
+        return 'true';
     }
 
     /**
@@ -1163,64 +1065,30 @@ class OrderService extends BaseService
      */
     public function updateItemList($id, $params)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]);
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
         //验证包裹列表
-        !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $info['order_no']);
+        !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $dbOrder['order_no']);
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
-        //获取包裹
-        $dbMaterialList = $this->getMaterialService()->getList(['order_no' => $info['order_no']], ['*'], false)->toArray();
-        //删除包裹和材料
-        $rowCount = $this->getPackageService()->delete(['order_no' => $info['order_no']]);
+        $dbMaterialList = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false)->toArray();
+        //删除包裹
+        $rowCount = $this->getPackageService()->delete(['order_no' => $dbOrder['order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $rowCount = $this->getMaterialService()->delete(['order_no' => $info['order_no']]);
+        $rowCount = $this->getMaterialService()->delete(['order_no' => $dbOrder['order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
         //新增包裹和材料
-        $info['package_list'] = $params['package_list'] ?? [];
-        $info['material_list'] = $params['material_list'] ?? [];
-        $this->addAllItemList($info);
-        //若司机已出库,则处理取件线路中对应材料数量
-        if (intval($info['status']) === BaseConstService::TRACKING_ORDER_STATUS_4) {
-            foreach ($dbMaterialList as $dbMaterial) {
-                $dbTourMaterial = $this->tourMaterialModel->newQuery()->where('tour_no', $info['tour_no'])->where('code', $dbMaterial['code'])->first();
-                if (!empty($dbTourMaterial)) {
-                    $diffExpectQuantity = $dbTourMaterial->expect_quantity - $dbMaterial['expect_quantity'];
-                    $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $diffExpectQuantity]);
-                    if ($rowCount === false) {
-                        throw new BusinessLogicException('材料处理失败');
-                    }
-                }
-            }
-            $materialList = $params['material_list'] ?? [];
-            foreach ($materialList as $material) {
-                $dbTourMaterial = $this->tourMaterialModel->newQuery()->where('tour_no', $info['tour_no'])->where('code', $material['code'])->first();
-                if (empty($dbTourMaterial)) {
-                    $rowCount = $this->tourMaterialModel->newQuery()->create([
-                        'tour_no' => $info['tour_no'],
-                        'name' => $material['name'],
-                        'code' => $material['code'],
-                        'expect_quantity' => $material['expect_quantity'],
-                    ]);
-                } else {
-                    $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $dbTourMaterial->expect_quantity + $material['expect_quantity']]);
-                }
-                if ($rowCount === false) {
-                    throw new BusinessLogicException('材料处理失败');
-                }
-            }
-            //删除预计数量为0的取件材料
-            $rowCount = $this->tourMaterialModel->newQuery()->where('tour_no', $info['tour_no'])->where('expect_quantity', 0)->delete();
-            if ($rowCount === false) {
-                throw new BusinessLogicException('材料处理失败');
-            }
-        }
+        $dbOrder['package_list'] = $params['package_list'] ?? [];
+        $dbOrder['material_list'] = $params['material_list'] ?? [];
+        $this->addAllItemList($dbOrder);
+        //处理取派线路中的材料
+        $this->getTrackingOrderService()->dealMaterialList($dbOrder, $dbMaterialList, $params['material_list'] ?? []);
     }
 
     /**

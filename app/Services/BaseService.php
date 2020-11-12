@@ -200,18 +200,25 @@ class BaseService
      * @param $where
      * @param array $selectFields
      * @param bool $isResource
+     * @param array $orderFields
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
-    public function getInfoLock($where, $selectFields = ['*'], $isResource = true)
+    public function getInfoLock($where, $selectFields = ['*'], $isResource = true, $orderFields = [])
     {
         $query = $this->query;
         SearchTrait::buildQuery($query, $where);
+        if (!empty($orderFields)) {
+            $keyArr = array_keys($orderFields);
+            foreach ($keyArr as $key) {
+                $this->query->orderBy($key, $orderFields[$key]);
+            }
+        }
         $data = $query->first($selectFields);
         if (empty($data)) {
             return null;
         }
         unset($query);
-        return $this->locked()->getInfo($where, $selectFields, $isResource);
+        return $this->locked()->getInfo($where, $selectFields, $isResource, $orderFields);
     }
 
 

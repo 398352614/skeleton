@@ -353,31 +353,38 @@ class TrackingOrderService extends BaseService
 
     /**
      * 修改
+     * 注意：取派订单删除时，因为待取派订单只会生成取件运单,所以只有一个运单
      * @param $order
      * @throws BusinessLogicException
      */
     public function updateByOrder($order)
     {
-        $dbTrackingOrder = parent::getInfo(['order_no' => $order['order_no']], ['*'], false);
+        $dbTrackingOrder = parent::getInfoLock(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         if (empty($dbTrackingOrder)) return;
         $dbTrackingOrder = $dbTrackingOrder->toArray();
         //运单重新分配站点
         $trackingOrder = array_merge(Arr::only($order, $this->tOrderAndOrderSameFields), Arr::only($dbTrackingOrder, ['company_id', 'order_no', 'tracking_order_no', 'type']));
         $line = $this->fillSender($trackingOrder);
+        //1.若运单状态是待出库或取派中,则不能修改
+        //2.若运单状态是取消取派,取派完成,回收站,则无需处理
+        //3.若运单状态是待分配或已分配，则能修改
         if ($this->checkIsChange($dbTrackingOrder, $trackingOrder)) {
-            //若运单状态不是待分配或已分配状态,则不能修改
-            if (!in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
-                throw new BusinessLogicException('运单状态为[:status_name],不能操作', 1000, ['status_name' => $dbTrackingOrder['status_name']]);
+            if (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
+                throw new BusinessLogicException('运单状态为[:status_name],不能修改派送信息', 1000, ['status_name' => $dbTrackingOrder['status_name']]);
             }
-            list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line);
-            $trackingOrder = array_merge($trackingOrder, self::getBatchTourFillData($batch, $tour));
-            TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
-            TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+            if (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
+                list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line);
+                $trackingOrder = array_merge($trackingOrder, self::getBatchTourFillData($batch, $tour));
+                TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
+                TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+            }
         }
-        //修改运单
-        $rowCount = parent::updateById($dbTrackingOrder['id'], $trackingOrder);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('运单修改失败');
+        //1.若运单状态为待分配，已分配，待出库，取派中，则允许修改;否则，不用修改
+        if (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
+            $rowCount = parent::updateById($dbTrackingOrder['id'], $trackingOrder);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('运单修改失败');
+            }
         }
     }
 

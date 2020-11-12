@@ -23,7 +23,7 @@ class OrderValidate extends BaseValidate
         'out_order_no' => 'nullable|string|max:50',
         'mask_code' => "nullable|string|max:50",
         'execution_date' => 'required|date|after_or_equal:today',
-        'second_execution_date' => 'required_if:type,3',
+        'second_execution_date' => 'required_if:type,3|date|after_or_equal:today',
         'list_mode' => 'sometimes|required|in:1,2',
         'type' => 'required|integer|in:1,2,3',
         'out_user_id' => 'nullable|integer',
@@ -82,9 +82,9 @@ class OrderValidate extends BaseValidate
             'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat',
             //收货人信息
             'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
-            'receiver_city', 'receiver_street', 'receiver_address',
+            'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat',
             //备注
-            'special_remark', 'remark', 'receiver_lon', 'receiver_lat',
+            'special_remark', 'remark',
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
             //材料列表
@@ -98,9 +98,9 @@ class OrderValidate extends BaseValidate
             'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat',
             //收货人信息
             'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
-            'receiver_city', 'receiver_street', 'receiver_address',
+            'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat',
             //备注
-            'special_remark', 'remark', 'receiver_lon', 'receiver_lat',
+            'special_remark', 'remark',
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
             //材料列表

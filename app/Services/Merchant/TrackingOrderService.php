@@ -14,6 +14,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\TrackingOrderResource;
 use App\Jobs\AddOrderPush;
 use App\Models\Order;
+use App\Models\TourMaterial;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
@@ -24,6 +25,11 @@ use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use Illuminate\Support\Arr;
 
+/**
+ * Class TrackingOrderService
+ * @package App\Services\Merchant
+ * @property TourMaterial $tourMaterialModel
+ */
 class TrackingOrderService extends BaseService
 {
     use ExportTrait;
@@ -81,9 +87,12 @@ class TrackingOrderService extends BaseService
 
     public $orderBy = ['id' => 'desc'];
 
+    private $tourMaterialModel;
+
     public function __construct(TrackingOrder $trackingOrder)
     {
         parent::__construct($trackingOrder, TrackingOrderResource::class, null);
+        $this->tourMaterialModel = new TourMaterial();
     }
 
     /**
@@ -350,32 +359,103 @@ class TrackingOrderService extends BaseService
 
     /**
      * 修改
+     * 注意：取派订单删除时，因为待取派订单只会生成取件运单,所以只有一个运单
      * @param $order
      * @throws BusinessLogicException
      */
     public function updateByOrder($order)
     {
-        $dbTrackingOrder = parent::getInfo(['order_no' => $order['order_no']], ['*'], false);
+        $dbTrackingOrder = parent::getInfoLock(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         if (empty($dbTrackingOrder)) return;
         $dbTrackingOrder = $dbTrackingOrder->toArray();
-        //若运单状态不是待分配或已分配状态,则不能修改
-        if (!in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
-            throw new BusinessLogicException('运单状态为[:status_name],不能操作', 1000, ['status_name' => $dbTrackingOrder['status_name']]);
-        }
         //运单重新分配站点
         $trackingOrder = array_merge(Arr::only($order, $this->tOrderAndOrderSameFields), Arr::only($dbTrackingOrder, ['company_id', 'order_no', 'tracking_order_no', 'type']));
         $line = $this->fillSender($trackingOrder);
+        //1.若运单状态是待出库或取派中,则不能修改
+        //2.若运单状态是取消取派,取派完成,回收站,则无需处理
+        //3.若运单状态是待分配或已分配，则能修改
         if ($this->checkIsChange($dbTrackingOrder, $trackingOrder)) {
-            list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line);
-            $trackingOrder = array_merge($trackingOrder, self::getBatchTourFillData($batch, $tour));
-            TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
-            TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+            if (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
+                throw new BusinessLogicException('运单状态为[:status_name],不能修改派送信息', 1000, ['status_name' => $dbTrackingOrder['status_name']]);
+            }
+            if (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
+                list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line);
+                $trackingOrder = array_merge($trackingOrder, self::getBatchTourFillData($batch, $tour));
+                TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
+                TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+            }
         }
-        //修改运单
-        $rowCount = parent::updateById($dbTrackingOrder['id'], $trackingOrder);
+        //1.若运单状态为待分配，已分配，待出库，取派中，则允许修改;否则，不用修改
+        if (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
+            $rowCount = parent::updateById($dbTrackingOrder['id'], $trackingOrder);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('运单修改失败');
+            }
+        }
+    }
+
+    public function updateDateAndPhone($order, $params)
+    {
+
+    }
+
+    /**
+     * 处理材料
+     * @param $order
+     * @param $dbMaterialList
+     * @param $materialList
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function dealMaterialList($order, $dbMaterialList, $materialList)
+    {
+        $dbTrackingOrder = parent::getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
+        if (empty($dbTrackingOrder)) return 'true';
+        $dbTrackingOrder = $dbTrackingOrder->toArray();
+        //若是取派件订单并且是派件运单,则不处理
+        if (($order['type'] == BaseConstService::ORDER_TYPE_3) && ($dbTrackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2)) {
+            return 'true';
+        }
+        //若运单是取派中,则需要处理取件线路中对应材料数量
+        if (intval($dbTrackingOrder['status']) === BaseConstService::TRACKING_ORDER_STATUS_4) {
+            foreach ($dbMaterialList as $dbMaterial) {
+                $dbTourMaterial = $this->tourMaterialModel->newQuery()->where('tour_no', $dbTrackingOrder['tour_no'])->where('code', $dbMaterial['code'])->first();
+                if (!empty($dbTourMaterial)) {
+                    $diffExpectQuantity = $dbTourMaterial->expect_quantity - $dbMaterial['expect_quantity'];
+                    $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $diffExpectQuantity]);
+                    if ($rowCount === false) {
+                        throw new BusinessLogicException('材料处理失败');
+                    }
+                }
+            }
+            foreach ($materialList as $material) {
+                $dbTourMaterial = $this->tourMaterialModel->newQuery()->where('tour_no', $dbTrackingOrder['tour_no'])->where('code', $material['code'])->first();
+                if (empty($dbTourMaterial)) {
+                    $rowCount = $this->tourMaterialModel->newQuery()->create([
+                        'tour_no' => $dbTrackingOrder['tour_no'],
+                        'name' => $material['name'],
+                        'code' => $material['code'],
+                        'expect_quantity' => $material['expect_quantity'],
+                    ]);
+                } else {
+                    $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $dbTourMaterial->expect_quantity + $material['expect_quantity']]);
+                }
+                if ($rowCount === false) {
+                    throw new BusinessLogicException('材料处理失败');
+                }
+            }
+            //删除预计数量为0的取件材料
+            $rowCount = $this->tourMaterialModel->newQuery()->where('tour_no', $dbTrackingOrder['tour_no'])->where('expect_quantity', 0)->delete();
+            if ($rowCount === false) {
+                throw new BusinessLogicException('材料处理失败');
+            }
+        };
+        $rowCount = $this->getMaterialService()->update(['order_no' => $order['order_no']], ['batch_no' => $dbTrackingOrder['batch_no'], 'tour_no' => $dbTrackingOrder['tour_no']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('运单修改失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
+        return 'true';
+
     }
 
     /**
