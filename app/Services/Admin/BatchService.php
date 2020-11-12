@@ -373,7 +373,7 @@ class BatchService extends BaseService
             $order['material_list'] = array_values(collect($materialList)->where('order_no', $order['order_no'])->all());
         }
         $info['tracking_order_count'] = count($trackingOrderList);
-        $info['tracking_order_count'] = count($orderList);
+        $info['order_count'] = count($orderList);
         $info['orders'] = $orderList;
         return $info;
     }

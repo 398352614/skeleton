@@ -98,30 +98,17 @@ class TourService extends BaseService
     }
 
     /**
-     * 司机 服务
-     * @return DriverService
-     */
-    private function getDriverService()
-    {
-        return self::getInstance(DriverService::class);
-    }
-
-    /**
-     * 车辆 服务
-     * @return CarService
-     */
-    private function getCarService()
-    {
-        return self::getInstance(CarService::class);
-    }
-
-    /**
      * 仓库 服务
      * @return WareHouseService
      */
     private function getWareHouseService()
     {
         return self::getInstance(WareHouseService::class);
+    }
+
+    public function getUploadService()
+    {
+        return self::getInstance(UploadService::class);
     }
 
     /**
@@ -158,51 +145,6 @@ class TourService extends BaseService
         }
         return parent::getPageList();
     }
-
-    /**
-     * 分配或取消分配司机或车辆到取件线路-站点-订单
-     * @param $tour
-     * @param $data
-     * @return bool
-     */
-    private function assignOrCancelAssignAll($tour, $data)
-    {
-        //取件线路
-        $rowCount = parent::updateById($tour['id'], $data);
-        if ($rowCount === false) return false;
-        //站点
-        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no']], $data);
-        if ($rowCount === false) return false;
-        //订单
-        $rowCount = $this->getOrderService()->update(['tour_no' => $tour['tour_no']], $data);
-        if ($rowCount === false) return false;
-        //包裹
-        $rowCount = $this->getPackageService()->update(['tour_no' => $tour['tour_no']], $data);
-        if ($rowCount === false) return false;
-        return true;
-    }
-
-    /**
-     * 取消锁定-将状态改为已分配
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function unlock($id)
-    {
-        $tour = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::TOUR_STATUS_3, false);
-        //取件线路 处理
-        $rowCount = parent::updateById($id, ['status' => BaseConstService::TOUR_STATUS_2]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('取件线路取消锁定失败，请重新操作');
-        }
-        //站点 处理
-        $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_WAIT_OUT], ['status' => BaseConstService::BATCH_ASSIGNED]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('站点取消锁定失败，请重新操作');
-        }
-        TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_UN_LOCK);
-    }
-
 
     /**
      * 站点加入取件线路
@@ -287,133 +229,6 @@ class TourService extends BaseService
         return $tour;
     }
 
-    /**
-     * 通过订单,修改订单相关数据
-     * @param $dbOrder
-     * @param $order
-     * @param $data
-     * @throws BusinessLogicException
-     */
-    public function updateAboutOrderByOrder($dbOrder, $order)
-    {
-        $info = $this->getInfoOfStatus(['tour_no' => $dbOrder['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
-        //若订单类型改变,则站点统计数量改变
-        $data = [];
-        if (intval($dbOrder['type']) !== intval($order['type'])) {
-            if (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) {
-                $data['expect_pickup_quantity'] = $info['expect_pickup_quantity'] + 1;
-                $data['expect_pie_quantity'] = $info['expect_pie_quantity'] - 1;
-            } else {
-                $data['expect_pickup_quantity'] = $info['expect_pickup_quantity'] - 1;
-                $data['expect_pie_quantity'] = $info['expect_pie_quantity'] + 1;
-            }
-        }
-        $rowCount = parent::updateById($info['id'], $data);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败');
-        }
-    }
-
-
-    /**
-     * 移除站点订单
-     * @param $order
-     * @param $batch
-     * @throws BusinessLogicException
-     */
-    public function removeBatchOrder($order, $batch)
-    {
-        $info = $this->getInfoOfStatus(['tour_no' => $order['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3], true);
-        $quantity = $info['expect_pickup_quantity'] + $info['expect_pie_quantity'];
-        //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
-        if ($quantity - 1 <= 0) {
-            $rowCount = parent::delete(['id' => $info['id']]);
-        } else {
-            $data = (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
-            $rowCount = parent::updateById($info['id'], $data);
-        }
-        if ($rowCount === false) {
-            throw new BusinessLogicException('取件移除订单失败，请重新操作');
-        }
-    }
-
-    /**
-     * 移除站点
-     * @param $batch
-     * @throws BusinessLogicException
-     */
-    public function removeBatch($batch)
-    {
-        $info = $this->getInfoOfStatus(['tour_no' => $batch['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
-        $quantity = intval($info['expect_pickup_quantity']) + intval($info['expect_pie_quantity']);
-        $batchQuantity = intval($batch['expect_pickup_quantity']) + intval($batch['expect_pie_quantity']);
-        //当站点中不存在其他订单时,删除站点;若还存在其他订单,则只移除订单
-        if ($quantity - $batchQuantity <= 0) {
-            $rowCount = parent::delete(['id' => $info['id']]);
-        } else {
-            $data = ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - $batch['expect_pickup_quantity'], 'expect_pie_quantity' => $info['expect_pie_quantity'] - $batch['expect_pie_quantity']];
-            $rowCount = parent::updateById($info['id'], $data);
-        }
-        if ($rowCount === false) {
-            throw new BusinessLogicException('取件移除站点失败，请重新操作');
-        }
-    }
-
-    /**
-     * 通过站点,获取可分配的取件线路
-     * @param $batch
-     * @param $line
-     * @return array
-     */
-    public function getListByBatch($batch, $line)
-    {
-        $data = [];
-        $tour = $this->getInfo(['tour_no' => $batch['tour_no']], ['*'], false)->toArray();
-        if (!empty($tour) && !empty($line)) {
-            //当日截止时间验证
-            if ((date('Y-m-d') == $batch['execution_date'] && time() < strtotime($batch['execution_date'] . ' ' . $line['order_deadline']) ||
-                date('Y-m-d') !== $batch['execution_date'])) {
-                //取件订单，线路最大订单量验证
-                if ($this->formData['type'] = BaseConstService::TRACKING_ORDER_TYPE_1 && $tour['expect_pickup_quantity'] + $batch['expect_pickup_quantity'] < $line['pickup_max_count']) {
-                    $data = $batch;
-                }
-                //派件订单，线路最大订单量验证
-                if ($this->formData['type'] = BaseConstService::TRACKING_ORDER_TYPE_2 && $tour['expect_pie_quantity'] + $batch['expect_pie_quantity'] < $line['pie_max_count']) {
-                    $data = $batch;
-                }
-            }
-        }
-        return $data;
-    }
-
-
-    /**
-     * 分配站点至取件线路
-     * @param $batch
-     * @param $line
-     * @param $params
-     * @return BaseService|array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|mixed|object|null
-     * @throws BusinessLogicException
-     */
-    public function assignBatchToTour($batch, $line, $params)
-    {
-        if (!empty($batch['tour_no'])) {
-            $this->removeBatch($batch);
-        }
-        $tour = $this->getTourInfo($batch, $line, true, $params['tour_no'] ?? '', true);
-        if (!empty($params['tour_no']) && empty($tour)) {
-            throw new BusinessLogicException('当前指定取件线路不符合当前站点');
-        }
-        $quantity = ['expect_pickup_quantity' => $batch['expect_pickup_quantity'], 'expect_pie_quantity' => $batch['expect_pie_quantity']];
-        //若存在取件线路，判断当前取件线路中是否已存在相同站点,若存在，则合并
-        if (!empty($tour)) {
-            $batch = $this->getBatchService()->mergeTwoBatch($tour, $batch);
-            $tour = $this->joinExistTour($tour, $quantity);
-        } else {
-            $tour = $this->joinNewTour($batch, $line, $quantity);
-        }
-        return [$tour, $batch];
-    }
 
     /**
      * 获取取件线路信息
@@ -671,12 +486,6 @@ class TourService extends BaseService
         $info['batchs'] = array_values($info['batchs']);
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         return $info;
-    }
-
-
-    public function getUploadService()
-    {
-        return self::getInstance(UploadService::class);
     }
 
     protected function getRelativeUrl(string $url): string

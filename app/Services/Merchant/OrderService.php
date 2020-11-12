@@ -1065,7 +1065,7 @@ class OrderService extends BaseService
     {
         //站点移除订单,添加新的订单
         if (!empty($dbInfo['batch_no'])) {
-            $this->getBatchService()->removeOrder($dbInfo);
+            $this->getBatchService()->removeTrackingOrder($dbInfo);
             //重新统计站点金额
             $this->getBatchService()->reCountAmountByNo($dbInfo['batch_no']);
             //重新统计取件线路金额
@@ -1124,7 +1124,7 @@ class OrderService extends BaseService
         }
         //站点移除订单
         if (!empty($info['batch_no'])) {
-            $this->getBatchService()->removeOrder($info);
+            $this->getBatchService()->removeTrackingOrder($info);
         }
         //重新统计站点金额
         !empty($info['batch_no']) && $this->getBatchService()->reCountAmountByNo($info['batch_no']);

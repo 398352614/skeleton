@@ -67,6 +67,23 @@ class TourService extends BaseService
         'express_first_no_two',
     ];
 
+    protected $planHeadings = [
+        'batch_no',
+        'out_user_id',
+        'receiver_fullname',
+        'receiver_phone',
+        'receiver_address',
+        'receiver_post_code',
+        'receiver_city',
+        'merchant_name',
+        'type',
+        'package_quantity',
+        'out_order_no',
+        'mask_code',
+        'material_code_list',
+        'material_expect_quantity_list'
+    ];
+
     protected $batchHeadings = [
         'date',
         'driver',
@@ -136,15 +153,6 @@ class TourService extends BaseService
     private function getTrackingOrderService()
     {
         return self::getInstance(TrackingOrderService::class);
-    }
-
-    /**
-     * 运单服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
     }
 
     /**
@@ -227,6 +235,11 @@ class TourService extends BaseService
     private function getApiTimesService()
     {
         return self::getInstance(ApiTimesService::class);
+    }
+
+    public function getUploadService()
+    {
+        return self::getInstance(UploadService::class);
     }
 
     /**
@@ -877,11 +890,6 @@ class TourService extends BaseService
     }
 
 
-    public function getUploadService()
-    {
-        return self::getInstance(UploadService::class);
-    }
-
     protected function getRelativeUrl(string $url): string
     {
         return str_replace(config('app.url'), '', $url);
@@ -1116,23 +1124,6 @@ class TourService extends BaseService
         $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
         return $this->excelExport($name, $this->tourHeadings, $cellData, $dir);
     }
-
-    protected $planHeadings = [
-        'batch_no',
-        'out_user_id',
-        'receiver_fullname',
-        'receiver_phone',
-        'receiver_address',
-        'receiver_post_code',
-        'receiver_city',
-        'merchant_name',
-        'type',
-        'package_quantity',
-        'out_order_no',
-        'mask_code',
-        'material_code_list',
-        'material_expect_quantity_list'
-    ];
 
     /**
      * 计划导出
