@@ -61,9 +61,10 @@ class OrderService extends BaseService
         'out_order_no',
         'sender_post_code',
         'sender_house_number',
+        'sender_date',
         'receiver_post_code',
         'receiver_house_number',
-        'execution_date',
+        'receiver_date',
         'package_name',
         'package_quantity',
         'material_name',
@@ -784,6 +785,7 @@ class OrderService extends BaseService
     public function orderExport()
     {
         $orderList = $this->getPageList();
+        //特殊处理
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -810,11 +812,29 @@ class OrderService extends BaseService
             }
             if (!empty($materialList)) {
                 $orderList[$k]['material_name'] = implode(',', collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
-                $orderList[$k]['material_quantity'] = count(collect($materialList)->where('order_no', $v['order_no']));
+                $orderList[$k]['material_quantity'] = collect($materialList)->where('order_no', $v['order_no'])->sum('expect_quantity');
             } else {
                 $orderList[$k]['material_name'] = [];
                 $orderList[$k]['material_quantity'] = 0;
             }
+            if ($v['type'] == BaseConstService::ORDER_TYPE_1) {
+                $orderList[$k]['sender_post_code'] = $orderList[$k]['receiver_post_code'];
+                $orderList[$k]['sender_house_number'] = $orderList[$k]['receiver_house_number'];
+                $orderList[$k]['sender_date'] = $orderList[$k]['receiver_date'];
+                $orderList[$k]['receiver_post_code'] = $orderList[$k]['receiver_house_number'] = $orderList[$k]['receiver_date'] = '';
+            }elseif($v['type'] == BaseConstService::ORDER_TYPE_2){
+                $orderList[$k]['receiver_date'] = $orderList[$k]['execution_date'];
+            }elseif ($v['type'] == BaseConstService::ORDER_TYPE_3){
+                $orderList[$k]['receiver_date'] = $orderList[$k]['execution_date'];
+                $orderList[$k]['sender'] = $orderList[$k]['second_execution_date'];
+                $a = $orderList[$k]['sender_post_code'];
+                $b = $orderList[$k]['sender_house_number'];
+                $orderList[$k]['sender_post_code'] = $orderList[$k]['receiver_post_code'];
+                $orderList[$k]['sender_house_number'] = $orderList[$k]['receiver_house_number'];
+                $orderList[$k]['receiver_post_code'] = $a;
+                $orderList[$k]['receiver_house_number'] = $b;
+            }
+
         }
         $cellData = [];
         foreach ($orderList as $v) {
