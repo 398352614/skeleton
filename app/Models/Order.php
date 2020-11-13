@@ -128,6 +128,11 @@ class Order extends BaseModel
      */
     protected $dates = [];
 
+    public function getSecondExecutionDateAttribute($value)
+    {
+        return (empty($value) || ($value = '0000-00-00')) ? null : $value;
+    }
+
 
     public function getTypeNameAttribute()
     {
