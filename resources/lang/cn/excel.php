@@ -192,9 +192,9 @@ return [
         'package_quantity'=>'包裹数量',
         'material_name'=>'材料',
         'material_quantity'=>'材料数量',
-        'replace_amount'=>'运费',
-        'sticker_amount'=>'代收货款',
-        'settlement_amount'=>'贴单费',
+        'replace_amount'=>'代收货款',
+        'sticker_amount'=>'贴单费',
+        'settlement_amount'=>'运费',
         'created_at'=>'创建时间'
     ],
 ];
