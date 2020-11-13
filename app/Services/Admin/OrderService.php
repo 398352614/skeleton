@@ -826,7 +826,7 @@ class OrderService extends BaseService
                 $orderList[$k]['receiver_date'] = $orderList[$k]['execution_date'];
             }elseif ($v['type'] == BaseConstService::ORDER_TYPE_3){
                 $orderList[$k]['receiver_date'] = $orderList[$k]['execution_date'];
-                $orderList[$k]['sender'] = $orderList[$k]['second_execution_date'];
+                $orderList[$k]['sender_date'] = $orderList[$k]['second_execution_date'];
                 $a = $orderList[$k]['sender_post_code'];
                 $b = $orderList[$k]['sender_house_number'];
                 $orderList[$k]['sender_post_code'] = $orderList[$k]['receiver_post_code'];
