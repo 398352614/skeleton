@@ -198,6 +198,4 @@ return [
         'settlement_amount' => 'Delivery Amount',
         'created_at' => 'Creation Time'
     ]
-
-
 ];

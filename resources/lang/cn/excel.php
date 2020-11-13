@@ -181,6 +181,6 @@ return [
         'replace_amount' => '运费',
         'sticker_amount' => '代收货款',
         'settlement_amount' => '贴单费',
-        'created_at' => '创建时间'
-    ],
-];
+        'created_at' => '创建时间',
+        ],
+    ];

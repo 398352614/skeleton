@@ -305,7 +305,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                         'A' => 15,
                         'B' => 10,
                         'C' => 5,
-                        'D' => 10,
+                        'D' => 20,
                         'E' => 10,
                         'F' => 10,
                         'G' => 15,

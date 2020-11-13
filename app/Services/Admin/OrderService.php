@@ -61,6 +61,7 @@ class OrderService extends BaseService
         'out_order_no',
         'second_place_post_code',
         'second_place_house_number',
+        'second_execution_date',
         'place_post_code',
         'place_house_number',
         'execution_date',
@@ -784,6 +785,7 @@ class OrderService extends BaseService
     public function orderExport()
     {
         $orderList = $this->getPageList();
+        //特殊处理
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -810,10 +812,27 @@ class OrderService extends BaseService
             }
             if (!empty($materialList)) {
                 $orderList[$k]['material_name'] = implode(',', collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
-                $orderList[$k]['material_quantity'] = count(collect($materialList)->where('order_no', $v['order_no']));
+                $orderList[$k]['material_quantity'] = collect($materialList)->where('order_no', $v['order_no'])->sum('expect_quantity');
             } else {
                 $orderList[$k]['material_name'] = [];
                 $orderList[$k]['material_quantity'] = 0;
+            }
+            if ($v['type'] == BaseConstService::ORDER_TYPE_1) {
+                $orderList[$k]['second_place_post_code'] = $orderList[$k]['place_post_code'];
+                $orderList[$k]['second_place_house_number'] = $orderList[$k]['place_house_number'];
+                $orderList[$k]['second_place_date'] = $orderList[$k]['execution_date'];
+                $orderList[$k]['place_post_code'] = $orderList[$k]['place_house_number'];
+            }elseif($v['type'] == BaseConstService::ORDER_TYPE_2){
+                $orderList[$k]['place_date'] = $orderList[$k]['execution_date'];
+            }elseif ($v['type'] == BaseConstService::ORDER_TYPE_3){
+                $orderList[$k]['place_date'] = $orderList[$k]['execution_date'];
+                $orderList[$k]['second_place_date'] = $orderList[$k]['second_execution_date'];
+                $a = $orderList[$k]['second_place_post_code'];
+                $b = $orderList[$k]['second_place_house_number'];
+                $orderList[$k]['second_place_post_code'] = $orderList[$k]['place_post_code'];
+                $orderList[$k]['second_place_house_number'] = $orderList[$k]['place_house_number'];
+                $orderList[$k]['place_post_code'] = $a;
+                $orderList[$k]['place_house_number'] = $b;
             }
         }
         $cellData = [];
