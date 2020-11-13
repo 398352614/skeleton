@@ -19,18 +19,18 @@ class AddressValidate extends BaseValidate
         'place_city' => 'required|string|max:50',
         'place_street' => 'required|string|max:50',
         'place_address' => 'checkAddress|nullable|string|max:250',
-        'lon' => 'required|string|max:50',
-        'lat' => 'required|string|max:50',
+        'place_lon' => 'required|string|max:50',
+        'place_lat' => 'required|string|max:50',
     ];
 
     public $scene = [
         'store' => [
             'place_fullname', 'place_phone', 'place_post_code', 'place_house_number',
-            'place_city', 'place_street', 'place_address', 'lon', 'lat',
+            'place_city', 'place_street', 'place_address', 'place_lat', 'place_lat',
         ],
         'update' => [
             'place_fullname', 'place_phone', 'place_post_code', 'place_house_number',
-            'place_city', 'place_street', 'place_address', 'lon', 'lat',
+            'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',
         ]
     ];
 }
