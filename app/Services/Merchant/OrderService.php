@@ -129,21 +129,12 @@ class OrderService extends BaseService
 
 
     /**
-     * 发件人地址 服务
-     * @return SenderAddressService
-     */
-    private function getSenderAddressService()
-    {
-        return self::getInstance(SenderAddressService::class);
-    }
-
-    /**
      * 收人地址 服务
-     * @return ReceiverAddressService
+     * @return AddressService
      */
-    private function getReceiverAddressService()
+    private function getAddressService()
     {
-        return self::getInstance(ReceiverAddressService::class);
+        return self::getInstance(AddressService::class);
     }
 
     /**
@@ -504,7 +495,7 @@ class OrderService extends BaseService
         $list = json_decode($params['list'], true);
         for ($i = 0; $i < count($list); $i++) {
             $list[$i] = $this->form($list[$i]);
-            empty($list[$i]['receiver_country']) && $list[$i]['receiver_country'] = CompanyTrait::getCountry();
+            empty($list[$i]['place_country']) && $list[$i]['place_country'] = CompanyTrait::getCountry();
             try {
                 $this->store($list[$i], BaseConstService::ORDER_SOURCE_2);
             } catch (BusinessLogicException $e) {
@@ -555,7 +546,7 @@ class OrderService extends BaseService
         $settlementList = array_flip(ConstTranslateTrait::$orderSettlementTypeList);
         $deliveryList = ['是' => 1, '否' => 2, 'Yes' => 1, 'No' => 2];
         $itemList = array_flip(ConstTranslateTrait::$orderNatureList);
-        //$countryNameList = array_unique(collect($data)->pluck('receiver_country_name')->toArray());
+        //$countryNameList = array_unique(collect($data)->pluck('place_country_name')->toArray());
         //$countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {
             $data[$i] = array_map('strval', $data[$i]);
@@ -571,7 +562,7 @@ class OrderService extends BaseService
             if (is_numeric($data[$i]['execution_date'])) {
                 $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             }
-            empty($data[$i]['receiver_country']) && $data[$i]['receiver_country'] = CompanyTrait::getCountry();//填充收件人国家
+            empty($data[$i]['place_country']) && $data[$i]['place_country'] = CompanyTrait::getCountry();//填充收件人国家
         }
         return $data;
     }
@@ -605,13 +596,13 @@ class OrderService extends BaseService
         }
         $data = Arr::only($data, [
             'type',
-            'receiver_fullname',
-            'receiver_phone',
-            'receiver_country',
-            'receiver_post_code',
-            'receiver_house_number',
-            'receiver_city',
-            'receiver_street',
+            'place_fullname',
+            'place_phone',
+            'place_country',
+            'place_post_code',
+            'place_house_number',
+            'place_city',
+            'place_street',
             'execution_date',
             'settlement_type',
             'settlement_amount',
@@ -664,14 +655,14 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-        $params['receiver_post_code'] = str_replace(' ', '', $params['receiver_post_code']);
+        $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         //若是新增,则填充商户ID及国家
         if (empty($orderNo)) {
             $params['merchant_id'] = auth()->user()->id;
             //若邮编是纯数字，则认为是比利时邮编
-            $params['receiver_country'] = post_code_be($params['receiver_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
+            $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
             if (empty($params['lat']) || empty($params['lon'])) {
-                $location = LocationTrait::getLocation($params['receiver_country'], $params['receiver_city'], $params['receiver_street'], $params['receiver_house_number'], $params['receiver_post_code']);
+                $location = LocationTrait::getLocation($params['place_country'], $params['place_city'], $params['place_street'], $params['place_house_number'], $params['place_post_code']);
                 $params['lat'] = $location['lat'];
                 $params['lon'] = $location['lon'];
             }
@@ -680,9 +671,9 @@ class OrderService extends BaseService
             throw new BusinessLogicException('地址数据不正确，请重新选择地址');
         }
         //获取经纬度
-        $fields = ['receiver_house_number', 'receiver_city', 'receiver_street'];
+        $fields = ['place_house_number', 'place_city', 'place_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
-        $params['receiver_country'] = post_code_be($params['receiver_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
+        $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
@@ -691,8 +682,8 @@ class OrderService extends BaseService
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['receiver_address'])) {
-            $params['receiver_address'] = CommonService::addressFieldsSortCombine($params, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code']);
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
+            $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
         //若存在外部订单号,则判断是否存在已预约的订单号
         if (!empty($params['out_order_no'])) {
@@ -724,14 +715,14 @@ class OrderService extends BaseService
         }
         //填充发件人信息
         $params = array_merge($params, [
-            'sender_fullname' => $warehouse['fullname'],
-            'sender_phone' => $warehouse['phone'],
-            'sender_country' => $warehouse['country'],
-            'sender_post_code' => $warehouse['post_code'],
-            'sender_house_number' => $warehouse['house_number'],
-            'sender_city' => $warehouse['city'],
-            'sender_street' => $warehouse['street'],
-            'sender_address' => $warehouse['address'],
+            'second_place_fullname' => $warehouse['fullname'],
+            'second_place_phone' => $warehouse['phone'],
+            'second_place_country' => $warehouse['country'],
+            'second_place_post_code' => $warehouse['post_code'],
+            'second_place_house_number' => $warehouse['house_number'],
+            'second_place_city' => $warehouse['city'],
+            'second_place_street' => $warehouse['street'],
+            'second_place_address' => $warehouse['address'],
         ]);
         return $line;
     }
@@ -773,8 +764,8 @@ class OrderService extends BaseService
                 $list[$i] = $this->importCheck($list[$i]);
             }
             if (isset($list[$i]['log']) && $list[$i]['log'] === __('当前订单没有合适的线路，请先联系管理员')) {
-                $list[$i]['receiver_house_number'] = __('请检查输入');
-                $list[$i]['receiver_post_code'] = __('请检查输入');
+                $list[$i]['place_house_number'] = __('请检查输入');
+                $list[$i]['place_post_code'] = __('请检查输入');
                 $list[$i]['execution_date'] = __('请检查输入');
             }
             if (count($list[$i]) > 4) {
@@ -805,33 +796,33 @@ class OrderService extends BaseService
         }
         //如果没传经纬度，就去地址库拉经纬度
         if (empty($data['lon']) || empty($data['lat'])) {
-            $address = $this->getReceiverAddressService()->getInfoByUnique($data);
+            $address = $this->getAddressService()->getInfoByUnique($data);
             $list['lon'] = $address['lon'] ?? null;
             $list['lat'] = $address['lat'] ?? null;
-            $list['receiver_city'] = $address['receiver_city'] ?? null;
-            $list['receiver_street'] = $address['receiver_street'] ?? null;
+            $list['place_city'] = $address['place_city'] ?? null;
+            $list['place_street'] = $address['place_street'] ?? null;
             //如果地址库没有，就通过第三方API获取经纬度
-            $fields = ['receiver_city', 'receiver_street'];
+            $fields = ['place_city', 'place_street'];
             $data = array_merge(array_fill_keys($fields, ''), $data);
             if (empty($data['lon']) || empty($data['lat'])) {
                 try {
-                    $info = LocationTrait::getLocation($data['receiver_country'], $data['receiver_city'], $data['receiver_street'], $data['receiver_house_number'], $data['receiver_post_code']);
+                    $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
                 } catch (BusinessLogicException $e) {
                     $list['log'] = __($e->getMessage(), $e->replace);
-                    $list['receiver_house_number'] = __('请检查输入');
-                    $list['receiver_post_code'] = __('请检查输入');
+                    $list['place_house_number'] = __('请检查输入');
+                    $list['place_post_code'] = __('请检查输入');
                 } catch (\Exception $e) {
                 }
                 $list['lon'] = $info['lon'] ?? '';
                 $list['lat'] = $info['lat'] ?? '';
-                $list['receiver_city'] = $info['city'] ?? '';
-                $list['receiver_street'] = $info['street'] ?? '';
+                $list['place_city'] = $info['city'] ?? '';
+                $list['place_street'] = $info['street'] ?? '';
             }
         } else {
             $list['lon'] = $data['lon'] ?? null;
             $list['lat'] = $data['lat'] ?? null;
-            $list['receiver_city'] = $data['receiver_city'] ?? null;
-            $list['receiver_street'] = $data['receiver_street'] ?? null;
+            $list['place_city'] = $data['place_city'] ?? null;
+            $list['place_street'] = $data['place_street'] ?? null;
         }
         $package = [];
         $material = [];
@@ -962,15 +953,15 @@ class OrderService extends BaseService
     public function updatePhoneDateByApi($id, $data)
     {
         $this->request->validate([
-            'receiver_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-            'execution_date' => 'required_without:receiver_phone|date|after_or_equal:today'
+            'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+            'execution_date' => 'required_without:place_phone|date|after_or_equal:today'
         ]);
         $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
-        list($phone, $executionDate) = [$data['receiver_phone'] ?? '', $data['execution_date'] ?? null];
+        list($phone, $executionDate) = [$data['place_phone'] ?? '', $data['execution_date'] ?? null];
         if (in_array($dbOrder['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4, BaseConstService::ORDER_STATUS_5])) {
             throw new BusinessLogicException('该状态无法进行此操作');
         }
-        $data = array_filter(Arr::only($data, ['receiver_phone', 'execution_date']));
+        $data = array_filter(Arr::only($data, ['place_phone', 'execution_date']));
         $rowCount = parent::updateById($dbOrder['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
@@ -989,7 +980,7 @@ class OrderService extends BaseService
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
             $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
         } else {
-            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'receiver_post_code' => 'required|string|max:50']);
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'place_post_code' => 'required|string|max:50']);
         }
         if ($validator->fails()) {
             throw new BusinessLogicException('地址数据不正确，无法拉取可选日期', 3001);
@@ -1129,8 +1120,8 @@ class OrderService extends BaseService
             'actual_time' => $batch['actual_time'] ?? 0,
             'expect_arrive_time' => $batch['expect_arrive_time'] ?? '',
             'actual_arrive_time' => $batch['actual_arrive_time'] ?? '',
-            'receiver_lon' => $batch['receiver_lon'] ?? '',
-            'receiver_lat' => $batch['receiver_lat'] ?? '',
+            'place_lon' => $batch['place_lon'] ?? '',
+            'place_lat' => $batch['place_lat'] ?? '',
             'driver_lon' => $routeTracking['lon'] ?? '',
             'driver_lat' => $routeTracking['lat'] ?? '',
             'rest_batch' => $count,

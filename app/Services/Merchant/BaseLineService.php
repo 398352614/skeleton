@@ -216,12 +216,12 @@ class BaseLineService extends BaseService
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             if ($merchantAlone == BaseConstService::YES) {
-                $lineRange = $this->getMerchantLineRangeByPostcode($info['receiver_post_code'], $info['execution_date'], $info['merchant_id']);
+                $lineRange = $this->getMerchantLineRangeByPostcode($info['place_post_code'], $info['execution_date'], $info['merchant_id']);
             } else {
-                $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'], $info['execution_date']);
+                $lineRange = $this->getLineRangeByPostcode($info['place_post_code'], $info['execution_date']);
             }
         } else {
-            $coordinate = ['lat' => $info['lat'] ?? $info ['receiver_lat'], 'lon' => $info['lon'] ?? $info ['receiver_lon']];
+            $coordinate = ['lat' => $info['lat'] ?? $info ['place_lat'], 'lon' => $info['lon'] ?? $info ['place_lon']];
             $lineRange = $this->getLineRangeByArea($coordinate, $info['execution_date']);
         }
         if (empty($lineRange)) {
@@ -243,9 +243,9 @@ class BaseLineService extends BaseService
     public function getLineRangeList($params)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRangeList = $this->getLineRangeListByPostcode($params['receiver_post_code'], auth()->user()->id);
+            $lineRangeList = $this->getLineRangeListByPostcode($params['place_post_code'], auth()->user()->id);
         } else {
-            $coordinate = ['lat' => $params['lat'] ?? $params ['receiver_lat'], 'lon' => $params['lon'] ?? $params ['receiver_lon']];
+            $coordinate = ['lat' => $params['lat'] ?? $params ['place_lat'], 'lon' => $params['lon'] ?? $params ['place_lon']];
             $lineRangeList = $this->getLineRangeListByArea($coordinate);
         }
         return $lineRangeList;

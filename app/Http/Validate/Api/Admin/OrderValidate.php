@@ -2,7 +2,7 @@
 /**
  * 订单 验证类
  * Created by PhpStorm
- * User: receiver_long
+ * User: place_long
  * Date: 2019/12/16
  * Time: 15:06
  */
@@ -32,24 +32,24 @@ class OrderValidate extends BaseValidate
         'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
         'replace_amount' => 'nullable|numeric|gte:0',
         'delivery' => 'nullable|integer|in:1,2',
-        'receiver_fullname' => 'required|string|max:50',
-        'receiver_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'receiver_post_code' => 'required|string|max:50',
-        'receiver_house_number' => 'required|string|max:50',
-        'receiver_city' => 'required|string|max:50',
-        'receiver_street' => 'required|string|max:50',
-        'receiver_address' => 'checkAddress|nullable|string|max:250',
-        'receiver_lon' => 'required|string|max:50',
-        'receiver_lat' => 'required|string|max:50',
-        'sender_fullname' => 'required_if:type,3|string|max:50',
-        'sender_phone' => 'required_if:type,3|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'sender_post_code' => 'required_if:type,3|string|max:50',
-        'sender_house_number' => 'required_if:type,3|string|max:50',
-        'sender_city' => 'required_if:type,3|string|max:50',
-        'sender_street' => 'required_if:type,3|string|max:50',
-        'sender_address' => 'checkAddress|nullable|string|max:250',
-        'sender_lon' => 'required_if:type,3|string|max:50',
-        'sender_lat' => 'required_if:type,3|string|max:50',
+        'place_fullname' => 'required|string|max:50',
+        'place_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'place_post_code' => 'required|string|max:50',
+        'place_house_number' => 'required|string|max:50',
+        'place_city' => 'required|string|max:50',
+        'place_street' => 'required|string|max:50',
+        'place_address' => 'checkAddress|nullable|string|max:250',
+        'place_lon' => 'required|string|max:50',
+        'place_lat' => 'required|string|max:50',
+        'second_place_fullname' => 'required_if:type,3|string|max:50',
+        'second_place_phone' => 'required_if:type,3|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'second_place_post_code' => 'required_if:type,3|string|max:50',
+        'second_place_house_number' => 'required_if:type,3|string|max:50',
+        'second_place_city' => 'required_if:type,3|string|max:50',
+        'second_place_street' => 'required_if:type,3|string|max:50',
+        'second_place_address' => 'checkAddress|nullable|string|max:250',
+        'second_place_lon' => 'required_if:type,3|string|max:50',
+        'second_place_lat' => 'required_if:type,3|string|max:50',
         'special_remark' => 'nullable|string|max:250',
         'remark' => 'nullable|string|max:250',
         'out_status' => 'sometimes|integer|in:1,2',
@@ -78,11 +78,11 @@ class OrderValidate extends BaseValidate
             'merchant_id', 'execution_date', 'second_execution_date',
             'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
-            'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
-            'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat',
+            'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
+            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
             //收货人信息
-            'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number',
-            'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat',
+            'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number',
+            'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',
             //备注
             'special_remark', 'remark',
             //包裹列表
@@ -94,11 +94,11 @@ class OrderValidate extends BaseValidate
             'merchant_id', 'execution_date', 'second_execution_date',
             'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
-            'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
-            'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat',
+            'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
+            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
             //收货人信息
-            'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
-            'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lon', 'receiver_lat',
+            'place_fullname', 'place_phone', 'place_post_code', 'place_house_number',
+            'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',
             //备注
             'special_remark', 'remark',
             //包裹列表
@@ -109,11 +109,11 @@ class OrderValidate extends BaseValidate
         'again' => [
             'tracking_order_type', 'execution_date',
             //发货人信息
-            'sender_fullname', 'sender_phone', 'sender_country', 'sender_post_code', 'sender_house_number',
-            'sender_city', 'sender_street', 'sender_address', 'sender_lon', 'sender_lat',
+            'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
+            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
             //收货人信息
-            'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number',
-            'receiver_city', 'receiver_street', 'receiver_address',
+            'place_fullname', 'place_phone', 'place_post_code', 'place_house_number',
+            'place_city', 'place_street', 'place_address',
         ],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],

@@ -27,7 +27,7 @@ class TourTaskResource extends JsonResource
             'status' => $this->status,
             'status_name' => $this->status_name,
             'batch_count' => $this->batch_count,
-            'last_receiver' => $this->last_receiver,
+            'last_place' => $this->last_place,
             'warehouse_id' => $this->warehouse_id,
             'warehouse_name' => $this->warehouse_name,
             'warehouse_phone' => $this->warehouse_phone,

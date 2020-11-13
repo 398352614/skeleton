@@ -29,10 +29,10 @@ class OrderImportService extends BaseService
 
     public static $headings = [
         'type',
-        'receiver_fullname',
-        'receiver_phone',
-        'receiver_post_code',
-        'receiver_house_number',
+        'place_fullname',
+        'place_phone',
+        'place_post_code',
+        'place_house_number',
         'execution_date',
         'settlement_type',
         'settlement_amount',

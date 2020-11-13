@@ -83,7 +83,7 @@ class RouteTrackingService extends BaseService
         $batchList = array_values($batchList);
         foreach ($batchList as $k => $v) {
             $batchList[$k]['sort_id'] = $k + 1;
-            $batchList[$k] = array_only_fields_sort($batchList[$k], ['batch_no', 'receiver_fullname', 'receiver_address', 'receiver_lon', 'receiver_lat', 'expect_arrive_time', 'actual_arrive_time', 'sort_id']);
+            $batchList[$k] = array_only_fields_sort($batchList[$k], ['batch_no', 'place_fullname', 'place_address', 'place_lon', 'place_lat', 'expect_arrive_time', 'actual_arrive_time', 'sort_id']);
             $batchList[$k]['event']=[];
         }
         $tourEventList = $this->getTourDriverService()->getList(['tour_no' => $tour['tour_no']]);
@@ -100,18 +100,18 @@ class RouteTrackingService extends BaseService
         $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
         //插入出库事件
         $out = [[
-            'receiver_lon' => $tour['warehouse_lon'],
-            'receiver_lat' => $tour['warehouse_lat'],
-            'receiver_fullname' => $tour['warehouse_name'],
+            'place_lon' => $tour['warehouse_lon'],
+            'place_lat' => $tour['warehouse_lat'],
+            'place_fullname' => $tour['warehouse_name'],
             'event' => [collect($info)->sortBy('id')->first()
             ]]];
         $batchList = array_merge($out, array_values($batchList));
         //插入入库事件
         if ($tour['status'] == 5) {
             $in = [[
-                'receiver_lon' => $tour['warehouse_lon'],
-                'receiver_lat' => $tour['warehouse_lat'],
-                'receiver_fullname' => $tour['warehouse_name'],
+                'place_lon' => $tour['warehouse_lon'],
+                'place_lat' => $tour['warehouse_lat'],
+                'place_fullname' => $tour['warehouse_name'],
                 'event' => [
                     collect($info)->sortByDesc('id')->first()]
             ]];

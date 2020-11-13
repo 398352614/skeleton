@@ -24,6 +24,7 @@ use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class TrackingOrderService
@@ -52,16 +53,16 @@ class TrackingOrderService extends BaseService
         'order_no',
         'out_status',
         'execution_date',
-        'receiver_fullname',
-        'receiver_phone',
-        'receiver_country',
-        'receiver_post_code',
-        'receiver_house_number',
-        'receiver_city',
-        'receiver_street',
-        'receiver_address',
-        'receiver_lon',
-        'receiver_lat',
+        'place_fullname',
+        'place_phone',
+        'place_country',
+        'place_post_code',
+        'place_house_number',
+        'place_city',
+        'place_street',
+        'place_address',
+        'place_lon',
+        'place_lat',
         'mask_code',
         'special_remark',
     ];
@@ -75,8 +76,8 @@ class TrackingOrderService extends BaseService
         'status',
         'out_user_id',
         'out_order_no',
-        'receiver_post_code',
-        'receiver_house_number',
+        'place_post_code',
+        'place_house_number',
         'execution_date',
         'driver_fullname',
         'batch_no',
@@ -159,21 +160,12 @@ class TrackingOrderService extends BaseService
     }
 
     /**
-     * 发件人地址 服务
-     * @return SenderAddressService
-     */
-    private function getSenderAddressService()
-    {
-        return self::getInstance(SenderAddressService::class);
-    }
-
-    /**
      * 收人地址 服务
-     * @return ReceiverAddressService
+     * @return AddressService
      */
-    private function getReceiverAddressService()
+    private function getAddressService()
     {
-        return self::getInstance(ReceiverAddressService::class);
+        return self::getInstance(AddressService::class);
     }
 
     /**
@@ -201,6 +193,36 @@ class TrackingOrderService extends BaseService
     private function getOrderNoRuleService()
     {
         return self::getInstance(OrderNoRuleService::class);
+    }
+
+    /**
+     * 通过地址获得可选日期
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getAbleDateListByAddress($params)
+    {
+        $this->validate($params);
+        $data = $this->getLineService()->getScheduleList($params);
+        return $data;
+    }
+
+    /**
+     * 获取可选日期验证
+     * @param $info
+     * @throws BusinessLogicException
+     */
+    public function validate($info)
+    {
+        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
+        } else {
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'place_post_code' => 'required|string|max:50']);
+        }
+        if ($validator->fails()) {
+            throw new BusinessLogicException('地址数据不正确，无法拉取可选日期', 3001);
+        }
     }
 
     /**
@@ -325,7 +347,7 @@ class TrackingOrderService extends BaseService
     private function store($params, $orderNo)
     {
         //填充发件人信息
-        $line = $this->fillSender($params, BaseConstService::YES);
+        $line = $this->fillWarehouseInfo($params, BaseConstService::YES);
         //生成运单号
         $params['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
         /**********************************************生成运单********************************************************/
@@ -370,7 +392,7 @@ class TrackingOrderService extends BaseService
         $dbTrackingOrder = $dbTrackingOrder->toArray();
         //运单重新分配站点
         $trackingOrder = array_merge(Arr::only($order, $this->tOrderAndOrderSameFields), Arr::only($dbTrackingOrder, ['company_id', 'order_no', 'tracking_order_no', 'type']));
-        $line = $this->fillSender($trackingOrder);
+        $line = $this->fillWarehouseInfo($trackingOrder);
         //1.若运单状态是待出库或取派中,则不能修改
         //2.若运单状态是取消取派,取派完成,回收站,则无需处理
         //3.若运单状态是待分配或已分配，则能修改
@@ -469,17 +491,17 @@ class TrackingOrderService extends BaseService
     public function storeAgain($dbOrder, $order, $trackingOrderType)
     {
         if (in_array($dbOrder['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
-            $address = Arr::only($order, ['receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lat', 'receiver_lon']);
+            $address = Arr::only($order, ['place_country', 'place_fullname', 'place_phone', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lat', 'place_lon']);
         } else {
             if ($trackingOrderType == BaseConstService::TRACKING_ORDER_TYPE_1) {
-                $address = Arr::only($order, ['receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'receiver_lat', 'receiver_lon']);
+                $address = Arr::only($order, ['place_country', 'place_fullname', 'place_phone', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lat', 'place_lon']);
             } else {
                 $address = [
-                    'receiver_country' => 'sender_country', 'receiver_fullname' => 'sender_fullname',
-                    'receiver_phone' => 'sender_phone', 'receiver_post_code' => 'sender_post_code',
-                    'receiver_house_number' => 'sender_house_number', 'receiver_city' => 'sender_city',
-                    'receiver_street' => 'sender_street', 'receiver_address' => 'sender_address',
-                    'receiver_lat' => 'sender_lat', 'receiver_lon' => 'sender_lon'
+                    'place_country' => 'second_place_country', 'place_fullname' => 'second_place_fullname',
+                    'place_phone' => 'second_place_phone', 'place_post_code' => 'second_place_post_code',
+                    'place_house_number' => 'second_place_house_number', 'place_city' => 'second_place_city',
+                    'place_street' => 'second_place_street', 'place_address' => 'second_place_address',
+                    'place_lat' => 'second_place_lat', 'place_lon' => 'second_place_lon'
                 ];
             }
         }
@@ -532,7 +554,7 @@ class TrackingOrderService extends BaseService
      */
     private function checkIsChange($dbTrackingOrder, $trackingOrder)
     {
-        $fields = ['execution_date', 'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
+        $fields = ['execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street'];
         $newDbOrder = Arr::only($dbTrackingOrder, $fields);
         $newOrder = Arr::only($trackingOrder, $fields);
         return empty(array_diff($newDbOrder, $newOrder)) ? false : true;
@@ -726,7 +748,7 @@ class TrackingOrderService extends BaseService
             return 'true';
         }
         $trackingOrder = array_merge($dbTrackingOrder, ['execution_date' => $params['execution_date']]);
-        $line = $this->fillSender($trackingOrder, BaseConstService::YES);
+        $line = $this->fillWarehouseInfo($trackingOrder, BaseConstService::YES);
         /***********************************************1.修改*********************************************************/
         $rowCount = parent::updateById($id, $trackingOrder);
         if ($rowCount === false) {
@@ -893,7 +915,7 @@ class TrackingOrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    private function fillSender(&$params, $merchantAlone = BaseConstService::NO)
+    private function fillWarehouseInfo(&$params, $merchantAlone = BaseConstService::NO)
     {
         //获取线路
         $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
@@ -904,14 +926,14 @@ class TrackingOrderService extends BaseService
         }
         //填充发件人信息
         $params = array_merge($params, [
-            'sender_fullname' => $warehouse['fullname'],
-            'sender_phone' => $warehouse['phone'],
-            'sender_country' => $warehouse['country'],
-            'sender_post_code' => $warehouse['post_code'],
-            'sender_house_number' => $warehouse['house_number'],
-            'sender_city' => $warehouse['city'],
-            'sender_street' => $warehouse['street'],
-            'sender_address' => $warehouse['address'],
+            'warehouse_fullname' => $warehouse['fullname'],
+            'warehouse_phone' => $warehouse['phone'],
+            'warehouse_country' => $warehouse['country'],
+            'warehouse_post_code' => $warehouse['post_code'],
+            'warehouse_house_number' => $warehouse['house_number'],
+            'warehouse_city' => $warehouse['city'],
+            'warehouse_street' => $warehouse['street'],
+            'warehouse_address' => $warehouse['address'],
         ]);
         return $line;
     }
@@ -923,15 +945,10 @@ class TrackingOrderService extends BaseService
      */
     public function record($params)
     {
-        //记录发件人地址
-        $info = $this->getSenderAddressService()->getInfoByUnique($params);
+        //记录地址
+        $info = $this->getAddressService()->getInfoByUnique($params);
         if (empty($info)) {
-            $this->getSenderAddressService()->create($params);
-        }
-        //记录收件人地址
-        $info = $this->getReceiverAddressService()->getInfoByUnique($params);
-        if (empty($info)) {
-            $this->getReceiverAddressService()->create($params);
+            $this->getAddressService()->create($params);
         }
     }
 

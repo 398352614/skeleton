@@ -330,7 +330,6 @@
     "国家新增失败": "Het toevoegen van nieuwe landen is mislukt",
     "已存在订单，不能删除国家": "De beschikking bestaat reeds, het land kan niet worden geschrapt",
     "已存在收件人，不能删除国家": "Ontvanger bestaat al, land kan niet worden geschrapt",
-    "已存在发件人，不能删除国家": "Sender bestaat al, land kan niet worden verwijderd",
     "已存在仓库，不能删除国家": "Het pakhuis bestaat al, het land kan niet worden verwijderd",
     "已存在线路，不能删除国家": "Lijn bestaat al, land kan niet worden verwijderd",
     "删除失败，请重新操作": "Kon niet verwijderen. Probeer het opnieuw",

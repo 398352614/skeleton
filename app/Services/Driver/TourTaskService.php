@@ -111,12 +111,12 @@ class TourTaskService extends BaseService
         }
         $list = parent::getPageList();
         if (empty($list)) return $list;
-        $batchFields = ['id', 'batch_no', 'receiver_fullname', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address'];
+        $batchFields = ['id', 'batch_no', 'place_fullname', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address'];
         foreach ($list as &$tour) {
             //获取站点数量
             $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
             //获取最后一个站点的收件人信息
-            $tour['last_receiver'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'desc', 'created_at' => 'desc']);
+            $tour['last_place'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'desc', 'created_at' => 'desc']);
             //获取是否有特殊事项
             $order = $this->getTrackingOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['special_remark'], false);
             $tour['is_exist_special_remark'] = !empty($order) ? true : false;

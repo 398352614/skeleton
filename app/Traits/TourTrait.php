@@ -109,7 +109,7 @@ trait TourTrait
         //若存在下一个站点
         $nextBatch = self::getNextBatch($tour['tour_no']);
         if (!empty($nextBatch)) {
-            $location = ['latitude' => $batch['receiver_lat'], 'longitude' => $batch['receiver_lon']];
+            $location = ['latitude' => $batch['place_lat'], 'longitude' => $batch['place_lon']];
             //更新站点预计和司机位置
             event(new AfterDriverLocationUpdated(Tour::where('tour_no', $tour['tour_no'])->first(), $nextBatch->batch_no, $location, true, true));
         }

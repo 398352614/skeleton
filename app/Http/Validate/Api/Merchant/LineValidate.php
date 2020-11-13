@@ -20,12 +20,12 @@ class LineValidate extends BaseValidate
 
 
     public $rules = [
-        'receiver_post_code' => 'required|string|max:50',
+        'place_post_code' => 'required|string|max:50',
         'type' => 'nullable|integer|in:1,2'
     ];
 
     public $scene = [
-        'getDateListByPostCode' => ['receiver_post_code', 'type'],
+        'getDateListByPostCode' => ['place_post_code', 'type'],
     ];
 }
 

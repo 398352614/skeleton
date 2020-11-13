@@ -64,7 +64,7 @@ class BaseModel extends Model
                 }
             }
             //若存在国家字段,则自动填充国家字段
-            $countryList = ['country', 'receiver_country', 'sender_country'];
+            $countryList = ['country', 'place_country', 'second_place__country', 'warehouse_country'];
             $newColumns = array_flip($columns);
             foreach ($countryList as $country) {
                 if (!empty($newColumns[$country]) && empty($model->$country)) {
@@ -103,14 +103,19 @@ class BaseModel extends Model
         return $list[$name]['name'];
     }
 
-    public function getSenderCountryNameAttribute()
+    public function getWarehouseCountryNameAttribute()
     {
-        return empty($this->sender_country) ? null : CountryTrait::getCountryName($this->sender_country);
+        return empty($this->warehouse_country) ? null : CountryTrait::getCountryName($this->warehouse_country);
     }
 
-    public function getReceiverCountryNameAttribute()
+    public function getSecondPlaceCountryNameAttribute()
     {
-        return empty($this->receiver_country) ? null : CountryTrait::getCountryName($this->receiver_country);
+        return empty($this->second_place_country) ? null : CountryTrait::getCountryName($this->second_place_country);
+    }
+
+    public function gePlaceCountryNameAttribute()
+    {
+        return empty($this->place_country) ? null : CountryTrait::getCountryName($this->place_country);
     }
 
     public function getCountryNameAttribute()

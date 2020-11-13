@@ -729,7 +729,7 @@ class TourService extends BaseService
         $data = [
             'batch_exception_no' => $batchExceptionNo,
             'batch_no' => $batch['batch_no'],
-            'receiver' => $batch['receiver_fullname'],
+            'fullname' => $batch['place_fullname'],
             'source' => __('司机来源'),
             'stage' => $params['stage'],
             'type' => $params['type'],
@@ -1095,17 +1095,17 @@ class TourService extends BaseService
             $data[$k]['tour_no'] = $batch['tour_no'];
             $data[$k]['line_id'] = $batch['line_id'];
             $data[$k]['line_name'] = $batch['line_name'];
-            $data[$k]['receiver_fullname'] = $batch['receiver_fullname'];
+            $data[$k]['place_fullname'] = $batch['place_fullname'];
             $data[$k]['execution_date'] = $batch['execution_date'];
-            $data[$k]['receiver_phone'] = $batch['receiver_phone'];
-            $data[$k]['receiver_country'] = $batch['receiver_country'];
-            $data[$k]['receiver_post_code'] = $batch['receiver_post_code'];
-            $data[$k]['receiver_house_number'] = $batch['receiver_house_number'];
-            $data[$k]['receiver_city'] = $batch['receiver_city'];
-            $data[$k]['receiver_street'] = $batch['receiver_street'];
-            $data[$k]['receiver_address'] = $batch['receiver_address'];
-            $data[$k]['receiver_lon'] = $batch['receiver_lon'];
-            $data[$k]['receiver_lat'] = $batch['receiver_lat'];
+            $data[$k]['place_phone'] = $batch['place_phone'];
+            $data[$k]['place_country'] = $batch['place_country'];
+            $data[$k]['place_post_code'] = $batch['place_post_code'];
+            $data[$k]['place_house_number'] = $batch['place_house_number'];
+            $data[$k]['place_city'] = $batch['place_city'];
+            $data[$k]['place_street'] = $batch['place_street'];
+            $data[$k]['place_address'] = $batch['place_address'];
+            $data[$k]['place_lon'] = $batch['place_lon'];
+            $data[$k]['place_lat'] = $batch['place_lat'];
             $data[$k]['status'] = BaseConstService::ADDITIONAL_PACKAGE_STATUS_1;
         }
         $this->getAdditionalPackageService()->insertAll($data);
@@ -1282,16 +1282,16 @@ class TourService extends BaseService
         $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList], 'type' => BaseConstService::ORDER_TYPE_3, 'status' => BaseConstService::ORDER_STATUS_2], ['*'], false)->toArray();
         foreach ($orderList as $order) {
             $trackingOrder = [];
-            $trackingOrder['receiver_fullname'] = $order['sender_fullname'];
-            $trackingOrder['receiver_phone'] = $order['sender_phone'];
-            $trackingOrder['receiver_country'] = $order['sender_country'];
-            $trackingOrder['receiver_post_code'] = $order['sender_post_code'];
-            $trackingOrder['receiver_house_number'] = $order['sender_house_number'];
-            $trackingOrder['receiver_city'] = $order['sender_city'];
-            $trackingOrder['receiver_street'] = $order['sender_street'];
-            $trackingOrder['receiver_address'] = $order['sender_address'];
-            $trackingOrder['receiver_lon'] = $order['sender_lon'];
-            $trackingOrder['receiver_lat'] = $order['sender_lat'];
+            $trackingOrder['place_fullname'] = $order['second_place_fullname'];
+            $trackingOrder['place_phone'] = $order['second_place_phone'];
+            $trackingOrder['place_country'] = $order['second_place_country'];
+            $trackingOrder['place_post_code'] = $order['second_place_post_code'];
+            $trackingOrder['place_house_number'] = $order['second_place_house_number'];
+            $trackingOrder['place_city'] = $order['second_place_city'];
+            $trackingOrder['place_street'] = $order['second_place_street'];
+            $trackingOrder['place_address'] = $order['second_place_address'];
+            $trackingOrder['place_lon'] = $order['second_place_lon'];
+            $trackingOrder['place_lat'] = $order['second_place_lat'];
             $trackingOrder['type'] = BaseConstService::TRACKING_ORDER_TYPE_2;
             $trackingOrder['execution_date'] = $order['second_execution_date'];
             $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'out_user_id', 'out_order_no', 'order_no', 'pie_execution_date', 'mask_code', 'special_remark']));

@@ -84,7 +84,7 @@ class Validate
 //        if (in_array($method, ['store', 'update'])) {
 //            $validateName = get_class($this->validate);
 //            $type = strtolower(str_replace('Validate', '', substr($validateName, (strrpos($validateName, '\\') + 1))));
-//            if (in_array($type, ['order', 'receiver', 'sender', 'warehouse'])) {
+//            if (in_array($type, ['order', 'place', 'second_place', 'warehouse'])) {
 //                $addressRules = AddressTemplateTrait::getFormatAddressTemplate($type);
 //                $rules = array_merge($rules, $addressRules);
 //            }

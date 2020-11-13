@@ -142,14 +142,14 @@ class TrackingOrderService extends BaseService
         }
         //填充发件人信息
         $params = array_merge($params, [
-            'sender_fullname' => $warehouse['fullname'],
-            'sender_phone' => $warehouse['phone'],
-            'sender_country' => $warehouse['country'],
-            'sender_post_code' => $warehouse['post_code'],
-            'sender_house_number' => $warehouse['house_number'],
-            'sender_city' => $warehouse['city'],
-            'sender_street' => $warehouse['street'],
-            'sender_address' => $warehouse['address'],
+            'second_place_fullname' => $warehouse['fullname'],
+            'second_place_phone' => $warehouse['phone'],
+            'second_place_country' => $warehouse['country'],
+            'second_place_post_code' => $warehouse['post_code'],
+            'second_place_house_number' => $warehouse['house_number'],
+            'second_place_city' => $warehouse['city'],
+            'second_place_street' => $warehouse['street'],
+            'second_place_address' => $warehouse['address'],
         ]);
         return $line;
     }

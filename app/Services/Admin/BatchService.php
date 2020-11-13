@@ -30,13 +30,13 @@ class BatchService extends BaseService
         'driver_name' => ['like', 'driver_name'],
         'line_id,line_name' => ['like', 'line_keyword'],
         'batch_no' => ['like', 'keyword'],
-        'receiver_fullname' => ['=', 'receiver_fullname'],
-        'receiver_phone' => ['=', 'receiver_phone'],
-        'receiver_country' => ['=', 'receiver_country'],
-        'receiver_post_code' => ['=', 'receiver_post_code'],
-        'receiver_house_number' => ['=', 'receiver_house_number'],
-        'receiver_city' => ['=', 'receiver_city'],
-        'receiver_street' => ['=', 'receiver_street'],
+        'place_fullname' => ['=', 'place_fullname'],
+        'place_phone' => ['=', 'place_phone'],
+        'place_country' => ['=', 'place_country'],
+        'place_post_code' => ['=', 'place_post_code'],
+        'place_house_number' => ['=', 'place_house_number'],
+        'place_city' => ['=', 'place_city'],
+        'place_street' => ['=', 'place_street'],
         'tour_no' => ['like', 'tour_no']
     ];
 
@@ -210,22 +210,22 @@ class BatchService extends BaseService
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             $where = [
                 'execution_date' => $info['execution_date'],
-                'receiver_fullname' => $info['receiver_fullname'],
-                'receiver_phone' => $info['receiver_phone'],
-                'receiver_country' => $info['receiver_country'],
-                'receiver_city' => $info['receiver_city'],
-                'receiver_street' => $info['receiver_street'],
-                'receiver_house_number' => $info['receiver_house_number'],
-                'receiver_post_code' => $info['receiver_post_code'],
+                'place_fullname' => $info['place_fullname'],
+                'place_phone' => $info['place_phone'],
+                'place_country' => $info['place_country'],
+                'place_city' => $info['place_city'],
+                'place_street' => $info['place_street'],
+                'place_house_number' => $info['place_house_number'],
+                'place_post_code' => $info['place_post_code'],
                 'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
             ];
         } else {
             $where = [
                 'execution_date' => $info['execution_date'],
-                'receiver_fullname' => $info['receiver_fullname'],
-                'receiver_phone' => $info['receiver_phone'],
-                'receiver_country' => $info['receiver_country'],
-                'receiver_address' => $info['receiver_address'],
+                'place_fullname' => $info['place_fullname'],
+                'place_phone' => $info['place_phone'],
+                'place_country' => $info['place_country'],
+                'place_address' => $info['place_address'],
                 'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
             ];
         }
@@ -323,16 +323,16 @@ class BatchService extends BaseService
             'line_id' => $line['id'],
             'line_name' => $line['name'],
             'execution_date' => $trackingOrder['execution_date'],
-            'receiver_fullname' => $trackingOrder['receiver_fullname'],
-            'receiver_phone' => $trackingOrder['receiver_phone'],
-            'receiver_country' => $trackingOrder['receiver_country'],
-            'receiver_post_code' => $trackingOrder['receiver_post_code'],
-            'receiver_house_number' => $trackingOrder['receiver_house_number'],
-            'receiver_city' => $trackingOrder['receiver_city'],
-            'receiver_street' => $trackingOrder['receiver_street'],
-            'receiver_address' => $trackingOrder['receiver_address'],
-            'receiver_lon' => $trackingOrder['receiver_lon'],
-            'receiver_lat' => $trackingOrder['receiver_lat'],
+            'place_fullname' => $trackingOrder['place_fullname'],
+            'place_phone' => $trackingOrder['place_phone'],
+            'place_country' => $trackingOrder['place_country'],
+            'place_post_code' => $trackingOrder['place_post_code'],
+            'place_house_number' => $trackingOrder['place_house_number'],
+            'place_city' => $trackingOrder['place_city'],
+            'place_street' => $trackingOrder['place_street'],
+            'place_address' => $trackingOrder['place_address'],
+            'place_lon' => $trackingOrder['place_lon'],
+            'place_lat' => $trackingOrder['place_lat'],
             'merchant_id' => $line['range_merchant_id'] ?? 0
         ];
         if (intval($trackingOrder['type']) === 1) {
@@ -388,9 +388,9 @@ class BatchService extends BaseService
         //通过运单获取可能站点
         $data = [];
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $fields = ['receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
+            $fields = ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street'];
         } else {
-            $fields = ['receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_address'];
+            $fields = ['place_fullname', 'place_phone', 'place_country', 'place_address'];
         }
         $rule = array_merge($this->formData, Arr::only($trackingOrder, $fields));
         $this->query->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]);

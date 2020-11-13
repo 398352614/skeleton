@@ -138,8 +138,8 @@ class GoogleApiService
 
         foreach ($orderBatchs as $key => $batch) {
             $batchs[] = [
-                "latitude" => $batch->receiver_lat,
-                "longitude" => $batch->receiver_lon,
+                "latitude" => $batch->place_lat,
+                "longitude" => $batch->place_lon,
                 "code" => $batch->batch_no,
                 "gather_sn" => ['a'],
             ];
@@ -212,8 +212,8 @@ class GoogleApiService
         //自动优化
         $driverLoc = [
             'batch_no' => 'driver_location',
-            'receiver_lat' => $tour->driver_location['latitude'],
-            'receiver_lon' => $tour->driver_location['longitude'],
+            'place_lat' => $tour->driver_location['latitude'],
+            'place_lon' => $tour->driver_location['longitude'],
         ];
         app('log')->debug('查看当前 batch 总数为:' . count($batchs) . '当前的 batch 为:', $batchs->toArray());
         app('log')->debug('整合后的数据为:', array_merge([$driverLoc], $batchs->toArray()));

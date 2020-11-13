@@ -382,26 +382,17 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     });
 
     //客户管理 - 收货方管理
-    Route::prefix('receiver-address')->group(function () {
+    Route::prefix('address')->group(function () {
         //列表查询
-        Route::get('/', 'ReceiverAddressController@index');
+        Route::get('/', 'AddressController@index');
         //获取详情
-        Route::get('/{id}', 'ReceiverAddressController@show');
+        Route::get('/{id}', 'AddressController@show');
         //新增
-        Route::post('/', 'ReceiverAddressController@store');
+        Route::post('/', 'AddressController@store');
         //修改
-        Route::put('/{id}', 'ReceiverAddressController@update');
+        Route::put('/{id}', 'AddressController@update');
         //删除
-        Route::delete('/{id}', 'ReceiverAddressController@destroy');
-    });
-
-    //发件人地址管理
-    Route::prefix('sender-address')->group(function () {
-        Route::get('/', 'SenderAddressController@index'); //发件人地址查询
-        Route::get('/{id}', 'SenderAddressController@show'); //发件人地址详情
-        Route::post('/', 'SenderAddressController@store'); //发件人地址新增
-        Route::put('/{id}', 'SenderAddressController@update'); //发件人地址修改
-        Route::delete('/{id}', 'SenderAddressController@destroy'); //发件人地址删除
+        Route::delete('/{id}', 'AddressController@destroy');
     });
 
 

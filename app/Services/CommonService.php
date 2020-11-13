@@ -80,7 +80,7 @@ class CommonService
     public static function addressFieldsSortCombine($data, $fields)
     {
         $countryKey = Arr::first($fields, function ($keyValue) {
-            return in_array($keyValue, ['country', 'receiver_country', 'sender_country']);
+            return in_array($keyValue, ['country', 'place_country', 'second_place_country']);
         });
         if (!empty($countryKey) && !empty($data[$countryKey]) && (app()->getLocale() == 'cn') && ($data[$countryKey] == 'CN')) {
             $data[$countryKey] = '中国';

@@ -44,8 +44,8 @@ class BatchArrived implements ITourDriver
     public function getLocation(): array
     {
         return [
-            'lon' => $this->batch['receiver_lon'],
-            'lat' => $this->batch['receiver_lat'],
+            'lon' => $this->batch['place_lon'],
+            'lat' => $this->batch['place_lat'],
         ];
     }
 
@@ -62,17 +62,17 @@ class BatchArrived implements ITourDriver
      */
     public function getContent(): string
     {
-        return '到达[' . $this->batch['receiver_fullname'] . ']客户家';
+        return '到达[' . $this->batch['place_fullname'] . ']客户家';
     }
 
     public function getAddress(): string
     {
         $address = [
-            'receiver_street' => $this->batch['receiver_street'],
-            'receiver_house_number' => $this->batch['receiver_house_number'],
-            'receiver_city' => $this->batch['receiver_city'],
-            'receiver_post_code' => $this->batch['receiver_post_code'],
-            'receiver_country' => $this->batch['receiver_country']
+            'place_street' => $this->batch['place_street'],
+            'place_house_number' => $this->batch['place_house_number'],
+            'place_city' => $this->batch['place_city'],
+            'place_post_code' => $this->batch['place_post_code'],
+            'place_country' => $this->batch['place_country']
         ];
         $address = implode(' ', $address);
         return $address;

@@ -48,12 +48,12 @@ class TourService extends BaseService
 
     protected $headings = [
         'id',
-        'receiver_fullname',
-        'receiver_phone',
+        'place_fullname',
+        'place_phone',
         'out_user_id',
-        'receiver_address',
-        'receiver_post_code',
-        'receiver_city',
+        'place_address',
+        'place_post_code',
+        'place_city',
         'merchant',
         'expect_pickup_quantity',
         'expect_pie_quantity',
@@ -376,8 +376,8 @@ class TourService extends BaseService
         if (count($batchs) >= 2) {
             $driverLoc = [
                 'batch_no' => 'driver_location',
-                'receiver_lat' => $tour->driver_location['latitude'],
-                'receiver_lon' => $tour->driver_location['longitude'],
+                'place_lat' => $tour->driver_location['latitude'],
+                'place_lon' => $tour->driver_location['longitude'],
             ];
             app('log')->debug('查看当前 batch 总数为:' . count($batchs) . '当前的 batch 为:', $batchs->toArray());
             app('log')->debug('整合后的数据为:', array_merge([$driverLoc], $batchs->toArray()));
@@ -522,12 +522,12 @@ class TourService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
             $cellData[$i][0] = $i + 1;
-            $cellData[$i][1] = $info[$i]['receiver_fullname'];
-            $cellData[$i][2] = $info[$i]['receiver_phone'];
+            $cellData[$i][1] = $info[$i]['place_fullname'];
+            $cellData[$i][2] = $info[$i]['place_phone'];
             $cellData[$i][3] = $orderInfo[0]['out_user_id'] ?? '';
-            $cellData[$i][4] = $info[$i]['receiver_street'] . ' ' . $info[$i]['receiver_house_number'];
-            $cellData[$i][5] = $info[$i]['receiver_post_code'];
-            $cellData[$i][6] = $info[$i]['receiver_city'];
+            $cellData[$i][4] = $info[$i]['place_street'] . ' ' . $info[$i]['place_house_number'];
+            $cellData[$i][5] = $info[$i]['place_post_code'];
+            $cellData[$i][6] = $info[$i]['place_city'];
             $cellData[$i][7] = $orderInfo[0]['merchant_id_name'];
             $cellData[$i][8] = $info[$i]['expect_pickup_quantity'];
             $cellData[$i][9] = $info[$i]['expect_pie_quantity'];
@@ -558,7 +558,7 @@ class TourService extends BaseService
         $info = $this->getBatchService()->getList(['tour_no' => $tourInfo['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
         $cityList = '';
         for ($i = 0; $i < count($info); $i++) {
-            $cityList = $cityList . $info[$i]['receiver_city'] . '-';
+            $cityList = $cityList . $info[$i]['place_city'] . '-';
         }
         $cityList = rtrim($cityList, "-");
         $params['name'] = $tourInfo['tour_no'];
@@ -585,8 +585,8 @@ class TourService extends BaseService
         $params[0]['lon'] = $tourInfo['warehouse_lon'];
         $params[0]['lat'] = $tourInfo['warehouse_lat'];
         for ($i = 1; $i <= count($info); $i++) {
-            $params[$i]['lon'] = $info[$i - 1]['receiver_lon'];
-            $params[$i]['lat'] = $info[$i - 1]['receiver_lat'];
+            $params[$i]['lon'] = $info[$i - 1]['place_lon'];
+            $params[$i]['lat'] = $info[$i - 1]['place_lat'];
         }
         $name = $tourInfo['tour_no'];
         return LocationTrait::getBatchMap($params, $name);

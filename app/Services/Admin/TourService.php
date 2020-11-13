@@ -54,12 +54,12 @@ class TourService extends BaseService
 
     protected $headings = [
         'id',
-        'receiver_fullname',
-        'receiver_phone',
+        'place_fullname',
+        'place_phone',
         'out_user_id',
-        'receiver_address',
-        'receiver_post_code',
-        'receiver_city',
+        'place_address',
+        'place_post_code',
+        'place_city',
         'merchant',
         'expect_pickup_quantity',
         'expect_pie_quantity',
@@ -70,11 +70,11 @@ class TourService extends BaseService
     protected $planHeadings = [
         'batch_no',
         'out_user_id',
-        'receiver_fullname',
-        'receiver_phone',
-        'receiver_address',
-        'receiver_post_code',
-        'receiver_city',
+        'place_fullname',
+        'place_phone',
+        'place_address',
+        'place_post_code',
+        'place_city',
         'merchant_name',
         'type',
         'package_quantity',
@@ -107,11 +107,11 @@ class TourService extends BaseService
         'actual_pickup_package_quantity',
         'expect_material_quantity',
         'actual_material_quantity',
-        'receiver_out_user_id',
-        'receiver_fullname',
-        'receiver_phone',
-        'receiver_post_code',
-        'receiver_address',
+        'place_out_user_id',
+        'place_fullname',
+        'place_phone',
+        'place_post_code',
+        'place_address',
         'expect_pie_quantity',
         'actual_pie_quantity',
         'expect_pickup_quantity',
@@ -963,7 +963,7 @@ class TourService extends BaseService
         $info = $this->getBatchService()->getList(['tour_no' => $tourInfo['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
         $cityList = '';
         for ($i = 0; $i < count($info); $i++) {
-            $cityList = $cityList . $info[$i]['receiver_city'] . '-';
+            $cityList = $cityList . $info[$i]['place_city'] . '-';
         }
         $cityList = rtrim($cityList, "-");
         $params['name'] = $tourInfo['tour_no'];
@@ -990,8 +990,8 @@ class TourService extends BaseService
         $params[0]['lon'] = $tourInfo['warehouse_lon'];
         $params[0]['lat'] = $tourInfo['warehouse_lat'];
         for ($i = 1; $i <= count($info); $i++) {
-            $params[$i]['lon'] = $info[$i - 1]['receiver_lon'];
-            $params[$i]['lat'] = $info[$i - 1]['receiver_lat'];
+            $params[$i]['lon'] = $info[$i - 1]['place_lon'];
+            $params[$i]['lat'] = $info[$i - 1]['place_lat'];
         }
         $name = $tourInfo['tour_no'];
         return LocationTrait::getBatchMap($params, $name);
@@ -1087,10 +1087,10 @@ class TourService extends BaseService
             $cellData[$i][8] = '';
             $cellData[$i][9] = '';
             $cellData[$i][10] = $batchList[$i]['out_user_id'];
-            $cellData[$i][11] = $batchList[$i]['receiver_fullname'];
-            $cellData[$i][12] = $batchList[$i]['receiver_phone'];
-            $cellData[$i][13] = $batchList[$i]['receiver_post_code'];
-            $cellData[$i][14] = $batchList[$i]['receiver_address'];
+            $cellData[$i][11] = $batchList[$i]['place_fullname'];
+            $cellData[$i][12] = $batchList[$i]['place_phone'];
+            $cellData[$i][13] = $batchList[$i]['place_post_code'];
+            $cellData[$i][14] = $batchList[$i]['place_address'];
             $cellData[$i][15] = $batchList[$i]['expect_pie_quantity'];
             $cellData[$i][16] = $batchList[$i]['actual_pie_quantity'];
             $cellData[$i][17] = $batchList[$i]['expect_pickup_quantity'];
@@ -1164,7 +1164,7 @@ class TourService extends BaseService
             $trackingOrderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
             $trackingOrderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
             $trackingOrderList[$k]['type'] = $trackingOrderList[$k]['type_name'];
-            $trackingOrderList[$k]['receiver_address'] = $trackingOrderList[$k]['receiver_street'] . ' ' . $trackingOrderList[$k]['receiver_house_number'];
+            $trackingOrderList[$k]['place_address'] = $trackingOrderList[$k]['place_street'] . ' ' . $trackingOrderList[$k]['place_house_number'];
             $trackingOrderList[$k]['material_code_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
             $trackingOrderList[$k]['material_expect_quantity_list'] = implode("\r", collect($materialList)->where('order_no', $v['order_no'])->pluck('expect_quantity')->toArray());
         }

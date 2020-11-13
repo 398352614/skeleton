@@ -44,8 +44,8 @@ class XLDirectionService
         foreach ($data as $key => $loc) {
             $temp = [];
             $temp['name'] = $loc['batch_no'];
-            $temp['lat'] = $loc['receiver_lat'];
-            $temp['lng'] = $loc['receiver_lon'];
+            $temp['lat'] = $loc['place_lat'];
+            $temp['lng'] = $loc['place_lon'];
             $locSeq[] = $temp;
         }
         return $this->getTour($locSeq);

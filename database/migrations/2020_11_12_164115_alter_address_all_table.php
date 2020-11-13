@@ -24,6 +24,7 @@ class AlterAddressAllTable extends Migration
             $table->renameColumn('receiver_address', 'place_address');
             $table->renameColumn('receiver_lat', 'place_lat');
             $table->renameColumn('receiver_lon', 'place_lon');
+            $table->rename('address');
         });
 
         Schema::table('sender_address', function (Blueprint $table) {

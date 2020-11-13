@@ -10,16 +10,16 @@ namespace App\Http\Controllers\Api\Merchant;
 
 
 use App\Http\Controllers\BaseController;
-use App\Services\Merchant\ReceiverAddressService;
+use App\Services\Merchant\AddressService;
 
 /**
- * Class ReceiverAddressController
+ * Class AddressController
  * @package App\Http\Controllers\Api\Merchant
- * @property ReceiverAddressService $service
+ * @property AddressService $service
  */
-class ReceiverAddressController extends BaseController
+class AddressController extends BaseController
 {
-    public function __construct(ReceiverAddressService $service, $exceptMethods = [])
+    public function __construct(AddressService $service, $exceptMethods = [])
     {
         parent::__construct($service, $exceptMethods);
     }

@@ -35,20 +35,11 @@ class CountryService extends BaseService
 
     /**
      * 收件人地址 服务
-     * @return ReceiverAddressService
+     * @return AddressService
      */
-    private function getReceiverAddressService()
+    private function getAddressService()
     {
-        return self::getInstance(ReceiverAddressService::class);
-    }
-
-    /**
-     * 发件人地址 服务
-     * @return SenderAddressService
-     */
-    private function getSenderAddressService()
-    {
-        return self::getInstance(SenderAddressService::class);
+        return self::getInstance(AddressService::class);
     }
 
     /**
@@ -144,13 +135,9 @@ class CountryService extends BaseService
         if (!empty($order)) {
             throw new BusinessLogicException('已存在订单，不能删除国家');
         }
-        $receiver = $this->getReceiverAddressService()->getInfo([], ['id'], false);
-        if (!empty($receiver)) {
+        $place = $this->getAddressService()->getInfo([], ['id'], false);
+        if (!empty($place)) {
             throw new BusinessLogicException('已存在收件人，不能删除国家');
-        }
-        $sender = $this->getSenderAddressService()->getInfo([], ['id'], false);
-        if (!empty($sender)) {
-            throw new BusinessLogicException('已存在发件人，不能删除国家');
         }
         $warehouse = $this->getWareHouseService()->getInfo([], ['id'], false);
         if (!empty($warehouse)) {

@@ -61,7 +61,7 @@ class CreateOrder extends Command
             $maCount = $this->option('material_count') ?? 1;
             $data = array_merge(
                 $this->base($executionDate, $merchantId),
-                $this->getReceiver(),
+                $this->getPlace(),
                 $this->getSender(),
                 $this->getMaPaList($maCount, $paCount)
             );
@@ -83,95 +83,95 @@ class CreateOrder extends Command
      * 获取收件人信息
      * @return mixed
      */
-    private function getReceiver()
+    private function getPlace()
     {
-        $receiverList = [
+        $placeList = [
             [
-                'receiver_fullname' => '大娃',
-                'receiver_phone' => '123456781',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '5611HW',
-                'receiver_house_number' => '314',
-                'receiver_city' => 'Eindhoven',
-                'receiver_street' => 'De Regent',
-                'receiver_address' => '大娃家',
+                'place_fullname' => '大娃',
+                'place_phone' => '123456781',
+                'place_country' => 'NL',
+                'place_post_code' => '5611HW',
+                'place_house_number' => '314',
+                'place_city' => 'Eindhoven',
+                'place_street' => 'De Regent',
+                'place_address' => '大娃家',
                 'lon' => '5.47409706',
                 'lat' => '51.43842145'
             ],
             [
-                'receiver_fullname' => '二娃',
-                'receiver_phone' => '1234567892',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '3031AT',
-                'receiver_house_number' => '199',
-                'receiver_city' => 'Rotterdam',
-                'receiver_street' => 'Jonker Fransstraat',
-                'receiver_address' => '二娃家',
+                'place_fullname' => '二娃',
+                'place_phone' => '1234567892',
+                'place_country' => 'NL',
+                'place_post_code' => '3031AT',
+                'place_house_number' => '199',
+                'place_city' => 'Rotterdam',
+                'place_street' => 'Jonker Fransstraat',
+                'place_address' => '二娃家',
                 'lon' => '4.4862111',
                 'lat' => '51.92512668'
             ],
             [
-                'receiver_fullname' => '三娃',
-                'receiver_phone' => '1234567893',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '6702AG',
-                'receiver_house_number' => '81',
-                'receiver_city' => 'Wageningen',
-                'receiver_street' => 'Troelstraweg',
-                'receiver_address' => '三娃家',
+                'place_fullname' => '三娃',
+                'place_phone' => '1234567893',
+                'place_country' => 'NL',
+                'place_post_code' => '6702AG',
+                'place_house_number' => '81',
+                'place_city' => 'Wageningen',
+                'place_street' => 'Troelstraweg',
+                'place_address' => '三娃家',
                 'lon' => '5.65477093',
                 'lat' => '51.96484667'
             ],
             [
-                'receiver_fullname' => '四娃',
-                'receiver_phone' => '1234567894',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '1013BD',
-                'receiver_house_number' => '916D',
-                'receiver_city' => 'Amsterdam',
-                'receiver_street' => 'Haparandaweg',
-                'receiver_address' => '四娃家',
+                'place_fullname' => '四娃',
+                'place_phone' => '1234567894',
+                'place_country' => 'NL',
+                'place_post_code' => '1013BD',
+                'place_house_number' => '916D',
+                'place_city' => 'Amsterdam',
+                'place_street' => 'Haparandaweg',
+                'place_address' => '四娃家',
                 'lon' => '4.87800829',
                 'lat' => '52.39512152'
             ],
             [
-                'receiver_fullname' => '五娃',
-                'receiver_phone' => '1234567895',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '9405PR',
-                'receiver_house_number' => '2',
-                'receiver_city' => 'Assen',
-                'receiver_street' => 'Transportweg',
-                'receiver_address' => '五娃家',
+                'place_fullname' => '五娃',
+                'place_phone' => '1234567895',
+                'place_country' => 'NL',
+                'place_post_code' => '9405PR',
+                'place_house_number' => '2',
+                'place_city' => 'Assen',
+                'place_street' => 'Transportweg',
+                'place_address' => '五娃家',
                 'lon' => '6.52054721',
                 'lat' => '52.99499546'
             ],
             [
-                'receiver_fullname' => '六娃',
-                'receiver_phone' => '1234567896',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '9723ZB',
-                'receiver_house_number' => '20',
-                'receiver_city' => 'Groningen',
-                'receiver_street' => 'De Zaayer',
-                'receiver_address' => '六娃家',
+                'place_fullname' => '六娃',
+                'place_phone' => '1234567896',
+                'place_country' => 'NL',
+                'place_post_code' => '9723ZB',
+                'place_house_number' => '20',
+                'place_city' => 'Groningen',
+                'place_street' => 'De Zaayer',
+                'place_address' => '六娃家',
                 'lon' => '6.58270309',
                 'lat' => '53.2082316'
             ],
             [
-                'receiver_fullname' => '七娃',
-                'receiver_phone' => '1234567897',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '1183GT',
-                'receiver_house_number' => '11',
-                'receiver_city' => 'Amstelveen',
-                'receiver_street' => 'Straat van Gibraltar',
-                'receiver_address' => '七娃家',
+                'place_fullname' => '七娃',
+                'place_phone' => '1234567897',
+                'place_country' => 'NL',
+                'place_post_code' => '1183GT',
+                'place_house_number' => '11',
+                'place_city' => 'Amstelveen',
+                'place_street' => 'Straat van Gibraltar',
+                'place_address' => '七娃家',
                 'lon' => '4.87510019',
                 'lat' => '52.31153083'
             ]
         ];
-        return Arr::random($receiverList);
+        return Arr::random($placeList);
     }
 
     /**
@@ -181,14 +181,14 @@ class CreateOrder extends Command
     private function getSender()
     {
         return [
-            'sender_fullname' => 'test',
-            'sender_phone' => '123456789',
-            'sender_country' => 'NL',
-            'sender_post_code' => '7041AH',
-            'sender_house_number' => '23-33',
-            'sender_city' => 's-Heerenberg',
-            'sender_street' => 'Marktstraat',
-            'sender_address' => 'test家',
+            'second_place_fullname' => 'test',
+            'second_place_phone' => '123456789',
+            'second_place_country' => 'NL',
+            'second_place_post_code' => '7041AH',
+            'second_place_house_number' => '23-33',
+            'second_place_city' => 's-Heerenberg',
+            'second_place_street' => 'Marktstraat',
+            'second_place_address' => 'test家',
         ];
     }
 

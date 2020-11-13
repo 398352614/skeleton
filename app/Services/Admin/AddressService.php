@@ -1,27 +1,34 @@
 <?php
+/**
+ * 客户管理-收货方 服务
+ * User: long
+ * Date: 2020/1/10
+ * Time: 13:41
+ */
 
 namespace App\Services\Admin;
 
+
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\AddressResource;
 use App\Models\Merchant;
-use App\Models\SenderAddress;
+use App\Models\Address;
 use App\Services\BaseService;
-use App\Http\Resources\SenderAddressResource;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 
-class SenderAddressService extends BaseService
+class AddressService extends BaseService
 {
     public $filterRules = [
         'merchant_id' => ['=', 'merchant_id'],
-        'sender_fullname' => ['like', 'sender_fullname'],
-        'sender_post_code' => ['like', 'sender_post_code']
+        'place_fullname' => ['like', 'place_fullname'],
+        'place_post_code' => ['like', 'place_post_code']
     ];
 
-    public function __construct(SenderAddress $senderAddress)
+    public function __construct(Address $address)
     {
-        parent::__construct($senderAddress, SenderAddressResource::class, SenderAddressResource::class);
+        parent::__construct($address, AddressResource::class, AddressResource::class);
     }
 
     /**
@@ -40,16 +47,10 @@ class SenderAddressService extends BaseService
      */
     public function getUniqueWhere($data)
     {
-        $fields = ['merchant_id', 'sender_country', 'sender_fullname', 'sender_phone', 'sender_post_code', 'sender_house_number', 'sender_city', 'sender_street', 'sender_address'];
+        $fields = ['merchant_id', 'place_country', 'place_fullname', 'place_phone', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address'];
         $where = Arr::only($data, $fields);
         return $where;
     }
-
-    public function index()
-    {
-        return parent::getpagelist();
-    }
-
 
     /**
      * 获取详情
@@ -59,7 +60,7 @@ class SenderAddressService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], true);
+        $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -76,34 +77,8 @@ class SenderAddressService extends BaseService
         return parent::getInfo($this->getUniqueWhere($data), ['*'], false);
     }
 
-
     /**
-     * 联合唯一检验
-     * @param $data
-     * @param array $dbInfo
-     * @throws BusinessLogicException
-     */
-    private function check(&$data, $dbInfo = [])
-    {
-        $data['sender_country'] = !empty($dbInfo['sender_country']) ? $dbInfo['sender_country'] : CompanyTrait::getCountry();
-        //验证商家是否存在
-        $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id']], ['id', 'country'], false);
-        if (empty($merchant)) {
-            throw new BusinessLogicException('商户不存在，请重新选择商户');
-        }
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['sender_address'])) {
-            $data['sender_address'] = CommonService::addressFieldsSortCombine($data, ['sender_country', 'sender_city', 'sender_street', 'sender_house_number', 'sender_post_code']);
-        }
-        //判断是否唯一
-        $where = $this->getUniqueWhere($data);
-        !empty($dbInfo['id']) && $where = Arr::add($where, 'id', ['<>', $dbInfo['id']]);
-        $info = parent::getInfo($where, ['*'], false);
-        if (!empty($info)) {
-            throw new BusinessLogicException('发货方地址已存在，不能重复添加');
-        }
-    }
-
-    /**
+     * 新增
      * @param $params
      * @throws BusinessLogicException
      */
@@ -112,11 +87,12 @@ class SenderAddressService extends BaseService
         $this->check($params);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
-            throw new BusinessLogicException('地址新增失败');
+            throw new BusinessLogicException('新增失败,请重新操作');
         }
     }
 
     /**
+     * 通过ID 修改
      * @param $id
      * @param $data
      * @return bool|int|void
@@ -131,11 +107,39 @@ class SenderAddressService extends BaseService
         $this->check($data, $info->toArray());
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('地址修改失败');
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
+    }
+
+
+    /**
+     * 验证
+     * @param $data
+     * @param array $dbInfo
+     * @throws BusinessLogicException
+     */
+    public function check(&$data, $dbInfo = [])
+    {
+        $data['place_country'] = !empty($dbInfo['place_country']) ? $dbInfo['place_country'] : CompanyTrait::getCountry();
+        //验证商家是否存在
+        $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id']], ['id', 'country'], false);
+        if (empty($merchant)) {
+            throw new BusinessLogicException('商户不存在，请重新选择商户');
+        }
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
+            $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
+        }
+        //判断是否唯一
+        $where = $this->getUniqueWhere($data);
+        !empty($dbInfo['id']) && $where = Arr::add($where, 'id', ['<>', $dbInfo['id']]);
+        $info = parent::getInfo($where, ['*'], false);
+        if (!empty($info)) {
+            throw new BusinessLogicException('收货方地址已存在，不能重复添加');
         }
     }
 
     /**
+     * 删除
      * @param $id
      * @throws BusinessLogicException
      */
@@ -143,7 +147,9 @@ class SenderAddressService extends BaseService
     {
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('地址删除失败');
+            throw new BusinessLogicException('删除失败，请重新操作');
         }
     }
+
+
 }

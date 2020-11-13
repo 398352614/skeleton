@@ -2,24 +2,27 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
 
 /**
- * 发件人地址 表
- * Class Source
+ * 收货方 表
+ * Class Employee
  * @package App\Models
  */
-class SenderAddress extends BaseModel
+class Address extends BaseModel
 {
     /**
+     * 司机实际取件导航
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'sender_address';
+    protected $table = 'address';
 
     /**
      * The primary key for the model.
+     *
      * @var string
      */
     protected $primaryKey = 'id';
@@ -43,42 +46,44 @@ class SenderAddress extends BaseModel
      *
      * @var array
      */
-    protected $hidden = [];
+    protected $fillable = [
+        'company_id',
+        'place_fullname',
+        'merchant_id',
+        'place_phone',
+        'place_country',
+        'place_post_code',
+        'place_house_number',
+        'place_city',
+        'place_street',
+        'place_address',
+        'place_lon',
+        'place_lat',
+        'created_at',
+        'updated_at',
+    ];
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $dates = [];
+    protected $hidden = [
+
+    ];
 
     protected $appends = [
         'merchant_id_name',
         'short',
-        'sender_country_name'
+        'place_country_name',
     ];
 
     /**
-     * The attributes that are mass assignable.
+     * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $fillable = [
-        'company_id',
-        'merchant_id',
-        'sender_fullname',
-        'sender_phone',
-        'sender_country',
-        'sender_post_code',
-        'sender_house_number',
-        'sender_city',
-        'sender_street',
-        'sender_address',
-        'sender_lat',
-        'sender_lon',
-        'created_at',
-        'updated_at',
-    ];
+    protected $dates = [];
 
     public function getMerchantIdNameAttribute()
     {
@@ -93,6 +98,6 @@ class SenderAddress extends BaseModel
 
     public function getShortAttribute()
     {
-        return empty($this->sender_country) ? null : $this->getOriginal('sender_country');
+        return empty($this->place_country) ? null : $this->getOriginal('place_country');
     }
 }

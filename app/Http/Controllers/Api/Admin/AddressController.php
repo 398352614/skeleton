@@ -1,39 +1,39 @@
 <?php
+/**
+ * 客户管理-收货方 接口
+ * User: long
+ * Date: 2020/1/10
+ * Time: 13:38
+ */
 
-namespace App\Http\Controllers\Api\Merchant;
+namespace App\Http\Controllers\Api\Admin;
 
-use App\Exceptions\BusinessLogicException;
+
 use App\Http\Controllers\BaseController;
-use App\Services\Merchant\SenderAddressService;
+use App\Services\Admin\AddressService;
 
 /**
- * Class SenderAddressController
- * @package App\Http\Controllers\Api\Merchant
- * @property SenderAddressService $service
+ * Class AddressController
+ * @package App\Http\Controllers\Api\Admin
+ * @property AddressService $service
  */
-class SenderAddressController extends BaseController
+class AddressController extends BaseController
 {
-    public function __construct(SenderAddressService $service)
+    public function __construct(AddressService $service, $exceptMethods = [])
     {
-        parent::__construct($service);
+        parent::__construct($service, $exceptMethods);
     }
 
-    /**
-     * @return mixed
-     * @throws BusinessLogicException
-     */
     public function index()
     {
         return $this->service->getPageList();
     }
 
-
     /**
      * 获取详情
-     *
      * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws BusinessLogicException
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function show($id)
     {
@@ -41,8 +41,8 @@ class SenderAddressController extends BaseController
     }
 
     /**
-     * @return mixed
-     * @throws BusinessLogicException
+     * 新增
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function store()
     {
@@ -50,9 +50,10 @@ class SenderAddressController extends BaseController
     }
 
     /**
+     * 修改
      * @param $id
-     * @return bool|int
-     * @throws BusinessLogicException
+     * @return bool|int|void
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function update($id)
     {
@@ -60,9 +61,9 @@ class SenderAddressController extends BaseController
     }
 
     /**
+     * 删除
      * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function destroy($id)
     {

@@ -31,13 +31,13 @@ class BatchService extends BaseService
         'driver_id' => ['=', 'driver_id'],
         'line_id,line_name' => ['like', 'line_keyword'],
         'batch_no' => ['like', 'keyword'],
-        'receiver_fullname' => ['=', 'receiver_fullname'],
-        'receiver_phone' => ['=', 'receiver_phone'],
-        'receiver_country' => ['=', 'receiver_country'],
-        'receiver_post_code' => ['=', 'receiver_post_code'],
-        'receiver_house_number' => ['=', 'receiver_house_number'],
-        'receiver_city' => ['=', 'receiver_city'],
-        'receiver_street' => ['=', 'receiver_street'],
+        'place_fullname' => ['=', 'place_fullname'],
+        'place_phone' => ['=', 'place_phone'],
+        'place_country' => ['=', 'place_country'],
+        'place_post_code' => ['=', 'place_post_code'],
+        'place_house_number' => ['=', 'place_house_number'],
+        'place_city' => ['=', 'place_city'],
+        'place_street' => ['=', 'place_street'],
         'tour_no' => ['like', 'tour_no']
     ];
 
@@ -165,22 +165,22 @@ class BatchService extends BaseService
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             $where = [
                 'execution_date' => $info['execution_date'],
-                'receiver_fullname' => $info['receiver_fullname'],
-                'receiver_phone' => $info['receiver_phone'],
-                'receiver_country' => $info['receiver_country'],
-                'receiver_city' => $info['receiver_city'],
-                'receiver_street' => $info['receiver_street'],
-                'receiver_house_number' => $info['receiver_house_number'],
-                'receiver_post_code' => $info['receiver_post_code'],
+                'place_fullname' => $info['place_fullname'],
+                'place_phone' => $info['place_phone'],
+                'place_country' => $info['place_country'],
+                'place_city' => $info['place_city'],
+                'place_street' => $info['place_street'],
+                'place_house_number' => $info['place_house_number'],
+                'place_post_code' => $info['place_post_code'],
                 'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
             ];
         } else {
             $where = [
                 'execution_date' => $info['execution_date'],
-                'receiver_fullname' => $info['receiver_fullname'],
-                'receiver_phone' => $info['receiver_phone'],
-                'receiver_country' => $info['receiver_country'],
-                'receiver_address' => $info['receiver_address'],
+                'place_fullname' => $info['place_fullname'],
+                'place_phone' => $info['place_phone'],
+                'place_country' => $info['place_country'],
+                'place_address' => $info['place_address'],
                 'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED]]
             ];
         }
@@ -278,16 +278,16 @@ class BatchService extends BaseService
             'line_id' => $line['id'],
             'line_name' => $line['name'],
             'execution_date' => $order['execution_date'],
-            'receiver_fullname' => $order['receiver_fullname'],
-            'receiver_phone' => $order['receiver_phone'],
-            'receiver_country' => $order['receiver_country'],
-            'receiver_post_code' => $order['receiver_post_code'],
-            'receiver_house_number' => $order['receiver_house_number'],
-            'receiver_city' => $order['receiver_city'],
-            'receiver_street' => $order['receiver_street'],
-            'receiver_address' => $order['receiver_address'],
-            'receiver_lon' => $order['receiver_lon'],
-            'receiver_lat' => $order['receiver_lat'],
+            'place_fullname' => $order['place_fullname'],
+            'place_phone' => $order['place_phone'],
+            'place_country' => $order['place_country'],
+            'place_post_code' => $order['place_post_code'],
+            'place_house_number' => $order['place_house_number'],
+            'place_city' => $order['place_city'],
+            'place_street' => $order['place_street'],
+            'place_address' => $order['place_address'],
+            'place_lon' => $order['place_lon'],
+            'place_lat' => $order['place_lat'],
             'merchant_id' => $line['range_merchant_id'] ?? 0
         ];
         if (intval($order['type']) === 1) {
