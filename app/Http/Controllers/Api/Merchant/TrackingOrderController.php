@@ -59,15 +59,5 @@ class TrackingOrderController extends BaseController
         return $this->service->getAbleDateList($id);
     }
 
-    /**
-     * 批量运单分配至取件线路
-     * @throws BusinessLogicException
-     * @throws \WebSocket\BadOpcodeException
-     */
-    public function assignListTour()
-    {
-        return $this->service->assignListTour($this->data);
-    }
-
 
 }
