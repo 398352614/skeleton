@@ -667,7 +667,7 @@ class OrderService extends BaseService
                 $params['lon'] = $location['lon'];
             }
         }
-        if (empty($params['lat']) || empty($params['lon'])) {
+        if (empty($params['place_lat']) || empty($params['place_lon'])) {
             throw new BusinessLogicException('地址数据不正确，请重新选择地址');
         }
         //获取经纬度
