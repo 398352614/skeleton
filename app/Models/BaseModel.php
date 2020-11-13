@@ -113,7 +113,7 @@ class BaseModel extends Model
         return empty($this->second_place_country) ? null : CountryTrait::getCountryName($this->second_place_country);
     }
 
-    public function gePlaceCountryNameAttribute()
+    public function getPlaceCountryNameAttribute()
     {
         return empty($this->place_country) ? null : CountryTrait::getCountryName($this->place_country);
     }
