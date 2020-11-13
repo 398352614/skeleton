@@ -711,24 +711,6 @@ class OrderService extends BaseService
     }
 
     /**
-     * 获取可选日期验证
-     * @param $info
-     * @throws BusinessLogicException
-     */
-    public function validate($info)
-    {
-        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
-            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
-        } else {
-            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'place_post_code' => 'required|string|max:50']);
-        }
-        if ($validator->fails()) {
-            throw new BusinessLogicException('地址数据不正确，无法拉取可选日期', 3001);
-        }
-    }
-
-
-    /**
      * 批量订单打印
      * @param $idList
      * @return array

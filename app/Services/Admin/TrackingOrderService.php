@@ -833,6 +833,8 @@ class TrackingOrderService extends BaseService
             'warehouse_city' => $warehouse['city'],
             'warehouse_street' => $warehouse['street'],
             'warehouse_address' => $warehouse['address'],
+            'warehouse_lon'=>$warehouse['warehouse_lon'],
+            'warehouse_lat'=>$warehouse['warehouse_lat']
         ]);
         return $line;
     }
