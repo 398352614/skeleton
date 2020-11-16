@@ -693,6 +693,8 @@ class OrderService extends BaseService
     public function updateBaseInfo($dbInfo, $data)
     {
         $columns = ['special_remark'];
+        Log::info('数据库',$dbInfo);
+        Log::info('输入',$data);
         foreach ($data as $k => $v) {
             if (!in_array($k, $columns) && $v !== $dbInfo[$k]) {
                 return false;
