@@ -33,6 +33,7 @@ class OrderResource extends JsonResource
             'out_status' => $this->out_status,
             'out_status_name' => $this->out_status_name,
             'execution_date' => $this->execution_date,
+            'second_execution_date' => $this->second_execution_date,
             'out_order_no' => $this->out_order_no,
             'exception_label' => $this->exception_label,
             'exception_label_name' => $this->exception_label_name,
