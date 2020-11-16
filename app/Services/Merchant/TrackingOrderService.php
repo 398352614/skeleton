@@ -752,6 +752,22 @@ class TrackingOrderService extends BaseService
     }
 
     /**
+     * 更新可出库状态
+     * @param $orderNo
+     * @param $outStatus
+     * @throws BusinessLogicException
+     */
+    public function updateOutStatusByOrderNo($orderNo, $outStatus)
+    {
+        $dbTrackingOrder = parent::getInfoLock(['order_no' => $orderNo, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]]], ['*'], false, ['created_at' => 'desc']);
+        if (empty($dbTrackingOrder)) return;
+        $rowCount = parent::updateById($dbTrackingOrder->id, ['out_status' => $outStatus]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+    }
+
+    /**
      * 通过订单号,获取派送信息
      * @param $orderNo
      * @return array

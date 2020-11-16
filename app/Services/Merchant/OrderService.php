@@ -1026,11 +1026,12 @@ class OrderService extends BaseService
      */
     public function updateOutStatus($id, $params)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]);
-        $rowCount = parent::updateById($info['id'], ['out_status' => $params['out_status']]);
+        $dbOrder = $this->getInfoByIdOfStatus($id, true);
+        $rowCount = parent::updateById($dbOrder['id'], ['out_status' => $params['out_status']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
+        $this->getTrackingOrderService()->updateOutStatusByOrderNo($dbOrder, $params['out_status']);
     }
 
     /**
