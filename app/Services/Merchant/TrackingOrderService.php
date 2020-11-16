@@ -97,6 +97,15 @@ class TrackingOrderService extends BaseService
     }
 
     /**
+     * 轨迹 服务
+     * @return RouteTrackingService
+     */
+    private function getRouteTrackingService()
+    {
+        return self::getInstance(RouteTrackingService::class);
+    }
+
+    /**
      * 线路邮编范围 服务
      * @return LineRangeService
      */
@@ -715,25 +724,6 @@ class TrackingOrderService extends BaseService
         return $data;
     }
 
-
-    /**
-     * 获取可分配的站点列表
-     * @param $id
-     * @param $params
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getAbleBatchList($id, $params)
-    {
-        $dbTrackingOrder = parent::getInfo(['id' => $id], ['*'], false);
-        if (empty($dbTrackingOrder)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $dbTrackingOrder = $dbTrackingOrder->toArray();
-        $dbTrackingOrder['execution_date'] = $params['execution_date'];
-        return $this->getBatchService()->getListByTrackingOrder($dbTrackingOrder);
-    }
-
     /**
      * 将运单分配至站点
      * @param $id
@@ -815,33 +805,50 @@ class TrackingOrderService extends BaseService
         dispatch(new AddOrderPush($dbTrackingOrderList, $tour['driver_id']));
     }
 
-
     /**
-     * 获取可加单的运单列表
-     * @param $trackingOrderIdList
-     * @param $executionDate
+     * 通过订单号,获取派送信息
+     * @param $orderNo
      * @return array
      * @throws BusinessLogicException
      */
-    public function getAddTrackingOrderList($trackingOrderIdList, $executionDate)
+    public function getDispatchInfoByOrderNo($orderNo)
     {
-        $lineId = null;
-        $dbTrackingOrderList = parent::getList(['id' => ['in', explode(',', $trackingOrderIdList)], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1], ['*'], false)->toArray();
-        $statusList = [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2];
-        foreach ($dbTrackingOrderList as $dbTrackingOrder) {
-            if (!in_array($dbTrackingOrder['status'], $statusList)) {
-                throw new BusinessLogicException('运单[:order_no]的不是待分配或已分配状态，不能操作', 1000, ['order_no' => $dbTrackingOrder['order_no']]);
-            }
-            if ($dbTrackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
-                throw new BusinessLogicException('派件运单不允许加单');
-            }
-            $dbLineId = $this->getLineService()->getLineIdByInfo($dbTrackingOrder, $executionDate);
-            if (empty($dbLineId) || (!empty($lineId) && ($lineId != $dbLineId))) {
-                return [$dbTrackingOrderList, 0];
-            }
-            $lineId = $dbLineId;
+        $dbTrackingOrder = parent::getInfo(['order_no' => $orderNo], ['*'], false, ['created_at' => 'desc']);
+        if (empty($dbTrackingOrder)) {
+            throw new BusinessLogicException('数据不存在');
         }
-        return [$dbTrackingOrderList, $lineId];
+        $batch = $this->getBatchService()->getInfo(['batch_no' => $dbTrackingOrder->batch_no], ['*'], false);
+        if (empty($batch)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $batchList = $this->getBatchService()->getList(['tour_no' => $batch['tour_no']], ['*'], false);
+        $count = $batchList->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
+        //处理预计耗时
+        if (!empty($batch->expect_arrive_time)) {
+            $expectTime = strtotime($batch->expect_arrive_time) - time();
+        } else {
+            $expectTime = 0;
+        }
+        $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $batch->tour_no], ['lon', 'lat'], false, ['id' => 'desc']) ?? '';
+        if (empty($routeTracking)) {
+            $routeTracking = $this->getTourService()->getInfo(['tour_no' => $batch->tour_no], ['*'], false);
+            $routeTracking['lon'] = $routeTracking['warehouse_lon'];
+            $routeTracking['lat'] = $routeTracking['warehouse_lat'];
+        }
+        return [
+            'expect_distance' => $batch['expect_distance'] ?? 0,
+            'actual_distance' => $batch['actual_distance'] ?? 0,
+            'expect_time' => ($expectTime >= 0) ? $expectTime : 0,
+            'actual_time' => $batch['actual_time'] ?? 0,
+            'expect_arrive_time' => $batch['expect_arrive_time'] ?? '',
+            'actual_arrive_time' => $batch['actual_arrive_time'] ?? '',
+            'place_lon' => $batch['place_lon'] ?? '',
+            'place_lat' => $batch['place_lat'] ?? '',
+            'driver_lon' => $routeTracking['lon'] ?? '',
+            'driver_lat' => $routeTracking['lat'] ?? '',
+            'rest_batch' => $count,
+            'out_order_no' => $dbTrackingOrder['out_order_no'] ?? ''
+        ];
     }
 
     /**
@@ -934,8 +941,8 @@ class TrackingOrderService extends BaseService
             'warehouse_city' => $warehouse['city'],
             'warehouse_street' => $warehouse['street'],
             'warehouse_address' => $warehouse['address'],
-            'warehouse_lon'=>$warehouse['warehouse_lon'],
-            'warehouse_lat'=>$warehouse['warehouse_lat']
+            'warehouse_lon' => $warehouse['warehouse_lon'],
+            'warehouse_lat' => $warehouse['warehouse_lat']
         ]);
         return $line;
     }

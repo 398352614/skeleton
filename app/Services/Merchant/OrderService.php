@@ -309,15 +309,15 @@ class OrderService extends BaseService
         if (!empty($params['out_order_no'])) {
             $this->query->where('out_order_no', '=', $params['out_order_no']);
         }
-        $this->query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5]);
+        //$this->query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5]);
         $info = $this->getPageList()->toArray(request());
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $data = parent::getInfo(['order_no' => $info[0]['order_no']], ['merchant_id', 'order_no', 'batch_no', 'tour_no', 'status'], false);
+        $data = parent::getInfo(['order_no' => $info[0]['order_no']], ['merchant_id', 'order_no', 'status'], false);
         $data['package_list'] = $this->getPackageService()->getList(['order_no' => $info[0]['order_no']], ['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount'], false);
         $data['material_list'] = $this->getMaterialService()->getList(['order_no' => $info[0]['order_no']], ['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'], false);
-        $data = array_only_fields_sort($data, ['merchant_id', 'tour_no', 'batch_no', 'order_no', 'status', 'package_list', 'material_list']);
+        $data = array_only_fields_sort($data, ['merchant_id', 'order_no', 'status', 'package_list', 'material_list']);
         return $data;
     }
 
@@ -1015,7 +1015,6 @@ class OrderService extends BaseService
             //以取消取派方式推送商城
             event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
         }
-
         return 'true';
     }
 
@@ -1077,42 +1076,11 @@ class OrderService extends BaseService
     public function getOrderDispatchInfo($id)
     {
         $where = [$this->getIdKeyName($id) => $id];
-        $info = parent::getInfo($where, ['batch_no'], false);
+        $dbOrder = parent::getInfo($where, ['batch_no'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $batch = $this->getBatchService()->getInfo(['batch_no' => $info->batch_no], ['*'], false);
-        if (empty($batch)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $batchList = $this->getBatchService()->getList(['tour_no' => $batch['tour_no']], ['*'], false);
-        $count = $batchList->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
-        //处理预计耗时
-        if (!empty($batch->expect_arrive_time)) {
-            $expectTime = strtotime($batch->expect_arrive_time) - time();
-        } else {
-            $expectTime = 0;
-        }
-        $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $batch->tour_no], ['lon', 'lat'], false, ['id' => 'desc']) ?? '';
-        if (empty($routeTracking)) {
-            $routeTracking = $this->getTourService()->getInfo(['tour_no' => $batch->tour_no], ['*'], false);
-            $routeTracking['lon'] = $routeTracking['warehouse_lon'];
-            $routeTracking['lat'] = $routeTracking['warehouse_lat'];
-        }
-        return [
-            'expect_distance' => $batch['expect_distance'] ?? 0,
-            'actual_distance' => $batch['actual_distance'] ?? 0,
-            'expect_time' => ($expectTime >= 0) ? $expectTime : 0,
-            'actual_time' => $batch['actual_time'] ?? 0,
-            'expect_arrive_time' => $batch['expect_arrive_time'] ?? '',
-            'actual_arrive_time' => $batch['actual_arrive_time'] ?? '',
-            'place_lon' => $batch['place_lon'] ?? '',
-            'place_lat' => $batch['place_lat'] ?? '',
-            'driver_lon' => $routeTracking['lon'] ?? '',
-            'driver_lat' => $routeTracking['lat'] ?? '',
-            'rest_batch' => $count,
-            'out_order_no' => $info['out_order_no'] ?? ''
-        ];
+        return $this->getTrackingOrderService()->getDispatchInfoByOrderNo($dbOrder->order_no);
     }
 
 }
