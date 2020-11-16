@@ -709,7 +709,7 @@ class OrderService extends BaseService
             $data['package_list'] = Arr::only($data['package_list'], array_keys($dbPackageList));
             foreach ($data['package_list'] as $k => $v) {
                 foreach ($v as $x => $y) {
-                    if ($y != collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->$x) {
+                    if ($y != collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->toArray()[$x]) {
                         return false;
                     }
                 }
@@ -721,7 +721,7 @@ class OrderService extends BaseService
             $data['material_list'] = Arr::only($data['material_list'], array_keys($dbMaterialList));
             foreach ($data['material_list'] as $k => $v) {
                 foreach ($v as $x => $y) {
-                    if ($y != collect($dbMaterialList)->where('code', $v['code'])->$x) {
+                    if ($y != collect($dbMaterialList)->where('code', $v['code'])->toArray()[$x]) {
                         return false;
                     }
                 }
