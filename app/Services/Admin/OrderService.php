@@ -704,22 +704,29 @@ class OrderService extends BaseService
             }
         }
         $dbPackageList = $this->getPackageService()->getList(['order_no' => $dbInfo['order_no']], ['*'], false);
-        dd($data['package_list'], $dbPackageList);
-        foreach ($data['package_list'] as $k => $v) {
-            foreach ($v as $x => $y) {
-                if ($y != collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->$x) {
-                    return false;
+        if(!empty($dbPackageList)){
+            $dbPackageList=$dbPackageList->toArray();
+            dd($data['package_list'], $dbPackageList);
+            foreach ($data['package_list'] as $k => $v) {
+                foreach ($v as $x => $y) {
+                    if ($y != collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->$x) {
+                        return false;
+                    }
                 }
             }
         }
         $dbMaterialList = $this->getMaterialService()->getList(['order_no' => $dbInfo['order_no']], ['*'], false);
-        foreach ($data['material_list'] as $k => $v) {
-            foreach ($v as $x => $y) {
-                if ($y != collect($dbMaterialList)->where('code', $v['code'])->$x) {
-                    return false;
+        if(!empty($dbMaterialList)){
+            $dbMaterialList=$dbMaterialList->toArray();
+            foreach ($data['material_list'] as $k => $v) {
+                foreach ($v as $x => $y) {
+                    if ($y != collect($dbMaterialList)->where('code', $v['code'])->$x) {
+                        return false;
+                    }
                 }
             }
         }
+
         dd($data);
         $rowCount = parent::updateById($data['id'], Arr::only($data, $columns));
         if ($rowCount === false) {
