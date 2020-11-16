@@ -1003,38 +1003,17 @@ class OrderService extends BaseService
      */
     public function destroy($id, $params)
     {
-        $info = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7]);
-        //若当前订单已取消取派了,在直接返回成功，不再删除
-        if (in_array(intval($info['status']), [BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7])) {
-            return 'true';
-        }
-        $rowCount = parent::updateById($info['id'], ['status' => BaseConstService::TRACKING_ORDER_STATUS_7, 'remark' => $params['remark'] ?? '', 'execution_date' => null, 'batch_no' => '', 'tour_no' => '']);
+        //获取信息
+        $dbOrder = $this->getInfoByIdOfStatus($id, true);
+        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('订单删除失败，请重新操作');
+            throw new BusinessLogicException('操作失败,请重新操作');
         }
-        //包裹移除站点和取件线路信息
-        $rowCount = $this->getPackageService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '', 'execution_date' => null, 'status' => BaseConstService::PACKAGE_STATUS_5]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('移除失败,请重新操作');
-        }
-        //材料移除站点和取件线路信息
-        $rowCount = $this->getMaterialService()->update(['order_no' => $info['order_no']], ['tour_no' => '', 'batch_no' => '', 'execution_date' => null]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('移除失败,请重新操作');
-        }
-        //站点移除订单
-        if (!empty($info['batch_no'])) {
-            $this->getBatchService()->removeTrackingOrder($info);
-        }
-        //重新统计站点金额
-        !empty($info['batch_no']) && $this->getBatchService()->reCountAmountByNo($info['batch_no']);
-        //重新统计取件线路金额
-        !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
+        $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
 
-        TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($info, BaseConstService::TRACKING_ORDER_TRAIL_DELETE);
         if ((!empty($params['no_push']) && $params['no_push'] == 0) || empty($params['no_push'])) {
             //以取消取派方式推送商城
-            event(new OrderCancel($info['order_no'], $info['out_order_no']));
+            event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
         }
 
         return 'true';
