@@ -699,8 +699,7 @@ class OrderService extends BaseService
         $data=Arr::only($data,array_keys($dbInfo));
         $columns = ['special_remark', 'package_list', 'material_list','id'];
         foreach ($data as $k => $v) {
-            if (!in_array($k, $columns) && $v !== $dbInfo[$k]) {
-                dd($k,$v);
+            if (!in_array($k, $columns) && $v != $dbInfo[$k]) {
                 return false;
             }
         }
