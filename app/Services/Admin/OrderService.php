@@ -696,27 +696,26 @@ class OrderService extends BaseService
      */
     public function updateBaseInfo($dbInfo, $data)
     {
-        $newData=Arr::only($data,array_keys($dbInfo));
+        $newData = Arr::only($data, array_keys($dbInfo));
         $columns = ['special_remark'];
         foreach ($newData as $k => $v) {
             if (!in_array($k, $columns) && $v != $dbInfo[$k]) {
                 return false;
             }
         }
-        $dbPackageList = $this->getPackageService()->getList(['order_no' => $dbInfo['order_no']],['*'],false);
+        $dbPackageList = $this->getPackageService()->getList(['order_no' => $dbInfo['order_no']], ['*'], false);
+        dd($data['package_list'], $dbPackageList);
         foreach ($data['package_list'] as $k => $v) {
             foreach ($v as $x => $y) {
-                if ($y !== collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->$x) {
-                    dd($x,$y);
+                if ($y != collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->$x) {
                     return false;
                 }
             }
         }
-        $dbMaterialList = $this->getMaterialService()->getList(['order_no' => $dbInfo['order_no']],['*'],false);
+        $dbMaterialList = $this->getMaterialService()->getList(['order_no' => $dbInfo['order_no']], ['*'], false);
         foreach ($data['material_list'] as $k => $v) {
             foreach ($v as $x => $y) {
-                if ($y !== collect($dbMaterialList)->where('code', $v['code'])->$x) {
-                    dd($x,$y);
+                if ($y != collect($dbMaterialList)->where('code', $v['code'])->$x) {
                     return false;
                 }
             }
