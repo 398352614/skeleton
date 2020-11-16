@@ -73,7 +73,7 @@ class AutoValidate extends Command
         foreach ($data as $k => $v) {
             $data[$k] = explode('1-', $v)[0];
         }
-        $array = include "/Users/whoyummy/Documents/tms-api/resources/lang/cn/validation.php";
+        $array = include base_path('resources/lang/cn/validation.php');
         $attributes = $array['attributes'];
         $key = array_keys($attributes);
         $result = Arr::except($data, $key);
@@ -90,7 +90,7 @@ class AutoValidate extends Command
         }
         $json = '';
         $params = [];
-        $array = include "/Users/whoyummy/Documents/tms-api/resources/lang/en/validation.php";
+        $array = include base_path('resources/lang/en/validation.php');
         $diff = Arr::except($data, array_keys($array['attributes']));
         if(!empty($diff)){
             foreach ($diff as $k => $v) {
