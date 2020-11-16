@@ -697,7 +697,7 @@ class OrderService extends BaseService
     public function updateBaseInfo($dbInfo, $data)
     {
         $newData=Arr::only($data,array_keys($dbInfo));
-        $columns = ['special_remark', 'package_list', 'material_list','id'];
+        $columns = ['special_remark'];
         foreach ($newData as $k => $v) {
             if (!in_array($k, $columns) && $v != $dbInfo[$k]) {
                 return false;
