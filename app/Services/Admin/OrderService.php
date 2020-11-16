@@ -634,7 +634,7 @@ class OrderService extends BaseService
         if (empty($dbInfo)) {
             throw new BusinessLogicException('数据不存在');
         }
-        if ($this->updateBaseInfo($dbInfo, $data)) {
+        if ($this->updateBaseInfo($dbInfo, $data) == true) {
             return;
         }
         if (intval($dbInfo['source']) === BaseConstService::ORDER_SOURCE_3) {
