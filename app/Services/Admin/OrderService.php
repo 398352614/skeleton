@@ -635,7 +635,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         if ($this->updateBaseInfo($dbInfo, $data) == true) {
-            return;
+            return '';
         }
         if (intval($dbInfo['source']) === BaseConstService::ORDER_SOURCE_3) {
             throw new BusinessLogicException('第三方订单不能修改');
@@ -690,20 +690,17 @@ class OrderService extends BaseService
      */
     public function updateBaseInfo($dbInfo, $data)
     {
-        //可修改信息
         $columns = ['special_remark'];
-        if (in_array($dbInfo['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4])) {
-            foreach ($data as $k => $v) {
-                if (!in_array($k, $columns) && $v !== $dbInfo[$k]) {
-                    throw new BusinessLogicException('该状态下只能修改基础信息');
-                }
+        foreach ($data as $k => $v) {
+            if (!in_array($k, $columns) && $v !== $dbInfo[$k]) {
+                return false;
             }
-            $rowCount = parent::updateById($dbInfo['id'], $data['special_remark']);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('修改失败，请重新操作');
-            }
-            return true;
         }
+        $rowCount = parent::updateById($dbInfo['id'], Arr::only($data, $columns));
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
+        return true;
     }
 
     /**
