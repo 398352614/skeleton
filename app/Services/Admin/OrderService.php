@@ -636,14 +636,14 @@ class OrderService extends BaseService
         if (empty($dbInfo)) {
             throw new BusinessLogicException('数据不存在');
         }
-        Log::info('true',[$this->updateBaseInfo($dbInfo, $data) == true]);
+        Log::info('true', [$this->updateBaseInfo($dbInfo, $data) == true]);
         if ($this->updateBaseInfo($dbInfo, $data) == true) {
             return '';
         }
         if (intval($dbInfo['source']) === BaseConstService::ORDER_SOURCE_3) {
             throw new BusinessLogicException('第三方订单不能修改');
         }
-        if(!in_array($dbInfo['status'],[BaseConstService::ORDER_STATUS_1,BaseConstService::ORDER_STATUS_2])){
+        if (!in_array($dbInfo['status'], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2])) {
             throw new BadConversionException('该状态下订单无法修改');
         }
         //验证
@@ -696,24 +696,24 @@ class OrderService extends BaseService
      */
     public function updateBaseInfo($dbInfo, $data)
     {
-        $columns = ['special_remark','package_list','material_list'];
+        $columns = ['special_remark', 'package_list', 'material_list'];
         foreach ($data as $k => $v) {
             if (!in_array($k, $columns) && $v !== $dbInfo[$k]) {
                 return false;
             }
         }
-        $dbPackageList=$this->getPackageService()->getList(['order_no'=>$data['order_no']]);
-        foreach ($data['package_list'] as $k=>$v){
-            foreach ($v as $x=>$y){
-                if($y !== collect($dbPackageList)->where('package_no',$v['package_no'])->$x){
+        $dbPackageList = $this->getPackageService()->getList(['order_no' => $dbInfo['order_no']],['*'],false);
+        foreach ($data['package_list'] as $k => $v) {
+            foreach ($v as $x => $y) {
+                if ($y !== collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->$x) {
                     return false;
                 }
             }
         }
-        $dbMaterialList=$this->getMaterialService()->getList(['order_no'=>$data['order_no']]);
-        foreach ($data['material_list'] as $k=>$v){
-            foreach ($v as $x=>$y){
-                if($y !== collect($dbMaterialList)->where('code',$v['code'])->$x){
+        $dbMaterialList = $this->getMaterialService()->getList(['order_no' => $dbInfo['order_no']],['*'],false);
+        foreach ($data['material_list'] as $k => $v) {
+            foreach ($v as $x => $y) {
+                if ($y !== collect($dbMaterialList)->where('code', $v['code'])->$x) {
                     return false;
                 }
             }
