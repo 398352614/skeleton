@@ -697,7 +697,7 @@ class OrderService extends BaseService
     public function updateBaseInfo($dbInfo, $data)
     {
         $newData=Arr::only($data,array_keys($dbInfo));
-        $columns = ['special_remark','id'];
+        $columns = ['special_remark'];
         foreach ($newData as $k => $v) {
             if (!in_array($k, $columns) && $v != $dbInfo[$k]) {
                 return false;
@@ -721,6 +721,7 @@ class OrderService extends BaseService
                 }
             }
         }
+        dd($data);
         $rowCount = parent::updateById($data['id'], Arr::only($data, $columns));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
