@@ -31,6 +31,7 @@ use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use App\Traits\OrderStatisticsTrait;
 use App\Traits\PrintTrait;
+use http\Exception\BadConversionException;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
 use Illuminate\Support\Facades\Log;
@@ -642,6 +643,9 @@ class OrderService extends BaseService
         if (intval($dbInfo['source']) === BaseConstService::ORDER_SOURCE_3) {
             throw new BusinessLogicException('第三方订单不能修改');
         }
+        if(!in_array($dbInfo['status'],[BaseConstService::ORDER_STATUS_1,BaseConstService::ORDER_STATUS_2])){
+            throw new BadConversionException('该状态下订单无法修改');
+        }
         //验证
         $this->check($data, $dbInfo['order_no']);
         $data = Arr::add($data, 'order_no', $dbInfo['order_no']);
@@ -692,12 +696,26 @@ class OrderService extends BaseService
      */
     public function updateBaseInfo($dbInfo, $data)
     {
-        $columns = ['special_remark'];
-        Log::info('数据库',$dbInfo);
-        Log::info('输入',$data);
+        $columns = ['special_remark','package_list','material_list'];
         foreach ($data as $k => $v) {
             if (!in_array($k, $columns) && $v !== $dbInfo[$k]) {
                 return false;
+            }
+        }
+        $dbPackageList=$this->getPackageService()->getList(['order_no'=>$data['order_no']]);
+        foreach ($data['package_list'] as $k=>$v){
+            foreach ($v as $x=>$y){
+                if($y !== collect($dbPackageList)->where('package_no',$v['package_no'])->$x){
+                    return false;
+                }
+            }
+        }
+        $dbMaterialList=$this->getMaterialService()->getList(['order_no'=>$data['order_no']]);
+        foreach ($data['material_list'] as $k=>$v){
+            foreach ($v as $x=>$y){
+                if($y !== collect($dbMaterialList)->where('code',$v['code'])->$x){
+                    return false;
+                }
             }
         }
         $rowCount = parent::updateById($dbInfo['id'], Arr::only($data, $columns));
