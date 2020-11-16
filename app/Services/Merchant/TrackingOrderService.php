@@ -751,60 +751,6 @@ class TrackingOrderService extends BaseService
         return 'true';
     }
 
-
-    /**
-     * 批量运单分配至指定取件线路
-     * @param $params
-     * @throws BusinessLogicException
-     * @throws \WebSocket\BadOpcodeException
-     */
-    public function assignListTour($params)
-    {
-        list($trackingOrderIdList, $tourNo) = [$params['id_list'], $params['tour_no']];
-        /******************************************1.获取数据**********************************************************/
-        //获取取件线路信息
-        $tour = $this->getTourService()->getInfoLock(['tour_no' => $tourNo, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);
-        if (empty($tour)) {
-            throw new BusinessLogicException('取件线路当前状态不能操作');
-        }
-        $tour = $tour->toArray();
-        //获取线路信息
-        list($dbTrackingOrderList, $lineId) = $this->getAddTrackingOrderList($trackingOrderIdList, $tour['execution_date']);
-        //判断当前线路ID是否是取件线路ID
-        if (intval($lineId) != intval($tour['line_id'])) {
-            throw new BusinessLogicException('当前线路已更换，请刷新');
-        }
-        $dbTrackingOrderList = Arr::where($dbTrackingOrderList, function ($trackingOrder) use ($tourNo) {
-            return (($trackingOrder['tour_no'] != $tourNo) && ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1));
-        });
-        //获取线路信息
-        $line = $this->getLineService()->getInfoLock(['id' => $lineId], ['*'], false);
-        if (empty($line)) {
-            throw new BusinessLogicException('线路不存在');
-        }
-        $line = $line->toArray();
-        /*******************************************2.验证*************************************************************/
-        $count = 0;
-        if ($tour['status'] == BaseConstService::TOUR_STATUS_4) {
-            $materialCount = $this->getMaterialService()->count(['order_no' => ['in', array_column($dbTrackingOrderList, 'order_no')]]);
-            if ($materialCount > 0) {
-                throw new BusinessLogicException('当前取件线路正在派送中，取件运单加单不能包含材料');
-            }
-        }
-        if ($tour['expect_pickup_quantity'] + $count > $line['pickup_max_count']) {
-            throw new BusinessLogicException('取件数量超过线路取件运单最大值');
-        }
-        /*******************************************2.加单*************************************************************/
-        foreach ($dbTrackingOrderList as $dbTrackingOrder) {
-            $trackingOrder = $dbTrackingOrder;
-            data_set($trackingOrder, 'execution_date', $tour['execution_date']);
-            list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, null, $tour, true, true);
-        }
-
-        //加单推送
-        dispatch(new AddOrderPush($dbTrackingOrderList, $tour['driver_id']));
-    }
-
     /**
      * 通过订单号,获取派送信息
      * @param $orderNo
