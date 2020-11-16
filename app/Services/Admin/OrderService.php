@@ -721,7 +721,7 @@ class OrderService extends BaseService
                 }
             }
         }
-        $rowCount = parent::updateById($dbInfo['id'], Arr::only($data, $columns));
+        $rowCount = parent::updateById($data['id'], Arr::only($data, $columns));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
