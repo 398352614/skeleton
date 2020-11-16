@@ -699,6 +699,7 @@ class OrderService extends BaseService
         $columns = ['special_remark', 'package_list', 'material_list'];
         foreach ($data as $k => $v) {
             if (!in_array($k, $columns) && $v !== $dbInfo[$k]) {
+                dd($k,$v);
                 return false;
             }
         }
@@ -706,6 +707,7 @@ class OrderService extends BaseService
         foreach ($data['package_list'] as $k => $v) {
             foreach ($v as $x => $y) {
                 if ($y !== collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->$x) {
+                    dd($x,$y);
                     return false;
                 }
             }
@@ -714,6 +716,7 @@ class OrderService extends BaseService
         foreach ($data['material_list'] as $k => $v) {
             foreach ($v as $x => $y) {
                 if ($y !== collect($dbMaterialList)->where('code', $v['code'])->$x) {
+                    dd($x,$y);
                     return false;
                 }
             }
