@@ -696,7 +696,7 @@ class OrderService extends BaseService
      */
     public function updateBaseInfo($dbInfo, $data)
     {
-        dd($dbInfo,$data,array_diff($dbInfo,$data));
+        dd($dbInfo,$data);
         $columns = ['special_remark', 'package_list', 'material_list','id'];
         foreach ($data as $k => $v) {
             if (!in_array($k, $columns) && $v !== $dbInfo[$k]) {
