@@ -33,6 +33,7 @@ use App\Traits\OrderStatisticsTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class OrderService extends BaseService
@@ -634,6 +635,7 @@ class OrderService extends BaseService
         if (empty($dbInfo)) {
             throw new BusinessLogicException('数据不存在');
         }
+        Log::info('true',[$this->updateBaseInfo($dbInfo, $data) == true]);
         if ($this->updateBaseInfo($dbInfo, $data) == true) {
             return '';
         }
