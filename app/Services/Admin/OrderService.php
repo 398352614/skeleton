@@ -706,7 +706,6 @@ class OrderService extends BaseService
         $dbPackageList = $this->getPackageService()->getList(['order_no' => $dbInfo['order_no']], ['*'], false);
         if(!empty($dbPackageList)){
             $dbPackageList=$dbPackageList->toArray();
-            dd($data['package_list'], $dbPackageList);
             foreach ($data['package_list'] as $k => $v) {
                 foreach ($v as $x => $y) {
                     if ($y != collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->$x) {
@@ -726,8 +725,6 @@ class OrderService extends BaseService
                 }
             }
         }
-
-        dd($data);
         $rowCount = parent::updateById($data['id'], Arr::only($data, $columns));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
