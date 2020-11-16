@@ -707,6 +707,7 @@ class OrderService extends BaseService
         if(!empty($dbPackageList)){
             $dbPackageList=$dbPackageList->toArray();
             $data['package_list'] = Arr::only($data['package_list'], array_keys($dbPackageList));
+            dd($data['package_list']);
             foreach ($data['package_list'] as $k => $v) {
                 foreach ($v as $x => $y) {
                     if ($y != collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->toArray()[$x]) {
