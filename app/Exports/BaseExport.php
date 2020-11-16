@@ -300,12 +300,12 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     }
                 }
                 if ($this->type == 'orderOut') {
-                    $event->sheet->getDelegate()->getStyle('Q2:S200')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
+                    $event->sheet->getDelegate()->getStyle('R2:T200')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
                     $column = [
                         'A' => 15,
                         'B' => 10,
                         'C' => 5,
-                        'D' => 20,
+                        'D' => 15,
                         'E' => 10,
                         'F' => 10,
                         'G' => 15,
@@ -313,15 +313,16 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                         'I' => 10,
                         'J' => 10,
                         'K' => 10,
-                        'L' => 15,
-                        'M' => 15,
-                        'N' => 10,
-                        'O' => 15,
-                        'P' => 10,
-                        'Q' => 10,
+                        'L' => 10,
+                        'M' => 10,
+                        'N' => 15,
+                        'O' => 5,
+                        'P' => 15,
+                        'Q' => 5,
                         'R' => 10,
                         'S' => 10,
-                        'T' => 20,
+                        'T' => 10,
+                        'U' => 20,
                     ];
                     foreach ($column as $k => $v) {
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
