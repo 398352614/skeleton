@@ -23,7 +23,7 @@ class OrderValidate extends BaseValidate
         'execution_date' => 'required|date|after_or_equal:today',
         'second_execution_date' => 'required_if:type,3|date|after_or_equal:today',
         'list_mode' => 'sometimes|required|in:1,2',
-        'type' => 'required|integer|in:1,2',
+        'type' => 'required|integer|in:1,2,3',
         'out_user_id' => 'nullable|integer',
         'mask_code' => 'nullable|string|max:50',
         'nature' => 'nullable|integer|in:1,2,3,4,5',

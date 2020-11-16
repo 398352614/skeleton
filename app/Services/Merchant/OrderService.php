@@ -656,15 +656,22 @@ class OrderService extends BaseService
     private function check(&$params, $orderNo = null)
     {
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
+        $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
         //若是新增,则填充商户ID及国家
         if (empty($orderNo)) {
             $params['merchant_id'] = auth()->user()->id;
             //若邮编是纯数字，则认为是比利时邮编
             $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-            if (empty($params['lat']) || empty($params['lon'])) {
+            if (empty($params['place_lat']) || empty($params['place_lon'])) {
                 $location = LocationTrait::getLocation($params['place_country'], $params['place_city'], $params['place_street'], $params['place_house_number'], $params['place_post_code']);
-                $params['lat'] = $location['lat'];
-                $params['lon'] = $location['lon'];
+                $params['place_lat'] = $location['lat'];
+                $params['place_lon'] = $location['lon'];
+            }
+            //若是取派订单,则填充派件经纬度
+            if (($params['type'] == BaseConstService::ORDER_TYPE_3) && (empty($params['second_place_lat']) || empty($params['second_place_lon']))) {
+                $location = LocationTrait::getLocation($params['second_place_country'], $params['second_place_city'], $params['second_place_street'], $params['second_place_house_number'], $params['second_place_post_code']);
+                $params['second_place_lat'] = $location['lat'];
+                $params['second_place_lat'] = $location['lon'];
             }
         }
         if (empty($params['place_lat']) || empty($params['place_lon'])) {
