@@ -630,7 +630,13 @@ class OrderService extends BaseService
         unset($data['order_no'], $data['tour_no'], $data['batch_no']);
         /*************************************************订单修改******************************************************/
         //获取信息
-        $dbInfo = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $dbInfo = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]);
+        if (empty($dbInfo)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if ($this->updateBaseInfo($dbInfo, $data)) {
+            return;
+        }
         if (intval($dbInfo['source']) === BaseConstService::ORDER_SOURCE_3) {
             throw new BusinessLogicException('第三方订单不能修改');
         }
@@ -675,6 +681,30 @@ class OrderService extends BaseService
         //($isChangeBatch === true) && event(new OrderExecutionDateUpdated($dbInfo['order_no'], $dbInfo['out_order_no'], $data['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']));
     }
 
+    /**
+     * 待出库，取派中的订单修改特殊事项
+     * @param $dbInfo
+     * @param $data
+     * @return bool
+     * @throws BusinessLogicException
+     */
+    public function updateBaseInfo($dbInfo, $data)
+    {
+        //可修改信息
+        $columns = ['special_remark'];
+        if (in_array($dbInfo['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4])) {
+            foreach ($data as $k => $v) {
+                if (!in_array($k, $columns) && $v !== $dbInfo[$k]) {
+                    throw new BusinessLogicException('该状态下只能修改基础信息');
+                }
+            }
+            $rowCount = parent::updateById($dbInfo['id'], $data['special_remark']);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('修改失败，请重新操作');
+            }
+            return true;
+        }
+    }
 
     /**
      * 判断是否需要更换站点

@@ -6,6 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\OrderTrailResource;
 use App\Models\Order;
 use App\Models\OrderTrail;
+use Illuminate\Support\Facades\Auth;
 
 class OrderTrailService extends BaseService
 {
@@ -112,7 +113,7 @@ class OrderTrailService extends BaseService
         if (empty($this->formData['order_no'])) {
             throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查单号是否正确');
         }
-        $info = parent::getList(['order_no' => $this->formData['order_no'],'merchant_id'=>auth()->user()->id]);
+        $info = parent::getList(['order_no' => $this->formData['order_no']]);
         if ($info->isEmpty()) {
             throw new BusinessLogicException('暂未查到与您单号相关的物流信息，请检查单号是否正确');
         }

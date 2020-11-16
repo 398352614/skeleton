@@ -238,19 +238,20 @@ class TourTaskService extends BaseService
 
     /**
      * 获取所有取件线路所有信息
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection|void
+     * @return array
      * @throws BusinessLogicException
      */
     public function getAllInfo()
     {
-        $tour = parent::getList(['status' => ['<>', BaseConstService::TOUR_STATUS_5]]);
+        $tour = $this->getPageList();
         if ($tour->isEmpty()) {
             return [];
         }
         $tour = $tour->toArray(request());
+        $tour = collect($tour)->where('status', '<>', BaseConstService::TOUR_STATUS_5)->toArray();
         foreach ($tour as $k => $v) {
             $tour[$k] = array_merge($tour[$k], $this->show($v['id']));
-            $tour[$k]['batch_list']=collect($tour[$k]['batch_list'])->toArray();
+            $tour[$k]['batch_list'] = collect($tour[$k]['batch_list'])->toArray();
             foreach ($tour[$k]['batch_list'] as $x => $y) {
                 $tour[$k]['batch_list'][$x] = array_merge($tour[$k]['batch_list'][$x], $this->getTourService()->getBatchInfo($v['id'], ['batch_id' => $y['id']]));
             }
