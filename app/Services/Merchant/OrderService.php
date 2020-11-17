@@ -705,36 +705,6 @@ class OrderService extends BaseService
     }
 
     /**
-     * 填充发件人信息
-     * @param $params
-     * @param $merchantAlone
-     * @return array
-     * @throws BusinessLogicException
-     */
-    private function fillSender(&$params, $merchantAlone = BaseConstService::NO)
-    {
-        //获取线路
-        $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
-        //获取仓库
-        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
-        if (empty($warehouse)) {
-            throw new BusinessLogicException('仓库不存在');
-        }
-        //填充发件人信息
-        $params = array_merge($params, [
-            'second_place_fullname' => $warehouse['fullname'],
-            'second_place_phone' => $warehouse['phone'],
-            'second_place_country' => $warehouse['country'],
-            'second_place_post_code' => $warehouse['post_code'],
-            'second_place_house_number' => $warehouse['house_number'],
-            'second_place_city' => $warehouse['city'],
-            'second_place_street' => $warehouse['street'],
-            'second_place_address' => $warehouse['address'],
-        ]);
-        return $line;
-    }
-
-    /**
      * 批量导入验证
      * @param $params
      * @return mixed
