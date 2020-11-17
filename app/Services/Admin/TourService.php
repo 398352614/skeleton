@@ -869,10 +869,10 @@ class TourService extends BaseService
         foreach ($tourList as $k => $v) {
             $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
             $cellData[$k]['driver'] = $v['line_name'] . ' ' . $v['driver_name'];
-            $batch[$k] = $this->getOrderService()->getList(['tour_no' => $v['tour_no'], 'status' => BaseConstService::ORDER_STATUS_5], ['tour_no','batch_no'], false);;
+            $batch = $this->getOrderService()->getList(['tour_no' => $v['tour_no'], 'status' => BaseConstService::ORDER_STATUS_5], ['tour_no','batch_no'], false);;
             $cellData[$k]['erp_batch_count'] = $cellData[$k]['mes_batch_count'] = $cellData[$k]['mix_batch_count'] = $cellData[$k]['total_batch_count'] = 0;
             $cellData[$k]['erp_batch'] = $cellData[$k]['mes_batch'] = $cellData[$k]['mix_batch'] = $cellData[$k]['total_batch'] = [];
-            foreach ($batch[$k] as $x => $y) {
+            foreach ($batch as $x => $y) {
                 if ($y['merchant_id'] == config('tms.erp_merchant_id')) {
                     $cellData[$k]['erp_batch'][] = $y['batch_no'];
                 } elseif ($y['merchant_id'] == config('tms.eushop_merchant_id')) {
