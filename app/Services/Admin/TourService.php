@@ -122,6 +122,7 @@ class TourService extends BaseService
         $this->directionClient = $directionClient;
     }
 
+
     /**
      * 通过线路ID 获取可加入的取件线路列表
      * @param $lineId
@@ -142,10 +143,9 @@ class TourService extends BaseService
     public function getAddOrderPageList($data)
     {
         list($orderIdList, $executionDate) = [$data['order_id_list'], $data['execution_date']];
-        list($orderList, $lineId) = $this->getOrderService()->getAddOrderList($orderIdList, $executionDate);
         $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
+        list($orderList, $lineId) = $this->getOrderService()->getAddOrderList($orderIdList, $executionDate);
         $this->filters['line_id'] = ['=', $lineId];
-        $this->filters['execution_date'] = ['=', $data['execution_date']];
         $list = parent::getPageList();
         return $list;
     }
@@ -864,41 +864,49 @@ class TourService extends BaseService
         } else {
             $lastDate = Carbon::create($params['year'], $params['month'])->endOfMonth()->format('Y-m-d');
         }
-        $cellData = [];
         $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false, [], ['execution_date' => 'asc']);
-        $orderList = $this->getOrderService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::ORDER_STATUS_5], ['*'], false);
-        Log::info(count($orderList));
-        foreach ($tourList as $k => $v) {
-            $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
-            $cellData[$k]['driver'] = $v['line_name'] . ' ' . $v['driver_name'];
-            $batch = $this->getOrderService()->getList(['tour_no' => $v['tour_no'], 'status' => BaseConstService::ORDER_STATUS_5], ['tour_no','batch_no'], false);;
-            $cellData[$k]['erp_batch_count'] = $cellData[$k]['mes_batch_count'] = $cellData[$k]['mix_batch_count'] = $cellData[$k]['total_batch_count'] = 0;
-            $cellData[$k]['erp_batch'] = $cellData[$k]['mes_batch'] = $cellData[$k]['mix_batch'] = $cellData[$k]['total_batch'] = [];
-            foreach ($batch as $x => $y) {
-                if ($y['merchant_id'] == config('tms.erp_merchant_id')) {
-                    $cellData[$k]['erp_batch'][] = $y['batch_no'];
-                } elseif ($y['merchant_id'] == config('tms.eushop_merchant_id')) {
-                    $cellData[$k]['mes_batch'][] = $y['batch_no'];
-                }
-                $cellData[$k]['total_batch'][] = $y['batch_no'];
-            }
-            $cellData[$k]['mix_batch_count'] = count(array_intersect(array_unique($cellData[$k]['erp_batch']), array_unique($cellData[$k]['mes_batch'])));
-            $cellData[$k]['erp_batch_count'] = count(array_unique($cellData[$k]['erp_batch'])) - $cellData[$k]['mix_batch_count'];
-            $cellData[$k]['mes_batch_count'] = count(array_unique($cellData[$k]['mes_batch'])) - $cellData[$k]['mix_batch_count'];
-            $cellData[$k]['total_batch_count'] = count(array_unique($cellData[$k]['total_batch']));
-            if ($cellData[$k]['total_batch_count'] !== 0) {
-                $cellData[$k]['erp_batch_percent'] = round($cellData[$k]['erp_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
-                $cellData[$k]['mes_batch_percent'] = round($cellData[$k]['mes_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
-                $cellData[$k]['mix_batch_percent'] = round($cellData[$k]['mix_batch_count'] * 100 / $cellData[$k]['total_batch_count'], 2);
-            } else {
-                $cellData[$k]['erp_batch_percent'] = $cellData[$k]['mes_batch_percent'] = $cellData[$k]['mix_batch_percent'] = 0;
-            }
-            $cellData[$k] = array_only_fields_sort($cellData[$k], $this->batchHeadings);
+        $erpMerchantId = config('tms.erp_merchant_id');
+        $mesMerchantId = config('tms.eushop_merchant_id');
+        $status = BaseConstService::BATCH_CHECKOUT;
+        $companyId = auth()->user()->company_id;
+        $erpBatchCountSql = "SELECT  COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
+        $mesBatchCountSql = "SELECT  COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `order` as a WHERE a.`merchant_id`={$mesMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
+        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND (SELECT d.`id` FROM `order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no";
+        $erpBatchList = array_create_index(collect(DB::select($erpBatchCountSql))->map(function ($value) {
+            return (array)$value;
+        })->toArray(), 'tour_no');
+        $mesBatchList = array_create_index(collect(DB::select($mesBatchCountSql))->map(function ($value) {
+            return (array)$value;
+        })->toArray(), 'tour_no');
+        $mixBatchList = array_create_index(collect(DB::select($mixBatchCountSql))->map(function ($value) {
+            return (array)$value;
+        })->toArray(), 'tour_no');
+        $dataList = [];
+        foreach ($tourList as $tour) {
+            $mixBatchCount = $mixBatchList[$tour['tour_no']]['num'] ?? 0;
+            $erpBatchCount = ($erpBatchList[$tour['tour_no']]['num'] ?? 0) - $mixBatchCount;
+            $mesBatchCount = ($mesBatchList[$tour['tour_no']]['num'] ?? 0) - $mixBatchCount;
+            $totalBatchCount = $mixBatchCount + $erpBatchCount + $mesBatchCount;
+            $mixBatchPercent = $totalBatchCount == 0 ? 0 : round($mixBatchCount * 100 / $totalBatchCount, 2);
+            $erpBatchPercent = $totalBatchCount == 0 ? 0 : round($erpBatchCount * 100 / $totalBatchCount, 2);
+            $mesBatchPercent = $totalBatchCount == 0 ? 0 : 100 - $mixBatchPercent - $erpBatchPercent;
+            $data = [
+                'date' => $tour['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($tour['execution_date'])->dayOfWeek),
+                'driver' => $tour['line_name'] . ' ' . $tour['driver_name'],
+                'mix_batch_count' => $mixBatchCount,
+                'erp_batch_count' => $erpBatchCount,
+                'mes_batch_count' => $mesBatchCount,
+                'total_batch_count' => $totalBatchCount,
+                'mix_batch_percent' => $mixBatchPercent,
+                'erp_batch_percent' => $erpBatchPercent,
+                'mes_batch_percent' => $mesBatchPercent,
+            ];
+            $dataList[] = array_only_fields_sort($data, $this->batchHeadings);
         }
         $headings = [[$params['year'] . '-' . $params['month']], $this->batchHeadings];
         $dir = 'batchCount';
-        $name = date('Ymd') . auth()->user()->company_id;
-        return $this->excelExport($name, $headings, $cellData, $dir);
+        $name = date('Ymd') . $companyId;
+        return $this->excelExport($name, $headings, $dataList, $dir);
     }
 
     /**
