@@ -869,7 +869,7 @@ class TourService extends BaseService
         foreach ($tourList as $k => $v) {
             $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
             $cellData[$k]['driver'] = $v['line_name'] . ' ' . $v['driver_name'];
-            $batch = $this->getOrderService()->getList(['tour_no' => $v['tour_no'], 'status' => BaseConstService::ORDER_STATUS_5], ['tour_no','batch_no'], false);;
+            $batch = $this->getOrderService()->getList(['tour_no' => $v['tour_no'], 'status' => BaseConstService::ORDER_STATUS_5], ['merchant_id','tour_no','batch_no'], false)->toArray();
             $cellData[$k]['erp_batch_count'] = $cellData[$k]['mes_batch_count'] = $cellData[$k]['mix_batch_count'] = $cellData[$k]['total_batch_count'] = 0;
             $cellData[$k]['erp_batch'] = $cellData[$k]['mes_batch'] = $cellData[$k]['mix_batch'] = $cellData[$k]['total_batch'] = [];
             foreach ($batch as $x => $y) {
