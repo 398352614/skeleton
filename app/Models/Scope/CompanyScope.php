@@ -135,7 +135,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Material)
                 && !($model instanceof OrderNoRule)
                 && !($model instanceof Warehouse)
-                && !($model instanceof OrderTrail)
+                //&& !($model instanceof OrderTrail)
                 && !($model instanceof TourDriverEvent)
                 && !($model instanceof RouteTracking)
                 && !($model instanceof Driver)

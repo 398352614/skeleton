@@ -6,6 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\OrderTrailResource;
 use App\Models\Order;
 use App\Models\OrderTrail;
+use Illuminate\Support\Facades\Auth;
 
 class OrderTrailService extends BaseService
 {

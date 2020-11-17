@@ -122,7 +122,6 @@ class TourService extends BaseService
         $this->directionClient = $directionClient;
     }
 
-
     /**
      * 通过线路ID 获取可加入的取件线路列表
      * @param $lineId
@@ -143,9 +142,10 @@ class TourService extends BaseService
     public function getAddOrderPageList($data)
     {
         list($orderIdList, $executionDate) = [$data['order_id_list'], $data['execution_date']];
-        $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
         list($orderList, $lineId) = $this->getOrderService()->getAddOrderList($orderIdList, $executionDate);
+        $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
         $this->filters['line_id'] = ['=', $lineId];
+        $this->filters['execution_date'] = ['=', $data['execution_date']];
         $list = parent::getPageList();
         return $list;
     }
@@ -857,7 +857,7 @@ class TourService extends BaseService
     {
         $firstDate = Carbon::create($params['year'], $params['month'])->format('Y-m-d');
         $today = Carbon::today();
-        if ($today->year > $params['year'] || ($today->year == $params & $today->month > $params['month'])) {
+        if ($today->year < $params['year'] || ($today->year == $params & $today->month > $params['month'])) {
             throw new BusinessLogicException('只能选择本月之前的月份');
         } elseif ($today->year == $params['year'] && $today->month == $params['month']) {
             $lastDate = $today->subDay()->format('Y-m-d');
@@ -866,6 +866,8 @@ class TourService extends BaseService
         }
         $cellData = [];
         $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false, [], ['execution_date' => 'asc']);
+        $orderList = $this->getOrderService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::ORDER_STATUS_5], ['*'], false);
+        Log::info(count($orderList));
         foreach ($tourList as $k => $v) {
             $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
             $cellData[$k]['driver'] = $v['line_name'] . ' ' . $v['driver_name'];

@@ -602,4 +602,6 @@
 "线路未出库，无法进行现金充值":"De lijn is niet uit voorraad en kan niet worden opgeladen in contanten",
 "只有已完成的订单才能无效化":"Alleen voltooide orders kunnen ongeldig worden verklaard",
 "等":"enz."
+,"该状态下只能修改基础信息":"Alleen basisinformatie kan in deze toestand worden gewijzigd",
+"站点排序":"sorteren van locatie"
 }

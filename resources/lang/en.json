@@ -729,4 +729,7 @@
 "线路未出库，无法进行现金充值":"The line is not out of stock and cannot be recharged in cash",
 "只有已完成的订单才能无效化":"Only completed orders can be invalidated",
 "等":"etc."
+
+,"该状态下只能修改基础信息":"Only basic information can be modified in this state",
+"站点排序":"Site sorting"
 }

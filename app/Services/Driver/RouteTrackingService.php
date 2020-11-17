@@ -52,15 +52,15 @@ class RouteTrackingService extends BaseService
     public function createByList($params)
     {
         if(empty($params['device_number'])){
-            return true;
+            return '';
         }
         //验证当前账号是否绑定指定设备
         $device = $this->getDeviceService()->getInfo(['number' => $params['device_number'], 'driver_id' => auth()->user()->id], ['*'], false);
-        if (empty($device)) return 'true';
+        if (empty($device)) return '';
 
         $tour = Tour::query()->where('driver_id', auth()->user()->id)->where('status', BaseConstService::TOUR_STATUS_4)->first();
         if (empty($tour)) {
-            return 'true';
+            return '';
         }
         $tracking = collect($params['location_list'])->sortBy('time')->toArray()[0];
         $firstTracking = $this->getInfo(['tour_no' => $tour->tour_no], ['*'], false, ['time' => 'desc']);
@@ -77,6 +77,7 @@ class RouteTrackingService extends BaseService
     /**
      * @param $tracking
      * @param $firstTracking
+     * @return string
      * @throws BusinessLogicException
      */
     public function moveCheck($tracking, $firstTracking)
@@ -96,5 +97,6 @@ class RouteTrackingService extends BaseService
             }
         }
         Log::info('route-tracking-tour-no', ['tour_no' => $tracking['tour_no']]);
+        return '';
     }
 }

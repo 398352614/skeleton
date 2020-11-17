@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Api\Admin\OrderController;
 use App\Models\Merchant;
+use App\Models\ReceiverAddress;
+use App\Models\SenderAddress;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -47,34 +49,36 @@ class CreateOrder extends Command
      */
     public function handle(OrderController $controller)
     {
-        $times = $this->option('times') ?? 1;
-        for ($i = 0; $i < $times; $i++) {
-            $merchantId = $this->option('merchant_id') ?? 3;
-            $merchant = Merchant::query()->where('id', $merchantId)->first();
-            if (empty($merchant)) {
-                $this->error('merchant id dose not exist');
-                exit;
-            }
-            auth()->setUser($merchant);
-            $executionDate = $this->option('execution_date') ?? date('Y-m-d');
-            $paCount = $this->option('package_count') ?? 1;
-            $maCount = $this->option('material_count') ?? 1;
-            $data = array_merge(
-                $this->base($executionDate, $merchantId),
-                $this->getReceiver(),
-                $this->getSender(),
-                $this->getMaPaList($maCount, $paCount)
-            );
-            try {
-                $controller->setData($data);
-                $res = $controller->store();
-                $this->info(json_encode($res, true));
-            } catch (BusinessLogicException $exception) {
-                $this->error($exception->getMessage());
-                exit;
-            } catch (\Exception $exception) {
-                $this->error($exception->getMessage());
-                exit;
+        if (config('tms.app_env') == 'local') {
+            $times = $this->option('times') ?? 1;
+            for ($i = 0; $i < $times; $i++) {
+                $merchantId = $this->option('merchant_id') ?? 3;
+                $merchant = Merchant::query()->where('id', $merchantId)->first();
+                if (empty($merchant)) {
+                    $this->error('merchant id dose not exist');
+                    exit;
+                }
+                auth()->setUser($merchant);
+                $executionDate = $this->option('execution_date') ?? date('Y-m-d');
+                $paCount = $this->option('package_count') ?? 1;
+                $maCount = $this->option('material_count') ?? 1;
+                $data = array_merge(
+                    $this->base($executionDate, $merchantId),
+                    $this->getReceiver(),
+                    $this->getSender(),
+                    $this->getMaPaList($maCount, $paCount)
+                );
+                try {
+                    $controller->setData($data);
+                    $res = $controller->store();
+                    $this->info(json_encode($res, true));
+                } catch (BusinessLogicException $exception) {
+                    $this->error($exception->getMessage());
+                    continue;
+                } catch (\Exception $exception) {
+                    $this->error($exception->getMessage());
+                    continue;
+                }
             }
         }
     }
@@ -85,80 +89,11 @@ class CreateOrder extends Command
      */
     private function getReceiver()
     {
-        $receiverList = [
-            [
-                'receiver_fullname' => '大娃',
-                'receiver_phone' => '123456781',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '5611HW',
-                'receiver_house_number' => '314',
-                'receiver_city' => 'Eindhoven',
-                'receiver_street' => 'De Regent',
-                'receiver_address' => '大娃家',
-                'lon' => '5.47409706',
-                'lat' => '51.43842145'
-            ],
-            [
-                'receiver_fullname' => '二娃',
-                'receiver_phone' => '1234567892',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '3031AT',
-                'receiver_house_number' => '199',
-                'receiver_city' => 'Rotterdam',
-                'receiver_street' => 'Jonker Fransstraat',
-                'receiver_address' => '二娃家',
-                'lon' => '4.4862111',
-                'lat' => '51.92512668'
-            ],
-            [
-                'receiver_fullname' => '三娃',
-                'receiver_phone' => '1234567893',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '6702AG',
-                'receiver_house_number' => '81',
-                'receiver_city' => 'Wageningen',
-                'receiver_street' => 'Troelstraweg',
-                'receiver_address' => '三娃家',
-                'lon' => '5.65477093',
-                'lat' => '51.96484667'
-            ],
-            [
-                'receiver_fullname' => '四娃',
-                'receiver_phone' => '1234567894',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '1013BD',
-                'receiver_house_number' => '916D',
-                'receiver_city' => 'Amsterdam',
-                'receiver_street' => 'Haparandaweg',
-                'receiver_address' => '四娃家',
-                'lon' => '4.87800829',
-                'lat' => '52.39512152'
-            ],
-            [
-                'receiver_fullname' => '五娃',
-                'receiver_phone' => '1234567895',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '9405PR',
-                'receiver_house_number' => '2',
-                'receiver_city' => 'Assen',
-                'receiver_street' => 'Transportweg',
-                'receiver_address' => '五娃家',
-                'lon' => '6.52054721',
-                'lat' => '52.99499546'
-            ],
-            [
-                'receiver_fullname' => '六娃',
-                'receiver_phone' => '1234567896',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '9723ZB',
-                'receiver_house_number' => '20',
-                'receiver_city' => 'Groningen',
-                'receiver_street' => 'De Zaayer',
-                'receiver_address' => '六娃家',
-                'lon' => '6.58270309',
-                'lat' => '53.2082316'
-            ],
-            [
+        $count = ReceiverAddress::query()->count();
+        $id = rand(1, $count);
+        $address = ReceiverAddress::query()->where('id', $id)->first();
+        if (empty($address)) {
+            $address = [
                 'receiver_fullname' => '七娃',
                 'receiver_phone' => '1234567897',
                 'receiver_country' => 'NL',
@@ -169,9 +104,12 @@ class CreateOrder extends Command
                 'receiver_address' => '七娃家',
                 'lon' => '4.87510019',
                 'lat' => '52.31153083'
-            ]
-        ];
-        return Arr::random($receiverList);
+            ];
+        } else {
+            $address = $address->toArray();
+        }
+        $data = Arr::only($address, ['receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'lon', 'lat']);
+        return $data;
     }
 
     /**
@@ -180,16 +118,25 @@ class CreateOrder extends Command
      */
     private function getSender()
     {
-        return [
-            'sender_fullname' => 'test',
-            'sender_phone' => '123456789',
-            'sender_country' => 'NL',
-            'sender_post_code' => '7041AH',
-            'sender_house_number' => '23-33',
-            'sender_city' => 's-Heerenberg',
-            'sender_street' => 'Marktstraat',
-            'sender_address' => 'test家',
-        ];
+        $count = SenderAddress::query()->count();
+        $id = rand(1, $count);
+        $address = SenderAddress::query()->where('id', $id)->first();
+        if (empty($address)) {
+            $address = [
+                'sender_fullname' => 'test',
+                'sender_phone' => '123456789',
+                'sender_country' => 'NL',
+                'sender_post_code' => '7041AH',
+                'sender_house_number' => '23-33',
+                'sender_city' => 's-Heerenberg',
+                'sender_street' => 'Marktstraat',
+                'sender_address' => 'test家',
+            ];
+        } else {
+            $address = $address->toArray();
+        }
+        $data = Arr::only($address, ['receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'lon', 'lat']);
+        return $data;
     }
 
 
@@ -213,7 +160,7 @@ class CreateOrder extends Command
                 'out_order_no' => $j . 'O' . $faker->randomNumber(5, true),
                 'weight' => $faker->randomFloat(2, 0, 100),
                 'expect_quantity' => 1,
-                'feature_logo' => Arr::random(['常温','冰冻','风房']),
+                'feature_logo' => Arr::random(['常温', '冰冻', '风房', '打折村', '海鲜预售']),
                 'remark' => $faker->sentences(1, true)];
         }
         for ($k = 0; $k < $maCount; $k++) {

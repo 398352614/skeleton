@@ -31,8 +31,10 @@ use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use App\Traits\OrderStatisticsTrait;
 use App\Traits\PrintTrait;
+use http\Exception\BadConversionException;
 use Illuminate\Support\Arr;
 use App\Services\OrderTrailService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class OrderService extends BaseService
@@ -630,9 +632,19 @@ class OrderService extends BaseService
         unset($data['order_no'], $data['tour_no'], $data['batch_no']);
         /*************************************************订单修改******************************************************/
         //获取信息
-        $dbInfo = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $dbInfo = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]);
+        if (empty($dbInfo)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        Log::info('true', [$this->updateBaseInfo($dbInfo, $data) == true]);
+        if ($this->updateBaseInfo($dbInfo, $data) == true) {
+            return '';
+        }
         if (intval($dbInfo['source']) === BaseConstService::ORDER_SOURCE_3) {
             throw new BusinessLogicException('第三方订单不能修改');
+        }
+        if (!in_array($dbInfo['status'], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2])) {
+            throw new BadConversionException('该状态下订单无法修改');
         }
         //验证
         $this->check($data, $dbInfo['order_no']);
@@ -675,6 +687,56 @@ class OrderService extends BaseService
         //($isChangeBatch === true) && event(new OrderExecutionDateUpdated($dbInfo['order_no'], $dbInfo['out_order_no'], $data['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']));
     }
 
+    /**
+     * 待出库，取派中的订单修改特殊事项
+     * @param $dbInfo
+     * @param $data
+     * @return bool
+     * @throws BusinessLogicException
+     */
+    public function updateBaseInfo($dbInfo, $data)
+    {
+        $newData = Arr::only($data, array_keys($dbInfo));
+        $columns = ['special_remark'];
+        foreach ($newData as $k => $v) {
+            if (!in_array($k, $columns) && $v != $dbInfo[$k]) {
+                return false;
+            }
+        }
+        if (!empty($data['material_list'])) {
+            $dbPackageList = $this->getPackageService()->getList(['order_no' => $dbInfo['order_no']], ['*'], false);
+            if (!empty($dbPackageList)) {
+                $dbPackageList = $dbPackageList->toArray();
+                $data['package_list'] = Arr::only($data['package_list'], array_keys($dbPackageList));
+                foreach ($data['package_list'] as $k => $v) {
+                    foreach ($v as $x => $y) {
+                        if ($y != collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->first()[$x]) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        if (!empty($data['material_list'])) {
+            $dbMaterialList = $this->getMaterialService()->getList(['order_no' => $dbInfo['order_no']], ['*'], false);
+            if (!empty($dbMaterialList)) {
+                $dbMaterialList = $dbMaterialList->toArray();
+                $data['material_list'] = Arr::only($data['material_list'], array_keys($dbMaterialList));
+                foreach ($data['material_list'] as $k => $v) {
+                    foreach ($v as $x => $y) {
+                        if ($y != collect($dbMaterialList)->where('code', $v['code'])->first()[$x]) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        $rowCount = parent::updateById($data['id'], Arr::only($data, $columns));
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
+        return true;
+    }
 
     /**
      * 判断是否需要更换站点
