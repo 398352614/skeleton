@@ -868,9 +868,10 @@ class TourService extends BaseService
         $erpMerchantId = config('tms.erp_merchant_id');
         $mesMerchantId = config('tms.eushop_merchant_id');
         $status = BaseConstService::BATCH_CHECKOUT;
-        $erpBatchCountSql = "SELECT  COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND `status`={$status} GROUP BY b.tour_no;";
-        $mesBatchCountSql = "SELECT  COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND `status`={$status} GROUP BY b.tour_no;";
-        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND (SELECT d.`id` FROM `order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND `status`={$status} GROUP BY b.tour_no";
+        $companyId = auth()->user()->company_id;
+        $erpBatchCountSql = "SELECT  COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
+        $mesBatchCountSql = "SELECT  COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `order` as a WHERE a.`merchant_id`={$mesMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
+        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND (SELECT d.`id` FROM `order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no";
         $erpBatchList = array_create_index(collect(DB::select($erpBatchCountSql))->map(function ($value) {
             return (array)$value;
         })->toArray(), 'tour_no');
@@ -886,6 +887,9 @@ class TourService extends BaseService
             $erpBatchCount = ($erpBatchList[$tour['tour_no']]['num'] ?? 0) - $mixBatchCount;
             $mesBatchCount = ($mesBatchList[$tour['tour_no']]['num'] ?? 0) - $mixBatchCount;
             $totalBatchCount = $mixBatchCount + $erpBatchCount + $mesBatchCount;
+            $mixBatchPercent = $totalBatchCount == 0 ? 0 : round($mixBatchCount * 100 / $totalBatchCount, 2);
+            $erpBatchPercent = $totalBatchCount == 0 ? 0 : round($erpBatchCount * 100 / $totalBatchCount, 2);
+            $mesBatchPercent = $totalBatchCount == 0 ? 0 : 100 - $mixBatchPercent - $erpBatchPercent;
             $data = [
                 'date' => $tour['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($tour['execution_date'])->dayOfWeek),
                 'driver' => $tour['line_name'] . ' ' . $tour['driver_name'],
@@ -893,15 +897,15 @@ class TourService extends BaseService
                 'erp_batch_count' => $erpBatchCount,
                 'mes_batch_count' => $mesBatchCount,
                 'total_batch_count' => $totalBatchCount,
-                'mix_batch_percent' => $totalBatchCount == 0 ? 0 : round($mixBatchCount * 100 / $totalBatchCount, 2),
-                'erp_batch_percent' => $totalBatchCount == 0 ? 0 : round($erpBatchCount * 100 / $totalBatchCount, 2),
-                'mes_batch_percent' => $totalBatchCount == 0 ? 0 : round($mesBatchCount * 100 / $totalBatchCount, 2),
+                'mix_batch_percent' => $mixBatchPercent,
+                'erp_batch_percent' => $erpBatchPercent,
+                'mes_batch_percent' => $mesBatchPercent,
             ];
             $dataList[] = array_only_fields_sort($data, $this->batchHeadings);
         }
         $headings = [[$params['year'] . '-' . $params['month']], $this->batchHeadings];
         $dir = 'batchCount';
-        $name = date('Ymd') . auth()->user()->company_id;
+        $name = date('Ymd') . $companyId;
         return $this->excelExport($name, $headings, $dataList, $dir);
     }
 
