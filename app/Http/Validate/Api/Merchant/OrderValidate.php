@@ -69,6 +69,7 @@ class OrderValidate extends BaseValidate
         'material_list.*.remark' => 'nullable|string|max:250',
 
         'order_no' => 'nullable|string|max:50',
+        'order_no_list' => 'required|string',
     ];
 
     public $scene = [
@@ -106,6 +107,7 @@ class OrderValidate extends BaseValidate
         ],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
+        'destroyAll' => ['order_no_list'],
         'updateOutStatus' => ['order_no', 'out_status'],
         'getDateListByPostCode' => ['place_post_code'],
         'updateItemList' => [

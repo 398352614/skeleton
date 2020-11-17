@@ -148,6 +148,16 @@ class OrderController extends OrderBaseController
     }
 
     /**
+     * 批量删除
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function destroyAll()
+    {
+        return $this->service->destroyAll($this->data['order_no_list']);
+    }
+
+    /**
      * 批量检查
      * @return array
      * @throws BusinessLogicException
