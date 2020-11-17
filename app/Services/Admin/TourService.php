@@ -857,7 +857,7 @@ class TourService extends BaseService
     {
         $firstDate = Carbon::create($params['year'], $params['month'])->format('Y-m-d');
         $today = Carbon::today();
-        if ($today->year > $params['year'] || ($today->year == $params & $today->month > $params['month'])) {
+        if ($today->year < $params['year'] || ($today->year == $params & $today->month > $params['month'])) {
             throw new BusinessLogicException('只能选择本月之前的月份');
         } elseif ($today->year == $params['year'] && $today->month == $params['month']) {
             $lastDate = $today->subDay()->format('Y-m-d');
@@ -866,18 +866,16 @@ class TourService extends BaseService
         }
         $cellData = [];
         $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false, [], ['execution_date' => 'asc']);
-        $orderList = $this->getOrderService()->getList(['tour_no' => ['in', $tourList->pluck('tour_no')->toArray()], 'status' => BaseConstService::ORDER_STATUS_5], ['*'], false);
-        Log::info(count($orderList));
         foreach ($tourList as $k => $v) {
             $cellData[$k]['date'] = $v['execution_date'] . ' ' . ConstTranslateTrait::weekList(Carbon::create($v['execution_date'])->dayOfWeek);
             $cellData[$k]['driver'] = $v['line_name'] . ' ' . $v['driver_name'];
-            $batch[$k] = $orderList->where('tour_no', $v['tour_no'])->groupBy('batch_no')->toArray();
+            $batch[$k] = $this->getOrderService()->getList(['tour_no' => $v['tour_no'], 'status' => BaseConstService::ORDER_STATUS_5], ['tour_no','batch_no'], false);;
             $cellData[$k]['erp_batch_count'] = $cellData[$k]['mes_batch_count'] = $cellData[$k]['mix_batch_count'] = $cellData[$k]['total_batch_count'] = 0;
             $cellData[$k]['erp_batch'] = $cellData[$k]['mes_batch'] = $cellData[$k]['mix_batch'] = $cellData[$k]['total_batch'] = [];
-            foreach ($orderList->where('tour_no', $v['tour_no']) as $x => $y) {
-                if ($y['merchant_id'] == (config('tms.env') == 'local' ? BaseConstService::ERP_MERCHANT_ID_2 : BaseConstService::ERP_MERCHANT_ID_1)) {
+            foreach ($batch[$k] as $x => $y) {
+                if ($y['merchant_id'] == config('tms.erp_merchant_id')) {
                     $cellData[$k]['erp_batch'][] = $y['batch_no'];
-                } elseif ($y['merchant_id'] == (config('tms.env') == 'local' ? BaseConstService::SHOP_MERCHANT_ID_1 : BaseConstService::SHOP_MERCHANT_ID_2)) {
+                } elseif ($y['merchant_id'] == config('tms.eushop_merchant_id')) {
                     $cellData[$k]['mes_batch'][] = $y['batch_no'];
                 }
                 $cellData[$k]['total_batch'][] = $y['batch_no'];
