@@ -744,7 +744,8 @@ class OrderService extends BaseService
      * @param $order
      * @return bool
      */
-    private function checkIsChangeBatch($dbOrder, $order)
+    private
+    function checkIsChangeBatch($dbOrder, $order)
     {
         $fields = ['execution_date', 'receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street'];
         $newDbOrder = Arr::only($dbOrder, $fields);
@@ -761,7 +762,8 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    private function changeBatch($dbInfo, $data, $line)
+    private
+    function changeBatch($dbInfo, $data, $line)
     {
         //站点移除订单,添加新的订单
         if (!empty($dbInfo['batch_no'])) {
@@ -783,7 +785,8 @@ class OrderService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function getTourDate($id)
+    public
+    function getTourDate($id)
     {
         $params = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($params)) {
@@ -799,7 +802,8 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getDate($params)
+    public
+    function getDate($params)
     {
         $this->validate($params);
         $data = $this->getLineService()->getScheduleList($params);
@@ -811,7 +815,8 @@ class OrderService extends BaseService
      * @param $info
      * @throws BusinessLogicException
      */
-    public function validate($info)
+    public
+    function validate($info)
     {
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
             $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
@@ -830,7 +835,8 @@ class OrderService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function getBatchPageListByOrder($id, $params)
+    public
+    function getBatchPageListByOrder($id, $params)
     {
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
@@ -848,7 +854,8 @@ class OrderService extends BaseService
      * @return string
      * @throws BusinessLogicException
      */
-    public function assignToBatch($id, $params)
+    public
+    function assignToBatch($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (!empty($params['batch_no']) && ($info['batch_no'] == $params['batch_no'])) {
@@ -889,7 +896,8 @@ class OrderService extends BaseService
      * @param $id
      * @throws BusinessLogicException
      */
-    public function removeFromBatch($id)
+    public
+    function removeFromBatch($id)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($info['batch_no'])) {
@@ -925,7 +933,8 @@ class OrderService extends BaseService
      * @param $idList
      * @throws BusinessLogicException
      */
-    public function removeListFromBatch($idList)
+    public
+    function removeListFromBatch($idList)
     {
         $idList = explode_id_string($idList);
         $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
@@ -974,7 +983,8 @@ class OrderService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function destroy($id, $params)
+    public
+    function destroy($id, $params)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_6, BaseConstService::ORDER_STATUS_7]);
         //若当前订单已取消取派了,在直接返回成功，不再删除
@@ -1021,7 +1031,8 @@ class OrderService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    public function destroyByList($params)
+    public
+    function destroyByList($params)
     {
         $log = null;
         $ids = explode_id_string($params['id_list']);
@@ -1045,7 +1056,8 @@ class OrderService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    public function recovery($id, $params)
+    public
+    function recovery($id, $params)
     {
         $order = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::ORDER_STATUS_7);
         if (intval($order['source']) === BaseConstService::ORDER_SOURCE_3) {
@@ -1086,7 +1098,8 @@ class OrderService extends BaseService
      * @param $id
      * @throws BusinessLogicException
      */
-    public function actualDestroy($id)
+    public
+    function actualDestroy($id)
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::ORDER_STATUS_7);
         $rowCount = parent::delete(['id' => $id]);
@@ -1111,7 +1124,8 @@ class OrderService extends BaseService
      * @throws BusinessLogicException
      * @throws \WebSocket\BadOpcodeException
      */
-    public function assignListTour($params)
+    public
+    function assignListTour($params)
     {
         list($orderIdList, $tourNo) = [$params['id_list'], $params['tour_no']];
         /******************************************1.获取数据**********************************************************/
@@ -1180,7 +1194,8 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getAddOrderList($orderIdList, $executionDate)
+    public
+    function getAddOrderList($orderIdList, $executionDate)
     {
         $lineId = null;
         $orderList = parent::getList(['id' => ['in', explode(',', $orderIdList)], 'type' => BaseConstService::ORDER_TYPE_1], ['*'], false)->toArray();
@@ -1208,7 +1223,8 @@ class OrderService extends BaseService
      * @throws BusinessLogicException
      * @throws \Throwable
      */
-    public function orderPrintAll($idList)
+    public
+    function orderPrintAll($idList)
     {
         $printTemplate = $this->getPrintTemplateService()->getInfo([], ['id', 'type'], false);
         if (empty($printTemplate)) {
@@ -1256,7 +1272,8 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderExport($ids)
+    public
+    function orderExport($ids)
     {
         $ids = explode(',', $ids);
         $orderList = parent::getList(['id' => ['in', $ids]], ['*'], false);
@@ -1292,7 +1309,8 @@ class OrderService extends BaseService
      * 同步订单状态列表
      * @param $idList
      */
-    public function synchronizeStatusList($idList)
+    public
+    function synchronizeStatusList($idList)
     {
         //获取订单列表
         $idList = explode_id_string($idList);
@@ -1337,7 +1355,8 @@ class OrderService extends BaseService
      * @param $id
      * @throws BusinessLogicException
      */
-    public function neutralize($id)
+    public
+    function neutralize($id)
     {
         $order = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($order)) {
