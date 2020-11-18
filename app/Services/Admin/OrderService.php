@@ -687,8 +687,12 @@ class OrderService extends BaseService
         if (empty($dbOrder)) {
             throw new BusinessLogicException('订单[:order_no]不存在', 1000, ['order_no' => $orderNo]);
         }
-        if ($dbOrder->type == BaseConstService::ORDER_TYPE_1) {
-
+        //
+        if (in_array($dbOrder->type, [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
+            $data = ['execution_date' => $executionDate];
+        }
+        if ($dbOrder->type == BaseConstService::ORDER_TYPE_3) {
+            $data['second_execution_date'];
         }
     }
 

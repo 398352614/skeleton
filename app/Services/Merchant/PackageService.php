@@ -132,9 +132,9 @@ class PackageService extends BaseService
                     $errorMsg .= __('包裹外部标识[:out_order_no]已存在;', ['out_order_no' => $package['out_order_no']]);
                 }
                 //第三方特殊处理
-                $order = DB::table('order')->where('order_no', $dbPackage['order_no'])->whereNotIn('status', [BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::PACKAGE_STATUS_5])->first();
+                $order = DB::table('order')->where('order_no', $dbPackage['order_no'])->whereNotIn('status', [BaseConstService::ORDER_STATUS_4, BaseConstService::ORDER_STATUS_5])->first();
                 if (auth()->user()->getAttribute('is_api') == true && !empty($order)) {
-                    throw new BusinessLogicException($errorMsg, 1005, [], ['batch_no' => $order->batch_no, 'order_no' => $dbPackage['order_no'], 'out_order_no' => $order->out_order_no, 'status' => $order->status]);
+                    throw new BusinessLogicException($errorMsg, 1005, [], ['order_no' => $dbPackage['order_no'], 'out_order_no' => $order->out_order_no, 'status' => $order->status]);
                 } else {
                     throw new BusinessLogicException($errorMsg, 1000);
                 }
@@ -210,7 +210,7 @@ class PackageService extends BaseService
             'express_first_no' => $params['express_first_no'],
             'order_no' => $info[0]['order_no'],
             'out_order_no' => $order['out_order_no'],
-            'status'=>$order['status']
+            'status' => $order['status']
         ];
     }
 
