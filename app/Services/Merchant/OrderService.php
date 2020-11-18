@@ -390,6 +390,7 @@ class OrderService extends BaseService
         $this->addAllItemList($params);
         return [
             'order_no' => $params['order_no'],
+            'out_order_no' => $params['out_order_no'] ?? '',
             'batch_no' => '',
             'tour_no' => '',
             'line' => [
