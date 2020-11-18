@@ -388,7 +388,7 @@ class OrderService extends BaseService
         $tour = $this->getTrackingOrderService()->storeByOrder($order);
         //新增订单明细列表
         $this->addAllItemList($params);
-        return [[
+        return [
             'order_no' => $params['order_no'],
             'batch_no' => '',
             'tour_no' => '',
@@ -398,7 +398,7 @@ class OrderService extends BaseService
             ],
             'execution_date' => $order->execution_date,
             'second_execution_date' => $order->second_execution_date ?? null
-        ]];
+        ];
     }
 
 
