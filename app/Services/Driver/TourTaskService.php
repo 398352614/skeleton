@@ -243,22 +243,22 @@ class TourTaskService extends BaseService
      */
     public function getAllInfo()
     {
-        $tour = $this->getPageList();
-        if ($tour->isEmpty()) {
+        $tourList = $this->getPageList();
+        if ($tourList->isEmpty()) {
             return [];
         }
-        $tour = $tour->toArray(request());
-        $tour = collect($tour)->where('status', '<>', BaseConstService::TOUR_STATUS_5)->toArray();
-        foreach ($tour as $k => $v) {
-            $tour[$k] = array_merge($tour[$k], $this->show($v['id']));
-            $tour[$k]['batch_list'] = collect($tour[$k]['batch_list'])->toArray();
-            foreach ($tour[$k]['batch_list'] as $x => $y) {
-                $tour[$k]['batch_list'][$x] = array_merge($tour[$k]['batch_list'][$x], $this->getTourService()->getBatchInfo($v['id'], ['batch_id' => $y['id']]));
-                $tour[$k]['batch_list'][$x] = array_merge($tour[$k]['batch_list'][$x], collect($this->getTourService()->getBatchList($v['id'])['batch_list'])->where('batch_no',$y['batch_no'])->first());
+        $tourList = $tourList->toArray(request());
+        $tourList = collect($tourList)->where('status', '<>', BaseConstService::TOUR_STATUS_5)->toArray();
+        foreach ($tourList as $k => $v) {
+            $tourList[$k] = array_merge($tourList[$k], $this->show($v['id']));
+            $tourList[$k]['batch_list'] = collect($tourList[$k]['batch_list'])->toArray();
+            foreach ($tourList[$k]['batch_list'] as $x => $y) {
+                $tourList[$k]['batch_list'][$x] = array_merge($tourList[$k]['batch_list'][$x], $this->getTourService()->getBatchInfo($v['id'], ['batch_id' => $y['id']]));
+                $tourList[$k]['batch_list'][$x] = array_merge($tourList[$k]['batch_list'][$x], collect($this->getTourService()->getBatchList($v['id'])['batch_list'])->where('batch_no',$y['batch_no'])->first());
             }
         }
-        $tour=array_values($tour);
-        return $tour;
+        $tourList=array_values($tourList);
+        return $tourList;
     }
 
 }
