@@ -257,6 +257,7 @@ class TourTaskService extends BaseService
                 $tour[$k]['batch_list'][$x] = array_merge($tour[$k]['batch_list'][$x], collect($this->getTourService()->getBatchList($v['id'])['batch_list'])->where('batch_no',$y['batch_no'])->first());
             }
         }
+        $tour=array_values($tour);
         return $tour;
     }
 
