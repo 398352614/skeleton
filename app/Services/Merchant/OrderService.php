@@ -666,7 +666,9 @@ class OrderService extends BaseService
     private function check(&$params, $orderNo = null)
     {
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
-        $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
+        if (!empty($params['second_place_post_code'])) {
+            $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
+        }
         //若是新增,则填充商户ID及国家
         if (empty($orderNo)) {
             $params['merchant_id'] = auth()->user()->id;
