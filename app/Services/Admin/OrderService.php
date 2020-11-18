@@ -681,6 +681,17 @@ class OrderService extends BaseService
         $this->getTrackingOrderService()->updateByOrder($data);
     }
 
+    public function updateExecutionDate($orderNo, $trackingOrderType, $executionDate)
+    {
+        $dbOrder = $this->getInfoOfStatus(['order_no' => $orderNo], true);
+        if (empty($dbOrder)) {
+            throw new BusinessLogicException('订单[:order_no]不存在', 1000, ['order_no' => $orderNo]);
+        }
+        if ($dbOrder->type == BaseConstService::ORDER_TYPE_1) {
+
+        }
+    }
+
     /**
      * 删除
      * @param $id
