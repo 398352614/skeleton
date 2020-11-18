@@ -396,7 +396,11 @@ class OrderService extends BaseService
         if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
             throw new BusinessLogicException('当前订单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
         }
-        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_3]);
+        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['status' => BaseConstService::PACKAGE_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
