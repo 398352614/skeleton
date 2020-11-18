@@ -296,8 +296,8 @@ class TrackingOrderService extends BaseService
     public function storeByOrder(Order $order)
     {
         $params = $this->fillData($order);
-        $this->store($params, $order->order_no);
-        return 'true';
+        $tour = $this->store($params, $order->order_no);
+        return $tour;
     }
 
     /**

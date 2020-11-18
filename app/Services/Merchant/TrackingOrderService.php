@@ -342,8 +342,8 @@ class TrackingOrderService extends BaseService
     public function storeByOrder(Order $order)
     {
         $params = $this->fillData($order);
-        $this->store($params, $order->order_no);
-        return 'true';
+        $tour = $this->store($params, $order->order_no);
+        return $tour;
     }
 
     /**
@@ -385,7 +385,7 @@ class TrackingOrderService extends BaseService
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
         //运单轨迹-运单加入取件线路
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
-        return 'true';
+        return $tour;
     }
 
     /**

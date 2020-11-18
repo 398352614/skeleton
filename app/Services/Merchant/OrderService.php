@@ -385,10 +385,20 @@ class OrderService extends BaseService
             throw new BusinessLogicException('订单新增失败');
         }
         //生成运单
-        $this->getTrackingOrderService()->storeByOrder($order);
+        $tour = $this->getTrackingOrderService()->storeByOrder($order);
         //新增订单明细列表
         $this->addAllItemList($params);
-        return ['order_no' => $params['order_no']];
+        return [[
+            'order_no' => $params['order_no'],
+            'batch_no' => '',
+            'tour_no' => '',
+            'line' => [
+                'line_id' => $tour['line_id'] ?? null,
+                'line_name' => $tour['line_name'] ?? '',
+            ],
+            'execution_date' => $order->execution_date,
+            'second_execution_date' => $order->second_execution_date ?? null
+        ]];
     }
 
 
