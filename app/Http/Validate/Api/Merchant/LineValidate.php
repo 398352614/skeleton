@@ -21,7 +21,7 @@ class LineValidate extends BaseValidate
 
     public $rules = [
         'place_post_code' => 'required|string|max:50',
-        'type' => 'nullable|integer|in:1,2'
+        'type' => 'nullable|integer|in:1,2,3'
     ];
 
     public $scene = [

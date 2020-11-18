@@ -34,7 +34,13 @@ class LineService extends BaseLineService
             return [];
         }
         $postCode = $params['place_post_code'];
-        $type = !empty($params['type']) ? intval($params['type']) : BaseConstService::TRACKING_ORDER_TYPE_2;
+        if (empty($params['type'])) {
+            $type = BaseConstService::TRACKING_ORDER_TYPE_2;
+        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
+            $type = BaseConstService::ORDER_TYPE_1;
+        } else {
+            $type = intval($params['type']);
+        }
         $lineRangeList = parent::getLineRangeListByPostcode($postCode, auth()->user()->id);
         $dateList = parent::getScheduleListByLineRangeList(['type' => $type], $lineRangeList, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
         return $dateList;
