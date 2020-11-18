@@ -875,7 +875,7 @@ class OrderService extends BaseService
         }
         //若材料存在,则新增材料列表
         if (!empty($params['material_list'])) {
-            $materialList = collect($params['material_list'])->map(function ($item, $key) use ($params, $batch, $tour) {
+            $materialList = collect($params['material_list'])->map(function ($item, $key) use ($params) {
                 $collectItem = collect($item)->only(['name', 'code', 'out_order_no', 'expect_quantity', 'remark']);
                 return $collectItem
                     ->put('order_no', $params['order_no'])
