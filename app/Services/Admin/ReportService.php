@@ -16,7 +16,6 @@ use App\Models\TourMaterial;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Traits\ConstTranslateTrait;
-use App\Traits\StatusConvertTrait;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +27,6 @@ use Illuminate\Support\Facades\DB;
  */
 class ReportService extends BaseService
 {
-    use StatusConvertTrait;
 
     public $filterRules = [
         'execution_date' => ['between', ['begin_date', 'end_date']],
