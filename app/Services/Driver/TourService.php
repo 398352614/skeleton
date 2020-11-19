@@ -1293,9 +1293,8 @@ class TourService extends BaseService
             $trackingOrder['place_lon'] = $order['second_place_lon'];
             $trackingOrder['place_lat'] = $order['second_place_lat'];
             $trackingOrder['type'] = BaseConstService::TRACKING_ORDER_TYPE_2;
-            $trackingOrder['execution_date'] = $order['second_execution_date'];
-            $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'out_user_id', 'out_order_no', 'order_no', 'pie_execution_date', 'mask_code', 'special_remark']));
-            $this->getTrackingOrderService()->store($trackingOrder);
+            $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'out_user_id', 'out_order_no', 'mask_code', 'special_remark']));
+            $this->getTrackingOrderService()->store($trackingOrder, $order['order_no']);
         }
         //TourTrait::afterBackWarehouse($tour);
     }

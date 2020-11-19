@@ -97,7 +97,7 @@ class TrackingOrderService extends BaseService
      * @return bool
      * @throws BusinessLogicException
      */
-    private function store($params, $orderNo)
+    public function store($params, $orderNo)
     {
         //填充发件人信息
         $line = $this->fillWarehouseInfo($params, BaseConstService::YES);
