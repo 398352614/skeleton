@@ -15,6 +15,7 @@ use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class TrackingOrderService
@@ -121,6 +122,7 @@ class TrackingOrderService extends BaseService
         $trackingOrder = $trackingOrder->getAttributes();
         /*****************************************运单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
+        Log::info('tracking-order', $trackingOrder);
         $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
         /*******************************************材料填充取派信息***************************************************/
         $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);

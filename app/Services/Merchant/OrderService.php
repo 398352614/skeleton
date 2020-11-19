@@ -955,7 +955,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('订单[:order_no]不存在', 1000, ['order_no' => $trackingOrder['order_no']]);
         }
         //若是取派中的派件,修改第二日期;否则，修改第一日期
-        if (($dbOrder->type == BaseConstService::ORDER_TYPE_3) && ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2)) {
+        if (($dbOrder['type'] == BaseConstService::ORDER_TYPE_3) && ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2)) {
             $data = ['second_execution_date' => $trackingOrder['execution_date']];
         } else {
             $data = ['execution_date' => $trackingOrder['execution_date']];
