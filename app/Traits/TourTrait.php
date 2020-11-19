@@ -35,6 +35,7 @@ trait TourTrait
         //派送订单
         $orderList = Order::query()->select(['*'])->where('tour_no', $tour['tour_no'])->whereNotIn('order_no', array_column($cancelOrderList, 'order_no'))->get()->toArray();
         !empty($orderList) && TrackingOrderTrailService::storeAllByTrackingOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_DELIVERING);
+        !empty($orderList) && OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_START);
         //触发司机出库1
         event(new OutWarehouse($tour));
         //出库通知
