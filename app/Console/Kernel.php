@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('telescope:prune --hours=48')->daily()->onOneServer();
+        $schedule->command('telescope:prune --hours=48')->daily()->onOneServer()->emailOutputTo(config('tms.admin_email'));
         $schedule->command('db:backup')->dailyAt('1:00')->onOneServer();
     }
 
