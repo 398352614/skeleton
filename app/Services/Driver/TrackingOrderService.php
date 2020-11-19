@@ -119,7 +119,7 @@ class TrackingOrderService extends BaseService
         if ($trackingOrder == false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        $trackingOrder = $trackingOrder->getAttributes();
+        $trackingOrder = $trackingOrder->getOriginal();
         /*****************************************运单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
         Log::info('tracking-order', $trackingOrder);
