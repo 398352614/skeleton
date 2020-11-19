@@ -1056,7 +1056,7 @@ class OrderService extends BaseService
             try {
                 $this->destroy($orderNo, ['no_push' => 1]);
             } catch (BusinessLogicException $exception) {
-                throw new BusinessLogicException('删除失败,订单[:order_no]删除失败,原因[:exception_info]', 1000, ['order_no' => $orderNo, 'exception_info' => $exception->getMessage()]);
+                throw new BusinessLogicException('批量删除失败,订单[:order_no]删除失败,原因-[:exception_info]', 1000, array_merge(['order_no' => $orderNo, 'exception_info' => $exception->getMessage()], $exception->replace));
             }
         }
         return 'true';
