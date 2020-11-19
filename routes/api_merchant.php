@@ -148,6 +148,8 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('getCountryList', 'CommonController@getCountryList');
 
         Route::get('get-postcode', 'CommonController@getPostcode');
+
+        Route::get('dictionary', 'CommonController@dictionary');
     });
 
     //取件线路
