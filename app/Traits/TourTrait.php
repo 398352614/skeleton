@@ -21,6 +21,7 @@ use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Package;
 use App\Models\Tour;
+use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
@@ -33,7 +34,7 @@ trait TourTrait
         //取消派送订单，取派失败
         !empty($cancelOrderList) && TrackingOrderTrailService::storeAllByTrackingOrderList($cancelOrderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
         //派送订单
-        $orderList = Order::query()->select(['*'])->where('tour_no', $tour['tour_no'])->whereNotIn('order_no', array_column($cancelOrderList, 'order_no'))->get()->toArray();
+        $orderList = TrackingOrder::query()->select(['*'])->where('tour_no', $tour['tour_no'])->whereNotIn('order_no', array_column($cancelOrderList, 'order_no'))->get()->toArray();
         !empty($orderList) && TrackingOrderTrailService::storeAllByTrackingOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_DELIVERING);
         !empty($orderList) && OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_START);
 /*        //触发司机出库1
