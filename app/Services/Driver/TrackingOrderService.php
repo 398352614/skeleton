@@ -92,6 +92,15 @@ class TrackingOrderService extends BaseService
     }
 
     /**
+     * 订单服务
+     * @return OrderService
+     */
+    private function getOrderService()
+    {
+        return self::getInstance(OrderService::class);
+    }
+
+    /**
      * 新增
      * @param $params
      * @param $orderNo
@@ -112,7 +121,7 @@ class TrackingOrderService extends BaseService
         $trackingOrder = $trackingOrder->getAttributes();
         /*****************************************运单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
-        $this->fillBatchTourInfo($trackingOrder, $batch, $tour);
+        $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
         /*******************************************材料填充取派信息***************************************************/
         $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
         if ($rowCount === false) {
@@ -171,14 +180,16 @@ class TrackingOrderService extends BaseService
      * @param $trackingOrder
      * @param $batch
      * @param $tour
+     * @param boolean $isUpdateOrder
      * @throws BusinessLogicException
      */
-    public function fillBatchTourInfo($trackingOrder, $batch, $tour)
+    public function fillBatchTourInfo($trackingOrder, $batch, $tour, $isUpdateOrder = false)
     {
         $rowCount = parent::updateById($trackingOrder['id'], self::getBatchTourFillData($batch, $tour));
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
+        ($isUpdateOrder == true) && $this->getOrderService()->updateByTrackingOrder($trackingOrder);
     }
 
     /**
