@@ -634,4 +634,5 @@
 ,"订单[:order_no]不存在":"Overzicht van bestellingenNee] bestaat niet",
 "删除失败,订单[:order_no]删除失败,原因[:exception_info]":"Kon niet verwijderen, bestellen [: bestellenNee] verwijderen mislukt, reden [: uitzonderinginfo",
 "订单关闭":"Bestelling gesloten"
+,"订单删除":"Verwijdering van bestellingen"
 }
