@@ -36,10 +36,10 @@ trait TourTrait
         $orderList = Order::query()->select(['*'])->where('tour_no', $tour['tour_no'])->whereNotIn('order_no', array_column($cancelOrderList, 'order_no'))->get()->toArray();
         !empty($orderList) && TrackingOrderTrailService::storeAllByTrackingOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_DELIVERING);
         !empty($orderList) && OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_START);
-        //触发司机出库1
+/*        //触发司机出库1
         event(new OutWarehouse($tour));
         //出库通知
-        dispatch(new \App\Jobs\OutWarehouse($tour['tour_no'], array_merge($cancelOrderList, $orderList)));
+        dispatch(new \App\Jobs\OutWarehouse($tour['tour_no'], array_merge($cancelOrderList, $orderList)));*/
     }
 
     public static function actualOutWarehouse($tour)
@@ -64,10 +64,11 @@ trait TourTrait
         data_set($orderList, '*.status', BaseConstService::TRACKING_ORDER_STATUS_6);
         data_set($batch, 'status', BaseConstService::TRACKING_ORDER_STATUS_6);
         TrackingOrderTrailService::storeAllByTrackingOrderList($orderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
-        //取消取派通知
-        event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $orderList));
-        //处理站点
-        self::dealBatchEvent($tour, $batch);
+        OrderTrailService::storeAllByOrderList($orderList, BaseConstService::ORDER_TRAIL_FAIL);
+        /*        //取消取派通知
+                event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $orderList));
+                //处理站点
+                self::dealBatchEvent($tour, $batch);*/
     }
 
 
@@ -86,10 +87,10 @@ trait TourTrait
             OrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_4], BaseConstService::ORDER_TRAIL_FAIL);
         }
         unset($groupOrderList);
-        //签收通知
+/*        //签收通知
         event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $orderList));
         //处理站点
-        self::dealBatchEvent($tour, $batch);
+        self::dealBatchEvent($tour, $batch);*/
     }
 
     public static function afterBackWarehouse($tour)
