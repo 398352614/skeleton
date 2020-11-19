@@ -91,6 +91,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{order_no}', 'OrderTrailController@index');
     });
 
+    //运单轨迹管理
+    Route::prefix('tracking-order-trail')->group(function () {
+        //列表查询
+        Route::get('/{tracking_order_no}', 'TrackingOrderTrailController@index');
+    });
+
     Route::prefix('package')->group(function () {
         //列表查询
         Route::get('/', 'PackageController@index');

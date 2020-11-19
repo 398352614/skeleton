@@ -16,14 +16,12 @@ use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\MapAreaTrait;
-use App\Traits\StatusConvertTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 
 class BatchService extends BaseService
 {
-    use StatusConvertTrait;
 
     public $filterRules = [
         'status' => ['=', 'status'],
