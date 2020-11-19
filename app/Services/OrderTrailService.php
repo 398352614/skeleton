@@ -20,7 +20,7 @@ use App\Models\TrackingOrderTrail;
 
 class OrderTrailService extends BaseService
 {
-    public static $selectFields = ['company_id', 'merchant_id', 'execution_date', 'order_no', 'tracking_order_no'];
+    public static $selectFields = ['type_name','company_id', 'merchant_id', 'execution_date', 'order_no', 'tracking_order_no'];
 
     public $filterRules = [
         'order_no' => ['=', 'order_no'],
