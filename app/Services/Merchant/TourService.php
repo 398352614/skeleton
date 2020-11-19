@@ -231,6 +231,30 @@ class TourService extends BaseService
 
 
     /**
+     * 移除站点运单
+     * @param $order
+     * @param $batch
+     * @throws BusinessLogicException
+     */
+    public function removeBatchTrackingOrder($order, $batch)
+    {
+        $info = $this->getInfoOfStatus(['tour_no' => $order['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3], true);
+        $quantity = $info['expect_pickup_quantity'] + $info['expect_pie_quantity'];
+        //当站点中不存在其他运单时,删除站点;若还存在其他运单,则只移除运单
+        if ($quantity - 1 <= 0) {
+            $rowCount = parent::delete(['id' => $info['id']]);
+        } else {
+            $data = (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => $info['expect_pickup_quantity'] - 1] : ['expect_pie_quantity' => $info['expect_pie_quantity'] - 1];
+            $rowCount = parent::updateById($info['id'], $data);
+        }
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取件移除运单失败，请重新操作');
+        }
+    }
+
+
+
+    /**
      * 获取取件线路信息
      * @param $batch
      * @param $line
