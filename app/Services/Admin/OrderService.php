@@ -24,6 +24,7 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\CommonService;
 use App\Services\OrderNoRuleService;
+use App\Services\OrderTrailService;
 use App\Traits\BarcodeTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
@@ -404,6 +405,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
+        OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder,BaseConstService::ORDER_TRAIL_CLOSED);
     }
 
     /**

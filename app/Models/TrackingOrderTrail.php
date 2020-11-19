@@ -69,6 +69,11 @@ class TrackingOrderTrail extends BaseModel
      */
     protected $dates = [];
 
+    /**
+     * 翻译
+     * @param $value
+     * @return array|string|null
+     */
     public function getContentAttribute($value)
     {
         if (preg_match_all('/(?<=\[)[^]]+/', $value, $params)) {

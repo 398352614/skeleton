@@ -20,6 +20,7 @@ use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
+use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
@@ -313,10 +314,11 @@ class TrackingOrderService extends BaseService
      * 新增
      * @param $params
      * @param $orderNo
+     * @param bool $again
      * @return bool
      * @throws BusinessLogicException
      */
-    private function store($params, $orderNo)
+    private function store($params, $orderNo, $again = false)
     {
         //填充发件人信息
         $line = $this->fillWarehouseInfo($params, BaseConstService::YES);
@@ -348,6 +350,11 @@ class TrackingOrderService extends BaseService
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
         //运单轨迹-运单加入取件线路
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+        //订单轨迹-订单创建
+        OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
+        if ($again == true) {
+            OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_RESTART);
+        }
         return $tour;
     }
 
@@ -377,6 +384,9 @@ class TrackingOrderService extends BaseService
                 $trackingOrder = array_merge($trackingOrder, self::getBatchTourFillData($batch, $tour));
                 TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
                 TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+                if ($dbTrackingOrder['execution_date'] != $trackingOrder['execution_date']) {
+                    OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_UPDATE, $dbTrackingOrder);
+                }
             }
         }
         //1.若运单状态为待分配，已分配，待出库，取派中，则允许修改;否则，不用修改
@@ -415,7 +425,7 @@ class TrackingOrderService extends BaseService
         }
         $trackingOrder = array_merge($address, ['type' => $trackingOrderType, 'execution_date' => $order['execution_date']]);
         $trackingOrder = array_merge(Arr::only($dbOrder, $this->tOrderAndOrderSameFields), $trackingOrder);
-        return $this->store($trackingOrder, $dbOrder['order_no']);
+        return $this->store($trackingOrder, $dbOrder['order_no'], true);
     }
 
     /**
@@ -451,6 +461,7 @@ class TrackingOrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
+        OrderTrailService::OrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::ORDER_TRAIL_DELETE);
     }
 
 
@@ -500,6 +511,7 @@ class TrackingOrderService extends BaseService
             $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
             ($dbTrackingOrder['batch_no'] != $batch['batch_no']) && TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
             ($dbTrackingOrder['tour_no'] != $tour['tour_no']) && TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+            ($dbTrackingOrder['execution_date'] != $tour['execution_date']) && OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_UPDATE, $tour);
         }
         return [$batch, $tour];
     }

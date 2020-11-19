@@ -11,6 +11,7 @@ use App\Models\Batch;
 use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\OrderNoRuleService;
+use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
@@ -137,24 +138,6 @@ class BatchService extends BaseService
         return self::getInstance(TrackingOrderService::class);
     }
 
-    public function getPageList()
-    {
-        if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
-            unset($this->filters['status']);
-        }
-        $list = parent::getPageList();
-        $merchantList = $this->getMerchantService()->getList([], ['id', 'name'], false)->toArray();
-        $merchantList = array_create_index($merchantList, 'id');
-        foreach ($list as &$batch) {
-            if ($batch['merchant_id'] == 0) {
-                $batch['merchant_id_name'] = __('多商家');
-            } else {
-                $batch['merchant_id_name'] = $merchantList[$batch['merchant_id']]['name'] ?? '';
-            }
-        }
-        return $list;
-    }
-
     /**
      * 顺带包裹 服务
      * @return AdditionalPackageService
@@ -171,6 +154,24 @@ class BatchService extends BaseService
     public function getBaseLineService()
     {
         return self::getInstance(BaseLineService::class);
+    }
+
+    public function getPageList()
+    {
+        if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
+            unset($this->filters['status']);
+        }
+        $list = parent::getPageList();
+        $merchantList = $this->getMerchantService()->getList([], ['id', 'name'], false)->toArray();
+        $merchantList = array_create_index($merchantList, 'id');
+        foreach ($list as &$batch) {
+            if ($batch['merchant_id'] == 0) {
+                $batch['merchant_id_name'] = __('多商家');
+            } else {
+                $batch['merchant_id_name'] = $merchantList[$batch['merchant_id']]['name'] ?? '';
+            }
+        }
+        return $list;
     }
 
     /**
@@ -470,6 +471,7 @@ class BatchService extends BaseService
         }
 
         TrackingOrderTrailService::storeAllByTrackingOrderList($trackingOrderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
+        OrderTrailService::storeAllByOrderList($trackingOrderList, BaseConstService::ORDER_TRAIL_FAIL);
 
         //取消通知
         foreach ($trackingOrderList as $trackingOrder) {
@@ -535,6 +537,7 @@ class BatchService extends BaseService
      */
     private function assignBatchToTour($info, $params)
     {
+        $date = $info['execution_date'];
         $info['execution_date'] = $params['execution_date'];
         if (isset($params['merchant_id'])) {
             $info['merchant_id'] = $params['merchant_id'];
@@ -554,6 +557,9 @@ class BatchService extends BaseService
         //重新统计取件线路金额
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
         TrackingOrderTrailService::storeByBatch($batch, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR);
+        if ($date != $tour['execution_date']) {
+            OrderTrailService::storeByBatch($batch, BaseConstService::ORDER_TRAIL_UPDATE, $tour);
+        }
     }
 
     /**
@@ -577,6 +583,9 @@ class BatchService extends BaseService
         foreach ($idList as $id) {
             $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
             $this->assignBatchToTour($info, $params);
+            if ($info['execution_date'] != $tour['execution_date']) {
+                OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_UPDATE, $tour);
+            }
         }
         return 'true';
     }

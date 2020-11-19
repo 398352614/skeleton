@@ -307,6 +307,21 @@ class BaseConstService
     //司机端 文件目录
     const DRIVER_FILE_TOUR_DIR = 'tour';
 
+    /**
+     * order_trail 订单轨迹常量
+     * 1-订单创建 2-订单锁定 3-订单开始运输 4-订单完成 5-取派订单中转
+     * 6-订单重启 7-订单修改 8-订单关闭 9-订单删除
+     */
+    const ORDER_TRAIL_CREATED = 1;
+    const ORDER_TRAIL_LOCK = 2;
+    const ORDER_TRAIL_UNLOCK = 3;
+    const ORDER_TRAIL_START = 4;
+    const ORDER_TRAIL_FINISH = 5;
+    const ORDER_TRAIL_FAIL = 6;
+    const ORDER_TRAIL_RESTART = 7;
+    const ORDER_TRAIL_UPDATE = 8;
+    const ORDER_TRAIL_CLOSED = 9;
+    const ORDER_TRAIL_DELETE = 10;
 
     /**
      * order_trail 订单轨迹常量
