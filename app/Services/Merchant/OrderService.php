@@ -1030,7 +1030,7 @@ class OrderService extends BaseService
     {
         //获取信息
         $dbOrder = $this->getInfoByIdOfStatus($id, true);
-        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_5]);
+        $rowCount = parent::updateById($dbOrder['id'], ['status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
