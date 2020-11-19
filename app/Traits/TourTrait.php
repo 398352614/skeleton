@@ -22,6 +22,7 @@ use App\Models\Order;
 use App\Models\Package;
 use App\Models\Tour;
 use App\Services\BaseConstService;
+use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
 use Illuminate\Support\Facades\Log;
 
@@ -76,10 +77,12 @@ trait TourTrait
         //若存在签收成功的订单列表,则记录
         if (!empty($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_5])) {
             TrackingOrderTrailService::storeAllByTrackingOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_5], BaseConstService::TRACKING_ORDER_TRAIL_DELIVERED);
+            OrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::ORDER_STATUS_3], BaseConstService::ORDER_TRAIL_FINISH);
         }
         //若存在签收失败的订单列表,则记录
         if (!empty($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_6])) {
             TrackingOrderTrailService::storeAllByTrackingOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_6], BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
+            OrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_4], BaseConstService::ORDER_TRAIL_FAIL);
         }
         unset($groupOrderList);
         //签收通知

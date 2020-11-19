@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\OrderTrailResource;
+use App\Http\Resources\TrackingOrderTrailResource;
 use App\Models\TrackingOrder;
 use App\Models\TrackingOrderTrail;
 
@@ -19,7 +20,7 @@ class TrackingOrderTrailService extends BaseService
 
     public function __construct(TrackingOrderTrail $trackingOrderTrail)
     {
-        parent::__construct($trackingOrderTrail, OrderTrailResource::class, OrderTrailResource::class);
+        parent::__construct($trackingOrderTrail, TrackingOrderTrailResource::class, TrackingOrderTrailResource::class);
     }
 
     public static function storeByTour($tour, int $action)

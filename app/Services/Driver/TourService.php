@@ -26,6 +26,7 @@ use App\Services\BaseConstService;
 use App\Services\BaseService;
 use App\Services\FeeService;
 use App\Services\OrderNoRuleService;
+use App\Services\OrderTrailService;
 use App\Traits\TourTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -234,6 +235,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('运单锁定失败，请重新操作');
         }
         TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_LOCK);
+        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_LOCK);
     }
 
     /**
@@ -267,6 +269,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('运单取消锁定失败，请重新操作');
         }
         TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_UN_LOCK);
+        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_UNLOCK);
     }
 
 
@@ -783,6 +786,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
+        OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_FAIL);
         return [$tour, $batch, $cancelOrderList = []];
     }
 
