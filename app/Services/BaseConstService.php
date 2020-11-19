@@ -159,13 +159,6 @@ class BaseConstService
     const PACKAGE_STATUS_4 = 4;
     const PACKAGE_STATUS_5 = 5;
 
-    //商户端包裹列表1-未取派2-取派中3-已签收4-取派失败5-回收站
-    const MERCHANT_PACKAGE_STATUS_1 = 1;
-    const MERCHANT_PACKAGE_STATUS_2 = 2;
-    const MERCHANT_PACKAGE_STATUS_3 = 3;
-    const MERCHANT_PACKAGE_STATUS_4 = 4;
-    const MERCHANT_PACKAGE_STATUS_5 = 5;
-
     //顺带包裹状态
     const ADDITIONAL_PACKAGE_STATUS_1 = 1;
     const ADDITIONAL_PACKAGE_STATUS_2 = 2;

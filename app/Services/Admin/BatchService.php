@@ -547,8 +547,7 @@ class BatchService extends BaseService
         /***********************************************修改运单************************************************/
         $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         foreach ($trackingOrderList as $trackingOrder) {
-            $this->getTrackingOrderService()->fillBatchTourInfo($trackingOrder, $batch, $tour);
-            event(new OrderExecutionDateUpdated($trackingOrder['order_no'], $trackingOrder['out_order_no'] ?? '', $params['execution_date'], $batch['batch_no'], ['tour_no' => $tour['tour_no'], 'line_id' => $tour['line_id'], 'line_name' => $tour['line_name']]));
+            $this->getTrackingOrderService()->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
         }
         //重新统计站点金额
         $this->reCountAmountByNo($info['batch_no']);

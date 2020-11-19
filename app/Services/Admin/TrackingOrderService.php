@@ -189,6 +189,15 @@ class TrackingOrderService extends BaseService
     }
 
     /**
+     * 订单服务
+     * @return OrderService
+     */
+    private function getOrderService()
+    {
+        return self::getInstance(OrderService::class);
+    }
+
+    /**
      * 查询初始化
      * @return array
      */
@@ -488,10 +497,7 @@ class TrackingOrderService extends BaseService
         //重新统计取件线路金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         if ($isFillTrackingOrder === true) {
-            $rowCount = parent::updateById($trackingOrder['id'], self::getBatchTourFillData($batch, $tour));
-            if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败,请重新操作');
-            }
+            $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
             ($dbTrackingOrder['batch_no'] != $batch['batch_no']) && TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
             ($dbTrackingOrder['tour_no'] != $tour['tour_no']) && TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
         }
@@ -503,14 +509,16 @@ class TrackingOrderService extends BaseService
      * @param $trackingOrder
      * @param $batch
      * @param $tour
+     * @param boolean $isUpdateOrder
      * @throws BusinessLogicException
      */
-    public function fillBatchTourInfo($trackingOrder, $batch, $tour)
+    public function fillBatchTourInfo($trackingOrder, $batch, $tour, $isUpdateOrder = false)
     {
         $rowCount = parent::updateById($trackingOrder['id'], self::getBatchTourFillData($batch, $tour));
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
+        ($isUpdateOrder == true) && $this->getOrderService()->updateByTrackingOrder($trackingOrder);
     }
 
     /**
@@ -655,8 +663,6 @@ class TrackingOrderService extends BaseService
         }
         /********************************************2.改变站点****************************************************/
         $this->changeBatch(Arr::only($dbTrackingOrder, ['batch_no', 'tour_no', 'type']), $trackingOrder, $line, $params['batch_no'] ?? null, null, false, true);
-        /*******************************************3.反写日期至订单****************************************************/
-        //todo 反写日期至订单
         return 'true';
     }
 
