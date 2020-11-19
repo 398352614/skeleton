@@ -91,7 +91,7 @@ class OrderTrailService extends BaseService
                 $content = sprintf("订单[%s]货品解锁", $trackingOrder['type_name']);
                 break;
             case BaseConstService::ORDER_TRAIL_START:             //订单开始
-                $content = sprintf("订单[取件]开始");
+                $content = sprintf("订单[%s]开始", $trackingOrder['type_name']);
                 break;
             case BaseConstService::ORDER_TRAIL_FINISH:                //订单完成
                 $content = sprintf("订单[%s]完成", $trackingOrder['type_name']);
@@ -109,7 +109,7 @@ class OrderTrailService extends BaseService
                 $content = '订单关闭';
                 break;
             case BaseConstService::ORDER_TRAIL_DELETE:                     // 订单删除
-                $content = '订单关闭';
+                $content = '订单删除';
                 break;
             default:
                 $content = '未定义的状态';
