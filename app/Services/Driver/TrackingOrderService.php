@@ -93,13 +93,14 @@ class TrackingOrderService extends BaseService
     /**
      * 新增
      * @param $params
-     * @return string
+     * @param $orderNo
+     * @return bool
      * @throws BusinessLogicException
      */
-    public function store($params)
+    private function store($params, $orderNo)
     {
         //填充发件人信息
-        $line = $this->fillSender($params, BaseConstService::YES);
+        $line = $this->fillWarehouseInfo($params, BaseConstService::YES);
         //生成运单号
         $params['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
         /**********************************************生成运单********************************************************/
@@ -110,6 +111,12 @@ class TrackingOrderService extends BaseService
         $trackingOrder = $trackingOrder->getAttributes();
         /*****************************************运单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
+        $this->fillBatchTourInfo($trackingOrder, $batch, $tour);
+        /*******************************************材料填充取派信息***************************************************/
+        $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
         //重新统计站点金额
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
         //重新统计取件线路金额
@@ -120,18 +127,18 @@ class TrackingOrderService extends BaseService
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
         //运单轨迹-运单加入取件线路
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
-        return 'true';
+        return $tour;
     }
 
 
     /**
-     * 填充发件人信息
+     * 填充仓库信息
      * @param $params
      * @param $merchantAlone
      * @return array
      * @throws BusinessLogicException
      */
-    private function fillSender(&$params, $merchantAlone = BaseConstService::NO)
+    private function fillWarehouseInfo(&$params, $merchantAlone = BaseConstService::NO)
     {
         //获取线路
         $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
@@ -142,16 +149,54 @@ class TrackingOrderService extends BaseService
         }
         //填充发件人信息
         $params = array_merge($params, [
-            'second_place_fullname' => $warehouse['fullname'],
-            'second_place_phone' => $warehouse['phone'],
-            'second_place_country' => $warehouse['country'],
-            'second_place_post_code' => $warehouse['post_code'],
-            'second_place_house_number' => $warehouse['house_number'],
-            'second_place_city' => $warehouse['city'],
-            'second_place_street' => $warehouse['street'],
-            'second_place_address' => $warehouse['address'],
+            'warehouse_fullname' => $warehouse['fullname'],
+            'warehouse_phone' => $warehouse['phone'],
+            'warehouse_country' => $warehouse['country'],
+            'warehouse_post_code' => $warehouse['post_code'],
+            'warehouse_house_number' => $warehouse['house_number'],
+            'warehouse_city' => $warehouse['city'],
+            'warehouse_street' => $warehouse['street'],
+            'warehouse_address' => $warehouse['address'],
+            'warehouse_lon' => $warehouse['warehouse_lon'],
+            'warehouse_lat' => $warehouse['warehouse_lat']
         ]);
         return $line;
+    }
+
+    /**
+     * 填充运单数据
+     * @param $trackingOrder
+     * @param $batch
+     * @param $tour
+     * @throws BusinessLogicException
+     */
+    public function fillBatchTourInfo($trackingOrder, $batch, $tour)
+    {
+        $rowCount = parent::updateById($trackingOrder['id'], self::getBatchTourFillData($batch, $tour));
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+    }
+
+    /**
+     * 获取运单填充数据
+     * @param $batch
+     * @param $tour
+     * @return array
+     */
+    private static function getBatchTourFillData($batch, $tour)
+    {
+        return [
+            'execution_date' => $batch['execution_date'],
+            'batch_no' => $batch['batch_no'],
+            'tour_no' => $tour['tour_no'],
+            'driver_id' => $tour['driver_id'] ?? null,
+            'driver_name' => $tour['driver_name'] ?? '',
+            'driver_phone' => $tour['driver_phone'] ?? '',
+            'car_id' => $tour['car_id'] ?? null,
+            'car_no' => $tour['car_no'] ?? '',
+            'status' => $tour['status'] ?? BaseConstService::TRACKING_ORDER_STATUS_1
+        ];
     }
 
 

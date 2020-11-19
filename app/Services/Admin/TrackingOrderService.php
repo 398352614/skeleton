@@ -808,7 +808,7 @@ class TrackingOrderService extends BaseService
 
 
     /**
-     * 填充发件人信息
+     * 填充仓库信息
      * @param $params
      * @param $merchantAlone
      * @return array
