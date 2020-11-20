@@ -320,7 +320,7 @@ class TrackingOrderService extends BaseService
      */
     private function store($params, $orderNo, $again = false)
     {
-        //填充发件人信息
+        //填充仓库信息
         $line = $this->fillWarehouseInfo($params, BaseConstService::YES);
         //生成运单号
         $params['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
@@ -852,8 +852,8 @@ class TrackingOrderService extends BaseService
             'warehouse_city' => $warehouse['city'],
             'warehouse_street' => $warehouse['street'],
             'warehouse_address' => $warehouse['address'],
-            'warehouse_lon' => $warehouse['warehouse_lon'],
-            'warehouse_lat' => $warehouse['warehouse_lat']
+            'warehouse_lon' => $warehouse['lon'],
+            'warehouse_lat' => $warehouse['lat']
         ]);
         return $line;
     }
