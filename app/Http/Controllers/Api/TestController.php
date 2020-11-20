@@ -135,9 +135,9 @@ class TestController extends BaseController
         return $fileNameList;
     }
 
-    public function testPush(Request $request)
+    public function testPush()
     {
-        Log::info('data', [$request->getBody()]);
+        Log::info('data', $this->data);
     }
 
 
