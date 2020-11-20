@@ -35,6 +35,6 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/letter', 'TestController@incrementLetter');
         Route::get('/getPath', 'TestController@getPath');
-        Route::get('/push-test', 'TourController@pushTest');         //自动优化线路
+        Route::get('/push-test', 'TestsController@testPush');         //自动优化线路
     });
 });
