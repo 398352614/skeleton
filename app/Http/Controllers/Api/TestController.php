@@ -14,6 +14,7 @@ use App\Http\Controllers\BaseController;
 use App\Services\TestService;
 use App\Traits\AlphaTrait;
 use GuzzleHttp\Client;
+use http\Env\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -134,9 +135,9 @@ class TestController extends BaseController
         return $fileNameList;
     }
 
-    public function testPush()
+    public function testPush(Request $request)
     {
-        Log::info('data', request());
+        Log::info('data', [$request->getBody()]);
     }
 
 
