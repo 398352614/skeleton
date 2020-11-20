@@ -16,6 +16,7 @@ use App\Traits\AlphaTrait;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -132,5 +133,11 @@ class TestController extends BaseController
         }
         return $fileNameList;
     }
+
+    public function testPush()
+    {
+        Log::info('data', request());
+    }
+
 
 }
