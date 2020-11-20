@@ -130,7 +130,7 @@ class Order extends BaseModel
 
     public function getSecondExecutionDateAttribute($value)
     {
-        return (empty($value) || ($value = '0000-00-00')) ? null : $value;
+        return (empty($value) || ($value == '0000-00-00')) ? null : $value;
     }
 
 
