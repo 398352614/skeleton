@@ -76,6 +76,7 @@ trait TourTrait
     public static function afterBatchSign($tour, $batch)
     {
         $trackingOrderList = TrackingOrder::query()->where('batch_no', $batch['batch_no'])->whereIn('status', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])->get()->toArray();
+        dd($trackingOrderList);
         $groupOrderList = array_create_group_index($trackingOrderList, 'status');
         //若存在签收成功的订单列表,则记录
         if (!empty($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_5])) {
