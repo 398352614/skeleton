@@ -137,7 +137,6 @@ class TestController extends BaseController
 
     public function testPush()
     {
-        dd($this->data);
         Log::info('data', $this->data);
     }
 
