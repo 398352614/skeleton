@@ -75,8 +75,8 @@ trait TourTrait
 
     public static function afterBatchSign($tour, $batch)
     {
-        $orderList = Order::query()->where('batch_no', $batch['batch_no'])->whereIn('status', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])->get()->toArray();
-        $groupOrderList = array_create_group_index($orderList, 'status');
+        $trackingOrderList = TrackingOrder::query()->where('batch_no', $batch['batch_no'])->whereIn('status', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])->get()->toArray();
+        $groupOrderList = array_create_group_index($trackingOrderList, 'status');
         //若存在签收成功的订单列表,则记录
         if (!empty($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_5])) {
             TrackingOrderTrailService::storeAllByTrackingOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_5], BaseConstService::TRACKING_ORDER_TRAIL_DELIVERED);
@@ -89,7 +89,7 @@ trait TourTrait
         }
         unset($groupOrderList);
 /*        //签收通知
-        event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $orderList));
+        event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $trackingOrderList));
         //处理站点
         self::dealBatchEvent($tour, $batch);*/
     }
