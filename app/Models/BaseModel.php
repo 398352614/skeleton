@@ -73,9 +73,14 @@ class BaseModel extends Model
             }
             //若是司机端 则添加司机ID
             if (auth()->user() instanceof Driver) {
-                if (in_array('driver_id', $columns)) {
-                    if (!isset($model->driver_id) || $model->driver_id === null) {
-                        $model->driver_id = auth()->user()->id;
+                if (!($model instanceof Tour)
+                    && !($model instanceof Batch)
+                    && !($model instanceof TrackingOrder)
+                ) {
+                    if (in_array('driver_id', $columns)) {
+                        if (!isset($model->driver_id) || $model->driver_id === null) {
+                            $model->driver_id = auth()->user()->id;
+                        }
                     }
                 }
             }
