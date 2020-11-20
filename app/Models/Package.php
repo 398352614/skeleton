@@ -52,6 +52,7 @@ class Package extends BaseModel
         'batch_no',
         'order_no',
         'execution_date',
+        'second_execution_date',
         'type',
         'name',
         'express_first_no',
