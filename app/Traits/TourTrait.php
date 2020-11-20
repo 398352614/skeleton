@@ -75,21 +75,21 @@ trait TourTrait
 
     public static function afterBatchSign($tour, $batch)
     {
-        $orderList = Order::query()->where('batch_no', $batch['batch_no'])->whereIn('status', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])->get()->toArray();
-        $groupOrderList = array_create_group_index($orderList, 'status');
+        $trackingOrderList = TrackingOrder::query()->where('batch_no', $batch['batch_no'])->whereIn('status', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])->get()->toArray();
+        $groupOrderList = array_create_group_index($trackingOrderList, 'status');
         //若存在签收成功的订单列表,则记录
         if (!empty($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_5])) {
             TrackingOrderTrailService::storeAllByTrackingOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_5], BaseConstService::TRACKING_ORDER_TRAIL_DELIVERED);
-            OrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::ORDER_STATUS_3], BaseConstService::ORDER_TRAIL_FINISH);
+            OrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_5], BaseConstService::ORDER_TRAIL_FINISH);
         }
         //若存在签收失败的订单列表,则记录
         if (!empty($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_6])) {
             TrackingOrderTrailService::storeAllByTrackingOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_6], BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
-            OrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_4], BaseConstService::ORDER_TRAIL_FAIL);
+            OrderTrailService::storeAllByOrderList($groupOrderList[BaseConstService::TRACKING_ORDER_STATUS_6], BaseConstService::ORDER_TRAIL_FAIL);
         }
         unset($groupOrderList);
 /*        //签收通知
-        event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $orderList));
+        event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $trackingOrderList));
         //处理站点
         self::dealBatchEvent($tour, $batch);*/
     }

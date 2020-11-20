@@ -119,7 +119,7 @@ class TrackingOrderService extends BaseService
         if ($trackingOrder == false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        $trackingOrder = $trackingOrder->getAttributes();
+        $trackingOrder = $trackingOrder->getOriginal();
         /*****************************************运单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
         $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
@@ -138,6 +138,7 @@ class TrackingOrderService extends BaseService
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
         //运单轨迹-运单加入取件线路
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+        Log::info('运单信息',$trackingOrder);
         //订单轨迹-运单中途创建
         OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_RESTART);
         return $tour;
