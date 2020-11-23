@@ -14,7 +14,9 @@ use App\Models\AdditionalPackage;
 use App\Models\Material;
 use App\Models\Order;
 use App\Models\Package;
+use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AssignBatch extends ATourNotify
@@ -24,12 +26,12 @@ class AssignBatch extends ATourNotify
      * AssignBatch constructor.
      * @param $tour
      * @param $batch
-     * @param array $orderList
+     * @param array $trackingOrderList
      */
-    public function __construct($tour, $batch, $orderList = [])
+    public function __construct($tour, $batch, $trackingOrderList = [])
     {
-        $orderList = !empty($orderList) ? $orderList : $this->getOrderAndPackageList($batch['batch_no']);
-        parent::__construct($tour, $batch, [], $orderList);
+        $trackingOrderList = !empty($trackingOrderList) ? $trackingOrderList : $this->getTrackingOrderAndPackageList($batch['batch_no']);
+        parent::__construct($tour, $batch, [], $trackingOrderList);
     }
 
     public function notifyType(): string
@@ -40,47 +42,17 @@ class AssignBatch extends ATourNotify
     public function getDataList(): array
     {
         $this->batch['delivery_count'] = 0;
-        $orderNoList = array_column($this->orderList, 'order_no');
-        //获取包裹
-        $packageList = Package::query()->whereIn('order_no', $orderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
-        foreach ($packageList as $k => $v) {
-            $packageList[$k]['delivery_count'] = floatval($v['delivery_amount']) == 0.00 ? 0 : 1;
-        }
-        //获取材料
-        $packageList = array_create_group_index($packageList, 'order_no');
-        Log::info('package_list', $packageList);
-        $materialList = Material::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
-        $materialList = array_create_group_index($materialList, 'order_no');
-        //将包裹材料组装至订单下
-        $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList, $materialList) {
-            $order['package_list'] = $packageList[$order['order_no']] ?? [];
-            $order['material_list'] = $materialList[$order['order_no']] ?? [];
-            return collect($order);
-        })->toArray();
-        //统计提货数量
-        $orderList = $this->orderList;
-        foreach ($orderList as $k => $v) {
-            $orderList[$k]['delivery_count'] = 0;
-            if (!empty($packageList[$v['order_no']])) {
-                $deliveryCountList = collect($packageList[$v['order_no']])->pluck('delivery_count')->toArray();
-                foreach ($deliveryCountList as $x => $y) {
-                    $orderList[$k]['delivery_count'] += $y;
-                }
-            }
-            $this->batch['delivery_count'] += $orderList[$k]['delivery_count'];
-        }
-        unset($packageList, $materialList);
-
+        $this->fillTrackingOrderList(true, true);
         //处理顺带包裹提货数
         $additionalPackageList = AdditionalPackage::query()->where('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no', 'delivery_amount', 'sticker_no', 'sticker_amount']);
         foreach ($additionalPackageList as $k => $v) {
             $additionalPackageList[$k]['delivery_count'] = floatval($additionalPackageList[$k]['delivery_amount']) == 0.00 ? 0 : 1;
             $this->batch['delivery_count'] += $additionalPackageList[$k]['delivery_count'];
         }
-        $orderList = collect($orderList)->groupBy('merchant_id')->toArray();
+        $trackingOrderList = collect($this->trackingOrderList)->groupBy('merchant_id')->toArray();
         $batchList = [];
-        foreach ($orderList as $merchantId => $merchantOrderList) {
-            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
+        foreach ($trackingOrderList as $merchantId => $merchantTrackingOrderList) {
+            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'tracking_order_list' => $merchantTrackingOrderList]);
         }
         if (!empty($additionalPackageList)) {
             $additionalPackageList = $additionalPackageList->groupBy('merchant_id')->toArray();
@@ -96,21 +68,22 @@ class AssignBatch extends ATourNotify
         return $tourList;
     }
 
+
     /**
-     * 获取订单列表
+     * 获取运单列表
      *
      * @param $batchNo
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function getOrderAndPackageList($batchNo)
+    public function getTrackingOrderAndPackageList($batchNo)
     {
-        $orderList = Order::query()->where('batch_no', $batchNo)->where('status', BaseConstService::TRACKING_ORDER_STATUS_5)->get()->toArray();
-        $packageList = Package::query()->whereIn('order_no', array_column($orderList, 'order_no'))->get()->toArray();
+        $trackingOrderList = TrackingOrder::query()->where('batch_no', $batchNo)->where('status', BaseConstService::TRACKING_ORDER_STATUS_5)->get()->toArray();
+        $packageList = Package::query()->whereIn('order_no', array_column($trackingOrderList, 'order_no'))->get()->toArray();
         $packageList = collect($packageList)->groupBy('order_no')->toArray();
-        foreach ($orderList as &$order) {
+        foreach ($trackingOrderList as &$order) {
             $order['package_list'] = $packageList[$order['order_no']] ?? '';
         }
-        return $orderList;
+        return $trackingOrderList;
     }
 
     /**

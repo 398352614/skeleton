@@ -9,8 +9,12 @@
 namespace App\Events\Interfaces;
 
 
+use App\Models\Material;
+use App\Models\Order;
+use App\Models\Package;
 use App\Services\BaseConstService;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 abstract class ATourNotify
@@ -21,7 +25,7 @@ abstract class ATourNotify
 
     public $batchList;
 
-    public $orderList;
+    public $trackingOrderList;
 
     public $type;
 
@@ -33,11 +37,11 @@ abstract class ATourNotify
         'pay_type', 'pay_picture', 'status', 'auth_fullname', 'auth_birth_date'
     ];
 
-    public static $orderFields = [
-        'merchant_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status'
+    public static $trackingOrderFields = [
+        'merchant_id', 'tour_no', 'batch_no', 'tracking_order_no', 'order_no', 'out_order_no', 'status'
     ];
 
-    public function __construct($tour, $batch, $batchList, $orderList)
+    public function __construct($tour, $batch, $batchList, $trackingOrderList)
     {
         //取件线路
         $this->tour = Arr::only($tour, self::$tourFields);
@@ -47,9 +51,9 @@ abstract class ATourNotify
         !empty($batchList) && $this->batchList = collect($batchList)->map(function ($batch) {
             return Arr::only($batch, self::$batchFields);
         })->toArray();
-        //订单
-        !empty($orderList) && $this->orderList = collect($orderList)->map(function ($order) {
-            return Arr::only($order, self::$orderFields);
+        //运单
+        !empty($trackingOrderList) && $this->trackingOrderList = collect($trackingOrderList)->map(function ($order) {
+            return Arr::only($order, self::$trackingOrderFields);
         })->toArray();
         $this->type = $this->notifyType();
         Log::info('notify-type:' . $this->notifyType());
@@ -76,5 +80,40 @@ abstract class ATourNotify
     public function getThirdPartyContent(bool $status, string $msg = ''): string
     {
         return '';
+    }
+
+    /**
+     * 填充运单列表
+     * @param bool $packageFill
+     * @param bool $materialFill
+     */
+    public function fillTrackingOrderList($packageFill = false, $materialFill = false)
+    {
+        $orderNoList = array_column($this->trackingOrderList, 'order_no');
+        //获取订单列表
+        $orderList = Order::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'out_order_no', DB::raw('type as order_type'), DB::raw('status as order_status')])->toArray();
+        $orderList = array_create_index($orderList, 'order_no');
+        //获取包裹
+        $packageList = [];
+        if ($packageFill === true) {
+            $packageList = Package::query()->whereIn('order_no', $orderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
+            $packageList = array_create_group_index($packageList, 'order_no');
+            Log::info('package_list', $packageList);
+        }
+        //获取材料
+        $materialList = [];
+        if ($materialFill === true) {
+            $materialList = Material::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
+            $materialList = array_create_group_index($materialList, 'order_no');
+            Log::info('material_list', $materialList);
+        }
+        //将包裹材料组装至运单下
+        $this->trackingOrderList = collect($this->trackingOrderList)->map(function ($trackingOrder) use ($packageList, $materialList, $orderList) {
+            !empty($packageList) && $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']] ?? [];
+            !empty($materialList) && $trackingOrder['material_list'] = $materialList[$trackingOrder['order_no']] ?? [];
+            $trackingOrder = array_merge($trackingOrder, $orderList[$trackingOrder['order_no']] ?? []);
+            return collect($trackingOrder);
+        })->toArray();
+        unset($packageList, $materialList, $orderList);
     }
 }

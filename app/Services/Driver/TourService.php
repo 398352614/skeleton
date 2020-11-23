@@ -368,6 +368,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('出库失败');
         }
         //取消取派运单
+        $cancelTrackingOrderIdList = [];
         if (!empty($params['cancel_tracking_order_id_list'])) {
             $cancelTrackingOrderIdList = explode_id_string($params['cancel_tracking_order_id_list'], ',');
             $rowCount = $this->getTrackingOrderService()->update(['tour_no' => $tour['tour_no'], 'id' => ['in', $cancelTrackingOrderIdList], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['batch_no' => '', 'tour_no' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
@@ -407,7 +408,11 @@ class TourService extends BaseService
         !empty($params['material_list']) && $this->insertMaterialList($tour, $params['material_list']);
         //重新统计取件线路金额
         $this->reCountAmountByNo($tour['tour_no']);
-        return [$tour, $newCancelOrderList = []];
+        $newCancelOrderList = [];
+        if (!empty($cancelTrackingOrderIdList)) {
+            $newCancelOrderList = $this->getTrackingOrderService()->getList(['id' => ['in', $cancelTrackingOrderIdList], 'status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false)->toArray();
+        }
+        return [$tour, $newCancelOrderList];
     }
 
     /**
@@ -657,7 +662,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('更新到达时间失败，请重新操作');
         }
-        //TourTrait::afterBatchArrived($tour, $batch);
+        TourTrait::afterBatchArrived($tour, $batch);
         $specialRemarkList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'tracking_order_no', 'order_no', 'special_remark'], false);
         return $specialRemarkList;
     }
@@ -787,7 +792,9 @@ class TourService extends BaseService
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         OrderTrailService::storeByTour($tour, BaseConstService::ORDER_TRAIL_FAIL);
-        return [$tour, $batch, $cancelOrderList = []];
+        //获取取消取派运单列表
+        $cancelTrackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false)->toArray();
+        return [$tour, $batch, $cancelTrackingOrderList];
     }
 
     /**
@@ -1242,6 +1249,7 @@ class TourService extends BaseService
      * 司机入库
      * @param $id
      * @param $params
+     * @return
      * @throws BusinessLogicException
      */
     public function inWarehouse($id, $params)
@@ -1301,7 +1309,7 @@ class TourService extends BaseService
             $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'order_no', 'out_user_id', 'out_order_no', 'mask_code', 'special_remark']));
             $this->getTrackingOrderService()->store($trackingOrder, $order['order_no']);
         }
-        //TourTrait::afterBackWarehouse($tour);
+        return $tour;
     }
 
     /**
