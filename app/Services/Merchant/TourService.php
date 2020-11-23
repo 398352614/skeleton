@@ -122,10 +122,10 @@ class TourService extends BaseService
 
     /**
      * 运单 服务
-     * @return trackingOrderService
+     * @return TrackingOrderService
      */
     public function getTrackingOrderService(){
-        return self::getInstance(trackingOrderService::class);
+        return self::getInstance(TrackingOrderService::class);
 
     }
 
