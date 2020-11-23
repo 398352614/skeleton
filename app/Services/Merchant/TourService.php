@@ -120,9 +120,18 @@ class TourService extends BaseService
         return self::getInstance(OrderNoRuleService::class);
     }
 
+    /**
+     * 运单 服务
+     * @return TrackingOrderService
+     */
+    public function getTrackingOrderService(){
+        return self::getInstance(TrackingOrderService::class);
+
+    }
+
     public function getPageList()
     {
-        $orderQuery = $this->getOrderService()->query->whereNotNull('tour_no');
+        $orderQuery = $this->getTrackingOrderService()->query->whereNotNull('tour_no');
         if (!empty($this->formData['tour_no'])) {
             $orderQuery->where('tour_no', 'like', $this->formData['tour_no']);
         }
