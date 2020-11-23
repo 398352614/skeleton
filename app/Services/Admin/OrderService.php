@@ -307,10 +307,10 @@ class OrderService extends BaseService
         if ($order === false) {
             throw new BusinessLogicException('订单新增失败');
         }
-        //生成运单
-        $tour = $this->getTrackingOrderService()->storeByOrder($order);
         //新增订单明细列表
         $this->addAllItemList($params);
+        //生成运单
+        $tour = $this->getTrackingOrderService()->storeByOrder($order);
         return [
             'order_no' => $params['order_no'],
             'out_order_no' => $params['out_order_no'] ?? '',
