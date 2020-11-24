@@ -416,7 +416,6 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        event(new OrderCancel($dbOrder->order_no, $dbOrder->out_order_no));
         OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CLOSED);
     }
 
