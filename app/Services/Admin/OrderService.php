@@ -901,6 +901,19 @@ class OrderService extends BaseService
         $idList = explode_id_string($idList);
         $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
         $orderNoList = array_column($orderList, 'order_no');
+        //获取运单列表
+        "SELECT
+                a.order_no as order_no,
+                a.tracking_order_no as tracking_order_no,
+                a.batch_no as batch_no,
+                a.tour_no as tour_no
+        FROM
+	            tracking_order as a
+        INNER JOIN 
+                tracking_order as b
+        ON
+                b.id=(SELECT d.id FROM tracking_order as d WHERE d.id=b.id ORDER BY d.created_at DESC LIMIT 1)";
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         //获取包裹列表
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'], false)->toArray();
         $packageList = array_create_group_index($packageList, 'order_no');
