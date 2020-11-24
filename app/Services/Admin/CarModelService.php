@@ -66,24 +66,4 @@ class CarModelService extends BaseService
             throw new BusinessLogicException('车辆品牌不存在');
         }
     }
-
-    public function getAll($id){
-    if (Cache::has('model'.$id)) {
-        $resource = Cache::get('brand');
-    } else {
-            $client = new \GuzzleHttp\Client();
-            $url = 'http://tool.bitefu.net/car/?type=series&pagesize=300&brand_id=' . $id;
-            $res = $client->request('GET', $url, [
-                    'http_errors' => false
-                ]
-            );
-            $info = (string)$res->getBody();
-            $info = json_decode($info, TRUE)['info'];
-            $resource = array_map(function ($info) {
-                return Arr::only($info, ['id', 'name']);
-            }, $info);
-            Cache::put('model'.$id, $resource);
-        }
-    return $resource;
-    }
 }

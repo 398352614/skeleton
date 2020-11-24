@@ -949,55 +949,6 @@ class TourService extends BaseService
     }
 
     /**
-     * 导出城市线路
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function cityExport($id)
-    {
-        $tourInfo = $this->getInfo(['id' => $id], ['*'], false);
-        if (empty($tourInfo)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $info = $this->getBatchService()->getList(['tour_no' => $tourInfo['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
-        $cityList = '';
-        for ($i = 0; $i < count($info); $i++) {
-            $cityList = $cityList . $info[$i]['place_city'] . '-';
-        }
-        $cityList = rtrim($cityList, "-");
-        $params['name'] = $tourInfo['tour_no'];
-        $params['txt'] = $tourInfo['line_name'] . ' ' . $tourInfo['driver_name'] . ':' . $tourInfo['driver_phone'] . ' ' . $cityList;
-        $params['dir'] = 'tour';
-        //return $this->txtExport($params['name'],$params['txt'],$params['dir']);
-        return $params;
-    }
-
-    /**
-     * 导出站点地图
-     * @param $id
-     * @return array
-     * @throws BusinessLogicException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function mapExport($id)
-    {
-        $tourInfo = $this->getInfo(['id' => $id], ['*'], false);
-        if (empty($tourInfo)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $info = $this->getBatchService()->getList(['tour_no' => $tourInfo['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
-        $params[0]['lon'] = $tourInfo['warehouse_lon'];
-        $params[0]['lat'] = $tourInfo['warehouse_lat'];
-        for ($i = 1; $i <= count($info); $i++) {
-            $params[$i]['lon'] = $info[$i - 1]['place_lon'];
-            $params[$i]['lat'] = $info[$i - 1]['place_lat'];
-        }
-        $name = $tourInfo['tour_no'];
-        return LocationTrait::getBatchMap($params, $name);
-    }
-
-    /**
      * 统计运单数量
      *
      * @param $info

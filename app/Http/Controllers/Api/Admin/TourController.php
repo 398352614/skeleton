@@ -256,29 +256,6 @@ class TourController extends BaseController
     }
 
     /**
-     * 导出城市线路
-     * @param $id
-     * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function cityExport($id)
-    {
-        return $this->service->cityExport($id);
-    }
-
-    /**
-     * 导出站点地图
-     * @param $id
-     * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function mapExport($id)
-    {
-        return $this->service->mapExport($id);
-    }
-
-    /**
      * 导出取件报告
      * @param $id
      * @return mixed

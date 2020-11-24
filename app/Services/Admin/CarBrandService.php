@@ -26,26 +26,4 @@ class CarBrandService extends BaseService
     {
         return parent::getList([], ['id', 'cn_name', 'en_name'], false)->toArray();
     }
-
-    public function getAll(){
-        if(Cache::has('brand')){
-            $resource=Cache::get('brand');
-        }else{
-            $client = new \GuzzleHttp\Client();
-            $url = 'http://tool.bitefu.net/car/?type=brand&pagesize=300';
-            $res = $client->request('GET', $url, [
-                    'http_errors' => false
-                ]
-            );
-            $info = (string)$res->getBody();
-            $info = json_decode($info,TRUE)['info'];
-            $resource =array_map(function ($info) {
-                return Arr::only($info,['id','name']);
-            }, $info);
-            Cache::put('brand',$resource);
-        };
-        return $resource;
-    }
-
-
 }

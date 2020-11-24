@@ -134,20 +134,13 @@ class BatchController extends BaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function getTourDate($id)
+    public function getDateList($id)
     {
-        return $this->service->getTourDate($id);
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getLineDate($id)
-    {
-        return $this->service->getLineDate($id, $this->data);
-
+        if (!empty($this->data['line_id'])) {
+            return $this->service->getLineDate($id, $this->data);
+        } else {
+            return $this->service->getTourDate($id);
+        }
     }
 
 
