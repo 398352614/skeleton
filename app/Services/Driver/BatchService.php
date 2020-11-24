@@ -75,7 +75,6 @@ class BatchService extends BaseService
         $tour = $this->getTourService()->join($batch, $line, $trackingOrder, $tour);
         /***********************************************填充取件线路编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);
-
         return [$batch, $tour];
     }
 
