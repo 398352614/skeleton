@@ -902,7 +902,7 @@ class OrderService extends BaseService
         $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
         $orderNoList = array_column($orderList, 'order_no');
         //获取运单列表
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $orderNoList]], ['id', 'order_no', 'out_order_no', 'batch_no', 'tour_no'], false, [], ['id' => 'asc'])->toArray();
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $orderNoList]], ['id', 'order_no', 'out_order_no', 'batch_no', 'tour_no', 'type', 'status'], false, [], ['id' => 'asc'])->toArray();
         //这里只会得到订单的最新运单
         $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
         //获取包裹列表
@@ -927,9 +927,11 @@ class OrderService extends BaseService
             $order['delivery_count'] = (floatval($order['delivery_amount']) == 0) ? 0 : 1;
             if (empty($trackingOrderList[$orderNo])) {
                 $order['cancel_remark'] = $order['signature'] = $order['line_name'] = $order['driver_name'] = $order['driver_phone'] = $order['car_no'] = '';
-                $order['pay_type'] = $order['line_id'] = $order['driver_id'] = $order['car_id'] = null;
+                $order['tracking_order_type'] = $order['tracking_order_status'] = $order['pay_type'] = $order['line_id'] = $order['driver_id'] = $order['car_id'] = null;
                 continue;
             }
+            $order['tracking_order_type'] = $trackingOrderList[$orderNo]['type'];
+            $order['tracking_order_status'] = $trackingOrderList[$orderNo]['status'];
             $order['cancel_remark'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['cancel_remark'] ?? '';
             $order['signature'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['signature'] ?? '';
             $order['pay_type'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['pay_type'] ?? null;
