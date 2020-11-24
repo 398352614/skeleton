@@ -27,6 +27,7 @@ use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 
 class TrackingOrderService extends BaseService
 {
@@ -871,6 +872,4 @@ class TrackingOrderService extends BaseService
             $this->getAddressService()->create($params);
         }
     }
-
-
 }
