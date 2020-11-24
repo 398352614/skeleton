@@ -1304,7 +1304,7 @@ class TourService extends BaseService
             $trackingOrder['place_address'] = $order['second_place_address'];
             $trackingOrder['place_lon'] = $order['second_place_lon'];
             $trackingOrder['place_lat'] = $order['second_place_lat'];
-            $trackingOrder['execution_date'] = $order['second_execution_date'];
+            $trackingOrder['execution_date'] = !empty($order['second_execution_date']) ? $order['second_execution_date'] : Carbon::parse($order['execution_date'])->addDay()->format('Y-m-d');
             $trackingOrder['type'] = BaseConstService::TRACKING_ORDER_TYPE_2;
             $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'order_no', 'out_user_id', 'out_order_no', 'mask_code', 'special_remark']));
             $this->getTrackingOrderService()->store($trackingOrder, $order['order_no']);
