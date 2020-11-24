@@ -111,7 +111,7 @@ abstract class ATourNotify
         $this->trackingOrderList = collect($this->trackingOrderList)->map(function ($trackingOrder) use ($packageList, $materialList, $orderList) {
             !empty($packageList) && $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']] ?? [];
             !empty($materialList) && $trackingOrder['material_list'] = $materialList[$trackingOrder['order_no']] ?? [];
-            $trackingOrder = array_merge($trackingOrder, $orderList[$trackingOrder['order_no']] ?? []);
+            $trackingOrder = array_merge($trackingOrder, !empty($orderList[$trackingOrder['order_no']]) ? Arr::only($orderList[$trackingOrder['order_no']], ['order_no', 'out_order_no', 'order_type', 'order_status']) : []);
             return collect($trackingOrder);
         })->toArray();
         unset($packageList, $materialList, $orderList);
