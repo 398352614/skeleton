@@ -108,9 +108,9 @@ abstract class ATourNotify
             Log::info('material_list', $materialList);
         }
         //将包裹材料组装至运单下
-        $this->trackingOrderList = collect($this->trackingOrderList)->map(function ($trackingOrder) use ($packageList, $materialList, $orderList) {
-            !empty($packageList) && $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']] ?? [];
-            !empty($materialList) && $trackingOrder['material_list'] = $materialList[$trackingOrder['order_no']] ?? [];
+        $this->trackingOrderList = collect($this->trackingOrderList)->map(function ($trackingOrder) use ($packageFill, $materialFill, $packageList, $materialList, $orderList) {
+            ($packageFill == true) && $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']] ?? [];
+            ($materialFill == true) && $trackingOrder['material_list'] = $materialList[$trackingOrder['order_no']] ?? [];
             $trackingOrder = array_merge($trackingOrder, !empty($orderList[$trackingOrder['order_no']]) ? Arr::only($orderList[$trackingOrder['order_no']], ['order_no', 'out_order_no', 'order_type', 'order_status']) : []);
             return collect($trackingOrder);
         })->toArray();
