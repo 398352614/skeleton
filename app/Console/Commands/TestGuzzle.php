@@ -44,81 +44,8 @@ class TestGuzzle extends Command
         // $url = 'https://www.baidu.com';
 
         $curl = new CurlClient();
-        $params = json_decode('
-        {
-    "type": "assign-batch",
-    "data": {
-        "tour_no": "TOUR00060073",
-        "line_name": "Enchede（6）",
-        "execution_date": "2020-08-22",
-        "driver_id": 24,
-        "driver_name": "ali",
-        "driver_phone": "0615277686",
-        "car_id": 25,
-        "car_no": "V-441-RJ",
-        "expect_distance": 16110,
-        "expect_time": 1203,
-        "merchant_id": 8,
-        "batch": {
-            "batch_no": "BATCH00061110",
-            "tour_no": "TOUR00060073",
-            "status": 5,
-            "cancel_remark": "",
-            "place_fullname": "L zheng",
-            "place_phone": "0031633085585",
-            "place_country": "NL",
-            "place_post_code": "7441CN",
-            "place_house_number": "90",
-            "place_city": "Nijverdal",
-            "place_street": "Veldsweg",
-            "place_address": "NL Nijverdal Veldsweg 90 7441CN",
-            "expect_arrive_time": "2020-08-22 12:34:09",
-            "expect_distance": 113530,
-            "expect_time": 4532,
-            "signature": "https://tms.eutechne.com/storage/driver/images/6/2020-08-22/24/tour/202008222201125f417988056b4.png",
-            "pay_type": 4,
-            "pay_picture": "",
-            "auth_fullname": "",
-            "auth_birth_date": null,
-            "delivery_count": 0,
-            "merchant_id": 8,
-            "order_list": [
-                {
-                    "merchant_id": 8,
-                    "order_no": "TMS0006001123",
-                    "batch_no": "BATCH00061110",
-                    "tour_no": "TOUR00060073",
-                    "out_order_no": "341282",
-                    "status": 5,
-                    "package_list": [
-                        {
-                            "name": "PEHH9098250003",
-                            "order_no": "TMS0006001606",
-                            "express_first_no": "EAXOND230188",
-                            "express_second_no": "",
-                            "out_order_no": "MES20904584043",
-                            "expect_quantity": 1,
-                            "actual_quantity": 1,
-                            "status": 5,
-                            "sticker_no": "",
-                            "sticker_amount": "0.00",
-                            "delivery_amount": "0.00",
-                            "is_auth": 2,
-                            "auth_fullname": "",
-                            "auth_birth_date": null,
-                            "status_name": "已完成",
-                            "type_name": null,
-                            "delivery_count": 0
-                        }
-                    ],
-                    "material_list": [],
-                    "delivery_count": 0
-                }
-            ]
-        }
-    }
-}', true);
-        $res = $curl->post('https://www.myeushop.com/api/tms/subscription', $params, 3);
+        $params = json_decode('{"type":"out-warehouse","data":{"tour_no":"4BAN01","line_name":"AMS（3）","execution_date":"2020-11-25","driver_id":77,"driver_name":"Ms.Wang","driver_phone":"18565654434","car_id":11,"car_no":"as","expect_distance":0,"expect_time":0,"merchant_id":117,"batch_list":[{"batch_no":"ZD2369","tour_no":"4BAN01","status":4,"cancel_remark":"","place_fullname":"wanglihui14","place_phone":"0031898989898","place_country":"NL","place_post_code":"1012BW","place_house_number":"19","place_city":"Amsterdam","place_street":"Koestraat","place_address":"NL Amsterdam Koestraat 19 1012BW","expect_arrive_time":null,"expect_distance":0,"expect_time":0,"signature":"","pay_type":1,"pay_picture":"","auth_fullname":"","auth_birth_date":null,"merchant_id":"117","tracking_order_list":[{"merchant_id":117,"out_order_no":"CL1NL1","order_no":"SMAAADQS0001","tracking_order_no":"YD00030000145","batch_no":"ZD2369","tour_no":"4BAN01","status":4,"package_list":[],"order_type":1,"order_status":2},{"merchant_id":117,"out_order_no":"BG1NL1","order_no":"SMAAADQT0001","tracking_order_no":"YD00030000146","batch_no":"ZD2369","tour_no":"4BAN01","status":4,"package_list":[{"name":"NLEONA1000017","order_no":"SMAAADQT0001","express_first_no":"NLEONA1000017","express_second_no":"","out_order_no":"BG1NL1","expect_quantity":1,"actual_quantity":0,"status":2,"sticker_no":"","sticker_amount":null,"delivery_amount":null,"is_auth":2,"auth_fullname":"","auth_birth_date":null,"status_name":"取派中","type_name":null}],"order_type":3,"order_status":2},{"merchant_id":117,"out_order_no":"BG1NL2","order_no":"SMAAADQU0001","tracking_order_no":"YD00030000147","batch_no":"ZD2369","tour_no":"4BAN01","status":4,"package_list":[{"name":"NLEONA1000025","order_no":"SMAAADQU0001","express_first_no":"NLEONA1000025","express_second_no":"","out_order_no":"BG1NL2","expect_quantity":1,"actual_quantity":0,"status":2,"sticker_no":"","sticker_amount":null,"delivery_amount":null,"is_auth":2,"auth_fullname":"","auth_birth_date":null,"status_name":"取派中","type_name":null}],"order_type":3,"order_status":2}]}]}}', true);
+        $res = $curl->post('https://dev-nl-erp-api.nle-tech.com/api/p3/domestic_tms_partner/', $params, 1);
 
         dd($res);
     }

@@ -179,7 +179,7 @@ class BatchService extends BaseService
         $data = (intval($trackingOrder['type']) === 1) ? [
             'expect_pickup_quantity' => intval($batch['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($batch['expect_pie_quantity']) + 1
         ];
-        $rowCount = parent::updateById($batch['id'], $data);
+        $rowCount = parent::update(['id' => $batch['id'], 'driver_id' => ['<>', null]], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('运单加入站点失败!');
         }
@@ -246,7 +246,7 @@ class BatchService extends BaseService
             'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN,
             'merchant_id' => $tour['merchant_id']
         ];
-        $rowCount = parent::updateById($batch['id'], $data);
+        $rowCount = parent::update(['id' => $batch['id'], 'driver_id' => ['<>', null]], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败，请重新操作');
         }

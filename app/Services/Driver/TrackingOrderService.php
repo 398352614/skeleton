@@ -201,7 +201,7 @@ class TrackingOrderService extends BaseService
     public function fillBatchTourInfo($trackingOrder, $batch, $tour, $isUpdateOrder = false)
     {
         $data = self::getBatchTourFillData($batch, $tour);
-        $rowCount = parent::updateById($trackingOrder['id'], $data);
+        $rowCount = parent::update(['id' => $trackingOrder['id'], 'driver_id' => ['<>', null]], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
