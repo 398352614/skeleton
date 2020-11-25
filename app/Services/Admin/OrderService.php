@@ -636,7 +636,6 @@ class OrderService extends BaseService
         if (empty($dbInfo)) {
             throw new BusinessLogicException('数据不存在');
         }
-        Log::info('true', [$this->updateBaseInfo($dbInfo, $data) == true]);
         if ($this->updateBaseInfo($dbInfo, $data) == true) {
             return '';
         }
@@ -644,7 +643,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('第三方订单不能修改');
         }
         if (!in_array($dbInfo['status'], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2])) {
-            throw new BadConversionException('该状态下订单无法修改');
+            throw new BusinessLogicException('该状态下订单无法修改');
         }
         //验证
         $this->check($data, $dbInfo['order_no']);
