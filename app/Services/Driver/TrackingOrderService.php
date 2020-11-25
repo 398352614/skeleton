@@ -177,6 +177,19 @@ class TrackingOrderService extends BaseService
         return $line;
     }
 
+
+    /**
+     * 获取运单
+     * @param $orderNo
+     * @return array
+     */
+    public function getTrackingOrderByOrderNo($orderNo)
+    {
+        $trackingOrder = parent::getInfo(['order_no' => $orderNo], ['*'], false, ['created_at' => 'desc']);
+        return !empty($trackingOrder) ? $trackingOrder->toArray() : [];
+    }
+
+
     /**
      * 填充运单数据
      * @param $trackingOrder
