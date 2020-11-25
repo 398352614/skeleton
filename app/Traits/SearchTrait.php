@@ -38,6 +38,7 @@ trait SearchTrait
             }
             if ($type === 'all') {
                 $query->whereRaw("IFNULL({$k},0) <> -1");
+                continue;
             }
             //not in
             if ($type === 'not in' && is_array($value)) {
