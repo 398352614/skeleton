@@ -175,11 +175,11 @@ class BatchService extends BaseService
     public function joinExistBatch($trackingOrder, $batch)
     {
         //锁定站点
-        $batch = parent::getInfoLock(['id' => $batch['id'], 'driver_id' => ['<>', null]], ['*'], false);
+        $batch = parent::getInfoLock(['id' => $batch['id'], 'driver_id' => ['all', null]], ['*'], false);
         $data = (intval($trackingOrder['type']) === 1) ? [
             'expect_pickup_quantity' => intval($batch['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($batch['expect_pie_quantity']) + 1
         ];
-        $rowCount = parent::update(['id' => $batch['id'], 'driver_id' => ['<>', null]], $data);
+        $rowCount = parent::update(['id' => $batch['id'], 'driver_id' => ['all', null]], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('运单加入站点失败!');
         }
@@ -246,7 +246,7 @@ class BatchService extends BaseService
             'status' => $tour['status'] ?? BaseConstService::BATCH_WAIT_ASSIGN,
             'merchant_id' => $tour['merchant_id']
         ];
-        $rowCount = parent::update(['id' => $batch['id'], 'driver_id' => ['<>', null]], $data);
+        $rowCount = parent::update(['id' => $batch['id'], 'driver_id' => ['all', null]], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败，请重新操作');
         }
@@ -260,10 +260,10 @@ class BatchService extends BaseService
      */
     public function reCountAmountByNo($batchNo)
     {
-        //$totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['batch_no' => $batchNo, 'driver_id' => ['<>', null]]);
-        //$totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['batch_no' => $batchNo, 'driver_id' => ['<>', null]]);
+        //$totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['batch_no' => $batchNo, 'driver_id' => ['all', null]]);
+        //$totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['batch_no' => $batchNo, 'driver_id' => ['all', null]]);
         $totalReplaceAmount = $totalSettlementAmount = 0.00;
-        $rowCount = parent::update(['batch_no' => $batchNo, 'driver_id' => ['<>', null]], ['replace_amount' => $totalReplaceAmount, 'settlement_amount' => $totalSettlementAmount]);
+        $rowCount = parent::update(['batch_no' => $batchNo, 'driver_id' => ['all', null]], ['replace_amount' => $totalReplaceAmount, 'settlement_amount' => $totalSettlementAmount]);
         if ($rowCount === false) {
             throw new BusinessLogicException('金额统计失败');
         }

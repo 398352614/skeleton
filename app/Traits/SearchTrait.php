@@ -23,9 +23,9 @@ trait SearchTrait
                 continue;
             }
             //如果是like查询，但其中包含Mysql不能识别的%和_则加上转义符号
-            if($type === 'like'){
-                $value=str_replace('_','\_',$value);
-                $value=str_replace('%','\%',$value);
+            if ($type === 'like') {
+                $value = str_replace('_', '\_', $value);
+                $value = str_replace('%', '\%', $value);
             }
             //in
             if ($type === 'in' && is_array($value)) {
@@ -35,6 +35,9 @@ trait SearchTrait
             if ($type === '<>') {
                 $query->where($k, $type, $value);
                 continue;
+            }
+            if ($type === 'all') {
+                $query->whereRaw("IFNULL({$k},0) <> -1");
             }
             //not in
             if ($type === 'not in' && is_array($value)) {

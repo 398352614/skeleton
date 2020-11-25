@@ -1433,9 +1433,9 @@ class TourService extends BaseService
      */
     public function reCountAmountByNo($tourNo)
     {
-        $totalReplaceAmount = $this->getBatchService()->sum('replace_amount', ['tour_no' => $tourNo, 'driver_id' => ['<>', null]]);
-        $totalSettlementAmount = $this->getBatchService()->sum('settlement_amount', ['tour_no' => $tourNo, 'driver_id' => ['<>', null]]);
-        $rowCount = parent::update(['tour_no' => $tourNo, 'driver_id' => ['<>', null]], ['replace_amount' => $totalReplaceAmount, 'settlement_amount' => $totalSettlementAmount]);
+        $totalReplaceAmount = $this->getBatchService()->sum('replace_amount', ['tour_no' => $tourNo, 'driver_id' => ['all', null]]);
+        $totalSettlementAmount = $this->getBatchService()->sum('settlement_amount', ['tour_no' => $tourNo, 'driver_id' => ['all', null]]);
+        $rowCount = parent::update(['tour_no' => $tourNo, 'driver_id' => ['all', null]], ['replace_amount' => $totalReplaceAmount, 'settlement_amount' => $totalSettlementAmount]);
         if ($rowCount === false) {
             throw new BusinessLogicException('金额统计失败');
         }
@@ -1636,7 +1636,7 @@ class TourService extends BaseService
             'expect_pickup_quantity' => !empty($quantity['expect_pickup_quantity']) ? $tour['expect_pickup_quantity'] + $quantity['expect_pickup_quantity'] : $tour['expect_pickup_quantity'],
             'expect_pie_quantity' => !empty($quantity['expect_pie_quantity']) ? $tour['expect_pie_quantity'] + $quantity['expect_pie_quantity'] : $tour['expect_pie_quantity'],
         ];
-        $rowCount = parent::update(['id' => $tour['id'], 'driver_id' => ['<>', null]], $data);
+        $rowCount = parent::update(['id' => $tour['id'], 'driver_id' => ['all', null]], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('站点加入取件线路失败，请重新操作！');
         }
@@ -1667,7 +1667,7 @@ class TourService extends BaseService
         if ((intval($batch['expect_pie_quantity']) > 0) && ($isAssign == false)) {
             $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
         }
-        $where = ['driver_id' => ['<>', null], 'line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
+        $where = ['driver_id' => ['all', null], 'line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
         isset($batch['merchant_id']) && $where['merchant_id'] = $batch['merchant_id'];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         return !empty($tour) ? $tour->toArray() : [];
@@ -1686,12 +1686,12 @@ class TourService extends BaseService
     {
         $arrCount = [];
         if ($type === 1) {
-            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['<>', null]]);
+            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['all', null]]);
         } elseif ($type === 2) {
-            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['<>', null]]);
+            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['all', null]]);
         } else {
-            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['<>', null]]);
-            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['<>', null]]);
+            $arrCount['pickup_count'] = parent::sum('expect_pickup_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['all', null]]);
+            $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['all', null]]);
         }
         return $arrCount;
     }
