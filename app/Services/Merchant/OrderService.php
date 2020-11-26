@@ -1164,6 +1164,8 @@ class OrderService extends BaseService
             }
         }
         return [
+            'order_no' => $order['order_no'],
+
             'place_fullname' => $trackingOrder['place_fullname'],
             'place_address' => $trackingOrder['place_address'],
             'place_lon' => $trackingOrder['place_lon'],
@@ -1176,8 +1178,8 @@ class OrderService extends BaseService
             'type' => $order['type'],
 
             'warehouse_address' => $trackingOrder['warehouse_address'],
-            'warehouse_lon' => $trackingOrder['warehouse_lon'],
-            'warehouse_lat' => $trackingOrder['warehouse_lat'],
+            'warehouse_lon' => $trackingOrder['warehouse_lon'] ?? '',
+            'warehouse_lat' => $trackingOrder['warehouse_lat'] ?? '',
 
             'driver_lon' => $routeTracking['lon'] ?? '',
             'driver_lat' => $routeTracking['lat'] ?? '',
