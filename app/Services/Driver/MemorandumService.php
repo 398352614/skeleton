@@ -8,12 +8,9 @@
 
 namespace App\Services\Driver;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Driver\MemorandumResource;
 use App\Models\Memorandum;
-
-use Illuminate\Support\Arr;
 
 class MemorandumService extends BaseService
 {

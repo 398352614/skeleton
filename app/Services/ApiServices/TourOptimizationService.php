@@ -8,14 +8,12 @@
 
 namespace App\Services\ApiServices;
 
-
 use App\Models\Tour;
 use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
 
 class TourOptimizationService
 {
-
     use FactoryInstanceTrait;
 
     public static function getOpInstance($companyId)

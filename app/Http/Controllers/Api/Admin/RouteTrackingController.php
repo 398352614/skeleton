@@ -12,6 +12,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Psy\Formatter\Formatter;
 
+/**
+ * Class RouteTrackingController
+ * @package App\Http\Controllers\Api\Admin
+ * @property RouteTrackingService $service
+ */
 class RouteTrackingController extends BaseController
 {
     public function __construct(RouteTrackingService $service)
@@ -22,6 +27,13 @@ class RouteTrackingController extends BaseController
     /**
      * @param Request $request
      * @return
+     * @throws BusinessLogicException
+     * HTTP/1.1 200 OK
+     * {
+     *  "code":200,
+     *  "msg":"拉取成功",
+     *  "data":{}
+     * }
      * @api {POST}  api/admin/route-tracking/route 管理员端:获取已收集的司机的路线
      * @apiName route
      * @apiGroup route-tracking
@@ -31,12 +43,6 @@ class RouteTrackingController extends BaseController
      * @apiParam {String}   driver_id                    司机 id
      * @apiParam {String}   tour_no                      在途路线编号 -- 两参数二选一
      * @apiSuccessExample {json}  返回示例
-     * HTTP/1.1 200 OK
-     * {
-     *  "code":200,
-     *  "msg":"拉取成功",
-     *  "data":{}
-     * }
      */
     public function show(Request $request)
     {
@@ -44,9 +50,11 @@ class RouteTrackingController extends BaseController
     }
 
     /**
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws BusinessLogicException
      */
-    public function index(){
+    public function index()
+    {
         return $this->service->index();
     }
 }

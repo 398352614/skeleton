@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Api\Driver;
 
-
 use App\Http\Controllers\BaseController;
 use App\Services\BaseService;
 use App\Services\Driver\FeeService;

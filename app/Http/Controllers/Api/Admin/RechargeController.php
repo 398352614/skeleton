@@ -1,17 +1,15 @@
 <?php
 
-
 namespace App\Http\Controllers\Api\Admin;
-
 
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\RechargeService;
 
 /**
-     * Class BatchExceptionController
-     * @package App\Http\Controllers\Api\Driver
-     * @property RechargeService $service
-     */
+ * Class BatchExceptionController
+ * @package App\Http\Controllers\Api\Driver
+ * @property RechargeService $service
+ */
 class RechargeController extends BaseController
 {
     /**
@@ -27,7 +25,8 @@ class RechargeController extends BaseController
      * 充值查询
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function index(){
+    public function index()
+    {
         return $this->service->getPageList();
     }
 
@@ -37,17 +36,8 @@ class RechargeController extends BaseController
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function show($id){
+    public function show($id)
+    {
         return $this->service->show($id);
-    }
-
-    /**
-     * 审核
-     * @param $id
-     * @return void
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function verify($id){
-        return $this->service->verify($id,$this->data);
     }
 }

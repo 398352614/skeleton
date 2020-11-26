@@ -6,7 +6,7 @@ use App\Traits\ConstTranslateTrait;
 
 /**
  * 订单轨迹表
- * Class OrderTrail
+ * Class TrackingOrderTrail
  * @package App\Models
  */
 class OrderTrail extends BaseModel
@@ -70,15 +70,15 @@ class OrderTrail extends BaseModel
 
     public function getContentAttribute($value)
     {
-        if(preg_match_all('/(?<=\[)[^]]+/',$value,$params)){
-            for($i=0,$j=count($params[0]);$i<$j;$i++){
-                $k=1;
-                $data['params'.($i+1)]=$params[0][$i];
-                $value=str_replace($data['params'.($i+1)],':params'.($i+1),$value,$k);
+        if (preg_match_all('/(?<=\[)[^]]+/', $value, $params)) {
+            for ($i = 0, $j = count($params[0]); $i < $j; $i++) {
+                $k = 1;
+                $data['params' . ($i + 1)] = $params[0][$i];
+                $value = str_replace($data['params' . ($i + 1)], ':params' . ($i + 1), $value, $k);
             }
-            return !empty($value)?__($value,$data): null;
-        }else{
-            return !empty($value)?__($value): null;
+            return !empty($value) ? __($value, $data) : null;
+        } else {
+            return !empty($value) ? __($value) : null;
         }
     }
 }

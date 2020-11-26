@@ -14,6 +14,8 @@ use App\Models\Material;
 use App\Models\Order;
 use App\Models\Package;
 use App\Services\BaseConstService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CancelBatch extends ATourNotify
 {
@@ -37,21 +39,11 @@ class CancelBatch extends ATourNotify
 
     public function getDataList(): array
     {
-        $orderNoList = array_column($this->orderList, 'order_no');
-        $packageList = Package::query()->whereIn('order_no', $orderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount'])->toArray();
-        $packageList = array_create_group_index($packageList, 'order_no');
-        $materialList = Material::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
-        $materialList = array_create_group_index($materialList, 'order_no');
-        $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList, $materialList) {
-            $order['package_list'] = $packageList[$order['order_no']] ?? [];
-            $order['material_list'] = $materialList[$order['order_no']] ?? [];
-            return collect($order);
-        })->toArray();
-        unset($packageList, $materialList);
-        $orderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
+        $this->fillTrackingOrderList(true, true);
+        $trackingOrderList = collect($this->trackingOrderList)->groupBy('merchant_id')->toArray();
         $batchList = [];
-        foreach ($orderList as $merchantId => $merchantOrderList) {
-            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
+        foreach ($trackingOrderList as $merchantId => $merchantTrackingOrderList) {
+            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'tracking_order_list' => $merchantTrackingOrderList]);
         }
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
@@ -68,7 +60,7 @@ class CancelBatch extends ATourNotify
      */
     public function getOrderAndPackageList($batchNo)
     {
-        $orderList = Order::query()->where('batch_no', $batchNo)->where('status', BaseConstService::ORDER_STATUS_6)->get()->toArray();
+        $orderList = Order::query()->where('batch_no', $batchNo)->where('status', BaseConstService::TRACKING_ORDER_STATUS_6)->get()->toArray();
         $packageList = Package::query()->whereIn('order_no', array_column($orderList, 'order_no'))->get()->toArray();
         $packageList = collect($packageList)->groupBy('order_no')->toArray();
         foreach ($orderList as &$order) {

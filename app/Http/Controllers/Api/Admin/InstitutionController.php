@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Resources\EmployeeListResource;
+use App\Http\Resources\Api\Admin\EmployeeListResource;
 use App\Services\Admin\InstitutionService;
 
 class InstitutionController extends BaseController
@@ -29,7 +29,7 @@ class InstitutionController extends BaseController
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function indexOfEmployees(int $id)
@@ -40,7 +40,7 @@ class InstitutionController extends BaseController
     /**
      *
      *
-     * @param  int  $id
+     * @param int $id
      * @return mixed
      */
     public function show(int $id)
@@ -51,17 +51,18 @@ class InstitutionController extends BaseController
     /**
      * 子树
      *
-     * @param  int  $id
+     * @param int $id
      * @return array
      */
     public function child(int $id)
     {
         return $this->service->getChildren($id);
     }
+
     /**
      * 新建
-     *
      * @return array
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function store()
     {
@@ -75,8 +76,8 @@ class InstitutionController extends BaseController
     /**
      * 移动
      *
-     * @param  int  $id
-     * @param  int  $parentId
+     * @param int $id
+     * @param int $parentId
      * @return array
      */
     public function move(int $id, int $parentId)
@@ -91,7 +92,7 @@ class InstitutionController extends BaseController
     /**
      * 更新信息
      *
-     * @param  int  $id
+     * @param int $id
      * @return array
      */
     public function update(int $id)
@@ -106,7 +107,7 @@ class InstitutionController extends BaseController
     /**
      * 删除
      *
-     * @param  int  $id
+     * @param int $id
      * @return array
      * @throws \App\Exceptions\BusinessLogicException
      */
@@ -119,11 +120,12 @@ class InstitutionController extends BaseController
         return failed();
     }
 
+
     /**
      * 删除它和子树
-     *
-     * @param  int  $id
+     * @param int $id
      * @return array
+     * @throws \App\Exceptions\BusinessLogicException
      */
     public function destroyWithChildren(int $id)
     {

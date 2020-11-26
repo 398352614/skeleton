@@ -8,16 +8,10 @@
 
 namespace App\Services;
 
-
 use App\Exceptions\BusinessLogicException;
-use App\Models\Company;
-use App\Models\Fee;
 use App\Models\Merchant;
 use App\Models\Order;
 use App\Models\ThirdPartyLog;
-use App\Traits\SearchTrait;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class ThirdPartyLogService

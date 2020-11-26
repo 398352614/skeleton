@@ -8,7 +8,6 @@
 
 namespace App\Traits;
 
-
 use Milon\Barcode\DNS1D;
 
 trait BarcodeTrait

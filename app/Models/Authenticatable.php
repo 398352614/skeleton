@@ -37,14 +37,19 @@ class Authenticatable extends BaseUser
         };
     }
 
-    public function getSenderCountryNameAttribute()
+    public function getWarehouseCountryNameAttribute()
     {
-        return empty($this->sender_country) ? null : CountryTrait::getCountryName($this->sender_country);
+        return empty($this->warehouse_country) ? null : CountryTrait::getCountryName($this->warehouse_country);
     }
 
-    public function getReceiverCountryNameAttribute()
+    public function getSecondPlaceCountryNameAttribute()
     {
-        return empty($this->receive_country) ? null : CountryTrait::getCountryName($this->receive_country);
+        return empty($this->second_place_country) ? null : CountryTrait::getCountryName($this->second_place_country);
+    }
+
+    public function getPlaceCountryNameAttribute()
+    {
+        return empty($this->place_country) ? null : CountryTrait::getCountryName($this->place_country);
     }
 
     public function getCountryNameAttribute()

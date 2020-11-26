@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Driver;
 use App\Http\Controllers\BaseController;
 use App\Models\Version;
 use App\Services\Admin\VersionService;
+
 class VersionController extends BaseController
 {
     public function __construct(VersionService $service)
@@ -12,9 +13,10 @@ class VersionController extends BaseController
         parent::__construct($service);
     }
 
-    public function check(){
+    public function check()
+    {
         //找到最新的版本并返回
-        $info =Version::query()->orderBy('version','desc')->first();
+        $info = Version::query()->orderBy('version', 'desc')->first();
         return $info;
     }
 

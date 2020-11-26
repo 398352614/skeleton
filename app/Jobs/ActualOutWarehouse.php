@@ -58,18 +58,18 @@ class ActualOutWarehouse implements ShouldQueue
     public $tries = 3;
 
     public $tour_no;
-    private $orderList;
+    private $trackingOrderList;
 
 
     /**
      * UpdateLineCountTime constructor.
      * @param $tourNo
-     * @param $orderList
+     * @param $trackingOrderList
      */
-    public function __construct($tourNo, $orderList)
+    public function __construct($tourNo, $trackingOrderList)
     {
         $this->tour_no = $tourNo;
-        $this->orderList = $orderList;
+        $this->trackingOrderList = $trackingOrderList;
     }
 
 
@@ -113,7 +113,7 @@ class ActualOutWarehouse implements ShouldQueue
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         Log::info('tour:' . json_encode($tour));
         $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
-        event(new \App\Events\TourNotify\ActualOutWarehouse($tour, $batchList, $this->orderList));
+        event(new \App\Events\TourNotify\ActualOutWarehouse($tour, $batchList, $this->trackingOrderList));
         /**************************************3.通知下一个站点事件************************************************/
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         $nextBatch = TourTrait::getNextBatch($tour['tour_no']);

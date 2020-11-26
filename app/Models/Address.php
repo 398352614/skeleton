@@ -10,7 +10,7 @@ use App\Traits\CountryTrait;
  * Class Employee
  * @package App\Models
  */
-class ReceiverAddress extends BaseModel
+class Address extends BaseModel
 {
     /**
      * 司机实际取件导航
@@ -18,7 +18,7 @@ class ReceiverAddress extends BaseModel
      *
      * @var string
      */
-    protected $table = 'receiver_address';
+    protected $table = 'address';
 
     /**
      * The primary key for the model.
@@ -48,17 +48,17 @@ class ReceiverAddress extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'receiver_fullname',
+        'place_fullname',
         'merchant_id',
-        'receiver_phone',
-        'receiver_country',
-        'receiver_post_code',
-        'receiver_house_number',
-        'receiver_city',
-        'receiver_street',
-        'receiver_address',
-        'lon',
-        'lat',
+        'place_phone',
+        'place_country',
+        'place_post_code',
+        'place_house_number',
+        'place_city',
+        'place_street',
+        'place_address',
+        'place_lon',
+        'place_lat',
         'created_at',
         'updated_at',
     ];
@@ -75,7 +75,7 @@ class ReceiverAddress extends BaseModel
     protected $appends = [
         'merchant_id_name',
         'short',
-        'receiver_country_name',
+        'place_country_name',
     ];
 
     /**
@@ -98,6 +98,6 @@ class ReceiverAddress extends BaseModel
 
     public function getShortAttribute()
     {
-        return empty($this->receiver_country) ? null : $this->getOriginal('receiver_country');
+        return empty($this->place_country) ? null : $this->getOriginal('place_country');
     }
 }

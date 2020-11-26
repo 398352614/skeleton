@@ -8,7 +8,6 @@
 
 namespace App\Services\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Models\LineRange;
 use App\Services\BaseConstService;
@@ -134,11 +133,11 @@ class LineRangeService extends BaseService
     public function getLineIdByRule($rules)
     {
         $query = $this->model->newQuery();
-        if (!empty($rules['receiver_country'])) {
-            $query->where('country', $rules['receiver_country']);
+        if (!empty($rules['place_country'])) {
+            $query->where('country', $rules['place_country']);
         }
-        if (!empty($rules['receiver_post_code'])) {
-            $query->where('post_code_start', '<=', $rules['receiver_post_code'])->where('post_code_end', '>=', $rules['receiver_post_code']);
+        if (!empty($rules['place_post_code'])) {
+            $query->where('post_code_start', '<=', $rules['place_post_code'])->where('post_code_end', '>=', $rules['place_post_code']);
         }
         $lineRange = $query->groupBy('line_id')->first(['line_id']);
         return !empty($lineRange) ? $lineRange->line_id : null;

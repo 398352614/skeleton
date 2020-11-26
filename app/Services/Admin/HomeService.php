@@ -1,14 +1,11 @@
 <?php
 
-
 namespace App\Services\Admin;
-
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -27,14 +24,14 @@ class HomeService extends BaseService
     {
         $date = Carbon::today()->format('Y-m-d');
         //当日订单
-        $noTakeOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_1]);//待分配
-        $assignOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_2]);//已分配
-        $waitOutOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_3]);//待出库
-        $takingOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_4]);//取派中
-        $signedOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_5]);//已完成
-        $cancelOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_6]);//取消取派
+        $noTakeOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);//待分配
+        $assignOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_2]);//已分配
+        $waitOutOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_3]);//待出库
+        $takingOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_4]);//取派中
+        $signedOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5]);//已完成
+        $cancelOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_6]);//取消取派
 
-        $NoOutOrder = parent::count(['execution_date' => $date, 'status' => ['in',[BaseConstService::ORDER_STATUS_1,BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_3,BaseConstService::ORDER_STATUS_4,BaseConstService::ORDER_STATUS_5]], 'out_status' => BaseConstService::ORDER_OUT_STATUS_2]);//不能出库
+        $NoOutOrder = parent::count(['execution_date' => $date, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]], 'out_status' => BaseConstService::OUT_STATUS_2]);//不能出库
         $exceptionOrder = parent::count(['execution_date' => $date, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);//异常
         //取件线路
         $tour = $this->getTourService()->count(['execution_date' => $date]);
@@ -148,7 +145,7 @@ class HomeService extends BaseService
     public function orderCount(Carbon $day, $no, $merchantId)
     {
         $countInfo = [];
-        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['<>', BaseConstService::ORDER_STATUS_7]], ['*'], false);
+        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]], ['*'], false);
         for ($i = $no; $i >= 1; $i--) {
             $date = $day->format('Y-m-d');
             $expectCount = collect($orderList)->where('execution_date', $date)->count();
@@ -194,7 +191,7 @@ class HomeService extends BaseService
         if (empty($params['end_date'])) {
             throw new BusinessLogicException('请选择结束时间');
         }
-        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['<>', BaseConstService::ORDER_STATUS_7]], ['*'], false);
+        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]], ['*'], false);
         $day = Carbon::create($params['begin_date']);
         $endDay = Carbon::create($params['end_date']);
         for ($i = 1; $day->lte($endDay); $i++) {
@@ -221,13 +218,13 @@ class HomeService extends BaseService
         } else {
             $additionalPackageList = [];
         }
-        $collection = parent::getList(['status' => ['<>', BaseConstService::ORDER_STATUS_7]], ['*'], false);
+        $collection = parent::getList(['status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]], ['*'], false);
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['total_order'] = $collection->where('merchant_id', $v['id'])->count();
-            $data[$k]['pickup_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->where('type', BaseConstService::ORDER_TYPE_1)->count();
-            $data[$k]['pie_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_7)->where('type', BaseConstService::ORDER_TYPE_2)->count();
-            $data[$k]['cancel_order'] = $collection->where('merchant_id', $v['id'])->where('status', BaseConstService::ORDER_STATUS_6)->count();
+            $data[$k]['pickup_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_3)->where('type', BaseConstService::ORDER_TYPE_1)->count();
+            $data[$k]['pie_order'] = $collection->where('merchant_id', $v['id'])->where('status', '<>', BaseConstService::ORDER_STATUS_3)->where('type', BaseConstService::ORDER_TYPE_2)->count();
+            $data[$k]['cancel_order'] = $collection->where('merchant_id', $v['id'])->where('status', BaseConstService::ORDER_STATUS_3)->count();
             $data[$k]['additional_package'] = collect($additionalPackageList)->where('merchant_id', $v['id'])->count();
             $data[$k]['total_recharge'] = $this->getRechargeStatisticsService()->sum('total_recharge_amount', ['merchant_id' => $v['id']]);
             $total['total_order'] += $data[$k]['total_order'];
@@ -251,7 +248,7 @@ class HomeService extends BaseService
     {
         $data = [];
         $merchantList = $this->getMerchantService()->getList();
-        $orderList = parent::getList(['execution_date' => Carbon::today()->format('Y-m-d'), 'status' => ['<>', BaseConstService::ORDER_STATUS_7]], ['*'], false);
+        $orderList = parent::getList(['execution_date' => Carbon::today()->format('Y-m-d'), 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]], ['*'], false);
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['order'] = collect($orderList)->where('merchant_id', $v['id'])->count();

@@ -1,42 +1,27 @@
 <?php
+/**
+ * 订单轨迹
+ */
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\api\admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Services\OrderTrailService;
-use Illuminate\Http\Request;
 
+/**
+ * Class OrderTrailController
+ * @package App\Http\Controllers\api\admin
+ * @property OrderTrailService $service
+ */
 class OrderTrailController extends BaseController
 {
-    /**
-     * @var OrderTrailService
-     */
-    public $service;
-
     public function __construct(OrderTrailService $service)
     {
-        $this->service = $service;
+        parent::__construct($service);
     }
 
-    /**
-     * @api {GET}  api/admin/ order-trail 管理员端:车辆列表
-     * @apiName index
-     * @apiGroup admin-car
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 车辆列表
-     * @apiParam {String}   order_no         需要查看的订单编号
-     * @apiSuccessExample {json}  返回示例
-     * HTTP/1.1 200 OK
-     * {
-     *  "ret":1,
-     *  "msg":"查询司机",
-     *  "data":{}
-     * }
-     */
-    public function index()
+    public function index($orderNo)
     {
-        return $this->service->getNoPageList();
+        return $this->service->index($orderNo);
     }
 }

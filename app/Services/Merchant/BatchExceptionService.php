@@ -9,11 +9,9 @@
 namespace App\Services\Merchant;
 
 use App\Models\BatchException;
-use App\Services\Merchant\BaseService;
 
 class BatchExceptionService extends BaseService
 {
-
     public function __construct(BatchException $batchException)
     {
         parent::__construct($batchException);

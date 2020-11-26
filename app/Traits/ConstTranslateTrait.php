@@ -21,9 +21,11 @@ use Illuminate\Support\Facades\App;
  * @method static printTemplateList($args = null)
  * @method static weekList($args = null)
  * @method static orderSourceList($arg = null)
+ * @method static trackingOrderTypeList($args = null)
  * @method static orderTypeList($args = null)
  * @method static orderSettlementTypeList($args = null)
- * @method static orderOutStatusList($args = null)
+ * @method static outStatusList($args = null)
+ * @method static trackingOrderStatusList($args = null)
  * @method static orderStatusList($args = null)
  * @method static packageStatusList($args = null)
  * @method static orderExceptionLabelList($args = null)
@@ -56,7 +58,6 @@ use Illuminate\Support\Facades\App;
  * @method static merchantTourStatusList($args = null)
  * @method static merchantBatchStatusList($args = null)
  * @method static showTypeList($args = null)
- * @method static merchantPackageStatusList($args = null)
  * @method static rechargeStatusList($args = null)
  * @method static verifyStatusList($args = null)
  * @method static isSkippedList($args = null)
@@ -74,6 +75,7 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
         BaseConstService::TOUR_NO_TYPE => '取件线路编号规则',
         BaseConstService::RECHARGE_NO_TYPE => '充值单号规则',
+        BaseConstService::TRACKING_ORDER_NO_TYPE => '运单单号规则',
     ];
 
     //线路分配规则
@@ -99,10 +101,12 @@ trait ConstTranslateTrait
         BaseConstService::SUNDAY => '星期日',
     ];
 
-    //订单类型1-取2-派
+    //订单类型1-取件2-派件3-取派
     public static $orderTypeList = [
+        BaseConstService::ORDER_TYPE_0 => '全部',
         BaseConstService::ORDER_TYPE_1 => '取件',
         BaseConstService::ORDER_TYPE_2 => '派件',
+        BaseConstService::ORDER_TYPE_3 => '取派件'
     ];
 
     //订单来源1-手动添加2-批量导入3-第三方
@@ -118,41 +122,48 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_SETTLEMENT_TYPE_2 => '到付',
     ];
 
-    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    //订单状态
     public static $orderStatusList = [
-        BaseConstService::ORDER_STATUS_1 => '待分配',
-        BaseConstService::ORDER_STATUS_2 => '已分配',
-        BaseConstService::ORDER_STATUS_3 => '待出库',
-        BaseConstService::ORDER_STATUS_4 => '取派中',
-        BaseConstService::ORDER_STATUS_5 => '已完成',
-        BaseConstService::ORDER_STATUS_6 => '取消取派',
-        BaseConstService::ORDER_STATUS_7 => '回收站',
+        BaseConstService::ORDER_STATUS_0 => '全部',
+        BaseConstService::ORDER_STATUS_1 => '待取派',
+        BaseConstService::ORDER_STATUS_2 => '取派中',
+        BaseConstService::ORDER_STATUS_3 => '已完成',
+        BaseConstService::ORDER_STATUS_4 => '取派失败',
+        BaseConstService::ORDER_STATUS_5 => '回收站',
+    ];
+
+    //运单类型1-取2-派
+    public static $trackingOrderTypeList = [
+        BaseConstService::TRACKING_ORDER_TYPE_0 => '全部',
+        BaseConstService::TRACKING_ORDER_TYPE_1 => '取件',
+        BaseConstService::TRACKING_ORDER_TYPE_2 => '派件',
+    ];
+
+    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
+    public static $trackingOrderStatusList = [
+        BaseConstService::TRACKING_ORDER_STATUS_0 => '全部',
+        BaseConstService::TRACKING_ORDER_STATUS_1 => '待分配',
+        BaseConstService::TRACKING_ORDER_STATUS_2 => '已分配',
+        BaseConstService::TRACKING_ORDER_STATUS_3 => '待出库',
+        BaseConstService::TRACKING_ORDER_STATUS_4 => '取派中',
+        BaseConstService::TRACKING_ORDER_STATUS_5 => '已完成',
+        BaseConstService::TRACKING_ORDER_STATUS_6 => '取消取派',
+        BaseConstService::TRACKING_ORDER_STATUS_7 => '回收站',
     ];
 
     //订单可出库状态1-是2-否
-    public static $orderOutStatusList = [
-        BaseConstService::ORDER_OUT_STATUS_1 => '是',
-        BaseConstService::ORDER_OUT_STATUS_2 => '否'
+    public static $outStatusList = [
+        BaseConstService::OUT_STATUS_1 => '是',
+        BaseConstService::OUT_STATUS_2 => '否'
     ];
 
     //包裹状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     public static $packageStatusList = [
-        BaseConstService::ORDER_STATUS_1 => '待分配',
-        BaseConstService::ORDER_STATUS_2 => '已分配',
-        BaseConstService::ORDER_STATUS_3 => '待出库',
-        BaseConstService::ORDER_STATUS_4 => '取派中',
-        BaseConstService::ORDER_STATUS_5 => '已完成',
-        BaseConstService::ORDER_STATUS_6 => '取消取派',
-        BaseConstService::ORDER_STATUS_7 => '回收站',
-    ];
-
-    //商户端包裹状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
-    public static $merchantPackageStatusList = [
-        BaseConstService::MERCHANT_PACKAGE_STATUS_1 => '未取派',
-        BaseConstService::MERCHANT_PACKAGE_STATUS_2 => '取派中',
-        BaseConstService::MERCHANT_PACKAGE_STATUS_3 => '已完成',
-        BaseConstService::MERCHANT_PACKAGE_STATUS_4 => '取消取派',
-        BaseConstService::MERCHANT_PACKAGE_STATUS_5 => '回收站',
+        BaseConstService::PACKAGE_STATUS_1 => '未取派',
+        BaseConstService::PACKAGE_STATUS_2 => '取派中',
+        BaseConstService::PACKAGE_STATUS_3 => '已完成',
+        BaseConstService::PACKAGE_STATUS_4 => '取消取派',
+        BaseConstService::PACKAGE_STATUS_5 => '回收站',
     ];
 
     //订单异常标签1-正常2-异常

@@ -1,25 +1,25 @@
 <?php
 /**
- * 联系人管理-收货方 接口
+ * 客户管理-收货方 接口
  * User: long
- * Date: 2020/3/16
+ * Date: 2020/1/10
  * Time: 13:38
  */
 
-namespace App\Http\Controllers\Api\Merchant;
+namespace App\Http\Controllers\Api\Admin;
 
 
 use App\Http\Controllers\BaseController;
-use App\Services\Merchant\ReceiverAddressService;
+use App\Services\Admin\AddressService;
 
 /**
- * Class ReceiverAddressController
- * @package App\Http\Controllers\Api\Merchant
- * @property ReceiverAddressService $service
+ * Class AddressController
+ * @package App\Http\Controllers\Api\Admin
+ * @property AddressService $service
  */
-class ReceiverAddressController extends BaseController
+class AddressController extends BaseController
 {
-    public function __construct(ReceiverAddressService $service, $exceptMethods = [])
+    public function __construct(AddressService $service, $exceptMethods = [])
     {
         parent::__construct($service, $exceptMethods);
     }

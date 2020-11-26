@@ -122,21 +122,21 @@
             <div class="address bottom-line">
                 <div class="address-obj right-line">{{__('发货方')}}</div>
                 <div class="address-info">
-                    <div>{{__('姓名').'：'.$data['sender_fullname']}}</div>
-                    <div>{{__('电话').'：'.$data['sender_phone']}}</div>
-                    <div>{{__('地址').'：'.$data['sender_address']}}</div>
+                    <div>{{__('姓名').'：'.$data['second_place_fullname']}}</div>
+                    <div>{{__('电话').'：'.$data['second_place_phone']}}</div>
+                    <div>{{__('地址').'：'.$data['second_place_address']}}</div>
                 </div>
             </div>
             <div class="address bottom-line">
                 <div class="address-obj right-line">{{__('收货方')}}</div>
                 <div class="address-info">
-                    <div>{{__('姓名').'：'.$data['receiver_fullname']}}</div>
-                    <div>{{__('电话').'：'.$data['receiver_phone']}}</div>
-                    <div>{{__('地址').'：'.$data['receiver_address']}}</div>
+                    <div>{{__('姓名').'：'.$data['place_fullname']}}</div>
+                    <div>{{__('电话').'：'.$data['place_phone']}}</div>
+                    <div>{{__('地址').'：'.$data['place_address']}}</div>
                 </div>
             </div>
             <div class="destination bottom-line">
-                <div class="destination-address right-line font-size-t1">目的地：{{$data['receiver_address_short']}}</div>
+                <div class="destination-address right-line font-size-t1">目的地：{{$data['place_address_short']}}</div>
                 <div class="destination-info">
                     <div>{{__('快件类型').'：'.$data['type_name']}}</div>
                     <div>

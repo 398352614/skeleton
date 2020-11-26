@@ -11,7 +11,6 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Models\MerchantGroup;
 use App\Services\Admin\MerchantService;
 
 /**
@@ -103,6 +102,11 @@ class MerchantController extends BaseController
         return $this->service->statusByList($this->data);
     }
 
+    /**
+     * 导出EXCEL
+     * @return array
+     * @throws BusinessLogicException
+     */
     public function excel()
     {
         return $this->service->merchantExcel();

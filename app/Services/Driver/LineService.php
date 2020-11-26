@@ -8,11 +8,9 @@
 
 namespace App\Services\Driver;
 
-
 use App\Models\Line;
 
-
-class LineService extends BaseService
+class LineService extends BaseLineService
 {
     public function __construct(Line $line)
     {

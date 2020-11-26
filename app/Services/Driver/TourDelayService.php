@@ -1,13 +1,9 @@
 <?php
 
-
 namespace App\Services\Driver;
-
 
 use App\Http\Resources\Api\Driver\TourDelayResource;
 use App\Models\TourDelay;
-use App\Services\Driver\BaseService;
-use App\Traits\ConstTranslateTrait;
 
 class TourDelayService extends BaseService
 {

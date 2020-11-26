@@ -8,10 +8,8 @@
 
 namespace App\Services\Driver;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Models\Device;
-
 
 class DeviceService extends BaseService
 {

@@ -59,18 +59,18 @@ class OutWarehouse implements ShouldQueue
 
     public $tour_no;
 
-    public $orderList;
+    public $trackingOrderList;
 
 
     /**
      * UpdateLineCountTime constructor.
      * @param $tourNo
-     * @param $orderList ;
+     * @param $trackingOrderList ;
      */
-    public function __construct($tourNo, $orderList)
+    public function __construct($tourNo, $trackingOrderList)
     {
         $this->tour_no = $tourNo;
-        $this->orderList = $orderList;
+        $this->trackingOrderList = $trackingOrderList;
     }
 
 
@@ -84,7 +84,7 @@ class OutWarehouse implements ShouldQueue
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         Log::info('tour:' . json_encode($tour));
         $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
-        event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $this->orderList));
+        event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $this->trackingOrderList));
         Log::info('出库成功');
         return true;
     }

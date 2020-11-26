@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\HomeService;
-use Illuminate\Http\Request;
 
 /**
  * Class HomeController
@@ -23,39 +22,48 @@ class HomeController extends BaseController
      * @return array
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function home(){
+    public function home()
+    {
         return $this->service->home();
     }
 
     /**
      * 此周数据
      * @return array
+     * @throws \Exception
      */
-    public function thisWeekCount(){
+    public function thisWeekCount()
+    {
         return $this->service->thisWeekCount();
     }
 
     /**
      * 上周数据
      * @return array
+     * @throws \Exception
      */
-    public function lastWeekCount(){
+    public function lastWeekCount()
+    {
         return $this->service->lastWeekCount();
     }
 
     /**
      * 此月数据
      * @return array
+     * @throws \Exception
      */
-    public function thisMonthCount(){
+    public function thisMonthCount()
+    {
         return $this->service->thisMonthCount();
     }
 
     /**
      * 上月数据
      * @return array
+     * @throws \Exception
      */
-    public function lastMonthCount(){
+    public function lastMonthCount()
+    {
         return $this->service->lastMonthCount();
     }
 
@@ -64,11 +72,13 @@ class HomeController extends BaseController
      * @return array
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function periodCount(){
+    public function periodCount()
+    {
         return $this->service->periodCount($this->data);
     }
 
-    public function merchantCount(){
+    public function merchantCount()
+    {
         return $this->service->merchantCount();
     }
 

@@ -63,10 +63,12 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::get('/{id}/getSpecialRemarkList', 'TourTaskController@getSpecialRemarkList');
         //获取站点的订单特殊事项列表
         Route::get('/{id}/getBatchSpecialRemarkList', 'TourTaskController@getBatchSpecialRemarkList');
-        //获取订单特殊事项
+        //获取运单特殊事项
         Route::get('/{id}/getSpecialRemark', 'TourTaskController@getSpecialRemark');
         //获取订单特殊事项
         Route::get('/all-info', 'TourTaskController@getAllInfo');
+        //获取运单列表
+        Route::get('/{id}/getTrackingOrderList', 'TourTaskController@getTrackingOrderList');
     });
 
     //设备管理
@@ -128,7 +130,7 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         //获取站点列表
         Route::get('/{id}/getBatchList', 'TourController@getBatchList');
         //获取站点的订单列表
-        Route::get('/{id}/getBatchOrderList', 'TourController@getBatchOrderList');
+        Route::get('/{id}/getBatchTrackingOrderList', 'TourController@getBatchTrackingOrderList');
         //到达站点
         Route::put('/{id}/batchArrive', 'TourController@batchArrive');
         //获取站点详情

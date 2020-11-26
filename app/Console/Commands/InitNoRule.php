@@ -41,12 +41,12 @@ class InitNoRule extends Command
      */
     public function handle()
     {
-        $companyList = Company::query()->get(['id'])->toArray();
-        if(!empty($companyList)){
+        $companyList = Company::query()->get(['id', 'company_code'])->toArray();
+        if (!empty($companyList)) {
             foreach ($companyList as $company) {
                 $recharge = OrderNoRule::query()->where('company_id', $company['id'])->where('type', BaseConstService::RECHARGE_NO_TYPE)->first();
-                $prefix = BaseConstService::RECHARGE . substr('000' . $company['id'], -4, 4);
                 if (empty($recharge)) {
+                    $prefix = BaseConstService::RECHARGE . $company['company_code'];
                     OrderNoRule::create([
                         'company_id' => $company['id'],
                         'type' => BaseConstService::RECHARGE_NO_TYPE,
@@ -56,9 +56,22 @@ class InitNoRule extends Command
                         'max_no' => $prefix . str_repeat('9', 7)
                     ]);
                 }
+
+                $trackingOrder = OrderNoRule::query()->where('company_id', $company['id'])->where('type', BaseConstService::TRACKING_ORDER_NO_TYPE)->first();
+                if (empty($trackingOrder)) {
+                    $prefix = BaseConstService::TRACKING_ORDER . $company['company_code'];
+                    OrderNoRule::create([
+                        'company_id' => $company['id'],
+                        'type' => BaseConstService::TRACKING_ORDER_NO_TYPE,
+                        'prefix' => $prefix,
+                        'start_index' => 1,
+                        'int_length' => 7,
+                        'max_no' => $prefix . str_repeat('9', 7)
+                    ]);
+                }
             }
             $this->info('number rule init successful!');
-        }else{
+        } else {
             $this->info('number rule init failed!');
         }
     }

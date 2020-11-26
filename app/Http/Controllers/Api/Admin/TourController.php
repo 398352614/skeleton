@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Services\Admin\TourService;
 use App\Traits\TourRedisLockTrait;
 use Illuminate\Http\Request;
@@ -237,7 +236,7 @@ class TourController extends BaseController
      */
     public function unlockRedis(Request $request)
     {
-        if(self::setTourLock($request->tour_no, 0)){
+        if (self::setTourLock($request->tour_no, 0)) {
             return 1;
         }
         return '1';
@@ -253,29 +252,6 @@ class TourController extends BaseController
     public function batchExport()
     {
         return $this->service->batchExport($this->data);
-    }
-
-    /**
-     * 导出城市线路
-     * @param $id
-     * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function cityExport($id)
-    {
-        return $this->service->cityExport($id);
-    }
-
-    /**
-     * 导出站点地图
-     * @param $id
-     * @return mixed
-     * @throws \App\Exceptions\BusinessLogicException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function mapExport($id)
-    {
-        return $this->service->mapExport($id);
     }
 
     /**

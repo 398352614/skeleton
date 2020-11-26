@@ -8,8 +8,6 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-
-use App\Http\Controllers\BaseController;
 use App\Services\CommonService;
 use Illuminate\Http\Request;
 
@@ -60,11 +58,12 @@ class CommonController
     {
         return $this->service->getPostcode($request->all());
     }
-
+    
     /**
      * @return array
      */
-    public function dictionary(){
+    public function dictionary()
+    {
         return $this->service->dictionary();
     }
 }

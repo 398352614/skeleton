@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Services\Admin;
+namespace App\Traits;
 
-use App\Exceptions\BusinessLogicException;
-
-trait HasLoginControl
+trait HasLoginControlTrait
 {
     /**
      * 禁止登陆控制

@@ -53,6 +53,17 @@ class OrderController extends BaseController
     }
 
     /**
+     * 获取订单的运单列表
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getTrackingOrderList($id)
+    {
+        return $this->service->getTrackingOrderList($id);
+    }
+
+    /**
      * 订单统计
      * @return array
      * @throws BusinessLogicException
@@ -109,71 +120,6 @@ class OrderController extends BaseController
 
 
     /**
-     * 通过订单，获取可分配的线路的取派日期
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getTourDate($id)
-    {
-        return $this->service->getTourDate($id);
-    }
-
-    /**
-     * 通过国家邮编，获取可分配的取派日期
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getDate()
-    {
-        return $this->service->getDate($this->data);
-    }
-
-    /**
-     * 通过订单,获取可分配的站点列表
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getBatchPageListByOrder($id)
-    {
-        return $this->service->getBatchPageListByOrder($id, $this->data);
-    }
-
-
-    /**
-     * 分配至站点
-     * 参数存在站点编号(batchNo),为指定站点;否则为新建站点
-     * @param $id
-     * @return string
-     * @throws BusinessLogicException
-     */
-    public function assignToBatch($id)
-    {
-        return $this->service->assignToBatch($id, $this->data);
-    }
-
-    /**
-     * 从站点中移除订单
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function removeFromBatch($id)
-    {
-        return $this->service->removeFromBatch($id);
-    }
-
-    /**
-     * 批量订单从站点移除
-     * @throws BusinessLogicException
-     */
-    public function removeListFromBatch()
-    {
-        return $this->service->removeListFromBatch($this->data['id_list']);
-    }
-
-    /**
      * 删除订单
      * @param $id
      * @return mixed
@@ -181,48 +127,51 @@ class OrderController extends BaseController
      */
     public function destroy($id)
     {
-        return $this->service->destroy($id, $this->data);
+        return $this->service->destroy($id);
     }
+
 
     /**
      * 批量删除订单
-     * @return mixed
      * @throws BusinessLogicException
      */
-    public function destroyByList()
+    public function destroyAll()
     {
-        return $this->service->destroyByList($this->data);
+        return $this->service->destroyAll($this->data['id_list']);
     }
 
     /**
-     * 恢复
+     * 获取再次取派信息
+     * @param $id
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getAgainInfo($id)
+    {
+        return $this->service->getAgainInfo($id);
+    }
+
+    /**
+     * 再次取派
+     * @param $id
+     * @return bool
+     * @throws BusinessLogicException
+     */
+    public function again($id)
+    {
+        return $this->service->again($id, $this->data);
+    }
+
+    /**
+     * 终止派送
      * @param $id
      * @throws BusinessLogicException
      */
-    public function recovery($id)
+    public function end($id)
     {
-        return $this->service->recovery($id, $this->data);
+        return $this->service->end($id);
     }
 
-    /**
-     * 彻底删除
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function actualDestroy($id)
-    {
-        return $this->service->actualDestroy($id);
-    }
-
-    /**
-     * 批量分配订单至取件线路
-     * @throws BusinessLogicException
-     * @throws \WebSocket\BadOpcodeException
-     */
-    public function assignListTour()
-    {
-        return $this->service->assignListTour($this->data);
-    }
 
     /**
      * 批量打印
@@ -236,30 +185,21 @@ class OrderController extends BaseController
     }
 
     /**
+     * 同步订单状态列表
+     */
+    public function synchronizeStatusList()
+    {
+        return $this->service->synchronizeStatusList($this->data['id_list']);
+    }
+
+    /**
      * 订单导出
      * @return array
      * @throws BusinessLogicException
      */
     public function orderExport()
     {
-        return $this->service->orderExport($this->data['id_list']);
-    }
-
-    /**
-     * @return array
-     * @throws BusinessLogicException
-     */
-    public function getLineList()
-    {
-        return $this->service->getLineList();
-    }
-
-    /**
-     * 同步订单状态列表
-     */
-    public function synchronizeStatusList()
-    {
-        return $this->service->synchronizeStatusList($this->data['id_list']);
+        return $this->service->orderExport();
     }
 
     /**

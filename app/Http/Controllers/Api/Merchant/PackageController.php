@@ -3,7 +3,6 @@
 
 namespace App\Http\Controllers\Api\Merchant;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Merchant\PackageService;
@@ -33,7 +32,8 @@ class PackageController extends BaseController
      * 列表查询
      * @return mixed
      */
-    public function index(){
+    public function index()
+    {
         return $this->service->getPageList();
     }
 
@@ -43,7 +43,8 @@ class PackageController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function show($id){
+    public function show($id)
+    {
         return $this->service->show($id);
     }
 }

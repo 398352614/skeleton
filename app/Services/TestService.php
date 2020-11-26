@@ -10,12 +10,9 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\TestInfoResource;
-use App\Http\Resources\TestResource;
 use App\Models\Test;
 use Carbon\Carbon;
 use Vinkla\Hashids\Facades\Hashids;
-
 
 class TestService extends BaseService
 {
@@ -26,13 +23,7 @@ class TestService extends BaseService
 
     public function __construct(Test $test)
     {
-        $this->model = $test;
-        $this->query = $this->model::query();
-        $this->resource = TestResource::class;
-        $this->infoResource = TestInfoResource::class;
-        $this->request = request();
-        $this->formData = $this->request->all();
-        $this->setFilterRules();
+        parent::__construct($test);
     }
 
     public function show($id)

@@ -8,14 +8,11 @@
 
 namespace App\Services\Driver;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Driver\CarResource;
 use App\Models\Car;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class CarService extends BaseService
@@ -24,6 +21,7 @@ class CarService extends BaseService
     {
         parent::__construct($car, CarResource::class);
     }
+
 
     public function getPageList()
     {

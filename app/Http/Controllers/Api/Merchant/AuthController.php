@@ -9,7 +9,6 @@ namespace App\Http\Controllers\Api\Merchant;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
-use App\Models\CompanyConfig;
 use App\Models\Employee;
 use App\Models\Merchant;
 use App\Traits\CompanyTrait;

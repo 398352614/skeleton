@@ -134,56 +134,6 @@ class TourController extends BaseController
     }
 
     /**
-     * 分配司机
-     * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function assignDriver($id)
-    {
-        return $this->service->assignDriver($id, $this->data);
-    }
-
-    /**
-     * 取消司机分配
-     * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function cancelAssignDriver($id)
-    {
-        return $this->service->cancelAssignDriver($id);
-    }
-
-    /**
-     * 分配车辆
-     * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function assignCar($id)
-    {
-        return $this->service->assignCar($id, $this->data);
-    }
-
-    /**
-     * 取消车辆分配
-     * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function cancelAssignCar($id)
-    {
-        return $this->service->cancelAssignCar($id);
-    }
-
-    /**
-     * 取消锁定
-     * @param $id
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function unlock($id)
-    {
-        return $this->service->unlock($id);
-    }
-
-    /**
      * @api {GET}  api/admin/tour/unlock-redis 管理员端:取消 redis 锁
      * @apiName unlock-redis
      * @apiGroup admin

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Merchant\HomeService;
-use Illuminate\Http\Request;
 
 /**
  * Class HomeController
@@ -82,7 +81,8 @@ class HomeController extends BaseController
      * 总计统计
      * @return array
      */
-    public function all(){
+    public function all()
+    {
         return $this->service->all();
     }
 }

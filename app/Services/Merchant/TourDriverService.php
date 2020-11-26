@@ -8,11 +8,9 @@
 
 namespace App\Services\Merchant;
 
-
 use App\Http\Resources\Api\Merchant\TourDriverEventResource;
 use App\Models\Batch;
 use App\Models\TourDriverEvent;
-use App\Services\Merchant\BaseService;
 
 class TourDriverService extends BaseService
 {

@@ -4,7 +4,6 @@ namespace App\Services\BaseServices;
 
 use App\Exceptions\BusinessLogicException;
 use App\Services\Admin\ApiTimesService;
-use App\Services\Admin\BatchService;
 use App\Services\CurlClient;
 use App\Traits\FactoryInstanceTrait;
 use Illuminate\Support\Facades\DB;
@@ -44,8 +43,8 @@ class XLDirectionService
         foreach ($data as $key => $loc) {
             $temp = [];
             $temp['name'] = $loc['batch_no'];
-            $temp['lat'] = $loc['receiver_lat'];
-            $temp['lng'] = $loc['receiver_lon'];
+            $temp['lat'] = $loc['place_lat'];
+            $temp['lng'] = $loc['place_lon'];
             $locSeq[] = $temp;
         }
         return $this->getTour($locSeq);

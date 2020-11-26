@@ -86,8 +86,8 @@ class TourController extends BaseController
      */
     public function outWarehouse($id)
     {
-        list($tour, $cancelOrderList) = $this->service->outWarehouse($id, $this->data);
-        TourTrait::afterOutWarehouse($tour, $cancelOrderList);
+        list($tour, $cancelTrackingOrderList) = $this->service->outWarehouse($id, $this->data);
+        TourTrait::afterOutWarehouse($tour, $cancelTrackingOrderList);
         return;
     }
 
@@ -117,20 +117,21 @@ class TourController extends BaseController
     }
 
     /**
-     * 获取站点的订单列表
+     * 获取站点的运单列表
      * @param $id
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getBatchOrderList($id)
+    public function getBatchTrackingOrderList($id)
     {
-        return $this->service->getBatchOrderList($id, $this->data);
+        return $this->service->getBatchTrackingOrderList($id, $this->data);
     }
 
 
     /**
      * 到达站点
      * @param $id
+     * @return Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * @throws BusinessLogicException
      */
     public function batchArrive($id)
@@ -167,8 +168,8 @@ class TourController extends BaseController
      */
     public function batchCancel($id)
     {
-        list($tour, $batch, $cancelOrderList) = $this->service->batchCancel($id, $this->data);
-        TourTrait::afterBatchCancel($tour, $batch, $cancelOrderList);
+        list($tour, $batch, $cancelTrackingOrderList) = $this->service->batchCancel($id, $this->data);
+        TourTrait::afterBatchCancel($tour, $batch, $cancelTrackingOrderList);
         return;
     }
 
@@ -213,7 +214,9 @@ class TourController extends BaseController
      */
     public function inWarehouse($id)
     {
-        return $this->service->inWarehouse($id, $this->data);
+        $tour = $this->service->inWarehouse($id, $this->data);
+        TourTrait::afterBackWarehouse($tour);
+        return;
     }
 
     /**

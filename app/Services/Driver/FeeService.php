@@ -8,10 +8,7 @@
 
 namespace App\Services\Driver;
 
-
 use App\Models\Fee;
-
-use Illuminate\Database\Eloquent\Model;
 
 class FeeService extends BaseService
 {

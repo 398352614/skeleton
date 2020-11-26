@@ -8,28 +8,24 @@
 
 namespace App\Services\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\ReceiverAddressResource;
-use App\Models\Merchant;
-use App\Models\ReceiverAddress;
-use App\Services\Admin\BaseService;
+use App\Http\Resources\Api\Admin\AddressResource;
+use App\Models\Address;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 
-class ReceiverAddressService extends BaseService
+class AddressService extends BaseService
 {
-
     public $filterRules = [
         'merchant_id' => ['=', 'merchant_id'],
-        'receiver_fullname' => ['like', 'receiver_fullname'],
-        'receiver_post_code' => ['like', 'receiver_post_code']
+        'place_fullname' => ['like', 'place_fullname'],
+        'place_post_code' => ['like', 'place_post_code']
     ];
 
-    public function __construct(ReceiverAddress $receiverAddress)
+    public function __construct(Address $address)
     {
-        parent::__construct($receiverAddress, ReceiverAddressResource::class, ReceiverAddressResource::class);
+        parent::__construct($address, AddressResource::class, AddressResource::class);
     }
 
     /**
@@ -39,7 +35,7 @@ class ReceiverAddressService extends BaseService
      */
     public function getUniqueWhere($data)
     {
-        $fields = ['merchant_id', 'receiver_country', 'receiver_fullname', 'receiver_phone', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address'];
+        $fields = ['merchant_id', 'place_country', 'place_fullname', 'place_phone', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address'];
         $where = Arr::only($data, $fields);
         return $where;
     }
@@ -112,14 +108,14 @@ class ReceiverAddressService extends BaseService
      */
     public function check(&$data, $dbInfo = [])
     {
-        $data['receiver_country'] = !empty($dbInfo['receiver_country']) ? $dbInfo['receiver_country'] : CompanyTrait::getCountry();
+        $data['place_country'] = !empty($dbInfo['place_country']) ? $dbInfo['place_country'] : CompanyTrait::getCountry();
         //验证商家是否存在
         $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id']], ['id', 'country'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在，请重新选择商户');
         }
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['receiver_address'])) {
-            $data['receiver_address'] = CommonService::addressFieldsSortCombine($data, ['receiver_country', 'receiver_city', 'receiver_street', 'receiver_house_number', 'receiver_post_code']);
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
+            $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
         //判断是否唯一
         $where = $this->getUniqueWhere($data);

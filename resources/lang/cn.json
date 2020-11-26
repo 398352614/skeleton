@@ -16,5 +16,7 @@
   "线路[:line]存在取派任务线路[:tour_no]，不能操作": "线路[:line]存在取派任务线路[:tour_no]，不能操作",
   "邮编范围:post_range_1与:post_range_2存在重叠,无法添加": "邮编范围:post_range_1与:post_range_2存在重叠,无法添加",
   "当前状态是[:status_name]，不能操作": "当前状态是[:status_name]，不能操作",
-  "当前订单状态是[:status_name]，不能操作": "当前订单状态是[:status_name]，不能操作"
+  "当前订单状态是[:status_name]，不能操作": "当前订单状态是[:status_name]，不能操作",
+  "区域[:i]和区域[:j]有重叠": "区域[:i]和区域[:j]有重叠",
+  "区域[:key]部分区域已存在": "区域[:key]部分区域已存在"
 }

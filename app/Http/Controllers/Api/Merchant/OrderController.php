@@ -75,11 +75,11 @@ class OrderController extends OrderBaseController
     {
         if (auth()->user()->getAttribute('is_api') == true) {
             $orderSource = BaseConstService::ORDER_SOURCE_3;
-            $this->data['out_status'] = !empty($this->data['out_status']) ? $this->data['out_status'] : BaseConstService::ORDER_OUT_STATUS_2;
-            unset($this->data['receiver_address']);
+            $this->data['out_status'] = !empty($this->data['out_status']) ? $this->data['out_status'] : BaseConstService::OUT_STATUS_2;
+            unset($this->data['place_address']);
         } else {
             $orderSource = BaseConstService::ORDER_SOURCE_1;
-            $this->data['out_status'] = BaseConstService::ORDER_OUT_STATUS_1;
+            $this->data['out_status'] = BaseConstService::OUT_STATUS_1;
         }
         return $this->service->store($this->data, $orderSource);
     }
@@ -137,61 +137,6 @@ class OrderController extends OrderBaseController
 
 
     /**
-     * 通过订单，获取可分配的线路的取派日期
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getTourDate($id)
-    {
-        return $this->service->getTourDate($id);
-    }
-
-    /**
-     * 通过国家邮编，获取可分配的取派日期
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getDate()
-    {
-        return $this->service->getDate($this->data);
-    }
-
-    /**
-     * 通过订单,获取可分配的站点列表
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getBatchPageListByOrder($id)
-    {
-        return $this->service->getBatchPageListByOrder($id, $this->data);
-    }
-
-
-    /**
-     * 分配至站点
-     * 参数存在站点编号(batchNo),为指定站点;否则为新建站点
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function assignToBatch($id)
-    {
-        return $this->service->assignToBatch($id, $this->data);
-    }
-
-    /**
-     * 从站点中移除订单
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function removeFromBatch($id)
-    {
-        return $this->service->removeFromBatch($id);
-    }
-
-    /**
      * 删除订单
      * @param $id
      * @return mixed
@@ -203,23 +148,13 @@ class OrderController extends OrderBaseController
     }
 
     /**
-     * 恢复
-     * @param $id
+     * 批量删除
+     * @return string
      * @throws BusinessLogicException
      */
-    public function recovery($id)
+    public function destroyAll()
     {
-        return $this->service->recovery($id, $this->data);
-    }
-
-    /**
-     * 彻底删除
-     * @param $id
-     * @throws BusinessLogicException
-     */
-    public function actualDestroy($id)
-    {
-        return $this->service->actualDestroy($id);
+        return $this->service->destroyAll($this->data['order_no_list']);
     }
 
     /**
@@ -270,5 +205,15 @@ class OrderController extends OrderBaseController
     public function showByApi()
     {
         return $this->service->showByApi($this->data);
+    }
+
+    /**
+     * 物流追踪
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function track($id){
+        return $this->service->track($id);
     }
 }

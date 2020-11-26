@@ -8,12 +8,10 @@
 
 namespace App\Services\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\LineResource;
 use App\Models\Line;
 use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
@@ -178,9 +176,9 @@ class BaseLineService extends BaseService
     public function getLineIdByInfo($info, $executionDate)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'], $executionDate);
+            $lineRange = $this->getLineRangeByPostcode($info['place_post_code'], $executionDate);
         } else {
-            $coordinate = ['lat' => $info['lat'] ?? $info ['receiver_lat'], 'lon' => $info['lon'] ?? $info ['receiver_lon']];
+            $coordinate = ['lat' => $info['lat'] ?? $info ['place_lat'], 'lon' => $info['lon'] ?? $info ['place_lon']];
             $lineRange = $this->getLineRangeByArea($coordinate, $executionDate);
         }
         if (!empty($lineRange['line_id'])) {
@@ -205,7 +203,7 @@ class BaseLineService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getInfoByRule($info, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1, $merchantAlone = BaseConstService::NO)
+    public function getInfoByRule($info, $orderOrBatch = BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone = BaseConstService::NO)
     {
         $lineRange = $this->getLineRange($info, $merchantAlone);
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
@@ -251,7 +249,7 @@ class BaseLineService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getScheduleList($params, $orderOrBatch = BaseConstService::ORDER_OR_BATCH_1)
+    public function getScheduleList($params, $orderOrBatch = BaseConstService::TRACKING_ORDER_OR_BATCH_1)
     {
         $lineRangeList = $this->getLineRangeList($params);
         return $this->getScheduleListByLineRangeList($params, $lineRangeList, $orderOrBatch);
@@ -267,7 +265,7 @@ class BaseLineService extends BaseService
     public function getScheduleListByLine($params, $lineId)
     {
         $lineRangeList = $this->getLineRangeListByLine($lineId);
-        return $this->getScheduleListByLineRangeList($params, $lineRangeList, BaseConstService::ORDER_OR_BATCH_2, false);
+        return $this->getScheduleListByLineRangeList($params, $lineRangeList, BaseConstService::TRACKING_ORDER_OR_BATCH_2, false);
     }
 
     /**
@@ -300,12 +298,12 @@ class BaseLineService extends BaseService
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             if ($merchantAlone == BaseConstService::YES) {
-                $lineRange = $this->getMerchantLineRangeByPostcode($info['receiver_post_code'], $info['execution_date'], $info['merchant_id']);
+                $lineRange = $this->getMerchantLineRangeByPostcode($info['place_post_code'], $info['execution_date'], $info['merchant_id']);
             } else {
-                $lineRange = $this->getLineRangeByPostcode($info['receiver_post_code'], $info['execution_date']);
+                $lineRange = $this->getLineRangeByPostcode($info['place_post_code'], $info['execution_date']);
             }
         } else {
-            $coordinate = ['lat' => $info['lat'] ?? $info ['receiver_lat'], 'lon' => $info['lon'] ?? $info ['receiver_lon']];
+            $coordinate = ['lat' => $info['lat'] ?? $info ['place_lat'], 'lon' => $info['lon'] ?? $info ['place_lon']];
             $lineRange = $this->getLineRangeByArea($coordinate, $info['execution_date']);
         }
         if (empty($lineRange)) {
@@ -327,9 +325,9 @@ class BaseLineService extends BaseService
     public function getLineRangeList($params)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRangeList = $this->getLineRangeListByPostcode($params['receiver_post_code'], $params['merchant_id'] ?? null);
+            $lineRangeList = $this->getLineRangeListByPostcode($params['place_post_code'], $params['merchant_id'] ?? null);
         } else {
-            $coordinate = ['lat' => $params['lat'] ?? $params['receiver_lat'], 'lon' => $params['lon'] ?? $params['receiver_lon']];
+            $coordinate = ['lat' => $params['lat'] ?? $params['place_lat'], 'lon' => $params['lon'] ?? $params['place_lon']];
             $lineRangeList = $this->getLineRangeListByArea($coordinate);
         }
         return $lineRangeList;
@@ -561,9 +559,9 @@ class BaseLineService extends BaseService
         if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
             if ($orderOrBatch === 2) {
                 $this->maxBatchCheck($params, $line);
-            } elseif ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::ORDER_TYPE_1) {
+            } elseif ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) {
                 $this->pickupMaxCheck($params, $line);
-            } elseif ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::ORDER_TYPE_2) {
+            } elseif ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::TRACKING_ORDER_TYPE_2) {
                 $this->pieMaxCheck($params, $line);
             }
         }

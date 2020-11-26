@@ -1,9 +1,7 @@
 <?php
 
-
 namespace App\Services\Driver;
 
-use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Driver\AdditionalPackageResource;
 use App\Models\AdditionalPackage;
 
@@ -18,40 +16,5 @@ class AdditionalPackageService extends BaseService
     public function __construct(AdditionalPackage $model)
     {
         parent::__construct($model, AdditionalPackageResource::class);
-    }
-
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     * @throws BusinessLogicException
-     */
-    public function getPageList()
-    {
-        parent::buildQuery($this->query, $this->filters);
-        $info=$this->query->get();
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $batchNo = $info->pluck('batch_no')->toArray();
-        $info = $this->getBatchService()->getAdditionalPackageList($batchNo);
-        foreach ($info as $k => $v) {
-            $info[$k]['additional_package_list'] = parent::getList(['batch_no' => $v['batch_no']]);
-            $info[$k]['additional_package_count'] = parent::count(['batch_no' => $v['batch_no']]);
-        }
-        return $info;
-    }
-
-    /**
-     * @param $id
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
-     * @throws BusinessLogicException
-     */
-    public function show($id)
-    {
-        $batch = $this->getBatchService()->getInfo(['id' => $id]);
-        if (empty($batch)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        return parent::getList(['batch_no' => $batch['batch_no']]);
     }
 }

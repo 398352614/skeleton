@@ -8,16 +8,11 @@
 
 namespace App\Services\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\WareHouseResource;
 use App\Models\Warehouse;
-use App\Services\Admin\BaseService;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
-use App\Traits\LocationTrait;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 
 class WareHouseService extends BaseService
 {

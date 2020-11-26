@@ -11,8 +11,6 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\TourDelayService;
-use App\Services\Admin\TourDriverService;
-use App\Traits\ConstTranslateTrait;
 
 /**
  * Class TourDriverController

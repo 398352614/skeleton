@@ -16,6 +16,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -27,11 +28,11 @@ class ActualOutWarehouse extends ATourNotify
      * ActualOutWarehouse constructor.
      * @param $tour
      * @param $batchList
-     * @param $orderList
+     * @param $trackingOrderList
      */
-    public function __construct($tour, $batchList, $orderList)
+    public function __construct($tour, $batchList, $trackingOrderList)
     {
-        parent::__construct($tour, [], $batchList, $orderList);
+        parent::__construct($tour, [], $batchList, $trackingOrderList);
     }
 
 
@@ -42,24 +43,18 @@ class ActualOutWarehouse extends ATourNotify
 
     public function getDataList(): array
     {
-        $packageList = Package::query()->whereIn('order_no', array_column($this->orderList, 'order_no'))->get(['order_no', 'express_first_no', 'status'])->toArray();
-        $packageList = array_create_group_index($packageList, 'order_no');
-        $this->orderList = collect($this->orderList)->map(function ($order) use ($packageList) {
-            $order['package_list'] = $packageList[$order['order_no']] ?? [];
-            return collect($order);
-        })->toArray();
-        unset($packageList);
+        $this->fillTrackingOrderList(true);
         $batchList = collect($this->batchList)->keyBy('batch_no')->toArray();
-        $orderList = collect($this->orderList)->groupBy(function ($order) {
+        $trackingOrderList = collect($this->trackingOrderList)->groupBy(function ($order) {
             return $order['merchant_id'] . '-' . $order['batch_no'];
         })->toArray();
         $newBatchList = [];
-        foreach ($orderList as $merchantIdBatchNo => $merchantBatchList) {
+        foreach ($trackingOrderList as $merchantIdBatchNo => $merchantBatchList) {
             list($merchantId, $batchNo) = explode('-', $merchantIdBatchNo);
             if (!empty($batchList[$batchNo])) {
-                $newBatchList[$merchantId][] = array_merge($batchList[$batchNo], ['merchant_id' => $merchantId, 'order_list' => $merchantBatchList]);
+                $newBatchList[$merchantId][] = array_merge($batchList[$batchNo], ['merchant_id' => $merchantId, 'tracking_order_list' => $merchantBatchList]);
             } else {
-                $newBatchList[$merchantId][] = array_merge(Arr::only($merchantBatchList[0], self::$batchFields), ['merchant_id' => $merchantId, 'order_list' => $merchantBatchList]);
+                $newBatchList[$merchantId][] = array_merge(Arr::only($merchantBatchList[0], self::$batchFields), ['merchant_id' => $merchantId, 'tracking_order_list' => $merchantBatchList]);
             }
         }
         $tourList = [];

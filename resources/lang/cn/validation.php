@@ -87,7 +87,7 @@ return [
     'unique' => ':attribute 已存在',
     'url' => ':attribute 无效的格式',
     'unique_ignore' => ':attribute 已存在',
-    'check_special_char'=>':attribute 存在特殊字符',
+    'check_special_char' => ':attribute 存在特殊字符',
 
     /*
     |--------------------------------------------------------------------------
@@ -270,7 +270,7 @@ return [
         'new_password' => [
             'different' => '新密码不能和旧密码一样',
         ],
-        'receiver_house_number' => [
+        'place_house_number' => [
             'required_if' => '当国家是荷兰时，门牌号必填',
         ]
     ],
@@ -302,24 +302,24 @@ return [
         'name' => '名称',
         'contacts' => '负责人',
         'address' => '详细地址',
-        'receiver_fullname' => '收件人姓名',
-        'receiver_phone' => '收件人电话',
-        'receiver_country' => '收件人国家',
-        'receiver_post_code' => '收件人邮编',
-        'receiver_house_number' => '收件人门牌号',
-        'receiver_city' => '收件人城市',
-        'receiver_street' => '收件人街道',
-        'receiver_address' => '收件人地址',
-        'lon' => '经度',
-        'lat' => '纬度',
-        'sender_fullname' => '发件人姓名',
-        'sender_phone' => '发件人电话',
-        'sender_country' => '发件人国家',
-        'sender_post_code' => '发件人邮编',
-        'sender_house_number' => '发件人门牌号',
-        'sender_city' => '发件人城市',
-        'sender_street' => '发件人街道',
-        'sender_address' => '发件人详细地址',
+        'place_fullname' => '收件人姓名',
+        'place_phone' => '收件人电话',
+        'place_country' => '收件人国家',
+        'place_post_code' => '收件人邮编',
+        'place_house_number' => '收件人门牌号',
+        'place_city' => '收件人城市',
+        'place_street' => '收件人街道',
+        'place_address' => '收件人地址',
+        'place_lon' => '经度',
+        'place_lat' => '纬度',
+        'second_place_fullname' => '发件人姓名',
+        'second_place_phone' => '发件人电话',
+        'second_place_country' => '发件人国家',
+        'second_place_post_code' => '发件人邮编',
+        'second_place_house_number' => '发件人门牌号',
+        'second_place_city' => '发件人城市',
+        'second_place_street' => '发件人街道',
+        'second_place_address' => '发件人详细地址',
         'house_number' => '门牌号',
         //Admin-BatchException
         'deal_remark' => '处理内容',
@@ -384,6 +384,7 @@ return [
         'can_skip_batch' => '能否跳过',
         //Admin-Order
         'execution_date' => '取派日期',
+        'second_execution_date' => '派送日期',
         'out_order_no' => '外部订单号',
         'express_first_no' => '快递单号1',
         'express_second_no' => '快递单号2',
@@ -397,13 +398,13 @@ return [
         'replace_amount' => '代收款',
         'delivery' => '自提',
         'special_remark' => '特殊事项',
-        //Admin-ReceiverAddress
+        //Admin-Address
         //Admin-Register
         'confirm_password' => '密码确认',
         'code' => '验证码',
         'new_password' => '新密码',
         'confirm_new_password' => '新密码确认',
-        //Admin-SenderAddress
+        //Admin-Address
         //Admin-Tour
         'driver_id' => '司机ID',
         'car_id' => '车辆ID',
@@ -541,8 +542,6 @@ return [
         "company_id" => "公司ID",
         "merchant_id" => "商户ID",
         "batch_no" => "站点编号",
-        "receiver_lon" => "收件人经度",
-        "receiver_lat" => "收件人纬度",
         "created_at" => "创建时间",
         "updated_at" => "修改时间",
         "template" => "模板",
@@ -577,7 +576,6 @@ return [
         "auth_fullname" => "身份人姓名",
         "auth_birth_date" => "身份人出身年月",
         "batch_exception_no" => "异常编号",
-        "receiver" => "收货方姓名",
         "deal_id" => "处理人ID(员工ID)",
         "deal_name" => "处理人姓名",
         "deal_time" => "处理时间",
@@ -684,40 +682,22 @@ return [
         "company_auth" => "是否需要验证公司权限",
 
 
-"sign_time"=>"签收时间",
-"out_expect_arrive_time"=>"出库预计时间",
-"out_expect_distance"=>"出库预计里程",
-"out_expect_time"=>"出库预计耗时",
-"relate_material_list"=>"文件列表",
+        "sign_time" => "签收时间",
+        "out_expect_arrive_time" => "出库预计时间",
+        "out_expect_distance" => "出库预计里程",
+        "out_expect_time" => "出库预计耗时",
+        "relate_material_list" => "文件列表",
 
 
-"number"=>"设备型号",
-"mode"=>"模式",
-"delay_type"=>"延迟类型",
-"delay_remark"=>"延迟备注",
+        "number" => "设备型号",
+        "mode" => "模式",
+        "delay_type" => "延迟类型",
+        "delay_remark" => "延迟备注",
+        "second_place_lon" => "发件人经度",
+        "second_place_lat" => "发件人纬度",
+        "tracking_order_no" => "运单号",
+        "warehouse_fullname" => "发件人姓名",
 
-"place_fullname"=>"收件人姓名",
-"place_phone"=>"收件人手机号码",
-"place_country"=>"收件人国家",
-"place_post_code"=>"收件人邮编",
-"place_house_number"=>"收件人门牌号",
-"place_city"=>"收件人城市",
-"place_street"=>"收件人街道",
-"place_address"=>"收件人地址",
-"place_lon"=>"收件人经度",
-"place_lat"=>"收件人纬度",
-"second_execution_date"=>"取派订单类型中的派件日期",
-"second_place_fullname"=>"发件人姓名",
-"second_place_phone"=>"发件人电话",
-"second_place_country"=>"发件人国家",
-"second_place_post_code"=>"发件人邮编",
-"second_place_house_number"=>"发件人门牌号",
-"second_place_city"=>"发件人城市",
-"second_place_street"=>"发件人街道",
-"second_place_address"=>"发件人详细地址",
-"second_place_lon"=>"发件人经度",
-"second_place_lat"=>"发件人纬度",
-"tracking_order_no"=>"运单号",
-"warehouse_fullname"=>"发件人姓名",
-]
+
+    ],
 ];
