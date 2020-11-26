@@ -68,7 +68,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //订单新增初始化
         Route::get('/init', 'OrderController@initStore');
         //订单新增
-        Route::get('/', 'OrderController@store');
+        Route::post('/', 'OrderController@store');
         //订单导入模板
         Route::get('/template', 'OrderImportController@templateExport');
         //批量导入

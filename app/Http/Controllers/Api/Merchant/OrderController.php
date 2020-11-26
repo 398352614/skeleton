@@ -206,4 +206,14 @@ class OrderController extends OrderBaseController
     {
         return $this->service->showByApi($this->data);
     }
+
+    /**
+     * 物流追踪
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function track($id){
+        return $this->service->track($id);
+    }
 }

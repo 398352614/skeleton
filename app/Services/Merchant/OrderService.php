@@ -1128,4 +1128,68 @@ class OrderService extends BaseService
         return $this->getTrackingOrderService()->getDispatchInfoByOrderNo($dbOrder->order_no);
     }
 
+    /**
+     * 地图追踪
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function track($id)
+    {
+        $order = parent::getInfo(['id' => $id]);
+        if (empty($order)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if (!$order['status'] == BaseConstService::ORDER_STATUS_3) {
+            throw new BusinessLogicException('运输未开始，暂无物流信息');
+        }
+        $trackingOrder = $this->getTrackingOrderService()->getTrackingOrderByOrderNo($order['order_no']);
+        if (empty($trackingOrder)) {
+            throw new BusinessLogicException('暂无物流信息');
+        }
+        $tour = $this->getTrackingOrderService()->getInfo(['tour_no' => $trackingOrder['tour_no']], ['*'], false);
+        if (empty($tour)) {
+            throw new BusinessLogicException('取件线路不存在');
+        }
+        $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $tour['tour_no']], ['lon', 'lat'], false, ['id' => 'desc']) ?? [];
+        $batch = $this->getBatchService()->getInfo(['batch_no' => $trackingOrder['batch_no']], ['*'], false) ?? [];
+        $content = '';
+        if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
+            if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
+                $content = __('取件成功，派件中');
+            } elseif ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 && $trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_5) {
+                $content = __('取件成功，等待派件');
+            } else {
+                $content = __('取件中');
+            }
+        }
+        return [
+            'place_fullname' => $trackingOrder['place_fullname'],
+            'place_address' => $trackingOrder['place_address'],
+            'place_lon' => $trackingOrder['place_lon'],
+            'place_lat' => $trackingOrder['place_lat'],
+
+            'second_place_fullname' => $order['second_place_fullname'],
+            'second_place_address' => $order['second_place_address'],
+            'second_place_lon' => $order['second_place_lon'],
+            'second_place_lat' => $order['second_place_lat'],
+            'type' => $order['type'],
+
+            'warehouse_address' => $trackingOrder['warehouse_address'],
+            'warehouse_lon' => $trackingOrder['warehouse_lon'],
+            'warehouse_lat' => $trackingOrder['warehouse_lat'],
+
+            'driver_lon' => $routeTracking['lon'] ?? '',
+            'driver_lat' => $routeTracking['lat'] ?? '',
+            'driver_name' => $tour['tour_no'],
+            'car_no' => $tour['tour_no'],
+            'tour_no' => $tour['tour_no'],
+
+            'expect_distance' => $batch['expect_distance'] ?? 0,
+            'expect_arrive_time' => $batch['expect_arrive_time'] ?? '',
+            'actual_arrive_time' => $batch['actual_arrive_time'] ?? '',
+
+            'content' => $content
+        ];
+    }
 }

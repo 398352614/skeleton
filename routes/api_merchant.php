@@ -49,6 +49,8 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::put('/{id}', 'OrderController@update');
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
+        //订单追踪
+        Route::get('/{id}/track','OrderController@track');
     });
 
     //运单管理
