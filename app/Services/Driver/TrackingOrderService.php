@@ -11,8 +11,6 @@ namespace App\Services\Driver;
 use App\Exceptions\BusinessLogicException;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
-use App\Services\OrderNoRuleService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
 use Illuminate\Support\Facades\Log;
@@ -27,78 +25,6 @@ class TrackingOrderService extends BaseService
     public function __construct(TrackingOrder $trackingOrder, $resource = null, $infoResource = null)
     {
         parent::__construct($trackingOrder, $resource, $infoResource);
-    }
-
-    /**
-     * 线路 服务
-     * @return LineService
-     */
-    private function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    private function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
-    }
-
-    /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    private function getTourService()
-    {
-        return self::getInstance(TourService::class);
-    }
-
-    /**
-     * 站点 服务
-     * @return BatchService
-     */
-    private function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 包裹 服务
-     * @return PackageService
-     */
-    private function getPackageService()
-    {
-        return self::getInstance(PackageService::class);
-    }
-
-    /**
-     * 材料 服务
-     * @return MaterialService
-     */
-    private function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
-    }
-
-    /**
-     * 单号规则 服务
-     * @return OrderNoRuleService
-     */
-    private function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
-    /**
-     * 订单服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
     }
 
     /**

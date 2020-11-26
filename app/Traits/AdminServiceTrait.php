@@ -11,7 +11,9 @@ use App\Services\Admin\BatchExceptionService;
 use App\Services\Admin\BatchService;
 use App\Services\Admin\CarBrandService;
 use App\Services\Admin\CarService;
+use App\Services\Admin\CompanyService;
 use App\Services\Admin\DriverService;
+use App\Services\Admin\EmployeeService;
 use App\Services\Admin\FeeService;
 use App\Services\Admin\LineAreaService;
 use App\Services\Admin\LineRangeService;
@@ -38,6 +40,11 @@ use App\Services\OrderNoRuleService;
 trait AdminServiceTrait
 {
     use FactoryInstanceTrait;
+
+    public function getCompanyService()
+    {
+        return self::getInstance(CompanyService::class);
+    }
 
     /**
      * 商户服务
@@ -312,6 +319,15 @@ trait AdminServiceTrait
     public function getTourDriverService()
     {
         return self::getInstance(TourDriverService::class);
+    }
+
+    /**
+     * 员工 服务
+     * @return EmployeeService
+     */
+    public function getEmployeeService()
+    {
+        return self::getInstance(EmployeeService::class);
     }
 
     /**

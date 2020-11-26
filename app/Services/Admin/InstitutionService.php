@@ -18,14 +18,6 @@ class InstitutionService extends BaseService
     }
 
     /**
-     * 成员 服务
-     * @return EmployeeService
-     */
-    public function getEmployeeService(){
-        return self::getInstance(EmployeeService::class);
-    }
-
-    /**
      * @param int $id
      * @return mixed
      */
@@ -112,11 +104,6 @@ class InstitutionService extends BaseService
             'country' => $data['country'] ?? '',
             'address' => $data['address'] ?? '',
         ]);
-    }
-
-    public function getCompanyService()
-    {
-        return self::getInstance(CompanyService::class);
     }
 
     /**

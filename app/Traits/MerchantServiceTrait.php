@@ -13,6 +13,7 @@ use App\Services\Merchant\LineRangeService;
 use App\Services\Merchant\LineService;
 use App\Services\Merchant\MaterialService;
 use App\Services\Merchant\MerchantGroupService;
+use App\Services\Merchant\MerchantService;
 use App\Services\Merchant\OrderService;
 use App\Services\Merchant\PackageService;
 use App\Services\Merchant\RouteTrackingService;
@@ -26,6 +27,15 @@ use App\Services\OrderNoRuleService;
 Trait MerchantServiceTrait
 {
     use FactoryInstanceTrait;
+
+    /**
+     * 商家 服务
+     * @return MerchantService
+     */
+    public function getMerchantService()
+    {
+        return self::getInstance(MerchantService::class);
+    }
 
     /**
      * 邮编线路范围 服务

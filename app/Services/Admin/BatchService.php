@@ -40,25 +40,6 @@ class BatchService extends BaseService
         parent::__construct($batch, BatchResource::class, BatchInfoResource::class);
     }
 
-
-    /**
-     * 顺带包裹 服务
-     * @return AdditionalPackageService
-     */
-    public function getAdditionalPackageService()
-    {
-        return self::getInstance(AdditionalPackageService::class);
-    }
-
-    /**
-     * 线路基础 服务
-     * @return BaseLineService
-     */
-    public function getBaseLineService()
-    {
-        return self::getInstance(BaseLineService::class);
-    }
-
     public function getPageList()
     {
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {

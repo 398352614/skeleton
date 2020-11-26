@@ -16,8 +16,6 @@ use App\Models\Order;
 use App\Models\TourMaterial;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
-use App\Services\BaseService;
-use App\Services\OrderNoRuleService;
 use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
@@ -93,123 +91,6 @@ class TrackingOrderService extends BaseService
     {
         parent::__construct($trackingOrder, TrackingOrderResource::class, null);
         $this->tourMaterialModel = new TourMaterial();
-    }
-
-    /**
-     * 轨迹 服务
-     * @return RouteTrackingService
-     */
-    private function getRouteTrackingService()
-    {
-        return self::getInstance(RouteTrackingService::class);
-    }
-
-    /**
-     * 线路邮编范围 服务
-     * @return LineRangeService
-     */
-    private function getLineRangeService()
-    {
-        return self::getInstance(LineRangeService::class);
-    }
-
-    /**
-     * 线路区域范围 服务
-     * @return LineAreaService
-     */
-    private function getLineAreaService()
-    {
-        return self::getInstance(LineAreaService::class);
-    }
-
-    /**
-     * 线路服务
-     * @return LineService
-     */
-    private function getLineService()
-    {
-        return self::getInstance(LineService::class);
-    }
-
-    /**
-     * 取件线路 服务
-     * @return TourService
-     */
-    private function getTourService()
-    {
-        return self::getInstance(TourService::class);
-    }
-
-    /**
-     * 站点 服务
-     * @return BatchService
-     */
-    private function getBatchService()
-    {
-        return self::getInstance(BatchService::class);
-    }
-
-    /**
-     * 仓库 服务
-     * @return WareHouseService
-     */
-    private function getWareHouseService()
-    {
-        return self::getInstance(WareHouseService::class);
-    }
-
-    /**
-     * 站点异常 服务
-     * @return BatchExceptionService
-     */
-    private function getBatchExceptionService()
-    {
-        return self::getInstance(BatchExceptionService::class);
-    }
-
-    /**
-     * 收人地址 服务
-     * @return AddressService
-     */
-    private function getAddressService()
-    {
-        return self::getInstance(AddressService::class);
-    }
-
-    /**
-     * 商户 服务
-     * @return MerchantService
-     */
-    private function getMerchantService()
-    {
-        return self::getInstance(MerchantService::class);
-    }
-
-    /**
-     * 材料 服务
-     * @return MaterialService
-     */
-    private function getMaterialService()
-    {
-        return self::getInstance(MaterialService::class);
-    }
-
-    /**
-     * 订单规则 服务
-     * @return OrderNoRuleService
-     */
-    private function getOrderNoRuleService()
-    {
-        return self::getInstance(OrderNoRuleService::class);
-    }
-
-    /**
-     * 订单服务
-     * @return OrderService
-     */
-    private function getOrderService()
-    {
-        return self::getInstance(OrderService::class);
     }
 
     /**
