@@ -1176,6 +1176,7 @@ class OrderService extends BaseService
             'second_place_lon' => $order['second_place_lon'],
             'second_place_lat' => $order['second_place_lat'],
             'type' => $order['type'],
+            'type_name' => $order['type_name'],
 
             'warehouse_address' => $trackingOrder['warehouse_address'],
             'warehouse_lon' => $trackingOrder['warehouse_lon'] ?? '',
