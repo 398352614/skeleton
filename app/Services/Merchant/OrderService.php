@@ -1010,7 +1010,7 @@ class OrderService extends BaseService
      */
     public function track($id)
     {
-        $order = parent::getInfo(['id' => $id]);
+        $order = parent::getInfo(['id' => $id],['*'],false);
         if (empty($order)) {
             throw new BusinessLogicException('数据不存在');
         }
