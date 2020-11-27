@@ -12,6 +12,7 @@ use App\Events\TourDriver\OutWarehouse;
 use App\Listeners\CountTourTimeAndDistance;
 use App\Listeners\SendNotify2Merchant;
 use App\Listeners\SendOrderCancel;
+use App\Listeners\SendOrderDelete;
 use App\Listeners\SendOrderExecutionDate;
 use App\Listeners\TourDriver;
 use App\Listeners\UpdateDriverCountTime;
@@ -90,7 +91,7 @@ class EventServiceProvider extends ServiceProvider
             SendOrderCancel::class
         ],
         \App\Events\OrderDelete::class => [
-            SendOrderCancel::class
+            SendOrderDelete::class
         ]
     ];
 
