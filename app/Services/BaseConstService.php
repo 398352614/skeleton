@@ -13,7 +13,6 @@ class BaseConstService
 {
     const TMS = 'TMS';
     const ORDER = 'ORDER';
-    const TRACKING_ORDER = 'YD';
     const BATCH = 'BATCH';
     const TOUR = 'TOUR';
     const PACKAGE = 'PACKAGE';
@@ -49,8 +48,6 @@ class BaseConstService
 
     //订单号编号类型
     const ORDER_NO_TYPE = 'order';
-    //运单类型
-    const TRACKING_ORDER_NO_TYPE = 'tracking_order';
     //站点编号类型
     const BATCH_NO_TYPE = 'batch';
     //取件线路编号类型
@@ -109,15 +106,13 @@ class BaseConstService
     const ERP_MERCHANT_ID_2 = 65;
     const SHOP_MERCHANT_ID_1 = 3;
 
-    //订单类型1-取2-派3-取派
-    const ORDER_TYPE_0 = 0;
+    //订单类型1-取2-派
     const ORDER_TYPE_1 = 1;
     const ORDER_TYPE_2 = 2;
-    const ORDER_TYPE_3 = 3;
 
     //订单出库状态1-可出库2-不可出库
-    const OUT_STATUS_1 = 1;
-    const OUT_STATUS_2 = 2;
+    const ORDER_OUT_STATUS_1 = 1;
+    const ORDER_OUT_STATUS_2 = 2;
 
     //订单来源1-手动添加2-批量导入3-第三方
     const ORDER_SOURCE_1 = 1;
@@ -128,36 +123,31 @@ class BaseConstService
     const ORDER_SETTLEMENT_TYPE_1 = 1;
     const ORDER_SETTLEMENT_TYPE_2 = 2;
 
-    //运单类型1-取2-派
-    const TRACKING_ORDER_TYPE_0 = 0;
-    const TRACKING_ORDER_TYPE_1 = 1;
-    const TRACKING_ORDER_TYPE_2 = 2;
-
-    //订单状态1-待取派2-取派中3-取派完成4-取派失败5-回收站
-    const ORDER_STATUS_0 = 0;
+    //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     const ORDER_STATUS_1 = 1;
     const ORDER_STATUS_2 = 2;
     const ORDER_STATUS_3 = 3;
     const ORDER_STATUS_4 = 4;
     const ORDER_STATUS_5 = 5;
-
-    //运单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
-    const TRACKING_ORDER_STATUS_0 = 0;
-    const TRACKING_ORDER_STATUS_1 = 1;
-    const TRACKING_ORDER_STATUS_2 = 2;
-    const TRACKING_ORDER_STATUS_3 = 3;
-    const TRACKING_ORDER_STATUS_4 = 4;
-    const TRACKING_ORDER_STATUS_5 = 5;
-    const TRACKING_ORDER_STATUS_6 = 6;
-    const TRACKING_ORDER_STATUS_7 = 7;
+    const ORDER_STATUS_6 = 6;
+    const ORDER_STATUS_7 = 7;
 
 
-    //包裹列表1-未取派2-取派中3-已签收4-取派失败5-回收站
+    //包裹列表1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     const PACKAGE_STATUS_1 = 1;
     const PACKAGE_STATUS_2 = 2;
     const PACKAGE_STATUS_3 = 3;
     const PACKAGE_STATUS_4 = 4;
     const PACKAGE_STATUS_5 = 5;
+    const PACKAGE_STATUS_6 = 6;
+    const PACKAGE_STATUS_7 = 7;
+
+    //商户端包裹列表1-未取派4-取派中5-已签收6-取消取派7-回收站
+    const MERCHANT_PACKAGE_STATUS_1 = 1;
+    const MERCHANT_PACKAGE_STATUS_2 = 2;
+    const MERCHANT_PACKAGE_STATUS_3 = 3;
+    const MERCHANT_PACKAGE_STATUS_4 = 4;
+    const MERCHANT_PACKAGE_STATUS_5 = 5;
 
     //顺带包裹状态
     const ADDITIONAL_PACKAGE_STATUS_1 = 1;
@@ -175,9 +165,9 @@ class BaseConstService
     const IS_INCREMENT_1 = 1;
     const IS_INCREMENT_2 = 2;
 
-    //订单/站点 1-运单2-站点
-    const TRACKING_ORDER_OR_BATCH_1 = 1;
-    const TRACKING_ORDER_OR_BATCH_2 = 2;
+    //订单/站点 1-订单2-站点
+    const ORDER_OR_BATCH_1 = 1;
+    const ORDER_OR_BATCH_2 = 2;
 
     //取件线路状态状态：1-待分配2-已分配-3-待出库4-取派中5-取派完成
     const TOUR_STATUS_1 = 1;
@@ -307,41 +297,26 @@ class BaseConstService
     //司机端 文件目录
     const DRIVER_FILE_TOUR_DIR = 'tour';
 
-    /**
-     * order_trail 订单轨迹常量
-     * 1-订单创建 2-订单锁定 3-订单开始运输 4-订单完成 5-取派订单中转
-     * 6-订单重启 7-订单修改 8-订单关闭 9-订单删除
-     */
-    const ORDER_TRAIL_CREATED = 1;
-    const ORDER_TRAIL_LOCK = 2;
-    const ORDER_TRAIL_UNLOCK = 3;
-    const ORDER_TRAIL_START = 4;
-    const ORDER_TRAIL_FINISH = 5;
-    const ORDER_TRAIL_FAIL = 6;
-    const ORDER_TRAIL_RESTART = 7;
-    const ORDER_TRAIL_UPDATE = 8;
-    const ORDER_TRAIL_CLOSED = 9;
-    const ORDER_TRAIL_DELETE = 10;
 
     /**
      * order_trail 订单轨迹常量
      * 1-订单创建 2-加入站点 3-加入取件线路 4-已分配司机 5-加入网点 6-待出库 7-配送中 8-已签收
      * 9-取消取派 10-取消司机分配 11-取消待出库 12-移除站点 13-移除取件线路 14-订单删除
      */
-    const TRACKING_ORDER_TRAIL_CREATED = 1;
-    const TRACKING_ORDER_TRAIL_JOIN_BATCH = 2;
-    const TRACKING_ORDER_TRAIL_JOIN_TOUR = 3;
-    const TRACKING_ORDER_TRAIL_ASSIGN_DRIVER = 4;
-    const TRACKING_ORDER_TRAIL_REVENUE_OUTLETS = 5;
-    const TRACKING_ORDER_TRAIL_LOCK = 6;
-    const TRACKING_ORDER_TRAIL_DELIVERING = 7;
-    const TRACKING_ORDER_TRAIL_DELIVERED = 8;
-    const TRACKING_ORDER_TRAIL_CANCEL_DELIVER = 9;
-    const TRACKING_ORDER_TRAIL_CANCEL_ASSIGN_DRIVER = 10;
-    const TRACKING_ORDER_TRAIL_UN_LOCK = 11;
-    const TRACKING_ORDER_TRAIL_REMOVE_BATCH = 12;
-    const TRACKING_ORDER_TRAIL_REMOVE_TOUR = 13;
-    const TRACKING_ORDER_TRAIL_DELETE = 14;
+    const ORDER_TRAIL_CREATED = 1;
+    const ORDER_TRAIL_JOIN_BATCH = 2;
+    const ORDER_TRAIL_JOIN_TOUR = 3;
+    const ORDER_TRAIL_ASSIGN_DRIVER = 4;
+    const ORDER_TRAIL_REVENUE_OUTLETS = 5;
+    const ORDER_TRAIL_LOCK = 6;
+    const ORDER_TRAIL_DELIVERING = 7;
+    const ORDER_TRAIL_DELIVERED = 8;
+    const ORDER_TRAIL_CANCEL_DELIVER = 9;
+    const ORDER_TRAIL_CANCEL_ASSIGN_DRIVER = 10;
+    const ORDER_TRAIL_UN_LOCK = 11;
+    const ORDER_TRAIL_REMOVE_BATCH = 12;
+    const ORDER_TRAIL_REMOVE_TOUR = 13;
+    const ORDER_TRAIL_DELETE = 14;
 
     //通知类型
     const NOTIFY_OUT_WAREHOUSE = 'out-warehouse';       //出库通知
@@ -430,4 +405,8 @@ class BaseConstService
     const TOUR_DELAY_TYPE_2 = 2;
     const TOUR_DELAY_TYPE_3 = 3;
     const TOUR_DELAY_TYPE_4 = 4;
+
+    //包裹类型1取2派
+    const PACKAGE_TYPE_1 =1;
+    const PACKAGE_TYPE_2 =2;
 }
