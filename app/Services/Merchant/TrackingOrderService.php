@@ -314,6 +314,13 @@ class TrackingOrderService extends BaseService
         }
     }
 
+    /**
+     * 修改电话和日期
+     * @param $order
+     * @param $params
+     * @return array|void
+     * @throws BusinessLogicException
+     */
     public function updateDateAndPhone($order, $params)
     {
         $dbTrackingOrder = parent::getInfoLock(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
@@ -352,48 +359,45 @@ class TrackingOrderService extends BaseService
         unset($trackingOrder['tour_no'], $trackingOrder['batch_no'], $data['order_no'], $data['tour_no'], $data['batch_no']);
         /******************************更换站点***************************************/
         $line = $this->fillWarehouseInfo($trackingOrder);
-        list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, true);
-        //修改
-        $rowCount = parent::updateById($dbTrackingOrder['id'], $data);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败，请重新操作');
-        }
+        $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, true, [], false, true);
         return [
             'order_no' => $dbTrackingOrder['order_no'],
-            'batch_no' => $order['batch_no'] ?? '',
-            'tour_no' => $order['tour_no'] ?? '',
+            'out_order_no' => $dbTrackingOrder['out_order_no'],
+            'batch_no' => $dbTrackingOrder['batch_no'] ?? '',
+            'tour_no' => '',
             'line' => [
-                'line_id' => $tour['line_id'] ?? '',
-                'line_name' => $tour['line_name'] ?? '',
+                'line_id' => '',
+                'line_name' => '',
             ]
         ];
     }
 
 
     /**
-     * @param $info
+     * 修改电话
+     * @param $dbTrackingOrder
      * @param $data
      * @return array
      * @throws BusinessLogicException
      */
-    public function updatePhone($info, $data)
+    public function updatePhone($dbTrackingOrder, $data)
     {
-        $row = parent::update(['batch_no' => $info['batch_no']], $data);
+        $row = parent::update(['batch_no' => $dbTrackingOrder['batch_no']], $data);
         if ($row === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $batch = $this->getBatchService()->update(['batch_no' => $info['batch_no']], $data);
+        $batch = $this->getBatchService()->update(['batch_no' => $dbTrackingOrder['batch_no']], $data);
         if ($batch === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false);
         return [
-            'order_no' => $info['order_no'],
-            'batch_no' => $info['batch_no'] ?? '',
-            'tour_no' => $info['tour_no'] ?? '',
+            'order_no' => $dbTrackingOrder['order_no'],
+            'out_order_no' => $dbTrackingOrder['out_order_no'],
+            'batch_no' => '',
+            'tour_no' => '',
             'line' => [
-                'line_id' => $tour['line_id'] ?? '',
-                'line_name' => $tour['line_name'] ?? '',
+                'line_id' => '',
+                'line_name' => '',
             ]
         ];
     }
