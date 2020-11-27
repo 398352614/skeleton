@@ -58,13 +58,13 @@ class ThirdPartyLogService extends BaseService
         switch ($notifyType) {
             case BaseConstService::NOTIFY_OUT_WAREHOUSE :
             case BaseConstService::NOTIFY_ACTUAL_OUT_WAREHOUSE:
-                $batchOrderList = array_column($postData['batch_list'], 'order_list');
+                $batchOrderList = array_column($postData['batch_list'], 'tracking_order_list');
                 foreach ($batchOrderList as $orderList) {
                     $orderNoList = array_merge($orderNoList, array_column($orderList, 'order_no'));
                 }
                 break;
             case BaseConstService::NOTIFY_ASSIGN_BATCH:
-                $orderNoList = array_column($postData['batch']['order_list'], 'order_no');
+                $orderNoList = array_column($postData['batch']['tracking_order_list'], 'order_no');
                 break;
             case BaseConstService::NOTIFY_ORDER_CANCEL:
             case BaseConstService::NOTIFY_STORE_ORDER:
