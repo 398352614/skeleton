@@ -870,8 +870,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        $this->getTrackingOrderService()->updateDateAndPhone($dbOrder, $data);
-        return 'true';
+        return $this->getTrackingOrderService()->updateDateAndPhone($dbOrder, $data);
     }
 
     /**

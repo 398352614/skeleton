@@ -363,7 +363,7 @@ class TrackingOrderService extends BaseService
         return [
             'order_no' => $dbTrackingOrder['order_no'],
             'out_order_no' => $dbTrackingOrder['out_order_no'],
-            'batch_no' => $dbTrackingOrder['batch_no'] ?? '',
+            'batch_no' => '',
             'tour_no' => '',
             'line' => [
                 'line_id' => '',
