@@ -50,6 +50,7 @@ class Material extends BaseModel
         'merchant_id',
         'tour_no',
         'batch_no',
+        'tracking_order_no',
         'order_no',
         'execution_date',
         'name',

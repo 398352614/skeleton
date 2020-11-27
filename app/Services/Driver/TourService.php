@@ -736,7 +736,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('此站点已被跳过，请先恢复站点');
         }
         /*******************************************1.处理站点下的材料*************************************************/
-        !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list'], $dbMaterialList);
+        $mSignTrackingOrderList = $this->dealMaterialList($tour, $params['material_list'], $dbMaterialList);
         /*******************************************2.处理站点下的包裹*************************************************/
         list($signTrackingOrderList, $signPackageList) = $this->dealPackageList($batch, $params);
         /****************************************3.处理站点下的顺带包裹************************************************/
@@ -750,7 +750,7 @@ class TourService extends BaseService
                 $pieCount += 1;
             }
         }
-        //签收成功运单
+        //包裹-签收成功运单
         foreach ($signTrackingOrderList as $trackingOrder) {
             //运单签收成功
             $rowCount = $this->getTrackingOrderService()->updateById($trackingOrder['id'], $trackingOrder);
@@ -780,6 +780,20 @@ class TourService extends BaseService
                 if ($rowCount === false) {
                     throw new BusinessLogicException('签收失败');
                 }
+            }
+        }
+        //材料-签收成功订单
+        foreach ($mSignTrackingOrderList as $trackingOrder) {
+            if (!empty($signTrackingOrderList[$trackingOrder['tracking_order_no']])) continue;
+            //运单签收
+            $rowCount = $this->getTrackingOrderService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['status' => BaseConstService::TRACKING_ORDER_STATUS_5]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('签收失败');
+            }
+            //订单签收
+            $rowCount = $this->getOrderService()->update(['order_no' => $trackingOrder['order_no']], ['status' => BaseConstService::ORDER_STATUS_3]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('签收失败');
             }
         }
         //签收失败运单
@@ -858,11 +872,14 @@ class TourService extends BaseService
      * @param $tour
      * @param $materialList
      * @param $dbMaterialList
+     * @return array
      * @throws BusinessLogicException
      */
     private function dealMaterialList($tour, $materialList, $dbMaterialList)
     {
+        if (empty($materialList)) return [];
         $dbMaterialList = array_create_index($dbMaterialList, 'id');
+        $signTrackingOrderList = [];
         foreach ($materialList as $material) {
             $actualQuantity = intval($material['actual_quantity']);
             $rowCount = $this->getMaterialService()->update(['id' => $material['id']], ['actual_quantity' => $actualQuantity]);
@@ -876,7 +893,15 @@ class TourService extends BaseService
             if ($rowCount === false) {
                 throw new BusinessLogicException('材料处理失败');
             }
+            if ($actualQuantity > 0) {
+                $signTrackingOrderList[] = [
+                    'tracking_order_no' => $dbMaterialList[$material['id']]['tracking_order_no'],
+                    'order_no' => $dbMaterialList[$material['id']]['order_no'],
+                    'status' => BaseConstService::TRACKING_ORDER_STATUS_5
+                ];
+            }
         }
+        return $signTrackingOrderList;
     }
 
     /**
@@ -921,9 +946,10 @@ class TourService extends BaseService
                 $orderDeliveryAmount += $packageDeliveryAmount;
             }
             if ($isSignTrackingOrder) {
-                $signTrackingOrderList[] = [
+                $trackingOrderNo = $dbTrackingOrderList[$orderNo]['tracking_order_no'];
+                $signTrackingOrderList[$trackingOrderNo] = [
                     'id' => $dbTrackingOrderList[$orderNo]['id'],
-                    'tracking_order_no' => $dbTrackingOrderList[$orderNo]['tracking_order_no'],
+                    'tracking_order_no' => $trackingOrderNo,
                     'order_no' => $orderNo,
                     'type' => $dbTrackingOrderList[$orderNo]['type'],
                     'sticker_amount' => $orderStickerAmount,

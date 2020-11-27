@@ -50,7 +50,7 @@ class TrackingOrderService extends BaseService
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
         $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
         /*******************************************材料填充取派信息***************************************************/
-//        $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+//        $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no'], 'tracking_order_no' => $trackingOrder['tracking_order_no']]);
 //        if ($rowCount === false) {
 //            throw new BusinessLogicException('操作失败，请重新操作');
 //        }
