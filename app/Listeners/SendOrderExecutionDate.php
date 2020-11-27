@@ -92,6 +92,8 @@ class SendOrderExecutionDate implements ShouldQueue
                     'order_no' => $event->order_no,
                     'out_order_no' => $event->out_order_no,
                     'execution_date' => $event->execution_date,
+                    'second_execution_date' => $event->second_execution_date,
+                    'status' => $event->status,
                     'batch_no' => $event->batch_no,
                     'tour_no' => $event->tour['tour_no'],
                     'line' => Arr::except($event->tour, ['tour_no'])
