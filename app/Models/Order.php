@@ -52,6 +52,7 @@ class Order extends BaseModel
         'execution_date',
         'second_execution_date',
         'out_order_no',
+        'out_group_order_no',
         'express_first_no',
         'express_second_no',
         'mask_code',

@@ -19,6 +19,7 @@ class OrderValidate extends BaseValidate
 
     public $rules = [
         'batch_no' => 'nullable|string|max:50',
+        'out_group_order_no' => 'nullable|string|max:50',
         'out_order_no' => 'nullable|string|max:50',
         'execution_date' => 'required|date|after_or_equal:today',
         'second_execution_date' => 'nullable|date|after_or_equal:today',
@@ -75,7 +76,7 @@ class OrderValidate extends BaseValidate
     public $scene = [
         'store' => [
             'merchant_id', 'execution_date', 'second_execution_date',
-            'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
+            'out_group_order_no', 'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
             'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
@@ -91,7 +92,7 @@ class OrderValidate extends BaseValidate
         ],
         'update' => [
             'merchant_id', 'execution_date', 'second_execution_date', 'mask_code',
-            'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
+            'out_group_order_no', 'out_order_no', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
             'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
