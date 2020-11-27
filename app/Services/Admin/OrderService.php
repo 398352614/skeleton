@@ -698,22 +698,28 @@ class OrderService extends BaseService
         $executionDate = !empty($data['execution_date']) ? $data['execution_date'] : $dbOrder['execution_date'];
         $secondExecutionDate = !empty($data['second_execution_date']) ? $data['second_execution_date'] : $dbOrder['second_execution_date'];
         $status = !empty($data['status']) ? $data['status'] : $dbOrder['status'];
-        event(new OrderExecutionDateUpdated($dbOrder['order_no'], $dbOrder['out_order_no'] ?? '', $executionDate, $secondExecutionDate, $status, '', ['tour_no' => '', 'line_id' => '', 'line_name' => '']));    }
+        event(new OrderExecutionDateUpdated($dbOrder['order_no'], $dbOrder['out_order_no'] ?? '', $executionDate, $secondExecutionDate, $status, '', ['tour_no' => '', 'line_id' => '', 'line_name' => '']));
+    }
 
     /**
      * 删除
      * @param $id
+     * @return string
      * @throws BusinessLogicException
      */
     public function destroy($id)
     {
         //获取信息
-        $dbOrder = $this->getInfoOfStatus(['id' => $id], true);
+        $dbOrder = $this->getInfoOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_5]);
+        if ($dbOrder['status'] == BaseConstService::ORDER_STATUS_5) {
+            return 'true';
+        }
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
+        return 'true';
     }
 
     /**

@@ -316,8 +316,88 @@ class TrackingOrderService extends BaseService
 
     public function updateDateAndPhone($order, $params)
     {
-
+        $dbTrackingOrder = parent::getInfoLock(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
+        if (empty($dbTrackingOrder)) return;
+        //若是取派件中的派件运单,则不处理
+        if (($order['type'] == BaseConstService::ORDER_TYPE_3) && ($dbTrackingOrder->type == BaseConstService::TRACKING_ORDER_TYPE_2)) {
+            return;
+        }
+        //若是取派失败，取派完成，删除，则不处理
+        if (in_array($dbTrackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7])) {
+            return;
+        }
+        //分类
+        if ($dbTrackingOrder['status'] < BaseConstService::ORDER_STATUS_3) {
+            return $this->updateDatePhone($dbTrackingOrder, $params);
+        } elseif (in_array($dbTrackingOrder['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]) && empty($params['execution_date'])) {
+            return $this->updatePhone($dbTrackingOrder, $params);
+        } else {
+            throw new BusinessLogicException('该状态无法进行此操作');
+        }
     }
+
+
+    /**
+     * 通过API修改（电话，取派日期）
+     * @param $dbTrackingOrder
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updateDatePhone($dbTrackingOrder, $data)
+    {
+        $trackingOrder = array_merge($dbTrackingOrder, $data);
+        /*************************************************订单修改******************************************************/
+        //验证
+        unset($trackingOrder['tour_no'], $trackingOrder['batch_no'], $data['order_no'], $data['tour_no'], $data['batch_no']);
+        /******************************更换站点***************************************/
+        $line = $this->fillWarehouseInfo($trackingOrder);
+        list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, true);
+        //修改
+        $rowCount = parent::updateById($dbTrackingOrder['id'], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
+        return [
+            'order_no' => $dbTrackingOrder['order_no'],
+            'batch_no' => $order['batch_no'] ?? '',
+            'tour_no' => $order['tour_no'] ?? '',
+            'line' => [
+                'line_id' => $tour['line_id'] ?? '',
+                'line_name' => $tour['line_name'] ?? '',
+            ]
+        ];
+    }
+
+
+    /**
+     * @param $info
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updatePhone($info, $data)
+    {
+        $row = parent::update(['batch_no' => $info['batch_no']], $data);
+        if ($row === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $batch = $this->getBatchService()->update(['batch_no' => $info['batch_no']], $data);
+        if ($batch === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $tour = $this->getTourService()->getInfo(['tour_no' => $info['tour_no']], ['*'], false);
+        return [
+            'order_no' => $info['order_no'],
+            'batch_no' => $info['batch_no'] ?? '',
+            'tour_no' => $info['tour_no'] ?? '',
+            'line' => [
+                'line_id' => $tour['line_id'] ?? '',
+                'line_name' => $tour['line_name'] ?? '',
+            ]
+        ];
+    }
+
 
     /**
      * 处理材料

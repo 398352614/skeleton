@@ -10,6 +10,7 @@
 namespace App\Services\Merchant;
 
 use App\Events\OrderCancel;
+use App\Events\OrderDelete;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Merchant\OrderInfoResource;
@@ -839,7 +840,8 @@ class OrderService extends BaseService
         $executionDate = !empty($data['execution_date']) ? $data['execution_date'] : $dbOrder['execution_date'];
         $secondExecutionDate = !empty($data['second_execution_date']) ? $data['second_execution_date'] : $dbOrder['second_execution_date'];
         $status = !empty($data['status']) ? $data['status'] : $dbOrder['status'];
-        event(new OrderExecutionDateUpdated($dbOrder['order_no'], $dbOrder['out_order_no'] ?? '', $executionDate, $secondExecutionDate, $status, '', ['tour_no' => '', 'line_id' => '', 'line_name' => '']));    }
+        event(new OrderExecutionDateUpdated($dbOrder['order_no'], $dbOrder['out_order_no'] ?? '', $executionDate, $secondExecutionDate, $status, '', ['tour_no' => '', 'line_id' => '', 'line_name' => '']));
+    }
 
 
     /**
@@ -855,10 +857,6 @@ class OrderService extends BaseService
             'execution_date' => 'required_without:place_phone|date|after_or_equal:today'
         ]);
         $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
-        list($phone, $executionDate) = [$data['place_phone'] ?? '', $data['execution_date'] ?? null];
-        if (in_array($dbOrder['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4, BaseConstService::ORDER_STATUS_5])) {
-            throw new BusinessLogicException('该状态无法进行此操作');
-        }
         $data = array_filter(Arr::only($data, ['place_phone', 'execution_date']));
         $rowCount = parent::updateById($dbOrder['id'], $data);
         if ($rowCount === false) {
@@ -895,7 +893,10 @@ class OrderService extends BaseService
     public function destroy($id, $params)
     {
         //获取信息
-        $dbOrder = $this->getInfoByIdOfStatus($id, true);
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_5]);
+        if ($dbOrder['status'] == BaseConstService::ORDER_STATUS_5) {
+            return 'true';
+        }
         $rowCount = parent::updateById($dbOrder['id'], ['status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
@@ -904,7 +905,7 @@ class OrderService extends BaseService
 
         if ((!empty($params['no_push']) && $params['no_push'] == 0) || empty($params['no_push'])) {
             //以取消取派方式推送商城
-            event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
+            event(new OrderDelete($dbOrder['order_no'], $dbOrder['out_order_no']));
         }
         return 'true';
     }
