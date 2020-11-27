@@ -157,6 +157,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/get-line', 'TrackingOrderController@getLineList');
         //列表查询
         Route::get('/', 'TrackingOrderController@index');
+        //获取详情
+        Route::get('/{id}', 'TrackingOrderController@show');
         //获取可分配路线日期
         Route::get('/{id}/get-date', 'TrackingOrderController@getAbleDateList');
         //获取可分配的站点列表
@@ -503,7 +505,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取可上传的文件目录列表
         Route::get('file-dir', 'UploadController@getFileDirList');
         //下载
-        Route::post('file-download','UploadController@fileDownload');
+        Route::post('file-download', 'UploadController@fileDownload');
 
         Route::post('file', 'UploadController@fileUpload');
     });

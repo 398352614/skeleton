@@ -11,6 +11,7 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\Api\Admin\TrackingOrderInfoResource;
 use App\Http\Resources\Api\Admin\TrackingOrderResource;
 use App\Jobs\AddOrderPush;
 use App\Models\Order;
@@ -82,7 +83,7 @@ class TrackingOrderService extends BaseService
 
     public function __construct(TrackingOrder $trackingOrder)
     {
-        parent::__construct($trackingOrder, TrackingOrderResource::class, null);
+        parent::__construct($trackingOrder, TrackingOrderResource::class, TrackingOrderInfoResource::class);
     }
 
     /**
@@ -182,6 +183,12 @@ class TrackingOrderService extends BaseService
             $trackingOrder['exception_stage_name'] = !empty($batchException) ? ConstTranslateTrait::batchExceptionStageList($batchException['stage']) : __('正常');
         }
         return $list;
+    }
+
+    public function show($id)
+    {
+        $dbTrackingOrder = parent::getInfo(['id' => $id], ['*'], true);
+        return !empty($dbTrackingOrder) ? $dbTrackingOrder : [];
     }
 
     /**
