@@ -122,6 +122,13 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
+        if(!empty($this->formData['keyword'])){
+            $trackingOrderList=$this->getTrackingOrderService()->getList(['order_no'=>$this->formData['keyword']]);
+            if(!empty($trackingOrderList)){
+                $trackingOrderList=$trackingOrderList->pluck('order_no')->toArray();
+                $this->query->whereIn('order_no',$trackingOrderList);
+            }
+        }
         return parent::getPageList();
     }
 
