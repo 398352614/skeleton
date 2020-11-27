@@ -356,11 +356,6 @@ class BatchService extends BaseService
 
         TrackingOrderTrailService::storeAllByTrackingOrderList($trackingOrderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
         OrderTrailService::storeAllByOrderList($trackingOrderList, BaseConstService::ORDER_TRAIL_FAIL);
-
-        //取消通知
-        foreach ($trackingOrderList as $trackingOrder) {
-            //event(new OrderCancel($trackingOrder['order_no'], $trackingOrder['out_order_no']));
-        }
     }
 
     /**

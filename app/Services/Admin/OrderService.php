@@ -9,6 +9,7 @@
 
 namespace App\Services\Admin;
 
+use App\Events\OrderCancel;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\OrderInfoResource;
 use App\Http\Resources\Api\Admin\OrderResource;
@@ -316,6 +317,8 @@ class OrderService extends BaseService
             throw new BusinessLogicException('操作失败，请重新操作');
         }
         OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CLOSED);
+        //取消通知
+        event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
     }
 
     /**

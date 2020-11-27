@@ -88,6 +88,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         \App\Events\OrderCancel::class => [
             SendOrderCancel::class
+        ],
+        \App\Events\OrderDelete::class => [
+            SendOrderCancel::class
         ]
     ];
 
