@@ -53,9 +53,10 @@ class RouteTrackingService extends BaseService
         $batchList = collect($batchList)->sortBy('sort_id')->all();
         $batchList = array_values($batchList);
         foreach ($batchList as $k => $v) {
+            $batchList[$k] = collect($batchList[$k])->toArray();
             $batchList[$k]['sort_id'] = $k + 1;
             $batchList[$k] = array_only_fields_sort($batchList[$k], ['batch_no', 'place_fullname', 'place_address', 'place_lon', 'place_lat', 'expect_arrive_time', 'actual_arrive_time', 'sort_id']);
-            $batchList[$k]['event']=[];
+            $batchList[$k]['event'] = [];
         }
         $tourEventList = $this->getTourDriverService()->getList(['tour_no' => $tour['tour_no']]);
         if (empty($tourEventList)) {
@@ -67,7 +68,7 @@ class RouteTrackingService extends BaseService
                 $batchList[$k]['event'] = array_merge($batchList[$k]['event'], $tourEvent);
             }
         }
-        $batchList = collect($batchList)->whereNotNull('event')->where('event','<>',[])->sortBy('actual_arrive_time')->all();
+        $batchList = collect($batchList)->whereNotNull('event')->where('event', '<>', [])->sortBy('actual_arrive_time')->all();
         $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
         //插入出库事件
         $out = [[
@@ -91,7 +92,7 @@ class RouteTrackingService extends BaseService
         if (!empty($tour->driver)) {
             $driver = Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']);
         } else {
-            $driver = ['id'=>'', 'email'=>'', 'fullname'=>'', 'phone'=>''];
+            $driver = ['id' => '', 'email' => '', 'fullname' => '', 'phone' => ''];
         }
         return [
             'driver' => $driver,
