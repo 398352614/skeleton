@@ -20,6 +20,7 @@ use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
+use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
@@ -330,10 +331,11 @@ class TrackingOrderService extends BaseService
         if (in_array($dbTrackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7])) {
             return;
         }
+        $dbTrackingOrder=$dbTrackingOrder->toArray();
         //分类
-        if ($dbTrackingOrder['status'] < BaseConstService::ORDER_STATUS_3) {
+        if ($dbTrackingOrder['status'] == BaseConstService::ORDER_STATUS_1) {
             return $this->updateDatePhone($dbTrackingOrder, $params);
-        } elseif (in_array($dbTrackingOrder['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4]) && empty($params['execution_date'])) {
+        } elseif ($dbTrackingOrder['status'] == BaseConstService::ORDER_STATUS_2 && empty($params['execution_date'])) {
             return $this->updatePhone($dbTrackingOrder, $params);
         } else {
             throw new BusinessLogicException('该状态无法进行此操作');
@@ -356,7 +358,7 @@ class TrackingOrderService extends BaseService
         unset($trackingOrder['tour_no'], $trackingOrder['batch_no'], $data['order_no'], $data['tour_no'], $data['batch_no']);
         /******************************更换站点***************************************/
         $line = $this->fillWarehouseInfo($trackingOrder);
-        $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, true, [], false, true);
+        $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, null, [], false, true);
         return [
             'order_no' => $dbTrackingOrder['order_no'],
             'out_order_no' => $dbTrackingOrder['out_order_no'],

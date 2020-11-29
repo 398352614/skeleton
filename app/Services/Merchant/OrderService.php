@@ -881,25 +881,31 @@ class OrderService extends BaseService
      */
     public function updatePhoneDateByApiList($params)
     {
+        $params['order_no_list'] = explode(',', $params['order_no_list']);
         $this->request->validate([
             'order_no_list' => 'required',
             'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
             'execution_date' => 'required_without:place_phone|date|after_or_equal:today'
         ]);
-        $dbOrderList = $this->getList(['id' => ['in', $params['order_no_list']]], ['*'], false);
-        if (empty($dbOrderList)) {
+        $dbOrderList = parent::getList(['order_no' => ['in', $params['order_no_list']]], ['*'], false);
+        if ($dbOrderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
-        if (array_unique(collect($dbOrderList)->pluck('phone')->toArray()) !== 1 || array_unique(collect($dbOrderList)->pluck('execution_date')->toArray()) !== 1) {
+        $dbOrderList = $dbOrderList->toArray();
+        if (count(array_unique(collect($dbOrderList)->pluck('place_phone')->toArray())) > 1 || count(array_unique(collect($dbOrderList)->pluck('execution_date')->toArray())) > 1) {
             throw new BusinessLogicException('所选多个订单电话或取件日期不一致，无法统一修改');
         }
         $data = array_filter(Arr::only($params, ['place_phone', 'execution_date']));
-        $rowCount = parent::update(['id' => ['in', $params['order_no_list']]], $data);
+        $rowCount = parent::update(['order_no' => ['in', $params['order_no_list']]], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        $rowCount = $this->getTrackingOrderService()->update(['order_no' => ['in', $params['order_no_list']]], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
         foreach ($params['order_no_list'] as $k => $v) {
-            $this->getTrackingOrderService()->updateDateAndPhone($v, $data);
+            $this->getTrackingOrderService()->updateDateAndPhone(['order_no' => $v], $data);
         }
         return '';
     }
