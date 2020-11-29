@@ -11,6 +11,7 @@ namespace App\Services\Driver;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
+use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 
 class OrderService extends BaseService
@@ -63,6 +64,41 @@ class OrderService extends BaseService
         $secondExecutionDate = !empty($data['second_execution_date']) ? $data['second_execution_date'] : $dbOrder['second_execution_date'];
         $status = !empty($data['status']) ? $data['status'] : $dbOrder['status'];
         event(new OrderExecutionDateUpdated($dbOrder['order_no'], $dbOrder['out_order_no'] ?? '', $executionDate, $secondExecutionDate, $status, '', ['tour_no' => '', 'line_id' => '', 'line_name' => '']));
+    }
+
+
+    /**
+     * 获取运单类型
+     * @param $order
+     * @param TrackingOrder
+     * @return int|null
+     */
+    public function getTrackingOrderType($order, TrackingOrder $trackingOrder = null)
+    {
+        (empty($trackingOrder)) && $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
+        //1.运单不存在,直接获取运单类型
+        if (empty($trackingOrder)) {
+            return $this->getTrackingOrderService()->getTypeByOrderType($order['type']);
+        }
+        $trackingOrder = $trackingOrder->toArray();
+        //2.当运单存在时，若运单不是取派完成或者取派失败,则表示已存在取派的运单
+        if (!in_array($trackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])) {
+            return null;
+        }
+        //3.当运单存在时，若运单为取派失败,则新增取派失败的运单
+        if ($trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
+            return $trackingOrder['type'];
+        }
+        //4.当运单存在时，当运单为取派完成，若订单为取件或派件,则表示不需要新增运单
+        if (in_array($order['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
+            return null;
+        }
+        //5.当运单存在时，当运单为取派完成，当订单为取派件,若运单为派件类型，则表示不需要新增运单
+        if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
+            return null;
+        }
+        //6.当运单存在时，当运单为取派完成，当订单为取派件,若运单为取件类型，则表示新增派件派件运单
+        return BaseConstService::TRACKING_ORDER_TYPE_2;
     }
 
 

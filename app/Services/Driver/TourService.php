@@ -1177,29 +1177,53 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败，请重新操作');
         }
-        //存在取派订单且取件运单成功的，生成派件运单
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5], ['*'], false)->toArray();
-        $orderNoList = array_column($trackingOrderList, 'order_no');
-        $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList], 'type' => BaseConstService::ORDER_TYPE_3, 'status' => BaseConstService::ORDER_STATUS_2], ['*'], false)->toArray();
-        foreach ($orderList as $order) {
-            $trackingOrder = [];
-            $trackingOrder['place_fullname'] = $order['second_place_fullname'];
-            $trackingOrder['place_phone'] = $order['second_place_phone'];
-            $trackingOrder['place_country'] = $order['second_place_country'];
-            $trackingOrder['place_post_code'] = $order['second_place_post_code'];
-            $trackingOrder['place_house_number'] = $order['second_place_house_number'];
-            $trackingOrder['place_city'] = $order['second_place_city'];
-            $trackingOrder['place_street'] = $order['second_place_street'];
-            $trackingOrder['place_address'] = $order['second_place_address'];
-            $trackingOrder['place_lon'] = $order['second_place_lon'];
-            $trackingOrder['place_lat'] = $order['second_place_lat'];
-            $trackingOrder['execution_date'] = !empty($order['second_execution_date']) ? $order['second_execution_date'] : Carbon::parse($order['execution_date'])->addDay()->format('Y-m-d');
-            $trackingOrder['type'] = BaseConstService::TRACKING_ORDER_TYPE_2;
-            $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'order_no', 'out_user_id', 'out_order_no', 'mask_code', 'special_remark']));
-            $this->getTrackingOrderService()->store($trackingOrder, $order['order_no']);
-        }
         return $tour;
     }
+
+    /**
+     * 分拣入库
+     * @param $packageNo
+     * @throws BusinessLogicException
+     */
+    public function packagePickOut($packageNo)
+    {
+        $package = $this->getPackageService()->getInfo(['express_first_no' => $packageNo], ['*'], false, ['created_at' => 'desc']);
+        if (empty($package)) {
+            throw new BusinessLogicException('当前包裹不存在系统中');
+        }
+        if (in_array($package->status, [BaseConstService::PACKAGE_STATUS_3, BaseConstService::PACKAGE_STATUS_4])) {
+            throw new BusinessLogicException('当前包裹已取消取派或删除');
+        }
+        $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
+        $type = $this->getOrderService()->getTrackingOrderType($order);
+        if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
+            throw new BusinessLogicException('当前包裹不能生成对应派件运单');
+        }
+        if (!empty($order['second_execution_date'])) {
+            $executionDate = $order['second_execution_date'];
+            $line = [];
+        } else {
+            list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $order['second_place_post_code'], 'type' => $type], $order['merchant_id']);
+        }
+        $trackingOrder[] = [
+            'place_fullname' => $order['second_place_fullname'],
+            'place_phone' => $order['second_place_phone'],
+            'place_country' => $order['second_place_country'],
+            'place_post_code' => $order['second_place_post_code'],
+            'place_house_number' => $order['second_place_house_number'],
+            'place_city' => $order['second_place_city'],
+            'place_street' => $order['second_place_street'],
+            'place_address' => $order['second_place_address'],
+            'place_lat' => $order['second_place_lat'],
+            'place_lon' => $order['second_place_lon'],
+            'execution_date' => $executionDate,
+            'type' => $type,
+        ];
+        $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'order_no', 'out_user_id', 'out_order_no', 'mask_code', 'special_remark']));
+        $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line);
+        //todo 新增分拣日志
+    }
+
 
     /**
      * 更新批次配送顺序

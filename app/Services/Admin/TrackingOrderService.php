@@ -226,12 +226,9 @@ class TrackingOrderService extends BaseService
         $trackingOrder = $trackingOrder->getAttributes();
         /*****************************************运单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
-        $this->fillBatchTourInfo($trackingOrder, $batch, $tour);
-        /*******************************************材料填充取派信息***************************************************/
-        $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no'], 'tracking_order_no' => $trackingOrder['tracking_order_no']]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败，请重新操作');
-        }
+        $trackingOrder = $this->fillBatchTourInfo($trackingOrder, $batch, $tour);
+        /*******************************************填充运单信息至订单***************************************************/
+        $this->fillToOrder($orderNo, $trackingOrder);
         //自动记录
         $this->record($trackingOrder);
         //重新统计站点金额
@@ -411,11 +408,37 @@ class TrackingOrderService extends BaseService
     }
 
     /**
+     * 填充运单信息至订单
+     * @param $orderNo
+     * @param $trackingOrder
+     * @params $fillMaterial
+     * @throws BusinessLogicException
+     */
+    public function fillToOrder($orderNo, $trackingOrder, $fillMaterial = true)
+    {
+        if ($fillMaterial == true) {
+            $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['batch_no' => $trackingOrder['batch_no'], 'tour_no' => $trackingOrder['tour_no'], 'tracking_order_no' => $trackingOrder['tracking_order_no']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败，请重新操作');
+            }
+        }
+        $rowCount = $this->getPackageService()->update(['order_no' => $orderNo], ['tracking_order_no' => $trackingOrder['tracking_order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        $rowCount = $this->getPackageService()->update(['order_no' => $orderNo], ['tracking_order_no' => $trackingOrder['tracking_order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+    }
+
+    /**
      * 填充运单数据
      * @param $trackingOrder
      * @param $batch
      * @param $tour
      * @param boolean $isUpdateOrder
+     * @return array
      * @throws BusinessLogicException
      */
     public function fillBatchTourInfo($trackingOrder, $batch, $tour, $isUpdateOrder = false)
@@ -425,7 +448,9 @@ class TrackingOrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
-        ($isUpdateOrder == true) && $this->getOrderService()->updateByTrackingOrder(array_merge($trackingOrder, $data));
+        $trackingOrder = array_merge($trackingOrder, $data);
+        ($isUpdateOrder == true) && $this->getOrderService()->updateByTrackingOrder($trackingOrder);
+        return $trackingOrder;
     }
 
     /**
@@ -440,6 +465,8 @@ class TrackingOrderService extends BaseService
             'execution_date' => $batch['execution_date'],
             'batch_no' => $batch['batch_no'],
             'tour_no' => $tour['tour_no'],
+            'line_id' => $tour['line_id'],
+            'line_name' => $tour['line_name'],
             'driver_id' => $tour['driver_id'] ?? null,
             'driver_name' => $tour['driver_name'] ?? '',
             'driver_phone' => $tour['driver_phone'] ?? '',
