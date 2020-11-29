@@ -7,7 +7,7 @@
  */
 $key = 'OY17evPMwM6az5Bdobqz';
 $secret = 'MmkEv1pRgVyN9aBan3Q1N5X7j4WA96oO';
-$api= "https://dev-tms.nle-tech.com/api/merchant_api/order-update-phone-date-list";
+$api= "https://dev02-tms.nle-tech.com/api/merchant_api/order-update-phone-date-list";
 
 //参数
 $options = [
