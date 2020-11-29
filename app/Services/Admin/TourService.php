@@ -795,9 +795,11 @@ class TourService extends BaseService
             $info['batchs'][$k]['sort_id'] = $k + 1;
         }
         $info['batchs'] = array_values($info['batchs']);
-        $status = [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2, BaseConstService::PACKAGE_STATUS_3, BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5];
-        $info['expect_pickup_package_quantity'] = $this->getPackageService()->count(['tour_no' => $info['tour_no'], 'type' => BaseConstService::PACKAGE_TYPE_1, 'status' => ['in', $status]]);
-        $info['expect_pie_package_quantity'] = $this->getPackageService()->count(['tour_no' => $info['tour_no'], 'type' => BaseConstService::PACKAGE_TYPE_2, 'status' => ['in', $status]]);
+        $status = [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2, BaseConstService::PACKAGE_STATUS_3];
+        $pickupTrackingOrderList = collect($trackingOrderTotalList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_1)->toArray();
+        $pieTrackingOrderList=collect($trackingOrderTotalList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_2)->toArray();
+        $info['expect_pickup_package_quantity'] = $this->getPackageService()->count(['package_no' => ['in', $pickupTrackingOrderList], 'status' => ['in', $status]]);
+        $info['expect_pie_package_quantity'] = $this->getPackageService()->count(['package_no' => ['in', $pieTrackingOrderList], 'status' => ['in', $status]]);
         return $info;
     }
 
