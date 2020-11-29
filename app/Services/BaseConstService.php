@@ -358,6 +358,7 @@ class BaseConstService
     const NOTIFY_RECHARGE_PROCESS = 'recharge-process';   //同步订单状态
     const NOTIFY_RECHARGE_VALIDUSER = 'recharge-validuser';   //同步订单状态
     const NOTIFY_STORE_ORDER = 'store-order';               //订单新增
+    const NOTIFY_PACKAGE_INFO = 'package-info';   //发送包裹信息
 
 
     //商户类型

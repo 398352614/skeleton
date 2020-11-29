@@ -63,6 +63,8 @@ class StockService extends BaseService
             'type' => $type,
         ];
         $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'order_no', 'out_user_id', 'out_order_no', 'mask_code', 'special_remark']));
+        //生成运单号
+        $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
         $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line);
         //包裹分拣
         $this->pickOut($package, $tour, $trackingOrder);

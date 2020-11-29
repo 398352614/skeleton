@@ -50,6 +50,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'admins',
         ],
+        'admin_api' => [
+            'driver' => 'admin_api',
+            'provider' => 'admins_api',
+        ],
         'driver' => [
             'driver' => 'jwt',
             'provider' => 'drivers',
@@ -101,6 +105,10 @@ return [
         'merchants_api' => [
             'driver' => 'eloquent_merchant_api',
             'model' => \App\Models\MerchantApi::class,
+        ],
+        'admins_api' => [
+            'driver' => 'eloquent_admin_api',
+            'model' => \App\Models\AdminApi::class,
         ],
     ],
 

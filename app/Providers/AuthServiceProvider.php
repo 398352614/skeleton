@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Services\Auth\AdminApiGuard;
+use App\Services\Auth\EloquentAdminApiProvider;
 use App\Services\Auth\EloquentMerchantApiProvider;
 use App\Services\Auth\MerchantApiGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -35,6 +37,16 @@ class AuthServiceProvider extends ServiceProvider
         Auth::provider('eloquent_merchant_api', function ($app, array $config) {
             // Return an instance of Illuminate\Contracts\Auth\UserProvider...
             return new EloquentMerchantApiProvider(new \App\Hash\MerchantApi(), $config['model']);
+        });
+
+        Auth::extend('admin_api', function ($app, $name, array $config) {
+            // Return an instance of Illuminate\Contracts\Auth\Guard...
+            return new AdminApiGuard(Auth::createUserProvider($config['provider']), $this->app['request']);
+        });
+
+        Auth::provider('eloquent_admin_api', function ($app, array $config) {
+            // Return an instance of Illuminate\Contracts\Auth\UserProvider...
+            return new EloquentAdminApiProvider(new \App\Hash\MerchantApi(), $config['model']);
         });
 
     }

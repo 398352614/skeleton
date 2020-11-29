@@ -39,8 +39,6 @@ class TrackingOrderService extends BaseService
     {
         //填充发件人信息
         $line = $this->fillWarehouseInfo($params, BaseConstService::YES, $line);
-        //生成运单号
-        $params['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
         /**********************************************生成运单********************************************************/
         $trackingOrder = parent::create($params);
         if ($trackingOrder == false) {
