@@ -543,6 +543,7 @@ class OrderService extends BaseService
                     ->put('order_no', $params['order_no'])
                     ->put('merchant_id', $params['merchant_id'])
                     ->put('execution_date', $params['execution_date'])
+                    ->put('second_execution_date', $params['second_execution_date'] ?? null)
                     ->put('status', $status)
                     ->put('type', $params['type']);
             })->toArray();
