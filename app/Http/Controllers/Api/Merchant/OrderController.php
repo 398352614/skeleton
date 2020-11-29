@@ -126,11 +126,10 @@ class OrderController extends OrderBaseController
     }
 
     /**
-     * @param $id
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function updateByApiList($id)
+    public function updateByApiList()
     {
         return $this->service->updatePhoneDateByApiList($this->data);
     }
@@ -223,7 +222,8 @@ class OrderController extends OrderBaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function track($id){
+    public function track($id)
+    {
         return $this->service->track($id);
     }
 }

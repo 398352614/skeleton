@@ -7,12 +7,12 @@
  */
 $key = 'OY17evPMwM6az5Bdobqz';
 $secret = 'MmkEv1pRgVyN9aBan3Q1N5X7j4WA96oO';
-$api= "https://dev-tms.nle-tech.com/api/merchant_api/order-update-phone-date-list";
+$api= "https://dev02-tms.nle-tech.com/api/merchant_api/order-update-phone-date-list";
 
 //参数
 $options = [
-    'order_no_list' => 'SMAAADUI0001,SMAAADUH0001',      //邮编
-    'execution_date' => '2020-11-29',      //邮编
+    'order_no_list' => 'SMAAADRY0001',      //邮编
+    'execution_date' => '2020-11-30',      //邮编
     'place_phone' => '110',      //邮编
 ];
 

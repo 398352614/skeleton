@@ -901,6 +901,7 @@ class OrderService extends BaseService
         foreach ($params['order_no_list'] as $k => $v) {
             $this->getTrackingOrderService()->updateDateAndPhone($v, $data);
         }
+        return '';
     }
 
     /**
