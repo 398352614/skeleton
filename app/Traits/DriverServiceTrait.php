@@ -6,6 +6,8 @@ use App\Services\Driver\AdditionalPackageService;
 use App\Services\Driver\LineAreaService;
 use App\Services\Driver\LineRangeService;
 use App\Services\Driver\MerchantLineRangeService;
+use App\Services\Driver\StockLogService;
+use App\Services\Driver\StockService;
 use App\Services\Driver\TourDelayService;
 use App\Services\Driver\BatchExceptionService;
 use App\Services\Driver\BatchService;
@@ -34,6 +36,24 @@ Trait DriverServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * 库存服务
+     * @return StockService
+     */
+    public function getStockService()
+    {
+        return self::getInstance(StockService::class);
+    }
+
+    /**
+     * 库存日志 服务
+     * @return StockLogService
+     */
+    public function getStockLogService()
+    {
+        return self::getInstance(StockLogService::class);
     }
 
     /**

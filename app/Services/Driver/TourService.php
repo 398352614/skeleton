@@ -1220,8 +1220,9 @@ class TourService extends BaseService
             'type' => $type,
         ];
         $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'order_no', 'out_user_id', 'out_order_no', 'mask_code', 'special_remark']));
-        $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line);
-        //todo 新增分拣日志
+        $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line);
+        //包裹分拣
+        $this->getStockService()->pickOut($package, $tour, $trackingOrder);
     }
 
 

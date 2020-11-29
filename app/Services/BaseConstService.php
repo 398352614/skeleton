@@ -432,7 +432,12 @@ class BaseConstService
     const TOUR_DELAY_TYPE_3 = 3;
     const TOUR_DELAY_TYPE_4 = 4;
 
-    //包裹类型1取2派
+    //包裹类型1取2派3-取派
     const PACKAGE_TYPE_1 = 1;
     const PACKAGE_TYPE_2 = 2;
+    const PACKAGE_TYPE_3 = 3;
+
+    //包裹仓库类型1-入库2-出库
+    const WAREHOUSE_PACKAGE_TYPE_1 = 1;
+    const WAREHOUSE_PACKAGE_TYPE_2 = 2;
 }
