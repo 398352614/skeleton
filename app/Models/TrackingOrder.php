@@ -57,6 +57,8 @@ class TrackingOrder extends BaseModel
         'tracking_order_no',
         'batch_no',
         'tour_no',
+        'line_id',
+        'line_name',
         'type',
         'execution_date',
         'warehouse_fullname',
