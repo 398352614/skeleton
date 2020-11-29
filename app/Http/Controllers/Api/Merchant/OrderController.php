@@ -126,6 +126,16 @@ class OrderController extends OrderBaseController
     }
 
     /**
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function updateByApiList($id)
+    {
+        return $this->service->updatePhoneDateByApiList($this->data);
+    }
+
+    /**
      * 修改订单清单
      * @param $id
      * @throws BusinessLogicException

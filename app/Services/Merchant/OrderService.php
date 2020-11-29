@@ -875,25 +875,32 @@ class OrderService extends BaseService
 
     /**
      * 批量修改电话和日期
-     * @param $id
-     * @param $data
+     * @param $params
      * @return boolean|array
      * @throws BusinessLogicException
      */
-    public function updatePhoneDateByApiList($data)
+    public function updatePhoneDateByApiList($params)
     {
         $this->request->validate([
-            'order_no_list'=>'required',
+            'order_no_list' => 'required',
             'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
             'execution_date' => 'required_without:place_phone|date|after_or_equal:today'
         ]);
-        $dbOrder = $this->getInfoLock(['id'=>['in',$data['order_no_list']]],['*'],false);
-        $data = array_filter(Arr::only($data, ['place_phone', 'execution_date']));
-        $rowCount = parent::updateById($dbOrder['id'], $data);
+        $dbOrderList = $this->getList(['id' => ['in', $params['order_no_list']]], ['*'], false);
+        if (empty($dbOrderList)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if (array_unique(collect($dbOrderList)->pluck('phone')->toArray()) !== 1 || array_unique(collect($dbOrderList)->pluck('execution_date')->toArray()) !== 1) {
+            throw new BusinessLogicException('所选多个订单电话或取件日期不一致，无法统一修改');
+        }
+        $data = array_filter(Arr::only($params, ['place_phone', 'execution_date']));
+        $rowCount = parent::update(['id' => ['in', $params['order_no_list']]], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        return $this->getTrackingOrderService()->updateDateAndPhone($dbOrder, $data);
+        foreach ($params['order_no_list'] as $k => $v) {
+            $this->getTrackingOrderService()->updateDateAndPhone($v, $data);
+        }
     }
 
     /**
@@ -1033,7 +1040,7 @@ class OrderService extends BaseService
      */
     public function track($id)
     {
-        $order = parent::getInfo(['id' => $id],['*'],false);
+        $order = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($order)) {
             throw new BusinessLogicException('数据不存在');
         }

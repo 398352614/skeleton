@@ -326,7 +326,7 @@ class TrackingOrderService extends BaseService
         $dbTrackingOrder = parent::getInfoLock(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         if (empty($dbTrackingOrder)) return;
         //若是取派件中的派件运单,则不处理
-        if (($order['type'] == BaseConstService::ORDER_TYPE_3) && ($dbTrackingOrder->type == BaseConstService::TRACKING_ORDER_TYPE_2)) {
+        if (($dbTrackingOrder['type'] == BaseConstService::ORDER_TYPE_3) && ($dbTrackingOrder->type == BaseConstService::TRACKING_ORDER_TYPE_2)) {
             return;
         }
         //若是取派失败，取派完成，删除，则不处理
