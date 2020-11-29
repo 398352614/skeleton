@@ -220,6 +220,15 @@ class TourController extends BaseController
     }
 
     /**
+     * 包裹分拣入库
+     * @throws BusinessLogicException
+     */
+    public function packagePickOut()
+    {
+        return $this->service->packagePickOut($this->data['express_first_no']);
+    }
+
+    /**
      * @api {POST}  api/driver/tour/update-batch-index 管理员端:更新批次的派送顺序
      * @apiName update-batch-index
      * @apiGroup driver
