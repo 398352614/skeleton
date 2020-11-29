@@ -304,7 +304,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     $column = [
                         'A' => 15,
                         'B' => 10,
-                        'C' => 5,
+                        'C' => 10,
                         'D' => 15,
                         'E' => 10,
                         'F' => 10,
