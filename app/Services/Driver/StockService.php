@@ -66,6 +66,11 @@ class StockService extends BaseService
         $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line);
         //包裹分拣
         $this->pickOut($package, $tour, $trackingOrder);
+        return [
+            'line_id' => $tour['line_id'],
+            'line_name' => $tour['line_name'],
+            'execution_date' => $executionDate
+        ];
     }
 
 
