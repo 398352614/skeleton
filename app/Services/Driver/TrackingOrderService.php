@@ -80,7 +80,7 @@ class TrackingOrderService extends BaseService
     private function fillWarehouseInfo(&$params, $merchantAlone = BaseConstService::NO, $line = [])
     {
         //获取线路
-        !empty($line) && $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
+        empty($line) && $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
         //获取仓库
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {

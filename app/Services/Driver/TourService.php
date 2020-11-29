@@ -1205,7 +1205,7 @@ class TourService extends BaseService
         } else {
             list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $order['second_place_post_code'], 'type' => $type], $order['merchant_id']);
         }
-        $trackingOrder[] = [
+        $trackingOrder = [
             'place_fullname' => $order['second_place_fullname'],
             'place_phone' => $order['second_place_phone'],
             'place_country' => $order['second_place_country'],
