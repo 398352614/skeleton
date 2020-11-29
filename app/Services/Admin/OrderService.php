@@ -826,12 +826,12 @@ class OrderService extends BaseService
                 $orderList[$k]['material_name'] = [];
                 $orderList[$k]['material_quantity'] = 0;
             }
-            if ($v['type'] == BaseConstService::ORDER_TYPE_1) {
+            if ($v['type'] == BaseConstService::ORDER_TYPE_2) {
                 $orderList[$k]['receiver_post_code'] = $orderList[$k]['place_post_code'];
                 $orderList[$k]['receiver_house_number'] = $orderList[$k]['place_house_number'];
                 $orderList[$k]['receiver_execution_date'] = $orderList[$k]['execution_date'];
                 $orderList[$k]['sender_post_code'] = $orderList[$k]['sender_house_number'] = $orderList[$k]['sender_execution_date'] = '';
-            } elseif ($v['type'] == BaseConstService::ORDER_TYPE_2) {
+            } elseif ($v['type'] == BaseConstService::ORDER_TYPE_1) {
                 $orderList[$k]['sender_post_code'] = $orderList[$k]['place_post_code'];
                 $orderList[$k]['sender_house_number'] = $orderList[$k]['place_house_number'];
                 $orderList[$k]['sender_execution_date'] = $orderList[$k]['execution_date'];
