@@ -803,6 +803,16 @@ class TourService extends BaseService
         return $info;
     }
 
+    /**
+     * 通过线路ID 获取可加入的取件线路列表
+     * @param $lineId
+     * @return array
+     */
+    public function getListJoinByLineId($data)
+    {
+        $list = parent::getList(['line_id' => $data['line_id'], 'execution_date' => $data['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]], ['id', 'tour_no'], false)->toArray();
+        return $list;
+    }
 
     protected function getRelativeUrl(string $url): string
     {
