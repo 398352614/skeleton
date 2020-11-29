@@ -837,13 +837,13 @@ class OrderService extends BaseService
                 $orderList[$k]['sender_execution_date'] = $orderList[$k]['execution_date'];
                 $orderList[$k]['receiver_post_code'] = $orderList[$k]['receiver_house_number'] = $orderList[$k]['receiver_execution_date'] = '';
             } elseif ($v['type'] == BaseConstService::ORDER_TYPE_3) {
-                $orderList[$k]['sender_post_code'] = $orderList[$k]['place_post_code'];
-                $orderList[$k]['sender_house_number'] = $orderList[$k]['place_house_number'];
-                $orderList[$k]['sender_execution_date'] = $orderList[$k]['execution_date'];
+                $orderList[$k]['receiver_post_code'] = $orderList[$k]['place_post_code'];
+                $orderList[$k]['receiver_house_number'] = $orderList[$k]['place_house_number'];
+                $orderList[$k]['receiver_execution_date'] = $orderList[$k]['execution_date'];
 
-                $orderList[$k]['receiver_post_code'] = $orderList[$k]['second_place_post_code'];
-                $orderList[$k]['receiver_house_number'] = $orderList[$k]['second_place_house_number'];
-                $orderList[$k]['receiver_execution_date'] = $orderList[$k]['second_execution_date'];
+                $orderList[$k]['sender_post_code'] = $orderList[$k]['second_place_post_code'];
+                $orderList[$k]['sender_house_number'] = $orderList[$k]['second_place_house_number'];
+                $orderList[$k]['sender_execution_date'] = $orderList[$k]['second_execution_date'];
             }
         }
         $cellData = [];
