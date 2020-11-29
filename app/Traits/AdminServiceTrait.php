@@ -29,6 +29,8 @@ use App\Services\Admin\PackageService;
 use App\Services\Admin\PrintTemplateService;
 use App\Services\Admin\RechargeService;
 use App\Services\Admin\RechargeStatisticsService;
+use App\Services\Admin\StockLogService;
+use App\Services\Admin\StockService;
 use App\Services\Admin\TourDriverService;
 use App\Services\Admin\TourService;
 use App\Services\Admin\TrackingOrderService;
@@ -53,6 +55,24 @@ trait AdminServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * 库存服务
+     * @return StockService
+     */
+    public function getStockService()
+    {
+        return self::getInstance(StockService::class);
+    }
+
+    /**
+     * 库存日志 服务
+     * @return StockLogService
+     */
+    public function getStockLogService()
+    {
+        return self::getInstance(StockLogService::class);
     }
 
     /**

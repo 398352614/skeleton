@@ -133,6 +133,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'PackageController@show');
     });
 
+    //库存管理
+    Route::prefix('stock')->group(function () {
+        //列表查询
+        Route::get('/', 'StockController@index');
+        //获取日志
+        Route::get('/{express_first_no}/log', 'StockController@getStockLogList');
+    });
+
     Route::prefix('material')->group(function () {
         //列表查询
         Route::get('/', 'MaterialController@index');

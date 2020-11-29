@@ -147,12 +147,16 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::get('/{id}/getTotalInfo', 'TourController@getTotalInfo');
         //司机入库
         Route::put('/{id}/inWarehouse', 'TourController@inWarehouse');
-        //包裹分拣入库
-        Route::put('/package-pick-out', 'TourController@packagePickOut');
         //站点跳过
         Route::put('/{id}/batch-skip', 'TourController@batchSkip');
         //站点恢复
         Route::put('/{id}/batch-recovery', 'TourController@batchRecovery');
+    });
+
+    //库存管理
+    Route::prefix('stock')->group(function () {
+        //包裹分拣入库
+        Route::put('/package-pick-out', 'StockController@packagePickOut');
     });
 
     //上传接口
