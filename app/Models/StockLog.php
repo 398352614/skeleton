@@ -18,7 +18,7 @@ class StockLog extends BaseModel
      *
      * @var string
      */
-    protected $table = 'stock';
+    protected $table = 'stock_log';
 
     /**
      * The primary key for the model.
@@ -71,7 +71,7 @@ class StockLog extends BaseModel
     ];
 
     protected $appends = [
-
+        'type_name'
     ];
 
     /**
@@ -80,5 +80,11 @@ class StockLog extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::warehousePackageTypeList($this->type);
+    }
+
 
 }

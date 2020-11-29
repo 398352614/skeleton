@@ -14,11 +14,6 @@ use App\Models\StockLog;
 
 class StockLogService extends BaseService
 {
-    public $filterRules = [
-        'execution_date' => ['between', ['begin_date', 'end_date']],
-        'line_id' => ['=', 'line_id'],
-        'express_first_no,order_no' => ['like', 'keyword'],
-    ];
 
     public function __construct(StockLog $stockLog)
     {
