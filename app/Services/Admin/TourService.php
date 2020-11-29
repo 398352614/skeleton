@@ -798,8 +798,8 @@ class TourService extends BaseService
         $status = [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2, BaseConstService::PACKAGE_STATUS_3];
         $pickupTrackingOrderList = collect($trackingOrderTotalList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_1)->toArray();
         $pieTrackingOrderList=collect($trackingOrderTotalList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_2)->toArray();
-        $info['expect_pickup_package_quantity'] = $this->getPackageService()->count(['package_no' => ['in', $pickupTrackingOrderList], 'status' => ['in', $status]]);
-        $info['expect_pie_package_quantity'] = $this->getPackageService()->count(['package_no' => ['in', $pieTrackingOrderList], 'status' => ['in', $status]]);
+        $info['expect_pickup_package_quantity'] = $this->getPackageService()->count(['tracking_order_no' => ['in', $pickupTrackingOrderList], 'status' => ['in', $status]]);
+        $info['expect_pie_package_quantity'] = $this->getPackageService()->count(['tracking_order_no' => ['in', $pieTrackingOrderList], 'status' => ['in', $status]]);
         return $info;
     }
 
