@@ -874,6 +874,29 @@ class OrderService extends BaseService
     }
 
     /**
+     * 批量修改电话和日期
+     * @param $id
+     * @param $data
+     * @return boolean|array
+     * @throws BusinessLogicException
+     */
+    public function updatePhoneDateByApiList($data)
+    {
+        $this->request->validate([
+            'order_no_list'=>'required',
+            'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+            'execution_date' => 'required_without:place_phone|date|after_or_equal:today'
+        ]);
+        $dbOrder = $this->getInfoLock(['id'=>['in',$data['order_no_list']]],['*'],false);
+        $data = array_filter(Arr::only($data, ['place_phone', 'execution_date']));
+        $rowCount = parent::updateById($dbOrder['id'], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        return $this->getTrackingOrderService()->updateDateAndPhone($dbOrder, $data);
+    }
+
+    /**
      * 获取可选日期验证
      * @param $info
      * @throws BusinessLogicException
