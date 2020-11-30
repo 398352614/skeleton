@@ -103,7 +103,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //批量打印
         Route::get('/pdf', 'OrderController@orderPrintAll');
         //订单导出表格
-        Route::post('/excel', 'OrderController@orderExport');
+        Route::get('/excel', 'OrderController@orderExport');
         //同步订单状态列表
         Route::post('/synchronize-status-list', 'OrderController@synchronizeStatusList');
         //订单第三方对接日志
