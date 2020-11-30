@@ -86,17 +86,8 @@ class StockService extends BaseService
     public function pickOut($package, $tour, $trackingOrder)
     {
         $dbPackage = parent::getInfoLock(['express_first_no' => $package['express_first_no']], ['*'], false);
-        //若存在包裹,则放入日志中，并且删除
         if (!empty($dbPackage)) {
-            $rowCount = parent::delete(['express_first_no' => $dbPackage->express_first_no]);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败，请重新操作');
-            }
-            $stockLogData = array_merge($dbPackage->toArray(), ['type' => BaseConstService::WAREHOUSE_PACKAGE_TYPE_1]);
-            $this->getStockLogService()->create($stockLogData);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败，请重新操作');
-            }
+            throw  new BusinessLogicException('当前包裹已入库');
         }
         //加入库存
         $stockData = [
@@ -106,10 +97,14 @@ class StockService extends BaseService
             'execution_date' => $tour['execution_date'],
             'operator' => auth()->user()->fullname,
             'order_no' => $package['order_no'],
-            'in_warehouse_time' => now(),
             'express_first_no' => $package['express_first_no']
         ];
         $rowCount = parent::create($stockData);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        //生成入库日志
+        $rowCount = $this->getStockInLogService()->create($stockData);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }

@@ -29,9 +29,4 @@ class StockController extends BaseController
     {
         return $this->service->getPageList();
     }
-
-    public function getStockLogList($packageNo)
-    {
-        return $this->service->getStockLogList($packageNo);
-    }
 }

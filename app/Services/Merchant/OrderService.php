@@ -1041,7 +1041,7 @@ class OrderService extends BaseService
     public function getOrderDispatchInfo($id)
     {
         $where = [$this->getIdKeyName($id) => $id];
-        $dbOrder = parent::getInfo($where, ['batch_no'], false);
+        $dbOrder = parent::getInfo($where, ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }

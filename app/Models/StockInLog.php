@@ -6,11 +6,11 @@ use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 库存日志表
+ * 入库日志表
  * Class Employee
  * @package App\Models
  */
-class StockLog extends BaseModel
+class StockInLog extends BaseModel
 {
     /**
      * 司机实际取件导航
@@ -18,7 +18,7 @@ class StockLog extends BaseModel
      *
      * @var string
      */
-    protected $table = 'stock_log';
+    protected $table = 'stock_in_log';
 
     /**
      * The primary key for the model.
@@ -48,15 +48,13 @@ class StockLog extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'type',
         'line_id',
         'line_name',
         'order_no',
         'tracking_order_no',
         'express_first_no',
+        'weight',
         'operator',
-        'in_warehouse_time',
-        'out_warehouse_time',
         'created_at',
         'updated_at',
     ];
@@ -71,7 +69,6 @@ class StockLog extends BaseModel
     ];
 
     protected $appends = [
-        'type_name'
     ];
 
     /**
@@ -80,11 +77,4 @@ class StockLog extends BaseModel
      * @var array
      */
     protected $dates = [];
-
-    public function getTypeNameAttribute()
-    {
-        return empty($this->type) ? null : ConstTranslateTrait::warehousePackageTypeList($this->type);
-    }
-
-
 }

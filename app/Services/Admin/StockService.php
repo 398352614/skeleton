@@ -24,9 +24,4 @@ class StockService extends BaseService
         parent::__construct($stock, StockResource::class);
     }
 
-    public function getStockLogList($packageNo)
-    {
-        return $this->getStockLogService()->getList(['express_first_no' => $packageNo], ['*'], false)->toArray();
-    }
-
 }

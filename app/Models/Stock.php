@@ -55,7 +55,6 @@ class Stock extends BaseModel
         'express_first_no',
         'execution_date',
         'operator',
-        'in_warehouse_time',
         'created_at',
         'updated_at',
     ];
