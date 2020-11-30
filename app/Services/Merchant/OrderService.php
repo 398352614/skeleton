@@ -1042,7 +1042,7 @@ class OrderService extends BaseService
     {
         $where = [$this->getIdKeyName($id) => $id];
         $dbOrder = parent::getInfo($where, ['*'], false);
-        if (empty($info)) {
+        if (empty($dbOrder)) {
             throw new BusinessLogicException('数据不存在');
         }
         return $this->getTrackingOrderService()->getDispatchInfoByOrderNo($dbOrder->order_no);
