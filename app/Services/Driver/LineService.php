@@ -45,7 +45,7 @@ class LineService extends BaseLineService
         }
         $lineRangeList = parent::getLineRangeListByPostcode($params['place_post_code'], $merchantId);
         $executionDate = null;
-        $line = null;
+        $newLine = null;
         foreach ($lineRangeList as $lineRange) {
             $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
             if (empty($line) || ($line->status == BaseConstService::OFF)) {
@@ -64,6 +64,7 @@ class LineService extends BaseLineService
                     //取最近日期
                     if (empty($executionDate) || Carbon::parse($executionDate . ' 00:00:00')->gt($params['execution_date'] . ' 00:00:00')) {
                         $executionDate = $params['execution_date'];
+                        $newLine = $line;
                     }
                     break;
                 } catch (BusinessLogicException $e) {
@@ -74,6 +75,6 @@ class LineService extends BaseLineService
         if (empty($executionDate)) {
             throw new BusinessLogicException('没有合适日期');
         }
-        return [$executionDate, $line];
+        return [$executionDate, $newLine];
     }
 }
