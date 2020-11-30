@@ -449,6 +449,11 @@ class TrackingOrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
+        //更新材料
+        $rowCount = $this->getMaterialService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
         $trackingOrder = array_merge($trackingOrder, $data);
         ($isUpdateOrder == true) && $this->getOrderService()->updateByTrackingOrder($trackingOrder);
         return $trackingOrder;
@@ -491,6 +496,11 @@ class TrackingOrderService extends BaseService
         }
         //运单移除站点和取件线路信息
         $rowCount = parent::updateById($id, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        //材料移除取件线路信息
+        $rowCount = $this->getMaterialService()->update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['tour_no' => '', 'batch_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
