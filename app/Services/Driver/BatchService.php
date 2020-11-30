@@ -94,7 +94,7 @@ class BatchService extends BaseService
     private function hasSameBatch($trackingOrder, $line, $batchNo = null, $tour = [], $isAddOrder = false)
     {
         $where = $this->getBatchWhere($trackingOrder);
-        $where['driver_id'] = ['<>', null];
+        $where['driver_id'] = ['all', null];
         $where = Arr::add($where, 'line_id', $line['id']);
         !empty($tour['tour_no']) && $where['tour_no'] = $tour['tour_no'];
         $isAddOrder && $where['status'] = ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]];

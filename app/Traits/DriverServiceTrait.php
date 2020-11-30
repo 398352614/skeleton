@@ -56,6 +56,7 @@ Trait DriverServiceTrait
         return self::getInstance(StockInLogService::class);
     }
 
+
     /**
      * @return OrderNoRuleService
      */

@@ -26,6 +26,7 @@ class StockService extends BaseService
     /**
      * 分拣入库
      * @param $packageNo
+     * @return array
      * @throws BusinessLogicException
      */
     public function packagePickOut($packageNo)

@@ -30,6 +30,7 @@ use App\Services\Admin\PrintTemplateService;
 use App\Services\Admin\RechargeService;
 use App\Services\Admin\RechargeStatisticsService;
 use App\Services\Admin\StockInLogService;
+use App\Services\Admin\StockOutLogService;
 use App\Services\Admin\StockService;
 use App\Services\Admin\TourDriverService;
 use App\Services\Admin\TourService;
@@ -67,12 +68,21 @@ trait AdminServiceTrait
     }
 
     /**
-     * 库存日志 服务
+     * 入库日志 服务
      * @return StockInLogService
      */
     public function getStockInLogService()
     {
         return self::getInstance(StockInLogService::class);
+    }
+
+    /**
+     * 入库日志 服务
+     * @return StockOutLogService
+     */
+    public function getStockOutLogService()
+    {
+        return self::getInstance(StockOutLogService::class);
     }
 
     /**
