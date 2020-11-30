@@ -1523,7 +1523,6 @@ class TourService extends BaseService
      */
     public function getTourInfo($batch, $line, $isLock = true, $tourNo = null, $isAssign = false)
     {
-        $this->query->where('driver_id', '<>', null);
         if (!empty($tourNo)) {
             $this->query->where('tour_no', '=', $tourNo);
         }
