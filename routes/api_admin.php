@@ -137,9 +137,20 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::prefix('stock')->group(function () {
         //列表查询
         Route::get('/', 'StockController@index');
-        //获取日志
-        Route::get('/{express_first_no}/log', 'StockController@getStockLogList');
     });
+
+    //入库日志管理
+    Route::prefix('stock-in-log')->group(function () {
+        //列表查询
+        Route::get('/', 'StockInLogController@index');
+    });
+
+    //出库日志管理
+    Route::prefix('stock-out-log')->group(function () {
+        //列表查询
+        Route::get('/', 'StockOutLogController@index');
+    });
+
 
     Route::prefix('material')->group(function () {
         //列表查询
