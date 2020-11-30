@@ -8,20 +8,13 @@
 
 namespace App\Services\Admin;
 
-use App\Http\Resources\Api\Admin\StockResource;
+use App\Http\Resources\Api\Admin\StockInResource;
 use App\Models\StockInLog;
 
 class StockInLogService extends BaseService
 {
-
     public function __construct(StockInLog $stockInLog)
     {
-        parent::__construct($stockInLog, StockResource::class);
+        parent::__construct($stockInLog, StockInResource::class);
     }
-
-    public function getStockLogList($packageNo)
-    {
-        return parent::getList(['express_first_no' => $packageNo], ['*'], false)->toArray();
-    }
-
 }
