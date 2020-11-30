@@ -605,7 +605,7 @@ class TrackingOrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        $rowCount = $this->getPackageService()->update(['order_no' => $orderNo], ['tracking_order_no' => $trackingOrder['tracking_order_no']]);
+        $rowCount = $this->getOrderService()->update(['order_no' => $orderNo], ['tracking_order_no' => $trackingOrder['tracking_order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
@@ -624,6 +624,11 @@ class TrackingOrderService extends BaseService
     {
         $data = self::getBatchTourFillData($batch, $tour);
         $rowCount = parent::updateById($trackingOrder['id'], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+        //更新材料
+        $rowCount = $this->getMaterialService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
