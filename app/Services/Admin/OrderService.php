@@ -711,7 +711,7 @@ class OrderService extends BaseService
     public function destroy($id)
     {
         //获取信息
-        $dbOrder = $this->getInfoOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_5]);
+        $dbOrder = $this->getInfoOfStatus(['id'=>$id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_5]);
         if ($dbOrder['status'] == BaseConstService::ORDER_STATUS_5) {
             return 'true';
         }

@@ -1,19 +1,26 @@
 <?php
 /**
- * 通过邮编获取可预约日期列表
+ * 填充包裹信息
  * User: long
- * Date: 2020/6/9
- * Time: 14:14
+ * Date: 2020/11/30
+ * Time: 15:14
  */
-$key = 'OY17evPMwM6az5Bdobqz';
-$secret = 'MmkEv1pRgVyN9aBan3Q1N5X7j4WA96oO';
-$api= "https://dev02-tms.nle-tech.com/api/merchant_api/order-update-phone-date-list";
+$key = 'DqagEnpeXe1dDykAlGoM';
+$secret = '3gDw4rjXxBANwkmk7XaZNkKEyQmvR15P';
+$api = "https://dev02-tms.nle-tech.com/api/admin_api/fill-package";
 
 //参数
 $options = [
-    'order_no_list' => 'SMAAADRY0001',      //邮编
-    'execution_date' => '2020-11-30',      //邮编
-    'place_phone' => '110',      //邮编
+    'package_list' => '[
+            {
+                "express_first_no":"112121",
+                "weight":90
+            },
+            {
+                "express_first_no":"112122",
+                "weight":1
+            }
+        ]'
 ];
 
 /************************************************1.获取参数*************************************************************/
