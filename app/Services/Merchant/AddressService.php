@@ -118,7 +118,7 @@ class AddressService extends BaseService
         !empty($dbInfo['id']) && $where = Arr::add($where, 'id', ['<>', $dbInfo['id']]);
         $info = parent::getInfo($where, ['*'], false);
         if (!empty($info)) {
-            throw new BusinessLogicException('收货方地址已存在，不能重复添加');
+            throw new BusinessLogicException('地址已存在，不能重复添加');
         }
 
     }
