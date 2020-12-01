@@ -166,7 +166,7 @@ class TourTaskService extends BaseService
             ], false, ['code'])->toArray();
         }
         $materialList = Arr::where($materialList, function ($material) {
-            return !empty($material['code']) && !empty($material['expect_quantity']);
+            return !empty($material['code']);
         });
         return $materialList;
     }
@@ -263,10 +263,10 @@ class TourTaskService extends BaseService
             $tourList[$k]['batch_list'] = collect($tourList[$k]['batch_list'])->toArray();
             foreach ($tourList[$k]['batch_list'] as $x => $y) {
                 $tourList[$k]['batch_list'][$x] = array_merge($tourList[$k]['batch_list'][$x], $this->getTourService()->getBatchInfo($v['id'], ['batch_id' => $y['id']]));
-                $tourList[$k]['batch_list'][$x] = array_merge($tourList[$k]['batch_list'][$x], collect($this->getTourService()->getBatchList($v['id'])['batch_list'])->where('batch_no',$y['batch_no'])->first());
+                $tourList[$k]['batch_list'][$x] = array_merge($tourList[$k]['batch_list'][$x], collect($this->getTourService()->getBatchList($v['id'])['batch_list'])->where('batch_no', $y['batch_no'])->first());
             }
         }
-        $tourList=array_values($tourList);
+        $tourList = array_values($tourList);
         return $tourList;
     }
 
