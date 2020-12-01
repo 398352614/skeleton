@@ -49,6 +49,7 @@ class Order extends BaseModel
         'company_id',
         'merchant_id',
         'order_no',
+        'tracking_order_no',
         'execution_date',
         'second_execution_date',
         'out_order_no',
