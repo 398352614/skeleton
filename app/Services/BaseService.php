@@ -256,6 +256,10 @@ class BaseService
 
     public function insertAll($data)
     {
+        $fields = $this->model->getFillable();
+        foreach ($data as $key => $item) {
+            $data[$key] = Arr::only($item, $fields);
+        }
         return $this->model->insertAll($data);
     }
 

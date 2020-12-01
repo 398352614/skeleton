@@ -48,6 +48,8 @@ class TrackingOrderPackage extends BaseModel
     protected $fillable = [
         'company_id',
         'merchant_id',
+        'tour_no',
+        'batch_no',
         'tracking_order_no',
         'order_no',
         'execution_date',
