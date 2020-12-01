@@ -22,6 +22,40 @@ class StockService extends BaseService
         parent::__construct($stock, $resource, $infoResource);
     }
 
+    /**
+     * 包裹出库
+     * @param $packageList
+     * @param $tour
+     * @throws BusinessLogicException
+     */
+    public function outWarehouse($packageList, $tour)
+    {
+        $packageList = array_create_index($packageList, 'express_first_no');
+        $dbPackageList = parent::getList(['express_first_no' => ['in', array_column($packageList, 'express_first_no')]], ['express_first_no'], false)->toArray();
+        $rowCount = parent::delete(['express_first_no' => ['in', array_column($packageList, 'express_first_no')]]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        if (empty($dbPackage)) return;
+        $stockDataList = [];
+        foreach ($dbPackageList as $dbPackage) {
+            $no = $dbPackage['express_first_no'];
+            $stockDataList[] = [
+                'line_id' => $tour['line_id'],
+                'line_name' => $tour['line_name'],
+                'tracking_order_no' => $packageList[$no]['tracking_order_no'],
+                'execution_date' => $tour['execution_date'],
+                'operator' => auth()->user()->fullname,
+                'order_no' => $packageList[$no]['order_no'],
+                'express_first_no' => $no
+            ];
+        }
+        $rowCount = $this->getStockOutLogService()->insertAll($stockDataList);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+    }
+
 
     /**
      * 分拣入库

@@ -271,11 +271,14 @@ class TourService extends BaseService
         !empty($params['material_list']) && $this->insertMaterialList($tour, $params['material_list']);
         //重新统计取件线路金额
         $this->reCountAmountByNo($tour['tour_no']);
-        $newCancelOrderList = [];
+        $newCancelTrackingOrderList = [];
         if (!empty($cancelTrackingOrderIdList)) {
-            $newCancelOrderList = $this->getTrackingOrderService()->getList(['id' => ['in', $cancelTrackingOrderIdList], 'status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false)->toArray();
+            $newCancelTrackingOrderList = $this->getTrackingOrderService()->getList(['id' => ['in', $cancelTrackingOrderIdList], 'status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false)->toArray();
         }
-        return [$tour, $newCancelOrderList];
+        //包裹出库
+        $outPackageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList], 'status' => BaseConstService::PACKAGE_STATUS_2], ['*'], false)->toArray();
+        $this->getStockService()->outWarehouse($outPackageList, $tour);
+        return [$tour, $newCancelTrackingOrderList];
     }
 
     /**
