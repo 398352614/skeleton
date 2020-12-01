@@ -53,7 +53,6 @@ class TrackingOrderPackage extends BaseModel
         'tracking_order_no',
         'order_no',
         'execution_date',
-        'second_execution_date',
         'tracking_type',
         'name',
         'express_first_no',
