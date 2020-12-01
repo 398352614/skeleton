@@ -104,7 +104,7 @@ class TourTaskService extends BaseService
         $materialList = $this->getTourMaterialList($tour);
         //获取所有包裹列表
         $expectPickupPackageQuantity = $actualPickupPackageQuantity = $expectPiePackageQuantity = $actualPiePackageQuantity = 0;
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
+        $packageList = $this->getTrackingOrderPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         for ($i = 0, $j = count($packageList); $i < $j; $i++) {
             $packageList[$i]['feature_logo'] = $packageList[$i]['feature_logo'] ?? '';
             if ($packageList[$i]['type'] == BaseConstService::PACKAGE_TYPE_1) {
@@ -158,7 +158,7 @@ class TourTaskService extends BaseService
         if (in_array(intval($tour['status']), [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5])) {
             $materialList = $this->tourMaterialModel->newQuery()->where('tour_no', '=', $tour['tour_no'])->get()->toArray();
         } else {
-            $materialList = $this->getMaterialService()->getList(['tour_no' => $tour['tour_no']], [
+            $materialList = $this->getTrackingOrderMaterialService()->getList(['tour_no' => $tour['tour_no']], [
                 'name',
                 'code',
                 DB::raw('SUM(expect_quantity) as expect_quantity'),
@@ -235,7 +235,7 @@ class TourTaskService extends BaseService
         //获取所有运单列表
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour->tour_no], ['order_no', 'tracking_order_no'], false);
         //获取所有包裹列表
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', array_column($trackingOrderList, 'order_no')]], ['order_no', 'express_first_no', 'feature_logo']);
+        $packageList = $this->getTrackingOrderPackageService()->getList(['order_no' => ['in', array_column($trackingOrderList, 'order_no')]], ['order_no', 'express_first_no', 'feature_logo']);
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
         $trackingOrderList = array_map(function ($trackingOrder) use ($packageList) {

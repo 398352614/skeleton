@@ -65,17 +65,17 @@ class StockService extends BaseService
      */
     public function packagePickOut($packageNo)
     {
-        $package = $this->getPackageService()->getInfo(['express_first_no' => $packageNo], ['*'], false, ['created_at' => 'desc']);
+        $package = $this->getTrackingOrderPackageService()->getInfo(['express_first_no' => $packageNo], ['*'], false, ['created_at' => 'desc']);
         if (empty($package)) {
             throw new BusinessLogicException('当前包裹不存在系统中');
         }
-        if (in_array($package->status, [BaseConstService::PACKAGE_STATUS_3, BaseConstService::PACKAGE_STATUS_4])) {
+        if ($package->status != BaseConstService::TRACKING_ORDER_STATUS_5) {
             throw new BusinessLogicException('当前包裹已取消取派或删除');
         }
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
         if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
-            throw new BusinessLogicException('当前包裹不能生成对应派件运单');
+            throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
         }
         if (!empty($order['second_execution_date'])) {
             $executionDate = $order['second_execution_date'];

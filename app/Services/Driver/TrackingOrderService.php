@@ -50,6 +50,8 @@ class TrackingOrderService extends BaseService
         $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
         /*******************************************填充运单信息至订单***************************************************/
         $this->fillToOrder($orderNo, $trackingOrder, false);
+        /*******************************************生成运单包裹和材料***************************************************/
+        $this->addAllItemList($orderNo, $trackingOrder);
         //重新统计站点金额
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
         //重新统计取件线路金额
@@ -64,6 +66,30 @@ class TrackingOrderService extends BaseService
         //订单轨迹-运单中途创建
         OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_RESTART);
         return $tour;
+    }
+
+
+    /**
+     * 新增运单获取列表
+     * @param $orderNo
+     * @param $trackingOrder
+     * @throws BusinessLogicException
+     */
+    private function addAllItemList($orderNo, $trackingOrder)
+    {
+        $packageList = $this->getPackageService()->getList(['order_no' => $orderNo, 'status' => BaseConstService::ORDER_STATUS_2], ['*'], false)->toArray();
+        if (!empty($packageList)) {
+            data_set($packageList, '*.tour_no', $trackingOrder['tour_no']);
+            data_set($packageList, '*.batch_no', $trackingOrder['batch_no']);
+            data_set($packageList, '*.tracking_order_no', $trackingOrder['tracking_order_no']);
+            data_set($packageList, '*.tracking_type', $trackingOrder['type']);
+            data_set($packageList, '*.status', $trackingOrder['status']);
+            data_set($packageList, '*.execution_date', $trackingOrder['execution_date']);
+            $rowCount = $this->getTrackingOrderPackageService()->insertAll($packageList);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+        }
     }
 
 
@@ -123,7 +149,7 @@ class TrackingOrderService extends BaseService
     public function fillToOrder($orderNo, $trackingOrder, $fillMaterial = true)
     {
         if ($fillMaterial == true) {
-            $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['batch_no' => $trackingOrder['batch_no'], 'tour_no' => $trackingOrder['tour_no'], 'tracking_order_no' => $trackingOrder['tracking_order_no']]);
+            $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['tracking_order_no' => $trackingOrder['tracking_order_no']]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('操作失败，请重新操作');
             }

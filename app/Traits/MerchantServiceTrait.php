@@ -19,6 +19,8 @@ use App\Services\Merchant\PackageService;
 use App\Services\Merchant\RouteTrackingService;
 use App\Services\Merchant\TourDriverService;
 use App\Services\Merchant\TourService;
+use App\Services\Merchant\TrackingOrderMaterialService;
+use App\Services\Merchant\TrackingOrderPackageService;
 use App\Services\Merchant\TrackingOrderService;
 use App\Services\Merchant\UploadService;
 use App\Services\Merchant\WareHouseService;
@@ -108,6 +110,26 @@ Trait MerchantServiceTrait
     {
         return self::getInstance(TrackingOrderService::class);
     }
+
+
+    /**
+     * 运单包裹表
+     * @return TrackingOrderPackageService
+     */
+    public function getTrackingOrderPackageService()
+    {
+        return self::getInstance(TrackingOrderPackageService::class);
+    }
+
+    /**
+     * 运单材料表
+     * @return TrackingOrderMaterialService
+     */
+    public function getTrackingOrderMaterialService()
+    {
+        return self::getInstance(TrackingOrderMaterialService::class);
+    }
+
 
     /**
      * 订单 服务

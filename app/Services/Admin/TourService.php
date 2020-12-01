@@ -313,6 +313,11 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('运单取消锁定失败，请重新操作');
         }
+        //运单包裹 处理
+        $rowCount = $this->getTrackingOrderPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['status' => BaseConstService::TRACKING_ORDER_STATUS_2]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('运单取消锁定失败，请重新操作');
+        }
         TrackingOrderTrailService::storeByTour($tour, BaseConstService::TRACKING_ORDER_TRAIL_UN_LOCK);
     }
 
@@ -797,7 +802,7 @@ class TourService extends BaseService
         $info['batchs'] = array_values($info['batchs']);
         $status = [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2, BaseConstService::PACKAGE_STATUS_3];
         $pickupTrackingOrderList = collect($trackingOrderTotalList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_1)->toArray();
-        $pieTrackingOrderList=collect($trackingOrderTotalList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_2)->toArray();
+        $pieTrackingOrderList = collect($trackingOrderTotalList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_2)->toArray();
         $info['expect_pickup_package_quantity'] = $this->getPackageService()->count(['tracking_order_no' => ['in', $pickupTrackingOrderList], 'status' => ['in', $status]]);
         $info['expect_pie_package_quantity'] = $this->getPackageService()->count(['tracking_order_no' => ['in', $pieTrackingOrderList], 'status' => ['in', $status]]);
         return $info;

@@ -22,12 +22,124 @@ class OrderService extends BaseService
     }
 
     /**
-     * 包裹服务
-     * @return PackageService
+     * 订单出库
+     * @param $tourNo
+     * @param $action
+     * @throws BusinessLogicException
      */
-    public function getPackageService()
+    public function outWarehouse($tourNo)
     {
-        return self::getInstance(PackageService::class);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tourNo, 'status' => [BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_6]], ['*'], false)->toArray();
+        //订单处理
+        $ingOrderNoList = $cancelOrderList = [];
+        foreach ($trackingOrderList as $trackingOrder) {
+            if ($trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_4) {
+                $ingOrderNoList[] = $trackingOrder['order_no'];
+                continue;
+            }
+            if ($trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
+                $cancelOrderList[] = $trackingOrder['order_no'];
+                continue;
+            }
+        }
+        $rowCount = parent::update(['order_no' => ['in', $ingOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_2]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $rowCount = parent::update(['order_no' => ['in', $cancelOrderList]], ['status' => BaseConstService::ORDER_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        //包裹处理
+        $ingPackageNoList = $cancelPackageNoList = [];
+        $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => ['in', array_column($trackingOrderList, 'tracking_order_no')]], ['*'], false)->toArray();
+        foreach ($trackingOrderPackageList as $trackingOrderPackage) {
+            if ($trackingOrderPackage['status'] == BaseConstService::TRACKING_ORDER_STATUS_4) {
+                $ingPackageNoList[] = $trackingOrderPackage['express_first_no'];
+                continue;
+            }
+            if ($trackingOrderPackage['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
+                $cancelPackageNoList[] = $trackingOrderPackage['express_first_no'];
+                continue;
+            }
+        }
+        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $ingPackageNoList]], ['status' => BaseConstService::ORDER_STATUS_2]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $cancelPackageNoList]], ['status' => BaseConstService::ORDER_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+    }
+
+    /**
+     * 取消取派
+     * @param $batchNo
+     * @throws BusinessLogicException
+     */
+    public function batchCancel($batchNo)
+    {
+        //订单处理
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo, 'status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false)->toArray();
+        $rowCount = parent::update(['order_no' => ['in', array_column($trackingOrderList, 'order_no')]], ['status' => BaseConstService::ORDER_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        //包裹处理
+        $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => ['in', array_column($trackingOrderList, 'tracking_order_no')]], ['*'], false)->toArray();
+        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', array_column($trackingOrderPackageList, 'express_first_no')]], ['status' => BaseConstService::ORDER_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+    }
+
+    /**
+     * 签收
+     * @param $batchNo
+     * @throws BusinessLogicException
+     */
+    public function batchSign($batchNo)
+    {
+        //订单处理
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5], ['*'], false)->toArray();
+        $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
+        $trackingOrderNoList = array_column($trackingOrderList, 'order_no');
+        $orderList = parent::getList(['order_no' => ['in', $trackingOrderNoList]], ['*'], false)->toArray();
+        $signOrderNoList = [];
+        foreach ($orderList as $order) {
+            if (($order['type'] == BaseConstService::ORDER_TYPE_3) && ($trackingOrderList[$order['order_no']]['type']) == BaseConstService::TRACKING_ORDER_TYPE_1) {
+                continue;
+            }
+            $signOrderNoList[] = $order['order_no'];
+        }
+        $rowCount = parent::update(['order_no' => ['in', $signOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_3]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        //包裹处理
+        $signPackageNoList = $cancelPackageNoList = [];
+        $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => ['in', $trackingOrderNoList]], ['*'], false)->toArray();
+        $packageList = $this->getPackageService()->getList(['express_first_no' => ['in', array_column($trackingOrderPackageList, 'express_first_no')]], ['*'], false)->toArray();
+        $packageList = array_create_index($packageList, 'order_no');
+        foreach ($trackingOrderPackageList as $trackingOrderPackage) {
+            if ($trackingOrderPackage['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
+                $cancelPackageNoList[] = $trackingOrderPackage['express_first_no'];
+                continue;
+            }
+            if (($packageList[$trackingOrderPackage['order_no']]['type'] == BaseConstService::ORDER_TYPE_3) && ($trackingOrderPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1)) {
+                continue;
+            }
+            $signPackageNoList = $trackingOrderPackage['express_first_no'];
+        }
+        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $signPackageNoList]], ['status' => BaseConstService::ORDER_STATUS_2]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $cancelPackageNoList]], ['status' => BaseConstService::ORDER_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
     }
 
 
@@ -75,7 +187,7 @@ class OrderService extends BaseService
      */
     public function getTrackingOrderType($order, TrackingOrder $trackingOrder = null)
     {
-        (empty($trackingOrder)) && $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
+        (empty($trackingOrder)) && $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], [' * '], false, ['created_at' => 'desc']);
         //1.运单不存在,直接获取运单类型
         if (empty($trackingOrder)) {
             return $this->getTrackingOrderService()->getTypeByOrderType($order['type']);
@@ -100,6 +212,4 @@ class OrderService extends BaseService
         //6.当运单存在时，当运单为取派完成，当订单为取派件,若运单为取件类型，则表示新增派件派件运单
         return BaseConstService::TRACKING_ORDER_TYPE_2;
     }
-
-
 }

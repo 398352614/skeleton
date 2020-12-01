@@ -34,6 +34,8 @@ use App\Services\Admin\StockOutLogService;
 use App\Services\Admin\StockService;
 use App\Services\Admin\TourDriverService;
 use App\Services\Admin\TourService;
+use App\Services\Admin\TrackingOrderMaterialService;
+use App\Services\Admin\TrackingOrderPackageService;
 use App\Services\Admin\TrackingOrderService;
 use App\Services\Admin\TransportPriceService;
 use App\Services\Admin\UploadService;
@@ -173,6 +175,24 @@ trait AdminServiceTrait
     public function getTrackingOrderService()
     {
         return self::getInstance(TrackingOrderService::class);
+    }
+
+    /**
+     * 运单包裹表
+     * @return TrackingOrderPackageService
+     */
+    public function getTrackingOrderPackageService()
+    {
+        return self::getInstance(TrackingOrderPackageService::class);
+    }
+
+    /**
+     * 运单材料表
+     * @return TrackingOrderMaterialService
+     */
+    public function getTrackingOrderMaterialService()
+    {
+        return self::getInstance(TrackingOrderMaterialService::class);
     }
 
     /**

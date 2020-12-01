@@ -23,6 +23,8 @@ use App\Services\Driver\RechargeService;
 use App\Services\Driver\RechargeStatisticsService;
 use App\Services\Driver\TourService;
 use App\Services\Driver\TourTaskService;
+use App\Services\Driver\TrackingOrderMaterialService;
+use App\Services\Driver\TrackingOrderPackageService;
 use App\Services\Driver\TrackingOrderService;
 use App\Services\Driver\WareHouseService;
 use App\Services\OrderNoRuleService;
@@ -136,6 +138,26 @@ Trait DriverServiceTrait
     {
         return self::getInstance(TrackingOrderService::class);
     }
+
+
+    /**
+     * 运单包裹表
+     * @return TrackingOrderPackageService
+     */
+    public function getTrackingOrderPackageService()
+    {
+        return self::getInstance(TrackingOrderPackageService::class);
+    }
+
+    /**
+     * 运单材料表
+     * @return TrackingOrderMaterialService
+     */
+    public function getTrackingOrderMaterialService()
+    {
+        return self::getInstance(TrackingOrderMaterialService::class);
+    }
+
 
     /**
      * 订单 服务

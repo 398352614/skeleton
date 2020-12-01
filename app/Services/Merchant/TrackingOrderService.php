@@ -4,7 +4,7 @@
  * 运单服务
  * Created by PhpStorm
  * User: long
- * Date: 2020/11/11
+ * Date: 2020/10/20
  * Time: 16:39
  */
 
@@ -21,7 +21,6 @@ use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
-use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,7 +37,7 @@ class TrackingOrderService extends BaseService
         'type' => ['=', 'type'],
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'tracking_order_no,order_no,out_order_no,out_user_id' => ['like', 'keyword'],
+        'place_post_code,tracking_order_no,order_no,out_order_no,out_user_id' => ['like', 'keyword'],
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'tour_no' => ['like', 'tour_no'],
@@ -246,7 +245,7 @@ class TrackingOrderService extends BaseService
      */
     private function store($params, $orderNo)
     {
-        //填充发件人信息
+        //填充仓库信息
         $line = $this->fillWarehouseInfo($params, BaseConstService::YES);
         //生成运单号
         $params['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
@@ -261,6 +260,8 @@ class TrackingOrderService extends BaseService
         $trackingOrder = $this->fillBatchTourInfo($trackingOrder, $batch, $tour);
         /*******************************************填充运单信息至订单***************************************************/
         $this->fillToOrder($orderNo, $trackingOrder);
+        /*******************************************生成运单包裹和材料***************************************************/
+        $this->addAllItemList($orderNo, $trackingOrder);
         //自动记录
         $this->record($trackingOrder);
         //重新统计站点金额
@@ -315,6 +316,16 @@ class TrackingOrderService extends BaseService
             if ($rowCount === false) {
                 throw new BusinessLogicException('运单修改失败');
             }
+            //删除原运单包裹和材料
+            $rowCount = $this->getTrackingOrderPackageService()->delete(['tracking_order_no' => $trackingOrder['tracking_order_no']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+            $rowCount = $this->getTrackingOrderMaterialService()->delete(['tracking_order_no' => $trackingOrder['tracking_order_no']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+            $this->addAllItemList($order['order_no'], $trackingOrder);
         }
     }
 
@@ -345,6 +356,41 @@ class TrackingOrderService extends BaseService
             return $this->updatePhone($dbTrackingOrder, $params);
         } else {
             throw new BusinessLogicException('该状态无法进行此操作');
+        }
+    }
+
+    /**
+     * 新增运单获取列表
+     * @param $orderNo
+     * @param $trackingOrder
+     * @throws BusinessLogicException
+     */
+    private function addAllItemList($orderNo, $trackingOrder)
+    {
+        $packageList = $this->getPackageService()->getList(['order_no' => $orderNo], ['*'], false)->toArray();
+        if (!empty($packageList)) {
+            data_set($packageList, '*.tour_no', $trackingOrder['tour_no']);
+            data_set($packageList, '*.batch_no', $trackingOrder['batch_no']);
+            data_set($packageList, '*.tracking_order_no', $trackingOrder['tracking_order_no']);
+            data_set($packageList, '*.tracking_type', $trackingOrder['type']);
+            data_set($packageList, '*.status', $trackingOrder['status']);
+            data_set($packageList, '*.execution_date', $trackingOrder['execution_date']);
+            $rowCount = $this->getTrackingOrderPackageService()->insertAll($packageList);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+        }
+        $materialList = $this->getMaterialService()->getList(['order_no' => $orderNo], ['*'], false)->toArray();
+        if (!empty($materialList)) {
+            data_set($materialList, '*.tour_no', $trackingOrder['tour_no']);
+            data_set($materialList, '*.batch_no', $trackingOrder['batch_no']);
+            data_set($materialList, '*.tracking_order_no', $trackingOrder['tracking_order_no']);
+            data_set($materialList, '*.tracking_type', $trackingOrder['type']);
+            data_set($materialList, '*.execution_date', $trackingOrder['execution_date']);
+            $rowCount = $this->getTrackingOrderMaterialService()->insertAll($materialList);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
         }
     }
 
@@ -627,8 +673,13 @@ class TrackingOrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
-        //更新材料
-        $rowCount = $this->getMaterialService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+        //更新运单包裹
+        $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+        //更新运单材料
+        $rowCount = $this->getTrackingOrderMaterialService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
@@ -677,6 +728,16 @@ class TrackingOrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
+        //材料移除站点线路信息
+        $rowCount = $this->getTrackingOrderMaterialService()->update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['tour_no' => '', 'batch_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        //包裹移除站点线路信息
+        $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
         $this->getBatchService()->removeTrackingOrder($dbTrackingOrder);
         //重新统计站点金额
         !empty($dbTrackingOrder['batch_no']) && $this->getBatchService()->reCountAmountByNo($dbTrackingOrder['batch_no']);
@@ -710,6 +771,16 @@ class TrackingOrderService extends BaseService
         $where = ['order_no' => ['in', $trackingOrderNoList]];
         //运单移除站点和取件线路信息
         $rowCount = parent::update($where, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        //材料移除取件线路信息
+        $rowCount = $this->getTrackingOrderMaterialService()->update($where, ['tour_no' => '', 'batch_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('移除失败,请重新操作');
+        }
+        //包裹移除取件线路信息
+        $rowCount = $this->getTrackingOrderPackageService()->update($where, ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败,请重新操作');
         }
@@ -761,8 +832,7 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('修改失败');
         }
         /********************************************2.改变站点****************************************************/
-        $this->changeBatch(Arr::only($dbTrackingOrder, ['batch_no', 'tour_no', 'type']), $trackingOrder, $line, $params['batch_no'] ?? null, null, false, true);
-
+        $this->changeBatch(Arr::only($dbTrackingOrder, ['batch_no', 'tour_no', 'type', 'execution_date']), $trackingOrder, $line, $params['batch_no'] ?? null, null, false, true);
         return 'true';
     }
 
@@ -893,7 +963,7 @@ class TrackingOrderService extends BaseService
 
 
     /**
-     * 填充发件人信息
+     * 填充仓库信息
      * @param $params
      * @param $merchantAlone
      * @return array
@@ -918,8 +988,8 @@ class TrackingOrderService extends BaseService
             'warehouse_city' => $warehouse['city'],
             'warehouse_street' => $warehouse['street'],
             'warehouse_address' => $warehouse['address'],
-            'warehouse_lon' => $warehouse['warehouse_lon'],
-            'warehouse_lat' => $warehouse['warehouse_lat']
+            'warehouse_lon' => $warehouse['lon'],
+            'warehouse_lat' => $warehouse['lat']
         ]);
         return $line;
     }
@@ -948,6 +1018,4 @@ class TrackingOrderService extends BaseService
             $this->getAddressService()->create($params);
         }
     }
-
-
 }

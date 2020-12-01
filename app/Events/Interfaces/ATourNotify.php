@@ -12,6 +12,8 @@ namespace App\Events\Interfaces;
 use App\Models\Material;
 use App\Models\Order;
 use App\Models\Package;
+use App\Models\TrackingOrderMaterial;
+use App\Models\TrackingOrderPackage;
 use App\Services\BaseConstService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -90,20 +92,26 @@ abstract class ATourNotify
     public function fillTrackingOrderList($packageFill = false, $materialFill = false)
     {
         $orderNoList = array_column($this->trackingOrderList, 'order_no');
+        $trackingOrderNoList = array_column($this->trackingOrderList, 'tracking_order_no');
         //获取订单列表
         $orderList = Order::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'out_order_no', DB::raw('type as order_type'), DB::raw('status as order_status')])->toArray();
         $orderList = array_create_index($orderList, 'order_no');
         //获取包裹
         $packageList = [];
         if ($packageFill === true) {
-            $packageList = Package::query()->whereIn('order_no', $orderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
+            $packageList = TrackingOrderPackage::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'tracking_type', DB::raw('status as tracking_status'), 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
+            $dbPackageList = Package::query()->whereIn('express_first_no', array_column($packageList, 'express_first_no'))->get(['status', 'type', 'express_first_no'])->toArray();
+            $dbPackageList = array_create_index($dbPackageList, 'express_first_no');
+            foreach ($packageList as &$package) {
+                $package = array_merge($package, $dbPackageList[$package['express_first_no']]);
+            }
             $packageList = array_create_group_index($packageList, 'order_no');
             Log::info('package_list', $packageList);
         }
         //获取材料
         $materialList = [];
         if ($materialFill === true) {
-            $materialList = Material::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
+            $materialList = TrackingOrderMaterial::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get(['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
             $materialList = array_create_group_index($materialList, 'order_no');
             Log::info('material_list', $materialList);
         }
