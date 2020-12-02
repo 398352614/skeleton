@@ -168,7 +168,6 @@ class AuthController extends Controller
         if ($res) {
             auth('admin')->logout();
         }
-        Auth::logoutOtherDevices($data['new_password']);
         return success();
     }
 }
