@@ -102,7 +102,7 @@ class OrderService extends BaseService
     public function batchSign($batchNo)
     {
         //订单处理
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false)->toArray();
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo, 'status' => ['in', BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6]], ['*'], false)->toArray();
         $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
         $trackingOrderNoList = array_column($trackingOrderList, 'order_no');
         $orderList = parent::getList(['order_no' => ['in', $trackingOrderNoList]], ['*'], false)->toArray();
