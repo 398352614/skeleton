@@ -173,7 +173,8 @@ class OrderService extends BaseService
             $merchantId = $trackingOrderList[$cancelOrderNo]['merchant_id'];
             $count = $this->getTrackingOrderService()->count(['driver_id' => ['all', null], 'order_no' => $cancelOrderNo, 'type' => $type, 'status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
             $times = ($type == BaseConstService::TRACKING_ORDER_TYPE_1) ? $merchantList[$merchantId]['pickup_count'] : $merchantList[$merchantId]['pie_count'];
-            if ($count < intval($times)) {
+            $times = intval($times);
+            if ($times == 0 || ($count < $times)) {
                 unset($cancelOrderNoList[$key]);
             }
         }
