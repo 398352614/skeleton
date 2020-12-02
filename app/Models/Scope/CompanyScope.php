@@ -59,6 +59,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Matrix\Operators\Addition;
 
 class CompanyScope implements Scope
@@ -75,7 +76,9 @@ class CompanyScope implements Scope
     {
 
         $user = auth()->user();
-        $whereColumns = array_column($builder->getQuery()->wheres, 'column');
+        $query = $builder->getQuery();
+        $sql = $query->toSql();
+        $whereColumns = array_column($query->wheres, 'column');
         //如果是员工端
         if ($user instanceof Employee) {
             if (
@@ -129,7 +132,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof StockInLog))
                 && (!($model instanceof StockOutLog))
                 && (!in_array('driver_id', $whereColumns))
-                && (!in_array('IFNULL(driver_id, 0)', $whereColumns))
+                && (!Str::contains($sql, "IFNULL(driver_id,0) <> -1"))
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . '=' . $user->id);
             }
