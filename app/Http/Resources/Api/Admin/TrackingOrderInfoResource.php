@@ -61,6 +61,8 @@ class TrackingOrderInfoResource extends JsonResource
             'special_remark' => $this->special_remark,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'material_list' => $this->material_list,
+            'package_list' => $this->package_list
         ];
     }
 

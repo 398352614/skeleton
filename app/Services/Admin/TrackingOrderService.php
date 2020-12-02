@@ -193,7 +193,10 @@ class TrackingOrderService extends BaseService
     public function show($id)
     {
         $dbTrackingOrder = parent::getInfo(['id' => $id], ['*'], true);
-        return !empty($dbTrackingOrder) ? $dbTrackingOrder : [];
+        if (!empty($dbTrackingOrder)) return [];
+        $dbTrackingOrder['package_list'] = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => $dbTrackingOrder->tracking_order_no], ['*'], false)->toArray();
+        $dbTrackingOrder['material_list'] = $this->getTrackingOrderMaterialService()->getList(['tracking_order_no' => $dbTrackingOrder->tracking_order_no], ['*'], false)->toArray();
+        return $dbTrackingOrder;
     }
 
     /**
