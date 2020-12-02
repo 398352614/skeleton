@@ -41,6 +41,7 @@ class BackWarehouse implements ITourDriver
     public function getLocation(): array
     {
         Log::info('tour',$this->tour);
+        Log::info('tour',$this->tour['warehouse_lon']);
         return [
             'lon' => $this->tour['warehouse_lon'],
             'lat' => $this->tour['warehouse_lat']
