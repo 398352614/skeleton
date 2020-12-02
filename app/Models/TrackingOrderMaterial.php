@@ -49,7 +49,7 @@ class TrackingOrderMaterial extends BaseModel
         'tour_no',
         'batch_no',
         'tracking_order_no',
-        'tracking_type',
+        'type',
         'order_no',
         'execution_date',
         'name',

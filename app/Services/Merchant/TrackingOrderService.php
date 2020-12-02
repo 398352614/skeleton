@@ -372,7 +372,7 @@ class TrackingOrderService extends BaseService
             data_set($packageList, '*.tour_no', $trackingOrder['tour_no']);
             data_set($packageList, '*.batch_no', $trackingOrder['batch_no']);
             data_set($packageList, '*.tracking_order_no', $trackingOrder['tracking_order_no']);
-            data_set($packageList, '*.tracking_type', $trackingOrder['type']);
+            data_set($packageList, '*.type', $trackingOrder['type']);
             data_set($packageList, '*.status', $trackingOrder['status']);
             data_set($packageList, '*.execution_date', $trackingOrder['execution_date']);
             $rowCount = $this->getTrackingOrderPackageService()->insertAll($packageList);
@@ -385,7 +385,7 @@ class TrackingOrderService extends BaseService
             data_set($materialList, '*.tour_no', $trackingOrder['tour_no']);
             data_set($materialList, '*.batch_no', $trackingOrder['batch_no']);
             data_set($materialList, '*.tracking_order_no', $trackingOrder['tracking_order_no']);
-            data_set($materialList, '*.tracking_type', $trackingOrder['type']);
+            data_set($materialList, '*.type', $trackingOrder['type']);
             data_set($materialList, '*.execution_date', $trackingOrder['execution_date']);
             $rowCount = $this->getTrackingOrderMaterialService()->insertAll($materialList);
             if ($rowCount === false) {

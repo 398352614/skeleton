@@ -53,7 +53,7 @@ class TrackingOrderPackage extends BaseModel
         'tracking_order_no',
         'order_no',
         'execution_date',
-        'tracking_type',
+        'type',
         'name',
         'express_first_no',
         'express_second_no',
@@ -85,7 +85,7 @@ class TrackingOrderPackage extends BaseModel
 
     protected $appends = [
         'status_name',
-        'tracking_type_name'
+        'type_name'
     ];
 
     /**
@@ -101,8 +101,8 @@ class TrackingOrderPackage extends BaseModel
         return empty($this->status) ? null : ConstTranslateTrait::trackingOrderStatusList($this->status);
     }
 
-    public function getTrackingTypeNameAttribute()
+    public function getTypeNameAttribute()
     {
-        return empty($this->tracking_type) ? null : ConstTranslateTrait::orderTypeList($this->tracking_type);
+        return empty($this->type) ? null : ConstTranslateTrait::orderTypeList($this->type);
     }
 }
