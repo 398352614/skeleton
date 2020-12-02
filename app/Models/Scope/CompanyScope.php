@@ -41,7 +41,8 @@ use App\Models\Recharge;
 use App\Models\RouteTracking;
 use App\Models\SpecialTimeCharging;
 use App\Models\Stock;
-use App\Models\StockLog;
+use App\Models\StockInLog;
+use App\Models\StockOutLog;
 use App\Models\Tour;
 use App\Models\TourDelay;
 use App\Models\TourDriverEvent;
@@ -125,7 +126,8 @@ class CompanyScope implements Scope
                 && (!($model instanceof Recharge))
                 && (!($model instanceof Device))
                 && (!($model instanceof Stock))
-                && (!($model instanceof StockLog))
+                && (!($model instanceof StockInLog))
+                && (!($model instanceof StockOutLog))
                 && (!in_array('driver_id', $whereColumns))
                 && (!in_array('IFNULL(driver_id, 0)', $whereColumns))
             ) {
