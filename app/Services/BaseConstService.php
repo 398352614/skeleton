@@ -21,6 +21,8 @@ class BaseConstService
     const BATCH_EXCEPTION = 'BE';
     const RECHARGE = '';
 
+    const CANCEL_TIMES = 3;
+
     //邮编国家
     const POSTCODE_COUNTRY_BE = 'BE';
 

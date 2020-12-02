@@ -662,7 +662,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //包裹取消取派
-        $rowCount = $this->getTrackingOrderPackageService()->update(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
+        $rowCount = $this->getTrackingOrderPackageService()->update(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
