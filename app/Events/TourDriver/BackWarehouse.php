@@ -13,6 +13,7 @@ use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class BackWarehouse implements ITourDriver
 {
@@ -39,6 +40,7 @@ class BackWarehouse implements ITourDriver
 
     public function getLocation(): array
     {
+        Log::info($this->tour);
         return [
             'lon' => $this->tour['warehouse_lon'],
             'lat' => $this->tour['warehouse_lat']
