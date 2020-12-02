@@ -102,18 +102,26 @@ class OrderService extends BaseService
     public function batchSign($batchNo)
     {
         //订单处理
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5], ['*'], false)->toArray();
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false)->toArray();
         $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
         $trackingOrderNoList = array_column($trackingOrderList, 'order_no');
         $orderList = parent::getList(['order_no' => ['in', $trackingOrderNoList]], ['*'], false)->toArray();
-        $signOrderNoList = [];
+        $signOrderNoList = $cancelOrderNoList = [];
         foreach ($orderList as $order) {
+            if ($trackingOrderList[$order['order_no']]['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
+                $cancelOrderNoList = $order['order_no'];
+                continue;
+            }
             if (($order['type'] == BaseConstService::ORDER_TYPE_3) && ($trackingOrderList[$order['order_no']]['type']) == BaseConstService::TRACKING_ORDER_TYPE_1) {
                 continue;
             }
             $signOrderNoList[] = $order['order_no'];
         }
         $rowCount = parent::update(['order_no' => ['in', $signOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_3]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $rowCount = parent::update(['order_no' => ['in', $cancelOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }

@@ -782,6 +782,13 @@ class TourService extends BaseService
                 throw new BusinessLogicException('签收失败');
             }
         }
+        foreach ($cancelTrackingOrderList as $key => $cancelTrackingOrder) {
+            $material = $this->getTrackingOrderMaterialService()->getInfo(['tracking_order_no' => $cancelTrackingOrder['tracking_order_no'], 'actual_quantity', ['>', 0]], ['id'], false);
+            if (!empty($material)) {
+                $signTrackingOrderList[] = $cancelTrackingOrder;
+                unset($cancelTrackingOrderList[$key]);
+            }
+        }
 //        $totalAmount = [
 //            'sticker_amount' => $totalStickerAmount,
 //            'delivery_amount' => $totalDeliveryAmount,
