@@ -47,7 +47,7 @@ class TrackingOrderService extends BaseService
         $trackingOrder = $trackingOrder->getAttributes();
         /*****************************************运单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
-        $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
+        $trackingOrder = $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
         /*******************************************填充运单信息至订单***************************************************/
         $this->fillToOrder($orderNo, $trackingOrder, false);
         /*******************************************生成运单包裹和材料***************************************************/
