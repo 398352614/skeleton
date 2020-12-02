@@ -99,12 +99,12 @@ class TourTaskService extends BaseService
         $tour['additional_package_count'] = count($additionalPackageList);
         //获取所有运单列表
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
-        $orderNoList = array_column($trackingOrderList, 'order_no');
+        $trackingOrderNoList = array_column($trackingOrderList, 'tracking_order_no');
         //获取所有材料列表
         $materialList = $this->getTourMaterialList($tour);
         //获取所有包裹列表
         $expectPickupPackageQuantity = $actualPickupPackageQuantity = $expectPiePackageQuantity = $actualPiePackageQuantity = 0;
-        $packageList = $this->getTrackingOrderPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
+        $packageList = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => ['in', $trackingOrderNoList]], ['*'], false)->toArray();
         for ($i = 0, $j = count($packageList); $i < $j; $i++) {
             $packageList[$i]['feature_logo'] = $packageList[$i]['feature_logo'] ?? '';
             if ($packageList[$i]['type'] == BaseConstService::PACKAGE_TYPE_1) {
