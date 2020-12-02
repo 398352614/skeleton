@@ -164,9 +164,8 @@ class AuthController extends Controller
                 'password' => bcrypt($data['new_password'])
             ]
         );
-
+        auth('admin')->refresh(true);
         if ($res) {
-            $this->refresh();
             auth('admin')->logout();
         }
         return success();
