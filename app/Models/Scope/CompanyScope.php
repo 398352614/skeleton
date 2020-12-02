@@ -48,6 +48,8 @@ use App\Models\TourDriverEvent;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
 use App\Models\TrackingOrder;
+use App\Models\TrackingOrderMaterial;
+use App\Models\TrackingOrderPackage;
 use App\Models\TrackingOrderTrail;
 use App\Models\TransportPrice;
 use App\Models\Warehouse;
@@ -101,6 +103,8 @@ class CompanyScope implements Scope
                 && (!($model instanceof CarModel))
                 && (!($model instanceof Material))
                 && (!($model instanceof Package))
+                && (!($model instanceof TrackingOrderMaterial))
+                && (!($model instanceof TrackingOrderPackage))
                 && (!($model instanceof TourMaterial))
                 && (!($model instanceof TourDelay))
                 && (!($model instanceof Merchant))
