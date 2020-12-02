@@ -287,6 +287,9 @@ class TourService extends BaseService
         //运单
         $rowCount = $this->getTrackingOrderService()->update(['tour_no' => $tour['tour_no']], $data);
         if ($rowCount === false) return false;
+        //运单包裹
+        $rowCount = $this->getTrackingOrderPackageService()->update(['tour_no' => $tour['tour_no']], $data);
+        if ($rowCount === false) return false;
         return true;
     }
 
