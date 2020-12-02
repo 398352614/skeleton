@@ -109,7 +109,7 @@ class OrderService extends BaseService
         $signOrderNoList = $cancelOrderNoList = [];
         foreach ($orderList as $order) {
             if ($trackingOrderList[$order['order_no']]['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
-                $cancelOrderNoList = $order['order_no'];
+                $cancelOrderNoList[] = $order['order_no'];
                 continue;
             }
             if (($order['type'] == BaseConstService::ORDER_TYPE_3) && ($trackingOrderList[$order['order_no']]['type']) == BaseConstService::TRACKING_ORDER_TYPE_1) {
