@@ -84,6 +84,9 @@ class RouteTrackingService extends BaseService
             ]];
             $batchList = array_merge(array_values($batchList), $in);
         }
+        if(empty($tour->driver)){
+            throw new BusinessLogicException('司机不存在');
+        }
         return [
             'driver' => Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']),
             'route_tracking' => $routeTrackingList,
