@@ -1176,6 +1176,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败，请重新操作');
         }
+        Log::info('tour',$tour);
         TourTrait::afterBackWarehouse($tour);
     }
 
