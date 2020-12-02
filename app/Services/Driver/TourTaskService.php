@@ -235,7 +235,7 @@ class TourTaskService extends BaseService
         //获取所有运单列表
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour->tour_no], ['order_no', 'tracking_order_no'], false);
         //获取所有包裹列表
-        $packageList = $this->getTrackingOrderPackageService()->getList(['order_no' => ['in', array_column($trackingOrderList, 'order_no')]], ['order_no', 'express_first_no', 'feature_logo']);
+        $packageList = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => ['in', array_column($trackingOrderList, 'tracking_order_no')]], ['order_no', 'express_first_no', 'feature_logo']);
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
         $trackingOrderList = array_map(function ($trackingOrder) use ($packageList) {
