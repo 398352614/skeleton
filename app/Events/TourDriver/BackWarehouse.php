@@ -40,8 +40,8 @@ class BackWarehouse implements ITourDriver
     public function getLocation(): array
     {
         return [
-            'lon' => $this->tour['lon'],
-            'lat' => $this->tour['lat']
+            'lon' => $this->tour['warehouse_lon'],
+            'lat' => $this->tour['warehouse_lat']
         ];
     }
 
