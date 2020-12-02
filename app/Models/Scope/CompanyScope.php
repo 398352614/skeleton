@@ -127,6 +127,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof Stock))
                 && (!($model instanceof StockLog))
                 && (!in_array('driver_id', $whereColumns))
+                && (in_array('IFNULL(driver_id, 0)', $whereColumns))
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . '=' . $user->id);
             }
