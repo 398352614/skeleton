@@ -187,7 +187,7 @@ class OrderService extends BaseService
      */
     public function getTrackingOrderType($order, TrackingOrder $trackingOrder = null)
     {
-        (empty($trackingOrder)) && $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], [' * '], false, ['created_at' => 'desc']);
+        (empty($trackingOrder)) && $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         //1.运单不存在,直接获取运单类型
         if (empty($trackingOrder)) {
             return $this->getTrackingOrderService()->getTypeByOrderType($order['type']);
