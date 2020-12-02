@@ -1145,6 +1145,7 @@ class TourService extends BaseService
      * 司机入库
      * @param $id
      * @param $params
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function inWarehouse($id, $params)
@@ -1183,8 +1184,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败，请重新操作');
         }
-        Log::info('tour', $tour);
-        TourTrait::afterBackWarehouse($tour);
+        return $tour;
     }
 
     /**
