@@ -257,7 +257,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/all-track', 'RouteTrackingController@index')->name('car.track-index');
         // 导出里程
         Route::get('/{id}/distance', 'CarController@distanceExport')->name('car.distance');
-        // 导出里程
+        // 导出信息
         Route::get('/{id}/info', 'CarController@infoExport')->name('car.info');
     });
 
@@ -356,7 +356,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{tour_no}', 'TourDriverController@getListByTourNo');
     });
 
-    //取件线路-司机
+    //延迟管理
     Route::prefix('delay')->group(function () {
         Route::get('/init', 'TourDelayController@init');
         Route::get('/', 'TourDelayController@index');
