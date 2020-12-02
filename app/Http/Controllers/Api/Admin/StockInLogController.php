@@ -9,16 +9,16 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\StockOutLogService;
+use App\Services\Admin\StockInLogService;
 
 /**
  * Class StockInLogController
  * @package App\Http\Controllers\Api\Admin
- * @property StockOutLogService $service
+ * @property StockInLogService $service
  */
 class StockInLogController extends BaseController
 {
-    public function __construct(StockOutLogService $service, $exceptMethods = [])
+    public function __construct(StockInLogService $service, $exceptMethods = [])
     {
         parent::__construct($service, $exceptMethods);
     }
