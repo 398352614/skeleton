@@ -53,6 +53,7 @@ class StockOutLog extends BaseModel
         'order_no',
         'tracking_order_no',
         'express_first_no',
+        'execution_date',
         'weight',
         'operator',
         'created_at',
