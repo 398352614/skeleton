@@ -783,7 +783,7 @@ class TourService extends BaseService
             }
         }
         foreach ($cancelTrackingOrderList as $key => $cancelTrackingOrder) {
-            $material = $this->getTrackingOrderMaterialService()->getInfo(['tracking_order_no' => $cancelTrackingOrder['tracking_order_no'], 'actual_quantity', ['>', 0]], ['id'], false);
+            $material = $this->getTrackingOrderMaterialService()->getInfo(['tracking_order_no' => $cancelTrackingOrder['tracking_order_no'], 'actual_quantity' => ['>', 0]], ['id'], false);
             if (!empty($material)) {
                 $signTrackingOrderList[] = $cancelTrackingOrder;
                 unset($cancelTrackingOrderList[$key]);
@@ -1183,7 +1183,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('司机入库失败，请重新操作');
         }
-        Log::info('tour',$tour);
+        Log::info('tour', $tour);
         TourTrait::afterBackWarehouse($tour);
     }
 
