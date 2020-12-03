@@ -256,7 +256,10 @@ class OrderService extends BaseService
         //新增订单明细列表
         $this->addAllItemList($params);
         //生成运单
-        $tour = $this->getTrackingOrderService()->storeByOrder($order);
+        $tour = [];
+        if (!empty($params['execution_date'])) {
+            $tour = $this->getTrackingOrderService()->storeByOrder($order);
+        }
         return [
             'order_no' => $params['order_no'],
             'out_order_no' => $params['out_order_no'] ?? '',
