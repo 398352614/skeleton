@@ -1012,12 +1012,12 @@ class OrderService extends BaseService
         !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $dbOrder['order_no']);
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
-        $dbMaterialList = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false)->toArray();
         //删除包裹
         $rowCount = $this->getPackageService()->delete(['order_no' => $dbOrder['order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
+        //删除材料
         $rowCount = $this->getMaterialService()->delete(['order_no' => $dbOrder['order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
@@ -1026,16 +1026,7 @@ class OrderService extends BaseService
         $dbOrder['package_list'] = $params['package_list'] ?? [];
         $dbOrder['material_list'] = $params['material_list'] ?? [];
         $this->addAllItemList($dbOrder);
-        //由于取派订单，只有取件阶段可以修改，直接修改即可
-        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false);
-        if (!empty($dbTrackingOrder)) {
-            $rowCount = $this->getMaterialService()->update(['order_no' => $dbOrder['order_no']], Arr::only($dbTrackingOrder->toArray(), ['tracking_order_no', 'batch_no', 'tour_no']));
-            if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败');
-            }
-        }
-        //处理取派线路中的材料
-        $this->getTrackingOrderService()->dealMaterialList($dbOrder, $dbMaterialList, $params['material_list'] ?? []);
+        $this->getTrackingOrderService()->updateItemListByOrderNo($dbOrder['order_no'], $params);
     }
 
     /**

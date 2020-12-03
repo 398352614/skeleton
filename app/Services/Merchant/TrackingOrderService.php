@@ -367,7 +367,7 @@ class TrackingOrderService extends BaseService
      */
     private function addAllItemList($orderNo, $trackingOrder)
     {
-        $packageList = $this->getPackageService()->getList(['order_no' => $orderNo], ['*'], false)->toArray();
+        $packageList = $this->getPackageService()->getList(['order_no' => $orderNo, 'status' => ['in', [BaseConstService::PACKAGE_TYPE_1, BaseConstService::PACKAGE_TYPE_2]]], ['*'], false)->toArray();
         if (!empty($packageList)) {
             data_set($packageList, '*.tour_no', $trackingOrder['tour_no']);
             data_set($packageList, '*.batch_no', $trackingOrder['batch_no']);
@@ -453,24 +453,43 @@ class TrackingOrderService extends BaseService
         ];
     }
 
+    /**
+     * 修改货物明细列表
+     * @param $orderNo
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function updateItemListByOrderNo($orderNo, $params)
+    {
+        //由于取派订单，只有取件阶段可以修改，直接修改即可
+        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $orderNo, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]]], ['*'], false, ['created_at' => 'desc']);
+        if (empty($dbTrackingOrder)) return;
+        $dbTrackingOrder = $dbTrackingOrder->toArray();
+        $dbTrackingOrderMaterialList = $this->getTrackingOrderMaterialService()->getList(['order_no' => $orderNo], ['*'], false)->toArray();
+        $rowCount = $this->getTrackingOrderPackageService()->delete(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $rowCount = $this->getTrackingOrderMaterialService()->delete(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $this->addAllItemList($orderNo, $dbTrackingOrder);
+        //处理取派线路中的材料
+        $this->getTrackingOrderService()->dealMaterialList($dbTrackingOrder, $dbTrackingOrderMaterialList, $params['material_list'] ?? []);
+    }
+
 
     /**
      * 处理材料
-     * @param $order
+     * @param $dbTrackingOrder
      * @param $dbMaterialList
      * @param $materialList
      * @return string
      * @throws BusinessLogicException
      */
-    public function dealMaterialList($order, $dbMaterialList, $materialList)
+    public function dealMaterialList($dbTrackingOrder, $dbMaterialList, $materialList)
     {
-        $dbTrackingOrder = parent::getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
-        if (empty($dbTrackingOrder)) return 'true';
-        $dbTrackingOrder = $dbTrackingOrder->toArray();
-        //若是取派件订单并且是派件运单,则不处理
-        if (($order['type'] == BaseConstService::ORDER_TYPE_3) && ($dbTrackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2)) {
-            return 'true';
-        }
         //若运单是取派中,则需要处理取件线路中对应材料数量
         if (intval($dbTrackingOrder['status']) === BaseConstService::TRACKING_ORDER_STATUS_4) {
             foreach ($dbMaterialList as $dbMaterial) {
