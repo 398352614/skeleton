@@ -298,6 +298,20 @@ class OrderService extends BaseService
     }
 
     /**
+     * 自动终止派送
+     * @param $cancelTrackingOrderList
+     * @throws BusinessLogicException
+     */
+    public function autoEnd($cancelTrackingOrderList)
+    {
+        $cancelOrderNoList = array_column($cancelTrackingOrderList, 'order_no');
+        $cancelOrderList = $this->filterCancelOrderNoList($cancelOrderNoList, $cancelTrackingOrderList);
+        foreach ($cancelOrderList as $cancelOrder) {
+            $this->end($cancelOrder['id']);
+        }
+    }
+
+    /**
      * 终止派送
      * @param $id
      * @throws BusinessLogicException
@@ -321,6 +335,36 @@ class OrderService extends BaseService
         //取消通知
         event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
     }
+
+
+    /**
+     * 过滤取派失败订单
+     * @param $cancelOrderNoList
+     * @param $trackingOrderList
+     * @return mixed
+     */
+    private function filterCancelOrderNoList($cancelOrderNoList, $trackingOrderList)
+    {
+        if (empty($cancelOrderNoList)) return [];
+        $cancelOrderList = $this->getOrderService()->getList(['order_no' => ['in', $cancelOrderNoList]], ['id', 'order_no', 'merchant_id'], false)->toArray();
+        $merchantIdList = array_unique(array_column($cancelOrderList, 'merchant_id'));
+        $cancelOrderList = array_create_index($cancelOrderList, 'order_no');
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIdList]], ['id', 'pickup_count', 'pie_count'], false)->toArray();
+        $merchantList = array_create_index($merchantList, 'id');
+        $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
+        foreach ($cancelOrderNoList as $key => $cancelOrderNo) {
+            $type = $trackingOrderList[$cancelOrderNo]['type'];
+            $merchantId = $trackingOrderList[$cancelOrderNo]['merchant_id'];
+            $count = $this->getTrackingOrderService()->count(['driver_id' => ['all', null], 'order_no' => $cancelOrderNo, 'type' => $type, 'status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
+            $times = ($type == BaseConstService::TRACKING_ORDER_TYPE_1) ? $merchantList[$merchantId]['pickup_count'] : $merchantList[$merchantId]['pie_count'];
+            $times = intval($times);
+            if ($times == 0 || ($count < $times)) {
+                unset($cancelOrderList[$cancelOrderNo]);
+            }
+        }
+        return $cancelOrderList;
+    }
+
 
     /**
      * 订单批量新增
