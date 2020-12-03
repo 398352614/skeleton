@@ -145,6 +145,7 @@ class StockService extends BaseService
         }
         //推送入库分拣信息
         Log::info('分拣开始');
+        Log::info('包裹',[$dbPackage]);
         dispatch(new \App\Jobs\PackagePickOut([$dbPackage]));
     }
 

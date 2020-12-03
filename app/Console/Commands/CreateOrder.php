@@ -176,7 +176,7 @@ class CreateOrder extends Command
     {
         $faker = Factory::create('nl-NL');
         $base = [
-            'type' => Arr::random([1, 2, 3]),
+            'type' => Arr::random([3]),
             'settlement_type' => Arr::random([1, 2]),
             'special_remark' => $faker->sentence(2, true),
             'remark' => $faker->sentence(2, true),
