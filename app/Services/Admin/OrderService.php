@@ -759,11 +759,11 @@ class OrderService extends BaseService
         if ($dbOrder['status'] == BaseConstService::ORDER_STATUS_5) {
             return 'true';
         }
+        $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
-        $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
         //材料清除运单信息
         $rowCount = $this->getMaterialService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '']);
         if ($rowCount === false) {
