@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Resources\EmployeeListResource;
+use App\Http\Resources\Api\Admin\EmployeeListResource;
 use App\Services\Admin\InstitutionService;
 
 class InstitutionController extends BaseController
