@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class PackagePickUp implements ShouldQueue
+class PackagePickOut implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
@@ -88,6 +88,7 @@ class PackagePickUp implements ShouldQueue
     {
         $this->curl = new CurlClient();
         $notifyType = $this->notifyType();
+        Log::info('merchant',collect($this->packageList)->pluck('merchant_id')->toArray());
         $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
         if (empty($merchantList)) return true;
         foreach ($merchantList as $merchantId => $packageList) {
