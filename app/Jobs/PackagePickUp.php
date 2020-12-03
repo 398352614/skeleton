@@ -3,18 +3,13 @@
 namespace App\Jobs;
 
 
-use App\Exceptions\BusinessLogicException;
-use App\Models\Batch;
 use App\Models\MerchantApi;
-use App\Models\Package;
-use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class PackagePickUp implements ShouldQueue
