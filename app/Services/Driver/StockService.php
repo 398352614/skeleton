@@ -142,6 +142,8 @@ class StockService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
+        //推送入库分拣信息
+        dispatch(new \App\Jobs\PackagePickUp($dbPackage));
     }
 
 

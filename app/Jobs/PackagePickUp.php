@@ -2,18 +2,22 @@
 
 namespace App\Jobs;
 
+
 use App\Exceptions\BusinessLogicException;
+use App\Models\Batch;
 use App\Models\MerchantApi;
 use App\Models\Package;
+use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-class SendPackageInfo implements ShouldQueue
+class PackagePickUp implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
@@ -38,7 +42,6 @@ class SendPackageInfo implements ShouldQueue
      */
     public $timeout = 30;
 
-
     /**
      * 任务可以尝试的最大次数。
      *
@@ -46,69 +49,60 @@ class SendPackageInfo implements ShouldQueue
      */
     public $tries = 3;
 
-    /**
-     * @var CurlClient $curl
-     */
-    public $curl;
-
     public $packageList;
+
+    /**
+     * @var CurlClient
+     */
+    private $curl;
 
     /**
      * 推送字段
      * @var array
      */
-    public static $columns=[
-        'weight',
+    public static $columns = [
         'express_first_no',
+        'order_no',
         'out_order_no',
-        'order_no'
     ];
 
     /**
-     * UpdateLineCountTime constructor.
-     * @param $packageList ;
-     */
-    public function __construct(array $packageList)
-    {
-        $this->packageList = $packageList;
-    }
-
-    /**
-     * 推送类型-发送包裹信息
+     * 推送类型-包裹入库分拣
      * @return string
      */
     public function notifyType()
     {
-        return BaseConstService::NOTIFY_PACKAGE_INFO;
+        return BaseConstService::NOTIFY_PACKAGE_PICK_OUT;
     }
 
     /**
+     * UpdateLineCountTime constructor.
+     * @param $packageList
+     */
+    public function __construct($packageList)
+    {
+        $this->packageList = $packageList;
+    }
+
+
+    /**
+     * 触发入库分拣队列
      * Execute the job.
-     * @return bool
-     * @throws BusinessLogicException
      */
     public function handle()
     {
         $this->curl = new CurlClient();
         $notifyType = $this->notifyType();
-        //取数据
-        $packageList = Package::query()->whereIn('express_first_no', collect($this->packageList)->pluck('merchant_id')->toArray())->orderBy('id','desc')->get();
-        if(empty($packageList))return true;
-        //数据处理
-        foreach ($packageList as $k=>$v){
-            $packageList[$k]['weight'] = collect($this->packageList)->where('express_first_no',$v['express_first_no'])->first()['weight'];
-        }
-        //取商家url
         $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
         if (empty($merchantList)) return true;
-        //分商家推送
-        foreach ($merchantList as $merchantId => $merchant) {
-            $packageList = collect($packageList)->where('merchant_id', $merchantId)->only(self::$columns)->toArray();
+        foreach ($merchantList as $merchantId => $packageList) {
+            $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->only(self::$columns);
             if (!empty($packageList)) {
                 $postData = ['type' => $notifyType, 'data' => ['package_list' => $packageList]];
                 $this->postData($merchantList[$merchantId]['url'], $postData);
             }
         }
+        Log::info('入库分拣成功');
         return true;
     }
 
@@ -128,10 +122,9 @@ class SendPackageInfo implements ShouldQueue
     }
 
     /**
-     * 发送通知-1
+     * 发送通知
      * @param string $url
      * @param array $postData
-     * @throws BusinessLogicException
      */
     public function postData(string $url, array $postData)
     {
@@ -144,22 +137,6 @@ class SendPackageInfo implements ShouldQueue
         } catch (\Exception $ex) {
             Log::info(json_encode($postData, JSON_UNESCAPED_UNICODE));
             Log::info('推送失败');
-        }
-    }
-
-    /**
-     * 发送通知-2
-     * @param array $merchant
-     * @param array $postData
-     * @throws BusinessLogicException
-     */
-    public function merchantPostData(array $merchant, array $postData)
-    {
-        $res = $this->curl->merchantPost($merchant, $postData);
-        if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
-            app('log')->info('send notify failure');
-            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
-            throw new BusinessLogicException('发送失败');
         }
     }
 }
