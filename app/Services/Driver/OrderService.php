@@ -47,7 +47,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('操作失败');
         }
         //过滤取派失败订单
-        //$cancelOrderList = $this->filterCancelOrderNoList($cancelOrderList, $trackingOrderList);
+        $cancelOrderList = $this->filterCancelOrderNoList($cancelOrderList, $trackingOrderList);
         $rowCount = parent::update(['order_no' => ['in', $cancelOrderList]], ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
@@ -85,7 +85,7 @@ class OrderService extends BaseService
         //订单处理
         $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo, 'status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false)->toArray();
         $cancelOrderNoList = array_column($trackingOrderList, 'order_no');
-        //$cancelOrderNoList = $this->filterCancelOrderNoList($cancelOrderNoList, $trackingOrderList);
+        $cancelOrderNoList = $this->filterCancelOrderNoList($cancelOrderNoList, $trackingOrderList);
         $rowCount = parent::update(['order_no' => ['in', $cancelOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
@@ -125,7 +125,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        //$cancelOrderNoList = $this->filterCancelOrderNoList($cancelOrderNoList, $trackingOrderList);
+        $cancelOrderNoList = $this->filterCancelOrderNoList($cancelOrderNoList, $trackingOrderList);
         $rowCount = parent::update(['order_no' => ['in', $cancelOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
