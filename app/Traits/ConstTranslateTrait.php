@@ -421,9 +421,9 @@ trait ConstTranslateTrait
     ];
 
     public static $trackStatusList = [
-        BaseConstService::TRACK_STATUS_1 => '取件成功，派件中',
+        BaseConstService::TRACK_STATUS_1 => '取件中',
         BaseConstService::TRACK_STATUS_2 => '取件成功，等待派件',
-        BaseConstService::TRACK_STATUS_3 => '取件中'
+        BaseConstService::TRACK_STATUS_3 => '取件成功，派件中'
     ];
 
     /**
