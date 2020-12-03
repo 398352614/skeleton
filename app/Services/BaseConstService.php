@@ -364,7 +364,6 @@ class BaseConstService
     const NOTIFY_PACKAGE_PICK_OUT = 'package-pick-out';   //包裹入库分拣
 
 
-
     //商户类型
     const MERCHANT_TYPE_1 = 1;
     const MERCHANT_TYPE_2 = 2;
@@ -445,4 +444,10 @@ class BaseConstService
     //包裹仓库类型1-入库2-出库
     const WAREHOUSE_PACKAGE_TYPE_1 = 1;
     const WAREHOUSE_PACKAGE_TYPE_2 = 2;
+
+    //商户端订单物流类型
+    const TRACK_STATUS_1 = 1;
+    const TRACK_STATUS_2 = 2;
+    const TRACK_STATUS_3 = 3;
+
 }
