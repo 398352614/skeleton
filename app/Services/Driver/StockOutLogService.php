@@ -8,7 +8,6 @@
 
 namespace App\Services\Driver;
 
-use App\Http\Resources\Api\Admin\StockInResource;
 use App\Models\StockOutLog;
 
 class StockOutLogService extends BaseService

@@ -12,7 +12,6 @@ namespace App\Services;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Test;
 use Carbon\Carbon;
-use Vinkla\Hashids\Facades\Hashids;
 
 class TestService extends BaseService
 {

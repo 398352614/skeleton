@@ -9,7 +9,6 @@
 namespace App\Services\Driver;
 
 use App\Exceptions\BusinessLogicException;
-use App\Models\Car;
 use App\Models\Line;
 use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;

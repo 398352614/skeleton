@@ -9,7 +9,6 @@
 namespace App\Events\Interfaces;
 
 
-use App\Models\Material;
 use App\Models\Order;
 use App\Models\Package;
 use App\Models\TrackingOrderMaterial;

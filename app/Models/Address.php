@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
-use App\Traits\CountryTrait;
-
 /**
  * 收货方 表
  * Class Employee

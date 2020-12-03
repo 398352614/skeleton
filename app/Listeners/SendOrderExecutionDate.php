@@ -2,17 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Events\Interfaces\ATourNotify;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Models\Batch;
-use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\Order;
-use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;

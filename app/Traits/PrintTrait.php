@@ -13,7 +13,6 @@ use App\Exceptions\BusinessLogicException;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Barryvdh\Snappy\PdfFaker;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\View;
 
 trait PrintTrait
 {

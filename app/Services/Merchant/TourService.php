@@ -9,15 +9,15 @@ use App\Http\Resources\Api\Merchant\TourResource;
 use App\Models\Batch;
 use App\Models\Tour;
 use App\Models\TourLog;
-use App\Services\BaseConstService;
-use App\Services\BaseServices\XLDirectionService;
 use App\Services\ApiServices\GoogleApiService;
 use App\Services\ApiServices\TourOptimizationService;
+use App\Services\BaseConstService;
+use App\Services\BaseServices\XLDirectionService;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
+use App\Traits\TourRedisLockTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Traits\TourRedisLockTrait;
 
 class TourService extends BaseService
 {

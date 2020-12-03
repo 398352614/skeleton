@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Exceptions\BusinessLogicException;
 use App\Traits\TourRedisLockTrait;
 use Closure;
-use Exception;
 
 class CheckTourRedisLock
 {

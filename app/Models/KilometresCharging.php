@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
-
 /**
  * 公里计费表
  * Class Employee

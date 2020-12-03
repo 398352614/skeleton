@@ -9,18 +9,17 @@ use App\Http\Resources\Api\Admin\TourResource;
 use App\Models\Batch;
 use App\Models\Tour;
 use App\Models\TourLog;
+use App\Services\ApiServices\GoogleApiService;
+use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Services\BaseServices\XLDirectionService;
-use App\Services\ApiServices\GoogleApiService;
-use App\Services\OrderNoRuleService;
-use App\Services\ApiServices\TourOptimizationService;
+use App\Services\TrackingOrderTrailService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
+use App\Traits\TourRedisLockTrait;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\DB;
-use App\Traits\TourRedisLockTrait;
-use App\Services\TrackingOrderTrailService;
 
 
 class TourService extends BaseService

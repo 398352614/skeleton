@@ -9,20 +9,13 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\LineResource;
-use App\Http\Validate\Api\Admin\LineValidate;
 use App\Models\Line;
 use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
-use App\Traits\ImportTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class LineService extends BaseLineService
 {

@@ -4,15 +4,10 @@ namespace App\Services\Auth;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Employee;
-use App\Models\Merchant;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\GuardHelpers;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**

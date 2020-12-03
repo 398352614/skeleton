@@ -3,8 +3,8 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\BatchResource;
 use App\Http\Resources\Api\Admin\BatchInfoResource;
+use App\Http\Resources\Api\Admin\BatchResource;
 use App\Models\Batch;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;

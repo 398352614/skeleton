@@ -5,9 +5,6 @@ namespace App\Console\Commands;
 use App\Models\Batch;
 use App\Models\Order;
 use App\Models\Tour;
-use App\Services\BaseConstService;
-use App\Services\CurlClient;
-use App\Services\TrackingOrderTrailService;
 use Illuminate\Console\Command;
 
 class Repush extends Command

@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Services\BaseConstService;
-use App\Traits\ConstTranslateTrait;
-
 /**
  * 入库日志表
  * Class Employee

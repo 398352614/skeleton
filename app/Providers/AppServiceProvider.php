@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Services\MessageService;
 use App\Services\RedisService;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Validator;

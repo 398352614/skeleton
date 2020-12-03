@@ -7,7 +7,6 @@ use App\Models\Batch;
 use App\Models\Tour;
 use App\Models\TourLog;
 use App\Services\BaseConstService;
-use App\Traits\TourRedisLockTrait;
 use Illuminate\Support\Facades\Log;
 
 trait UpdateTourTimeAndDistanceTrait

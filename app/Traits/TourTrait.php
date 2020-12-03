@@ -9,23 +9,17 @@
 namespace App\Traits;
 
 use App\Events\AfterDriverLocationUpdated;
+use App\Events\TourDriver\BackWarehouse;
 use App\Events\TourDriver\BatchArrived;
 use App\Events\TourDriver\BatchDepart;
-use App\Events\TourDriver\BackWarehouse;
 use App\Events\TourDriver\OutWarehouse;
-use App\Events\TourNotify\CancelBatch;
-use App\Events\TourNotify\NextBatch;
 use App\Jobs\ActualOutWarehouse;
-use App\Listeners\SendNotify2Merchant;
 use App\Models\Batch;
-use App\Models\Order;
-use App\Models\Package;
 use App\Models\Tour;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
-use Illuminate\Support\Facades\Log;
 
 trait TourTrait
 {

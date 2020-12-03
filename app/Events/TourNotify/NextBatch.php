@@ -10,13 +10,8 @@ namespace App\Events\TourNotify;
 
 use App\Events\Interfaces\ATourNotify;
 use App\Models\Batch;
-use App\Models\Material;
-use App\Models\Order;
-use App\Models\Package;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class NextBatch extends ATourNotify
 {

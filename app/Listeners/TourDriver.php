@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\Interfaces\ITourDriver;
-use App\Models\RouteTracking;
 use App\Models\TourDriverEvent;
 
 class TourDriver

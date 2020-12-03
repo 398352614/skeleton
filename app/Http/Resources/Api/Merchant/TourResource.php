@@ -4,7 +4,6 @@ namespace App\Http\Resources\Api\Merchant;
 
 use App\Services\BaseConstService;
 use App\Services\GisService;
-use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TourResource extends JsonResource

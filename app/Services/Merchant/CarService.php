@@ -2,13 +2,7 @@
 
 namespace App\Services\Merchant;
 
-use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Merchant\CarResource;
 use App\Models\Car;
-use App\Models\Tour;
-use App\Services\BaseConstService;
-use App\Services\Merchant\BaseService;
-use App\Traits\ConstTranslateTrait;
 
 class CarService extends BaseService
 {

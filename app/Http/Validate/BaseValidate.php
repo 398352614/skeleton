@@ -9,12 +9,10 @@
 
 namespace App\Http\Validate;
 
-use App\Traits\AddressTemplateTrait;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Validator;
-use Illuminate\Validation\Rule;
 use tests\Mockery\Adapter\Phpunit\EmptyTestCase;
 
 /**

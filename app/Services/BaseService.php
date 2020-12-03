@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class BaseService
 {

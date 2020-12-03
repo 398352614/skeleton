@@ -2,11 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Company;
-use App\Models\Fee;
-use App\Models\Line;
 use App\Models\LineRange;
-use App\Services\BaseConstService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 

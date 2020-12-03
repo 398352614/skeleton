@@ -12,7 +12,6 @@ use App\Models\Authenticatable;
 use GatewayWorker\Lib\Gateway;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
