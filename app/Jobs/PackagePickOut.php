@@ -79,6 +79,8 @@ class PackagePickOut implements ShouldQueue
     {
         Log::info(5);
         $this->packageList = $packageList;
+        Log::info(6);
+
     }
 
 
