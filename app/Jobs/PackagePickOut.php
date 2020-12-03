@@ -44,7 +44,6 @@ class PackagePickOut implements ShouldQueue
      */
     public $tries = 3;
 
-    public $packageList;
 
     /**
      * @var CurlClient
@@ -61,6 +60,8 @@ class PackagePickOut implements ShouldQueue
         'out_order_no',
     ];
 
+    private $packageList;
+
     /**
      * 推送类型-包裹入库分拣
      * @return string
@@ -76,6 +77,7 @@ class PackagePickOut implements ShouldQueue
      */
     public function __construct($packageList)
     {
+        Log::info(5);
         $this->packageList = $packageList;
     }
 
