@@ -93,7 +93,7 @@ class PackagePickOut implements ShouldQueue
         if (empty($merchantList)) return true;
         foreach ($merchantList as $merchantId => $merchant) {
             $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->only(self::$columns);
-            Log::info('1',$merchantList[$merchantId]['url']);
+            Log::info($merchantList[$merchantId]['url']);
             if (!empty($packageList)) {
                 $postData = ['type' => $notifyType, 'data' => ['package_list' => $packageList]];
                 $this->postData($merchant['url'], $postData);
