@@ -950,7 +950,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         //包裹清除运单信息
-        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_4]);
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
