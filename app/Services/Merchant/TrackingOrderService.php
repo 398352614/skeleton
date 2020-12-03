@@ -581,16 +581,6 @@ class TrackingOrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
-        //材料清除运单信息
-        $rowCount = $this->getMerchantService()->update(['order_no' => $orderNo], ['tracking_order_no' => '']);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
-        }
-        //包裹清除运单信息
-        $rowCount = $this->getPackageService()->update(['order_no' => $orderNo], ['tracking_order_no' => '']);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
-        }
         OrderTrailService::OrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::ORDER_TRAIL_DELETE);
     }
 
