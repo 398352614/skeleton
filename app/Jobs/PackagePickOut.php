@@ -76,7 +76,7 @@ class PackagePickOut implements ShouldQueue
      */
     public function __construct($packageList)
     {
-        $this->packageList = [$packageList];
+        $this->packageList = $packageList;
     }
 
 
@@ -86,9 +86,13 @@ class PackagePickOut implements ShouldQueue
      */
     public function handle()
     {
+        Log::info(1);
         $this->curl = new CurlClient();
+        Log::info(2);
         $notifyType = $this->notifyType();
+        Log::info(3);
         $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
+        Log::info(4);
         if (empty($merchantList)) return true;
         foreach ($merchantList as $merchantId => $packageList) {
             $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->only(self::$columns);
