@@ -566,13 +566,28 @@ class TrackingOrderService extends BaseService
             !empty($dbTrackingOrder['batch_no']) && $this->getBatchService()->reCountAmountByNo($dbTrackingOrder['batch_no']);
             //重新统计取件线路金额
             !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
-            //清除材料的取件信息
-            $rowCount = $this->getMaterialService()->update(['order_no' => $orderNo], ['batch_no' => '', 'tour_no' => '']);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败,请重新操作');
-            }
         }
         $rowCount = parent::delete(['order_no' => $orderNo]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+        //删除运单包裹
+        $rowCount = $this->getTrackingOrderPackageService()->delete(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+        //删除运单材料
+        $rowCount = $this->getTrackingOrderMaterialService()->delete(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+        //材料清除运单信息
+        $rowCount = $this->getMerchantService()->update(['order_no' => $orderNo], ['tracking_order_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+        //包裹清除运单信息
+        $rowCount = $this->getPackageService()->update(['order_no' => $orderNo], ['tracking_order_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }

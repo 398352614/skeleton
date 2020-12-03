@@ -944,7 +944,6 @@ class OrderService extends BaseService
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
-
         if ((!empty($params['no_push']) && $params['no_push'] == 0) || empty($params['no_push'])) {
             //以取消取派方式推送商城
             event(new OrderDelete($dbOrder['order_no'], $dbOrder['out_order_no']));
