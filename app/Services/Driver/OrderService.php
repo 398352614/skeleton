@@ -164,8 +164,8 @@ class OrderService extends BaseService
     private function filterCancelOrderNoList($cancelOrderNoList, $trackingOrderList)
     {
         $orderList = $this->getOrderService()->getList(['order_no' => ['in', $cancelOrderNoList]], ['merchant_id'], false)->toArray();
-        $merchantIdList = array_column($orderList, 'merchant_id');
-        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIdList]], ['pickup_count', 'pie_count'])->toArray();
+        $merchantIdList = array_unique(array_column($orderList, 'merchant_id'));
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIdList]], ['id', 'pickup_count', 'pie_count'])->toArray();
         $merchantList = array_create_index($merchantList, 'id');
         $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
         foreach ($cancelOrderNoList as $key => $cancelOrderNo) {
