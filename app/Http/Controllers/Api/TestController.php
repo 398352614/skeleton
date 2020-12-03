@@ -12,11 +12,6 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\TestService;
-use App\Traits\AlphaTrait;
-use GuzzleHttp\Client;
-use http\Env\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 

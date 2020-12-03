@@ -3,11 +3,16 @@
 namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithEvents;     // 自动注册事件监听器
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithStrictNullComparison;    // 导出 0 原样显示，不为 null
-use Maatwebsite\Excel\Concerns\WithTitle;    // 设置工作䈬名称
-use Maatwebsite\Excel\Events\AfterSheet;    // 在工作表流程结束时会引发事件
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
+use Maatwebsite\Excel\Concerns\WithTitle;
+use Maatwebsite\Excel\Events\AfterSheet;
+
+// 自动注册事件监听器
+// 导出 0 原样显示，不为 null
+// 设置工作䈬名称
+// 在工作表流程结束时会引发事件
 
 class MerchantExport implements FromArray, WithTitle, WithEvents, WithStrictNullComparison,WithHeadings
 {

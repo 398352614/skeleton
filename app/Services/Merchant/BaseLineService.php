@@ -15,12 +15,11 @@ use App\Models\HolidayDate;
 use App\Models\Line;
 use App\Models\MerchantHoliday;
 use App\Services\BaseConstService;
-use App\Services\Merchant\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 
 class BaseLineService extends BaseService
 {

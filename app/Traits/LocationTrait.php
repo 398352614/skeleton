@@ -9,12 +9,8 @@
 namespace App\Traits;
 
 use App\Exceptions\BusinessLogicException;
-use App\Services\Admin\UploadService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 trait LocationTrait
 {

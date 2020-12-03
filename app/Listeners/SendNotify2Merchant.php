@@ -2,18 +2,12 @@
 
 namespace App\Listeners;
 
-use App\Events\AfterDriverLocationUpdated;
 use App\Events\Interfaces\ATourNotify;
 use App\Exceptions\BusinessLogicException;
-use App\Models\Batch;
-use App\Models\Merchant;
 use App\Models\MerchantApi;
-use App\Models\Order;
-use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
 use App\Services\ThirdPartyLogService;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;

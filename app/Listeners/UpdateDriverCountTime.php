@@ -6,7 +6,6 @@ use App\Events\AfterDriverLocationUpdated;
 use App\Events\TourNotify\NextBatch;
 use App\Exceptions\BusinessLogicException;
 use App\Services\Admin\ApiTimesService;
-use App\Services\ApiServices\GoogleApiService;
 use App\Services\ApiServices\TourOptimizationService;
 use App\Traits\FactoryInstanceTrait;
 use App\Traits\UpdateTourTimeAndDistanceTrait;

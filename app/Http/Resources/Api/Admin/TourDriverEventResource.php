@@ -6,7 +6,6 @@
 namespace App\Http\Resources\Api\Admin;
 
 use App\Services\GisService;
-use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TourDriverEventResource extends JsonResource

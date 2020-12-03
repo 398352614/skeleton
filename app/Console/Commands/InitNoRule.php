@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Company;
-use App\Models\Fee;
 use App\Models\OrderNoRule;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;

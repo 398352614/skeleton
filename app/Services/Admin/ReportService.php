@@ -13,11 +13,7 @@ use App\Http\Resources\Api\Admin\ReportResource;
 use App\Models\Tour;
 use App\Models\TourMaterial;
 use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
-use App\Traits\ConstTranslateTrait;
 use Carbon\CarbonInterval;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class ReportService

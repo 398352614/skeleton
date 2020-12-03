@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Models\AddressTemplate;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 
 class CacheLocation extends Command
 {

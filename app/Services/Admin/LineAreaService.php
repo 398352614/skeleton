@@ -10,10 +10,8 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\LineArea;
-use App\Services\Admin\BaseService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\MapAreaTrait;
-use Illuminate\Database\Eloquent\Model;
 
 class LineAreaService extends BaseService
 {

@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
-
 /**
  * 运单轨迹表
  * Class TrackingOrderTrail

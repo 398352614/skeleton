@@ -9,7 +9,6 @@
 
 namespace App\Http\Resources\Api\Merchant;
 
-use App\Traits\ConstTranslateTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TransportPriceResource extends JsonResource

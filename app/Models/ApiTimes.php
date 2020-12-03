@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
-use Illuminate\Support\Facades\App;
-
 /**
  * 汽车表
  * Class Car

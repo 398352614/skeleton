@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
-
 /**
  * line_area表
  * Class Employee

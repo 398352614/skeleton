@@ -15,11 +15,8 @@ use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryAddressTrait;
 use App\Traits\LocationTrait;
 use App\Traits\PostcodeTrait;
-use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class CommonService
 {

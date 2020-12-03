@@ -10,9 +10,8 @@ namespace App\Services\Driver;
 
 use App\Http\Resources\Api\Driver\MerchantResource;
 use App\Models\Merchant;
-use App\Services\BaseConstService;
-
 use App\Models\MerchantApi;
+use App\Services\BaseConstService;
 
 /**
  * Class MerchantService

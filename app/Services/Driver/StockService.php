@@ -12,7 +12,6 @@ namespace App\Services\Driver;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Stock;
 use App\Services\BaseConstService;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 class StockService extends BaseService

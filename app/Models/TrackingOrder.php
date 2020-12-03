@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\SearchTrait;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
 
 /**
  * 运单表

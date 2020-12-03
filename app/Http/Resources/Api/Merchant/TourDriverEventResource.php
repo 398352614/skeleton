@@ -6,9 +6,7 @@
 namespace App\Http\Resources\Api\Merchant;
 
 use App\Services\GisService;
-use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
 
 class TourDriverEventResource extends JsonResource
 {

@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
-
 /**
  * worker表
  * Class Employee

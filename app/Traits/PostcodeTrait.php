@@ -8,7 +8,6 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 
 trait PostcodeTrait

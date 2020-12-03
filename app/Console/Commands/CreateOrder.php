@@ -5,10 +5,9 @@ namespace App\Console\Commands;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Api\Admin\OrderController;
 use App\Models\Merchant;
+use Faker\Factory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
-use Faker\Factory;
 
 class CreateOrder extends Command
 {

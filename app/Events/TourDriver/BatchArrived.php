@@ -9,9 +9,7 @@
 namespace App\Events\TourDriver;
 
 use App\Events\Interfaces\ITourDriver;
-use App\Services\BaseConstService;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Arr;
 
 class BatchArrived implements ITourDriver
 {

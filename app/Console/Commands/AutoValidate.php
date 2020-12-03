@@ -4,15 +4,11 @@
 namespace App\Console\Commands;
 
 
-use App\Traits\ConstTranslateTrait;
-use Doctrine\DBAL\Schema\Schema;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use function Composer\Autoload\includeFile;
-use function GuzzleHttp\Psr7\str;
 
 class AutoValidate extends Command
 {

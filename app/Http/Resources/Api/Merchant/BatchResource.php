@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Api\Merchant;
 
 use App\Services\GisService;
-use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BatchResource extends JsonResource

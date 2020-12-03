@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Services\BaseConstService;
-use App\Traits\ConstTranslateTrait;
-
 /**
  * 库存表
  * Class Employee
