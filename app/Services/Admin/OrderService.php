@@ -760,7 +760,7 @@ class OrderService extends BaseService
             return 'true';
         }
         $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
-        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_5]);
+        $rowCount = parent::updateById($id, ['tracking_order_no' => '', 'status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
