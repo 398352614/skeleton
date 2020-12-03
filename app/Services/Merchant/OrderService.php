@@ -945,12 +945,12 @@ class OrderService extends BaseService
         }
         $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
         //材料清除运单信息
-        $rowCount = $this->getMaterialService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_4]);
+        $rowCount = $this->getMaterialService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         //包裹清除运单信息
-        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '']);
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
