@@ -91,11 +91,12 @@ class PackagePickOut implements ShouldQueue
         $notifyType = $this->notifyType();
         $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
         if (empty($merchantList)) return true;
-        foreach ($merchantList as $merchantId => $packageList) {
+        foreach ($merchantList as $merchantId => $merchant) {
             $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->only(self::$columns);
+            Log::info('1',$merchantList[$merchantId]['url']);
             if (!empty($packageList)) {
                 $postData = ['type' => $notifyType, 'data' => ['package_list' => $packageList]];
-                $this->postData($merchantList[$merchantId]['url'], $postData);
+                $this->postData($merchant['url'], $postData);
             }
         }
         Log::info('入库分拣成功');

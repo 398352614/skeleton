@@ -120,7 +120,6 @@ class StockService extends BaseService
      */
     public function pickOut($package, $tour, $trackingOrder)
     {
-        dd($package);
         $dbPackage = parent::getInfoLock(['express_first_no' => $package['express_first_no']], ['*'], false);
         if (!empty($dbPackage)) {
             throw  new BusinessLogicException('当前包裹已入库');
@@ -146,8 +145,8 @@ class StockService extends BaseService
         }
         //推送入库分拣信息
         Log::info('分拣开始');
-        Log::info('包裹',[$dbPackage]);
-        dispatch(new \App\Jobs\PackagePickOut([$dbPackage]));
+        Log::info('包裹',[$package]);
+        dispatch(new \App\Jobs\PackagePickOut([$package]));
     }
 
 
