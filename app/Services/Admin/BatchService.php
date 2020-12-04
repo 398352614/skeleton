@@ -249,9 +249,9 @@ class BatchService extends BaseService
         //订单列表
         $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         //获取包裹列表
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
+        $packageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         //获取材料列表
-        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
+        $materialList = $this->getTrackingOrderMaterialService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         //数据组装
         foreach ($orderList as $key => &$order) {
             $order['package_list'] = array_values(collect($packageList)->where('order_no', $order['order_no'])->all());
