@@ -144,8 +144,7 @@ class StockService extends BaseService
             throw new BusinessLogicException('操作失败，请重新操作');
         }
         //推送入库分拣信息
-        Log::info('分拣开始');
-        dispatch(new \App\Jobs\PackagePickOut($dbPackage));
+        dispatch(new \App\Jobs\PackagePickOut([$package]));
     }
 
 

@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class PackagePickOut implements ShouldQueue
@@ -44,22 +45,13 @@ class PackagePickOut implements ShouldQueue
      */
     public $tries = 3;
 
-    public $packageList;
 
     /**
      * @var CurlClient
      */
     private $curl;
 
-    /**
-     * 推送字段
-     * @var array
-     */
-    public static $columns = [
-        'express_first_no',
-        'order_no',
-        'out_order_no',
-    ];
+    private $packageList;
 
     /**
      * 推送类型-包裹入库分拣
@@ -86,16 +78,24 @@ class PackagePickOut implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('package',$this->packageList);
+        Log::info('入库分拣开始');
+        $columns = [
+            'express_first_no',
+            'order_no',
+            'out_order_no',
+        ];
         $this->curl = new CurlClient();
         $notifyType = $this->notifyType();
         $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
         if (empty($merchantList)) return true;
-        foreach ($merchantList as $merchantId => $packageList) {
-            $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->only(self::$columns);
+        foreach ($merchantList as $merchantId => $merchant) {
+            $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->toArray();
+            foreach ($packageList as $k => $v) {
+                $packageList[$k] = Arr::only($v, $columns);
+            }
             if (!empty($packageList)) {
                 $postData = ['type' => $notifyType, 'data' => ['package_list' => $packageList]];
-                $this->postData($merchantList[$merchantId]['url'], $postData);
+                $this->postData($merchant['url'], $postData);
             }
         }
         Log::info('入库分拣成功');

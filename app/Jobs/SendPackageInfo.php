@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class SendPackageInfo implements ShouldQueue
@@ -54,17 +55,6 @@ class SendPackageInfo implements ShouldQueue
     public $packageList;
 
     /**
-     * 推送字段
-     * @var array
-     */
-    public static $columns=[
-        'weight',
-        'express_first_no',
-        'out_order_no',
-        'order_no'
-    ];
-
-    /**
      * UpdateLineCountTime constructor.
      * @param $packageList ;
      */
@@ -89,26 +79,36 @@ class SendPackageInfo implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('包裹重量转发开始');
+        $columns = [
+            'weight',
+            'express_first_no',
+            'out_order_no',
+            'order_no'
+        ];
         $this->curl = new CurlClient();
         $notifyType = $this->notifyType();
         //取数据
-        $packageList = Package::query()->whereIn('express_first_no', collect($this->packageList)->pluck('merchant_id')->toArray())->orderBy('id','desc')->get();
-        if(empty($packageList))return true;
-        //数据处理
-        foreach ($packageList as $k=>$v){
-            $packageList[$k]['weight'] = collect($this->packageList)->where('express_first_no',$v['express_first_no'])->first()['weight'];
+        foreach ($this->packageList as $k => $v) {
+            $packageList[$k] = Package::query()->where('express_first_no', $v['express_first_no'])->orderBy('id', 'desc')->first();
+            $packageList[$k]['weight'] = $v['weight'];
         }
+        if (empty($packageList)) return true;
         //取商家url
-        $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
+        $merchantList = $this->getMerchantList(collect($packageList)->pluck('merchant_id')->toArray());
         if (empty($merchantList)) return true;
         //分商家推送
         foreach ($merchantList as $merchantId => $merchant) {
-            $packageList = collect($packageList)->where('merchant_id', $merchantId)->only(self::$columns)->toArray();
+            $packageList = collect($packageList)->where('merchant_id', $merchantId)->toArray();
+            foreach ($packageList as $k => $v) {
+                $packageList[$k] = Arr::only($v, $columns);
+            }
             if (!empty($packageList)) {
                 $postData = ['type' => $notifyType, 'data' => ['package_list' => $packageList]];
                 $this->postData($merchantList[$merchantId]['url'], $postData);
             }
         }
+        Log::info('包裹重量转发成功');
         return true;
     }
 
