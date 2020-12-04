@@ -132,18 +132,19 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
-        return $list = parent::getPageList();
-//        foreach ($list as &$order) {
-//            $order['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $order['order_no']]);
-//            $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['id', 'type', 'status'], false);
-//            if (!empty($trackingOrder)) {
-//                $order['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
-//                $order['tracking_order_status_name'] = $trackingOrder->type_name . '-' . $trackingOrder->status_name;
-//            } else {
-//                $order['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
-//                $order['tracking_order_status_name'] = __('运单未创建');
-//            }
-//        }
+        $list = parent::getPageList();
+        foreach ($list as $k => $v) {
+            $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);
+            $trackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $v['order_no']], ['id', 'type', 'status'], false, [], ['id' => 'desc']);
+            if (!$trackingOrder->isEmpty()) {
+                $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
+                $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
+            } else {
+                $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
+                $list[$k]['tracking_order_status_name'] = __('运单未创建');
+            }
+        }
+        return $list;
     }
 
     /**
