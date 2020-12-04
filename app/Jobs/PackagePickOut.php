@@ -10,6 +10,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 class PackagePickOut implements ShouldQueue
@@ -78,7 +79,7 @@ class PackagePickOut implements ShouldQueue
     public function handle()
     {
         Log::info('入库分拣开始');
-        $columns=[
+        $columns = [
             'express_first_no',
             'order_no',
             'out_order_no',
@@ -86,11 +87,14 @@ class PackagePickOut implements ShouldQueue
         $this->curl = new CurlClient();
         $notifyType = $this->notifyType();
         $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
-        Log::info('merchant',$merchantList);
+        Log::info('merchant', $merchantList);
         if (empty($merchantList)) return true;
         foreach ($merchantList as $merchantId => $merchant) {
             $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->all();
-            Log::info('package',$packageList);
+            foreach ($packageList as $k => $v) {
+                $packageList[$k] = Arr::only($v, $columns);
+            }
+            Log::info('package', $packageList);
             if (!empty($packageList)) {
                 $postData = ['type' => $notifyType, 'data' => ['package_list' => $packageList]];
                 $this->postData($merchant['url'], $postData);
