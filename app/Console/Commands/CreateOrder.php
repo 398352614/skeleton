@@ -23,6 +23,7 @@ class CreateOrder extends Command
      */
     protected $signature = 'order:create
                                             {--times= : times}
+                                            {--type= : type}
                                             {--merchant_id= : merchant id}
                                             {--execution_date= : execution date}
                                             {--material_count= : material count}
@@ -62,9 +63,10 @@ class CreateOrder extends Command
                 }
                 auth()->setUser($merchant);
                 $executionDate = $this->option('execution_date') ?? date('Y-m-d');
-                $paCount = $this->option('package_count') ?? 1;
+                $paCount = $this->option('package_count') ?? 0;
                 $maCount = $this->option('material_count') ?? 1;
                 $data = array_merge($this->getMaPaList($maCount, $paCount), $this->base($merchantId));
+                $data['type'] = $this->option('type') ?? Arr::random([1, 2, 3]);
                 if ($data['type'] == 3) {
                     $data = array_merge($data, $this->getAddress($executionDate), $this->getSecondAddress($executionDate));
                 } else {
@@ -112,7 +114,7 @@ class CreateOrder extends Command
         } else {
             $address = $address->toArray();
         }
-        return Arr::only($address, ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat','execution_date']);
+        return Arr::only($address, ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat', 'execution_date']);
     }
 
     /**
@@ -122,7 +124,7 @@ class CreateOrder extends Command
      */
     private function getSecondAddress($executionDate)
     {
-        $executionDate=Carbon::create($executionDate)->addDay()->format('Y-m-d');
+        $executionDate = Carbon::create($executionDate)->addDay()->format('Y-m-d');
         $newData = [];
         $data = $this->getAddress($executionDate);
         foreach ($data as $k => $v) {
@@ -139,7 +141,7 @@ class CreateOrder extends Command
      * @param int $paCount
      * @return array
      */
-    private function getMaPaList($maCount = 0, $paCount = 0)
+    private function getMaPaList($maCount, $paCount)
     {
         $faker = Factory::create('nl-NL');
         $packageList = [];
@@ -176,7 +178,6 @@ class CreateOrder extends Command
     {
         $faker = Factory::create('nl-NL');
         $base = [
-            'type' => Arr::random([3]),
             'settlement_type' => Arr::random([1, 2]),
             'special_remark' => $faker->sentence(2, true),
             'remark' => $faker->sentence(2, true),
