@@ -86,10 +86,11 @@ class PackagePickOut implements ShouldQueue
         $this->curl = new CurlClient();
         $notifyType = $this->notifyType();
         $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
+        Log::info('merchant',$merchantList);
         if (empty($merchantList)) return true;
         foreach ($merchantList as $merchantId => $merchant) {
             $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->only($columns);
-            Log::info($merchantList[$merchantId]['url']);
+            Log::info('package',$packageList);
             if (!empty($packageList)) {
                 $postData = ['type' => $notifyType, 'data' => ['package_list' => $packageList]];
                 $this->postData($merchant['url'], $postData);
