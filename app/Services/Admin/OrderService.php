@@ -132,20 +132,22 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
-        $this->query->where('status', '<>', BaseConstService::ORDER_STATUS_5);
+        $this->query->where('status','<>',BaseConstService::ORDER_STATUS_5);
         $list = parent::getPageList();
         foreach ($list as $k => $v) {
             $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);
             $trackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $v['order_no']], ['id', 'type', 'status'], false, [], ['id' => 'desc']);
-            if (!$trackingOrder->isEmpty() || $trackingOrder[0]->status != BaseConstService::TRACKING_ORDER_STATUS_6) {
-                $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
-                $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
-            } elseif($trackingOrder->isEmpty()){
+            if(!empty($trackingOrder) && !empty($trackingOrder[0])){
+                if ($trackingOrder[0]['status'] != BaseConstService::TRACKING_ORDER_STATUS_5) {
+                    $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
+                    $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
+                } else {
+                    $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
+                    $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
+                }
+            }else{
                 $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
                 $list[$k]['tracking_order_status_name'] = __('运单未创建');
-            } {
-                $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
-                $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
             }
         }
         return $list;
