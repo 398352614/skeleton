@@ -676,7 +676,7 @@ class OrderService extends BaseService
                 return false;
             }
         }
-        if (!empty($data['material_list'])) {
+        if (!empty($data['package_list'])) {
             $dbPackageList = $this->getPackageService()->getList(['order_no' => $dbInfo['order_no']], ['*'], false);
             if (!empty($dbPackageList)) {
                 $dbPackageList = $dbPackageList->toArray();
