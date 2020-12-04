@@ -306,6 +306,8 @@ class TrackingOrderService extends BaseService
             if ($rowCount === false) {
                 throw new BusinessLogicException('操作失败');
             }
+            empty($trackingOrder['tour_no']) && $trackingOrder['tour_no'] = $dbTrackingOrder['tour_no'];
+            empty($trackingOrder['batch_no']) && $trackingOrder['batch_no'] = $dbTrackingOrder['batch_no'];
             $this->addAllItemList($order['order_no'], $trackingOrder);
         }
     }
