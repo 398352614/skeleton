@@ -94,7 +94,8 @@ class PackagePickOut implements ShouldQueue
             Log::info('2');
             $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->toArray();
             foreach ($packageList as $k => $v) {
-                $packageList[$k]=collect($v)->only($columns)->toArray();
+                Log::info($v);
+                $packageList[$k] = Arr::only($v, $columns);
             }
             Log::info('package', $packageList);
             if (!empty($packageList)) {
