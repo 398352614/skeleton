@@ -79,6 +79,7 @@ class SendPackageInfo implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('包裹重量转发开始');
         $columns = [
             'weight',
             'express_first_no',
@@ -89,25 +90,32 @@ class SendPackageInfo implements ShouldQueue
         $notifyType = $this->notifyType();
         //取数据
         $packageList = Package::query()->whereIn('express_first_no', collect($this->packageList)->pluck('merchant_id')->toArray())->orderBy('id', 'desc')->get();
+        Log::info('1',$packageList);
         if (empty($packageList)) return true;
         //数据处理
         foreach ($packageList as $k => $v) {
             $packageList[$k]['weight'] = collect($this->packageList)->where('express_first_no', $v['express_first_no'])->first()['weight'];
         }
+        Log::info('2',$packageList);
         //取商家url
         $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
         if (empty($merchantList)) return true;
+        Log::info('3',$merchantList);
         //分商家推送
         foreach ($merchantList as $merchantId => $merchant) {
+            Log::info('4');
             $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->toArray();
             foreach ($packageList as $k => $v) {
                 $packageList[$k] = Arr::only($v, $columns);
             }
+            Log::info('5',$packageList);
             if (!empty($packageList)) {
+                Log::info('6',$packageList);
                 $postData = ['type' => $notifyType, 'data' => ['package_list' => $packageList]];
                 $this->postData($merchantList[$merchantId]['url'], $postData);
             }
         }
+        Log::info('包裹重量转发成功');
         return true;
     }
 
