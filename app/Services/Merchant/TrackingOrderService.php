@@ -524,7 +524,7 @@ class TrackingOrderService extends BaseService
                 throw new BusinessLogicException('材料处理失败');
             }
         };
-        $rowCount = $this->getMaterialService()->update(['order_no' => $order['order_no']], ['batch_no' => $dbTrackingOrder['batch_no'], 'tour_no' => $dbTrackingOrder['tour_no']]);
+        $rowCount = $this->getMaterialService()->update(['order_no' => $dbTrackingOrder['order_no']], ['batch_no' => $dbTrackingOrder['batch_no'], 'tour_no' => $dbTrackingOrder['tour_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
