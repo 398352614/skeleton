@@ -50,16 +50,6 @@ class PackagePickOut implements ShouldQueue
      */
     private $curl;
 
-    /**
-     * 推送字段
-     * @var array
-     */
-    public static $columns = [
-        'express_first_no',
-        'order_no',
-        'out_order_no',
-    ];
-
     private $packageList;
 
     /**
@@ -87,12 +77,18 @@ class PackagePickOut implements ShouldQueue
      */
     public function handle()
     {
+        Log::info('入库分拣开始');
+        $columns=[
+            'express_first_no',
+            'order_no',
+            'out_order_no',
+        ];
         $this->curl = new CurlClient();
         $notifyType = $this->notifyType();
         $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
         if (empty($merchantList)) return true;
         foreach ($merchantList as $merchantId => $merchant) {
-            $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->only(self::$columns);
+            $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->only($columns);
             Log::info($merchantList[$merchantId]['url']);
             if (!empty($packageList)) {
                 $postData = ['type' => $notifyType, 'data' => ['package_list' => $packageList]];
