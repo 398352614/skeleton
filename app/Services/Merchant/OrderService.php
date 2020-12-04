@@ -996,7 +996,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
-        $this->getTrackingOrderService()->updateOutStatusByOrderNo($dbOrder, $params['out_status']);
+        $this->getTrackingOrderService()->updateOutStatusByOrderNo($dbOrder['order_no'], $params['out_status']);
     }
 
     /**
@@ -1073,15 +1073,15 @@ class OrderService extends BaseService
         }
         $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $tour['tour_no']], ['lon', 'lat'], false, ['id' => 'desc']) ?? [];
         $batch = $this->getBatchService()->getInfo(['batch_no' => $trackingOrder['batch_no']], ['*'], false) ?? [];
-        $count = $this->getBatchService()->query->where('tour_no',$tour['tour_no'])->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
+        $count = $this->getBatchService()->query->where('tour_no', $tour['tour_no'])->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
         $status = '';
         if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
             if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
-                $status=BaseConstService::TRACK_STATUS_1;
+                $status = BaseConstService::TRACK_STATUS_1;
             } elseif ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 && $trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_5) {
-                $status=BaseConstService::TRACK_STATUS_2;
+                $status = BaseConstService::TRACK_STATUS_2;
             } else {
-                $status=BaseConstService::TRACK_STATUS_3;
+                $status = BaseConstService::TRACK_STATUS_3;
             }
         }
         return [
@@ -1112,8 +1112,8 @@ class OrderService extends BaseService
             'expect_distance' => $batch['expect_distance'] ?? 0,
             'expect_arrive_time' => $batch['expect_arrive_time'] ?? '',
             'actual_arrive_time' => $batch['actual_arrive_time'] ?? '',
-            'rest_batch'=>$count,
-            'status'=>$status,
+            'rest_batch' => $count,
+            'status' => $status,
             'status_name' => empty($status) ? null : ConstTranslateTrait::trackStatusList($status)
         ];
     }
