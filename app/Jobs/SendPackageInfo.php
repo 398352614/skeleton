@@ -89,28 +89,21 @@ class SendPackageInfo implements ShouldQueue
         $this->curl = new CurlClient();
         $notifyType = $this->notifyType();
         //取数据
-        $packageList = Package::query()->whereIn('express_first_no', collect($this->packageList)->pluck('merchant_id')->toArray())->orderBy('id', 'desc')->get();
-        Log::info('1',$packageList);
-        if (empty($packageList)) return true;
-        //数据处理
-        foreach ($packageList as $k => $v) {
-            $packageList[$k]['weight'] = collect($this->packageList)->where('express_first_no', $v['express_first_no'])->first()['weight'];
+        foreach ($this->packageList as $k => $v) {
+            $packageList[$k] = Package::query()->where('express_first_no', $v['express_first_no'])->orderBy('id', 'desc')->first();
+            $packageList[$k]['weight'] = $v['weight'];
         }
-        Log::info('2',$packageList);
+        if (empty($packageList)) return true;
         //取商家url
-        $merchantList = $this->getMerchantList(collect($this->packageList)->pluck('merchant_id')->toArray());
+        $merchantList = $this->getMerchantList(collect($packageList)->pluck('merchant_id')->toArray());
         if (empty($merchantList)) return true;
-        Log::info('3',$merchantList);
         //分商家推送
         foreach ($merchantList as $merchantId => $merchant) {
-            Log::info('4');
-            $packageList = collect($this->packageList)->where('merchant_id', $merchantId)->toArray();
+            $packageList = collect($packageList)->where('merchant_id', $merchantId)->toArray();
             foreach ($packageList as $k => $v) {
                 $packageList[$k] = Arr::only($v, $columns);
             }
-            Log::info('5',$packageList);
             if (!empty($packageList)) {
-                Log::info('6',$packageList);
                 $postData = ['type' => $notifyType, 'data' => ['package_list' => $packageList]];
                 $this->postData($merchantList[$merchantId]['url'], $postData);
             }
