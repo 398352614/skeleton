@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\OrderCancel;
+use App\Events\OrderDelete;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Models\MerchantApi;
@@ -72,7 +73,7 @@ class SendOrderDelete implements ShouldQueue
      * @return bool
      * @throws BusinessLogicException
      */
-    public function handle(OrderCancel $event)
+    public function handle(OrderDelete $event)
     {
         try {
             //获取商户ID
