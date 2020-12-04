@@ -122,9 +122,9 @@ class ReportService extends BaseService
         //获取订单列表
         $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList]], ['id', 'type', 'out_user_id', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount'], false)->toArray();
         //获取当前取件线路上的所有包裹
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
+        $packageList = $this->getTrackingOrderPackageService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         //获取当前取件线路上的所有材料
-        $materialList = $this->getMaterialService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+        $materialList = $this->getTrackingOrderMaterialService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         //获取站点的取件材料汇总
         $tourMaterialList = $this->getTourMaterialList($info, $materialList);
         //统计预计实际材料数量
