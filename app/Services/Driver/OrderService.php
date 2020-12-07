@@ -107,9 +107,10 @@ class OrderService extends BaseService
     {
         //订单处理
         $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6]]], ['*'], false)->toArray();
+        $trackingOrderNoList = array_column($trackingOrderList, 'tracking_order_no');
+        $orderNoList = array_column($trackingOrderList, 'order_no');
         $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
-        $trackingOrderNoList = array_column($trackingOrderList, 'order_no');
-        $orderList = parent::getList(['order_no' => ['in', $trackingOrderNoList]], ['*'], false)->toArray();
+        $orderList = parent::getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         $signOrderNoList = $cancelOrderNoList = [];
         foreach ($orderList as $order) {
             if ($trackingOrderList[$order['order_no']]['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
