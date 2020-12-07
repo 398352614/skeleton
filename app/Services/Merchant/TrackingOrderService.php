@@ -350,9 +350,9 @@ class TrackingOrderService extends BaseService
         }
         $dbTrackingOrder = $dbTrackingOrder->toArray();
         //分类
-        if ($dbTrackingOrder['status'] == BaseConstService::ORDER_STATUS_1) {
+        if (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
             return $this->updateDatePhone($dbTrackingOrder, $params);
-        } elseif ($dbTrackingOrder['status'] == BaseConstService::ORDER_STATUS_2 && empty($params['execution_date'])) {
+        } elseif (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]) && empty($params['execution_date'])) {
             return $this->updatePhone($dbTrackingOrder, $params);
         } else {
             throw new BusinessLogicException('该状态无法进行此操作');

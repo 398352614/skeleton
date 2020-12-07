@@ -797,7 +797,7 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $this->getTourService()->getList(['tour_no' => ['in', $dbTrackingOrderList->pluck('tour_no')->toArray()]]);
-        $dbTrackingOrderList = $dbTrackingOrderList->toArray(request());
+        $dbTrackingOrderList = collect($dbTrackingOrderList)->toArray();
         foreach ($dbTrackingOrderList as $k => $v) {
             $dbTrackingOrderList[$k]['merchant_name'] = $v['merchant_id_name'];
             $dbTrackingOrderList[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
