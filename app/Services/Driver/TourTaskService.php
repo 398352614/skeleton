@@ -124,8 +124,6 @@ class TourTaskService extends BaseService
                 return $trackingOrder;
             }
             $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']];
-            data_set($trackingOrder['package_list'], '*.status', $trackingOrder['status']);
-            data_set($trackingOrder['package_list'], '*.status_name', $trackingOrder['status_name']);
             data_set($trackingOrder['package_list'], '*.merchant', null);
             return $trackingOrder;
         }, $trackingOrderList);
