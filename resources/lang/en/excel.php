@@ -169,7 +169,7 @@ return [
         'place_post_code' => 'Post Code',
         'place_house_number' => 'House Number',
         'execution_date' => 'Date',
-        'driver_fullname' => 'Driver',
+        'driver_name' => 'Driver',
         'batch_no' => 'Batch No',
         'tour_no' => 'Tour No',
         'line_name' => 'Line',

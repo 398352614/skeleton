@@ -154,7 +154,7 @@ return [
         'place_post_code' => '邮编',
         'place_house_number' => '门牌号',
         'execution_date' => '取派日期',
-        'driver_fullname' => '派送司机',
+        'driver_name' => '派送司机',
         'batch_no' => '站点编号',
         'tour_no' => '取件线路编号',
         'line_name' => '线路名称',
