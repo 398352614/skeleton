@@ -444,9 +444,11 @@ class TrackingOrderService extends BaseService
         if ((in_array($dbTrackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]))) {
             throw new BusinessLogicException('订单正在[:status_name],不能修改日期', 1000, ['status_name' => $dbTrackingOrder->status_name]);
         }
+        $dbTrackingOrder = $dbTrackingOrder->toArray();
         $trackingOrder = array_merge($dbTrackingOrder, ['execution_date' => $secondExecutionDate]);
-        unset($trackingOrder['tour_no'], $trackingOrder['batch_no']);
-        $this->changeBatch($dbTrackingOrder, $trackingOrder, [], null, [], false, true, false);
+        unset($trackingOrder['tour_no'], $trackingOrder['batch_no'], $trackingOrder['line_id'], $trackingOrder['line_name']);
+        $line = $this->fillWarehouseInfo($trackingOrder);
+        $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, null, [], false, true, false);
     }
 
 
