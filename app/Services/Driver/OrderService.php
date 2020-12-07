@@ -149,7 +149,9 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $cancelPackageNoList], 'order_no' => ['in', $cancelOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_4]);
+        //考虑订单签收，包裹取消取派的情况
+        $orderNoList = array_merge($cancelOrderNoList, $signOrderNoList);
+        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $cancelPackageNoList], 'order_no' => ['in', $orderNoList]], ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
