@@ -139,7 +139,7 @@ class TourService extends BaseService
      */
     public function getAddOrderPageList($data)
     {
-        list($orderIdList, $executionDate) = [$data['order_id_list'], $data['execution_date']];
+        list($orderIdList, $executionDate) = [$data['tracking_order_id_list'], $data['execution_date']];
 
         $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
         list($orderList, $lineId) = $this->getTrackingOrderService()->getAddTrackingOrderList($orderIdList, $executionDate);
