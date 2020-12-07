@@ -423,9 +423,12 @@ class TrackingOrderService extends BaseService
         ];
     }
 
-    public function updateSecondDate()
+    public function updateSecondDate($dbOrder)
     {
-
+        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
+        if (empty($dbTrackingOrder) || ($dbTrackingOrder->type != BaseConstService::TRACKING_ORDER_TYPE_2) || (!in_array($dbTrackingOrder->status, []))) {
+            return;
+        }
     }
 
 

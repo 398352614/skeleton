@@ -861,15 +861,20 @@ class OrderService extends BaseService
         event(new OrderExecutionDateUpdated($dbOrder['order_no'], $dbOrder['out_order_no'] ?? '', $executionDate, $secondExecutionDate, $status, '', ['tour_no' => '', 'line_id' => $trackingOrder['line_id'] ?? '', 'line_name' => $trackingOrder['line_name'] ?? '']));
     }
 
-
-    public function updateSecondDate($id, $data)
+    /**
+     * 修改派送日期
+     * @param $id
+     * @param $secondExecutionDate
+     * @throws BusinessLogicException
+     */
+    public function updateSecondDate($id, $secondExecutionDate)
     {
         $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
-        $rowCount = parent::updateById($dbOrder['id'], Arr::only($data, ['second_execution_date']));
+        $rowCount = parent::updateById($dbOrder['id'], ['second_execution_date' => $secondExecutionDate]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        return $this->getTrackingOrderService()->updateSecondDate($dbOrder, $data);
+        return $this->getTrackingOrderService()->updateSecondDate($dbOrder, $secondExecutionDate);
     }
 
 

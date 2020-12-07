@@ -116,6 +116,16 @@ class OrderController extends OrderBaseController
     }
 
     /**
+     * 修改派件日期
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function updateSecondDate($id)
+    {
+        return $this->service->updateSecondDate($id, $this->data['second_execution_date']);
+    }
+
+    /**
      * @param $id
      * @return mixed
      * @throws BusinessLogicException
@@ -198,7 +208,6 @@ class OrderController extends OrderBaseController
     {
         return $this->service->end($id);
     }
-
 
 
     /**
