@@ -36,7 +36,7 @@ class StockService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        if (empty($dbPackage)) return;
+        if (empty($dbPackageList)) return;
         $stockDataList = [];
         foreach ($dbPackageList as $dbPackage) {
             $no = $dbPackage['express_first_no'];
