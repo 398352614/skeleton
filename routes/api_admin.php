@@ -109,8 +109,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
         //无效化已完成订单（用以新增同号订单）
         Route::get('/{id}/neutralize', 'OrderController@neutralize');
-        //获取可加单取件线路
-        Route::get('/get-tour', 'TourController@getAddOrderPageList');
     });
 
     //订单轨迹管理
@@ -190,13 +188,15 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //批量运单从站点移除
         Route::delete('/remove-batch', 'TrackingOrderController@removeListFromBatch');
         //批量运单分配至指定取件线路
-        Route::put('/assign-list', 'TrackingOrderController@assignListTour');
+        Route::put('/assign-tour', 'TrackingOrderController@assignListTour');
         //批量打印
         Route::get('/print', 'TrackingOrderController@orderPrintAll');
         //运单导出表格
         Route::get('/order-excel', 'TrackingOrderController@trackingOrderExport');
         //运单第三方对接日志
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
+        //获取可加单取件线路
+        Route::get('/get-tour', 'TourController@getAddOrderPageList');
     });
 
     //物流状态管理
