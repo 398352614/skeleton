@@ -751,7 +751,7 @@ class OrderService extends BaseService
         $executionDate = !empty($data['execution_date']) ? $data['execution_date'] : $dbOrder['execution_date'];
         $secondExecutionDate = !empty($data['second_execution_date']) ? $data['second_execution_date'] : $dbOrder['second_execution_date'];
         $status = !empty($data['status']) ? $data['status'] : $dbOrder['status'];
-        event(new OrderExecutionDateUpdated($dbOrder['order_no'], $dbOrder['out_order_no'] ?? '', $executionDate, $secondExecutionDate, $status, '', ['tour_no' => '', 'line_id' => '', 'line_name' => '']));
+        event(new OrderExecutionDateUpdated($dbOrder['order_no'], $dbOrder['out_order_no'] ?? '', $executionDate, $secondExecutionDate, $status, '', ['tour_no' => '', 'line_id' => $trackingOrder['line_id'] ?? '', 'line_name' => $trackingOrder['line_name'] ?? '']));
     }
 
     /**
