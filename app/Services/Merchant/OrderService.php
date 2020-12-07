@@ -9,6 +9,7 @@
 
 namespace App\Services\Merchant;
 
+use App\Events\OrderCancel;
 use App\Events\OrderDelete;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
@@ -23,6 +24,7 @@ use App\Models\TourMaterial;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\CommonService;
+use App\Services\OrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
@@ -283,7 +285,7 @@ class OrderService extends BaseService
      */
     public function getAgainInfo($id)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_2], false);
+        $dbOrder = $this->getInfoByIdOfStatus($id, false, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2], false);
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
         if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder)) {
             throw new BusinessLogicException('当前订单不支持再次派送，请联系管理员');
@@ -303,6 +305,7 @@ class OrderService extends BaseService
      */
     private function getTrackingOrderType($order, TrackingOrder $trackingOrder = null)
     {
+        (empty($trackingOrder)) && $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         //1.运单不存在,直接获取运单类型
         if (empty($trackingOrder)) {
             return $this->getTrackingOrderService()->getTypeByOrderType($order['type']);
@@ -338,12 +341,12 @@ class OrderService extends BaseService
      */
     public function again($id, $params)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
-        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
-        $trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder);
-        if ($trackingOrderType != $params['tracking_order_type']) {
-            throw new BusinessLogicException('当前订单不支持再次派送，请刷新后再操作');
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $trackingOrderType = $this->getTrackingOrderType($dbOrder);
+        if (empty($type)) {
+            throw new BusinessLogicException('当前包裹已生成对应运单');
         }
+        $params = array_merge($dbOrder, $params);
         return $this->getTrackingOrderService()->storeAgain($dbOrder, $params, $trackingOrderType);
     }
 
@@ -355,15 +358,22 @@ class OrderService extends BaseService
      */
     public function end($id)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['tracking_order_no', 'order_no'], false, ['created_at' => 'desc']);
         if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
             throw new BusinessLogicException('当前订单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
         }
-        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_3]);
+        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['status' => BaseConstService::PACKAGE_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder->toArray(), BaseConstService::ORDER_TRAIL_CLOSED);
+        //取消通知
+        //event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
     }
 
 

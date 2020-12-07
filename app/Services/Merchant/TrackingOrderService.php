@@ -549,11 +549,11 @@ class TrackingOrderService extends BaseService
                 $address = Arr::only($order, ['place_country', 'place_fullname', 'place_phone', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lat', 'place_lon']);
             } else {
                 $address = [
-                    'place_country' => 'second_place_country', 'place_fullname' => 'second_place_fullname',
-                    'place_phone' => 'second_place_phone', 'place_post_code' => 'second_place_post_code',
-                    'place_house_number' => 'second_place_house_number', 'place_city' => 'second_place_city',
-                    'place_street' => 'second_place_street', 'place_address' => 'second_place_address',
-                    'place_lat' => 'second_place_lat', 'place_lon' => 'second_place_lon'
+                    'place_country' => $order['second_place_country'], 'place_fullname' => $order['second_place_fullname'],
+                    'place_phone' => $order['second_place_phone'], 'place_post_code' => $order['second_place_post_code'],
+                    'place_house_number' => $order['second_place_house_number'], 'place_city' => $order['second_place_city'],
+                    'place_street' => $order['second_place_street'], 'place_address' => $order['second_place_address'],
+                    'place_lat' => $order['second_place_lat'], 'place_lon' => $order['second_place_lon']
                 ];
             }
         }

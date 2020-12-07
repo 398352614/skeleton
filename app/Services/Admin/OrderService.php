@@ -132,12 +132,12 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
-        $this->query->where('status','<>',BaseConstService::ORDER_STATUS_5);
+        $this->query->where('status', '<>', BaseConstService::ORDER_STATUS_5);
         $list = parent::getPageList();
         foreach ($list as $k => $v) {
             $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);
             $trackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $v['order_no']], ['id', 'type', 'status'], false, [], ['id' => 'desc']);
-            if(!empty($trackingOrder) && !empty($trackingOrder[0])){
+            if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
                 if ($trackingOrder[0]['status'] != BaseConstService::TRACKING_ORDER_STATUS_5) {
                     $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
                     $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
@@ -145,7 +145,7 @@ class OrderService extends BaseService
                     $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
                     $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
                 }
-            }else{
+            } else {
                 $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
                 $list[$k]['tracking_order_status_name'] = __('运单未创建');
             }
@@ -241,7 +241,7 @@ class OrderService extends BaseService
      */
     public function getAgainInfo($id)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_2], false);
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2], false);
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
         if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder)) {
             throw new BusinessLogicException('当前订单不支持再次派送，请联系管理员');
@@ -298,9 +298,10 @@ class OrderService extends BaseService
     {
         $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
         $trackingOrderType = $this->getTrackingOrderType($dbOrder);
-        if ($trackingOrderType != $params['tracking_order_type']) {
-            throw new BusinessLogicException('当前订单不支持再次派送，请刷新后再操作');
+        if (empty($type)) {
+            throw new BusinessLogicException('当前包裹已生成对应运单');
         }
+        $params = array_merge($dbOrder, $params);
         return $this->getTrackingOrderService()->storeAgain($dbOrder, $params, $trackingOrderType);
     }
 

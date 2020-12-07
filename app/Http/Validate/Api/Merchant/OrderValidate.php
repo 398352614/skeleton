@@ -109,6 +109,7 @@ class OrderValidate extends BaseValidate
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
         'destroyAll' => ['order_no_list'],
+        'agign' => ['execution_date'],
         'updateOutStatus' => ['order_no', 'out_status'],
         'getDateListByPostCode' => ['place_post_code'],
         'updateByApiList' => ['order_no_list'],

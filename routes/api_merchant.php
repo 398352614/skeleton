@@ -46,6 +46,12 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::post('/', 'OrderController@store');
         //修改
         Route::put('/{id}', 'OrderController@update');
+        //获取再次取派信息
+        Route::get('/{id}/again-info', 'OrderController@getAgainInfo');
+        //再次取派
+        Route::put('/{id}/again', 'OrderController@again');
+        //终止派送
+        Route::put('/{id}/end', 'OrderController@end');
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
         //订单追踪

@@ -166,6 +166,41 @@ class OrderController extends OrderBaseController
         return $this->service->destroyAll($this->data['order_no_list']);
     }
 
+
+    /**
+     * 获取再次取派信息
+     * @param $id
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getAgainInfo($id)
+    {
+        return $this->service->getAgainInfo($id);
+    }
+
+    /**
+     * 再次取派
+     * @param $id
+     * @return bool
+     * @throws BusinessLogicException
+     */
+    public function again($id)
+    {
+        return $this->service->again($id, $this->data);
+    }
+
+    /**
+     * 终止派送
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function end($id)
+    {
+        return $this->service->end($id);
+    }
+
+
+
     /**
      * 批量检查
      * @return array

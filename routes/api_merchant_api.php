@@ -27,4 +27,7 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant_api'])->group(funct
     Route::post('package-info', 'PackageController@showByApi');//包裹查询
     Route::post('order-info', 'OrderController@showByApi');//订单查询
     Route::post('update-order-item-list', 'OrderController@updateItemList');//修改明细
+    Route::post('/again-order--info', 'OrderController@getAgainInfo');//获取再次取派信息
+    Route::post('/again-order', 'OrderController@again'); //再次取派
+    Route::post('/end-order', 'OrderController@end');//终止派送
 });
