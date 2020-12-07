@@ -891,7 +891,7 @@ class OrderService extends BaseService
             'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
             'execution_date' => 'required_without:place_phone|date|after_or_equal:today'
         ]);
-        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $data = array_filter(Arr::only($data, ['place_phone', 'execution_date']));
         $rowCount = parent::updateById($dbOrder['id'], $data);
         if ($rowCount === false) {

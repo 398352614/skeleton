@@ -132,7 +132,6 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
-        $this->query->where('status', '<>', BaseConstService::ORDER_STATUS_5);
         $list = parent::getPageList();
         foreach ($list as $k => $v) {
             $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);

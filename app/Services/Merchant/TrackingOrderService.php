@@ -410,6 +410,10 @@ class TrackingOrderService extends BaseService
         unset($trackingOrder['tour_no'], $trackingOrder['batch_no'], $data['order_no'], $data['tour_no'], $data['batch_no']);
         /******************************更换站点***************************************/
         $line = $this->fillWarehouseInfo($trackingOrder);
+        $row = parent::update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], $data);
+        if($row == false){
+            throw new BusinessLogicException('操作失败');
+        }
         $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, null, [], false, true);
         return [
             'order_no' => $dbTrackingOrder['order_no'],
