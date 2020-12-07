@@ -65,7 +65,7 @@ class StockService extends BaseService
      */
     public function packagePickOut($packageNo)
     {
-        $package = $this->getTrackingOrderPackageService()->getInfo(['express_first_no' => $packageNo], ['*'], false, ['created_at' => 'desc']);
+        $package = $this->getPackageService()->getInfo(['express_first_no' => $packageNo], ['*'], false, ['created_at' => 'desc']);
         if (empty($package)) {
             throw new BusinessLogicException('当前包裹不存在系统中');
         }
