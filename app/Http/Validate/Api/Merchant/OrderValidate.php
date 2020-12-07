@@ -106,6 +106,7 @@ class OrderValidate extends BaseValidate
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
+        'updateSecondDate' => ['second_execution_date'],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
         'destroyAll' => ['order_no_list'],

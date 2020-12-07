@@ -30,4 +30,5 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant_api'])->group(funct
     Route::post('/again-order--info', 'OrderController@getAgainInfo');//获取再次取派信息
     Route::post('/again-order', 'OrderController@again'); //再次取派
     Route::post('/end-order', 'OrderController@end');//终止派送
+    Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//修改派送日期
 });
