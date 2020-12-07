@@ -224,7 +224,6 @@ class GoogleApiService
         app('log')->info('当前返回的值为:' . json_encode($batchNos));
         $nextBatch = null;
         foreach ($batchNos as $k => $batchNo) {
-            Batch::where('batch_no', $batchNo)->update(['sort_id' => $key + $k]);
             if (!$nextBatch) {
                 $nextBatch = Batch::where('batch_no', $batchNo)->first();
             }
