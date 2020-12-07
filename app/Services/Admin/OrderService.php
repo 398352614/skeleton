@@ -766,6 +766,9 @@ class OrderService extends BaseService
         if ($dbOrder['status'] == BaseConstService::ORDER_STATUS_5) {
             return 'true';
         }
+        if ($dbOrder['source'] == BaseConstService::ORDER_SOURCE_3) {
+            throw new BusinessLogicException('第三方订单不允许手动删除');
+        }
         $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
         $rowCount = parent::updateById($id, ['tracking_order_no' => '', 'status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {

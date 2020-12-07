@@ -411,7 +411,7 @@ class TrackingOrderService extends BaseService
         /******************************更换站点***************************************/
         $line = $this->fillWarehouseInfo($trackingOrder);
         $row = parent::update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], $data);
-        if($row == false){
+        if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
         $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, null, [], false, true);
@@ -427,11 +427,16 @@ class TrackingOrderService extends BaseService
         ];
     }
 
-    public function updateSecondDate($dbOrder)
+    public function updateSecondDate($dbOrder, $secondExecutionDate)
     {
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
-        if (empty($dbTrackingOrder) || ($dbTrackingOrder->type != BaseConstService::TRACKING_ORDER_TYPE_2) || (!in_array($dbTrackingOrder->status, []))) {
+        if (empty($dbTrackingOrder)
+            || ($dbTrackingOrder->type != BaseConstService::TRACKING_ORDER_TYPE_2)
+            || (!in_array($dbTrackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]))) {
             return;
+        }
+        if ((!in_array($dbTrackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]))) {
+            throw new BusinessLogicException('订单正在[:status_name]', 1000, ['status_name' => $dbTrackingOrder->status_name]);
         }
     }
 
