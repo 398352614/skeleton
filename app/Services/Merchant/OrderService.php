@@ -874,6 +874,10 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['second_execution_date' => $secondExecutionDate]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
         return $this->getTrackingOrderService()->updateSecondDate($dbOrder, $secondExecutionDate);
     }
 
@@ -896,6 +900,13 @@ class OrderService extends BaseService
         $rowCount = parent::updateById($dbOrder['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        //修改包裹取派日期
+        if (!empty($data['execution_date'])) {
+            $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], $data);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败，请重新操作');
+            }
         }
         return $this->getTrackingOrderService()->updateDateAndPhone($dbOrder, $data);
     }

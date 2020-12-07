@@ -414,7 +414,7 @@ class TrackingOrderService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, null, [], false, true);
+        $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, null, [], false, true, false);
         return [
             'order_no' => $dbTrackingOrder['order_no'],
             'out_order_no' => $dbTrackingOrder['out_order_no'],
@@ -427,6 +427,12 @@ class TrackingOrderService extends BaseService
         ];
     }
 
+    /**
+     * 修改派件日期
+     * @param $dbOrder
+     * @param $secondExecutionDate
+     * @throws BusinessLogicException
+     */
     public function updateSecondDate($dbOrder, $secondExecutionDate)
     {
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
@@ -435,9 +441,12 @@ class TrackingOrderService extends BaseService
             || (!in_array($dbTrackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]))) {
             return;
         }
-        if ((!in_array($dbTrackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]))) {
-            throw new BusinessLogicException('订单正在[:status_name]', 1000, ['status_name' => $dbTrackingOrder->status_name]);
+        if ((in_array($dbTrackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]))) {
+            throw new BusinessLogicException('订单正在[:status_name],不能修改日期', 1000, ['status_name' => $dbTrackingOrder->status_name]);
         }
+        $trackingOrder = array_merge($dbTrackingOrder, ['execution_date' => $secondExecutionDate]);
+        unset($trackingOrder['tour_no'], $trackingOrder['batch_no']);
+        $this->changeBatch($dbTrackingOrder, $trackingOrder, [], null, [], false, true, false);
     }
 
 
@@ -645,10 +654,11 @@ class TrackingOrderService extends BaseService
      * @param $tour
      * @param $isAddOrder
      * @param $isFillTrackingOrder
+     * @param $isUpdateOrder
      * @return array
      * @throws BusinessLogicException
      */
-    private function changeBatch($dbTrackingOrder, $trackingOrder, $line, $batchNo = null, $tour = [], $isAddOrder = false, $isFillTrackingOrder = false)
+    private function changeBatch($dbTrackingOrder, $trackingOrder, $line, $batchNo = null, $tour = [], $isAddOrder = false, $isFillTrackingOrder = false, $isUpdateOrder = true)
     {
         //站点移除运单,添加新的运单
         if (!empty($dbTrackingOrder['batch_no'])) {
@@ -664,7 +674,7 @@ class TrackingOrderService extends BaseService
         //重新统计取件线路金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         if ($isFillTrackingOrder === true) {
-            $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
+            $this->fillBatchTourInfo($trackingOrder, $batch, $tour, $isUpdateOrder);
             ($dbTrackingOrder['batch_no'] != $batch['batch_no']) && TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
             ($dbTrackingOrder['tour_no'] != $tour['tour_no']) && TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
             ($dbTrackingOrder['execution_date'] != $tour['execution_date']) && OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_UPDATE, $tour);
