@@ -60,15 +60,15 @@ class CreateOrder extends Command
                     exit;
                 }
                 auth()->setUser($merchant);
-                $executionDate = $this->option('execution_date') ?? date('Y-m-d');
                 $paCount = $this->option('package_count') ?? 0;
                 $maCount = $this->option('material_count') ?? 1;
                 $data = array_merge($this->getMaPaList($maCount, $paCount), $this->base($merchantId));
                 $data['type'] = $this->option('type') ?? Arr::random([1, 2, 3]);
+                $data['execution_date']=$this->option('execution_date') ?? date('Y-m-d');
                 if ($data['type'] == 3) {
-                    $data = array_merge($data, $this->getAddress($executionDate), $this->getSecondAddress($executionDate));
+                    $data = array_merge($data, $this->getAddress(), $this->getSecondAddress());
                 } else {
-                    $data = array_merge($data, $this->getAddress($executionDate));
+                    $data = array_merge($data, $this->getAddress());
                 }
                 try {
                     $controller->setData($data);
@@ -90,11 +90,11 @@ class CreateOrder extends Command
      * @param $executionDate
      * @return mixed
      */
-    private function getAddress($executionDate)
+    private function getAddress()
     {
         $count = Address::query()->count();
         $id = rand(1, $count);
-        $address = Address::query()->where('id', $id)->first();
+        $address = Address::query()->get()[$id];
         if (empty($address)) {
             $address = [
                 'place_fullname' => '七娃',
@@ -107,12 +107,11 @@ class CreateOrder extends Command
                 'place_address' => '七娃家',
                 'place_lon' => '4.87510019',
                 'place_lat' => '52.31153083',
-                'execution_date' => $executionDate
             ];
         } else {
             $address = $address->toArray();
         }
-        return Arr::only($address, ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat', 'execution_date']);
+        return Arr::only($address, ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat']);
     }
 
     /**
