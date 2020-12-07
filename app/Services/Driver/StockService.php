@@ -69,8 +69,8 @@ class StockService extends BaseService
         if (empty($package)) {
             throw new BusinessLogicException('当前包裹不存在系统中');
         }
-        if ($package->status != BaseConstService::TRACKING_ORDER_STATUS_5) {
-            throw new BusinessLogicException('当前包裹已取消取派或删除');
+        if (!in_array($package->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
+            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
         }
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
