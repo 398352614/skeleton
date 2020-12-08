@@ -14,6 +14,7 @@ use App\Models\AdditionalPackage;
 use App\Models\Package;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AssignBatch extends ATourNotify
@@ -40,18 +41,15 @@ class AssignBatch extends ATourNotify
     {
         $this->batch['delivery_count'] = 0;
         $this->fillTrackingOrderList(true, true);
-        //处理顺带包裹提货数
-        $additionalPackageList = AdditionalPackage::query()->where('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no', 'delivery_amount', 'sticker_no', 'sticker_amount']);
-        foreach ($additionalPackageList as $k => $v) {
-            $additionalPackageList[$k]['delivery_count'] = floatval($additionalPackageList[$k]['delivery_amount']) == 0.00 ? 0 : 1;
-            $this->batch['delivery_count'] += $additionalPackageList[$k]['delivery_count'];
-        }
+        //订单处理
         $trackingOrderList = collect($this->trackingOrderList)->groupBy('merchant_id')->toArray();
         $batchList = [];
         foreach ($trackingOrderList as $merchantId => $merchantTrackingOrderList) {
             $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'tracking_order_list' => $merchantTrackingOrderList, 'delivery_count' => array_sum(array_column($merchantTrackingOrderList, 'delivery_count'))]);
         }
-        if (!empty($additionalPackageList)) {
+        //处理顺带包裹提货数
+        $additionalPackageList = AdditionalPackage::query()->where('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no', 'delivery_amount', 'sticker_no', DB::raw('IFNULL(delivery_amount,0.00) as delivery_amount'), DB::raw('IF(IFNULL(delivery_amount,0.00)=0.00,0,1) as delivery_count')]);
+        if ($additionalPackageList->isNotEmpty()) {
             $additionalPackageList = $additionalPackageList->groupBy('merchant_id')->toArray();
         } else {
             $additionalPackageList = [];
@@ -60,6 +58,7 @@ class AssignBatch extends ATourNotify
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
             $batch['additional_package_list'] = $additionalPackageList[$merchantId] ?? [];
+            $batch['delivery_count'] += !empty($additionalPackageList[$merchantId]) ? array_sum(array_column($additionalPackageList[$merchantId], 'delivery_count')) : 0;
             $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch]);
         }
         return $tourList;
