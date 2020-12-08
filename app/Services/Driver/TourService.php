@@ -918,7 +918,7 @@ class TourService extends BaseService
             if (in_array(intval($dbPackage['id']), $packageIdList)) {
                 $packageData = ['status' => BaseConstService::TRACKING_ORDER_STATUS_5, 'auth_fullname' => $params['auth_fullname'] ?? '', 'auth_birth_date' => !empty($params['auth_birth_date']) ? $params['auth_birth_date'] : null];
                 //判断取件或派件
-                if (intval($dbPackage['type']) === BaseConstService::TRACKING_ORDER_TYPE_2) {
+                if (intval($dbPackage['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) {
                     //贴单费计算
                     if (!empty($packageList[$dbPackage['id']]['sticker_no'])) {
                         $totalStickerAmount += $stickerAmount;
