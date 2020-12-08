@@ -49,7 +49,7 @@ class AssignBatch extends ATourNotify
         $trackingOrderList = collect($this->trackingOrderList)->groupBy('merchant_id')->toArray();
         $batchList = [];
         foreach ($trackingOrderList as $merchantId => $merchantTrackingOrderList) {
-            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'tracking_order_list' => $merchantTrackingOrderList]);
+            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'tracking_order_list' => $merchantTrackingOrderList, 'delivery_count' => array_sum(array_column($merchantTrackingOrderList, 'delivery_count'))]);
         }
         if (!empty($additionalPackageList)) {
             $additionalPackageList = $additionalPackageList->groupBy('merchant_id')->toArray();

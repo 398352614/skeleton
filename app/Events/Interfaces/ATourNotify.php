@@ -98,7 +98,7 @@ abstract class ATourNotify
         //获取包裹
         $packageList = [];
         if ($packageFill === true) {
-            $packageList = TrackingOrderPackage::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', DB::raw('type as tracking_type'), DB::raw('status as tracking_status'), 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
+            $packageList = TrackingOrderPackage::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', DB::raw('type as tracking_type'), DB::raw('status as tracking_status'), 'sticker_no', 'sticker_amount', DB::raw('IFNULL(delivery_amount,0.00) as delivery_amount'), DB::raw('IF(IFNULL(delivery_amount,0.00)=0.00,0,1) as delivery_delivery_count'), 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
             $dbPackageList = Package::query()->whereIn('express_first_no', array_column($packageList, 'express_first_no'))->get(['status', 'type', 'express_first_no'])->toArray();
             $dbPackageList = array_create_index($dbPackageList, 'express_first_no');
             foreach ($packageList as &$package) {
@@ -119,6 +119,7 @@ abstract class ATourNotify
             ($packageFill == true) && $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']] ?? [];
             ($materialFill == true) && $trackingOrder['material_list'] = $materialList[$trackingOrder['order_no']] ?? [];
             $trackingOrder = array_merge($trackingOrder, !empty($orderList[$trackingOrder['order_no']]) ? Arr::only($orderList[$trackingOrder['order_no']], ['order_no', 'out_order_no', 'order_type', 'order_status']) : []);
+            $trackingOrder['delivery_count'] = !empty($packageList[$trackingOrder['order_no']]) ? array_sum(array_column($packageList[$trackingOrder['order_no']], 'delivery_count')) : 0;
             return collect($trackingOrder);
         })->toArray();
         unset($packageList, $materialList, $orderList);
