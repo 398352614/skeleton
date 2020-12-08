@@ -964,6 +964,7 @@ class OrderService extends BaseService
             $order['tracking_order_type'] = $trackingOrderList[$orderNo]['type'];
             $order['tracking_order_type_name'] = $trackingOrderList[$orderNo]['type_name'];
             $order['tracking_order_status'] = $trackingOrderList[$orderNo]['status'];
+            $order['tracking_order_status_name'] = $trackingOrderList[$orderNo]['status_name'];
             $order['cancel_remark'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['cancel_remark'] ?? '';
             $order['signature'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['signature'] ?? '';
             $order['pay_type'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['pay_type'] ?? null;
