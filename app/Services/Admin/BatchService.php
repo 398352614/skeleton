@@ -354,8 +354,7 @@ class BatchService extends BaseService
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //自动自动终止派送
-        $cancelTrackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false)->toArray();
-        $this->getOrderService()->autoEnd($cancelTrackingOrderList);
+        $this->getOrderService()->autoEnd($trackingOrderList);
         //若存在取件线路编号,则移除站点
         if (!empty($info['tour_no'])) {
             $this->getTourService()->removeBatch($info);
