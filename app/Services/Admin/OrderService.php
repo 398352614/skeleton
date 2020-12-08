@@ -295,9 +295,9 @@ class OrderService extends BaseService
      */
     public function again($id, $params)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $trackingOrderType = $this->getTrackingOrderType($dbOrder);
-        if (empty($type)) {
+        if (empty($trackingOrderType)) {
             throw new BusinessLogicException('当前包裹已生成对应运单');
         }
         $params = array_merge($dbOrder, $params);
