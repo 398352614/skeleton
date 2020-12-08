@@ -448,6 +448,10 @@ class TrackingOrderService extends BaseService
         $trackingOrder = array_merge($dbTrackingOrder, ['execution_date' => $secondExecutionDate]);
         unset($trackingOrder['tour_no'], $trackingOrder['batch_no'], $trackingOrder['line_id'], $trackingOrder['line_name']);
         $line = $this->fillWarehouseInfo($trackingOrder);
+        $rowCount = parent::updateById($dbTrackingOrder['id'], $trackingOrder);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
         $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, null, [], false, true, false);
     }
 
