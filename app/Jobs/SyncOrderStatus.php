@@ -57,7 +57,7 @@ class SyncOrderStatus implements ShouldQueue
         'merchant_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'status_name',
         'delivery_count', 'cancel_remark', 'signature', 'pay_type',
         'line_id', 'line_name', 'driver_id', 'driver_name', 'driver_phone', 'car_id', 'car_no',
-        'package_list', 'material_list','tracking_order_type','tracking_order_type_name'
+        'package_list', 'material_list', 'tracking_order_type', 'tracking_order_type_name', 'type', 'type_name','tracking_order_status','tracking_order_status_name'
     ];
 
 
