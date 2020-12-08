@@ -48,7 +48,7 @@ class AssignBatch extends ATourNotify
             $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'tracking_order_list' => $merchantTrackingOrderList, 'delivery_count' => array_sum(array_column($merchantTrackingOrderList, 'delivery_count'))]);
         }
         //处理顺带包裹提货数
-        $additionalPackageList = AdditionalPackage::query()->where('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no', 'delivery_amount', 'sticker_no', DB::raw('IFNULL(delivery_amount,0.00) as delivery_amount'), DB::raw('IF(IFNULL(delivery_amount,0.00)=0.00,0,1) as delivery_count')]);
+        $additionalPackageList = AdditionalPackage::query()->where('batch_no', $this->batch['batch_no'])->get(['merchant_id', 'package_no', 'sticker_amount', 'sticker_no', DB::raw('IFNULL(delivery_amount,0.00) as delivery_amount'), DB::raw('IF(IFNULL(delivery_amount,0.00)=0.00,0,1) as delivery_count')]);
         if ($additionalPackageList->isNotEmpty()) {
             $additionalPackageList = $additionalPackageList->groupBy('merchant_id')->toArray();
         } else {
