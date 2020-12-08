@@ -65,7 +65,7 @@ class OrderService extends BaseService
                 continue;
             }
         }
-        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $ingPackageNoList]], ['status' => BaseConstService::ORDER_STATUS_2]);
+        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $ingPackageNoList], 'order_no' => ['in', $ingOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
@@ -146,7 +146,7 @@ class OrderService extends BaseService
             }
             $signPackageNoList = $trackingOrderPackage['express_first_no'];
         }
-        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $signPackageNoList]], ['status' => BaseConstService::ORDER_STATUS_3]);
+        $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $signPackageNoList], 'order_no' => ['in', $signOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_3]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
