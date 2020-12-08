@@ -552,7 +552,7 @@ class OrderService extends BaseService
         if (!empty($params['second_place_post_code'])) {
             $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
             if ((CompanyTrait::getAddressTemplateId() == 1)) {
-                $params['second_place_post_code'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
+                $params['second_place_address'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
             }
         }
         //若是新增,则填充商户ID及国家
