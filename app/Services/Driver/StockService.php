@@ -77,26 +77,30 @@ class StockService extends BaseService
         if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
             throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
         }
-        if (!empty($order['second_execution_date'])) {
-            $executionDate = $order['second_execution_date'];
-            $line = [];
-        } else {
-            list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $order['second_place_post_code'], 'type' => $type], $order['merchant_id']);
+        $line = [];
+        $executionDate = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['execution_date'] : $order['second_execution_date'];
+        if (empty($executionDate)) {
+            $placeCode = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_post_code'] : $order['second_place_post_code'];
+            list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
         }
-        $trackingOrder = [
-            'place_fullname' => $order['second_place_fullname'],
-            'place_phone' => $order['second_place_phone'],
-            'place_country' => $order['second_place_country'],
-            'place_post_code' => $order['second_place_post_code'],
-            'place_house_number' => $order['second_place_house_number'],
-            'place_city' => $order['second_place_city'],
-            'place_street' => $order['second_place_street'],
-            'place_address' => $order['second_place_address'],
-            'place_lat' => $order['second_place_lat'],
-            'place_lon' => $order['second_place_lon'],
-            'execution_date' => $executionDate,
-            'type' => $type,
-        ];
+        if ($order['type'] == BaseConstService::ORDER_TYPE_2) {
+            $trackingOrder = Arr::only($order, ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lat', 'place_lon']);
+        } else {
+            $trackingOrder = [
+                'place_fullname' => $order['second_place_fullname'],
+                'place_phone' => $order['second_place_phone'],
+                'place_country' => $order['second_place_country'],
+                'place_post_code' => $order['second_place_post_code'],
+                'place_house_number' => $order['second_place_house_number'],
+                'place_city' => $order['second_place_city'],
+                'place_street' => $order['second_place_street'],
+                'place_address' => $order['second_place_address'],
+                'place_lat' => $order['second_place_lat'],
+                'place_lon' => $order['second_place_lon']
+            ];
+        }
+        $trackingOrder['execution_date'] = $executionDate;
+        $trackingOrder['type'] = $type;
         $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'order_no', 'out_user_id', 'out_order_no', 'mask_code', 'special_remark']));
         //生成运单号
         $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
