@@ -135,7 +135,7 @@ class OrderService extends BaseService
         if ($this->formData['exception_label'] == 2) {
             $cancelTrackingOrderList = $this->getTrackingOrderService()->getList(['status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false);
             if (!empty($cancelTrackingOrderList)) {
-                $cancelTrackingOrderList = $cancelTrackingOrderList->pluck('order_no')->toArray();
+                $cancelTrackingOrderList = $cancelTrackingOrderList->pluck('tracking_order_no')->toArray();
             }
             $this->query->where('status', BaseConstService::ORDER_STATUS_2)->where('tracking_order_no', '=', '')->orWhereIn('tracking_order_no', $cancelTrackingOrderList);
         }
