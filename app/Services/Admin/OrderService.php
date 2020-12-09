@@ -40,7 +40,7 @@ class OrderService extends BaseService
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'out_group_order_no,order_no,out_order_no,out_user_id' => ['like', 'keyword'],
-        'exception_label' => ['=', 'exception_label'],
+//        'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
     ];
@@ -132,21 +132,31 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
+        if($this->formData['exception_label'] == 2){
+            $cancelTrackingOrderList=$this->getTrackingOrderService()->getList(['status'=>BaseConstService::TRACKING_ORDER_STATUS_6],['*'],false);
+            if(!empty($cancelTrackingOrderList)){
+                $cancelTrackingOrderList=$cancelTrackingOrderList->pluck('order_no')->toArray();
+            }
+            $this->query->where('status',BaseConstService::ORDER_STATUS_2)->where('tracking_order_no','<>','')->orWhereIn('tracking_order_no',$cancelTrackingOrderList);
+        }
         $list = parent::getPageList();
         foreach ($list as $k => $v) {
             $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);
-            $trackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $v['order_no']], ['id', 'type', 'status'], false, [], ['id' => 'desc']);
-            if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
-                if ($trackingOrder[0]['status'] != BaseConstService::TRACKING_ORDER_STATUS_5) {
-                    $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
+            $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
+            $list[$k]['tracking_order_status'] = 0;
+            $list[$k]['tracking_order_status_name']='';
+            if($list[$k]['status'] == BaseConstService::ORDER_STATUS_2){
+                $trackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $v['order_no']], ['id', 'type', 'status'], false, [], ['id' => 'desc']);
+                if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
+                    $list[$k]['tracking_order_status'] = $trackingOrder[0]['status'];
                     $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
+                    if ($trackingOrder[0]['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
+                        $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
+                    }
                 } else {
                     $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
-                    $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
+                    $list[$k]['tracking_order_status_name'] = __('运单未创建');
                 }
-            } else {
-                $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
-                $list[$k]['tracking_order_status_name'] = __('运单未创建');
             }
         }
         return $list;
