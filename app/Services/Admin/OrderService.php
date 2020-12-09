@@ -136,8 +136,10 @@ class OrderService extends BaseService
         foreach ($list as $k => $v) {
             $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);
             $trackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $v['order_no']], ['id', 'type', 'status'], false, [], ['id' => 'desc']);
+            $list[$k]['tracking_order_status'] = 0;
             if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
-                if ($trackingOrder[0]['status'] != BaseConstService::TRACKING_ORDER_STATUS_5) {
+                $list[$k]['tracking_order_status'] = $trackingOrder[0]['status'];
+                if ($trackingOrder[0]['status'] !== BaseConstService::TRACKING_ORDER_STATUS_5) {
                     $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
                     $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
                 } else {
