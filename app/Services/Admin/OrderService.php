@@ -132,20 +132,22 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
-        if($this->formData['exception_label'] == 2){
-            $cancelTrackingOrderList=$this->getTrackingOrderService()->getList(['status'=>BaseConstService::TRACKING_ORDER_STATUS_6],['*'],false);
-            if(!empty($cancelTrackingOrderList)){
-                $cancelTrackingOrderList=$cancelTrackingOrderList->pluck('order_no')->toArray();
+        if ($this->formData['exception_label'] == 2) {
+            $cancelTrackingOrderList = $this->getTrackingOrderService()->getList(['status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false);
+            if (!empty($cancelTrackingOrderList)) {
+                $cancelTrackingOrderList = $cancelTrackingOrderList->pluck('order_no')->toArray();
             }
-            $this->query->where('status',BaseConstService::ORDER_STATUS_2)->where('tracking_order_no','<>','')->orWhereIn('tracking_order_no',$cancelTrackingOrderList);
+            dd($cancelTrackingOrderList);
+
+            $this->query->where('status', BaseConstService::ORDER_STATUS_2)->where('tracking_order_no', '=', '')->orWhereIn('tracking_order_no', $cancelTrackingOrderList);
         }
         $list = parent::getPageList();
         foreach ($list as $k => $v) {
             $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);
             $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
             $list[$k]['tracking_order_status'] = 0;
-            $list[$k]['tracking_order_status_name']='';
-            if($list[$k]['status'] == BaseConstService::ORDER_STATUS_2){
+            $list[$k]['tracking_order_status_name'] = '';
+            if ($list[$k]['status'] == BaseConstService::ORDER_STATUS_2) {
                 $trackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $v['order_no']], ['id', 'type', 'status'], false, [], ['id' => 'desc']);
                 if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
                     $list[$k]['tracking_order_status'] = $trackingOrder[0]['status'];
