@@ -1148,8 +1148,8 @@ class OrderService extends BaseService
 
             'driver_lon' => $routeTracking['lon'] ?? '',
             'driver_lat' => $routeTracking['lat'] ?? '',
-            'driver_name' => $tour['tour_no'],
-            'car_no' => $tour['tour_no'],
+            'driver_name' => $tour['driver_name'],
+            'car_no' => $tour['car_no'],
             'tour_no' => $tour['tour_no'],
 
             'expect_distance' => $batch['expect_distance'] ?? 0,
