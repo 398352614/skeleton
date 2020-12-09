@@ -29,7 +29,7 @@ class OrderService extends BaseService
      */
     public function outWarehouse($tourNo)
     {
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tourNo, 'status' => [BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_6]], ['*'], false)->toArray();
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tourNo, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_6]]], ['*'], false)->toArray();
         //订单处理
         $ingOrderNoList = $cancelOrderList = [];
         foreach ($trackingOrderList as $trackingOrder) {
