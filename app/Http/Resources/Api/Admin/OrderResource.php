@@ -47,7 +47,7 @@ class OrderResource extends JsonResource
             'settlement_amount' => $this->settlement_amount,
             'tracking_order_status'=>$this->tracking_order_status,
             'tracking_order_status_name'=>$this->tracking_order_status_name,
-
+            'tracking_order_count'=>$this->tracking_order_count,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
