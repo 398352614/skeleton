@@ -60,6 +60,6 @@ class BatchResource extends JsonResource
             'additional_package_count' => $this->additional_package_count ?? 0,
             'exception_label_name' => $this->exception_label_name,
             'pay_type_name' => $this->pay_type_name,
-        ], GisService::corTransfer(['receiver_lon'=>$this->receiver_lon,'receiver_lat'=>$this->receiver_lat]));
+        ], GisService::corTransfer(['place_lon'=>$this->place_lon,'place_lat'=>$this->place_lat]));
     }
 }
