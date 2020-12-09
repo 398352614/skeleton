@@ -291,10 +291,10 @@ class TourService extends BaseService
         $newCancelTrackingOrderList = $this->getTrackingOrderService()->getList(['tracking_order_no' => ['in', array_column(array_values($cancelTrackingOrderList), 'tracking_order_no')]], ['*'], false)->toArray();
         $cancelTrackingOrderList = array_create_index($cancelTrackingOrderList, 'tracking_order_no');
         foreach ($newCancelTrackingOrderList as &$newCancelTrackingOrder) {
-            $newCancelTrackingOrder['batch_no'] = $cancelTrackingOrderList[$newCancelTrackingOrder['order_no']]['batch_no'] ?? '';
-            $newCancelTrackingOrder['tour_no'] = $cancelTrackingOrderList[$newCancelTrackingOrder['order_no']]['tour_no'] ?? '';
+            $newCancelTrackingOrder['batch_no'] = $cancelTrackingOrderList[$newCancelTrackingOrder['tracking_order_no']]['batch_no'] ?? '';
+            $newCancelTrackingOrder['tour_no'] = $cancelTrackingOrderList[$newCancelTrackingOrder['tracking_order_no']]['tour_no'] ?? '';
         }
-        $this->getOrderService()->outWarehouse($tour['tour_no']);
+        $this->getOrderService()->outWarehouse($tour['tour_no'], $newCancelTrackingOrderList);
         $outPackageList = $this->getTrackingOrderPackageService()->getList(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['*'], false)->toArray();
         //包裹出库
         $this->getStockService()->outWarehouse($outPackageList, $tour);

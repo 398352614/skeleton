@@ -24,12 +24,19 @@ class OrderService extends BaseService
     /**
      * 订单出库
      * @param $tourNo
-     * @param $action
+     * @param $newCancelTrackingOrderList
      * @throws BusinessLogicException
      */
-    public function outWarehouse($tourNo)
+    public function outWarehouse($tourNo, $newCancelTrackingOrderList)
     {
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tourNo, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_6]]], ['*'], false)->toArray();
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tourNo, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_4]]], ['*'], false)->toArray();
+        if (!empty($newCancelTrackingOrderList)) {
+            $trackingOrderList = array_create_index($trackingOrderList, 'tracking_order_no');
+            $newCancelTrackingOrderList = array_create_index($newCancelTrackingOrderList, 'tracking_order_no');
+            $trackingOrderList = array_merge($trackingOrderList, $newCancelTrackingOrderList);
+            $trackingOrderList = array_values($trackingOrderList);
+            unset($newCancelTrackingOrderList);
+        }
         //订单处理
         $ingOrderNoList = $cancelOrderList = [];
         foreach ($trackingOrderList as $trackingOrder) {
