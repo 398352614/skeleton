@@ -248,8 +248,8 @@ class TourService extends BaseService
                 }
                 //如果运单中还存在材料要派送,则派送
                 foreach ($cancelTrackingOrderList as $key => $cancelTrackingOrder) {
-                    $where = ['tour_no' => $tour['tour_no'], 'tracking_order_no' => $cancelTrackingOrder['order_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3];
-                    $materialQuantity = $this->getTrackingOrderMaterialService()->sum('expect_quantity', ['tour_no' => $tour['tour_no'], 'order_no' => $cancelTrackingOrder['order_no']]);
+                    $where = ['tour_no' => $tour['tour_no'], 'tracking_order_no' => $cancelTrackingOrder['tracking_order_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3];
+                    $materialQuantity = $this->getTrackingOrderMaterialService()->sum('expect_quantity', $where);
                     if ($materialQuantity == 0) {
                         $rowCount = $this->getTrackingOrderService()->update($where, ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
                         if ($rowCount === false) {
