@@ -790,7 +790,12 @@ class TourService extends BaseService
                     $order = collect($trackingOrderTotalList)->where('out_user_id', '<>', '')->first();
                 }
                 if (empty($order)) {
-                    $info['batchs'][$k]['out_user_id'] = '';
+                    $order = collect($trackingOrderTotalList)->where('out_user_id', '<>', '')->first();
+                    if(empty($order)){
+                        $info['batchs'][$k]['out_user_id'] = '';
+                    }else{
+                        $info['batchs'][$k]['out_user_id'] = $order['out_user_id'];
+                    }
                 } elseif (count(collect($trackingOrderTotalList)->groupBy('out_user_id')) == 1) {
                     $info['batchs'][$k]['out_user_id'] = $order['out_user_id'];
                 } else {

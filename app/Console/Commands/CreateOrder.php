@@ -64,9 +64,10 @@ class CreateOrder extends Command
                 $maCount = $this->option('material_count') ?? 1;
                 $data = array_merge($this->getMaPaList($maCount, $paCount), $this->base($merchantId));
                 $data['type'] = $this->option('type') ?? Arr::random([1, 2, 3]);
-                $data['execution_date']=$this->option('execution_date') ?? date('Y-m-d');
+                $data['execution_date'] = $this->option('execution_date') ?? date('Y-m-d');
                 if ($data['type'] == 3) {
                     $data = array_merge($data, $this->getAddress(), $this->getSecondAddress());
+                    $data['second_execution_date'] = Carbon::create($data['execution_date'])->addDay()->format('Y-m-d');
                 } else {
                     $data = array_merge($data, $this->getAddress());
                 }
@@ -119,11 +120,10 @@ class CreateOrder extends Command
      * @param $executionDate
      * @return array
      */
-    private function getSecondAddress($executionDate)
+    private function getSecondAddress()
     {
-        $executionDate = Carbon::create($executionDate)->addDay()->format('Y-m-d');
         $newData = [];
-        $data = $this->getAddress($executionDate);
+        $data = $this->getAddress();
         foreach ($data as $k => $v) {
             $newData['second_' . $k] = $v;
         }
