@@ -137,8 +137,6 @@ class OrderService extends BaseService
             if (!empty($cancelTrackingOrderList)) {
                 $cancelTrackingOrderList = $cancelTrackingOrderList->pluck('order_no')->toArray();
             }
-            dd($cancelTrackingOrderList);
-
             $this->query->where('status', BaseConstService::ORDER_STATUS_2)->where('tracking_order_no', '=', '')->orWhereIn('tracking_order_no', $cancelTrackingOrderList);
         }
         $list = parent::getPageList();
@@ -550,11 +548,17 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
+        //获取经纬度
+        $fields = ['place_house_number', 'place_city', 'place_street'];
+        $params = array_merge(array_fill_keys($fields, ''), $params);
         //通过商户获取国家
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'], 'status' => BaseConstService::MERCHANT_STATUS_1], ['*'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在');
         }
+        //若邮编是纯数字，则认为是比利时邮编
+        $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
@@ -562,6 +566,13 @@ class OrderService extends BaseService
         !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $orderNo);
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
+        //填充地址
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
+            $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
+        }
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['second_place_address'])) {
+            $params['second_place_address'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
+        }
         //若存在外部订单号,则判断是否存在已预约的订单号
         if (!empty($params['out_order_no'])) {
             $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
@@ -570,29 +581,6 @@ class OrderService extends BaseService
             if (!empty($dbOrder)) {
                 throw new BusinessLogicException('外部订单号已存在', 1005, [], ['order_no' => $dbOrder->order_no, 'out_order_no' => $dbOrder->out_order_no, 'status' => $dbOrder->status]);
             }
-        }
-        /*************************************************地址一处理***************************************************/
-        $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
-        //获取经纬度
-        $fields = ['place_house_number', 'place_city', 'place_street'];
-        $params = array_merge(array_fill_keys($fields, ''), $params);
-        //若邮编是纯数字，则认为是比利时邮编
-        $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-        //填充地址
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
-            $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
-        }
-        if ($params['type'] != BaseConstService::ORDER_TYPE_3) return;
-        /*************************************************地址二处理***************************************************/
-        $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
-        //获取经纬度
-        $fields = ['second_place_house_number', 'second_place_city', 'second_place_street'];
-        $params = array_merge(array_fill_keys($fields, ''), $params);
-        //若邮编是纯数字，则认为是比利时邮编
-        $params['second_place_country'] = post_code_be($params['second_place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-        //填充地址
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['second_place_address'])) {
-            $params['second_place_address'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
         }
     }
 
