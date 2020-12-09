@@ -40,7 +40,7 @@ class OrderService extends BaseService
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'out_group_order_no,order_no,out_order_no,out_user_id' => ['like', 'keyword'],
-        'exception_label' => ['=', 'exception_label'],
+//        'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
     ];
@@ -132,6 +132,13 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
+        if($this->formData['exception_label'] == 2){
+            $cancelTrackingOrderList=$this->getTrackingOrderService()->getList(['status'=>BaseConstService::TRACKING_ORDER_STATUS_6],['*'],false);
+            if(!empty($cancelTrackingOrderList)){
+                $cancelTrackingOrderList=$cancelTrackingOrderList->pluck('order_no')->toArray();
+            }
+            $this->query->where('status',BaseConstService::ORDER_STATUS_2)->where('tracking_order_no','<>','')->orWhereIn('tracking_order_no',$cancelTrackingOrderList);
+        }
         $list = parent::getPageList();
         foreach ($list as $k => $v) {
             $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);
