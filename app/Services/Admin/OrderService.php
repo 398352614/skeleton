@@ -150,7 +150,7 @@ class OrderService extends BaseService
             if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
                 $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
                 $list[$k]['tracking_order_status'] = $trackingOrder[0]['status'];
-            } else {
+            } elseif($list[$k]['status'] !== BaseConstService::ORDER_STATUS_5) {
                 $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
                 $list[$k]['tracking_order_status_name'] = __('运单未创建');
             }
