@@ -1125,7 +1125,7 @@ class OrderService extends BaseService
         }
         $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $tour['tour_no']], ['lon', 'lat'], false, ['id' => 'desc']) ?? [];
         $batch = $this->getBatchService()->getInfo(['batch_no' => $trackingOrder['batch_no']], ['*'], false) ?? [];
-        $count = $this->getBatchService()->query->where('tour_no', $tour['tour_no'])->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
+        $count = $this->getBatchService()->query->where('merchant_id','<>','')->where('tour_no', $tour['tour_no'])->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
         $status = '';
         if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
             if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
