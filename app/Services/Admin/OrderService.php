@@ -137,7 +137,8 @@ class OrderService extends BaseService
             if (!empty($cancelTrackingOrderList)) {
                 $cancelTrackingOrderList = $cancelTrackingOrderList->pluck('tracking_order_no')->toArray();
             }
-            $this->query->where('status', BaseConstService::ORDER_STATUS_2)->where('tracking_order_no', '=', '')->orWhereIn('tracking_order_no', $cancelTrackingOrderList);
+            $cancelTrackingOrderList[] = '';
+            $this->query->where('status', BaseConstService::ORDER_STATUS_2)->WhereIn('tracking_order_no', $cancelTrackingOrderList);
         }
         $list = parent::getPageList();
         foreach ($list as $k => $v) {
