@@ -81,6 +81,7 @@ trait LocationTrait
             try {
                 $client = new \GuzzleHttp\Client();
                 $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
+                Log::info('location-url', ['url' => $url]);
                 $res = $client->request('GET', $url, [
                         'auth' =>
                             [
