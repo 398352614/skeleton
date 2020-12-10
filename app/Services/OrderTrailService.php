@@ -99,7 +99,7 @@ class OrderTrailService extends BaseService
                 $content = sprintf("订单[%s]运单创建，生成运单号[%s]，日期[%s]", $type[$trackingOrder['type']], $trackingOrder['tracking_order_no'], $trackingOrder['execution_date']);
                 break;
             case BaseConstService::ORDER_TRAIL_UPDATE:          // 订单修改
-                $content = sprintf("订单[%s]日期修改，日期从[%s]更变为[%s]", $type[$trackingOrder['type']], $trackingOrder['execution_date'], $params['execution_date']);
+                $content = sprintf("订单[%s]日期修改，日期从[%s]更变为[%s]", $type[$trackingOrder['type']], $params['execution_date'], $trackingOrder['execution_date']);
                 break;
             case BaseConstService::ORDER_TRAIL_CLOSED:                     // 订单关闭
                 $content = '订单关闭';

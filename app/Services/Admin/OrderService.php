@@ -132,7 +132,7 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
-        if ($this->formData['exception_label'] == 2) {
+        if (!empty($this->formData['exception_label']) && $this->formData['exception_label'] == 2) {
             $cancelTrackingOrderList = $this->getTrackingOrderService()->getList(['status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false);
             if (!empty($cancelTrackingOrderList)) {
                 $cancelTrackingOrderList = $cancelTrackingOrderList->pluck('tracking_order_no')->toArray();

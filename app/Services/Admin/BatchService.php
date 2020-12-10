@@ -444,7 +444,7 @@ class BatchService extends BaseService
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
         TrackingOrderTrailService::storeByBatch($batch, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR);
         if ($date != $tour['execution_date']) {
-            OrderTrailService::storeByBatch($batch, BaseConstService::ORDER_TRAIL_UPDATE, $tour);
+            OrderTrailService::storeByBatch($batch, BaseConstService::ORDER_TRAIL_UPDATE, $trackingOrderList[0]);
         }
     }
 
@@ -470,7 +470,7 @@ class BatchService extends BaseService
             $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
             $this->assignBatchToTour($info, $params);
             if ($info['execution_date'] != $tour['execution_date']) {
-                OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_UPDATE, $tour);
+                OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_UPDATE, $info);
             }
         }
         return 'true';
