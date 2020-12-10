@@ -420,7 +420,7 @@ class TourService extends BaseService
         if (!empty($params['cancel_tracking_order_id_list'])) {
             $disableWhere['id'] = ['not in', explode_id_string($params['cancel_tracking_order_id_list'], ',')];
         }
-        $disableOutTrackingOrder = $this->getTrackingOrderService()->getInfo($disableWhere, ['id', 'order_no'], false);
+        $disableOutTrackingOrder = $this->getTrackingOrderService()->getInfo($disableWhere, ['id', 'order_no', 'tracking_order_no'], false);
         if (!empty($disableOutTrackingOrder)) {
             throw new BusinessLogicException('运单[:tracking_order_no]不可出库', 1000, ['tracking_order_no' => $disableOutTrackingOrder->tracking_order_no]);
         }
