@@ -89,7 +89,7 @@ trait LocationTrait
                                 config('thirdParty.location_api_secret')
                             ],
                         'http_errors' => false,
-                        'timeout' => 30
+                        'timeout' => 90
                     ]
                 );
             } catch (\Exception $ex) {
