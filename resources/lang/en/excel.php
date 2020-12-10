@@ -196,7 +196,7 @@ return [
         'material_quantity' => 'Material Quantity',
         'replace_amount' => 'Replace Amount',
         'sticker_amount' => 'Sticker Amount',
-        'settlement_amount' => 'Delivery Amount',
+        'settlement_amount' => 'Settlement Amount',
         'created_at' => 'Creation Time'
     ]
 ];
