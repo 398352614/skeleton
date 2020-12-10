@@ -11,6 +11,7 @@ namespace App\Traits;
 use App\Exceptions\BusinessLogicException;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait LocationTrait
 {
@@ -90,6 +91,7 @@ trait LocationTrait
                     ]
                 );
             } catch (\Exception $ex) {
+                Log::info('location-ex', ['message' => $ex->getMessage()]);
                 throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法根据邮编和门牌号码获取城市和地址信息，请稍后再尝试');
             }
             $body = $res->getBody();
