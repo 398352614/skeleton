@@ -882,11 +882,12 @@ class OrderService extends BaseService
     public function updateSecondDate($id, $secondExecutionDate)
     {
         $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
-        $rowCount = parent::updateById($dbOrder['id'], ['second_execution_date' => $secondExecutionDate]);
+        $data = ($dbOrder['type'] == BaseConstService::ORDER_TYPE_2) ? ['execution_date' => $secondExecutionDate] : ['second_execution_date' => $secondExecutionDate];
+        $rowCount = parent::updateById($dbOrder['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['second_execution_date' => $secondExecutionDate]);
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
