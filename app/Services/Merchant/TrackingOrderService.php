@@ -926,7 +926,7 @@ class TrackingOrderService extends BaseService
         if (empty($batch)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $batchList = $this->getBatchService()->getList(['tour_no' => $batch['tour_no']], ['*'], false);
+        $batchList = $this->getBatchService()->getList(['tour_no' => $batch['tour_no'],'merchant_id'=>['<>','']], ['*'], false);
         $count = $batchList->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
         //处理预计耗时
         if (!empty($batch->expect_arrive_time)) {
