@@ -3,8 +3,14 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
+use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
 
+/**
+ * Class OrderTrailController
+ * @package App\Http\Controllers\Api\Merchant
+ * @property OrderTrailService $service
+ */
 class OrderTrailController extends BaseController
 {
     /**
@@ -12,7 +18,7 @@ class OrderTrailController extends BaseController
      */
     public $service;
 
-    public function __construct(TrackingOrderTrailService $service)
+    public function __construct(OrderTrailService $service)
     {
         $this->service = $service;
     }
@@ -33,8 +39,8 @@ class OrderTrailController extends BaseController
      *  "data":{}
      * }
      */
-    public function index()
+    public function index($orderNo)
     {
-        return $this->service->index();
+        return $this->service->index($orderNo);
     }
 }
