@@ -123,7 +123,7 @@ class OrderService extends BaseService
     {
         if (!empty($this->formData['keyword'])) {
             $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => $this->formData['keyword']]);
-            if (!empty($trackingOrderList)) {
+            if ($trackingOrderList->isEmpty()) {
                 $trackingOrderList = $trackingOrderList->pluck('order_no')->toArray();
                 $this->query->whereIn('order_no', $trackingOrderList);
             }
