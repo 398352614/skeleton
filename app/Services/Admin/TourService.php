@@ -786,17 +786,11 @@ class TourService extends BaseService
                     $order = collect($trackingOrderTotalList)->where('merchant_id', config('tms.erp_merchant_id'))->where('out_user_id', '<>', '')->first();
                 } elseif (in_array(config('tms.eushop_merchant_id'), collect($trackingOrderTotalList)->pluck('merchant_id')->toArray())) {
                     $order = collect($trackingOrderTotalList)->where('merchant_id', config('tms.eushop_merchant_id'))->where('out_user_id', '<>', '')->first();
-                } else {
-                    $order = collect($trackingOrderTotalList)->where('out_user_id', '<>', '')->first();
                 }
                 if (empty($order)) {
-                    $order = collect($trackingOrderTotalList)->where('out_user_id', '<>', '')->first();
-                    if(empty($order)){
-                        $info['batchs'][$k]['out_user_id'] = '';
-                    }else{
-                        $info['batchs'][$k]['out_user_id'] = $order['out_user_id'];
-                    }
-                } elseif (count(collect($trackingOrderTotalList)->groupBy('out_user_id')) == 1) {
+                    $order = collect($trackingOrderTotalList)->where('out_user_id', '<>', '')->first();;
+                }
+                if (count(collect($trackingOrderTotalList)->groupBy('out_user_id')) == 1) {
                     $info['batchs'][$k]['out_user_id'] = $order['out_user_id'];
                 } else {
                     $info['batchs'][$k]['out_user_id'] = $order['out_user_id'] . ' ' . __('等');
