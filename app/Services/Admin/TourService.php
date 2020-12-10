@@ -779,24 +779,24 @@ class TourService extends BaseService
         $trackingOrderTotalList = $this->getTrackingOrderService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
         foreach ($info['batchs'] as $k => $v) {
             $info['batchs'][$k] = collect($info['batchs'][$k])->toArray();
-            $trackingOrderTotalList = array_values(collect($trackingOrderTotalList)->where('batch_no', $v['batch_no'])->all());
+            $trackingOrderList = array_values(collect($trackingOrderTotalList)->where('batch_no', $v['batch_no'])->all());
             $info['batchs'][$k]['out_user_id'] = '';
-            if (count($trackingOrderTotalList) > 1) {
-                if (in_array(config('tms.erp_merchant_id'), collect($trackingOrderTotalList)->pluck('merchant_id')->toArray())) {
-                    $order = collect($trackingOrderTotalList)->where('merchant_id', config('tms.erp_merchant_id'))->where('out_user_id', '<>', '')->first();
-                } elseif (in_array(config('tms.eushop_merchant_id'), collect($trackingOrderTotalList)->pluck('merchant_id')->toArray())) {
-                    $order = collect($trackingOrderTotalList)->where('merchant_id', config('tms.eushop_merchant_id'))->where('out_user_id', '<>', '')->first();
+            if (count($trackingOrderList) > 1) {
+                if (in_array(config('tms.erp_merchant_id'), collect($trackingOrderList)->pluck('merchant_id')->toArray())) {
+                    $order = collect($trackingOrderList)->where('merchant_id', config('tms.erp_merchant_id'))->where('out_user_id', '<>', '')->first();
+                } elseif (in_array(config('tms.eushop_merchant_id'), collect($trackingOrderList)->pluck('merchant_id')->toArray())) {
+                    $order = collect($trackingOrderList)->where('merchant_id', config('tms.eushop_merchant_id'))->where('out_user_id', '<>', '')->first();
                 }
                 if (empty($order)) {
-                    $order = collect($trackingOrderTotalList)->where('out_user_id', '<>', '')->first();;
+                    $order = collect($trackingOrderList)->where('out_user_id', '<>', '')->first();;
                 }
-                if (count(collect($trackingOrderTotalList)->groupBy('out_user_id')) == 1) {
+                if (count(collect($trackingOrderList)->groupBy('out_user_id')) == 1) {
                     $info['batchs'][$k]['out_user_id'] = $order['out_user_id'];
                 } else {
                     $info['batchs'][$k]['out_user_id'] = $order['out_user_id'] . ' ' . __('等');
                 }
-            } elseif (count($trackingOrderTotalList) == 1) {
-                $info['batchs'][$k]['out_user_id'] = $trackingOrderTotalList[0]['out_user_id'];
+            } elseif (count($trackingOrderList) == 1) {
+                $info['batchs'][$k]['out_user_id'] = collect($trackingOrderList)->sortBy('out_user_id')->toArray()[0]['out_user_id'];
             }
             $info['batchs'][$k]['sort_id'] = $k + 1;
         }
