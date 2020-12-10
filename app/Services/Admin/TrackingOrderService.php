@@ -465,7 +465,7 @@ class TrackingOrderService extends BaseService
             $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
             ($dbTrackingOrder['batch_no'] != $batch['batch_no']) && TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
             ($dbTrackingOrder['tour_no'] != $tour['tour_no']) && TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
-            ($dbTrackingOrder['execution_date'] != $tour['execution_date']) && OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_UPDATE, $tour);
+            ($dbTrackingOrder['execution_date'] != $tour['execution_date']) && OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_UPDATE, $dbTrackingOrder);
         }
         return [$batch, $tour];
     }
