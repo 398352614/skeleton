@@ -51,6 +51,7 @@ class Stock extends BaseModel
         'tracking_order_no',
         'express_first_no',
         'execution_date',
+        'weight',
         'operator',
         'created_at',
         'updated_at',
