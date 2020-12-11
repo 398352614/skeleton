@@ -13,6 +13,10 @@ use App\Models\StockInLog;
 
 class StockInLogService extends BaseService
 {
+    public $filterRules = [
+        'tracking_order_no,order_no,express_first_no' => ['like', 'keyword'],
+    ];
+
     public function __construct(StockInLog $stockInLog)
     {
         parent::__construct($stockInLog, StockInResource::class);
