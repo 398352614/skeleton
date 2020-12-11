@@ -14,7 +14,7 @@ use App\Models\StockInLog;
 class StockInLogService extends BaseService
 {
     public $filterRules = [
-        'tracking_order_no,order_no,out_order_no' => ['like', 'keyword'],
+        'tracking_order_no,order_no,express_first_no' => ['like', 'keyword'],
     ];
 
     public function __construct(StockInLog $stockInLog)
