@@ -10,6 +10,7 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait CompanyTrait
 {
@@ -20,6 +21,7 @@ trait CompanyTrait
     public static function getCountry()
     {
         $company = self::getCompany();
+        Log::info('country',$company['country']);
         return $company['country'] ?? '';
     }
 
