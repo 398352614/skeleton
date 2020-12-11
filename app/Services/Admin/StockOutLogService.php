@@ -14,7 +14,7 @@ use App\Models\StockOutLog;
 class StockOutLogService extends BaseService
 {
     public $filterRules = [
-        'tracking_order,order_no,out_order_no' => ['like', 'keyword'],
+        'tracking_order_no,order_no,out_order_no' => ['like', 'keyword'],
     ];
 
     public function __construct(StockOutLog $stockOutLog)
