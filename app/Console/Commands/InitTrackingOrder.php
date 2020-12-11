@@ -72,7 +72,7 @@ class InitTrackingOrder extends Command
             $trackingOrderModel = new TrackingOrder();
             $OrderModel = new Order();
             /****************************************************新增运单**************************************************/
-            for ($i = 89; $i <= $pages; $i++) {
+            for ($i = 1; $i <= $pages; $i++) {
                 $orderList = Order::query()->where('status', '<>', BaseConstService::TRACKING_ORDER_STATUS_7)->forPage($i, 500)->get()->toArray();
                 $trackingOrderList = collect($orderList)->map(function ($order, $key) use ($trackingOrderFields, $tourFillFields, $orderNoRuleService, $OrderModel) {
                     $trackingOrder = Arr::only($order, $trackingOrderFields);
