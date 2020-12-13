@@ -29,16 +29,14 @@ class TourDriver
         $location = $event->getLocation();
         $now = now();
         $data = [
-            [
-                'content' => $event->getContent(),
-                'tour_no' => $event->getTourNo(),
-                'lat' => $location['lat'],
-                'lon' => $location['lon'],
-                'address' => $event->getAddress(),
-                'batch_no' => $event->getBatchNo(),
-                'created_at' => $now,
-                'updated_at' => $now
-            ]
+            'content' => $event->getContent(),
+            'tour_no' => $event->getTourNo(),
+            'lat' => $location['lat'],
+            'lon' => $location['lon'],
+            'address' => $event->getAddress(),
+            'batch_no' => $event->getBatchNo(),
+            'created_at' => $now,
+            'updated_at' => $now
         ];
         dispatch(new AddData('tour-event', $data));
     }
