@@ -6,7 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\TrackingOrderTrailResource;
 use App\Models\TrackingOrder;
 use App\Models\TrackingOrderTrail;
-use App\Jobs\AddTrail;
+use App\Jobs\AddData;
 
 class TrackingOrderTrailService extends BaseService
 {
@@ -106,7 +106,7 @@ class TrackingOrderTrailService extends BaseService
             'updated_at' => $now
         ];
         !empty($trackingOrder['merchant_id']) && $data['merchant_id'] = $trackingOrder['merchant_id'];
-        dispatch(new AddTrail('tracking-order', $data));
+        dispatch(new AddData($data, TrackingOrder::query()));
     }
 
     /**

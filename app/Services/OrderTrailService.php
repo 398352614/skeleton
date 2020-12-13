@@ -9,7 +9,9 @@
 namespace App\Services;
 
 use App\Http\Resources\Api\OrderTrailResource;
+use App\Jobs\AddData;
 use App\Jobs\AddTrail;
+use App\Models\Order;
 use App\Models\OrderTrail;
 use App\Models\TrackingOrder;
 
@@ -122,6 +124,6 @@ class OrderTrailService extends BaseService
             'updated_at' => $now
         ];
         !empty($trackingOrder['merchant_id']) && $data['merchant_id'] = $trackingOrder['merchant_id'];
-        dispatch(new AddTrail('order', $data));
+        dispatch(new AddData($data, Order::query()));
     }
 }

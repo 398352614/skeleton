@@ -2,14 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Models\Order;
-use App\Models\TrackingOrder;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class AddTrail implements ShouldQueue
+class AddData implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, SerializesModels;
 
@@ -25,7 +23,7 @@ class AddTrail implements ShouldQueue
      *
      * @var string|null
      */
-    public $queue = 'add-trail';
+    public $queue = 'add-data';
 
     /**
      * 任务可以执行的最大秒数 (超时时间)。
@@ -41,20 +39,21 @@ class AddTrail implements ShouldQueue
      */
     public $tries = 3;
 
-    public $type;
+    public $query;
 
     public $data;
 
 
     /**
      * addTrail constructor.
-     * @param $type
+     * @param $query
      * @param $data
      */
-    public function __construct($type, $data)
+    public function __construct($data, $query)
     {
-        $this->type = $type;
+
         $this->data = $data;
+        $this->query = $query;
     }
 
 
@@ -64,8 +63,7 @@ class AddTrail implements ShouldQueue
      */
     public function handle()
     {
-        $query = ($this->type == 'order') ? Order::query() : TrackingOrder::query();
-        $query->insert($this->data);
+        $this->query->insert($this->data);
     }
 
 }
