@@ -10,7 +10,6 @@ namespace App\Services;
 
 use App\Http\Resources\Api\OrderTrailResource;
 use App\Jobs\AddData;
-use App\Jobs\AddTrail;
 use App\Models\Order;
 use App\Models\OrderTrail;
 use App\Models\TrackingOrder;
