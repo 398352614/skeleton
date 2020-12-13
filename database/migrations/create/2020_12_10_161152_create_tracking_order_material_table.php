@@ -31,6 +31,16 @@ class CreateTrackingOrderMaterialTable extends Migration
             $table->string('remark')->default('')->nullable()->comment('备注');
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
+
+            $table->unique('tracking_order_no', 'tracking_order_no');
+            $table->index('company_id', 'company_id');
+            $table->index('merchant_id', 'merchant_id');
+            $table->index('execution_date', 'execution_date');
+            $table->index('order_no', 'order_no');
+            $table->index('batch_no', 'batch_no');
+            $table->index('tour_no', 'tour_no');
+            $table->index('type', 'type');
+            $table->index('code', 'code');
         });
     }
 
