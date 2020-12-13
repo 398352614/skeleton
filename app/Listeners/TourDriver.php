@@ -40,6 +40,6 @@ class TourDriver
                 'updated_at' => $now
             ]
         ];
-        dispatch(new AddData($data, TourDriverEvent::query()));
+        dispatch(new AddData('tour-event', $data));
     }
 }

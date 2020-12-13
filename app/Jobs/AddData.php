@@ -2,6 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Models\OrderTrail;
+use App\Models\TourDriverEvent;
+use App\Models\TrackingOrderTrail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -39,21 +42,20 @@ class AddData implements ShouldQueue
      */
     public $tries = 3;
 
-    public $query;
+    public $type;
 
     public $data;
 
 
     /**
      * addTrail constructor.
-     * @param $query
+     * @param $type
      * @param $data
      */
-    public function __construct($data, $query)
+    public function __construct($type, $data)
     {
-
+        $this->type = $type;
         $this->data = $data;
-        $this->query = $query;
     }
 
 
@@ -63,7 +65,16 @@ class AddData implements ShouldQueue
      */
     public function handle()
     {
-        $this->query->insert($this->data);
+        if ($this->type == 'order-trail') {
+            $query = OrderTrail::query();
+        } elseif ($this->type == 'tracking-order-trail') {
+            $query = TrackingOrderTrail::query();
+        } elseif ($this->type == 'tour-event') {
+            $query = TourDriverEvent::query();
+        } else {
+            return;
+        }
+        $query->insert($this->data);
     }
 
 }
