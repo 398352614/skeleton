@@ -15,6 +15,7 @@ use App\Traits\FactoryInstanceTrait;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class InitTrackingOrder extends Command
 {
@@ -67,14 +68,13 @@ class InitTrackingOrder extends Command
                 'warehouse_lon',
                 'warehouse_lat'
             ];
-            /**@var OrderNoRuleService $orderNoRuleService */
-            $orderNoRuleService = FactoryInstanceTrait::getInstance(OrderNoRuleService::class);
             $trackingOrderModel = new TrackingOrder();
-            $OrderModel = new Order();
+            $startIndex = 1;
             /****************************************************新增运单**************************************************/
             for ($i = 1; $i <= $pages; $i++) {
                 $orderList = Order::query()->where('status', '<>', BaseConstService::TRACKING_ORDER_STATUS_7)->forPage($i, 500)->get()->toArray();
-                $trackingOrderList = collect($orderList)->map(function ($order, $key) use ($trackingOrderFields, $tourFillFields, $orderNoRuleService, $OrderModel) {
+                $trackingOrderList = [];
+                foreach ($orderList as $order) {
                     $trackingOrder = Arr::only($order, $trackingOrderFields);
                     $trackingOrder['place_fullname'] = $order['receiver_fullname'];
                     $trackingOrder['place_phone'] = $order['receiver_phone'];
@@ -86,7 +86,9 @@ class InitTrackingOrder extends Command
                     $trackingOrder['place_address'] = $order['receiver_address'];
                     $trackingOrder['place_lon'] = $order['lon'];
                     $trackingOrder['place_lat'] = $order['lat'];
-                    $trackingOrderNo = $orderNoRuleService->createTrackingOrderNo($order['company_id']);
+                    //$trackingOrderNo = $orderNoRuleService->createTrackingOrderNo($order['company_id']);
+                    $trackingOrderNo = 'YD0' . Str::substr($order['order_no'], 3);
+                    $startIndex++;
                     $trackingOrder = Arr::add($trackingOrder, 'tracking_order_no', $trackingOrderNo);
                     $trackingOrder = array_merge(array_fill_keys($tourFillFields, ''), $trackingOrder);
                     $trackingOrder['line_id'] = null;
@@ -98,8 +100,8 @@ class InitTrackingOrder extends Command
                             unset($trackingOrder['warehouse_name']);
                         }
                     }
-                    return collect($trackingOrder);
-                })->toArray();
+                    $trackingOrderList[] = $trackingOrder;
+                }
                 $trackingOrderModel::query()->insert($trackingOrderList);
             }
             /************************************************新增运单包裹**********************************************/

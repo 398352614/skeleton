@@ -25,6 +25,7 @@ class CreateOrderTrailTable extends Migration
 
             $table->index('company_id', 'company_id');
             $table->index('order_no', 'order_no');
+            $table->index('merchant_id', 'merchant_id');
             $table->index('tracking_order_no', 'tracking_order_no');
         });
     }

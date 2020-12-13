@@ -912,13 +912,13 @@ class TrackingOrderService extends BaseService
 
     /**
      * 通过订单号,获取派送信息
-     * @param $orderNo
+     * @param $trackingOrderNo
      * @return array
      * @throws BusinessLogicException
      */
-    public function getDispatchInfoByOrderNo($orderNo)
+    public function getDispatchInfoByOrderNo($trackingOrderNo)
     {
-        $dbTrackingOrder = parent::getInfo(['order_no' => $orderNo], ['*'], false, ['created_at' => 'desc']);
+        $dbTrackingOrder = parent::getInfo(['tracking_order_no' => $trackingOrderNo], ['*'], false);
         if (empty($dbTrackingOrder)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -926,7 +926,7 @@ class TrackingOrderService extends BaseService
         if (empty($batch)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $batchList = $this->getBatchService()->getList(['tour_no' => $batch['tour_no'],'merchant_id'=>['<>','']], ['*'], false);
+        $batchList = $this->getBatchService()->getList(['tour_no' => $batch['tour_no'], 'merchant_id' => ['<>', '']], ['*'], false);
         $count = $batchList->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
         //处理预计耗时
         if (!empty($batch->expect_arrive_time)) {

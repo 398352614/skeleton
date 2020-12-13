@@ -1098,7 +1098,7 @@ class OrderService extends BaseService
         if (empty($dbOrder)) {
             throw new BusinessLogicException('数据不存在');
         }
-        return $this->getTrackingOrderService()->getDispatchInfoByOrderNo($dbOrder->order_no);
+        return $this->getTrackingOrderService()->getDispatchInfoByOrderNo($dbOrder->tracking_order_no);
     }
 
     /**

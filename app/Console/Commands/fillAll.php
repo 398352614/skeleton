@@ -49,7 +49,8 @@ class fillAll extends Command
         Artisan::call('migrate --path="database/migrations/2020_12_11_141735_alter_order_tables.php"');
         //运单相关数据填充
         Artisan::call('tracking-order:fill');
-
+        //单号规则-重置运单开始索引
+        Artisan::call('tracking-no-index:reset');
         $time = (time() - $startTime) / 60;
         $this->info("successful,the time is {$time} min");
         return;
