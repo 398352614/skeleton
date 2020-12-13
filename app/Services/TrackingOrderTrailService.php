@@ -6,6 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\TrackingOrderTrailResource;
 use App\Models\TrackingOrder;
 use App\Models\TrackingOrderTrail;
+use App\Jobs\AddTrail;
 
 class TrackingOrderTrailService extends BaseService
 {
@@ -94,15 +95,18 @@ class TrackingOrderTrailService extends BaseService
                 $content = '未定义的状态';
                 break;
         }
+        $now = now();
         $data = [
             'company_id' => $trackingOrder['company_id'],
             'tracking_order_no' => $trackingOrder['tracking_order_no'],
             'order_no' => $trackingOrder['order_no'],
             'merchant_id' => $trackingOrder['merchant_id'],
             'content' => $content,
+            'created_at' => $now,
+            'updated_at' => $now
         ];
         !empty($trackingOrder['merchant_id']) && $data['merchant_id'] = $trackingOrder['merchant_id'];
-        TrackingOrderTrail::query()->create($data);
+        dispatch(new AddTrail('tracking-order', $data));
     }
 
     /**
