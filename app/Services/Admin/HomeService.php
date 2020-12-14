@@ -145,10 +145,9 @@ class HomeService extends BaseService
     public function orderCount(Carbon $day, $no, $merchantId)
     {
         $countInfo = [];
-        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]], ['*'], false);
         for ($i = $no; $i >= 1; $i--) {
             $date = $day->format('Y-m-d');
-            $expectCount = collect($orderList)->where('execution_date', $date)->count();
+            $expectCount = parent::count(['merchant_id' => $merchantId, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7], 'execution_date' => $date]);
             $countInfo[$i] = ['date' => $date, 'order' => $expectCount];
             $day = $day->subDay();
         }
