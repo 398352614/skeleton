@@ -37,6 +37,9 @@ class MerchantValidate extends BaseValidate
         'advance_days' => 'nullable|integer|gte:0|lte:7',
         'appointment_days' => 'nullable|integer|gte:1|lte:30',
         'delay_time' => 'nullable|integer|gte:0|lte:60',
+
+        'package_list.*.weight' => 'required|numeric|gte:0',
+        'package_list.*.express_first_no' => 'required_with:package_list|string|max:50|regex:/^[0-9a-zA-Z]([0-9a-zA-Z])*[0-9a-zA-Z]$/',
     ];
 
     public $scene = [
@@ -50,7 +53,7 @@ class MerchantValidate extends BaseValidate
             'appointment_days',
             'delay_time',
             'additional_status'
-        ]
+        ],
     ];
 }
 

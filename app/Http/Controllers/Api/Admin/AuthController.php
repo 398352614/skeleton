@@ -74,7 +74,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth('admin')->refresh());
+        return $this->respondWithToken(auth('admin')->refresh(true));
     }
 
     /**
@@ -164,11 +164,10 @@ class AuthController extends Controller
                 'password' => bcrypt($data['new_password'])
             ]
         );
-
+        auth('admin')->refresh(true);
         if ($res) {
             auth('admin')->logout();
         }
-
         return success();
     }
 }

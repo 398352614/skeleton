@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
-
 /**
  * tour_driver_event 表对应的模型,线路司机事件
  * Class TourDriverEvent

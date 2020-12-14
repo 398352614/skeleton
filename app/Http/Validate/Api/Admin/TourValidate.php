@@ -32,11 +32,11 @@ class TourValidate extends BaseValidate
     public $scene = [
         'assignDriver' => ['driver_id'],
         'assignCar' => ['car_id'],
-        'getAddOrderPageList' => ['order_id_list', 'execution_date'],
+        'getAddOrderPageList' => ['tracking_order_id_list', 'execution_date'],
         'getLineDate' => ['line_id'],
         'assignTourToTour' => ['execution_date', 'line_id', 'tour_no'],
         'getListJoinByLineId' => ['line_id', 'execution_date'],
-        'batchExport'=>['year','month']
+        'batchExport'=>['year','month'],
     ];
 
     public $message = [

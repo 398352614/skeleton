@@ -116,6 +116,16 @@ class OrderController extends OrderBaseController
     }
 
     /**
+     * 修改派件日期
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function updateSecondDate($id)
+    {
+        return $this->service->updateSecondDate($id, $this->data['second_execution_date']);
+    }
+
+    /**
      * @param $id
      * @return mixed
      * @throws BusinessLogicException
@@ -123,6 +133,15 @@ class OrderController extends OrderBaseController
     public function updateByApi($id)
     {
         return $this->service->updatePhoneDateByApi($id, $this->data);
+    }
+
+    /**
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function updateByApiList()
+    {
+        return $this->service->updatePhoneDateByApiList($this->data);
     }
 
     /**
@@ -156,6 +175,40 @@ class OrderController extends OrderBaseController
     {
         return $this->service->destroyAll($this->data['order_no_list']);
     }
+
+
+    /**
+     * 获取再次取派信息
+     * @param $id
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getAgainInfo($id)
+    {
+        return $this->service->getAgainInfo($id);
+    }
+
+    /**
+     * 再次取派
+     * @param $id
+     * @return bool
+     * @throws BusinessLogicException
+     */
+    public function again($id)
+    {
+        return $this->service->again($id, $this->data);
+    }
+
+    /**
+     * 终止派送
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function end($id)
+    {
+        return $this->service->end($id);
+    }
+
 
     /**
      * 批量检查
@@ -213,7 +266,8 @@ class OrderController extends OrderBaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function track($id){
+    public function track($id)
+    {
         return $this->service->track($id);
     }
 }

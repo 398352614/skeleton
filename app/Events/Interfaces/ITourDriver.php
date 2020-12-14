@@ -2,8 +2,6 @@
 
 namespace App\Events\Interfaces;
 
-use App\Models\Order;
-
 interface ITourDriver
 {
     /**

@@ -2,29 +2,16 @@
 
 namespace App\Jobs;
 
-use App\Events\TourNotify\NextBatch;
 use App\Exceptions\BusinessLogicException;
-use App\Models\Batch;
-use App\Models\Material;
 use App\Models\MerchantApi;
-use App\Models\Package;
-use App\Models\Tour;
-use App\Services\Admin\TourService;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
-use App\Traits\CompanyTrait;
-use App\Traits\FactoryInstanceTrait;
-use App\Traits\TourTrait;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use WebSocket\Client;
 
 class SyncOrderStatus implements ShouldQueue
 {
@@ -70,7 +57,7 @@ class SyncOrderStatus implements ShouldQueue
         'merchant_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'status_name',
         'delivery_count', 'cancel_remark', 'signature', 'pay_type',
         'line_id', 'line_name', 'driver_id', 'driver_name', 'driver_phone', 'car_id', 'car_no',
-        'package_list', 'material_list'
+        'package_list', 'material_list', 'tracking_order_type', 'tracking_order_type_name', 'type', 'type_name','tracking_order_status','tracking_order_status_name'
     ];
 
 

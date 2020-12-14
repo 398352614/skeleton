@@ -7,7 +7,6 @@ namespace App\Console\Commands;
 use App\Traits\ConstTranslateTrait;
 use Exception;
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 

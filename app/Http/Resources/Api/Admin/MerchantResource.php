@@ -10,7 +10,6 @@
 namespace App\Http\Resources\Api\Admin;
 
 use App\Models\MerchantGroup;
-use App\Traits\ConstTranslateTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class MerchantResource extends JsonResource

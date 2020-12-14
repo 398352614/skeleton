@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\Interfaces\ITourDriver;
-use App\Models\RouteTracking;
+use App\Jobs\AddData;
 use App\Models\TourDriverEvent;
 
 class TourDriver
@@ -27,13 +27,17 @@ class TourDriver
     public function handle(ITourDriver $event)
     {
         $location = $event->getLocation();
-        $tourDriverEvent = TourDriverEvent::create([
-            'content'   => $event->getContent(),
-            'tour_no'   => $event->getTourNo(),
-            'lat'       =>  $location['lat'],
-            'lon'       =>  $location['lon'],
-            'address'   => $event->getAddress(),
-            'batch_no'   => $event->getBatchNo()
-        ]);
+        $now = now();
+        $data = [
+            'content' => $event->getContent(),
+            'tour_no' => $event->getTourNo(),
+            'lat' => $location['lat'],
+            'lon' => $location['lon'],
+            'address' => $event->getAddress(),
+            'batch_no' => $event->getBatchNo(),
+            'created_at' => $now,
+            'updated_at' => $now
+        ];
+        dispatch(new AddData('tour-event', $data));
     }
 }

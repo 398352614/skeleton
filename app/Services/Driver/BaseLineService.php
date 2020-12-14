@@ -307,7 +307,7 @@ class BaseLineService extends BaseService
      * @param $lineRange
      * @return int
      */
-    private function getFirstWeekDate($lineRange)
+    public function getFirstWeekDate($lineRange)
     {
         if ($lineRange['schedule'] === 0) {
             $lineRange['schedule'] = 7;
@@ -346,7 +346,7 @@ class BaseLineService extends BaseService
      * @param $orderOrBatch
      * @throws BusinessLogicException
      */
-    private function maxCheck($params, $line, $orderOrBatch)
+    public function maxCheck($params, $line, $orderOrBatch)
     {
         if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
             if ($orderOrBatch === 2) {
@@ -366,7 +366,7 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function appointmentDayCheck($info, $line)
+    public function appointmentDayCheck($info, $line)
     {
         //判断预约日期是否在可预约日期范围内
         if (Carbon::today()->addDays($line['appointment_days'])->lt($info['execution_date'] . ' 00:00:00')) {

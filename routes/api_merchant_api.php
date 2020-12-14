@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,7 +23,12 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant_api'])->group(funct
     Route::post('post-code-date-list', 'LineController@getDateListByPostCode');//获取可选日期
     Route::post('order-dispatch-info', 'OrderController@getOrderDispatchInfo');//派送情况
     Route::post('order-update-phone-date', 'OrderController@updateByApi');//修改订单
+    Route::post('order-update-phone-date-list', 'OrderController@updateByApiList');//修改订单
     Route::post('package-info', 'PackageController@showByApi');//包裹查询
     Route::post('order-info', 'OrderController@showByApi');//订单查询
     Route::post('update-order-item-list', 'OrderController@updateItemList');//修改明细
+    Route::post('/again-order-info', 'OrderController@getAgainInfo');//获取再次取派信息
+    Route::post('/again-order', 'OrderController@again'); //再次取派
+    Route::post('/end-order', 'OrderController@end');//终止派送
+    Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//修改派送日期
 });

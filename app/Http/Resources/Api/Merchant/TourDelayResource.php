@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Api\Merchant;
 
-use App\Services\BaseConstService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TourDelayResource extends JsonResource

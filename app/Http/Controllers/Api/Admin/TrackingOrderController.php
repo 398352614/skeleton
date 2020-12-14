@@ -59,6 +59,11 @@ class TrackingOrderController extends BaseController
         return $this->service->getPageList();
     }
 
+    public function show($id)
+    {
+        return $this->service->show($id);
+    }
+
     /**
      * 运单从站点移除
      * @param $id

@@ -12,7 +12,6 @@ use App\Events\Interfaces\ITourDriver;
 use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Arr;
 
 class BackWarehouse implements ITourDriver
 {

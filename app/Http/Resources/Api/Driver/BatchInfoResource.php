@@ -61,7 +61,7 @@ class BatchInfoResource extends JsonResource
             'exception_label_name' => $this->exception_label_name,
             'pay_type_name' => $this->pay_type_name,
             'orders' => OrderResource::collection($this->orders),
-        ], GisService::corTransfer(['receiver_lon'=>$this->receiver_lon,'receiver_lat'=>$this->receiver_lat]));
+        ], GisService::corTransfer(['place_lon'=>$this->place_lon,'place_lat'=>$this->place_lat]));
     }
 
     public function corTransfer()

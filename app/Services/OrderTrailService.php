@@ -9,6 +9,8 @@
 namespace App\Services;
 
 use App\Http\Resources\Api\OrderTrailResource;
+use App\Jobs\AddData;
+use App\Models\Order;
 use App\Models\OrderTrail;
 use App\Models\TrackingOrder;
 
@@ -99,7 +101,7 @@ class OrderTrailService extends BaseService
                 $content = sprintf("订单[%s]运单创建，生成运单号[%s]，日期[%s]", $type[$trackingOrder['type']], $trackingOrder['tracking_order_no'], $trackingOrder['execution_date']);
                 break;
             case BaseConstService::ORDER_TRAIL_UPDATE:          // 订单修改
-                $content = sprintf("订单[%s]日期修改，日期从[%s]更变为[%s]", $type[$trackingOrder['type']], $trackingOrder['execution_date'], $params['execution_date']);
+                $content = sprintf("订单[%s]日期修改，日期从[%s]更变为[%s]", $type[$trackingOrder['type']], $params['execution_date'], $trackingOrder['execution_date']);
                 break;
             case BaseConstService::ORDER_TRAIL_CLOSED:                     // 订单关闭
                 $content = '订单关闭';
@@ -111,13 +113,16 @@ class OrderTrailService extends BaseService
                 $content = '未定义的状态';
                 break;
         }
+        $now = now();
         $data = [
             'company_id' => $trackingOrder['company_id'],
             'order_no' => $trackingOrder['order_no'],
             'merchant_id' => $trackingOrder['merchant_id'],
             'content' => $content,
+            'created_at' => $now,
+            'updated_at' => $now
         ];
         !empty($trackingOrder['merchant_id']) && $data['merchant_id'] = $trackingOrder['merchant_id'];
-        OrderTrail::query()->create($data);
+        dispatch(new AddData('order-trail', $data));
     }
 }

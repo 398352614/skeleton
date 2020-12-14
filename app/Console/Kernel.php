@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('telescope:prune --hours=48')->daily()->onOneServer()->emailOutputTo(config('tms.admin_email'));
         $schedule->command('db:backup')->dailyAt('1:00')->onOneServer()->emailOutputTo(config('tms.admin_email'));
+        $schedule->command('restart:queue')->dailyAt('2:00')->onOneServer()->emailOutputTo(config('tms.admin_email'));
     }
 
     /**

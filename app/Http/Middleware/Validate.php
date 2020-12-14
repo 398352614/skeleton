@@ -10,12 +10,9 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\BusinessLogicException;
-use App\Traits\AddressTemplateTrait;
-use App\Traits\CompanyTrait;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Validate\BaseValidate;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class Validate

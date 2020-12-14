@@ -7,7 +7,6 @@ use App\Models\Batch;
 use App\Models\Tour;
 use App\Models\TourLog;
 use App\Services\BaseConstService;
-use App\Traits\TourRedisLockTrait;
 use Illuminate\Support\Facades\Log;
 
 trait UpdateTourTimeAndDistanceTrait
@@ -61,7 +60,6 @@ trait UpdateTourTimeAndDistanceTrait
                 }
                 //更新出库预计
                 if ($tour['actual_out_status'] == BaseConstService::YES && $tourBatch['status'] == BaseConstService::BATCH_DELIVERING) {
-                    Log::info($tourBatch);
                     if (empty($tourBatch->out_expect_arrive_time)) {
                         $tourBatch->out_expect_arrive_time = date('Y-m-d H:i:s', time() + $res['time']);
                     }

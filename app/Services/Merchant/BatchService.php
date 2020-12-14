@@ -3,8 +3,8 @@
 namespace App\Services\Merchant;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Merchant\BatchResource;
 use App\Http\Resources\Api\Merchant\BatchInfoResource;
+use App\Http\Resources\Api\Merchant\BatchResource;
 use App\Models\Batch;
 use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;

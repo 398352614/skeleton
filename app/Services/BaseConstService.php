@@ -21,6 +21,8 @@ class BaseConstService
     const BATCH_EXCEPTION = 'BE';
     const RECHARGE = '';
 
+    const CANCEL_TIMES = 3;
+
     //邮编国家
     const POSTCODE_COUNTRY_BE = 'BE';
 
@@ -353,10 +355,13 @@ class BaseConstService
     const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回仓库通知
     const NOTIFY_ORDER_EXECUTION_DATE_UPDATE = 'update-execution-date'; //修改取派日期通知
     const NOTIFY_ORDER_CANCEL = 'cancel-order';     //订单取消通知
+    const NOTIFY_ORDER_DELETE = 'delete-order';     //订单删除通知
     const NOTIFY_SYNC_ORDER_STATUS = 'sync-order-status';   //同步订单状态
     const NOTIFY_RECHARGE_PROCESS = 'recharge-process';   //同步订单状态
     const NOTIFY_RECHARGE_VALIDUSER = 'recharge-validuser';   //同步订单状态
     const NOTIFY_STORE_ORDER = 'store-order';               //订单新增
+    const NOTIFY_PACKAGE_INFO = 'package-info';   //发送包裹信息
+    const NOTIFY_PACKAGE_PICK_OUT = 'package-pick-out';   //包裹入库分拣
 
 
     //商户类型
@@ -431,7 +436,18 @@ class BaseConstService
     const TOUR_DELAY_TYPE_3 = 3;
     const TOUR_DELAY_TYPE_4 = 4;
 
-    //包裹类型1取2派
-    const PACKAGE_TYPE_1 =1;
-    const PACKAGE_TYPE_2 =2;
+    //包裹类型1取2派3-取派
+    const PACKAGE_TYPE_1 = 1;
+    const PACKAGE_TYPE_2 = 2;
+    const PACKAGE_TYPE_3 = 3;
+
+    //包裹仓库类型1-入库2-出库
+    const WAREHOUSE_PACKAGE_TYPE_1 = 1;
+    const WAREHOUSE_PACKAGE_TYPE_2 = 2;
+
+    //商户端订单物流类型
+    const TRACK_STATUS_1 = 1;
+    const TRACK_STATUS_2 = 2;
+    const TRACK_STATUS_3 = 3;
+
 }

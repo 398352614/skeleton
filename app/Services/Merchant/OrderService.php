@@ -10,27 +10,27 @@
 namespace App\Services\Merchant;
 
 use App\Events\OrderCancel;
+use App\Events\OrderDelete;
 use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\Api\Merchant\OrderAgainResource;
 use App\Http\Resources\Api\Merchant\OrderInfoResource;
 use App\Http\Resources\Api\Merchant\OrderResource;
-use App\Http\Resources\Api\Merchant\OrderAgainResource;
 use App\Http\Validate\Api\Merchant\OrderImportValidate;
 use App\Http\Validate\BaseValidate;
 use App\Models\Order;
 use App\Models\OrderImportLog;
 use App\Models\TourMaterial;
 use App\Models\TrackingOrder;
-use App\Services\CommonService;
 use App\Services\BaseConstService;
-use App\Services\ThirdPartyLogService;
+use App\Services\CommonService;
+use App\Services\OrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
-use App\Services\TrackingOrderTrailService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -121,6 +121,13 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
+        if (!empty($this->formData['keyword'])) {
+            $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => $this->formData['keyword']]);
+            if (!$trackingOrderList->isEmpty()) {
+                $trackingOrderList = $trackingOrderList->pluck('order_no')->toArray();
+                $this->query->whereIn('order_no', $trackingOrderList);
+            }
+        }
         return parent::getPageList();
     }
 
@@ -248,10 +255,13 @@ class OrderService extends BaseService
         if ($order === false) {
             throw new BusinessLogicException('订单新增失败');
         }
-        //生成运单
-        $tour = $this->getTrackingOrderService()->storeByOrder($order);
         //新增订单明细列表
         $this->addAllItemList($params);
+        //生成运单
+        $tour = [];
+        if (!empty($params['execution_date'])) {
+            $tour = $this->getTrackingOrderService()->storeByOrder($order);
+        }
         return [
             'order_no' => $params['order_no'],
             'out_order_no' => $params['out_order_no'] ?? '',
@@ -275,7 +285,7 @@ class OrderService extends BaseService
      */
     public function getAgainInfo($id)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_2], false);
+        $dbOrder = $this->getInfoByIdOfStatus($id, false, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2], false);
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
         if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder)) {
             throw new BusinessLogicException('当前订单不支持再次派送，请联系管理员');
@@ -295,6 +305,7 @@ class OrderService extends BaseService
      */
     private function getTrackingOrderType($order, TrackingOrder $trackingOrder = null)
     {
+        (empty($trackingOrder)) && $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         //1.运单不存在,直接获取运单类型
         if (empty($trackingOrder)) {
             return $this->getTrackingOrderService()->getTypeByOrderType($order['type']);
@@ -330,12 +341,12 @@ class OrderService extends BaseService
      */
     public function again($id, $params)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
-        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
-        $trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder);
-        if ($trackingOrderType != $params['tracking_order_type']) {
-            throw new BusinessLogicException('当前订单不支持再次派送，请刷新后再操作');
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $trackingOrderType = $this->getTrackingOrderType($dbOrder);
+        if (empty($trackingOrderType)) {
+            throw new BusinessLogicException('当前包裹已生成对应运单');
         }
+        $params = array_merge($dbOrder, $params);
         return $this->getTrackingOrderService()->storeAgain($dbOrder, $params, $trackingOrderType);
     }
 
@@ -347,15 +358,22 @@ class OrderService extends BaseService
      */
     public function end($id)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['tracking_order_no', 'order_no'], false, ['created_at' => 'desc']);
         if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
             throw new BusinessLogicException('当前订单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
         }
-        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_3]);
+        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['status' => BaseConstService::PACKAGE_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder->toArray(), BaseConstService::ORDER_TRAIL_CLOSED);
+        //取消通知
+        //event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
     }
 
 
@@ -530,34 +548,6 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-        $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
-        if (!empty($params['second_place_post_code'])) {
-            $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
-        }
-        //若是新增,则填充商户ID及国家
-        if (empty($orderNo)) {
-            $params['merchant_id'] = auth()->user()->id;
-            //若邮编是纯数字，则认为是比利时邮编
-            $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-            if (empty($params['place_lat']) || empty($params['place_lon'])) {
-                $location = LocationTrait::getLocation($params['place_country'], $params['place_city'], $params['place_street'], $params['place_house_number'], $params['place_post_code']);
-                $params['place_lat'] = $location['lat'];
-                $params['place_lon'] = $location['lon'];
-            }
-            //若是取派订单,则填充派件经纬度
-            if (($params['type'] == BaseConstService::ORDER_TYPE_3) && (empty($params['second_place_lat']) || empty($params['second_place_lon']))) {
-                $location = LocationTrait::getLocation($params['second_place_country'], $params['second_place_city'], $params['second_place_street'], $params['second_place_house_number'], $params['second_place_post_code']);
-                $params['second_place_lat'] = $location['lat'];
-                $params['second_place_lat'] = $location['lon'];
-            }
-        }
-        if (empty($params['place_lat']) || empty($params['place_lon'])) {
-            throw new BusinessLogicException('地址数据不正确，请重新选择地址');
-        }
-        //获取经纬度
-        $fields = ['place_house_number', 'place_city', 'place_street'];
-        $params = array_merge(array_fill_keys($fields, ''), $params);
-        $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
@@ -565,10 +555,6 @@ class OrderService extends BaseService
         !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $orderNo);
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
-        //填充地址
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
-            $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
-        }
         //若存在外部订单号,则判断是否存在已预约的订单号
         if (!empty($params['out_order_no'])) {
             $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
@@ -587,6 +573,50 @@ class OrderService extends BaseService
             }
         }
         $params['out_order_no'] = $params['out_order_no'] ?? '';
+        if (empty($orderNo)) {
+            $params['merchant_id'] = auth()->user()->id;
+        }
+        /***************************************************地址一处理*************************************************/
+        $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
+        //若邮编是纯数字，则认为是比利时邮编
+        $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
+        //获取经纬度
+        $fields = ['place_house_number', 'place_city', 'place_street'];
+        $params = array_merge(array_fill_keys($fields, ''), $params);
+        //获取经纬度
+        if (empty($params['place_lat']) || empty($params['place_lon'])) {
+            $location = LocationTrait::getLocation($params['place_country'], $params['place_city'], $params['place_street'], $params['place_house_number'], $params['place_post_code']);
+            $params['place_lat'] = $location['lat'];
+            $params['place_lon'] = $location['lon'];
+        }
+        if (empty($params['place_lat']) || empty($params['place_lon'])) {
+            throw new BusinessLogicException('地址不正确，请重新选择地址');
+        }
+        //填充地址
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
+            $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
+        }
+        if ($params['type'] != BaseConstService::ORDER_TYPE_3) return;
+        /***************************************************地址二处理*************************************************/
+        $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
+        //若邮编是纯数字，则认为是比利时邮编
+        $params['second_place_country'] = post_code_be($params['second_place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
+        //获取经纬度
+        $fields = ['second_place_house_number', 'second_place_city', 'second_place_street'];
+        $params = array_merge(array_fill_keys($fields, ''), $params);
+        //获取经纬度
+        if (empty($params['second_place_lat']) || empty($params['second_place_lon'])) {
+            $location = LocationTrait::getLocation($params['second_place_country'], $params['second_place_city'], $params['second_place_street'], $params['second_place_house_number'], $params['second_place_post_code']);
+            $params['second_place_lat'] = $location['second_lat'];
+            $params['second_place_lon'] = $location['second_lon'];
+        }
+        if (empty($params['second_place_lat']) || empty($params['second_place_lon'])) {
+            throw new BusinessLogicException('派件地址不正确，请重新选择地址');
+        }
+        //填充地址
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['second_place_address'])) {
+            $params['second_place_address'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
+        }
     }
 
     /**
@@ -737,7 +767,8 @@ class OrderService extends BaseService
                 return $collectItem
                     ->put('order_no', $params['order_no'])
                     ->put('merchant_id', $params['merchant_id'])
-                    ->put('execution_date', $params['execution_date'])
+                    ->put('execution_date', $params['execution_date'] ?? null)
+                    ->put('tracking_order_no', $params['tracking_order_no'] ?? '')
                     ->put('status', $status)
                     ->put('type', $params['type']);
             })->toArray();
@@ -753,7 +784,7 @@ class OrderService extends BaseService
                 return $collectItem
                     ->put('order_no', $params['order_no'])
                     ->put('merchant_id', $params['merchant_id'])
-                    ->put('execution_date', $params['execution_date']);
+                    ->put('execution_date', $params['execution_date'] ?? null);
             })->toArray();
             $rowCount = $this->getMaterialService()->insertAll($materialList);
             if ($rowCount === false) {
@@ -836,11 +867,36 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        //todo 通知第三方
+        $executionDate = !empty($data['execution_date']) ? $data['execution_date'] : $dbOrder['execution_date'];
+        $secondExecutionDate = !empty($data['second_execution_date']) ? $data['second_execution_date'] : $dbOrder['second_execution_date'];
+        $status = !empty($data['status']) ? $data['status'] : $dbOrder['status'];
+        event(new OrderExecutionDateUpdated($dbOrder['order_no'], $dbOrder['out_order_no'] ?? '', $executionDate, $secondExecutionDate, $status, '', ['tour_no' => '', 'line_id' => $trackingOrder['line_id'] ?? '', 'line_name' => $trackingOrder['line_name'] ?? '']));
+    }
+
+    /**
+     * 修改派送日期
+     * @param $id
+     * @param $secondExecutionDate
+     * @throws BusinessLogicException
+     */
+    public function updateSecondDate($id, $secondExecutionDate)
+    {
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $data = ($dbOrder['type'] == BaseConstService::ORDER_TYPE_2) ? ['execution_date' => $secondExecutionDate] : ['second_execution_date' => $secondExecutionDate];
+        $rowCount = parent::updateById($dbOrder['id'], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        return $this->getTrackingOrderService()->updateSecondDate($dbOrder, $secondExecutionDate);
     }
 
 
     /**
+     * 修改电话和日期
      * @param $id
      * @param $data
      * @return boolean|array
@@ -852,18 +908,57 @@ class OrderService extends BaseService
             'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
             'execution_date' => 'required_without:place_phone|date|after_or_equal:today'
         ]);
-        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]);
-        list($phone, $executionDate) = [$data['place_phone'] ?? '', $data['execution_date'] ?? null];
-        if (in_array($dbOrder['status'], [BaseConstService::ORDER_STATUS_3, BaseConstService::ORDER_STATUS_4, BaseConstService::ORDER_STATUS_5])) {
-            throw new BusinessLogicException('该状态无法进行此操作');
-        }
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $data = array_filter(Arr::only($data, ['place_phone', 'execution_date']));
         $rowCount = parent::updateById($dbOrder['id'], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        $this->getTrackingOrderService()->updateDateAndPhone($dbOrder, $data);
-        return 'true';
+        //修改包裹取派日期
+        if (!empty($data['execution_date'])) {
+            $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], $data);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败，请重新操作');
+            }
+        }
+        return $this->getTrackingOrderService()->updateDateAndPhone($dbOrder, $data);
+    }
+
+    /**
+     * 批量修改电话和日期
+     * @param $params
+     * @return boolean|array
+     * @throws BusinessLogicException
+     */
+    public function updatePhoneDateByApiList($params)
+    {
+        $params['order_no_list'] = explode(',', $params['order_no_list']);
+        $this->request->validate([
+            'order_no_list' => 'required',
+            'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+            'execution_date' => 'required_without:place_phone|date|after_or_equal:today'
+        ]);
+        $dbOrderList = parent::getList(['order_no' => ['in', $params['order_no_list']]], ['*'], false);
+        if ($dbOrderList->isEmpty()) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $dbOrderList = $dbOrderList->toArray();
+        if (count(array_unique(collect($dbOrderList)->pluck('place_phone')->toArray())) > 1 || count(array_unique(collect($dbOrderList)->pluck('execution_date')->toArray())) > 1) {
+            throw new BusinessLogicException('所选多个订单电话或取件日期不一致，无法统一修改');
+        }
+        $data = array_filter(Arr::only($params, ['place_phone', 'execution_date']));
+        $rowCount = parent::update(['order_no' => ['in', $params['order_no_list']]], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        $rowCount = $this->getTrackingOrderService()->update(['order_no' => ['in', $params['order_no_list']]], $data);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        foreach ($params['order_no_list'] as $k => $v) {
+            $this->getTrackingOrderService()->updateDateAndPhone(['order_no' => $v], $data);
+        }
+        return '';
     }
 
     /**
@@ -893,16 +988,31 @@ class OrderService extends BaseService
     public function destroy($id, $params)
     {
         //获取信息
-        $dbOrder = $this->getInfoByIdOfStatus($id, true);
-        $rowCount = parent::updateById($dbOrder['id'], ['status' => BaseConstService::ORDER_STATUS_5]);
+        $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_5]);
+        if ($dbOrder['status'] == BaseConstService::ORDER_STATUS_5) {
+            return 'true';
+        }
+        if (($dbOrder['source'] == BaseConstService::ORDER_SOURCE_3) && (auth()->user()->getAttribute('is_api') != true)) {
+            throw new BusinessLogicException('第三方订单不允许手动删除');
+        }
+        $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
+        $rowCount = parent::updateById($dbOrder['id'], ['tracking_order_no' => '', 'status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
-        $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
-
+        //材料清除运单信息
+        $rowCount = $this->getMaterialService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+        //包裹清除运单信息
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_5]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
         if ((!empty($params['no_push']) && $params['no_push'] == 0) || empty($params['no_push'])) {
             //以取消取派方式推送商城
-            event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
+            event(new OrderDelete($dbOrder['order_no'], $dbOrder['out_order_no']));
         }
         return 'true';
     }
@@ -939,7 +1049,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败');
         }
-        $this->getTrackingOrderService()->updateOutStatusByOrderNo($dbOrder, $params['out_status']);
+        $this->getTrackingOrderService()->updateOutStatusByOrderNo($dbOrder['order_no'], $params['out_status']);
     }
 
     /**
@@ -958,12 +1068,12 @@ class OrderService extends BaseService
         !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $dbOrder['order_no']);
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
-        $dbMaterialList = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false)->toArray();
         //删除包裹
         $rowCount = $this->getPackageService()->delete(['order_no' => $dbOrder['order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
+        //删除材料
         $rowCount = $this->getMaterialService()->delete(['order_no' => $dbOrder['order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
@@ -972,8 +1082,7 @@ class OrderService extends BaseService
         $dbOrder['package_list'] = $params['package_list'] ?? [];
         $dbOrder['material_list'] = $params['material_list'] ?? [];
         $this->addAllItemList($dbOrder);
-        //处理取派线路中的材料
-        $this->getTrackingOrderService()->dealMaterialList($dbOrder, $dbMaterialList, $params['material_list'] ?? []);
+        $this->getTrackingOrderService()->updateItemListByOrderNo($dbOrder['order_no'], $params);
     }
 
     /**
@@ -985,11 +1094,11 @@ class OrderService extends BaseService
     public function getOrderDispatchInfo($id)
     {
         $where = [$this->getIdKeyName($id) => $id];
-        $dbOrder = parent::getInfo($where, ['batch_no'], false);
-        if (empty($info)) {
+        $dbOrder = parent::getInfo($where, ['*'], false);
+        if (empty($dbOrder)) {
             throw new BusinessLogicException('数据不存在');
         }
-        return $this->getTrackingOrderService()->getDispatchInfoByOrderNo($dbOrder->order_no);
+        return $this->getTrackingOrderService()->getDispatchInfoByOrderNo($dbOrder->tracking_order_no);
     }
 
     /**
@@ -1000,7 +1109,7 @@ class OrderService extends BaseService
      */
     public function track($id)
     {
-        $order = parent::getInfo(['id' => $id]);
+        $order = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($order)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -1017,14 +1126,15 @@ class OrderService extends BaseService
         }
         $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $tour['tour_no']], ['lon', 'lat'], false, ['id' => 'desc']) ?? [];
         $batch = $this->getBatchService()->getInfo(['batch_no' => $trackingOrder['batch_no']], ['*'], false) ?? [];
-        $content = '';
+        $count = $this->getBatchService()->query->where('merchant_id', '<>', '')->where('tour_no', $tour['tour_no'])->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
+        $status = '';
         if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
             if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
-                $content = __('取件成功，派件中');
+                $status = BaseConstService::TRACK_STATUS_1;
             } elseif ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 && $trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_5) {
-                $content = __('取件成功，等待派件');
+                $status = BaseConstService::TRACK_STATUS_2;
             } else {
-                $content = __('取件中');
+                $status = BaseConstService::TRACK_STATUS_3;
             }
         }
         return [
@@ -1048,15 +1158,16 @@ class OrderService extends BaseService
 
             'driver_lon' => $routeTracking['lon'] ?? '',
             'driver_lat' => $routeTracking['lat'] ?? '',
-            'driver_name' => $tour['tour_no'],
-            'car_no' => $tour['tour_no'],
+            'driver_name' => $tour['driver_name'],
+            'car_no' => $tour['car_no'],
             'tour_no' => $tour['tour_no'],
 
             'expect_distance' => $batch['expect_distance'] ?? 0,
             'expect_arrive_time' => $batch['expect_arrive_time'] ?? '',
             'actual_arrive_time' => $batch['actual_arrive_time'] ?? '',
-
-            'content' => $content
+            'rest_batch' => $count,
+            'status' => $status,
+            'status_name' => empty($status) ? null : ConstTranslateTrait::trackStatusList($status)
         ];
     }
 }

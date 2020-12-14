@@ -11,8 +11,6 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Company;
 use App\Models\Driver;
 use App\Models\Employee;
-use App\Models\Scope\CompanyScope;
-use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 
 trait HasCompanyId

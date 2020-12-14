@@ -2,27 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Events\TourNotify\NextBatch;
-use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
-use App\Models\Material;
-use App\Models\Package;
 use App\Models\Tour;
-use App\Services\Admin\TourService;
 use App\Services\BaseConstService;
-use App\Traits\CompanyTrait;
-use App\Traits\FactoryInstanceTrait;
-use App\Traits\TourTrait;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use WebSocket\Client;
 
 class OutWarehouse implements ShouldQueue
 {

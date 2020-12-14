@@ -169,7 +169,7 @@ return [
         'place_post_code' => 'Post Code',
         'place_house_number' => 'House Number',
         'execution_date' => 'Date',
-        'driver_fullname' => 'Driver',
+        'driver_name' => 'Driver',
         'batch_no' => 'Batch No',
         'tour_no' => 'Tour No',
         'line_name' => 'Line',
@@ -196,7 +196,7 @@ return [
         'material_quantity' => 'Material Quantity',
         'replace_amount' => 'Replace Amount',
         'sticker_amount' => 'Sticker Amount',
-        'settlement_amount' => 'Delivery Amount',
+        'settlement_amount' => 'Settlement Amount',
         'created_at' => 'Creation Time'
     ]
 ];

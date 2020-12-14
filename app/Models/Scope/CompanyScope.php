@@ -40,12 +40,17 @@ use App\Models\Package;
 use App\Models\Recharge;
 use App\Models\RouteTracking;
 use App\Models\SpecialTimeCharging;
+use App\Models\Stock;
+use App\Models\StockInLog;
+use App\Models\StockOutLog;
 use App\Models\Tour;
 use App\Models\TourDelay;
 use App\Models\TourDriverEvent;
 use App\Models\TourLog;
 use App\Models\TourMaterial;
 use App\Models\TrackingOrder;
+use App\Models\TrackingOrderMaterial;
+use App\Models\TrackingOrderPackage;
 use App\Models\TrackingOrderTrail;
 use App\Models\TransportPrice;
 use App\Models\Warehouse;
@@ -53,8 +58,7 @@ use App\Models\WeightCharging;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
-use Illuminate\Support\Facades\Cache;
-use Matrix\Operators\Addition;
+use Illuminate\Support\Str;
 
 class CompanyScope implements Scope
 {
@@ -70,7 +74,9 @@ class CompanyScope implements Scope
     {
 
         $user = auth()->user();
-        $whereColumns = array_column($builder->getQuery()->wheres, 'column');
+        $query = $builder->getQuery();
+        $sql = $query->toSql();
+        $whereColumns = array_column($query->wheres, 'column');
         //如果是员工端
         if ($user instanceof Employee) {
             if (
@@ -99,6 +105,9 @@ class CompanyScope implements Scope
                 && (!($model instanceof CarModel))
                 && (!($model instanceof Material))
                 && (!($model instanceof Package))
+                && (!($model instanceof TrackingOrderMaterial))
+                && (!($model instanceof TrackingOrderPackage))
+                && (!($model instanceof Batch))
                 && (!($model instanceof TourMaterial))
                 && (!($model instanceof TourDelay))
                 && (!($model instanceof Merchant))
@@ -117,7 +126,11 @@ class CompanyScope implements Scope
                 && (!($model instanceof CompanyConfig))
                 && (!($model instanceof Recharge))
                 && (!($model instanceof Device))
+                && (!($model instanceof Stock))
+                && (!($model instanceof StockInLog))
+                && (!($model instanceof StockOutLog))
                 && (!in_array('driver_id', $whereColumns))
+                && (!Str::contains($sql, "IFNULL(driver_id,0) <> -1"))
             ) {
                 $builder->whereRaw($model->getTable() . '.driver_id' . '=' . $user->id);
             }

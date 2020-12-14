@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,10 +46,18 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::post('/', 'OrderController@store');
         //修改
         Route::put('/{id}', 'OrderController@update');
+        //获取再次取派信息
+        Route::get('/{id}/again-info', 'OrderController@getAgainInfo');
+        //再次取派
+        Route::put('/{id}/again', 'OrderController@again');
+        //终止派送
+        Route::put('/{id}/end', 'OrderController@end');
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
         //订单追踪
         Route::get('/{id}/track','OrderController@track');
+        //批量更新电话日期
+        Route::post('/update-phone-date-list','OrderController@updateByApiList');
     });
 
     //运单管理
@@ -88,7 +95,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
     //物流状态管理
     Route::prefix('order-trail')->group(function () {
         //rest api 放在最后
-        Route::get('/', 'OrderTrailController@index')->name('order-trail.index');
+        Route::get('/{order_no}', 'OrderTrailController@index')->name('order-trail.index');
     });
 
     //订单导入记录管理

@@ -14,7 +14,6 @@ use App\Models\Scope\HasCompanyId;
 use App\Traits\CompanyTrait;
 use App\Traits\CountryTrait;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
 
 class BaseModel extends Model
 {

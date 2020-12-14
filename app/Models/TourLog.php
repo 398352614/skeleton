@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
-
 /**
  * tour_log 表对应的模型,相当于司机的一趟任务
  * Class Tour

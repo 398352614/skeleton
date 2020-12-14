@@ -3,23 +3,28 @@
 namespace App\Traits;
 
 use App\Services\Driver\AdditionalPackageService;
-use App\Services\Driver\LineAreaService;
-use App\Services\Driver\LineRangeService;
-use App\Services\Driver\MerchantLineRangeService;
-use App\Services\Driver\TourDelayService;
 use App\Services\Driver\BatchExceptionService;
 use App\Services\Driver\BatchService;
 use App\Services\Driver\CarService;
 use App\Services\Driver\DeviceService;
+use App\Services\Driver\LineAreaService;
+use App\Services\Driver\LineRangeService;
 use App\Services\Driver\LineService;
 use App\Services\Driver\MaterialService;
+use App\Services\Driver\MerchantLineRangeService;
 use App\Services\Driver\MerchantService;
 use App\Services\Driver\OrderService;
 use App\Services\Driver\PackageService;
 use App\Services\Driver\RechargeService;
 use App\Services\Driver\RechargeStatisticsService;
+use App\Services\Driver\StockInLogService;
+use App\Services\Driver\StockOutLogService;
+use App\Services\Driver\StockService;
+use App\Services\Driver\TourDelayService;
 use App\Services\Driver\TourService;
 use App\Services\Driver\TourTaskService;
+use App\Services\Driver\TrackingOrderMaterialService;
+use App\Services\Driver\TrackingOrderPackageService;
 use App\Services\Driver\TrackingOrderService;
 use App\Services\Driver\WareHouseService;
 use App\Services\OrderNoRuleService;
@@ -35,6 +40,34 @@ Trait DriverServiceTrait
     {
         return self::getInstance(MerchantService::class);
     }
+
+    /**
+     * 库存服务
+     * @return StockService
+     */
+    public function getStockService()
+    {
+        return self::getInstance(StockService::class);
+    }
+
+    /**
+     * 入库日志 服务
+     * @return StockInLogService
+     */
+    public function getStockInLogService()
+    {
+        return self::getInstance(StockInLogService::class);
+    }
+
+    /**
+     * 出库日志 服务
+     * @return StockOutLogService
+     */
+    public function getStockOutLogService()
+    {
+        return self::getInstance(StockOutLogService::class);
+    }
+
 
     /**
      * @return OrderNoRuleService
@@ -105,6 +138,26 @@ Trait DriverServiceTrait
     {
         return self::getInstance(TrackingOrderService::class);
     }
+
+
+    /**
+     * 运单包裹表
+     * @return TrackingOrderPackageService
+     */
+    public function getTrackingOrderPackageService()
+    {
+        return self::getInstance(TrackingOrderPackageService::class);
+    }
+
+    /**
+     * 运单材料表
+     * @return TrackingOrderMaterialService
+     */
+    public function getTrackingOrderMaterialService()
+    {
+        return self::getInstance(TrackingOrderMaterialService::class);
+    }
+
 
     /**
      * 订单 服务

@@ -48,8 +48,7 @@ class Package extends BaseModel
     protected $fillable = [
         'company_id',
         'merchant_id',
-        'tour_no',
-        'batch_no',
+        'tracking_order_no',
         'order_no',
         'execution_date',
         'second_execution_date',
@@ -98,7 +97,7 @@ class Package extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::packageStatusList($this->status);
+        return (empty($this->status)  || ($this->status >= 6)) ? null : ConstTranslateTrait::packageStatusList($this->status);
     }
 
     public function getTypeNameAttribute()

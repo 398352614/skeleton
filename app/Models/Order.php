@@ -49,11 +49,11 @@ class Order extends BaseModel
         'company_id',
         'merchant_id',
         'order_no',
+        'tracking_order_no',
         'execution_date',
         'second_execution_date',
         'out_order_no',
-        'express_first_no',
-        'express_second_no',
+        'out_group_order_no',
         'mask_code',
         'source',
         'list_mode',
@@ -141,7 +141,7 @@ class Order extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::orderStatusList($this->status);
+        return (empty($this->status) || ($this->status >= 6)) ? null : ConstTranslateTrait::orderStatusList($this->status);
     }
 
     public function getOutStatusNameAttribute()

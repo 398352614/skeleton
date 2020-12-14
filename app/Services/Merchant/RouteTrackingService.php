@@ -140,15 +140,6 @@ class RouteTrackingService extends BaseService
     }
 
     /**
-     * 司机服务
-     * @return DriverService
-     */
-    public function getDriverService()
-    {
-        return self::getInstance(DriverService::class);
-    }
-
-    /**
      * 获取所有车辆位置
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      * @throws BusinessLogicException

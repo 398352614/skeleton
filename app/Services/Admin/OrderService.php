@@ -9,7 +9,10 @@
 
 namespace App\Services\Admin;
 
+use App\Events\OrderCancel;
+use App\Events\OrderExecutionDateUpdated;
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\Api\Admin\OrderAgainResource;
 use App\Http\Resources\Api\Admin\OrderInfoResource;
 use App\Http\Resources\Api\Admin\OrderResource;
 use App\Models\Order;
@@ -27,7 +30,6 @@ use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
-use App\Http\Resources\Api\Admin\OrderAgainResource;
 
 class OrderService extends BaseService
 {
@@ -37,8 +39,8 @@ class OrderService extends BaseService
         'type' => ['=', 'type'],
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'order_no,out_order_no,out_user_id' => ['like', 'keyword'],
-        'exception_label' => ['=', 'exception_label'],
+        'out_group_order_no,order_no,out_order_no,out_user_id' => ['like', 'keyword'],
+//        'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
     ];
@@ -130,18 +132,33 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
-        return $list = parent::getPageList();
-//        foreach ($list as &$order) {
-//            $order['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $order['order_no']]);
-//            $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['id', 'type', 'status'], false);
-//            if (!empty($trackingOrder)) {
-//                $order['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
-//                $order['tracking_order_status_name'] = $trackingOrder->type_name . '-' . $trackingOrder->status_name;
-//            } else {
-//                $order['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
-//                $order['tracking_order_status_name'] = __('运单未创建');
-//            }
-//        }
+        if (!empty($this->formData['exception_label']) && $this->formData['exception_label'] == 2) {
+            $cancelTrackingOrderList = $this->getTrackingOrderService()->getList(['status' => BaseConstService::TRACKING_ORDER_STATUS_6], ['*'], false);
+            if (!empty($cancelTrackingOrderList)) {
+                $cancelTrackingOrderList = $cancelTrackingOrderList->pluck('tracking_order_no')->toArray();
+            }
+            $cancelTrackingOrderList[] = '';
+            $this->query->where('status', BaseConstService::ORDER_STATUS_2)->WhereIn('tracking_order_no', $cancelTrackingOrderList);
+        }
+        $list = parent::getPageList();
+        foreach ($list as $k => $v) {
+            $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);
+            $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
+            $list[$k]['tracking_order_status'] = 0;
+            $list[$k]['tracking_order_status_name'] = '';
+            $trackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $v['order_no']], ['id', 'type', 'status'], false, [], ['id' => 'desc']);
+            if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
+                $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
+                $list[$k]['tracking_order_status'] = $trackingOrder[0]['status'];
+            } elseif($list[$k]['status'] !== BaseConstService::ORDER_STATUS_5) {
+                $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
+                $list[$k]['tracking_order_status_name'] = __('运单未创建');
+            }
+            if ($list[$k]['status'] == BaseConstService::ORDER_STATUS_2 && $trackingOrder[0]['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
+                $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
+            }
+        }
+        return $list;
     }
 
     /**
@@ -232,7 +249,7 @@ class OrderService extends BaseService
      */
     public function getAgainInfo($id)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_2], false);
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2], false);
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
         if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder)) {
             throw new BusinessLogicException('当前订单不支持再次派送，请联系管理员');
@@ -246,11 +263,12 @@ class OrderService extends BaseService
 
     /**
      * @param $order
-     * @param TrackingOrder
+     * @params $trackingOrder
      * @return int|null
      */
     private function getTrackingOrderType($order, TrackingOrder $trackingOrder = null)
     {
+        (empty($trackingOrder)) && $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         //1.运单不存在,直接获取运单类型
         if (empty($trackingOrder)) {
             return $this->getTrackingOrderService()->getTypeByOrderType($order['type']);
@@ -286,13 +304,27 @@ class OrderService extends BaseService
      */
     public function again($id, $params)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
-        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
-        $trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder);
-        if ($trackingOrderType != $params['tracking_order_type']) {
-            throw new BusinessLogicException('当前订单不支持再次派送，请刷新后再操作');
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $trackingOrderType = $this->getTrackingOrderType($dbOrder);
+        if (empty($trackingOrderType)) {
+            throw new BusinessLogicException('当前包裹已生成对应运单');
         }
+        $params = array_merge($dbOrder, $params);
         return $this->getTrackingOrderService()->storeAgain($dbOrder, $params, $trackingOrderType);
+    }
+
+    /**
+     * 自动终止派送
+     * @param $cancelTrackingOrderList
+     * @throws BusinessLogicException
+     */
+    public function autoEnd($cancelTrackingOrderList)
+    {
+        $cancelOrderNoList = array_column($cancelTrackingOrderList, 'order_no');
+        $cancelOrderList = $this->filterCancelOrderNoList($cancelOrderNoList, $cancelTrackingOrderList);
+        foreach ($cancelOrderList as $cancelOrder) {
+            $this->end($cancelOrder['id']);
+        }
     }
 
     /**
@@ -302,9 +334,9 @@ class OrderService extends BaseService
      */
     public function end($id)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
-        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['tracking_order_no', 'order_no'], false, ['created_at' => 'desc']);
-        if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
+        if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
             throw new BusinessLogicException('当前订单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
         }
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
@@ -315,8 +347,40 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CLOSED);
+        OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder->toArray(), BaseConstService::ORDER_TRAIL_CLOSED);
+        //取消通知
+        event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
     }
+
+
+    /**
+     * 过滤取派失败订单
+     * @param $cancelOrderNoList
+     * @param $trackingOrderList
+     * @return mixed
+     */
+    private function filterCancelOrderNoList($cancelOrderNoList, $trackingOrderList)
+    {
+        if (empty($cancelOrderNoList)) return [];
+        $cancelOrderList = $this->getOrderService()->getList(['order_no' => ['in', $cancelOrderNoList]], ['id', 'order_no', 'merchant_id'], false)->toArray();
+        $merchantIdList = array_unique(array_column($cancelOrderList, 'merchant_id'));
+        $cancelOrderList = array_create_index($cancelOrderList, 'order_no');
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIdList]], ['id', 'pickup_count', 'pie_count'], false)->toArray();
+        $merchantList = array_create_index($merchantList, 'id');
+        $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
+        foreach ($cancelOrderNoList as $key => $cancelOrderNo) {
+            $type = $trackingOrderList[$cancelOrderNo]['type'];
+            $merchantId = $trackingOrderList[$cancelOrderNo]['merchant_id'];
+            $count = $this->getTrackingOrderService()->count(['driver_id' => ['all', null], 'order_no' => $cancelOrderNo, 'type' => $type, 'status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
+            $times = ($type == BaseConstService::TRACKING_ORDER_TYPE_1) ? $merchantList[$merchantId]['pickup_count'] : $merchantList[$merchantId]['pie_count'];
+            $times = intval($times);
+            if ($times == 0 || ($count < $times)) {
+                unset($cancelOrderList[$cancelOrderNo]);
+            }
+        }
+        return $cancelOrderList;
+    }
+
 
     /**
      * 订单批量新增
@@ -539,6 +603,7 @@ class OrderService extends BaseService
                     ->put('order_no', $params['order_no'])
                     ->put('merchant_id', $params['merchant_id'])
                     ->put('execution_date', $params['execution_date'])
+                    ->put('second_execution_date', $params['second_execution_date'] ?? null)
                     ->put('status', $status)
                     ->put('type', $params['type']);
             })->toArray();
@@ -627,7 +692,7 @@ class OrderService extends BaseService
                 return false;
             }
         }
-        if (!empty($data['material_list'])) {
+        if (!empty($data['package_list'])) {
             $dbPackageList = $this->getPackageService()->getList(['order_no' => $dbInfo['order_no']], ['*'], false);
             if (!empty($dbPackageList)) {
                 $dbPackageList = $dbPackageList->toArray();
@@ -691,23 +756,44 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        //todo 通知第三方
+        $executionDate = !empty($data['execution_date']) ? $data['execution_date'] : $dbOrder['execution_date'];
+        $secondExecutionDate = !empty($data['second_execution_date']) ? $data['second_execution_date'] : $dbOrder['second_execution_date'];
+        $status = !empty($data['status']) ? $data['status'] : $dbOrder['status'];
+        event(new OrderExecutionDateUpdated($dbOrder['order_no'], $dbOrder['out_order_no'] ?? '', $executionDate, $secondExecutionDate, $status, '', ['tour_no' => '', 'line_id' => $trackingOrder['line_id'] ?? '', 'line_name' => $trackingOrder['line_name'] ?? '']));
     }
 
     /**
      * 删除
      * @param $id
+     * @return string
      * @throws BusinessLogicException
      */
     public function destroy($id)
     {
         //获取信息
-        $dbOrder = $this->getInfoOfStatus(['id' => $id], true);
-        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_5]);
+        $dbOrder = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_5]);
+        if ($dbOrder['status'] == BaseConstService::ORDER_STATUS_5) {
+            return 'true';
+        }
+        if ($dbOrder['source'] == BaseConstService::ORDER_SOURCE_3) {
+            throw new BusinessLogicException('第三方订单不允许手动删除');
+        }
+        $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
+        $rowCount = parent::updateById($id, ['tracking_order_no' => '', 'status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
-        $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
+        //材料清除运单信息
+        $rowCount = $this->getMaterialService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+        //包裹清除运单信息
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_5]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败,请重新操作');
+        }
+        return 'true';
     }
 
     /**
@@ -813,24 +899,24 @@ class OrderService extends BaseService
                 $orderList[$k]['material_name'] = [];
                 $orderList[$k]['material_quantity'] = 0;
             }
-            if ($v['type'] == BaseConstService::ORDER_TYPE_1) {
+            if ($v['type'] == BaseConstService::ORDER_TYPE_2) {
                 $orderList[$k]['receiver_post_code'] = $orderList[$k]['place_post_code'];
                 $orderList[$k]['receiver_house_number'] = $orderList[$k]['place_house_number'];
                 $orderList[$k]['receiver_execution_date'] = $orderList[$k]['execution_date'];
                 $orderList[$k]['sender_post_code'] = $orderList[$k]['sender_house_number'] = $orderList[$k]['sender_execution_date'] = '';
-            } elseif ($v['type'] == BaseConstService::ORDER_TYPE_2) {
+            } elseif ($v['type'] == BaseConstService::ORDER_TYPE_1) {
                 $orderList[$k]['sender_post_code'] = $orderList[$k]['place_post_code'];
                 $orderList[$k]['sender_house_number'] = $orderList[$k]['place_house_number'];
                 $orderList[$k]['sender_execution_date'] = $orderList[$k]['execution_date'];
                 $orderList[$k]['receiver_post_code'] = $orderList[$k]['receiver_house_number'] = $orderList[$k]['receiver_execution_date'] = '';
             } elseif ($v['type'] == BaseConstService::ORDER_TYPE_3) {
-                $orderList[$k]['sender_post_code'] = $orderList[$k]['place_post_code'];
-                $orderList[$k]['sender_house_number'] = $orderList[$k]['place_house_number'];
-                $orderList[$k]['sender_execution_date'] = $orderList[$k]['execution_date'];
-
                 $orderList[$k]['receiver_post_code'] = $orderList[$k]['second_place_post_code'];
                 $orderList[$k]['receiver_house_number'] = $orderList[$k]['second_place_house_number'];
                 $orderList[$k]['receiver_execution_date'] = $orderList[$k]['second_execution_date'];
+
+                $orderList[$k]['sender_post_code'] = $orderList[$k]['place_post_code'];
+                $orderList[$k]['sender_house_number'] = $orderList[$k]['place_house_number'];
+                $orderList[$k]['sender_execution_date'] = $orderList[$k]['execution_date'];
             }
         }
         $cellData = [];
@@ -881,11 +967,13 @@ class OrderService extends BaseService
             $order['delivery_count'] = (floatval($order['delivery_amount']) == 0) ? 0 : 1;
             if (empty($trackingOrderList[$orderNo])) {
                 $order['cancel_remark'] = $order['signature'] = $order['line_name'] = $order['driver_name'] = $order['driver_phone'] = $order['car_no'] = '';
-                $order['tracking_order_type'] = $order['tracking_order_status'] = $order['pay_type'] = $order['line_id'] = $order['driver_id'] = $order['car_id'] = null;
+                $order['tracking_order_type'] = $order['tracking_order_status'] = $order['pay_type'] = $order['line_id'] = $order['driver_id'] = $order['car_id'] = $order['tracking_order_type_name'] = null;
                 continue;
             }
             $order['tracking_order_type'] = $trackingOrderList[$orderNo]['type'];
+            $order['tracking_order_type_name'] = $trackingOrderList[$orderNo]['type_name'];
             $order['tracking_order_status'] = $trackingOrderList[$orderNo]['status'];
+            $order['tracking_order_status_name'] = $trackingOrderList[$orderNo]['status_name'];
             $order['cancel_remark'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['cancel_remark'] ?? '';
             $order['signature'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['signature'] ?? '';
             $order['pay_type'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['pay_type'] ?? null;

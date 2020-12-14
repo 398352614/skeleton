@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterPackageDateTable extends Migration
+class AlterAddIndexTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,7 @@ class AlterPackageDateTable extends Migration
      */
     public function up()
     {
-        Schema::table('package', function (Blueprint $table) {
-            $table->date('second_execution_date')->default(null)->nullable()->after('execution_date')->comment('第二日期');
-        });
+        //
     }
 
     /**
@@ -26,7 +24,11 @@ class AlterPackageDateTable extends Migration
     public function down()
     {
         Schema::table('package', function (Blueprint $table) {
-            $table->dropColumn('second_execution_date');
+            $table->index('express_first_no');
+            $table->index('status');
+        });
+        Schema::table('order_trail', function (Blueprint $table) {
+            $table->index('merchant_id');
         });
     }
 }

@@ -107,13 +107,7 @@ class OrderValidate extends BaseValidate
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
         'again' => [
-            'tracking_order_type', 'execution_date',
-            //发货人信息
-            'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
-            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
-            //收货人信息
-            'place_fullname', 'place_phone', 'place_post_code', 'place_house_number',
-            'place_city', 'place_street', 'place_address',
+            'execution_date',
         ],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],

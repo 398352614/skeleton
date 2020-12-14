@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class BaseService
 {
@@ -207,14 +205,14 @@ class BaseService
         if (!empty($orderFields)) {
             $keyArr = array_keys($orderFields);
             foreach ($keyArr as $key) {
-                $this->query->orderBy($key, $orderFields[$key]);
+                $query->orderBy($key, $orderFields[$key]);
             }
         }
         $data = $query->first($selectFields);
+        unset($query);
         if (empty($data)) {
             return null;
         }
-        unset($query);
         return $this->locked()->getInfo($where, $selectFields, $isResource, $orderFields);
     }
 
@@ -256,6 +254,10 @@ class BaseService
 
     public function insertAll($data)
     {
+        $fields = $this->model->getFillable();
+        foreach ($data as $key => $item) {
+            $data[$key] = Arr::only($item, $fields);
+        }
         return $this->model->insertAll($data);
     }
 

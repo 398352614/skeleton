@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\App;
  * @method static trackingOrderStatusList($args = null)
  * @method static orderStatusList($args = null)
  * @method static packageStatusList($args = null)
+ * @method static warehousePackageTypeList($args = null)
  * @method static orderExceptionLabelList($args = null)
  * @method static orderNatureList($args = null)
  * @method static batchPayTypeList($args = null)
@@ -65,6 +66,7 @@ use Illuminate\Support\Facades\App;
  * @method static languageList($args = null)
  * @method static merchantAdditionalStatusList($args = null)
  * @method static tourDelayTypeList($args = null)
+ * @method static trackStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -164,6 +166,12 @@ trait ConstTranslateTrait
         BaseConstService::PACKAGE_STATUS_3 => '已完成',
         BaseConstService::PACKAGE_STATUS_4 => '取消取派',
         BaseConstService::PACKAGE_STATUS_5 => '回收站',
+    ];
+
+    //仓库包裹类型1-入库2-出库
+    public static $warehousePackageTypeList = [
+        BaseConstService::WAREHOUSE_PACKAGE_TYPE_1,
+        BaseConstService::WAREHOUSE_PACKAGE_TYPE_2,
     ];
 
     //订单异常标签1-正常2-异常
@@ -412,6 +420,11 @@ trait ConstTranslateTrait
         BaseConstService::TOUR_DELAY_TYPE_4 => '其他'
     ];
 
+    public static $trackStatusList = [
+        BaseConstService::TRACK_STATUS_1 => '取件中',
+        BaseConstService::TRACK_STATUS_2 => '取件成功，等待派件',
+        BaseConstService::TRACK_STATUS_3 => '取件成功，派件中'
+    ];
 
     /**
      * 格式化常量列表

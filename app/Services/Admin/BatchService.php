@@ -3,8 +3,8 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\BatchResource;
 use App\Http\Resources\Api\Admin\BatchInfoResource;
+use App\Http\Resources\Api\Admin\BatchResource;
 use App\Models\Batch;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
@@ -38,25 +38,6 @@ class BatchService extends BaseService
     public function __construct(Batch $batch)
     {
         parent::__construct($batch, BatchResource::class, BatchInfoResource::class);
-    }
-
-
-    /**
-     * 顺带包裹 服务
-     * @return AdditionalPackageService
-     */
-    public function getAdditionalPackageService()
-    {
-        return self::getInstance(AdditionalPackageService::class);
-    }
-
-    /**
-     * 线路基础 服务
-     * @return BaseLineService
-     */
-    public function getBaseLineService()
-    {
-        return self::getInstance(BaseLineService::class);
     }
 
     public function getPageList()
@@ -268,9 +249,9 @@ class BatchService extends BaseService
         //订单列表
         $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
         //获取包裹列表
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
+        $packageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         //获取材料列表
-        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['*'], false)->toArray();
+        $materialList = $this->getTrackingOrderMaterialService()->getList(['batch_no' => $info['batch_no']], ['*'], false)->toArray();
         //数据组装
         foreach ($orderList as $key => &$order) {
             $order['package_list'] = array_values(collect($packageList)->where('order_no', $order['order_no'])->all());
@@ -367,6 +348,13 @@ class BatchService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
+        //运单包裹取消取派
+        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取消取派失败，请重新操作');
+        }
+        //自动自动终止派送
+        $this->getOrderService()->autoEnd($trackingOrderList);
         //若存在取件线路编号,则移除站点
         if (!empty($info['tour_no'])) {
             $this->getTourService()->removeBatch($info);
@@ -375,11 +363,6 @@ class BatchService extends BaseService
 
         TrackingOrderTrailService::storeAllByTrackingOrderList($trackingOrderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
         OrderTrailService::storeAllByOrderList($trackingOrderList, BaseConstService::ORDER_TRAIL_FAIL);
-
-        //取消通知
-        foreach ($trackingOrderList as $trackingOrder) {
-            //event(new OrderCancel($trackingOrder['order_no'], $trackingOrder['out_order_no']));
-        }
     }
 
     /**
@@ -461,7 +444,7 @@ class BatchService extends BaseService
         !empty($info['tour_no']) && $this->getTourService()->reCountAmountByNo($info['tour_no']);
         TrackingOrderTrailService::storeByBatch($batch, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR);
         if ($date != $tour['execution_date']) {
-            OrderTrailService::storeByBatch($batch, BaseConstService::ORDER_TRAIL_UPDATE, $tour);
+            OrderTrailService::storeByBatch($batch, BaseConstService::ORDER_TRAIL_UPDATE, $trackingOrderList[0]);
         }
     }
 
@@ -487,7 +470,7 @@ class BatchService extends BaseService
             $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
             $this->assignBatchToTour($info, $params);
             if ($info['execution_date'] != $tour['execution_date']) {
-                OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_UPDATE, $tour);
+                OrderTrailService::storeByBatch($info, BaseConstService::ORDER_TRAIL_UPDATE, $info);
             }
         }
         return 'true';
@@ -571,6 +554,16 @@ class BatchService extends BaseService
         }
         //修改运单
         $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        //修改运单材料
+        $rowCount = $this->getTrackingOrderPackageService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        //修改运单包裹
+        $rowCount = $this->getTrackingOrderMaterialService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }

@@ -10,10 +10,6 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\LineRange;
-use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
-use Carbon\Carbon;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class LineRangeService extends BaseService

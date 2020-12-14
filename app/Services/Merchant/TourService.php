@@ -9,15 +9,15 @@ use App\Http\Resources\Api\Merchant\TourResource;
 use App\Models\Batch;
 use App\Models\Tour;
 use App\Models\TourLog;
-use App\Services\BaseConstService;
-use App\Services\BaseServices\XLDirectionService;
 use App\Services\ApiServices\GoogleApiService;
 use App\Services\ApiServices\TourOptimizationService;
+use App\Services\BaseConstService;
+use App\Services\BaseServices\XLDirectionService;
 use App\Traits\ExportTrait;
 use App\Traits\LocationTrait;
+use App\Traits\TourRedisLockTrait;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use App\Traits\TourRedisLockTrait;
 
 class TourService extends BaseService
 {
@@ -197,7 +197,6 @@ class TourService extends BaseService
     }
 
 
-
     /**
      * 获取取件线路信息
      * @param $batch
@@ -215,10 +214,10 @@ class TourService extends BaseService
         }
         //若不存在取件线路或者超过最大订单量,则新建取件线路
         if ((intval($batch['expect_pickup_quantity']) > 0) && ($isAssign == false)) {
-            $this->query->where(DB::raw('expect_pickup_quantity+' . intval($batch['expect_pickup_quantity'])), '<=', $line['pickup_max_count']);
+            $this->query->where(DB::raw('expect_pickup_quantity+' . 1), '<=', $line['pickup_max_count']);
         }
         if ((intval($batch['expect_pie_quantity']) > 0) && ($isAssign == false)) {
-            $this->query->where(DB::raw('expect_pie_quantity+' . intval($batch['expect_pie_quantity'])), '<=', $line['pie_max_count']);
+            $this->query->where(DB::raw('expect_pie_quantity+' . 1), '<=', $line['pie_max_count']);
         }
         $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
         isset($batch['merchant_id']) && $where['merchant_id'] = $batch['merchant_id'];

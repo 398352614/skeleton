@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Models\Material;
 use App\Models\Package;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;

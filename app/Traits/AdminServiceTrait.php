@@ -11,7 +11,9 @@ use App\Services\Admin\BatchExceptionService;
 use App\Services\Admin\BatchService;
 use App\Services\Admin\CarBrandService;
 use App\Services\Admin\CarService;
+use App\Services\Admin\CompanyService;
 use App\Services\Admin\DriverService;
+use App\Services\Admin\EmployeeService;
 use App\Services\Admin\FeeService;
 use App\Services\Admin\LineAreaService;
 use App\Services\Admin\LineRangeService;
@@ -27,8 +29,13 @@ use App\Services\Admin\PackageService;
 use App\Services\Admin\PrintTemplateService;
 use App\Services\Admin\RechargeService;
 use App\Services\Admin\RechargeStatisticsService;
+use App\Services\Admin\StockInLogService;
+use App\Services\Admin\StockOutLogService;
+use App\Services\Admin\StockService;
 use App\Services\Admin\TourDriverService;
 use App\Services\Admin\TourService;
+use App\Services\Admin\TrackingOrderMaterialService;
+use App\Services\Admin\TrackingOrderPackageService;
 use App\Services\Admin\TrackingOrderService;
 use App\Services\Admin\TransportPriceService;
 use App\Services\Admin\UploadService;
@@ -39,6 +46,11 @@ trait AdminServiceTrait
 {
     use FactoryInstanceTrait;
 
+    public function getCompanyService()
+    {
+        return self::getInstance(CompanyService::class);
+    }
+
     /**
      * 商户服务
      * @return MerchantService
@@ -46,6 +58,33 @@ trait AdminServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * 库存服务
+     * @return StockService
+     */
+    public function getStockService()
+    {
+        return self::getInstance(StockService::class);
+    }
+
+    /**
+     * 入库日志 服务
+     * @return StockInLogService
+     */
+    public function getStockInLogService()
+    {
+        return self::getInstance(StockInLogService::class);
+    }
+
+    /**
+     * 入库日志 服务
+     * @return StockOutLogService
+     */
+    public function getStockOutLogService()
+    {
+        return self::getInstance(StockOutLogService::class);
     }
 
     /**
@@ -136,6 +175,24 @@ trait AdminServiceTrait
     public function getTrackingOrderService()
     {
         return self::getInstance(TrackingOrderService::class);
+    }
+
+    /**
+     * 运单包裹表
+     * @return TrackingOrderPackageService
+     */
+    public function getTrackingOrderPackageService()
+    {
+        return self::getInstance(TrackingOrderPackageService::class);
+    }
+
+    /**
+     * 运单材料表
+     * @return TrackingOrderMaterialService
+     */
+    public function getTrackingOrderMaterialService()
+    {
+        return self::getInstance(TrackingOrderMaterialService::class);
     }
 
     /**
@@ -312,6 +369,15 @@ trait AdminServiceTrait
     public function getTourDriverService()
     {
         return self::getInstance(TourDriverService::class);
+    }
+
+    /**
+     * 员工 服务
+     * @return EmployeeService
+     */
+    public function getEmployeeService()
+    {
+        return self::getInstance(EmployeeService::class);
     }
 
     /**

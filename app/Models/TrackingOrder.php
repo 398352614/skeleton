@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\SearchTrait;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\App;
 
 /**
  * 运单表
@@ -57,6 +56,8 @@ class TrackingOrder extends BaseModel
         'tracking_order_no',
         'batch_no',
         'tour_no',
+        'line_id',
+        'line_name',
         'type',
         'execution_date',
         'warehouse_fullname',

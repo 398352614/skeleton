@@ -35,6 +35,7 @@ class OrderResource extends JsonResource
             'execution_date' => $this->execution_date,
             'second_execution_date' => $this->second_execution_date,
             'out_order_no' => $this->out_order_no,
+            'out_group_order_no' => $this->out_group_order_no,
             'exception_label' => $this->exception_label,
             'exception_label_name' => $this->exception_label_name,
             'place_post_code' => $this->place_post_code,
@@ -44,7 +45,9 @@ class OrderResource extends JsonResource
             'replace_amount' => $this->replace_amount,
             'sticker_amount' => $this->sticker_amount,
             'settlement_amount' => $this->settlement_amount,
-
+            'tracking_order_status'=>$this->tracking_order_status,
+            'tracking_order_status_name'=>$this->tracking_order_status_name,
+            'tracking_order_count'=>$this->tracking_order_count,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];

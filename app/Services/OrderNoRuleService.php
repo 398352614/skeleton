@@ -241,13 +241,14 @@ class OrderNoRuleService extends BaseService
 
     /**
      * 创建运单编号
-     * @param $type
+     * @param $companyId
      * @return string
      * @throws BusinessLogicException
      */
-    public function createTrackingOrderNo()
+    public function createTrackingOrderNo($companyId = null)
     {
-        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::TRACKING_ORDER_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
+        empty($companyId) && $companyId = auth()->user()->company_id;
+        $info = parent::getInfoLock(['company_id' => $companyId, 'type' => BaseConstService::TRACKING_ORDER_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('运单单号规则不存在或已被禁用，请先联系后台管理员');
         }

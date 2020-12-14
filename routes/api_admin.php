@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -101,17 +100,15 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //批量删除
         Route::delete('/list', 'OrderController@destroyAll');
         //批量打印
-        Route::get('/export-pdf', 'OrderController@orderPrintAll');
+        Route::get('/pdf', 'OrderController@orderPrintAll');
         //订单导出表格
-        Route::post('/order-excel', 'OrderController@orderExport');
+        Route::get('/excel', 'OrderController@orderExport');
         //同步订单状态列表
         Route::post('/synchronize-status-list', 'OrderController@synchronizeStatusList');
         //订单第三方对接日志
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
         //无效化已完成订单（用以新增同号订单）
         Route::get('/{id}/neutralize', 'OrderController@neutralize');
-        //获取可加单取件线路
-        Route::get('/get-tour', 'TourController@getAddOrderPageList');
     });
 
     //订单轨迹管理
@@ -131,7 +128,28 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/', 'PackageController@index');
         //获取详情
         Route::get('/{id}', 'PackageController@show');
+        //填充包裹信息
+        Route::put('fill-package', 'PackageController@fillWeightInfo');
     });
+
+    //库存管理
+    Route::prefix('stock')->group(function () {
+        //列表查询
+        Route::get('/', 'StockController@index');
+    });
+
+    //入库日志管理
+    Route::prefix('stock-in-log')->group(function () {
+        //列表查询
+        Route::get('/', 'StockInLogController@index');
+    });
+
+    //出库日志管理
+    Route::prefix('stock-out-log')->group(function () {
+        //列表查询
+        Route::get('/', 'StockOutLogController@index');
+    });
+
 
     Route::prefix('material')->group(function () {
         //列表查询
@@ -157,6 +175,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/get-line', 'TrackingOrderController@getLineList');
         //列表查询
         Route::get('/', 'TrackingOrderController@index');
+        //获取详情
+        Route::get('/{id}', 'TrackingOrderController@show');
         //获取可分配路线日期
         Route::get('/{id}/get-date', 'TrackingOrderController@getAbleDateList');
         //获取可分配的站点列表
@@ -168,13 +188,15 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //批量运单从站点移除
         Route::delete('/remove-batch', 'TrackingOrderController@removeListFromBatch');
         //批量运单分配至指定取件线路
-        Route::put('/assign-list', 'TrackingOrderController@assignListTour');
+        Route::put('/assign-tour', 'TrackingOrderController@assignListTour');
         //批量打印
         Route::get('/print', 'TrackingOrderController@orderPrintAll');
         //运单导出表格
         Route::get('/order-excel', 'TrackingOrderController@trackingOrderExport');
         //运单第三方对接日志
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
+        //获取可加单取件线路
+        Route::get('/get-tour', 'TourController@getAddOrderPageList');
     });
 
     //物流状态管理
@@ -234,7 +256,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/all-track', 'RouteTrackingController@index')->name('car.track-index');
         // 导出里程
         Route::get('/{id}/distance', 'CarController@distanceExport')->name('car.distance');
-        // 导出里程
+        // 导出信息
         Route::get('/{id}/info', 'CarController@infoExport')->name('car.info');
     });
 
@@ -333,7 +355,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{tour_no}', 'TourDriverController@getListByTourNo');
     });
 
-    //取件线路-司机
+    //延迟管理
     Route::prefix('delay')->group(function () {
         Route::get('/init', 'TourDelayController@init');
         Route::get('/', 'TourDelayController@index');
@@ -503,7 +525,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取可上传的文件目录列表
         Route::get('file-dir', 'UploadController@getFileDirList');
         //下载
-        Route::post('file-download','UploadController@fileDownload');
+        Route::post('file-download', 'UploadController@fileDownload');
 
         Route::post('file', 'UploadController@fileUpload');
     });

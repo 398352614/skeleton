@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Api\Merchant;
 
 use App\Services\GisService;
-use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class BatchInfoResource extends JsonResource
@@ -31,17 +30,17 @@ class BatchInfoResource extends JsonResource
             'actual_pickup_quantity' => $this->actual_pickup_quantity,
             'expect_pie_quantity' => $this->expect_pie_quantity,
             'actual_pie_quantity' => $this->actual_pie_quantity,
-            'receiver_fullname' => $this->receiver_fullname,
-            'receiver_phone' => $this->receiver_phone,
-            'receiver_country' => $this->receiver_country,
-            'receiver_country_name' => $this->receiver_country_name,
-            'receiver_post_code' => $this->receiver_post_code,
-            'receiver_house_number' => $this->receiver_house_number,
-            'receiver_city' => $this->receiver_city,
-            'receiver_street' => $this->receiver_street,
-            'receiver_address' => $this->receiver_address,
-            'receiver_lon' => $this->receiver_lon,
-            'receiver_lat' => $this->receiver_lat,
+            'place_fullname' => $this->place_fullname,
+            'place_phone' => $this->place_phone,
+            'place_country' => $this->place_country,
+            'place_country_name' => $this->place_country_name,
+            'place_post_code' => $this->place_post_code,
+            'place_house_number' => $this->place_house_number,
+            'place_city' => $this->place_city,
+            'place_street' => $this->place_street,
+            'place_address' => $this->place_address,
+            'place_lon' => $this->place_lon,
+            'place_lat' => $this->place_lat,
             'expect_arrive_time' => $this->expect_arrive_time,
             'actual_arrive_time' => $this->actual_arrive_time,
             'sign_time' => $this->sign_time,
@@ -61,6 +60,6 @@ class BatchInfoResource extends JsonResource
             'exception_label_name' => $this->exception_label_name,
             'pay_type_name' => $this->pay_type_name,
             'orders' => OrderResource::collection($this->orders),
-        ], GisService::corTransfer(['receiver_lon'=>$this->receiver_lon,'receiver_lat'=>$this->receiver_lat]));
+        ], GisService::corTransfer(['place_lon'=>$this->place_lon,'place_lat'=>$this->place_lat]));
     }
 }

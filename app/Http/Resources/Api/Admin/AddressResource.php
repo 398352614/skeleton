@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Api\Admin;
 
-use App\Models\Merchant;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AddressResource extends JsonResource
