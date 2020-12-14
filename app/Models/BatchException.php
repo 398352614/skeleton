@@ -50,7 +50,7 @@ class BatchException extends BaseModel
         'company_id',
         'batch_exception_no',
         'batch_no',
-        'receiver',
+        'fullname',
         'status',
         'source',
         'stage',

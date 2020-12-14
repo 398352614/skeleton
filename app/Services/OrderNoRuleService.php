@@ -238,4 +238,31 @@ class OrderNoRuleService extends BaseService
         return $orderNo;
     }
 
+
+    /**
+     * 创建运单编号
+     * @param $companyId
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function createTrackingOrderNo($companyId = null)
+    {
+        empty($companyId) && $companyId = auth()->user()->company_id;
+        $info = parent::getInfoLock(['company_id' => $companyId, 'type' => BaseConstService::TRACKING_ORDER_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('运单单号规则不存在或已被禁用，请先联系后台管理员');
+        }
+        $info = $info->toArray();
+        $trackingOrderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
+        //修改索引
+        $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
+        $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
+        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'start_string_index' => $startStringIndex]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('单号生成失败，请重新操作');
+        }
+        return $trackingOrderNo;
+    }
+
+
 }

@@ -11,14 +11,11 @@ use App\Http\Controllers\Api\Admin\RegisterController;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\Driver;
-use App\Models\Employee;
 use App\Services\BaseConstService;
 use App\Services\FeeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use RongCloud\RongCloud;
 
 class AuthController extends Controller
 {
@@ -29,8 +26,6 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        //$this->validateLogin($request);
-
         $credentials = [
             $this->username() => $request['username'],
             'password' => $request['password'],
@@ -43,14 +38,11 @@ class AuthController extends Controller
         if (!$token = $this->guard()->attempt($credentials)) {
             throw new BusinessLogicException('用户名或密码错误！');
         }
-
-        /*if (auth('admin')->user()->is_locked == 1) {
-            auth('admin')->logout();
-
-            throw new BusinessLogicException('账户已被锁定，暂时无法登陆');
-        }*/
         $params['messager_token'] = auth('driver')->user()->messager;
 
+        if (empty($params['messager_token'])) {
+            $params['messager_token'] = '';
+        }
         $params['token'] = $token;
         return $this->respondWithToken($params);
     }
@@ -85,6 +77,9 @@ class AuthController extends Controller
     {
         $token = auth('driver')->refresh();
         $messageToken = auth('driver')->user()->messager;
+        if (empty($messageToken)) {
+            $messageToken = '';
+        }
         return $this->respondWithToken(['token' => $token, 'messager_token' => $messageToken]);
     }
 
@@ -183,12 +178,6 @@ class AuthController extends Controller
      */
     public function resetPassword(Request $request)
     {
-//        $data = $request->validate([
-//            'new_password' => 'required|string|between:8,20',
-//            'confirm_new_password' =>'required|string|same:new_password',
-//            'email' => 'required|email',
-//            'code'  => 'required|string|digits_between:6,6'
-//        ]);
         $data = $request->all();
 
         if ($data['code'] !== RegisterController::getVerifyCode($data['email'], 'RESET')) {
@@ -221,9 +210,6 @@ class AuthController extends Controller
      */
     public function applyOfReset(Request $request)
     {
-//        $request->validate([
-//            'email' => 'required|email',
-//        ]);
         if (empty(Driver::query()->where('email', $request['email'])->first())) {
             throw new BusinessLogicException('用户不存在，请检查用户名');
         }
@@ -240,11 +226,6 @@ class AuthController extends Controller
      */
     public function updatePassword(Request $request)
     {
-//        $data = $request->validate([
-//            'origin_password' => 'required|string|between:8,20',
-//            'new_password' => 'required|string|between:8,20|different:origin_password',
-//            'new_confirm_password' => 'required|same:new_password',
-//        ]);
         $data = $request->all();
 
         /** @var Driver $driver */

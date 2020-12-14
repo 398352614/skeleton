@@ -10,12 +10,9 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\BusinessLogicException;
-use App\Traits\AddressTemplateTrait;
-use App\Traits\CompanyTrait;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Validate\BaseValidate;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class Validate
@@ -84,7 +81,7 @@ class Validate
 //        if (in_array($method, ['store', 'update'])) {
 //            $validateName = get_class($this->validate);
 //            $type = strtolower(str_replace('Validate', '', substr($validateName, (strrpos($validateName, '\\') + 1))));
-//            if (in_array($type, ['order', 'receiver', 'sender', 'warehouse'])) {
+//            if (in_array($type, ['order', 'place', 'second_place', 'warehouse'])) {
 //                $addressRules = AddressTemplateTrait::getFormatAddressTemplate($type);
 //                $rules = array_merge($rules, $addressRules);
 //            }

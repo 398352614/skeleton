@@ -2,17 +2,19 @@
 
 namespace App\Exports;
 
-use App\Services\CommonService;
 use App\Traits\FactoryInstanceTrait;
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\WithEvents;     // 自动注册事件监听器
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Maatwebsite\Excel\Concerns\WithStrictNullComparison;    // 导出 0 原样显示，不为 null
-use Maatwebsite\Excel\Concerns\WithTitle;    // 设置工作䈬名称
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
-use Maatwebsite\Excel\Facades\Excel;    // 在工作表流程结束时会引发事件
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
+
+// 自动注册事件监听器
+// 导出 0 原样显示，不为 null
+// 设置工作䈬名称
+// 在工作表流程结束时会引发事件
 
 class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComparison, WithHeadings
 {
@@ -277,7 +279,58 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                                         $event->sheet->getDelegate()->getColumnDimensionByColumn($i)->setWidth('15');
                                     }
                                 }*/
-            },
+                if ($this->type == 'trackingOrderOut') {
+                    $column = [
+                        'A' => 15,
+                        'B' => 10,
+                        'C' => 15,
+                        'D' => 10,
+                        'E' => 10,
+                        'F' => 10,
+                        'G' => 15,
+                        'H' => 10,
+                        'I' => 10,
+                        'J' => 15,
+                        'K' => 10,
+                        'L' => 20,
+                        'M' => 15,
+                        'N' => 10,
+                        'O' => 20
+                    ];
+                    foreach ($column as $k => $v) {
+                        $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
+                    }
+                }
+                if ($this->type == 'orderOut') {
+                    $event->sheet->getDelegate()->getStyle('R2:T200')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
+                    $column = [
+                        'A' => 15,
+                        'B' => 10,
+                        'C' => 10,
+                        'D' => 15,
+                        'E' => 10,
+                        'F' => 10,
+                        'G' => 15,
+                        'H' => 10,
+                        'I' => 5,
+                        'J' => 10,
+                        'K' => 10,
+                        'L' => 5,
+                        'M' => 10,
+                        'N' => 15,
+                        'O' => 5,
+                        'P' => 15,
+                        'Q' => 5,
+                        'R' => 10,
+                        'S' => 10,
+                        'T' => 10,
+                        'U' => 20,
+                    ];
+                    foreach ($column as $k => $v) {
+                        $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
+                    }
+                }
+            }
         ];
     }
 }

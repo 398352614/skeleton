@@ -8,15 +8,10 @@
 
 namespace App\Services\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
-use App\Exports\BatchListExport;
-use App\Models\Driver;
-use App\Models\Employee;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**

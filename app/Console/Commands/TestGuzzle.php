@@ -42,7 +42,7 @@ class TestGuzzle extends Command
         // $url = 'https://dev-distancematrix.nle-tech.com';
         // $url = 'https://dev-distancematrix.nle-tech.com/api/update-line?api_key=nletech&timestamp=1584347717&sign=a02822e91d08baba93f08e8cb63ae560a226e6b98c5a75b56d125a23d18c9e0e';
         // $url = 'https://www.baidu.com';
-
+        // https://dev-tms.nle-tech.com/api/test/push-test
         $curl = new CurlClient();
         $params = json_decode('
         {
@@ -158,7 +158,5 @@ class TestGuzzle extends Command
     }
 }', true);
         $res = $curl->post('https://www.myeushop.com/api/tms/subscription', $params, 2);
-
-        dd($res);
     }
 }

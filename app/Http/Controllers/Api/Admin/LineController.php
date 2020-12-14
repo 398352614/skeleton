@@ -84,15 +84,6 @@ class LineController extends BaseController
     }
 
     /**
-     * 邮编-导入
-     * @return mixed
-     */
-    public function postcodeImport()
-    {
-        return $this->service->postcodeImport($this->data);
-    }
-
-    /**
      * 区域-列表查询
      * @return mixed
      */

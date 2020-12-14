@@ -8,7 +8,6 @@
 
 namespace App\Services\ApiServices;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
 use App\Models\Tour;
@@ -16,10 +15,7 @@ use App\Services\Admin\ApiTimesService;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
 use App\Traits\FactoryInstanceTrait;
-use function GuzzleHttp\Psr7\build_query;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class TenCentApiService
 {
@@ -76,7 +72,7 @@ class TenCentApiService
         foreach ($orderBatchs as $key => $batch) {
             $batchs[] = [
                 'batch_no' => $batch->batch_no,
-                'location' => implode(',', [$batch->receiver_lat, $batch->receiver_lon])
+                'location' => implode(',', [$batch->place_lat, $batch->place_lon])
             ];
         }
         try {
@@ -132,7 +128,7 @@ class TenCentApiService
     {
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
         $orderBatchs = $orderBatchs->keyBy('batch_no')->map(function ($batch) {
-            return collect(['receiver_lat' => $batch->receiver_lat, 'receiver_lon' => $batch->receiver_lon]);
+            return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon]);
         })->toArray();
         if (empty($driverLocation)) {
             $driverLocation = ['latitude' => $tour->warehouse_lat, 'longitude' => $tour->warehouse_lon];

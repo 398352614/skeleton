@@ -8,14 +8,11 @@
 
 namespace App\Services\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\OrderImportInfoResource;
 use App\Http\Resources\Api\Admin\OrderImportResource;
 use App\Models\OrderImportLog;
-use App\Services\Admin\BaseService;
 use App\Traits\ExportTrait;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 
 class OrderImportService extends BaseService
@@ -29,11 +26,11 @@ class OrderImportService extends BaseService
 
     public static $headings = [
         'type_name',
-        'receiver_fullname',
-        'receiver_phone',
-        'receiver_post_code',
-        'receiver_house_number',
-        'receiver_address',
+        'place_fullname',
+        'place_phone',
+        'place_post_code',
+        'place_house_number',
+        'place_address',
         'execution_date',
         'settlement_type_name',
         'settlement_amount',

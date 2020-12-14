@@ -8,12 +8,8 @@
 
 namespace App\Services\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Models\CompanyConfig;
-use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
-use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Facades\Artisan;
 
 class CompanyConfigService extends BaseService
@@ -45,7 +41,6 @@ class CompanyConfigService extends BaseService
             'line_rule' => $params['line_rule'],
             'show_type' => $params['show_type'] ?? 1,
             'address_template_id' => $params['address_template_id'],
-            'show_type' => $params['show_type'],
             'weight_unit' => $params['weight_unit'],
             'currency_unit' => $params['currency_unit'],
             'volume_unit' => $params['volume_unit'],

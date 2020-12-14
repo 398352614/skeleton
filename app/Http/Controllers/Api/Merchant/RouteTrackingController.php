@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers\Api\Merchant;
 
-use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Models\RouteTracking;
-use App\Models\Tour;
 use App\Services\Merchant\RouteTrackingService;
-use App\Services\BaseConstService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Psy\Formatter\Formatter;
+
 
 class RouteTrackingController extends BaseController
 {
@@ -43,7 +38,8 @@ class RouteTrackingController extends BaseController
         return $this->service->show();
     }
 
-    public function index(){
+    public function index()
+    {
         return $this->service->index();
     }
 }

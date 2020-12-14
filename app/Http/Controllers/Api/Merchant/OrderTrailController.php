@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Services\OrderTrailService;
-use Illuminate\Http\Request;
+use App\Services\TrackingOrderTrailService;
 
+/**
+ * Class OrderTrailController
+ * @package App\Http\Controllers\Api\Merchant
+ * @property OrderTrailService $service
+ */
 class OrderTrailController extends BaseController
 {
     /**
-     * @var OrderTrailService
+     * @var TrackingOrderTrailService
      */
     public $service;
 
@@ -35,8 +39,8 @@ class OrderTrailController extends BaseController
      *  "data":{}
      * }
      */
-    public function index()
+    public function index($orderNo)
     {
-        return $this->service->getNoPageList();
+        return $this->service->index($orderNo);
     }
 }

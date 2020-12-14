@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,5 +34,6 @@ Route::namespace('Api')->group(function () {
 
         Route::get('/letter', 'TestController@incrementLetter');
         Route::get('/getPath', 'TestController@getPath');
+        Route::post('/push-test', 'TestController@testPush');         //自动优化线路
     });
 });

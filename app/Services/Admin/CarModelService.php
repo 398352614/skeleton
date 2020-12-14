@@ -3,16 +3,9 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\CarBrandResource;
 use App\Http\Resources\Api\Admin\CarModelResource;
-use App\Http\Resources\Api\Admin\CarResource;
-use App\Models\Car;
-use App\Models\CarBrand;
 use App\Models\CarModel;
-use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
+
 
 class CarModelService extends BaseService
 {
@@ -56,25 +49,5 @@ class CarModelService extends BaseService
         if (empty($brand)) {
             throw new BusinessLogicException('车辆品牌不存在');
         }
-    }
-
-    public function getAll($id){
-    if (Cache::has('model'.$id)) {
-        $resource = Cache::get('brand');
-    } else {
-            $client = new \GuzzleHttp\Client();
-            $url = 'http://tool.bitefu.net/car/?type=series&pagesize=300&brand_id=' . $id;
-            $res = $client->request('GET', $url, [
-                    'http_errors' => false
-                ]
-            );
-            $info = (string)$res->getBody();
-            $info = json_decode($info, TRUE)['info'];
-            $resource = array_map(function ($info) {
-                return Arr::only($info, ['id', 'name']);
-            }, $info);
-            Cache::put('model'.$id, $resource);
-        }
-    return $resource;
     }
 }

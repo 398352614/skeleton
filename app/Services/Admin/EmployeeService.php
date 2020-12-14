@@ -3,15 +3,13 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\CarResource;
 use App\Http\Resources\Api\Admin\EmployeeListResource;
 use App\Models\Employee;
-use App\Services\Admin\BaseService;
+use App\Traits\HasLoginControlTrait;
 
 class EmployeeService extends BaseService
 {
-    use HasEnabledSet,
-        HasLoginControl;
+    use HasLoginControlTrait;
 
     public $filterRules = [
         'email' => ['like', 'email'],

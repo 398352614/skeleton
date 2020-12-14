@@ -8,7 +8,6 @@
 
 namespace App\Services;
 
-
 use EasyWeChat\Kernel\Messages\News;
 use EasyWeChat\Kernel\Messages\NewsItem;
 

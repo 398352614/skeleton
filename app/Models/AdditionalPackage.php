@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -59,16 +58,16 @@ class AdditionalPackage extends BaseModel
         'sticker_no',
         'sticker_amount',
         'delivery_amount',
-        'receiver_fullname',
-        'receiver_phone',
-        'receiver_country',
-        'receiver_post_code',
-        'receiver_house_number',
-        'receiver_city',
-        'receiver_street',
-        'receiver_address',
-        'receiver_lon',
-        'receiver_lat',
+        'place_fullname',
+        'place_phone',
+        'place_country',
+        'place_post_code',
+        'place_house_number',
+        'place_city',
+        'place_street',
+        'place_address',
+        'place_lon',
+        'place_lat',
         'created_at',
         'updated_at',
     ];

@@ -49,12 +49,11 @@ class Order extends BaseModel
         'company_id',
         'merchant_id',
         'order_no',
+        'tracking_order_no',
         'execution_date',
-        'batch_no',
-        'tour_no',
+        'second_execution_date',
         'out_order_no',
-        'express_first_no',
-        'express_second_no',
+        'out_group_order_no',
         'mask_code',
         'source',
         'list_mode',
@@ -70,33 +69,29 @@ class Order extends BaseModel
         'cancel_type',
         'cancel_remark',
         'cancel_picture',
-        'sender_fullname',
-        'sender_phone',
-        'sender_country',
-        'sender_post_code',
-        'sender_house_number',
-        'sender_city',
-        'sender_street',
-        'sender_address',
-        'receiver_fullname',
-        'receiver_phone',
-        'receiver_country',
-        'receiver_post_code',
-        'receiver_house_number',
-        'receiver_city',
-        'receiver_street',
-        'receiver_address',
-        'lon',
-        'lat',
+        'second_place_fullname',
+        'second_place_phone',
+        'second_place_country',
+        'second_place_post_code',
+        'second_place_house_number',
+        'second_place_city',
+        'second_place_street',
+        'second_place_address',
+        'second_place_lon',
+        'second_place_lat',
+        'place_fullname',
+        'place_phone',
+        'place_country',
+        'place_post_code',
+        'place_house_number',
+        'place_city',
+        'place_street',
+        'place_address',
+        'place_lon',
+        'place_lat',
         'special_remark',
         'remark',
         'unique_code',
-        'driver_id',
-        'driver_name',
-        'driver_phone',
-        'car_id',
-        'car_no',
-        'sticker_no',
         'sticker_amount',
         'delivery_amount',
         'out_status',
@@ -119,8 +114,8 @@ class Order extends BaseModel
         'exception_label_name',
         'type_name',
         'merchant_id_name',
-        'receiver_country_name',
-        'sender_country_name',
+        'place_country_name',
+        'second_place_country_name',
         'country_name',
         'settlement_type_name',
         'source_name'
@@ -133,6 +128,11 @@ class Order extends BaseModel
      */
     protected $dates = [];
 
+    public function getSecondExecutionDateAttribute($value)
+    {
+        return (empty($value) || ($value == '0000-00-00')) ? null : $value;
+    }
+
 
     public function getTypeNameAttribute()
     {
@@ -141,12 +141,12 @@ class Order extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::orderStatusList($this->status);
+        return (empty($this->status) || ($this->status >= 6)) ? null : ConstTranslateTrait::orderStatusList($this->status);
     }
 
     public function getOutStatusNameAttribute()
     {
-        return empty($this->out_status) ? null : ConstTranslateTrait::orderOutStatusList($this->out_status);
+        return empty($this->out_status) ? null : ConstTranslateTrait::outStatusList($this->out_status);
     }
 
     public function getExceptionLabelNameAttribute()
@@ -168,7 +168,7 @@ class Order extends BaseModel
 
     public function getShortAttribute()
     {
-        return empty($this->receiver_country) ? null : $this->getOriginal('receiver_country');
+        return empty($this->place_country) ? null : $this->getOriginal('place_country');
     }
 
     public function getSourceNameAttribute()

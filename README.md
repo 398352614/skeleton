@@ -40,7 +40,7 @@ git clone https://github.com/balloontmz/php_docker_env;
 打开php_docker_env文件夹下.env文件，进行相关配置。  
 >NGINX_HTTPS_PORT=433  #https端口  
  NGINX_HTTP_PORT=80  #http端口  
- USER_NETWORK= #网络  
+ USER_NETWORK= #网络  （将其他各个端口用下划线连接）  
  WEB_ROOT=../www #项目目录  
  MYSQL_PORT=3306 #数据库端口  
  REDIS_PORT=6379 #redis端口  

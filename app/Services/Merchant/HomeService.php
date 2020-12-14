@@ -1,14 +1,12 @@
 <?php
 
-
 namespace App\Services\Merchant;
-
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
 use App\Services\BaseConstService;
-use App\Services\Merchant\BaseService;
 use Carbon\Carbon;
+
 class HomeService extends BaseService
 {
     public function __construct(Order $order)
@@ -127,12 +125,12 @@ class HomeService extends BaseService
         $allOrder=count($info);
         $pickupOrder=count(collect($info)->where('type','=',BaseConstService::ORDER_TYPE_1));
         $peiOrder=count(collect($info)->where('type','=',BaseConstService::ORDER_TYPE_2));
-        $noTakeOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_STATUS_1));
-        $assignOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_STATUS_2));
-        $waitOutOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_STATUS_3));
-        $takingOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_STATUS_4));
-        $signedOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_STATUS_5));
-        $cancelOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_STATUS_6));
+        $noTakeOrder=count(collect($info)->where('status','=',BaseConstService::TRACKING_ORDER_STATUS_1));
+        $assignOrder=count(collect($info)->where('status','=',BaseConstService::TRACKING_ORDER_STATUS_2));
+        $waitOutOrder=count(collect($info)->where('status','=',BaseConstService::TRACKING_ORDER_STATUS_3));
+        $takingOrder=count(collect($info)->where('status','=',BaseConstService::TRACKING_ORDER_STATUS_4));
+        $signedOrder=count(collect($info)->where('status','=',BaseConstService::TRACKING_ORDER_STATUS_5));
+        $cancelOrder=count(collect($info)->where('status','=',BaseConstService::TRACKING_ORDER_STATUS_6));
         $exceptionOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_EXCEPTION_LABEL_2));
         return[
             'all' => $allOrder,
@@ -156,12 +154,12 @@ class HomeService extends BaseService
         $countInfo=[];
         if ($begin === $end){
             $date =$end->format('Y-m-d');
-            $orderCount=$this->count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_5]);
+            $orderCount=$this->count(['execution_date'=>$date,'status' => BaseConstService::TRACKING_ORDER_STATUS_5]);
             $countInfo[0]=['date'=>$date,'orderCount'=>$orderCount];
         }else{
             for($i=0,$j=$end->diffInDays($begin);$i<=$j;$i++){
                 $date =$begin->format('Y-m-d');
-                $orderCount=$this->count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_5]);
+                $orderCount=$this->count(['execution_date'=>$date,'status' => BaseConstService::TRACKING_ORDER_STATUS_5]);
                 $countInfo[$i]=['date'=>$date,'orderCount'=>$orderCount];
                 $begin =$begin->addDay();
             }

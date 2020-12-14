@@ -7,12 +7,9 @@ use App\Http\Resources\Api\Admin\CarResource;
 use App\Models\Car;
 use App\Models\Tour;
 use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use App\Traits\PrintTrait;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class CarService extends BaseService
 {

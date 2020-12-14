@@ -3,10 +3,8 @@
 namespace App\Services\Auth;
 
 use Illuminate\Auth\EloquentUserProvider;
-use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Str;
+use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 
 class EloquentMerchantApiProvider extends EloquentUserProvider
 {

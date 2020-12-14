@@ -8,15 +8,12 @@
 
 namespace App\Services\Merchant;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Merchant\TransportPriceResource;
 use App\Models\KilometresCharging;
 use App\Models\SpecialTimeCharging;
 use App\Models\TransportPrice;
 use App\Models\WeightCharging;
-use App\Services\Merchant\BaseService;
-
 
 /**
  * Class TransportPriceService

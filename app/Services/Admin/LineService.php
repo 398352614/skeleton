@@ -8,22 +8,14 @@
 
 namespace App\Services\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\LineResource;
-use App\Http\Validate\Api\Admin\LineValidate;
 use App\Models\Line;
 use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
-use App\Traits\ImportTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class LineService extends BaseLineService
 {
@@ -59,7 +51,7 @@ class LineService extends BaseLineService
             $postCode = explode_post_code($this->formData['post_code']);
             if (!is_numeric($postCode)) {
                 $this->query->where('rule', '=', 0);//保证查不到的条件
-            }else{
+            } else {
                 $this->query->whereRaw("id IN (SELECT DISTINCT line_id FROM line_range WHERE post_code_start <= {$postCode} AND post_code_end >= {$postCode})");
             }
         }
@@ -213,10 +205,13 @@ class LineService extends BaseLineService
         if (empty($lineIdList)) return $list;
 
         $lineAreaList = $this->getLineAreaService()->getList(['line_id' => ['in', $lineIdList]], ['line_id', 'coordinate_list', 'country'], false, ['line_id', 'coordinate_list', 'country'])->toArray();
-        $lineAreaList = array_create_index($lineAreaList, 'line_id');
+        $lineAreaList = array_create_group_index($lineAreaList, 'line_id');
         if (empty($lineAreaList)) return $list;
         foreach ($list as &$line) {
-            $line['coordinate_list'] = !empty($lineAreaList[$line['id']]['coordinate_list']) ? json_decode($lineAreaList[$line['id']]['coordinate_list'], true) : [];
+            $coordinateList = array_column($lineAreaList[$line['id']], 'coordinate_list');
+            $line['coordinate_list'] = !empty($coordinateList) ? array_map(function ($coordinateItemList) {
+                return json_decode($coordinateItemList, true);
+            }, $coordinateList) : [];
             $line['work_day_list'] = $workdayList;
         }
         return $list;
@@ -234,8 +229,11 @@ class LineService extends BaseLineService
         if (empty($info)) {
             throw new BusinessLogicException('线路不存在');
         }
-        $lineArea = $this->getLineAreaService()->getInfo(['line_id' => $info['id']], ['coordinate_list'], false)->toArray();
-        $info['coordinate_list'] = json_decode($lineArea['coordinate_list'], true);
+        $lineAreaList = $this->getLineAreaService()->getList(['line_id' => $info['id']], ['coordinate_list'], false)->toArray();
+        $coordinateList = array_column($lineAreaList, 'coordinate_list');
+        $info['coordinate_list'] = array_map(function ($coordinateItemList) {
+            return json_decode($coordinateItemList, true);
+        }, $coordinateList);
         return $info;
     }
 

@@ -4,15 +4,7 @@ namespace App\Listeners;
 
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
-use App\Models\Batch;
-use App\Models\Tour;
-use App\Models\TourLog;
-use App\Services\BaseConstService;
-use App\Services\ApiServices\GoogleApiService;
 use App\Services\ApiServices\TourOptimizationService;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 
 class UpdateLineCountTime
 {

@@ -1,18 +1,19 @@
 <?php
 
-
 namespace App\Services\Admin;
-
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\PackageResource;
+use App\Jobs\SendPackageInfo;
+use App\Models\MerchantApi;
 use App\Models\Package;
 use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
+use App\Services\CurlClient;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class PackageService extends BaseService
 {
@@ -155,7 +156,12 @@ class PackageService extends BaseService
                 $query->where($key, '=', $value, 'or');
             }
         });
-        $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_6, BaseConstService::PACKAGE_STATUS_7])->first();
+        $result = $query->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5])->first();
         return !empty($result) ? $result->toArray() : [];
+    }
+
+    public function fillWeightInfo($packageList)
+    {
+        dispatch(new SendPackageInfo($packageList));
     }
 }

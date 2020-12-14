@@ -19,6 +19,11 @@ class TransportPriceController extends BaseController
         parent::__construct($service);
     }
 
+    /**
+     * 获取详情
+     * @return array
+     * @throws BusinessLogicException
+     */
     public function show()
     {
         return $this->service->show();

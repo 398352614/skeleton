@@ -15,12 +15,8 @@ use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryAddressTrait;
 use App\Traits\LocationTrait;
 use App\Traits\PostcodeTrait;
-use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
-
 
 class CommonService
 {
@@ -80,7 +76,7 @@ class CommonService
     public static function addressFieldsSortCombine($data, $fields)
     {
         $countryKey = Arr::first($fields, function ($keyValue) {
-            return in_array($keyValue, ['country', 'receiver_country', 'sender_country']);
+            return in_array($keyValue, ['country', 'place_country', 'second_place_country']);
         });
         if (!empty($countryKey) && !empty($data[$countryKey]) && (app()->getLocale() == 'cn') && ($data[$countryKey] == 'CN')) {
             $data[$countryKey] = '中国';
@@ -89,9 +85,9 @@ class CommonService
         return $address;
     }
 
+
     public function dictionary()
     {
-        $result = [];
         $data=[];
         $reflection = new \ReflectionClass(ConstTranslateTrait::class);
         $result = collect($reflection->getProperties())->pluck('name')->toArray();

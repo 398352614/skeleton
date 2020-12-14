@@ -214,25 +214,4 @@ class DriverController extends BaseController
         }
         return;
     }
-
-    /**
-     * @api {GET}  api/admin/driver/crop-type 管理员端:合作类型
-     * @apiName crop-type
-     * @apiGroup admin-driver-driver
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 合作类型
-     * @apiSuccessExample {json}  返回示例
-     * HTTP/1.1 200 OK
-     * {
-     *  "ret":1,
-     *  "msg":"添加线路",
-     *  "data":{}
-     * }
-     */
-    public function cropType()
-    {
-        $data = ConstTranslateTrait::formatList(ConstTranslateTrait::$driverTypeList);
-        return $data;
-    }
 }

@@ -5,16 +5,11 @@
  * Date: 2019/12/31
  * Time: 10:54
  */
-
 namespace App\Services\Driver;
-
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Driver\BatchExceptionResource;
 use App\Models\BatchException;
-use App\Services\BaseConstService;
-use App\Services\Driver\BaseService;
-use App\Services\OrderNoRuleService;
 
 class BatchExceptionService extends BaseService
 {

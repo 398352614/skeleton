@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Services\Admin\BatchService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 /**
@@ -134,20 +132,13 @@ class BatchController extends BaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function getTourDate($id)
+    public function getDateList($id)
     {
-        return $this->service->getTourDate($id);
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function getLineDate($id)
-    {
-        return $this->service->getLineDate($id, $this->data);
-
+        if (!empty($this->data['line_id'])) {
+            return $this->service->getLineDate($id, $this->data);
+        } else {
+            return $this->service->getTourDate($id);
+        }
     }
 
 

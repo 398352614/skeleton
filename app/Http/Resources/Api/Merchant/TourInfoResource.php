@@ -4,7 +4,6 @@ namespace App\Http\Resources\Api\Merchant;
 
 use App\Services\BaseConstService;
 use App\Services\GisService;
-use App\Traits\CompanyTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TourInfoResource extends JsonResource
@@ -78,6 +77,6 @@ class TourInfoResource extends JsonResource
             'batchs' => BatchResource::collection($this->batchs)->sortBy('sort_id')->values(),
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
-        ], GisService::corTransfer(['receiver_lon'=>$this->receiver_lon,'receiver_lat'=>$this->receiver_lat]));
+        ], GisService::corTransfer(['place_lon'=>$this->place_lon,'place_lat'=>$this->place_lat]));
     }
 }

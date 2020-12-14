@@ -8,11 +8,9 @@
 
 namespace App\Services\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\CountryResource;
 use App\Models\Country;
-use App\Services\Admin\BaseService;
 use App\Traits\CountryTrait;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
@@ -98,13 +96,9 @@ class CountryService extends BaseService
         if (!empty($order)) {
             throw new BusinessLogicException('已存在订单，不能删除国家');
         }
-        $receiver = $this->getReceiverAddressService()->getInfo([], ['id'], false);
-        if (!empty($receiver)) {
+        $place = $this->getAddressService()->getInfo([], ['id'], false);
+        if (!empty($place)) {
             throw new BusinessLogicException('已存在收件人，不能删除国家');
-        }
-        $sender = $this->getSenderAddressService()->getInfo([], ['id'], false);
-        if (!empty($sender)) {
-            throw new BusinessLogicException('已存在发件人，不能删除国家');
         }
         $warehouse = $this->getWareHouseService()->getInfo([], ['id'], false);
         if (!empty($warehouse)) {

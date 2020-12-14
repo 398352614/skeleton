@@ -14,7 +14,6 @@ use App\Models\Scope\HasCompanyId;
 use App\Traits\CompanyTrait;
 use App\Traits\CountryTrait;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Schema;
 
 class BaseModel extends Model
 {
@@ -64,7 +63,7 @@ class BaseModel extends Model
                 }
             }
             //若存在国家字段,则自动填充国家字段
-            $countryList = ['country', 'receiver_country', 'sender_country'];
+            $countryList = ['country', 'place_country', 'second_place__country', 'warehouse_country'];
             $newColumns = array_flip($columns);
             foreach ($countryList as $country) {
                 if (!empty($newColumns[$country]) && empty($model->$country)) {
@@ -73,9 +72,14 @@ class BaseModel extends Model
             }
             //若是司机端 则添加司机ID
             if (auth()->user() instanceof Driver) {
-                if (in_array('driver_id', $columns)) {
-                    if (!isset($model->driver_id) || $model->driver_id === null) {
-                        $model->driver_id = auth()->user()->id;
+                if (!($model instanceof Tour)
+                    && !($model instanceof Batch)
+                    && !($model instanceof TrackingOrder)
+                ) {
+                    if (in_array('driver_id', $columns)) {
+                        if (!isset($model->driver_id) || $model->driver_id === null) {
+                            $model->driver_id = auth()->user()->id;
+                        }
                     }
                 }
             }
@@ -103,14 +107,19 @@ class BaseModel extends Model
         return $list[$name]['name'];
     }
 
-    public function getSenderCountryNameAttribute()
+    public function getWarehouseCountryNameAttribute()
     {
-        return empty($this->sender_country) ? null : CountryTrait::getCountryName($this->sender_country);
+        return empty($this->warehouse_country) ? null : CountryTrait::getCountryName($this->warehouse_country);
     }
 
-    public function getReceiverCountryNameAttribute()
+    public function getSecondPlaceCountryNameAttribute()
     {
-        return empty($this->receiver_country) ? null : CountryTrait::getCountryName($this->receiver_country);
+        return empty($this->second_place_country) ? null : CountryTrait::getCountryName($this->second_place_country);
+    }
+
+    public function getPlaceCountryNameAttribute()
+    {
+        return empty($this->place_country) ? null : CountryTrait::getCountryName($this->place_country);
     }
 
     public function getCountryNameAttribute()

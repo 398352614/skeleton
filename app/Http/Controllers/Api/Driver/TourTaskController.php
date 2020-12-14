@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Api\Driver;
 
-
 use App\Http\Controllers\BaseController;
 use App\Services\Driver\TourTaskService;
 
@@ -70,17 +69,19 @@ class TourTaskController extends BaseController
      */
     public function getSpecialRemark($id)
     {
-        return $this->service->getSpecialRemark($this->data['order_id']);
+        return $this->service->getSpecialRemark($this->data['tracking_order_id']);
     }
 
 
     /**
-     * 获取订单及包裹列表
+     * 获取运单及包裹列表
+     * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function getOrderList(){
-        return $this->service->getOrderList($this->data);
+    public function getTrackingOrderList($id)
+    {
+        return $this->service->getTrackingOrderList($id);
     }
 
     /**

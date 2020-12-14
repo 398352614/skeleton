@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
-use Illuminate\Support\Facades\App;
 
 /**
  * 设备表

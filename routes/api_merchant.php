@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,22 +46,36 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::post('/', 'OrderController@store');
         //修改
         Route::put('/{id}', 'OrderController@update');
-        //获取可分配路线日期
-        Route::get('/{id}/getTourDate', 'OrderController@getTourDate');
-        //获取可分配路线日期(新增)
-        Route::get('/get-date', 'OrderController@getDate');
-        //获取可分配的站点列表
-        //Route::get('/{id}/getBatchPageListByOrder', 'OrderController@getBatchPageListByOrder');
-        //分配至站点
-        Route::put('/{id}/assignToBatch', 'OrderController@assignToBatch');
-        //从站点移除
-        Route::delete('/{id}/removeFromBatch', 'OrderController@removeFromBatch');
+        //获取再次取派信息
+        Route::get('/{id}/again-info', 'OrderController@getAgainInfo');
+        //再次取派
+        Route::put('/{id}/again', 'OrderController@again');
+        //终止派送
+        Route::put('/{id}/end', 'OrderController@end');
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
-        //恢复
-        Route::put('/{id}/recovery', 'OrderController@recovery');
-        //彻底删除
-        Route::delete('/{id}/actualDestroy', 'OrderController@actualDestroy');
+        //订单追踪
+        Route::get('/{id}/track','OrderController@track');
+        //批量更新电话日期
+        Route::post('/update-phone-date-list','OrderController@updateByApiList');
+    });
+
+    //运单管理
+    Route::prefix('tracking-order')->group(function () {
+        //查询初始化
+        Route::get('/init-index', 'TrackingOrderController@initIndex');
+        //运单统计
+        Route::get('/count', 'TrackingOrderController@trackingOrderCount');
+        //列表查询
+        Route::get('/', 'TrackingOrderController@index');
+        //获取可分配路线日期
+        Route::get('/{id}/get-able-date-list', 'TrackingOrderController@getAbleDateList');
+        //通过地址获取可分配的路线日期列表
+        Route::get('/get-able-date-list-addr', 'TrackingOrderController@getAbleDateListByAddress');
+        //分配至站点
+        Route::put('/{id}/assign-batch', 'TrackingOrderController@assignToBatch');
+        //从站点移除
+        Route::delete('/{id}/remove-batch', 'TrackingOrderController@removeFromBatch');
     });
 
     Route::prefix('package')->group(function () {
@@ -82,7 +95,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
     //物流状态管理
     Route::prefix('order-trail')->group(function () {
         //rest api 放在最后
-        Route::get('/', 'OrderTrailController@index')->name('order-trail.index');
+        Route::get('/{order_no}', 'OrderTrailController@index')->name('order-trail.index');
     });
 
     //订单导入记录管理
@@ -128,21 +141,12 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
     });
 
     //收件人地址管理
-    Route::prefix('receiver-address')->group(function () {
-        Route::get('/', 'ReceiverAddressController@index');//列表查询
-        Route::get('/{id}', 'ReceiverAddressController@show');//获取详情
-        Route::post('/', 'ReceiverAddressController@store');//新增
-        Route::put('/{id}', 'ReceiverAddressController@update');//修改
-        Route::delete('/{id}', 'ReceiverAddressController@destroy');//删除
-    });
-
-    //发件人地址管理
-    Route::prefix('sender-address')->group(function () {
-        Route::get('/', 'SenderAddressController@index'); //查询
-        Route::get('/{id}', 'SenderAddressController@show'); //详情
-        Route::post('/', 'SenderAddressController@store'); //新增
-        Route::put('/{id}', 'SenderAddressController@update'); //修改
-        Route::delete('/{id}', 'SenderAddressController@destroy'); //删除
+    Route::prefix('address')->group(function () {
+        Route::get('/', 'AddressController@index');//列表查询
+        Route::get('/{id}', 'AddressController@show');//获取详情
+        Route::post('/', 'AddressController@store');//新增
+        Route::put('/{id}', 'AddressController@update');//修改
+        Route::delete('/{id}', 'AddressController@destroy');//删除
     });
 
     //公共接口
@@ -153,6 +157,8 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('getCountryList', 'CommonController@getCountryList');
 
         Route::get('get-postcode', 'CommonController@getPostcode');
+
+        Route::get('dictionary', 'CommonController@dictionary');
     });
 
     //取件线路

@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
-
 /**
  * route_tracking 表对应的模型,线路追踪
  * Class RouteTracking

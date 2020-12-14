@@ -7,13 +7,7 @@ namespace App\Traits;
 
 use App\Exceptions\BusinessLogicException;
 use App\Exports\BaseExport;
-use App\Exports\BatchListExport;
-use App\Exports\MerchantExport;
 use App\Exports\PlanExport;
-use App\Models\Merchant;
-use App\Services\BaseService;
-use App\Traits\ConstTranslateTrait;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 

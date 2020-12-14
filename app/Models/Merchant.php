@@ -65,6 +65,8 @@ class Merchant extends Authenticatable implements JWTSubject
         'advance_days',
         'appointment_days',
         'delay_time',
+        'pickup_count',
+        'pie_count',
         'created_at',
         'updated_at'
     ];

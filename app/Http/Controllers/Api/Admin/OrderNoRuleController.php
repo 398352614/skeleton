@@ -4,10 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Http\Resources\CompanyInfoResource;
-use App\Services\Admin\CompanyService;
 use App\Services\OrderNoRuleService;
-use Illuminate\Http\Request;
 
 /**
  * 单号规则管理

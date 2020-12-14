@@ -8,11 +8,9 @@
 
 namespace App\Traits;
 
-
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 trait AddressTemplateTrait
 {
@@ -40,15 +38,15 @@ trait AddressTemplateTrait
     {
         $addressTemplate = self::getAddressTemplate();
         if ($type == 'order') {
-            $orderReceiverAddress = array_key_prefix($addressTemplate, 'receiver_');
-            $senderReceiverAddress = array_key_prefix(Arr::only($addressTemplate, 'sender_'));
-            return array_merge($orderReceiverAddress, $senderReceiverAddress);
+            $orderPlaceAddress = array_key_prefix($addressTemplate, 'place_');
+            $second_PlaceAddress = array_key_prefix(Arr::only($addressTemplate, 'second_place_'));
+            return array_merge($orderPlaceAddress, $second_PlaceAddress);
         }
-        if ($type == 'receiver') {
-            return array_key_prefix($addressTemplate, 'receiver_');
+        if ($type == 'place_') {
+            return array_key_prefix($addressTemplate, 'place_');
         }
-        if ($type == 'sender') {
-            return array_key_prefix($addressTemplate, 'sender_');
+        if ($type == 'second_place_') {
+            return array_key_prefix($addressTemplate, 'second_place_');
         }
         if ($type == 'warehouse') {
             return $addressTemplate;

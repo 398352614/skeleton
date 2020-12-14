@@ -10,9 +10,8 @@ namespace App\Events\TourNotify;
 
 
 use App\Events\Interfaces\ATourNotify;
-use App\Models\Order;
+use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
-use Illuminate\Support\Facades\Log;
 
 class ArrivedBatch extends ATourNotify
 {
@@ -21,12 +20,12 @@ class ArrivedBatch extends ATourNotify
 
     public $batch;
 
-    public $orderList;
+    public $trackingOrderList;
 
-    public function __construct($tour, $batch, $orderList = [])
+    public function __construct($tour, $batch, $trackingOrderList = [])
     {
-        $orderList = !empty($orderList) ? $orderList : $this->getOrderList($batch['batch_no']);
-        parent::__construct($tour, $batch, [], $orderList);
+        $trackingOrderList = !empty($trackingOrderList) ? $trackingOrderList : $this->getTrackingOrderList($batch['batch_no']);
+        parent::__construct($tour, $batch, [], $trackingOrderList);
     }
 
     public function notifyType(): string
@@ -36,10 +35,11 @@ class ArrivedBatch extends ATourNotify
 
     public function getDataList(): array
     {
-        $orderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
+        $this->fillTrackingOrderList();
+        $trackingOrderList = collect($this->trackingOrderList)->groupBy('merchant_id')->toArray();
         $batchList = [];
-        foreach ($orderList as $merchantId => $merchantOrderList) {
-            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'order_list' => $merchantOrderList]);
+        foreach ($trackingOrderList as $merchantId => $merchantTrackingOrderList) {
+            $batchList[$merchantId] = array_merge($this->batch, ['merchant_id' => $merchantId, 'tracking_order_list' => $merchantTrackingOrderList]);
         }
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
@@ -54,9 +54,9 @@ class ArrivedBatch extends ATourNotify
      * @param $batchNo
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function getOrderList($batchNo)
+    public function getTrackingOrderList($batchNo)
     {
-        $orderList = Order::query()->where('batch_no', $batchNo)->where('status', BaseConstService::ORDER_STATUS_4)->get();
-        return $orderList->toArray();
+        $trackingOrderList = TrackingOrder::query()->where('batch_no', $batchNo)->where('status', BaseConstService::TRACKING_ORDER_STATUS_4)->get();
+        return $trackingOrderList->toArray();
     }
 }

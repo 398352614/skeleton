@@ -8,7 +8,6 @@
 
 namespace App\Services\Merchant;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Filesystem\FilesystemAdapter;

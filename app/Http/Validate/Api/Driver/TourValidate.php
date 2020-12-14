@@ -25,9 +25,9 @@ class TourValidate extends BaseValidate
         'begin_signature_first_pic' => 'nullable|string|max:250',
         'begin_signature_second_pic' => 'nullable|string|max:250',
         'begin_signature_third_pic' => 'nullable|string|max:250',
-        'cancel_order_id_list' => 'nullable|string',
-        'out_order_id_list' => 'nullable|string',
-        'order_count' => 'required|integer',
+        'cancel_tracking_order_id_list' => 'nullable|string',
+        'out_tracking_order_id_list' => 'nullable|string',
+        'tracking_order_count' => 'required|integer',
         //确认出库
         'begin_distance' => 'required|integer|gte:0',
         //异常上报
@@ -97,14 +97,14 @@ class TourValidate extends BaseValidate
         'outWarehouse' => [
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.expect_quantity', 'material_list.*.actual_quantity',
-            'cancel_order_id_list', 'out_order_id_list', 'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic',
-            'order_count'
+            'begin_signature', 'begin_signature_remark', 'begin_signature_first_pic', 'begin_signature_second_pic', 'begin_signature_third_pic',
+            'cancel_tracking_order_id_list', 'out_tracking_order_id_list', 'tracking_order_count'
         ],
         'checkOutWarehouse' => [
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.expect_quantity', 'material_list.*.actual_quantity',
-            'cancel_order_id_list', 'out_order_id_list',
-            'order_count'
+            'cancel_tracking_order_id_list', 'out_tracking_order_id_list',
+            'tracking_order_count'
         ],
         'actualOutWarehouse' => ['begin_distance'],
         'getBatchOrderList' => ['batch_id'],

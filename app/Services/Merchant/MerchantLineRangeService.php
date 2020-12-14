@@ -10,7 +10,6 @@ namespace App\Services\Merchant;
 
 use App\Models\MerchantLineRange;
 
-
 class MerchantLineRangeService extends BaseService
 {
     public function __construct(MerchantLineRange $model)

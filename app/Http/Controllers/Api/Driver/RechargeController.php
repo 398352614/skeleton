@@ -1,17 +1,15 @@
 <?php
 
-
 namespace App\Http\Controllers\Api\Driver;
-
 
 use App\Http\Controllers\BaseController;
 use App\Services\Driver\RechargeService;
 
 /**
-     * Class BatchExceptionController
-     * @package App\Http\Controllers\Api\Driver
-     * @property RechargeService $service
-     */
+ * Class BatchExceptionController
+ * @package App\Http\Controllers\Api\Driver
+ * @property RechargeService $service
+ */
 class RechargeController extends BaseController
 {
     /**
@@ -27,7 +25,8 @@ class RechargeController extends BaseController
      * 充值查询
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function index(){
+    public function index()
+    {
         return $this->service->getPageList();
     }
 
@@ -37,7 +36,8 @@ class RechargeController extends BaseController
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function show($id){
+    public function show($id)
+    {
         return $this->service->show($id);
     }
 
@@ -46,7 +46,8 @@ class RechargeController extends BaseController
      * @return void
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function recharge(){
+    public function recharge()
+    {
         return $this->service->recharge($this->data);
     }
 
@@ -54,7 +55,8 @@ class RechargeController extends BaseController
      * 确认充值
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function verify(){
+    public function verify()
+    {
         return $this->service->verify($this->data);
     }
 
@@ -63,7 +65,8 @@ class RechargeController extends BaseController
      * @return array
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function getOutUser(){
+    public function getOutUser()
+    {
         return $this->service->getOutUser($this->data);
     }
 }

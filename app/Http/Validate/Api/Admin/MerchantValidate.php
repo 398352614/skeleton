@@ -36,7 +36,9 @@ class MerchantValidate extends BaseValidate
         'advance_days' => 'nullable|integer|gte:0|lte:7',
         'appointment_days' => 'nullable|integer|gte:1|lte:30',
         'delay_time' => 'nullable|integer|gte:0|lte:60',
-        'merchant_id' => 'nullable|integer',
+        'merchant_id' => 'required|integer',
+        'pickup_count' => 'required|integer|gte:0|lte:5',
+        'pie_count' => 'nullable|integer|gte:0|lte:5',
         'fee_code_list' => 'nullable|string|max:1000'
     ];
 

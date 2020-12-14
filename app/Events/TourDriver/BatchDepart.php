@@ -9,9 +9,7 @@
 namespace App\Events\TourDriver;
 
 use App\Events\Interfaces\ITourDriver;
-use App\Services\BaseConstService;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Arr;
 
 class BatchDepart implements ITourDriver
 {
@@ -51,8 +49,8 @@ class BatchDepart implements ITourDriver
     public function getLocation(): array
     {
         return [
-            'lon' => $this->batch['receiver_lon'],
-            'lat' => $this->batch['receiver_lat'],
+            'lon' => $this->batch['place_lon'],
+            'lat' => $this->batch['place_lat'],
         ];
     }
 
@@ -61,17 +59,17 @@ class BatchDepart implements ITourDriver
      */
     public function getContent(): string
     {
-        return '从[' . $this->batch['receiver_fullname'] . ']客户家离开';
+        return '从[' . $this->batch['place_fullname'] . ']客户家离开';
     }
 
     public function getAddress(): string
     {
         $address = [
-            'receiver_street' => $this->batch['receiver_street'],
-            'receiver_house_number' => $this->batch['receiver_house_number'],
-            'receiver_city' => $this->batch['receiver_city'],
-            'receiver_post_code' => $this->batch['receiver_post_code'],
-            'receiver_country' => $this->batch['receiver_country']
+            'place_street' => $this->batch['place_street'],
+            'place_house_number' => $this->batch['place_house_number'],
+            'place_city' => $this->batch['place_city'],
+            'place_post_code' => $this->batch['place_post_code'],
+            'place_country' => $this->batch['place_country']
         ];
         $address = implode(' ', $address);
         return $address;

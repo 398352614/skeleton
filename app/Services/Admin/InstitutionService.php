@@ -8,7 +8,6 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Institution;
-use App\Services\Admin\BaseService;
 use Illuminate\Database\Eloquent\Model;
 
 class InstitutionService extends BaseService
@@ -16,14 +15,6 @@ class InstitutionService extends BaseService
     public function __construct(Institution $institution)
     {
         parent::__construct($institution);
-    }
-
-    /**
-     * 成员 服务
-     * @return EmployeeService
-     */
-    public function getEmployeeService(){
-        return self::getInstance(EmployeeService::class);
     }
 
     /**
@@ -113,11 +104,6 @@ class InstitutionService extends BaseService
             'country' => $data['country'] ?? '',
             'address' => $data['address'] ?? '',
         ]);
-    }
-
-    public function getCompanyService()
-    {
-        return self::getInstance(CompanyService::class);
     }
 
     /**

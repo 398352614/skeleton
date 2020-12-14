@@ -39,11 +39,11 @@ return [
         'address_template' => 'address_template',
     ],
     'wechat_push' => env('WECHAT_PUSH'),
-    'env'=>env('APP_ENV'),
-    'excel'=>env('EXCEL'),
-    'admin_id'=>env('ADMIN_ID'),
-    'erp_merchant_id'=>env('ERP_MERCHANT_ID'),
-    'eushop_merchant_id'=>env('EUSHOP_MERCHANT_ID'),
+    'env' => env('APP_ENV'),
+    'excel' => env('EXCEL'),
+    'admin_id' => env('ADMIN_ID'),
+    'erp_merchant_id' => env('ERP_MERCHANT_ID'),
+    'eushop_merchant_id' => env('EUSHOP_MERCHANT_ID'),
 
-    'admin_email'=>env('ADMIN_EMAIL')
+    'admin_email' => env('ADMIN_EMAIL')
 ];

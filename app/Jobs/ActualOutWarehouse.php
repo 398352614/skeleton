@@ -2,18 +2,14 @@
 
 namespace App\Jobs;
 
-use App\Events\TourNotify\NextBatch;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
-use App\Models\Material;
-use App\Models\Package;
 use App\Models\Tour;
 use App\Services\Admin\TourService;
 use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
 use App\Traits\TourTrait;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -21,8 +17,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use WebSocket\Client;
 
 class ActualOutWarehouse implements ShouldQueue
 {
@@ -58,18 +52,18 @@ class ActualOutWarehouse implements ShouldQueue
     public $tries = 3;
 
     public $tour_no;
-    private $orderList;
+    private $trackingOrderList;
 
 
     /**
      * UpdateLineCountTime constructor.
      * @param $tourNo
-     * @param $orderList
+     * @param $trackingOrderList
      */
-    public function __construct($tourNo, $orderList)
+    public function __construct($tourNo, $trackingOrderList)
     {
         $this->tour_no = $tourNo;
-        $this->orderList = $orderList;
+        $this->trackingOrderList = $trackingOrderList;
     }
 
 
@@ -113,7 +107,7 @@ class ActualOutWarehouse implements ShouldQueue
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         Log::info('tour:' . json_encode($tour));
         $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
-        event(new \App\Events\TourNotify\ActualOutWarehouse($tour, $batchList, $this->orderList));
+        event(new \App\Events\TourNotify\ActualOutWarehouse($tour, $batchList, $this->trackingOrderList));
         /**************************************3.通知下一个站点事件************************************************/
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         $nextBatch = TourTrait::getNextBatch($tour['tour_no']);

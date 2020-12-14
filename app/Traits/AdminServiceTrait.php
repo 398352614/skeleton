@@ -1,10 +1,9 @@
 <?php
 
-
 namespace App\Traits;
 
-
 use App\Services\Admin\AdditionalPackageService;
+use App\Services\Admin\AddressService;
 use App\Services\Admin\AddressTemplateService;
 use App\Services\Admin\ApiTimesService;
 use App\Services\Admin\BaseLineService;
@@ -12,7 +11,9 @@ use App\Services\Admin\BatchExceptionService;
 use App\Services\Admin\BatchService;
 use App\Services\Admin\CarBrandService;
 use App\Services\Admin\CarService;
+use App\Services\Admin\CompanyService;
 use App\Services\Admin\DriverService;
+use App\Services\Admin\EmployeeService;
 use App\Services\Admin\FeeService;
 use App\Services\Admin\LineAreaService;
 use App\Services\Admin\LineRangeService;
@@ -26,12 +27,16 @@ use App\Services\Admin\MerchantService;
 use App\Services\Admin\OrderService;
 use App\Services\Admin\PackageService;
 use App\Services\Admin\PrintTemplateService;
-use App\Services\Admin\ReceiverAddressService;
 use App\Services\Admin\RechargeService;
 use App\Services\Admin\RechargeStatisticsService;
-use App\Services\Admin\SenderAddressService;
+use App\Services\Admin\StockInLogService;
+use App\Services\Admin\StockOutLogService;
+use App\Services\Admin\StockService;
 use App\Services\Admin\TourDriverService;
 use App\Services\Admin\TourService;
+use App\Services\Admin\TrackingOrderMaterialService;
+use App\Services\Admin\TrackingOrderPackageService;
+use App\Services\Admin\TrackingOrderService;
 use App\Services\Admin\TransportPriceService;
 use App\Services\Admin\UploadService;
 use App\Services\Admin\WareHouseService;
@@ -41,6 +46,11 @@ trait AdminServiceTrait
 {
     use FactoryInstanceTrait;
 
+    public function getCompanyService()
+    {
+        return self::getInstance(CompanyService::class);
+    }
+
     /**
      * 商户服务
      * @return MerchantService
@@ -48,6 +58,33 @@ trait AdminServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * 库存服务
+     * @return StockService
+     */
+    public function getStockService()
+    {
+        return self::getInstance(StockService::class);
+    }
+
+    /**
+     * 入库日志 服务
+     * @return StockInLogService
+     */
+    public function getStockInLogService()
+    {
+        return self::getInstance(StockInLogService::class);
+    }
+
+    /**
+     * 入库日志 服务
+     * @return StockOutLogService
+     */
+    public function getStockOutLogService()
+    {
+        return self::getInstance(StockOutLogService::class);
     }
 
     /**
@@ -132,6 +169,33 @@ trait AdminServiceTrait
     }
 
     /**
+     * 运单 服务
+     * @return TrackingOrderService
+     */
+    public function getTrackingOrderService()
+    {
+        return self::getInstance(TrackingOrderService::class);
+    }
+
+    /**
+     * 运单包裹表
+     * @return TrackingOrderPackageService
+     */
+    public function getTrackingOrderPackageService()
+    {
+        return self::getInstance(TrackingOrderPackageService::class);
+    }
+
+    /**
+     * 运单材料表
+     * @return TrackingOrderMaterialService
+     */
+    public function getTrackingOrderMaterialService()
+    {
+        return self::getInstance(TrackingOrderMaterialService::class);
+    }
+
+    /**
      * 商户线路范围 服务
      * @return MerchantLineRangeService
      */
@@ -184,24 +248,6 @@ trait AdminServiceTrait
     public function getAddressTemplateService()
     {
         return self::getInstance(AddressTemplateService::class);
-    }
-
-    /**
-     * 收件人地址 服务
-     * @return ReceiverAddressService
-     */
-    public function getReceiverAddressService()
-    {
-        return self::getInstance(ReceiverAddressService::class);
-    }
-
-    /**
-     * 发件人地址 服务
-     * @return SenderAddressService
-     */
-    public function getSenderAddressService()
-    {
-        return self::getInstance(SenderAddressService::class);
     }
 
     /**
@@ -311,6 +357,11 @@ trait AdminServiceTrait
         return self::getInstance(RechargeService::class);
     }
 
+    public function getAddressService()
+    {
+        return self::getInstance(AddressService::class);
+    }
+
     /**
      * 司机事件 服务
      * @return TourDriverService
@@ -318,6 +369,15 @@ trait AdminServiceTrait
     public function getTourDriverService()
     {
         return self::getInstance(TourDriverService::class);
+    }
+
+    /**
+     * 员工 服务
+     * @return EmployeeService
+     */
+    public function getEmployeeService()
+    {
+        return self::getInstance(EmployeeService::class);
     }
 
     /**

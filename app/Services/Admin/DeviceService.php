@@ -14,7 +14,6 @@ use App\Http\Resources\Api\Admin\DriverResource;
 use App\Models\Device;
 use App\Models\Driver;
 use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
 use Illuminate\Support\Arr;
 
 /**
@@ -55,7 +54,7 @@ class DeviceService extends BaseService
     public function getDriverPageList()
     {
         $perPage = $this->request->input('per_page', 10);
-        $deviceList = parent::getList(['driver_id' => ['<>', null]], ['driver_id'], false)->toArray();
+        $deviceList = parent::getList(['driver_id' => ['all', null]], ['driver_id'], false)->toArray();
         $query = $this->driverModel::query();
         !empty($deviceList) && $query->whereNotIn('id', array_column($deviceList, 'driver_id'));
         return DriverResource::collection($query->paginate($perPage));

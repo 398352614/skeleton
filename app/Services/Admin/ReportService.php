@@ -8,18 +8,12 @@
 
 namespace App\Services\Admin;
 
-
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\ReportResource;
 use App\Models\Tour;
 use App\Models\TourMaterial;
 use App\Services\BaseConstService;
-use App\Services\Admin\BaseService;
-use App\Traits\ConstTranslateTrait;
-use App\Traits\StatusConvertTrait;
 use Carbon\CarbonInterval;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Class ReportService
@@ -28,7 +22,6 @@ use Illuminate\Support\Facades\DB;
  */
 class ReportService extends BaseService
 {
-    use StatusConvertTrait;
 
     public $filterRules = [
         'execution_date' => ['between', ['begin_date', 'end_date']],
@@ -122,13 +115,16 @@ class ReportService extends BaseService
             $warehouseInfo['warehouse_actual_arrive_time'] = $info['end_time'];
             $warehouseInfo['warehouse_actual_time_human'] = $warehouseInfo['warehouse_actual_time'];
         }
-        //获取当前取件线路上的所有订单
-        $orderList = $this->getOrderService()->getList(['tour_no' => $info['tour_no']], ['id', 'type', 'out_user_id', 'tour_no', 'batch_no', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount', 'sticker_no'], false)->toArray();
+        //获取当前取件线路上的所有运单
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $info['tour_no']], ['tracking_order_no', 'order_no', 'tour_no', 'batch_no'], false)->toArray();
+        $orderNoList = array_column($trackingOrderList, 'order_no');
+        $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
+        //获取订单列表
+        $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList]], ['id', 'type', 'out_user_id', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount'], false)->toArray();
         //获取当前取件线路上的所有包裹
-        $packageList = $this->getPackageService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
-        $packageList = self::statusConvert($packageList);
+        $packageList = $this->getTrackingOrderPackageService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         //获取当前取件线路上的所有材料
-        $materialList = $this->getMaterialService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
+        $materialList = $this->getTrackingOrderMaterialService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         //获取站点的取件材料汇总
         $tourMaterialList = $this->getTourMaterialList($info, $materialList);
         //统计预计实际材料数量
@@ -151,12 +147,15 @@ class ReportService extends BaseService
         //统计站点的各费用
         $info['card_sticker_count'] = $info['card_delivery_count'] = $info['cash_sticker_count'] = $info['cash_delivery_count'] = $info['api_sticker_count'] = $info['api_delivery_count'] = 0;
         foreach ($orderList as $k => $v) {
+            $orderList[$k]['tracking_order_no'] = $trackingOrderList[$v['order_no']]['tracking_order_no'] ?? '';
+            $orderList[$k]['batch_no'] = $trackingOrderList[$v['order_no']]['batch_no'] ?? '';
+            $orderList[$k]['tour_no'] = $trackingOrderList[$v['order_no']]['tour_no'] ?? '';
             //更新订单统计
             $orderList[$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
             $orderList[$k]['expect_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
             $orderList[$k]['expect_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
             $orderList[$k]['expect_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount']), 2), 2);
-            if ($v['status'] == BaseConstService::ORDER_STATUS_5) {
+            if ($v['status'] == BaseConstService::TRACKING_ORDER_STATUS_5) {
                 $orderList[$k]['actual_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
                 $orderList[$k]['actual_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
                 $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
@@ -327,13 +326,13 @@ class ReportService extends BaseService
             $newBatchList[$key] = [
                 'id' => $batch['id'],
                 'batch_no' => $batch['batch_no'],
-                'name' => $batch['receiver_fullname'],
-                'phone' => $batch['receiver_phone'],
-                'post_code' => $batch['receiver_post_code'],
-                'city' => $batch['receiver_city'],
-                'street' => $batch['receiver_street'],
-                'house_number' => $batch['receiver_house_number'],
-                'address' => $batch['receiver_address'],
+                'name' => $batch['place_fullname'],
+                'phone' => $batch['place_phone'],
+                'post_code' => $batch['place_post_code'],
+                'city' => $batch['place_city'],
+                'street' => $batch['place_street'],
+                'house_number' => $batch['place_house_number'],
+                'address' => $batch['place_address'],
                 'expect_quantity' => $batch['expect_pickup_quantity'] + $batch['expect_pie_quantity'],
                 'sticker_amount' => number_format(round($batch['sticker_amount'], 2), 2),
                 'delivery_amount' => number_format(round($batch['delivery_amount'], 2), 2),
@@ -360,7 +359,7 @@ class ReportService extends BaseService
                 'sort_id' => $batch['sort_id'],
             ];
             $newBatchList[$key]['order_list'] = $orderList[$batch['batch_no']];
-            $newBatchList[$key]['package_list'] = array_values(collect($packageList)->where('batch_no', $batch['batch_no'])->toArray());
+            $newBatchList[$key]['package_list'] = array_values(collect($packageList)->whereIn('order_no', array_column($orderList[$batch['batch_no']], 'order_no'))->toArray());
             $newBatchList[$key]['material_list'] = !empty($materialList[$batch['batch_no']]) ? array_values($materialList[$batch['batch_no']]) : [];
         }
         $arriveBatchList = array_values(collect($newBatchList)->whereNotNull('actual_arrive_time')->sortBy('actual_arrive_time')->all());

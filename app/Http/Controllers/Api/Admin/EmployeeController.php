@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\Admin\EmployeeService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 class EmployeeController extends Controller

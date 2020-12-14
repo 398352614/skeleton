@@ -9,12 +9,9 @@
 namespace App\Traits;
 
 use App\Exceptions\BusinessLogicException;
-use App\Services\Admin\UploadService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 trait LocationTrait
 {
@@ -64,6 +61,7 @@ trait LocationTrait
      */
     private static function getLocationDetail($country, $city, $street, $houseNumber, $postCode)
     {
+        Log::info('country', ['country' => $country]);
         return ($country === 'NL') ? self::getLocationDetailFirst($country, $houseNumber, $postCode) : self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode);
     }
 
@@ -83,6 +81,7 @@ trait LocationTrait
             try {
                 $client = new \GuzzleHttp\Client();
                 $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
+                Log::info('location-url', ['url' => $url]);
                 $res = $client->request('GET', $url, [
                         'auth' =>
                             [
@@ -90,10 +89,11 @@ trait LocationTrait
                                 config('thirdParty.location_api_secret')
                             ],
                         'http_errors' => false,
-                        'timeout' => 3
+                        'timeout' => 50
                     ]
                 );
             } catch (\Exception $ex) {
+                Log::info('location-ex', ['message' => $ex->getMessage()]);
                 throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法根据邮编和门牌号码获取城市和地址信息，请稍后再尝试');
             }
             $body = $res->getBody();

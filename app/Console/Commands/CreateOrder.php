@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Api\Admin\OrderController;
+use App\Models\Address;
 use App\Models\Merchant;
-use App\Models\ReceiverAddress;
-use App\Models\SenderAddress;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
@@ -21,6 +21,7 @@ class CreateOrder extends Command
      */
     protected $signature = 'order:create
                                             {--times= : times}
+                                            {--type= : type}
                                             {--merchant_id= : merchant id}
                                             {--execution_date= : execution date}
                                             {--material_count= : material count}
@@ -59,15 +60,17 @@ class CreateOrder extends Command
                     exit;
                 }
                 auth()->setUser($merchant);
-                $executionDate = $this->option('execution_date') ?? date('Y-m-d');
-                $paCount = $this->option('package_count') ?? 1;
+                $paCount = $this->option('package_count') ?? 0;
                 $maCount = $this->option('material_count') ?? 1;
-                $data = array_merge(
-                    $this->base($executionDate, $merchantId),
-                    $this->getReceiver(),
-                    $this->getSender(),
-                    $this->getMaPaList($maCount, $paCount)
-                );
+                $data = array_merge($this->getMaPaList($maCount, $paCount), $this->base($merchantId));
+                $data['type'] = $this->option('type') ?? Arr::random([1, 2, 3]);
+                $data['execution_date'] = $this->option('execution_date') ?? date('Y-m-d');
+                if ($data['type'] == 3) {
+                    $data = array_merge($data, $this->getAddress(), $this->getSecondAddress());
+                    $data['second_execution_date'] = Carbon::create($data['execution_date'])->addDay()->format('Y-m-d');
+                } else {
+                    $data = array_merge($data, $this->getAddress());
+                }
                 try {
                     $controller->setData($data);
                     $res = $controller->store();
@@ -84,59 +87,47 @@ class CreateOrder extends Command
     }
 
     /**
-     * 获取收件人信息
+     * 获取地址信息
+     * @param $executionDate
      * @return mixed
      */
-    private function getReceiver()
+    private function getAddress()
     {
-        $count = ReceiverAddress::query()->count();
+        $count = Address::query()->count();
         $id = rand(1, $count);
-        $address = ReceiverAddress::query()->where('id', $id)->first();
+        $address = Address::query()->get()[$id];
         if (empty($address)) {
             $address = [
-                'receiver_fullname' => '七娃',
-                'receiver_phone' => '1234567897',
-                'receiver_country' => 'NL',
-                'receiver_post_code' => '1183GT',
-                'receiver_house_number' => '11',
-                'receiver_city' => 'Amstelveen',
-                'receiver_street' => 'Straat van Gibraltar',
-                'receiver_address' => '七娃家',
-                'lon' => '4.87510019',
-                'lat' => '52.31153083'
+                'place_fullname' => '七娃',
+                'place_phone' => '1234567897',
+                'place_country' => 'NL',
+                'place_post_code' => '1183GT',
+                'place_house_number' => '11',
+                'place_city' => 'Amstelveen',
+                'place_street' => 'Straat van Gibraltar',
+                'place_address' => '七娃家',
+                'place_lon' => '4.87510019',
+                'place_lat' => '52.31153083',
             ];
         } else {
             $address = $address->toArray();
         }
-        $data = Arr::only($address, ['receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'lon', 'lat']);
-        return $data;
+        return Arr::only($address, ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat']);
     }
 
     /**
      * 获取发件人信息
+     * @param $executionDate
      * @return array
      */
-    private function getSender()
+    private function getSecondAddress()
     {
-        $count = SenderAddress::query()->count();
-        $id = rand(1, $count);
-        $address = SenderAddress::query()->where('id', $id)->first();
-        if (empty($address)) {
-            $address = [
-                'sender_fullname' => 'test',
-                'sender_phone' => '123456789',
-                'sender_country' => 'NL',
-                'sender_post_code' => '7041AH',
-                'sender_house_number' => '23-33',
-                'sender_city' => 's-Heerenberg',
-                'sender_street' => 'Marktstraat',
-                'sender_address' => 'test家',
-            ];
-        } else {
-            $address = $address->toArray();
+        $newData = [];
+        $data = $this->getAddress();
+        foreach ($data as $k => $v) {
+            $newData['second_' . $k] = $v;
         }
-        $data = Arr::only($address, ['receiver_fullname', 'receiver_phone', 'receiver_country', 'receiver_post_code', 'receiver_house_number', 'receiver_city', 'receiver_street', 'receiver_address', 'lon', 'lat']);
-        return $data;
+        return $newData;
     }
 
 
@@ -147,7 +138,7 @@ class CreateOrder extends Command
      * @param int $paCount
      * @return array
      */
-    private function getMaPaList($maCount = 0, $paCount = 0)
+    private function getMaPaList($maCount, $paCount)
     {
         $faker = Factory::create('nl-NL');
         $packageList = [];
@@ -177,17 +168,16 @@ class CreateOrder extends Command
     /**
      * 获取基础数据
      * @param $executionDate
+     * @param $merchantId
      * @return array
      */
-    public function base($executionDate, $merchantId)
+    public function base($merchantId)
     {
         $faker = Factory::create('nl-NL');
         $base = [
-            'type' => Arr::random([1, 2]),
             'settlement_type' => Arr::random([1, 2]),
             'special_remark' => $faker->sentence(2, true),
             'remark' => $faker->sentence(2, true),
-            'execution_date' => $executionDate,
             'merchant_id' => $merchantId
         ];
         return $base;

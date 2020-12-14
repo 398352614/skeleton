@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\Employee;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use WebSocket\Client;
 
 class PushAdmin extends Command

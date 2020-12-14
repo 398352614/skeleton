@@ -25,7 +25,7 @@ class AlterOrderAlterColumnMaskCode extends Migration
      */
     public function down()
     {
-        Schema::table('package', function (Blueprint $table) {
+        Schema::table('order', function (Blueprint $table) {
             $table->string('mask_code')->default('')->after('express_second_no')->comment('掩码')->change();
         });
     }

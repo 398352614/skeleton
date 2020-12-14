@@ -12,10 +12,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\TestService;
-use App\Traits\AlphaTrait;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -132,5 +129,11 @@ class TestController extends BaseController
         }
         return $fileNameList;
     }
+
+    public function testPush()
+    {
+        Log::info('data', $this->data);
+    }
+
 
 }

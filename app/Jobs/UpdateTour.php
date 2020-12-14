@@ -2,28 +2,16 @@
 
 namespace App\Jobs;
 
-use App\Events\TourNotify\NextBatch;
 use App\Exceptions\BusinessLogicException;
-use App\Models\Batch;
-use App\Models\Material;
-use App\Models\Package;
-use App\Models\Tour;
-use App\Services\BaseConstService;
 use App\Services\Driver\TourService;
 use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
-use App\Traits\TourTrait;
-use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use PHPUnit\Exception;
-use Tymon\JWTAuth\Facades\JWTAuth;
-use WebSocket\Client;
 
 class UpdateTour implements ShouldQueue
 {
