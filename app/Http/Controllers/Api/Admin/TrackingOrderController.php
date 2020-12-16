@@ -138,4 +138,14 @@ class TrackingOrderController extends BaseController
         return $this->service->trackingOrderExport();
     }
 
+    /**
+     *
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function changeOutStatus()
+    {
+        return $this->service->changeOutStatus($this->data);
+    }
+
 }

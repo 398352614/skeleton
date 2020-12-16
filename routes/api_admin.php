@@ -197,6 +197,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index');
         //获取可加单取件线路
         Route::get('/get-tour', 'TourController@getAddOrderPageList');
+        //修改出库状态
+        Route::put('/out-status','TrackingOrderController@changeOutStatus');
     });
 
     //物流状态管理

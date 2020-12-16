@@ -897,4 +897,19 @@ class TrackingOrderService extends BaseService
             $this->getAddressService()->create($params);
         }
     }
+
+    /**
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function changeOutStatus($params)
+    {
+        $ids = explode(',',$params['id_list']);
+        for ($i = 0; $i < count($ids); $i++) {
+            $rowCount[$i] = parent::updateById($ids[$i], ['out_status' => $params['out_status']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('修改失败，请重新操作');
+            }
+        }
+    }
 }
