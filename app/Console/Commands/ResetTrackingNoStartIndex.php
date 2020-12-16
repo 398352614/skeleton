@@ -43,10 +43,9 @@ class ResetTrackingNoStartIndex extends Command
     {
         $trackingOrderRuleNoList = OrderNoRule::query()->where('type', BaseConstService::TRACKING_ORDER_NO_TYPE)->get()->toArray();
         foreach ($trackingOrderRuleNoList as $trackingOrderNoRule) {
-            $trackingOrder = TrackingOrder::query()->where('company_id', $trackingOrderNoRule['company_id'])->orderBy('id', 'desc')->first();
-            if (empty($trackingOrder)) continue;
-            $startIndex = intval(Str::substr($trackingOrder['tracking_order_no'], 7)) + 1;
-            OrderNoRule::query()->where('id', $trackingOrderNoRule['id'])->update(['start_index' => $startIndex]);
+            $orderNoRule = OrderNoRule::query()->where('company_id', $trackingOrderNoRule['company_id'])->where('type', BaseConstService::ORDER_NO_TYPE)->first();
+            if (empty($orderNoRule)) continue;
+            OrderNoRule::query()->where('id', $trackingOrderNoRule['id'])->update(['start_index' => intval($orderNoRule['start_index'])]);
         }
         $this->info('successful');
         return;
