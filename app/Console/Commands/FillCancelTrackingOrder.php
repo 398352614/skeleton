@@ -52,7 +52,7 @@ class FillCancelTrackingOrder extends Command
         $idList = $idList[0]->id_list;
         $oldOrderList = DB::select("SELECT * FROM `old_order` WHERE id in ({$idList})");
         $oldOrderList = collect($oldOrderList)->toArray();
-        dd($oldOrderList);
+        dd($oldOrderList[0]);
         $trackingOrderFields = (new TrackingOrder())->getFillable();
         $trackingOrderPackageFields = (new TrackingOrderPackage())->getFillable();
         $trackingOrderModel = new TrackingOrder();
