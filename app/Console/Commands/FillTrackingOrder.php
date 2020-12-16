@@ -55,11 +55,17 @@ class FillTrackingOrder extends Command
         $packageStatus4Sql = "UPDATE `package` SET `status` = 4 WHERE `status` = 6";
         $packageStatus5Sql = "UPDATE `package` SET `status` = 5 WHERE `status` = 7";
 
+        $trackingOrderPackageExecutionDateSql = "UPDATE `tracking_order_package` AS a SET a.`execution_date`=(SELECT b.`execution_date` FROM `tracking_order` AS b WHERE b.`order_no`=a.`order_no` LIMIT 1)";
         $trackingOrderPackageBatchSql = "UPDATE `tracking_order_package` AS a SET a.`batch_no`=(SELECT b.`batch_no` FROM `tracking_order` AS b WHERE b.`order_no`=a.`order_no` LIMIT 1)";
         $trackingOrderPackageTourSql = "UPDATE `tracking_order_package` AS a SET a.`tour_no`=(SELECT b.`tour_no` FROM `tracking_order` AS b WHERE b.`order_no`=a.`order_no` LIMIT 1)";
+        $trackingOrderMaterialExecutionDateSql = "UPDATE `tracking_order_material` AS a SET a.`execution_date`=(SELECT b.`execution_date` FROM `tracking_order` AS b WHERE b.`order_no`=a.`order_no` LIMIT 1)";
         $trackingOrderMaterialBatchSql = "UPDATE `tracking_order_material` AS a SET a.`batch_no`=(SELECT b.`batch_no` FROM `tracking_order` AS b WHERE b.`order_no`=a.`order_no` LIMIT 1)";
         $trackingOrderMaterialTourSql = "UPDATE `tracking_order_material` AS a SET a.`tour_no`=(SELECT b.`tour_no` FROM `tracking_order` AS b WHERE b.`order_no`=a.`order_no` LIMIT 1)";
-
+        $trackingOrderPackageStatus1Sql = "UPDATE `tracking_order_package` SET `status` = 1 WHERE `status` IN (1,2,3)";
+        $trackingOrderpackageStatus2Sql = "UPDATE `tracking_order_package` SET `status` = 2 WHERE `status` = 4";
+        $trackingOrderpackageStatus3Sql = "UPDATE `tracking_order_package` SET `status` = 3 WHERE `status` = 5";
+        $trackingOrderpackageStatus4Sql = "UPDATE `tracking_order_package` SET `status` = 4 WHERE `status` = 6";
+        $trackingOrderpackageStatus5Sql = "UPDATE `tracking_order_package` SET `status` = 5 WHERE `status` = 7";
 
 //        DB::update($orderSql);
 //        DB::update($packageSql);
@@ -67,10 +73,18 @@ class FillTrackingOrder extends Command
 //        DB::update($trackingOrderPackageSql);
 //        DB::update($trackingOrderMaterialSql);
 
+        DB::update($trackingOrderPackageExecutionDateSql);
         DB::update($trackingOrderPackageBatchSql);
         DB::update($trackingOrderPackageTourSql);
+        DB::update($trackingOrderMaterialExecutionDateSql);
         DB::update($trackingOrderMaterialBatchSql);
         DB::update($trackingOrderMaterialTourSql);
+
+        DB::update($trackingOrderPackageStatus1Sql);
+        DB::update($trackingOrderpackageStatus2Sql);
+        DB::update($trackingOrderpackageStatus3Sql);
+        DB::update($trackingOrderpackageStatus4Sql);
+        DB::update($trackingOrderpackageStatus5Sql);
 
 //        DB::update($orderStatus1Sql);
 //        DB::update($orderStatus2Sql);
