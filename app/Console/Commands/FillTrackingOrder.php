@@ -55,17 +55,17 @@ class FillTrackingOrder extends Command
         $packageStatus4Sql = "UPDATE `package` SET `status` = 4 WHERE `status` = 6";
         $packageStatus5Sql = "UPDATE `package` SET `status` = 5 WHERE `status` = 7";
 
-        DB::update($orderSql);
-        DB::update($packageSql);
-        DB::update($materialSql);
+//        DB::update($orderSql);
+//        DB::update($packageSql);
+//        DB::update($materialSql);
         DB::update($trackingOrderPackageSql);
         DB::update($trackingOrderMaterialSql);
 
-        DB::update($orderStatus1Sql);
-        DB::update($orderStatus2Sql);
-        DB::update($orderStatus3Sql);
-        DB::update($orderStatus4Sql);
-        DB::update($orderStatus5Sql);
+//        DB::update($orderStatus1Sql);
+//        DB::update($orderStatus2Sql);
+//        DB::update($orderStatus3Sql);
+//        DB::update($orderStatus4Sql);
+//        DB::update($orderStatus5Sql);
 
         DB::update($packageStatus1Sql);
         DB::update($packageStatus2Sql);
