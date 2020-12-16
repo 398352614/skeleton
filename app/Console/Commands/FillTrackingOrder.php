@@ -69,15 +69,14 @@ class FillTrackingOrder extends Command
 //        DB::update($trackingOrderPackageSql);
 //        DB::update($trackingOrderMaterialSql);
 
-        DB::update($trackingOrderPackageExecutionDateSql);
-        DB::update($trackingOrderPackageBatchSql);
-        DB::update($trackingOrderPackageTourSql);
-        DB::update($trackingOrderPackageStatusSql);
-        DB::update($trackingOrderMaterialExecutionDateSql);
-        DB::update($trackingOrderMaterialBatchSql);
-        DB::update($trackingOrderMaterialTourSql);
-        $deleteSql = DB::delete("DELETE from `tracking_order_package` WHERE `status`=7");
-
+//        DB::update($trackingOrderPackageExecutionDateSql);
+//        DB::update($trackingOrderPackageBatchSql);
+//        DB::update($trackingOrderPackageTourSql);
+//        DB::update($trackingOrderPackageStatusSql);
+//        DB::update($trackingOrderMaterialExecutionDateSql);
+//        DB::update($trackingOrderMaterialBatchSql);
+//        DB::update($trackingOrderMaterialTourSql);
+        $deleteSql = DB::delete("DELETE from `tracking_order_package` WHERE `status` is null");
 
 
 //        DB::update($orderStatus1Sql);
