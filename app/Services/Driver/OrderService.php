@@ -151,7 +151,7 @@ class OrderService extends BaseService
             if (($packageList[$trackingOrderPackage['order_no']]['type'] == BaseConstService::ORDER_TYPE_3) && ($trackingOrderPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1)) {
                 continue;
             }
-            $signPackageNoList = $trackingOrderPackage['express_first_no'];
+            $signPackageNoList[] = $trackingOrderPackage['express_first_no'];
         }
         $rowCount = $this->getPackageService()->update(['express_first_no' => ['in', $signPackageNoList], 'order_no' => ['in', $signOrderNoList]], ['status' => BaseConstService::ORDER_STATUS_3]);
         if ($rowCount === false) {
