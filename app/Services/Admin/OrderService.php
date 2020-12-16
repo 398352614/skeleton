@@ -999,7 +999,7 @@ class OrderService extends BaseService
         if (empty($order)) {
             throw new BusinessLogicException('数据不存在');
         }
-        if ($order['status'] !== BaseConstService::ORDER_STATUS_5) {
+        if ($order['status'] !== BaseConstService::ORDER_STATUS_3) {
             throw new BusinessLogicException('只有已完成的订单才能无效化');
         }
         $row = parent::updateById($id, ['out_order_no' => $order['out_order_no'] !== '' ? $order['out_order_no'] . 'OLD' : '']);
