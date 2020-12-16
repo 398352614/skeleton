@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Material;
 use App\Models\Order;
 use App\Models\Package;
 use App\Models\Tour;
 use App\Models\TrackingOrder;
+use App\Models\TrackingOrderMaterial;
+use App\Models\TrackingOrderPackage;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
@@ -45,10 +48,13 @@ class FillCancelTrackingOrder extends Command
      */
     public function handle()
     {
-        $idList = DB::select("SELECT `id` FROM `order` WHERE `company_id`=6 AND `status`=4 AND `tracking_order_no` is null");
+        $idList = DB::select("SELECT GROUP_CONCAT(`id`) as id_list FROM `order` WHERE `company_id`=6 AND `status`=4 AND `tracking_order_no` is null");
+        $idList = $idList[0]->id_list;
         $oldOrderList = DB::select("SELECT * FROM `old_order` WHERE id in ({$idList})");
         $trackingOrderFields = (new TrackingOrder())->getFillable();
+        $trackingOrderPackageFields = (new TrackingOrderPackage())->getFillable();
         $trackingOrderModel = new TrackingOrder();
+        $trackingOrderPackageModel = new TrackingOrderPackage();
         $tourFillFields = [
             'line_id',
             'line_name',
@@ -81,8 +87,8 @@ class FillCancelTrackingOrder extends Command
             $trackingOrder['place_lat'] = $oldOrder['lat'];
             $trackingOrder = array_merge(array_fill_keys($tourFillFields, ''), $trackingOrder);
             $trackingOrder['line_id'] = null;
-            if (!empty($order['tour_no'])) {
-                $tour = Tour::query()->where('tour_no', $order['tour_no'])->first();
+            if (!empty($oldOrder['tour_no'])) {
+                $tour = Tour::query()->where('tour_no', $oldOrder['tour_no'])->first();
                 if (!empty($tour)) {
                     $trackingOrder = array_merge($trackingOrder, Arr::only($tour->toArray(), $tourFillFields));
                     $trackingOrder['warehouse_fullname'] = $tour['warehouse_name'];
@@ -90,7 +96,30 @@ class FillCancelTrackingOrder extends Command
                 }
             }
             $trackingOrderList[] = $trackingOrder;
+            //订单更新
+            Order::query()->where('order_no', $oldOrder['order_no'])->update(['tracking_order_no' => $trackingOrderNo]);
+            //包裹更新
+            Package::query()->where('order_no', $oldOrder['order_no'])->update(['tracking_order_no' => $trackingOrderNo]);
+            //材料更新
+            Material::query()->where('order_no', $oldOrder['order_no'])->update(['tracking_order_no' => $trackingOrderNo]);
+            //运单材料更新
+            TrackingOrderMaterial::query()->where('order_no', $oldOrder['order_no'])->update(['tracking_order_no' => $trackingOrderNo]);
+            //运单包裹新增
+            $packageList = Package::query()->where('order_no', $oldOrder['order_no'])->get()->toArray();
+            if (empty($packageList)) continue;
+            $packageList = collect($packageList)->map(function ($package, $key) use ($trackingOrderPackageFields) {
+                return collect(Arr::only($package, $trackingOrderPackageFields));
+            })->toArray();
+            data_set($packageList, '*.tour_no', $trackingOrder['tour_no']);
+            data_set($packageList, '*.batch_no', $trackingOrder['batch_no']);
+            data_set($packageList, '*.tracking_order_no', $trackingOrder['tracking_order_no']);
+            data_set($packageList, '*.type', $trackingOrder['type']);
+            data_set($packageList, '*.status', $trackingOrder['status']);
+            data_set($packageList, '*.execution_date', $trackingOrder['execution_date']);
+            $trackingOrderPackageModel::query()->insert($packageList);
         }
         $trackingOrderModel::query()->insert($trackingOrderList);
+        $this->info('successful\n');
+        return;
     }
 }
