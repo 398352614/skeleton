@@ -51,7 +51,9 @@ class FillCancelTrackingOrder extends Command
         $idList = DB::select("SELECT GROUP_CONCAT(`id`) as id_list FROM `order` WHERE `company_id`=6 AND `status`=4 AND `tracking_order_no` is null");
         $idList = $idList[0]->id_list;
         $oldOrderList = DB::select("SELECT * FROM `old_order` WHERE id in ({$idList})");
-        $oldOrderList = collect($oldOrderList)->toArray();
+        $oldOrderList = collect($oldOrderList)->map(function ($oldOrder, $key) {
+            return collect($oldOrder);
+        })->toArray();
         dd($oldOrderList[0]);
         $trackingOrderFields = (new TrackingOrder())->getFillable();
         $trackingOrderPackageFields = (new TrackingOrderPackage())->getFillable();
