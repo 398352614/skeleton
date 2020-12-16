@@ -54,7 +54,6 @@ class FillCancelTrackingOrder extends Command
         $oldOrderList = collect($oldOrderList)->map(function ($oldOrder, $key) {
             return collect($oldOrder);
         })->toArray();
-        dd($oldOrderList[0]);
         $trackingOrderFields = (new TrackingOrder())->getFillable();
         $trackingOrderPackageFields = (new TrackingOrderPackage())->getFillable();
         $trackingOrderModel = new TrackingOrder();
