@@ -452,6 +452,8 @@ class TourService extends BaseService
             $batch['actual_pickup_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['actual_quantity'] ?? "0";
             $batch['expect_pie_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['expect_quantity'] ?? "0";
             $batch['actual_pie_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['actual_quantity'] ?? "0";
+            $batch['receiver_lon'] = $batch['place_lon'];
+            $batch['receiver_lat'] = $batch['place_lat'];
             return $batch;
         }, $batchList);
         $tour['batch_count'] = count($batchList);
