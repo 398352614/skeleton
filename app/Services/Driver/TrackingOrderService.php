@@ -31,11 +31,13 @@ class TrackingOrderService extends BaseService
      * 新增
      * @param $params
      * @param $orderNo
-     * @params $line
+     * @param $line
+     * @param bool $again
      * @return bool
      * @throws BusinessLogicException
+     * @params $line
      */
-    public function store($params, $orderNo, $line)
+    public function store($params, $orderNo, $line, $again = false)
     {
         //填充发件人信息
         $line = $this->fillWarehouseInfo($params, BaseConstService::YES, $line);
@@ -64,7 +66,11 @@ class TrackingOrderService extends BaseService
         TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
         Log::info('运单信息', $trackingOrder);
         //订单轨迹-运单中途创建
-        OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_RESTART);
+        if ($again == true) {
+            OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_RESTART);
+        } else {
+            OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
+        }
         return $tour;
     }
 
