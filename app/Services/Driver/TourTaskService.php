@@ -251,6 +251,7 @@ class TourTaskService extends BaseService
      */
     public function getAllInfo()
     {
+        return [];
         $tour = $this->getInfo(['status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false, ['id' => 'desc']);
         if (empty($tour)) {
             return [];
@@ -262,7 +263,7 @@ class TourTaskService extends BaseService
         $tour['last_place'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'desc', 'created_at' => 'desc']);
         $tour['batch_list'] = collect($tour['batch_list'])->toArray();
         foreach ($tour['batch_list'] as $x => $y) {
-            $tour['batch_list'][$x]['tracking_order_list'] = collect($tour['tracking_order_list'])->where('batch_no',$y['batch_no'])->all();
+            $tour['batch_list'][$x]['tracking_order_list'] = collect($tour['tracking_order_list'])->where('batch_no', $y['batch_no'])->all();
             $packageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $y['batch_no']], ['*'], false)->toArray();
             $authPackage = collect($packageList)->first(function ($package) {
                 return (intval($package['status']) == BaseConstService::BATCH_DELIVERING) && (intval($package['is_auth']) == BaseConstService::IS_AUTH_1);
