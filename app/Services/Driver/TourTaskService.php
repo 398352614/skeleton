@@ -251,6 +251,7 @@ class TourTaskService extends BaseService
      */
     public function getAllInfo()
     {
+        return [];
         $tour = $this->getInfo(['status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false, ['id' => 'desc']);
         if (empty($tour)) {
             return [];
