@@ -7,6 +7,7 @@ use App\Http\Resources\Api\TrackingOrderTrailResource;
 use App\Models\TrackingOrder;
 use App\Models\TrackingOrderTrail;
 use App\Jobs\AddData;
+use Illuminate\Support\Facades\Log;
 
 class TrackingOrderTrailService extends BaseService
 {
@@ -36,14 +37,22 @@ class TrackingOrderTrailService extends BaseService
     }
 
 
+    /**
+     * 批量新增
+     * @param array $trackingOrderList
+     * @param int $action
+     * @param null $params
+     */
     public static function storeAllByTrackingOrderList(array $trackingOrderList, int $action, $params = null)
     {
+        $data = [];
         foreach ($trackingOrderList as $key => $trackingOrder) {
-            self::TrackingOrderStatusChangeCreateTrail($trackingOrder, $action, $params ?? $trackingOrder);
+            $data[] = self::trackingOrderStatusChangeCreateTrail($trackingOrder, $action, $params ?? $trackingOrder, true);
         }
+        dispatch(new AddData('order-trail', $data));
     }
 
-    public static function TrackingOrderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [])
+    public static function trackingOrderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [],$list=false)
     {
         //根据不同的类型生成不同的content
         $content = '';
@@ -105,8 +114,11 @@ class TrackingOrderTrailService extends BaseService
             'created_at' => $now,
             'updated_at' => $now
         ];
-        !empty($trackingOrder['merchant_id']) && $data['merchant_id'] = $trackingOrder['merchant_id'];
-        dispatch(new AddData('tracking-order-trail', $data));
+        if ($list == false) {
+            dispatch(new AddData('order-trail', $data));
+        } else {
+            return $data;
+        }
     }
 
     /**
