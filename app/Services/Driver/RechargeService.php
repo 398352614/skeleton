@@ -76,8 +76,8 @@ class RechargeService extends BaseService
         if(empty($tour)){
             throw new BusinessLogicException('线路未出库，无法进行现金充值');
         }
-        $orderList=$this->getOrderService()->getList(['tour_no'=>$tour['tour_no']],['*'],false);
-        if($orderList->isEmpty()){
+        $trackingOrderList=$this->getTrackingOrderService()->getList(['tour_no'=>$tour['tour_no']],['*'],false);
+        if($trackingOrderList->isEmpty()){
             throw new BusinessLogicException('数据不存在');
         }
         $params = Arr::only($params, ['merchant_id', 'out_user_name']);

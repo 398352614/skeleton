@@ -463,7 +463,7 @@ class TourService extends BaseService
         $tour['total_delay_amount'] = $this->getTourDelayService()->count(['tour_no' => $tour['tour_no']]);
         //获取延时时间
         $tour['total_delay_time'] = intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']]));
-        $tour['total_delay_time_human'] = round(intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']])) / 60) . __('分钟');
+        $tour['total_delay_time_human'] = round($tour['total_delay_time'] / 60) . __('分钟');
         return TourBatchResource::make($tour)->toArray(request());
     }
 
