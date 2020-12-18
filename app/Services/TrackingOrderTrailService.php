@@ -49,7 +49,7 @@ class TrackingOrderTrailService extends BaseService
         foreach ($trackingOrderList as $key => $trackingOrder) {
             $data[] = self::trackingOrderStatusChangeCreateTrail($trackingOrder, $action, $params ?? $trackingOrder, true);
         }
-        dispatch(new AddData('order-trail', $data));
+        dispatch(new AddData('tracking-order-trail', $data));
     }
 
     public static function trackingOrderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [],$list=false)
@@ -115,7 +115,7 @@ class TrackingOrderTrailService extends BaseService
             'updated_at' => $now
         ];
         if ($list == false) {
-            dispatch(new AddData('order-trail', $data));
+            dispatch(new AddData('tracking-order-trail', $data));
         } else {
             return $data;
         }
