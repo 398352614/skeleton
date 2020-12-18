@@ -13,6 +13,7 @@ use App\Jobs\AddData;
 use App\Models\Order;
 use App\Models\OrderTrail;
 use App\Models\TrackingOrder;
+use Illuminate\Support\Facades\Log;
 
 class OrderTrailService extends BaseService
 {
@@ -69,10 +70,11 @@ class OrderTrailService extends BaseService
      */
     public static function storeAllByOrderList(array $trackingOrderList, int $action, $params = null)
     {
-        $data=[];
+        $data = [];
         foreach ($trackingOrderList as $key => $trackingOrder) {
             $data[] = self::OrderStatusChangeCreateTrail($trackingOrder, $action, $params ?? $trackingOrder, true);
         }
+        Log::info('轨迹', $data);
         dispatch(new AddData('order-trail', $data));
     }
 
