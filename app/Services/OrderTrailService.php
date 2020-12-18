@@ -127,6 +127,7 @@ class OrderTrailService extends BaseService
             'updated_at' => $now
         ];
         !empty($trackingOrder['merchant_id']) && $data['merchant_id'] = $trackingOrder['merchant_id'];
+        Log::info($list);
         if ($list == false) {
             dispatch(new AddData('order-trail', $data));
         } else {
