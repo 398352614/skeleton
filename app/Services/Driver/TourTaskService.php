@@ -251,26 +251,18 @@ class TourTaskService extends BaseService
      */
     public function getAllInfo()
     {
-        return [];
         $tour = $this->getInfo(['status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false, ['id' => 'desc']);
         if (empty($tour)) {
             return [];
         }
         $tour = $tour->toArray();
+        $tour = $this->show($tour['id']);
         //只取第一个
         $batchFields = ['id', 'batch_no', 'place_fullname', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address'];
-        //获取站点数量
-        $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
-        //获取最后一个站点的收件人信息
         $tour['last_place'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'desc', 'created_at' => 'desc']);
-        //获取是否有特殊事项
-        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['special_remark'], false);
-        $tour['is_exist_special_remark'] = !empty($trackingOrder) ? true : false;
-        $tour = array_merge($tour, $this->show($tour['id']));
         $tour['batch_list'] = collect($tour['batch_list'])->toArray();
         foreach ($tour['batch_list'] as $x => $y) {
             $tour['batch_list'][$x] = array_merge($tour['batch_list'][$x], $this->getTourService()->getBatchInfo($tour['id'], ['batch_id' => $y['id']]));
-            $tour['batch_list'][$x] = array_merge($tour['batch_list'][$x], collect($this->getTourService()->getBatchList($tour['id'])['batch_list'])->where('batch_no', $y['batch_no'])->first());
         }
         $tourList[] = $tour;
         return $tourList;
