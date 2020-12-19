@@ -513,12 +513,12 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         //更新运单包裹
-        $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no'], 'status' => $data['status']]);
+        $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no'], 'status' => $data['status'], 'execution_date' => $data['execution_date']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         //更新运单材料
-        $rowCount = $this->getTrackingOrderMaterialService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+        $rowCount = $this->getTrackingOrderMaterialService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no'], 'execution_date' => $data['execution_date']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
