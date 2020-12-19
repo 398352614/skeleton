@@ -340,7 +340,7 @@ class OrderService extends BaseService
             if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
                 throw new BusinessLogicException('当前订单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
             }
-            !empty($trackingOrder) && $this->getTrackingOrderService()->removeFromBatch($trackingOrder->id);
+            (!empty($trackingOrder) && (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]))) && $this->getTrackingOrderService()->removeFromBatch($trackingOrder->id);
         }
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
