@@ -270,4 +270,15 @@ class OrderController extends OrderBaseController
     {
         return $this->service->track($id);
     }
+
+    /**
+     * 获取订单的运单列表
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getTrackingOrderList($id)
+    {
+        return $this->service->getTrackingOrderList($id);
+    }
 }
