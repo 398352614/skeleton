@@ -874,11 +874,7 @@ class OrderService extends BaseService
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
-        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
-        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
         $orderList = $orderList->toArray(request());
-        $packageIsExist = !empty($packageList);
-        $materialIsExist = !empty($materialList);
         foreach ($orderList as $k => $v) {
             $orderList[$k]['merchant_name'] = $v['merchant_id_name'];
             $orderList[$k]['status'] = $v['status_name'];
@@ -887,15 +883,17 @@ class OrderService extends BaseService
             $orderList[$k]['replace_amount'] = $v['replace_amount'] ?? 0.00;
             $orderList[$k]['settlement_amount'] = $v['settlement_amount'] ?? 0.00;
             if ($packageIsExist) {
-                $orderList[$k]['package_name'] = implode(',', collect($packageList)->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray());
-                $orderList[$k]['package_quantity'] = count(collect($packageList)->where('order_no', $v['order_no']));
+                $list=$this->getPackageService()->query->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray();
+                $orderList[$k]['package_name'] = implode(',', $list);
+                $orderList[$k]['package_quantity'] = count($list);
             } else {
                 $orderList[$k]['package_name'] = [];
                 $orderList[$k]['package_quantity'] = 0;
             }
             if ($materialIsExist) {
-                $orderList[$k]['material_name'] = implode(',', collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
-                $orderList[$k]['material_quantity'] = collect($materialList)->where('order_no', $v['order_no'])->sum('expect_quantity');
+                $list=$this->getPackageService()->query->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray();
+                $orderList[$k]['material_name'] = implode(',', $list);
+                $orderList[$k]['material_quantity'] = collect($list);
             } else {
                 $orderList[$k]['material_name'] = [];
                 $orderList[$k]['material_quantity'] = 0;
