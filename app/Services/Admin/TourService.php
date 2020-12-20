@@ -791,9 +791,9 @@ class TourService extends BaseService
                     $order = collect($trackingOrderList)->where('out_user_id', '<>', '')->first();;
                 }
                 if (count(collect($trackingOrderList)->groupBy('out_user_id')) == 1) {
-                    $info['batchs'][$k]['out_user_id'] = $order['out_user_id'];
+                    $info['batchs'][$k]['out_user_id'] = $order['out_user_id'] ?? '';
                 } else {
-                    $info['batchs'][$k]['out_user_id'] = $order['out_user_id'] . ' ' . __('等');
+                    $info['batchs'][$k]['out_user_id'] = ($order['out_user_id'] ?? '') . ' ' . __('等');
                 }
             } elseif (count($trackingOrderList) == 1) {
                 $info['batchs'][$k]['out_user_id'] = collect($trackingOrderList)->sortBy('out_user_id')->toArray()[0]['out_user_id'];
