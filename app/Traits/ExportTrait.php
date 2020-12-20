@@ -63,9 +63,7 @@ trait ExportTrait
             if ($dir == 'plan') {
                 $rowCount = Excel::store(new PlanExport($data, $headings, $name, $dir, $params), $path);
             } else {
-                Log::info('开始时间'.Carbon::now()->format('Y-m-d H:i:s'));
                 $rowCount = Excel::store(new BaseExport($data, $headings, $name, $dir), $path);
-                Log::info('结束时间'.Carbon::now()->format('Y-m-d H:i:s'));
             }
         } catch (\Exception $ex) {
             throw new BusinessLogicException('表格导出失败，请重新操作');
