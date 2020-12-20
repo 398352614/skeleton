@@ -876,11 +876,9 @@ class OrderService extends BaseService
         }
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
         $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
-        $merchant = $this->getMerchantService()->getList(['id' => ['in', $orderList->pluck('merchant_id')->toArray()]]);
-        if ($merchant->isEmpty()) {
-            throw new BusinessLogicException('数据不存在');
-        }
         $orderList = $orderList->toArray(request());
+        $packageIsExist = !empty($packageList);
+        $materialIsExist = !empty($materialList);
         foreach ($orderList as $k => $v) {
             $orderList[$k]['merchant_name'] = $v['merchant_id_name'];
             $orderList[$k]['status'] = $v['status_name'];
@@ -888,14 +886,14 @@ class OrderService extends BaseService
             $orderList[$k]['sticker_amount'] = $v['sticker_amount'] ?? 0.00;
             $orderList[$k]['replace_amount'] = $v['replace_amount'] ?? 0.00;
             $orderList[$k]['settlement_amount'] = $v['settlement_amount'] ?? 0.00;
-            if (!empty($packageList)) {
+            if ($packageIsExist) {
                 $orderList[$k]['package_name'] = implode(',', collect($packageList)->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray());
                 $orderList[$k]['package_quantity'] = count(collect($packageList)->where('order_no', $v['order_no']));
             } else {
                 $orderList[$k]['package_name'] = [];
                 $orderList[$k]['package_quantity'] = 0;
             }
-            if (!empty($materialList)) {
+            if ($materialIsExist) {
                 $orderList[$k]['material_name'] = implode(',', collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
                 $orderList[$k]['material_quantity'] = collect($materialList)->where('order_no', $v['order_no'])->sum('expect_quantity');
             } else {
