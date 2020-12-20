@@ -177,12 +177,6 @@ class TrackingOrderService extends BaseService
             $this->query->whereIn('tour_no', $tourList);
         }
         $list = parent::getPageList();
-        $tourNoList = collect($list)->where('tour_no', '<>', '')->pluck('tour_no')->toArray();
-        $tour = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false);
-        foreach ($list as $k => $v) {
-            $list[$k]['line_id'] = $tour->where('tour_no', $v['tour_no'])->first()['line_id'] ?? '';
-            $list[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
-        }
         foreach ($list as &$trackingOrder) {
             $batchException = $this->getBatchExceptionService()->getInfo(['batch_no' => $trackingOrder['batch_no']], ['id', 'batch_no', 'stage'], false, ['created_at' => 'desc']);
             $trackingOrder['exception_stage_name'] = !empty($batchException) ? ConstTranslateTrait::batchExceptionStageList($batchException['stage']) : __('正常');
@@ -785,7 +779,7 @@ class TrackingOrderService extends BaseService
     public function trackingOrderExport()
     {
         $this->query->where('status', '<>', BaseConstService::TRACKING_ORDER_STATUS_7);
-        $dbTrackingOrderList = $this->getPageList();
+        $dbTrackingOrderList = $this->setFilter()->getList();
 //        if ($dbTrackingOrderList->hasMorePages()) {
 //            throw new BusinessLogicException('数据量过大无法导出，运单数不得超过200');
 //        }
