@@ -20,6 +20,8 @@ use App\Listeners\UpdateLineCountTime;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Laravel\Telescope\Telescope;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -103,5 +105,11 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
+        Event::listen('laravels.received_request', function ($request, $app) {
+            $reflection = new \ReflectionClass(Telescope::class);
+            $handlingApprovedRequest = $reflection->getMethod('handlingApprovedRequest');
+            $handlingApprovedRequest->setAccessible(true);
+            $handlingApprovedRequest->invoke(null, $app) ? Telescope::startRecording() : Telescope::stopRecording();
+        });
     }
 }
