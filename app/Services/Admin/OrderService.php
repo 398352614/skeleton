@@ -869,7 +869,7 @@ class OrderService extends BaseService
      */
     public function orderExport()
     {
-        $orderList = $this->getPageList();
+        $orderList = $this->setFilter()->getList();
         //特殊处理
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
