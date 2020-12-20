@@ -874,7 +874,13 @@ class OrderService extends BaseService
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
+        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
         $orderList = $orderList->toArray(request());
+        $packageIsExist = !empty($packageList);
+        $materialIsExist = !empty($materialList);
+        unset($packageList);
+        unset($materialList);
         foreach ($orderList as $k => $v) {
             $orderList[$k]['merchant_name'] = $v['merchant_id_name'];
             $orderList[$k]['status'] = $v['status_name'];
