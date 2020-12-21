@@ -72,13 +72,12 @@ class OrderTrailService extends BaseService
     {
         $data = [];
         foreach ($trackingOrderList as $key => $trackingOrder) {
-            $data[] = self::OrderStatusChangeCreateTrail($trackingOrder, $action, $params ?? $trackingOrder, true);
+            $data[] = self::orderStatusChangeCreateTrail($trackingOrder, $action, $params ?? $trackingOrder, true);
         }
-        Log::info('轨迹', $data);
         dispatch(new AddData('order-trail', $data));
     }
 
-    public static function OrderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [], $list = false)
+    public static function orderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [], $list = false)
     {
         $type = [1 => '取件', 2 => '派件'];
         //根据不同的类型生成不同的content
