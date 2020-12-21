@@ -119,6 +119,14 @@ php artisan key:generate
 ```
 php artisan storage:link
 ```
+composer 自我更新
+```gitexclude
+composer selfupdate
+```
+composer 安装依赖
+```gitexclude
+composer install
+```
 #### 3.3 数据库初始化
 ```
 php artisan migrate

@@ -13,6 +13,7 @@ use App\Jobs\AddData;
 use App\Models\Order;
 use App\Models\OrderTrail;
 use App\Models\TrackingOrder;
+use Illuminate\Support\Facades\Log;
 
 class OrderTrailService extends BaseService
 {
@@ -69,12 +70,14 @@ class OrderTrailService extends BaseService
      */
     public static function storeAllByOrderList(array $trackingOrderList, int $action, $params = null)
     {
+        $data = [];
         foreach ($trackingOrderList as $key => $trackingOrder) {
-            self::OrderStatusChangeCreateTrail($trackingOrder, $action, $params ?? $trackingOrder);
+            $data[] = self::orderStatusChangeCreateTrail($trackingOrder, $action, $params ?? $trackingOrder, true);
         }
+        dispatch(new AddData('order-trail', $data));
     }
 
-    public static function OrderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [])
+    public static function orderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [], $list = false)
     {
         $type = [1 => '取件', 2 => '派件'];
         //根据不同的类型生成不同的content
@@ -123,6 +126,10 @@ class OrderTrailService extends BaseService
             'updated_at' => $now
         ];
         !empty($trackingOrder['merchant_id']) && $data['merchant_id'] = $trackingOrder['merchant_id'];
-        dispatch(new AddData('order-trail', $data));
+        if ($list == false) {
+            dispatch(new AddData('order-trail', $data));
+        } else {
+            return $data;
+        }
     }
 }

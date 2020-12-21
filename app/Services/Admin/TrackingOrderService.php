@@ -177,12 +177,6 @@ class TrackingOrderService extends BaseService
             $this->query->whereIn('tour_no', $tourList);
         }
         $list = parent::getPageList();
-        $tourNoList = collect($list)->where('tour_no', '<>', '')->pluck('tour_no')->toArray();
-        $tour = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false);
-        foreach ($list as $k => $v) {
-            $list[$k]['line_id'] = $tour->where('tour_no', $v['tour_no'])->first()['line_id'] ?? '';
-            $list[$k]['line_name'] = $tour->where('tour_no', $v['tour_no'])->first()['line_name'] ?? '';
-        }
         foreach ($list as &$trackingOrder) {
             $batchException = $this->getBatchExceptionService()->getInfo(['batch_no' => $trackingOrder['batch_no']], ['id', 'batch_no', 'stage'], false, ['created_at' => 'desc']);
             $trackingOrder['exception_stage_name'] = !empty($batchException) ? ConstTranslateTrait::batchExceptionStageList($batchException['stage']) : __('正常');
@@ -246,16 +240,16 @@ class TrackingOrderService extends BaseService
         //重新统计取件线路金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         //运单轨迹-运单创建
-        TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_CREATED);
+        TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_CREATED);
         //运单轨迹-运单加入站点
-        TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
+        TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
         //运单轨迹-运单加入取件线路
-        TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+        TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
         //订单轨迹-订单创建
         if ($again == true) {
-            OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_RESTART);
+            OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_RESTART);
         } else {
-            OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
+            OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
         }
         return $tour;
     }
@@ -284,10 +278,10 @@ class TrackingOrderService extends BaseService
             if (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
                 list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line);
                 $trackingOrder = array_merge($trackingOrder, self::getBatchTourFillData($batch, $tour));
-                TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
-                TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+                TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
+                TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
                 if ($dbTrackingOrder['execution_date'] != $trackingOrder['execution_date']) {
-                    OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_UPDATE, $dbTrackingOrder);
+                    OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_UPDATE, $dbTrackingOrder);
                 }
             }
         }
@@ -415,7 +409,7 @@ class TrackingOrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
-        OrderTrailService::OrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::ORDER_TRAIL_DELETE);
+        OrderTrailService::orderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::ORDER_TRAIL_DELETE);
     }
 
 
@@ -463,9 +457,9 @@ class TrackingOrderService extends BaseService
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         if ($isFillTrackingOrder === true) {
             $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
-            ($dbTrackingOrder['batch_no'] != $batch['batch_no']) && TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
-            ($dbTrackingOrder['tour_no'] != $tour['tour_no']) && TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
-            ($dbTrackingOrder['execution_date'] != $tour['execution_date']) && OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_UPDATE, $dbTrackingOrder);
+            ($dbTrackingOrder['batch_no'] != $batch['batch_no']) && TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
+            ($dbTrackingOrder['tour_no'] != $tour['tour_no']) && TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
+            ($dbTrackingOrder['execution_date'] != $tour['execution_date']) && OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_UPDATE, $dbTrackingOrder);
         }
         return [$batch, $tour];
     }
@@ -513,12 +507,12 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         //更新运单包裹
-        $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+        $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no'], 'status' => $data['status'], 'execution_date' => $data['execution_date']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         //更新运单材料
-        $rowCount = $this->getTrackingOrderMaterialService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no']]);
+        $rowCount = $this->getTrackingOrderMaterialService()->update(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['batch_no' => $batch['batch_no'], 'tour_no' => $tour['tour_no'], 'execution_date' => $data['execution_date']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
@@ -583,8 +577,8 @@ class TrackingOrderService extends BaseService
         //重新统计取件线路金额
         !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
 
-        TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH, $dbTrackingOrder);
-        TrackingOrderTrailService::TrackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR, $dbTrackingOrder);
+        TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH, $dbTrackingOrder);
+        TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR, $dbTrackingOrder);
     }
 
     /**
@@ -785,10 +779,10 @@ class TrackingOrderService extends BaseService
     public function trackingOrderExport()
     {
         $this->query->where('status', '<>', BaseConstService::TRACKING_ORDER_STATUS_7);
-        $dbTrackingOrderList = $this->getPageList();
-        if ($dbTrackingOrderList->hasMorePages()) {
-            throw new BusinessLogicException('数据量过大无法导出，运单数不得超过200');
-        }
+        $dbTrackingOrderList = $this->setFilter()->getList();
+//        if ($dbTrackingOrderList->hasMorePages()) {
+//            throw new BusinessLogicException('数据量过大无法导出，运单数不得超过200');
+//        }
         if ($dbTrackingOrderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -895,6 +889,21 @@ class TrackingOrderService extends BaseService
         $info = $this->getAddressService()->getInfoByUnique($params);
         if (empty($info)) {
             $this->getAddressService()->create($params);
+        }
+    }
+
+    /**
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function changeOutStatus($params)
+    {
+        $ids = explode(',', $params['id_list']);
+        for ($i = 0; $i < count($ids); $i++) {
+            $rowCount[$i] = parent::updateById($ids[$i], ['out_status' => $params['out_status']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('修改失败，请重新操作');
+            }
         }
     }
 }

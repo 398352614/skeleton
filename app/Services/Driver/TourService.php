@@ -452,6 +452,8 @@ class TourService extends BaseService
             $batch['actual_pickup_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_1]['actual_quantity'] ?? "0";
             $batch['expect_pie_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['expect_quantity'] ?? "0";
             $batch['actual_pie_package_quantity'] = $packageList[$batch['batch_no']][BaseConstService::ORDER_TYPE_2]['actual_quantity'] ?? "0";
+            $batch['receiver_lon'] = $batch['place_lon'];
+            $batch['receiver_lat'] = $batch['place_lat'];
             return $batch;
         }, $batchList);
         $tour['batch_count'] = count($batchList);
@@ -461,7 +463,7 @@ class TourService extends BaseService
         $tour['total_delay_amount'] = $this->getTourDelayService()->count(['tour_no' => $tour['tour_no']]);
         //获取延时时间
         $tour['total_delay_time'] = intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']]));
-        $tour['total_delay_time_human'] = round(intval($this->getTourDelayService()->sum('delay_time', ['tour_no' => $tour['tour_no']])) / 60) . __('分钟');
+        $tour['total_delay_time_human'] = round($tour['total_delay_time'] / 60) . __('分钟');
         return TourBatchResource::make($tour)->toArray(request());
     }
 

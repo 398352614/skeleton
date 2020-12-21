@@ -335,9 +335,12 @@ class OrderService extends BaseService
     public function end($id)
     {
         $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
-        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
-        if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
-            throw new BusinessLogicException('当前订单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
+        if (!empty($dbOrder['tracking_order_no'])) {
+            $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $dbOrder['tracking_order_no']], ['*'], false);
+            if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
+                throw new BusinessLogicException('当前订单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
+            }
+            (!empty($trackingOrder) && (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]))) && $this->getTrackingOrderService()->removeFromBatch($trackingOrder->id);
         }
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
@@ -347,7 +350,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        OrderTrailService::OrderStatusChangeCreateTrail($trackingOrder->toArray(), BaseConstService::ORDER_TRAIL_CLOSED);
+        OrderTrailService::orderStatusChangeCreateTrail($trackingOrder->toArray(), BaseConstService::ORDER_TRAIL_CLOSED);
         //取消通知
         event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
     }
@@ -872,18 +875,18 @@ class OrderService extends BaseService
      */
     public function orderExport()
     {
-        $orderList = $this->getPageList();
+        $orderList = $this->setFilter()->getList();
         //特殊处理
         if ($orderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
         $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
         $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
-        $merchant = $this->getMerchantService()->getList(['id' => ['in', $orderList->pluck('merchant_id')->toArray()]]);
-        if ($merchant->isEmpty()) {
-            throw new BusinessLogicException('数据不存在');
-        }
         $orderList = $orderList->toArray(request());
+        $packageIsExist = !empty($packageList);
+        $materialIsExist = !empty($materialList);
+        unset($packageList);
+        unset($materialList);
         foreach ($orderList as $k => $v) {
             $orderList[$k]['merchant_name'] = $v['merchant_id_name'];
             $orderList[$k]['status'] = $v['status_name'];
@@ -891,16 +894,18 @@ class OrderService extends BaseService
             $orderList[$k]['sticker_amount'] = $v['sticker_amount'] ?? 0.00;
             $orderList[$k]['replace_amount'] = $v['replace_amount'] ?? 0.00;
             $orderList[$k]['settlement_amount'] = $v['settlement_amount'] ?? 0.00;
-            if (!empty($packageList)) {
-                $orderList[$k]['package_name'] = implode(',', collect($packageList)->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray());
-                $orderList[$k]['package_quantity'] = count(collect($packageList)->where('order_no', $v['order_no']));
+            if ($packageIsExist) {
+                $list=$this->getPackageService()->query->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray();
+                $orderList[$k]['package_name'] = implode(',', $list);
+                $orderList[$k]['package_quantity'] = count($list);
             } else {
                 $orderList[$k]['package_name'] = [];
                 $orderList[$k]['package_quantity'] = 0;
             }
-            if (!empty($materialList)) {
-                $orderList[$k]['material_name'] = implode(',', collect($materialList)->where('order_no', $v['order_no'])->pluck('code')->toArray());
-                $orderList[$k]['material_quantity'] = collect($materialList)->where('order_no', $v['order_no'])->sum('expect_quantity');
+            if ($materialIsExist) {
+                $list=$this->getMaterialService()->query->where('order_no', $v['order_no'])->pluck('code')->toArray();
+                $orderList[$k]['material_name'] = implode(',', $list);
+                $orderList[$k]['material_quantity'] = collect($list);
             } else {
                 $orderList[$k]['material_name'] = [];
                 $orderList[$k]['material_quantity'] = 0;
@@ -1005,7 +1010,7 @@ class OrderService extends BaseService
         if (empty($order)) {
             throw new BusinessLogicException('数据不存在');
         }
-        if ($order['status'] !== BaseConstService::ORDER_STATUS_5) {
+        if ($order['status'] !== BaseConstService::ORDER_STATUS_3) {
             throw new BusinessLogicException('只有已完成的订单才能无效化');
         }
         $row = parent::updateById($id, ['out_order_no' => $order['out_order_no'] !== '' ? $order['out_order_no'] . 'OLD' : '']);
