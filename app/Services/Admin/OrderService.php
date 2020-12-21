@@ -899,7 +899,7 @@ class OrderService extends BaseService
             if ($materialIsExist) {
                 $list=$this->getMaterialService()->query->where('order_no', $v['order_no'])->pluck('code')->toArray();
                 $orderList[$k]['material_name'] = implode(',', $list);
-                $orderList[$k]['material_quantity'] = collect($list);
+                $orderList[$k]['material_quantity'] = count($list);
             } else {
                 $orderList[$k]['material_name'] = [];
                 $orderList[$k]['material_quantity'] = 0;
