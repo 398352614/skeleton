@@ -50,7 +50,7 @@ class OrderService extends BaseService
         'type' => ['=', 'type'],
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'order_no,out_order_no' => ['like', 'keyword'],
+        'out_user_id,order_no,out_order_no' => ['like', 'keyword'],
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
