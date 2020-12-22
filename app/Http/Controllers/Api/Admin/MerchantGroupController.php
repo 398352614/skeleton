@@ -77,7 +77,8 @@ class MerchantGroupController extends BaseController
      * @param $id
      * @return mixed
      */
-    public function indexOfMerchant($id){
+    public function indexOfMerchant($id)
+    {
         return $this->service->indexOfMerchant($id);
     }
 
@@ -86,7 +87,8 @@ class MerchantGroupController extends BaseController
      * 批量设置运价
      * @throws BusinessLogicException
      */
-    public function updatePrice(){
+    public function updatePrice()
+    {
         return $this->service->updatePrice($this->data);
     }
 }
