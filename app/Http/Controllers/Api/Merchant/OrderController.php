@@ -115,6 +115,11 @@ class OrderController extends OrderBaseController
         return $this->service->updateById($id, $this->data);
     }
 
+    public function updateAddress($id)
+    {
+        return $this->service->updateAddress($id, $this->data);
+    }
+
     /**
      * 修改派件日期
      * @param $id

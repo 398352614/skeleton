@@ -60,6 +60,8 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::post('/update-phone-date-list','OrderController@updateByApiList');
         //获取订单的运单列表
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList');
+        //修改订单地址
+        Route::put('/{id}/update-address', 'OrderController@updateAddress');
     });
 
     //运单管理
