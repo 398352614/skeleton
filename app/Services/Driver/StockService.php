@@ -13,6 +13,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Stock;
 use App\Services\BaseConstService;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class StockService extends BaseService
@@ -79,7 +80,7 @@ class StockService extends BaseService
         }
         $line = [];
         $executionDate = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['execution_date'] : $order['second_execution_date'];
-        if (empty($executionDate)) {
+        if (empty($executionDate) || Carbon::today()->gte($executionDate . ' 00:00:00')) {
             $placeCode = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_post_code'] : $order['second_place_post_code'];
             list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
         }
@@ -104,7 +105,7 @@ class StockService extends BaseService
         $trackingOrder = array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'order_no', 'out_user_id', 'out_order_no', 'mask_code', 'special_remark']));
         //生成运单号
         $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
-        $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line,true);
+        $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
         //包裹分拣
         $this->pickOut($package, $tour, $trackingOrder);
         return [
