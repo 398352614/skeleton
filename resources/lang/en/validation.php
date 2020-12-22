@@ -487,5 +487,17 @@ return [
         "delay_remark" => "delay remark",
         "second_execution_date" => "second execution date",
         "tracking_order_no" => "tracking order no",
-    ]
+    
+"receiver"=>"receiver",
+"lon"=>"lon",
+"lat"=>"lat",
+"pickup_count"=>"pickup count",
+"pie_count"=>"pie count",
+"out_group_order_no"=>"out group order no",
+"length"=>"length",
+"operator"=>"operator",
+"warehouse_name"=>"warehouse name",
+"tracking_type"=>"tracking type",
+"tracking_status"=>"tracking status",
+]
 ];
