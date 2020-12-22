@@ -855,7 +855,7 @@ class OrderService extends BaseService
      */
     public function updateAddress($id, $params)
     {
-        $dbOrder = parent::getInfoLock(['id' => $id], ['*'], false);
+        $dbOrder = parent::getInfoLock(['id' => $id], ['*'], false)->toArray();
         if (empty($dbOrder)) {
             throw new BusinessLogicException('数据不存在');
         }
