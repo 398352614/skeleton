@@ -1023,7 +1023,7 @@ class TourService extends BaseService
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $materialList = $this->getTrackingOrderMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $packageList = $this->getTrackingOrderPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
-        $orderList=$this->getOrderService()->getList(['tracking_order_no'=>['in',collect($trackingOrderList)->pluck('order_no')->toArray()]],['*'],false)->toArray();
+        $orderList=$this->getOrderService()->getList(['tracking_order_no'=>['in',collect($trackingOrderList)->pluck('tracking_order_no')->toArray()]],['*'],false)->toArray();
         if (empty($materialList) && empty($packageList)) {
             throw new BusinessLogicException('数据不存在');
         }
