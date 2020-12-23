@@ -94,15 +94,17 @@ class PackageNoRuleService extends BaseService
 
     /**
      * 顺带验证
-     * @param $data
+     * @param $list
      * @throws BusinessLogicException
      */
-    public function additionalCheck($data)
+    public function additionalCheck($list)
     {
         $ruleList = parent::getList();
         foreach ($ruleList as $k => $v) {
-            if (!str_starts_with($data['package_no'], $v['prefix']) || strlen($data['package_no']) !== $v['length']) {
-                throw new BusinessLogicException('该包裹非本系统包裹，无法顺带');
+            foreach ($list as $x=>$y){
+                if (!str_starts_with($y['package_no'], $v['prefix']) || strlen($y['package_no']) !== $v['length']) {
+                    throw new BusinessLogicException('该包裹非本系统包裹，无法顺带');
+                }
             }
         }
     }
