@@ -1023,18 +1023,17 @@ class TourService extends BaseService
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $materialList = $this->getTrackingOrderMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $packageList = $this->getTrackingOrderPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        $orderList=$this->getOrderService()->getList(['tracking_order_no'=>['in',collect($trackingOrderList)->pluck('order_no')->toArray()]],['*'],false)->toArray();
         if (empty($materialList) && empty($packageList)) {
             throw new BusinessLogicException('数据不存在');
         }
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
-        if (empty($batchList)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        if (empty($trackingOrderList)) {
+        if (empty($batchList) || empty($orderList) || empty($trackingOrderList)) {
             throw new BusinessLogicException('数据不存在');
         }
         $merchantList = $this->getMerchantService()->getList(['id' => ['in', collect($trackingOrderList)->pluck('merchant_id')->toArray()]], ['*'], false)->toArray();
         foreach ($trackingOrderList as $k => $v) {
+            $trackingOrderList[$k]['out_user_id'] = collect($orderList)->where('tracking_order_no', $v['tracking_order_no'])->first()['out_user_id'] ?? '';
             $trackingOrderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'];
             $trackingOrderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
             $trackingOrderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
