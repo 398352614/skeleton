@@ -63,12 +63,12 @@ class TourService extends BaseService
 
     protected $planHeadings = [
         'batch_no',
-        'out_user_id',
         'place_fullname',
         'place_phone',
         'place_address',
         'place_post_code',
         'place_city',
+        'out_user_id',
         'merchant_name',
         'type',
         'package_quantity',
@@ -927,17 +927,11 @@ class TourService extends BaseService
             BaseConstService::BATCH_CHECKOUT => BaseConstService::MERCHANT_BATCH_STATUS_3,
             BaseConstService::BATCH_CANCEL => BaseConstService::MERCHANT_BATCH_STATUS_4
         ];
-
         $tour = $this->query->where('id', '=', $id)->first();
         if (empty($tour)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $tour['expect_pie_package_quantity'] = 0;
-        $tour['actual_pie_package_quantity'] = 0;
-        $tour['expect_pickup_package_quantity'] = 0;
-        $tour['actual_pickup_package_quantity'] = 0;
-        $tour['expect_material_quantity'] = 0;
-        $tour['actual_material_quantity'] = 0;
+        $tour['expect_pie_package_quantity'] = $tour['actual_pie_package_quantity'] = $tour['expect_pickup_package_quantity'] = $tour['actual_pickup_package_quantity'] = $tour['expect_material_quantity'] = $tour['actual_material_quantity'] = 0;
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();;
         $packageList = $this->getTrackingOrderPackageService()->getList(['order_no' => ['in', collect($trackingOrderList)->pluck('order_no')->toArray()]], ['*'], false)->toArray();
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['actual_arrive_time' => 'asc', 'created_at' => 'asc'])->toArray();
@@ -966,16 +960,7 @@ class TourService extends BaseService
         }
 
         for ($i = 0; $i < count($batchList); $i++) {
-            $cellData[$i][0] = '';
-            $cellData[$i][1] = '';
-            $cellData[$i][2] = '';
-            $cellData[$i][3] = '';
-            $cellData[$i][4] = '';
-            $cellData[$i][5] = '';
-            $cellData[$i][6] = '';
-            $cellData[$i][7] = '';
-            $cellData[$i][8] = '';
-            $cellData[$i][9] = '';
+            $cellData[$i][0] = $cellData[$i][1] = $cellData[$i][2] = $cellData[$i][2] = $cellData[$i][3] = $cellData[$i][4] = $cellData[$i][5] = $cellData[$i][6] = $cellData[$i][7] = $cellData[$i][8] = $cellData[$i][9] = 0;
             $cellData[$i][10] = $batchList[$i]['out_user_id'];
             $cellData[$i][11] = $batchList[$i]['place_fullname'];
             $cellData[$i][12] = $batchList[$i]['place_phone'];
