@@ -647,9 +647,9 @@ class OrderService extends BaseService
         if ($this->updateBaseInfo($dbOrder, $data) == true) {
             return '';
         }
-//        if (intval($dbOrder['source']) === BaseConstService::ORDER_SOURCE_3) {
-//            throw new BusinessLogicException('第三方订单不能修改');
-//        }
+        if (intval($dbOrder['source']) === BaseConstService::ORDER_SOURCE_3) {
+            throw new BusinessLogicException('第三方订单不能修改');
+        }
         if ($dbOrder['type'] != $data['type']) {
             throw new BusinessLogicException('订单类型不能修改');
         }
