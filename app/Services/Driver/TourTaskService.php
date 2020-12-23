@@ -8,6 +8,7 @@
 
 namespace App\Services\Driver;
 
+use App\Console\Commands\FixRecharge;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Driver\TourTaskResource;
 use App\Models\AdditionalPackage;
@@ -245,26 +246,37 @@ class TourTaskService extends BaseService
 
     /**
      * 获取所有取件线路所有信息
-     * @return array
+     * @return array|\Illuminate\Database\Eloquent\Collection
      * @throws BusinessLogicException
      */
     public function getAllInfo()
     {
-        $tourList = $this->getPageList();
-        if ($tourList->isEmpty()) {
+        $tour = $this->getInfo(['status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
+        if (empty($tour)) {
+            $tour = $this->getInfo(['status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false, ['id' => 'desc']);
+        }
+        if (empty($tour)) {
             return [];
         }
-        $tourList = $tourList->toArray(request());
-        $tourList = collect($tourList)->where('status', '<>', BaseConstService::TOUR_STATUS_5)->toArray();
-        foreach ($tourList as $k => $v) {
-            $tourList[$k] = array_merge($tourList[$k], $this->show($v['id']));
-            $tourList[$k]['batch_list'] = collect($tourList[$k]['batch_list'])->toArray();
-            foreach ($tourList[$k]['batch_list'] as $x => $y) {
-                $tourList[$k]['batch_list'][$x] = array_merge($tourList[$k]['batch_list'][$x], $this->getTourService()->getBatchInfo($v['id'], ['batch_id' => $y['id']]));
-                $tourList[$k]['batch_list'][$x] = array_merge($tourList[$k]['batch_list'][$x], collect($this->getTourService()->getBatchList($v['id'])['batch_list'])->where('batch_no', $y['batch_no'])->first());
+        $tour = $tour->toArray();
+        $tour = $this->show($tour['id']);
+        //只取第一个
+        $batchFields = ['id', 'batch_no', 'place_fullname', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address'];
+        $tour['last_place'] = $this->getBatchService()->getInfo(['tour_no' => $tour['tour_no']], $batchFields, false, ['sort_id' => 'desc', 'created_at' => 'desc']);
+        $tour['batch_list'] = collect($tour['batch_list'])->toArray();
+        foreach ($tour['batch_list'] as $x => $y) {
+            $tour['batch_list'][$x]['tracking_order_list'] = array_values(collect($tour['tracking_order_list'])->where('batch_no', $y['batch_no'])->all());
+            $authPackage = collect($tour['tracking_order_list'])->pluck('package_list')->where('batch_no', $y['batch_no'])->where('status', BaseConstService::BATCH_DELIVERING)->where('is_auth', BaseConstService::IS_AUTH_1)->first();
+            $tour['batch_list'][$x]['is_auth'] = !empty($authPackage) ? BaseConstService::IS_AUTH_1 : BaseConstService::IS_AUTH_2;
+            $tour['batch_list'][$x]['tour_id'] = $tour['id'];
+            $tour['batch_list'][$x]['actual_total_amount'] = number_format(round($tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['delivery_amount'] + $tour['batch_list'][$x]['actual_replace_amount'] + $tour['batch_list'][$x]['actual_settlement_amount'], 2), 2);
+            if ($tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['settlement_amount'] + $tour['batch_list'][$x]['delivery_amount'] == 0) {
+                $tour['batch_list'][$x]['no_need_to_pay'] = BaseConstService::YES;
+            } else {
+                $tour['batch_list'][$x]['no_need_to_pay'] = BaseConstService::NO;
             }
         }
-        $tourList = array_values($tourList);
+        $tourList[] = $tour;
         return $tourList;
     }
 

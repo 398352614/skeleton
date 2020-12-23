@@ -29,6 +29,7 @@ class TourDriver
         $location = $event->getLocation();
         $now = now();
         $data = [
+            'company_id' => auth()->user()->company_id,
             'content' => $event->getContent(),
             'tour_no' => $event->getTourNo(),
             'lat' => $location['lat'],

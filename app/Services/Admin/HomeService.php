@@ -24,14 +24,10 @@ class HomeService extends BaseService
     {
         $date = Carbon::today()->format('Y-m-d');
         //当日订单
-        $noTakeOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);//待分配
-        $assignOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_2]);//已分配
-        $waitOutOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_3]);//待出库
-        $takingOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_4]);//取派中
-        $signedOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_5]);//已完成
-        $cancelOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::TRACKING_ORDER_STATUS_6]);//取消取派
-
-        $NoOutOrder = parent::count(['execution_date' => $date, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]], 'out_status' => BaseConstService::OUT_STATUS_2]);//不能出库
+        $noTakeOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_1]);//待分配
+        $takingOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_2]);//取派中
+        $signedOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_3]);//已完成
+        $cancelOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_4]);//取消取派
         $exceptionOrder = parent::count(['execution_date' => $date, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);//异常
         //取件线路
         $tour = $this->getTourService()->count(['execution_date' => $date]);
@@ -44,13 +40,12 @@ class HomeService extends BaseService
         $takingCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_4]);//配送中
         return [
             //订单统计
-            'preparing_order' => $noTakeOrder + $assignOrder + $waitOutOrder,
+            'preparing_order' => $noTakeOrder,
             'taking_order' => $takingOrder,
             'signed_order' => $signedOrder,
             'cancel_order' => $cancelOrder,
             'exception_order' => $exceptionOrder,
-            'total_order' => $noTakeOrder + $assignOrder + $waitOutOrder + $takingOrder + $signedOrder + $cancelOrder,
-            'no_out_order' => $NoOutOrder,
+            'total_order' => $noTakeOrder + $takingOrder + $signedOrder + $cancelOrder,
             //任务统计
             'tour' => $tour,
             //司机统计

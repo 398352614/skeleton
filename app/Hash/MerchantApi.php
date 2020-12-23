@@ -36,8 +36,7 @@ class MerchantApi extends AbstractHasher implements HasherContract
      */
     public function check($value, $hashedValue, array $options = array())
     {
-        return true;
-        //return $this->make($value, $options) === $hashedValue;
+        return $this->make($value, $options) === $hashedValue;
     }
 
     /**

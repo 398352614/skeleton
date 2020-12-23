@@ -23,13 +23,15 @@ class TrackingOrderValidate extends BaseValidate
         'tour_no' => 'required|string|max:50',
         'remark' => 'nullable|string|max:250',
         'id_list' => 'required|string|checkIdList:100',
+        'out_status'=>'required|integer|in:1,2'
     ];
 
     public $scene = [
         'removeListFromBatch' => ['id_list'],
         'getAbleBatchList' => ['execution_date'],
         'assignToBatch' => ['execution_date', 'batch_no'],
-        'assignListTour' => ['id_list', 'tour_no']
+        'assignListTour' => ['id_list', 'tour_no'],
+        'changeOutStatus'=>['id_list','out_status']
     ];
 }
 
