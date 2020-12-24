@@ -553,7 +553,7 @@ class BatchService extends BaseService
             throw new BusinessLogicException('操作失败');
         }
         //修改运单
-        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
+        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no']], ['line_id' => null, 'line_name' => '', 'tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
