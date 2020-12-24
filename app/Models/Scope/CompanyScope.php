@@ -37,6 +37,7 @@ use App\Models\Order;
 use App\Models\OrderNoRule;
 use App\Models\OrderTrail;
 use App\Models\Package;
+use App\Models\PackageNoRule;
 use App\Models\Recharge;
 use App\Models\RouteTracking;
 use App\Models\SpecialTimeCharging;
@@ -129,6 +130,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof Stock))
                 && (!($model instanceof StockInLog))
                 && (!($model instanceof StockOutLog))
+                && (!($model instanceof PackageNoRule))
                 && (!in_array('driver_id', $whereColumns))
                 && (!Str::contains($sql, "IFNULL(driver_id,0) <> -1"))
             ) {

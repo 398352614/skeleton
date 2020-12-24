@@ -4,32 +4,32 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\MerchantGroupService;
+use App\Services\PackageNoRuleService;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
- * 商户组 列表
+ * 单号规则管理
  * Class OrderController
  * @package App\Http\Controllers\Api\Admin
- * @property MerchantGroupService $service
+ * @property PackageNoRuleService $service
  */
-class MerchantGroupController extends BaseController
+class PackageNoRuleController extends BaseController
 {
-    public function __construct(MerchantGroupService $service)
+    public function __construct(PackageNoRuleService $service)
     {
         parent::__construct($service);
     }
-
 
     public function index()
     {
         return $this->service->getPageList();
     }
 
-
     /**
      * 获取详情
      * @param $id
-     * @return array
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function show($id)
@@ -38,13 +38,12 @@ class MerchantGroupController extends BaseController
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        return $info->toArray();
+        return $info;
     }
-
 
     /**
      * 新增
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws BusinessLogicException
      */
     public function store()
     {
@@ -70,25 +69,5 @@ class MerchantGroupController extends BaseController
     public function destroy($id)
     {
         return $this->service->destroy($id);
-    }
-
-    /**
-     * 成员信息
-     * @param $id
-     * @return mixed
-     */
-    public function indexOfMerchant($id)
-    {
-        return $this->service->indexOfMerchant($id);
-    }
-
-
-    /**
-     * 批量设置运价
-     * @throws BusinessLogicException
-     */
-    public function updatePrice()
-    {
-        return $this->service->updatePrice($this->data);
     }
 }

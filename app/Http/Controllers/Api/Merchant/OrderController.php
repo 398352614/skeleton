@@ -115,6 +115,11 @@ class OrderController extends OrderBaseController
         return $this->service->updateById($id, $this->data);
     }
 
+    public function updateAddress($id)
+    {
+        return $this->service->updateAddress($id, $this->data);
+    }
+
     /**
      * 修改派件日期
      * @param $id
@@ -269,5 +274,16 @@ class OrderController extends OrderBaseController
     public function track($id)
     {
         return $this->service->track($id);
+    }
+
+    /**
+     * 获取订单的运单列表
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getTrackingOrderList($id)
+    {
+        return $this->service->getTrackingOrderList($id);
     }
 }

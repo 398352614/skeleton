@@ -189,6 +189,12 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::get('/', 'MerchantController@index');
     });
 
+    //顺带包裹编号规则管理
+    Route::prefix('package-no-rule')->group(function () {
+        //查询
+        Route::get('/', 'PackageNoRuleController@index');
+    });
+
     //充值管理
     Route::prefix('recharge')->group(function () {
         //充值查询

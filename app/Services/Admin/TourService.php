@@ -63,12 +63,12 @@ class TourService extends BaseService
 
     protected $planHeadings = [
         'batch_no',
-        'out_user_id',
         'place_fullname',
         'place_phone',
         'place_address',
         'place_post_code',
         'place_city',
+        'out_user_id',
         'merchant_name',
         'type',
         'package_quantity',
@@ -848,9 +848,9 @@ class TourService extends BaseService
         $mesMerchantId = config('tms.eushop_merchant_id');
         $status = BaseConstService::BATCH_CHECKOUT;
         $companyId = auth()->user()->company_id;
-        $erpBatchCountSql = "SELECT  COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
-        $mesBatchCountSql = "SELECT  COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$mesMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
-        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND (SELECT d.`id` FROM `order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no";
+        $erpBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
+        $mesBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$mesMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
+        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no AND (SELECT d.`id` FROM `tracking_order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>''";
         $erpBatchList = array_create_index(collect(DB::select($erpBatchCountSql))->map(function ($value) {
             return (array)$value;
         })->toArray(), 'tour_no');
@@ -928,17 +928,11 @@ class TourService extends BaseService
             BaseConstService::BATCH_CHECKOUT => BaseConstService::MERCHANT_BATCH_STATUS_3,
             BaseConstService::BATCH_CANCEL => BaseConstService::MERCHANT_BATCH_STATUS_4
         ];
-
         $tour = $this->query->where('id', '=', $id)->first();
         if (empty($tour)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $tour['expect_pie_package_quantity'] = 0;
-        $tour['actual_pie_package_quantity'] = 0;
-        $tour['expect_pickup_package_quantity'] = 0;
-        $tour['actual_pickup_package_quantity'] = 0;
-        $tour['expect_material_quantity'] = 0;
-        $tour['actual_material_quantity'] = 0;
+        $tour['expect_pie_package_quantity'] = $tour['actual_pie_package_quantity'] = $tour['expect_pickup_package_quantity'] = $tour['actual_pickup_package_quantity'] = $tour['expect_material_quantity'] = $tour['actual_material_quantity'] = 0;
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();;
         $packageList = $this->getTrackingOrderPackageService()->getList(['order_no' => ['in', collect($trackingOrderList)->pluck('order_no')->toArray()]], ['*'], false)->toArray();
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['actual_arrive_time' => 'asc', 'created_at' => 'asc'])->toArray();
@@ -967,16 +961,7 @@ class TourService extends BaseService
         }
 
         for ($i = 0; $i < count($batchList); $i++) {
-            $cellData[$i][0] = '';
-            $cellData[$i][1] = '';
-            $cellData[$i][2] = '';
-            $cellData[$i][3] = '';
-            $cellData[$i][4] = '';
-            $cellData[$i][5] = '';
-            $cellData[$i][6] = '';
-            $cellData[$i][7] = '';
-            $cellData[$i][8] = '';
-            $cellData[$i][9] = '';
+            $cellData[$i][0] = $cellData[$i][1] = $cellData[$i][2] = $cellData[$i][2] = $cellData[$i][3] = $cellData[$i][4] = $cellData[$i][5] = $cellData[$i][6] = $cellData[$i][7] = $cellData[$i][8] = $cellData[$i][9] = 0;
             $cellData[$i][10] = $batchList[$i]['out_user_id'];
             $cellData[$i][11] = $batchList[$i]['place_fullname'];
             $cellData[$i][12] = $batchList[$i]['place_phone'];
@@ -1039,18 +1024,17 @@ class TourService extends BaseService
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $materialList = $this->getTrackingOrderMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $packageList = $this->getTrackingOrderPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
+        $orderList = $this->getOrderService()->getList(['tracking_order_no' => ['in', collect($trackingOrderList)->pluck('tracking_order_no')->toArray()]], ['*'], false)->toArray();
         if (empty($materialList) && empty($packageList)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
-        if (empty($batchList)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        if (empty($trackingOrderList)) {
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc'])->toArray();
+        if (empty($batchList) || empty($orderList) || empty($trackingOrderList)) {
             throw new BusinessLogicException('数据不存在');
         }
         $merchantList = $this->getMerchantService()->getList(['id' => ['in', collect($trackingOrderList)->pluck('merchant_id')->toArray()]], ['*'], false)->toArray();
         foreach ($trackingOrderList as $k => $v) {
+            $trackingOrderList[$k]['out_user_id'] = collect($orderList)->where('tracking_order_no', $v['tracking_order_no'])->first()['out_user_id'] ?? '';
             $trackingOrderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'];
             $trackingOrderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
             $trackingOrderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();

@@ -115,7 +115,6 @@ class PlanExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     $event->sheet->getDelegate()->mergeCells('D' . $v[0] . ':' . 'D' . $v[1]);
                     $event->sheet->getDelegate()->mergeCells('E' . $v[0] . ':' . 'E' . $v[1]);
                     $event->sheet->getDelegate()->mergeCells('F' . $v[0] . ':' . 'F' . $v[1]);
-                    $event->sheet->getDelegate()->mergeCells('G' . $v[0] . ':' . 'G' . $v[1]);
                 }
             },
         ];

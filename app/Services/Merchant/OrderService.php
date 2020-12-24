@@ -50,7 +50,7 @@ class OrderService extends BaseService
         'type' => ['=', 'type'],
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
-        'order_no,out_order_no' => ['like', 'keyword'],
+        'out_user_id,order_no,out_order_no' => ['like', 'keyword'],
         'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
@@ -121,6 +121,13 @@ class OrderService extends BaseService
 
     public function getPageList()
     {
+        if (!empty($this->formData['post_code'])) {
+            $trackingOrderList = $this->getTrackingOrderService()->getList(['place_post_code' => ['like', $this->formData['post_code']]]);
+            if (!$trackingOrderList->isEmpty()) {
+                $trackingOrderList = $trackingOrderList->pluck('order_no')->toArray();
+                $this->query->whereIn('order_no', $trackingOrderList);
+            }
+        }
         if (!empty($this->formData['keyword'])) {
             $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => $this->formData['keyword']]);
             if (!$trackingOrderList->isEmpty()) {
@@ -287,12 +294,15 @@ class OrderService extends BaseService
     {
         $dbOrder = $this->getInfoByIdOfStatus($id, false, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2], false);
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
-        if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder)) {
+        if (empty($dbTrackingOrder)) {
+            $dbTrackingOrder = null;
+        }
+        if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder->toArray(), $dbTrackingOrder)) {
             throw new BusinessLogicException('当前订单不支持再次派送，请联系管理员');
         }
         $dbOrder['tracking_order_type'] = $trackingOrderType;
         $dbOrder['tracking_order_type_name'] = ConstTranslateTrait::trackingOrderTypeList($trackingOrderType);
-        $dbOrder['tracking_order_id'] = $dbTrackingOrder->id;
+        $dbOrder['tracking_order_id'] = empty($dbTrackingOrder) ? null : $dbTrackingOrder->id;
         $resource = OrderAgainResource::make($dbOrder)->resolve();
         return $resource;
     }
@@ -840,6 +850,51 @@ class OrderService extends BaseService
         $this->getTrackingOrderService()->updateByOrder($data);
     }
 
+    /**
+     * 修改地址
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function updateAddress($id, $params)
+    {
+        $dbOrder = parent::getInfoLock(['id' => $id], ['*'], false);
+        if (empty($dbOrder)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $dbOrder = $dbOrder->toArray();
+        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $params['order_no']], ['status'], false, ['id' => 'desc']);
+        if (empty($dbTrackingOrder)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $dbTrackingOrder = $dbTrackingOrder->toArray();
+        if (intval($dbOrder['source']) === BaseConstService::ORDER_SOURCE_3 && !in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
+            throw new BusinessLogicException('该状态的第三方订单不能修改');
+        }
+        $columns = [
+            'place_fullname',
+            'place_phone',
+            'place_country',
+            'place_post_code',
+            'place_house_number',
+            'place_city',
+            'place_street',
+        ];
+        $rowCount = parent::updateById($dbOrder['id'], Arr::only($params, $columns));
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
+            $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
+        }
+        //$address = LocationTrait::getLocation($params['place_country'], $params['place_city'], $params['place_street'], $params['place_house_number'], $params['place_post_code']);
+        $params['place_lon'] = $address['lon'] ?? '';
+        $params['place_lat'] = $address['lat'] ?? '';
+        $data = array_merge($dbOrder, Arr::only($params, $columns));
+        Log::info('参数', $data);
+        /******************************判断是否需要更换站点(取派日期+收货方地址 验证)***************************************/
+        $this->getTrackingOrderService()->updateByOrder($data);
+    }
 
     /**
      * 反写运单信息至订单

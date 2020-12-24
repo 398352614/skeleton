@@ -611,12 +611,32 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //单号规则管理
     Route::prefix('order-no-rule')->group(function () {
+        //查询
         Route::get('/', 'OrderNoRuleController@index');
+        //详情
         Route::get('/{id}', 'OrderNoRuleController@show');
+        //初始化
         Route::get('/init', 'OrderNoRuleController@initStore');
+        //新增
         Route::post('/', 'OrderNoRuleController@store');
+        //修改
         Route::put('/{id}', 'OrderNoRuleController@update');
+        //删除
         Route::delete('/{id}', 'OrderNoRuleController@destroy');
+    });
+
+    //顺带包裹编号规则管理
+    Route::prefix('package-no-rule')->group(function () {
+        //查询
+        Route::get('/', 'PackageNoRuleController@index');
+        //详情
+        Route::get('/{id}', 'PackageNoRuleController@show');
+        //新增
+        Route::post('/', 'PackageNoRuleController@store');
+        //修改
+        Route::put('/{id}', 'PackageNoRuleController@update');
+        //删除
+        Route::delete('/{id}', 'PackageNoRuleController@destroy');
     });
 
     //打印模板

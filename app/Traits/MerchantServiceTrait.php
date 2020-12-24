@@ -25,6 +25,7 @@ use App\Services\Merchant\TrackingOrderService;
 use App\Services\Merchant\UploadService;
 use App\Services\Merchant\WareHouseService;
 use App\Services\OrderNoRuleService;
+use App\Services\PackageNoRuleService;
 
 Trait MerchantServiceTrait
 {
@@ -239,4 +240,12 @@ Trait MerchantServiceTrait
         return self::getInstance(AddressService::class);
     }
 
+    /**
+     * 运单编号规则
+     * @return PackageNoRuleService
+     */
+    public function getPackageNoRuleService()
+    {
+        return self::getInstance(PackageNoRuleService::class);
+    }
 }

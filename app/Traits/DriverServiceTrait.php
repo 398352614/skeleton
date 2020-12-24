@@ -28,6 +28,7 @@ use App\Services\Driver\TrackingOrderPackageService;
 use App\Services\Driver\TrackingOrderService;
 use App\Services\Driver\WareHouseService;
 use App\Services\OrderNoRuleService;
+use App\Services\PackageNoRuleService;
 
 Trait DriverServiceTrait
 {
@@ -269,4 +270,12 @@ Trait DriverServiceTrait
         return self::getInstance(WareHouseService::class);
     }
 
+    /**
+     * 运单编号规则
+     * @return PackageNoRuleService
+     */
+    public function getPackageNoRuleService()
+    {
+        return self::getInstance(PackageNoRuleService::class);
+    }
 }

@@ -41,6 +41,7 @@ use App\Services\Admin\TransportPriceService;
 use App\Services\Admin\UploadService;
 use App\Services\Admin\WareHouseService;
 use App\Services\OrderNoRuleService;
+use App\Services\PackageNoRuleService;
 
 trait AdminServiceTrait
 {
@@ -387,5 +388,14 @@ trait AdminServiceTrait
     public function getApiTimesService()
     {
         return self::getInstance(ApiTimesService::class);
+    }
+
+    /**
+     * 运单编号规则
+     * @return PackageNoRuleService
+     */
+    public function getPackageNoRuleService()
+    {
+        return self::getInstance(PackageNoRuleService::class);
     }
 }
