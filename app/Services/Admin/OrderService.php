@@ -30,6 +30,7 @@ use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 
 class OrderService extends BaseService
 {
@@ -258,12 +259,15 @@ class OrderService extends BaseService
     {
         $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2], false);
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
-        if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder, $dbTrackingOrder)) {
+        if (empty($dbTrackingOrder)) {
+            $dbTrackingOrder = null;
+        }
+        if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder->toArray(), $dbTrackingOrder)) {
             throw new BusinessLogicException('当前订单不支持再次派送，请联系管理员');
         }
         $dbOrder['tracking_order_type'] = $trackingOrderType;
         $dbOrder['tracking_order_type_name'] = ConstTranslateTrait::trackingOrderTypeList($trackingOrderType);
-        $dbOrder['tracking_order_id'] = $dbTrackingOrder->id;
+        $dbOrder['tracking_order_id'] = empty($dbTrackingOrder) ? null : $dbTrackingOrder->id;
         $resource = OrderAgainResource::make($dbOrder)->resolve();
         return $resource;
     }
@@ -896,7 +900,7 @@ class OrderService extends BaseService
             $orderList[$k]['replace_amount'] = $v['replace_amount'] ?? 0.00;
             $orderList[$k]['settlement_amount'] = $v['settlement_amount'] ?? 0.00;
             if ($packageIsExist) {
-                $list=$this->getPackageService()->query->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray();
+                $list = $this->getPackageService()->query->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray();
                 $orderList[$k]['package_name'] = implode(',', $list);
                 $orderList[$k]['package_quantity'] = count($list);
             } else {
@@ -904,7 +908,7 @@ class OrderService extends BaseService
                 $orderList[$k]['package_quantity'] = 0;
             }
             if ($materialIsExist) {
-                $list=$this->getMaterialService()->query->where('order_no', $v['order_no'])->get();
+                $list = $this->getMaterialService()->query->where('order_no', $v['order_no'])->get();
                 $orderList[$k]['material_name'] = implode(',', collect($list)->pluck('code')->toArray());
                 $orderList[$k]['material_quantity'] = collect($list)->sum('expect_quantity');
             } else {
