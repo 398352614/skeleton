@@ -101,9 +101,10 @@ class PackageNoRuleService extends BaseService
     public function additionalCheck($list)
     {
         $ruleList = parent::getList();
-        Log::info('rule', $ruleList);
-        Log::info('list',$list);
-        if (!empty($ruleList)) {
+        if(!empty($ruleList)){
+            $ruleList=$ruleList->toArray();
+            Log::info('rule', $ruleList->toArray());
+            Log::info('list',$list);
             foreach ($ruleList as $k => $v) {
                 foreach ($list as $x => $y) {
                     if (!str_starts_with($y['package_no'], $v['prefix']) || strlen($y['package_no']) !== $v['length']) {
