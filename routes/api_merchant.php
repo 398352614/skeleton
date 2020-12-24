@@ -47,7 +47,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //修改
         Route::put('/{id}', 'OrderController@update');
         //获取再次取派信息
-        Route::get('/{id}/again-info', 'OrderController@getAgainInfo');
+        Route::get('/{id}/again-info', 'OrderController@getAgainInfo')->where('id', '[-]?[0-9]+');;
         //再次取派
         Route::put('/{id}/again', 'OrderController@again');
         //终止派送
@@ -55,9 +55,9 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
         //订单追踪
-        Route::get('/{id}/track','OrderController@track');
+        Route::get('/{id}/track', 'OrderController@track');
         //批量更新电话日期
-        Route::post('/update-phone-date-list','OrderController@updateByApiList');
+        Route::post('/update-phone-date-list', 'OrderController@updateByApiList');
     });
 
     //运单管理

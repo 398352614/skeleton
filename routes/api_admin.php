@@ -90,7 +90,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //修改
         Route::put('/{id}', 'OrderController@update');
         //获取再次取派信息
-        Route::get('/{id}/again-info', 'OrderController@getAgainInfo');
+        Route::get('/{id}/again-info', 'OrderController@getAgainInfo')->where('id', '[-]?[0-9]+');
         //再次取派
         Route::put('/{id}/again', 'OrderController@again');
         //终止派送
@@ -198,7 +198,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取可加单取件线路
         Route::get('/get-tour', 'TourController@getAddOrderPageList');
         //修改出库状态
-        Route::put('/out-status','TrackingOrderController@changeOutStatus');
+        Route::put('/out-status', 'TrackingOrderController@changeOutStatus');
     });
 
     //物流状态管理
