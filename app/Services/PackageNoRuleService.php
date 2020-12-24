@@ -101,19 +101,17 @@ class PackageNoRuleService extends BaseService
     public function additionalCheck($list)
     {
         $ruleList = parent::getList();
-        if(!empty($ruleList)){
-            $ruleList=collect($ruleList)->toArray();
-            Log::info('rule', $ruleList);
-            Log::info('list',$list);
-            foreach ($ruleList as $k => $v) {
-                foreach ($list as $x => $y) {
-                    if (!str_starts_with($y['package_no'], $v['prefix']) || strlen($y['package_no']) !== $v['length']) {
-                        Log::info($y['package_no']);
-                        Log::info($v['prefix']);
-                        Log::info(strlen($y['package_no']));
-                        Log::info($v['length']);
-                        throw new BusinessLogicException('该包裹非本系统包裹，无法顺带');
+        if ($ruleList->isNotEmpty()) {
+            $ruleList = collect($ruleList)->toArray();
+            foreach ($list as $k => $v) {
+                $bool = 0;
+                foreach ($ruleList as $x => $y) {
+                    if (str_starts_with($v['package_no'], $y['prefix']) && strlen($v['package_no']) == $y['length']) {
+                        $bool = 1;
                     }
+                }
+                if ($bool == 0) {
+                    throw new BusinessLogicException('该包裹非本系统包裹，无法顺带');
                 }
             }
         }
