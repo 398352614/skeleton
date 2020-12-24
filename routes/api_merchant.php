@@ -47,7 +47,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //修改
         Route::put('/{id}', 'OrderController@update');
         //获取再次取派信息
-        Route::get('/{id}/again-info', 'OrderController@getAgainInfo')->where('id', '[-]?[0-9]+');;
+        Route::get('/{id}/again-info', 'OrderController@getAgainInfo');
         //再次取派
         Route::put('/{id}/again', 'OrderController@again');
         //终止派送
@@ -69,7 +69,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //列表查询
         Route::get('/', 'TrackingOrderController@index');
         //获取可分配路线日期
-        Route::get('/{id}/get-able-date-list', 'TrackingOrderController@getAbleDateList');
+        Route::get('/{id}/get-able-date-list', 'TrackingOrderController@getAbleDateList')->where('id', '[-]?[0-9]+');
         //通过地址获取可分配的路线日期列表
         Route::get('/get-able-date-list-addr', 'TrackingOrderController@getAbleDateListByAddress');
         //分配至站点

@@ -90,7 +90,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //修改
         Route::put('/{id}', 'OrderController@update');
         //获取再次取派信息
-        Route::get('/{id}/again-info', 'OrderController@getAgainInfo')->where('id', '[-]?[0-9]+');
+        Route::get('/{id}/again-info', 'OrderController@getAgainInfo');
         //再次取派
         Route::put('/{id}/again', 'OrderController@again');
         //终止派送
@@ -178,7 +178,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取详情
         Route::get('/{id}', 'TrackingOrderController@show');
         //获取可分配路线日期
-        Route::get('/{id}/get-date', 'TrackingOrderController@getAbleDateList');
+        Route::get('/{id}/get-date', 'TrackingOrderController@getAbleDateList')->where('id', '[-]?[0-9]+');
         //获取可分配的站点列表
         Route::get('/{id}/get-batch', 'TrackingOrderController@getAbleBatchList');
         //分配至站点
