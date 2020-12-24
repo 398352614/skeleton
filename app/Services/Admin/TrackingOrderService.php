@@ -638,7 +638,7 @@ class TrackingOrderService extends BaseService
     {
         if ($id < 0) {
             $dbOrder = $this->getOrderService()->getInfo(['id' => abs($id)], ['*'], false);
-            if (empty($params)) {
+            if (empty($dbOrder)) {
                 throw new BusinessLogicException('数据不存在');
             }
             $params = Arr::only($dbOrder->toArray(), ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',]);
