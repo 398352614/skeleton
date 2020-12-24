@@ -14,6 +14,7 @@ use App\Http\Resources\Api\PackageNoRuleResource;
 use App\Models\PackageNoRule;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PackageNoRuleService extends BaseService
 {
@@ -100,10 +101,14 @@ class PackageNoRuleService extends BaseService
     public function additionalCheck($list)
     {
         $ruleList = parent::getList();
-        foreach ($ruleList as $k => $v) {
-            foreach ($list as $x=>$y){
-                if (!str_starts_with($y['package_no'], $v['prefix']) || strlen($y['package_no']) !== $v['length']) {
-                    throw new BusinessLogicException('该包裹非本系统包裹，无法顺带');
+        Log::info('rule', $ruleList);
+        Log::info('list',$list);
+        if (!empty($ruleList)) {
+            foreach ($ruleList as $k => $v) {
+                foreach ($list as $x => $y) {
+                    if (!str_starts_with($y['package_no'], $v['prefix']) || strlen($y['package_no']) !== $v['length']) {
+                        throw new BusinessLogicException('该包裹非本系统包裹，无法顺带');
+                    }
                 }
             }
         }
