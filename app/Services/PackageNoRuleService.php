@@ -103,7 +103,7 @@ class PackageNoRuleService extends BaseService
         $ruleList = parent::getList();
         if(!empty($ruleList)){
             $ruleList=$ruleList->toArray();
-            Log::info('rule', $ruleList->toArray());
+            Log::info('rule', $ruleList);
             Log::info('list',$list);
             foreach ($ruleList as $k => $v) {
                 foreach ($list as $x => $y) {
