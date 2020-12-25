@@ -70,7 +70,7 @@ class StockService extends BaseService
         if (empty($package)) {
             throw new BusinessLogicException('当前包裹不存在系统中');
         }
-        $stock = $this->getStockService()->getInfo(['express_first_no'], ['*'], false);
+        $stock = $this->getStockService()->getInfo(['express_first_no'=>$package['express_first_no']], ['*'], false);
         if (!empty($stock)) {
             throw new BusinessLogicException('包裹已入库，当前线路[:line_name]，派送日期[:execution_Date]', 1000, ['line_name' => $stock['line_name'], 'execution_Date' => $stock['execution_Date']]);
         }
