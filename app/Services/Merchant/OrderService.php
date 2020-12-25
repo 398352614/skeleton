@@ -862,12 +862,12 @@ class OrderService extends BaseService
     public function updateAddress($id, $params)
     {
         $result = ['line' => []];
-        $dbOrder = parent::getInfoLock(['id' => $id], ['*'], false);
+        unset($params['order_no'], $params['tour_no'], $params['batch_no']);
+        $dbOrder = $this->getInfoByIdOfStatus($id,true);
         if (empty($dbOrder)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $dbOrder = $dbOrder->toArray();
-        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $params['order_no']], ['status'], false, ['id' => 'desc']);
+        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['status'], false, ['id' => 'desc']);
         if (!empty($dbTrackingOrder)) {
             $dbTrackingOrder = $dbTrackingOrder->toArray();
             if (intval($dbOrder['source']) === BaseConstService::ORDER_SOURCE_3 && !in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
