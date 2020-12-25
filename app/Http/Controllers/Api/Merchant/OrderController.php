@@ -292,4 +292,37 @@ class OrderController extends OrderBaseController
     {
         return $this->service->getTrackingOrderList($id);
     }
+
+    /**
+     * 取消预约
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function removeFromBatch($id)
+    {
+        return $this->service->removeFromBatch($id);
+    }
+
+    /**
+     * 通过订单ID获取可选日期
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getAbleDateList($id)
+    {
+        return $this->service->getAbleDateList($id);
+    }
+
+    /**
+     * 重新预约
+     * @param $id
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function assignToBatch($id)
+    {
+        return $this->service->assignToBatch($id,$this->data);
+    }
 }

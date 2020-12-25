@@ -62,6 +62,15 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList');
         //修改订单地址
         Route::put('/{id}/update-address', 'OrderController@updateAddress');
+
+        //获取可分配路线日期
+        Route::get('/{id}/get-date', 'OrderController@getAbleDateList');
+        //通过地址获取可分配的路线日期列表
+        Route::get('/get-date', 'OrderController@getAbleDateListByAddress');
+        //分配至站点
+        Route::put('/{id}/assign-batch', 'OrderController@assignToBatch');
+        //从站点移除
+        Route::delete('/{id}/remove-batch', 'OrderController@removeFromBatch');
     });
 
     //运单管理
@@ -72,14 +81,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/count', 'TrackingOrderController@trackingOrderCount');
         //列表查询
         Route::get('/', 'TrackingOrderController@index');
-        //获取可分配路线日期
-        Route::get('/{id}/get-able-date-list', 'TrackingOrderController@getAbleDateList');
-        //通过地址获取可分配的路线日期列表
-        Route::get('/get-able-date-list-addr', 'TrackingOrderController@getAbleDateListByAddress');
-        //分配至站点
-        Route::put('/{id}/assign-batch', 'TrackingOrderController@assignToBatch');
-        //从站点移除
-        Route::delete('/{id}/remove-batch', 'TrackingOrderController@removeFromBatch');
+
     });
 
     Route::prefix('package')->group(function () {

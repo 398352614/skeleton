@@ -115,6 +115,7 @@ class OrderValidate extends BaseValidate
         'updateOutStatus' => ['order_no', 'out_status'],
         'getDateListByPostCode' => ['place_post_code'],
         'updateByApiList' => ['order_no_list'],
+        'assignToBatch' => ['execution_date', 'batch_no'],
         'updateItemList' => [
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',

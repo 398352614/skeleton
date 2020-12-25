@@ -1244,4 +1244,66 @@ class OrderService extends BaseService
             'status_name' => empty($status) ? null : ConstTranslateTrait::trackStatusList($status)
         ];
     }
+
+    /**
+     * 通过订单ID获得运单信息
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getTrackingOrderByOrderId($id)
+    {
+        $order = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($order)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $order['tracking_order_no']], ['*'], false);
+        return $trackingOrder;
+    }
+
+    /**
+     * 取消预约
+     * @param $id
+     * @return void
+     * @throws BusinessLogicException
+     */
+    public function removeFromBatch($id)
+    {
+        $trackingOrder = $this->getTrackingOrderByOrderId($id);
+        if (empty($trackingOrder)) {
+            return;
+        }
+        return $this->getTrackingOrderService()->removeFromBatch($trackingOrder['id']);
+    }
+
+    /**
+     * 重新预约
+     * @param $id
+     * @param $params
+     * @return string|void
+     * @throws BusinessLogicException
+     */
+    public function assignToBatch($id, $params)
+    {
+        $trackingOrder = $this->getTrackingOrderByOrderId($id);
+        if (empty($trackingOrder)) {
+            return;
+        }
+        return $this->getTrackingOrderService()->assignToBatch($trackingOrder['id'], $params);
+    }
+
+    /**
+     * 根据订单号获取可选日期
+     * @param $id
+     * @return mixed|void
+     * @throws BusinessLogicException
+     */
+    public function getAbleDateList($id)
+    {
+        $trackingOrder = $this->getTrackingOrderByOrderId($id);
+        if (empty($trackingOrder)) {
+            return;
+        }
+        return $this->getTrackingOrderService()->getAbleDateList($trackingOrder['id']);
+    }
 }
