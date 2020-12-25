@@ -892,7 +892,7 @@ class OrderService extends BaseService
             }
             $params['place_lon'] = $address['lon'];
             $params['place_lat'] = $address['lat'];
-            $columns = array_merge($columns, ['place_lon', 'place_lat']);
+            $columns = array_merge($columns, ['place_lon', 'place_lat','place_address']);
             //更新订单
             $rowCount = parent::updateById($dbOrder['id'], Arr::only($params, $columns));
             if ($rowCount === false) {
