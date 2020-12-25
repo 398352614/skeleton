@@ -115,6 +115,12 @@ class OrderController extends OrderBaseController
         return $this->service->updateById($id, $this->data);
     }
 
+    /**
+     * 修改地址
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
     public function updateAddress($id)
     {
         return $this->service->updateAddress($id, $this->data);

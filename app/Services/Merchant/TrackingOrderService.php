@@ -283,6 +283,7 @@ class TrackingOrderService extends BaseService
      * 修改
      * 注意：取派订单删除时，因为待取派订单只会生成取件运单,所以只有一个运单
      * @param $order
+     * @return array|void
      * @throws BusinessLogicException
      */
     public function updateByOrder($order)
@@ -328,6 +329,7 @@ class TrackingOrderService extends BaseService
             $trackingOrder = array_merge($dbTrackingOrder, $trackingOrder);
             $this->addAllItemList($order['order_no'], $trackingOrder);
         }
+        return $trackingOrder;
     }
 
     /**
