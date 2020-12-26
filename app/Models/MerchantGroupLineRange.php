@@ -3,18 +3,19 @@
 namespace App\Models;
 
 /**
- * 商户费用配置 表
+ * 商户线路范围表
  * Class Employee
  * @package App\Models
  */
-class MerchantFeeConfig extends BaseModel
+class MerchantGroupLineRange extends BaseModel
 {
     /**
+     * 司机实际取件导航
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'merchant_fee_config';
+    protected $table = 'merchant_group_line_range';
 
     /**
      * The primary key for the model.
@@ -44,10 +45,15 @@ class MerchantFeeConfig extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'merchant_id',
-        'fee_code',
+        'merchant_group_id',
+        'line_id',
+        'line_range_id',
+        'post_code_start',
+        'post_code_end',
+        'schedule',
+        'country',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**
@@ -59,14 +65,11 @@ class MerchantFeeConfig extends BaseModel
 
     ];
 
-    protected $appends = [
-
-    ];
-
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = [];
+
 }

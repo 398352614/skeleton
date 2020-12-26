@@ -49,6 +49,7 @@ class Merchant extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'company_id',
+        'code',
         'type',
         'name',
         'email',
@@ -61,12 +62,6 @@ class Merchant extends Authenticatable implements JWTSubject
         'address',
         'avatar',
         'status',
-        'additional_status',
-        'advance_days',
-        'appointment_days',
-        'delay_time',
-        'pickup_count',
-        'pie_count',
         'created_at',
         'updated_at'
     ];
@@ -89,21 +84,21 @@ class Merchant extends Authenticatable implements JWTSubject
 
     protected $appends = [
         'settlement_type_name',
-        'additional_status_name',
         'status_name',
         'type_name',
-        'country_name'
+        'country_name',
+        'additional_status',
+        'advance_days',
+        'appointment_days',
+        'delay_time',
+        'pickup_count',
+        'pie_count',
     ];
 
 
     public function getSettlementTypeNameAttribute()
     {
         return empty($this->settlement_type) ? null : ConstTranslateTrait::merchantSettlementTypeList($this->settlement_type);
-    }
-
-    public function getAdditionalStatusNameAttribute()
-    {
-        return empty($this->additional_status) ? null : ConstTranslateTrait::merchantAdditionalStatusList($this->additional_status);
     }
 
     public function getStatusNameAttribute()
@@ -119,6 +114,42 @@ class Merchant extends Authenticatable implements JWTSubject
     public function getCountryNameAttribute()
     {
         return empty($this->country) ? null : CountryTrait::getCountryName($this->country);
+    }
+
+    public function getAdditionalStatusAttribute()
+    {
+        if (empty($this->merchant_group_id) || empty($this->merchantGroup)) return null;
+        return $this->merchantGroup->additional_status;
+    }
+
+    public function getAdvanceDaysAttribute()
+    {
+        if (empty($this->merchant_group_id) || empty($this->merchantGroup)) return null;
+        return $this->merchantGroup->advance_days;
+    }
+
+    public function getAppointmentDaysAttribute()
+    {
+        if (empty($this->merchant_group_id) || empty($this->merchantGroup)) return null;
+        return $this->merchantGroup->appointment_days;
+    }
+
+    public function getDelayTimeAttribute()
+    {
+        if (empty($this->merchant_group_id) || empty($this->merchantGroup)) return null;
+        return $this->merchantGroup->delay_time;
+    }
+
+    public function getPickupCountAttribute()
+    {
+        if (empty($this->merchant_group_id) || empty($this->merchantGroup)) return null;
+        return $this->merchantGroup->pickup_count;
+    }
+
+    public function getPieCountAttribute()
+    {
+        if (empty($this->merchant_group_id) || empty($this->merchantGroup)) return null;
+        return $this->merchantGroup->pie_count;
     }
 
 
@@ -143,5 +174,10 @@ class Merchant extends Authenticatable implements JWTSubject
     public function companyConfig()
     {
         return $this->belongsTo(CompanyConfig::class, 'company_id', 'company_id');
+    }
+
+    public function merchantGroup()
+    {
+        return $this->belongsTo(MerchantGroup::class, 'merchant_group_id', 'id');
     }
 }

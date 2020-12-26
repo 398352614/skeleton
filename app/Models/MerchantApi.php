@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 商户api表
  * Class Employee
@@ -72,6 +74,17 @@ class MerchantApi extends Authenticatable
      */
     protected $dates = [];
 
+    protected $appends = [
+        'status_name'
+    ];
+
+
+    public function getStatusNameAttribute()
+    {
+        return empty($this->status) ? null : ConstTranslateTrait::statusList($this->status);
+    }
+
+
     /**
      * Get the password for the user.
      *
@@ -81,6 +94,4 @@ class MerchantApi extends Authenticatable
     {
         return $this->secret;
     }
-
-
 }

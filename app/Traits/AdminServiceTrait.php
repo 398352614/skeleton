@@ -20,8 +20,8 @@ use App\Services\Admin\LineRangeService;
 use App\Services\Admin\LineService;
 use App\Services\Admin\MaterialService;
 use App\Services\Admin\MerchantApiService;
+use App\Services\Admin\MerchantGroupLineRangeService;
 use App\Services\Admin\MerchantGroupService;
-use App\Services\Admin\MerchantLineRangeService;
 use App\Services\Admin\MerchantRechargeService;
 use App\Services\Admin\MerchantService;
 use App\Services\Admin\OrderService;
@@ -196,12 +196,12 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户线路范围 服务
-     * @return MerchantLineRangeService
+     * 商组线路范围 服务
+     * @return MerchantGroupLineRangeService
      */
-    public function getMerchantLineRangeService()
+    public function getMerchantGroupLineRangeService()
     {
-        return self::getInstance(MerchantLineRangeService::class);
+        return self::getInstance(MerchantGroupLineRangeService::class);
     }
 
     /**

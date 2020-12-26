@@ -9,13 +9,13 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Models\MerchantLineRange;
+use App\Models\MerchantGroupLineRange;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
-class MerchantLineRangeService extends BaseService
+class MerchantGroupLineRangeService extends BaseService
 {
-    public function __construct(MerchantLineRange $model)
+    public function __construct(MerchantGroupLineRange $model)
     {
         parent::__construct($model, null);
     }
@@ -47,27 +47,27 @@ class MerchantLineRangeService extends BaseService
             return $detailLineRangeList;
         })->toArray();
         /*******************************************3.获取商户线路范围*************************************************/
-        $merchantLineRangeList = parent::getList(['line_id' => $id], ['*'], false)->toArray();
-        $merchantIdList = array_unique(array_column($merchantLineRangeList, 'merchant_id'));
-        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIdList]], ['id', 'name'], false)->toArray();
-        $merchantList = array_create_index($merchantList, 'id');
+        $merchantGroupLineRangeList = parent::getList(['line_id' => $id], ['*'], false)->toArray();
+        $merchantGroupIdList = array_unique(array_column($merchantGroupLineRangeList, 'merchant_group_id'));
+        $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantGroupIdList]], ['id', 'name'], false)->toArray();
+        $merchantGroupList = array_create_index($merchantGroupList, 'id');
         /**********************************************4.数据填充******************************************************/
-        $merchantLineRangeList = collect($merchantLineRangeList)->map(function ($merchantLineRange, $key) use ($merchantList) {
-            $merchantLineRange['merchant_id_name'] = $merchantList[$merchantLineRange['merchant_id']]['name'];
-            $merchantLineRange['post_code_range'] = $merchantLineRange['post_code_start'] . '-' . $merchantLineRange['post_code_end'];
-            return collect($merchantLineRange);
+        $merchantGroupLineRangeList = collect($merchantGroupLineRangeList)->map(function ($merchantGroupLineRange, $key) use ($merchantGroupList) {
+            $merchantGroupLineRange['merchant_group_id_name'] = $merchantGroupList[$merchantGroupLineRange['merchant_group_id']]['name'];
+            $merchantGroupLineRange['post_code_range'] = $merchantGroupLineRange['post_code_start'] . '-' . $merchantGroupLineRange['post_code_end'];
+            return collect($merchantGroupLineRange);
         })->groupBy('post_code_range')->toArray();
-        foreach ($merchantLineRangeList as $postCodeRange => $postCodeRangeList) {
-            $newPostCodeRangeList = collect($postCodeRangeList)->groupBy('merchant_id')->map(function ($merchantRangeList) {
-                $merchantRangeList = $merchantRangeList->toArray();
-                $newMerchantRange = Arr::only($merchantRangeList[0], ['id', 'company_id', 'merchant_id', 'merchant_id_name', 'line_id', 'is_alone']);
-                $newMerchantRange['workday_list'] = array_column($merchantRangeList, 'schedule');
-                return collect($newMerchantRange);
+        foreach ($merchantGroupLineRangeList as $postCodeRange => $postCodeRangeList) {
+            $newPostCodeRangeList = collect($postCodeRangeList)->groupBy('merchant_group_id')->map(function ($merchantGroupRangeList) {
+                $merchantGroupRangeList = $merchantGroupRangeList->toArray();
+                $newMerchantGroupRange = Arr::only($merchantGroupRangeList[0], ['id', 'company_id', 'merchant_group_id', 'merchant_group_id_name', 'line_id', 'is_alone']);
+                $newMerchantGroupRange['workday_list'] = array_column($merchantGroupRangeList, 'schedule');
+                return collect($newMerchantGroupRange);
             })->toArray();
-            $lineRangeList[$postCodeRange]['merchant_list'] = array_values($newPostCodeRangeList);
+            $lineRangeList[$postCodeRange]['merchant_group_list'] = array_values($newPostCodeRangeList);
         }
-        data_fill($lineRangeList, '*.merchant_list', []);
-        $line['merchant_line_range_list'] = array_values($lineRangeList);
+        data_fill($lineRangeList, '*.merchant_group_list', []);
+        $line['merchant_group_line_range_list'] = array_values($lineRangeList);
         return $line;
     }
 
@@ -79,15 +79,15 @@ class MerchantLineRangeService extends BaseService
      */
     public function createOrUpdate($id, $data)
     {
-        $merchantLineRangeList = $data['merchant_line_range_list'];
+        $merchantGroupLineRangeList = $data['merchant_group_line_range_list'];
         $line = $this->getLineService()->getInfo(['id' => $id], ['id', 'name'], false);
         if (empty($line)) {
             throw new BusinessLogicException('数据不存在');
         }
         //获取商户列表
-        $merchantIdList = array_unique(array_column($merchantLineRangeList, 'merchant_id'));
-        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIdList]], ['id', 'name'], false)->toArray();
-        $merchantList = array_create_index($merchantList, 'id');
+        $merchantGroupIdList = array_unique(array_column($merchantGroupLineRangeList, 'merchant_group_id'));
+        $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantGroupIdList]], ['id', 'name'], false)->toArray();
+        $merchantGroupList = array_create_index($merchantGroupList, 'id');
         //获取线路范围列表
         $lineRangeList = $this->getLineRangeService()->getList(['line_id' => $id], ['*'], false);
         $lineRangeList = $lineRangeList->groupBy(function ($lineRange) {
@@ -104,17 +104,17 @@ class MerchantLineRangeService extends BaseService
             ]);
         })->toArray();
         //验证线路范围是否存在
-        $merchantLineRangeList = collect($merchantLineRangeList)->filter(function ($merchantLineRange) use ($lineRangeList, $merchantList) {
-            return !empty($lineRangeList[$merchantLineRange['post_code_range']]) && !empty($merchantList[$merchantLineRange['merchant_id']]);
-        })->unique(function ($merchantLineRange) {
-            return $merchantLineRange['merchant_id'] . '-' . $merchantLineRange['post_code_range'];
-        })->map(function ($merchantLineRange) use ($lineRangeList) {
-            $merchantLineRange['line_id'] = $lineRangeList[$merchantLineRange['post_code_range']]['line_id'];
-            $merchantLineRange['country'] = $lineRangeList[$merchantLineRange['post_code_range']]['country'];
-            $merchantLineRange['workday_list'] = implode(',', array_intersect(explode_id_string($merchantLineRange['workday_list']), explode_id_string($lineRangeList[$merchantLineRange['post_code_range']]['workday_list'])));
-            return collect($merchantLineRange);
+        $merchantGroupLineRangeList = collect($merchantGroupLineRangeList)->filter(function ($merchantGroupLineRange) use ($lineRangeList, $merchantGroupList) {
+            return !empty($lineRangeList[$merchantGroupLineRange['post_code_range']]) && !empty($merchantGroupList[$merchantGroupLineRange['merchant_id']]);
+        })->unique(function ($merchantGroupLineRange) {
+            return $merchantGroupLineRange['merchant_group_id'] . '-' . $merchantGroupLineRange['post_code_range'];
+        })->map(function ($merchantGroupLineRange) use ($lineRangeList) {
+            $merchantGroupLineRange['line_id'] = $lineRangeList[$merchantGroupLineRange['post_code_range']]['line_id'];
+            $merchantGroupLineRange['country'] = $lineRangeList[$merchantGroupLineRange['post_code_range']]['country'];
+            $merchantGroupLineRange['workday_list'] = implode(',', array_intersect(explode_id_string($merchantGroupLineRange['workday_list']), explode_id_string($lineRangeList[$merchantGroupLineRange['post_code_range']]['workday_list'])));
+            return collect($merchantGroupLineRange);
         })->toArray();
-        $merchantLineRangeList = array_values($merchantLineRangeList);
+        $merchantGroupLineRangeList = array_values($merchantGroupLineRangeList);
 
         //删除线路的商户线路范围
         $rowCount = parent::delete(['line_id' => $id]);
@@ -122,11 +122,11 @@ class MerchantLineRangeService extends BaseService
             throw new BusinessLogicException('操作失败');
         }
         //新增线路的商户线路范围
-        foreach ($merchantLineRangeList as $merchantLineRange) {
-            $workdayList = explode(',', $merchantLineRange['workday_list']);
+        foreach ($merchantGroupLineRangeList as $merchantGroupLineRange) {
+            $workdayList = explode(',', $merchantGroupLineRange['workday_list']);
             $newList = [];
             foreach ($workdayList as $key => $workday) {
-                $newList[$key] = $merchantLineRange;
+                $newList[$key] = $merchantGroupLineRange;
                 $newList[$key]['schedule'] = $workday;
                 list($newList[$key]['post_code_start'], $newList[$key]['post_code_end']) = explode('-', $newList[$key]['post_code_range']);
                 unset($newList[$key]['post_code_range'], $newList[$key]['workday_list']);
@@ -163,20 +163,20 @@ class MerchantLineRangeService extends BaseService
             throw new BusinessLogicException('操作失败');
         }
         //获取新增的取派日期列表
-        $merchantLineRangeList = parent::getList(['line_id' => $lineId], ['*'], false)->toArray();
-        $dbWorkdayList = array_unique(array_column($merchantLineRangeList, 'schedule'));
+        $merchantGroupLineRangeList = parent::getList(['line_id' => $lineId], ['*'], false)->toArray();
+        $dbWorkdayList = array_unique(array_column($merchantGroupLineRangeList, 'schedule'));
         $diffWorkdayList = array_diff($workdayList, $dbWorkdayList);
         if (!empty($diffWorkdayList)) {
-            $merchantLineRangeList = collect($merchantLineRangeList)->groupBy(function ($merchantLineRange) {
-                return $merchantLineRange['post_code_start'] . '-' . $merchantLineRange['post_code_end'];
-            })->map(function ($detailMerchantLineRangeList) {
-                $detailMerchantLineRangeList = $detailMerchantLineRangeList->toArray();
-                return collect(Arr::only($detailMerchantLineRangeList[0], ['merchant_id', 'line_id', 'post_code_start', 'post_code_end', 'country', 'is_alone']));
+            $merchantGroupLineRangeList = collect($merchantGroupLineRangeList)->groupBy(function ($merchantGroupLineRange) {
+                return $merchantGroupLineRange['post_code_start'] . '-' . $merchantGroupLineRange['post_code_end'];
+            })->map(function ($detailMerchantGroupLineRangeList) {
+                $detailMerchantGroupLineRangeList = $detailMerchantGroupLineRangeList->toArray();
+                return collect(Arr::only($detailMerchantGroupLineRangeList[0], ['merchant_group_id', 'line_id', 'post_code_start', 'post_code_end', 'country', 'is_alone']));
             })->toArray();
             $dataList = [];
             foreach ($diffWorkdayList as $workday) {
-                foreach ($merchantLineRangeList as $MerchantRange) {
-                    $dataList[] = array_merge($MerchantRange, ['schedule' => $workday]);
+                foreach ($merchantGroupLineRangeList as $MerchantGroupRange) {
+                    $dataList[] = array_merge($MerchantGroupRange, ['schedule' => $workday]);
                 }
             }
             $rowCount = parent::insertAll($dataList);
@@ -186,21 +186,21 @@ class MerchantLineRangeService extends BaseService
         }
         //新增新的邮编的所有商户范围
         $merchantPostCodeRangeList = [];
-        $merchantLineRangeList = parent::getList(['line_id' => $lineId], ['post_code_start', 'post_code_end'], false, ['post_code_start', 'post_code_end']);
-        foreach ($merchantLineRangeList as $merchantLineRange) {
-            $merchantPostCodeRangeList[] = $merchantLineRange['post_code_start'] . '-' . $merchantLineRange['post_code_end'];
+        $merchantGroupLineRangeList = parent::getList(['line_id' => $lineId], ['post_code_start', 'post_code_end'], false, ['post_code_start', 'post_code_end']);
+        foreach ($merchantGroupLineRangeList as $merchantGroupLineRange) {
+            $merchantPostCodeRangeList[] = $merchantGroupLineRange['post_code_start'] . '-' . $merchantGroupLineRange['post_code_end'];
         }
         $diffPostCodeRangeList = array_diff($postCodeRangeList, $merchantPostCodeRangeList);
         if (empty($diffPostCodeRangeList)) return;
-        $merchantList = $this->getMerchantService()->getList([], ['*'], false)->toArray();
-        if (empty($merchantList)) return;
+        $merchantGroupList = $this->getMerchantGroupService()->getList([], ['*'], false)->toArray();
+        if (empty($merchantGroupList)) return;
         $insetRangeList = [];
-        foreach ($merchantList as $merchant) {
+        foreach ($merchantGroupList as $merchantGroup) {
             foreach ($diffPostCodeRangeList as $postCodeRange) {
                 list($postCodeStart, $postCodeEnd) = explode('-', $postCodeRange);
                 foreach ($workdayList as $schedule) {
                     $insetRangeList[] = [
-                        'merchant_id' => $merchant['id'],
+                        'merchant_group_id' => $merchantGroup['id'],
                         'line_id' => $lineId,
                         'post_code_start' => $postCodeStart,
                         'post_code_end' => $postCodeEnd,

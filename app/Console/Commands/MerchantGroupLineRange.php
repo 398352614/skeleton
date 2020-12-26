@@ -6,21 +6,21 @@ use App\Models\LineRange;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class MerchantLineRange extends Command
+class MerchantGroupLineRange extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'merchantLineRange:init';
+    protected $signature = 'merchantGroupLineRange:init';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'merchant line range init';
+    protected $description = 'merchant group line range init';
 
     /**
      * Create a new command instance.
@@ -39,16 +39,16 @@ class MerchantLineRange extends Command
      */
     public function handle()
     {
-        $merchantList = DB::table('merchant')->get()->toArray();
-        $model = new \App\Models\MerchantLineRange();
-        foreach ($merchantList as $merchant) {
-            $lineRangeList = LineRange::query()->where('company_id', $merchant->company_id)->get()->toArray();
+        $merchantGroupList = DB::table('merchant_group')->get()->toArray();
+        $model = new \App\Models\MerchantGroupLineRange();
+        foreach ($merchantGroupList as $merchantGroup) {
+            $lineRangeList = LineRange::query()->where('company_id', $merchantGroup->company_id)->get()->toArray();
             foreach ($lineRangeList as $key => $lineRange) {
                 unset($lineRangeList[$key]['id'], $lineRangeList[$key]['country_name']);
             }
-            data_set($lineRangeList, '*.merchant_id', $merchant->id);
+            data_set($lineRangeList, '*.merchant_group_id', $merchantGroup->id);
             $model->insertAll($lineRangeList);
         }
-        $this->info('merchant line range init successful');
+        $this->info('merchant group line range init successful');
     }
 }

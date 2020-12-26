@@ -72,6 +72,21 @@ class MerchantGroupController extends BaseController
         return $this->service->destroy($id);
     }
 
+    public function getFeeList()
+    {
+        return $this->service->getFeeList($this->data['merchant_group_id'] ?? null);
+    }
+
+    /**
+     * 配置
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function config($id)
+    {
+        return $this->service->config($id, $this->data);
+    }
+
     /**
      * 成员信息
      * @param $id

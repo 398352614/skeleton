@@ -90,7 +90,8 @@ class BaseLineService extends BaseService
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             if ($merchantAlone == BaseConstService::YES) {
-                $lineRange = $this->getMerchantLineRangeByPostcode($info['place_post_code'], $info['execution_date'], $info['merchant_id']);
+                $lineRange = $this->getMerchantGroupLineRangeByPostcode($info['place_post_code'], $info['execution_date'], $info['merchant_id']);
+                $lineRange['merchant_id'] = $info['merchant_id'];
             } else {
                 $lineRange = $this->getLineRangeByPostcode($info['place_post_code'], $info['execution_date']);
             }
@@ -132,19 +133,23 @@ class BaseLineService extends BaseService
      * @param $merchantId
      * @return array
      */
-    private function getMerchantLineRangeByPostcode($postCode, $executionDate, $merchantId = null)
+    private function getMerchantGroupLineRangeByPostcode($postCode, $executionDate, $merchantId = null)
     {
         //若邮编是纯数字，则认为是比利时邮编
         $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
-        $query = $this->getMerchantLineRangeService()->query
+        $query = $this->getMerchantGroupLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);
         //若存在商户ID，则加
-        !empty($merchantId) && $query->where('merchant_id', $merchantId);
+        if (!empty($merchantId)) {
+            $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId], ['id', 'merchant_group_id'], false);
+            if (empty($merchant)) return [];
+            $query->where('merchant_group_id', $merchant->merchant_group_id);
+        };
         //若存在取派日期，则加上取派日期条件
         !empty($executionDate) && $query->where('schedule', Carbon::create($executionDate)->dayOfWeek);
         $query = $query->first();
@@ -187,7 +192,7 @@ class BaseLineService extends BaseService
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
-        $query = $this->getMerchantLineRangeService()->query
+        $query = $this->getMerchantGroupLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);

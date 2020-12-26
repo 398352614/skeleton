@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 商户组表
  * Class Employee
@@ -49,7 +51,15 @@ class MerchantGroup extends BaseModel
         'transport_price_name',
         'count',
         'name',
-        'is_default'
+        'is_default',
+        'additional_status',
+        'advance_days',
+        'appointment_days',
+        'delay_time',
+        'pickup_count',
+        'pie_count',
+        'created_at',
+        'updated_at'
     ];
 
     /**
@@ -67,6 +77,15 @@ class MerchantGroup extends BaseModel
      * @var array
      */
     protected $dates = [];
+
+    protected $appends = [
+        'additional_status_name',
+    ];
+
+    public function getAdditionalStatusNameAttribute()
+    {
+        return empty($this->additional_status) ? null : ConstTranslateTrait::merchantAdditionalStatusList($this->additional_status);
+    }
 
 
 }
