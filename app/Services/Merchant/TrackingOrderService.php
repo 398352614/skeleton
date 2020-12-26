@@ -283,6 +283,7 @@ class TrackingOrderService extends BaseService
      * 修改
      * 注意：取派订单删除时，因为待取派订单只会生成取件运单,所以只有一个运单
      * @param $order
+     * @return array|void
      * @throws BusinessLogicException
      */
     public function updateByOrder($order)
@@ -328,6 +329,7 @@ class TrackingOrderService extends BaseService
             $trackingOrder = array_merge($dbTrackingOrder, $trackingOrder);
             $this->addAllItemList($order['order_no'], $trackingOrder);
         }
+        return $trackingOrder;
     }
 
     /**
@@ -861,9 +863,18 @@ class TrackingOrderService extends BaseService
      */
     public function getAbleDateList($id)
     {
-        $params = parent::getInfo(['id' => $id], ['*'], false);
-        if (empty($params)) {
-            throw new BusinessLogicException('数据不存在');
+        if ($id < 0) {
+            $dbOrder = $this->getOrderService()->getInfo(['id' => abs($id)], ['*'], false);
+            if (empty($dbOrder)) {
+                throw new BusinessLogicException('数据不存在');
+            }
+            $params = Arr::only($dbOrder->toArray(), ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',]);
+            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
+        } else {
+            $params = parent::getInfo(['id' => $id], ['*'], false);
+            if (empty($params)) {
+                throw new BusinessLogicException('数据不存在');
+            }
         }
         $data = $this->getLineService()->getScheduleList($params);
         return $data;

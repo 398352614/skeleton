@@ -178,7 +178,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取详情
         Route::get('/{id}', 'TrackingOrderController@show');
         //获取可分配路线日期
-        Route::get('/{id}/get-date', 'TrackingOrderController@getAbleDateList');
+        Route::get('/{id}/get-date', 'TrackingOrderController@getAbleDateList')->where('id', '[-]?[0-9]+');
         //获取可分配的站点列表
         Route::get('/{id}/get-batch', 'TrackingOrderController@getAbleBatchList');
         //分配至站点
@@ -198,7 +198,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取可加单取件线路
         Route::get('/get-tour', 'TourController@getAddOrderPageList');
         //修改出库状态
-        Route::put('/out-status','TrackingOrderController@changeOutStatus');
+        Route::put('/out-status', 'TrackingOrderController@changeOutStatus');
     });
 
     //物流状态管理

@@ -126,6 +126,8 @@ class OrderService extends BaseService
             if (!$trackingOrderList->isEmpty()) {
                 $trackingOrderList = $trackingOrderList->pluck('order_no')->toArray();
                 $this->query->whereIn('order_no', $trackingOrderList);
+            } else {
+                return [];
             }
         }
         if (!empty($this->formData['keyword'])) {
@@ -302,7 +304,7 @@ class OrderService extends BaseService
         }
         $dbOrder['tracking_order_type'] = $trackingOrderType;
         $dbOrder['tracking_order_type_name'] = ConstTranslateTrait::trackingOrderTypeList($trackingOrderType);
-        $dbOrder['tracking_order_id'] = empty($dbTrackingOrder) ? null : $dbTrackingOrder->id;
+        $dbOrder['tracking_order_id'] = empty($dbTrackingOrder) ? -1 * intval($dbOrder['id']) : $dbTrackingOrder->id;
         $resource = OrderAgainResource::make($dbOrder)->resolve();
         return $resource;
     }
@@ -854,46 +856,60 @@ class OrderService extends BaseService
      * 修改地址
      * @param $id
      * @param $params
+     * @return array
      * @throws BusinessLogicException
      */
     public function updateAddress($id, $params)
     {
-        $dbOrder = parent::getInfoLock(['id' => $id], ['*'], false);
+        $result = ['line' => []];
+        unset($params['order_no'], $params['tour_no'], $params['batch_no']);
+        $dbOrder = $this->getInfoByIdOfStatus($id, true);
         if (empty($dbOrder)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $dbOrder = $dbOrder->toArray();
-        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $params['order_no']], ['status'], false, ['id' => 'desc']);
-        if (empty($dbTrackingOrder)) {
-            throw new BusinessLogicException('数据不存在');
+        $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['status'], false, ['id' => 'desc']);
+        if (!empty($dbTrackingOrder)) {
+            $dbTrackingOrder = $dbTrackingOrder->toArray();
+            if (intval($dbOrder['source']) === BaseConstService::ORDER_SOURCE_3 && !in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
+                throw new BusinessLogicException('该状态的第三方订单不能修改');
+            }
+            $columns = [
+                'place_fullname',
+                'place_phone',
+                'place_country',
+                'place_post_code',
+                'place_house_number',
+                'place_city',
+                'place_street',
+            ];
+            //取经纬度
+            if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
+                $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
+            }
+            $address = LocationTrait::getLocation($params['place_country'], $params['place_city'], $params['place_street'], $params['place_house_number'], $params['place_post_code']);
+            if (empty($address)) {
+                throw new BusinessLogicException('邮编或门牌号码不正确，请仔细检查输入或联系客服');
+            }
+            $params['place_lon'] = $address['lon'];
+            $params['place_lat'] = $address['lat'];
+            $columns = array_merge($columns, ['place_lon', 'place_lat','place_address']);
+            //更新订单
+            $rowCount = parent::updateById($dbOrder['id'], Arr::only($params, $columns));
+            if ($rowCount === false) {
+                throw new BusinessLogicException('修改失败，请重新操作');
+            }
+            $data = array_merge($dbOrder, Arr::only($params, $columns));
+            Log::info('参数', $data);
+            /******************************判断是否需要更换站点(取派日期+收货方地址 验证)***************************************/
+            $trackingOrder = $this->getTrackingOrderService()->updateByOrder($data);
+            $result = [
+                'line' => [
+                    'line_id' => $trackingOrder['line_id'],
+                    'line_name' => $trackingOrder['line_name']
+                ]
+            ];
         }
-        $dbTrackingOrder = $dbTrackingOrder->toArray();
-        if (intval($dbOrder['source']) === BaseConstService::ORDER_SOURCE_3 && !in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
-            throw new BusinessLogicException('该状态的第三方订单不能修改');
-        }
-        $columns = [
-            'place_fullname',
-            'place_phone',
-            'place_country',
-            'place_post_code',
-            'place_house_number',
-            'place_city',
-            'place_street',
-        ];
-        $rowCount = parent::updateById($dbOrder['id'], Arr::only($params, $columns));
-        if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败，请重新操作');
-        }
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
-            $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
-        }
-        //$address = LocationTrait::getLocation($params['place_country'], $params['place_city'], $params['place_street'], $params['place_house_number'], $params['place_post_code']);
-        $params['place_lon'] = $address['lon'] ?? '';
-        $params['place_lat'] = $address['lat'] ?? '';
-        $data = array_merge($dbOrder, Arr::only($params, $columns));
-        Log::info('参数', $data);
-        /******************************判断是否需要更换站点(取派日期+收货方地址 验证)***************************************/
-        $this->getTrackingOrderService()->updateByOrder($data);
+        return $result;
     }
 
     /**
@@ -1227,5 +1243,67 @@ class OrderService extends BaseService
             'status' => $status,
             'status_name' => empty($status) ? null : ConstTranslateTrait::trackStatusList($status)
         ];
+    }
+
+    /**
+     * 通过订单ID获得运单信息
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getTrackingOrderByOrderId($id)
+    {
+        $order = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($order)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $order['tracking_order_no']], ['*'], false);
+        return $trackingOrder;
+    }
+
+    /**
+     * 取消预约
+     * @param $id
+     * @return void
+     * @throws BusinessLogicException
+     */
+    public function removeFromBatch($id)
+    {
+        $trackingOrder = $this->getTrackingOrderByOrderId($id);
+        if (empty($trackingOrder)) {
+            return;
+        }
+        return $this->getTrackingOrderService()->removeFromBatch($trackingOrder['id']);
+    }
+
+    /**
+     * 重新预约
+     * @param $id
+     * @param $params
+     * @return string|void
+     * @throws BusinessLogicException
+     */
+    public function assignToBatch($id, $params)
+    {
+        $trackingOrder = $this->getTrackingOrderByOrderId($id);
+        if (empty($trackingOrder)) {
+            return;
+        }
+        return $this->getTrackingOrderService()->assignToBatch($trackingOrder['id'], $params);
+    }
+
+    /**
+     * 根据订单号获取可选日期
+     * @param $id
+     * @return mixed|void
+     * @throws BusinessLogicException
+     */
+    public function getAbleDateList($id)
+    {
+        $trackingOrder = $this->getTrackingOrderByOrderId($id);
+        if (empty($trackingOrder)) {
+            return;
+        }
+        return $this->getTrackingOrderService()->getAbleDateList($trackingOrder['id']);
     }
 }

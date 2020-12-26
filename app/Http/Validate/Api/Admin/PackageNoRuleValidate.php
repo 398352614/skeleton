@@ -10,7 +10,7 @@ class PackageNoRuleValidate extends BaseValidate
     public $rules = [
         'name' => 'required|string|max:50',
         'prefix' => 'required|string|max:50',
-        'length' => 'required|integer|lte:20',
+        'length' => 'required|integer|lte:50',
         'status' => 'required|integer|in:1,2'
     ];
 
