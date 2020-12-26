@@ -283,17 +283,18 @@ class TrackingOrderService extends BaseService
      * 修改
      * 注意：取派订单删除时，因为待取派订单只会生成取件运单,所以只有一个运单
      * @param $order
+     * @param $merchantAlone
      * @return array|void
      * @throws BusinessLogicException
      */
-    public function updateByOrder($order)
+    public function updateByOrder($order, $merchantAlone = BaseConstService::NO)
     {
         $dbTrackingOrder = parent::getInfoLock(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         if (empty($dbTrackingOrder)) return;
         $dbTrackingOrder = $dbTrackingOrder->toArray();
         //运单重新分配站点
         $trackingOrder = array_merge(Arr::only($order, $this->tOrderAndOrderSameFields), Arr::only($dbTrackingOrder, ['company_id', 'order_no', 'tracking_order_no', 'type']));
-        $line = $this->fillWarehouseInfo($trackingOrder);
+        $line = $this->fillWarehouseInfo($trackingOrder, $merchantAlone);
         //1.若运单状态是待出库或取派中,则不能修改
         //2.若运单状态是取消取派,取派完成,回收站,则无需处理
         //3.若运单状态是待分配或已分配，则能修改
