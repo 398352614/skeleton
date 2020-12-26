@@ -22,6 +22,7 @@ use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -294,6 +295,8 @@ class TrackingOrderService extends BaseService
         $dbTrackingOrder = $dbTrackingOrder->toArray();
         //运单重新分配站点
         $trackingOrder = array_merge(Arr::only($order, $this->tOrderAndOrderSameFields), Arr::only($dbTrackingOrder, ['company_id', 'order_no', 'tracking_order_no', 'type']));
+        Log::info($merchantAlone);
+        Log::info($trackingOrder);
         $line = $this->fillWarehouseInfo($trackingOrder, $merchantAlone);
         //1.若运单状态是待出库或取派中,则不能修改
         //2.若运单状态是取消取派,取派完成,回收站,则无需处理
@@ -1041,6 +1044,8 @@ class TrackingOrderService extends BaseService
     private function fillWarehouseInfo(&$params, $merchantAlone = BaseConstService::NO)
     {
         //获取线路
+        Log::info($merchantAlone);
+        Log::info($params['merchant_id']);
         $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
         //获取仓库
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
