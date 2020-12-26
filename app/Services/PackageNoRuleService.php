@@ -100,6 +100,7 @@ class PackageNoRuleService extends BaseService
      */
     public function additionalCheck($list)
     {
+        $this->query->where('status', BaseConstService::YES);
         $ruleList = parent::getList();
         if ($ruleList->isNotEmpty()) {
             $ruleList = collect($ruleList)->toArray();
