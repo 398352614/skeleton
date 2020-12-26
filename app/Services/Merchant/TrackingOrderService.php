@@ -296,7 +296,7 @@ class TrackingOrderService extends BaseService
         //运单重新分配站点
         $trackingOrder = array_merge(Arr::only($order, $this->tOrderAndOrderSameFields), Arr::only($dbTrackingOrder, ['company_id', 'order_no', 'tracking_order_no', 'type']));
         Log::info($merchantAlone);
-        Log::info($trackingOrder);
+        Log::info((string)$trackingOrder);
         $line = $this->fillWarehouseInfo($trackingOrder, $merchantAlone);
         //1.若运单状态是待出库或取派中,则不能修改
         //2.若运单状态是取消取派,取派完成,回收站,则无需处理
