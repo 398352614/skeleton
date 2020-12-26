@@ -35,7 +35,13 @@ class MerchantApiService extends BaseService
 
     public function getPageList()
     {
-        return parent::getPageList();
+        $list = parent::getPageList();
+        foreach ($list as &$merchantApi) {
+            $merchant = $this->getMerchantService()->getInfo(['id' => $merchantApi['merchant_id']], ['name', 'code'], false);
+            $merchantApi['merchant_id_name'] = $merchant->name ?? '';
+            $merchantApi['merchant_id_code'] = $merchant->code ?? '';
+        }
+        return $list;
     }
 
     /**

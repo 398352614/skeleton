@@ -14,6 +14,8 @@ class MerchantApiResource extends JsonResource
             'secret' => $this->secret,
             'status' => $this->status,
             'status_name' => $this->status_name,
+            'merchant_id_name' => $this->merchant_id_name,
+            'merchant_id_code' => $this->merchant_id_code,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s')
         ];
