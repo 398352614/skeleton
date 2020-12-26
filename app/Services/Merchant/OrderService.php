@@ -304,7 +304,7 @@ class OrderService extends BaseService
         }
         $dbOrder['tracking_order_type'] = $trackingOrderType;
         $dbOrder['tracking_order_type_name'] = ConstTranslateTrait::trackingOrderTypeList($trackingOrderType);
-        $dbOrder['tracking_order_id'] = empty($dbTrackingOrder) ? null : $dbTrackingOrder->id;
+        $dbOrder['tracking_order_id'] = empty($dbTrackingOrder) ? -1 * intval($dbOrder['id']) : $dbTrackingOrder->id;
         $resource = OrderAgainResource::make($dbOrder)->resolve();
         return $resource;
     }

@@ -863,9 +863,18 @@ class TrackingOrderService extends BaseService
      */
     public function getAbleDateList($id)
     {
-        $params = parent::getInfo(['id' => $id], ['*'], false);
-        if (empty($params)) {
-            throw new BusinessLogicException('数据不存在');
+        if ($id < 0) {
+            $dbOrder = $this->getOrderService()->getInfo(['id' => abs($id)], ['*'], false);
+            if (empty($dbOrder)) {
+                throw new BusinessLogicException('数据不存在');
+            }
+            $params = Arr::only($dbOrder->toArray(), ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',]);
+            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
+        } else {
+            $params = parent::getInfo(['id' => $id], ['*'], false);
+            if (empty($params)) {
+                throw new BusinessLogicException('数据不存在');
+            }
         }
         $data = $this->getLineService()->getScheduleList($params);
         return $data;
