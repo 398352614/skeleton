@@ -83,7 +83,7 @@ class MerchantApi extends Authenticatable
     {
         return empty($this->status) ? null : ConstTranslateTrait::statusList($this->status);
     }
-
+    
 
     /**
      * Get the password for the user.

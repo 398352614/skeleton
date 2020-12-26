@@ -51,7 +51,7 @@ class MerchantApiController extends BaseController
 
     /**
      * 修改
-     * @param $id (此处前端传给我的是merchant_api表的id)
+     * @param $id
      * @throws BusinessLogicException
      */
     public function update($id)

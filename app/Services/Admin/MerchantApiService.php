@@ -35,9 +35,7 @@ class MerchantApiService extends BaseService
 
     public function getPageList()
     {
-        if (!empty($this->filters)) {
-            $this->merchantModel->whereIn('');
-        }
+        return parent::getPageList();
     }
 
     /**
@@ -50,6 +48,10 @@ class MerchantApiService extends BaseService
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('商户不存在');
+        }
+        $dbMerchantApi = parent::getInfo(['merchant_id' => $params['merchant_id']], ['id'], false);
+        if (!empty($dbMerchantApi)) {
+            throw new BusinessLogicException('当前商户已创建API对接信息');
         }
         //生成授权api
         $merchantApi = parent::create([

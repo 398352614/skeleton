@@ -388,12 +388,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'LineController@postcodeDestroy');
         //导入
         Route::post('/import', 'LineController@postcodeLineImport');
-
         //商户线路范围详情
         Route::get('/{id}/merchant-group-line-range', 'MerchantGroupLineRangeController@show');
         //商户线路范围修改
         Route::put('/{id}/merchant-group-line-range', 'MerchantGroupLineRangeController@createOrUpdate');
-
         /****************************************区域线路**************************************/
         //列表查询
         Route::get('/area', 'LineController@areaIndex');
@@ -573,7 +571,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'MerchantApiController@destroy');
     });
 
-
     //商户组管理
     Route::prefix('merchant-group')->group(function () {
         //列表查询
@@ -594,6 +591,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/fee', 'MerchantGroupController@getFeeList');
         //配置
         Route::put('/{id}/config', 'MerchantGroupController@config');
+        //状态修改
+        Route::put('/{id}/status', 'MerchantGroupController@status');
     });
 
     //运价管理

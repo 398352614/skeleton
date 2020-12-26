@@ -34,11 +34,7 @@ class MerchantGroupController extends BaseController
      */
     public function show($id)
     {
-        $info = $this->service->getInfo(['id' => $id], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        return $info->toArray();
+        return $this->service->show($id);
     }
 
 
@@ -105,5 +101,16 @@ class MerchantGroupController extends BaseController
     public function updatePrice()
     {
         return $this->service->updatePrice($this->data);
+    }
+
+    /**
+     * 状态-启用/禁用
+     * @param $id
+     * @return
+     * @throws BusinessLogicException
+     */
+    public function status($id)
+    {
+        return $this->service->status($id, $this->data);
     }
 }

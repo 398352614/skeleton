@@ -35,6 +35,30 @@ class MerchantGroupService extends BaseService
     }
 
     /**
+     * 获取详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info = $info->toArray();
+        //获取费用列表
+        $feeCodeList = $this->merchantGroupFeeConfigModel->newQuery()->where('merchant_group_id', $info['id'])->pluck('fee_code')->toArray();
+        if (empty($feeCodeList)) {
+            $info['fee_list'] = [];
+        } else {
+            $feeList = $this->getFeeService()->getList(['code' => ['in', $feeCodeList]], ['id', 'code', 'name'], false)->toArray();
+            $info['fee_list'] = $feeList;
+        }
+        return $info;
+    }
+
+    /**
      * 新增
      * @param $params
      * @throws BusinessLogicException
@@ -202,6 +226,21 @@ class MerchantGroupService extends BaseService
             if (empty($info)) {
                 throw new BusinessLogicException('批量设置运价失败');
             }
+        }
+    }
+
+    /**
+     * 修改用户组所有商户状态
+     * @param $id
+     * @param $data
+     * @return string|void
+     * @throws BusinessLogicException
+     */
+    public function status($id, $data)
+    {
+        $rowCount = $this->getMerchantService()->update(['merchant_group_id' => $id], ['status' => $data['status']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
         }
     }
 }

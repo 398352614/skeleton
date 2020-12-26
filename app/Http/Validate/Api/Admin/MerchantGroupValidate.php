@@ -30,13 +30,15 @@ class MerchantGroupValidate extends BaseValidate
         'pie_count' => 'nullable|integer|gte:0|lte:5',
         'fee_code_list' => 'nullable|string|max:1000',
         'merchant_group_id' => 'required|integer',
+        'status' => 'required|integer|in:1,2',
     ];
 
     public $scene = [
         'store' => ['name', 'transport_price_id', 'is_default'],
         'update' => ['name', 'transport_price_id', 'is_default'],
         'config' => ['additional_status', 'advance_days', 'appointment_days', 'delay_time', 'pickup_count', 'pie_count', 'fee_code_list'],
-        'getFeeList' => ['merchant_group_id']
+        'getFeeList' => ['merchant_group_id'],
+        'status' => ['status']
     ];
 }
 
