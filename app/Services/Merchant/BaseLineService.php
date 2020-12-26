@@ -112,8 +112,6 @@ class BaseLineService extends BaseService
      */
     public function getInfoByRule($info, $orderOrBatch = BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone = BaseConstService::NO)
     {
-        Log::info($merchantAlone);
-        Log::info($info['merchant_id']);
         $lineRange = $this->getLineRange($info, $merchantAlone);
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (empty($line)) {
@@ -170,8 +168,6 @@ class BaseLineService extends BaseService
      */
     private function getLineRange($info, $merchantAlone)
     {
-        Log::info($merchantAlone);
-        Log::info($info['merchant_id']);
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             if ($merchantAlone == BaseConstService::YES) {
                 $lineRange = $this->getMerchantLineRangeByPostcode($info['place_post_code'], $info['execution_date'], $info['merchant_id']);
