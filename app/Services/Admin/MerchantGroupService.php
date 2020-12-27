@@ -106,6 +106,11 @@ class MerchantGroupService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
+        //删除商户组的线路数据
+        $rowCount = $this->getMerchantGroupLineRangeService()->delete(['merchant_group_id' => $id]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败');
+        }
     }
 
     /**
