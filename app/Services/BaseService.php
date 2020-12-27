@@ -143,8 +143,7 @@ class BaseService
 
     protected function locked()
     {
-        //$this->query->sharedLock();
-        $this->query->lockForUpdate();
+        $this->query->sharedLock();
         return $this;
     }
 
