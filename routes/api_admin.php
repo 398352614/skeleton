@@ -568,7 +568,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //修改
         Route::put('/{id}', 'MerchantApiController@update');
         //删除
-        Route::put('/{id}', 'MerchantApiController@destroy');
+        Route::delete('/{id}', 'MerchantApiController@destroy');
     });
 
     //商户组管理
