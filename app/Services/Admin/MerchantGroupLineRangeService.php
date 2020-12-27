@@ -105,7 +105,7 @@ class MerchantGroupLineRangeService extends BaseService
         })->toArray();
         //验证线路范围是否存在
         $merchantGroupLineRangeList = collect($merchantGroupLineRangeList)->filter(function ($merchantGroupLineRange) use ($lineRangeList, $merchantGroupList) {
-            return !empty($lineRangeList[$merchantGroupLineRange['post_code_range']]) && !empty($merchantGroupList[$merchantGroupLineRange['merchant_id']]);
+            return !empty($lineRangeList[$merchantGroupLineRange['post_code_range']]) && !empty($merchantGroupList[$merchantGroupLineRange['merchant_group_id']]);
         })->unique(function ($merchantGroupLineRange) {
             return $merchantGroupLineRange['merchant_group_id'] . '-' . $merchantGroupLineRange['post_code_range'];
         })->map(function ($merchantGroupLineRange) use ($lineRangeList) {
