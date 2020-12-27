@@ -3,7 +3,7 @@
  * 订单轨迹
  */
 
-namespace App\Http\Controllers\api\Admin;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\BaseController;
 use App\Services\OrderTrailService;
