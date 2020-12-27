@@ -52,6 +52,7 @@ class MerchantGroupLineRange extends BaseModel
         'post_code_end',
         'schedule',
         'country',
+        'is_alone',
         'created_at',
         'updated_at',
     ];
