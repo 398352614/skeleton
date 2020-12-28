@@ -49,8 +49,11 @@ class StockExceptionService extends BaseService
      */
     public function getPageList()
     {
-        $this->getStockService()->
-        $this->query->orderByDesc('id');
+        $stockList = $this->getStockService()->getList(['operator_id' => auth()->user()->id], ['*'], false);
+        if (!empty($stockList)) {
+            $this->query->whereNotIn('express_order_no', $stockList->pluck('express_order_no')->toArray());
+        }
+        $this->query->orderByDesc('id')->where('driver_id', auth()->user()->id);
         return parent::getPageList();
     }
 
@@ -61,17 +64,17 @@ class StockExceptionService extends BaseService
      */
     public function store($params)
     {
-        $package = $this->getTrackingOrderPackageService()->getInfo(['express_first_no' => $params['express_first_no']], ['*'], false);
+        $package = $this->getTrackingOrderPackageService()->getInfo(['express_first_no' => $params['express_first_no']], ['*'], false, ['id' => 'desc']);
         if (empty($package)) {
             throw new BusinessLogicException('数据不存在');
         }
         $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $package['tracking_order_no']], ['*'], false);
         if (empty($trackingOrder)) {
-            return;
+            throw new BusinessLogicException('数据不存在');
         }
         $order = $this->getOrderService()->getInfo(['order_no' => $trackingOrder['order_no']], ['*'], false);
         if (empty($order)) {
-            return;
+            throw new BusinessLogicException('数据不存在');
         }
         if (!(in_array($order['status'], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_4])
             && $order['type'] == BaseConstService::ORDER_TYPE_3
@@ -98,7 +101,7 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('上报异常失败，请重新操作');
         }
         if (empty(CompanyTrait::getCompany()['stock_exception_verify']) || CompanyTrait::getCompany()['stock_exception_verify'] == BaseConstService::STOCK_EXCEPTION_VERIFY_2) {
-            $this->autoDeal($stockException, $order['status']);
+            $this->autoDeal($stockException);
         }
 
     }
@@ -106,10 +109,9 @@ class StockExceptionService extends BaseService
     /**
      * 自动处理
      * @param $stockException
-     * @param $orderStatus
      * @throws BusinessLogicException
      */
-    public function autoDeal($stockException, $orderStatus)
+    public function autoDeal($stockException)
     {
         if (empty($stockException)) {
             throw new BusinessLogicException('数据不存在');
@@ -126,20 +128,13 @@ class StockExceptionService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('处理失败，请重新操作');
         }
-        if ($orderStatus == BaseConstService::ORDER_STATUS_4) {
-            //订单取消取派的情况，回取派中
-            $statusList['order'] = BaseConstService::ORDER_STATUS_2;
-            $statusList['tracking_order'] = BaseConstService::TRACKING_ORDER_STATUS_5;
-            $statusList['package'] = BaseConstService::PACKAGE_STATUS_2;
-            $statusList['batch'] = BaseConstService::BATCH_DELIVERING;
-        } else {
-            //订单待取派或取派中的情况，变已完成
-            $statusList['order'] = BaseConstService::ORDER_STATUS_3;
-            $statusList['tracking_order'] = BaseConstService::TRACKING_ORDER_STATUS_5;
-            $statusList['package'] = BaseConstService::PACKAGE_STATUS_3;
-            $statusList['batch'] = BaseConstService::BATCH_CHECKOUT;
-        }
+        //订单取消取派的情况，回取派中
+        $statusList['order'] = BaseConstService::ORDER_STATUS_2;
+        $statusList['tracking_order'] = BaseConstService::TRACKING_ORDER_STATUS_5;
+        $statusList['package'] = BaseConstService::PACKAGE_STATUS_2;
+        $statusList['batch'] = BaseConstService::BATCH_CHECKOUT;
         $this->statusChange($stockException, $statusList);
+        $this->getStockService()->packagePickOut($stockException['express_first_no']);
     }
 
     /**
@@ -151,7 +146,11 @@ class StockExceptionService extends BaseService
     public function statusChange($stockException, $statusList)
     {
         //更新包裹
-        $rowCount = $this->getPackageService()->update(['express_first_no' => $stockException['express_first_no']], ['status' => $statusList['package']]);
+        $package = $this->getPackageService()->getInfo(['express_first_no' => $stockException['express_first_no']], ['*'], false, ['id' => 'desc']);
+        if (empty($package)) {
+            return;
+        }
+        $rowCount = $this->getPackageService()->update(['express_first_no' => $package['express_first_no']], ['status' => $statusList['package']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('包裹处理失败，请重新操作');
         }
@@ -167,15 +166,13 @@ class StockExceptionService extends BaseService
             if ($rowCount === false) {
                 throw new BusinessLogicException('运单包裹处理失败，请重新操作');
             }
-            //只有变回取派中才需要更新订单
-            if ($statusList['order'] = BaseConstService::ORDER_STATUS_2) {
-                $rowCount = $this->getOrderService()->update(['order_no' => $trackingOrder['order_no']], ['status'=>$statusList['order']]);
-                if ($rowCount === false) {
-                    throw new BusinessLogicException('订单处理失败，请重新操作');
-                }
+            //更新订单
+            $rowCount = $this->getOrderService()->update(['order_no' => $trackingOrder['order_no']], ['status' => $statusList['order']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('订单处理失败，请重新操作');
             }
             //更新站点
-            $batch = $this->getBatchService()->getInfoLock(['batch_no'=>$trackingOrder['batch_no']], ['*'], false);
+            $batch = $this->getBatchService()->getInfoLock(['batch_no' => $trackingOrder['batch_no']], ['*'], false);
             if (!empty($batch)) {
                 $batchData = [
                     'status' => $statusList['batch'],
@@ -190,7 +187,7 @@ class StockExceptionService extends BaseService
                 $this->getTourService()->reCountAmountByNo($batch['batch_no']);
             }
             //更新取件线路
-            $tour = $this->getTourService()->getInfoLock(['tour_no'=>$trackingOrder['tour_no']], ['*'], false);
+            $tour = $this->getTourService()->getInfoLock(['tour_no' => $trackingOrder['tour_no']], ['*'], false);
             if (!empty($tour)) {
                 $tourData = [
                     'actual_pickup_quantity' => intval($tour['actual_pickup_quantity']) + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 ? 1 : 0),

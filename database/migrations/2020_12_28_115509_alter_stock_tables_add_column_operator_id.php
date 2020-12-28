@@ -13,7 +13,15 @@ class AlterStockTablesAddColumnOperatorId extends Migration
      */
     public function up()
     {
-        //
+        Schema::table('stock', function (Blueprint $table) {
+            $table->integer('operator_id')->default(null)->nullable()->after('operator')->comment('操作人ID');
+        });
+        Schema::table('stock_in_log', function (Blueprint $table) {
+            $table->integer('operator_id')->default(null)->nullable()->after('operator')->comment('操作人ID');
+        });
+        Schema::table('stock_out_log', function (Blueprint $table) {
+            $table->integer('operator_id')->default(null)->nullable()->after('operator')->comment('操作人ID');
+        });
     }
 
     /**
@@ -23,6 +31,14 @@ class AlterStockTablesAddColumnOperatorId extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('stock', function (Blueprint $table) {
+            $table->dropColumn('operator_id');
+        });
+        Schema::table('stock_in_log', function (Blueprint $table) {
+            $table->dropColumn('operator_id');
+        });
+        Schema::table('stock_in_log', function (Blueprint $table) {
+            $table->dropColumn('operator_id');
+        });
     }
 }

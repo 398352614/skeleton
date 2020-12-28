@@ -14,7 +14,7 @@ class AlterCompanyConfigAddColumnStockExceptionVerify extends Migration
     public function up()
     {
         Schema::table('company_config', function (Blueprint $table) {
-            $table->tinyInteger('stock_exception_verify')->default(1)->nullable()->after('address_template_id')->comment('是否开启入库异常审核1-开启2-关闭');
+            $table->tinyInteger('stock_exception_verify')->default(2)->nullable()->after('address_template_id')->comment('是否开启入库异常审核1-开启2-关闭');
         });
     }
 

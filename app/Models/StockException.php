@@ -58,7 +58,6 @@ class StockException extends BaseModel
         'deal_remark',
         'deal_time',
         'operator',
-
         'created_at',
         'updated_at',
     ];

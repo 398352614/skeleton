@@ -47,6 +47,7 @@ class StockService extends BaseService
                 'tracking_order_no' => $packageList[$no]['tracking_order_no'],
                 'execution_date' => $tour['execution_date'],
                 'operator' => auth()->user()->fullname,
+                'operator_id' => auth()->user()->id,
                 'order_no' => $packageList[$no]['order_no'],
                 'express_first_no' => $no
             ];
@@ -80,7 +81,7 @@ class StockService extends BaseService
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
         $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false,['id'=>'desc']);
-        if (in_array($order['status'], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2])
+        if (in_array($order['status'], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_4])
             && $order['type'] == BaseConstService::ORDER_TYPE_3
             && !empty($trackingOrder)
             && $trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1
@@ -149,6 +150,7 @@ class StockService extends BaseService
             'tracking_order_no' => $trackingOrder['tracking_order_no'],
             'execution_date' => $tour['execution_date'],
             'operator' => auth()->user()->fullname,
+            'operator_id' => auth()->user()->id,
             'order_no' => $package['order_no'],
             'express_first_no' => $package['express_first_no']
         ];
