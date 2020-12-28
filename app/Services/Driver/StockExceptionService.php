@@ -129,7 +129,7 @@ class StockExceptionService extends BaseService
         if ($orderStatus == BaseConstService::ORDER_STATUS_4) {
             //订单取消取派的情况，回取派中
             $statusList['order'] = BaseConstService::ORDER_STATUS_2;
-            $statusList['tracking_order'] = BaseConstService::TRACKING_ORDER_STATUS_4;
+            $statusList['tracking_order'] = BaseConstService::TRACKING_ORDER_STATUS_5;
             $statusList['package'] = BaseConstService::PACKAGE_STATUS_2;
             $statusList['batch'] = BaseConstService::BATCH_DELIVERING;
         } else {
@@ -168,7 +168,7 @@ class StockExceptionService extends BaseService
                 throw new BusinessLogicException('运单包裹处理失败，请重新操作');
             }
             //只有变回取派中才需要更新订单
-            if ($statusList['order'] = BaseConstService::ORDER_STATUS_3) {
+            if ($statusList['order'] = BaseConstService::ORDER_STATUS_2) {
                 $rowCount = $this->getOrderService()->update(['order_no' => $trackingOrder['order_no']], ['status'=>$statusList['order']]);
                 if ($rowCount === false) {
                     throw new BusinessLogicException('订单处理失败，请重新操作');
