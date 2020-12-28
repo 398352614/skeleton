@@ -91,7 +91,6 @@ class BaseLineService extends BaseService
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
             if ($merchantAlone == BaseConstService::YES) {
                 $lineRange = $this->getMerchantGroupLineRangeByPostcode($info['place_post_code'], $info['execution_date'], $info['merchant_id']);
-                $lineRange['merchant_id'] = $info['merchant_id'];
             } else {
                 $lineRange = $this->getLineRangeByPostcode($info['place_post_code'], $info['execution_date']);
             }
@@ -103,6 +102,7 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
         }
         if (!empty($lineRange['is_alone']) && (intval($lineRange['is_alone']) == BaseConstService::YES)) {
+            $lineRange['merchant_id'] = $info['merchant_id'];
             $lineRange['range_merchant_id'] = $lineRange['merchant_id'] ?? 0;
         } else {
             $lineRange['range_merchant_id'] = 0;
