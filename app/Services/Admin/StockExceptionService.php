@@ -126,7 +126,7 @@ class StockExceptionService extends BaseService
                 throw new BusinessLogicException('运单包裹处理失败，请重新操作');
             }
             //更新订单
-            $rowCount = $this->getOrderService()->update(['order_no' => $trackingOrder['order_no']], $statusList['order']);
+            $rowCount = $this->getOrderService()->update(['order_no' => $trackingOrder['order_no']], ['status'=>$statusList['order']]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('订单处理失败，请重新操作');
             }
