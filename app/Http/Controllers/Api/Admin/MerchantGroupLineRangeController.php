@@ -10,17 +10,17 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\MerchantLineRangeService;
+use App\Services\Admin\MerchantGroupLineRangeService;
 
 /**
- * 费用
+ * 商户组线路范围
  * Class FeeController
  * @package App\Http\Controllers\Api\Admin
- * @property MerchantLineRangeService $service
+ * @property MerchantGroupLineRangeService $service
  */
-class MerchantLineRangeController extends BaseController
+class MerchantGroupLineRangeController extends BaseController
 {
-    public function __construct(MerchantLineRangeService $service, $exceptMethods = [])
+    public function __construct(MerchantGroupLineRangeService $service, $exceptMethods = [])
     {
         parent::__construct($service, $exceptMethods);
     }

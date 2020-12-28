@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\App;
 /**
  * Trait ConstTranslateTrait
  * @package App\Traits
+ * @method static statusList($args = null)
  * @method static noTypeList($args = null)
  * @method static lineRuleList($args = null)
  * @method static printTemplateList($args = null)
@@ -70,6 +71,12 @@ use Illuminate\Support\Facades\App;
  */
 trait ConstTranslateTrait
 {
+    //状态1-是2-否
+    public static $statusList = [
+        BaseConstService::YES => '是',
+        BaseConstService::NO => '否'
+    ];
+
     //编号类型
     public static $noTypeList = [
         BaseConstService::ORDER_NO_TYPE => '订单编号规则',

@@ -7,7 +7,7 @@ namespace App\Models;
  * Class Employee
  * @package App\Models
  */
-class MerchantLineRange extends BaseModel
+class MerchantGroupLineRange extends BaseModel
 {
     /**
      * 司机实际取件导航
@@ -15,7 +15,7 @@ class MerchantLineRange extends BaseModel
      *
      * @var string
      */
-    protected $table = 'merchant_line_range';
+    protected $table = 'merchant_group_line_range';
 
     /**
      * The primary key for the model.
@@ -45,13 +45,14 @@ class MerchantLineRange extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'merchant_id',
+        'merchant_group_id',
         'line_id',
         'line_range_id',
         'post_code_start',
         'post_code_end',
         'schedule',
         'country',
+        'is_alone',
         'created_at',
         'updated_at',
     ];

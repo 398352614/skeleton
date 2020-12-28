@@ -11,7 +11,7 @@ use App\Services\Driver\LineAreaService;
 use App\Services\Driver\LineRangeService;
 use App\Services\Driver\LineService;
 use App\Services\Driver\MaterialService;
-use App\Services\Driver\MerchantLineRangeService;
+use App\Services\Driver\MerchantGroupLineRangeService;
 use App\Services\Driver\MerchantService;
 use App\Services\Driver\OrderService;
 use App\Services\Driver\PackageService;
@@ -245,11 +245,11 @@ Trait DriverServiceTrait
 
     /**
      * 商户线路范围 服务
-     * @return MerchantLineRangeService
+     * @return MerchantGroupLineRangeService
      */
-    public function getMerchantLineRangeService()
+    public function getMerchantGroupLineRangeService()
     {
-        return self::getInstance(MerchantLineRangeService::class);
+        return self::getInstance(MerchantGroupLineRangeService::class);
     }
 
     /**

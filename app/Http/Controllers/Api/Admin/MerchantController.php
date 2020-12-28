@@ -46,11 +46,6 @@ class MerchantController extends BaseController
         return $this->service->init();
     }
 
-    public function getFeeList()
-    {
-        return $this->service->getFeeList($this->data['merchant_id'] ?? null);
-    }
-
     /**
      * 新增
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
@@ -111,5 +106,4 @@ class MerchantController extends BaseController
     {
         return $this->service->merchantExcel();
     }
-
 }

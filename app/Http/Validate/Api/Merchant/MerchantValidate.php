@@ -34,9 +34,6 @@ class MerchantValidate extends BaseValidate
         'additional_status' => 'required|integer|in:1,2',
         'password' => 'required|string|max:100',
         'confirm_password' => 'required|string|same:password',
-        'advance_days' => 'nullable|integer|gte:0|lte:7',
-        'appointment_days' => 'nullable|integer|gte:1|lte:30',
-        'delay_time' => 'nullable|integer|gte:0|lte:60',
 
         'package_list.*.weight' => 'required|numeric|gte:0',
         'package_list.*.express_first_no' => 'required_with:package_list|string|max:50|regex:/^[0-9a-zA-Z]([0-9a-zA-Z])*[0-9a-zA-Z]$/',
@@ -49,10 +46,6 @@ class MerchantValidate extends BaseValidate
             'phone',
             'address',
             'country',
-            'advance_days',
-            'appointment_days',
-            'delay_time',
-            'additional_status'
         ],
     ];
 }

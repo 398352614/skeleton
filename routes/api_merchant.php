@@ -55,7 +55,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
         //订单追踪
-        Route::get('/{id}/track', 'OrderController@track');
+        Route::get('/{id}/track','OrderController@track');
         //批量更新电话日期
         Route::post('/update-phone-date-list','OrderController@updateByApiList');
         //获取订单的运单列表
