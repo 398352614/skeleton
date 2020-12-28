@@ -117,6 +117,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof Warehouse))
                 && (!($model instanceof Line))
                 && (!($model instanceof LineRange))
+                && (!($model instanceof MerchantGroup))
                 && (!($model instanceof MerchantGroupLineRange))
                 && (!($model instanceof LineArea))
                 && (!($model instanceof TrackingOrder))
@@ -167,6 +168,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Driver)
                 && !($model instanceof Holiday)
                 && !($model instanceof HolidayDate)
+                && (!($model instanceof MerchantGroup))
                 && !($model instanceof MerchantGroupLineRange)
                 && (!in_array('merchant_id', $whereColumns))
             ) {
