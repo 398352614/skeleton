@@ -42,6 +42,7 @@ use App\Models\Recharge;
 use App\Models\RouteTracking;
 use App\Models\SpecialTimeCharging;
 use App\Models\Stock;
+use App\Models\StockException;
 use App\Models\StockInLog;
 use App\Models\StockOutLog;
 use App\Models\Tour;
@@ -132,6 +133,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof StockInLog))
                 && (!($model instanceof StockOutLog))
                 && (!($model instanceof PackageNoRule))
+                && (!($model instanceof StockException))
                 && (!in_array('driver_id', $whereColumns))
                 && (!Str::contains($sql, "IFNULL(driver_id,0) <> -1"))
             ) {

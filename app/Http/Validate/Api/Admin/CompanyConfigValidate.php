@@ -19,7 +19,7 @@ class CompanyConfigValidate extends BaseValidate
         'currency_unit' => 'required|string|max:50',
         'volume_unit' => 'required|string|max:50',
         'map' => 'required|string|max:50',
-        'show_type'=>'required|integer|in:1,2'
+        'stock_exception_verify'=>'nullable|integer|in:1,2'
     ];
 
     public $scene = [
@@ -31,7 +31,8 @@ class CompanyConfigValidate extends BaseValidate
             'volume_unit',
             'show_type',
             'map',
-            'show_type'
+            'show_type',
+            'stock_exception_verify'
         ],
     ];
 }

@@ -499,5 +499,8 @@ return [
 "warehouse_name"=>"warehouse name",
 "tracking_type"=>"tracking type",
 "tracking_status"=>"tracking status",
+
+"stock_exception_verify"=>"stock exception verify",
+"stock_exception_no"=>"stock exception no",
 ]
 ];

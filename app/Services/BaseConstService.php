@@ -19,6 +19,7 @@ class BaseConstService
     const PACKAGE = 'PACKAGE';
     const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
+    const STOCK_EXCEPTION = 'SE';
     const RECHARGE = '';
 
     const CANCEL_TIMES = 3;
@@ -57,8 +58,10 @@ class BaseConstService
     const BATCH_NO_TYPE = 'batch';
     //取件线路编号类型
     const TOUR_NO_TYPE = 'tour';
-    //站点编号类型
+    //站点异常编号类型
     const BATCH_EXCEPTION_NO_TYPE = 'batch_exception';
+    //入库异常编号类型
+    const STOCK_EXCEPTION_NO_TYPE = 'stock_exception';
     //充值单号类型
     const RECHARGE_NO_TYPE = 'recharge';
 
@@ -450,4 +453,11 @@ class BaseConstService
     const TRACK_STATUS_2 = 2;
     const TRACK_STATUS_3 = 3;
 
+    //入库异常状态
+    const STOCK_STATUS_1 = 1;
+    const STOCK_STATUS_2 = 2;
+
+    //入库异常审核1-关闭-2-开启
+    const STOCK_EXCEPTION_VERIFY_1 = 1;
+    const STOCK_EXCEPTION_VERIFY_2 = 2;
 }

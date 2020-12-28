@@ -85,6 +85,7 @@ trait ConstTranslateTrait
         BaseConstService::TOUR_NO_TYPE => '取件线路编号规则',
         BaseConstService::RECHARGE_NO_TYPE => '充值单号规则',
         BaseConstService::TRACKING_ORDER_NO_TYPE => '运单单号规则',
+        BaseConstService::STOCK_EXCEPTION_NO_TYPE => '入库异常编号规则',
     ];
 
     //线路分配规则

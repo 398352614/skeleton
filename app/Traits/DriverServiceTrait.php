@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Services\Driver\StockExceptionService;
 use App\Services\Driver\AdditionalPackageService;
 use App\Services\Driver\BatchExceptionService;
 use App\Services\Driver\BatchService;
@@ -277,5 +278,15 @@ Trait DriverServiceTrait
     public function getPackageNoRuleService()
     {
         return self::getInstance(PackageNoRuleService::class);
+    }
+
+
+    /**
+     * 入库异常 服务
+     * @return StockExceptionService
+     */
+    public function getStockExceptionService()
+    {
+        return self::getInstance(StockExceptionService::class);
     }
 }

@@ -723,4 +723,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //充值审核
         Route::put('/statistics/{id}', 'RechargeStatisticsController@verify');
     });
+
+    //入库异常管理
+    Route::prefix('stock-exception')->group(function () {
+        //查询
+        Route::get('/', 'stockExceptionController@index');
+        //详情
+        Route::get('/{id}', 'stockExceptionController@show');
+        //审核
+        Route::put('/{id}/deal', 'stockExceptionController@deal');
+    });
 });

@@ -1,0 +1,165 @@
+<?php
+/**
+ * 异常管理 服务
+ * User: long
+ * Date: 2020/1/3
+ * Time: 16:26
+ */
+
+namespace App\Services\Admin;
+
+use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\Api\Admin\StockExceptionResource;
+use App\Models\BatchException;
+use App\Models\StockException;
+use App\Services\BaseConstService;
+use Illuminate\Support\Carbon;
+
+class StockExceptionService extends BaseService
+{
+    public $filterRules = [
+        'status' => ['=', 'status'],
+        'stock_exception_no,express_first_no,tracking_order_no' => ['like', 'keyword'],
+        'created_at' => ['between', ['begin_date', 'end_date']]
+    ];
+
+    public function __construct(StockException $batchException)
+    {
+        parent::__construct($batchException, StockExceptionResource::class);
+    }
+
+    /**
+     * 获取详情
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $info->toArray();
+    }
+
+    /**
+     * 列表查询
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getPageList()
+    {
+        $this->query->orderByDesc('id');
+        return parent::getPageList();
+    }
+
+    /**
+     * 异常处理
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function deal($id, $params)
+    {
+        $stockException = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($stockException)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $stockException = $stockException->toArray();
+        if (intval($stockException['status']) !== BaseConstService::STOCK_STATUS_1) {
+            throw new BusinessLogicException('当前状态不能处理异常或异常已处理');
+        }
+        $rowCount = parent::updateById($id, [
+            'deal_remark' => $params['deal_remark'],
+            'deal_time' => Carbon::now(),
+            'operator' => auth()->user()->fullname,
+            'status' => BaseConstService::STOCK_STATUS_2,
+        ]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('处理失败，请重新操作');
+        }
+        //后续处理
+        $trackingOrder = $this->getInfo(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
+        if (empty($trackingOrder)) {
+            return;
+        }
+        $order = $this->getInfo(['order_no' => $trackingOrder['order_no']], ['*'], false);
+        if (empty($order)) {
+            return;
+        }
+        if ($order['status'] == BaseConstService::ORDER_STATUS_4) {
+            //订单取消取派的情况，回取派中
+            $statusList['order'] = BaseConstService::ORDER_STATUS_2;
+            $statusList['tracking_order'] = BaseConstService::TRACKING_ORDER_STATUS_4;
+            $statusList['package'] = BaseConstService::PACKAGE_STATUS_2;
+            $statusList['batch'] = BaseConstService::BATCH_DELIVERING;
+        } else {
+            //订单待取派或取派中的情况，变已完成
+            $statusList['order'] = BaseConstService::ORDER_STATUS_3;
+            $statusList['tracking_order'] = BaseConstService::TRACKING_ORDER_STATUS_5;
+            $statusList['package'] = BaseConstService::PACKAGE_STATUS_3;
+            $statusList['batch'] = BaseConstService::BATCH_CHECKOUT;
+        }
+        $this->statusChange($stockException, $statusList);
+    }
+
+    /**
+     * 更换状态
+     * @param $stockException
+     * @param $statusList
+     * @throws BusinessLogicException
+     */
+    public function statusChange($stockException, $statusList)
+    {
+        //更新包裹
+        $rowCount = $this->getPackageService()->update(['express_first_no' => $stockException['express_first_no']], ['status' => $statusList['package']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('包裹处理失败，请重新操作');
+        }
+        //更新运单
+        $rowCount = $this->getTrackingOrderService()->update(['tracking_order_no' => $stockException['tracking_order_no']], ['status' => $statusList['tracking_order']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('运单处理失败，请重新操作');
+        }
+        $trackingOrder = $this->getTrackingOrderService()->getInfoLock(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
+        if (!empty($trackingOrder)) {
+            //更新运单包裹
+            $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $stockException['tracking_order_no']], ['status' => $statusList['tracking_order']]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('运单包裹处理失败，请重新操作');
+            }
+            //只有变回取派中才需要更新订单
+            if ($statusList['order'] = BaseConstService::ORDER_STATUS_3) {
+                $rowCount = $this->getOrderService()->update(['order_no' => $trackingOrder['order_no']], $statusList['order']);
+                if ($rowCount === false) {
+                    throw new BusinessLogicException('订单处理失败，请重新操作');
+                }
+            }
+            //更新站点
+            $batch = $this->getBatchService()->getInfoLock(['batch_no', $trackingOrder['batch_no']], ['*'], false);
+            if (!empty($batch)) {
+                $batchData = [
+                    'status' => $statusList['batch'],
+                    'actual_pickup_quantity' => $batch['actual_pickup_quantity'] + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 ? 1 : 0),
+                    'actual_pie_quantity' => $batch['actual_pie_quantity'] + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2 ? 1 : 0),
+                ];
+                $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $stockException['batch_no']], $batchData);
+                if ($rowCount === false) {
+                    throw new BusinessLogicException('站点处理失败，请重新操作');
+                }
+            }
+            //更新取件线路
+            $tour = $this->getTourService()->getInfoLock(['tour_no', $trackingOrder['tour_no']], ['*'], false);
+            if (!empty($tour)) {
+                $tourData = [
+                    'actual_pickup_quantity' => intval($tour['actual_pickup_quantity']) + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 ? 1 : 0),
+                    'actual_pie_quantity' => intval($tour['actual_pie_quantity']) + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2 ? 1 : 0),
+                ];
+                $rowCount = $this->getTourService()->update(['tour_no' => $stockException['tour_no']], $tourData);
+                if ($rowCount === false) {
+                    throw new BusinessLogicException('取件线路处理失败，请重新操作');
+                }
+            }
+        }
+    }
+}

@@ -29,6 +29,7 @@ use App\Services\Admin\PackageService;
 use App\Services\Admin\PrintTemplateService;
 use App\Services\Admin\RechargeService;
 use App\Services\Admin\RechargeStatisticsService;
+use App\Services\Admin\StockExceptionService;
 use App\Services\Admin\StockInLogService;
 use App\Services\Admin\StockOutLogService;
 use App\Services\Admin\StockService;
@@ -397,5 +398,14 @@ trait AdminServiceTrait
     public function getPackageNoRuleService()
     {
         return self::getInstance(PackageNoRuleService::class);
+    }
+
+    /**
+     * 入库异常 服务
+     * @return StockExceptionService
+     */
+    public function getStockExceptionService()
+    {
+        return self::getInstance(StockExceptionService::class);
     }
 }

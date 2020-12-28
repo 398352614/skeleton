@@ -70,7 +70,7 @@ class StockService extends BaseService
         if (empty($package)) {
             throw new BusinessLogicException('当前包裹不存在系统中');
         }
-        $stock = $this->getStockService()->getInfo(['express_first_no'=>$package['express_first_no']], ['*'], false);
+        $stock = $this->getStockService()->getInfo(['express_first_no' => $package['express_first_no']], ['*'], false);
         if (!empty($stock)) {
             throw new BusinessLogicException('包裹已入库，当前线路[:line_name]，派送日期[:execution_date]', 1000, ['line_name' => $stock['line_name'], 'execution_date' => $stock['execution_date']]);
         }
@@ -79,6 +79,15 @@ class StockService extends BaseService
         }
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false,['id'=>'desc']);
+        if (in_array($order['status'], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2])
+            && $order['type'] == BaseConstService::ORDER_TYPE_3
+            && !empty($trackingOrder)
+            && $trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1
+            && $trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_6
+        ) {
+            throw new BusinessLogicException('当前包裹不能生成对应派件运单，请进行异常入库处理', 5005);
+        }
         if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
             throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
         }
@@ -155,6 +164,4 @@ class StockService extends BaseService
         //推送入库分拣信息
         dispatch(new \App\Jobs\PackagePickOut([$package]));
     }
-
-
 }

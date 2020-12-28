@@ -2,22 +2,22 @@
 
 namespace App\Models;
 
+use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 公司配置 表
+ * 站点异常表
  * Class Employee
  * @package App\Models
  */
-class CompanyConfig extends BaseModel
+class StockException extends BaseModel
 {
     /**
-     * 司机实际取件导航
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'company_config';
+    protected $table = 'stock_exception';
 
     /**
      * The primary key for the model.
@@ -47,14 +47,18 @@ class CompanyConfig extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'address_template_id',
-        'line_rule',
-        'show_type',
-        'weight_unit',
-        'currency_unit',
-        'volume_unit',
-        'stock_exception_verify',
-        'map',
+        'stock_exception_no',
+        'tracking_order_no',
+        'express_first_no',
+        'driver_id',
+        'driver_name',
+        'remark',
+        'status',
+
+        'deal_remark',
+        'deal_time',
+        'operator',
+
         'created_at',
         'updated_at',
     ];
@@ -69,7 +73,7 @@ class CompanyConfig extends BaseModel
     ];
 
     protected $appends = [
-        'line_rule_name'
+        'status_name',
     ];
 
     /**
@@ -80,8 +84,9 @@ class CompanyConfig extends BaseModel
     protected $dates = [];
 
 
-    public function getLineRuleNameAttribute()
+    public function getStatusNameAttribute()
     {
-        return empty($this->line_rule) ? null : ConstTranslateTrait::lineRuleList($this->line_rule);
+        return ConstTranslateTrait::batchExceptionStatusList($this->status);
     }
+
 }

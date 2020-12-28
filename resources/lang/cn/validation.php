@@ -698,15 +698,18 @@ return [
         "tracking_order_no" => "运单号",
         "warehouse_fullname" => "发件人姓名",
 
-"receiver"=>"收货方姓名",
-"lon"=>"经度",
-"lat"=>"纬度",
-"pickup_count"=>"取件次数0-手动",
-"pie_count"=>"派件次数0-手动",
-"out_group_order_no"=>"外部订单组号",
-"length"=>"长度限制",
-"operator"=>"操作人",
-"tracking_type"=>"运单类型",
-"tracking_status"=>"状态",
-]
+        "receiver" => "收货方姓名",
+        "lon" => "经度",
+        "lat" => "纬度",
+        "pickup_count" => "取件次数0-手动",
+        "pie_count" => "派件次数0-手动",
+        "out_group_order_no" => "外部订单组号",
+        "length" => "长度限制",
+        "operator" => "操作人",
+        "tracking_type" => "运单类型",
+        "tracking_status" => "状态",
+
+        "stock_exception_verify" => "是否开启入库异常审核",
+        "stock_exception_no" => "入库异常编号",
+    ]
 ];
