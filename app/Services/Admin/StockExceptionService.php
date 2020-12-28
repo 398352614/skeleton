@@ -131,14 +131,14 @@ class StockExceptionService extends BaseService
                 throw new BusinessLogicException('订单处理失败，请重新操作');
             }
             //更新站点
-            $batch = $this->getBatchService()->getInfoLock(['batch_no', $trackingOrder['batch_no']], ['*'], false);
+            $batch = $this->getBatchService()->getInfoLock(['batch_no'=>$trackingOrder['batch_no']], ['*'], false);
             if (!empty($batch)) {
                 $batchData = [
                     'status' => $statusList['batch'],
                     'actual_pickup_quantity' => $batch['actual_pickup_quantity'] + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 ? 1 : 0),
                     'actual_pie_quantity' => $batch['actual_pie_quantity'] + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2 ? 1 : 0),
                 ];
-                $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $stockException['batch_no']], $batchData);
+                $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $trackingOrder['batch_no']], $batchData);
                 if ($rowCount === false) {
                     throw new BusinessLogicException('站点处理失败，请重新操作');
                 }
@@ -150,7 +150,7 @@ class StockExceptionService extends BaseService
                     'actual_pickup_quantity' => intval($tour['actual_pickup_quantity']) + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 ? 1 : 0),
                     'actual_pie_quantity' => intval($tour['actual_pie_quantity']) + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2 ? 1 : 0),
                 ];
-                $rowCount = $this->getTourService()->update(['tour_no' => $stockException['tour_no']], $tourData);
+                $rowCount = $this->getTourService()->update(['tour_no' => $trackingOrder['tour_no']], $tourData);
                 if ($rowCount === false) {
                     throw new BusinessLogicException('取件线路处理失败，请重新操作');
                 }
