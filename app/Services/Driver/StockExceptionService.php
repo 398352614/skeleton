@@ -51,7 +51,7 @@ class StockExceptionService extends BaseService
     {
         $stockList = $this->getStockService()->getList(['operator_id' => auth()->user()->id], ['*'], false);
         if (!empty($stockList)) {
-            $this->query->whereNotIn('express_order_no', $stockList->pluck('express_order_no')->toArray());
+            $this->query->whereNotIn('express_first_no', $stockList->pluck('express_first_no')->toArray());
         }
         $this->query->orderByDesc('id')->where('driver_id', auth()->user()->id);
         return parent::getPageList();
