@@ -216,6 +216,6 @@ class MerchantService extends BaseService
     public function getPageList()
     {
         $this->query->orderByDesc('id');
-        return $this->getPageList();
+        return parent::getPageList();
     }
 }
