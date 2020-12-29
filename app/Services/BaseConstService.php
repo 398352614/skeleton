@@ -164,7 +164,7 @@ class BaseConstService
     const PACKAGE_STATUS_4 = 4;
     const PACKAGE_STATUS_5 = 5;
 
-    //顺带包裹状态
+    //顺带包裹状态1-启用2-禁用
     const ADDITIONAL_PACKAGE_STATUS_1 = 1;
     const ADDITIONAL_PACKAGE_STATUS_2 = 2;
 
