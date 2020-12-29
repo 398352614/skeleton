@@ -289,4 +289,13 @@ Trait DriverServiceTrait
     {
         return self::getInstance(StockExceptionService::class);
     }
+
+    /**
+     * 获取商户组
+     * @return StockExceptionService
+     */
+    public function getMerchantGroupService()
+    {
+        return self::getInstance(StockExceptionService::class);
+    }
 }

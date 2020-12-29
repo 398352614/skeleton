@@ -134,6 +134,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof StockOutLog))
                 && (!($model instanceof PackageNoRule))
                 && (!($model instanceof StockException))
+                && (!($model instanceof MerchantGroup))
                 && (!in_array('driver_id', $whereColumns))
                 && (!Str::contains($sql, "IFNULL(driver_id,0) <> -1"))
             ) {

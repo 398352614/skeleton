@@ -35,6 +35,13 @@ class MerchantService extends BaseService
             $this->query->whereIn('id', $merchantIdList);
         }
         $this->query->where('status', BaseConstService::MERCHANT_RECHARGE_STATUS_1);
+        if(!empty($this->formData['additional_status'])){
+            $merchantGroupList=$this->getMerchantGroupService()->getList(['additional_status'=>$this->formData['additional_status']],['*'],false);
+            if(!empty($merchantIdList)){
+                $merchantGroupList=$merchantGroupList->pluck('id')->toArray();
+                $this->query->whereIn('merchant_group_id',$merchantGroupList);
+            }
+        }
         return parent::setFilter()->getList([], ['*'], false);
     }
 }
