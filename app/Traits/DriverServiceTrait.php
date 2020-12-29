@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Services\Driver\MerchantGroupService;
 use App\Services\Driver\StockExceptionService;
 use App\Services\Driver\AdditionalPackageService;
 use App\Services\Driver\BatchExceptionService;
@@ -296,6 +297,6 @@ Trait DriverServiceTrait
      */
     public function getMerchantGroupService()
     {
-        return self::getInstance(StockExceptionService::class);
+        return self::getInstance(MerchantGroupService::class);
     }
 }
