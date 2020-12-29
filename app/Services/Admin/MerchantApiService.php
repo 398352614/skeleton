@@ -22,7 +22,7 @@ use Vinkla\Hashids\Facades\Hashids;
 class MerchantApiService extends BaseService
 {
     public $filterRules = [
-        'code,name' => ['like', 'keyword'],
+        'name' => ['like', 'keyword'],
     ];
 
     protected $merchantModel;
@@ -35,6 +35,12 @@ class MerchantApiService extends BaseService
 
     public function getPageList()
     {
+        if(!empty($this->formData['keyword'])){
+            $merchantList=$this->getMerchantService()->getList(['code'=>$this->formData['keyword']],['*'],false);
+            if(!empty($merchantList)){
+                $this->query->whereIn('merchant_id',$merchantList->pluck('id')->toArray());
+            }
+        }
         $list = parent::getPageList();
         foreach ($list as &$merchantApi) {
             $merchant = $this->getMerchantService()->getInfo(['id' => $merchantApi['merchant_id']], ['name', 'code'], false);
