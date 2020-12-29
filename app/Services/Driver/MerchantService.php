@@ -42,6 +42,6 @@ class MerchantService extends BaseService
                 $this->query->whereIn('merchant_group_id', $merchantGroupList);
             }
         }
-        return $this->getList();
+        return $this->query->get();
     }
 }
