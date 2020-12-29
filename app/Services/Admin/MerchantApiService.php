@@ -34,13 +34,15 @@ class MerchantApiService extends BaseService
 
     public function getPageList()
     {
-        if(!empty($this->formData)){
-            $merchant=$this->getMerchantService();
-            $merchant->formData = $this->formData;
-            $merchantList = $merchant->setFilter()->getList();
-            if (!empty($merchantList)) {
-                $this->query->whereIn('merchant_id', $merchantList->pluck('id')->toArray());
-            }
+        if (!empty($this->formData['name'])) {
+           $this->getMerchantService()->query->where('name',$this->formData['name']);
+        }
+        if (!empty($this->formData['code'])) {
+            $this->getMerchantService()->query->where('code',$this->formData['code']);
+        }
+        $merchantList=$this->getMerchantService()->getList();
+        if(!empty($merchantList)){
+            $this->query->whereIn('merchant_id',$merchantList->pluck('id')->toArray());
         }
         $list = parent::getPageList();
         foreach ($list as &$merchantApi) {
