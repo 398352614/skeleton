@@ -48,7 +48,7 @@ class MerchantController extends BaseController
 
     /**
      * 新增
-     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
+     * @return void
      * @throws BusinessLogicException
      */
     public function store()

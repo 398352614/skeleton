@@ -210,8 +210,12 @@ class MerchantService extends BaseService
     public function getMerchantPageList($where)
     {
         $this->filters = $where;
-        $this->query->orderByDesc('id');
         return parent::getPageList();
     }
 
+    public function getPageList()
+    {
+        $this->query->orderByDesc('id');
+        return $this->getPageList();
+    }
 }
