@@ -289,27 +289,27 @@ class OrderNoRuleService extends BaseService
         return $orderNo;
     }
 
-    public function baseCreateNo($noRuleId,$type)
-    {
-        $lock=$this->getNoRuleLock($noRuleId);
-        if($lock == BaseConstService::YES){
-            $tryTime=BaseConstService::TRY_TIME;
-            sleep(0.1);
-        }
-        $info = parent::getInfo(['company_id' => auth()->user()->company_id, 'type' => $type, 'status' => BaseConstService::ON], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('编号规则不存在或已被禁用，请先联系后台管理员');
-        }
-        $info = $info->toArray();
-        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
-        //修改索引
-        $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
-        $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
-        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'start_string_index' => $startStringIndex]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('单号生成失败，请重新操作');
-        }
-        return $orderNo;
-    }
+//    public function baseCreateNo($noRuleId,$type)
+//    {
+//        $lock=$this->getNoRuleLock($noRuleId);
+//        if($lock == BaseConstService::YES){
+//            $tryTime=BaseConstService::TRY_TIME;
+//            sleep(0.1);
+//        }
+//        $info = parent::getInfo(['company_id' => auth()->user()->company_id, 'type' => $type, 'status' => BaseConstService::ON], ['*'], false);
+//        if (empty($info)) {
+//            throw new BusinessLogicException('编号规则不存在或已被禁用，请先联系后台管理员');
+//        }
+//        $info = $info->toArray();
+//        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
+//        //修改索引
+//        $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
+//        $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
+//        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'start_string_index' => $startStringIndex]);
+//        if ($rowCount === false) {
+//            throw new BusinessLogicException('单号生成失败，请重新操作');
+//        }
+//        return $orderNo;
+//    }
 
 }
