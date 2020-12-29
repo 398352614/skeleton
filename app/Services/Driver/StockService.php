@@ -75,9 +75,6 @@ class StockService extends BaseService
         if (!empty($stock)) {
             throw new BusinessLogicException('包裹已入库，当前线路[:line_name]，派送日期[:execution_date]', 1000, ['line_name' => $stock['line_name'], 'execution_date' => $stock['execution_date']]);
         }
-        if (!in_array($package->status, [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2])) {
-            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
-        }
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
         $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false,['id'=>'desc']);
@@ -88,6 +85,9 @@ class StockService extends BaseService
             && $trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_6
         ) {
             throw new BusinessLogicException('当前包裹不能生成对应派件运单，请进行异常入库处理', 5005);
+        }
+        if (!in_array($package->status, [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2])) {
+            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
         }
         if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
             throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
