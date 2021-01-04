@@ -1112,6 +1112,7 @@ class TrackingOrderService extends BaseService
             if ($rowCount === false) {
                 throw new BusinessLogicException('操作失败');
             }
-        };
+        }
+        TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder->toArray(), BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
     }
 }
