@@ -19,7 +19,7 @@ class StockExceptionValidate extends BaseValidate
 
 
     public $rules = [
-        'deal_remark' => 'required|string|max:250|min:5',
+        'deal_remark' => 'nullable|string|max:250|min:5',
     ];
 
     public $scene = [
