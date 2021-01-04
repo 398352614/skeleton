@@ -981,6 +981,7 @@ class OrderService extends BaseService
                 continue;
             }
             $order['tracking_order_type'] = $trackingOrderList[$orderNo]['type'];
+            $order['tracking_type'] = $trackingOrderList[$orderNo]['type'];
             $order['tracking_order_type_name'] = $trackingOrderList[$orderNo]['type_name'];
             $order['tracking_order_status'] = $trackingOrderList[$orderNo]['status'];
             $order['tracking_order_status_name'] = $trackingOrderList[$orderNo]['status_name'];
