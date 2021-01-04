@@ -71,4 +71,15 @@ class MerchantApiController extends BaseController
     {
         return $this->service->destroy($id);
     }
+
+    /**
+     * 修改状态
+     * @param $id
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function status($id)
+    {
+        return $this->service->status($id, $this->data);
+    }
 }
