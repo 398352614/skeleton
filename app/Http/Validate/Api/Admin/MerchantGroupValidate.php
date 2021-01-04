@@ -29,7 +29,7 @@ class MerchantGroupValidate extends BaseValidate
         'pickup_count' => 'required|integer|gte:0|lte:5',
         'pie_count' => 'nullable|integer|gte:0|lte:5',
         'fee_code_list' => 'nullable|string|max:1000',
-        'merchant_group_id' => 'required|integer',
+        'merchant_group_id' => 'nullable|integer',
         'status' => 'required|integer|in:1,2',
     ];
 
