@@ -23,6 +23,7 @@ class StockExceptionResource extends JsonResource
             'deal_time' => $this->deal_time,
             'operator' => $this->operator,
             'operator_id' => $this->operator_id,
+            'order_no'=>$this->order_no ?? '',
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];

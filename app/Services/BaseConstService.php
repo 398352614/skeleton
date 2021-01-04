@@ -453,9 +453,10 @@ class BaseConstService
     const TRACK_STATUS_2 = 2;
     const TRACK_STATUS_3 = 3;
 
-    //入库异常状态
-    const STOCK_STATUS_1 = 1;
-    const STOCK_STATUS_2 = 2;
+    //入库异常状态1-未审核2-已审核3-审核拒绝
+    const STOCK_EXCEPTION_STATUS_1 = 1;
+    const STOCK_EXCEPTION_STATUS_2 = 2;
+    const STOCK_EXCEPTION_STATUS_3 = 3;
 
     //入库异常审核1-关闭-2-开启
     const STOCK_EXCEPTION_VERIFY_1 = 1;

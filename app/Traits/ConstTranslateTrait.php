@@ -68,6 +68,7 @@ use Illuminate\Support\Facades\App;
  * @method static merchantAdditionalStatusList($args = null)
  * @method static tourDelayTypeList($args = null)
  * @method static trackStatusList($args = null)
+ * @method static stockExceptionStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -432,6 +433,12 @@ trait ConstTranslateTrait
         BaseConstService::TRACK_STATUS_1 => '取件中',
         BaseConstService::TRACK_STATUS_2 => '取件成功，等待派件',
         BaseConstService::TRACK_STATUS_3 => '取件成功，派件中'
+    ];
+
+    public static $stockExceptionStatusList =[
+        BaseConstService::STOCK_EXCEPTION_STATUS_1 => '未审核',
+        BaseConstService::STOCK_EXCEPTION_STATUS_2 => '审核成功',
+        BaseConstService::STOCK_EXCEPTION_STATUS_3 => '审核失败'
     ];
 
     /**

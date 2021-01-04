@@ -85,7 +85,7 @@ class StockException extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return ConstTranslateTrait::batchExceptionStatusList($this->status);
+        return ConstTranslateTrait::stockExceptionStatusList($this->status);
     }
 
 }

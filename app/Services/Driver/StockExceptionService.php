@@ -84,7 +84,7 @@ class StockExceptionService extends BaseService
         ) {
             throw new BusinessLogicException('该包裹当前状态不允许上报异常');
         }
-        //生成站点异常
+        //生成入库异常
         $stockExceptionNo = $this->getOrderNoRuleService()->createStockExceptionNo();
         $data = [
             'stock_exception_no' => $stockExceptionNo,
@@ -93,7 +93,7 @@ class StockExceptionService extends BaseService
             'driver_id' => $trackingOrder['driver_id'],
             'driver_name' => $trackingOrder['driver_name'],
             'remark' => $params['remark'] ?? '',
-            'status' => BaseConstService::STOCK_STATUS_1,
+            'status' => BaseConstService::STOCK_EXCEPTION_STATUS_1,
         ];
         $rowCount = $this->getStockExceptionService()->create($data);
         $stockException = $rowCount->getAttributes();
@@ -116,14 +116,14 @@ class StockExceptionService extends BaseService
         if (empty($stockException)) {
             throw new BusinessLogicException('数据不存在');
         }
-        if (intval($stockException['status']) !== BaseConstService::STOCK_STATUS_1) {
-            throw new BusinessLogicException('当前状态不能处理异常或异常已处理');
+        if (intval($stockException['status']) !== BaseConstService::STOCK_EXCEPTION_STATUS_1) {
+            throw new BusinessLogicException('异常已处理或被拒绝');
         }
         $rowCount = parent::updateById($stockException['id'], [
             'deal_remark' => __('自动处理'),
             'deal_time' => Carbon::now(),
             'operator' => __('系统'),
-            'status' => BaseConstService::STOCK_STATUS_2,
+            'status' => BaseConstService::STOCK_EXCEPTION_STATUS_2,
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('处理失败，请重新操作');
@@ -178,6 +178,8 @@ class StockExceptionService extends BaseService
                     'status' => $statusList['batch'],
                     'actual_pickup_quantity' => $batch['actual_pickup_quantity'] + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 ? 1 : 0),
                     'actual_pie_quantity' => $batch['actual_pie_quantity'] + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2 ? 1 : 0),
+                    'actual_pickup_package_quantity' => $batch['actual_pickup_package_quantity'] + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 ? 1 : 0),
+                    'actual_pie_package_quantity' => $batch['actual_pie_package_quantity'] + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2 ? 1 : 0),
                 ];
                 $rowCount = $this->getBatchService()->update(['batch_no' => $trackingOrder['batch_no']], $batchData);
                 if ($rowCount === false) {
