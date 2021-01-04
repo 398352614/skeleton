@@ -561,6 +561,7 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        $params['out_user_id'] = !empty($params['out_user_id']) ? $params['out_user_id'] : null;
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         //获取经纬度
         $fields = ['place_house_number', 'place_city', 'place_street'];
