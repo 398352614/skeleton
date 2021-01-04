@@ -70,7 +70,7 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('当前状态不能处理异常或异常已处理');
         }
         $rowCount = parent::updateById($id, [
-            'deal_remark' => $params['deal_remark'],
+            'deal_remark' => $params['deal_remark'] ?? '',
             'deal_time' => Carbon::now(),
             'operator' => auth()->user()->fullname,
             'status' => BaseConstService::STOCK_STATUS_2,
