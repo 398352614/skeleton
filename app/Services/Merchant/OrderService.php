@@ -371,13 +371,7 @@ class OrderService extends BaseService
     public function end($id)
     {
         $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
-        if (!empty($dbOrder['tracking_order_no'])) {
-            $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $dbOrder['tracking_order_no']], ['*'], false);
-            if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
-                throw new BusinessLogicException('当前订单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
-            }
-            (!empty($trackingOrder) && (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]))) && $this->getTrackingOrderService()->removeFromBatch($trackingOrder->id);
-        }
+        $this->getTrackingOrderService()->end($dbOrder['tracking_order_no'] ?? '');
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
@@ -386,7 +380,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        OrderTrailService::orderStatusChangeCreateTrail($trackingOrder->toArray(), BaseConstService::ORDER_TRAIL_CLOSED);
+        OrderTrailService::orderStatusChangeCreateTrail($dbOrder, BaseConstService::ORDER_TRAIL_CLOSED);
         //取消通知
         //event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
     }
@@ -892,7 +886,7 @@ class OrderService extends BaseService
             }
             $params['place_lon'] = $address['lon'];
             $params['place_lat'] = $address['lat'];
-            $columns = array_merge($columns, ['place_lon', 'place_lat','place_address']);
+            $columns = array_merge($columns, ['place_lon', 'place_lat', 'place_address']);
             //更新订单
             $rowCount = parent::updateById($dbOrder['id'], Arr::only($params, $columns));
             if ($rowCount === false) {
@@ -901,7 +895,7 @@ class OrderService extends BaseService
             $data = array_merge($dbOrder, Arr::only($params, $columns));
             Log::info('参数', $data);
             /******************************判断是否需要更换站点(取派日期+收货方地址 验证)***************************************/
-            $trackingOrder = $this->getTrackingOrderService()->updateByOrder($data,BaseConstService::YES);
+            $trackingOrder = $this->getTrackingOrderService()->updateByOrder($data, BaseConstService::YES);
             $result = [
                 'line' => [
                     'line_id' => $trackingOrder['line_id'],
