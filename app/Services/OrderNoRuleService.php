@@ -14,13 +14,11 @@ use App\Http\Resources\Api\OrderNoRuleResource;
 use App\Models\OrderNoRule;
 use App\Traits\AlphaTrait;
 use App\Traits\ConstTranslateTrait;
-use App\Traits\NoRuleRedisLockTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class OrderNoRuleService extends BaseService
 {
-    use NoRuleRedisLockTrait;
     public function __construct(OrderNoRule $orderNoRule)
     {
         parent::__construct($orderNoRule, OrderNoRuleResource::class);
