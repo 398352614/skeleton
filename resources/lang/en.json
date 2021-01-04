@@ -858,4 +858,14 @@
 "参数":"parameter",
 "入库异常单号规则不存在或已被禁用，请先联系后台管理员":"The rule of abnormal receipt order number does not exist or has been disabled. Please contact the background administrator first",
 "该包裹非本系统包裹，无法顺带":"This package is not the package of this system and cannot be brought along"
+,"当前商户已创建API对接信息":"The current merchant has created API docking information",
+"异常已处理":"Exception handled",
+"异常已拒绝":"Exception rejected",
+"当前运单正在[:status_name]":"The current waybill is [:status_name]",
+"取件失败，无法入库":"Failed to retrieve, unable to store",
+"异常已处理或被拒绝":"Exception handled or rejected",
+"编号规则不存在或已被禁用，请先联系后台管理员":"The numbering rule does not exist or has been disabled. Please contact the background administrator first",
+"入库异常编号规则":"Numbering rules of warehousing exception",
+"审核成功":"Audit successful",
+"审核失败":"Audit failed"
 }

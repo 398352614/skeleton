@@ -725,4 +725,14 @@
 "参数":"parameter",
 "入库异常单号规则不存在或已被禁用，请先联系后台管理员":"De regel van abnormaal ontvangstordernummer bestaat niet of is uitgeschakeld. Neem eerst contact op met de achtergrondbeheerder",
 "该包裹非本系统包裹，无法顺带":"Dit pakket is niet het pakket van dit systeem en kan niet worden meegenomen"
+,"当前商户已创建API对接信息":"De huidige handelaar heeft API-docking-informatie gecreëerd.",
+"异常已处理":"Uitzondering behandeld",
+"异常已拒绝":"Uitzondering verworpen",
+"当前运单正在[:status_name]":"De huidige waybill is [: status]-serverNaam",
+"取件失败，无法入库":"Kon niet ophalen, niet opslaan",
+"异常已处理或被拒绝":"Uitzondering behandeld of verworpen",
+"编号规则不存在或已被禁用，请先联系后台管理员":"De nummering regel bestaat niet of is uitgeschakeld. Neem eerst contact op met de achtergrondbeheerder",
+"入库异常编号规则":"Nummerregels van uitzondering op opslag",
+"审核成功":"Audit succesvol",
+"审核失败":"Audit mislukt"
 }
