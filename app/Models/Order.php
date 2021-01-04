@@ -114,6 +114,7 @@ class Order extends BaseModel
         'exception_label_name',
         'type_name',
         'merchant_id_name',
+        'merchant_id_code',
         'place_country_name',
         'second_place_country_name',
         'country_name',
@@ -158,6 +159,12 @@ class Order extends BaseModel
     {
         if (empty($this->merchant) || empty($this->merchant_id)) return '';
         return $this->merchant->name;
+    }
+
+    public function getMerchantIdCodeAttribute()
+    {
+        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+        return $this->merchant->code;
     }
 
 

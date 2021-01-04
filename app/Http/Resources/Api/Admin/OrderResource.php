@@ -20,6 +20,7 @@ class OrderResource extends JsonResource
             'company_id' => $this->company_id,
             'merchant_id' => $this->merchant_id,
             'merchant_id_name' => $this->merchant_id_name,
+            'merchant_id_code' => $this->merchant_id_code,
             'order_no' => $this->order_no,
             'source' => $this->source,
             'source_name' => $this->source_name,
