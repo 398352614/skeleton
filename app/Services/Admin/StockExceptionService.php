@@ -19,7 +19,7 @@ class StockExceptionService extends BaseService
 {
     public $filterRules = [
         'status' => ['=', 'status'],
-        'stock_exception_no,express_first_no,tracking_order_no' => ['like', 'keyword'],
+        'order_no,stock_exception_no,express_first_no,tracking_order_no' => ['like', 'keyword'],
         'created_at' => ['between', ['begin_date', 'end_date']]
     ];
 
@@ -66,10 +66,10 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $stockException = $stockException->toArray();
-        if (intval($stockException['status']) !== BaseConstService::STOCK_EXCEPTION_STATUS_2) {
+        if (intval($stockException['status']) == BaseConstService::STOCK_EXCEPTION_STATUS_2) {
             throw new BusinessLogicException('异常已处理');
         }
-        if (intval($stockException['status']) !== BaseConstService::STOCK_EXCEPTION_STATUS_3) {
+        if (intval($stockException['status']) == BaseConstService::STOCK_EXCEPTION_STATUS_3) {
             throw new BusinessLogicException('异常已拒绝');
         }
         $rowCount = parent::updateById($id, [

@@ -19,7 +19,7 @@ class StockExceptionService extends BaseService
 {
     public $filterRules = [
         'status' => ['=', 'status'],
-        'batch_exception_no,batch_no' => ['like', 'keyword'],
+        'order_no,batch_exception_no,batch_no' => ['like', 'keyword'],
         'created_at' => ['between', ['begin_date', 'end_date']]
     ];
 
