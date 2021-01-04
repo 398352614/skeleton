@@ -49,6 +49,7 @@ class StockException extends BaseModel
         'company_id',
         'stock_exception_no',
         'tracking_order_no',
+        'order_no',
         'express_first_no',
         'driver_id',
         'driver_name',

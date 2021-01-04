@@ -50,14 +50,7 @@ class StockExceptionService extends BaseService
     public function getPageList()
     {
         $this->query->orderByDesc('id');
-        $list= parent::getPageList();
-        foreach ($list as $k=>$v){
-            $order=$this->getTrackingOrderService()->getInfo(['tracking_order_no'=>$v['tracking_order_no']],['*'],false);
-            if(!empty($order)){
-                $list[$k]['order_no']=$order->toArray()['order_no'];
-            }
-        }
-        return $list;
+        return parent::getPageList();
     }
 
     /**
