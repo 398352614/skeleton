@@ -87,11 +87,9 @@ class SyncOrderStatus implements ShouldQueue
         $this->curl = new CurlClient();
         $merchantOrderList = collect($this->orderList)->groupBy('merchant_id')->toArray();
         foreach ($merchantOrderList as $merchantId => $orderList) {
-            if ($merchantId == config('tms.erp_merchant_id')) {
-                $orderList = collect($orderList)->where('out_order_no', '<>', '')->toArray();
-                if(empty($orderList)){
-                    continue;
-                }
+            $orderList = collect($orderList)->where('out_order_no', '<>', '')->toArray();
+            if (empty($orderList)) {
+                continue;
             }
             $postData = ['type' => $notifyType, 'data' => ['order_list' => $orderList]];
             $this->postData($merchantList[$merchantId]['url'], $postData);
