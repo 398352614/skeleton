@@ -563,7 +563,6 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-        $params['out_user_id'] = !empty($params['out_user_id']) ? $params['out_user_id'] : null;
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
