@@ -82,11 +82,11 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('处理失败，请重新操作');
         }
         //后续处理
-        $trackingOrder = $this->getInfo(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
         if (empty($trackingOrder)) {
             return;
         }
-        $order = $this->getInfo(['order_no' => $trackingOrder['order_no']], ['*'], false);
+        $order = $this->getOrderService()->getInfo(['order_no' => $trackingOrder['order_no']], ['*'], false);
         if (empty($order)) {
             return;
         }
