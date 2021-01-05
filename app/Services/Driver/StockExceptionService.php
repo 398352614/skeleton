@@ -190,7 +190,7 @@ class StockExceptionService extends BaseService
                     'actual_pickup_package_quantity' => $batch['actual_pickup_package_quantity'] + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 ? 1 : 0),
                     'actual_pie_package_quantity' => $batch['actual_pie_package_quantity'] + ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2 ? 1 : 0),
                 ];
-                $rowCount = $this->getBatchService()->updateById($batch['id'], $batchData);
+                $rowCount = $this->getBatchService()->update(['batch_no' => $trackingOrder['batch_no']], $batchData);
                 if ($rowCount === false) {
                     throw new BusinessLogicException('站点处理失败，请重新操作');
                 }
