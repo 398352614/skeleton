@@ -12,6 +12,7 @@ namespace App\Services\Driver;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Stock;
 use App\Services\BaseConstService;
+use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -83,8 +84,13 @@ class StockService extends BaseService
             && !empty($trackingOrder)
             && $trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1
             && $trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_6
+            && !empty(CompanyTrait::getCompany()['stock_exception_verify'])
         ) {
-            throw new BusinessLogicException('当前包裹不能生成对应派件运单，请进行异常入库处理', 5005);
+            if(CompanyTrait::getCompany()['stock_exception_verify'] == BaseConstService::STOCK_EXCEPTION_VERIFY_2){
+                throw new BusinessLogicException('当前包裹不能生成对应派件运单，请进行异常入库处理', 5005);
+            }else{
+                throw new BusinessLogicException('当前包裹不能生成对应派件运单，请进行异常入库处理', 5004);
+            }
         }
         if (!in_array($package->status, [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2])) {
             throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
