@@ -944,8 +944,9 @@ class OrderService extends BaseService
     /**
      * 同步订单状态列表
      * @param $idList
+     * @param bool $stockException
      */
-    public function synchronizeStatusList($idList)
+    public function synchronizeStatusList($idList, $stockException = false)
     {
         //获取订单列表
         $idList = explode_id_string($idList);
@@ -980,10 +981,13 @@ class OrderService extends BaseService
                 $order['tracking_order_type'] = $order['tracking_order_status'] = $order['pay_type'] = $order['line_id'] = $order['driver_id'] = $order['car_id'] = $order['tracking_order_type_name'] = null;
                 continue;
             }
-            $order['tracking_order_type'] = $trackingOrderList[$orderNo]['type'];
-            $order['tracking_type'] = $trackingOrderList[$orderNo]['type'];
-            $order['tracking_order_type_name'] = $trackingOrderList[$orderNo]['type_name'];
+            $order['tracking_type'] = $order['tracking_order_type'] = $trackingOrderList[$orderNo]['type'];
             $order['tracking_order_status'] = $trackingOrderList[$orderNo]['status'];
+            if ($stockException == true) {
+                $order['tracking_type'] = $order['tracking_order_type'] = BaseConstService::TRACKING_ORDER_TYPE_1;
+                $order['tracking_order_status'] = BaseConstService::TRACKING_ORDER_STATUS_5;
+            }
+            $order['tracking_order_type_name'] = $trackingOrderList[$orderNo]['type_name'];
             $order['tracking_order_status_name'] = $trackingOrderList[$orderNo]['status_name'];
             $order['cancel_remark'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['cancel_remark'] ?? '';
             $order['signature'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['signature'] ?? '';

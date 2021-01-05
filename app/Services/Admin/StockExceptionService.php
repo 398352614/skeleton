@@ -107,7 +107,7 @@ class StockExceptionService extends BaseService
         $statusList['batch'] = BaseConstService::BATCH_CHECKOUT;
         $this->statusChange($stockException, $statusList);
         //利用同步订单状态推送
-        $this->getOrderService()->synchronizeStatusList($order['id']);
+        $this->getOrderService()->synchronizeStatusList($order['id'],true);
     }
 
     /**

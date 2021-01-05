@@ -142,7 +142,7 @@ class StockExceptionService extends BaseService
         if (empty($order)) {
             throw new BusinessLogicException('订单不存在');
         }
-        $this->getOrderService()->synchronizeStatusList($order['id']);
+        $this->getOrderService()->synchronizeStatusList($order['id'],true);
         return $this->getStockService()->packagePickOut($stockException['express_first_no']);
     }
 
