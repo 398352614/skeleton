@@ -78,17 +78,19 @@ class StockService extends BaseService
         }
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
-        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false,['id'=>'desc']);
-        if (in_array($order['status'], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_4])
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['id' => 'desc']);
+        if (in_array($order['status'], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_4])
             && $order['type'] == BaseConstService::ORDER_TYPE_3
             && !empty($trackingOrder)
             && $trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1
             && $trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_6
             && !empty(CompanyTrait::getCompany()['stock_exception_verify'])
         ) {
-            if(CompanyTrait::getCompany()['stock_exception_verify'] == BaseConstService::STOCK_EXCEPTION_VERIFY_2){
+            if (CompanyTrait::getCompany()['stock_exception_verify'] == BaseConstService::STOCK_EXCEPTION_VERIFY_2) {
+                //未开启审核，自动入库，返回线路日期
                 throw new BusinessLogicException('当前包裹不能生成对应派件运单，请进行异常入库处理', 5005);
-            }else{
+            } else {
+                //开启审核，不返回值
                 throw new BusinessLogicException('当前包裹不能生成对应派件运单，请进行异常入库处理', 5004);
             }
         }
