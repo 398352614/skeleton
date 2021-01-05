@@ -946,7 +946,7 @@ class OrderService extends BaseService
      * @param $idList
      * @param bool $stockException
      */
-    public function synchronizeStatusList($idList, $stockException = true)
+    public function synchronizeStatusList($idList, $stockException = false)
     {
         //获取订单列表
         $idList = explode_id_string($idList);
