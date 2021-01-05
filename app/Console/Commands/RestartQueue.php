@@ -35,7 +35,7 @@ class RestartQueue extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->process = new Process('supervisorctl restart all','/api');
+        $this->process = new Process('supervisorctl restart all');
     }
 
     /**
