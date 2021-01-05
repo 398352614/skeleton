@@ -76,7 +76,7 @@ class StockExceptionService extends BaseService
             'deal_remark' => $params['deal_remark'] ?? '',
             'deal_time' => Carbon::now(),
             'operator' => auth()->user()->fullname,
-            'status' => $params['status'],
+            'status' => $params['status'] ?? BaseConstService::STOCK_EXCEPTION_STATUS_2,
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('处理失败，请重新操作');
