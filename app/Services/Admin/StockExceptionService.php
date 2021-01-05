@@ -72,8 +72,18 @@ class StockExceptionService extends BaseService
         if (intval($stockException['status']) == BaseConstService::STOCK_EXCEPTION_STATUS_3) {
             throw new BusinessLogicException('异常已拒绝');
         }
+        if (empty($params['status'])) {
+            $params['status'] = BaseConstService::STOCK_EXCEPTION_STATUS_2;
+        }
+        if (!empty($params['deal_remark'])) {
+            $remark = $params['deal_remark'];
+        } elseif ($params['status'] == BaseConstService::STOCK_EXCEPTION_STATUS_2) {
+            $remark = __('调整为取件成功');
+        } else {
+            $remark = __('审核失败');
+        }
         $rowCount = parent::updateById($id, [
-            'deal_remark' => $params['deal_remark'] ?? '',
+            'deal_remark' => $remark,
             'deal_time' => Carbon::now(),
             'operator' => auth()->user()->fullname,
             'status' => $params['status'],
@@ -82,11 +92,11 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('处理失败，请重新操作');
         }
         //后续处理
-        $trackingOrder = $this->getInfo(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
         if (empty($trackingOrder)) {
             return;
         }
-        $order = $this->getInfo(['order_no' => $trackingOrder['order_no']], ['*'], false);
+        $order = $this->getOrderService()->getInfo(['order_no' => $trackingOrder['order_no']], ['*'], false);
         if (empty($order)) {
             return;
         }
@@ -96,6 +106,8 @@ class StockExceptionService extends BaseService
         $statusList['package'] = BaseConstService::PACKAGE_STATUS_2;
         $statusList['batch'] = BaseConstService::BATCH_CHECKOUT;
         $this->statusChange($stockException, $statusList);
+        //利用同步订单状态推送
+        $this->getOrderService()->synchronizeStatusList($order['id']);
     }
 
     /**
@@ -124,7 +136,7 @@ class StockExceptionService extends BaseService
         $trackingOrder = $this->getTrackingOrderService()->getInfoLock(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
         if (!empty($trackingOrder)) {
             //更新运单包裹
-            $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $stockException['tracking_order_no']], ['status' => $statusList['tracking_order']]);
+            $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $stockException['tracking_order_no']], ['status' => $statusList['tracking_order'], 'actual_quantity' => 1]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('运单包裹处理失败，请重新操作');
             }
@@ -147,6 +159,8 @@ class StockExceptionService extends BaseService
                 if ($rowCount === false) {
                     throw new BusinessLogicException('站点处理失败，请重新操作');
                 }
+                //重新统计站点金额
+                $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
             }
             //更新取件线路
             $tour = $this->getTourService()->getInfoLock(['tour_no' => $trackingOrder['tour_no']], ['*'], false);
@@ -159,6 +173,8 @@ class StockExceptionService extends BaseService
                 if ($rowCount === false) {
                     throw new BusinessLogicException('取件线路处理失败，请重新操作');
                 }
+                //重新统计取件线路金额
+                $this->getTourService()->reCountAmountByNo($tour['tour_no']);
             }
         }
     }
