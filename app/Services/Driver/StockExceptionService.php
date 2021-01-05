@@ -123,7 +123,7 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('异常已处理或被拒绝');
         }
         $rowCount = parent::updateById($stockException['id'], [
-            'deal_remark' => __('自动处理'),
+            'deal_remark' => __('调整为取件成功'),
             'deal_time' => Carbon::now(),
             'operator' => __('系统'),
             'status' => BaseConstService::STOCK_EXCEPTION_STATUS_2,
