@@ -72,11 +72,21 @@ class StockExceptionService extends BaseService
         if (intval($stockException['status']) == BaseConstService::STOCK_EXCEPTION_STATUS_3) {
             throw new BusinessLogicException('异常已拒绝');
         }
+        if (empty($params['status'])) {
+            $params['status'] = BaseConstService::STOCK_EXCEPTION_STATUS_2;
+        }
+        if (!empty($params['deal_remark'])) {
+            $remark = $params['deal_remark'];
+        } elseif ($params['status'] == BaseConstService::STOCK_EXCEPTION_STATUS_2) {
+            $remark = __('调整为取件成功');
+        } else {
+            $remark = __('审核失败');
+        }
         $rowCount = parent::updateById($id, [
-            'deal_remark' => $params['deal_remark'] ?? '',
+            'deal_remark' => $remark,
             'deal_time' => Carbon::now(),
             'operator' => auth()->user()->fullname,
-            'status' => $params['status'] ?? BaseConstService::STOCK_EXCEPTION_STATUS_2,
+            'status' => $params['status'],
         ]);
         if ($rowCount === false) {
             throw new BusinessLogicException('处理失败，请重新操作');
