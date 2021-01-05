@@ -946,7 +946,7 @@ class OrderService extends BaseService
      * @param $idList
      * @param bool $stockException
      */
-    public function synchronizeStatusList($idList, $stockException = false)
+    public function synchronizeStatusList($idList, $stockException = true)
     {
         //获取订单列表
         $idList = explode_id_string($idList);
@@ -987,8 +987,8 @@ class OrderService extends BaseService
                 $order['tracking_type'] = $order['tracking_order_type'] = BaseConstService::TRACKING_ORDER_TYPE_1;
                 $order['tracking_order_status'] = BaseConstService::TRACKING_ORDER_STATUS_5;
             }
-            $order['tracking_order_type_name'] = $trackingOrderList[$orderNo]['type_name'];
-            $order['tracking_order_status_name'] = $trackingOrderList[$orderNo]['status_name'];
+            $order['tracking_order_type_name'] = ConstTranslateTrait::trackingOrderTypeList($order['tracking_order_type']);
+            $order['tracking_order_status_name'] = ConstTranslateTrait::trackingOrderStatusList($order['tracking_order_status']);
             $order['cancel_remark'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['cancel_remark'] ?? '';
             $order['signature'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['signature'] ?? '';
             $order['pay_type'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['pay_type'] ?? null;
