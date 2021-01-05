@@ -126,7 +126,7 @@ class StockExceptionService extends BaseService
         $trackingOrder = $this->getTrackingOrderService()->getInfoLock(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
         if (!empty($trackingOrder)) {
             //更新运单包裹
-            $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $stockException['tracking_order_no']], ['status' => $statusList['tracking_order']]);
+            $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $stockException['tracking_order_no']], ['status' => $statusList['tracking_order'], 'actual_quantity' => 1]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('运单包裹处理失败，请重新操作');
             }
@@ -149,6 +149,8 @@ class StockExceptionService extends BaseService
                 if ($rowCount === false) {
                     throw new BusinessLogicException('站点处理失败，请重新操作');
                 }
+                //重新统计站点金额
+                $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
             }
             //更新取件线路
             $tour = $this->getTourService()->getInfoLock(['tour_no' => $trackingOrder['tour_no']], ['*'], false);
@@ -161,6 +163,8 @@ class StockExceptionService extends BaseService
                 if ($rowCount === false) {
                     throw new BusinessLogicException('取件线路处理失败，请重新操作');
                 }
+                //重新统计取件线路金额
+                $this->getTourService()->reCountAmountByNo($tour['tour_no']);
             }
         }
     }

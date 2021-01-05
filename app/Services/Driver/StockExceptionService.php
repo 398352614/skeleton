@@ -103,7 +103,7 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('上报异常失败，请重新操作');
         }
         if (empty(CompanyTrait::getCompany()['stock_exception_verify']) || CompanyTrait::getCompany()['stock_exception_verify'] == BaseConstService::STOCK_EXCEPTION_VERIFY_2) {
-           return $this->autoDeal($stockException);
+            return $this->autoDeal($stockException);
         }
 
     }
@@ -138,8 +138,8 @@ class StockExceptionService extends BaseService
         $statusList['batch'] = BaseConstService::BATCH_CHECKOUT;
         $this->statusChange($stockException, $statusList);
         //利用同步订单状态推送
-        $order=$this->getOrderService()->getInfo(['order_no'=>$stockException['order_no']],['*'],false);
-        if(empty($order)){
+        $order = $this->getOrderService()->getInfo(['order_no' => $stockException['order_no']], ['*'], false);
+        if (empty($order)) {
             throw new BusinessLogicException('订单不存在');
         }
         $this->getOrderService()->synchronizeStatusList($order['id']);
@@ -171,7 +171,7 @@ class StockExceptionService extends BaseService
         $trackingOrder = $this->getTrackingOrderService()->getInfoLock(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
         if (!empty($trackingOrder)) {
             //更新运单包裹
-            $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $stockException['tracking_order_no']], ['status' => $statusList['tracking_order'],'actual_quantity'=>1]);
+            $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $stockException['tracking_order_no']], ['status' => $statusList['tracking_order'], 'actual_quantity' => 1]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('运单包裹处理失败，请重新操作');
             }
@@ -195,7 +195,7 @@ class StockExceptionService extends BaseService
                     throw new BusinessLogicException('站点处理失败，请重新操作');
                 }
                 //重新统计站点金额
-                $this->getTourService()->reCountAmountByNo($batch['batch_no']);
+                $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
             }
             //更新取件线路
             $tour = $this->getTourService()->getInfoLock(['tour_no' => $trackingOrder['tour_no']], ['*'], false);
