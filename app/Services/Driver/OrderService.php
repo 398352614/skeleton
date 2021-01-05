@@ -262,4 +262,64 @@ class OrderService extends BaseService
         //6.当运单存在时，当运单为取派完成，当订单为取派件,若运单为取件类型，则表示新增派件派件运单
         return BaseConstService::TRACKING_ORDER_TYPE_2;
     }
+
+    /**
+     * 同步订单状态
+     * @param $idList
+     */
+    public function synchronizeStatusList($idList)
+    {
+        //获取订单列表
+        $idList = explode_id_string($idList);
+        $orderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
+        $orderNoList = array_column($orderList, 'order_no');
+        //获取运单列表
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $orderNoList]], ['id', 'order_no', 'out_order_no', 'batch_no', 'tour_no', 'type', 'status'], false, [], ['id' => 'asc'])->toArray();
+        //这里只会得到订单的最新运单
+        $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
+        //获取包裹列表
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', 'status', 'sticker_no', 'sticker_amount', 'delivery_amount', 'is_auth', 'auth_fullname', 'auth_birth_date'], false)->toArray();
+        $packageList = array_create_group_index($packageList, 'order_no');
+        //获取材料列表
+        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'], false)->toArray();
+        $materialList = array_create_group_index($materialList, 'order_no');
+        //获取站点列表
+        $batchNoList = array_column($trackingOrderList, 'batch_no');
+        $batchList = $this->getBatchService()->getList(['batch_no' => ['in', $batchNoList]], ['*'], false)->toArray();
+        $batchList = array_create_index($batchList, 'batch_no');
+        //获取取件线路列表
+        $tourNoList = array_column($trackingOrderList, 'tour_no');
+        $tourList = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false)->toArray();
+        $tourList = array_create_index($tourList, 'tour_no');
+        //组合数据
+        foreach ($orderList as &$order) {
+            $orderNo = $order['order_no'];
+            $order['package_list'] = $packageList[$orderNo] ?? [];
+            $order['material_list'] = $materialList[$orderNo] ?? [];
+            $order['delivery_count'] = (floatval($order['delivery_amount']) == 0) ? 0 : 1;
+            if (empty($trackingOrderList[$orderNo])) {
+                $order['cancel_remark'] = $order['signature'] = $order['line_name'] = $order['driver_name'] = $order['driver_phone'] = $order['car_no'] = '';
+                $order['tracking_order_type'] = $order['tracking_order_status'] = $order['pay_type'] = $order['line_id'] = $order['driver_id'] = $order['car_id'] = $order['tracking_order_type_name'] = null;
+                continue;
+            }
+            $order['tracking_order_type'] = $trackingOrderList[$orderNo]['type'];
+            $order['tracking_type'] = $trackingOrderList[$orderNo]['type'];
+            $order['tracking_order_type_name'] = $trackingOrderList[$orderNo]['type_name'];
+            $order['tracking_order_status'] = $trackingOrderList[$orderNo]['status'];
+            $order['tracking_order_status_name'] = $trackingOrderList[$orderNo]['status_name'];
+            $order['cancel_remark'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['cancel_remark'] ?? '';
+            $order['signature'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['signature'] ?? '';
+            $order['pay_type'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['pay_type'] ?? null;
+            $order['line_id'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['line_id'] ?? null;
+            $order['line_name'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['line_name'] ?? '';
+            $order['driver_id'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['driver_id'] ?? null;
+            $order['driver_name'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['driver_name'] ?? '';
+            $order['driver_phone'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['driver_phone'] ?? '';
+            $order['car_id'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['car_id'] ?? null;
+            $order['car_no'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['car_no'] ?? '';
+            $order['batch_no'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['batch_no'] ?? '';
+            $order['tour_no'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['tour_no'] ?? '';
+        }
+        dispatch(new \App\Jobs\SyncOrderStatus($orderList));
+    }
 }
