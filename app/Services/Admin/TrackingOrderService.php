@@ -395,7 +395,7 @@ class TrackingOrderService extends BaseService
             //重新统计取件线路金额
             !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
         }
-        $rowCount = parent::update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['status' => BaseConstService::TRACKING_ORDER_STATUS_7]);
+        $rowCount = parent::update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['batch_no' => '', 'tour_no' => '', 'line_id' => null, 'line_name' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_7]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
