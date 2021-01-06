@@ -611,7 +611,7 @@ class TrackingOrderService extends BaseService
         if (empty($dbTrackingOrder)) return;
         $dbTrackingOrder = $dbTrackingOrder->toArray();
         //若运单状态不是待分配或已分配状态,则不能修改
-        if (!in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2,BaseConstService::TRACKING_ORDER_STATUS_3])) {
+        if (!in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3])) {
             throw new BusinessLogicException('运单状态为[:status_name],不能操作', 1000, ['status_name' => $dbTrackingOrder['status_name']]);
         }
         //站点移除订单
@@ -623,17 +623,17 @@ class TrackingOrderService extends BaseService
             //重新统计取件线路金额
             !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
         }
-        $rowCount = parent::delete(['order_no' => $orderNo]);
+        $rowCount = parent::update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['status' => BaseConstService::TRACKING_ORDER_STATUS_7]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         //删除运单包裹
-        $rowCount = $this->getTrackingOrderPackageService()->delete(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']]);
+        $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['batch_no' => '', 'tour_no' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_7]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         //删除运单材料
-        $rowCount = $this->getTrackingOrderMaterialService()->delete(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']]);
+        $rowCount = $this->getTrackingOrderMaterialService()->update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败,请重新操作');
         }
