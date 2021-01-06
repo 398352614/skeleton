@@ -87,6 +87,15 @@ class AdditionalPackage extends BaseModel
 
     public function getMerchantNameAttribute()
     {
-        return empty($this->merchant_id) ? '' : DB::table('merchant')->where('id','=', $this->merchant_id)->first()->name;
+        if (empty($this->merchant_id)) {
+            return '';
+        } else {
+            $merchant = DB::table('merchant')->where('id', '=', $this->merchant_id)->first();
+            if (empty($merhcant)) {
+                return '';
+            } else {
+                return $merchant->name;
+            }
+        }
     }
 }
