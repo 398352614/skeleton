@@ -92,7 +92,7 @@ class AdditionalPackage extends BaseModel
         } else {
             $merchant = DB::table('merchant')->where('id', '=', $this->merchant_id)->first();
             if (empty($merhcant)) {
-                return '';
+                return 0;
             } else {
                 return $merchant->name;
             }
