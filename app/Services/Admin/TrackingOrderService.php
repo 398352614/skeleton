@@ -382,8 +382,8 @@ class TrackingOrderService extends BaseService
         $dbTrackingOrder = parent::getInfoLock(['order_no' => $orderNo], ['*'], false);
         if (empty($dbTrackingOrder)) return;
         $dbTrackingOrder = $dbTrackingOrder->toArray();
-        //若运单状态不是待分配或已分配状态,则不能修改
-        if (!in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
+        //若运单状态不是待分配或已分配或待出库状态,则不能修改
+        if (!in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2,BaseConstService::TRACKING_ORDER_STATUS_3])) {
             throw new BusinessLogicException('运单状态为[:status_name],不能操作', 1000, ['status_name' => $dbTrackingOrder['status_name']]);
         }
         //站点移除订单
