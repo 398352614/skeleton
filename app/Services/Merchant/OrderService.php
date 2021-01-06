@@ -847,13 +847,13 @@ class OrderService extends BaseService
     }
 
     /**
-     * 修改地址
+     * 修改地址日期
      * @param $id
      * @param $params
      * @return array
      * @throws BusinessLogicException
      */
-    public function updateAddress($id, $params)
+    public function updateAddressDate($id, $params)
     {
         $result = ['line' => []];
         unset($params['order_no'], $params['tour_no'], $params['batch_no']);
