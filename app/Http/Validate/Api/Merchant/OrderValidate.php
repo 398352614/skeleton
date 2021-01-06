@@ -107,7 +107,7 @@ class OrderValidate extends BaseValidate
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
         'updateSecondDate' => ['second_execution_date'],
-        'updateAddress' => ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street','order_no'],
+        'updateAddressDate' => ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street','order_no','execution_date'],
         'recovery' => ['execution_date'],
         'destroy' => ['remark'],
         'destroyAll' => ['order_no_list'],
