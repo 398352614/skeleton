@@ -121,9 +121,9 @@ class OrderController extends OrderBaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function updateAddressDate($id)
+    public function updateAddress($id)
     {
-        return $this->service->updateAddressDate($id, $this->data);
+        return $this->service->updateAddress($id, $this->data);
     }
 
     /**

@@ -847,13 +847,13 @@ class OrderService extends BaseService
     }
 
     /**
-     * 修改地址日期
+     * 修改地址
      * @param $id
      * @param $params
      * @return array
      * @throws BusinessLogicException
      */
-    public function updateAddressDate($id, $params)
+    public function updateAddress($id, $params)
     {
         $result = ['line' => []];
         unset($params['order_no'], $params['tour_no'], $params['batch_no']);
@@ -886,7 +886,7 @@ class OrderService extends BaseService
             }
             $params['place_lon'] = $address['lon'];
             $params['place_lat'] = $address['lat'];
-            $columns = array_merge($columns, ['place_lon', 'place_lat', 'place_address', 'execution_date']);
+            $columns = array_merge($columns, ['place_lon', 'place_lat', 'place_address']);
             //更新订单
             $rowCount = parent::updateById($dbOrder['id'], Arr::only($params, $columns));
             if ($rowCount === false) {

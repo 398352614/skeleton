@@ -61,7 +61,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //获取订单的运单列表
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList');
         //修改订单地址
-        Route::put('/{id}/update-address-date', 'OrderController@updateAddressDate');
+        Route::put('/{id}/update-address', 'OrderController@updateAddress');
         //获取可分配路线日期
         Route::get('/{id}/get-date', 'OrderController@getAbleDateList');
         //通过地址获取可分配的路线日期列表
