@@ -161,7 +161,7 @@ class ReportService extends BaseService
                 $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
                 $orderList[$k]['sticker_count'] = count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', ""));
                 $orderList[$k]['delivery_count'] = count(collect($orderList[$k]['package_list'])->where('delivery_amount', '<>', 0));
-                $orderList[$k]['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'];
+                $orderList[$k]['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'] ?? BaseConstService::BATCH_PAY_TYPE_1;
                 if ($orderList[$k]['pay_type'] == BaseConstService::BATCH_PAY_TYPE_1) {
                     if (!empty($orderList[$k]['package_list'])) {
                         $info['cash_sticker_count'] += $orderList[$k]['sticker_count'];
@@ -184,7 +184,7 @@ class ReportService extends BaseService
         $info = $this->countByPayType($info, $batchList);
         //将订单的外部订单号赋值给其所有包裹
         foreach ($packageList as $k => $v) {
-            $packageList[$k]['out_order_no'] = collect($orderList)->where('order_no', $v['order_no'])->first()['out_order_no'];
+            $packageList[$k]['out_order_no'] = collect($orderList)->where('order_no', $v['order_no'])->first()['out_order_no'] ?? '';
         }
         /**********************************************获取出库信息****************************************************/
         $outWarehouseInfo = $this->getOutWarehouseInfo($info, $warehouseInfo, $packageList, $tourMaterialList);

@@ -1034,8 +1034,8 @@ class TourService extends BaseService
         $merchantList = $this->getMerchantService()->getList(['id' => ['in', collect($trackingOrderList)->pluck('merchant_id')->toArray()]], ['*'], false)->toArray();
         foreach ($trackingOrderList as $k => $v) {
             $trackingOrderList[$k]['out_user_id'] = collect($orderList)->where('tracking_order_no', $v['tracking_order_no'])->first()['out_user_id'] ?? '';
-            $trackingOrderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'];
-            $trackingOrderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
+            $trackingOrderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'] ?? 1000;
+            $trackingOrderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'] ?? '';
             $trackingOrderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
             $trackingOrderList[$k]['type'] = $trackingOrderList[$k]['type_name'];
             $trackingOrderList[$k]['place_address'] = $trackingOrderList[$k]['place_street'] . ' ' . $trackingOrderList[$k]['place_house_number'];
