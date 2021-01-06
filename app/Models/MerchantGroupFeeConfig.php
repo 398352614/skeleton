@@ -3,18 +3,18 @@
 namespace App\Models;
 
 /**
- * 商户费用配置 表
+ * 商户组费用配置 表
  * Class Employee
  * @package App\Models
  */
-class MerchantFeeConfig extends BaseModel
+class MerchantGroupFeeConfig extends BaseModel
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'merchant_fee_config';
+    protected $table = 'merchant_group_fee_config';
 
     /**
      * The primary key for the model.
@@ -44,7 +44,7 @@ class MerchantFeeConfig extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'merchant_id',
+        'merchant_group_id',
         'fee_code',
         'created_at',
         'updated_at'

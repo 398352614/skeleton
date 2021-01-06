@@ -22,6 +22,7 @@ use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -283,17 +284,18 @@ class TrackingOrderService extends BaseService
      * 修改
      * 注意：取派订单删除时，因为待取派订单只会生成取件运单,所以只有一个运单
      * @param $order
+     * @param $merchantAlone
      * @return array|void
      * @throws BusinessLogicException
      */
-    public function updateByOrder($order)
+    public function updateByOrder($order, $merchantAlone = BaseConstService::NO)
     {
         $dbTrackingOrder = parent::getInfoLock(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         if (empty($dbTrackingOrder)) return;
         $dbTrackingOrder = $dbTrackingOrder->toArray();
         //运单重新分配站点
         $trackingOrder = array_merge(Arr::only($order, $this->tOrderAndOrderSameFields), Arr::only($dbTrackingOrder, ['company_id', 'order_no', 'tracking_order_no', 'type']));
-        $line = $this->fillWarehouseInfo($trackingOrder);
+        $line = $this->fillWarehouseInfo($trackingOrder, $merchantAlone);
         //1.若运单状态是待出库或取派中,则不能修改
         //2.若运单状态是取消取派,取派完成,回收站,则无需处理
         //3.若运单状态是待分配或已分配，则能修改
@@ -1085,5 +1087,32 @@ class TrackingOrderService extends BaseService
         if (empty($info)) {
             $this->getAddressService()->create($params);
         }
+    }
+
+    /**
+     * 终止运单
+     * @param $trackingOrderNo
+     * @throws BusinessLogicException
+     */
+    public function end($trackingOrderNo)
+    {
+        if (empty($trackingOrderNo)) return;
+        $trackingOrder = parent::getInfo(['tracking_order_no' => $trackingOrderNo], ['*'], false);
+        if (empty($trackingOrder)) return;
+        if (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
+            throw new BusinessLogicException('当前运单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
+        }
+        if (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
+            $this->removeFromBatch($trackingOrder->id);
+            $rowCount = parent::update(['tracking_order_no' => $trackingOrder->tracking_order_no], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+            $rowCount = $this->getTrackingOrderPackageService()->update(['tracking_order_no' => $trackingOrder->tracking_order_no], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('操作失败');
+            }
+        }
+        TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder->toArray(), BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
     }
 }

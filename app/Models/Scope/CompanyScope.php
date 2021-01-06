@@ -31,7 +31,7 @@ use App\Models\Material;
 use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
-use App\Models\MerchantLineRange;
+use App\Models\MerchantGroupLineRange;
 use App\Models\MerchantRecharge;
 use App\Models\Order;
 use App\Models\OrderNoRule;
@@ -42,6 +42,7 @@ use App\Models\Recharge;
 use App\Models\RouteTracking;
 use App\Models\SpecialTimeCharging;
 use App\Models\Stock;
+use App\Models\StockException;
 use App\Models\StockInLog;
 use App\Models\StockOutLog;
 use App\Models\Tour;
@@ -117,7 +118,8 @@ class CompanyScope implements Scope
                 && (!($model instanceof Warehouse))
                 && (!($model instanceof Line))
                 && (!($model instanceof LineRange))
-                && (!($model instanceof MerchantLineRange))
+                && (!($model instanceof MerchantGroup))
+                && (!($model instanceof MerchantGroupLineRange))
                 && (!($model instanceof LineArea))
                 && (!($model instanceof TrackingOrder))
                 && (!($model instanceof Order))
@@ -131,6 +133,8 @@ class CompanyScope implements Scope
                 && (!($model instanceof StockInLog))
                 && (!($model instanceof StockOutLog))
                 && (!($model instanceof PackageNoRule))
+                && (!($model instanceof StockException))
+                && (!($model instanceof MerchantGroup))
                 && (!in_array('driver_id', $whereColumns))
                 && (!Str::contains($sql, "IFNULL(driver_id,0) <> -1"))
             ) {
@@ -167,7 +171,8 @@ class CompanyScope implements Scope
                 && !($model instanceof Driver)
                 && !($model instanceof Holiday)
                 && !($model instanceof HolidayDate)
-                && !($model instanceof MerchantLineRange)
+                && (!($model instanceof MerchantGroup))
+                && !($model instanceof MerchantGroupLineRange)
                 && (!in_array('merchant_id', $whereColumns))
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . '=' . $user->id);

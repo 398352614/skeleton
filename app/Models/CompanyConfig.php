@@ -53,6 +53,7 @@ class CompanyConfig extends BaseModel
         'weight_unit',
         'currency_unit',
         'volume_unit',
+        'stock_exception_verify',
         'map',
         'created_at',
         'updated_at',

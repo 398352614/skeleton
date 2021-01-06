@@ -208,4 +208,13 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         //获取外部用户信息
         Route::get('/out-user', 'RechargeController@getOutUser');
     });
+
+
+    //入库异常管理
+    Route::prefix('stock-exception')->group(function () {
+        //详情
+        Route::get('/', 'stockExceptionController@index');
+        //上报
+        Route::post('/', 'stockExceptionController@store');
+    });
 });

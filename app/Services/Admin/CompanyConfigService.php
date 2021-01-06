@@ -41,6 +41,7 @@ class CompanyConfigService extends BaseService
             'line_rule' => $params['line_rule'],
             'show_type' => $params['show_type'] ?? 1,
             'address_template_id' => $params['address_template_id'],
+            'stock_exception_verify' => $params['stock_exception_verify'] ?? 2,
             'weight_unit' => $params['weight_unit'],
             'currency_unit' => $params['currency_unit'],
             'volume_unit' => $params['volume_unit'],

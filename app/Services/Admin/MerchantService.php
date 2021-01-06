@@ -11,7 +11,6 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\MerchantResource;
 use App\Models\Merchant;
-use App\Models\MerchantFeeConfig;
 use App\Models\MerchantGroup;
 use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
@@ -19,21 +18,17 @@ use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
-use Vinkla\Hashids\Facades\Hashids;
 
 /**
  * Class MerchantService
  * @package App\Services\Admin
- * @property MerchantFeeConfig $merchantFeeConfigModel
  */
 class MerchantService extends BaseService
 {
     use ExportTrait;
 
-    protected $merchantFeeConfigModel;
-
     public $filterRules = [
-        'name' => ['like', 'name'],
+        'code,name,email' => ['like', 'keyword'],
         'merchant_group_id' => ['=', 'merchant_group_id'],
         'status' => ['=', 'status']
     ];
@@ -54,7 +49,6 @@ class MerchantService extends BaseService
     public function __construct(Merchant $merchant)
     {
         parent::__construct($merchant, MerchantResource::class);
-        $this->merchantFeeConfigModel = new MerchantFeeConfig();
     }
 
     public function init()
@@ -77,37 +71,10 @@ class MerchantService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $info = $info->toArray();
-        $info['merchant_group_name'] = MerchantGroup::query()->where('id', $info['merchant_group_id'])->value('name');
-        unset($info['password']);
-        //获取费用列表
-        $feeCodeList = $this->merchantFeeConfigModel->newQuery()->where('merchant_id', $info['id'])->pluck('fee_code')->toArray();
-        if (empty($feeCodeList)) {
-            $info['fee_list'] = [];
-        } else {
-            $feeList = $this->getFeeService()->getList(['code' => ['in', $feeCodeList]], ['id', 'code', 'name'], false)->toArray();
-            $info['fee_list'] = $feeList;
-        }
+        $info['merchant_group_name'] = $info['merchant_group']['name'];
+        unset($info['password'], $info['merchant_group']);
         return $info;
     }
-
-    /**
-     * 获取费用列表
-     * @param null $merchantId
-     * @return array
-     */
-    public function getFeeList($merchantId = null)
-    {
-        $feeList = $this->getFeeService()->getList([], ['id', 'code', 'name'], false)->toArray();
-        if (empty($feeList) || empty($merchantId)) return $feeList;
-        $feeCodeList = $this->merchantFeeConfigModel->newQuery()->where('merchant_id', $merchantId)->pluck('fee_code')->toArray();
-        if (!empty($feeCodeList)) {
-            $feeList = collect($feeList)->filter(function ($fee, $key) use ($feeCodeList) {
-                return !in_array($fee['code'], $feeCodeList);
-            })->toArray();
-        }
-        return array_values($feeList);
-    }
-
 
     /**
      * 新增
@@ -123,50 +90,15 @@ class MerchantService extends BaseService
         if ($merchant === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
         }
-        //生成授权api
+        //生成用户编码
         $id = $merchant->getAttribute('id');
-        $merchantApi = $this->getMerchantApiService()->create([
-            'merchant_id' => $id,
-            'key' => Hashids::encode(time() . $id),
-            'secret' => Hashids::connection('alternative')->encode(time() . $id)
-        ]);
-        if ($merchantApi === false) {
+        $rowCount = parent::updateById($id, ['code' => sprintf("%05s", $id)]);
+        if ($rowCount === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
         }
         $rowCount = MerchantGroup::query()->where('id', $params['merchant_group_id'])->increment('count');
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败');
-        }
-        //费用配置添加
-        $this->addFeeConfigList($id, $params);
-        //新增商户所有线路范围
-        $this->getLineService()->storeAllPostCodeLineRangeByMerchantId($id);
-    }
-
-    /**
-     * 批量新增费用配置列表
-     * @param $merchantId
-     * @param $params
-     * @throws BusinessLogicException
-     */
-    private function addFeeConfigList($merchantId, $params)
-    {
-        $rowCount = $this->merchantFeeConfigModel->newQuery()->where('merchant_id', $merchantId)->delete();
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
-        }
-        if (empty($params['fee_code_list'])) return;
-        $feeCodeList = array_unique(explode(',', $params['fee_code_list']));
-        $feeList = $this->getFeeService()->getList(['code' => ['in', $feeCodeList]], ['id', 'code'], false)->toArray();
-        if (empty($feeList)) return;
-        $newFeeList = [];
-        foreach ($feeList as $fee) {
-            $newFeeList[] = ['fee_code' => $fee['code']];
-        }
-        data_set($newFeeList, '*.merchant_id', $merchantId);
-        $rowCount = $this->merchantFeeConfigModel->insertAll($newFeeList);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
         }
     }
 
@@ -191,8 +123,6 @@ class MerchantService extends BaseService
             MerchantGroup::query()->where('id', $info['merchant_group_id'])->decrement('count');
             MerchantGroup::query()->where('id', $data['merchant_group_id'])->increment('count');
         }
-        //新增费用配置列表
-        $this->addFeeConfigList($id, $data);
     }
 
     /**
@@ -202,15 +132,9 @@ class MerchantService extends BaseService
      */
     public function check(&$params)
     {
-        if (!empty($params['advance_days']) && !empty($params['appointment_days']) && (intval($params['advance_days']) >= intval($params['appointment_days']))) {
-            throw new BusinessLogicException('可预约天数必须大于提前下单天数');
-        }
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $params['merchant_group_id']], ['*'], false);
         if (empty($merchantGroup)) {
             throw new BusinessLogicException('商户组不存在');
-        }
-        if (empty($params['appointment_days'])) {
-            $params['appointment_days'] = null;
         }
         $params['country'] = CompanyTrait::getCountry();
     }
@@ -289,4 +213,9 @@ class MerchantService extends BaseService
         return parent::getPageList();
     }
 
+    public function getPageList()
+    {
+        $this->query->orderByDesc('id');
+        return parent::getPageList();
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Traits;
 
+use App\Services\Driver\MerchantGroupService;
+use App\Services\Driver\StockExceptionService;
 use App\Services\Driver\AdditionalPackageService;
 use App\Services\Driver\BatchExceptionService;
 use App\Services\Driver\BatchService;
@@ -11,7 +13,7 @@ use App\Services\Driver\LineAreaService;
 use App\Services\Driver\LineRangeService;
 use App\Services\Driver\LineService;
 use App\Services\Driver\MaterialService;
-use App\Services\Driver\MerchantLineRangeService;
+use App\Services\Driver\MerchantGroupLineRangeService;
 use App\Services\Driver\MerchantService;
 use App\Services\Driver\OrderService;
 use App\Services\Driver\PackageService;
@@ -245,11 +247,11 @@ Trait DriverServiceTrait
 
     /**
      * 商户线路范围 服务
-     * @return MerchantLineRangeService
+     * @return MerchantGroupLineRangeService
      */
-    public function getMerchantLineRangeService()
+    public function getMerchantGroupLineRangeService()
     {
-        return self::getInstance(MerchantLineRangeService::class);
+        return self::getInstance(MerchantGroupLineRangeService::class);
     }
 
     /**
@@ -277,5 +279,24 @@ Trait DriverServiceTrait
     public function getPackageNoRuleService()
     {
         return self::getInstance(PackageNoRuleService::class);
+    }
+
+
+    /**
+     * 入库异常 服务
+     * @return StockExceptionService
+     */
+    public function getStockExceptionService()
+    {
+        return self::getInstance(StockExceptionService::class);
+    }
+
+    /**
+     * 获取商户组
+     * @return StockExceptionService
+     */
+    public function getMerchantGroupService()
+    {
+        return self::getInstance(MerchantGroupService::class);
     }
 }

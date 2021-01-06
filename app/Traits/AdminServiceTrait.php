@@ -20,8 +20,8 @@ use App\Services\Admin\LineRangeService;
 use App\Services\Admin\LineService;
 use App\Services\Admin\MaterialService;
 use App\Services\Admin\MerchantApiService;
+use App\Services\Admin\MerchantGroupLineRangeService;
 use App\Services\Admin\MerchantGroupService;
-use App\Services\Admin\MerchantLineRangeService;
 use App\Services\Admin\MerchantRechargeService;
 use App\Services\Admin\MerchantService;
 use App\Services\Admin\OrderService;
@@ -29,6 +29,7 @@ use App\Services\Admin\PackageService;
 use App\Services\Admin\PrintTemplateService;
 use App\Services\Admin\RechargeService;
 use App\Services\Admin\RechargeStatisticsService;
+use App\Services\Admin\StockExceptionService;
 use App\Services\Admin\StockInLogService;
 use App\Services\Admin\StockOutLogService;
 use App\Services\Admin\StockService;
@@ -197,12 +198,12 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户线路范围 服务
-     * @return MerchantLineRangeService
+     * 商组线路范围 服务
+     * @return MerchantGroupLineRangeService
      */
-    public function getMerchantLineRangeService()
+    public function getMerchantGroupLineRangeService()
     {
-        return self::getInstance(MerchantLineRangeService::class);
+        return self::getInstance(MerchantGroupLineRangeService::class);
     }
 
     /**
@@ -397,5 +398,14 @@ trait AdminServiceTrait
     public function getPackageNoRuleService()
     {
         return self::getInstance(PackageNoRuleService::class);
+    }
+
+    /**
+     * 入库异常 服务
+     * @return StockExceptionService
+     */
+    public function getStockExceptionService()
+    {
+        return self::getInstance(StockExceptionService::class);
     }
 }

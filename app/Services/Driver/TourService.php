@@ -815,7 +815,9 @@ class TourService extends BaseService
             'signature' => $params['signature'],
             'sign_time' => now(),
             'pay_type' => $params['pay_type'],
-            'pay_picture' => $params['pay_picture']
+            'pay_picture' => $params['pay_picture'],
+            'sticker_amount' => $totalStickerAmount,
+            'delivery_amount' => $totalDeliveryAmount
         ];
         $rowCount = $this->getBatchService()->updateById($batch['id'], array_merge($batchData, ['auth_fullname' => $params['auth_fullname'] ?? '', 'auth_birth_date' => !empty($params['auth_birth_date']) ? $params['auth_birth_date'] : null]));
         if ($rowCount === false) {

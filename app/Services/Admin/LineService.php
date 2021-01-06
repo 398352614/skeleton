@@ -117,18 +117,18 @@ class LineService extends BaseLineService
 
     /**
      * 新增商户所有线路范围
-     * @param $merchantId
+     * @param $merchantGroupId
      * @throws BusinessLogicException
      */
-    public function storeAllPostCodeLineRangeByMerchantId($merchantId)
+    public function storeAllPostCodeLineRangeByMerchantGroupId($merchantGroupId)
     {
         $lineRangeList = $this->getLineRangeService()->getList([], ['*'], false)->toArray();
-        data_set($lineRangeList, '*.merchant_id', $merchantId);
+        data_set($lineRangeList, '*.merchant_group_id', $merchantGroupId);
         foreach ($lineRangeList as $key => $lineRange) {
             unset($lineRangeList[$key]['country_name']);
             unset($lineRangeList[$key]['id']);
         }
-        $rowCount = $this->getMerchantLineRangeService()->insertAll($lineRangeList);
+        $rowCount = $this->getMerchantGroupLineRangeService()->insertAll($lineRangeList);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
@@ -180,7 +180,7 @@ class LineService extends BaseLineService
             throw new BusinessLogicException('线路范围删除失败');
         }
         //删除商户线路范围
-        $rowCount = $this->getMerchantLineRangeService()->delete(['line_id' => $id]);
+        $rowCount = $this->getMerchantGroupLineRangeService()->delete(['line_id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }

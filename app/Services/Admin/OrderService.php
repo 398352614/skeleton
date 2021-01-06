@@ -346,13 +346,7 @@ class OrderService extends BaseService
     public function end($id)
     {
         $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
-        if (!empty($dbOrder['tracking_order_no'])) {
-            $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $dbOrder['tracking_order_no']], ['*'], false);
-            if (!empty($trackingOrder) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
-                throw new BusinessLogicException('当前订单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
-            }
-            (!empty($trackingOrder) && (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]))) && $this->getTrackingOrderService()->removeFromBatch($trackingOrder->id);
-        }
+        $this->getTrackingOrderService()->end($dbOrder['tracking_order_no'] ?? '');
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
@@ -361,7 +355,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        OrderTrailService::orderStatusChangeCreateTrail($trackingOrder->toArray(), BaseConstService::ORDER_TRAIL_CLOSED);
+        OrderTrailService::orderStatusChangeCreateTrail($dbOrder, BaseConstService::ORDER_TRAIL_CLOSED);
         //取消通知
         event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
     }
@@ -379,7 +373,7 @@ class OrderService extends BaseService
         $cancelOrderList = $this->getOrderService()->getList(['order_no' => ['in', $cancelOrderNoList]], ['id', 'order_no', 'merchant_id'], false)->toArray();
         $merchantIdList = array_unique(array_column($cancelOrderList, 'merchant_id'));
         $cancelOrderList = array_create_index($cancelOrderList, 'order_no');
-        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIdList]], ['id', 'pickup_count', 'pie_count'], false)->toArray();
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIdList]], ['*'], false)->toArray();
         $merchantList = array_create_index($merchantList, 'id');
         $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
         foreach ($cancelOrderNoList as $key => $cancelOrderNo) {
@@ -956,8 +950,9 @@ class OrderService extends BaseService
     /**
      * 同步订单状态列表
      * @param $idList
+     * @param bool $stockException
      */
-    public function synchronizeStatusList($idList)
+    public function synchronizeStatusList($idList, $stockException = false)
     {
         //获取订单列表
         $idList = explode_id_string($idList);
@@ -992,10 +987,14 @@ class OrderService extends BaseService
                 $order['tracking_order_type'] = $order['tracking_order_status'] = $order['pay_type'] = $order['line_id'] = $order['driver_id'] = $order['car_id'] = $order['tracking_order_type_name'] = null;
                 continue;
             }
-            $order['tracking_order_type'] = $trackingOrderList[$orderNo]['type'];
-            $order['tracking_order_type_name'] = $trackingOrderList[$orderNo]['type_name'];
+            $order['tracking_type'] = $order['tracking_order_type'] = $trackingOrderList[$orderNo]['type'];
             $order['tracking_order_status'] = $trackingOrderList[$orderNo]['status'];
-            $order['tracking_order_status_name'] = $trackingOrderList[$orderNo]['status_name'];
+            if ($stockException == true) {
+                $order['tracking_type'] = $order['tracking_order_type'] = BaseConstService::TRACKING_ORDER_TYPE_1;
+                $order['tracking_order_status'] = BaseConstService::TRACKING_ORDER_STATUS_5;
+            }
+            $order['tracking_order_type_name'] = ConstTranslateTrait::trackingOrderTypeList($order['tracking_order_type']);
+            $order['tracking_order_status_name'] = ConstTranslateTrait::trackingOrderStatusList($order['tracking_order_status']);
             $order['cancel_remark'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['cancel_remark'] ?? '';
             $order['signature'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['signature'] ?? '';
             $order['pay_type'] = $batchList[$trackingOrderList[$orderNo]['batch_no']]['pay_type'] ?? null;
@@ -1006,6 +1005,8 @@ class OrderService extends BaseService
             $order['driver_phone'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['driver_phone'] ?? '';
             $order['car_id'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['car_id'] ?? null;
             $order['car_no'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['car_no'] ?? '';
+            $order['batch_no'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['batch_no'] ?? '';
+            $order['tour_no'] = $tourList[$trackingOrderList[$orderNo]['tour_no']]['tour_no'] ?? '';
         }
         dispatch(new \App\Jobs\SyncOrderStatus($orderList));
     }

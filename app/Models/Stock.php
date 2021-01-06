@@ -53,6 +53,7 @@ class Stock extends BaseModel
         'execution_date',
         'weight',
         'operator',
+        'operator_id',
         'created_at',
         'updated_at',
     ];

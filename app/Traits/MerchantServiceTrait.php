@@ -12,7 +12,7 @@ use App\Services\Merchant\LineRangeService;
 use App\Services\Merchant\LineService;
 use App\Services\Merchant\MaterialService;
 use App\Services\Merchant\MerchantGroupService;
-use App\Services\Merchant\MerchantLineRangeService;
+use App\Services\Merchant\MerchantGroupLineRangeService;
 use App\Services\Merchant\MerchantService;
 use App\Services\Merchant\OrderService;
 use App\Services\Merchant\PackageService;
@@ -51,11 +51,11 @@ Trait MerchantServiceTrait
 
     /**
      * 商户线路范围 服务
-     * @return MerchantLineRangeService
+     * @return MerchantGroupLineRangeService
      */
-    public function getMerchantLineRangeService()
+    public function getMerchantGroupLineRangeService()
     {
-        return self::getInstance(MerchantLineRangeService::class);
+        return self::getInstance(MerchantGroupLineRangeService::class);
     }
 
     /**

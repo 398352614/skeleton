@@ -21,7 +21,6 @@ class MerchantService extends BaseService
 {
     public $filterRules = [
         'name' => ['like', 'name'],
-        'additional_status' => ['=', 'additional_status']
     ];
 
     public function __construct(Merchant $merchant)
@@ -36,6 +35,13 @@ class MerchantService extends BaseService
             $this->query->whereIn('id', $merchantIdList);
         }
         $this->query->where('status', BaseConstService::MERCHANT_RECHARGE_STATUS_1);
-        return parent::setFilter()->getList([], ['*'], false);
+        if (!empty($this->formData['additional_status'])) {
+            $merchantGroupList = $this->getMerchantGroupService()->getList(['additional_status' => $this->formData['additional_status']], ['*'], false);
+            if ($merchantGroupList->isNotEmpty()) {
+                $merchantGroupList = $merchantGroupList->pluck('id')->toArray();
+                $this->query->whereIn('merchant_group_id', $merchantGroupList);
+            }
+        }
+        return $this->query->get();
     }
 }

@@ -12,6 +12,7 @@ namespace App\Services\Driver;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Stock;
 use App\Services\BaseConstService;
+use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -47,6 +48,7 @@ class StockService extends BaseService
                 'tracking_order_no' => $packageList[$no]['tracking_order_no'],
                 'execution_date' => $tour['execution_date'],
                 'operator' => auth()->user()->fullname,
+                'operator_id' => auth()->user()->id,
                 'order_no' => $packageList[$no]['order_no'],
                 'express_first_no' => $no
             ];
@@ -70,15 +72,31 @@ class StockService extends BaseService
         if (empty($package)) {
             throw new BusinessLogicException('当前包裹不存在系统中');
         }
-        $stock = $this->getStockService()->getInfo(['express_first_no'=>$package['express_first_no']], ['*'], false);
+        $stock = $this->getStockService()->getInfo(['express_first_no' => $package['express_first_no']], ['*'], false);
         if (!empty($stock)) {
             throw new BusinessLogicException('包裹已入库，当前线路[:line_name]，派送日期[:execution_date]', 1000, ['line_name' => $stock['line_name'], 'execution_date' => $stock['execution_date']]);
+        }
+        $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
+        $type = $this->getOrderService()->getTrackingOrderType($order);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['id' => 'desc']);
+        if (in_array($order['status'], [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_4])
+            && $order['type'] == BaseConstService::ORDER_TYPE_3
+            && !empty($trackingOrder)
+            && $trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1
+            && $trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_6
+            && !empty(CompanyTrait::getCompany()['stock_exception_verify'])
+        ) {
+            if (CompanyTrait::getCompany()['stock_exception_verify'] == BaseConstService::STOCK_EXCEPTION_VERIFY_2) {
+                //未开启审核，自动入库，返回线路日期
+                throw new BusinessLogicException('当前包裹不能生成对应派件运单，请进行异常入库处理', 5005);
+            } else {
+                //开启审核，不返回值
+                throw new BusinessLogicException('当前包裹不能生成对应派件运单，请进行异常入库处理', 5004);
+            }
         }
         if (!in_array($package->status, [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2])) {
             throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
         }
-        $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
-        $type = $this->getOrderService()->getTrackingOrderType($order);
         if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
             throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
         }
@@ -140,6 +158,7 @@ class StockService extends BaseService
             'tracking_order_no' => $trackingOrder['tracking_order_no'],
             'execution_date' => $tour['execution_date'],
             'operator' => auth()->user()->fullname,
+            'operator_id' => auth()->user()->id,
             'order_no' => $package['order_no'],
             'express_first_no' => $package['express_first_no']
         ];
@@ -155,6 +174,4 @@ class StockService extends BaseService
         //推送入库分拣信息
         dispatch(new \App\Jobs\PackagePickOut([$package]));
     }
-
-
 }

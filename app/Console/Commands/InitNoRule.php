@@ -68,6 +68,19 @@ class InitNoRule extends Command
                         'max_no' => $prefix . str_repeat('9', 7)
                     ]);
                 }
+
+                $trackingOrder = OrderNoRule::query()->where('company_id', $company['id'])->where('type', BaseConstService::STOCK_EXCEPTION_NO_TYPE)->first();
+                if (empty($trackingOrder)) {
+                    $prefix = BaseConstService::STOCK_EXCEPTION . $company['company_code'];
+                    OrderNoRule::create([
+                        'company_id' => $company['id'],
+                        'type' => BaseConstService::STOCK_EXCEPTION_NO_TYPE,
+                        'prefix' => $prefix,
+                        'start_index' => 1,
+                        'int_length' => 7,
+                        'max_no' => $prefix . str_repeat('9', 7)
+                    ]);
+                }
             }
             $this->info('number rule init successful!');
         } else {
