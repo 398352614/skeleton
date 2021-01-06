@@ -99,8 +99,16 @@ class Recharge extends BaseModel
 
     public function getMerchantNameAttribute()
     {
-        return empty($this->merchant_id) ? '' : DB::table('merchant')->where('id', '=', $this->merchant_id)->first()->name;
-    }
+        if (empty($this->merchant_id)) {
+            return '';
+        } else {
+            $merchant = DB::table('merchant')->where('id', '=', $this->merchant_id)->first();
+            if (empty($merhcant)) {
+                return 0;
+            } else {
+                return $merchant->name;
+            }
+        }    }
 
     public function getStatusNameAttribute()
     {
