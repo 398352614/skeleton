@@ -383,7 +383,7 @@ class TourService extends BaseService
             $outTrackingOrderIdList = array_filter(explode(',', $params['out_tracking_order_id_list']), function ($value) {
                 return is_numeric($value);
             });
-            $noOutTrackingOrder = $this->getTrackingOrderService()->getInfo(['id' => ['in', $outTrackingOrderIdList], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_3]], ['order_no'], false);
+            $noOutTrackingOrder = $this->getTrackingOrderService()->getInfo(['id' => ['in', $outTrackingOrderIdList], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_3]], ['order_no', 'tracking_order_no'], false);
             if (!empty($noOutTrackingOrder)) {
                 throw new BusinessLogicException('运单[:tracking_order_no]已取消或已删除,不能出库,请先剔除', 1000, ['tracking_order_no' => $noOutTrackingOrder->tracking_order_no]);
             }
