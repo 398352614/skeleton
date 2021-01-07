@@ -1084,9 +1084,7 @@ class TrackingOrderService extends BaseService
     {
         //记录地址
         $info = $this->getAddressService()->getInfoByUnique($params);
-        Log::info('address-info', $info);
         if (empty($info)) {
-            Log::info('address-info-2');
             $this->getAddressService()->create($params);
         }
     }
