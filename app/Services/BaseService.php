@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\BaseModel;
+use App\Models\OrderNoRule;
 use App\Traits\FactoryInstanceTrait;
 use App\Traits\SearchTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -143,8 +144,11 @@ class BaseService
 
     protected function locked()
     {
-        $this->query->sharedLock();
-        //$this->query->lockForUpdate();
+        if ($this->model instanceof OrderNoRule) {
+            $this->query->lockForUpdate();
+        } else {
+            $this->query->sharedLock();
+        }
         return $this;
     }
 
