@@ -22,7 +22,9 @@ use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Class TrackingOrderService
@@ -227,7 +229,17 @@ class TrackingOrderService extends BaseService
         }
         $trackingOrder = $trackingOrder->getAttributes();
         /*****************************************运单加入站点*********************************************************/
-        list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
+        $lock = Cache::lock('order-store', 5);
+        try {
+            $lock->block(6);
+            list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
+        } catch (LockTimeoutException $e) {
+            optional($lock)->release();
+            throw new BusinessLogicException('操作繁忙，请稍后再试');
+        } catch (businesslogicexception $e) {
+            optional($lock)->release();
+            throw new BusinessLogicException($e->getMessage(), 1000, $e->replace, $e->data);
+        }
         $trackingOrder = $this->fillBatchTourInfo($trackingOrder, $batch, $tour, $again);
         /*******************************************填充运单信息至订单***************************************************/
         $this->fillToOrder($orderNo, $trackingOrder);
