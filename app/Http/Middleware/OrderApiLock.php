@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Cache;
 class OrderApiLock
 {
 
-    public $times = 20;
+    public $times = 30;
 
     /**
      * @param \Illuminate\Http\Request $request
