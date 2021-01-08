@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Services\BaseService;
+use App\Services\TransactionService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -25,7 +26,7 @@ class OrderStore implements ShouldQueue
      * @param $data
      * @param $orderSource
      */
-    public function __construct(BaseService $orderService, $data, $orderSource)
+    public function __construct(TransactionService $orderService, $data, $orderSource)
     {
         $this->orderService = $orderService;
         $this->data = $data;
