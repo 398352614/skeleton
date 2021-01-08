@@ -30,7 +30,7 @@ class OrderApiLock
         for ($i = 1; $i <= $this->times; $i++) {
             $value = $lock->get();
             if (empty($value)) {
-                usleep(200);
+                usleep(200000);
                 continue;
             }
             break;
