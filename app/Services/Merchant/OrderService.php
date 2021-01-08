@@ -572,7 +572,7 @@ class OrderService extends BaseService
             if (!empty($dbOrder)) {
                 throw new BusinessLogicException('外部订单号已存在', 1005, [], [
                     'order_no' => $dbOrder['order_no'],
-                    'out_order_no' => $order['out_order_no'] ?? '',
+                    'out_order_no' => $dbOrder['out_order_no'] ?? '',
                     'batch_no' => '',
                     'tour_no' => '',
                     'line' => ['line_id' => null, 'line_name' => ''],
