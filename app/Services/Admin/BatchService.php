@@ -70,14 +70,12 @@ class BatchService extends BaseService
      */
     public function join($trackingOrder, $line, $batchNo = null, $tour = [], $isAddOrder = false)
     {
-        DB::select("LOCK TABLES batch WRITE");
         list($batch, $tour) = $this->hasSameBatch($trackingOrder, $line, $batchNo, $tour, $isAddOrder);
         if (!empty($batchNo) && empty($batch)) {
             throw new BusinessLogicException('当前指定站点不符合当前运单');
         }
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
         $batch = !empty($batch) ? $this->joinExistBatch($trackingOrder, $batch) : $this->joinNewBatch($trackingOrder, $line);
-        //DB::select("UNLOCK TABLES");
         /**************************************站点加入取件线路********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $trackingOrder, $tour);
         /***********************************************填充取件线路编号************************************************/
