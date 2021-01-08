@@ -12,34 +12,34 @@ class OrderApiLock
     public $times = 20;
 
     /**
-     * @param $request
+     * @param \Illuminate\Http\Request $request
      * @param Closure $next
      * @return mixed
      * @throws BusinessLogicException
      */
     public function handle($request, Closure $next)
     {
-        $outGroupOrderNo = $request->get('out_group_order_no');
-        if (!empty($outGroupOrderNo)) {
-            $lock = Cache::lock($outGroupOrderNo, 5);
-            $value = null;
-            for ($i = 1; $i <= $this->times; $i++) {
-                $value = $lock->get();
-                if (empty($value)) {
-                    usleep(100);
-                    continue;
-                }
-                break;
-            }
-            if (empty($value)) {
-                throw new BusinessLogicException('系统繁忙，请稍后重试');
-            }
+        $status = $request->route()->named('merchant_api.order.store');
+        if (!$status) return $next($request);
 
-            if ($lock->get()) {
-                // 获取锁定10秒...
-                $lock->release();
+        $outGroupOrderNo = $request->get('out_group_order_no');
+        if (empty($outGroupOrderNo)) return $next($request);
+
+        $lock = Cache::lock($outGroupOrderNo, 5);
+        $value = null;
+        for ($i = 1; $i <= $this->times; $i++) {
+            $value = $lock->get();
+            if (empty($value)) {
+                usleep(200);
+                continue;
             }
+            break;
         }
-        return $next($request);
+        if (empty($value)) {
+            throw new BusinessLogicException('系统繁忙，请稍后重试');
+        }
+        $value = $next($request);
+        $lock->release();
+        return $value;
     }
 }
