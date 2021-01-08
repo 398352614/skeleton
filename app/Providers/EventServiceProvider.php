@@ -11,6 +11,7 @@ use App\Events\TourDriver\BatchDepart;
 use App\Events\TourDriver\OutWarehouse;
 use App\Listeners\CountTourTimeAndDistance;
 use App\Listeners\SendNotify2Merchant;
+use App\Listeners\SendNotify2Merchant2;
 use App\Listeners\SendOrderCancel;
 use App\Listeners\SendOrderDelete;
 use App\Listeners\SendOrderExecutionDate;
@@ -84,6 +85,28 @@ class EventServiceProvider extends ServiceProvider
         ],
         \App\Events\TourNotify\BackWarehouse::class => [
             SendNotify2Merchant::class
+        ],
+        /*********************************取件线路消息通知2****************************************/
+        \App\Events\TourNotify2\OutWarehouse::class => [
+            SendNotify2Merchant2::class
+        ],
+        \App\Events\TourNotify2\ActualOutWarehouse::class => [
+            SendNotify2Merchant2::class
+        ],
+        \App\Events\TourNotify2\NextBatch::class => [
+            SendNotify2Merchant2::class
+        ],
+        \App\Events\TourNotify2\ArrivedBatch::class => [
+            SendNotify2Merchant2::class
+        ],
+        \App\Events\TourNotify2\AssignBatch::class => [
+            SendNotify2Merchant2::class
+        ],
+        \App\Events\TourNotify2\CancelBatch::class => [
+            SendNotify2Merchant2::class
+        ],
+        \App\Events\TourNotify2\BackWarehouse::class => [
+            SendNotify2Merchant2::class
         ],
         /*********************************取派日期修改通知****************************************/
         \App\Events\OrderExecutionDateUpdated::class => [

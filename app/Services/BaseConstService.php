@@ -461,4 +461,8 @@ class BaseConstService
     //入库异常审核1-关闭-2-开启
     const STOCK_EXCEPTION_VERIFY_1 = 1;
     const STOCK_EXCEPTION_VERIFY_2 = 2;
+
+    //推送模式1-简单模式2-详细模式
+    const SIMPLE_PUSH_MODE = 1;
+    const DETAIL_PUSH_MODE = 2;
 }

@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Events\TourNotify;
+namespace App\Events\TourNotify2;
 
 use App\Events\Interfaces\ATourNotify;
+use App\Events\Interfaces\ATourNotify2;
 use App\Services\BaseConstService;
 
 /**
  * 司机回仓事件
  */
-class BackWarehouse extends ATourNotify
+class BackWarehouse extends ATourNotify2
 {
     public $tour;
 
@@ -23,7 +24,6 @@ class BackWarehouse extends ATourNotify
     {
         parent::__construct($tour, [], $batchList, $trackingOrderList);
     }
-
 
     public function notifyType(): string
     {

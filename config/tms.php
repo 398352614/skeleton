@@ -44,6 +44,6 @@ return [
     'admin_id'=>env('ADMIN_ID'),
     'erp_merchant_id'=>env('ERP_MERCHANT_ID'),
     'eushop_merchant_id'=>env('EUSHOP_MERCHANT_ID'),
-
+    'old_company_id'=>env('OLD_COMPANY_ID'),
         'admin_email'=>env('ADMIN_EMAIL')
 ];

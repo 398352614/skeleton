@@ -90,10 +90,11 @@ trait TourTrait
 
     public static function afterBackWarehouse($tour)
     {
+        $trackingOrderList = TrackingOrder::query()->select(['*'])->where('tour_no', $tour['tour_no'])->get()->toArray();
+        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->get(['id', 'sort_id'])->toArray();
         //触发返回仓库
         event(new BackWarehouse($tour));
-
-        event(new \App\Events\TourNotify\BackWarehouse($tour));
+        event(new \App\Events\TourNotify\BackWarehouse($tour, $batchList, $trackingOrderList));
     }
 
 
