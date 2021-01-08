@@ -72,7 +72,7 @@ class OutWarehouse implements ShouldQueue
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         Log::info('tour:' . json_encode($tour));
         $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
-        if(CompanyTrait::getCompany($tour['company_id'])['old_company_id'] == config('tms.old_company_id')){
+        if($tour['company_id'] == config('tms.old_company_id')){
             event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $this->trackingOrderList));
         }else{
             event(new \App\Events\TourNotify2\OutWarehouse($tour, $batchList, $this->trackingOrderList));

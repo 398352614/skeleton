@@ -13,6 +13,7 @@ use App\Events\Interfaces\ATourNotify2;
 use App\Models\Batch;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
+use Illuminate\Support\Facades\Log;
 
 class NextBatch extends ATourNotify2
 {
@@ -31,11 +32,15 @@ class NextBatch extends ATourNotify2
     {
         $this->fillTrackingOrderList();
         //更新预计耗时
-        if (!empty($this->trackingOrderList['expect_arrive_time'])) {
-            $expectTime = strtotime($this->trackingOrderList['expect_arrive_time']) - time();
-            $this->trackingOrderList['expect_time'] = $expectTime > 0 ? $expectTime : 0;
-        } else {
-            $this->trackingOrderList['expect_time'] = 0;
+        foreach ($this->trackingOrderList as $merchantId => $trackingOrderList) {
+            foreach ($trackingOrderList as $k => $v) {
+                if (!empty($v['expect_arrive_time'])) {
+                    $expectTime = strtotime($v['expect_arrive_time']) - time();
+                    $this->trackingOrderList[$merchantId][$k]['expect_time'] = $expectTime > 0 ? $expectTime : 0;
+                } else {
+                    $this->trackingOrderList[$merchantId][$k]['expect_time'] = 0;
+                }
+            }
         }
         return $this->trackingOrderList;
     }

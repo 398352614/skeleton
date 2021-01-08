@@ -107,12 +107,20 @@ class ActualOutWarehouse implements ShouldQueue
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         Log::info('tour:' . json_encode($tour));
         $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
-        event(new \App\Events\TourNotify\ActualOutWarehouse($tour, $batchList, $this->trackingOrderList));
+        if($tour['company_id'] == config('tms.old_company_id')){
+            event(new \App\Events\TourNotify\ActualOutWarehouse($tour, $batchList, $this->trackingOrderList));
+        }else{
+            event(new \App\Events\TourNotify2\ActualOutWarehouse($tour, $batchList, $this->trackingOrderList));
+        }
         /**************************************3.通知下一个站点事件************************************************/
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         $nextBatch = TourTrait::getNextBatch($tour['tour_no']);
         if (!empty($nextBatch)) {
-            event(new \App\Events\TourNotify\NextBatch($tour, $nextBatch->toArray()));
+            if($tour['company_id'] == config('tms.old_company_id')){
+                event(new \App\Events\TourNotify\NextBatch($tour, $nextBatch->toArray()));
+            }else{
+                event(new \App\Events\TourNotify2\NextBatch($tour, $nextBatch->toArray()));
+            }
         }
         return true;
     }

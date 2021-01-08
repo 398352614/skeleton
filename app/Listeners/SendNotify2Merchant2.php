@@ -75,6 +75,7 @@ class SendNotify2Merchant2 implements ShouldQueue
     public function handle(ATourNotify2 $event)
     {
         try {
+            Log::info(1);
             $dataList = $event->getDataList();
             $notifyType = $event->notifyType();
             Log::info('notify-type:' . $notifyType);
@@ -84,7 +85,7 @@ class SendNotify2Merchant2 implements ShouldQueue
             if (empty($merchantList)) return true;
             foreach ($dataList as $merchantId => $data) {
                 //根据推送模式组合数据,默认详细模式
-                if (!$merchantList[$merchantId]['push_mode'] && $merchantList[$merchantId]['push_mode'] == BaseConstService::SIMPLE_PUSH_MODE) {
+                if (!empty($merchantList[$merchantId]['push_mode']) && $merchantList[$merchantId]['push_mode'] == BaseConstService::SIMPLE_PUSH_MODE) {
                     $data = NotifyInfoResource::make($data)->toArray(request());
                 } else {
                     $data = NotifyResource::make($data)->toArray(request());
@@ -94,6 +95,7 @@ class SendNotify2Merchant2 implements ShouldQueue
                 list($pushStatus, $msg) = $this->postData($merchantList[$merchantId]['url'], $postData);
                 ThirdPartyLogService::storeAll($merchantId, $data, $notifyType, $event->getThirdPartyContent($pushStatus, $msg));
             }
+            Log::info(2);
         } catch (\ErrorException $ex) {
             Log::channel('job-daily')->error($ex->getMessage());
         } catch (\Exception $ex) {
