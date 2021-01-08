@@ -139,7 +139,7 @@ class BatchService extends BaseService
             $dbBatch = parent::getInfo($where, ['*'], false);
             $batchList = empty($dbBatch) ? [] : [$dbBatch->toArray()];
         } else {
-            $batchList = parent::getList($where, ['*'], false, [], ['id' => 'desc'])->toArray();
+            $batchList = parent::getListLock($where, ['*'], false, [], ['id' => 'desc'])->toArray();
         }
         if (empty($batchList)) return [[], $tour];
         foreach ($batchList as $batch) {
