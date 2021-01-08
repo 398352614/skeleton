@@ -10,6 +10,7 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Exceptions\BusinessLogicException;
+use App\Jobs\OrderStore;
 use App\Services\BaseConstService;
 use App\Services\Merchant\OrderService;
 use Illuminate\Database\Eloquent\Builder;
@@ -81,7 +82,8 @@ class OrderController extends OrderBaseController
             $orderSource = BaseConstService::ORDER_SOURCE_1;
             $this->data['out_status'] = BaseConstService::OUT_STATUS_1;
         }
-        return $this->service->store($this->data, $orderSource);
+        //return $this->service->store($this->data, $orderSource);
+        return OrderStore::dispatchNow($this->service, $this->data, $orderSource);
     }
 
     /**
@@ -333,6 +335,6 @@ class OrderController extends OrderBaseController
      */
     public function assignToBatch($id)
     {
-        return $this->service->assignToBatch($id,$this->data);
+        return $this->service->assignToBatch($id, $this->data);
     }
 }
