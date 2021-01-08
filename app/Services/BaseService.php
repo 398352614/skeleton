@@ -172,15 +172,6 @@ class BaseService
      */
     public function getListLock($where = [], $selectFields = ['*'], $isResource = true, $groupFields = [], $orderFields = [])
     {
-        $query = $this->query;
-        if (!empty($where)) {
-            SearchTrait::buildQuery($query, $where);
-        }
-        $count = $query->count();
-        if (empty($count) || $count == 0) {
-            $this->query = $this->model::query();
-            return [];
-        }
         return $this->locked()->getList($where, $selectFields, $isResource, $groupFields, $orderFields);
     }
 
