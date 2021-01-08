@@ -136,7 +136,7 @@ class BatchService extends BaseService
         (isset($line['range_merchant_id']) && empty($batchNo)) && $where['merchant_id'] = $line['range_merchant_id'];
         if (!empty($batchNo)) {
             $where['batch_no'] = $batchNo;
-            $dbBatch = parent::getInfo($where, ['*'], false);
+            $dbBatch = parent::getInfoLock($where, ['*'], false);
             $batchList = empty($dbBatch) ? [] : [$dbBatch->toArray()];
         } else {
             $batchList = parent::getListLock($where, ['*'], false, [], ['id' => 'desc'])->toArray();
