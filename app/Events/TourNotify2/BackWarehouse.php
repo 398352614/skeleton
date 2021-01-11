@@ -33,6 +33,7 @@ class BackWarehouse extends ATourNotify2
 
     public function getDataList(): array
     {
-        return [];
+        $this->fillTrackingOrderList();
+        return $this->trackingOrderList;
     }
 }

@@ -75,7 +75,6 @@ class SendNotify2Merchant2 implements ShouldQueue
     public function handle(ATourNotify2 $event)
     {
         try {
-            Log::info(1);
             $dataList = $event->getDataList();
             $notifyType = $event->notifyType();
             Log::info('notify-type:' . $notifyType);
@@ -86,7 +85,7 @@ class SendNotify2Merchant2 implements ShouldQueue
             foreach ($dataList as $merchantId => $data) {
                 //根据推送模式组合数据,默认详细模式
                 if (!empty($merchantList[$merchantId]['push_mode']) && $merchantList[$merchantId]['push_mode'] == BaseConstService::SIMPLE_PUSH_MODE) {
-                    $data = NotifyInfoResource::make($data)->toArray(request());
+                    $data = NotifyResource::make($data)->toArray(request());
                 } else {
                     $data = NotifyResource::make($data)->toArray(request());
                 }

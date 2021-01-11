@@ -103,7 +103,7 @@ trait TourTrait
     public static function afterBackWarehouse($tour)
     {
         $trackingOrderList = TrackingOrder::query()->select(['*'])->where('tour_no', $tour['tour_no'])->get()->toArray();
-        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->get(['id', 'sort_id'])->toArray();
+        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->get()->toArray();
         //触发返回仓库
         event(new BackWarehouse($tour));
         if($tour['company_id'] == config('tms.old_company_id')){
@@ -134,7 +134,7 @@ trait TourTrait
 
     public static function getNextBatch($tourNo)
     {
-        return $nextBatch = Batch::query()->where('tour_no', $tourNo)->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first(['batch_no', 'expect_arrive_time', 'expect_time', 'expect_distance']);
+        return $nextBatch = Batch::query()->where('tour_no', $tourNo)->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first();
     }
 
 }

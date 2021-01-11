@@ -109,7 +109,7 @@ abstract class ATourNotify2
         Log::info('material_list', $materialList);
         //获取站点
         $batchList = empty($this->batchList) ? [$this->batch] : $this->batchList;
-        Log::info('batch_list', $batchList);
+        Log::info('batch_list', $this->batchList);
         $batchList = array_create_group_index($batchList, 'batch_no');
         //组装
         $batchFieldsInTrackingOrderList = ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'actual_arrive_time', 'actual_distance', 'actual_time', 'actual_arrive_time', 'actual_distance', 'actual_time', 'signature', 'pay_type', 'pay_picture'];
