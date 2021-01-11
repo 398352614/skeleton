@@ -14,6 +14,13 @@ class NotifyResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'tracking_order_no',
+            'status',
+            'type',
+            'order_no',
+            'order_status',
+            'order_type'
+        ];
     }
 }
