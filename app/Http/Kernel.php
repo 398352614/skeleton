@@ -40,6 +40,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:1000,1',
             'bindings',
+            'orderapilock',
             'validate',
             'response',
         ],
@@ -64,10 +65,11 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'orderapilock' => \App\Http\Middleware\OrderApiLock::class,
         'validate' => \App\Http\Middleware\Validate::class,
         'response' => \App\Http\Middleware\Response::class,
         'checktourredislock' => \App\Http\Middleware\CheckTourRedisLock::class,
-        'importCheck'=> \App\Http\Middleware\ImportCheck::class
+        'importCheck' => \App\Http\Middleware\ImportCheck::class
     ];
 
     /**
