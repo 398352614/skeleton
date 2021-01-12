@@ -115,6 +115,7 @@ class ActualOutWarehouse implements ShouldQueue
         /**************************************3.通知下一个站点事件************************************************/
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
         $nextBatch = TourTrait::getNextBatch($tour['tour_no']);
+        Log::info('next',$nextBatch->toArray());
         if (!empty($nextBatch)) {
             if($tour['company_id'] == config('tms.old_company_id')){
                 event(new \App\Events\TourNotify\NextBatch($tour, $nextBatch->toArray()));
