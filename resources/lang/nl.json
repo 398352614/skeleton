@@ -735,4 +735,8 @@
 "入库异常编号规则":"Nummerregels van uitzondering op opslag",
 "审核成功":"Audit succesvol",
 "审核失败":"Audit mislukt"
+,"调整为取件成功":"Aanpassing om succes op te vangen",
+"当前商户没有API对接权限":"De huidige handelaar heeft geen API-toestemming om te landen.",
+"订单为[:order_no],运单为[:tracking_order_no]已取消或已删除,不能出库,请先剔除":"De order is [: orderNee, de vrachtbrief is [: tracking]Foto van bestelling[no] is geannuleerd of verwijderd, kan niet worden uitgegeven, kunt u eerst verwijderen",
+"当前站点为[:status],无法进行此操作":"De huidige site is [: status], deze operatie kan niet worden uitgevoerd"
 }
