@@ -29,6 +29,8 @@ class TestController extends BaseController
 
     public function index()
     {
+        $routeAs = request()->route()->getName();
+        return $routeAs;
 /*        $i = 0;
         $info = DB::table('order')->get()->chunk(50)->toArray();
         foreach ($info as $k) {
