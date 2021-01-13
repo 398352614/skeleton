@@ -206,7 +206,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //司机新增
         Route::post('/register', 'DriverController@driverRegister')->name('driver.store');
         //获取状态
-        Route::get('/status', 'DriverController@driverStatus')->name('driver.status');
+        Route::get('/status', 'DriverController@driverStatus')->name('driver.lock');
         //锁定或解锁司机
         Route::post('/{id}/lock', 'DriverController@lockDriver')->name('driver.lock');
         //修改司机密码
@@ -427,7 +427,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取详情
         Route::get('/show', 'CompanyConfigController@show')->name('company-config.show');
         //获取地址模板列表
-        Route::get('/address-template', 'CompanyConfigController@getAddressTemplateList')->name('company-config.address-template');
+        Route::get('/address-template', 'CompanyConfigController@getAddressTemplateList')->name('company-config.show');
         //修改
         Route::put('/update', 'CompanyConfigController@update')->name('company-config.update');
     });
@@ -534,7 +534,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取详情
         Route::get('/{id}', 'MerchantController@show')->name('merchant.show');
         //初始化
-        Route::get('/init', 'MerchantController@init')->name('merchant.store');
+        Route::get('/init', 'MerchantController@init')->name('merchant.store|merchant.update');
         //新增
         Route::post('/', 'MerchantController@store')->name('merchant.store');
         //修改
@@ -582,7 +582,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //批量修改运价方案
         Route::put('/transport-price', 'MerchantGroupController@updatePrice')->name('merchant-group.transport-price');
         //获取费用列表
-        Route::get('/fee', 'MerchantGroupController@getFeeList')->name('merchant-group.fee');
+        Route::get('/fee', 'MerchantGroupController@getFeeList')->name('merchant-group.config');
         //配置
         Route::put('/{id}/config', 'MerchantGroupController@config')->name('merchant-group.config');
         //状态修改
