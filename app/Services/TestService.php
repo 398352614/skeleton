@@ -80,7 +80,7 @@ class TestService extends BaseService
     public function authTree()
     {
         $permission = new Permission();
-        $permissionList = $permission->newQuery()->where('type', 2)->get(['id', 'parent_id', 'name', 'route_as', 'type'])->toArray();
+        $permissionList = $permission->newQuery()->where('type', 2)->where('id', '<>', 140)->get(['id', 'parent_id', 'name', 'route_as', 'type'])->toArray();
         $menuList = $permission->newQuery()->where('type', 1)->get(['id', 'parent_id', 'name', 'route_as', 'type'])->toArray();
         $menuList = TreeService::makeTree($menuList);
         return [
