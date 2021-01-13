@@ -17,7 +17,7 @@ class BatchExceptionResource extends JsonResource
             'stage_name' => $this->stage_name,
             'status' => $this->status,
             'status_name' => $this->status_name,
-            'fullname' => $this->place_fullname,
+            'fullname' => $this->fullname,
             'source' => $this->source,
             'created_at' => (string)$this->created_at,
             'driver_name' => $this->driver_name,
