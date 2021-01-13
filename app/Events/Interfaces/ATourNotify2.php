@@ -31,10 +31,10 @@ abstract class ATourNotify2
     public $type;
 
     public static $tourFields = ['line_name', 'tour_no', 'execution_date', 'expect_distance', 'expect_time', 'driver_id', 'driver_name', 'driver_phone', 'car_id', 'car_no',
-        'expect_distance', 'expect_time', 'actual_time', 'actual_distance'];
+        'expect_distance','expect_time','actual_time','actual_distance'];
 
     public static $batchFields = [
-        'batch_no', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number',
+        'batch_no','place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number',
         'place_city', 'place_street', 'place_address', 'expect_arrive_time', 'expect_time', 'expect_distance', 'signature',
         'pay_type', 'pay_picture', 'status', 'auth_fullname', 'auth_birth_date'
     ];
@@ -46,7 +46,7 @@ abstract class ATourNotify2
     public function __construct($tour, $batch, $batchList, $trackingOrderList)
     {
         //取件线路
-        $this->tour = Arr::only($tour, self::$tourFields);
+        $this->tour = $tour;
         //站点
         !empty($batch) && $this->batch = Arr::only($batch, self::$batchFields);
         //站点列表
@@ -92,28 +92,27 @@ abstract class ATourNotify2
         $orderNoList = array_column($this->trackingOrderList, 'order_no');
         $trackingOrderNoList = array_column($this->trackingOrderList, 'tracking_order_no');
         //获取订单列表
-        $orderList = Order::query()->whereIn('order_no', $orderNoList)->get(['tracking_order_no', 'order_no', 'out_order_no', DB::raw('type as order_type'), DB::raw('status as order_status')])->toArray();
-        $orderList = array_create_index($orderList, 'tracking_order_no');
+        $orderList = Order::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'out_order_no', DB::raw('type as order_type'), DB::raw('status as order_status')])->toArray();
+        $orderList = array_create_index($orderList, 'order_no');
         //获取包裹
-        $packageList = TrackingOrderPackage::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get(['tracking_order_no', 'name', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', DB::raw('type as tracking_type'), DB::raw('status as tracking_status'), 'sticker_no', 'sticker_amount', DB::raw('IFNULL(delivery_amount,0.00) as delivery_amount'), DB::raw('IF(IFNULL(delivery_amount,0.00)=0.00,0,1) as delivery_count'), 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
-        $dbPackageList = Package::query()->whereIn('express_first_no', array_column($packageList, 'express_first_no'))->get(['tracking_order_no', 'status', 'type', 'express_first_no'])->toArray();
+        $packageList = TrackingOrderPackage::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', DB::raw('type as tracking_type'), DB::raw('status as tracking_status'), 'sticker_no', 'sticker_amount', DB::raw('IFNULL(delivery_amount,0.00) as delivery_amount'), DB::raw('IF(IFNULL(delivery_amount,0.00)=0.00,0,1) as delivery_count'), 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
+        $dbPackageList = Package::query()->whereIn('express_first_no', array_column($packageList, 'express_first_no'))->get(['status', 'type', 'express_first_no'])->toArray();
         $dbPackageList = array_create_index($dbPackageList, 'express_first_no');
         foreach ($packageList as &$package) {
             $package = array_merge($package, $dbPackageList[$package['express_first_no']]);
-            unset($package['status_name'], $package['type_name']);
         }
-        $packageList = array_create_group_index($packageList, 'tracking_order_no');
+        $packageList = array_create_group_index($packageList, 'order_no');
         Log::info('package_list', $packageList);
         //获取材料
-        $materialList = TrackingOrderMaterial::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get(['tracking_order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
-        $materialList = array_create_group_index($materialList, 'tracking_order_no');
+        $materialList = TrackingOrderMaterial::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get(['name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
+        $materialList = array_create_group_index($materialList, 'order_no');
         Log::info('material_list', $materialList);
         //获取站点
         $batchList = empty($this->batchList) ? [$this->batch] : $this->batchList;
+        Log::info('batch_list', $this->batchList);
         $batchList = array_create_group_index($batchList, 'batch_no');
         //组装
-        Log::info('batch_list', $batchList);
-        $batchFieldsInTrackingOrderList = ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'expect_arrive_time', 'expect_distance', 'expect_time', 'actual_arrive_time', 'actual_distance', 'actual_time', 'signature', 'pay_type', 'pay_picture'];
+        $batchFieldsInTrackingOrderList = ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'actual_arrive_time', 'actual_distance', 'actual_time', 'actual_arrive_time', 'actual_distance', 'actual_time', 'signature', 'pay_type', 'pay_picture'];
         $tourFieldsInTrackingOrderList = ['line_name', 'execution_date', 'driver_id', 'driver_name', 'driver_phone', 'car_id', 'car_no'];
         $orderFieldsInTrackingOrderList = ['out_order_no', 'order_type', 'order_status'];
         $trackingOrderList = $this->trackingOrderList;
@@ -125,9 +124,9 @@ abstract class ATourNotify2
             $trackingOrderList[$k]['delivery_count'] = !empty($packageList[$v['order_no']]) ? array_sum(array_column($packageList[$v['order_no']], 'delivery_count')) : 0;
             $trackingOrderList[$k] = array_merge($trackingOrderList[$k], Arr::only($this->tour, $tourFieldsInTrackingOrderList));
             $trackingOrderList[$k] = array_merge($trackingOrderList[$k], Arr::only($batchList[$v['batch_no']] ?? [], $batchFieldsInTrackingOrderList));
-            $trackingOrderList[$k] = array_merge($trackingOrderList[$k], Arr::only($orderList[$v['tracking_order_no']] ?? [], $orderFieldsInTrackingOrderList));
-            $trackingOrderList[$k]['package_list'] = $packageList[$v['tracking_order_no']] ?? [];
-            $trackingOrderList[$k]['material_list'] = $materialList[$v['tracking_order_no']] ?? [];
+            $trackingOrderList[$k] = array_merge($trackingOrderList[$k], Arr::only($orderList[$v['order_no']] ?? [], $orderFieldsInTrackingOrderList));
+            $trackingOrderList[$k]['package_list'] = $packageList[$v['order_no']] ?? [];
+            $trackingOrderList[$k]['material_list'] = $materialList[$v['order_no']] ?? [];
         }
         $this->trackingOrderList = collect($trackingOrderList)->groupBy('merchant_id')->toArray();
         unset($packageList, $materialList, $orderList);

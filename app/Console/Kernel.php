@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-use App\Services\BaseConstService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -28,7 +27,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('telescope:prune --hours=48')->daily()->onOneServer()->emailOutputTo(config('tms.admin_email'));
         $schedule->command('db:backup')->dailyAt('1:00')->onOneServer()->emailOutputTo(config('tms.admin_email'));
         $schedule->command('restart:queue')->dailyAt('2:00')->onOneServer()->emailOutputTo(config('tms.admin_email'));
-        $schedule->command('route:retry')->cron('*/'.BaseConstService::ROUTE_RETRY_INTERVAL_TIME.' * * * *')->onOneServer();
     }
 
     /**

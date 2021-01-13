@@ -465,9 +465,4 @@ class BaseConstService
     //推送模式1-简单模式2-详细模式
     const SIMPLE_PUSH_MODE = 1;
     const DETAIL_PUSH_MODE = 2;
-
-    //线路重试最大次数
-    const ROUTE_RETRY_MAX_TIMES = 3;
-    //线路重推间隔时间(分钟)
-    const ROUTE_RETRY_INTERVAL_TIME = 1;
 }

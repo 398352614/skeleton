@@ -14,7 +14,7 @@ class Repush extends Command
      *
      * @var string
      */
-    protected $signature = 'repush:order {--order_no= : order_no}{--tour_no= : tour_no}';
+    protected $signature = 'repush {--order_no= : order_no}{--tour_no= : tour_no}';
 
     /**
      * The console command description.

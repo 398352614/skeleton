@@ -21,7 +21,6 @@ use App\Services\BaseConstService;
 use App\Services\FeeService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
-use App\Traits\ConstTranslateTrait;
 use App\Traits\TourRedisLockTrait;
 use App\Traits\TourTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -503,7 +502,7 @@ class TourService extends BaseService
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
         if ($batch['status'] !== BaseConstService::BATCH_DELIVERING) {
-            throw new BusinessLogicException('当前站点为[:status],无法进行此操作', 1000, ['status' => ConstTranslateTrait::$batchStatusList[$batch['status']]]);
+            throw new BusinessLogicException('状态不正确');
         }
         $line = $this->getLineService()->getInfo(['id' => $tour['line_id']], ['*'], false);
         if (empty($line)) {
