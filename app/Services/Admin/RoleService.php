@@ -45,15 +45,6 @@ class RoleService extends BaseService
     }
 
     /**
-     * 获取权限树
-     * @return array
-     */
-    public function getPermissionTree()
-    {
-        return TreeService::makeTree(self::getPermissionList());
-    }
-
-    /**
      * 获取角色权限树
      * @param $id
      * @return array
@@ -63,7 +54,9 @@ class RoleService extends BaseService
     {
         $rolePermissionList = $this->model::findById($id)->getAllPermissions();
         $permissionIdList = array_column($rolePermissionList->toArray(), 'id');
-        $permissionList = self::getPermissionList();
+        $permissionList = array_map(function ($permission) {
+            return Arr::only($permission, ['id', 'parent_id', 'name', 'route_as', 'type']);
+        }, self::getPermissionList());
         foreach ($permissionList as &$permission) {
             $permission['is_auth'] = (in_array($permission['id'], $permissionIdList)) ? 1 : 2;
         }

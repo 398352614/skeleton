@@ -468,8 +468,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //删除
         Route::delete('/{id}', 'RoleController@destroy')->name('role.destroy');
         /************************************权限************************************************/
-        //获取权限树
-        Route::get('/permission-tree', 'RoleController@getPermissionTree')->name('role.permission');
         //获取当前角色权限树
         Route::get('/{id}/permission-tree', 'RoleController@getRolePermissionTree')->name('role.permission');
         //给角色分配权限

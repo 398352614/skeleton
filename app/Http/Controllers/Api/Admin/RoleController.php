@@ -46,15 +46,6 @@ class RoleController extends BaseController
     }
 
     /**
-     * 获取权限树
-     * @return array
-     */
-    public function getPermissionTree()
-    {
-        return $this->service->getPermissionTree();
-    }
-
-    /**
      * 新增
      * @param $params
      * @throws BusinessLogicException
