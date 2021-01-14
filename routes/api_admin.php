@@ -30,8 +30,6 @@ Route::namespace('Api\Admin')->group(function () {
     Route::get('/tour/callback', 'TourController@callback');
     // 取消 redis 锁
     Route::get('/tour/unlock-redis', 'TourController@unlockRedis');
-    //获取当前用户权限
-    Route::get('/permission', 'AuthController@getPermission');
 });
 
 //认证
@@ -42,6 +40,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::post('logout', 'AuthController@logout');
     //修改密码
     Route::put('my-password', 'AuthController@updatePassword');
+    //获取当前用户权限
+    Route::get('/permission', 'AuthController@getPermission');
 
     //主页统计
     Route::prefix('statistics')->group(function () {
