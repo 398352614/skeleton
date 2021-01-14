@@ -155,21 +155,6 @@ class Role extends BaseModel implements RoleContract
     }
 
     /**
-     * @param int $id
-     * @param null $guardName
-     * @return \Spatie\Permission\Contracts\Role|\Spatie\Permission\Models\Role
-     * @throws BusinessLogicException
-     */
-    public static function findById(int $id, $guardName = null): RoleContract
-    {
-        $role = static::where('id', $id)->where('company_id', auth()->user()->company_id)->first();
-        if (empty($role)) {
-            throw new BusinessLogicException('角色不存在');
-        }
-        return $role;
-    }
-
-    /**
      * Find or create role by its name (and optionally guardName).
      *
      * @param string $name
@@ -186,6 +171,21 @@ class Role extends BaseModel implements RoleContract
             throw new BusinessLogicException('角色不存在');
         }
 
+        return $role;
+    }
+
+    /**
+     * @param int $id
+     * @param null $guardName
+     * @return \Spatie\Permission\Contracts\Role|\Spatie\Permission\Models\Role
+     * @throws BusinessLogicException
+     */
+    public static function findById(int $id, $guardName = null): RoleContract
+    {
+        $role = static::where('id', $id)->where('company_id', auth()->user()->company_id)->first();
+        if (empty($role)) {
+            throw new BusinessLogicException('角色不存在');
+        }
         return $role;
     }
 

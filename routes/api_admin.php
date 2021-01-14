@@ -30,10 +30,12 @@ Route::namespace('Api\Admin')->group(function () {
     Route::get('/tour/callback', 'TourController@callback');
     // 取消 redis 锁
     Route::get('/tour/unlock-redis', 'TourController@unlockRedis');
+    //获取当前用户权限
+    Route::get('/permission', 'AuthController@getPermission');
 });
 
 //认证
-Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'])->group(function () {
+Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin', /*'permission:admin'*/])->group(function () {
     //个人信息
     Route::get('me', 'AuthController@me');
     //登出
@@ -450,6 +452,37 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/password', 'EmployeeController@resetPassword')->name('employees.reset-password');
         //员工移动
         Route::put('/{id}/move-to/{parentId}', 'EmployeeController@move')->name('employees.move');
+    });
+
+    //角色管理/权限管理
+    Route::prefix('role')->group(function () {
+        /************************************角色************************************************/
+        //列表查询
+        Route::get('/', 'RoleController@index')->name('role.index');
+        //获取详情
+        Route::get('/{id}', 'RoleController@show')->name('role.show');
+        //新增
+        Route::post('/', 'RoleController@store')->name('role.store');
+        //修改
+        Route::put('/{id}', 'RoleController@update')->name('role.update');
+        //删除
+        Route::delete('/{id}', 'RoleController@destroy')->name('role.destroy');
+        /************************************权限************************************************/
+        //获取权限树
+        Route::get('/permission-tree', 'RoleController@getPermissionTree')->name('role.permission');
+        //获取当前角色权限树
+        Route::get('/{id}/permission-tree', 'RoleController@getRolePermissionTree')->name('role.permission');
+        //给角色分配权限
+        Route::put('/{id}/assign-permission', 'RoleController@assignPermission')->name('role.permission');
+        /************************************用户************************************************/
+        //获取员工列表
+        Route::get('/employee-list', 'RoleController@getEmployeeList')->name('role.employee-list');
+        //获取指定角色的员工列表
+        Route::get('/{id}/employee-list', 'RoleController@getRoleEmployeeList')->name('role.role-employee-list');
+        //员工分配角色
+        Route::put('/{id}/assign-employee-list', 'RoleController@assignEmployeeList')->name('role.assign-employee-list');
+        //员工移除角色
+        Route::delete('/{id}/remove-employee-list', 'RoleController@removeEmployeeList')->name('role.remove-employee-list');
     });
 
     //组织管理

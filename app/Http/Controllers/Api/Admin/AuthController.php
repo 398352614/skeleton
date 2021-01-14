@@ -9,9 +9,13 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Role;
+use App\Services\BaseConstService;
+use App\Services\TreeService;
 use App\Traits\CompanyTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -30,7 +34,7 @@ class AuthController extends Controller
             'password' => $request['password']
         ];
 
-        if (empty(Employee::query()->where($this->username(),$request['username'])->first())){
+        if (empty(Employee::query()->where($this->username(), $request['username'])->first())) {
             throw new BusinessLogicException('邮箱未注册，请先注册');
         }
 
@@ -57,6 +61,28 @@ class AuthController extends Controller
         //不可删除
         $companyConfig = $user->companyConfig;
         return response()->json($user);
+    }
+
+    /**
+     * 获取当前用户权限
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getPermission()
+    {
+        /**@var Role $role */
+        $role = auth('admin')->user()->roles->first();
+        if (empty($role)) return [];
+        $rolePermissionList = $role->getAllPermissions();
+        if ($rolePermissionList->isEmpty()) return [];
+        $rolePermissionList = $rolePermissionList->map(function ($permission, $key) {
+            return $permission->only(['id', 'parent_id', 'name', 'route_as', 'type']);
+        });
+        $rolePermissionList = array_create_group_index($rolePermissionList->toArray(), 'type');
+        return [
+            'permission_list' => $rolePermissionList[BaseConstService::PERMISSION_TYPE_2],
+            'menu_list' => TreeService::makeTree($rolePermissionList[BaseConstService::PERMISSION_TYPE_1])
+        ];
     }
 
     /**

@@ -27,7 +27,7 @@ class Permission extends BaseModel implements PermissionContract
      *
      * @var string
      */
-    protected $table = 'permissions_2';
+    protected $table = 'permissions';
 
     /**
      * The primary key for the model.
@@ -105,7 +105,7 @@ class Permission extends BaseModel implements PermissionContract
      */
     public static function create(array $attributes = [])
     {
-        $permission = static::getPermissions(['route' => $attributes['route']])->first();
+        $permission = static::getPermissions(['route_as' => $attributes['route_as']])->first();
         if (!empty($permission)) {
             throw new BusinessLogicException('路由已存在');
         }
@@ -152,7 +152,7 @@ class Permission extends BaseModel implements PermissionContract
      */
     public static function findByName(string $name, $guardName = null): PermissionContract
     {
-        $permission = static::getPermissions(['route' => $name])->first();
+        $permission = static::getPermissions(['route_as' => $name])->first();
         if (empty($permission)) {
             throw new BusinessLogicException('权限不存在');
         }

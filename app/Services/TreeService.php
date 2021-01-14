@@ -26,7 +26,7 @@ class TreeService
     public static function makeTree($data)
     {
         $dataset = self::buildData($data);
-        $r = self::makeTreeCore(0, $dataset);
+        $r = self::makeTreeCore(array_key_first($dataset), $dataset);
         return $r;
     }
 

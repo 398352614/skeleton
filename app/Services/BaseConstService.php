@@ -31,6 +31,10 @@ class BaseConstService
     const YES = 1;
     const NO = 2;
 
+    //权限类型1-菜单2-按钮
+    const PERMISSION_TYPE_1 = 1;
+    const PERMISSION_TYPE_2 = 2;
+
     //是否需要验证
     const IS_AUTH_1 = 1;
     const IS_AUTH_2 = 2;

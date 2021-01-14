@@ -125,4 +125,15 @@ class EmployeeService extends BaseService
             throw new BusinessLogicException('员工删除失败');
         }
     }
+
+    /**
+     * 获取超级管理员
+     * @return mixed|null
+     */
+    public function getAdminEmployeeId()
+    {
+        $companyId = auth()->user()->company_id;
+        $adminEmployee = $this->model->newQuery()->where('company_id', $companyId)->first();
+        return $adminEmployee->id ?? null;
+    }
 }

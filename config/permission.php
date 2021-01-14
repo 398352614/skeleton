@@ -13,7 +13,7 @@ return [
          * `Spatie\Permission\Contracts\Permission` contract.
          */
 
-        'permission' => Spatie\Permission\Models\Permission::class,
+        'permission' => \App\Models\Permission::class,
 
         /*
          * When using the "HasRoles" trait from this package, we need to know which
@@ -24,7 +24,7 @@ return [
          * `Spatie\Permission\Contracts\Role` contract.
          */
 
-        'role' => Spatie\Permission\Models\Role::class,
+        'role' => \App\Models\Role::class,
 
     ],
 
@@ -81,24 +81,16 @@ return [
          * that case, name this `model_uuid`.
          */
 
-        'model_morph_key' => 'model_id',
+        'model_morph_key' => 'employee_id',
     ],
 
     /*
-     * When set to true, the required permission names are added to the exception
+     * When set to true, the required permission/role names are added to the exception
      * message. This could be considered an information leak in some contexts, so
      * the default setting is false here for optimum safety.
      */
 
     'display_permission_in_exception' => false,
-
-    /*
-     * When set to true, the required role names are added to the exception
-     * message. This could be considered an information leak in some contexts, so
-     * the default setting is false here for optimum safety.
-     */
-
-    'display_role_in_exception' => false,
 
     /*
      * By default wildcard permission lookups are disabled.
@@ -113,13 +105,13 @@ return [
          * When permissions or roles are updated the cache is flushed automatically.
          */
 
-        'expiration_time' => \DateInterval::createFromDateString('24 hours'),
+        'expiration_time' => 3600*24*7,
 
         /*
          * The cache key used to store all permissions.
          */
 
-        'key' => 'spatie.permission.cache',
+        'key' => 'permission_cache',
 
         /*
          * When checking for a permission against a model by passing a Permission
@@ -130,7 +122,7 @@ return [
          * `$user->can('view-posts')` would be 'name'.
          */
 
-        'model_key' => 'name',
+        'model_key' => 'route_as',
 
         /*
          * You may optionally indicate a specific cache driver to use for permission and
