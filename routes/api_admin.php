@@ -328,9 +328,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //取消分配司机
         Route::put('/{id}/cancel-driver', 'TourController@cancelAssignDriver')->name('assign-driver|tour.cancel-driver');
         //分配车辆
-        Route::put('/{id}/assign-car', 'TourController@assignCar')->name('tour.assign-car');
+        Route::put('/{id}/assign-car', 'TourController@assignCar')->name('tour.assign-car|tour.cancel-car');
         //取消分配车辆
-        Route::put('/{id}/cancel-car', 'TourController@cancelAssignCar')->name('tour.cancel-car');
+        Route::put('/{id}/cancel-car', 'TourController@cancelAssignCar')->name('tour.assign-car|tour.cancel-car');
         //取消待出库
         Route::put('/{id}/unlock', 'TourController@unlock')->name('tour.unlock');
         //导出投递站点excel
