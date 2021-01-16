@@ -324,9 +324,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //线路任务详情
         Route::get('/{id}', 'TourController@show')->name('tour.show');
         //分配司机
-        Route::put('/{id}/assign-driver', 'TourController@assignDriver')->name('tour.assign-driver');
+        Route::put('/{id}/assign-driver', 'TourController@assignDriver')->name('assign-driver|tour.cancel-driver');
         //取消分配司机
-        Route::put('/{id}/cancel-driver', 'TourController@cancelAssignDriver')->name('tour.cancel-driver');
+        Route::put('/{id}/cancel-driver', 'TourController@cancelAssignDriver')->name('assign-driver|tour.cancel-driver');
         //分配车辆
         Route::put('/{id}/assign-car', 'TourController@assignCar')->name('tour.assign-car');
         //取消分配车辆
