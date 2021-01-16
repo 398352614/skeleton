@@ -26,7 +26,7 @@ class Permission
         if (in_array($prefix, ['api/admin/common', 'api/admin/upload'])) return $next($request);
 
         $routeAs = $request->route()->getName();
-        if (empty($routeAs) || $routeAs == 'common') return $next($request);
+        if (empty($routeAs) || $routeAs === 'common') return $next($request);
 
         $isAuth = auth()->user()->can($routeAs);
         if ($isAuth === false) {
