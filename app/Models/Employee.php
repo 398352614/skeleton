@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -11,6 +12,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class Employee extends Authenticatable implements JWTSubject
 {
+    use HasRoles;
     /**
      * The table associated with the model.
      *
@@ -89,6 +91,16 @@ class Employee extends Authenticatable implements JWTSubject
     protected $casts = [
         'forbid_login' => 'bool',
     ];
+
+    /**
+     * @param \Spatie\Permission\Contracts\Permission|\Spatie\Permission\Contracts\Role $roleOrPermission
+     *
+     * @throws \Spatie\Permission\Exceptions\GuardDoesNotMatch
+     */
+    protected function ensureModelSharesGuard($roleOrPermission)
+    {
+        //不判断守卫
+    }
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

@@ -38,6 +38,7 @@ use App\Models\OrderNoRule;
 use App\Models\OrderTrail;
 use App\Models\Package;
 use App\Models\PackageNoRule;
+use App\Models\Permission;
 use App\Models\Recharge;
 use App\Models\RouteTracking;
 use App\Models\SpecialTimeCharging;
@@ -85,6 +86,7 @@ class CompanyScope implements Scope
                 !($model instanceof Company)
                 && (!($model instanceof ApiTimes))
                 && !($model instanceof AddressTemplate)
+                && !($model instanceof Permission)
                 && (!in_array('company_id', $whereColumns))
             ) {
                 $builder->whereRaw($model->getTable() . '.company_id' . '=' . $user->company_id);
