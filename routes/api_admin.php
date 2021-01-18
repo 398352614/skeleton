@@ -33,7 +33,7 @@ Route::namespace('Api\Admin')->group(function () {
 });
 
 //认证
-Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin', /*'permission:admin'*/])->group(function () {
+Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin', 'permission:admin'])->group(function () {
     //个人信息
     Route::get('me', 'AuthController@me');
     //登出
