@@ -65,16 +65,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //订单管理
     Route::prefix('order-import')->group(function () {
-        //订单新增初始化
-        Route::get('/init', 'OrderController@initStore')->name('order-import.store');
-        //订单新增
-        Route::post('/', 'OrderController@store')->name('order-import.store');
-        //订单导入模板
-        Route::get('/template', 'OrderImportController@templateExport')->name('order-import.template');
-        //批量导入
-        Route::post('/import', 'OrderController@import')->name('order-import.template');
-        //批量新增
-        Route::post('/list', 'OrderController@storeByList')->name('order-import.list');
+
     });
 
     //订单管理
@@ -87,6 +78,16 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/', 'OrderController@index')->name('order.index');
         //获取详情
         Route::get('/{id}', 'OrderController@show')->name('order.show');
+        //订单新增初始化
+        Route::get('/init', 'OrderController@initStore')->name('order.store');
+        //订单新增
+        Route::post('/', 'OrderController@store')->name('order.store');
+        //模板导出
+        Route::get('/template', 'OrderImportController@templateExport')->name('order.template-export');
+        //批量导入
+        Route::post('/import', 'OrderController@import')->name('order.import-list');
+        //批量新增
+        Route::post('/list', 'OrderController@storeByList')->name('order.store-list');
         //获取订单的运单列表
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList')->name('order.tracking-order');
         //修改
