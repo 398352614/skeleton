@@ -476,11 +476,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取员工列表
         Route::get('/employee-list', 'RoleController@getEmployeeList')->name('role.employee-list');
         //获取指定角色的员工列表
-        Route::get('/{id}/employee-list', 'RoleController@getRoleEmployeeList')->name('role.role-employee-list');
+        Route::get('/{id}/employee-list', 'RoleController@getRoleEmployeeList')->name('role.employee-list');
         //员工分配角色
         Route::put('/{id}/assign-employee-list', 'RoleController@assignEmployeeList')->name('role.assign-employee-list');
         //员工移除角色
-        Route::delete('/{id}/remove-employee-list', 'RoleController@removeEmployeeList')->name('role.remove-employee-list');
+        Route::delete('/{id}/remove-employee-list', 'RoleController@removeEmployeeList')->name('role.role.employee-list');
     });
 
     //组织管理
