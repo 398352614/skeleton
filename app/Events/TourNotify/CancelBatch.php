@@ -13,6 +13,7 @@ use App\Events\Interfaces\ATourNotify;
 use App\Models\Order;
 use App\Models\Package;
 use App\Services\BaseConstService;
+use Illuminate\Support\Facades\Log;
 
 class CancelBatch extends ATourNotify
 {
@@ -46,7 +47,30 @@ class CancelBatch extends ATourNotify
         foreach ($batchList as $merchantId => $batch) {
             $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch]);
         }
+        Log::info('data_list_1',$tourList);
         return $tourList;
+    }
+
+    /**
+     * 详情模式
+     * @return array
+     */
+    public function getDataList2(): array
+    {
+        $dataList = $this->fillTrackingOrderList2();
+        Log::info('data_list_2', $dataList);
+        return $dataList;
+    }
+
+    /**
+     * 简略模式
+     * @return mixed
+     */
+    public function getDataList3()
+    {
+        $dataList = parent::simplify($this->fillTrackingOrderList2());
+        Log::info('data_list_3',$dataList);
+        return $dataList;
     }
 
     /**

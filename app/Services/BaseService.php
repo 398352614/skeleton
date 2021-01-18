@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\BaseModel;
+use App\Models\OrderNoRule;
 use App\Traits\FactoryInstanceTrait;
 use App\Traits\SearchTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -143,8 +144,11 @@ class BaseService
 
     protected function locked()
     {
-        //$this->query->sharedLock();
-        $this->query->lockForUpdate();
+        if ($this->model instanceof OrderNoRule) {
+            $this->query->lockForUpdate();
+        } else {
+            $this->query->sharedLock();
+        }
         return $this;
     }
 
@@ -155,6 +159,20 @@ class BaseService
     public function getPageList()
     {
         return $this->resource::collection($this->setFilter()->setOrderBy()->getPaginate());
+    }
+
+    /**
+     * 获取列表并锁定
+     * @param array $where
+     * @param array $selectFields
+     * @param bool $isResource
+     * @param array $groupFields
+     * @param array $orderFields
+     * @return array|Builder[]|Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getListLock($where = [], $selectFields = ['*'], $isResource = true, $groupFields = [], $orderFields = [])
+    {
+        return $this->locked()->getList($where, $selectFields, $isResource, $groupFields, $orderFields);
     }
 
 

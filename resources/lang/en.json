@@ -868,4 +868,8 @@
     "入库异常编号规则":"Numbering rules of warehousing exception",
     "审核成功":"Audit successful",
     "审核失败":"Audit failed"
+,"调整为取件成功":"Adjust to pick up success",
+"当前商户没有API对接权限":"The current merchant does not have API docking permission",
+"订单为[:order_no],运单为[:tracking_order_no]已取消或已删除,不能出库,请先剔除":"The order is [:order_No], the waybill is [:tracking_order_no] has been cancelled or deleted, can't issue, please delete first",
+"当前站点为[:status],无法进行此操作":"The current site is [:status], this operation cannot be performed"
 }

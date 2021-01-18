@@ -462,7 +462,14 @@ class BaseConstService
     const STOCK_EXCEPTION_VERIFY_1 = 1;
     const STOCK_EXCEPTION_VERIFY_2 = 2;
 
-    //推送模式1-简单模式2-详细模式
-    const SIMPLE_PUSH_MODE = 1;
+    //推送模式1-经典模式2-详细模式3-简略模式4-自定义模式
+    const OLD_PUSH_MODE = 1;
     const DETAIL_PUSH_MODE = 2;
+    const SIMPLE_PUSH_MODE = 3;
+    const CUSTOM_PUSH_MODE = 4;
+
+    //线路重试最大次数
+    const ROUTE_RETRY_MAX_TIMES = 3;
+    //线路重推间隔时间(分钟)
+    const ROUTE_RETRY_INTERVAL_TIME = 1;
 }

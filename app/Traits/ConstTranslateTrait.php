@@ -68,6 +68,7 @@ use Illuminate\Support\Facades\App;
  * @method static merchantAdditionalStatusList($args = null)
  * @method static tourDelayTypeList($args = null)
  * @method static trackStatusList($args = null)
+ * @method static pushModeList($args = null)
  * @method static stockExceptionStatusList($args = null)
  */
 trait ConstTranslateTrait
@@ -99,6 +100,14 @@ trait ConstTranslateTrait
     public static $printTemplateList = [
         BaseConstService::PRINT_TEMPLATE_STANDARD => '标准模板',
         BaseConstService::PRINT_TEMPLATE_GENERAL => '通用模板',
+    ];
+
+    //推送模式列表
+    public static $pushModeList = [
+        BaseConstService::OLD_PUSH_MODE => '经典模式',
+        BaseConstService::DETAIL_PUSH_MODE => '详情模式',
+        BaseConstService::SIMPLE_PUSH_MODE => '简略模式',
+        BaseConstService::CUSTOM_PUSH_MODE => '定制模式',
     ];
 
     //星期
@@ -435,7 +444,7 @@ trait ConstTranslateTrait
         BaseConstService::TRACK_STATUS_3 => '取件成功，派件中'
     ];
 
-    public static $stockExceptionStatusList =[
+    public static $stockExceptionStatusList = [
         BaseConstService::STOCK_EXCEPTION_STATUS_1 => '未审核',
         BaseConstService::STOCK_EXCEPTION_STATUS_2 => '审核成功',
         BaseConstService::STOCK_EXCEPTION_STATUS_3 => '审核失败'

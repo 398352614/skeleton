@@ -10,6 +10,7 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Exceptions\BusinessLogicException;
+use App\Jobs\OrderStore;
 use App\Services\BaseConstService;
 use App\Services\Merchant\OrderService;
 use Illuminate\Database\Eloquent\Builder;
@@ -333,6 +334,6 @@ class OrderController extends OrderBaseController
      */
     public function assignToBatch($id)
     {
-        return $this->service->assignToBatch($id,$this->data);
+        return $this->service->assignToBatch($id, $this->data);
     }
 }

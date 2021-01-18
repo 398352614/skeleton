@@ -50,11 +50,7 @@ trait TourTrait
         event(new BatchArrived($batch));
 
         //触发司机到达站点2
-        if($tour['company_id'] == config('tms.old_company_id')){
-            event(new \App\Events\TourNotify\ArrivedBatch($tour, $batch));
-        }else{
-            event(new \App\Events\TourNotify2\ArrivedBatch($tour, $batch));
-        }
+        event(new \App\Events\TourNotify\ArrivedBatch($tour, $batch));
     }
 
 
@@ -65,11 +61,7 @@ trait TourTrait
         TrackingOrderTrailService::storeAllByTrackingOrderList($trackingOrderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
         OrderTrailService::storeAllByOrderList($trackingOrderList, BaseConstService::ORDER_TRAIL_FAIL);
         //取消取派通知
-        if($tour['company_id'] == config('tms.old_company_id')){
             event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $trackingOrderList));
-        }else{
-            event(new \App\Events\TourNotify2\CancelBatch($tour, $batch, $trackingOrderList));
-        }
         //处理站点
         self::dealBatchEvent($tour, $batch);
     }
@@ -91,11 +83,7 @@ trait TourTrait
         }
         unset($groupOrderList);
         //签收通知
-        if($tour['company_id'] == config('tms.old_company_id')){
             event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $trackingOrderList));
-        }else{
-            event(new \App\Events\TourNotify2\AssignBatch($tour, $batch, $trackingOrderList));
-        }
         //处理站点
         self::dealBatchEvent($tour, $batch);
     }
@@ -106,11 +94,7 @@ trait TourTrait
         $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->get()->toArray();
         //触发返回仓库
         event(new BackWarehouse($tour));
-        if($tour['company_id'] == config('tms.old_company_id')){
             event(new \App\Events\TourNotify\BackWarehouse($tour, $batchList, $trackingOrderList));
-        }else{
-            event(new \App\Events\TourNotify2\BackWarehouse($tour, $batchList, $trackingOrderList));
-        }
     }
 
 

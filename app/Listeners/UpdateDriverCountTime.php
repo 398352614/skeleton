@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\AfterDriverLocationUpdated;
 use App\Events\TourNotify\NextBatch;
 use App\Exceptions\BusinessLogicException;
+use App\Models\RouteRetry;
 use App\Services\Admin\ApiTimesService;
 use App\Services\ApiServices\TourOptimizationService;
 use App\Traits\FactoryInstanceTrait;
@@ -13,7 +14,9 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class UpdateDriverCountTime implements ShouldQueue
 {
@@ -64,7 +67,8 @@ class UpdateDriverCountTime implements ShouldQueue
             $tour = $event->tour;
             $driverLocation = $event->location;
             $nextBatchNo = $event->nextBatchNo;
-            TourOptimizationService::getOpInstance($tour->company_id)->updateDriverLocation($tour, $driverLocation, $nextBatchNo, $event->queue);
+            $queue = $event->queue;
+            TourOptimizationService::getOpInstance($tour->company_id)->updateDriverLocation($tour, $driverLocation, $nextBatchNo, $queue);
             $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
             $service->timesCount('distance_times', $tour->company_id);
             //通知下一个站点事件
@@ -73,8 +77,30 @@ class UpdateDriverCountTime implements ShouldQueue
             }
             $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
             $service->timesCount('actual_distance_times', $tour->company_id);
+            //清空路线重试任务
+            $row = RouteRetry::query()->where('123', $tour['tour_no'])->delete();
+            if ($row == true) {
+                Log::info('线路重试任务已清空');
+            } else {
+                Log::info('线路重试任务清空失败');
+            }
             Log::info('司机位置和各站点预计耗时和里程更新成功');
         } catch (\Exception $ex) {
+            //计入路线重推
+            $row = RouteRetry::query()->create([
+                'company_id' => $tour->company_id,
+                'tour_no' => $tour->tour_no,
+                'retry_times' => 0,
+                'data' => json_encode([
+                    'tour' => $tour,
+                    'driver_location' => $driverLocation,
+                    'next_batch_no' => $nextBatchNo,
+                    'queue' => $queue
+                ])
+            ]);
+            if ($row == false) {
+                Log::info('计入路线重推失败');
+            }
             Log::channel('job-daily')->error('更新线路失败:' . $ex->getFile());
             Log::channel('job-daily')->error('更新线路失败:' . $ex->getLine());
             Log::channel('job-daily')->error('更新线路失败:' . $ex->getMessage());

@@ -19,7 +19,9 @@ use App\Traits\ExportTrait;
 use App\Traits\TourRedisLockTrait;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 class TourService extends BaseService
@@ -1023,7 +1025,7 @@ class TourService extends BaseService
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $materialList = $this->getTrackingOrderMaterialService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
         $packageList = $this->getTrackingOrderPackageService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->toArray();
-        $orderList=$this->getOrderService()->getList(['tracking_order_no'=>['in',collect($trackingOrderList)->pluck('tracking_order_no')->toArray()]],['*'],false)->toArray();
+        $orderList = $this->getOrderService()->getList(['tracking_order_no' => ['in', collect($trackingOrderList)->pluck('tracking_order_no')->toArray()]], ['*'], false)->toArray();
         if (empty($materialList) && empty($packageList)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -1080,5 +1082,48 @@ class TourService extends BaseService
         $dir = 'plan';
         $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
         return $this->excelExport($name, $headings, $data, $dir, $params);
+    }
+
+    /**
+     * 获取有序站点列表
+     * @param $tourNo
+     * @param bool $onlyId
+     * @return array
+     */
+    public function getBatchListSortBySortId($tourNo, $onlyId = false)
+    {
+        $batchList = $this->getBatchService()->getlist(['status' => ['in', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT]], 'tour_no' => $tourNo], ['id', 'sort_id'], false)->toArray();
+        $ingBatchList = $this->getBatchService()->getlist(['status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]], 'tour_no' => $tourNo], ['id', 'sort_id'], false)->toArray();
+        $batchList = array_merge($batchList, $ingBatchList);
+        if ($onlyId == true) {
+            $batchList = array_column($batchList, 'id');
+        }
+        return $batchList;
+    }
+
+    /**
+     * 路线导航
+     * @param $tourNo
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function routeNavigation($tourNo)
+    {
+        return $this->autoOpTour(['tour_no' => $tourNo]);
+    }
+
+    /**
+     * 线路刷新
+     * @param $tourNo
+     * @param array $batchIdList
+     * @throws BusinessLogicException
+     * @throws \Throwable
+     */
+    public function routeRefresh($tourNo, $batchIdList = [])
+    {
+        if (empty($batchList)) {
+            $batchIdList = $this->getBatchListSortBySortId($tourNo, true);
+        }
+        $this->updateBatchIndex(['tour_no' => $tourNo, 'batch_ids' => $batchIdList]);
     }
 }

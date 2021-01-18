@@ -2,22 +2,20 @@
 
 namespace App\Models;
 
-use App\Traits\ConstTranslateTrait;
-
 /**
- * 商户api表
- * Class Employee
+ * route_tracking 表对应的模型,线路追踪
+ * Class RouteTracking
  * @package App\Models
  */
-class MerchantApi extends Authenticatable
+class RouteRetry extends BaseModel
 {
     /**
-     * 司机实际取件导航
+     * 线路追踪
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'merchant_api';
+    protected $table = 'route_retry';
 
     /**
      * The primary key for the model.
@@ -47,16 +45,11 @@ class MerchantApi extends Authenticatable
      */
     protected $fillable = [
         'company_id',
-        'merchant_id',
-        'key',
-        'secret',
-        'push_mode',
-        'url',
-        'white_ip_list',
-        'status',
+        'tour_no',
+        'data',
+        'retry_times',
         'created_at',
         'updated_at',
-        'recharge_status'
     ];
 
     /**
@@ -64,9 +57,7 @@ class MerchantApi extends Authenticatable
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
+    protected $hidden = [];
 
     /**
      * The attributes that should be mutated to dates.
@@ -75,24 +66,4 @@ class MerchantApi extends Authenticatable
      */
     protected $dates = [];
 
-    protected $appends = [
-        'status_name'
-    ];
-
-
-    public function getStatusNameAttribute()
-    {
-        return empty($this->status) ? null : ConstTranslateTrait::statusList($this->status);
-    }
-
-
-    /**
-     * Get the password for the user.
-     *
-     * @return string
-     */
-    public function getAuthPassword()
-    {
-        return $this->secret;
-    }
 }

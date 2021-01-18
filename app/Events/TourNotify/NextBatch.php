@@ -12,6 +12,7 @@ use App\Events\Interfaces\ATourNotify;
 use App\Models\Batch;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
+use Illuminate\Support\Facades\Log;
 
 class NextBatch extends ATourNotify
 {
@@ -47,7 +48,33 @@ class NextBatch extends ATourNotify
         foreach ($batchList as $merchantId => $batch) {
             $tourList[$merchantId] = array_merge($this->tour, ['merchant_id' => $merchantId, 'batch' => $batch]);
         }
+        Log::info('data_list_1',$tourList);
         return $tourList;
+    }
+
+    public function getDataList2(): array
+    {
+        $dataList = $this->fillTrackingOrderList2();
+        //更新预计耗时
+        foreach ($dataList as $merchantId => $merchantTrackingOrderList) {
+            foreach ($merchantTrackingOrderList as $k => $v) {
+                if (!empty($v['expect_arrive_time'])) {
+                    $expectTime = strtotime($v['expect_arrive_time']) - time();
+                    $trackingOrderList[$merchantId][$k]['expect_time'] = $expectTime > 0 ? $expectTime : 0;
+                } else {
+                    $trackingOrderList[$merchantId][$k]['expect_time'] = 0;
+                }
+            }
+        }
+        Log::info('data_list_2', $dataList);
+        return $dataList;
+    }
+
+    public function getDataList3()
+    {
+        $dataList = parent::simplify($this->fillTrackingOrderList2());
+        Log::info('data_list_3', $dataList);
+        return $dataList;
     }
 
     /**

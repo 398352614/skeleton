@@ -52,10 +52,6 @@ class Repush extends Command
         $tour = Tour::query()->where('tour_no', $order['tour_no'])->first()->toArray();
         $batch = Batch::query()->where('batch_no', $order['batch_no'])->first()->toArray();
         //签收通知
-        if($tour['company_id'] == config('tms.old_company_id')){
             event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $orderList));
-        }else{
-            event(new \App\Events\TourNotify2\AssignBatch($tour, $batch, $orderList));
-        }
     }
 }
