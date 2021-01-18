@@ -144,7 +144,6 @@ abstract class ATourNotify
         $dbPackageList = array_create_index($dbPackageList, 'express_first_no');
         foreach ($packageList as &$package) {
             $package = array_merge($package, $dbPackageList[$package['express_first_no']]);
-            $package = array_only_fields_sort($package, ['express_first_no', 'out_order_no', 'tracking_package_type', 'tracking_package_status', 'package_status', 'package_type']);
         }
         $packageList = array_create_group_index($packageList, 'tracking_order_no');
         //获取材料
@@ -167,8 +166,8 @@ abstract class ATourNotify
             $trackingOrderList[$k] = array_merge($trackingOrderList[$k], Arr::only($this->tour, $tourFieldsInTrackingOrderList));
             $trackingOrderList[$k] = array_merge($trackingOrderList[$k], Arr::only($batchList[$v['batch_no']] ?? [], $batchFieldsInTrackingOrderList));
             $trackingOrderList[$k] = array_merge($trackingOrderList[$k], Arr::only($orderList[$v['tracking_order_no']] ?? [], $orderFieldsInTrackingOrderList));
-            $trackingOrderList[$k]['tracking_status'] = $v['status'] ?? 0;
-            $trackingOrderList[$k]['tracking_type'] = $v['type'] ?? 0;
+            $trackingOrderList[$k]['tracking_order_status'] = $v['status'] ?? 0;
+            $trackingOrderList[$k]['tracking_order_type'] = $v['type'] ?? 0;
 
             $trackingOrderList[$k]['package_list'] = $packageList[$v['tracking_order_no']] ?? [];
             $trackingOrderList[$k]['material_list'] = $materialList[$v['tracking_order_no']] ?? [];
