@@ -128,7 +128,7 @@ class RoleService extends BaseService
         $role = $this->model::findById($id);
         $modelHasRolesTable = config('permission.table_names.model_has_roles');
         $list = Employee::query()
-            ->join("$modelHasRolesTable as b", 'b.employee_id', '=', 'employee.employee.id')
+            ->join("$modelHasRolesTable as b", 'b.employee_id', '=', 'employee.id')
             ->where('b.role_id', $role->id)
             ->where('employee.company_id', auth()->user()->company_id)
             ->paginate();
