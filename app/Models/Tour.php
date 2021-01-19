@@ -170,7 +170,7 @@ class Tour extends BaseModel
                 $lat = $data['lat'];
             }
         } else {
-            $data = $this->batchs()->where('status', BaseConstService::BATCH_CHECKOUT)->orderByDesc('actual_arrived_time')->first();
+            $data = $this->batchs()->where('status', BaseConstService::BATCH_CHECKOUT)->orderByDesc('actual_arrive_time')->first();
             if (!empty($data)) {
                 $lon = $data['place_lon'];
                 $lat = $data['place_lat'];
