@@ -50,6 +50,7 @@ trait UpdateTourTimeAndDistanceTrait
             }
             unset($data['loc_res'][$tour->tour_no . $tour->tour_no]);
             $max_time = $max_distance = 0;
+            $logBatchList = [];
             foreach ($data['loc_res'] as $key => $res) {
                 $tourBatch = Batch::where('batch_no', str_replace($tour->tour_no, '', $key))->where('tour_no', $tour->tour_no)->first();
                 if (empty($tourBatch)) continue;
@@ -58,6 +59,12 @@ trait UpdateTourTimeAndDistanceTrait
                     $tourBatch->expect_arrive_time = date('Y-m-d H:i:s', time() + $res['time']);
                     $tourBatch->expect_distance = $res['distance'];
                     $tourBatch->expect_time = $res['time'];
+                    $logBatchList[] = [
+                        'batch_no' => $tourBatch->batch_no,
+                        'expect_arrive_time' => date('Y-m-d H:i:s', time() + $res['time']),
+                        'expect_distance' => $res['distance'],
+                        'expect_time' => $res['time']
+                    ];
                 }
                 //更新出库预计
                 if ($tour['actual_out_status'] == BaseConstService::YES && $tourBatch['status'] == BaseConstService::BATCH_DELIVERING) {
@@ -75,6 +82,8 @@ trait UpdateTourTimeAndDistanceTrait
                 $max_time = max($max_time, $res['time']);
                 $max_distance = max($max_distance, $res['distance']);
             }
+            Log::info($tour->tour_no . '-batch-log', $logBatchList);
+            unset($logBatchList);
             Log::info(((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
                 || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]));
             // 只有未更新过的线路需要更新期望时间和距离
