@@ -711,5 +711,17 @@ return [
 
         "stock_exception_verify" => "是否开启入库异常审核",
         "stock_exception_no" => "入库异常编号",
+
+
+        "push_mode" => "推送方式：",
+        "employee_id" => "用户ID",
+        "permission_id" => "权限ID",
+        "model_type" => "",
+        "role_id" => "角色ID",
+        "route" => "路由",
+        "route_as" => "路由别名",
+        "is_show" => "是否显示",
+        "retry_times" => "重试次数",
+        "operator_id" => "操作人ID",
     ]
 ];
