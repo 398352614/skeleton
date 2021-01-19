@@ -177,8 +177,8 @@ class Tour extends BaseModel
             }
         }
         return [
-            'latitude' => $lat ?? $this->warehoust_lat,
-            'longitude' => $lon ?? $this->warehoust_lon,
+            'latitude' => $lat ?? $this->warehouse_lat,
+            'longitude' => $lon ?? $this->warehouse_lon,
         ];
     }
 
