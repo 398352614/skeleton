@@ -163,18 +163,22 @@ class Tour extends BaseModel
      */
     public function getDriverLocationAttribute()
     {
-        /*        if (config('tms.app_env') !== 'local') {
-                    if ($this->routeTracking->count()) {
-                        $sorted = $this->routeTracking->sortByDesc('created_at')->first();
-                        return [
-                            'latitude' => $sorted->lat,
-                            'longitude' => $sorted->lon,
-                        ];
-                    }
-                }*/
+        if (config('tms.true_app_env') !== 'deploy' && $this->routeTracking->count()) {
+            $data = $this->routeTracking->sortByDesc('id')->first();
+            if (!empty($data)) {
+                $lon = $data['lon'];
+                $lat = $data['lat'];
+            }
+        } else {
+            $data = $this->batchs()->where('status', BaseConstService::BATCH_CHECKOUT)->orderByDesc('actual_arrived_time')->first();
+            if (!empty($data)) {
+                $lon = $data['place_lon'];
+                $lat = $data['place_lat'];
+            }
+        }
         return [
-            'latitude' => $this->warehouse_lat,
-            'longitude' => $this->warehouse_lon,
+            'latitude' => $lat ?? $this->warehoust_lat,
+            'longitude' => $lon ?? $this->warehoust_lon,
         ];
     }
 
