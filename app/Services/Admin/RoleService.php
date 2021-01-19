@@ -30,6 +30,8 @@ class RoleService extends BaseService
 {
     use PermissionTrait;
 
+    public $orderBy = ['id', 'asc'];
+
     public function __construct(Role $role)
     {
         parent::__construct($role, RoleResource::class);
