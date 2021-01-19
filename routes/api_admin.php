@@ -481,7 +481,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //员工分配角色
         Route::put('/{id}/assign-employee-list', 'RoleController@assignEmployeeList')->name('role.assign-employee-list');
         //员工移除角色
-        Route::delete('/{id}/remove-employee-list', 'RoleController@removeEmployeeList')->name('role.role.employee-list');
+        Route::delete('/{id}/remove-employee-list', 'RoleController@removeEmployeeList')->name('role.employee-list');
     });
 
     //组织管理
