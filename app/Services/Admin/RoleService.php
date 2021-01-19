@@ -150,7 +150,7 @@ class RoleService extends BaseService
 //        if (in_array($this->getEmployeeService()->getAdminEmployeeId(), $employeeIdList)) {
 //            throw new BusinessLogicException('存在超级管理员，不能操作');
 //        }
-        $employeeIdList = DB::table(config('permission.table_names.model_has_roles'))->whereIn('employee_id', $employeeIdList)->pluck('employee_id')->toArray();
+        $employeeIdList = DB::table(config('permission.table_names.model_has_roles'))->whereNotIn('employee_id', $employeeIdList)->pluck('employee_id')->toArray();
         if (empty($employeeIdList)) return;
 
         $employeeList = $this->getEmployeeService()->getList(['id' => ['in', $employeeIdList]], ['id'], false);
