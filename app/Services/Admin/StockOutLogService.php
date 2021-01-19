@@ -15,6 +15,7 @@ class StockOutLogService extends BaseService
 {
     public $filterRules = [
         'tracking_order_no,order_no,express_first_no' => ['like', 'keyword'],
+        'execution_date' => ['between', ['begin_date', 'end_date']],
     ];
 
     public function __construct(StockOutLog $stockOutLog)
