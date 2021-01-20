@@ -89,7 +89,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //批量新增
         Route::post('/list', 'OrderController@storeByList')->name('order.store-list');
         //获取订单的运单列表
-        Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList')->name('order.tracking-order');
+        Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList')->name('order.index');
         //修改
         Route::put('/{id}', 'OrderController@update')->name('order.update');
         //获取再次取派信息
