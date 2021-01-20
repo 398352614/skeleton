@@ -317,9 +317,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //线路任务管理
     Route::prefix('tour')->group(function () {
         //更改线路任务顺序 -- 手动优化
-        Route::post('/update-batch-index', 'TourController@updateBatchIndex')->name('tour.update-batch-index');
+        Route::post('/update-batch-index', 'TourController@updateBatchIndex')->name('tour.intelligent-scheduling');
         //自动优化线路
-        Route::post('/auto-op-tour', 'TourController@autoOpTour')->name('tour.auto-op-tour');
+        Route::post('/auto-op-tour', 'TourController@autoOpTour')->name('tour.intelligent-scheduling');
         //线路任务查询
         Route::get('/', 'TourController@index')->name('tour.index');
         //线路任务详情
