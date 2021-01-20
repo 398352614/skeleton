@@ -845,13 +845,13 @@ class TourService extends BaseService
             $lastDate = Carbon::create($params['year'], $params['month'])->endOfMonth()->format('Y-m-d');
         }
         $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false, [], ['execution_date' => 'asc']);
-        $erpMerchantId = config('tms.erp_merchant_id').','.config('tms.tcp_merchant_id');
+        $erpMerchantId = (string) config('tms.erp_merchant_id').','.config('tms.tcp_merchant_id');
         $mesMerchantId = config('tms.eushop_merchant_id');
-        $status = BaseConstService::BATCH_CHECKOUT.','.BaseConstService::BATCH_CANCEL;
+        $status = (string) BaseConstService::BATCH_CHECKOUT.','.BaseConstService::BATCH_CANCEL;
         $companyId = auth()->user()->company_id;
-        $erpBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id` IN ({$erpMerchantId}) AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN ({$status}) AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
+        $erpBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id` IN {$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN {$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
         $mesBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$mesMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN ({$status}) AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
-        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND (SELECT d.`id` FROM `tracking_order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN ({$status}) AND b.`company_id`={$companyId} GROUP BY b.tour_no";
+        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id` IN {$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND (SELECT d.`id` FROM `tracking_order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN {$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no";
         $erpBatchList = array_create_index(collect(DB::select($erpBatchCountSql))->map(function ($value) {
             return (array)$value;
         })->toArray(), 'tour_no');
