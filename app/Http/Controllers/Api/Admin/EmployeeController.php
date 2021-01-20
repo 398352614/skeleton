@@ -2,17 +2,23 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Services\Admin\EmployeeService;
+use App\Services\BaseService;
 use Illuminate\Support\Arr;
 
-class EmployeeController extends Controller
+/**
+ * Class EmployeeController
+ * @package App\Http\Controllers\Api\Admin
+ * @property EmployeeService $service
+ */
+class EmployeeController extends BaseController
 {
     public $service;
 
-    public function __construct(EmployeeService $service)
+    public function __construct(EmployeeService $service, $exceptMethods = [])
     {
-        $this->service = $service;
+        parent::__construct($service, $exceptMethods);
     }
 
     public function index()
@@ -26,25 +32,24 @@ class EmployeeController extends Controller
     }
 
     /**
-     * 更新
-     *
-     * @param  int  $id
-     * @throws \App\Exceptions\BusinessLogicException
-     */
-    public function update(int $id)
-    {
-
-        return $this->service->updateEmployee($id, \request()->all());
-    }
-
-    /**
      * 新建
      *
      * @throws \App\Exceptions\BusinessLogicException
      */
     public function store()
     {
-        return $this->service->createEmployee(\request()->all());
+        return $this->service->store($this->data);
+    }
+
+    /**
+     * 更新
+     * @param int $id
+     * @return bool|int|void
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function update($id)
+    {
+        return $this->service->updateById($id, $this->data);
     }
 
     /**
@@ -62,13 +67,13 @@ class EmployeeController extends Controller
     /**
      * 设置登录权限
      *
-     * @param  int  $id
-     * @param  int  $enabled
+     * @param int $id
+     * @param int $enabled
      * @return array
      */
     public function setLogin(int $id, int $enabled)
     {
-        if ($this->service->forbidLogin(Arr::wrap($id), (bool) $enabled)) {
+        if ($this->service->forbidLogin(Arr::wrap($id), (bool)$enabled)) {
             return success();
         }
 
@@ -76,7 +81,7 @@ class EmployeeController extends Controller
     }
 
     /**
-     * @param  int  $id
+     * @param int $id
      * @return array
      * @throws \App\Exceptions\BusinessLogicException
      */
@@ -86,13 +91,6 @@ class EmployeeController extends Controller
             return success();
         }
 
-        return failed();
-    }
-
-    public function move(int $id,int $institutionId){
-        if ($this->service->updateById($id,['institution_id'=>$institutionId])){
-            return success();
-        }
         return failed();
     }
 }

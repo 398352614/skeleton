@@ -451,8 +451,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/forbid-login/{enabled}', 'EmployeeController@setLogin')->name('employees.set-login');
         //修改员工密码
         Route::put('/{id}/password', 'EmployeeController@resetPassword')->name('employees.reset-password');
-        //员工移动
-        Route::put('/{id}/move-to/{parentId}', 'EmployeeController@move')->name('employees.move');
     });
 
     //角色管理/权限管理

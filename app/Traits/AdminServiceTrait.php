@@ -29,6 +29,7 @@ use App\Services\Admin\PackageService;
 use App\Services\Admin\PrintTemplateService;
 use App\Services\Admin\RechargeService;
 use App\Services\Admin\RechargeStatisticsService;
+use App\Services\Admin\RoleService;
 use App\Services\Admin\StockExceptionService;
 use App\Services\Admin\StockInLogService;
 use App\Services\Admin\StockOutLogService;
@@ -380,6 +381,15 @@ trait AdminServiceTrait
     public function getEmployeeService()
     {
         return self::getInstance(EmployeeService::class);
+    }
+
+    /**
+     * 权限组 服务
+     * @return RoleService
+     */
+    public function getRoleService()
+    {
+        return self::getInstance(RoleService::class);
     }
 
     /**

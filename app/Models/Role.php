@@ -98,11 +98,11 @@ class Role extends BaseModel implements RoleContract
      */
     public static function create(array $attributes = [])
     {
+        empty($attributes['company_id']) && $attributes['company_id'] = auth()->user()->company_id;
         $role = static::where('name', $attributes['name'])->where('company_id', $attributes['company_id'])->first();
         if (!empty($role)) {
-            throw new BusinessLogicException('角色已存在');
+            throw new BusinessLogicException('权限组已存在');
         }
-        $attributes['company_id'] = auth()->user()->company_id;
         return static::query()->create($attributes);
     }
 
@@ -148,7 +148,7 @@ class Role extends BaseModel implements RoleContract
     {
         $role = static::where('name', $name)->where('company_id', auth()->user()->company_id)->first();
         if (empty($role)) {
-            throw new BusinessLogicException('角色不存在');
+            throw new BusinessLogicException('权限组不存在');
         }
 
         return $role;
@@ -168,7 +168,7 @@ class Role extends BaseModel implements RoleContract
         $role = static::where('name', $name)->where('company_id', auth()->user()->company_id)->first();
 
         if (empty($role)) {
-            throw new BusinessLogicException('角色不存在');
+            throw new BusinessLogicException('权限组不存在');
         }
 
         return $role;
@@ -184,7 +184,7 @@ class Role extends BaseModel implements RoleContract
     {
         $role = static::where('id', $id)->where('company_id', auth()->user()->company_id)->first();
         if (empty($role)) {
-            throw new BusinessLogicException('角色不存在');
+            throw new BusinessLogicException('权限组不存在');
         }
         return $role;
     }

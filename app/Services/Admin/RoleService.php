@@ -30,7 +30,11 @@ class RoleService extends BaseService
 {
     use PermissionTrait;
 
-    public $orderBy = ['id'=>'asc'];
+    public $filterRules = [
+        'name' => ['like', 'keyword'],
+    ];
+
+    public $orderBy = ['id' => 'asc'];
 
     public function __construct(Role $role)
     {
@@ -73,9 +77,9 @@ class RoleService extends BaseService
      */
     public function assignPermission($id, $permissionIdList)
     {
-//        if ($id == $this->getAdminRoleId()) {
-//            throw new BusinessLogicException('管理员组权限不允许操作');
-//        }
+        if ($id == $this->getAdminRoleId()) {
+            throw new BusinessLogicException('管理员组权限不允许操作');
+        }
         //1.获取分配的权限列表
         $permissionIdList = explode_id_string($permissionIdList);
         $basePermissionList = self::getPermissionList();
@@ -93,9 +97,9 @@ class RoleService extends BaseService
      */
     public function destroy($id)
     {
-//        if ($id == $this->getAdminRoleId()) {
-//            throw new BusinessLogicException('管理员组权限不允许操作');
-//        }
+        if ($id == $this->getAdminRoleId()) {
+            throw new BusinessLogicException('管理员组权限不允许操作');
+        }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
@@ -128,12 +132,13 @@ class RoleService extends BaseService
     public function getRoleEmployeeList($id)
     {
         $role = $this->model::findById($id);
+        $this->per_page = $this->request->input('per_page', 10);
         $modelHasRolesTable = config('permission.table_names.model_has_roles');
         $list = Employee::query()
             ->join("$modelHasRolesTable as b", 'b.employee_id', '=', 'employee.id')
             ->where('b.role_id', $role->id)
             ->where('employee.company_id', auth()->user()->company_id)
-            ->paginate();
+            ->paginate($this->per_page);
         return RoleEmployeeListResource::collection($list);
     }
 
@@ -149,9 +154,9 @@ class RoleService extends BaseService
         //过滤员工ID
         $employeeIdList = explode(',', $employeeIdList);
         if (empty($employeeIdList)) return;
-//        if (in_array($this->getEmployeeService()->getAdminEmployeeId(), $employeeIdList)) {
-//            throw new BusinessLogicException('存在超级管理员，不能操作');
-//        }
+        if (in_array($this->getEmployeeService()->getAdminEmployeeId(), $employeeIdList)) {
+            throw new BusinessLogicException('存在超级管理员，不能操作');
+        }
         $roleEmployeeIdList = DB::table(config('permission.table_names.model_has_roles'))->whereIn('employee_id', $employeeIdList)->pluck('employee_id')->toArray();
         $employeeIdList = array_diff($employeeIdList, $roleEmployeeIdList);
         if (empty($employeeIdList)) return;
@@ -176,9 +181,9 @@ class RoleService extends BaseService
         $role = $this->model::findById($id);
         //过滤员工ID
         $employeeIdList = explode(',', $employeeIdList);
-//        if (in_array($this->getEmployeeService()->getAdminEmployeeId(), $employeeIdList)) {
-//            throw new BusinessLogicException('存在超级管理员，不能操作');
-//        }
+        if (in_array($this->getEmployeeService()->getAdminEmployeeId(), $employeeIdList)) {
+            throw new BusinessLogicException('存在超级管理员，不能操作');
+        }
         $employeeList = $this->getEmployeeService()->getList(['id' => ['in', $employeeIdList]], ['id'], false);
         //分配用户
         $employeeList->map(function ($employee, $key) use ($role) {
@@ -194,7 +199,7 @@ class RoleService extends BaseService
     public function getAdminRoleId()
     {
         $companyId = auth()->user()->company_id;
-        $adminRole = $this->model->newQuery()->where('company_id', $companyId)->first();
+        $adminRole = $this->model->newQuery()->where('company_id', $companyId)->where('is_admin', 1)->first();
         return $adminRole->id ?? null;
     }
 
