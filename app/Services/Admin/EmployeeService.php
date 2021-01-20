@@ -98,7 +98,6 @@ class EmployeeService extends BaseService
         if ($adminRoleId != $data['role_id']) {
             throw new BusinessLogicException('超级管理员只能在管理员组');
         }
-        if (($employee->is_admin == 1) && )
         $rowCount = $employee->update([
             'fullname' => $data['fullname'],
             'username' => $data['username'],
