@@ -19,6 +19,7 @@ use App\Services\TreeService;
 use App\Traits\PermissionTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 
 /**
@@ -112,13 +113,20 @@ class RoleService extends BaseService
      */
     public function getEmployeeList()
     {
+        $this->per_page = $this->request->input('per_page', 10);
+        $employeeName = $this->formData['name'] ?? '';
         $modelHasRolesTable = config('permission.table_names.model_has_roles');
         $roleList = parent::getList([], ['id'], false)->toArray();
         $employeeIdList = DB::table($modelHasRolesTable)
             ->whereIn('role_id', array_column($roleList, 'id'))
             ->pluck('employee_id')
             ->toArray();
-        $employeeList = Employee::query()->whereNotIn('id', $employeeIdList)->paginate();
+        $query = Employee::query();
+        if (!empty($employeeName)) {
+            $employeeName = str_replace('_', '\_', str_replace('%', '\%', $employeeName));
+            $query->where('name', 'like', "%{$employeeName}%");
+        }
+        $employeeList = $query->whereNotIn('id', $employeeIdList)->paginate($this->per_page);
         return RoleEmployeeListResource::collection($employeeList);
     }
 
