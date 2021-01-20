@@ -564,7 +564,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取详情
         Route::get('/{id}', 'MerchantController@show')->name('merchant.show');
         //初始化
-        Route::get('/init', 'MerchantController@init')->name('merchant.store|merchant.update');
+        Route::get('/init', 'MerchantController@init')->name('merchant.index');
         //新增
         Route::post('/', 'MerchantController@store')->name('merchant.store');
         //修改
