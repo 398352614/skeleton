@@ -851,10 +851,11 @@ class TourService extends BaseService
         $companyId = auth()->user()->company_id;
         $erpBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id` IN ({$erpMerchantId}) AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN ({$status}) AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
         $mesBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$mesMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN ({$status}) AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
-        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id` IN ({$erpMerchantId}) AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND (SELECT d.`id` FROM `tracking_order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN {$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no";
+        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id` IN ({$erpMerchantId}) AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND (SELECT d.`id` FROM `tracking_order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN ({$status}) AND b.`company_id`={$companyId} GROUP BY b.tour_no";
         $erpBatchList = array_create_index(collect(DB::select($erpBatchCountSql))->map(function ($value) {
             return (array)$value;
         })->toArray(), 'tour_no');
+        dd($erpBatchList);
         $mesBatchList = array_create_index(collect(DB::select($mesBatchCountSql))->map(function ($value) {
             return (array)$value;
         })->toArray(), 'tour_no');
