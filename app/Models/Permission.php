@@ -154,7 +154,7 @@ class Permission extends BaseModel implements PermissionContract
     {
         $permission = static::getPermissions(['route_as' => $name])->first();
         if (empty($permission)) {
-            throw new BusinessLogicException('权限不存在');
+            throw new BusinessLogicException('当前权限不存在');
         }
 
         return $permission;
@@ -177,7 +177,7 @@ class Permission extends BaseModel implements PermissionContract
         $permission = static::getPermissions(['id' => $id])->first();
 
         if (empty($permission)) {
-            throw new BusinessLogicException('权限不存在');
+            throw new BusinessLogicException('当前权限不存在');
         }
 
         return $permission;
