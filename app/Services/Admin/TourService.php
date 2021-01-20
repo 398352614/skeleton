@@ -855,7 +855,6 @@ class TourService extends BaseService
         $erpBatchList = array_create_index(collect(DB::select($erpBatchCountSql))->map(function ($value) {
             return (array)$value;
         })->toArray(), 'tour_no');
-        dd($erpBatchList);
         $mesBatchList = array_create_index(collect(DB::select($mesBatchCountSql))->map(function ($value) {
             return (array)$value;
         })->toArray(), 'tour_no');
