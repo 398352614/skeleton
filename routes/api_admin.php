@@ -250,9 +250,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //车辆删除
         Route::delete('/{id}', 'CarController@destroy')->name('car.destroy');
         //todo 车辆追踪
-        Route::get('/track', 'RouteTrackingController@show')->name('car.track-show');
+        Route::get('/track', 'RouteTrackingController@show')->name('car.index');
         //todo 所有车辆追踪
-        Route::get('/all-track', 'RouteTrackingController@index')->name('car.track-index');
+        Route::get('/all-track', 'RouteTrackingController@index')->name('car.index');
         // 导出里程
         Route::get('/{id}/distance', 'CarController@distanceExport')->name('car.export-distance');
         // 导出信息
