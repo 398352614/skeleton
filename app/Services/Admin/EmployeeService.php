@@ -38,7 +38,8 @@ class EmployeeService extends BaseService
     public function show($id)
     {
         $employee = parent::getInfo(['id' => $id], ['*'], true);
-        $role = $this->getEmployeeRole($employee->id);
+        if ($employee->isEmpty()) return [];
+        $role = $this->getEmployeeRole($employee['id']);
         $employee['role_id'] = $role['id'] ?? null;
         $employee['role_id_name'] = $role['name'] ?? '';
         return $employee;
