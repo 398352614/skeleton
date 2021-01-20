@@ -8,12 +8,14 @@
 
 namespace App\Services;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\OrderTrailResource;
 use App\Jobs\AddData;
 use App\Models\Order;
 use App\Models\OrderTrail;
 use App\Models\TrackingOrder;
 use Illuminate\Support\Facades\Log;
+use \App\Services\Admin\BaseService;
 
 class OrderTrailService extends BaseService
 {
@@ -32,10 +34,18 @@ class OrderTrailService extends BaseService
      * 轨迹查询
      * @param $orderNo
      * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws BusinessLogicException
      */
     public function index($orderNo)
     {
-        return parent::getList(['order_no' => $orderNo], ['*'], false);
+        $order = $this->getOrderService()->getInfo(['order_no'=> $orderNo],['*'],false);
+        if (empty($order)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $order['order_trail_list'] = parent::getList(['order_no' => $orderNo], ['*'], false);
+        $order['package_list'] = $this->getPackageService()->getList(['order_no' => $orderNo], ['*'], false);
+        $order['material_list'] = $this->getMaterialService()->getList(['order_no' => $orderNo], ['*'], false);
+        return $order;
     }
 
     /**
