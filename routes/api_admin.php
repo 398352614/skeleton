@@ -132,7 +132,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取详情
         Route::get('/{id}', 'PackageController@show')->name('package.show');
         //填充包裹信息
-        Route::put('fill-package', 'PackageController@fillWeightInfo')->name('package.fill-package');
+        Route::put('fill-package', 'PackageController@fillWeightInfo');
     });
 
     //库存管理
