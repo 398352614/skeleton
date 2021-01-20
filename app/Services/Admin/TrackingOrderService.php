@@ -44,6 +44,9 @@ class TrackingOrderService extends BaseService
         'merchant_id' => ['=', 'merchant_id'],
         'tour_no' => ['like', 'tour_no'],
         'batch_no' => ['like', 'batch_no'],
+        'out_user_id' => ['like', 'out_user_id'],
+        'tracking_order_no' => ['like', 'tracking_order_no'],
+        'out_order_no' => ['like', 'out_order_no'],
     ];
 
     protected $tOrderAndOrderSameFields = [

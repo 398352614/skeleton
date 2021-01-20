@@ -16,6 +16,10 @@ class StockInLogService extends BaseService
     public $filterRules = [
         'tracking_order_no,order_no,express_first_no' => ['like', 'keyword'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
+        'express_first_no' => ['like', 'express_first_no'],
+        'order_no' => ['like', 'order_no'],
+        'line_id' => ['=', 'line_id'],
+        'line_name' => ['like', 'line_name'],
     ];
 
     public function __construct(StockInLog $stockInLog)

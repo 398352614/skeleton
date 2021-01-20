@@ -44,6 +44,12 @@ class OrderService extends BaseService
 //        'exception_label' => ['=', 'exception_label'],
         'merchant_id' => ['=', 'merchant_id'],
         'source' => ['=', 'source'],
+        'tour_no' => ['like', 'tour_no'],
+        'out_user_id' => ['like', 'out_user_id'],
+        'tracking_order_no' => ['like', 'tracking_order_no'],
+        'out_order_no' => ['like', 'out_order_no'],
+        'out_group_order_no' => ['like', 'out_group_order_no']
+
     ];
 
     public $headings = [
@@ -707,7 +713,7 @@ class OrderService extends BaseService
                 $data['package_list'] = Arr::only($data['package_list'], array_keys($dbPackageList));
                 foreach ($data['package_list'] as $k => $v) {
                     foreach ($v as $x => $y) {
-                        $package=collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->first();
+                        $package = collect($dbPackageList)->where('express_first_no', $v['express_first_no'])->first();
                         if (empty($package) || $y != $package[$x]) {
                             return false;
                         }
@@ -722,7 +728,7 @@ class OrderService extends BaseService
                 $data['material_list'] = Arr::only($data['material_list'], array_keys($dbMaterialList));
                 foreach ($data['material_list'] as $k => $v) {
                     foreach ($v as $x => $y) {
-                        $material=collect($dbMaterialList)->where('code', $v['code'])->first();
+                        $material = collect($dbMaterialList)->where('code', $v['code'])->first();
                         if (empty($material) || $y != $material[$x]) {
                             return false;
                         }

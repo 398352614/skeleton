@@ -47,5 +47,6 @@ return [
     'eushop_merchant_id' => env('EUSHOP_MERCHANT_ID'),
     'old_company_id' => env('OLD_COMPANY_ID'),
     'admin_email' => env('ADMIN_EMAIL'),
-    'true_app_env' => env('TRUE_APP_ENV')
+    'true_app_env' => env('TRUE_APP_ENV'),
+    'tcp_merchant_id'=>env('TCP_MERCHANT_ID'),
 ];

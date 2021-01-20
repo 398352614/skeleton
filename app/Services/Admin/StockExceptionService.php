@@ -20,7 +20,9 @@ class StockExceptionService extends BaseService
     public $filterRules = [
         'status' => ['=', 'status'],
         'order_no,stock_exception_no,express_first_no,tracking_order_no' => ['like', 'keyword'],
-        'created_at' => ['between', ['begin_date', 'end_date']]
+        'created_at' => ['between', ['begin_date', 'end_date']],
+        'order_no'=>['like','order_no'],
+        'express_first_no'=>['like','express_first_no']
     ];
 
     public function __construct(StockException $batchException)
