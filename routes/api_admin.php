@@ -339,7 +339,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //导出任务报告
         Route::get('/{id}/tour-excel', 'TourController@tourExport')->name('tour.tour-excel');
         //导出计划
-        Route::get('/{id}/plan-excel', 'TourController@planExport')->name('tour.plan-excel');
+        Route::get('/{id}/plan-excel', 'TourController@planExport')->name('tour.intelligent-scheduling');
         //获取可分配日期
         Route::get('/{id}/get-date', 'TourController@getLineDate')->name('tour.assign');
         //获取可加入的取件线路列表
