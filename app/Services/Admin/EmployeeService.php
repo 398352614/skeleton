@@ -53,7 +53,7 @@ class EmployeeService extends BaseService
     {
         $roleEmployee = DB::table(config('permission.table_names.model_has_roles'))->where('employee_id', $employeeId)->first();
         if (empty($roleEmployee)) return [];
-        return $this->getRoleService()->getInfo(['id' => $roleEmployee->id], ['*'], false);
+        return $this->getRoleService()->getInfo(['id' => $roleEmployee->role_id], ['*'], false);
     }
 
     /**
