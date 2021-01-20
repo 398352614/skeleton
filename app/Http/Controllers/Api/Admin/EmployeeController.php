@@ -28,7 +28,7 @@ class EmployeeController extends BaseController
 
     public function show($id)
     {
-        return $this->service->getInfo(['id' => $id], ['*'], true);
+        return $this->service->show($id);
     }
 
     /**
