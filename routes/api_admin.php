@@ -370,7 +370,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //线路管理
     Route::prefix('line')->group(function () {
         //通过日期，获取线路列表
-        Route::get('/by-date', 'LineController@getListByDate')->name('line.post-code-index|line.area-index');
+        Route::get('/by-date', 'LineController@getListByDate');
         /****************************************邮编线路**************************************/
         //列表查询
         Route::get('/', 'LineController@postcodeIndex')->name('line.post-code-index');
