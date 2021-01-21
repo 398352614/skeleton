@@ -25,6 +25,14 @@ class EmployeeService extends BaseService
 
     public function getPageList()
     {
+        $this->per_page = $this->request->input('per_page', 10);
+        $employeeIdList = [];
+        if (!empty($this->formData['role_id'])) {
+            $modelHasRolesTable = config('permission.table_names.model_has_roles');
+            $eRoleList = DB::table($modelHasRolesTable)->where('role_id', $this->formData['role_id'])->paginate($this->per_page);
+            $employeeIdList = $eRoleList->pluck('employee_id')->toArray();
+        }
+        if (!empty($employeeIdList)) $this->filters['id'] = ['in', $employeeIdList];
         $list = parent::getPageList();
         if (empty($list)) return $list;
         foreach ($list as &$employee) {
