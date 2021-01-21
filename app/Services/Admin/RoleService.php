@@ -141,12 +141,17 @@ class RoleService extends BaseService
     {
         $role = $this->model::findById($id);
         $this->per_page = $this->request->input('per_page', 10);
+        $employeeName = $this->formData['fullname'] ?? '';
         $modelHasRolesTable = config('permission.table_names.model_has_roles');
-        $list = Employee::query()
+        $query = Employee::query()
             ->join("$modelHasRolesTable as b", 'b.employee_id', '=', 'employee.id')
             ->where('b.role_id', $role->id)
-            ->where('employee.company_id', auth()->user()->company_id)
-            ->paginate($this->per_page);
+            ->where('employee.company_id', auth()->user()->company_id);
+        if (!empty($employeeName)) {
+            $employeeName = str_replace('_', '\_', str_replace('%', '\%', $employeeName));
+            $query->where('employee.fullname', 'like', "%{$employeeName}%");
+        }
+        $list = $query->paginate($this->per_page);
         return RoleEmployeeListResource::collection($list);
     }
 
