@@ -43,4 +43,17 @@ class LineService extends BaseLineService
         $dateList = parent::getScheduleListByLineRangeList(['type' => $type], $lineRangeList, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
         return $dateList;
     }
+
+    public function getAllLineRange()
+    {
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_AREA) {
+            return '';
+        }
+        $allLineRange = $this->getLineRangeService()->getList(['company_id' => auth()->user()->company_id], ['*'], false);
+        foreach ($allLineRange as $k=>$v)
+        {
+            $allLineRange[$k]=array_only_fields_sort($v,['id', 'post_code_start', 'post_code_end', 'schedule']);
+        }
+        return $allLineRange;
+    }
 }
