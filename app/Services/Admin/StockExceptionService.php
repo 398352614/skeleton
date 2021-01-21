@@ -70,7 +70,7 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('异常已处理');
         }
         if (intval($stockException['status']) == BaseConstService::STOCK_EXCEPTION_STATUS_3) {
-            throw new BusinessLogicException('异常已拒绝');
+            throw new BusinessLogicException('异常已处理');
         }
         if (empty($params['status'])) {
             $params['status'] = BaseConstService::STOCK_EXCEPTION_STATUS_2;
