@@ -422,7 +422,7 @@ class TourService extends BaseService
         }
         $disableOutTrackingOrder = $this->getTrackingOrderService()->getInfo($disableWhere, ['id', 'order_no', 'tracking_order_no'], false);
         if (!empty($disableOutTrackingOrder)) {
-            throw new BusinessLogicException('运单[:tracking_order_no]不可出库', 1000, ['tracking_order_no' => $disableOutTrackingOrder->tracking_order_no]);
+            throw new BusinessLogicException('订单为[:order_no],运单为[:tracking_order_no]不可出库', 1000, ['order_no' => $disableOutTrackingOrder->order_no, 'tracking_order_no' => $disableOutTrackingOrder->tracking_order_no]);
         }
         return $tour;
     }

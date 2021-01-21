@@ -788,6 +788,7 @@
     "当前包裹不能生成对应派件运单或已生成派件运单": "The current package cannot generate corresponding dispatch waybill or generated dispatch waybill",
     "当前包裹已入库": "The current package has been put into storage",
     "运单[:tracking_order_no]不可出库": "Waybill [:tracking_order_no] cannot be shipped out",
+    "订单为[:order_no],运单为[:tracking_order_no]不可出库": "Order No is [:order_no],Waybill is [:tracking_order_no] cannot be shipped out",
     "运单信息": "Waybill Information",
     "地址不正确，请重新选择地址": "The address is incorrect. Please reselect the address",
     "派件地址不正确，请重新选择地址": "The delivery address is incorrect, please reselect the address",
