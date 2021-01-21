@@ -42,7 +42,7 @@ class MerchantApiService extends BaseService
                 ->get();
         }
         //新搜索
-        if (!empty($this->formData['code'] || !empty($this->formData['name']))) {
+        if (!empty($this->formData['code']) || !empty($this->formData['name'])) {
             if (!empty($this->formData['code'])) {
                 $where['code'] = $this->formData['code'];
             }
