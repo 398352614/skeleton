@@ -181,7 +181,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取详情
         Route::get('/{id}', 'TrackingOrderController@show')->name('tracking-order.show');
         //获取可分配路线日期
-        Route::get('/{id}/get-date', 'TrackingOrderController@getAbleDateList')->where('id', '[-]?[0-9]+')->name('tracking-order.assign-batch');
+        Route::get('/{id}/get-date', 'TrackingOrderController@getAbleDateList')->where('id', '[-]?[0-9]+');
         //获取可分配的站点列表
         Route::get('/{id}/get-batch', 'TrackingOrderController@getAbleBatchList')->name('tracking-order.assign-batch');
         //分配至站点
