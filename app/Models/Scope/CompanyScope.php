@@ -88,7 +88,6 @@ class CompanyScope implements Scope
                 && (!($model instanceof ApiTimes))
                 && !($model instanceof AddressTemplate)
                 && !($model instanceof Permission)
-                && !($model instanceof Role)
                 && (!in_array('company_id', $whereColumns))
             ) {
                 $builder->whereRaw($model->getTable() . '.company_id' . '=' . $user->company_id);
