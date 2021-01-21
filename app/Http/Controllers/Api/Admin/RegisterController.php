@@ -147,7 +147,8 @@ class RegisterController extends BaseController
             'password' => bcrypt($data['password']),
             'fullname' => $data['email'],
             'company_id' => $company->id,
-            'username' => $data['email']
+            'username' => $data['email'],
+            'is_admin' => 1
         ]);
     }
 
