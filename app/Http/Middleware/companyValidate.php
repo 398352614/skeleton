@@ -70,6 +70,8 @@ class companyValidate extends Middleware
         'CountryController@store',
         'CountryController@destroy',
         'CommonController@getCountryList',
+        'AuthController@getPermission',
+        'CommonController@dictionary'
     ];
 
     protected $merchantExcept = [
