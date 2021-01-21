@@ -122,7 +122,7 @@ class Permission extends BaseModel implements PermissionContract
             config('permission.table_names.role_has_permissions'),
             'permission_id',
             'role_id'
-        );
+        )->where('company_id', '<>', null);
     }
 
     /**
@@ -136,7 +136,7 @@ class Permission extends BaseModel implements PermissionContract
             config('permission.table_names.model_has_permissions'),
             'permission_id',
             config('permission.column_names.model_morph_key')
-        );
+        )->where('company_id', '<>', null);
     }
 
     /**

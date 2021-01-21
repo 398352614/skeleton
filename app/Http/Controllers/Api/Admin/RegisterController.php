@@ -159,10 +159,11 @@ class RegisterController extends BaseController
      */
     protected function addRole($company)
     {
+        /**@var Role $role * */
         $role = Role::create([
             'company_id' => $company->id,
             'name' => '管理员组',
-            'is_admin' => 1
+            'is_admin' => 1,
         ]);
         if ($role === false) {
             throw new BusinessLogicException('初始化权限组失败');
