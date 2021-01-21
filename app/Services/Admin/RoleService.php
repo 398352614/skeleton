@@ -124,7 +124,7 @@ class RoleService extends BaseService
         $query = Employee::query();
         if (!empty($employeeName)) {
             $employeeName = str_replace('_', '\_', str_replace('%', '\%', $employeeName));
-            $query->where('name', 'like', "%{$employeeName}%");
+            $query->where('fullname', 'like', "%{$employeeName}%");
         }
         $employeeList = $query->whereNotIn('id', $employeeIdList)->paginate($this->per_page);
         return RoleEmployeeListResource::collection($employeeList);
