@@ -56,6 +56,7 @@ class Role extends BaseModel implements RoleContract
     protected $fillable = [
         'company_id',
         'name',
+        'is_admin',
         'created_at',
         'updated_at',
     ];
