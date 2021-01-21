@@ -114,7 +114,7 @@ class RoleService extends BaseService
     public function getEmployeeList()
     {
         $this->per_page = $this->request->input('per_page', 10);
-        $employeeName = $this->formData['name'] ?? '';
+        $employeeName = $this->formData['fullname'] ?? '';
         $modelHasRolesTable = config('permission.table_names.model_has_roles');
         $roleList = parent::getList([], ['id'], false)->toArray();
         $employeeIdList = DB::table($modelHasRolesTable)
