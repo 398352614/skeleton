@@ -381,11 +381,9 @@ class TourService extends BaseService
         //存在出库订单,则验证
         if (!empty($params['out_tracking_order_id_list'])) {
             //验证订单是否都可出库
-            $outTrackingOrderIdList = array_filter(explode(',', $params['out_tracking_order_id_list']), function ($value) {
-                return is_numeric($value);
-            });
+            $outTrackingOrderIdList = explode_id_string($params['out_tracking_order_id_list']);
             $noOutTrackingOrderList = $this->getTrackingOrderService()->getList(['id' => ['in', $outTrackingOrderIdList], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_3]], ['order_no', 'tracking_order_no'], false);
-            if (!empty($noOutTrackingOrderList)) {
+            if ($noOutTrackingOrderList->isNotEmpty()) {
                 Log::info('no_out_tracking_order_list', $noOutTrackingOrderList);
                 throw new BusinessLogicException('订单已取消或已删除,不能出库,请先剔除', 5006, [], $noOutTrackingOrderList);
             }
