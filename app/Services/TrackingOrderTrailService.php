@@ -9,7 +9,7 @@ use App\Models\TrackingOrderTrail;
 use App\Jobs\AddData;
 use Illuminate\Support\Facades\Log;
 
-class TrackingOrderTrailService extends BaseService
+class TrackingOrderTrailService extends \App\Services\Admin\BaseService
 {
 
     public static $selectFields = ['company_id', 'merchant_id', 'order_no', 'tracking_order_no'];
@@ -129,7 +129,14 @@ class TrackingOrderTrailService extends BaseService
      */
     public function index($trackingOrderNo)
     {
-        return parent::getList(['tracking_order_no' => $trackingOrderNo], ['*'], false);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no'=> $trackingOrderNo],['*'],false);
+        if (empty($trackingOrder)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $trackingOrder['tracking_order_trail_list'] = parent::getList(['tracking_order_no' => $trackingOrderNo], ['*'], false);
+        $trackingOrder['package_list'] = $this->getPackageService()->getList(['tracking_order_no' => $trackingOrderNo], ['*'], false);
+        $trackingOrder['material_list'] = $this->getMaterialService()->getList(['tracking_order_no' => $trackingOrderNo], ['*'], false);
+        return $trackingOrder;
     }
 
     public function create($data)
