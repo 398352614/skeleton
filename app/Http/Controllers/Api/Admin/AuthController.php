@@ -47,7 +47,6 @@ class AuthController extends Controller
 
             throw new BusinessLogicException('暂时无法登录，请联系管理员！');
         }
-
         return $this->respondWithToken($token);
     }
 
@@ -109,12 +108,22 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        /**@var Role $role */
+        $role = auth('admin')->user()->roles->first();
+        if (empty($role)) {
+            $permissionAuth = 2;
+        } else {
+            $rolePermissionList = $role->getAllPermissions();
+            $permissionAuth = $rolePermissionList->isEmpty() ? 2 : 1;
+            unset($rolePermissionList);
+        }
         return [
             'username' => auth('admin')->user()->fullname,
             'company_id' => auth('admin')->user()->company_id,
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('admin')->factory()->getTTL() * 60,
+            'is_permission' => $permissionAuth,
             'company_config' => CompanyTrait::getCompany(auth('admin')->user()->company_id)
         ];
     }
