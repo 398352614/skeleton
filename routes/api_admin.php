@@ -218,7 +218,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //司机列表
         Route::get('/', 'DriverController@index')->name('driver.index');
         //司机详情
-        Route::get('/{id}', 'DriverController@show')->name('driver.show');
+        Route::get('/{id}', 'DriverController@show')->name('driver.index');
         //司机修改
         Route::put('/{id}', 'DriverController@update')->name('driver.update');
         //删除司机
@@ -244,7 +244,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //车辆新增
         Route::post('/', 'CarController@store')->name('car.store');
         //车辆详情
-        Route::get('/{id}', 'CarController@show')->name('car.show');
+        Route::get('/{id}', 'CarController@show')->name('car.index');
         //车辆修改
         Route::put('/{id}', 'CarController@update')->name('car.update');
         //车辆删除
@@ -375,7 +375,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'LineController@postcodeIndex')->name('line.post-code-index');
         //获取详情
-        Route::get('/{id}', 'LineController@postcodeShow')->name('line.post-code-show');
+        Route::get('/{id}', 'LineController@postcodeShow')->name('line.post-code-index');
         //新增
         Route::post('/', 'LineController@postcodeStore')->name('line.post-code-store');
         //修改
@@ -410,7 +410,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'WareHouseController@index')->name('warehouse.index');
         //获取详情
-        Route::get('/{id}', 'WareHouseController@show')->name('warehouse.show');
+        Route::get('/{id}', 'WareHouseController@show')->name('warehouse.index');
         //新增
         Route::post('/', 'WareHouseController@store')->name('warehouse.store');
         //修改
@@ -440,7 +440,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //员工列表
         Route::get('/', 'EmployeeController@index')->name('employees.index');
         //员工详情
-        Route::get('/{id}', 'EmployeeController@show')->name('employees.show');
+        Route::get('/{id}', 'EmployeeController@show')->name('employees.index');
         //员工修改
         Route::put('/{id}', 'EmployeeController@update')->name('employees.update');
         //员工新增
@@ -459,7 +459,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'RoleController@index')->name('role.index');
         //获取详情
-        Route::get('/{id}', 'RoleController@show')->name('role.show');
+        Route::get('/{id}', 'RoleController@show')->name('role.index');
         //新增
         Route::post('/', 'RoleController@store')->name('role.store');
         //修改
@@ -505,7 +505,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'AddressController@index')->name('address.index');
         //获取详情
-        Route::get('/{id}', 'AddressController@show')->name('address.show');
+        Route::get('/{id}', 'AddressController@show')->name('address.index');
         //新增
         Route::post('/', 'AddressController@store')->name('address.store');
         //修改
@@ -562,7 +562,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'MerchantController@index')->name('merchant.index');
         //获取详情
-        Route::get('/{id}', 'MerchantController@show')->name('merchant.show');
+        Route::get('/{id}', 'MerchantController@show')->name('merchant.index');
         //初始化
         Route::get('/init', 'MerchantController@init')->name('merchant.index');
         //新增
@@ -584,7 +584,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'MerchantApiController@index')->name('merchant-api.index');
         //获取详情
-        Route::get('/{id}', 'MerchantApiController@show')->name('merchant-api.show');
+        Route::get('/{id}', 'MerchantApiController@show')->name('merchant-api.index');
         //新增
         Route::post('/', 'MerchantApiController@store')->name('merchant-api.store');
         //修改
@@ -600,7 +600,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'MerchantGroupController@index')->name('merchant-group.index');
         //获取详情
-        Route::get('/{id}', 'MerchantGroupController@show')->name('merchant-group.show');
+        Route::get('/{id}', 'MerchantGroupController@show')->name('merchant-group.index');
         //新增
         Route::post('/', 'MerchantGroupController@store')->name('merchant-group.store');
         //修改
@@ -624,7 +624,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'TransportPriceController@index')->name('transport-price.index');
         //获取详情
-        Route::get('/{id}', 'TransportPriceController@show')->name('transport-price.show');
+        Route::get('/{id}', 'TransportPriceController@show')->name('transport-price.index');
         //新增
         Route::post('/', 'TransportPriceController@store')->name('transport-price.store');
         //修改
@@ -648,7 +648,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //查询
         Route::get('/', 'OrderNoRuleController@index')->name('order-no-rule.index');
         //详情
-        Route::get('/{id}', 'OrderNoRuleController@show')->name('order-no-rule.show');
+        Route::get('/{id}', 'OrderNoRuleController@show')->name('order-no-rule.index');
         //初始化
         Route::get('/init', 'OrderNoRuleController@initStore')->name('order-no-rule.store');
         //新增
@@ -664,7 +664,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //查询
         Route::get('/', 'PackageNoRuleController@index')->name('package-no-rule.index');
         //详情
-        Route::get('/{id}', 'PackageNoRuleController@show')->name('package-no-rule.show');
+        Route::get('/{id}', 'PackageNoRuleController@show')->name('package-no-rule.index');
         //新增
         Route::post('/', 'PackageNoRuleController@store')->name('package-no-rule.store');
         //修改
@@ -688,9 +688,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'FeeController@index')->name('fee.index');
         //初始化
-        Route::get('/init', 'FeeController@init')->name('fee.show');
+        Route::get('/init', 'FeeController@init')->name('fee.index');
         //详情
-        Route::get('/{id}', 'FeeController@show')->name('fee.show');
+        Route::get('/{id}', 'FeeController@show')->name('fee.index');
         //新增
         Route::post('/', 'FeeController@store')->name('fee.store');
         //修改
@@ -704,7 +704,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表查询
         Route::get('/', 'HolidayController@index')->name('holiday.index');
         //详情
-        Route::get('/{id}', 'HolidayController@show')->name('holiday.show');
+        Route::get('/{id}', 'HolidayController@show')->name('holiday.index');
         //新增
         Route::post('/', 'HolidayController@store')->name('holiday.store');
         //修改
@@ -753,7 +753,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //查询
         Route::get('/', 'stockExceptionController@index')->name('stock-exception.index');
         //详情
-        Route::get('/{id}', 'stockExceptionController@show')->name('stock-exception.show');
+        Route::get('/{id}', 'stockExceptionController@show')->name('stock-exception.index');
         //审核
         Route::put('/{id}/deal', 'stockExceptionController@deal')->name('stock-exception.deal');
     });
