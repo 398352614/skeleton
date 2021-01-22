@@ -129,7 +129,7 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
      */
     public function index($trackingOrderNo)
     {
-        $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no'=> $trackingOrderNo],['*'],false);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no'=> $trackingOrderNo],['*'],false);
         if (empty($trackingOrder)) {
             throw new BusinessLogicException('数据不存在');
         }
