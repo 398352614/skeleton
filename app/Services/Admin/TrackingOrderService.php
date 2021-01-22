@@ -711,7 +711,7 @@ class TrackingOrderService extends BaseService
      */
     public function assignListTour($params)
     {
-        list($trackingOrderIdList, $tourNo) = [$params['tracking_id_list'], $params['tour_no']];
+        list($trackingOrderIdList, $tourNo) = [$params['tracking_order_id_list'], $params['tour_no']];
         /******************************************1.获取数据**********************************************************/
         //获取取件线路信息
         $tour = $this->getTourService()->getInfoLock(['tour_no' => $tourNo, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);
