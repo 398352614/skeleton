@@ -101,6 +101,11 @@ class RoleService extends BaseService
         if ($id == $this->getAdminRoleId()) {
             throw new BusinessLogicException('管理员组权限不允许操作');
         }
+        $modelHasRolesTable = config('permission.table_names.model_has_roles');
+        $roleEmployee = DB::table($modelHasRolesTable)->where('role_id', $id)->first();
+        if (!empty($roleEmployee)) {
+            throw new BusinessLogicException('请先移除该权限组员工');
+        }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');

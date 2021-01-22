@@ -348,8 +348,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/unlock', 'TourController@unlock')->name('tour.unlock');
         //导出投递站点excel
         Route::get('/batch-excel', 'TourController@batchExport')->name('tour.batch-excel');
-        //导出任务报告
-        Route::get('/{id}/tour-excel', 'TourController@tourExport')->name('tour.tour-excel');
         //导出计划
         Route::get('/{id}/plan-excel', 'TourController@planExport')->name('tour.intelligent-scheduling');
         //获取可分配日期
@@ -382,6 +380,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/', 'ReportController@index')->name('report.index');
         //获取详情
         Route::get('/{id}', 'ReportController@show')->name('report.show');
+        //导出任务报告
+        Route::get('/{id}/tour-excel', 'TourController@tourExport')->name('report.report-excel');
     });
 
     //线路管理
