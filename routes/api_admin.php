@@ -90,6 +90,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::post('/list', 'OrderController@storeByList')->name('order.store-list');
         //获取订单的运单列表
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList')->name('order.index');
+        //订单轨迹
+        Route::get('/{order_no}/trail', 'OrderTrailController@index')->name('order.trail');
         //修改
         Route::put('/{id}', 'OrderController@update')->name('order.update');
         //获取再次取派信息
@@ -112,6 +114,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index')->name('order.third-party-log');
         //无效化已完成订单（用以新增同号订单）
         Route::get('/{id}/neutralize', 'OrderController@neutralize')->name('order.neutralize');
+    });
+
+    //物流查询
+    Route::prefix('trail')->group(function () {
+        //列表查询
+        Route::get('/order/{order_no}', 'OrderTrailController@index')->name('trail.index');
+        //列表查询
+        Route::get('/tracking-order/{tracking_order_no}', 'TrackingOrderTrailController@index')->name('trail.index');
     });
 
     //订单轨迹管理
@@ -180,6 +190,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/', 'TrackingOrderController@index')->name('tracking-order.index');
         //获取详情
         Route::get('/{id}', 'TrackingOrderController@show')->name('tracking-order.show');
+        //运单轨迹
+        Route::get('/{tracking_order_no}/trail', 'TrackingOrderTrailController@index')->name('tracking-order.trail');
         //获取可分配路线日期
         Route::get('/{id}/get-date', 'TrackingOrderController@getAbleDateList')->where('id', '[-]?[0-9]+');
         //获取可分配的站点列表
@@ -346,6 +358,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/by-line', 'TourController@getListJoinByLineId')->name('tour.assign');
         //分配线路
         Route::put('/{id}/assign', 'TourController@assignTourToTour')->name('tour.assign');
+        //线路追踪
+        Route::get('/track', 'RouteTrackingController@show')->name('tour.track');
+        //线路追踪
+        Route::get('/all-track', 'RouteTrackingController@index')->name('tour.track');
+
     });
 
     //todo 取件线路-司机
@@ -516,10 +533,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //国家管理
     Route::prefix('country')->group(function () {
-        Route::get('/', 'CountryController@index')->name('address.index');
-        Route::get('/init', 'CountryController@initStore')->name('address.store');
-        Route::post('/', 'CountryController@store')->name('address.store');
-        Route::delete('/{id}', 'CountryController@destroy')->name('address.destroy');
+        Route::get('/', 'CountryController@index');
+        Route::get('/init', 'CountryController@initStore');
+        Route::post('/', 'CountryController@store');
+        Route::delete('/{id}', 'CountryController@destroy');
     });
 
     //公共接口
@@ -532,10 +549,16 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/country', 'CommonController@getCountryList');
         //获取指定国家地址
         Route::get('/address/{country}', 'CommonController@getCountryAddress');
-
+        //获取邮编信息
         Route::get('/postcode', 'CommonController@getPostcode');
-
-        Route::get('/dictionary', 'CommonController@dictionary');
+        //获取线路列表
+        Route::get('/get-line', 'TrackingOrderController@getLineList');
+        //获取用户列表
+        Route::get('/merchant', 'MerchantController@index');
+        //获取司机列表
+        Route::get('/driver', 'DriverController@index');
+        //获取权限组列表
+        Route::get('/role', 'RoleController@index');
     });
 
     //上传接口
