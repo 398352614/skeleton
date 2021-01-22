@@ -154,7 +154,12 @@ class EmployeeService extends BaseService
             throw new BusinessLogicException('无法删除自己');
         }
         $rowCount = parent::delete(['id' => $id]);
-
+        if ($rowCount === false) {
+            throw new BusinessLogicException('员工删除失败');
+        }
+        //删除员工权限
+        $modelHasRolesTable = config('permission.table_names.model_has_roles');
+        $rowCount = DB::table($modelHasRolesTable)->where('employee_id', $id)->delete();
         if ($rowCount === false) {
             throw new BusinessLogicException('员工删除失败');
         }
