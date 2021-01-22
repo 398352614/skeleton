@@ -261,14 +261,18 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'CarController@update')->name('car.update');
         //车辆删除
         Route::delete('/{id}', 'CarController@destroy')->name('car.destroy');
-        //todo 车辆追踪
-        Route::get('/track', 'RouteTrackingController@show')->name('car.index');
-        //todo 所有车辆追踪
-        Route::get('/all-track', 'RouteTrackingController@index')->name('car.index');
         // 导出里程
         Route::get('/{id}/distance', 'CarController@distanceExport')->name('car.export-distance');
         // 导出信息
         Route::get('/{id}/info', 'CarController@infoExport')->name('car.export-info');
+    });
+
+    //智能管车
+    Route::prefix('car-management')->group(function () {
+        //todo 车辆追踪
+        Route::get('/track', 'RouteTrackingController@show')->name('car-management.index');
+        //todo 所有车辆追踪
+        Route::get('/all-track', 'RouteTrackingController@index')->name('car-management.index');
     });
 
     //设备管理
@@ -335,7 +339,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //线路任务查询
         Route::get('/', 'TourController@index')->name('tour.index');
         //线路任务详情
-        Route::get('/{id}', 'TourController@show')->name('tour.show');
+        Route::get('/{id}', 'TourController@show')->name('tour.index');
+        //获取详情
+        Route::get('/report/{id}', 'ReportController@show')->name('tour.show');
         //分配司机
         Route::put('/{id}/assign-driver', 'TourController@assignDriver')->name('assign-driver|tour.cancel-driver');
         //取消分配司机
