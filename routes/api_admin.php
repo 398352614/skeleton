@@ -458,6 +458,13 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/update', 'CompanyConfigController@update')->name('company-config.update');
     });
 
+    Route::prefix('special-scenes-config')->group(function () {
+        //获取详情
+        Route::get('/show', 'CompanyConfigController@show')->name('special-scenes-config.show');
+        //修改
+        Route::put('/update', 'CompanyConfigController@update')->name('special-scenes-config.update');
+    });
+
     //员工管理
     Route::prefix('employees')->group(function () {
         //员工列表
