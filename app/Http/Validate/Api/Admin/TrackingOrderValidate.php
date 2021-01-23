@@ -32,7 +32,6 @@ class TrackingOrderValidate extends BaseValidate
         'getAbleBatchList' => ['execution_date'],
         'assignToBatch' => ['execution_date', 'batch_no'],
         'assignListTour' => ['tracking_id_list', 'tour_no'],
-        'getAddOrderPageList' => ['tracking_order_id_list'],
         'changeOutStatus' => ['id_list', 'out_status']
     ];
 }
