@@ -272,7 +272,11 @@ return [
         ],
         'place_house_number' => [
             'required_if' => '当国家是荷兰时，门牌号必填',
-        ]
+        ],
+        //费用列表
+        'code' => [
+            'regex:/[A-Z]+/' => '编码规则必须是大写'
+        ],
     ],
 
     /*
