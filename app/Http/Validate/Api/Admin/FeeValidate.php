@@ -33,7 +33,6 @@ class FeeValidate extends BaseValidate
     ];
 
     public $message = [
-
     ];
 }
 
