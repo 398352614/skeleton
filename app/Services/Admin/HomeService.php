@@ -204,7 +204,7 @@ class HomeService extends BaseService
     public function merchantCount()
     {
         $data = [];
-        $total = ['merchant_name' => __('合计'), 'total_order' => 0, 'pickup_order' => 0, 'pie_order' => 0, 'cancel_order' => 0, 'additional_package' => 0, 'total_recharge' => 0];
+        $total = ['merchant_name' => __('合计'), 'total_order' => 0, 'pickup_order' => 0, 'pie_order' => 0, 'pickup_pie_order' => 0, 'cancel_order' => 0, 'additional_package' => 0, 'total_recharge' => 0];
         $merchantList = $this->getMerchantService()->getList();
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
@@ -218,6 +218,7 @@ class HomeService extends BaseService
             $total['total_order'] += $data[$k]['total_order'];
             $total['pickup_order'] += $data[$k]['pickup_order'];
             $total['pie_order'] += $data[$k]['pie_order'];
+            $total['pickup_pie_order'] += $data[$k]['pickup_pie_order'];
             $total['cancel_order'] += $data[$k]['cancel_order'];
             $total['additional_package'] += $data[$k]['additional_package'];
             $total['total_recharge'] += $data[$k]['total_recharge'];
