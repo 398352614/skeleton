@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
+use App\Channels\Notifications\JPushChannel;
 use App\Services\RedisService;
+use Illuminate\Notifications\ChannelManager;
 use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Tymon\JWTAuth\JWTGuard;
+use JPush\Client as JPushClient;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +24,15 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton('redis-service', function ($app) {
             return new RedisService();
+        });
+
+        $this->app->singleton(JPushClient::class, function ($app) {
+            $options = [
+                $app->config->get('j-push.key'),
+                $app->config->get('j-push.secret'),
+                $app->config->get('j-push.log')
+            ];
+            return new JPushClient(...$options);
         });
 
         if ($this->app->isLocal() || ($this->app->environment() === 'development')) {
@@ -76,6 +88,14 @@ class AppServiceProvider extends ServiceProvider
             $this->user = null;
             return null;
         });
+
+        // 添加 JPush 驱动
+        $this->app->extend(ChannelManager::class, function ($manager) {
+            $manager->extend('jpush', function ($app) {
+                return $app->make(JPushChannel::class);
+            });
+        });
+
         if (Str::startsWith(env('APP_URL'), 'https')) {
             $url->forceScheme('https');
         }

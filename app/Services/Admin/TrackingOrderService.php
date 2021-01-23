@@ -44,6 +44,9 @@ class TrackingOrderService extends BaseService
         'merchant_id' => ['=', 'merchant_id'],
         'tour_no' => ['like', 'tour_no'],
         'batch_no' => ['like', 'batch_no'],
+        'out_user_id' => ['like', 'out_user_id'],
+        'tracking_order_no' => ['like', 'tracking_order_no'],
+        'out_order_no' => ['like', 'out_order_no'],
     ];
 
     protected $tOrderAndOrderSameFields = [
@@ -708,7 +711,7 @@ class TrackingOrderService extends BaseService
      */
     public function assignListTour($params)
     {
-        list($trackingOrderIdList, $tourNo) = [$params['id_list'], $params['tour_no']];
+        list($trackingOrderIdList, $tourNo) = [$params['tracking_order_id_list'], $params['tour_no']];
         /******************************************1.获取数据**********************************************************/
         //获取取件线路信息
         $tour = $this->getTourService()->getInfoLock(['tour_no' => $tourNo, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);

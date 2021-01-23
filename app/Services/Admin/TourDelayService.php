@@ -18,6 +18,7 @@ class TourDelayService extends BaseService
         'driver_name' => ['like', 'driver_name'],
         'driver_id' => ['=', 'driver_id'],
         'line_name' => ['like', 'line_name'],
+        'line_id' => ['=', 'line_id'],
         'delay_type' => ['=', 'delay_type'],
         'tour_no' => ['like', 'tour_no']
     ];

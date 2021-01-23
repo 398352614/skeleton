@@ -51,10 +51,12 @@ class RouteRetry extends Command
         $totalRouteRetryList = \App\Models\RouteRetry::query()->get();
         if (empty($totalRouteRetryList)) {return;}
         $totalRouteRetryList = collect($totalRouteRetryList)->groupBy('tour_no')->toArray();
+        Log::info('DATA', $totalRouteRetryList);
         foreach ($totalRouteRetryList as $tourNo => $routeRetryList) {
             $latestRouteRetry = collect(collect($routeRetryList)->sortByDesc('updated_at')->first())->toArray();
             if (empty($latestRouteRetry)) {return;}
             try {
+                Log::info(1, $latestRouteRetry);
                 $tourService = FactoryInstanceTrait::getInstance(TourService::class);
                 $tourService->routeRefresh($latestRouteRetry['tour_no']);
                 //成功则清空路线重试任务
@@ -63,7 +65,6 @@ class RouteRetry extends Command
                 //失败则路线重试次数+1
                 \App\Models\RouteRetry::query()->where('id', $latestRouteRetry['id'])->update(['retry_times' => $latestRouteRetry['retry_times'] + 1]);
             }
-            Log::info('重试次数'.($latestRouteRetry['retry_times'] + 1));
             //超过最大重试次数则删除该条任务
             if ($latestRouteRetry['retry_times'] + 1 >= BaseConstService::ROUTE_RETRY_MAX_TIMES) {
                 \App\Models\RouteRetry::query()->where('id', $latestRouteRetry['id'])->delete();

@@ -30,7 +30,10 @@ class MerchantService extends BaseService
     public $filterRules = [
         'code,name,email' => ['like', 'keyword'],
         'merchant_group_id' => ['=', 'merchant_group_id'],
-        'status' => ['=', 'status']
+        'status' => ['=', 'status'],
+        'code' => ['like', 'code'],
+        'name' => ['like', 'name'],
+        'email' => ['like', 'email']
     ];
 
     protected $headings = [

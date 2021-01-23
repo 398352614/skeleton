@@ -25,7 +25,8 @@ class DeviceService extends BaseService
 {
     public $filterRules = [
         'number' => ['like', 'keyword'],
-        'driver_id' => ['=', 'driver_id']
+        'driver_id' => ['=', 'driver_id'],
+        'driver_name' => ['like', 'driver_name']
     ];
 
     public function __construct(Device $model)
@@ -54,9 +55,9 @@ class DeviceService extends BaseService
     public function getDriverPageList()
     {
         $perPage = $this->request->input('per_page', 10);
-        $deviceList = parent::getList(['driver_id' => ['all', null]], ['driver_id'], false)->toArray();
+        $deviceList = parent::getList([], ['driver_id'], false)->toArray();
         $query = $this->driverModel::query();
-        !empty($deviceList) && $query->whereNotIn('id', array_column($deviceList, 'driver_id'));
+        !empty($deviceList) && $query->whereNotIn('id', array_filter(array_column($deviceList, 'driver_id')));
         return DriverResource::collection($query->paginate($perPage));
     }
 

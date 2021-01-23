@@ -18,11 +18,13 @@ use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
 use App\Models\OrderNoRule;
+use App\Models\Role;
 use App\Models\SpecialTimeCharging;
 use App\Models\TransportPrice;
 use App\Models\WeightCharging;
 use App\Services\Admin\CompanyService;
 use App\Services\BaseConstService;
+use App\Traits\PermissionTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -33,6 +35,8 @@ use Vinkla\Hashids\Facades\Hashids;
 
 class RegisterController extends BaseController
 {
+    use PermissionTrait;
+
     public function __construct(CompanyService $service, $exceptMethods = [])
     {
         parent::__construct($service, $exceptMethods);
@@ -47,9 +51,9 @@ class RegisterController extends BaseController
     {
         $data = $request->all();
 
-                if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
-                    throw new BusinessLogicException('验证码错误');
-                }
+        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
+            throw new BusinessLogicException('验证码错误');
+        }
 
         RegisterController::deleteVerifyCode($data['email']);
 
@@ -77,8 +81,9 @@ class RegisterController extends BaseController
                 throw new BusinessLogicException('企业注册失败');
             }
 
-            $institutionId = $this->addInstitution($company);//初始化组织结构
-            $this->addEmployee($company, $data, $institutionId);//初始化管理员帐户
+            $employee = $this->addEmployee($company, $data);//初始化管理员帐户
+            $role = $this->addRole($company);//初始化权限组
+            $this->addPermission($employee, $role);//初始化员工权限组
             $this->initCompanyOrderCodeRules($company);//初始化编号规则
             $transportPrice = $this->addTransportPrice($company);//初始化运价方案
             $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化商户组
@@ -87,35 +92,6 @@ class RegisterController extends BaseController
             $this->addFee($company);//添加费用
             return 'true';
         });
-    }
-
-    /**
-     * @param $company
-     * @return mixed
-     */
-    protected function addInstitution($company)
-    {
-        //创建根节点
-        $companyRoot = Institution::create([
-            'company_id' => $company->id,
-            'name' => $company->name,
-            'parent' => 0,
-        ]);
-        //创建初始组织
-        $parentId = $companyRoot->id;
-        $companyRoot->makeRoot();
-        $child = Institution::create([
-            'company_id' => $company->id,
-            'name' => $company->name,
-            'phone' => $company->phone ?? '',
-            'contacts' => $company->contacts ?? '',
-            'country' => $company->country ?? '',
-            'address' => $company->address ?? '',
-            'parent' => $parentId,
-        ]);
-        $institutionId = $child->id;
-        $child->moveTo($parentId);
-        return $institutionId;
     }
 
     /**
@@ -161,21 +137,51 @@ class RegisterController extends BaseController
      * 添加管理员初始用户组
      * @param Company $company
      * @param array $data
-     * @param $institutionId
      * @return mixed
      */
-    protected function addEmployee(Company $company, array $data, $institutionId)
+    protected function addEmployee(Company $company, array $data)
     {
         return Employee::create([
             'email' => $data['email'],
             //'phone' => $data['phone'],
             'password' => bcrypt($data['password']),
-            'auth_group_id' => 1,
-            'institution_id' => $institutionId,
             'fullname' => $data['email'],
             'company_id' => $company->id,
-            'username' => $data['email']
+            'username' => $data['email'],
+            'is_admin' => 1
         ]);
+    }
+
+    /**
+     * 添加权限组
+     * @param $company
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
+     * @throws BusinessLogicException
+     */
+    protected function addRole($company)
+    {
+        /**@var Role $role * */
+        $role = Role::create([
+            'company_id' => $company->id,
+            'name' => '管理员组',
+            'is_admin' => 1,
+        ]);
+        if ($role === false) {
+            throw new BusinessLogicException('初始化权限组失败');
+        }
+        $basePermissionList = self::getPermissionList();
+        $role->syncPermissions(array_column($basePermissionList, 'id'));
+        return $role;
+    }
+
+    /**
+     * 员工初始化权限组
+     * @param $employee
+     * @param $role
+     */
+    protected function addPermission($employee, $role)
+    {
+        $employee->syncRoles($role);
     }
 
 

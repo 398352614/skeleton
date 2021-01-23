@@ -381,12 +381,11 @@ class TourService extends BaseService
         //存在出库订单,则验证
         if (!empty($params['out_tracking_order_id_list'])) {
             //验证订单是否都可出库
-            $outTrackingOrderIdList = array_filter(explode(',', $params['out_tracking_order_id_list']), function ($value) {
-                return is_numeric($value);
-            });
-            $noOutTrackingOrder = $this->getTrackingOrderService()->getInfo(['id' => ['in', $outTrackingOrderIdList], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_3]], ['order_no', 'tracking_order_no'], false);
-            if (!empty($noOutTrackingOrder)) {
-                throw new BusinessLogicException('订单为[:order_no],运单为[:tracking_order_no]已取消或已删除,不能出库,请先剔除', 1000, ['order_no' => $noOutTrackingOrder->order_no, 'tracking_order_no' => $noOutTrackingOrder->tracking_order_no]);
+            $outTrackingOrderIdList = explode_id_string($params['out_tracking_order_id_list']);
+            $noOutTrackingOrderList = $this->getTrackingOrderService()->getList(['id' => ['in', $outTrackingOrderIdList], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_3]], ['order_no', 'tracking_order_no'], false);
+            if ($noOutTrackingOrderList->isNotEmpty()) {
+                Log::info('no_out_tracking_order_list', $noOutTrackingOrderList);
+                throw new BusinessLogicException('订单已取消或已删除,不能出库,请先剔除', 5006, [], $noOutTrackingOrderList);
             }
         }
         //验证运单数量
@@ -423,7 +422,7 @@ class TourService extends BaseService
         }
         $disableOutTrackingOrder = $this->getTrackingOrderService()->getInfo($disableWhere, ['id', 'order_no', 'tracking_order_no'], false);
         if (!empty($disableOutTrackingOrder)) {
-            throw new BusinessLogicException('运单[:tracking_order_no]不可出库', 1000, ['tracking_order_no' => $disableOutTrackingOrder->tracking_order_no]);
+            throw new BusinessLogicException('订单为[:order_no],运单为[:tracking_order_no]不可出库', 1000, ['order_no' => $disableOutTrackingOrder->order_no, 'tracking_order_no' => $disableOutTrackingOrder->tracking_order_no]);
         }
         return $tour;
     }

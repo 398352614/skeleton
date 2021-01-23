@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Resources\Api\Admin\EmployeeListResource;
+use App\Http\Resources\Api\Admin\EmployeeResource;
 use App\Services\Admin\InstitutionService;
 
 class InstitutionController extends BaseController
@@ -34,7 +34,7 @@ class InstitutionController extends BaseController
      */
     public function indexOfEmployees(int $id)
     {
-        return EmployeeListResource::collection($this->service->indexOfEmployees($id));
+        return EmployeeResource::collection($this->service->indexOfEmployees($id));
     }
 
     /**
