@@ -123,6 +123,12 @@ composer 自我更新
 ```gitexclude
 composer selfupdate
 ```
+
+替换文件已解决php版本字符问题，文件在docker根目录下
+```
+tms-api/www/api/vendor/milon/barcode/src/Milon/Barcode/DNS1D.php
+```
+
 composer 安装依赖
 ```gitexclude
 composer install
