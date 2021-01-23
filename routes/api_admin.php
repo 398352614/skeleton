@@ -571,8 +571,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/warehouse', 'WareHouseController@index');
         //获取车辆列表
         Route::get('/car', 'CarController@index');
-        //获取车辆列表
-        Route::get('/car', 'CarController@index');
+        //获取运价列表
+        Route::get('/transport-price', 'TransportPriceController@index')->name('transport-price.index');
     });
 
     //上传接口
