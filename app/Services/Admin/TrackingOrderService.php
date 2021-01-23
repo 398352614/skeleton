@@ -415,6 +415,7 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         OrderTrailService::orderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::ORDER_TRAIL_DELETE);
+        TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_DELETE);
     }
 
 
