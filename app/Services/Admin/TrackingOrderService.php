@@ -185,8 +185,8 @@ class TrackingOrderService extends BaseService
         if (!empty($this->formData['post_code'])) {
             $trackingOrderList = $this->getTrackingOrderService()->getList(['place_post_code' => ['like', $this->formData['post_code']]]);
             if (!$trackingOrderList->isEmpty()) {
-                $trackingOrderList = $trackingOrderList->pluck('order_no')->toArray();
-                $this->query->whereIn('order_no', $trackingOrderList);
+                $trackingOrderList = $trackingOrderList->pluck('tracking_order_no')->toArray();
+                $this->query->whereIn('tracking_order_no', $trackingOrderList);
             }
         }
         $list = parent::getPageList();
