@@ -561,12 +561,16 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/get-line', 'TrackingOrderController@getLineList');
         //获取用户列表
         Route::get('/merchant', 'MerchantController@index');
+        //获取用户组列表
+        Route::get('/merchant-group', 'MerchantGroupController@index');
         //获取司机列表
         Route::get('/driver', 'DriverController@index');
         //获取权限组列表
         Route::get('/role', 'RoleController@index');
         //获取仓库列表
         Route::get('/warehouse', 'WareHouseController@index');
+        //获取车辆列表
+        Route::get('/car', 'CarController@index');
         //获取车辆列表
         Route::get('/car', 'CarController@index');
     });
