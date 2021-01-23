@@ -69,7 +69,7 @@ class RegisterController extends BaseController
 
         DB::transaction(function () use ($data) {
 
-            $lastCompany = Company::lockForUpdate()->orderBy('created_at', 'desc')->first();
+            $lastCompany = Company::lockForUpdate()->orderBy('id', 'desc')->first();
             $company = Company::create([
                 'company_code' => self::makeNewCompanyCode($lastCompany),
                 'email' => $data['email'],
