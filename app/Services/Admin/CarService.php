@@ -93,7 +93,7 @@ class CarService extends BaseService
             'relate_material_list' => !empty($this->formData['relate_material_list']) ? $this->formData['relate_material_list'] : null,
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改车辆失败');
+            throw new BusinessLogicException('车辆修改失败');
         }
     }
 
@@ -107,7 +107,7 @@ class CarService extends BaseService
     {
         $rowCount = parent::updateById($id, ['is_locked' => $isLocked]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 

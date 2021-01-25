@@ -86,7 +86,7 @@ class MerchantApiService extends BaseService
             'secret' => Hashids::connection('alternative')->encode(time() . $merchant->id)
         ]);
         if ($merchantApi === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
+            throw new BusinessLogicException('新增失败，请重新操作');
         }
     }
 
@@ -99,7 +99,7 @@ class MerchantApiService extends BaseService
     {
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         return;
     }

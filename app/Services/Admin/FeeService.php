@@ -47,7 +47,7 @@ class FeeService extends BaseService
         $params['level'] = BaseConstService::FEE_LEVEL_2;
         $rowCount = parent::create($params);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 
@@ -71,7 +71,7 @@ class FeeService extends BaseService
         unset($data['company_id'], $data['level']);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 
@@ -92,7 +92,7 @@ class FeeService extends BaseService
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         return 'true';
     }

@@ -99,7 +99,7 @@ class BaseLineService extends BaseService
         if (intval($data['status']) == BaseConstService::ON) {
             $rowCount = parent::update(['id' => ['in', $idList]], ['status' => $data['status']]);
             if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败');
+                throw new BusinessLogicException('操作失败，请重新操作');
             }
             return 'true';
         }
@@ -111,7 +111,7 @@ class BaseLineService extends BaseService
             }
             $rowCount = parent::update(['id' => $id], ['status' => $data['status']]);
             if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败');
+                throw new BusinessLogicException('操作失败，请重新操作');
             }
         }
         return 'true';

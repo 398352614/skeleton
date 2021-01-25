@@ -130,7 +130,7 @@ class LineService extends BaseLineService
         }
         $rowCount = $this->getMerchantGroupLineRangeService()->insertAll($lineRangeList);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 
@@ -182,7 +182,7 @@ class LineService extends BaseLineService
         //删除商户线路范围
         $rowCount = $this->getMerchantGroupLineRangeService()->delete(['line_id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 

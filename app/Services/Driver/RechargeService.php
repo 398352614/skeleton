@@ -131,11 +131,11 @@ class RechargeService extends BaseService
             throw new BusinessLogicException('充值已完成，请勿重复充值');
         }
         if ($params['verify_phone_end'] !== substr($info['out_user_phone'], -4)) {
-            throw new BusinessLogicException('验证失败，请重新输入');
+            throw new BusinessLogicException('手机尾号验证失败，请重新输入');
         }
         $row = parent::update(['recharge_no' => $params['recharge_no']], ['status' => BaseConstService::MERCHANT_RECHARGE_STATUS_2]);
         if ($row == false) {
-            throw new BusinessLogicException('验证失败');
+            throw new BusinessLogicException('验证操作失败');
         }
         return;
     }

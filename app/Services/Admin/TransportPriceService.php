@@ -98,7 +98,7 @@ class TransportPriceService extends BaseService
         $this->check($params);
         $transportPrice = parent::create($params);
         if ($transportPrice === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
+            throw new BusinessLogicException('新增失败，请重新操作');
         }
         $this->insertDetailsAll($transportPrice->getAttribute('id'), $params);
     }
@@ -120,15 +120,15 @@ class TransportPriceService extends BaseService
         //删除公里计费，重量计费，特殊时段计费列表
         $rowCount = $this->kilometresChargingModel->newQuery()->where('transport_price_id', '=', $id)->delete();
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $rowCount = $this->weightChargingModel->newQuery()->where('transport_price_id', '=', $id)->delete();
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $rowCount = $this->specialTimeChargingModel->newQuery()->where('transport_price_id', '=', $id)->delete();
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //新增公里计费，重量计费，特殊时段计费列表
         $this->insertDetailsAll($id, $data);
@@ -294,7 +294,7 @@ class TransportPriceService extends BaseService
             data_fill($params, 'km_list.*.transport_price_id', $id);
             $rowCount = $this->kilometresChargingModel->insertAll($params['km_list']);
             if ($rowCount === false) {
-                throw new BusinessLogicException('新增失败,请重新操作');
+                throw new BusinessLogicException('新增失败，请重新操作');
             }
         }
         //重量计费
@@ -302,7 +302,7 @@ class TransportPriceService extends BaseService
             data_fill($params, 'weight_list.*.transport_price_id', $id);
             $rowCount = $this->weightChargingModel->insertAll($params['weight_list']);
             if ($rowCount === false) {
-                throw new BusinessLogicException('新增失败,请重新操作');
+                throw new BusinessLogicException('新增失败，请重新操作');
             }
         }
         //特殊时段计费
@@ -310,7 +310,7 @@ class TransportPriceService extends BaseService
             data_fill($params, 'special_time_list.*.transport_price_id', $id);
             $rowCount = $this->specialTimeChargingModel->insertAll($params['special_time_list']);
             if ($rowCount === false) {
-                throw new BusinessLogicException('新增失败,请重新操作');
+                throw new BusinessLogicException('新增失败，请重新操作');
             }
         }
     }

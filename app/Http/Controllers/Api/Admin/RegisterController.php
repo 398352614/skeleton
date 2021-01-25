@@ -311,7 +311,7 @@ class RegisterController extends BaseController
             'amount' => 7.00
         ]);
         if ($fee === false) {
-            throw new BusinessLogicException('费用初始化失败');
+            throw new BusinessLogicException('初始化费用失败');
         }
         $fee = Fee::create([
             'company_id' => $company->id,
@@ -320,7 +320,7 @@ class RegisterController extends BaseController
             'amount' => 10.00
         ]);
         if ($fee === false) {
-            throw new BusinessLogicException('费用初始化失败');
+            throw new BusinessLogicException('初始化费用失败');
         }
     }
 
@@ -338,7 +338,7 @@ class RegisterController extends BaseController
 
         throw_if(
             Employee::where('email', $request->get('email'))->count(),
-            new BusinessLogicException('该邮箱已注册，请直接登录')
+            new BusinessLogicException('邮箱已注册，请直接登录')
         );
 
         return RegisterController::sendCode($request->get('email'));

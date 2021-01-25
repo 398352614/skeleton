@@ -51,7 +51,7 @@ class MerchantController extends BaseController
     {
         $dbInfo = $this->service->getInfo(['name' => $this->data['name'], 'id' => ['<>', auth()->id()]], ['id'], false);
         if (!empty($dbInfo)) {
-            throw new BusinessLogicException('名称已存在');
+            throw new BusinessLogicException('商户名称已存在');
         }
         return $this->service->updateById(auth()->id(), $this->data);
     }

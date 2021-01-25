@@ -50,7 +50,7 @@ class WareHouseService extends BaseService
         $this->fillData($params);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
-            throw new BusinessLogicException('仓库新增失败,请重新操作');
+            throw new BusinessLogicException('仓库新增失败，请重新操作');
         }
     }
 

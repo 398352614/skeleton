@@ -119,7 +119,7 @@ class MerchantGroupLineRangeService extends BaseService
         //删除线路的商户线路范围
         $rowCount = parent::delete(['line_id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //新增线路的商户线路范围
         foreach ($merchantGroupLineRangeList as $merchantGroupLineRange) {
@@ -133,7 +133,7 @@ class MerchantGroupLineRangeService extends BaseService
             }
             $rowCount = parent::insertAll($newList);
             if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败');
+                throw new BusinessLogicException('操作失败，请重新操作');
             }
         }
     }
@@ -151,7 +151,7 @@ class MerchantGroupLineRangeService extends BaseService
         //删除商户线路范围-不在取派日期中的
         $rowCount = parent::delete(['line_id' => $lineId, 'schedule' => ['not in', $workdayList]]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //删除商户线路范围-不在邮编范围内的
         $postCodeRangeList = [];
@@ -160,7 +160,7 @@ class MerchantGroupLineRangeService extends BaseService
         }
         $rowCount = $this->model->newQuery()->where('line_id', $lineId)->whereNotIn(DB::raw("CONCAT(post_code_start,'-',post_code_end)"), $postCodeRangeList)->delete();
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //获取新增的取派日期列表
         $merchantGroupLineRangeList = parent::getList(['line_id' => $lineId], ['*'], false)->toArray();
@@ -181,7 +181,7 @@ class MerchantGroupLineRangeService extends BaseService
             }
             $rowCount = parent::insertAll($dataList);
             if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败');
+                throw new BusinessLogicException('操作失败，请重新操作');
             }
         }
         //新增新的邮编的所有商户范围
@@ -212,7 +212,7 @@ class MerchantGroupLineRangeService extends BaseService
         }
         $rowCount = parent::insertAll($insetRangeList);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 }

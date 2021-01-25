@@ -85,7 +85,7 @@ class EmployeeService extends BaseService
             ]
         );
         if ($employee === false) {
-            throw new BusinessLogicException('新建员工失败');
+            throw new BusinessLogicException('员工新增失败');
         }
         //员工添加权限组
         $employee->syncRoles($role);
@@ -114,7 +114,7 @@ class EmployeeService extends BaseService
             'remark' => $data['remark'] ?? ''
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改员工失败');
+            throw new BusinessLogicException('员工修改失败');
         }
         $employee->syncRoles($role);
     }

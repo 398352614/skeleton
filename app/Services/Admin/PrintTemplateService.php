@@ -57,7 +57,7 @@ class PrintTemplateService extends BaseService
             'type' => $params['type']
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 }

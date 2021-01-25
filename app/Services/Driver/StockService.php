@@ -36,7 +36,7 @@ class StockService extends BaseService
         $dbPackageList = parent::getList(['express_first_no' => ['in', array_column($packageList, 'express_first_no')]], ['express_first_no'], false)->toArray();
         $rowCount = parent::delete(['express_first_no' => ['in', array_column($packageList, 'express_first_no')]]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         if (empty($dbPackageList)) return;
         $stockDataList = [];

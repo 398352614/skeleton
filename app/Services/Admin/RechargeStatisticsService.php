@@ -85,7 +85,7 @@ class RechargeStatisticsService extends BaseService
             'verify_name' =>auth()->user()->username
         ]);
         if ($row == false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         return;
     }

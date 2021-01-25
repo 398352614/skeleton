@@ -382,7 +382,7 @@ class BatchService extends BaseService
         $info = $info->toArray();
         $line = $this->getLineService()->getInfo(['id' => $info['line_id']], ['*'], false);
         if (empty($line)) {
-            throw new BusinessLogicException('路线不存在');
+            throw new BusinessLogicException('线路不存在');
         }
         $line = $line->toArray();
         $info['execution_date'] = $params['execution_date'];
@@ -459,7 +459,7 @@ class BatchService extends BaseService
     public function assignListToTour($idList, $params)
     {
         if (empty($params['tour_no'])) {
-            throw new BusinessLogicException('线路编号是必须的');
+            throw new BusinessLogicException('取件线路编号是必须的');
         }
         $tour = parent::getInfo(['tour_no' => $params['tour_no']], ['*'], false);
         if (empty($tour)) {
@@ -551,22 +551,22 @@ class BatchService extends BaseService
         //修改站点
         $rowCount = parent::updateById($id, ['line_id' => null, 'line_name' => '', 'tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::BATCH_WAIT_ASSIGN]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //修改运单
         $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no']], ['line_id' => null, 'line_name' => '', 'tour_no' => '', 'driver_id' => null, 'driver_name' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //修改运单材料
         $rowCount = $this->getTrackingOrderPackageService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '']);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //修改运单包裹
         $rowCount = $this->getTrackingOrderMaterialService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //将站点从取件线路移除
         $this->getTourService()->removeBatch($info);

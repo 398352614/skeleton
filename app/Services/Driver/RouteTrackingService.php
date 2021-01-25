@@ -86,13 +86,13 @@ class RouteTrackingService extends BaseService
             $stopTime = $firstTracking['stop_time'] + abs($tracking['time'] - $firstTracking['time']);
             $row = parent::update(['id' => $firstTracking['id']], ['stop_time' => $stopTime, 'time' => $tracking['time']]);
             if ($row == false) {
-                throw new BusinessLogicException('操作失败');
+                throw new BusinessLogicException('操作失败，请重新操作');
             }
         } else {
             $tracking['tour_driver_event_id'] = null;
             $row = $this->create($tracking);
             if ($row == false) {
-                throw new BusinessLogicException('操作失败');
+                throw new BusinessLogicException('操作失败，请重新操作');
             }
         }
         Log::info('route-tracking-tour-no', ['tour_no' => $tracking['tour_no']]);

@@ -766,11 +766,11 @@ class OrderService extends BaseService
         }
         $rowCount = parent::updateById($dbOrder['id'], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $executionDate = !empty($data['execution_date']) ? $data['execution_date'] : $dbOrder['execution_date'];
         $secondExecutionDate = !empty($data['second_execution_date']) ? $data['second_execution_date'] : $dbOrder['second_execution_date'];
@@ -797,17 +797,17 @@ class OrderService extends BaseService
         $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
         $rowCount = parent::updateById($id, ['tracking_order_no' => '', 'status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //材料清除运单信息
         $rowCount = $this->getMaterialService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '']);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //包裹清除运单信息
         $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_5]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         return 'true';
     }
@@ -1029,7 +1029,7 @@ class OrderService extends BaseService
         }
         $row = parent::updateById($id, ['out_order_no' => $order['out_order_no'] !== '' ? $order['out_order_no'] . 'OLD' : '']);
         if ($row == false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $packageList = $this->getPackageService()->getList(['order_no' => $order['order_no']], ['*'], false);
         if (empty($packageList)) {
@@ -1043,7 +1043,7 @@ class OrderService extends BaseService
                     'express_second_no' => $v['express_second_no'] !== '' ? $v['express_second_no'] . 'OLD' : '',
                 ]);
             if ($row == false) {
-                throw new BusinessLogicException('操作失败');
+                throw new BusinessLogicException('操作失败，请重新操作');
             }
         }
         return;

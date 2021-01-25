@@ -68,11 +68,11 @@ class RegisterController extends BaseController
 
         throw_if(
             Merchant::where('email', $data['email'])->count(),
-            new BusinessLogicException('账号已注册，请直接登录')
+            new BusinessLogicException('邮箱已注册，请直接登录')
         );
         throw_if(
             Merchant::where('name', $request->get('name'))->count(),
-            new BusinessLogicException('该名称已注册，请直接登录')
+            new BusinessLogicException('名称已注册，请直接登录')
         );
         return DB::transaction(function () use ($data) {
             $merchant = Merchant::create([
@@ -88,7 +88,7 @@ class RegisterController extends BaseController
                 'secret' => Hashids::connection('alternative')->encode(time() . $id)
             ]);
             if ($merchantApi === false) {
-                throw new BusinessLogicException('新增失败,请重新操作');
+                throw new BusinessLogicException('新增失败，请重新操作');
             }
         });
     }
@@ -121,7 +121,7 @@ class RegisterController extends BaseController
 
         throw_if(
             Employee::where('email', $request->get('email'))->count(),
-            new BusinessLogicException('该邮箱已注册，请直接登录')
+            new BusinessLogicException('邮箱已注册，请直接登录')
         );
 
         return RegisterController::sendCode($request->get('email'));

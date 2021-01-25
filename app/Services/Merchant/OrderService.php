@@ -929,11 +929,11 @@ class OrderService extends BaseService
         }
         $rowCount = parent::updateById($dbOrder['id'], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $executionDate = !empty($data['execution_date']) ? $data['execution_date'] : $dbOrder['execution_date'];
         $secondExecutionDate = !empty($data['second_execution_date']) ? $data['second_execution_date'] : $dbOrder['second_execution_date'];
@@ -1066,17 +1066,17 @@ class OrderService extends BaseService
         $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
         $rowCount = parent::updateById($dbOrder['id'], ['tracking_order_no' => '', 'status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //材料清除运单信息
         $rowCount = $this->getMaterialService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '']);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //包裹清除运单信息
         $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_5]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         if ((!empty($params['no_push']) && $params['no_push'] == 0) || empty($params['no_push'])) {
             //以取消取派方式推送商城
@@ -1139,12 +1139,12 @@ class OrderService extends BaseService
         //删除包裹
         $rowCount = $this->getPackageService()->delete(['order_no' => $dbOrder['order_no']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //删除材料
         $rowCount = $this->getMaterialService()->delete(['order_no' => $dbOrder['order_no']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //新增包裹和材料
         $dbOrder['package_list'] = $params['package_list'] ?? [];

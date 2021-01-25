@@ -137,7 +137,7 @@ trait LocationTrait
                 $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
                 $featureList = json_decode((string)($result->getBody()), TRUE)['features'];
             } catch (\Exception $ex) {
-                throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取具体信息，请稍后再尝试');
+                throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地址信息，请稍后再尝试');
             }
             $count = count($featureList);
             if (($count == 0)/* || ($count > 3)*/) {

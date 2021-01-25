@@ -210,7 +210,7 @@ class DriverController extends BaseController
 
         $rowCount = $this->service->updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         return;
     }

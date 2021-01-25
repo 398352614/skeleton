@@ -78,7 +78,7 @@ class LineAreaService extends BaseService
         }
         $rowCount = parent::insertAll($dataList);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 }

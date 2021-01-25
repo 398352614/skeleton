@@ -93,7 +93,7 @@ class TrackingOrderService extends BaseService
             data_set($packageList, '*.execution_date', $trackingOrder['execution_date']);
             $rowCount = $this->getTrackingOrderPackageService()->insertAll($packageList);
             if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败');
+                throw new BusinessLogicException('操作失败，请重新操作');
             }
         }
     }
@@ -185,7 +185,7 @@ class TrackingOrderService extends BaseService
         $data = self::getBatchTourFillData($batch, $tour);
         $rowCount = parent::update(['id' => $trackingOrder['id'], 'driver_id' => ['all', null]], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $trackingOrder = array_merge($trackingOrder, $data);
         ($isUpdateOrder == true) && $this->getOrderService()->updateByTrackingOrder($trackingOrder);

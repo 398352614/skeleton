@@ -54,7 +54,7 @@ class OrderNoRuleService extends BaseService
         $params['max_no'] = $params['prefix'] . str_repeat('Z', $params['string_length']) . str_repeat('9', $params['int_length']);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 
@@ -71,7 +71,7 @@ class OrderNoRuleService extends BaseService
         $this->check($data, $id);
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $info = $info->toArray();
         $data['max_no'] = $data['prefix'] . str_repeat('Z', $data['string_length']) . str_repeat('9', $data['int_length']);
@@ -82,7 +82,7 @@ class OrderNoRuleService extends BaseService
         $data = Arr::only($data, ['prefix', 'int_length', 'string_length', 'start_string_index', 'start_index', 'max_no', 'status']);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 
@@ -113,7 +113,7 @@ class OrderNoRuleService extends BaseService
     {
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 

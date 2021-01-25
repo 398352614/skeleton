@@ -48,7 +48,7 @@ class CompanyConfigService extends BaseService
             'map' => $params['map'],
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
     }

@@ -365,7 +365,7 @@ class BaseService
     {
         $rowCount = self::updateById($id, ['status' => $data['status']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改失败，清重新操作');
+            throw new BusinessLogicException('修改失败，请重新操作');
         }
         return 'true';
     }

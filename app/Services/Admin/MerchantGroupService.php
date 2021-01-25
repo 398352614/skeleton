@@ -68,7 +68,7 @@ class MerchantGroupService extends BaseService
         $this->check($params);
         $merchantGroup = parent::create($params);
         if ($merchantGroup === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
+            throw new BusinessLogicException('新增失败，请重新操作');
         }
         $merchantGroupId = $merchantGroup->getAttribute('id');
         //新增商户所有线路范围
@@ -104,12 +104,12 @@ class MerchantGroupService extends BaseService
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //删除商户组的线路数据
         $rowCount = $this->getMerchantGroupLineRangeService()->delete(['merchant_group_id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 
@@ -131,7 +131,7 @@ class MerchantGroupService extends BaseService
             $where = Arr::add($where, 'is_default', 1);
             $rowCount = parent::update($where, ['is_default' => 2]);
             if ($rowCount === false) {
-                throw new BusinessLogicException('操作失败');
+                throw new BusinessLogicException('操作失败，请重新操作');
             }
         }
     }
@@ -172,7 +172,7 @@ class MerchantGroupService extends BaseService
         }
         $rowCount = parent::updateById($id, Arr::only($params, ['additional_status', 'advance_days', 'appointment_days', 'delay_time', 'pickup_count', 'pie_count']));
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $this->addFeeConfigList($id, $params);
         return;
@@ -189,7 +189,7 @@ class MerchantGroupService extends BaseService
     {
         $rowCount = $this->merchantGroupFeeConfigModel->newQuery()->where('merchant_group_id', $merchantGroupId)->delete();
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         if (empty($params['fee_code_list'])) return;
         $feeCodeList = array_unique(explode(',', $params['fee_code_list']));
@@ -202,7 +202,7 @@ class MerchantGroupService extends BaseService
         data_set($newFeeList, '*.merchant_group_id', $merchantGroupId);
         $rowCount = $this->merchantGroupFeeConfigModel->insertAll($newFeeList);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 
@@ -245,7 +245,7 @@ class MerchantGroupService extends BaseService
     {
         $rowCount = $this->getMerchantService()->update(['merchant_group_id' => $id], ['status' => $data['status']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
     }
 }

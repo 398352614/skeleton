@@ -62,7 +62,7 @@ class AuthController extends Controller
         if (auth('merchant')->user()->status === 2) {
             auth('merchant')->logout();
 
-            throw new BusinessLogicException('暂时无法登录，请联系管理员！');
+            throw new BusinessLogicException('账户已被禁用，请联系管理员！');
         }
 
         auth('merchant')->user()->is_api = false;
