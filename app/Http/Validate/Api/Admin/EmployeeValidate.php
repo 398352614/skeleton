@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Validate\Api\Admin;
 
 use App\Http\Validate\BaseValidate;
@@ -17,9 +18,8 @@ class EmployeeValidate extends BaseValidate
         'email' => 'required|email|max:50|uniqueIgnore:employee,id',
         'phone' => 'sometimes|nullable|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
         'remark' => 'sometimes|nullable|string|max:250',
-        'group_id' => 'nullable|integer',
-        'institution_id' => 'sometimes|integer',
         'confirm_password' => 'required|same:password',
+        'role_id' => 'required|integer'
     ];
 
     public $scene = [
@@ -29,9 +29,8 @@ class EmployeeValidate extends BaseValidate
             'email',
             'phone',
             'remark',
-            'group_id',
-            'institution_id',
             'password',
+            'role_id'
         ],
         'update' => [
             'fullname',
@@ -39,8 +38,7 @@ class EmployeeValidate extends BaseValidate
             'email',
             'phone',
             'remark',
-            'group_id',
-            'institution_id',
+            'role_id'
         ],
         'resetPassword' => [
             'password',

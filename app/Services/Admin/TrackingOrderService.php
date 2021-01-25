@@ -22,7 +22,9 @@ use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Class TrackingOrderService
@@ -42,6 +44,10 @@ class TrackingOrderService extends BaseService
         'merchant_id' => ['=', 'merchant_id'],
         'tour_no' => ['like', 'tour_no'],
         'batch_no' => ['like', 'batch_no'],
+        'out_user_id' => ['like', 'out_user_id'],
+        'tracking_order_no' => ['like', 'tracking_order_no'],
+        'out_order_no' => ['like', 'out_order_no'],
+        'order_no' => ['like', 'order_no']
     ];
 
     protected $tOrderAndOrderSameFields = [
@@ -175,6 +181,13 @@ class TrackingOrderService extends BaseService
         } elseif (!empty($this->formData['line_id'])) {
             $tourList = $this->getTourService()->getList(['line_id' => $this->formData['line_id']])->pluck('tour_no')->toArray();
             $this->query->whereIn('tour_no', $tourList);
+        }
+        if (!empty($this->formData['post_code'])) {
+            $trackingOrderList = $this->getTrackingOrderService()->getList(['place_post_code' => ['like', $this->formData['post_code']]]);
+            if (!$trackingOrderList->isEmpty()) {
+                $trackingOrderList = $trackingOrderList->pluck('tracking_order_no')->toArray();
+                $this->query->whereIn('tracking_order_no', $trackingOrderList);
+            }
         }
         $list = parent::getPageList();
         foreach ($list as &$trackingOrder) {
@@ -410,6 +423,7 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         OrderTrailService::orderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::ORDER_TRAIL_DELETE);
+        TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_DELETE);
     }
 
 
@@ -706,7 +720,7 @@ class TrackingOrderService extends BaseService
      */
     public function assignListTour($params)
     {
-        list($trackingOrderIdList, $tourNo) = [$params['id_list'], $params['tour_no']];
+        list($trackingOrderIdList, $tourNo) = [$params['tracking_order_id_list'], $params['tour_no']];
         /******************************************1.获取数据**********************************************************/
         //获取取件线路信息
         $tour = $this->getTourService()->getInfoLock(['tour_no' => $tourNo, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);

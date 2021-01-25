@@ -19,7 +19,9 @@ use App\Traits\ExportTrait;
 use App\Traits\TourRedisLockTrait;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 class TourService extends BaseService
@@ -802,11 +804,10 @@ class TourService extends BaseService
             $info['batchs'][$k]['sort_id'] = $k + 1;
         }
         $info['batchs'] = array_values($info['batchs']);
-        $status = [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2, BaseConstService::PACKAGE_STATUS_3];
         $pickupTrackingOrderList = collect($trackingOrderTotalList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_1)->toArray();
         $pieTrackingOrderList = collect($trackingOrderTotalList)->where('type', BaseConstService::TRACKING_ORDER_TYPE_2)->toArray();
-        $info['expect_pickup_package_quantity'] = $this->getPackageService()->count(['tracking_order_no' => ['in', $pickupTrackingOrderList], 'status' => ['in', $status]]);
-        $info['expect_pie_package_quantity'] = $this->getPackageService()->count(['tracking_order_no' => ['in', $pieTrackingOrderList], 'status' => ['in', $status]]);
+        $info['expect_pickup_package_quantity'] = $this->getTrackingOrderPackageService()->count(['tracking_order_no' => ['in', array_column($pickupTrackingOrderList, 'tracking_order_no')]]);
+        $info['expect_pie_package_quantity'] = $this->getTrackingOrderPackageService()->count(['tracking_order_no' => ['in', array_column($pieTrackingOrderList, 'tracking_order_no')]]);
         return $info;
     }
 
@@ -844,13 +845,13 @@ class TourService extends BaseService
             $lastDate = Carbon::create($params['year'], $params['month'])->endOfMonth()->format('Y-m-d');
         }
         $tourList = parent::getList(['execution_date' => ['between', [$firstDate, $lastDate]], 'status' => BaseConstService::TOUR_STATUS_5], ['*'], false, [], ['execution_date' => 'asc']);
-        $erpMerchantId = config('tms.erp_merchant_id');
+        $erpMerchantId = config('tms.erp_merchant_id') . ',' . config('tms.tcp_merchant_id');
         $mesMerchantId = config('tms.eushop_merchant_id');
-        $status = BaseConstService::BATCH_CHECKOUT;
+        $status = BaseConstService::BATCH_CHECKOUT . ',' . BaseConstService::BATCH_CANCEL;
         $companyId = auth()->user()->company_id;
-        $erpBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
-        $mesBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$mesMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
-        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$erpMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND (SELECT d.`id` FROM `tracking_order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status`={$status} AND b.`company_id`={$companyId} GROUP BY b.tour_no";
+        $erpBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id` IN ({$erpMerchantId}) AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN ({$status}) AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
+        $mesBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id`={$mesMerchantId} AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN ({$status}) AND b.`company_id`={$companyId} GROUP BY b.tour_no;";
+        $mixBatchCountSql = "SELECT COUNT(*) as num,tour_no FROM `batch` as b WHERE b.`execution_date` BETWEEN '{$firstDate}' AND '{$lastDate}' AND (SELECT a.`id` FROM `tracking_order` as a WHERE a.`merchant_id` IN ({$erpMerchantId}) AND a.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND (SELECT d.`id` FROM `tracking_order` as d WHERE d.`merchant_id`={$mesMerchantId} AND d.`batch_no`=b.`batch_no` LIMIT 1)<>'' AND b.`status` IN ({$status}) AND b.`company_id`={$companyId} GROUP BY b.tour_no";
         $erpBatchList = array_create_index(collect(DB::select($erpBatchCountSql))->map(function ($value) {
             return (array)$value;
         })->toArray(), 'tour_no');
@@ -1035,8 +1036,8 @@ class TourService extends BaseService
         $merchantList = $this->getMerchantService()->getList(['id' => ['in', collect($trackingOrderList)->pluck('merchant_id')->toArray()]], ['*'], false)->toArray();
         foreach ($trackingOrderList as $k => $v) {
             $trackingOrderList[$k]['out_user_id'] = collect($orderList)->where('tracking_order_no', $v['tracking_order_no'])->first()['out_user_id'] ?? '';
-            $trackingOrderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'];
-            $trackingOrderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'];
+            $trackingOrderList[$k]['sort_id'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['sort_id'] ?? 1000;
+            $trackingOrderList[$k]['merchant_name'] = collect($merchantList)->where('id', $v['merchant_id'])->first()['name'] ?? '';
             $trackingOrderList[$k]['package_quantity'] = collect($packageList)->where('order_no', $v['order_no'])->count();
             $trackingOrderList[$k]['type'] = $trackingOrderList[$k]['type_name'];
             $trackingOrderList[$k]['place_address'] = $trackingOrderList[$k]['place_street'] . ' ' . $trackingOrderList[$k]['place_house_number'];
@@ -1081,5 +1082,48 @@ class TourService extends BaseService
         $dir = 'plan';
         $name = date('Ymd') . $tour['tour_no'] . auth()->user()->id;
         return $this->excelExport($name, $headings, $data, $dir, $params);
+    }
+
+    /**
+     * 获取有序站点列表
+     * @param $tourNo
+     * @param bool $onlyId
+     * @return array
+     */
+    public function getBatchListSortBySortId($tourNo, $onlyId = false)
+    {
+        $batchList = $this->getBatchService()->getlist(['status' => ['in', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT]], 'tour_no' => $tourNo], ['id', 'sort_id'], false)->toArray();
+        $ingBatchList = $this->getBatchService()->getlist(['status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING]], 'tour_no' => $tourNo], ['id', 'sort_id'], false)->toArray();
+        $batchList = array_merge($batchList, $ingBatchList);
+        if ($onlyId == true) {
+            $batchList = array_column($batchList, 'id');
+        }
+        return $batchList;
+    }
+
+    /**
+     * 路线导航
+     * @param $tourNo
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function routeNavigation($tourNo)
+    {
+        return $this->autoOpTour(['tour_no' => $tourNo]);
+    }
+
+    /**
+     * 线路刷新
+     * @param $tourNo
+     * @param array $batchIdList
+     * @throws BusinessLogicException
+     * @throws \Throwable
+     */
+    public function routeRefresh($tourNo, $batchIdList = [])
+    {
+        if (empty($batchList)) {
+            $batchIdList = $this->getBatchListSortBySortId($tourNo, true);
+        }
+        $this->updateBatchIndex(['tour_no' => $tourNo, 'batch_ids' => $batchIdList]);
     }
 }

@@ -69,7 +69,8 @@ class Kernel extends HttpKernel
         'validate' => \App\Http\Middleware\Validate::class,
         'response' => \App\Http\Middleware\Response::class,
         'checktourredislock' => \App\Http\Middleware\CheckTourRedisLock::class,
-        'importCheck' => \App\Http\Middleware\ImportCheck::class
+        'importCheck' => \App\Http\Middleware\ImportCheck::class,
+        'permission' => \App\Http\Middleware\Permission::class
     ];
 
     /**
@@ -88,5 +89,6 @@ class Kernel extends HttpKernel
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
+        \App\Http\Middleware\Permission::class
     ];
 }

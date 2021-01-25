@@ -21,6 +21,7 @@ use App\Services\BaseConstService;
 use App\Services\FeeService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
+use App\Traits\ConstTranslateTrait;
 use App\Traits\TourRedisLockTrait;
 use App\Traits\TourTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -263,12 +264,12 @@ class TourService extends BaseService
             }
         }
         //运单更换状态
-        $rowCount = $this->getTrackingOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::ORDER_STATUS_3], ['status' => BaseConstService::ORDER_STATUS_4]);
+        $rowCount = $this->getTrackingOrderService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['status' => BaseConstService::TRACKING_ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
         //更换包裹状态
-        $rowCount = $this->getTrackingOrderPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::PACKAGE_STATUS_3], ['status' => BaseConstService::PACKAGE_STATUS_4]);
+        $rowCount = $this->getTrackingOrderPackageService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['status' => BaseConstService::TRACKING_ORDER_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('出库失败');
         }
@@ -278,7 +279,7 @@ class TourService extends BaseService
         //若站点下所有运单都取消了，就取消取派站点
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'batch_no' => ['in', array_filter(array_unique($cancelTrackingOrderBatchNoList))]], ['batch_no', 'id'], false)->toArray();
         foreach ($batchList as $batch) {
-            $order = $this->getTrackingOrderService()->getInfo(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::ORDER_STATUS_4], ['id'], false);
+            $order = $this->getTrackingOrderService()->getInfo(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['id'], false);
             if (!empty($order)) continue;
             //若在出库前，没有订单派送，则删除站点
             $rowCount = $this->getBatchService()->delete(['tour_no' => $tour['tour_no'], 'id' => $batch['id']]);
@@ -380,12 +381,11 @@ class TourService extends BaseService
         //存在出库订单,则验证
         if (!empty($params['out_tracking_order_id_list'])) {
             //验证订单是否都可出库
-            $outTrackingOrderIdList = array_filter(explode(',', $params['out_tracking_order_id_list']), function ($value) {
-                return is_numeric($value);
-            });
-            $noOutTrackingOrder = $this->getTrackingOrderService()->getInfo(['id' => ['in', $outTrackingOrderIdList], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_3]], ['order_no', 'tracking_order_no'], false);
-            if (!empty($noOutTrackingOrder)) {
-                throw new BusinessLogicException('订单为[:order_no],运单为[:tracking_order_no]已取消或已删除,不能出库,请先剔除', 1000, ['order_no' => $noOutTrackingOrder->order_no, 'tracking_order_no' => $noOutTrackingOrder->tracking_order_no]);
+            $outTrackingOrderIdList = explode_id_string($params['out_tracking_order_id_list']);
+            $noOutTrackingOrderList = $this->getTrackingOrderService()->getList(['id' => ['in', $outTrackingOrderIdList], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_3]], ['order_no', 'tracking_order_no'], false);
+            if ($noOutTrackingOrderList->isNotEmpty()) {
+                Log::info('no_out_tracking_order_list', $noOutTrackingOrderList->toArray());
+                throw new BusinessLogicException('订单已取消或已删除,不能出库,请先剔除', 5006, [], $noOutTrackingOrderList->toArray());
             }
         }
         //验证运单数量
@@ -422,7 +422,7 @@ class TourService extends BaseService
         }
         $disableOutTrackingOrder = $this->getTrackingOrderService()->getInfo($disableWhere, ['id', 'order_no', 'tracking_order_no'], false);
         if (!empty($disableOutTrackingOrder)) {
-            throw new BusinessLogicException('运单[:tracking_order_no]不可出库', 1000, ['tracking_order_no' => $disableOutTrackingOrder->tracking_order_no]);
+            throw new BusinessLogicException('订单为[:order_no],运单为[:tracking_order_no]不可出库', 1000, ['order_no' => $disableOutTrackingOrder->order_no, 'tracking_order_no' => $disableOutTrackingOrder->tracking_order_no]);
         }
         return $tour;
     }
@@ -502,7 +502,7 @@ class TourService extends BaseService
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
         if ($batch['status'] !== BaseConstService::BATCH_DELIVERING) {
-            throw new BusinessLogicException('状态不正确');
+            throw new BusinessLogicException('当前站点为[:status],无法进行此操作', 1000, ['status' => ConstTranslateTrait::$batchStatusList[$batch['status']]]);
         }
         $line = $this->getLineService()->getInfo(['id' => $tour['line_id']], ['*'], false);
         if (empty($line)) {

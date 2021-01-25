@@ -204,19 +204,21 @@ class HomeService extends BaseService
     public function merchantCount()
     {
         $data = [];
-        $total = ['merchant_name' => __('合计'), 'total_order' => 0, 'pickup_order' => 0, 'pie_order' => 0, 'cancel_order' => 0, 'additional_package' => 0, 'total_recharge' => 0];
+        $total = ['merchant_name' => __('合计'), 'total_order' => 0, 'pickup_order' => 0, 'pie_order' => 0, 'pickup_pie_order' => 0, 'cancel_order' => 0, 'additional_package' => 0, 'total_recharge' => 0];
         $merchantList = $this->getMerchantService()->getList();
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['total_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id']]);
             $data[$k]['pickup_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_1]);
             $data[$k]['pie_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_2]);
+            $data[$k]['pickup_pie_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_3]);
             $data[$k]['cancel_order'] = parent::count(['status' => BaseConstService::ORDER_STATUS_4, 'merchant_id' => $v['id']]);
             $data[$k]['additional_package'] = DB::table('additional_package')->where('company_id', auth()->user()->company_id)->where('merchant_id', $v['id'])->count();
             $data[$k]['total_recharge'] = $this->getRechargeStatisticsService()->sum('total_recharge_amount', ['merchant_id' => $v['id']]);
             $total['total_order'] += $data[$k]['total_order'];
             $total['pickup_order'] += $data[$k]['pickup_order'];
             $total['pie_order'] += $data[$k]['pie_order'];
+            $total['pickup_pie_order'] += $data[$k]['pickup_pie_order'];
             $total['cancel_order'] += $data[$k]['cancel_order'];
             $total['additional_package'] += $data[$k]['additional_package'];
             $total['total_recharge'] += $data[$k]['total_recharge'];

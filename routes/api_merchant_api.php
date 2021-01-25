@@ -18,7 +18,7 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant_api'])->group(funct
     Route::post('me', 'AuthController@me');
     Route::post('order', 'OrderController@store')->name('merchant_api.order.store');//新增订单
     Route::post('cancel-order', 'OrderController@destroy');//删除订单
-    Route::post('order-update-address', 'OrderController@updateAddress');//修改订单地址
+    Route::post('order-update-address', 'OrderController@updateAddressDate');//修改订单地址日期
     Route::post('cancel-all-order', 'OrderController@destroyAll');//批量删除订单
     Route::post('order-out-status', 'OrderController@updateOutStatus');//出库
     Route::post('post-code-date-list', 'LineController@getDateListByPostCode');//获取可选日期
@@ -32,4 +32,5 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant_api'])->group(funct
     Route::post('/again-order', 'OrderController@again'); //再次取派
     Route::post('/end-order', 'OrderController@end');//终止派送
     Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//修改派送日期
+    Route::post('/get-all-line-range', 'LineController@getAllLineRange');//获取所有邮编
 });

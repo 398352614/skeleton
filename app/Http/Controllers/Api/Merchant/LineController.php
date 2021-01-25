@@ -32,4 +32,9 @@ class LineController extends BaseController
     {
         return $this->service->getDateListByPostCode($this->data);
     }
+
+    public function getAllLineRange()
+    {
+        return $this->service->getAllLineRange();
+    }
 }

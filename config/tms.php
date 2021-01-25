@@ -37,6 +37,7 @@ return [
     'cache_tags' => [
         'company' => 'company',
         'address_template' => 'address_template',
+        'permission' => env('PERMISSION_CACHE', 'permission:')
     ],
     'wechat_push' => env('WECHAT_PUSH'),
     'env' => env('APP_ENV'),
@@ -44,8 +45,8 @@ return [
     'admin_id' => env('ADMIN_ID'),
     'erp_merchant_id' => env('ERP_MERCHANT_ID'),
     'eushop_merchant_id' => env('EUSHOP_MERCHANT_ID'),
-
+    'old_company_id' => env('OLD_COMPANY_ID'),
     'admin_email' => env('ADMIN_EMAIL'),
-    'true_app_env' => env('TRUE_APP_ENV')
-
+    'true_app_env' => env('TRUE_APP_ENV'),
+    'tcp_merchant_id' => env('TCP_MERCHANT_ID'),
 ];

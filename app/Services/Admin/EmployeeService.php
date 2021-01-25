@@ -3,9 +3,11 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\Api\Admin\EmployeeListResource;
+use App\Http\Resources\Api\Admin\EmployeeResource;
 use App\Models\Employee;
+use App\Models\Role;
 use App\Traits\HasLoginControlTrait;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeService extends BaseService
 {
@@ -18,18 +20,49 @@ class EmployeeService extends BaseService
 
     public function __construct(Employee $employee)
     {
-        parent::__construct($employee, EmployeeListResource::class, EmployeeListResource::class);
+        parent::__construct($employee, EmployeeResource::class, EmployeeResource::class);
+    }
+
+    public function getPageList()
+    {
+        $this->per_page = $this->request->input('per_page', 10);
+        $employeeIdList = [];
+        if (!empty($this->formData['role_id'])) {
+            $modelHasRolesTable = config('permission.table_names.model_has_roles');
+            $eRoleList = DB::table($modelHasRolesTable)->where('role_id', $this->formData['role_id'])->paginate($this->per_page);
+            $employeeIdList = $eRoleList->pluck('employee_id')->toArray();
+        }
+        if (!empty($employeeIdList)) $this->filters['id'] = ['in', $employeeIdList];
+        $list = parent::getPageList();
+        if (empty($list)) return $list;
+        foreach ($list as &$employee) {
+            $role = $this->getEmployeeRole($employee->id);
+            $employee['role_id'] = $role['id'] ?? null;
+            $employee['role_id_name'] = $role['name'] ?? '';
+        }
+        return $list;
+    }
+
+    public function show($id)
+    {
+        $employee = parent::getInfo(['id' => $id], ['*'], true);
+        if (empty($employee)) return [];
+        $role = $this->getEmployeeRole($employee['id']);
+        $employee['role_id'] = $role['id'] ?? null;
+        $employee['role_id_name'] = $role['name'] ?? '';
+        return $employee;
     }
 
     /**
-     * @param int $institution
-     * @return mixed
+     * 获取员工权限组
+     * @param $employeeId
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
-    public function indexOfInstitution(int $institution)
+    private function getEmployeeRole($employeeId)
     {
-        $this->query->where('institution_id', $institution);
-
-        return parent::getPaginate();
+        $roleEmployee = DB::table(config('permission.table_names.model_has_roles'))->where('employee_id', $employeeId)->first();
+        if (empty($roleEmployee)) return [];
+        return $this->getRoleService()->getInfo(['id' => $roleEmployee->role_id], ['*'], false);
     }
 
     /**
@@ -38,24 +71,24 @@ class EmployeeService extends BaseService
      * @param array $data
      * @throws BusinessLogicException
      */
-    public function createEmployee(array $data)
+    public function store(array $data)
     {
-        $res = $this->create(
+        $role = Role::findById($data['role_id']);
+        $employee = parent::create(
             [
                 'fullname' => $data['fullname'],
                 'username' => $data['username'],
                 'email' => $data['email'],
                 'phone' => $data['phone'] ?? '',
                 'remark' => $data['remark'] ?? '',
-                'auth_group_id' => $data['group_id'] ?? 1,
-                'institution_id' => $data['institution_id'] ?? null,
                 'password' => bcrypt($data['password']),
             ]
         );
-
-        if ($res === false) {
+        if ($employee === false) {
             throw new BusinessLogicException('新建员工失败');
         }
+        //员工添加权限组
+        $employee->syncRoles($role);
     }
 
     /**
@@ -65,24 +98,25 @@ class EmployeeService extends BaseService
      * @param array $data
      * @throws BusinessLogicException
      */
-    public function updateEmployee(int $id, array $data)
+    public function updateById($id, $data)
     {
-        /** @var Employee $employee */
+        $role = Role::findById($data['role_id']);
         $employee = $this->model::findOrFail($id);
-
-        $res = $employee->update([
+        $adminRoleId = $this->getRoleService()->getAdminRoleId();
+        if (($employee->is_admin == 1) && $adminRoleId != $data['role_id']) {
+            throw new BusinessLogicException('超级管理员只能在管理员组');
+        }
+        $rowCount = $employee->update([
             'fullname' => $data['fullname'],
             'username' => $data['username'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? '',
-            'remark' => $data['remark'] ?? '',
-            'auth_group_id' => $data['group_id'] ?? '',
-            'institution_id' => $data['institution_id'] ?? null,
+            'remark' => $data['remark'] ?? ''
         ]);
-
-        if ($res === false) {
+        if ($rowCount === false) {
             throw new BusinessLogicException('修改员工失败');
         }
+        $employee->syncRoles($role);
     }
 
     /**
@@ -120,9 +154,25 @@ class EmployeeService extends BaseService
             throw new BusinessLogicException('无法删除自己');
         }
         $rowCount = parent::delete(['id' => $id]);
-
         if ($rowCount === false) {
             throw new BusinessLogicException('员工删除失败');
         }
+        //删除员工权限
+        $modelHasRolesTable = config('permission.table_names.model_has_roles');
+        $rowCount = DB::table($modelHasRolesTable)->where('employee_id', $id)->delete();
+        if ($rowCount === false) {
+            throw new BusinessLogicException('员工删除失败');
+        }
+    }
+
+    /**
+     * 获取超级管理员
+     * @return mixed|null
+     */
+    public function getAdminEmployeeId()
+    {
+        $companyId = auth()->user()->company_id;
+        $adminEmployee = $this->model->newQuery()->where('company_id', $companyId)->where('is_admin', 1)->first();
+        return $adminEmployee->id ?? null;
     }
 }

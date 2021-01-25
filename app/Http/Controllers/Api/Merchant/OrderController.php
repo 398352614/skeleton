@@ -10,6 +10,7 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Exceptions\BusinessLogicException;
+use App\Jobs\OrderStore;
 use App\Services\BaseConstService;
 use App\Services\Merchant\OrderService;
 use Illuminate\Database\Eloquent\Builder;
@@ -121,9 +122,9 @@ class OrderController extends OrderBaseController
      * @return array
      * @throws BusinessLogicException
      */
-    public function updateAddress($id)
+    public function updateAddressDate($id)
     {
-        return $this->service->updateAddress($id, $this->data);
+        return $this->service->updateAddressDate($id, $this->data);
     }
 
     /**
@@ -333,6 +334,6 @@ class OrderController extends OrderBaseController
      */
     public function assignToBatch($id)
     {
-        return $this->service->assignToBatch($id,$this->data);
+        return $this->service->assignToBatch($id, $this->data);
     }
 }

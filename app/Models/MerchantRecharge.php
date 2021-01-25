@@ -75,8 +75,8 @@ class MerchantRecharge extends BaseModel
             return '';
         } else {
             $merchant = DB::table('merchant')->where('id', '=', $this->merchant_id)->first();
-            if (empty($merhcant)) {
-                return 0;
+            if (empty($merchant)) {
+                return '';
             } else {
                 return $merchant->name;
             }

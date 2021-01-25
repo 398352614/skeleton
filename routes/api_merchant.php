@@ -55,13 +55,13 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //删除
         Route::delete('/{id}', 'OrderController@destroy');
         //订单追踪
-        Route::get('/{id}/track','OrderController@track');
+        Route::get('/{id}/track', 'OrderController@track');
         //批量更新电话日期
-        Route::post('/update-phone-date-list','OrderController@updateByApiList');
+        Route::post('/update-phone-date-list', 'OrderController@updateByApiList');
         //获取订单的运单列表
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList');
         //修改订单地址
-        Route::put('/{id}/update-address', 'OrderController@updateAddress');
+        Route::put('/{id}/update-address-date', 'OrderController@updateAddressDate');
         //获取可分配路线日期
         Route::get('/{id}/get-date', 'OrderController@getAbleDateList');
         //通过地址获取可分配的路线日期列表
@@ -159,10 +159,12 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('getLocation', 'CommonController@getLocation');
         //获取所有国家列表
         Route::get('getCountryList', 'CommonController@getCountryList');
-
+        //获取所有邮编列表
         Route::get('get-postcode', 'CommonController@getPostcode');
-
+        //字典
         Route::get('dictionary', 'CommonController@dictionary');
+        //获取所有线路范围
+        Route::get('line-range', 'LineController@getAllLineRange');
     });
 
     //取件线路
