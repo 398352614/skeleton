@@ -14,8 +14,10 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\TrackingOrderInfoResource;
 use App\Http\Resources\Api\Admin\TrackingOrderResource;
 use App\Jobs\AddOrderPush;
+use App\Models\Driver;
 use App\Models\Order;
 use App\Models\TrackingOrder;
+use App\Notifications\TourAddTrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
@@ -25,6 +27,7 @@ use App\Traits\ExportTrait;
 use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Notification;
 
 /**
  * Class TrackingOrderService
@@ -716,7 +719,6 @@ class TrackingOrderService extends BaseService
      * 批量运单分配至指定取件线路
      * @param $params
      * @throws BusinessLogicException
-     * @throws \WebSocket\BadOpcodeException
      */
     public function assignListTour($params)
     {
@@ -754,6 +756,8 @@ class TrackingOrderService extends BaseService
         if ($tour['expect_pickup_quantity'] + $count > $line['pickup_max_count']) {
             throw new BusinessLogicException('取件数量超过线路取件运单最大值');
         }
+        //获取取件线路的站点列表
+        $dbBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['id', 'batch_no', 'place_fullname'], false);
         /*******************************************2.加单*************************************************************/
         foreach ($dbTrackingOrderList as $dbTrackingOrder) {
             $trackingOrder = $dbTrackingOrder;
@@ -762,7 +766,10 @@ class TrackingOrderService extends BaseService
         }
 
         //加单推送
-        dispatch(new AddOrderPush($dbTrackingOrderList, $tour['driver_id']));
+        //dispatch(new AddOrderPush($dbTrackingOrderList, $tour['driver_id']));
+        if (!empty($tour['driver_id']) && (in_array($tour['status'], [BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]))) {
+            Notification::send(Driver::findOrFail($tour['driver_id']), new TourAddTrackingOrder($dbTrackingOrderList, $dbBatchList->toArray()));
+        }
     }
 
 

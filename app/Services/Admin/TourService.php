@@ -434,16 +434,18 @@ class TourService extends BaseService
     /**
      * 移除站点
      * @param $batch
-     * @return string
+     * @param $isCancelBatch
+     * @return array
      * @throws BusinessLogicException
      */
-    public function removeBatch($batch)
+    public function removeBatch($batch, $isCancelBatch = false)
     {
         $info = parent::getInfo(['tour_no' => $batch['tour_no']], ['id'], false);
         if (empty($info)) {
-            return 'true';
+            return [];
         }
-        $info = $this->getInfoOfStatus(['tour_no' => $batch['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
+        $status = $isCancelBatch ? [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4] : [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2];
+        $info = $this->getInfoOfStatus(['tour_no' => $batch['tour_no']], true, $status, true);
         $quantity = intval($info['expect_pickup_quantity']) + intval($info['expect_pie_quantity']);
         $batchQuantity = intval($batch['expect_pickup_quantity']) + intval($batch['expect_pie_quantity']);
         //当站点中不存在其他运单时,删除站点;若还存在其他运单,则只移除运单
@@ -456,7 +458,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取件移除站点失败，请重新操作');
         }
-        return 'true';
+        return $info;
     }
 
     /**

@@ -49,7 +49,7 @@ class OrderService extends BaseService
         'tracking_order_no' => ['like', 'tracking_order_no'],
         'out_order_no' => ['like', 'out_order_no'],
         'out_group_order_no' => ['like', 'out_group_order_no'],
-        'order_no'=>['like', 'order_no'],
+        'order_no' => ['like', 'order_no'],
     ];
 
     public $headings = [
@@ -340,8 +340,29 @@ class OrderService extends BaseService
         $cancelOrderNoList = array_column($cancelTrackingOrderList, 'order_no');
         $cancelOrderList = $this->filterCancelOrderNoList($cancelOrderNoList, $cancelTrackingOrderList);
         foreach ($cancelOrderList as $cancelOrder) {
-            $this->end($cancelOrder['id']);
+            $this->endByCancelBatch($cancelOrder['id']);
         }
+    }
+
+    /**
+     * 站点取消取派，订单自动终止
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function endByCancelBatch($id)
+    {
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['status' => BaseConstService::PACKAGE_STATUS_4]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        OrderTrailService::orderStatusChangeCreateTrail($dbOrder, BaseConstService::ORDER_TRAIL_CLOSED);
+        //取消通知
+        event(new OrderCancel($dbOrder['order_no'], $dbOrder['out_order_no']));
     }
 
     /**

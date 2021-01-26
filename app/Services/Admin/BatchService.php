@@ -6,12 +6,16 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\BatchInfoResource;
 use App\Http\Resources\Api\Admin\BatchResource;
 use App\Models\Batch;
+use App\Models\Driver;
+use App\Notifications\CancelBatch;
+use App\Notifications\TourAddTrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class BatchService extends BaseService
 {
@@ -337,7 +341,7 @@ class BatchService extends BaseService
      */
     public function cancel($id)
     {
-        $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
+        $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING], true);
         $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]]], ['*'], false)->toArray();
         //站点删除
         $rowCount = parent::delete(['id' => $info['id']]);
@@ -345,12 +349,17 @@ class BatchService extends BaseService
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //运单取消取派
-        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //运单包裹取消取派
-        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取消取派失败，请重新操作');
+        }
+        //运单材料取消取派
+        $rowCount = $this->getTrackingOrderMaterialService()->update(['batch_no' => $info['batch_no']], ['batch_no' => '', 'tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
@@ -358,8 +367,11 @@ class BatchService extends BaseService
         $this->getOrderService()->autoEnd($trackingOrderList);
         //若存在取件线路编号,则移除站点
         if (!empty($info['tour_no'])) {
-            $this->getTourService()->removeBatch($info);
+            $tour = $this->getTourService()->removeBatch($info, true);
             $this->getTourService()->reCountAmountByNo($info['tour_no']);
+            if (!empty($tour['driver_id']) && in_array($tour['status'], [BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4])) {
+                Notification::send(Driver::findOrFail($tour['driver_id']), new CancelBatch($info));
+            }
         }
 
         TrackingOrderTrailService::storeAllByTrackingOrderList($trackingOrderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);

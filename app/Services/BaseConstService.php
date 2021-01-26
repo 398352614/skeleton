@@ -370,6 +370,10 @@ class BaseConstService
     const NOTIFY_PACKAGE_INFO = 'package-info';   //发送包裹信息
     const NOTIFY_PACKAGE_PICK_OUT = 'package-pick-out';   //包裹入库分拣
 
+    //push类型
+    const PUSH_TOUR_ADD_ORDER = 'add_tracking_order';   //线路加单
+    const PUSH_CANCEL_BATCH = 'cancel-batch';           //站点取消取派
+
 
     //商户类型
     const MERCHANT_TYPE_1 = 1;
