@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Channels\JPushChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -50,7 +51,7 @@ class OrderChange extends Notification
      */
     public function via($notifiable)
     {
-        return ['database', 'jpush'];
+        return [JPushChannel::class];
     }
 
     /**
@@ -63,9 +64,10 @@ class OrderChange extends Notification
     {
         return $payload
             ->setPlatform('all')
-            ->addRegistrationId($notifiable->id)
+            //->addRegistrationId((string)($notifiable->id))
+            ->addAlias((string)($notifiable->id))
             ->message('订单推送', $this->getMessage())
-            ->options(['apns_production' => config('j-push.production')]);
+            ->options(['apns_production' => config('jpush.production')]);
     }
 
     /**

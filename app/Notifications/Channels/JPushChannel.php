@@ -6,7 +6,7 @@
  * Time: 14:22
  */
 
-namespace App\Channels\Notifications;
+namespace App\Notifications\Channels;
 
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
