@@ -60,7 +60,7 @@ class GoogleApiService
     public function InitTour(Tour $tour)
     {
         $api = '/api/init-line';
-        $driver_location = $tour->driver_location; //TODO: 此处司机位置如何获取
+        $driver_location = $tour->driver_location;
         $driver_location['code'] = create_unique($tour->company_id);
         $batchs = [$driver_location]; // 将司机位置放在序列中的第一位
 
