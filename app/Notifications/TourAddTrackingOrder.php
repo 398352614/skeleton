@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use JPush\PushPayload;
 
 class TourAddTrackingOrder extends Notification implements ShouldQueue
@@ -118,7 +119,7 @@ class TourAddTrackingOrder extends Notification implements ShouldQueue
         $packageList = collect($packageList)->groupBy('order_no')->toArray();
         foreach ($trackingOrderList as &$trackingOrder) {
             $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']] ?? '';
-            $trackingOrder = Arr::only($trackingOrder, ['order_no', 'special_remark']);
+            $trackingOrder = Arr::only($trackingOrder, ['order_no', 'tracking_order_no', 'special_remark', 'package_list']);
         }
         unset($packageList);
         return $trackingOrderList;
@@ -131,10 +132,11 @@ class TourAddTrackingOrder extends Notification implements ShouldQueue
      */
     private function getMaterialList($trackingOrderList)
     {
-        $materialList = TrackingOrderMaterial::query()
+        $query = TrackingOrderMaterial::query();
+        $materialList = $query
             ->whereIn('tracking_order_no', array_column($trackingOrderList, 'tracking_order_no'))
-            ->get(['name', 'code', DB::raw('SUM(expect_quantity) as expect_quantity'), DB::raw('0 as actual_quantity')])
             ->groupBy('code')
+            ->get(['name', 'code', DB::raw('SUM(expect_quantity) as expect_quantity'), DB::raw('0 as actual_quantity')])
             ->toArray();
         $materialList = Arr::where($materialList, function ($material) {
             return !empty($material['code']) && !empty($material['expect_quantity']);
