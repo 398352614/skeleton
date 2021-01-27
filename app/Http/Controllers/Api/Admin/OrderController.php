@@ -207,7 +207,18 @@ class OrderController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function neutralize($id){
+    public function neutralize($id)
+    {
         return $this->service->neutralize($id);
+    }
+
+    /**
+     * 运价估算
+     * @return array|void
+     * @throws BusinessLogicException
+     */
+    public function priceCount()
+    {
+        return $this->service->priceCount($this->data);
     }
 }

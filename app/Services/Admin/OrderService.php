@@ -18,6 +18,7 @@ use App\Http\Resources\Api\Admin\OrderResource;
 use App\Models\Order;
 use App\Models\OrderImportLog;
 use App\Models\TrackingOrder;
+use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Services\CommonService;
 use App\Services\OrderTrailService;
@@ -575,6 +576,22 @@ class OrderService extends BaseService
     }
 
     /**
+     * 运价计算
+     * @param $order
+     * @return array|void
+     * @throws BusinessLogicException
+     */
+    public function priceCount($order)
+    {
+        if (config('tms.true_app_env') == 'deploy') {
+            $order['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($order);
+        } else {
+            $order['distance'] = 0;
+        }
+        return $this->getTransportPriceService()->priceCount($order);
+    }
+
+    /**
      * 验证
      * @param $params
      * @param $orderNo
@@ -616,10 +633,14 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('外部订单号已存在', 1005, [], ['order_no' => $dbOrder->order_no, 'out_order_no' => $dbOrder->out_order_no, 'status' => $dbOrder->status]);
             }
         }
+        //运价计算
+        $params = $this->priceCount($params);
     }
 
     /**
      * 添加货物列表
+     * @param $params
+     * @param int $status
      * @throws BusinessLogicException
      */
     private function addAllItemList($params, $status = BaseConstService::ORDER_STATUS_1)
@@ -633,7 +654,7 @@ class OrderService extends BaseService
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
-                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark', 'is_auth']);
+                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'count_settlement_amount', 'expect_quantity', 'remark', 'is_auth']);
                 return $collectItem
                     ->put('order_no', $params['order_no'])
                     ->put('merchant_id', $params['merchant_id'])

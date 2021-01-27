@@ -61,7 +61,7 @@ class StockService extends BaseService
 
 
     /**
-     * 分拣入库
+     * 包裹分拣入库
      * @param $packageNo
      * @return array
      * @throws BusinessLogicException

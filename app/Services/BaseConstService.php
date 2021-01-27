@@ -478,4 +478,21 @@ class BaseConstService
     const ROUTE_RETRY_MAX_TIMES = 3;
     //线路重推间隔时间(分钟)
     const ROUTE_RETRY_INTERVAL_TIME = 1;
+
+    //固定值法
+    const ONLY_START_PRICE = 3;
+
+    //操作类型
+    const OPERATION_STORE = 1;
+    const OPERATION_UPDATE = 2;
+    const OPERATION_DESTROY = 3;
+    const OPERATION_STATUS_ON = 4;
+    const OPERATION_STATUS_OFF = 5;
+
+    //运价类型
+    const TRANSPORT_PRICE_TYPE_1 = 1;
+    const TRANSPORT_PRICE_TYPE_2 = 2;
+
+    //无限
+    const INFINITY = 999999999;
 }

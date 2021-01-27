@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 运价表
  * Class Employee
@@ -47,6 +49,7 @@ class TransportPrice extends BaseModel
         'company_id',
         'name',
         'starting_price',
+        'type',
         'remark',
         'status',
         'created_at',
@@ -61,6 +64,15 @@ class TransportPrice extends BaseModel
     protected $hidden = [
 
     ];
+
+    protected $appends = [
+        'type_name'
+    ];
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::transportPriceTypeList($this->type);
+    }
 
     /**
      * The attributes that should be mutated to dates.

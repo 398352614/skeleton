@@ -162,8 +162,14 @@ class PackageService extends BaseService
         return !empty($result) ? $result->toArray() : [];
     }
 
+    /**
+     * 填充包裹重量
+     * @param $packageList
+     * @throws BusinessLogicException
+     */
     public function fillWeightInfo($packageList)
     {
+        //todo 更新重量
         dispatch(new SendPackageInfo($packageList));
     }
 }

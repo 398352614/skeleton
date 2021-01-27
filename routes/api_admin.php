@@ -114,6 +114,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index')->name('order.third-party-log');
         //无效化已完成订单（用以新增同号订单）
         Route::get('/{id}/neutralize', 'OrderController@neutralize')->name('order.neutralize');
+        //运价估算
+        Route::post('/price-count', 'OrderController@priceCount')->name('order.store');
     });
 
     //物流查询
@@ -677,8 +679,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'TransportPriceController@update')->name('transport-price.update');
         //启用/禁用
         Route::put('/{id}/status', 'TransportPriceController@status')->name('transport-price.status');
-        //价格测试
-        Route::get('/{id}/test', 'TransportPriceController@getPriceResult')->name('transport-price.test');
+        //运价估算
+        Route::post('/{id}/test', 'TransportPriceController@priceCount')->name('transport-price.test');
+        //运价操作日志
+        Route::get('/{id}/log', 'TransportPriceController@operationLogIndex')->name('transport-price.log');
     });
 
     Route::prefix('version')->group(function () {

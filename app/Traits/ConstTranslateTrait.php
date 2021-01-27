@@ -69,6 +69,8 @@ use Illuminate\Support\Facades\App;
  * @method static tourDelayTypeList($args = null)
  * @method static trackStatusList($args = null)
  * @method static stockExceptionStatusList($args = null)
+ * @method static operationList($args = null)
+ * @method static transportPriceTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -435,10 +437,24 @@ trait ConstTranslateTrait
         BaseConstService::TRACK_STATUS_3 => '取件成功，派件中'
     ];
 
-    public static $stockExceptionStatusList =[
+    public static $stockExceptionStatusList = [
         BaseConstService::STOCK_EXCEPTION_STATUS_1 => '未审核',
         BaseConstService::STOCK_EXCEPTION_STATUS_2 => '审核成功',
         BaseConstService::STOCK_EXCEPTION_STATUS_3 => '审核失败'
+    ];
+
+    //编号类型
+    public static $operationList = [
+        BaseConstService::OPERATION_STORE => '新增',
+        BaseConstService::OPERATION_UPDATE => '修改',
+        BaseConstService::OPERATION_DESTROY => '删除',
+        BaseConstService::OPERATION_STATUS_ON => '启用禁用',
+        BaseConstService::OPERATION_STATUS_OFF => '启用禁用',
+    ];
+
+    public static $transportPriceTypeList = [
+        BaseConstService::TRANSPORT_PRICE_TYPE_1 => '阶梯乘积值计算（固定费用+（每单位重量价格*重量价格）*（每单位里程价格*里程价格））',
+        BaseConstService::TRANSPORT_PRICE_TYPE_2 => '阶梯固定值计算（固定费用+（重量价格档）*（里程价格档））',
     ];
 
     /**
