@@ -872,7 +872,7 @@ class TrackingOrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    private function fillWarehouseInfo(&$params, $merchantAlone = BaseConstService::NO)
+    public function fillWarehouseInfo(&$params, $merchantAlone = BaseConstService::NO)
     {
         //获取线路
         $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);

@@ -43,7 +43,7 @@ class GoogleApiDistanceService
     protected function getDistance($url, $from, $to)
     {
         $from = is_array($from) ? implode(';', array_filter($from)) : $from;
-        $to = implode(';', array_filter($to));
+        $to = is_array($to) ? implode(';', array_filter($to)) : $to;
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
         $url = $url . '?' . $query;
         if ((config('tms.true_app_env') === 'develop')) {
@@ -76,7 +76,6 @@ class GoogleApiDistanceService
                 $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
             }
             $to = implode(',', [$order['place_lat'], $order['place_lon']]);
-            dd($this->url,$from,$to);
             $res = $this->getDistance($this->url, $from, $to);
             $distance = $res['result']['elements'][0]['distance']['value'];
 /*        } catch (\Exception $e) {
