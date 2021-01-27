@@ -84,7 +84,7 @@ class CancelBatch extends Notification implements ShouldQueue
 
     public function getData()
     {
-        return [];
+        return $this->batch;
     }
 
     /**
