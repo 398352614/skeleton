@@ -35,21 +35,19 @@ class BackupDatabase extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->process = new Process([
-            sprintf(
-                'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s | gzip > %s',
-                config('database.connections.mysql.host'),
-                config('database.connections.mysql.username'),
-                config('database.connections.mysql.password'),
-                config('database.connections.mysql.database'),
+        $this->process = new Process(sprintf(
+            'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s | gzip > %s',
+            config('database.connections.mysql.host'),
+            config('database.connections.mysql.username'),
+            config('database.connections.mysql.password'),
+            config('database.connections.mysql.database'),
 
-                config('database.connections.mysql.database') . '.telescope_entries',
-                config('database.connections.mysql.database') . '.telescope_entries_tags',
-                config('database.connections.mysql.database') . '.telescope_monitoring',
+            config('database.connections.mysql.database') . '.telescope_entries',
+            config('database.connections.mysql.database') . '.telescope_entries_tags',
+            config('database.connections.mysql.database') . '.telescope_monitoring',
 
-                storage_path('app/backup/backup.sql.gz')
-            )
-        ]);
+            storage_path('app/backup/backup.sql.gz')
+        ));
     }
 
     /**
