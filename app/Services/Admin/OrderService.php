@@ -583,6 +583,7 @@ class OrderService extends BaseService
      */
     public function priceCount($order)
     {
+        $this->check($order);
         if (config('tms.true_app_env') !== 'deploy') {
             $order['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($order);
         } else {

@@ -76,6 +76,7 @@ class GoogleApiDistanceService
                 $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
             }
             $to = implode(',', [$order['place_lat'], $order['place_lon']]);
+            dd($this->url,$from,$to);
             $res = $this->getDistance($this->url, $from, $to);
             $distance = $res['result']['elements'][0]['distance']['value'];
 /*        } catch (\Exception $e) {
