@@ -343,8 +343,12 @@ class BatchService extends BaseService
     {
         $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING], true);
         $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]]], ['*'], false)->toArray();
-        //站点删除
-        $rowCount = parent::delete(['id' => $info['id']]);
+        //若是待分配,已分配,待出库,则删除;若是取派中，则取消取派
+        if (in_array($info['status'], [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT])) {
+            $rowCount = parent::delete(['id' => $info['id']]);
+        } else {
+            $rowCount = parent::update(['id' => $info['id']], ['status' => BaseConstService::BATCH_CANCEL]);
+        }
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
