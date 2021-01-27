@@ -53,7 +53,7 @@ class TourAddTrackingOrder extends Notification implements ShouldQueue
      *
      * @var int
      */
-    public $delay = 30;
+    public $delay = 5;
 
     public $trackingOrderList;
 

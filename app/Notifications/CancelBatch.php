@@ -39,7 +39,7 @@ class CancelBatch extends Notification implements ShouldQueue
      *
      * @var int
      */
-    public $timeout = 30;
+    public $timeout = 5;
 
     /**
      * 任务可以尝试的最大次数。
