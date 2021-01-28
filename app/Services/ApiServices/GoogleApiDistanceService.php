@@ -52,7 +52,7 @@ class GoogleApiDistanceService
             $options = [];
         }
         $res = $this->client->request('GET', $url, $options);
-        if (!isset($res['status']) || ($res['status'] != 0)) {
+        if (!isset($res['status']) || ($res['status'] != 'OK')) {
             Log::info('google-api请求url', ['url' => $url]);
             Log::info('google-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('google-api请求报错');
@@ -77,7 +77,7 @@ class GoogleApiDistanceService
             }
             $to = implode(',', [$order['place_lat'], $order['place_lon']]);
             $res = $this->getDistance($this->url, $from, $to);
-            $distance = $res['result']['elements'][0]['distance']['value'];
+            $distance = $res['rows']['elements'][0]['distance']['value'];
         } catch (\Exception $e) {
             throw new BusinessLogicException('可能由于网络原因，无法估算距离');
         }
