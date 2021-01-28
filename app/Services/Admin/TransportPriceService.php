@@ -480,7 +480,7 @@ class TransportPriceService extends BaseService
     {
         foreach ($data['package_list'] as $k => $package) {
             $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
-            $distancePrice = $this->getDistancePrice($package['distance'], $transportPrice);
+            $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
             //公式
             $data['package_list'][$k]['count_settlement_amount'] =
                 floatval($weightPrice) *
