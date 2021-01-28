@@ -46,12 +46,14 @@ class GoogleApiDistanceService
         $to = is_array($to) ? implode(';', array_filter($to)) : $to;
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
         $url = $url . $query;
+        Log::info('路由' . $url);
         if ((config('tms.true_app_env') === 'develop')) {
             $options = ['proxy' => ['http' => config('tms.http_proxy'), 'https' => config('tms.https_proxy')]];
         } else {
             $options = [];
         }
         $res = $this->client->request('GET', $url, $options);
+        dd($res);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
             Log::info('google-api请求url', ['url' => $url]);
             Log::info('google-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
