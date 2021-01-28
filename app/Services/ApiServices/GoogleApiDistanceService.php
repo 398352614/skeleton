@@ -52,6 +52,7 @@ class GoogleApiDistanceService
         } else {
             $options = [];
         }
+        dd($url);
         $res = $this->client->request('GET', $url, $options);
         dd($res);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
