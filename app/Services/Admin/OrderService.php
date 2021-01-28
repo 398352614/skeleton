@@ -632,7 +632,7 @@ class OrderService extends BaseService
         }
         //运价计算
         if (config('tms.true_app_env') !== 'deploy') {
-            $order['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+            $order['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params)/1000;
         } else {
             $order['distance'] = 0;
         }

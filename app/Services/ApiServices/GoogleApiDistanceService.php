@@ -45,14 +45,16 @@ class GoogleApiDistanceService
         $from = is_array($from) ? implode(';', array_filter($from)) : $from;
         $to = is_array($to) ? implode(';', array_filter($to)) : $to;
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
-        $url = $url . '?' . $query;
+        $url = $url . $query;
+        Log::info('路由' . $url);
         if ((config('tms.true_app_env') === 'develop')) {
             $options = ['proxy' => ['http' => config('tms.http_proxy'), 'https' => config('tms.https_proxy')]];
         } else {
             $options = [];
         }
         $res = $this->client->request('GET', $url, $options);
-        if (!isset($res['status']) || ($res['status'] != 0)) {
+        dd($res);
+        if (!isset($res['status']) || ($res['status'] != 'OK')) {
             Log::info('google-api请求url', ['url' => $url]);
             Log::info('google-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('google-api请求报错');
@@ -77,7 +79,7 @@ class GoogleApiDistanceService
             }
             $to = implode(',', [$order['place_lat'], $order['place_lon']]);
             $res = $this->getDistance($this->url, $from, $to);
-            $distance = $res['result']['elements'][0]['distance']['value'];
+            $distance = $res['rows']['elements'][0]['distance']['value'];
 /*        } catch (\Exception $e) {
             throw new BusinessLogicException('可能由于网络原因，无法估算距离');
         }*/
