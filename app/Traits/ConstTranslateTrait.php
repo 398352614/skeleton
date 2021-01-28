@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\App;
  * @package App\Traits
  * @method static statusList($args = null)
  * @method static noTypeList($args = null)
+ * @method static shortCutList($args = null)
  * @method static lineRuleList($args = null)
  * @method static printTemplateList($args = null)
  * @method static weekList($args = null)
@@ -89,6 +90,17 @@ trait ConstTranslateTrait
         BaseConstService::RECHARGE_NO_TYPE => '充值单号规则',
         BaseConstService::TRACKING_ORDER_NO_TYPE => '运单单号规则',
         BaseConstService::STOCK_EXCEPTION_NO_TYPE => '入库异常编号规则',
+    ];
+
+    //快捷方式列表
+    public static $shortCutList = [
+        BaseConstService::SHORT_CUT_ORDER_STORE => '下单',
+        BaseConstService::SHORT_CUT_ORDER_INDEX => '订单',
+        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => '线路规划',
+        BaseConstService::SHORT_CUT_TRACKING_INDEX => '运单',
+        BaseConstService::SHORT_CUT_BATCH_INDEX => '站点',
+        BaseConstService::SHORT_CUT_TOUR_INDEX => '线路任务',
+        BaseConstService::SHORT_CUT_TOUR_DISPATCH => '智能调度',
     ];
 
     //线路分配规则

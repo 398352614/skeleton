@@ -35,6 +35,15 @@ class BaseConstService
     const PERMISSION_TYPE_1 = 1;
     const PERMISSION_TYPE_2 = 2;
 
+    //快捷方式,值与数据库权限表一致
+    const SHORT_CUT_ORDER_STORE = 'order.store';
+    const SHORT_CUT_ORDER_INDEX = 'order.index';
+    const SHORT_CUT_LINE_POST_CODE_INDEX = 'line.post-code-index';
+    const SHORT_CUT_TRACKING_INDEX = 'tracking-order.index';
+    const SHORT_CUT_BATCH_INDEX = 'batch.index';
+    const SHORT_CUT_TOUR_INDEX = 'tour.index';
+    const SHORT_CUT_TOUR_DISPATCH = 'tour.intelligent-scheduling';
+
     //是否需要验证
     const IS_AUTH_1 = 1;
     const IS_AUTH_2 = 2;

@@ -61,11 +61,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/merchant', 'HomeController@merchantCount')->name('statistics.home');
         //商户统计概览
         Route::get('/merchant-total', 'HomeController@merchantTotalCount')->name('statistics.home');
-    });
-
-    //订单管理
-    Route::prefix('order-import')->group(function () {
-
+        //获取快捷方式列表
+        Route::get('/short-cut', 'HomeController@getShortCut')->name('statistics.home');
     });
 
     //订单管理

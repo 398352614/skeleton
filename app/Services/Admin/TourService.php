@@ -45,7 +45,7 @@ class TourService extends BaseService
         'tour_no' => ['like', 'tour_no'],
         'driver_name' => ['like', 'driver_name'],
         'driver_id' => ['=', 'driver_id'],
-        'line_name,driver_name' => ['like', 'key_word'],
+        'tour_no,line_name,driver_name' => ['like', 'key_word']
     ];
 
     protected $headings = [
@@ -157,6 +157,13 @@ class TourService extends BaseService
      */
     public function getPageList()
     {
+        if (!empty($this->formData['is_dispatch'])) {
+            if (intval($this->formData['is_dispatch']) == 1) {
+                $this->query->where('expect_distance', '>', 0);
+            } else {
+                $this->query->where('expect_distance', '=', 0);
+            }
+        }
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
             unset($this->filters['status']);
         }

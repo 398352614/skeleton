@@ -6,6 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
 use App\Models\Tour;
 use App\Services\BaseConstService;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -247,5 +248,18 @@ class HomeService extends BaseService
         }
         $data = array_values($data);
         return $data;
+    }
+
+    public function getShortCut()
+    {
+        $shortCutList = ConstTranslateTrait::formatList(ConstTranslateTrait::$shortCutList);
+        $permissionList = auth()->user()->getAllPermissions()->filter(function ($permission, $key) {
+            return ($permission['type'] == 2);
+        })->keyBy('route_as')->toArray();
+        if (empty($permissionList)) return $shortCutList;
+        $shortCutList = array_filter($shortCutList, function ($shortCunt) use ($permissionList) {
+            return !empty($permissionList[$shortCunt['id']]);
+        });
+        return $shortCutList;
     }
 }

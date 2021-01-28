@@ -90,4 +90,9 @@ class HomeController extends BaseController
     {
         return $this->service->merchantTotalCount();
     }
+
+    public function getShortCut()
+    {
+        return $this->service->getShortCut();
+    }
 }
