@@ -71,7 +71,7 @@ class GoogleApiDistanceService
      */
     public function getDistanceByOrder($order)
     {
-        try {
+/*        try {*/
             if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
                 $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
             } else {
@@ -80,9 +80,9 @@ class GoogleApiDistanceService
             $to = implode(',', [$order['place_lat'], $order['place_lon']]);
             $res = $this->getDistance($this->url, $from, $to);
             $distance = $res['rows']['elements'][0]['distance']['value'];
-        } catch (\Exception $e) {
+/*        } catch (\Exception $e) {
             throw new BusinessLogicException('可能由于网络原因，无法估算距离');
-        }
+        }*/
         return $distance;
     }
 }
