@@ -368,6 +368,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/track', 'RouteTrackingController@show')->name('tour.track');
         //线路追踪
         Route::get('/all-track', 'RouteTrackingController@index')->name('tour.track');
+        //导出站点地图
+        Route::get('/{id}/batchPng', 'TourController@batchPng');
 
     });
 

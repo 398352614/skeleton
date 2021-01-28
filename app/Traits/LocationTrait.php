@@ -172,7 +172,7 @@ trait LocationTrait
         }
         //$url = 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=127689096,1321755151&fm=15&gp=0.jpg';
         $url = config('tms.map_url') . 'staticmap?size=640x640&maptype=roadmap' . $markers . '&key=' . config('tms.map_key');
-        try {
+//        try {
             if ((App::environment() === 'development') || (App::environment() === 'local')) {
                 $options = ['proxy' => ['http' => config('tms.vpn'), 'https' => config('tms.vpn')]];
             } else {
@@ -180,9 +180,9 @@ trait LocationTrait
             }
             $client = new \GuzzleHttp\Client();
             $res = $client->request('GET', $url, $options);
-        } catch (\Exception $ex) {
-            throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
-        }
+//        } catch (\Exception $ex) {
+//            throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
+//        }
         $map['image'] = $res->getBody();
         $map['dir'] = 'tour';
         $map['name'] = $name;
