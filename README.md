@@ -283,3 +283,6 @@ php artisan unlock:tour {tour_no}
 ##### 4.3.3 上传文件目录结构
 用户上传的文件在app/public/storage目录下，根据不同端分为admin，driver，merchant三个文件夹，在此之下再根据文件类型分文件夹，例如，barcode，excel，flie等。结构形如app/public/storage/admin/excel。一般情况下不要改变该结构，不要在文件类型目录下再建更多子目录，那样做的话会难以管理。
 
+## 附录：
+### 1,新增权限
+

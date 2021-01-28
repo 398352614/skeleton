@@ -164,6 +164,7 @@ class TransportPriceService extends BaseService
         $data = [
             'company_id' => auth()->user()->id,
             'operation' => $operation,
+            'operator' => auth()->user()->fullname,
             'transport_price_id' => $id,
             'content' => json_encode($content),
             'second_content' => json_encode($secondContent)

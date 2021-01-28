@@ -115,7 +115,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //无效化已完成订单（用以新增同号订单）
         Route::get('/{id}/neutralize', 'OrderController@neutralize')->name('order.neutralize');
         //运价估算
-        Route::post('/price-count', 'OrderController@priceCount')->name('order.store');
+        Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
     });
 
     //物流查询
