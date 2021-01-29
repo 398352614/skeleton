@@ -16,6 +16,7 @@ use App\Services\BaseServices\XLDirectionService;
 use App\Services\TrackingOrderTrailService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
+use App\Traits\LocationTrait;
 use App\Traits\TourRedisLockTrait;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -1133,5 +1134,29 @@ class TourService extends BaseService
             $batchIdList = $this->getBatchListSortBySortId($tourNo, true);
         }
         $this->updateBatchIndex(['tour_no' => $tourNo, 'batch_ids' => $batchIdList]);
+    }
+
+    /**
+     * 导出站点地图
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function batchPng($id)
+    {
+        $tourInfo = $this->getInfo(['id' => $id], ['*'], false);
+        if (empty($tourInfo)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info = $this->getBatchService()->getList(['tour_no' => $tourInfo['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
+        $params[0]['lon'] = $tourInfo['warehouse_lon'];
+        $params[0]['lat'] = $tourInfo['warehouse_lat'];
+        for ($i = 1; $i <= count($info); $i++) {
+            $params[$i]['lon'] = $info[$i - 1]['place_lon'];
+            $params[$i]['lat'] = $info[$i - 1]['place_lat'];
+        }
+        $name = $tourInfo['tour_no'];
+        return LocationTrait::getBatchMap($params, $name);
     }
 }

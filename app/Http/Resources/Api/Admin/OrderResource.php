@@ -49,6 +49,9 @@ class OrderResource extends JsonResource
             'tracking_order_status'=>$this->tracking_order_status,
             'tracking_order_status_name'=>$this->tracking_order_status_name,
             'tracking_order_count'=>$this->tracking_order_count,
+            'starting_price'=>$this->starting_price,
+            'transport_price_type'=>$this->transport_price_type,
+            'transport_price_type_name'=>$this->transport_price_type_name,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];

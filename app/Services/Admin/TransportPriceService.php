@@ -164,6 +164,7 @@ class TransportPriceService extends BaseService
         $data = [
             'company_id' => auth()->user()->id,
             'operation' => $operation,
+            'operator' => auth()->user()->fullname,
             'transport_price_id' => $id,
             'content' => json_encode($content),
             'second_content' => json_encode($secondContent)
@@ -420,6 +421,8 @@ class TransportPriceService extends BaseService
         }
         $data['starting_price'] = $transportPrice['starting_price'];
         $data['settlement_amount'] = $data['count_settlement_amount'] = $data['count_settlement_amount'] + $data['starting_price'];
+        $data['transport_price_id'] = $transportPriceId;
+        $data['transport_price_type'] = $transportPrice['type'];
         return $data;
     }
 
@@ -479,7 +482,7 @@ class TransportPriceService extends BaseService
     {
         foreach ($data['package_list'] as $k => $package) {
             $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
-            $distancePrice = $this->getDistancePrice($package['distance'], $transportPrice);
+            $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
             //公式
             $data['package_list'][$k]['count_settlement_amount'] =
                 floatval($weightPrice) *

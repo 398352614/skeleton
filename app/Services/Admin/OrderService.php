@@ -636,7 +636,7 @@ class OrderService extends BaseService
         } else {
             $order['distance'] = 0;
         }
-        $params = $this->priceCount($params);
+        $params = $this->getTransportPriceService()->priceCount($params);
         return $params;
     }
 

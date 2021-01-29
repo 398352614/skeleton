@@ -18,6 +18,7 @@ class CreateTransportPriceOperationTable extends Migration
             $table->string('company_id')->default('')->nullable()->comment('公司ID');
             $table->integer('transport_price_id')->default(null)->nullable()->comment('运价方案ID');
             $table->string('operation')->default('')->nullable()->comment('操作类型');
+            $table->string('operator')->default('')->nullable()->comment('操作人');
             $table->json('content')->default('')->nullable()->comment('内容');
             $table->json('second_content')->default('')->nullable()->comment('附带内容');
 

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 运价操作日志
  * Class OrderImport
@@ -47,11 +49,21 @@ class TransportPriceOperation extends BaseModel
         'company_id',
         'transport_price_id',
         'operation',
+        'operator',
         'content',
         'second_content',
         'created_at',
         'updated_at',
     ];
+
+    protected $appends = [
+        'operation_name'
+    ];
+
+    public function getOperationNameAttribute()
+    {
+        return empty($this->operation) ? null : ConstTranslateTrait::operationList($this->operation);
+    }
 
     /**
      * The attributes that should be hidden for arrays.

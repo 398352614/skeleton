@@ -112,7 +112,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //无效化已完成订单（用以新增同号订单）
         Route::get('/{id}/neutralize', 'OrderController@neutralize')->name('order.neutralize');
         //运价估算
-        Route::post('/price-count', 'OrderController@priceCount')->name('order.store');
+        Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
     });
 
     //物流查询
@@ -365,6 +365,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/track', 'RouteTrackingController@show')->name('tour.track');
         //线路追踪
         Route::get('/all-track', 'RouteTrackingController@index')->name('tour.track');
+        //导出站点地图
+        Route::get('/{id}/batchPng', 'TourController@batchPng');
 
     });
 
