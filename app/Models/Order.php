@@ -100,6 +100,8 @@ class Order extends BaseModel
         'out_status',
         'created_at',
         'updated_at',
+        'transport_price_type',
+        'transport_price_id'
     ];
 
     /**
@@ -122,7 +124,8 @@ class Order extends BaseModel
         'second_place_country_name',
         'country_name',
         'settlement_type_name',
-        'source_name'
+        'source_name',
+        'transport_price_type_name'
     ];
 
     /**
@@ -190,4 +193,10 @@ class Order extends BaseModel
     {
         return empty($this->settlement_type) ? null : ConstTranslateTrait::orderSettlementTypeList($this->settlement_type);
     }
+
+    public function getTransportPriceTypeNameAttribute()
+    {
+        return empty($this->transport_price_type) ? null : ConstTranslateTrait::transportPriceTypeList($this->transport_price_type);
+    }
+
 }

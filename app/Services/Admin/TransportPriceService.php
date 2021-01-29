@@ -421,6 +421,8 @@ class TransportPriceService extends BaseService
         }
         $data['starting_price'] = $transportPrice['starting_price'];
         $data['settlement_amount'] = $data['count_settlement_amount'] = $data['count_settlement_amount'] + $data['starting_price'];
+        $data['transport_price_id'] = $transportPriceId;
+        $data['transport_price_type'] = $transportPrice['type'];
         return $data;
     }
 

@@ -14,19 +14,21 @@ class AlterOrderTrackingOrderAddColumns extends Migration
     public function up()
     {
         Schema::table('order', function (Blueprint $table) {
-            $table->string('distance')->default('')->nullable()->after('unique_code')->comment('距离');
-            $table->string('starting_price')->default('')->nullable()->after('distance')->comment('起步价');
-            $table->string('count_settlement_amount')->default('')->nullable()->after('settlement_amount')->comment('估算运费');
+            $table->integer('distance')->default(0)->nullable()->after('unique_code')->comment('距离');
+            $table->decimal('starting_price')->default(0)->nullable()->after('distance')->comment('起步价');
+            $table->decimal('count_settlement_amount')->default(0)->nullable()->after('settlement_amount')->comment('估算运费');
+            $table->string('transport_price_id')->default('')->nullable()->after('distance')->comment('运价方案ID');
+            $table->string('transport_price_type')->default('')->nullable()->after('transport_price_id')->comment('运价方案类型');
         });
         Schema::table('package', function (Blueprint $table) {
-            $table->string('settlement_amount')->default('')->nullable()->after('sticker_no')->comment('结算金额');
-            $table->string('count_settlement_amount')->default('')->nullable()->after('settlement_amount')->comment('估算运费');
-            $table->string('actual_weight')->default('')->nullable()->after('weight')->comment('实际重量');
+            $table->decimal('settlement_amount')->default(0)->nullable()->after('sticker_no')->comment('结算金额');
+            $table->decimal('count_settlement_amount')->default(0)->nullable()->after('settlement_amount')->comment('估算运费');
+            $table->decimal('actual_weight')->default(0)->nullable()->after('weight')->comment('实际重量');
         });
         Schema::table('tracking_order_package', function (Blueprint $table) {
-            $table->string('settlement_amount')->default('')->nullable()->after('sticker_no')->comment('结算金额');
-            $table->string('count_settlement_amount')->default('')->nullable()->after('settlement_amount')->comment('估算运费');
-            $table->string('actual_weight')->default('')->nullable()->after('weight')->comment('实际重量');
+            $table->decimal('settlement_amount')->default(0)->nullable()->after('sticker_no')->comment('结算金额');
+            $table->decimal('count_settlement_amount')->default(0)->nullable()->after('settlement_amount')->comment('估算运费');
+            $table->decimal('actual_weight')->default(0)->nullable()->after('weight')->comment('实际重量');
         });
     }
 

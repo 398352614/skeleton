@@ -284,5 +284,9 @@ php artisan unlock:tour {tour_no}
 用户上传的文件在app/public/storage目录下，根据不同端分为admin，driver，merchant三个文件夹，在此之下再根据文件类型分文件夹，例如，barcode，excel，flie等。结构形如app/public/storage/admin/excel。一般情况下不要改变该结构，不要在文件类型目录下再建更多子目录，那样做的话会难以管理。
 
 ## 附录：
-### 1,新增权限
+### 1 新增权限
+#### 1.1 新增permission表数据，注意要保持树状结构，并且注意类型，1为菜单，2为按钮，并将路由别名告知前端，前端通过路由别名进行隐藏显示操作。
+#### 1.2 新增role_has_permissions表数据
+#### 1.3 重新缓存permission表
+#### 1.4 重置permission,role等关系
 
