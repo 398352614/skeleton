@@ -33,7 +33,7 @@ class TenCentApiDistanceService
 
     public function __construct()
     {
-        $this->client = new \GuzzleHttp\Client();;
+        $this->client = new CurlClient();;
         $this->key = config('tms.tencent_api_key');
         $this->url = config('tms.tencent_api_url');
     }
@@ -54,7 +54,7 @@ class TenCentApiDistanceService
         $query = "mode=driving&from={$from}&to={$to}&key={$this->key}";
         $url = $url . '?' . $query;
         $url = str_replace('optimal_order', 'matrix/', $url);
-        $res = $this->client->request('GET', $url);
+        $res = $this->client->get($url);
         dd($url,$res);
         $body = $res->getBody();
         $stringBody = (string)$body;
