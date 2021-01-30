@@ -36,6 +36,7 @@ class TenCentApiDistanceService
         $this->client = new CurlClient();;
         $this->key = config('tms.tencent_api_key');
         $this->url = config('tms.tencent_api_url');
+        $this->distance_url = config('tms.tencent_distance_matrix_api_url');
     }
 
     /**
@@ -53,18 +54,14 @@ class TenCentApiDistanceService
         $to = is_array($to) ? implode(';', array_filter($to)) : $to;
         $query = "mode=driving&from={$from}&to={$to}&key={$this->key}";
         $url = $url . '?' . $query;
-        $url = str_replace('optimal_order', 'matrix/', $url);
         $res = $this->client->get($url);
-        dd($url,$res);
-        $body = $res->getBody();
-        $stringBody = (string)$body;
-        $res = json_decode($stringBody, TRUE);
         if (!isset($res['status']) || ($res['status'] != 0)) {
             Log::info('tencent-api请求url', ['url' => $url]);
             Log::info('tencent-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('teCent-api请求报错');
         }
-        return $res;
+        $distance = $res['result']['rows'][0]['elements'][0]['distance'];
+        return $distance;
     }
 
     /**
@@ -76,19 +73,17 @@ class TenCentApiDistanceService
      */
     public function getDistanceByOrder($order)
     {
-//        try {
-            if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
-                $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
-            } else {
-                $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
-            }
-            $to = implode(',', [$order['place_lat'], $order['place_lon']]);
-            $res = $this->getDistance($this->url, $from, $to);
-            dd($res);
-            $distance = $res['result']['elements'][0]['distance']['value'];
-//        } catch (\Exception $e) {
-//            throw new BusinessLogicException('可能由于网络原因，无法估算距离');
-//        }
+        try {
+        if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
+            $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
+        } else {
+            $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
+        }
+        $to = implode(',', [$order['place_lat'], $order['place_lon']]);
+        $distance = $this->getDistance($this->distance_url, $from, $to);
+        } catch (\Exception $e) {
+            throw new BusinessLogicException('可能由于网络原因，无法估算距离');
+        }
         return $distance;
     }
 }

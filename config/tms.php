@@ -48,6 +48,6 @@ return [
     'admin_email' => env('ADMIN_EMAIL'),
     'true_app_env' => env('TRUE_APP_ENV'),
     'tcp_merchant_id'=>env('TCP_MERCHANT_ID'),
-    'http_proxy'=>env('HTTP_PROXY'),
-    'HTTPS_PROXY'=>env('HTTPS_PROXY'),
+    'http_proxy'=>env('VPN_HTTP_PROXY'),
+    'https_proxy'=>env('VPN_HTTPS_PROXY'),
 ];
