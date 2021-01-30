@@ -33,10 +33,9 @@ class TenCentApiDistanceService
 
     public function __construct()
     {
-        $this->client = new CurlClient;
-        $this->url = config('tms.tencent_api_url');
-        $this->distance_url = config('tms.tencent_distance_matrix_api_url');
+        $this->client = new \GuzzleHttp\Client();;
         $this->key = config('tms.tencent_api_key');
+        $this->url = config('tms.tencent_api_url');
     }
 
     /**
@@ -46,6 +45,7 @@ class TenCentApiDistanceService
      * @param $to
      * @return mixed|null
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function getDistance($url, $from, $to)
     {
@@ -54,8 +54,8 @@ class TenCentApiDistanceService
         $query = "mode=driving&from={$from}&to={$to}&key={$this->key}";
         $url = $url . '?' . $query;
         $url = str_replace('optimal_order', 'matrix/', $url);
-        $res = $this->client->get($url);
-        dd($res);
+        $res = $this->client->request('GET', $url);
+        dd($url,$res);
         $body = $res->getBody();
         $stringBody = (string)$body;
         $res = json_decode($stringBody, TRUE);
