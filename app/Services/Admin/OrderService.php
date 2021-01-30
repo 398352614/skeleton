@@ -583,7 +583,6 @@ class OrderService extends BaseService
      */
     public function priceCount($order)
     {
-        $this->getTrackingOrderService()->fillWarehouseInfo($order, BaseConstService::NO);
         return $this->check($order);
     }
 
@@ -631,6 +630,7 @@ class OrderService extends BaseService
             }
         }
         //运价计算
+        $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
         if (config('tms.true_app_env') !== 'deploy') {
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         } else {

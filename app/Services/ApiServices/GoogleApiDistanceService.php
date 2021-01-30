@@ -62,6 +62,7 @@ class GoogleApiDistanceService
             Log::info('google-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('google-api请求报错');
         }
+        Log::info($res['rows'][0]['elements'][0]['distance']['value']);
         $distance = $res['rows'][0]['elements'][0]['distance']['value'];
         return $distance;
     }
@@ -75,17 +76,18 @@ class GoogleApiDistanceService
      */
     public function getDistanceByOrder($order)
     {
-                try {
-        if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
-            $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
-        } else {
-            $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
+        try {
+            if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
+                $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
+            } else {
+                $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
+            }
+            $to = implode(',', [$order['place_lat'], $order['place_lon']]);
+            $distance = $this->getDistance($this->url, $from, $to);
+        } catch (\Exception $e) {
+            Log::info('报错'.$e->getMessage());
+            throw new BusinessLogicException('可能由于网络原因，无法估算距离');
         }
-        $to = implode(',', [$order['place_lat'], $order['place_lon']]);
-        $distance = $this->getDistance($this->url, $from, $to);
-                } catch (\Exception $e) {
-                    throw new BusinessLogicException('可能由于网络原因，无法估算距离');
-                }
         return $distance;
     }
 }

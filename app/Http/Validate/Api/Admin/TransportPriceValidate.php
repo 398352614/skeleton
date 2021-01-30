@@ -39,7 +39,7 @@ class TransportPriceValidate extends BaseValidate
         'km' => 'nullable|integer|gte:0',
         'weight' => 'nullable|integer|gte:0',
         'special_time' => 'nullable|date_format:H:i:s',
-        'distance'=>'nullable|integer|gte:0',
+        'distance'=>'required|integer|gte:0',
         'type'=>'required|integer|in:1,2',
         'package_list.*.weight'=>'required_with:package_list|string|gte:0',
     ];
