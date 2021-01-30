@@ -23,18 +23,18 @@ class Permission
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if ($guard !== 'admin') return $next($request);
-
-        $prefix = $request->route()->getPrefix();
-        if (in_array($prefix, ['api/admin/common', 'api/admin/upload'])) return $next($request);
-        $routeAs = $request->route()->getName();
-        if (empty($routeAs) || ($routeAs === 'common')) return $next($request);
-        Log::info('route-as', ['route-as' => $routeAs]);
-        //$cache = Cache::get('permission_cache')->toArray();
-        $isAuth = auth()->user()->can($routeAs);
-        if ($isAuth === false) {
-            throw new BusinessLogicException('当前用户没有该权限,请按F5刷新页面');
-        }
+//        if ($guard == 'admin') return $next($request);
+//
+//        $prefix = $request->route()->getPrefix();
+//        if (in_array($prefix, ['api/admin/common', 'api/admin/upload'])) return $next($request);
+//        $routeAs = $request->route()->getName();
+//        if (empty($routeAs) || ($routeAs === 'common')) return $next($request);
+//        Log::info('route-as', ['route-as' => $routeAs]);
+//        //$cache = Cache::get('permission_cache')->toArray();
+//        $isAuth = auth()->user()->can($routeAs);
+//        if ($isAuth === false) {
+//            throw new BusinessLogicException('当前用户没有该权限,请按F5刷新页面');
+//        }
         return $next($request);
     }
 }
