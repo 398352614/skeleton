@@ -74,13 +74,13 @@ class TenCentApiDistanceService
     public function getDistanceByOrder($order)
     {
         try {
-        if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
-            $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
-        } else {
-            $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
-        }
-        $to = implode(',', [$order['place_lat'], $order['place_lon']]);
-        $distance = $this->getDistance($this->distance_url, $from, $to);
+            if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
+                $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
+            } else {
+                $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
+            }
+            $to = implode(',', [$order['place_lat'], $order['place_lon']]);
+            $distance = $this->getDistance($this->distance_url, $from, $to);
         } catch (\Exception $e) {
             throw new BusinessLogicException('可能由于网络原因，无法估算距离');
         }
