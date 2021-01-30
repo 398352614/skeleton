@@ -61,6 +61,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/merchant', 'HomeController@merchantCount')->name('statistics.home');
         //商户统计概览
         Route::get('/merchant-total', 'HomeController@merchantTotalCount')->name('statistics.home');
+        //今日概览
+        Route::get('/today-overview', 'HomeController@todayOverview')->name('statistics.home');
+        //任务结果概览
+        Route::get('/result-overview', 'HomeController@resultOverview')->name('statistics.home');
+        //订单分析
+        Route::get('/order-analysis', 'HomeController@orderAnalysis')->name('statistics.home');
         //获取快捷方式列表
         Route::get('/short-cut', 'HomeController@getShortCut')->name('statistics.home');
     });

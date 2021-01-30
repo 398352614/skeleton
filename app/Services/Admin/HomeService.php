@@ -250,6 +250,29 @@ class HomeService extends BaseService
         return $data;
     }
 
+    /**
+     * 今日概览
+     * @return array
+     */
+    public function todayOverview()
+    {
+        $now = today();
+        $trackingOrderCount = $this->getTrackingOrderService()->count(['execution_date' => $now, 'status' => ['in', BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]]);
+        $noOutTrackingOrderCount = $this->getTrackingOrderService()->count(['execution_date' => $now, 'out_status' => 2, 'status' => ['in', BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]]);
+        $batchCount = $this->getBatchService()->count(['execution_date' => $now, 'status' => ['in', BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT]]);
+        $tourCount = $this->getBatchService()->count(['execution_date' => $now, 'status' => ['in', BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]]);
+        return [
+            'tracking_order_count' => $trackingOrderCount,
+            'no_out_tracking_order_count' => $noOutTrackingOrderCount,
+            'batch_count' => $batchCount,
+            'tour_count' => $tourCount
+        ];
+    }
+
+    /**
+     * 获取快捷方式列表
+     * @return array
+     */
     public function getShortCut()
     {
         $shortCutList = ConstTranslateTrait::formatList(ConstTranslateTrait::$shortCutList);
@@ -261,5 +284,51 @@ class HomeService extends BaseService
             return !empty($permissionList[$shortCunt['id']]);
         });
         return $shortCutList;
+    }
+
+    /**
+     * 任务结果概览
+     * @param $executionDate
+     * @return array
+     */
+    public function resultOverview($executionDate)
+    {
+        $successWhere = ['status' => BaseConstService::TRACKING_ORDER_STATUS_5];
+        $cancelWhere = ['status' => BaseConstService::TRACKING_ORDER_STATUS_6];
+        if (!empty($executionDate)) {
+            $successWhere['execution_date'] = $cancelWhere['execution_date'] = $executionDate;
+        }
+        $trackingOrderSuccessCount = $this->getTrackingOrderService()->count($successWhere);
+        $trackingOrderCancelCount = $this->getTrackingOrderService()->count($cancelWhere);
+        $batchSuccessCount = $this->getBatchService()->count($successWhere);
+        $batchCancelCount = $this->getBatchService()->count($cancelWhere);
+        $packageSuccessCount = $this->getTrackingOrderPackageService()->count($successWhere);
+        $packageCancelCount = $this->getTrackingOrderPackageService()->count($cancelWhere);
+        return [
+            'tracking_order_success_count' => $trackingOrderSuccessCount,
+            'tracking_order_cancel_count' => $trackingOrderCancelCount,
+            'batch_success_count' => $batchSuccessCount,
+            'batch_cancel_count' => $batchCancelCount,
+            'package_success_count' => $packageSuccessCount,
+            'package_cancel_count' => $packageCancelCount
+        ];
+    }
+
+    /**
+     * 订单分析
+     * @return array
+     */
+    public function orderAnalysis()
+    {
+        $todayOrderCount = $this->getOrderService()->count(['execution_date' => today()]);
+        $orderCount = $this->getOrderService()->count();
+        $orderSuccessCount = $this->getOrderService()->count(['status' => BaseConstService::ORDER_STATUS_3]);
+        $orderCancelCount = $this->getOrderService()->count(['status' => BaseConstService::ORDER_STATUS_4]);
+        return [
+            'today_order_count' => $todayOrderCount,
+            'order_count' => $orderCount,
+            'order_success_count' => $orderSuccessCount,
+            'order_cancel_count' => $orderCancelCount,
+        ];
     }
 }
