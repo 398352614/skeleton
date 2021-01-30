@@ -53,13 +53,17 @@ class GoogleApiDistanceService
             $options = [];
         }
         $res = $this->client->request('GET', $url, $options);
-        dd($res);
+        $body = $res->getBody();
+        $stringBody = (string)$body;
+        $res = json_decode($stringBody, TRUE);
+        Log::info('返回值', $res);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
             Log::info('google-api请求url', ['url' => $url]);
             Log::info('google-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('google-api请求报错');
         }
-        return $res;
+        $distance = $res['rows'][0]['elements'][0]['distance']['value'];
+        return $distance;
     }
 
     /**
@@ -71,18 +75,17 @@ class GoogleApiDistanceService
      */
     public function getDistanceByOrder($order)
     {
-/*        try {*/
-            if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
-                $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
-            } else {
-                $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
-            }
-            $to = implode(',', [$order['place_lat'], $order['place_lon']]);
-            $res = $this->getDistance($this->url, $from, $to);
-            $distance = $res['rows']['elements'][0]['distance']['value'];
-/*        } catch (\Exception $e) {
-            throw new BusinessLogicException('可能由于网络原因，无法估算距离');
-        }*/
+                try {
+        if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
+            $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
+        } else {
+            $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
+        }
+        $to = implode(',', [$order['place_lat'], $order['place_lon']]);
+        $distance = $this->getDistance($this->url, $from, $to);
+                } catch (\Exception $e) {
+                    throw new BusinessLogicException('可能由于网络原因，无法估算距离');
+                }
         return $distance;
     }
 }

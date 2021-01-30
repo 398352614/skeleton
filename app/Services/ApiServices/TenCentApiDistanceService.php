@@ -55,6 +55,10 @@ class TenCentApiDistanceService
         $url = $url . '?' . $query;
         $url = str_replace('optimal_order', 'matrix/', $url);
         $res = $this->client->get($url);
+        dd($res);
+        $body = $res->getBody();
+        $stringBody = (string)$body;
+        $res = json_decode($stringBody, TRUE);
         if (!isset($res['status']) || ($res['status'] != 0)) {
             Log::info('tencent-api请求url', ['url' => $url]);
             Log::info('tencent-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
@@ -62,6 +66,7 @@ class TenCentApiDistanceService
         }
         return $res;
     }
+
     /**
      * 通过订单获取预计距离
      * @param $order
@@ -71,19 +76,19 @@ class TenCentApiDistanceService
      */
     public function getDistanceByOrder($order)
     {
-        try {
-        if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
-            $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
-        } else {
-            $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
-        }
-        $to = implode(',', [$order['place_lat'], $order['place_lon']]);
-        $res = $this->getDistance($this->url, $from, $to);
-        dd($res);
-        $distance = $res['result']['elements'][0]['distance']['value'];
-        } catch (\Exception $e) {
-            throw new BusinessLogicException('可能由于网络原因，无法估算距离');
-        }
+//        try {
+            if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
+                $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
+            } else {
+                $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
+            }
+            $to = implode(',', [$order['place_lat'], $order['place_lon']]);
+            $res = $this->getDistance($this->url, $from, $to);
+            dd($res);
+            $distance = $res['result']['elements'][0]['distance']['value'];
+//        } catch (\Exception $e) {
+//            throw new BusinessLogicException('可能由于网络原因，无法估算距离');
+//        }
         return $distance;
     }
 }
