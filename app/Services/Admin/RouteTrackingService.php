@@ -146,7 +146,7 @@ class RouteTrackingService extends BaseService
      */
     public function index()
     {
-        $where = ['driver' => ['<>', null]];
+        $where = ['driver_id' => ['<>', null]];
         //筛选是否在线
         if (!empty($this->formData['is_online']) && $this->formData['is_online'] == BaseConstService::NO) {
             $where['status'] = ['<>', BaseConstService::TRACKING_ORDER_STATUS_4];
