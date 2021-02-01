@@ -48,6 +48,9 @@ class OrderResource extends JsonResource
             'place_house_number' => $this->place_house_number,
             'driver_name' => $this->driver_name,
             'driver_phone' => $this->driver_phone,
+            'starting_price'=>$this->starting_price,
+            'transport_price_type'=>$this->transport_price_type,
+            'transport_price_type_name'=>$this->transport_price_type_name,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];

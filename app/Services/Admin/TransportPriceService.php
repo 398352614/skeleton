@@ -330,8 +330,7 @@ class TransportPriceService extends BaseService
      * @param string $endTime2 结束时间2
      * @return bool
      */
-    private
-    function isTimeCross($beginTime1 = '', $endTime1 = '', $beginTime2 = '', $endTime2 = '')
+    private function isTimeCross($beginTime1 = '', $endTime1 = '', $beginTime2 = '', $endTime2 = '')
     {
         $beginTime1 = strtotime('1970-01-02 ' . $beginTime1);
         $endTime1 = strtotime('1970-01-02 ' . $endTime1);
@@ -362,8 +361,7 @@ class TransportPriceService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    private
-    function insertDetailsAll($id, $params)
+    private function insertDetailsAll($id, $params)
     {
         //公里计费
         if (!empty($params['km_list'])) {
@@ -399,8 +397,7 @@ class TransportPriceService extends BaseService
      * @return array|void
      * @throws BusinessLogicException
      */
-    public
-    function priceCount($data, $transportPriceId = null)
+    public function priceCount($data, $transportPriceId = null)
     {
         $data['distance'] = $data['distance'] / 1000;
         $data['settlement_amount'] = $data['count_settlement_amount'] = 0;
@@ -434,8 +431,7 @@ class TransportPriceService extends BaseService
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public
-    function getTransportPriceIdByMerchantId($merchantId)
+    public function getTransportPriceIdByMerchantId($merchantId)
     {
         //获取商户组
         $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId], ['*'], false);
@@ -456,8 +452,7 @@ class TransportPriceService extends BaseService
      * @param $transportPrice
      * @return array
      */
-    public
-    function multiplyWeightMultiplyDistance($data, $transportPrice)
+    public function multiplyWeightMultiplyDistance($data, $transportPrice)
     {
         foreach ($data['package_list'] as $k => $package) {
             $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
@@ -479,8 +474,7 @@ class TransportPriceService extends BaseService
      * @param $transportPrice
      * @return array
      */
-    public
-    function stepWeightStepDistance($data, $transportPrice)
+    public function stepWeightStepDistance($data, $transportPrice)
     {
         foreach ($data['package_list'] as $k => $package) {
             $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
@@ -500,8 +494,7 @@ class TransportPriceService extends BaseService
      * @param $transportPrice
      * @return int
      */
-    public
-    function getWeightPrice($weight, $transportPrice)
+    public function getWeightPrice($weight, $transportPrice)
     {
         $weightPrice = collect($transportPrice['weight_list'])->where('start', '<=', $weight)->where('end', '>', $weight)->all();
         return $weightPrice[0]['price'] ?? 0;
@@ -514,8 +507,7 @@ class TransportPriceService extends BaseService
      * @param $transportPrice
      * @return int
      */
-    public
-    function getDistancePrice($distance, $transportPrice)
+    public function getDistancePrice($distance, $transportPrice)
     {
         $distancePrice = collect($transportPrice['km_list'])->where('start', '<=', $distance)->where('end', '>', $distance)->all();
         return $distancePrice[0]['price'] ?? 0;

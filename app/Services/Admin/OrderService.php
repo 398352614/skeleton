@@ -583,7 +583,7 @@ class OrderService extends BaseService
      */
     public function priceCount($order)
     {
-        if(!empty($order['order_no'])){
+        if(empty($order['order_no'])){
             //新增不传订单号
             return $this->check($order);
         }else{
