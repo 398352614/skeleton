@@ -146,10 +146,17 @@ class RouteTrackingService extends BaseService
      */
     public function index()
     {
-        if (!empty($this->formData['driver_name'])) {
-            $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4, 'driver_name' => ['like', $this->formData['driver_name']]], ['*'], false)->toArray();
+        //筛选是否在线
+        if (!empty($this->formData['is_online']) || $this->formData['is_online'] == BaseConstService::NO) {
+            $where = ['status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_4]];
         } else {
-            $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4], ['*'], false)->toArray();
+            $where = ['status' => BaseConstService::TOUR_STATUS_4];
+        }
+        //筛选司机名称
+        if (!empty($this->formData['driver_name'])) {
+            $info = $this->getTourService()->getList(array_merge($where, ['driver_name' => ['like', $this->formData['driver_name']]]), ['*'], false)->toArray();
+        } else {
+            $info = $this->getTourService()->getList($where, ['*'], false)->toArray();
         }
         if (empty($info)) {
             throw new BusinessLogicException('暂无车辆信息');
