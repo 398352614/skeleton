@@ -583,7 +583,7 @@ class OrderService extends BaseService
      */
     public function priceCount($order)
     {
-        return $this->check($order);
+        return $this->check($order, $order['order_no']);
     }
 
     /**
