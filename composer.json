@@ -19,7 +19,6 @@
         "guzzlehttp/guzzle": "^6.3",
         "intervention/image": "^2.5",
         "jiaxincui/closure-table": "^2.1",
-        "jpush/jpush": "^3.6",
         "laravel/framework": "6.18.27",
         "laravel/tinker": "^1.0",
         "maatwebsite/excel": "^3.1",
