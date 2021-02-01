@@ -147,7 +147,7 @@ class RouteTrackingService extends BaseService
     public function index()
     {
         //筛选是否在线
-        if (!empty($this->formData['is_online']) || $this->formData['is_online'] == BaseConstService::NO) {
+        if (!empty($this->formData['is_online']) && $this->formData['is_online'] == BaseConstService::NO) {
             $where = ['status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_4]];
         } else {
             $where = ['status' => BaseConstService::TOUR_STATUS_4];
