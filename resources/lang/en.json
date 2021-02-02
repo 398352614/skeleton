@@ -43,6 +43,7 @@
     "从[:params]客户家离开": "Leave [:params] customer's home",
     "第:line行：": "Line :line：",
     "请检查输入": "Please check the input",
+    "有未取材料,请刷新页面":"There are materials not taken, please refresh the page",
     "否": "No",
     "是": "Yes",
     "苹果": "Apple",

@@ -393,6 +393,11 @@ class TourService extends BaseService
         if ($trackingOrderCount != $params['tracking_order_count']) {
             throw new BusinessLogicException($trackingOrderCount, 5002);
         }
+        $expectMaterialList = $this->getTourTaskService()->getTourMaterialList($tour);
+        empty($params['material_list']) && $params['material_list'] = [];
+        if (!empty($expectMaterialList) && (count($expectMaterialList) != count($params['material_list']))) {
+            throw new BusinessLogicException('有未取材料,请刷新页面');
+        }
         //材料验证
         if (!empty($params['material_list'])) {
             $materialList = $params['material_list'];
@@ -401,7 +406,6 @@ class TourService extends BaseService
                 throw new BusinessLogicException('材料有重复,请先合并');
             }
             //验证材料数量
-            $expectMaterialList = $this->getTourTaskService()->getTourMaterialList($tour);
             foreach ($materialList as $v) {
                 $expectQuantity = collect($expectMaterialList)->where('code', $v['code'])->first();
                 if (empty($expectQuantity)) {
