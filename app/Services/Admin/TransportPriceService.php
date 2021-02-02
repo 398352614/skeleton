@@ -63,7 +63,11 @@ class TransportPriceService extends BaseService
             $transportPriceId = $item['id'];
             $item['km_list'] = $kmList[$transportPriceId];
             $item['weight_list'] = $weightList[$transportPriceId];
-            $item['special_time_list'] = $specialTimeList[$transportPriceId];
+            if(!empty($specialTimeList[$transportPriceId])){
+                $item['special_time_list'] = $specialTimeList[$transportPriceId];
+            }else{
+                $item['special_time_list']=[];
+            }
             $part = [];
             if ($item['starting_price'] !== 0) {
                 $part[] = __('固定费用');
