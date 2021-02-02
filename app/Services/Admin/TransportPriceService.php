@@ -462,8 +462,9 @@ class TransportPriceService extends BaseService
                 floatval($data['distance']) *
                 floatval($distancePrice)
                 , 2), 2);
-            $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round(floatval(
-                    $data['count_settlement_amount']) + floatval($data['package_list'][$k]['count_settlement_amount'])
+            $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round(
+                floatval($data['count_settlement_amount']) +
+                floatval($data['package_list'][$k]['count_settlement_amount'])
                 , 2), 2);
         }
         return $data;
@@ -486,7 +487,8 @@ class TransportPriceService extends BaseService
                 floatval($distancePrice)
                 , 2), 2);
             $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round(
-                $data['count_settlement_amount'] + $data['package_list'][$k]['count_settlement_amount']
+                floatval($data['count_settlement_amount']) +
+                floatval($data['package_list'][$k]['count_settlement_amount'])
                 , 2), 2);
         }
         return $data;
