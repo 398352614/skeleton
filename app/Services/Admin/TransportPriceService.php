@@ -269,6 +269,9 @@ class TransportPriceService extends BaseService
      */
     public function check(&$params)
     {
+        if(empty($params['starting_price']) && empty($params['km_list'] && empty('weight_list'))){
+            throw new BusinessLogicException('固定费用/距离费用/重量费用至少配置一项');
+        }
         //公里计费
         if (!empty($params['km_list'])) {
             $kmList = $params['km_list'];

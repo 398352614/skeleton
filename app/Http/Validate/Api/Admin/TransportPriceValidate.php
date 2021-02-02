@@ -20,7 +20,7 @@ class TransportPriceValidate extends BaseValidate
 
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:transport_price,id',
-        'starting_price' => 'required|numeric|gte:0',
+        'starting_price' => 'nullable|numeric|gte:0',
         'remark' => 'nullable|string|max:250',
         'status' => 'required|integer|in:1,2',
         //公里计费列表
