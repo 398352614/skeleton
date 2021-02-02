@@ -399,7 +399,6 @@ class TransportPriceService extends BaseService
      */
     public function priceCount($data, $transportPriceId = null)
     {
-        $data['distance'] = $data['distance'] / 1000;
         $data['settlement_amount'] = $data['count_settlement_amount'] = 0;
         if (empty($transportPriceId)) {
             $transportPriceId = $this->getTransportPriceIdByMerchantId($data['merchant_id']);
@@ -421,7 +420,6 @@ class TransportPriceService extends BaseService
         $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round($data['count_settlement_amount'] + $data['starting_price'], 2), 2);
         $data['transport_price_id'] = $transportPriceId;
         $data['transport_price_type'] = $transportPrice['type'];
-        $data['distance'] = $data['distance'] * 1000;
         return $data;
     }
 
