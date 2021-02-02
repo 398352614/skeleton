@@ -160,7 +160,12 @@ class TourService extends BaseService
     {
         if (!empty($this->formData['is_dispatch'])) {
             if (intval($this->formData['is_dispatch']) == 1) {
-                $this->query->where('expect_distance', '>', 0);
+                $this->query->where('expect_distance', '>', 0)->whereIn('status',[
+                    BaseConstService::TOUR_STATUS_1,
+                    BaseConstService::TOUR_STATUS_2,
+                    BaseConstService::TOUR_STATUS_3,
+                    BaseConstService::TOUR_STATUS_4,
+                ]);
             } else {
                 $this->query->where('expect_distance', '=', 0);
             }
