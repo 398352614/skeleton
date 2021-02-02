@@ -583,7 +583,13 @@ class OrderService extends BaseService
      */
     public function priceCount($order)
     {
-        return $this->check($order, $order['order_no']);
+        if(empty($order['order_no'])){
+            //新增不传订单号
+            return $this->check($order);
+        }else{
+            //修改要传订单号
+            return $this->check($order, $order['order_no']);
+        }
     }
 
     /**
@@ -631,10 +637,10 @@ class OrderService extends BaseService
         }
         //运价计算
         $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
-        if (config('tms.true_app_env') !== 'deploy') {
+        if (config('tms.true_app_env') !== 'develop') {
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         } else {
-            $params['distance'] = 0;
+            $params['distance'] = 1;
         }
         $params = $this->getTransportPriceService()->priceCount($params);
         return $params;

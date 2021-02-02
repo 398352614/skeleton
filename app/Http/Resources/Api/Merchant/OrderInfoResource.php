@@ -63,11 +63,14 @@ class OrderInfoResource extends JsonResource
             'driver_id' => $this->driver_id,
             'driver_name' => $this->driver_name,
             'driver_phone' => $this->driver_phone,
+            'starting_price' => $this->starting_price,
+            'transport_price_type' => $this->transport_price_type,
+            'transport_price_type_name' => $this->transport_price_type_name,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
             'item_list' => $this->item_list,
-            'lon'=>$this->lon,
-            'lat'=>$this->lat
+            'lon' => $this->lon,
+            'lat' => $this->lat
         ];
     }
 }

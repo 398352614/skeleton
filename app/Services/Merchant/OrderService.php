@@ -22,6 +22,7 @@ use App\Models\Order;
 use App\Models\OrderImportLog;
 use App\Models\TourMaterial;
 use App\Models\TrackingOrder;
+use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Services\CommonService;
 use App\Services\OrderTrailService;
@@ -625,6 +626,31 @@ class OrderService extends BaseService
         //填充地址
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['second_place_address'])) {
             $params['second_place_address'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
+        }
+        //运价计算
+        $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
+        if (config('tms.true_app_env') !== 'develop') {
+            $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+        } else {
+            $params['distance'] = 1;
+        }
+        $params = $this->getTransportPriceService()->priceCount($params);
+    }
+
+    /**
+     * 运价计算
+     * @param $order
+     * @return array|void
+     * @throws BusinessLogicException
+     */
+    public function priceCount($order)
+    {
+        if(empty($order['order_no'])){
+            //新增不传订单号
+            return $this->check($order);
+        }else{
+            //修改要传订单号
+            return $this->check($order, $order['order_no']);
         }
     }
 

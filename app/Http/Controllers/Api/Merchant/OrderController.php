@@ -336,4 +336,14 @@ class OrderController extends OrderBaseController
     {
         return $this->service->assignToBatch($id, $this->data);
     }
+
+    /**
+     * 运价估算
+     * @return array|void
+     * @throws BusinessLogicException
+     */
+    public function priceCount()
+    {
+        return $this->service->priceCount($this->data);
+    }
 }
