@@ -103,6 +103,17 @@ trait ConstTranslateTrait
         BaseConstService::SHORT_CUT_TOUR_DISPATCH => '智能调度',
     ];
 
+    //快捷方式路由列表(前端需要)
+    public static $shortCutRouteList = [
+        BaseConstService::SHORT_CUT_ORDER_STORE => 'orderAdd',
+        BaseConstService::SHORT_CUT_ORDER_INDEX => 'OrderList',
+        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => '线路规划',
+        BaseConstService::SHORT_CUT_TRACKING_INDEX => 'WaybillManagement',
+        BaseConstService::SHORT_CUT_BATCH_INDEX => 'stationList',
+        BaseConstService::SHORT_CUT_TOUR_INDEX => 'lineTask',
+        BaseConstService::SHORT_CUT_TOUR_DISPATCH => 'intelligentDispatch',
+    ];
+
     //线路分配规则
     public static $lineRuleList = [
         BaseConstService::LINE_RULE_POST_CODE => '按邮编自动分配',

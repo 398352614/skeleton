@@ -283,7 +283,12 @@ class HomeService extends BaseService
         $shortCutList = array_filter($shortCutList, function ($shortCunt) use ($permissionList) {
             return !empty($permissionList[$shortCunt['id']]);
         });
-        return $shortCutList;
+        $shortCutList = array_create_index($shortCutList, 'id');
+        $shortCutRouteList = ConstTranslateTrait::$shortCutRouteList;
+        foreach ($shortCutList as &$shortCut) {
+            $shortCut['route'] = $shortCutRouteList[$shortCut['id']] ?? '';
+        }
+        return array_values($shortCutList);
     }
 
     /**
