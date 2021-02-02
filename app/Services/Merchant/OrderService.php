@@ -629,10 +629,10 @@ class OrderService extends BaseService
         }
         //运价计算
         $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
-        if (config('tms.true_app_env') !== 'deploy') {
+        if (config('tms.true_app_env') !== 'develop') {
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         } else {
-            $params['distance'] = 0;
+            $params['distance'] = 1;
         }
         $params = $this->getTransportPriceService()->priceCount($params);
     }
