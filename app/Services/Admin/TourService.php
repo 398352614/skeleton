@@ -146,8 +146,8 @@ class TourService extends BaseService
 
         $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
         list($orderList, $lineId) = $this->getTrackingOrderService()->getAddTrackingOrderList($orderIdList, $executionDate);
-        $this->filters['line_id'] = ['=', $lineId];
-        $this->filters['execution_date'] = ['=', $data['execution_date']];
+        //$this->filters['line_id'] = ['=', $lineId];
+        $this->filters['execution_date'] = ['=', $executionDate];
         $list = parent::getPageList();
         return $list;
     }
@@ -569,22 +569,26 @@ class TourService extends BaseService
      * @param $isLock
      * @param $tourNo
      * @param $isAssign
+     * @param $isAddOrder
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null, $isAssign = false)
+    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null, $isAssign = false, $isAddOrder = false)
     {
         if (!empty($tourNo)) {
             $this->query->where('tour_no', '=', $tourNo);
         }
         //若不存在取件线路或者超过最大运单量,则新建取件线路
-        if ((intval($batch['expect_pickup_quantity']) > 0) && ($isAssign == false)) {
+        if ((intval($batch['expect_pickup_quantity']) > 0) && (($isAssign == false) || ($isAddOrder == false))) {
             $this->query->where(DB::raw('expect_pickup_quantity+' . 1), '<=', $line['pickup_max_count']);
         }
-        if ((intval($batch['expect_pie_quantity']) > 0) && ($isAssign == false)) {
+        if ((intval($batch['expect_pie_quantity']) > 0) && (($isAssign == false) || ($isAddOrder == false))) {
             $this->query->where(DB::raw('expect_pie_quantity+' . 1), '<=', $line['pie_max_count']);
         }
         $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
+        if ($isAddOrder == true) {
+            $where['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
+        }
         isset($batch['merchant_id']) && $where['merchant_id'] = $batch['merchant_id'];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         return !empty($tour) ? $tour->toArray() : [];

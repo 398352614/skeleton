@@ -733,14 +733,14 @@ class TrackingOrderService extends BaseService
         //获取线路信息
         list($dbTrackingOrderList, $lineId) = $this->getAddTrackingOrderList($trackingOrderIdList, $tour['execution_date']);
         //判断当前线路ID是否是取件线路ID
-        if (intval($lineId) != intval($tour['line_id'])) {
-            throw new BusinessLogicException('当前线路已更换，请刷新');
-        }
+//        if (intval($lineId) != intval($tour['line_id'])) {
+//            throw new BusinessLogicException('当前线路已更换，请刷新');
+//        }
         $dbTrackingOrderList = Arr::where($dbTrackingOrderList, function ($trackingOrder) use ($tourNo) {
             return (($trackingOrder['tour_no'] != $tourNo) && ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1));
         });
         //获取线路信息
-        $line = $this->getLineService()->getInfoLock(['id' => $lineId], ['*'], false);
+        $line = $this->getLineService()->getInfoLock(['id' => $tour['line_id']], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('线路不存在');
         }
@@ -753,9 +753,9 @@ class TrackingOrderService extends BaseService
                 throw new BusinessLogicException('当前取件线路正在派送中，取件运单加单不能包含材料');
             }
         }
-        if ($tour['expect_pickup_quantity'] + $count > $line['pickup_max_count']) {
-            throw new BusinessLogicException('取件数量超过线路取件运单最大值');
-        }
+//        if ($tour['expect_pickup_quantity'] + $count > $line['pickup_max_count']) {
+//            throw new BusinessLogicException('取件数量超过线路取件运单最大值');
+//        }
         //获取取件线路的站点列表
         $dbBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['id', 'batch_no', 'place_fullname'], false);
         /*******************************************2.加单*************************************************************/
@@ -792,11 +792,11 @@ class TrackingOrderService extends BaseService
             if ($dbTrackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
                 throw new BusinessLogicException('派件运单不允许加单');
             }
-            $dbLineId = $this->getLineService()->getLineIdByInfo($dbTrackingOrder, $executionDate);
-            if (empty($dbLineId) || (!empty($lineId) && ($lineId != $dbLineId))) {
-                return [$dbTrackingOrderList, 0];
-            }
-            $lineId = $dbLineId;
+//            $dbLineId = $this->getLineService()->getLineIdByInfo($dbTrackingOrder, $executionDate);
+//            if (empty($dbLineId) || (!empty($lineId) && ($lineId != $dbLineId))) {
+//                return [$dbTrackingOrderList, 0];
+//            }
+//            $lineId = $dbLineId;
         }
         return [$dbTrackingOrderList, $lineId];
     }

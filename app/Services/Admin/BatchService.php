@@ -148,7 +148,7 @@ class BatchService extends BaseService
         }
         if (empty($batchList)) return [[], $tour];
         foreach ($batchList as $batch) {
-            $tour = !empty($tour) ? $tour : $this->getTourService()->getTourInfo($batch, $line, true, $batch['tour_no'] ?? '');
+            $tour = !empty($tour) ? $tour : $this->getTourService()->getTourInfo($batch, $line, true, $batch['tour_no'] ?? '', false, $isAddOrder);
             if (!empty($tour)) {
                 return [$batch, $tour];
             }
