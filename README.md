@@ -286,7 +286,10 @@ php artisan unlock:tour {tour_no}
 ## 附录：
 ### 1 新增权限
 #### 1.1 新增permission表数据，注意要保持树状结构，并且注意类型，1为菜单，2为按钮，并将路由别名告知前端，前端通过路由别名进行隐藏显示操作。
-#### 1.2 新增role_has_permissions表数据
 #### 1.3 重新缓存permission表
+执行
+```
+php artisan permission:cache
+```
 #### 1.4 重置permission,role等关系
 
