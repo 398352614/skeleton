@@ -353,17 +353,17 @@ class BatchService extends BaseService
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //运单取消取派
-        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //运单包裹取消取派
-        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //运单材料取消取派
-        $rowCount = $this->getTrackingOrderMaterialService()->update(['batch_no' => $info['batch_no']], ['batch_no' => '', 'tour_no' => '']);
+        $rowCount = $this->getTrackingOrderMaterialService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
