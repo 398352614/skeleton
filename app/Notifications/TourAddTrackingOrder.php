@@ -59,20 +59,24 @@ class TourAddTrackingOrder extends Notification implements ShouldQueue
 
     public $dbBatchList;
 
+    public $tour;
+
     /**
      * TourAddTrackingOrder constructor.
      * @param array $trackingOrderList
      * @param array $dbBatchList
+     * @param  $tour
      */
-    public function __construct(array $trackingOrderList, array $dbBatchList)
+    public function __construct(array $trackingOrderList, array $dbBatchList, array $tour)
     {
         $this->trackingOrderList = $trackingOrderList;
         $this->dbBatchList = $dbBatchList;
+        $this->tour = $tour;
     }
 
     public function msgContent($locale)
     {
-        $content = __("线路[:line_name(:tour_no)]", ['line_name' => $this->trackingOrderList[0]['line_name'], 'tour_no' => $this->trackingOrderList[0]['tour_no']], $locale) . ';';
+        $content = __("线路[:line_name(:tour_no)]", ['line_name' => $this->tour['line_name'], 'tour_no' => $this->tour['tour_no']], $locale) . ';';
         $content .= $this->getMaterialContent($locale) . ';' . $this->getBatchContent($locale);
         return $content;
     }

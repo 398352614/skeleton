@@ -757,7 +757,7 @@ class TrackingOrderService extends BaseService
 //            throw new BusinessLogicException('取件数量超过线路取件运单最大值');
 //        }
         //获取取件线路的站点列表
-        $dbBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['id', 'batch_no', 'place_fullname'], false);
+        $dbBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['id', 'tour_no', 'place_fullname'], false);
         /*******************************************2.加单*************************************************************/
         foreach ($dbTrackingOrderList as $dbTrackingOrder) {
             $trackingOrder = $dbTrackingOrder;
@@ -768,7 +768,7 @@ class TrackingOrderService extends BaseService
         //加单推送
         //dispatch(new AddOrderPush($dbTrackingOrderList, $tour['driver_id']));
         if (!empty($tour['driver_id']) && (in_array($tour['status'], [BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]))) {
-            Notification::send(Driver::findOrFail($tour['driver_id']), new TourAddTrackingOrder($dbTrackingOrderList, $dbBatchList->toArray()));
+            Notification::send(Driver::findOrFail($tour['driver_id']), new TourAddTrackingOrder($dbTrackingOrderList, $dbBatchList->toArray(), $tour));
         }
     }
 
