@@ -418,7 +418,7 @@ class TransportPriceService extends BaseService
         $data['starting_price'] = $data['settlement_amount'] = $data['count_settlement_amount'] = 0;
         if (!empty($data['package_list'])) {
             foreach ($data['package_list'] as $k => $v) {
-                $data['package_list'][$k]['settlement_amount'] = $data['package_list'][$k]['count_settlement_amount'] =0;
+                $data['package_list'][$k]['settlement_amount'] = $data['package_list'][$k]['count_settlement_amount'] = 0;
             }
         }
         if (empty($transportPriceId)) {
@@ -446,6 +446,12 @@ class TransportPriceService extends BaseService
             }
             $data['starting_price'] = $transportPrice['starting_price'];
             $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round($data['count_settlement_amount'] + $data['starting_price'], 2), 2);
+        }
+        if (!empty($data['package_list'])) {
+            foreach ($data['package_list'] as $k => $v) {
+                $data['package_list'][$k]['settlement_amount'] = number_format($data['package_list'][$k]['settlement_amount'],2);
+                $data['package_list'][$k]['count_settlement_amount'] = number_format($data['package_list'][$k]['count_settlement_amount'],2);
+            }
         }
         return $data;
     }
@@ -483,16 +489,16 @@ class TransportPriceService extends BaseService
             $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
             $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
             //公式
-            $data['package_list'][$k]['count_settlement_amount'] = number_format(round(
+            $data['package_list'][$k]['count_settlement_amount'] = round(
                 floatval($package['weight']) *
                 floatval($weightPrice) *
                 floatval($data['distance']) *
                 floatval($distancePrice)
-                , 2), 2);
-            $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round(
+                , 2);
+            $data['settlement_amount'] = $data['count_settlement_amount'] = round(
                 floatval($data['count_settlement_amount']) +
                 floatval($data['package_list'][$k]['count_settlement_amount'])
-                , 2), 2);
+                , 2);
         }
         return $data;
     }
@@ -509,14 +515,14 @@ class TransportPriceService extends BaseService
             $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
             $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
             //公式
-            $data['package_list'][$k]['count_settlement_amount'] = number_format(round(
+            $data['package_list'][$k]['count_settlement_amount'] = round(
                 floatval($weightPrice) *
                 floatval($distancePrice)
-                , 2), 2);
-            $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round(
+                , 2);
+            $data['settlement_amount'] = $data['count_settlement_amount'] =round(
                 floatval($data['count_settlement_amount']) +
                 floatval($data['package_list'][$k]['count_settlement_amount'])
-                , 2), 2);
+                , 2);
         }
         return $data;
     }

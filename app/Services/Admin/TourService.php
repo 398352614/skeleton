@@ -167,7 +167,12 @@ class TourService extends BaseService
                     BaseConstService::TOUR_STATUS_4,
                 ]);
             } else {
-                $this->query->where('expect_distance', '=', 0);
+                $this->query->where('expect_distance', '=', 0)->whereIn('status',[
+                    BaseConstService::TOUR_STATUS_1,
+                    BaseConstService::TOUR_STATUS_2,
+                    BaseConstService::TOUR_STATUS_3,
+                    BaseConstService::TOUR_STATUS_4,
+                ]);;
             }
         }
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
