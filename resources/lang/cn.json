@@ -24,7 +24,7 @@
   "线路[:line_name(:tour_no)]": "线路[:line_name(:tour_no)]",
   "已新增运单[:content],未新增站点": "已新增运单[:content],未新增站点",
   "已追加[:count]个站点,收件人[:fullname],请前往站点列表手动调度派送顺序": "已追加[:count]个站点,收件人[:fullname],请前往站点列表手动调度派送顺序",
-  ":code--:quantity个": ":code--:quantity个",
+  ":code -- :quantity 个": ":code--:quantity个",
   "已新增材料[:content]": "已新增材料[:content]",
   "线路[:line_name(:tour_no)],接收人[:fullname]取消预约，请前往站点列表刷新任务": "线路[:line_name(:tour_no)],接收人[:fullname]取消预约，请前往站点列表刷新任务"
 }

@@ -74,7 +74,7 @@ class CancelBatch extends Notification implements ShouldQueue
     public function getMessage()
     {
         return [
-            'title' => __("站点取消取派"),
+            'title' => __('站点取消取派'),
             'extras' => [
                 'type' => BaseConstService::PUSH_CANCEL_BATCH,
                 'cn_content' => $this->msgContent('zh_CN'),
@@ -113,8 +113,7 @@ class CancelBatch extends Notification implements ShouldQueue
             ->setPlatform('all')
             //->addRegistrationId((string)($notifiable->id))
             ->addAlias((string)($notifiable->id))
-            ->androidNotification($this->msgContent(), $this->getMessage())
-            ->message($this->msgContent(), $this->getMessage())
+            ->message(__('站点取消取派'), $this->getMessage())
             ->options(['apns_production' => config('jpush.production')]);
     }
 

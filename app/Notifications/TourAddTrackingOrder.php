@@ -73,7 +73,7 @@ class TourAddTrackingOrder extends Notification implements ShouldQueue
     public function msgContent($locale)
     {
         $content = __("线路[:line_name(:tour_no)]", ['line_name' => $this->trackingOrderList[0]['line_name'], 'tour_no' => $this->trackingOrderList[0]['tour_no']], $locale) . ';';
-        $content .= $this->getBatchContent($locale) . ';' . $this->getMaterialContent($locale);
+        $content .= $this->getMaterialContent($locale) . ';' . $this->getBatchContent($locale);
         return $content;
     }
 
@@ -113,7 +113,7 @@ class TourAddTrackingOrder extends Notification implements ShouldQueue
         if (empty($materialList)) return '';
         $content = '';
         foreach ($materialList as $material) {
-            $content .= __(':code--:quantity个', ['code' => $material['code'], 'quantity' => $material['expect_quantity个']], $locale) . ';';
+            $content .= __(':code -- :quantity 个', ['code' => $material['code'], 'quantity' => $material['expect_quantity']], $locale) . ';';
         }
         return __('已新增材料[:content]', ['content' => $content], $locale);
     }
@@ -187,7 +187,7 @@ class TourAddTrackingOrder extends Notification implements ShouldQueue
             ->setPlatform('all')
             //->addRegistrationId((string)($notifiable->id))
             ->addAlias((string)($notifiable->id))
-            ->message($this->msgContent(), $this->getMessage())
+            ->message(__('线路加单'), $this->getMessage())
             ->options(['apns_production' => config('jpush.production')]);
     }
 
