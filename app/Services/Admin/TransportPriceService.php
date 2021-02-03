@@ -61,12 +61,12 @@ class TransportPriceService extends BaseService
         $specialTimeList = !empty($specialTimeList) ? array_create_group_index($specialTimeList, 'transport_price_id') : [];
         foreach ($list as &$item) {
             $transportPriceId = $item['id'];
-            if(!empty($item['km_list'])){
+            if(!empty($kmList[$transportPriceId])){
                 $item['km_list'] = $kmList[$transportPriceId];
             }else{
                 $item['km_list']=[];
             }
-            if(!empty($item['weight_list'])){
+            if(!empty($weightList[$transportPriceId])){
                 $item['weight_list'] = $weightList[$transportPriceId];
             }else{
                 $item['weight_list']=[];
