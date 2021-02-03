@@ -66,17 +66,19 @@ class CancelBatch extends Notification implements ShouldQueue
         $this->batch = $batch;
     }
 
-    public function msgContent()
+    public function msgContent($locale)
     {
-        return "接收人[{$this->batch['place_fullname']}]取消预约，请前往站点列表刷新任务";
+        return $content = __("线路[:line_name(:tour_no)],接收人[:fullname]取消预约，请前往站点列表刷新任务", ['line_name' => $this->batch['line_name'], 'tour_no' => $this->batch['tour_no'], 'fullname' => $this->batch['place_fullname']], $locale) . ';';
     }
 
     public function getMessage()
     {
         return [
-            'title' => "站点取消取派",
+            'title' => __("站点取消取派"),
             'extras' => [
                 'type' => BaseConstService::PUSH_CANCEL_BATCH,
+                'cn_content' => $this->msgContent('zh_CN'),
+                'en_content' => $this->msgContent('en'),
                 'data' => $this->getData()
             ],
         ];

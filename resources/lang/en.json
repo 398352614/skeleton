@@ -884,5 +884,11 @@
     "角色不存在": "The role does not exist",
     "订单推送": "Order push",
     "管理员组权限不允许操作": "Administrator group permission does not allow operation",
-    "存在超级管理员，不能操作": "There is super administrator, unable to operate"
+    "存在超级管理员，不能操作": "There is super administrator, unable to operate",
+    "线路[:line_name(:tour_no)]": "The line is [:line_name(:tour_no)]",
+    "已新增运单[:content],未新增站点": "The waybill has been added[:content],No new sites",
+    "已追加[:count]个站点,收件人[:fullname],请前往站点列表手动调度派送顺序": "[:count] batches have been added,receiver[:fullname],please go to the batch list to schedule the delivery order manually",
+    ":code--:quantity个": ":code--:quantity",
+    "已新增材料[:content]": "Added materials [:content]",
+    "线路[:line_name(:tour_no)],接收人[:fullname]取消预约，请前往站点列表刷新任务": "The line is[:line_name(:tour_no)],receiver[:fullname] cancel appointment，please go to the batch list refresh task"
 }

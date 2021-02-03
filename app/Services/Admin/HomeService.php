@@ -256,7 +256,7 @@ class HomeService extends BaseService
      */
     public function todayOverview()
     {
-        $now = today();
+        $now = date('Y-m-d');
         $trackingOrderCount = $this->getTrackingOrderService()->count(['execution_date' => $now, 'status' => ['in', BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]]);
         $noOutTrackingOrderCount = $this->getTrackingOrderService()->count(['execution_date' => $now, 'out_status' => 2, 'status' => ['in', BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]]);
         $batchCount = $this->getBatchService()->count(['execution_date' => $now, 'status' => ['in', BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT]]);
@@ -325,7 +325,7 @@ class HomeService extends BaseService
      */
     public function orderAnalysis()
     {
-        $todayOrderCount = $this->getOrderService()->count(['execution_date' => today()]);
+        $todayOrderCount = $this->getOrderService()->count(['execution_date' => date('Y-m-d')]);
         $orderCount = $this->getOrderService()->count();
         $orderSuccessCount = $this->getOrderService()->count(['status' => BaseConstService::ORDER_STATUS_3]);
         $orderCancelCount = $this->getOrderService()->count(['status' => BaseConstService::ORDER_STATUS_4]);

@@ -70,33 +70,52 @@ class TourAddTrackingOrder extends Notification implements ShouldQueue
         $this->dbBatchList = $dbBatchList;
     }
 
-    public function msgContent()
+    public function msgContent($locale)
     {
-        return $this->getAddFullName();
+        $content = __("线路[:line_name(:tour_no)]", ['line_name' => $this->trackingOrderList[0]['line_name'], 'tour_no' => $this->trackingOrderList[0]['tour_no']], $locale) . ';';
+        $content .= $this->getBatchContent($locale) . ';' . $this->getMaterialContent($locale);
+        return $content;
     }
 
     public function getMessage()
     {
         return [
-            'title' => '线路加单',
+            'title' => __('线路加单'),
             'extras' => [
                 'type' => BaseConstService::PUSH_TOUR_ADD_ORDER,
+                'cn_content' => $this->msgContent('zh_CN'),
+                'en_content' => $this->msgContent('en'),
                 'data' => $this->getData()
             ],
         ];
     }
 
-    private function getAddFullName()
+    private function getBatchContent($locale)
     {
         $trackingOrderFullNameList = array_column($this->trackingOrderList, 'place_fullname');
         $batchFullNameList = array_column($this->dbBatchList, 'place_fullname');
         $fullNameList = array_diff($trackingOrderFullNameList, $batchFullNameList);
         if (empty($fullNameList)) {
-            return '未新增站点';
+            $content = '';
+            foreach ($this->trackingOrderList as $trackingOrder) {
+                $content .= $trackingOrder['place_fullname'] . ':' . $trackingOrder['batch_no'] . '-' . $trackingOrder['order_no'] . ':' . $trackingOrder['tracking_order_no'] . ';';
+            }
+            return __("已新增运单[:content],未新增站点", ['content' => $content], $locale);
         }
         $count = count($fullNameList);
         $fullNameList = implode(',', $fullNameList);
-        return "已追加{$count}个站点,收件人[{$fullNameList}],请前往站点列表手动调度派送顺序";
+        return __("已追加[:count]个站点,收件人[:fullname],请前往站点列表手动调度派送顺序", ['count' => $count, 'fullname' => $fullNameList], $locale);
+    }
+
+    private function getMaterialContent($locale)
+    {
+        $materialList = TrackingOrderMaterial::query()->whereIn('tracking_order_no', array_column($this->trackingOrderList, 'tracking_order_no'))->get()->toArray();
+        if (empty($materialList)) return '';
+        $content = '';
+        foreach ($materialList as $material) {
+            $content .= __(':code--:quantity个', ['code' => $material['code'], 'quantity' => $material['expect_quantity个']], $locale) . ';';
+        }
+        return __('已新增材料[:content]', ['content' => $content], $locale);
     }
 
     public function getData()
