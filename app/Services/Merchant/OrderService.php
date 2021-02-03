@@ -554,6 +554,7 @@ class OrderService extends BaseService
      * 验证
      * @param $params
      * @param $orderNo
+     * @return array|void
      * @throws BusinessLogicException
      */
     private function check(&$params, $orderNo = null)
@@ -634,7 +635,10 @@ class OrderService extends BaseService
         } else {
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         }
+        $params['distance'] = $params['distance'] / 1000;
         $params = $this->getTransportPriceService()->priceCount($params);
+        $params['distance'] = $params['distance'] * 1000;
+        return $params;
     }
 
     /**

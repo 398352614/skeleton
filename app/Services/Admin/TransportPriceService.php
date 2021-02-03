@@ -61,20 +61,20 @@ class TransportPriceService extends BaseService
         $specialTimeList = !empty($specialTimeList) ? array_create_group_index($specialTimeList, 'transport_price_id') : [];
         foreach ($list as &$item) {
             $transportPriceId = $item['id'];
-            if(!empty($kmList[$transportPriceId])){
+            if (!empty($kmList[$transportPriceId])) {
                 $item['km_list'] = $kmList[$transportPriceId];
-            }else{
-                $item['km_list']=[];
+            } else {
+                $item['km_list'] = [];
             }
-            if(!empty($weightList[$transportPriceId])){
+            if (!empty($weightList[$transportPriceId])) {
                 $item['weight_list'] = $weightList[$transportPriceId];
-            }else{
-                $item['weight_list']=[];
+            } else {
+                $item['weight_list'] = [];
             }
-            if(!empty($specialTimeList[$transportPriceId])){
+            if (!empty($specialTimeList[$transportPriceId])) {
                 $item['special_time_list'] = $specialTimeList[$transportPriceId];
-            }else{
-                $item['special_time_list']=[];
+            } else {
+                $item['special_time_list'] = [];
             }
             $part = [];
             if ($item['starting_price'] !== 0) {
@@ -277,7 +277,7 @@ class TransportPriceService extends BaseService
      */
     public function check(&$params)
     {
-        if(empty($params['starting_price']) && empty($params['km_list']) && empty($params['weight_list'])){
+        if (empty($params['starting_price']) && empty($params['km_list']) && empty($params['weight_list'])) {
             throw new BusinessLogicException('固定费用/距离费用/重量费用至少配置一项');
         }
         //公里计费
@@ -414,27 +414,29 @@ class TransportPriceService extends BaseService
      */
     public function priceCount($data, $transportPriceId = null)
     {
-        $data['settlement_amount'] = $data['count_settlement_amount'] = 0;
         if (empty($transportPriceId)) {
             $transportPriceId = $this->getTransportPriceIdByMerchantId($data['merchant_id']);
         }
         $transportPrice = $this->show($transportPriceId);
-        if (!empty($data['package_list'])) {
-            //根据计算方式计算包裹运价
-            if ($transportPrice['type'] == BaseConstService::TRANSPORT_PRICE_TYPE_1) {
-                $data = $this->multiplyWeightMultiplyDistance($data, $transportPrice);
-            } elseif ($transportPrice['type'] == BaseConstService::TRANSPORT_PRICE_TYPE_2) {
-                $data = $this->stepWeightStepDistance($data, $transportPrice);
-            } elseif ($transportPrice['type'] == BaseConstService::ONLY_START_PRICE) {
-                $data['settlement_amount'] = $data['count_settlement_amount'] = 0.00;
-            } else {
-                throw new BusinessLogicException('暂无预计运价，运价以实际为准');
-            }
-        }
-        $data['starting_price'] = $transportPrice['starting_price'];
-        $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round($data['count_settlement_amount'] + $data['starting_price'], 2), 2);
+        $data['starting_price'] = $data['settlement_amount'] = $data['count_settlement_amount'] = 0;
         $data['transport_price_id'] = $transportPriceId;
         $data['transport_price_type'] = $transportPrice['type'];
+        if ($transportPrice['status'] !== BaseConstService::ON) {
+            if (!empty($data['package_list'])) {
+                //根据计算方式计算包裹运价
+                if ($transportPrice['type'] == BaseConstService::TRANSPORT_PRICE_TYPE_1) {
+                    $data = $this->multiplyWeightMultiplyDistance($data, $transportPrice);
+                } elseif ($transportPrice['type'] == BaseConstService::TRANSPORT_PRICE_TYPE_2) {
+                    $data = $this->stepWeightStepDistance($data, $transportPrice);
+                } elseif ($transportPrice['type'] == BaseConstService::ONLY_START_PRICE) {
+                    $data['settlement_amount'] = $data['count_settlement_amount'] = 0.00;
+                } else {
+                    throw new BusinessLogicException('暂无预计运价，运价以实际为准');
+                }
+            }
+            $data['starting_price'] = $transportPrice['starting_price'];
+            $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round($data['count_settlement_amount'] + $data['starting_price'], 2), 2);
+        }
         return $data;
     }
 
@@ -518,7 +520,7 @@ class TransportPriceService extends BaseService
     public function getWeightPrice($weight, $transportPrice)
     {
         $weightPrice = collect($transportPrice['weight_list'])->where('start', '<=', $weight)->where('end', '>', $weight)->all();
-        $weightPrice=array_values($weightPrice);
+        $weightPrice = array_values($weightPrice);
         return $weightPrice[0]['price'] ?? 0;
 
     }
@@ -532,7 +534,7 @@ class TransportPriceService extends BaseService
     public function getDistancePrice($distance, $transportPrice)
     {
         $distancePrice = collect($transportPrice['km_list'])->where('start', '<=', $distance)->where('end', '>', $distance)->all();
-        $distancePrice=array_values($distancePrice);
+        $distancePrice = array_values($distancePrice);
         return $distancePrice[0]['price'] ?? 0;
     }
 }
