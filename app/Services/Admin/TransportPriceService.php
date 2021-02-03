@@ -522,6 +522,13 @@ class TransportPriceService extends BaseService
         foreach ($data['package_list'] as $k => $package) {
             $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
             $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
+            if ($weightPrice == null && $distancePrice !== null) {
+                $weightPrice = 1;
+            } elseif ($weightPrice !== null && $distancePrice == null) {
+                $distancePrice = 1;
+            } elseif ($weightPrice == null && $distancePrice == null) {
+                $weightPrice = $distancePrice = 0;
+            }
             //公式
             $data['package_list'][$k]['count_settlement_amount'] = round(
                 floatval($weightPrice) *
