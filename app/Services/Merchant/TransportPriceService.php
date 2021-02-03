@@ -159,7 +159,7 @@ class TransportPriceService extends BaseService
                 floatval($data['package_list'][$k]['count_settlement_amount'])
                 , 2);
         }
-        return $data;;
+        return $data;
     }
 
     /**
