@@ -257,10 +257,10 @@ class HomeService extends BaseService
     public function todayOverview()
     {
         $now = date('Y-m-d');
-        $trackingOrderCount = $this->getTrackingOrderService()->count(['execution_date' => $now, 'status' => ['in', BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]]);
-        $noOutTrackingOrderCount = $this->getTrackingOrderService()->count(['execution_date' => $now, 'out_status' => 2, 'status' => ['in', BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]]);
-        $batchCount = $this->getBatchService()->count(['execution_date' => $now, 'status' => ['in', BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT]]);
-        $tourCount = $this->getBatchService()->count(['execution_date' => $now, 'status' => ['in', BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]]);
+        $trackingOrderCount = $this->getTrackingOrderService()->count(['execution_date' => $now, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]]]);
+        $noOutTrackingOrderCount = $this->getTrackingOrderService()->count(['execution_date' => $now, 'out_status' => 2, 'status' => ['in', 【BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3】]]);
+        $batchCount = $this->getBatchService()->count(['execution_date' => $now, 'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT]]]);
+        $tourCount = $this->getBatchService()->count(['execution_date' => $now, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]]]);
         return [
             'tracking_order_count' => $trackingOrderCount,
             'no_out_tracking_order_count' => $noOutTrackingOrderCount,
