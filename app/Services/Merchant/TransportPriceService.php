@@ -90,7 +90,7 @@ class TransportPriceService extends BaseService
         $transportPrice = $this->show();
         $data['transport_price_id'] = $transportPriceId;
         $data['transport_price_type'] = $transportPrice['type'];
-        if ($transportPrice['status'] !== BaseConstService::ON) {
+        if ($transportPrice['status'] == BaseConstService::ON) {
             if (!empty($data['package_list'])) {
                 //根据计算方式计算包裹运价
                 if ($transportPrice['type'] == BaseConstService::TRANSPORT_PRICE_TYPE_1) {
