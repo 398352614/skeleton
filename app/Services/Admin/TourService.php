@@ -160,7 +160,7 @@ class TourService extends BaseService
     {
         if (!empty($this->formData['is_dispatch'])) {
             if (intval($this->formData['is_dispatch']) == 1) {
-                $this->query->where('expect_distance', '>', 0)->whereIn('status',[
+                $this->query->where('expect_distance', '>', 0)->whereIn('status', [
                     BaseConstService::TOUR_STATUS_1,
                     BaseConstService::TOUR_STATUS_2,
                     BaseConstService::TOUR_STATUS_3,
@@ -188,6 +188,7 @@ class TourService extends BaseService
             } else {
                 $tour['merchant_id_name'] = $merchantList[$tour['merchant_id']]['name'] ?? '';
             }
+            $tour['is_dispatch'] = ($tour['expect_distance'] == 0) ? 2 : 1;
             //计算站点数量
             $tour['expect_batch_count'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->count();
             $tour['actual_batch_count'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT], ['*'], false)->count();
