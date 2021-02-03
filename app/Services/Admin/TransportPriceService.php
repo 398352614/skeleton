@@ -489,11 +489,12 @@ class TransportPriceService extends BaseService
         foreach ($data['package_list'] as $k => $package) {
             $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
             $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
-            if ($weightPrice == 0 && $distancePrice !== 0) {
+            if ($weightPrice == null && $distancePrice !== null) {
                 $weightPrice = 1;
-            }
-            if ($weightPrice !== 0 && $distancePrice == 0) {
+            } elseif ($weightPrice !== null && $distancePrice == null) {
                 $distancePrice = 1;
+            } elseif ($weightPrice == null && $distancePrice == null) {
+                $weightPrice = $distancePrice = 0;
             }
             //公式
             $data['package_list'][$k]['count_settlement_amount'] = round(
@@ -544,7 +545,7 @@ class TransportPriceService extends BaseService
     {
         $weightPrice = collect($transportPrice['weight_list'])->where('start', '<=', $weight)->where('end', '>', $weight)->all();
         $weightPrice = array_values($weightPrice);
-        return $weightPrice[0]['price'];
+        return $weightPrice[0]['price'] ?? null;
 
     }
 
@@ -558,6 +559,6 @@ class TransportPriceService extends BaseService
     {
         $distancePrice = collect($transportPrice['km_list'])->where('start', '<=', $distance)->where('end', '>', $distance)->all();
         $distancePrice = array_values($distancePrice);
-        return $distancePrice[0]['price'];
+        return $distancePrice[0]['price'] ?? null;
     }
 }
