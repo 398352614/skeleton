@@ -74,7 +74,7 @@ class StockService extends BaseService
         }
         $stock = $this->getStockService()->getInfo(['express_first_no' => $package['express_first_no']], ['*'], false);
         if (!empty($stock)) {
-            $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $package['order_no']], false, ['id' => 'desc']);
+            $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $package['order_no']], ['*'], false, ['id' => 'desc']);
             if (!empty($trackingOrderPackage)) {
                 $lineName = $trackingOrder['line_name'] ?? '';
                 $date = $trackingOrder['execution_date'] ?? null;
