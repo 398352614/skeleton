@@ -16,8 +16,11 @@ use App\Http\Resources\Api\Admin\TrackingOrderResource;
 use App\Jobs\AddOrderPush;
 use App\Models\Driver;
 use App\Models\Order;
+use App\Models\Tour;
 use App\Models\TrackingOrder;
 use App\Notifications\TourAddTrackingOrder;
+use App\Services\ApiServices\GoogleApiService;
+use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
@@ -729,6 +732,7 @@ class TrackingOrderService extends BaseService
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路当前状态不能操作');
         }
+        $tourModel = $tour;
         $tour = $tour->toArray();
         //获取线路信息
         list($dbTrackingOrderList, $lineId) = $this->getAddTrackingOrderList($trackingOrderIdList, $tour['execution_date']);
@@ -764,12 +768,12 @@ class TrackingOrderService extends BaseService
             data_set($trackingOrder, 'execution_date', $tour['execution_date']);
             list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, null, $tour, true, true);
         }
-
         //加单推送
         //dispatch(new AddOrderPush($dbTrackingOrderList, $tour['driver_id']));
         if (!empty($tour['driver_id']) && (in_array($tour['status'], [BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]))) {
             Notification::send(Driver::findOrFail($tour['driver_id']), new TourAddTrackingOrder($dbTrackingOrderList, $dbBatchList->toArray(), $tour));
         }
+        $this->getGoogleApiService()->InitTour($tour);
     }
 
 
