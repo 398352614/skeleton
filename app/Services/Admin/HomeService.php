@@ -285,8 +285,10 @@ class HomeService extends BaseService
         });
         $shortCutList = array_create_index($shortCutList, 'id');
         $shortCutRouteList = ConstTranslateTrait::$shortCutRouteList;
+        $shortCutIconList = ConstTranslateTrait::$shortCutIconList;
         foreach ($shortCutList as &$shortCut) {
             $shortCut['route'] = $shortCutRouteList[$shortCut['id']] ?? '';
+            $shortCut['icon'] = $shortCutIconList[$shortCut['id']] ?? '';
         }
         return array_values($shortCutList);
     }

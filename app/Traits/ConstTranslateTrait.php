@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\App;
  * @method static statusList($args = null)
  * @method static noTypeList($args = null)
  * @method static shortCutList($args = null)
+ * @method static shortCutRouteList($args = null)
+ * @method static $shortCutIconList($args = null)
  * @method static lineRuleList($args = null)
  * @method static printTemplateList($args = null)
  * @method static weekList($args = null)
@@ -96,7 +98,7 @@ trait ConstTranslateTrait
     public static $shortCutList = [
         BaseConstService::SHORT_CUT_ORDER_STORE => '下单',
         BaseConstService::SHORT_CUT_ORDER_INDEX => '订单',
-        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => '线路规划',
+        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => '线路规划(邮编)',
         BaseConstService::SHORT_CUT_TRACKING_INDEX => '运单',
         BaseConstService::SHORT_CUT_BATCH_INDEX => '站点',
         BaseConstService::SHORT_CUT_TOUR_INDEX => '线路任务',
@@ -107,11 +109,22 @@ trait ConstTranslateTrait
     public static $shortCutRouteList = [
         BaseConstService::SHORT_CUT_ORDER_STORE => 'orderAdd',
         BaseConstService::SHORT_CUT_ORDER_INDEX => 'OrderList',
-        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => '线路规划',
+        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => 'LinePlanningPostCode',
         BaseConstService::SHORT_CUT_TRACKING_INDEX => 'WaybillManagement',
         BaseConstService::SHORT_CUT_BATCH_INDEX => 'stationList',
         BaseConstService::SHORT_CUT_TOUR_INDEX => 'lineTask',
         BaseConstService::SHORT_CUT_TOUR_DISPATCH => 'intelligentDispatch',
+    ];
+
+    //快捷方式ICON列表(前端需要)
+    public static $shortCutIconList = [
+        BaseConstService::SHORT_CUT_ORDER_STORE => '&#xe65f;',
+        BaseConstService::SHORT_CUT_ORDER_INDEX => '&#xe66a;',
+        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => ' &#xe65f;',
+        BaseConstService::SHORT_CUT_TRACKING_INDEX => '&#xe661;',
+        BaseConstService::SHORT_CUT_BATCH_INDEX => 'stationList',
+        BaseConstService::SHORT_CUT_TOUR_INDEX => '&#xea06',
+        BaseConstService::SHORT_CUT_TOUR_DISPATCH => '&#xe670;',
     ];
 
     //线路分配规则
