@@ -31,7 +31,7 @@ class TransportPriceService extends BaseService
         WeightCharging $weightCharging,
         SpecialTimeCharging $specialTimeCharging)
     {
-        parent::__construct($transportPrice,TransportPriceResource::class);
+        parent::__construct($transportPrice, TransportPriceResource::class);
         //子模型
         $this->kilometresChargingModel = $kilometresCharging;
         $this->weightChargingModel = $weightCharging;
@@ -73,29 +73,39 @@ class TransportPriceService extends BaseService
      */
     public function priceCount($data, $transportPriceId = null)
     {
-        $data['distance'] = $data['distance'] / 1000;
-        $data['settlement_amount'] = $data['count_settlement_amount'] = 0;
+        //预设为0
+        $data['starting_price'] = $data['settlement_amount'] = $data['count_settlement_amount'] = 0;
+        if (!empty($data['package_list'])) {
+            foreach ($data['package_list'] as $k => $v) {
+                $data['package_list'][$k]['settlement_amount'] = $data['package_list'][$k]['count_settlement_amount'] =0;
+            }
+        }
         if (empty($transportPriceId)) {
             $transportPriceId = $this->getTransportPriceIdByMerchantId($data['merchant_id']);
         }
-        $transportPrice = $this->show();
-        if (!empty($data['package_list'])) {
-            //根据计算方式计算包裹运价
-            if ($transportPrice['type'] == BaseConstService::TRANSPORT_PRICE_TYPE_1) {
-                $data = $this->multiplyWeightMultiplyDistance($data, $transportPrice);
-            } elseif ($transportPrice['type'] == BaseConstService::TRANSPORT_PRICE_TYPE_2) {
-                $data = $this->stepWeightStepDistance($data, $transportPrice);
-            } elseif ($transportPrice['type'] == BaseConstService::ONLY_START_PRICE) {
-                $data['settlement_amount'] = $data['count_settlement_amount'] = 0;
-            } else {
-                throw new BusinessLogicException('暂无预计运价，运价以实际为准');
-            }
+        //没有运价就返回0
+        if ($transportPriceId == null) {
+            return $data;
         }
-        $data['starting_price'] = $transportPrice['starting_price'];
-        $data['settlement_amount'] = $data['count_settlement_amount'] = $data['count_settlement_amount'] + $data['starting_price'];
+        $transportPrice = $this->show();
         $data['transport_price_id'] = $transportPriceId;
         $data['transport_price_type'] = $transportPrice['type'];
-        $data['distance'] = $data['distance'] * 1000;
+        if ($transportPrice['status'] == BaseConstService::ON) {
+            if (!empty($data['package_list'])) {
+                //根据计算方式计算包裹运价
+                if ($transportPrice['type'] == BaseConstService::TRANSPORT_PRICE_TYPE_1) {
+                    $data = $this->multiplyWeightMultiplyDistance($data, $transportPrice);
+                } elseif ($transportPrice['type'] == BaseConstService::TRANSPORT_PRICE_TYPE_2) {
+                    $data = $this->stepWeightStepDistance($data, $transportPrice);
+                } elseif ($transportPrice['type'] == BaseConstService::ONLY_START_PRICE) {
+                    $data['settlement_amount'] = $data['count_settlement_amount'] = 0.00;
+                } else {
+                    throw new BusinessLogicException('暂无预计运价，运价以实际为准');
+                }
+            }
+            $data['starting_price'] = $transportPrice['starting_price'];
+            $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round($data['count_settlement_amount'] + $data['starting_price'], 2), 2);
+        }
         return $data;
     }
 
@@ -115,7 +125,7 @@ class TransportPriceService extends BaseService
         //获取商户组
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $merchant['merchant_group_id']], ['*'], false);
         if (empty($merchant)) {
-            throw new BusinessLogicException('商户组不存在');
+            return null;
         }
         return $merchantGroup['transport_price_id'];
     }

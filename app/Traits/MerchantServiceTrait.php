@@ -252,6 +252,7 @@ Trait MerchantServiceTrait
 
     /**
      * 运价方案 服务
+     * @return TransportPriceService
      */
     public function getTransportPriceService()
     {
