@@ -120,10 +120,10 @@ trait ConstTranslateTrait
     public static $shortCutIconList = [
         BaseConstService::SHORT_CUT_ORDER_STORE => '&#xe65f;',
         BaseConstService::SHORT_CUT_ORDER_INDEX => '&#xe66a;',
-        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => ' &#xe65f;',
+        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => '&#xe65f;',
         BaseConstService::SHORT_CUT_TRACKING_INDEX => '&#xe661;',
-        BaseConstService::SHORT_CUT_BATCH_INDEX => 'stationList',
-        BaseConstService::SHORT_CUT_TOUR_INDEX => '&#xea06',
+        BaseConstService::SHORT_CUT_BATCH_INDEX => '&#xe67a;',
+        BaseConstService::SHORT_CUT_TOUR_INDEX => '&#xea06;',
         BaseConstService::SHORT_CUT_TOUR_DISPATCH => '&#xe670;',
     ];
 
