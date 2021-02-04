@@ -6,6 +6,7 @@ use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\BatchInfoResource;
 use App\Http\Resources\Api\Admin\BatchResource;
+use App\Jobs\UpdateLineCountTime;
 use App\Models\Batch;
 use App\Models\Driver;
 use App\Models\Tour;
@@ -705,7 +706,7 @@ class BatchService extends BaseService
             }
         }
         if (empty($nextBatchNo)) return 'true';
-        event(new AfterTourUpdated(Tour::where('tour_no', $tourNo)->firstOrFail(), $nextBatchNo, true));
+        dispatch(new UpdateLineCountTime(Tour::where('tour_no', $tourNo)->firstOrFail(), $nextBatchNo));
         return 'true';
     }
 
