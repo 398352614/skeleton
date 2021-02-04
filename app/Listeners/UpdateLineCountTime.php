@@ -6,18 +6,44 @@ use App\Events\AfterDriverLocationUpdated;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Services\ApiServices\TourOptimizationService;
+use App\Traits\UpdateTourTimeAndDistanceTrait;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
-class UpdateLineCountTime
+class UpdateLineCountTime implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, SerializesModels;
 
     /**
-     * Create the event listener.
+     * 任务连接名称。
      *
-     * @return void
+     * @var string|null
      */
-    public function __construct()
-    {
-    }
+    public $connection = 'redis';
+
+    /**
+     * 任务发送到的队列的名称.
+     *
+     * @var string|null
+     */
+    public $queue = 'location';
+
+
+    /**
+     * 任务可以执行的最大秒数 (超时时间)。
+     *
+     * @var int
+     */
+    public $timeout = 30;
+
+    /**
+     * 任务可以尝试的最大次数。
+     *
+     * @var int
+     */
+    public $tries = 3;
 
     /**
      * 更新取件线路

@@ -688,14 +688,16 @@ class BatchService extends BaseService
         $batchList = parent::getList(['tour_no' => $tourNo], ['id', 'batch_no', 'sort_id', 'status'], false, [], ['is_skipped' => 'desc', 'sort_id' => 'asc'])->toArray();
         if (empty($batchList)) return 'true';
         $nextBatchNo = null;
+        $first = false;
         foreach ($batchList as $key => $batch) {
-            if (in_array($batch['status'], [
-                BaseConstService::BATCH_WAIT_ASSIGN,
-                BaseConstService::BATCH_WAIT_OUT,
-                BaseConstService::BATCH_DELIVERING,
-                BaseConstService::BATCH_ASSIGNED
-            ])) {
+            if (!$first && in_array($batch['status'], [
+                    BaseConstService::BATCH_WAIT_ASSIGN,
+                    BaseConstService::BATCH_WAIT_OUT,
+                    BaseConstService::BATCH_DELIVERING,
+                    BaseConstService::BATCH_ASSIGNED
+                ])) {
                 $nextBatchNo = $batch['batch_no'];
+                $first = true;
             }
             $rowCount = parent::update(['id' => $batch['id']], ['sort_id' => $key + 1]);
             if ($rowCount === false) {
