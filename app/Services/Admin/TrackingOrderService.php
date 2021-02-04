@@ -773,7 +773,6 @@ class TrackingOrderService extends BaseService
         if (!empty($tour['driver_id']) && (in_array($tour['status'], [BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]))) {
             Notification::send(Driver::findOrFail($tour['driver_id']), new TourAddTrackingOrder($dbTrackingOrderList, $dbBatchList->toArray(), $tour));
         }
-        $this->getGoogleApiService()->InitTour($tour);
     }
 
 
