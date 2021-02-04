@@ -10,6 +10,7 @@
 
 namespace App\Services\Admin;
 
+use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\TrackingOrderInfoResource;
 use App\Http\Resources\Api\Admin\TrackingOrderResource;
@@ -770,6 +771,7 @@ class TrackingOrderService extends BaseService
         }
         //更新站点顺序
         $this->getBatchService()->updateBatchSort($tour['tour_no']);
+        event(new AfterTourUpdated($tour, $nextBatch->batch_no));
         //加单推送
         //dispatch(new AddOrderPush($dbTrackingOrderList, $tour['driver_id']));
         if (!empty($tour['driver_id']) && (in_array($tour['status'], [BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]))) {

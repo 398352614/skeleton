@@ -2,11 +2,13 @@
 
 namespace App\Services\Admin;
 
+use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\BatchInfoResource;
 use App\Http\Resources\Api\Admin\BatchResource;
 use App\Models\Batch;
 use App\Models\Driver;
+use App\Models\Tour;
 use App\Notifications\CancelBatch;
 use App\Notifications\TourAddTrackingOrder;
 use App\Services\BaseConstService;
@@ -683,14 +685,25 @@ class BatchService extends BaseService
      */
     public function updateBatchSort($tourNo)
     {
-        $batchList = parent::getList(['tour_no' => $tourNo], ['id', 'sort_id'], false, [], ['is_skipped' => 'asc', 'sort_id' => 'asc'])->toArray();
+        $batchList = parent::getList(['tour_no' => $tourNo], ['id', 'batch_no', 'sort_id', 'status'], false, [], ['is_skipped' => 'desc', 'sort_id' => 'asc'])->toArray();
         if (empty($batchList)) return 'true';
+        $nextBatchNo = null;
         foreach ($batchList as $key => $batch) {
+            if (in_array($batch['status'], [
+                BaseConstService::BATCH_WAIT_ASSIGN,
+                BaseConstService::BATCH_WAIT_OUT,
+                BaseConstService::BATCH_DELIVERING,
+                BaseConstService::BATCH_ASSIGNED
+            ])) {
+                $nextBatchNo = $batch['batch_no'];
+            }
             $rowCount = parent::update(['id' => $batch['id']], ['sort_id' => $key + 1]);
             if ($rowCount === false) {
                 throw new BusinessLogicException('站点顺序调整失败,请重新操作');
             }
         }
+        if (empty($nextBatchNo)) return 'true';
+        event(new AfterTourUpdated(Tour::where('tour_no', $tourNo)->firstOrFail(), $nextBatchNo));
         return 'true';
     }
 
