@@ -206,7 +206,7 @@ class GoogleApiService
             }
             $batchs = $tour->batchs()->where('status', BaseConstService::BATCH_DELIVERING)->get();
         }
-        if (empty($batchs)) {
+        if ($batchs->isEmpty()) {
             return true;
         }
         //自动优化
