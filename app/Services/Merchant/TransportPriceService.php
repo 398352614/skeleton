@@ -148,6 +148,13 @@ class TransportPriceService extends BaseService
         foreach ($data['package_list'] as $k => $package) {
             $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
             $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
+            if ($weightPrice == null && $distancePrice !== null) {
+                $weightPrice = 1;
+            } elseif ($weightPrice !== null && $distancePrice == null) {
+                $distancePrice = 1;
+            } elseif ($weightPrice == null && $distancePrice == null) {
+                $weightPrice = $distancePrice = 0;
+            }
             //公式
             $data['package_list'][$k]['count_settlement_amount'] = round(
                 floatval($package['weight']) *
@@ -175,6 +182,13 @@ class TransportPriceService extends BaseService
         foreach ($data['package_list'] as $k => $package) {
             $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
             $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
+            if ($weightPrice == null && $distancePrice !== null) {
+                $weightPrice = 1;
+            } elseif ($weightPrice !== null && $distancePrice == null) {
+                $distancePrice = 1;
+            } elseif ($weightPrice == null && $distancePrice == null) {
+                $weightPrice = $distancePrice = 0;
+            }
             //公式
             $data['package_list'][$k]['count_settlement_amount'] = round(
                 floatval($weightPrice) *
@@ -198,7 +212,7 @@ class TransportPriceService extends BaseService
     public function getWeightPrice($weight, $transportPrice)
     {
         $weightPrice = collect($transportPrice['weight_list'])->where('start', '<=', $weight)->where('end', '>', $weight)->all();
-        return $weightPrice[0]['price'] ?? 0;
+        return $weightPrice[0]['price'] ?? null;
 
     }
 
@@ -211,6 +225,6 @@ class TransportPriceService extends BaseService
     public function getDistancePrice($distance, $transportPrice)
     {
         $distancePrice = collect($transportPrice['km_list'])->where('start', '<=', $distance)->where('end', '>', $distance)->all();
-        return $distancePrice[0]['price'] ?? 0;
+        return $distancePrice[0]['price'] ?? null;
     }
 }
