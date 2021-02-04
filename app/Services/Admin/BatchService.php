@@ -683,7 +683,7 @@ class BatchService extends BaseService
      */
     public function updateBatchSort($tourNo)
     {
-        $batchList = parent::getList(['tour_no' => $tourNo], ['id', 'sort_id'], false, [], ['sort_id' => 'asc'])->toArray();
+        $batchList = parent::getList(['tour_no' => $tourNo], ['id', 'sort_id'], false, [], ['is_skipped' => 'asc', 'sort_id' => 'asc'])->toArray();
         if (empty($batchList)) return 'true';
         foreach ($batchList as $key => $batch) {
             $rowCount = parent::update(['id' => $batch['id']], ['sort_id' => $key + 1]);
