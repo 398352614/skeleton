@@ -15,6 +15,7 @@ use App\Models\SpecialTimeCharging;
 use App\Models\TransportPrice;
 use App\Models\WeightCharging;
 use App\Services\BaseConstService;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class TransportPriceService
@@ -81,13 +82,14 @@ class TransportPriceService extends BaseService
             }
         }
         if (empty($transportPriceId)) {
-            $transportPriceId = $this->getTransportPriceIdByMerchantId($data['merchant_id']);
+            $transportPriceId = $this->getTransportPriceIdByMerchantId(auth()->user()->id);
         }
         //没有运价就返回0
         if ($transportPriceId == null) {
             return $data;
         }
         $transportPrice = $this->show();
+        Log::info('脚手架1', $transportPrice);
         $data['transport_price_id'] = $transportPriceId;
         $data['transport_price_type'] = $transportPrice['type'];
         if ($transportPrice['status'] == BaseConstService::ON) {
