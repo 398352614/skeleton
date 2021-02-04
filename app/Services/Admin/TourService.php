@@ -1175,9 +1175,4 @@ class TourService extends BaseService
         return LocationTrait::getBatchMap($params, $name);
     }
 
-    public function initTour($id)
-    {
-        $tour = Tour::where('id', $id)->firstOrFail();
-        $this->getGoogleApiService()->InitTour($tour);
-    }
 }
