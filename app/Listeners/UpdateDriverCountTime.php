@@ -78,7 +78,7 @@ class UpdateDriverCountTime implements ShouldQueue
             $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
             $service->timesCount('actual_distance_times', $tour->company_id);
             //清空路线重试任务
-            $row = RouteRetry::query()->where('123', $tour['tour_no'])->delete();
+            $row = RouteRetry::query()->where('tour_no', $tour['tour_no'])->delete();
             if ($row == true) {
                 Log::info('线路重试任务已清空');
             } else {
