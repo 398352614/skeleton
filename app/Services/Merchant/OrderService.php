@@ -607,27 +607,6 @@ class OrderService extends BaseService
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
             $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
-        if ($params['type'] != BaseConstService::ORDER_TYPE_3) return;
-        /***************************************************地址二处理*************************************************/
-        $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
-        //若邮编是纯数字，则认为是比利时邮编
-        $params['second_place_country'] = post_code_be($params['second_place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-        //获取经纬度
-        $fields = ['second_place_house_number', 'second_place_city', 'second_place_street'];
-        $params = array_merge(array_fill_keys($fields, ''), $params);
-        //获取经纬度
-        if (empty($params['second_place_lat']) || empty($params['second_place_lon'])) {
-            $location = LocationTrait::getLocation($params['second_place_country'], $params['second_place_city'], $params['second_place_street'], $params['second_place_house_number'], $params['second_place_post_code']);
-            $params['second_place_lat'] = $location['second_lat'];
-            $params['second_place_lon'] = $location['second_lon'];
-        }
-        if (empty($params['second_place_lat']) || empty($params['second_place_lon'])) {
-            throw new BusinessLogicException('派件地址不正确，请重新选择地址');
-        }
-        //填充地址
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['second_place_address'])) {
-            $params['second_place_address'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
-        }
         //运价计算
         $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
         if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
@@ -638,6 +617,28 @@ class OrderService extends BaseService
         $params['distance'] = $params['distance'] / 1000;
         $params = $this->getTransportPriceService()->priceCount($params);
         $params['distance'] = $params['distance'] * 1000;
+        /***************************************************地址二处理*************************************************/
+        if ($params['type'] == BaseConstService::ORDER_TYPE_3){
+            $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
+            //若邮编是纯数字，则认为是比利时邮编
+            $params['second_place_country'] = post_code_be($params['second_place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
+            //获取经纬度
+            $fields = ['second_place_house_number', 'second_place_city', 'second_place_street'];
+            $params = array_merge(array_fill_keys($fields, ''), $params);
+            //获取经纬度
+            if (empty($params['second_place_lat']) || empty($params['second_place_lon'])) {
+                $location = LocationTrait::getLocation($params['second_place_country'], $params['second_place_city'], $params['second_place_street'], $params['second_place_house_number'], $params['second_place_post_code']);
+                $params['second_place_lat'] = $location['second_lat'];
+                $params['second_place_lon'] = $location['second_lon'];
+            }
+            if (empty($params['second_place_lat']) || empty($params['second_place_lon'])) {
+                throw new BusinessLogicException('派件地址不正确，请重新选择地址');
+            }
+            //填充地址
+            if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['second_place_address'])) {
+                $params['second_place_address'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
+            }
+        }
         return $params;
     }
 
