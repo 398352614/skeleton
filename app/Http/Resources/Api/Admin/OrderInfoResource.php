@@ -40,6 +40,8 @@ class OrderInfoResource extends JsonResource
             'delivery' => $this->delivery,
             'delivery_name' => ($this->delivery == BaseConstService::YES) ? __('是') : __('否'),
             'status' => $this->status,
+            'sticker_amount' => $this->sticker_amount,
+            'delivery_amount' => $this->delivery_amount,
             'status_name' => $this->status_name,
             'second_place_fullname' => $this->second_place_fullname,
             'second_place_phone' => $this->second_place_phone,

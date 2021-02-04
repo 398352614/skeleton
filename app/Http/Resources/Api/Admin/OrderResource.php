@@ -46,6 +46,7 @@ class OrderResource extends JsonResource
             'replace_amount' => $this->replace_amount,
             'sticker_amount' => $this->sticker_amount,
             'settlement_amount' => $this->settlement_amount,
+            'delivery_amount' => $this->delivery_amount,
             'tracking_order_status'=>$this->tracking_order_status,
             'tracking_order_status_name'=>$this->tracking_order_status_name,
             'tracking_order_count'=>$this->tracking_order_count,
