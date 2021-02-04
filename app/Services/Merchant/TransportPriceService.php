@@ -212,6 +212,7 @@ class TransportPriceService extends BaseService
     public function getWeightPrice($weight, $transportPrice)
     {
         $weightPrice = collect($transportPrice['weight_list'])->where('start', '<=', $weight)->where('end', '>', $weight)->all();
+        $weightPrice = array_values($weightPrice);
         return $weightPrice[0]['price'] ?? null;
 
     }
@@ -225,6 +226,7 @@ class TransportPriceService extends BaseService
     public function getDistancePrice($distance, $transportPrice)
     {
         $distancePrice = collect($transportPrice['km_list'])->where('start', '<=', $distance)->where('end', '>', $distance)->all();
+        $distancePrice = array_values($distancePrice);
         return $distancePrice[0]['price'] ?? null;
     }
 }

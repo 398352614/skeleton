@@ -473,7 +473,7 @@ class TransportPriceService extends BaseService
         //获取商户组
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $merchant['merchant_group_id']], ['*'], false);
         if (empty($merchant)) {
-            throw new BusinessLogicException('商户组不存在');
+            return null;
         }
         return $merchantGroup['transport_price_id'];
     }
@@ -507,6 +507,7 @@ class TransportPriceService extends BaseService
                 floatval($data['count_settlement_amount']) +
                 floatval($data['package_list'][$k]['count_settlement_amount'])
                 , 2);
+            $data['package_settlement_amount'] = round($data['package_settlement_amount'] + $data['package_list'][$k]['count_settlement_amount'], 2);
         }
         return $data;
     }
@@ -538,6 +539,7 @@ class TransportPriceService extends BaseService
                 floatval($data['count_settlement_amount']) +
                 floatval($data['package_list'][$k]['count_settlement_amount'])
                 , 2);
+            $data['package_settlement_amount'] = round($data['package_settlement_amount'] + $data['package_list'][$k]['count_settlement_amount'], 2);
         }
         return $data;
     }

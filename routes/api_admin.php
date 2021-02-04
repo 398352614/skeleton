@@ -373,7 +373,6 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/all-track', 'RouteTrackingController@index')->name('tour.track');
         //导出站点地图
         Route::get('/{id}/batchPng', 'TourController@batchPng');
-
     });
 
     //todo 取件线路-司机

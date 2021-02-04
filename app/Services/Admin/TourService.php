@@ -1173,4 +1173,5 @@ class TourService extends BaseService
         $name = $tourInfo['tour_no'];
         return LocationTrait::getBatchMap($params, $name);
     }
+
 }

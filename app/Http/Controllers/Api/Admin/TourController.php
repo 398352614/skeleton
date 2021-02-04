@@ -281,4 +281,5 @@ class TourController extends BaseController
     {
         return $this->service->batchPng($id);
     }
+
 }
