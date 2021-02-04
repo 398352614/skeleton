@@ -618,7 +618,7 @@ class OrderService extends BaseService
         $params = $this->getTransportPriceService()->priceCount($params);
         $params['distance'] = $params['distance'] * 1000;
         /***************************************************地址二处理*************************************************/
-        if ($params['type'] == BaseConstService::ORDER_TYPE_3){
+        if ($params['type'] == BaseConstService::ORDER_TYPE_3) {
             $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
             //若邮编是纯数字，则认为是比利时邮编
             $params['second_place_country'] = post_code_be($params['second_place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
@@ -650,10 +650,10 @@ class OrderService extends BaseService
      */
     public function priceCount($order)
     {
-        if(empty($order['order_no'])){
+        if (empty($order['order_no'])) {
             //新增不传订单号
             return $this->check($order);
-        }else{
+        } else {
             //修改要传订单号
             return $this->check($order, $order['order_no']);
         }
@@ -803,7 +803,7 @@ class OrderService extends BaseService
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
-                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark', 'is_auth']);
+                $collectItem = collect($item)->only(['name', 'actual_weight', 'count_settlement_amount', 'settlement_amount', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark', 'is_auth']);
                 return $collectItem
                     ->put('order_no', $params['order_no'])
                     ->put('merchant_id', $params['merchant_id'])
