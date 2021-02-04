@@ -497,7 +497,7 @@ class TransportPriceService extends BaseService
                 $weightPrice = $distancePrice = 0;
             }
             //公式
-            $data['package_list'][$k]['count_settlement_amount'] = round(
+            $data['package_list'][$k]['settlement_amount'] = $data['package_list'][$k]['count_settlement_amount'] = round(
                 floatval($package['weight']) *
                 floatval($weightPrice) *
                 floatval($data['distance']) *
@@ -531,7 +531,7 @@ class TransportPriceService extends BaseService
                 $weightPrice = $distancePrice = 0;
             }
             //公式
-            $data['package_list'][$k]['count_settlement_amount'] = round(
+            $data['package_list'][$k]['settlement_amount'] = $data['package_list'][$k]['count_settlement_amount'] = round(
                 floatval($weightPrice) *
                 floatval($distancePrice)
                 , 2);

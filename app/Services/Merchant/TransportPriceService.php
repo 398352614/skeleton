@@ -74,7 +74,7 @@ class TransportPriceService extends BaseService
      */
     public function priceCount($data, $transportPriceId = null)
     {
-        Log::info('脚手架2',$data);
+        Log::info('脚手架2', $data);
         //预设为0
         $data['starting_price'] = $data['settlement_amount'] = $data['package_settlement_amount'] = $data['count_settlement_amount'] = 0.00;
         if (!empty($data['package_list'])) {
@@ -107,13 +107,13 @@ class TransportPriceService extends BaseService
                 }
             }
             $data['starting_price'] = $transportPrice['starting_price'];
-            $data['package_settlement_amount'] = number_format($data['count_settlement_amount'], 2,'.','');
-            $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round($data['count_settlement_amount'] + $data['starting_price'], 2), 2,'.','');
+            $data['package_settlement_amount'] = number_format($data['count_settlement_amount'], 2, '.', '');
+            $data['settlement_amount'] = $data['count_settlement_amount'] = number_format(round($data['count_settlement_amount'] + $data['starting_price'], 2), 2, '.', '');
         }
         if (!empty($data['package_list'])) {
             foreach ($data['package_list'] as $k => $v) {
-                $data['package_list'][$k]['settlement_amount'] = number_format($data['package_list'][$k]['settlement_amount'], 2,'.','');
-                $data['package_list'][$k]['count_settlement_amount'] = number_format($data['package_list'][$k]['count_settlement_amount'], 2,'.','');
+                $data['package_list'][$k]['settlement_amount'] = number_format($data['package_list'][$k]['settlement_amount'], 2, '.', '');
+                $data['package_list'][$k]['count_settlement_amount'] = number_format($data['package_list'][$k]['count_settlement_amount'], 2, '.', '');
             }
         }
         return $data;
@@ -159,7 +159,7 @@ class TransportPriceService extends BaseService
                 $weightPrice = $distancePrice = 0;
             }
             //公式
-            $data['package_list'][$k]['count_settlement_amount'] = round(
+            $data['package_list'][$k]['settlement_amount'] = $data['package_list'][$k]['count_settlement_amount'] = round(
                 floatval($package['weight']) *
                 floatval($weightPrice) *
                 floatval($data['distance']) *
@@ -193,7 +193,7 @@ class TransportPriceService extends BaseService
                 $weightPrice = $distancePrice = 0;
             }
             //公式
-            $data['package_list'][$k]['count_settlement_amount'] = round(
+            $data['package_list'][$k]['settlement_amount'] = $data['package_list'][$k]['count_settlement_amount'] = round(
                 floatval($weightPrice) *
                 floatval($distancePrice)
                 , 2);
