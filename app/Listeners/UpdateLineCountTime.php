@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Events\AfterDriverLocationUpdated;
 use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Services\ApiServices\TourOptimizationService;
@@ -28,5 +29,16 @@ class UpdateLineCountTime
     {
         app('log')->info('更新线路出发事件进入此处');
         TourOptimizationService::getOpInstance($event->tour->company_id)->updateTour($event->tour, $event->nextBatch);
+    }
+
+    /**
+     * 确定监听器是否应加入队列
+     *
+     * @param \App\Events\AfterDriverLocationUpdated $event
+     * @return bool
+     */
+    public function shouldQueue(AfterTourUpdated $event)
+    {
+        return ($event->queue === true);
     }
 }

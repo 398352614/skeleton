@@ -703,7 +703,7 @@ class BatchService extends BaseService
             }
         }
         if (empty($nextBatchNo)) return 'true';
-        event(new AfterTourUpdated(Tour::where('tour_no', $tourNo)->firstOrFail(), $nextBatchNo));
+        event(new AfterTourUpdated(Tour::where('tour_no', $tourNo)->firstOrFail(), $nextBatchNo, true));
         return 'true';
     }
 
