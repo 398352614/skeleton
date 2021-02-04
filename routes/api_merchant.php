@@ -178,4 +178,5 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //路径
         Route::get('/driver', 'TourDriverController@getListByTourNo')->name('tour.driver');
     });
+    
 });
