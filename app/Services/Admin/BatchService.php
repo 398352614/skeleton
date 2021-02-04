@@ -673,4 +673,25 @@ class BatchService extends BaseService
         $info = $this->getPageList();
         return $info;
     }
+
+
+    /**
+     * 更新站点排序
+     * @param $tourNo
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function updateBatchSort($tourNo)
+    {
+        $batchList = parent::getList(['tour_no' => $tourNo], ['id', 'sort_id'], false, [], ['sort_id' => 'asc'])->toArray();
+        if (empty($batchList)) return 'true';
+        foreach ($batchList as $key => $batch) {
+            $rowCount = parent::update(['id' => $batch['id']], ['sort_id' => $key + 1]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('站点顺序调整失败,请重新操作');
+            }
+        }
+        return 'true';
+    }
+
 }

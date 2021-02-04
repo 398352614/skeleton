@@ -768,6 +768,8 @@ class TrackingOrderService extends BaseService
             data_set($trackingOrder, 'execution_date', $tour['execution_date']);
             list($batch, $tour) = $this->changeBatch($dbTrackingOrder, $trackingOrder, $line, null, $tour, true, true);
         }
+        //更新站点顺序
+        $this->getBatchService()->updateBatchSort($tour['tour_no']);
         //加单推送
         //dispatch(new AddOrderPush($dbTrackingOrderList, $tour['driver_id']));
         if (!empty($tour['driver_id']) && (in_array($tour['status'], [BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]))) {

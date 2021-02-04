@@ -167,7 +167,7 @@ class TourService extends BaseService
                     BaseConstService::TOUR_STATUS_4,
                 ]);
             } else {
-                $this->query->where('expect_distance', '=', 0)->whereIn('status',[
+                $this->query->where('expect_distance', '=', 0)->whereIn('status', [
                     BaseConstService::TOUR_STATUS_1,
                     BaseConstService::TOUR_STATUS_2,
                     BaseConstService::TOUR_STATUS_3,
@@ -619,7 +619,6 @@ class TourService extends BaseService
             throw new BusinessLogicException('金额统计失败');
         }
     }
-
 
     /**
      * 此处要求batchIds 为有序,并且已完成或者异常的 batch 在前方,未完成的 batch 在后方
