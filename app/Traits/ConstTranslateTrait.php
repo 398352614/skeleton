@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\App;
  * @package App\Traits
  * @method static statusList($args = null)
  * @method static noTypeList($args = null)
+ * @method static shortCutList($args = null)
+ * @method static shortCutRouteList($args = null)
+ * @method static $shortCutIconList($args = null)
  * @method static lineRuleList($args = null)
  * @method static printTemplateList($args = null)
  * @method static weekList($args = null)
@@ -69,6 +72,8 @@ use Illuminate\Support\Facades\App;
  * @method static tourDelayTypeList($args = null)
  * @method static trackStatusList($args = null)
  * @method static stockExceptionStatusList($args = null)
+ * @method static operationList($args = null)
+ * @method static transportPriceTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -87,6 +92,39 @@ trait ConstTranslateTrait
         BaseConstService::RECHARGE_NO_TYPE => '充值单号规则',
         BaseConstService::TRACKING_ORDER_NO_TYPE => '运单单号规则',
         BaseConstService::STOCK_EXCEPTION_NO_TYPE => '入库异常编号规则',
+    ];
+
+    //快捷方式列表
+    public static $shortCutList = [
+        BaseConstService::SHORT_CUT_ORDER_STORE => '下单',
+        BaseConstService::SHORT_CUT_ORDER_INDEX => '订单',
+        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => '线路规划(邮编)',
+        BaseConstService::SHORT_CUT_TRACKING_INDEX => '运单',
+        BaseConstService::SHORT_CUT_BATCH_INDEX => '站点',
+        BaseConstService::SHORT_CUT_TOUR_INDEX => '线路任务',
+        BaseConstService::SHORT_CUT_TOUR_DISPATCH => '智能调度',
+    ];
+
+    //快捷方式路由列表(前端需要)
+    public static $shortCutRouteList = [
+        BaseConstService::SHORT_CUT_ORDER_STORE => 'orderAdd',
+        BaseConstService::SHORT_CUT_ORDER_INDEX => 'OrderList',
+        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => 'LinePlanningPostCode',
+        BaseConstService::SHORT_CUT_TRACKING_INDEX => 'WaybillManagement',
+        BaseConstService::SHORT_CUT_BATCH_INDEX => 'stationList',
+        BaseConstService::SHORT_CUT_TOUR_INDEX => 'lineTask',
+        BaseConstService::SHORT_CUT_TOUR_DISPATCH => 'intelligentDispatch',
+    ];
+
+    //快捷方式ICON列表(前端需要)
+    public static $shortCutIconList = [
+        BaseConstService::SHORT_CUT_ORDER_STORE => '&#xe65f;',
+        BaseConstService::SHORT_CUT_ORDER_INDEX => '&#xe66a;',
+        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => '&#xe65f;',
+        BaseConstService::SHORT_CUT_TRACKING_INDEX => '&#xe661;',
+        BaseConstService::SHORT_CUT_BATCH_INDEX => '&#xe67a;',
+        BaseConstService::SHORT_CUT_TOUR_INDEX => '&#xea06;',
+        BaseConstService::SHORT_CUT_TOUR_DISPATCH => '&#xe670;',
     ];
 
     //线路分配规则
@@ -435,10 +473,24 @@ trait ConstTranslateTrait
         BaseConstService::TRACK_STATUS_3 => '取件成功，派件中'
     ];
 
-    public static $stockExceptionStatusList =[
+    public static $stockExceptionStatusList = [
         BaseConstService::STOCK_EXCEPTION_STATUS_1 => '未审核',
         BaseConstService::STOCK_EXCEPTION_STATUS_2 => '审核成功',
         BaseConstService::STOCK_EXCEPTION_STATUS_3 => '审核失败'
+    ];
+
+    //编号类型
+    public static $operationList = [
+        BaseConstService::OPERATION_STORE => '新增',
+        BaseConstService::OPERATION_UPDATE => '修改',
+        BaseConstService::OPERATION_DESTROY => '删除',
+        BaseConstService::OPERATION_STATUS_ON => '启用禁用',
+        BaseConstService::OPERATION_STATUS_OFF => '启用禁用',
+    ];
+
+    public static $transportPriceTypeList = [
+        BaseConstService::TRANSPORT_PRICE_TYPE_1 => '阶梯乘积值计算（固定费用+（每单位重量价格*重量价格）*（每单位里程价格*里程价格））',
+        BaseConstService::TRANSPORT_PRICE_TYPE_2 => '阶梯固定值计算（固定费用+（重量价格档）*（里程价格档））',
     ];
 
     /**

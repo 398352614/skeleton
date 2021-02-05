@@ -24,4 +24,14 @@ class TourOptimizationService
             return self::getInstance(TenCentApiService::class);
         }
     }
+
+    public static function getDistanceInstance($companyId)
+    {
+        $company = CompanyTrait::getCompany($companyId);
+        if (!empty($company['map']) && ($company['map'] == 'google')) {
+            return self::getInstance(GoogleApiDistanceService::class);
+        } else {
+            return self::getInstance(TenCentApiDistanceService::class);
+        }
+    }
 }

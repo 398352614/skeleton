@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -12,6 +13,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class Driver extends Authenticatable implements JWTSubject
 {
+    use Notifiable;
     /**
      * The table associated with the model.
      *

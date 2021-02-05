@@ -2,16 +2,23 @@
 
 namespace App\Services\Admin;
 
+use App\Events\AfterTourUpdated;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\BatchInfoResource;
 use App\Http\Resources\Api\Admin\BatchResource;
+use App\Jobs\UpdateLineCountTime;
 use App\Models\Batch;
+use App\Models\Driver;
+use App\Models\Tour;
+use App\Notifications\CancelBatch;
+use App\Notifications\TourAddTrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 class BatchService extends BaseService
 {
@@ -144,7 +151,7 @@ class BatchService extends BaseService
         }
         if (empty($batchList)) return [[], $tour];
         foreach ($batchList as $batch) {
-            $tour = !empty($tour) ? $tour : $this->getTourService()->getTourInfo($batch, $line, true, $batch['tour_no'] ?? '');
+            $tour = !empty($tour) ? $tour : $this->getTourService()->getTourInfo($batch, $line, true, $batch['tour_no'] ?? '', false, $isAddOrder);
             if (!empty($tour)) {
                 return [$batch, $tour];
             }
@@ -337,20 +344,29 @@ class BatchService extends BaseService
      */
     public function cancel($id)
     {
-        $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED], true);
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]]], ['*'], false)->toArray();
-        //站点删除
-        $rowCount = parent::delete(['id' => $info['id']]);
+        $info = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING], true);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]]], ['*'], false)->toArray();
+        //若是待分配,已分配,待出库,则删除;若是取派中，则取消取派
+        if (in_array($info['status'], [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT])) {
+            $rowCount = parent::delete(['id' => $info['id']]);
+        } else {
+            $rowCount = parent::update(['id' => $info['id']], ['status' => BaseConstService::BATCH_CANCEL]);
+        }
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //运单取消取派
-        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //运单包裹取消取派
-        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+        $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no'], 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4]]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('取消取派失败，请重新操作');
+        }
+        //运单材料取消取派
+        $rowCount = $this->getTrackingOrderMaterialService()->update(['batch_no' => $info['batch_no']], ['tour_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
@@ -358,8 +374,11 @@ class BatchService extends BaseService
         $this->getOrderService()->autoEnd($trackingOrderList);
         //若存在取件线路编号,则移除站点
         if (!empty($info['tour_no'])) {
-            $this->getTourService()->removeBatch($info);
+            $tour = $this->getTourService()->removeBatch($info, true);
             $this->getTourService()->reCountAmountByNo($info['tour_no']);
+            if (!empty($tour['driver_id']) && in_array($tour['status'], [BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4])) {
+                Notification::send(Driver::findOrFail($tour['driver_id']), new CancelBatch($info));
+            }
         }
 
         TrackingOrderTrailService::storeAllByTrackingOrderList($trackingOrderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
@@ -642,9 +661,13 @@ class BatchService extends BaseService
      */
     public function reCountAmountByNo($batchNo)
     {
-        //$totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['batch_no' => $batchNo]);
-        //$totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['batch_no' => $batchNo]);
-        $totalReplaceAmount = $totalSettlementAmount = 0.00;
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo], ['*'], false);
+        if ($trackingOrderList->isEmpty()) {
+            $totalReplaceAmount = $totalSettlementAmount = 0;
+        }else{
+            $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['tracking_order_no' => ['in', $trackingOrderList->pluck('tracking_order_no')->toArray()]]);
+            $totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['tracking_order_no' => ['in', $trackingOrderList->pluck('tracking_order_no')->toArray()]]);
+        }
         $rowCount = parent::update(['batch_no' => $batchNo], ['replace_amount' => $totalReplaceAmount, 'settlement_amount' => $totalSettlementAmount]);
         if ($rowCount === false) {
             throw new BusinessLogicException('金额统计失败');
@@ -657,4 +680,38 @@ class BatchService extends BaseService
         $info = $this->getPageList();
         return $info;
     }
+
+
+    /**
+     * 更新站点排序
+     * @param $tourNo
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function updateBatchSort($tourNo)
+    {
+        $batchList = parent::getList(['tour_no' => $tourNo], ['id', 'batch_no', 'sort_id', 'status'], false, [], ['is_skipped' => 'desc', 'sort_id' => 'asc'])->toArray();
+        if (empty($batchList)) return 'true';
+        $nextBatchNo = null;
+        $first = false;
+        foreach ($batchList as $key => $batch) {
+            if (!$first && in_array($batch['status'], [
+                    BaseConstService::BATCH_WAIT_ASSIGN,
+                    BaseConstService::BATCH_WAIT_OUT,
+                    BaseConstService::BATCH_DELIVERING,
+                    BaseConstService::BATCH_ASSIGNED
+                ])) {
+                $nextBatchNo = $batch['batch_no'];
+                $first = true;
+            }
+            $rowCount = parent::update(['id' => $batch['id']], ['sort_id' => $key + 1]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('站点顺序调整失败,请重新操作');
+            }
+        }
+        if (empty($nextBatchNo)) return 'true';
+        dispatch(new UpdateLineCountTime(Tour::where('tour_no', $tourNo)->firstOrFail(), $nextBatchNo));
+        return 'true';
+    }
+
 }

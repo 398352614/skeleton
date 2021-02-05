@@ -5,19 +5,19 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 运价表
- * Class Employee
+ * 运价操作日志
+ * Class OrderImport
  * @package App\Models
  */
-class TransportPrice extends BaseModel
+class TransportPriceOperation extends BaseModel
 {
     /**
-     * 运价表
+     *
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'transport_price';
+    protected $table = 'transport_price_operation';
 
     /**
      * The primary key for the model.
@@ -47,32 +47,30 @@ class TransportPrice extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'name',
-        'starting_price',
-        'type',
-        'remark',
-        'status',
+        'transport_price_id',
+        'operation',
+        'operator',
+        'content',
+        'second_content',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
+
+    protected $appends = [
+        'operation_name'
+    ];
+
+    public function getOperationNameAttribute()
+    {
+        return empty($this->operation) ? null : ConstTranslateTrait::operationList($this->operation);
+    }
 
     /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
      */
-    protected $hidden = [
-
-    ];
-
-    protected $appends = [
-        'type_name'
-    ];
-
-    public function getTypeNameAttribute()
-    {
-        return empty($this->type) ? null : ConstTranslateTrait::transportPriceTypeList($this->type);
-    }
+    protected $hidden = [];
 
     /**
      * The attributes that should be mutated to dates.
@@ -80,6 +78,4 @@ class TransportPrice extends BaseModel
      * @var array
      */
     protected $dates = [];
-
-
 }

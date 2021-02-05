@@ -35,6 +35,15 @@ class BaseConstService
     const PERMISSION_TYPE_1 = 1;
     const PERMISSION_TYPE_2 = 2;
 
+    //快捷方式,值与数据库权限表一致
+    const SHORT_CUT_ORDER_STORE = 'order.store';
+    const SHORT_CUT_ORDER_INDEX = 'order.index';
+    const SHORT_CUT_LINE_POST_CODE_INDEX = 'line.post-code-index';
+    const SHORT_CUT_TRACKING_INDEX = 'tracking-order.index';
+    const SHORT_CUT_BATCH_INDEX = 'batch.index';
+    const SHORT_CUT_TOUR_INDEX = 'tour.index';
+    const SHORT_CUT_TOUR_DISPATCH = 'tour.intelligent-scheduling';
+
     //是否需要验证
     const IS_AUTH_1 = 1;
     const IS_AUTH_2 = 2;
@@ -370,6 +379,10 @@ class BaseConstService
     const NOTIFY_PACKAGE_INFO = 'package-info';   //发送包裹信息
     const NOTIFY_PACKAGE_PICK_OUT = 'package-pick-out';   //包裹入库分拣
 
+    //push类型
+    const PUSH_TOUR_ADD_ORDER = 'add_tracking_order';   //线路加单
+    const PUSH_CANCEL_BATCH = 'cancel-batch';           //站点取消取派
+
 
     //商户类型
     const MERCHANT_TYPE_1 = 1;
@@ -474,4 +487,21 @@ class BaseConstService
     const ROUTE_RETRY_MAX_TIMES = 3;
     //线路重推间隔时间(分钟)
     const ROUTE_RETRY_INTERVAL_TIME = 1;
+
+    //固定值法
+    const ONLY_START_PRICE = 3;
+
+    //操作类型
+    const OPERATION_STORE = 1;
+    const OPERATION_UPDATE = 2;
+    const OPERATION_DESTROY = 3;
+    const OPERATION_STATUS_ON = 4;
+    const OPERATION_STATUS_OFF = 5;
+
+    //运价类型
+    const TRANSPORT_PRICE_TYPE_1 = 1;
+    const TRANSPORT_PRICE_TYPE_2 = 2;
+
+    //无限
+    const INFINITY = 999999999;
 }

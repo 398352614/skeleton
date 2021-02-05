@@ -22,6 +22,7 @@ use App\Services\Merchant\TourService;
 use App\Services\Merchant\TrackingOrderMaterialService;
 use App\Services\Merchant\TrackingOrderPackageService;
 use App\Services\Merchant\TrackingOrderService;
+use App\Services\Merchant\TransportPriceService;
 use App\Services\Merchant\UploadService;
 use App\Services\Merchant\WareHouseService;
 use App\Services\OrderNoRuleService;
@@ -247,5 +248,14 @@ Trait MerchantServiceTrait
     public function getPackageNoRuleService()
     {
         return self::getInstance(PackageNoRuleService::class);
+    }
+
+    /**
+     * 运价方案 服务
+     * @return TransportPriceService
+     */
+    public function getTransportPriceService()
+    {
+        return self::getInstance(TransportPriceService::class);
     }
 }

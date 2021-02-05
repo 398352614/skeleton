@@ -161,6 +161,17 @@ class RouteTrackingService extends BaseService
             $info[$i]['lat'] = $data[$i][0]['lat'] ?? '';
             $info[$i]['time'] = $data[$i][0]['time_human'] ?? '';
         }
+        if ($this->formData['is_online'] == BaseConstService::NO) {
+            $notOnlineDriver = collect($info)->pluck('driver_id')->toArray();
+            unset($info);
+            $driver = $this->getDriverService()->query->whereNotIn('id', $notOnlineDriver)->get();
+            foreach ($driver as $k => $v) {
+                $info[$k]['driver_id'] = $v['id'];
+                $info[$k]['driver_name'] = $v['fullname'];
+                $info[$k]['driver_phone'] = $v['phone'];
+                $info[$k]['car_no'] = $info[$k]['id'] = $info[$k]['lat'] = $info[$k]['lon'] = $info[$k]['line_name'] = $info[$k]['time'] = $info[$k]['tour_no'] = '';
+            }
+        }
         return $info;
     }
 }

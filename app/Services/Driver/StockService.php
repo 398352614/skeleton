@@ -61,7 +61,7 @@ class StockService extends BaseService
 
 
     /**
-     * 分拣入库
+     * 包裹分拣入库
      * @param $packageNo
      * @return array
      * @throws BusinessLogicException
@@ -74,7 +74,15 @@ class StockService extends BaseService
         }
         $stock = $this->getStockService()->getInfo(['express_first_no' => $package['express_first_no']], ['*'], false);
         if (!empty($stock)) {
-            throw new BusinessLogicException('包裹已入库，当前线路[:line_name]，派送日期[:execution_date]', 1000, ['line_name' => $stock['line_name'], 'execution_date' => $stock['execution_date']]);
+            $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $package['order_no'], 'driver_id' => ['all', null]], ['*'], false, ['id' => 'desc']);
+            if (!empty($trackingOrder)) {
+                $lineName = $trackingOrder['line_name'] ?? '';
+                $date = $trackingOrder['execution_date'] ?? null;
+            } else {
+                $lineName = $stock['line_name'];
+                $date = $stock['execution_date'];
+            }
+            throw new BusinessLogicException('包裹已入库，当前线路[:line_name]，派送日期[:execution_date]', 1000, ['line_name' => $lineName, 'execution_date' => $date]);
         }
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);

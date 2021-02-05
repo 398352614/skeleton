@@ -275,4 +275,11 @@ class TourController extends BaseController
     {
         return $this->service->planExport($id);
     }
+
+
+    public function batchPng($id)
+    {
+        return $this->service->batchPng($id);
+    }
+
 }

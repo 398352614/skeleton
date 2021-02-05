@@ -42,6 +42,7 @@ use App\Services\Admin\TrackingOrderService;
 use App\Services\Admin\TransportPriceService;
 use App\Services\Admin\UploadService;
 use App\Services\Admin\WareHouseService;
+use App\Services\ApiServices\GoogleApiService;
 use App\Services\OrderNoRuleService;
 use App\Services\PackageNoRuleService;
 
@@ -417,5 +418,14 @@ trait AdminServiceTrait
     public function getStockExceptionService()
     {
         return self::getInstance(StockExceptionService::class);
+    }
+
+    /**
+     * 获取谷歌服务
+     * @return GoogleApiService
+     */
+    public function getGoogleApiService()
+    {
+        return self::getInstance(GoogleApiService::class);
     }
 }

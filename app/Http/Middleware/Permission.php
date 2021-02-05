@@ -30,7 +30,6 @@ class Permission
         $routeAs = $request->route()->getName();
         if (empty($routeAs) || ($routeAs === 'common')) return $next($request);
         Log::info('route-as', ['route-as' => $routeAs]);
-        //$cache = Cache::get('permission_cache')->toArray();
         $isAuth = auth()->user()->can($routeAs);
         if ($isAuth === false) {
             throw new BusinessLogicException('当前用户没有该权限,请按F5刷新页面');

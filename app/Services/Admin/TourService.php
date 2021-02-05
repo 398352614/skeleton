@@ -16,6 +16,7 @@ use App\Services\BaseServices\XLDirectionService;
 use App\Services\TrackingOrderTrailService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
+use App\Traits\LocationTrait;
 use App\Traits\TourRedisLockTrait;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -45,7 +46,7 @@ class TourService extends BaseService
         'tour_no' => ['like', 'tour_no'],
         'driver_name' => ['like', 'driver_name'],
         'driver_id' => ['=', 'driver_id'],
-        'line_name,driver_name' => ['like', 'key_word'],
+        'tour_no,line_name,driver_name' => ['like', 'key_word']
     ];
 
     protected $headings = [
@@ -146,8 +147,8 @@ class TourService extends BaseService
 
         $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
         list($orderList, $lineId) = $this->getTrackingOrderService()->getAddTrackingOrderList($orderIdList, $executionDate);
-        $this->filters['line_id'] = ['=', $lineId];
-        $this->filters['execution_date'] = ['=', $data['execution_date']];
+        //$this->filters['line_id'] = ['=', $lineId];
+        $this->filters['execution_date'] = ['=', $executionDate];
         $list = parent::getPageList();
         return $list;
     }
@@ -158,6 +159,23 @@ class TourService extends BaseService
      */
     public function getPageList()
     {
+        if (!empty($this->formData['is_dispatch'])) {
+            if (intval($this->formData['is_dispatch']) == 1) {
+                $this->query->where('expect_distance', '>', 0)->whereIn('status', [
+                    BaseConstService::TOUR_STATUS_1,
+                    BaseConstService::TOUR_STATUS_2,
+                    BaseConstService::TOUR_STATUS_3,
+                    BaseConstService::TOUR_STATUS_4,
+                ]);
+            } else {
+                $this->query->where('expect_distance', '=', 0)->whereIn('status', [
+                    BaseConstService::TOUR_STATUS_1,
+                    BaseConstService::TOUR_STATUS_2,
+                    BaseConstService::TOUR_STATUS_3,
+                    BaseConstService::TOUR_STATUS_4,
+                ]);;
+            }
+        }
         if (isset($this->filters['status'][1]) && (intval($this->filters['status'][1]) == 0)) {
             unset($this->filters['status']);
         }
@@ -176,6 +194,7 @@ class TourService extends BaseService
             } else {
                 $tour['merchant_id_name'] = $merchantList[$tour['merchant_id']]['name'] ?? '';
             }
+            $tour['is_dispatch'] = ($tour['expect_distance'] == 0) ? 2 : 1;
             //计算站点数量
             $tour['expect_batch_count'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false)->count();
             $tour['actual_batch_count'] = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT], ['*'], false)->count();
@@ -435,16 +454,18 @@ class TourService extends BaseService
     /**
      * 移除站点
      * @param $batch
-     * @return string
+     * @param $isCancelBatch
+     * @return array
      * @throws BusinessLogicException
      */
-    public function removeBatch($batch)
+    public function removeBatch($batch, $isCancelBatch = false)
     {
         $info = parent::getInfo(['tour_no' => $batch['tour_no']], ['id'], false);
         if (empty($info)) {
-            return 'true';
+            return [];
         }
-        $info = $this->getInfoOfStatus(['tour_no' => $batch['tour_no']], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2], true);
+        $status = $isCancelBatch ? [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4] : [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2];
+        $info = $this->getInfoOfStatus(['tour_no' => $batch['tour_no']], true, $status, true);
         $quantity = intval($info['expect_pickup_quantity']) + intval($info['expect_pie_quantity']);
         $batchQuantity = intval($batch['expect_pickup_quantity']) + intval($batch['expect_pie_quantity']);
         //当站点中不存在其他运单时,删除站点;若还存在其他运单,则只移除运单
@@ -457,7 +478,7 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取件移除站点失败，请重新操作');
         }
-        return 'true';
+        return $info;
     }
 
     /**
@@ -560,22 +581,26 @@ class TourService extends BaseService
      * @param $isLock
      * @param $tourNo
      * @param $isAssign
+     * @param $isAddOrder
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null, $isAssign = false)
+    public function getTourInfo($batch, $line, $isLock = true, $tourNo = null, $isAssign = false, $isAddOrder = false)
     {
         if (!empty($tourNo)) {
             $this->query->where('tour_no', '=', $tourNo);
         }
         //若不存在取件线路或者超过最大运单量,则新建取件线路
-        if ((intval($batch['expect_pickup_quantity']) > 0) && ($isAssign == false)) {
+        if ((intval($batch['expect_pickup_quantity']) > 0) && (($isAssign == false) || ($isAddOrder == false))) {
             $this->query->where(DB::raw('expect_pickup_quantity+' . 1), '<=', $line['pickup_max_count']);
         }
-        if ((intval($batch['expect_pie_quantity']) > 0) && ($isAssign == false)) {
+        if ((intval($batch['expect_pie_quantity']) > 0) && (($isAssign == false) || ($isAddOrder == false))) {
             $this->query->where(DB::raw('expect_pie_quantity+' . 1), '<=', $line['pie_max_count']);
         }
         $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
+        if ($isAddOrder == true) {
+            $where['status'] = ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
+        }
         isset($batch['merchant_id']) && $where['merchant_id'] = $batch['merchant_id'];
         $tour = ($isLock === true) ? parent::getInfoLock($where, ['*'], false) : parent::getInfo($where, ['*'], false);
         return !empty($tour) ? $tour->toArray() : [];
@@ -595,7 +620,6 @@ class TourService extends BaseService
             throw new BusinessLogicException('金额统计失败');
         }
     }
-
 
     /**
      * 此处要求batchIds 为有序,并且已完成或者异常的 batch 在前方,未完成的 batch 在后方
@@ -1126,4 +1150,29 @@ class TourService extends BaseService
         }
         $this->updateBatchIndex(['tour_no' => $tourNo, 'batch_ids' => $batchIdList]);
     }
+
+    /**
+     * 导出站点地图
+     * @param $id
+     * @return array
+     * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function batchPng($id)
+    {
+        $tourInfo = $this->getInfo(['id' => $id], ['*'], false);
+        if (empty($tourInfo)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info = $this->getBatchService()->getList(['tour_no' => $tourInfo['tour_no']], ['*'], false, [], ['sort_id' => 'asc'])->toArray();
+        $params[0]['lon'] = $tourInfo['warehouse_lon'];
+        $params[0]['lat'] = $tourInfo['warehouse_lat'];
+        for ($i = 1; $i <= count($info); $i++) {
+            $params[$i]['lon'] = $info[$i - 1]['place_lon'];
+            $params[$i]['lat'] = $info[$i - 1]['place_lat'];
+        }
+        $name = $tourInfo['tour_no'];
+        return LocationTrait::getBatchMap($params, $name);
+    }
+
 }

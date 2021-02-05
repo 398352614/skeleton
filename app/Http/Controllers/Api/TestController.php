@@ -142,5 +142,10 @@ class TestController extends BaseController
         return $this->service->authTree();
     }
 
+    public function jPushNotify()
+    {
+        return $this->service->jPushNotify();
+    }
+
 
 }

@@ -244,8 +244,8 @@ return [
             'after' => '特殊时段计费列表截止时间必须大于起始时间'
         ],
         'special_time_list.*.price' => [
-            'required_with' => '重量计费列表价格是必须的',
-            'integer' => '重量计费列表价格必须是数字'
+            'required_with' => '特殊时段计费列表价格是必须的',
+            'integer' => '特殊时段计费列表价格必须是数字'
         ],
         //邮编列表
         'item_list.*.post_code_start' => [
@@ -456,7 +456,7 @@ return [
         'status' => '状态',
         'transport_price_id' => '运价ID',
         'is_default' => '是否默认',
-        'starting_price' => '起步价',
+        'starting_price' => '固定费用',
         'permission' => '权限',
         'package_list' => '包裹列表',
         'material_list' => '材料列表',

@@ -90,4 +90,36 @@ class HomeController extends BaseController
     {
         return $this->service->merchantTotalCount();
     }
+
+    /**
+     * 今日概览
+     * @return array
+     */
+    public function todayOverview()
+    {
+        return $this->service->todayOverview();
+    }
+
+    /**
+     * 获取快捷方式列表
+     * @return array
+     */
+    public function getShortCut()
+    {
+        return $this->service->getShortCut();
+    }
+
+    /**
+     * 任务结果概览
+     * @return array
+     */
+    public function resultOverview()
+    {
+        return $this->service->resultOverview($this->data['execution_date'] ?? null);
+    }
+
+    public function orderAnalysis()
+    {
+        return $this->service->orderAnalysis();
+    }
 }

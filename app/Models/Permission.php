@@ -199,14 +199,20 @@ class Permission extends BaseModel implements PermissionContract
     }
 
     /**
-     * Get the current cached permissions.
+     * Get the current cached permissions.(cache is too big,suo can not)
      */
     protected static function getPermissions(array $params = []): Collection
     {
-        return app(PermissionRegistrar::class)
-            ->setPermissionClass(static::class)
-            ->getPermissions($params);
+//        return app(PermissionRegistrar::class)
+//            ->setPermissionClass(static::class)
+//            ->getPermissions($params);
+        return self::query()->select([
+            'id', 'parent_id', 'name', 'route_as', 'type'
+        ])->when(!empty($params), function ($query) use ($params) {
+            foreach ($params as $attr => $value) {
+                $query = $query->where($attr, $value);
+            }
+        })->with('roles:id,company_id,name,is_admin')->get();
     }
-
 }
 

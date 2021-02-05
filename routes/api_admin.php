@@ -61,11 +61,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/merchant', 'HomeController@merchantCount')->name('statistics.home');
         //商户统计概览
         Route::get('/merchant-total', 'HomeController@merchantTotalCount')->name('statistics.home');
-    });
-
-    //订单管理
-    Route::prefix('order-import')->group(function () {
-
+        //今日概览
+        Route::get('/today-overview', 'HomeController@todayOverview')->name('statistics.home');
+        //任务结果概览
+        Route::get('/result-overview', 'HomeController@resultOverview')->name('statistics.home');
+        //订单分析
+        Route::get('/order-analysis', 'HomeController@orderAnalysis')->name('statistics.home');
+        //获取快捷方式列表
+        Route::get('/short-cut', 'HomeController@getShortCut')->name('statistics.home');
     });
 
     //订单管理
@@ -114,6 +117,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index')->name('order.third-party-log');
         //无效化已完成订单（用以新增同号订单）
         Route::get('/{id}/neutralize', 'OrderController@neutralize')->name('order.neutralize');
+        //运价估算
+        Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
     });
 
     //物流查询
@@ -366,6 +371,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/track', 'RouteTrackingController@show')->name('tour.track');
         //线路追踪
         Route::get('/all-track', 'RouteTrackingController@index')->name('tour.track');
+
     });
 
     //todo 取件线路-司机
@@ -674,8 +680,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'TransportPriceController@update')->name('transport-price.update');
         //启用/禁用
         Route::put('/{id}/status', 'TransportPriceController@status')->name('transport-price.status');
-        //价格测试
-        Route::get('/{id}/test', 'TransportPriceController@getPriceResult')->name('transport-price.test');
+        //运价估算
+        Route::post('/{id}/test', 'TransportPriceController@priceCount')->name('transport-price.test');
+        //运价操作日志
+        Route::get('/{id}/log', 'TransportPriceController@operationLogIndex')->name('transport-price.log');
     });
 
     Route::prefix('version')->group(function () {
