@@ -19,6 +19,7 @@ use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
+use WebSocket\Base;
 
 class BatchService extends BaseService
 {
@@ -350,7 +351,7 @@ class BatchService extends BaseService
         if (in_array($info['status'], [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT])) {
             $rowCount = parent::delete(['id' => $info['id']]);
         } else {
-            $rowCount = parent::update(['id' => $info['id']], ['status' => BaseConstService::BATCH_CANCEL]);
+            $rowCount = parent::update(['id' => $info['id']], ['status' => BaseConstService::BATCH_CANCEL, 'is_skipped' => BaseConstService::IS_NOT_SKIPPED]);
         }
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
@@ -664,7 +665,7 @@ class BatchService extends BaseService
         $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo], ['*'], false);
         if ($trackingOrderList->isEmpty()) {
             $totalReplaceAmount = $totalSettlementAmount = 0;
-        }else{
+        } else {
             $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['tracking_order_no' => ['in', $trackingOrderList->pluck('tracking_order_no')->toArray()]]);
             $totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['tracking_order_no' => ['in', $trackingOrderList->pluck('tracking_order_no')->toArray()]]);
         }
