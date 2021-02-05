@@ -51,26 +51,25 @@ class initPermission extends Command
     {
         try {
             $companyList = Company::query()->get(['id'])->toArray();
+            $basePermissionList = self::getPermissionList();
             foreach ($companyList as $company) {
                 $this->info($company['id']);
-                $role=Role::query()->where('company_id',$company['id'])->where('is_admin',1)->first();
-                if(empty($role)){
+                $role = Role::query()->where('company_id', $company['id'])->where('is_admin', 1)->first();
+                if (empty($role)) {
+                    //新建管理员权限组
                     $role = Role::create([
                         'company_id' => $company['id'],
                         'name' => '管理员组',
                         'is_admin' => 1,
                     ]);
-                    $this->info(1);
-                    $basePermissionList = self::getPermissionList();
-                    $this->info(2);
-                    $role->syncPermissions(array_column($basePermissionList, 'id'));
-                    $this->info(3);
                     $employee = Employee::query()->where('company_id', $company['id'])->orderBy('id')->first();
-                    $this->info(4);
-                    if(empty(DB::table('model_has_roles')->where('employee_id',$employee['id'])->first())){
-                        $this->addPermission($employee, $role);//初始化员工权限组
+                    if (empty(DB::table('model_has_roles')->where('employee_id', $employee['id'])->first())) {
+                        //将管理员用户加入管理员权限组
+                        $this->addPermission($employee, $role);
                     }
                 }
+                //给管理员权限组补齐权限
+                $role->syncPermissions(array_column($basePermissionList, 'id'));
             }
         } catch (\Exception $e) {
             $this->info($e);
