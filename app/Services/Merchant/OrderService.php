@@ -608,15 +608,20 @@ class OrderService extends BaseService
             $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
         //运价计算
-        $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
-        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
-            $params['distance'] = 1000;
+        if (!empty($params['execution_date'])) {
+            $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
+            if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
+                $params['distance'] = 1000;
+            } else {
+                $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+            }
+            $params['distance'] = $params['distance'] / 1000;
+            $params = $this->getTransportPriceService()->priceCount($params);
+            $params['distance'] = $params['distance'] * 1000;
         } else {
-            $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+            $params['distance'] = 0;
+            $data['starting_price'] = $data['settlement_amount'] = $data['package_settlement_amount'] = $data['count_settlement_amount'] = 0.00;
         }
-        $params['distance'] = $params['distance'] / 1000;
-        $params = $this->getTransportPriceService()->priceCount($params);
-        $params['distance'] = $params['distance'] * 1000;
         /***************************************************地址二处理*************************************************/
         if ($params['type'] == BaseConstService::ORDER_TYPE_3) {
             $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
