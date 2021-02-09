@@ -225,9 +225,9 @@ class TourTaskService extends BaseService
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getTrackingOrderList($id)
+    public function getTrackingOrderList()
     {
-        $tour = parent::getInfo(['id' => $id], ['tour_no'], false);
+        $tour = parent::getInfo(['tour_no' => $this->formData['tour_no']], ['tour_no'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }
