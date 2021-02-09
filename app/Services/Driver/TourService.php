@@ -1275,10 +1275,15 @@ class TourService extends BaseService
 
     public function getTourList()
     {
+        $executionDate = [
+            today()->addDay()->format('Y-m-d'),
+            today()->subDay()->format('Y-m-d'),
+            today()->format('Y-m-d')
+        ];
         $info = [];
         $tour = DB::table('tour')
             ->where('company_id', auth()->user()->company_id)
-            ->where('execution_date', today()->format('Y - m - d'))
+            ->whereIn('execution_date', $executionDate)
             ->get()->toArray();
         $tour = collect($tour)->groupBy('line_id')->toArray();
         foreach ($tour as $k => $v) {
