@@ -38,8 +38,8 @@ class LineValidate extends BaseValidate
         'item_list.*.post_code_end' => 'required|integer|between:1000,9999|gte:item_list.*.post_code_start',
         'coordinate_list' => 'required',
         //区域列表
-        'coordinate_list.*.*.lat' => 'required|string|max:30',
-        'coordinate_list.*.*.lon' => 'required|string|max:30',
+        'coordinate_list.*.lat' => 'required|string|max:30',
+        'coordinate_list.*.lon' => 'required|string|max:30',
     ];
 
     public $scene = [
