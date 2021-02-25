@@ -216,8 +216,10 @@ class BaseLineService extends BaseService
     private function getMerchantGroupLineRangeByPostcode($postCode, $executionDate, $merchantId = null)
     {
         //若邮编是纯数字，则认为是比利时邮编
-        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-        //获取邮编数字部分
+        $country = CompanyTrait::getCountry();
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
+            $country = BaseConstService::POSTCODE_COUNTRY_BE;
+        }        //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
         $query = $this->getMerchantGroupLineRangeService()->query
@@ -245,8 +247,10 @@ class BaseLineService extends BaseService
     private function getLineRangeByPostcode($postCode, $executionDate)
     {
         //若邮编是纯数字，则认为是比利时邮编
-        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-        //获取邮编数字部分
+        $country = CompanyTrait::getCountry();
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
+            $country = BaseConstService::POSTCODE_COUNTRY_BE;
+        }        //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
         $query = $this->getLineRangeService()->query
@@ -268,8 +272,10 @@ class BaseLineService extends BaseService
     public function getLineRangeListByPostcode($postCode, $merchantId = null)
     {
         //若邮编是纯数字，则认为是比利时邮编
-        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-        //获取邮编数字部分
+        $country = CompanyTrait::getCountry();
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
+            $country = BaseConstService::POSTCODE_COUNTRY_BE;
+        }        //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
         $query = $this->getMerchantGroupLineRangeService()->query

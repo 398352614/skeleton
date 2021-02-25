@@ -590,8 +590,10 @@ class OrderService extends BaseService
         /***************************************************地址一处理*************************************************/
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         //若邮编是纯数字，则认为是比利时邮编
-        $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-        //获取经纬度
+        $country = CompanyTrait::getCountry();
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
+            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+        }        //获取经纬度
         $fields = ['place_house_number', 'place_city', 'place_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
         //获取经纬度
@@ -626,8 +628,10 @@ class OrderService extends BaseService
         if ($params['type'] == BaseConstService::ORDER_TYPE_3) {
             $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
             //若邮编是纯数字，则认为是比利时邮编
-            $params['second_place_country'] = post_code_be($params['second_place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-            //获取经纬度
+            $country = CompanyTrait::getCountry();
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
+                $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+            }            //获取经纬度
             $fields = ['second_place_house_number', 'second_place_city', 'second_place_street'];
             $params = array_merge(array_fill_keys($fields, ''), $params);
             //获取经纬度
