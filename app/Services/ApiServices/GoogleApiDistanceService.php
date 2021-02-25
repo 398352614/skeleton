@@ -47,8 +47,7 @@ class GoogleApiDistanceService
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
         $url = $url . $query;
         Log::info('路由' . $url);
-        dd(config('tms.true_app_env'));
-        if (config('tms.true_app_env') == 'develop') {
+        if (config('tms.true_app_env') == 2) {
             $options = [
                 'proxy' => [
                     'http' => config('tms.http_proxy'),
@@ -57,7 +56,7 @@ class GoogleApiDistanceService
         } else {
             $options = [];
         }
-        dd($options);
+        dd(env('TRUE_APP_ENV'), config('tms.true_app_env'),$options);
         $res = $this->client->request('GET', $url, $options);
         $body = $res->getBody();
         $stringBody = (string)$body;
