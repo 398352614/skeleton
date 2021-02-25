@@ -56,7 +56,7 @@ class GoogleApiDistanceService
         } else {
             $options = [];
         }
-        dd(env('TRUE_APP_ENV'), config('tms.true_app_env'),$options);
+        dd(env('APP_URL'),env('TRUE_APP_ENV'), config('tms.true_app_env'),$options);
         $res = $this->client->request('GET', $url, $options);
         $body = $res->getBody();
         $stringBody = (string)$body;
