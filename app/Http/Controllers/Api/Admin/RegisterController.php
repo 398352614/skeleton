@@ -107,10 +107,11 @@ class RegisterController extends BaseController
             BaseConstService::TOUR_NO_TYPE => BaseConstService::TOUR,
             BaseConstService::BATCH_EXCEPTION_NO_TYPE => BaseConstService::BATCH_EXCEPTION,
             BaseConstService::RECHARGE_NO_TYPE => BaseConstService::RECHARGE,
+            BaseConstService::TRACKING_ORDER_NO_TYPE => BaseConstService::TRACKING_ORDER,
         ];
         $rules = collect($rules)->map(function ($rule, $type) use ($company) {
             $prefix = $rule . substr('000' . $company->id, -4, 4);
-            if ($type == BaseConstService::ORDER_NO_TYPE) {
+            if ($type == BaseConstService::ORDER_NO_TYPE || $type == BaseConstService::TRACKING_ORDER_NO_TYPE) {
                 $length = 6;
             } elseif ($type == BaseConstService::RECHARGE_NO_TYPE) {
                 $length = 7;
