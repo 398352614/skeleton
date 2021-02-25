@@ -47,7 +47,7 @@ class GoogleApiDistanceService
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
         $url = $url . $query;
         Log::info('路由' . $url);
-        if ((config('tms.true_app_env') === 'develop')) {
+        if ((config('tms.true_app_env') == 'develop')) {
             $options = [
                 'proxy' => [
                     'http' => config('tms.http_proxy'),
