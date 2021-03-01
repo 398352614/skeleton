@@ -77,6 +77,7 @@ tms_dev_env_redis_1
 #### 2.2 从github上下载项目工程
  github仓库地址：[https://github.com/nletech/tms-api](https://github.com/nletech/tms-api)
 通过克隆，下载到服务器上。
+注意：应在docker环境文件夹同层新建www文件夹，再在www文件夹内git clone克隆项目代码。  
 ```gitexclude
 git clone https://github.com/nletech/tms-api/tree/deploy;
 ```
