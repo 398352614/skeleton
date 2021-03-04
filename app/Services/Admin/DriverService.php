@@ -51,8 +51,8 @@ class DriverService extends BaseService
      */
     public function destroy($id)
     {
-        $tourList = $this->getTourService()->getList(['driver_id' => $id],['*'],false)->toArray();
-        foreach ($tourList as $v){
+        $tourList = $this->getTourService()->getList(['driver_id' => $id], ['*'], false)->toArray();
+        foreach ($tourList as $v) {
             if (in_array($v['status'], [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_2])) {
                 throw new BusinessLogicException('仍有未完成的任务，无法删除');
             }
@@ -109,16 +109,16 @@ class DriverService extends BaseService
 
     public function getPageList()
     {
+        $date = null;
+        //如果查询条件中有取件线路，1查询取派日期，2查到这个取派日期的所有取件线路，3把已经在其他取件线路的司机排除。就是这条取件线路可选的司机。
         if (!empty($this->formData['tour_no'])) {
-            $date = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
-            if(empty($date)){
-                $date=$date->toArray()['execution_date'];
-            }else{
-                $date='';
+            $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
+            if (!empty($tour)) {
+                $date = $tour->toArray()['execution_date'];
             }
-            $info = Tour::query()->where('execution_date', $date)->where('status', '<>', BaseConstService::TOUR_STATUS_5)->whereNotNull('driver_id')->pluck('driver_id')->toArray();
-            if (!empty($info)) {
-                $this->query->whereNotIn('id', $info);
+            $driverIdList = Tour::query()->where('execution_date', $date)->where('status', '<>', BaseConstService::TOUR_STATUS_5)->whereNotNull('driver_id')->pluck('driver_id')->toArray();
+            if (!empty($driverIdList)) {
+                $this->query->whereNotIn('id', $driverIdList);
             }
             $this->query->where('is_locked', '=', BaseConstService::DRIVER_TO_NORMAL);
         }
