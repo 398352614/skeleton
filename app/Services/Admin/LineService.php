@@ -247,7 +247,7 @@ class LineService extends BaseLineService
         //基础验证
         $this->check($params);
         //区域范围验证
-        $this->getLineAreaService()->checkArea($params['coordinate_list'], $params['country']);
+        $this->getLineAreaService()->checkArea([$params['coordinate_list']], $params['country']);
         //新增
         $lineId = $this->store($params, BaseConstService::LINE_RULE_AREA);
         //区域范围批量新增
@@ -269,7 +269,7 @@ class LineService extends BaseLineService
         //基础验证
         $this->check($data, $info->toArray());
         //区域范围验证
-        $this->getLineAreaService()->checkArea($data['coordinate_list'], $data['country'], $id);
+        $this->getLineAreaService()->checkArea([$data['coordinate_list']], $data['country'], $id);
         //修改
         $this->updateById($id, $data);
         //删除原来区域范围验证
