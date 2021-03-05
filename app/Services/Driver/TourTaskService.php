@@ -137,7 +137,7 @@ class TourTaskService extends BaseService
         $tour['batch_list'] = $batchList;
         $tour['tracking_order_list'] = $trackingOrderList;
         $tour['material_list'] = $materialList;
-        $tour['actual_total_amount'] = number_format(round($tour['sticker_amount'] + $tour['delivery_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'], 2), 2);
+        $tour['actual_total_amount'] = number_format_simple(round($tour['sticker_amount'] + $tour['delivery_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'], 2), 2);
         //$tour['package_list'] = $packageList;
         $tour['expect_pickup_package_quantity'] = $expectPickupPackageQuantity;
         $tour['actual_pickup_package_quantity'] = $actualPickupPackageQuantity;
@@ -269,7 +269,7 @@ class TourTaskService extends BaseService
             $authPackage = collect($tour['tracking_order_list'])->pluck('package_list')->where('batch_no', $y['batch_no'])->where('status', BaseConstService::BATCH_DELIVERING)->where('is_auth', BaseConstService::IS_AUTH_1)->first();
             $tour['batch_list'][$x]['is_auth'] = !empty($authPackage) ? BaseConstService::IS_AUTH_1 : BaseConstService::IS_AUTH_2;
             $tour['batch_list'][$x]['tour_id'] = $tour['id'];
-            $tour['batch_list'][$x]['actual_total_amount'] = number_format(round($tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['delivery_amount'] + $tour['batch_list'][$x]['actual_replace_amount'] + $tour['batch_list'][$x]['actual_settlement_amount'], 2), 2);
+            $tour['batch_list'][$x]['actual_total_amount'] = number_format_simple(round($tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['delivery_amount'] + $tour['batch_list'][$x]['actual_replace_amount'] + $tour['batch_list'][$x]['actual_settlement_amount'], 2), 2);
             if ($tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['settlement_amount'] + $tour['batch_list'][$x]['delivery_amount'] == 0) {
                 $tour['batch_list'][$x]['no_need_to_pay'] = BaseConstService::YES;
             } else {

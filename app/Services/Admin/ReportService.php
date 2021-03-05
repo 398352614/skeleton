@@ -152,13 +152,13 @@ class ReportService extends BaseService
             $orderList[$k]['tour_no'] = $trackingOrderList[$v['order_no']]['tour_no'] ?? '';
             //更新订单统计
             $orderList[$k]['package_list'] = collect($packageList)->where('order_no', $v['order_no'])->all();
-            $orderList[$k]['expect_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
-            $orderList[$k]['expect_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
-            $orderList[$k]['expect_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount']), 2), 2);
+            $orderList[$k]['expect_settlement_amount'] = number_format_simple(round($v['settlement_amount'], 2), 2);
+            $orderList[$k]['expect_replace_amount'] = number_format_simple(round($v['replace_amount'], 2), 2);
+            $orderList[$k]['expect_total_amount'] = number_format_simple(round(($v['settlement_amount'] + $v['replace_amount']), 2), 2);
             if ($v['status'] == BaseConstService::TRACKING_ORDER_STATUS_5) {
-                $orderList[$k]['actual_settlement_amount'] = number_format(round($v['settlement_amount'], 2), 2);
-                $orderList[$k]['actual_replace_amount'] = number_format(round($v['replace_amount'], 2), 2);
-                $orderList[$k]['actual_total_amount'] = number_format(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
+                $orderList[$k]['actual_settlement_amount'] = number_format_simple(round($v['settlement_amount'], 2), 2);
+                $orderList[$k]['actual_replace_amount'] = number_format_simple(round($v['replace_amount'], 2), 2);
+                $orderList[$k]['actual_total_amount'] = number_format_simple(round(($v['settlement_amount'] + $v['replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
                 $orderList[$k]['sticker_count'] = count(collect($orderList[$k]['package_list'])->where('sticker_no', '<>', ""));
                 $orderList[$k]['delivery_count'] = count(collect($orderList[$k]['package_list'])->where('delivery_amount', '<>', 0));
                 $orderList[$k]['pay_type'] = collect($batchList)->where('batch_no', $v['batch_no'])->first()['pay_type'] ?? BaseConstService::BATCH_PAY_TYPE_1;
@@ -177,7 +177,7 @@ class ReportService extends BaseService
                     $info['api_delivery_count'] += $orderList[$k]['delivery_count'];
                 }
             } else {
-                $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount'] = $orderList[$k]['actual_replace_amount'] = number_format(0.00, 2);
+                $orderList[$k]['actual_settlement_amount'] = $orderList[$k]['actual_total_amount'] = $orderList[$k]['actual_replace_amount'] = number_format_simple(0.00, 2);
                 $orderList[$k]['delivery_count'] = $orderList[$k]['sticker_count'] = 0;
             }
         }
@@ -204,7 +204,7 @@ class ReportService extends BaseService
         $info['cash_settlement_amount'] = $info['cash_replace_amount'] = $info['cash_sticker_amount'] = $info['cash_delivery_amount'] = $info['cash_total_amount'] = 0;
         $info['api_settlement_amount'] = $info['api_replace_amount'] = $info['api_sticker_amount'] = $info['api_delivery_amount'] = $info['api_total_amount'] = 0;
         foreach ($batchList as $k => $v) {
-            $batchList[$k]['actual_total_amount'] = number_format(round(($v['actual_settlement_amount'] + $v['actual_replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
+            $batchList[$k]['actual_total_amount'] = number_format_simple(round(($v['actual_settlement_amount'] + $v['actual_replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
             //更新取件线路统计
             if ($v['pay_type'] == BaseConstService::BATCH_PAY_TYPE_1) {
                 $info['cash_settlement_amount'] += floatval($v['actual_settlement_amount']);
@@ -226,23 +226,23 @@ class ReportService extends BaseService
                 $info['api_total_amount'] += floatval($batchList[$k]['actual_total_amount']);
             }
         }
-        $info['card_settlement_amount'] = number_format(round($info['card_settlement_amount'], 2), 2);
-        $info['card_replace_amount'] = number_format(round($info['card_replace_amount'], 2), 2);
-        $info['card_sticker_amount'] = number_format(round($info['card_sticker_amount'], 2), 2);
-        $info['card_delivery_amount'] = number_format(round($info['card_delivery_amount'], 2), 2);
-        $info['card_total_amount'] = number_format(round($info['card_total_amount'], 2), 2);
+        $info['card_settlement_amount'] = number_format_simple(round($info['card_settlement_amount'], 2), 2);
+        $info['card_replace_amount'] = number_format_simple(round($info['card_replace_amount'], 2), 2);
+        $info['card_sticker_amount'] = number_format_simple(round($info['card_sticker_amount'], 2), 2);
+        $info['card_delivery_amount'] = number_format_simple(round($info['card_delivery_amount'], 2), 2);
+        $info['card_total_amount'] = number_format_simple(round($info['card_total_amount'], 2), 2);
 
-        $info['cash_settlement_amount'] = number_format(round($info['cash_settlement_amount'], 2), 2);
-        $info['cash_replace_amount'] = number_format(round($info['cash_replace_amount'], 2), 2);
-        $info['cash_sticker_amount'] = number_format(round($info['cash_sticker_amount'], 2), 2);
-        $info['cash_delivery_amount'] = number_format(round($info['cash_delivery_amount'], 2), 2);
-        $info['cash_total_amount'] = number_format(round($info['cash_total_amount'], 2), 2);
+        $info['cash_settlement_amount'] = number_format_simple(round($info['cash_settlement_amount'], 2), 2);
+        $info['cash_replace_amount'] = number_format_simple(round($info['cash_replace_amount'], 2), 2);
+        $info['cash_sticker_amount'] = number_format_simple(round($info['cash_sticker_amount'], 2), 2);
+        $info['cash_delivery_amount'] = number_format_simple(round($info['cash_delivery_amount'], 2), 2);
+        $info['cash_total_amount'] = number_format_simple(round($info['cash_total_amount'], 2), 2);
 
-        $info['api_settlement_amount'] = number_format(round($info['api_settlement_amount'], 2), 2);
-        $info['api_replace_amount'] = number_format(round($info['api_replace_amount'], 2), 2);
-        $info['api_sticker_amount'] = number_format(round($info['api_sticker_amount'], 2), 2);
-        $info['api_delivery_amount'] = number_format(round($info['api_delivery_amount'], 2), 2);
-        $info['api_total_amount'] = number_format(round($info['api_total_amount'], 2), 2);
+        $info['api_settlement_amount'] = number_format_simple(round($info['api_settlement_amount'], 2), 2);
+        $info['api_replace_amount'] = number_format_simple(round($info['api_replace_amount'], 2), 2);
+        $info['api_sticker_amount'] = number_format_simple(round($info['api_sticker_amount'], 2), 2);
+        $info['api_delivery_amount'] = number_format_simple(round($info['api_delivery_amount'], 2), 2);
+        $info['api_total_amount'] = number_format_simple(round($info['api_total_amount'], 2), 2);
 
         return $info;
     }
@@ -334,11 +334,11 @@ class ReportService extends BaseService
                 'house_number' => $batch['place_house_number'],
                 'address' => $batch['place_address'],
                 'expect_quantity' => $batch['expect_pickup_quantity'] + $batch['expect_pie_quantity'],
-                'sticker_amount' => number_format(round($batch['sticker_amount'], 2), 2),
-                'delivery_amount' => number_format(round($batch['delivery_amount'], 2), 2),
-                'replace_amount' => number_format(round($batch['actual_replace_amount'], 2), 2),
-                'settlement_amount' => number_format(round($batch['actual_settlement_amount'], 2), 2),
-                'total_amount' => number_format(round(($batch['actual_settlement_amount'] + $batch['sticker_amount'] + $batch['delivery_amount'] + $batch['actual_replace_amount']), 2), 2),
+                'sticker_amount' => number_format_simple(round($batch['sticker_amount'], 2), 2),
+                'delivery_amount' => number_format_simple(round($batch['delivery_amount'], 2), 2),
+                'replace_amount' => number_format_simple(round($batch['actual_replace_amount'], 2), 2),
+                'settlement_amount' => number_format_simple(round($batch['actual_settlement_amount'], 2), 2),
+                'total_amount' => number_format_simple(round(($batch['actual_settlement_amount'] + $batch['sticker_amount'] + $batch['delivery_amount'] + $batch['actual_replace_amount']), 2), 2),
                 'cancel_type' => $batch['cancel_type'],
                 'cancel_remark' => $batch['cancel_remark'],
                 'cancel_picture' => $batch['cancel_picture'],

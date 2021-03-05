@@ -572,7 +572,7 @@ class TourService extends BaseService
         //获取站点中过所有材料
         $materialList = $this->getTrackingOrderMaterialService()->getList(['batch_no' => $batch['batch_no']], ['*'], false)->toArray();
         $batch['tour_id'] = $tour['id'];
-        $batch['actual_total_amount'] = number_format(round($batch['sticker_amount'] + $batch['delivery_amount'] + $batch['actual_replace_amount'] + $batch['actual_settlement_amount'], 2), 2);
+        $batch['actual_total_amount'] = number_format_simple(round($batch['sticker_amount'] + $batch['delivery_amount'] + $batch['actual_replace_amount'] + $batch['actual_settlement_amount'], 2), 2);
         if ($batch['sticker_amount'] + $batch['sticker_amount'] + $batch['settlement_amount'] + $batch['delivery_amount'] == 0) {
             $batch['no_need_to_pay'] = BaseConstService::YES;
         } else {
@@ -701,11 +701,11 @@ class TourService extends BaseService
         //运费统计
         $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['order_no' => ['in', $orderNoList]]);
         return [
-            'total_sticker_amount' => number_format($totalStickerAmount, 2),
-            'total_delivery_amount' => number_format($totalDeliveryAmount, 2),
-            'total_replace_amount' => number_format($totalReplaceAmount, 2),
-            'total_settlement_amount' => number_format($totalSettlementAmount, 2),
-            'total_amount' => number_format($totalStickerAmount + $totalReplaceAmount + $totalSettlementAmount + $totalDeliveryAmount, 2),
+            'total_sticker_amount' => number_format_simple($totalStickerAmount, 2),
+            'total_delivery_amount' => number_format_simple($totalDeliveryAmount, 2),
+            'total_replace_amount' => number_format_simple($totalReplaceAmount, 2),
+            'total_settlement_amount' => number_format_simple($totalSettlementAmount, 2),
+            'total_amount' => number_format_simple($totalStickerAmount + $totalReplaceAmount + $totalSettlementAmount + $totalDeliveryAmount, 2),
         ];
     }
 
@@ -1140,7 +1140,7 @@ class TourService extends BaseService
         $tour['material_expect_count'] = $this->tourMaterialModel->newQuery()->where('tour_no', $tour['tour_no'])->sum('expect_quantity');
         $tour['material_actual_count'] = $this->tourMaterialModel->newQuery()->where('tour_no', $tour['tour_no'])->sum('finish_quantity');
         //总费用计算
-        $tour['actual_total_amount'] = number_format(round($tour['sticker_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'] + $tour['delivery_amount'], 2), 2);
+        $tour['actual_total_amount'] = number_format_simple(round($tour['sticker_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'] + $tour['delivery_amount'], 2), 2);
         return $tour;
     }
 
