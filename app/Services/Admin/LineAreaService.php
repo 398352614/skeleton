@@ -31,9 +31,9 @@ class LineAreaService extends BaseService
     {
         //判断页面区域是否有重叠
         $areaCount = count($coordinateList);
-        if($areaCount > 1){
-            for ($i = 0; $i <= $areaCount - 1; $i++) {
-                for ($j = $i + 1; $j <= $areaCount; $j++) {
+        if ($areaCount > 1) {
+            for ($i = 0; $i < $areaCount - 1; $i++) {
+                for ($j = $i + 1; $j < $areaCount; $j++) {
                     $status = MapAreaTrait::TwoAreasOverlap($coordinateList[$i], $coordinateList[$j]);
                     if ($status) {
                         throw new BusinessLogicException('区域[:i]和区域[:j]有重叠', 1000, ['i' => $i + 1, 'j' => $j + 1]);
