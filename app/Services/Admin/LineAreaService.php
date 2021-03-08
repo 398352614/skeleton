@@ -31,6 +31,12 @@ class LineAreaService extends BaseService
     {
         //判断页面区域是否有重叠
         $areaCount = count($coordinateList);
+        foreach ($coordinateList as $k=>$v)
+        {
+            if(count($v) < 3){
+                throw new BusinessLogicException("一个区域至少应该有三个顶点");
+            }
+        }
         if ($areaCount > 1) {
             for ($i = 0; $i < $areaCount - 1; $i++) {
                 for ($j = $i + 1; $j < $areaCount; $j++) {
