@@ -1,5 +1,7 @@
 <?php
 
+use App\Exceptions\BusinessLogicException;
+
 if (!function_exists('isJson')) {
     /**
      * 判断字符串是否是json

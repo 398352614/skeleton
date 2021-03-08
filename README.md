@@ -125,7 +125,8 @@ composer 自我更新
 composer selfupdate
 ```
 
-替换文件已解决php版本字符问题，文件在docker根目录下
+替换文件已解决php版本字符问题，文件在docker根目录下。
+原因是7.4版本php不支持花括号{}取数组元素，只支持中括号[]取数组元素。因此需要将环境文件夹根目录下的DNS1D.php文件复制并覆盖以下文件。
 ```
 tms-api/www/api/vendor/milon/barcode/src/Milon/Barcode/DNS1D.php
 ```
@@ -159,6 +160,20 @@ docker-compose exec php-cli bash
 cd api
 sudo supervisord -c /etc/supervisor/supervisord.conf
 ```
+
+#### 3.6 基础权限表  
+手动导入permission表  
+
+#### 3.7 导入地址模板  
+```$php
+php artisan db:seed --class=AddressTemplateSeeder
+```
+
+#### 3.8 打印模板上传
+打印模板并未存在git上，需要在本地上传至服务器的公共目录，然后移动至/app/tms/www/api/storage/app/public/admin/print_template。
+标准模板带包裹二维码，重命名为1.png，通用模板不带包裹二维码，重命名为2.png。
+
+
 ## 三、使用说明
 ### 1. 项目连接
 #### 1.1 内部连接

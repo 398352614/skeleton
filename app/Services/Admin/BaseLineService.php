@@ -240,6 +240,8 @@ class BaseLineService extends BaseService
         $this->appointmentDayCheck($info, $line);
         //若不是新增取件线路，则当前取件线路必须再最大订单量内
         $this->maxCheck($info, $line, $orderOrBatch);
+        //最小订单量检验
+        //$this->minCheck($info, $line, $orderOrBatch);
     }
 
     /**
@@ -586,6 +588,53 @@ class BaseLineService extends BaseService
     }
 
     /**
+     * 最小订单量验证
+     * @param $params
+     * @param $line
+     * @param $orderOrBatch
+     * @throws BusinessLogicException
+     */
+    private function minCheck($params, $line, $orderOrBatch)
+    {
+        $merchantGroupLineList = $this->getMerchantGroupLineService()->getList(['line_id' => $line['id']], ['*'], false);
+        if (!empty($merchantGroupLineList) && $line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
+            $merchantGroupLineList = $merchantGroupLineList->toArray();
+            $mixPickupCount = 0;
+            $mixPieCount = 0;
+            foreach ($merchantGroupLineList as $k => $v) {
+                $merchantIdList = $this->getMerchantService()->getList(['merchant_group_id' => $v['merchant_group_id']], ['*'], false)->pluck('id')->toArray();
+                $count[$k]['pickup_count'] = $this->getTourService()->sum('expect_pickup_quantity', ['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date']]);
+                //各商户组混合订单量等于=各商户组预计订单量-最小订单量
+                if ($count[$k]['pickup_count'] > $v['pickup_min_count']) {
+                    $mixPickupCount = $mixPickupCount + $count[$k]['pickup_count'] - $v['pickup_min_count'];
+                }
+                if ($count[$k]['pie_count'] > $v['pie_min_count']) {
+                    $mixPieCount = $mixPieCount + $count[$k]['pie_count'] - $v['pie_min_count'];
+                }
+            }
+            //如果各商户组混合订单量之和大于最大订单量减去各商户组最小订单量之和，则报错。
+            if ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::TRACKING_ORDER_TYPE_1 &&
+                $mixPickupCount + 1 > $line['pickup_max_count'] - collect($merchantGroupLineList)->sum('pickup_min_count')) {
+                throw new BusinessLogicException('当前线路的其他商户还未到达取件最小订单量，该商户无法添加订单');
+            }
+            if ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::TRACKING_ORDER_TYPE_2 &&
+                $mixPieCount + 1 > $line['pie_max_count'] - collect($merchantGroupLineList)->sum('pie_min_count')) {
+                throw new BusinessLogicException('当前线路的其他商户还未到达派件最小订单量，该商户无法添加订单');
+            }
+            if ($orderOrBatch === 2 &&
+                (
+                    $mixPickupCount + intval($params['expect_pickup_quantity']) > $line['pickup_max_count'] - collect($merchantGroupLineList)->sum('pickup_min_count') ||
+                    $mixPieCount + intval($params['expect_pie_quantity']) > $line['pie_max_count'] - collect($merchantGroupLineList)->sum('pie_min_count')
+                )
+            ) {
+                throw new BusinessLogicException('当前线路的其他商户还未到达取件最小订单量，该商户无法添加订单');
+            }
+        }
+        return;
+
+    }
+
+    /**
      * 截至日期检查
      * @param $info
      * @param $line
@@ -640,7 +689,7 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function maxBatchCheck(array $info, array $line)
+    private function maxBatchCheck($info, $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 3);
         if (intval($info['expect_pickup_quantity']) > 0) {

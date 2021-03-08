@@ -21,6 +21,7 @@ use App\Services\Admin\LineService;
 use App\Services\Admin\MaterialService;
 use App\Services\Admin\MerchantApiService;
 use App\Services\Admin\MerchantGroupLineRangeService;
+use App\Services\Admin\MerchantGroupLineService;
 use App\Services\Admin\MerchantGroupService;
 use App\Services\Admin\MerchantRechargeService;
 use App\Services\Admin\MerchantService;
@@ -427,5 +428,14 @@ trait AdminServiceTrait
     public function getGoogleApiService()
     {
         return self::getInstance(GoogleApiService::class);
+    }
+
+    /**
+     * 商户组线路服务
+     * @return MerchantGroupLineService
+     */
+    public function getMerchantGroupLineService()
+    {
+        return self::getInstance(MerchantGroupLineService::class);
     }
 }

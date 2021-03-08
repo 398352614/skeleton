@@ -149,17 +149,24 @@ class LineService extends BaseLineService
         }
         //基础验证
         $this->check($data, $info->toArray());
+        //商户组最小订单量验证
+        $this->getMerchantGroupLineService()->checkCount($info, $data['merchant_group_count_list']);
         //邮编范围验证
         $this->getLineRangeService()->checkRange($data['item_list'], $data['country'], $data['work_day_list'], $id);
         //修改
         $this->updateById($id, $data);
-        //删除原来线路范围
+        //删除并新增线路范围
         $rowCount = $this->getLineRangeService()->delete(['line_id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围修改失败');
         }
-        //批量新增
         $this->getLineRangeService()->storeAll($id, $data['item_list'], $data['country'], $data['work_day_list']);
+        //删除并新增最小订单量
+        $rowCount = $this->getMerchantGroupLineService()->delete(['line_id' => $id]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('线路范围修改失败');
+        }
+        $this->getMerchantGroupLineService()->storeAll($info, $data['merchant_group_count_list']);
     }
 
     /**
