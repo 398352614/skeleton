@@ -135,7 +135,6 @@ class GoogleApiService
         $batchs = [$driver_location]; // 将司机位置放在序列中的第一位
 
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
-
         foreach ($orderBatchs as $key => $batch) {
             $batchs[] = [
                 "latitude" => $batch->place_lat,
@@ -157,6 +156,7 @@ class GoogleApiService
             'target_code' => $nextCode,
             'location' => $batchs,
         ];
+        dd($params);
         app('log')->info('更新线路传送给 api 端的参数为:', $params);
         $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
@@ -219,7 +219,7 @@ class GoogleApiService
         app('log')->debug('整合后的数据为:', array_merge([$driverLoc], $batchs->toArray()));
         $batchNos = (new XLDirectionService())->GetRoute(array_merge([$driverLoc], $batchs->toArray()));
         if (empty($batchNos)) {
-            new BusinessLogicException('优化线路失败');
+            throw new BusinessLogicException('优化线路失败');
         }
         app('log')->info('当前返回的值为:' . json_encode($batchNos));
         $nextBatch = null;
@@ -229,6 +229,7 @@ class GoogleApiService
                 $nextBatch = Batch::where('batch_no', $batchNo)->first();
             }
         }
+        dd(collect($nextBatch)->toArray());
         if (empty($nextBatch)) {
             throw new BusinessLogicException('优化失败');
         };
