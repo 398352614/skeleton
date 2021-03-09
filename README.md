@@ -94,7 +94,7 @@ git pull
 ````gitexclude
 docker-compose exec php-cli bash
 cd api
-php aritsan migrate
+php artisan migrate
 ````
 如果有更改队列任务，还需进入容器，执行以下命令重启队列。
 ```gitexclude
