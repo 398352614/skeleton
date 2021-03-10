@@ -44,14 +44,14 @@ class MerchantGroupLineService extends BaseService
 
     /**
      * 批量新增
-     * @param $info
+     * @param $lineId
      * @param $data
      * @throws BusinessLogicException
      */
-    public function storeAll($info, $data)
+    public function storeAll($lineId, $data)
     {
         foreach ($data as &$v) {
-            $v['line_id'] = $info['id'];
+            $v['line_id'] = $lineId;
         }
         $rowCount = parent::insertAll($data);
         if ($rowCount === false) {

@@ -47,8 +47,8 @@ class MerchantGroupLine extends BaseModel
         'company_id',
         'line_id',
         'merchant_group_id',
-        'pickup_max_count',
-        'pie_max_count',
+        'pickup_min_count',
+        'pie_min_count',
         'created_at',
         'updated_at',
     ];

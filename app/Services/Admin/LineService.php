@@ -93,7 +93,13 @@ class LineService extends BaseLineService
                 return $item['post_code_start'] . $item['post_code_end'];
             })->toArray();
             $info['work_day_list'] = implode(',', array_values(array_unique(array_column($lineRangeList->toArray(), 'schedule'))));
-        };
+        }
+        $merchantGroupCountList = $this->getMerchantGroupLineService()->getList(['line_id' => $id], ['merchant_group_id', 'pickup_min_count', 'pie_min_count'], false);
+        $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in',$merchantGroupCountList->pluck('merchant_group_id')->toArray()]], ['*'], false);
+        foreach ($merchantGroupCountList as $k => $v) {
+            $merchantGroupCountList[$k]['merchant_group_name'] = $merchantGroupList->where('id', $v['merchant_group_id'])->first()['name'] ?? '';
+        }
+        $info['merchant_group_count_list'] = $merchantGroupCountList ?? [];
         return $info;
 
     }
@@ -109,10 +115,14 @@ class LineService extends BaseLineService
         $this->check($params);
         //邮编范围验证
         $this->getLineRangeService()->checkRange($params['item_list'], $params['country'], $params['work_day_list']);
+        //商户组最小订单量验证
+        $this->getMerchantGroupLineService()->checkCount($params, $params['merchant_group_count_list']);
         //新增
         $lineId = $this->store($params);
         //邮编范围批量新增
         $this->getLineRangeService()->storeAll($lineId, $params['item_list'], $params['country'], $params['work_day_list']);
+        //最小订单量批量新增
+        $this->getMerchantGroupLineService()->storeAll($lineId, $params['merchant_group_count_list']);
     }
 
     /**
@@ -150,7 +160,7 @@ class LineService extends BaseLineService
         //基础验证
         $this->check($data, $info->toArray());
         //商户组最小订单量验证
-        //$this->getMerchantGroupLineService()->checkCount($info, $data['merchant_group_count_list']);
+        $this->getMerchantGroupLineService()->checkCount($info, $data['merchant_group_count_list']);
         //邮编范围验证
         $this->getLineRangeService()->checkRange($data['item_list'], $data['country'], $data['work_day_list'], $id);
         //修改
@@ -162,11 +172,11 @@ class LineService extends BaseLineService
         }
         $this->getLineRangeService()->storeAll($id, $data['item_list'], $data['country'], $data['work_day_list']);
         //删除并新增最小订单量
-//        $rowCount = $this->getMerchantGroupLineService()->delete(['line_id' => $id]);
-//        if ($rowCount === false) {
-//            throw new BusinessLogicException('线路范围修改失败');
-//        }
-//        $this->getMerchantGroupLineService()->storeAll($info, $data['merchant_group_count_list']);
+        $rowCount = $this->getMerchantGroupLineService()->delete(['line_id' => $id]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('线路范围修改失败');
+        }
+        $this->getMerchantGroupLineService()->storeAll($info['id'], $data['merchant_group_count_list']);
     }
 
     /**
