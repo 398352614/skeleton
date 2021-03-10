@@ -162,11 +162,11 @@ class LineService extends BaseLineService
         }
         $this->getLineRangeService()->storeAll($id, $data['item_list'], $data['country'], $data['work_day_list']);
         //删除并新增最小订单量
-        $rowCount = $this->getMerchantGroupLineService()->delete(['line_id' => $id]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('线路范围修改失败');
-        }
-        $this->getMerchantGroupLineService()->storeAll($info, $data['merchant_group_count_list']);
+//        $rowCount = $this->getMerchantGroupLineService()->delete(['line_id' => $id]);
+//        if ($rowCount === false) {
+//            throw new BusinessLogicException('线路范围修改失败');
+//        }
+//        $this->getMerchantGroupLineService()->storeAll($info, $data['merchant_group_count_list']);
     }
 
     /**
