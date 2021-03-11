@@ -156,7 +156,6 @@ class GoogleApiService
             'target_code' => $nextCode,
             'location' => $batchs,
         ];
-        dd($params);
         app('log')->info('更新线路传送给 api 端的参数为:', $params);
         $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
@@ -229,7 +228,6 @@ class GoogleApiService
                 $nextBatch = Batch::where('batch_no', $batchNo)->first();
             }
         }
-        dd(collect($nextBatch)->toArray());
         if (empty($nextBatch)) {
             throw new BusinessLogicException('优化失败');
         };
