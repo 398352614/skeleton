@@ -96,7 +96,7 @@ class StockService extends BaseService
             list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
         }
         //有效期验证,未超期的自动生成派件运单
-        if ($executionDate > $package['expiration_date']) {
+        if (!empty($executionDate > $package['expiration_date'])) {
             $row=$this->getPackageService()->updateById($package['id'], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_2]);
             if($row == false){
                 throw new BusinessLogicException('操作失败');
