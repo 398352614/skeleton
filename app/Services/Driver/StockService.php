@@ -97,7 +97,10 @@ class StockService extends BaseService
         }
         //有效期验证,未超期的自动生成派件运单
         if ($executionDate > $package['expiration_date']) {
-            $this->getPackageService()->updateById($package, ['expiration_status' => BaseConstService::EXPIRATION_STATUS_2]);
+            $row=$this->getPackageService()->updateById($package['id'], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_2]);
+            if($row == false){
+                throw new BusinessLogicException('操作失败');
+            }
         } else {
             //格式处理
             $trackingOrder = $this->form($order, $executionDate, $type);
@@ -108,8 +111,8 @@ class StockService extends BaseService
         //包裹分拣
         $this->pickOut($package, $tour, $trackingOrder);
         return [
-            'line_id' => $tour['line_id'],
-            'line_name' => $tour['line_name'],
+            'line_id' => $tour['line_id'] ?? '',
+            'line_name' => $tour['line_name'] ?? '',
             'execution_date' => $executionDate,
             'expiration_date' => $package['expiration_date'] ?? '',
             'feature_logo'=>$package['feature_logo'],
@@ -132,9 +135,9 @@ class StockService extends BaseService
         }
         //加入库存
         $stockData = [
-            'line_id' => $tour['line_id'] ?? [],
-            'line_name' => $tour['line_name'] ?? [],
-            'tracking_order_no' => $trackingOrder['tracking_order_no'] ?? [],
+            'line_id' => $tour['line_id'] ?? '',
+            'line_name' => $tour['line_name'] ?? '',
+            'tracking_order_no' => $trackingOrder['tracking_order_no'] ?? '',
             'expiration_date' => $package['expiration_date'] ?? '',
             'expiration_status' => $package['expiration_status'] ?? '',
             'operator' => auth()->user()->fullname,

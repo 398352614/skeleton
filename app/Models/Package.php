@@ -51,6 +51,8 @@ class Package extends BaseModel
         'tracking_order_no',
         'order_no',
         'execution_date',
+        'expiration_date',
+        'expiration_status',
         'second_execution_date',
         'type',
         'name',
