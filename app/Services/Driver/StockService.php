@@ -78,7 +78,7 @@ class StockService extends BaseService
             throw new BusinessLogicException('当前包裹不存在系统中');
         }
         //在库验证
-        $this->stockExistCheck($package);
+        //$this->stockExistCheck($package);
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
         //异常验证
@@ -96,7 +96,7 @@ class StockService extends BaseService
             list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
         }
         //有效期验证,未超期的自动生成派件运单
-        if (!empty($executionDate > $package['expiration_date'])) {
+        if (!empty($package['expiration_date']) && $executionDate > $package['expiration_date']) {
             $row=$this->getPackageService()->updateById($package['id'], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_2]);
             if($row == false){
                 throw new BusinessLogicException('操作失败');
