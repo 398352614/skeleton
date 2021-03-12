@@ -14,8 +14,12 @@ class AlterPackageAddColumns extends Migration
     public function up()
     {
         Schema::table('package', function (Blueprint $table) {
-            $table->integer('expiration_date')->default(null)->nullable()->after('second_execution_date')->comment('保质期');
-            $table->integer('expiration_status')->default(null)->nullable()->after('second_execution_date')->comment('超期状态1-未超期2-已超期3-超期已处理');
+            $table->integer('expiration_date')->default(null)->nullable()->after('second_execution_date')->comment('有效日期');
+            $table->integer('expiration_status')->default(null)->nullable()->after('expiration_date')->comment('超期状态1-未超期2-已超期3-超期已处理');
+        });
+        Schema::table('stock', function (Blueprint $table) {
+            $table->integer('expiration_date')->default(null)->nullable()->after('execution_date')->comment('有效日期');
+            $table->integer('expiration_status')->default(null)->nullable()->after('expiration_date')->comment('超期状态1-未超期2-已超期3-超期已处理');
         });
     }
 

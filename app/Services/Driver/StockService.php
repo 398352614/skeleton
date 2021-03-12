@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Log;
 
 class StockService extends BaseService
 {
+    public $filterRules = [
+    ];
+
     public function __construct(Stock $stock, $resource = null, $infoResource = null)
     {
         parent::__construct($stock, $resource, $infoResource);
@@ -68,7 +71,7 @@ class StockService extends BaseService
      */
     public function packagePickOut($packageNo)
     {
-        $line = [];
+        $trackingOrder = $tour = $line = [];
         //存在验证
         $package = $this->getPackageService()->getInfo(['express_first_no' => $packageNo], ['*'], false, ['created_at' => 'desc']);
         if (empty($package)) {
@@ -92,21 +95,24 @@ class StockService extends BaseService
             $placeCode = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_post_code'] : $order['second_place_post_code'];
             list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
         }
-        //有效期验证
+        //有效期验证,未超期的自动生成派件运单
         if ($executionDate > $package['expiration_date']) {
-            throw new BusinessLogicException('包裹派送已超期，请联系管理员进行处理');
+            $this->getPackageService()->updateById($package, ['expiration_status' => BaseConstService::EXPIRATION_STATUS_2]);
+        } else {
+            //格式处理
+            $trackingOrder = $this->form($order, $executionDate, $type);
+            //生成运单号
+            $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
+            $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
         }
-        //格式处理
-        $trackingOrder= $this->form($order, $executionDate, $type);
-        //生成运单号
-        $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
-        $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
         //包裹分拣
         $this->pickOut($package, $tour, $trackingOrder);
         return [
             'line_id' => $tour['line_id'],
             'line_name' => $tour['line_name'],
-            'execution_date' => $executionDate
+            'execution_date' => $executionDate,
+            'expiration_date' => $package['expiration_date'] ?? '',
+            'feature_logo'=>$package['feature_logo'],
         ];
     }
 
@@ -126,10 +132,11 @@ class StockService extends BaseService
         }
         //加入库存
         $stockData = [
-            'line_id' => $tour['line_id'],
-            'line_name' => $tour['line_name'],
-            'tracking_order_no' => $trackingOrder['tracking_order_no'],
-            'execution_date' => $tour['execution_date'],
+            'line_id' => $tour['line_id'] ?? [],
+            'line_name' => $tour['line_name'] ?? [],
+            'tracking_order_no' => $trackingOrder['tracking_order_no'] ?? [],
+            'expiration_date' => $package['expiration_date'] ?? '',
+            'expiration_status' => $package['expiration_status'] ?? '',
             'operator' => auth()->user()->fullname,
             'operator_id' => auth()->user()->id,
             'order_no' => $package['order_no'],

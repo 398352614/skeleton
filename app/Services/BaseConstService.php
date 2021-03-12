@@ -505,4 +505,9 @@ class BaseConstService
 
     //无限
     const INFINITY = 999999999;
+
+    //超期状态
+    const EXPIRATION_STATUS_1 = 1;
+    const EXPIRATION_STATUS_2 = 2;
+    const EXPIRATION_STATUS_3 = 3;
 }

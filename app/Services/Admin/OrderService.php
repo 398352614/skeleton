@@ -619,7 +619,15 @@ class OrderService extends BaseService
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
         //验证包裹列表
-        !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $orderNo);
+        if(!empty($params['package_list'])){
+            $this->getPackageService()->check($params['package_list'], $orderNo);
+            //有效日日期不得早于取派日期
+            foreach ($params['package_list'] as $k=>$v){
+                if(!empty($v['expiration_date']) && $v['expiration_date'] < $params['execution_date']){
+                    throw new BusinessLogicException('有效日期不得小于取派日期');
+                }
+            }
+        }
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
@@ -643,7 +651,7 @@ class OrderService extends BaseService
 //        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
 //            $params['distance'] = 1000;
 //        } else {
-            $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+        $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
 //        }
         $params['distance'] = $params['distance'] / 1000;
         $params = $this->getTransportPriceService()->priceCount($params);
@@ -668,13 +676,14 @@ class OrderService extends BaseService
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
-                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'actual_weight','settlement_amount','count_settlement_amount', 'expect_quantity', 'remark', 'is_auth']);
+                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'actual_weight', 'settlement_amount', 'count_settlement_amount', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
                 return $collectItem
                     ->put('order_no', $params['order_no'])
                     ->put('merchant_id', $params['merchant_id'])
                     ->put('execution_date', $params['execution_date'])
                     ->put('second_execution_date', $params['second_execution_date'] ?? null)
                     ->put('status', $status)
+                    ->put('expiration_date', BaseConstService::EXPIRATION_STATUS_1)
                     ->put('type', $params['type']);
             })->toArray();
             $rowCount = $this->getPackageService()->insertAll($packageList);

@@ -148,10 +148,6 @@ php artisan address-template:cache
 ```
 php artisan postcode:cache
 ```
-国家缓存
-```
-php aritsan country:cache
-```
 #### 3.5 配置supervisor
 由于某些原因，supervisor并未以容器的形式进行管控，而是在php-cli容器中进行了安装，仅此需要解决supervisor配置问题，每次重启后均需重新配置。
 进入docker目录，执行以下命令：
@@ -228,7 +224,7 @@ postcode.nl网站API地址：[https://api.postcode.nl/rest](https://api.postcode
 
 
 ### 3. 自定义命令
-在Laravel框架下，拥有便利的自定义artisan命令。在项目目录下的app/Console/Commonds文目录内，存放有所有的自定义aritsan命令，其中可用的有以下命令。  
+在Laravel框架下，拥有便利的自定义artisan命令。在项目目录下的app/Console/Commonds文目录内，存放有所有的自定义artisan命令，其中可用的有以下命令。  
 #### 3.1 抛错自动翻译
 ```
 php artisan translate
@@ -307,5 +303,9 @@ php artisan unlock:tour {tour_no}
 ```
 php artisan permission:cache
 ```
-#### 1.4 重置permission,role等关系
+#### 1.4 初始化权限
+
+``` php
+php artisan permission:init
+```
 
