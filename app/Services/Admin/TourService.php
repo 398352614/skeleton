@@ -640,7 +640,9 @@ class TourService extends BaseService
                     $first = true; // 找到了下一个目的地
                 }
             }
-            $tempbatch->update(['sort_id' => $key + 1]);
+            if(!empty($tempbatch)){
+                $tempbatch->update(['sort_id' => $key + 1]);
+            }
         }
         if ($batch ?? null) {
             return $batch;
