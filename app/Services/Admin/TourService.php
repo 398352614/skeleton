@@ -629,6 +629,7 @@ class TourService extends BaseService
     {
         $first = false;
         foreach ($batchIds as $key => $batchId) {
+
             $tempbatch = Batch::where('id', $batchId)->first();
             if (!$first && in_array($tempbatch->status, [
                     BaseConstService::BATCH_WAIT_ASSIGN,
@@ -641,7 +642,9 @@ class TourService extends BaseService
                     $first = true; // 找到了下一个目的地
                 }
             }
-            $tempbatch->update(['sort_id' => $key + 1]);
+            if(!empty($tempbatch)){
+                $tempbatch->update(['sort_id' => $key + 1]);
+            }
         }
         if ($batch ?? null) {
             return $batch;
