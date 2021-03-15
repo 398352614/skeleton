@@ -241,7 +241,7 @@ class BaseLineService extends BaseService
         //若不是新增取件线路，则当前取件线路必须再最大订单量内
         $this->maxCheck($info, $line, $orderOrBatch);
         //最小订单量检验
-        //$this->minCheck($info, $line, $orderOrBatch);
+        $this->minCheck($info, $line, $orderOrBatch);
     }
 
     /**
