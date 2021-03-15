@@ -604,6 +604,7 @@ class BaseLineService extends BaseService
             foreach ($merchantGroupLineList as $k => $v) {
                 $merchantIdList = $this->getMerchantService()->getList(['merchant_group_id' => $v['merchant_group_id']], ['*'], false)->pluck('id')->toArray();
                 $count[$k]['pickup_count'] = $this->getTourService()->sum('expect_pickup_quantity', ['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date']]);
+                $count[$k]['pie_count'] = $this->getTourService()->sum('expect_pie_quantity', ['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date']]);
                 //各商户组混合订单量等于=各商户组预计订单量-最小订单量
                 if ($count[$k]['pickup_count'] > $v['pickup_min_count']) {
                     $mixPickupCount = $mixPickupCount + $count[$k]['pickup_count'] - $v['pickup_min_count'];
