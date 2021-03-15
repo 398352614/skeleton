@@ -27,6 +27,7 @@ class BaseConstService
     //邮编国家
     const POSTCODE_COUNTRY_BE = 'BE';
     const POSTCODE_COUNTRY_NL = 'NL';
+    const POSTCODE_COUNTRY_DE = 'DE';
 
     //是否
     const YES = 1;

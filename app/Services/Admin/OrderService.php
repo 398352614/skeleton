@@ -32,6 +32,7 @@ use App\Traits\LocationTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class OrderService extends BaseService
 {
@@ -614,6 +615,9 @@ class OrderService extends BaseService
         $country = CompanyTrait::getCountry();
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
             $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+        }
+        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5){
+            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');

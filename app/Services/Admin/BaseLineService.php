@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use Location\Formatter\Coordinate\DecimalDegrees;
 
 class BaseLineService extends BaseService
 {
@@ -350,6 +352,9 @@ class BaseLineService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
             $country = BaseConstService::POSTCODE_COUNTRY_BE;
         }
+        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5){
+            $country = BaseConstService::POSTCODE_COUNTRY_DE;
+        }
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
@@ -381,6 +386,9 @@ class BaseLineService extends BaseService
         $country = CompanyTrait::getCountry();
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
             $country = BaseConstService::POSTCODE_COUNTRY_BE;
+        }
+        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5){
+            $country = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
