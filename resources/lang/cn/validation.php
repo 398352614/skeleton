@@ -727,5 +727,16 @@ return [
         "is_show" => "是否显示",
         "retry_times" => "重试次数",
         "operator_id" => "操作人ID",
+
+
+        "is_admin" => "是否是管理员组",
+        "pickup_min_count" => "派件最大订单量",
+        "pie_min_count" => "派件最大订单量",
+        "transport_price_type" => "运价方案类型",
+        "count_settlement_amount" => "估算运费",
+        "expiration_date" => "有效日期",
+        "expiration_status" => "超期状态",
+        "actual_weight" => "实际重量",
+        "second_content" => "附带内容",
     ]
 ];

@@ -521,6 +521,7 @@ class BaseLineService extends BaseService
                     }
                     $this->appointmentDayCheck($params, $line);
                     $this->maxCheck($params, $line, $orderOrBatch);
+                    $this->minCheck($params, $line, $orderOrBatch);
                 } catch (BusinessLogicException $e) {
                     continue;
                 }
