@@ -31,6 +31,7 @@ use App\Models\Material;
 use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
+use App\Models\MerchantGroupLine;
 use App\Models\MerchantGroupLineRange;
 use App\Models\MerchantRecharge;
 use App\Models\Order;
@@ -59,6 +60,7 @@ use App\Models\TrackingOrderTrail;
 use App\Models\TransportPrice;
 use App\Models\Warehouse;
 use App\Models\WeightCharging;
+use App\Services\Admin\BaseLineService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -150,6 +152,8 @@ class CompanyScope implements Scope
             $builder->whereRaw($model->getTable() . '.company_id' . '=' . $user->company_id);
             if (!($model instanceof Batch)
                 && !($model instanceof CompanyConfig)
+                && !($model instanceof BaseLineService)
+                && !($model instanceof MerchantGroupLine)
                 && !($model instanceof Tour)
                 && !($model instanceof Line)
                 && !($model instanceof LineRange)
