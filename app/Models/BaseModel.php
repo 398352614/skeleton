@@ -44,9 +44,15 @@ class BaseModel extends Model
                 $item['company_id'] = $companyId;
             }
         }
+        $date = ['execution_date', 'second_execution_date', 'expiration_date', 'lisence_valid_date', 'date', 'auth_birth_date', 'recharge_date', 'verify_date'];
         //填充创建时间和修改时间
         foreach ($data as &$item) {
             $item['created_at'] = $item['updated_at'] = now();
+            foreach ($date as $v) {
+                if (key_exists($v, $item) && $item[$v] == '') {
+                    $item[$v] = null;
+                }
+            }
         }
         return $this->newQuery()->insert($data);
     }
