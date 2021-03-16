@@ -76,6 +76,13 @@ class BaseModel extends Model
                     $model->$country = auth()->user() ? CompanyTrait::getCountry() : null;
                 }
             }
+            //若存在日期字段，则自动填充日期
+            $date = ['execution_date', 'second_execution_date', 'expiration_date', 'lisence_valid_date', 'date', 'auth_birth_date', 'recharge_date', 'verify_date'];
+            foreach ($date as $v) {
+                if (in_array($v, $columns) && $model->$v == '') {
+                    $model->$v = null;
+                }
+            }
             //若是司机端 则添加司机ID
             if (auth()->user() instanceof Driver) {
                 if (!($model instanceof Tour)
