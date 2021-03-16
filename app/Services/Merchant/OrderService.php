@@ -288,7 +288,7 @@ class OrderService extends BaseService
 
 
     /**
-     * 获取再次取派信息
+     * 获取继续派送(再次取派)信息
      * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
@@ -346,7 +346,7 @@ class OrderService extends BaseService
 
 
     /**
-     * 再次取派
+     * 继续派送(再次取派)
      * @param $id
      * @param $params
      * @return bool
@@ -812,13 +812,14 @@ class OrderService extends BaseService
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
-                $collectItem = collect($item)->only(['name', 'actual_weight', 'count_settlement_amount', 'settlement_amount', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark', 'is_auth']);
+                $collectItem = collect($item)->only(['name', 'actual_weight', 'count_settlement_amount', 'settlement_amount', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
                 return $collectItem
                     ->put('order_no', $params['order_no'])
                     ->put('merchant_id', $params['merchant_id'])
                     ->put('execution_date', $params['execution_date'] ?? null)
                     ->put('tracking_order_no', $params['tracking_order_no'] ?? '')
                     ->put('status', $status)
+                    ->put('second_execution_date', $params['second_execution_date'] ?? null)
                     ->put('type', $params['type']);
             })->toArray();
             $rowCount = $this->getPackageService()->insertAll($packageList);

@@ -513,5 +513,16 @@ return [
         "is_show" => "is show",
         "retry_times" => "retry times",
         "operator_id" => "operator id",
-    ]
+    
+
+"is_admin"=>"is admin",
+"pickup_min_count"=>"pickup min count",
+"pie_min_count"=>"pie min count",
+"transport_price_type"=>"transport price type",
+"count_settlement_amount"=>"count settlement amount",
+"expiration_date"=>"expiration date",
+"expiration_status"=>"expiration status",
+"actual_weight"=>"actual weight",
+"second_content"=>"second content",
+]
 ];

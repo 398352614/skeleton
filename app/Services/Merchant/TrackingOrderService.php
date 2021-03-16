@@ -572,7 +572,7 @@ class TrackingOrderService extends BaseService
     }
 
     /**
-     * 再次取派
+     * 继续派送(再次取派)
      * @param $dbOrder
      * @param $order
      * @param $trackingOrderType

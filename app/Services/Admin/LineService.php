@@ -160,7 +160,7 @@ class LineService extends BaseLineService
         //基础验证
         $this->check($data, $info->toArray());
         //商户组最小订单量验证
-        $this->getMerchantGroupLineService()->checkCount($info, $data['merchant_group_count_list']);
+        $this->getMerchantGroupLineService()->checkCount($data, $data['merchant_group_count_list']);
         //邮编范围验证
         $this->getLineRangeService()->checkRange($data['item_list'], $data['country'], $data['work_day_list'], $id);
         //修改
