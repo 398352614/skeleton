@@ -84,6 +84,6 @@ class Stock extends BaseModel
 
     public function getExpirationStatusNameAttribute()
     {
-        return (empty($this->status) ) ? null : ConstTranslateTrait::expirationStatusList($this->status);
+        return (empty($this->expiration_status) ) ? null : ConstTranslateTrait::expirationStatusList($this->expiration_status);
     }
 }
