@@ -973,7 +973,8 @@ class TrackingOrderService extends BaseService
         if (empty($trackingOrderNo)) return;
         $trackingOrder = parent::getInfo(['tracking_order_no' => $trackingOrderNo], ['*'], false);
         if (empty($trackingOrder)) return;
-        if (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
+        $expiredTrackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => $trackingOrderNo, 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['*'], false);
+        if (empty($expiredTrackingOrderPackageList) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
             throw new BusinessLogicException('当前运单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
         }
         if (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
