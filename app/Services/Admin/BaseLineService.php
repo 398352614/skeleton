@@ -21,6 +21,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Location\Formatter\Coordinate\DecimalDegrees;
+use WebSocket\Base;
 
 class BaseLineService extends BaseService
 {
@@ -612,13 +613,19 @@ class BaseLineService extends BaseService
                 $merchantGroupLineList = $merchantGroupLineList->toArray();
                 $mixPickupCount = 0;
                 $mixPieCount = 0;
+                //只有超过本身最小订单量再进行判断
                 $merchantGroupId = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false)->toArray()['merchant_group_id'];
                 $merchantIdList = $this->getMerchantService()->getlist(['merchant_group_id' => $merchantGroupId], ['*'], false)->pluck(['id'])->toArray();
-                $count = $this->getTrackingOrderservice()->count(['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date'],
-                    'status' => ['in', $status]]);
-                //只有超过本身最小订单量再进行判断
+                $pickupCount = $this->getTrackingOrderservice()->count(['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date'],
+                    'status' => ['in', $status], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1]);
+                $pieCount = $this->getTrackingOrderservice()->count(['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date'],
+                    'status' => ['in', $status], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2]);
                 $merchantGroupLine = collect($merchantGroupLineList)->where('merchant_group_id', $merchantGroupId)->first();
-                if (!empty($merchantGroupLine) && $count + 1 > $merchantGroupLine['pickup_min_count']) {
+                if (empty($merchantGroupLine)) {
+                    $merchantGroupLine['pickup_min_count'] = $merchantGroupLine['pie_min_count'] = 0;
+                }
+                if (($params['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 && $pickupCount + 1 > $merchantGroupLine['pickup_min_count']) ||
+                    ($params['type'] == BaseConstService::TRACKING_ORDER_TYPE_2 && $pieCount + 1 > $merchantGroupLine['pie_min_count'])) {
                     foreach ($merchantGroupLineList as $k => $v) {
                         $merchantIdList = $this->getMerchantService()->getList(['merchant_group_id' => $v['merchant_group_id']], ['*'], false)->pluck('id')->toArray();
                         $count[$k]['pickup_count'] = $this->getTrackingOrderservice()->count([
