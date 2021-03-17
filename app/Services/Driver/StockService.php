@@ -112,12 +112,13 @@ class StockService extends BaseService
         }
         //包裹分拣
         $this->pickOut($package, $tour, $trackingOrder);
-        if($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_1){
+        if($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2){
             return [
                 'line_id' => $tour['line_id'] ?? '',
                 'line_name' => $tour['line_name'] ?? '',
                 'execution_date' => $executionDate,
                 'feature_logo' => $package['feature_logo'],
+                'expiration_date' => '',
             ];
         }else{
             return [
