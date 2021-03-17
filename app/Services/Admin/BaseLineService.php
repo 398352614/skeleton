@@ -630,11 +630,13 @@ class BaseLineService extends BaseService
                         $merchantIdList = $this->getMerchantService()->getList(['merchant_group_id' => $v['merchant_group_id']], ['*'], false)->pluck('id')->toArray();
                         $count[$k]['pickup_count'] = $this->getTrackingOrderservice()->count([
                             'line_id' => $line['id'],
+                            'type' => BaseConstService::TRACKING_ORDER_TYPE_1,
                             'merchant_id' => ['in', $merchantIdList],
                             'execution_date' => $params['execution_date'],
                             'status' => ['in', $status]]);
                         $count[$k]['pie_count'] = $this->getTrackingOrderservice()->count([
                             'line_id' => $line['id'],
+                            'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
                             'merchant_id' => ['in', $merchantIdList],
                             'execution_date' => $params['execution_date'],
                             'status' => ['in', $status]]);
