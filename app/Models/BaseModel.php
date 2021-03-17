@@ -44,9 +44,15 @@ class BaseModel extends Model
                 $item['company_id'] = $companyId;
             }
         }
+        $date = ['execution_date', 'second_execution_date', 'expiration_date', 'lisence_valid_date', 'date', 'auth_birth_date', 'recharge_date', 'verify_date'];
         //填充创建时间和修改时间
         foreach ($data as &$item) {
             $item['created_at'] = $item['updated_at'] = now();
+            foreach ($date as $v) {
+                if (key_exists($v, $item) && $item[$v] == '') {
+                    $item[$v] = null;
+                }
+            }
         }
         return $this->newQuery()->insert($data);
     }
@@ -68,6 +74,13 @@ class BaseModel extends Model
             foreach ($countryList as $country) {
                 if (!empty($newColumns[$country]) && empty($model->$country)) {
                     $model->$country = auth()->user() ? CompanyTrait::getCountry() : null;
+                }
+            }
+            //若存在日期字段，则自动填充日期
+            $date = ['execution_date', 'second_execution_date', 'expiration_date', 'lisence_valid_date', 'date', 'auth_birth_date', 'recharge_date', 'verify_date'];
+            foreach ($date as $v) {
+                if (in_array($v, $columns) && $model->$v == '') {
+                    $model->$v = null;
                 }
             }
             //若是司机端 则添加司机ID

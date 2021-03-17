@@ -612,8 +612,10 @@ class BaseLineService extends BaseService
             $mixPieCount = 0;
             foreach ($merchantGroupLineList as $k => $v) {
                 $merchantIdList = $this->getMerchantService()->getList(['merchant_group_id' => $v['merchant_group_id']], ['*'], false)->pluck('id')->toArray();
-                $count[$k]['pickup_count'] = $this->getTourService()->sum('expect_pickup_quantity', ['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date']]);
-                $count[$k]['pie_count'] = $this->getTourService()->sum('expect_pie_quantity', ['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date']]);
+                $count[$k]['pickup_count'] = $this->getTrackingOrderservice()->count(['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date'],
+                    'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]]);
+                $count[$k]['pie_count'] = $this->getTrackingOrderservice()->count(['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date'],
+                    'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]]);
                 //各商户组混合订单量等于=各商户组预计订单量-最小订单量
                 if ($count[$k]['pickup_count'] > $v['pickup_min_count']) {
                     $mixPickupCount = $mixPickupCount + $count[$k]['pickup_count'] - $v['pickup_min_count'];

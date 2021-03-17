@@ -53,6 +53,8 @@ class TrackingOrderPackage extends BaseModel
         'tracking_order_no',
         'order_no',
         'execution_date',
+        'expiration_date',
+        'expiration_status',
         'type',
         'name',
         'express_first_no',
@@ -88,7 +90,8 @@ class TrackingOrderPackage extends BaseModel
 
     protected $appends = [
         'status_name',
-        'type_name'
+        'type_name',
+        'expiration_status_name'
     ];
 
     /**
@@ -107,5 +110,10 @@ class TrackingOrderPackage extends BaseModel
     public function getTypeNameAttribute()
     {
         return empty($this->type) ? null : ConstTranslateTrait::orderTypeList($this->type);
+    }
+
+    public function getExpirationStatusNameAttribute()
+    {
+        return (empty($this->expiration_status) ) ? null : ConstTranslateTrait::expirationStatusList($this->expiration_status);
     }
 }
