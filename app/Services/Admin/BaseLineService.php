@@ -616,7 +616,8 @@ class BaseLineService extends BaseService
             $count = $this->getTrackingOrderservice()->count(['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date'],
                 'status' => ['in', $status]]);
             //只有超过本身最小订单量再进行判断
-            if ($count + 1 > collect($merchantGroupLineList)->where('merchant_group_id', $merchantGroupId)->first()['pickup_min_count']) {
+            $merchantGroupLine = collect($merchantGroupLineList)->where('merchant_group_id', $merchantGroupId)->first();
+            if (!empty($merchantGroupLine) && $count + 1 > $merchantGroupLine['pickup_min_count']) {
                 foreach ($merchantGroupLineList as $k => $v) {
                     $merchantIdList = $this->getMerchantService()->getList(['merchant_group_id' => $v['merchant_group_id']], ['*'], false)->pluck('id')->toArray();
                     $count[$k]['pickup_count'] = $this->getTrackingOrderservice()->count([
