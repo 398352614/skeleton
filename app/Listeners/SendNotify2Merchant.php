@@ -73,10 +73,6 @@ class SendNotify2Merchant implements ShouldQueue
     {
         try {
             $dataList = $event->getDataList();
-            if (in_array(config('TMS.fake_merchant_id'), array_keys($dataList))) {
-                $dataList[config('TMS.special_merchant_id')] = array_merge($dataList[config('TMS.fake_merchant_id')], $dataList[config('TMS.special_merchant_id')]);
-                unset($dataList[config('TMS.fake_merchant_id')]);
-            }
             $notifyType = $event->notifyType();
             Log::info('notify-type:' . $notifyType);
             Log::info('dataList:' . json_encode($dataList, JSON_UNESCAPED_UNICODE));
