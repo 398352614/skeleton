@@ -380,7 +380,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        $this->getTrackingOrderService()->stockUpdate($dbOrder);
+        $this->stockUpdate($dbOrder);
         $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['status' => BaseConstService::PACKAGE_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
@@ -617,18 +617,18 @@ class OrderService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
             $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5){
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5) {
             $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
         //验证包裹列表
-        if(!empty($params['package_list'])){
+        if (!empty($params['package_list'])) {
             $this->getPackageService()->check($params['package_list'], $orderNo);
             //有效日日期不得早于取派日期
-            foreach ($params['package_list'] as $k=>$v){
-                if(!empty($v['expiration_date']) && $v['expiration_date'] < $params['execution_date']){
+            foreach ($params['package_list'] as $k => $v) {
+                if (!empty($v['expiration_date']) && $v['expiration_date'] < $params['execution_date']) {
                     throw new BusinessLogicException('有效日期不得小于取派日期');
                 }
             }
@@ -1117,5 +1117,22 @@ class OrderService extends BaseService
             }
         }
         return;
+    }
+
+    /**
+     * 库存更新
+     * @param $order
+     * @throws BusinessLogicException
+     */
+    public function stockUpdate($order)
+    {
+        $expiredStockList = $this->getStockService()->getList(['order_no' => $order['order_no'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['*'], false);
+        if (!empty($expiredStockList)) {
+            $order = $this->getInfo(['order_no' => $order['order_no']], ['*'], false, ['id' => 'desc']);
+            if (empty($order)) {
+                throw new BusinessLogicException('订单不存在');
+            }
+            $this->getStockService()->update(['order_no' => $order['order_no'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_3]);
+        }
     }
 }
