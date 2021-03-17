@@ -118,14 +118,14 @@ class StockService extends BaseService
                 'line_name' => $tour['line_name'] ?? '',
                 'execution_date' => $executionDate,
                 'feature_logo' => $package['feature_logo'],
-                'expiration_date' => '',
+                'expiration_date' => $package['expiration_date'] ?? '',
             ];
         }else{
             return [
                 'line_id' => $tour['line_id'] ?? '',
                 'line_name' => $tour['line_name'] ?? '',
                 'execution_date' => $executionDate,
-                'expiration_date' => $package['expiration_date'] ?? '',
+                'expiration_date' => '',
                 'feature_logo' => $package['feature_logo'],
             ];
         }
