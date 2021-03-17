@@ -988,7 +988,6 @@ class TrackingOrderService extends BaseService
                 throw new BusinessLogicException('操作失败');
             }
         }
-        $this->stockUpdate($trackingOrder);
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder->toArray(), BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
     }
 }

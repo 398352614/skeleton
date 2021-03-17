@@ -380,6 +380,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
+        $this->getTrackingOrderService()->stockUpdate($dbOrder);
         $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['status' => BaseConstService::PACKAGE_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
