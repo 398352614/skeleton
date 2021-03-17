@@ -470,6 +470,7 @@ class BaseLineService extends BaseService
      */
     private function minCheck($params, $line, $orderOrBatch)
     {
+        $params['merchant_id']=auth()->user()->id;
         if (!empty($params['merchant_id'])) {
             $status = [
                 BaseConstService::TRACKING_ORDER_STATUS_1,
@@ -538,6 +539,7 @@ class BaseLineService extends BaseService
                 }
             }
         }
+        return;
     }
 
     /**
