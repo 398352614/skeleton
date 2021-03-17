@@ -16,6 +16,7 @@ use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use WebSocket\Base;
 
 class StockService extends BaseService
 {
@@ -78,7 +79,7 @@ class StockService extends BaseService
             throw new BusinessLogicException('当前包裹不存在系统中');
         }
         //在库验证
-        //$this->stockExistCheck($package);
+        $this->stockExistCheck($package);
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
         //异常验证
@@ -111,13 +112,22 @@ class StockService extends BaseService
         }
         //包裹分拣
         $this->pickOut($package, $tour, $trackingOrder);
-        return [
-            'line_id' => $tour['line_id'] ?? '',
-            'line_name' => $tour['line_name'] ?? '',
-            'execution_date' => $executionDate,
-            'expiration_date' => $package['expiration_date'] ?? '',
-            'feature_logo' => $package['feature_logo'],
-        ];
+        if($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_1){
+            return [
+                'line_id' => $tour['line_id'] ?? '',
+                'line_name' => $tour['line_name'] ?? '',
+                'execution_date' => $executionDate,
+                'feature_logo' => $package['feature_logo'],
+            ];
+        }else{
+            return [
+                'line_id' => $tour['line_id'] ?? '',
+                'line_name' => $tour['line_name'] ?? '',
+                'execution_date' => $executionDate,
+                'expiration_date' => $package['expiration_date'] ?? '',
+                'feature_logo' => $package['feature_logo'],
+            ];
+        }
     }
 
 
