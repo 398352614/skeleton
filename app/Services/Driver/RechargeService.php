@@ -102,6 +102,7 @@ class RechargeService extends BaseService
             $params['execution_date']=$tour['execution_date'];
             $params['line_id']=$tour['line_id'];
             $params['line_name']=$tour['line_name'];
+            $params=Arr::except($params,'verify_date');
             $row = parent::create($params);
             if ($row == false) {
                 throw new BusinessLogicException('拉取第三方用户信息失败');
