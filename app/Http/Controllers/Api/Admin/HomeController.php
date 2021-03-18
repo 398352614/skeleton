@@ -83,7 +83,7 @@ class HomeController extends BaseController
     }
 
     /**
-     * 商户总计
+     * 货主总计
      * @return array
      */
     public function merchantTotalCount()

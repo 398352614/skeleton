@@ -96,7 +96,7 @@ class BaseModel extends Model
                     }
                 }
             }
-            //若是商户端,则添加商户ID
+            //若是货主端,则添加货主ID
             if (auth()->user() instanceof Merchant) {
                 if (in_array('merchant_id', $columns)) {
                     if (!isset($model->merchant_id) || $model->merchant_id === null) {
@@ -104,7 +104,7 @@ class BaseModel extends Model
                     }
                 }
             }
-            //若是商户授权端,则添加商户ID
+            //若是货主授权端,则添加货主ID
             if (auth()->user() instanceof MerchantApi) {
                 if (in_array('merchant_id', $columns)) {
                     if (!isset($model->merchant_id) || $model->merchant_id === null) {

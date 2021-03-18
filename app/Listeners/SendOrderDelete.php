@@ -76,7 +76,7 @@ class SendOrderDelete implements ShouldQueue
     public function handle(OrderDelete $event)
     {
         try {
-            //获取商户ID
+            //获取货主ID
             $merchantId = $this->getMerchantIdByOrderNo($event->order_no);
             if (empty($merchantId)) return true;
             //获取推送url
@@ -97,7 +97,7 @@ class SendOrderDelete implements ShouldQueue
     }
 
     /**
-     * 通过单号 获取商户ID
+     * 通过单号 获取货主ID
      * @param $orderNo
      * @return mixed|null
      */
@@ -109,7 +109,7 @@ class SendOrderDelete implements ShouldQueue
     }
 
     /**
-     * 通过商户ID 获取url
+     * 通过货主ID 获取url
      * @param $merchantId
      * @return mixed|null
      */
@@ -136,7 +136,7 @@ class SendOrderDelete implements ShouldQueue
         $res = $this->curl->post($url, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
-            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::info('货主通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             return [false, $res['msg'] ?? '服务器内部错误'];
         }
         return [true, ''];
@@ -153,7 +153,7 @@ class SendOrderDelete implements ShouldQueue
         $res = $this->curl->merchantPost($merchant, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
-            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::info('货主通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('发送失败');
         }
     }

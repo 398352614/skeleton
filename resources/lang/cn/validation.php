@@ -160,9 +160,9 @@ return [
             'string' => '顺带包裹单号必须是字符串'
         ],
         'additional_package_list.*.merchant_id' => [
-            'required_with' => '商户ID是必须的',
-            'max' => '商户ID字段必须在 :max 个字符之内',
-            'string' => '商户ID必须是字符串'
+            'required_with' => '货主ID是必须的',
+            'max' => '货主ID字段必须在 :max 个字符之内',
+            'string' => '货主ID必须是字符串'
         ],
         'additional_package_list.*.sticker_no' => [
             'max' => '贴单号字段必须在 :max 个字符之内',
@@ -452,7 +452,7 @@ return [
 
         'advance_days' => '下单提前天数',
         'delay_time' => '延后时间(分钟)',
-        'merchant_group_id' => '商户组ID',
+        'merchant_group_id' => '货主组ID',
         'status' => '状态',
         'transport_price_id' => '运价ID',
         'is_default' => '是否默认',
@@ -544,7 +544,7 @@ return [
         'additional_status' => '顺带功能',
         "id" => "",
         "company_id" => "公司ID",
-        "merchant_id" => "商户ID",
+        "merchant_id" => "货主ID",
         "batch_no" => "站点编号",
         "created_at" => "创建时间",
         "updated_at" => "修改时间",

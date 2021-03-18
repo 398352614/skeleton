@@ -17,7 +17,7 @@ class CreateMerchantGroupLineTable extends Migration
             $table->integerIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
             $table->integer('line_id')->default(null)->nullable()->comment('线路ID');
-            $table->integer('merchant_group_id')->default(null)->nullable()->comment('商户组ID');
+            $table->integer('merchant_group_id')->default(null)->nullable()->comment('货主组ID');
             $table->smallInteger('pickup_min_count')->default(0)->nullable()->comment('派件最大订单量');
             $table->smallInteger('pie_min_count')->default(0)->nullable()->comment('派件最大订单量');
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');

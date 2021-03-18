@@ -112,7 +112,7 @@ class AddressService extends BaseService
         //验证商家是否存在
         $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id']], ['id', 'country'], false);
         if (empty($merchant)) {
-            throw new BusinessLogicException('商户不存在，请重新选择商户');
+            throw new BusinessLogicException('货主不存在，请重新选择货主');
         }
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
             $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);

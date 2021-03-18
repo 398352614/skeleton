@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户API 服务
+ * 货主API 服务
  * User: long
  * Date: 2019/12/24
  * Time: 20:06
