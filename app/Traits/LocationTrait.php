@@ -145,9 +145,9 @@ trait LocationTrait
             }
             return [
                 'province' => $featureList[0]['properties']['state'] ?? '',
-                'city' => $city,
+                'city' => $city ?? $featureList[0]['properties']['city'],
                 'district' => '',
-                'street' => $street,
+                'street' => $street ?? $featureList[0]['properties']['street'],
                 'house_number' => $houseNumber,
                 'lon' => $featureList[0]['geometry']['coordinates'][0],
                 'lat' => $featureList[0]['geometry']['coordinates'][1],
