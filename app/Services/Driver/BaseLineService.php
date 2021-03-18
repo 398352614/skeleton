@@ -15,6 +15,7 @@ use App\Traits\CompanyTrait;
 use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class BaseLineService extends BaseService
 {
