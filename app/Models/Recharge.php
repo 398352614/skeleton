@@ -76,7 +76,6 @@ class Recharge extends BaseModel
         'driver_verify_status',
         'verify_recharge_amount',
         'verify_time',
-        'verify_date',
         'verify_remark',
         'created_at',
         'updated_at',
