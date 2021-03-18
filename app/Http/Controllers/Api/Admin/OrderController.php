@@ -141,7 +141,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * 获取再次取派信息
+     * 获取继续派送(再次取派)信息
      * @param $id
      * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
@@ -152,7 +152,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * 再次取派
+     * 继续派送(再次取派)
      * @param $id
      * @return bool
      * @throws BusinessLogicException

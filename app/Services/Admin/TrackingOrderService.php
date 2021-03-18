@@ -362,7 +362,7 @@ class TrackingOrderService extends BaseService
 
 
     /**
-     * 再次取派
+     * 继续派送(再次取派)
      * @param $dbOrder
      * @param $order
      * @param $trackingOrderType
@@ -388,7 +388,27 @@ class TrackingOrderService extends BaseService
         }
         $trackingOrder = array_merge($address, ['type' => $trackingOrderType, 'execution_date' => $order['execution_date']]);
         $trackingOrder = array_merge(Arr::only($dbOrder, $this->tOrderAndOrderSameFields), $trackingOrder);
-        return $this->store($trackingOrder, $dbOrder['order_no'], true);
+        $tour = $this->store($trackingOrder, $dbOrder['order_no'], true);
+        $this->stockUpdate($order);
+        return $tour;
+    }
+
+    /**
+     * 更新库存信息（已超期包裹）
+     * @param $order
+     * @throws BusinessLogicException
+     */
+    public function stockUpdate($order)
+    {
+        $expiredStockList = $this->getStockService()->getList(['order_no' => $order['order_no'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['*'], false);
+        if (!empty($expiredStockList)) {
+            $trackingOrder = $this->getInfo(['order_no' => $order['order_no']], ['*'], false, ['id' => 'desc']);
+            if (empty($trackingOrder)) {
+                throw new BusinessLogicException('运单不存在');
+            }
+            $this->getStockService()->update(['order_no' => $trackingOrder['order_no'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['tracking_order_no' => $trackingOrder['tracking_order_no'],
+                'line_name' => $trackingOrder['line_name'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_3]);
+        }
     }
 
     /**
@@ -953,7 +973,8 @@ class TrackingOrderService extends BaseService
         if (empty($trackingOrderNo)) return;
         $trackingOrder = parent::getInfo(['tracking_order_no' => $trackingOrderNo], ['*'], false);
         if (empty($trackingOrder)) return;
-        if (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
+        $expiredTrackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => $trackingOrderNo, 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['*'], false);
+        if (empty($expiredTrackingOrderPackageList) && in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
             throw new BusinessLogicException('当前运单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
         }
         if (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {

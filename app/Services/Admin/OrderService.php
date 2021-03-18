@@ -32,6 +32,7 @@ use App\Traits\LocationTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class OrderService extends BaseService
 {
@@ -257,7 +258,7 @@ class OrderService extends BaseService
     }
 
     /**
-     * 获取再次取派信息
+     * 获取继续派送(再次取派)信息
      * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
@@ -314,7 +315,7 @@ class OrderService extends BaseService
 
 
     /**
-     * 再次取派
+     * 继续派送(再次取派)
      * @param $id
      * @param $params
      * @return bool
@@ -379,6 +380,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
+        $this->stockUpdate($dbOrder);
         $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['status' => BaseConstService::PACKAGE_STATUS_4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
@@ -611,12 +613,26 @@ class OrderService extends BaseService
             throw new BusinessLogicException('商户不存在');
         }
         //若邮编是纯数字，则认为是比利时邮编
-        $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
+        $country = CompanyTrait::getCountry();
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
+            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+        }
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5) {
+            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+        }
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
         //验证包裹列表
-        !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $orderNo);
+        if (!empty($params['package_list'])) {
+            $this->getPackageService()->check($params['package_list'], $orderNo);
+            //有效日日期不得早于取派日期
+            foreach ($params['package_list'] as $k => $v) {
+                if (!empty($v['expiration_date']) && $v['expiration_date'] < $params['execution_date']) {
+                    throw new BusinessLogicException('有效日期不得小于取派日期');
+                }
+            }
+        }
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
@@ -637,11 +653,11 @@ class OrderService extends BaseService
         }
         //运价计算
         $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
-        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
-            $params['distance'] = 1000;
-        } else {
-            $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
-        }
+//        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
+//            $params['distance'] = 1000;
+//        } else {
+        $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+//        }
         $params['distance'] = $params['distance'] / 1000;
         $params = $this->getTransportPriceService()->priceCount($params);
         $params['distance'] = $params['distance'] * 1000;
@@ -665,13 +681,14 @@ class OrderService extends BaseService
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
-                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'actual_weight','settlement_amount','count_settlement_amount', 'expect_quantity', 'remark', 'is_auth']);
+                $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'actual_weight', 'settlement_amount', 'count_settlement_amount', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
                 return $collectItem
                     ->put('order_no', $params['order_no'])
                     ->put('merchant_id', $params['merchant_id'])
                     ->put('execution_date', $params['execution_date'])
                     ->put('second_execution_date', $params['second_execution_date'] ?? null)
                     ->put('status', $status)
+                    ->put('expiration_status', BaseConstService::EXPIRATION_STATUS_1)
                     ->put('type', $params['type']);
             })->toArray();
             $rowCount = $this->getPackageService()->insertAll($packageList);
@@ -1100,5 +1117,22 @@ class OrderService extends BaseService
             }
         }
         return;
+    }
+
+    /**
+     * 库存更新
+     * @param $order
+     * @throws BusinessLogicException
+     */
+    public function stockUpdate($order)
+    {
+        $expiredStockList = $this->getStockService()->getList(['order_no' => $order['order_no'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['*'], false);
+        if (!empty($expiredStockList)) {
+            $order = $this->getInfo(['order_no' => $order['order_no']], ['*'], false, ['id' => 'desc']);
+            if (empty($order)) {
+                throw new BusinessLogicException('订单不存在');
+            }
+            $this->getStockService()->update(['order_no' => $order['order_no'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_3]);
+        }
     }
 }

@@ -107,10 +107,11 @@ class RegisterController extends BaseController
             BaseConstService::TOUR_NO_TYPE => BaseConstService::TOUR,
             BaseConstService::BATCH_EXCEPTION_NO_TYPE => BaseConstService::BATCH_EXCEPTION,
             BaseConstService::RECHARGE_NO_TYPE => BaseConstService::RECHARGE,
+            BaseConstService::TRACKING_ORDER_NO_TYPE => BaseConstService::TRACKING_ORDER,
         ];
         $rules = collect($rules)->map(function ($rule, $type) use ($company) {
             $prefix = $rule . substr('000' . $company->id, -4, 4);
-            if ($type == BaseConstService::ORDER_NO_TYPE) {
+            if ($type == BaseConstService::ORDER_NO_TYPE || $type == BaseConstService::TRACKING_ORDER_NO_TYPE) {
                 $length = 6;
             } elseif ($type == BaseConstService::RECHARGE_NO_TYPE) {
                 $length = 7;
@@ -204,11 +205,11 @@ class RegisterController extends BaseController
         if ($transportPrice === false) {
             throw new BusinessLogicException('初始化运价失败');
         }
-        $rowCount = KilometresCharging::create(['company_id' => $company->id, 'transport_price_id' => $transportPrice->id, 'start' => 0, 'end' => 2, 'price' => 4]);
+        $rowCount = KilometresCharging::create(['company_id' => $company->id, 'transport_price_id' => $transportPrice->id, 'start' => 0, 'end' => 999999999, 'price' => 4]);
         if ($rowCount === false) {
             throw new BusinessLogicException('初始化运价失败');
         }
-        $rowCount = WeightCharging::create(['company_id' => $company->id, 'transport_price_id' => $transportPrice->id, 'start' => 1, 'end' => 2, 'price' => 2]);
+        $rowCount = WeightCharging::create(['company_id' => $company->id, 'transport_price_id' => $transportPrice->id, 'start' => 0, 'end' => 999999999, 'price' => 2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('初始化运价失败');
         }

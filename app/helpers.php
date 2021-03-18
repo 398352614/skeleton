@@ -1,5 +1,7 @@
 <?php
 
+use App\Exceptions\BusinessLogicException;
+
 if (!function_exists('isJson')) {
     /**
      * 判断字符串是否是json
@@ -236,5 +238,20 @@ if (!function_exists('have_special_char')) {
             }
         }
         return false;
+    }
+}
+
+if (!function_exists('number_format_simple')) {
+
+    /** 判断是否有表情字符
+     * @param $number
+     * @param int $decimals
+     * @param string $dec_point
+     * @param string $thousands_sep
+     * @return bool
+     */
+    function number_format_simple($number, $decimals = 2, $dec_point = '.', $thousands_sep = '')
+    {
+        return number_format($number, $decimals, $dec_point, $thousands_sep);
     }
 }

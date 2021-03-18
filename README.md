@@ -77,6 +77,7 @@ tms_dev_env_redis_1
 #### 2.2 从github上下载项目工程
  github仓库地址：[https://github.com/nletech/tms-api](https://github.com/nletech/tms-api)
 通过克隆，下载到服务器上。
+注意：应在docker环境文件夹同层新建www文件夹，再在www文件夹内git clone克隆项目代码。  
 ```gitexclude
 git clone https://github.com/nletech/tms-api/tree/deploy;
 ```
@@ -93,7 +94,7 @@ git pull
 ````gitexclude
 docker-compose exec php-cli bash
 cd api
-php aritsan migrate
+php artisan migrate
 ````
 如果有更改队列任务，还需进入容器，执行以下命令重启队列。
 ```gitexclude
@@ -124,7 +125,8 @@ composer 自我更新
 composer selfupdate
 ```
 
-替换文件已解决php版本字符问题，文件在docker根目录下
+替换文件已解决php版本字符问题，文件在docker根目录下。
+原因是7.4版本php不支持花括号{}取数组元素，只支持中括号[]取数组元素。因此需要将环境文件夹根目录下的DNS1D.php文件复制并覆盖以下文件。
 ```
 tms-api/www/api/vendor/milon/barcode/src/Milon/Barcode/DNS1D.php
 ```
@@ -146,10 +148,6 @@ php artisan address-template:cache
 ```
 php artisan postcode:cache
 ```
-国家缓存
-```
-php aritsan country:cache
-```
 #### 3.5 配置supervisor
 由于某些原因，supervisor并未以容器的形式进行管控，而是在php-cli容器中进行了安装，仅此需要解决supervisor配置问题，每次重启后均需重新配置。
 进入docker目录，执行以下命令：
@@ -158,6 +156,20 @@ docker-compose exec php-cli bash
 cd api
 sudo supervisord -c /etc/supervisor/supervisord.conf
 ```
+
+#### 3.6 基础权限表  
+手动导入permission表  
+
+#### 3.7 导入地址模板  
+```$php
+php artisan db:seed --class=AddressTemplateSeeder
+```
+
+#### 3.8 打印模板上传
+打印模板并未存在git上，需要在本地上传至服务器的公共目录，然后移动至/app/tms/www/api/storage/app/public/admin/print_template。
+标准模板带包裹二维码，重命名为1.png，通用模板不带包裹二维码，重命名为2.png。
+
+
 ## 三、使用说明
 ### 1. 项目结构
 #### 1.1 内部连接
@@ -212,7 +224,7 @@ postcode.nl网站API地址：[https://api.postcode.nl/rest](https://api.postcode
 
 
 ### 3. 自定义命令
-在Laravel框架下，拥有便利的自定义artisan命令。在项目目录下的app/Console/Commonds文目录内，存放有所有的自定义aritsan命令，其中可用的有以下命令。  
+在Laravel框架下，拥有便利的自定义artisan命令。在项目目录下的app/Console/Commonds文目录内，存放有所有的自定义artisan命令，其中可用的有以下命令。  
 #### 3.1 抛错自动翻译
 ```
 php artisan translate
@@ -291,5 +303,9 @@ php artisan unlock:tour {tour_no}
 ```
 php artisan permission:cache
 ```
-#### 1.4 重置permission,role等关系
+#### 1.4 初始化权限
+
+``` php
+php artisan permission:init
+```
 

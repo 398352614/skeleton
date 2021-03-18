@@ -288,7 +288,7 @@ class OrderService extends BaseService
 
 
     /**
-     * 获取再次取派信息
+     * 获取继续派送(再次取派)信息
      * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
@@ -346,7 +346,7 @@ class OrderService extends BaseService
 
 
     /**
-     * 再次取派
+     * 继续派送(再次取派)
      * @param $id
      * @param $params
      * @return bool
@@ -590,8 +590,10 @@ class OrderService extends BaseService
         /***************************************************地址一处理*************************************************/
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         //若邮编是纯数字，则认为是比利时邮编
-        $params['place_country'] = post_code_be($params['place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-        //获取经纬度
+        $country = CompanyTrait::getCountry();
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
+            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+        }        //获取经纬度
         $fields = ['place_house_number', 'place_city', 'place_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
         //获取经纬度
@@ -626,8 +628,10 @@ class OrderService extends BaseService
         if ($params['type'] == BaseConstService::ORDER_TYPE_3) {
             $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
             //若邮编是纯数字，则认为是比利时邮编
-            $params['second_place_country'] = post_code_be($params['second_place_post_code']) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
-            //获取经纬度
+            $country = CompanyTrait::getCountry();
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
+                $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+            }            //获取经纬度
             $fields = ['second_place_house_number', 'second_place_city', 'second_place_street'];
             $params = array_merge(array_fill_keys($fields, ''), $params);
             //获取经纬度
@@ -808,13 +812,14 @@ class OrderService extends BaseService
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
-                $collectItem = collect($item)->only(['name', 'actual_weight', 'count_settlement_amount', 'settlement_amount', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark', 'is_auth']);
+                $collectItem = collect($item)->only(['name', 'actual_weight', 'count_settlement_amount', 'settlement_amount', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
                 return $collectItem
                     ->put('order_no', $params['order_no'])
                     ->put('merchant_id', $params['merchant_id'])
                     ->put('execution_date', $params['execution_date'] ?? null)
                     ->put('tracking_order_no', $params['tracking_order_no'] ?? '')
                     ->put('status', $status)
+                    ->put('second_execution_date', $params['second_execution_date'] ?? null)
                     ->put('type', $params['type']);
             })->toArray();
             $rowCount = $this->getPackageService()->insertAll($packageList);

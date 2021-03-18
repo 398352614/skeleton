@@ -26,7 +26,7 @@ class GoogleApiDistanceService
 
     public function __construct()
     {
-        $this->client = new \GuzzleHttp\Client();;
+        $this->client = new \GuzzleHttp\Client();
         $this->url = config('tms.map_url');
         $this->key = config('tms.map_key');
     }
@@ -47,8 +47,12 @@ class GoogleApiDistanceService
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
         $url = $url . $query;
         Log::info('路由' . $url);
-        if ((config('tms.true_app_env') === 'develop')) {
-            $options = ['proxy' => ['http' => config('tms.http_proxy'), 'https' => config('tms.https_proxy')]];
+        if (config('tms.true_app_env') == 'develop') {
+            $options = [
+                'proxy' => [
+                    'http' => config('tms.http_proxy'),
+                    'https' => config('tms.https_proxy')
+                ]];
         } else {
             $options = [];
         }
@@ -85,7 +89,7 @@ class GoogleApiDistanceService
             $to = implode(',', [$order['place_lat'], $order['place_lon']]);
             $distance = $this->getDistance($this->url, $from, $to);
         } catch (\Exception $e) {
-            Log::info('报错'.$e->getMessage());
+            Log::info('报错' . $e->getMessage());
             throw new BusinessLogicException('可能由于网络原因，无法估算距离');
         }
         return $distance;

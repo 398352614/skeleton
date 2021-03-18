@@ -26,6 +26,8 @@ class BaseConstService
 
     //邮编国家
     const POSTCODE_COUNTRY_BE = 'BE';
+    const POSTCODE_COUNTRY_NL = 'NL';
+    const POSTCODE_COUNTRY_DE = 'DE';
 
     //是否
     const YES = 1;
@@ -504,4 +506,9 @@ class BaseConstService
 
     //无限
     const INFINITY = 999999999;
+
+    //超期状态
+    const EXPIRATION_STATUS_1 = 1;
+    const EXPIRATION_STATUS_2 = 2;
+    const EXPIRATION_STATUS_3 = 3;
 }

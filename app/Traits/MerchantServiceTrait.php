@@ -11,6 +11,7 @@ use App\Services\Merchant\LineAreaService;
 use App\Services\Merchant\LineRangeService;
 use App\Services\Merchant\LineService;
 use App\Services\Merchant\MaterialService;
+use App\Services\Merchant\MerchantGroupLineService;
 use App\Services\Merchant\MerchantGroupService;
 use App\Services\Merchant\MerchantGroupLineRangeService;
 use App\Services\Merchant\MerchantService;
@@ -257,5 +258,14 @@ Trait MerchantServiceTrait
     public function getTransportPriceService()
     {
         return self::getInstance(TransportPriceService::class);
+    }
+
+    /**
+     * 商户组线路 服务
+     * @return MerchantGroupLineService
+     */
+    public function getMerchantGroupLineService()
+    {
+        return self::getInstance(MerchantGroupLineService::class);
     }
 }

@@ -97,9 +97,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{order_no}/trail', 'OrderTrailController@index')->name('order.trail');
         //修改
         Route::put('/{id}', 'OrderController@update')->name('order.update');
-        //获取再次取派信息
+        //获取继续派送(再次取派)信息
         Route::get('/{id}/again-info', 'OrderController@getAgainInfo')->name('order.again');
-        //再次取派
+        //继续派送(再次取派)
         Route::put('/{id}/again', 'OrderController@again')->name('order.again');
         //终止派送
         Route::put('/{id}/end', 'OrderController@end')->name('order.end');

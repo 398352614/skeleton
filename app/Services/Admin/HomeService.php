@@ -223,9 +223,9 @@ class HomeService extends BaseService
             $total['cancel_order'] += $data[$k]['cancel_order'];
             $total['additional_package'] += $data[$k]['additional_package'];
             $total['total_recharge'] += $data[$k]['total_recharge'];
-            $data[$k]['total_recharge'] = number_format($data[$k]['total_recharge'], 2);
+            $data[$k]['total_recharge'] = number_format_simple($data[$k]['total_recharge'], 2);
         }
-        $total['total_recharge'] = number_format($total['total_recharge'], 2);
+        $total['total_recharge'] = number_format_simple($total['total_recharge'], 2);
         $data[] = $total;
         return $data;
     }

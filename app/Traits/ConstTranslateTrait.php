@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\App;
  * @method static noTypeList($args = null)
  * @method static shortCutList($args = null)
  * @method static shortCutRouteList($args = null)
- * @method static $shortCutIconList($args = null)
+ * @method static shortCutIconList($args = null)
  * @method static lineRuleList($args = null)
  * @method static printTemplateList($args = null)
  * @method static weekList($args = null)
@@ -74,6 +74,7 @@ use Illuminate\Support\Facades\App;
  * @method static stockExceptionStatusList($args = null)
  * @method static operationList($args = null)
  * @method static transportPriceTypeList($args = null)
+ * @method static expirationStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -491,6 +492,12 @@ trait ConstTranslateTrait
     public static $transportPriceTypeList = [
         BaseConstService::TRANSPORT_PRICE_TYPE_1 => '阶梯乘积值计算（固定费用+（每单位重量价格*重量价格）*（每单位里程价格*里程价格））',
         BaseConstService::TRANSPORT_PRICE_TYPE_2 => '阶梯固定值计算（固定费用+（重量价格档）*（里程价格档））',
+    ];
+
+    public static $expirationStatusList = [
+        BaseConstService::EXPIRATION_STATUS_1 => '未超期',
+        BaseConstService::EXPIRATION_STATUS_2 => '已超期',
+        BaseConstService::EXPIRATION_STATUS_3 => '超期已处理',
     ];
 
     /**

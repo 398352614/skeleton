@@ -151,7 +151,7 @@ class RouteTrackingService extends BaseService
         } else {
             $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4], ['*'], false)->toArray();
         }
-        if (empty($info)) {
+        if (empty($info) && $this->formData['is_online'] == BaseConstService::YES) {
             throw new BusinessLogicException('暂无车辆信息');
         }
         for ($i = 0, $j = count($info); $i < $j; $i++) {

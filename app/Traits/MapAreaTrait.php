@@ -28,10 +28,9 @@ trait MapAreaTrait
     {
         //若有相同点
         $samePoint = Arr::where($coordinateList, function ($coordinateV) use ($coordinate) {
-            return (($coordinate['lat'] == $coordinateV['lat']) && ($coordinate['lat'] == $coordinateV['lat']));
+            return (($coordinate['lat'] == $coordinateV['lat']) && ($coordinate['lon'] == $coordinateV['lon']));
         });
         if (!empty($samePoint)) return true;
-
         $latList = array_column($coordinateList, 'lat');
         $lonList = array_column($coordinateList, 'lon');
         $lon = $coordinate['lon'];
@@ -65,11 +64,11 @@ trait MapAreaTrait
      */
     public static function TwoAreasOverlap($firstCoordinateList, $secondCoordinateList)
     {
-        foreach ($firstCoordinateList as $firstCoordinate) {
-            if (self::containsPoint($secondCoordinateList, $firstCoordinate)) {
-                return true;
-            }
-        }
+//        foreach ($firstCoordinateList as $firstCoordinate) {
+//            if (self::containsPoint($secondCoordinateList, $firstCoordinate)) {
+//                return true;
+//            }
+//        }
         foreach ($secondCoordinateList as $secondCoordinate) {
             if (self::containsPoint($firstCoordinateList, $secondCoordinate)) {
                 return true;

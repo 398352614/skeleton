@@ -16,10 +16,11 @@ class StockService extends BaseService
     public $filterRules = [
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'express_first_no,order_no' => ['like', 'keyword'],
-        'express_first_no'=>['like','express_first_no'],
-        'order_no'=>['like','order_no'],
+        'express_first_no' => ['like', 'express_first_no'],
+        'order_no' => ['like', 'order_no'],
         'line_id' => ['=', 'line_id'],
         'line_name' => ['like', 'line_name'],
+        'expiration_status' => ['=', 'expiration_status']
     ];
 
     public function __construct(Stock $stock)
