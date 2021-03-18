@@ -636,7 +636,11 @@ class OrderService extends BaseService
             $country = CompanyTrait::getCountry();
             if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
                 $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
-            }            //获取经纬度
+            }
+            if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5){
+                $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+            }
+            //获取经纬度
             $fields = ['second_place_house_number', 'second_place_city', 'second_place_street'];
             $params = array_merge(array_fill_keys($fields, ''), $params);
             //获取经纬度

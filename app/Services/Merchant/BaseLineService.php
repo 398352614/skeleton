@@ -287,6 +287,9 @@ class BaseLineService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
             $country = BaseConstService::POSTCODE_COUNTRY_BE;
         }        //获取邮编数字部分
+        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5){
+            $country = BaseConstService::POSTCODE_COUNTRY_DE;
+        }
         $postCode = explode_post_code($postCode);
         //获取线路范围
         $query = $this->getMerchantGroupLineRangeService()->query
