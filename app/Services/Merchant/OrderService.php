@@ -35,6 +35,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 /**
  * Class OrderService
@@ -593,7 +594,11 @@ class OrderService extends BaseService
         $country = CompanyTrait::getCountry();
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
             $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
-        }        //获取经纬度
+        }
+        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5){
+            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+        }
+        //获取经纬度
         $fields = ['place_house_number', 'place_city', 'place_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
         //获取经纬度
