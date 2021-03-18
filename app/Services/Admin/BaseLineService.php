@@ -133,6 +133,7 @@ class BaseLineService extends BaseService
         foreach ($params['item_list'] as $k=>$v){
             if($v['post_code_start'] >9999 || $v['post_code_end'] >9999){
                 $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+                exit;
             }
         }
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
