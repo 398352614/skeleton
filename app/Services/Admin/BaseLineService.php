@@ -130,6 +130,11 @@ class BaseLineService extends BaseService
     public function check(&$params, $dbInfo = [])
     {
         $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
+        foreach ($params['item_list'] as $k=>$v){
+            if($v['post_code_start'] >9999 || $v['post_code_end'] >9999){
+                $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+            }
+        }
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
             throw new BusinessLogicException('仓库不存在！');
