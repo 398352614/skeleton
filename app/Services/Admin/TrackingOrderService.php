@@ -685,6 +685,7 @@ class TrackingOrderService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
             $params = $dbOrder->toArray();
+            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
             if ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3) {
                 $address = [
                     'place_country' => $dbOrder['second_place_country'], 'place_fullname' => $dbOrder['second_place_fullname'],
