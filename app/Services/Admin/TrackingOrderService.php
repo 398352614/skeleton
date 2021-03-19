@@ -698,7 +698,7 @@ class TrackingOrderService extends BaseService
                 ];
                 $params = array_merge($params, $address);
             }
-            $params = Arr::only($params, ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',]);
+            $params = Arr::only($params, ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat','type']);
 //            $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
 //            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
 //            if (!empty($trackingOrderPackageList)) {
