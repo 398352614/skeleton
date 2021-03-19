@@ -699,7 +699,8 @@ class TrackingOrderService extends BaseService
                     'place_phone' => $dbOrder['second_place_phone'], 'place_post_code' => $dbOrder['second_place_post_code'],
                     'place_house_number' => $dbOrder['second_place_house_number'], 'place_city' => $dbOrder['second_place_city'],
                     'place_street' => $dbOrder['second_place_street'], 'place_address' => $dbOrder['second_place_address'],
-                    'place_lat' => $dbOrder['second_place_lat'], 'place_lon' => $dbOrder['second_place_lon']
+                    'place_lat' => $dbOrder['second_place_lat'], 'place_lon' => $dbOrder['second_place_lon'],
+                    'execution_date'=>$dbOrder['second_execution_date']
                 ];
                 $params = array_merge($params, $address);
             }
