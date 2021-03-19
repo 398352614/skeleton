@@ -713,7 +713,7 @@ class TrackingOrderService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
         }
-        Log::info('可选日期参数',$params);
+        Log::info('可选日期参数',$params->toArray());
         $data = $this->getLineService()->getScheduleList($params);
         return $data;
     }
