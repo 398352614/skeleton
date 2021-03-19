@@ -265,8 +265,21 @@ class OrderService extends BaseService
      */
     public function getAgainInfo($id)
     {
+        $expired = BaseConstService::NO;
         $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2], false);
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
+        $packageList = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+        if (!empty($packageList)) {
+            foreach ($packageList as $k => $v) {
+                if ($v['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
+                    $expired = BaseConstService::YES;
+                    break;
+                }
+            }
+        }
+        if ($expired == BaseConstService::YES) {
+            $dbTrackingOrder = null;
+        }
         if (empty($dbTrackingOrder)) {
             $dbTrackingOrder = null;
         }
