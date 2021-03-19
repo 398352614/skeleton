@@ -1,6 +1,9 @@
 # NLE-TMS后端技术文档
-[toc]
-## 一、项目介绍
+[1.项目介绍](#1)  
+[2.项目部署](#2)  
+[3.初始化项目](#3)   
+
+<h2 id='1'> 一、项目介绍 </h2>
 ### 1. 概述
   TMS全称Transportation Management System，即运输管理系统。TMS是恩尔伊科技公司重要开发运营项目之一，主要承接荷兰快递公司的快递业务以及欧亚商城的送货业务。  
 ### 2. 技术介绍
@@ -23,7 +26,7 @@ laravel版本：6.18.27
 开发服管理员端地址：[https://dev-tms-admin.nle-tech.com](https://dev-tms-admin.nle-tech.com)  
 开发服货主端地址：[https://dev-tms-business.nle-tech.com](https://dev-tms-business.nle-tech.com)  
   
-## 二、项目部署
+<h2 id='2'> 项目部署 </h2>  
 ### 1.搭建环境
 #### 1.1 安装docker
 Docker 是一个开源的应用容器引擎，可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。本项目的开发服，正式服均是由docker搭建环境。开发服与正式服的服务器均是CentOS系统，首先通过相关教程将Docker安装至服务器。  
@@ -103,7 +106,7 @@ cd api
 supervisorctl restart all
 ```
 
-### 3. 初始化项目
+<h2 id='3'> 初始化项目 </h2>  
 #### 3.1 nginx配置
 在服务器上/etc/nginx/conf.d/文件夹中，新建.conf配置文件，在service下加上以下配置：  
 ```
