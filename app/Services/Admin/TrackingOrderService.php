@@ -684,7 +684,7 @@ class TrackingOrderService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
             $params = Arr::only($dbOrder->toArray(), ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',]);
-            $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder], ['*'], false);
+            $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
             if (!empty($trackingOrderPackageList)) {
                 foreach ($trackingOrderPackageList as $k => $v) {
                     if ($v['expiration_status'] === BaseConstService::EXPIRATION_STATUS_2) {
