@@ -31,6 +31,7 @@ use App\Traits\ExportTrait;
 use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
 /**
@@ -712,6 +713,7 @@ class TrackingOrderService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
         }
+        Log::info('可选日期参数',$params);
         $data = $this->getLineService()->getScheduleList($params);
         return $data;
     }
