@@ -684,17 +684,6 @@ class TrackingOrderService extends BaseService
             if (empty($dbOrder)) {
                 throw new BusinessLogicException('数据不存在');
             }
-            $params = Arr::only($dbOrder->toArray(), ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',]);
-//            $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
-//            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
-//            if (!empty($trackingOrderPackageList)) {
-//                foreach ($trackingOrderPackageList as $k => $v) {
-//                    if ($v['expiration_status'] === BaseConstService::EXPIRATION_STATUS_2) {
-//                        $expired = BaseConstService::YES;
-//                    }
-//                    break;
-//                }
-//            }
             if ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3) {
                 $address = [
                     'place_country' => $dbOrder['second_place_country'], 'place_fullname' => $dbOrder['second_place_fullname'],
@@ -705,8 +694,20 @@ class TrackingOrderService extends BaseService
                     'execution_date'=>$dbOrder['second_execution_date'],
                     'type'=>BaseConstService::TRACKING_ORDER_TYPE_2
                 ];
-                $params = array_merge($params, $address);
             }
+            $params = Arr::only($dbOrder->toArray(), ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',]);
+            $params = array_merge($params, $address);
+//            $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+//            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
+//            if (!empty($trackingOrderPackageList)) {
+//                foreach ($trackingOrderPackageList as $k => $v) {
+//                    if ($v['expiration_status'] === BaseConstService::EXPIRATION_STATUS_2) {
+//                        $expired = BaseConstService::YES;
+//                    }
+//                    break;
+//                }
+//            }
+
         } else {
             $params = parent::getInfo(['id' => $id], ['*'], false);
             if (empty($params)) {
