@@ -74,6 +74,7 @@ class Driver extends Authenticatable implements JWTSubject
         'crop_type',
         'created_at',
         'updated_at',
+        'type'
     ];
 
     /**

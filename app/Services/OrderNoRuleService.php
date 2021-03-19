@@ -120,26 +120,12 @@ class OrderNoRuleService extends BaseService
 
     /**
      * 创建订单编号
-     * @param $type
      * @return string
      * @throws BusinessLogicException
      */
     public function createOrderNo()
     {
-        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::ORDER_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('订单单号规则不存在或已被禁用，请先联系后台管理员');
-        }
-        $info = $info->toArray();
-        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
-        //修改索引
-        $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
-        $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
-        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'start_string_index' => $startStringIndex]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('单号生成失败，请重新操作');
-        }
-        return $orderNo;
+        return $this->createNoBase(BaseConstService::ORDER_NO_TYPE, '订单单号规则不存在或已被禁用，请先联系后台管理员');
     }
 
     /**
@@ -149,23 +135,7 @@ class OrderNoRuleService extends BaseService
      */
     public function createBatchNo()
     {
-        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::BATCH_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('站点单号规则不存在或已被禁用，请先联系后台管理员');
-        }
-        $info = $info->toArray();
-        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
-        //修改索引
-        $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
-        $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
-        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'start_string_index' => $startStringIndex]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('单号生成失败，请重新操作');
-        }
-        if (empty($info)) {
-            throw new BusinessLogicException('单号规则不存在，请先添加单号规则');
-        }
-        return $orderNo;
+        return $this->createNoBase(BaseConstService::BATCH_NO_TYPE, '站点单号规则不存在或已被禁用，请先联系后台管理员');
     }
 
 
@@ -176,20 +146,7 @@ class OrderNoRuleService extends BaseService
      */
     public function createTourNo()
     {
-        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::TOUR_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('取件线路单号规则不存在或已被禁用，请先联系后台管理员');
-        }
-        $info = $info->toArray();
-        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
-        //修改索引
-        $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
-        $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
-        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'start_string_index' => $startStringIndex]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('单号生成失败，请重新操作');
-        }
-        return $orderNo;
+        return $this->createNoBase(BaseConstService::TOUR_NO_TYPE, '取件线路单号规则不存在或已被禁用，请先联系后台管理员');
     }
 
     /**
@@ -199,20 +156,7 @@ class OrderNoRuleService extends BaseService
      */
     public function createBatchExceptionNo()
     {
-        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::BATCH_EXCEPTION_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('异常站点单号规则不存在或已被禁用，请先联系后台管理员');
-        }
-        $info = $info->toArray();
-        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
-        //修改索引
-        $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
-        $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
-        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'start_string_index' => $startStringIndex]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('单号生成失败，请重新操作');
-        }
-        return $orderNo;
+        return $this->createNoBase(BaseConstService::BATCH_EXCEPTION_NO_TYPE, '异常站点单号规则不存在或已被禁用，请先联系后台管理员');
     }
 
     /**
@@ -222,46 +166,18 @@ class OrderNoRuleService extends BaseService
      */
     public function createRechargeNo()
     {
-        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::RECHARGE_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('充值单号规则不存在或已被禁用，请先联系后台管理员');
-        }
-        $info = $info->toArray();
-        $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
-        //修改索引
-        $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
-        $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
-        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'start_string_index' => $startStringIndex]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('单号生成失败，请重新操作');
-        }
-        return $orderNo;
+        return $this->createNoBase(BaseConstService::RECHARGE_NO_TYPE, '充值单号规则不存在或已被禁用，请先联系后台管理员');
     }
 
 
     /**
      * 创建运单编号
-     * @param $companyId
      * @return string
      * @throws BusinessLogicException
      */
-    public function createTrackingOrderNo($companyId = null)
+    public function createTrackingOrderNo()
     {
-        empty($companyId) && $companyId = auth()->user()->company_id;
-        $info = parent::getInfoLock(['company_id' => $companyId, 'type' => BaseConstService::TRACKING_ORDER_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('运单单号规则不存在或已被禁用，请先联系后台管理员');
-        }
-        $info = $info->toArray();
-        $trackingOrderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
-        //修改索引
-        $startStringIndex = !empty($info['start_string_index']) ? AlphaTrait::getNextString($info['start_string_index']) : '';
-        $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
-        $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'start_string_index' => $startStringIndex]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('单号生成失败，请重新操作');
-        }
-        return $trackingOrderNo;
+        return $this->createNoBase(BaseConstService::TRACKING_ORDER_NO_TYPE, '运单单号规则不存在或已被禁用，请先联系后台管理员');
     }
 
     /**
@@ -271,9 +187,41 @@ class OrderNoRuleService extends BaseService
      */
     public function createStockExceptionNo()
     {
-        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => BaseConstService::STOCK_EXCEPTION_NO_TYPE, 'status' => BaseConstService::ON], ['*'], false);
+        return $this->createNoBase(BaseConstService::STOCK_EXCEPTION_NO_TYPE, '入库异常单号规则不存在或已被禁用，请先联系后台管理员');
+    }
+
+    /**
+     * 创建事故处理单号
+     * @throws BusinessLogicException
+     */
+    public function createCarAccidentNO()
+    {
+        return $this->createNoBase(BaseConstService::CAR_ACCIDENT_NO_TYPE, '事故处理编号规则不存在或已被禁用，请先联系后台管理员');
+    }
+
+    /**
+     * 创建车辆维护流水号
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function createCarMaintainNO()
+    {
+        return $this->createNoBase(BaseConstService::CAR_MAINTAIN_NO_TYPE, '创建车辆维护流水号规则不存在或已被禁用，请先联系后台管理员');
+    }
+
+    /**
+     * 创建各种规则的编号
+     * @param  string  $ruleType
+     * @param  string  $infoFailMsg
+     * @param  string  $updateFailMsg
+     * @return string
+     * @throws BusinessLogicException
+     */
+    protected function createNoBase(string $ruleType, string $infoFailMsg, string $updateFailMsg = '单号生成失败，请重新操作')
+    {
+        $info = parent::getInfoLock(['company_id' => auth()->user()->company_id, 'type' => $ruleType, 'status' => BaseConstService::ON], ['*'], false);
         if (empty($info)) {
-            throw new BusinessLogicException('入库异常单号规则不存在或已被禁用，请先联系后台管理员');
+            throw new BusinessLogicException($infoFailMsg);
         }
         $info = $info->toArray();
         $orderNo = $info['prefix'] . $info['start_string_index'] . sprintf("%0{$info['int_length']}s", $info['start_index']);
@@ -282,7 +230,7 @@ class OrderNoRuleService extends BaseService
         $index = ($startStringIndex === str_repeat('A', $info['string_length'])) ? $info['start_index'] + 1 : $info['start_index'];
         $rowCount = parent::updateById($info['id'], ['start_index' => $index, 'start_string_index' => $startStringIndex]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('单号生成失败，请重新操作');
+            throw new BusinessLogicException($updateFailMsg);
         }
         return $orderNo;
     }

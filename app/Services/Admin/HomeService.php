@@ -9,6 +9,7 @@ use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use WebSocket\Base;
 
 class HomeService extends BaseService
 {
@@ -25,38 +26,43 @@ class HomeService extends BaseService
     {
         $date = Carbon::today()->format('Y-m-d');
         //当日订单
-        $noTakeOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_1]);//待分配
-        $takingOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_2]);//取派中
-        $signedOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_3]);//已完成
-        $cancelOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_4]);//取消取派
-        $exceptionOrder = parent::count(['execution_date' => $date, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);//异常
-        //取件线路
+        $preparingOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_1]);//待分配
+        $preparingBatch = $this->getBatchService()->count(['execution_date' => $date, 'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT]]]);
+        $preparingTour = $this->getTourService()->count(['execution_date' => $date, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]]]);
         $tour = $this->getTourService()->count(['execution_date' => $date]);
-        //司机及车辆
-        $carSum = $this->getCarService()->count();//车辆总数
-        $driverSum = $this->getDriverService()->count();//司机总数
-        $assignCar = Tour::query()->whereNotNull('car_id')->where('execution_date', $date)->whereIn('status', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2])->count();
-        $assignDriver = Tour::query()->where('execution_date', $date)->where('status', BaseConstService::TOUR_STATUS_2)->count();
-        $waitOutCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_3]);//待出库
-        $takingCar = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_4]);//配送中
+        $takingTour = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_4]);
+        $doneTour = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_5]);
+        $exceptionBatch = $this->getBatchService()->count(['execution_date' => $date, 'exception_label' => BaseConstService::BATCH_EXCEPTION_2]);
+        $batch = $this->getBatchService()->count(['execution_date' => $date);
+        $exceptionTrackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
+        $trackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date]);
+        $exceptionPackage = $this->getStockExceptionService()->count(['execution_date' => $date]);
+        $package = $this->getStockExceptionService()->count(['execution_date' => $date]);
+        $totalOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]]]);
+        $pickupOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_1]);
+        $pieOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_2]);
+        $pickupPieOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_3]);
         return [
             //订单统计
-            'preparing_order' => $noTakeOrder,
-            'taking_order' => $takingOrder,
-            'signed_order' => $signedOrder,
-            'cancel_order' => $cancelOrder,
-            'exception_order' => $exceptionOrder,
-            'total_order' => $noTakeOrder + $takingOrder + $signedOrder + $cancelOrder,
-            //任务统计
+            'preparing_order' => $preparingOrder,
+            'preparing_batch' => $preparingBatch,
+            'preparing_tour' => $preparingTour,
+
             'tour' => $tour,
-            //司机统计
-            'total_driver' => $driverSum,
-            'working_driver' => $assignDriver + $waitOutCar + $takingCar,
-            'free_driver' => $driverSum - $assignDriver - $waitOutCar - $takingCar,
-            //车辆统计
-            'total_car' => $carSum,
-            'working_car' => $assignCar + $waitOutCar + $takingCar,
-            'free_car' => $carSum - $assignCar - $waitOutCar - $takingCar,
+            'taking_tour' => $takingTour,
+            'done_tour' => $doneTour,
+
+            'exception_batch_' => $exceptionBatch,
+            'batch' => $batch,
+            'exception_tracking_order' => $exceptionTrackingOrder,
+            'tracking_order'=>$trackingOrder,
+            'exception_package' => $exceptionPackage,
+            'package' => $package,
+
+            'total_order' => $totalOrder,
+            'pickup_order' => $pickupOrder,
+            'pie_order' => $pieOrder,
+            'pickup_pie_order' => $pickupPieOrder
         ];
 
     }
@@ -210,9 +216,9 @@ class HomeService extends BaseService
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['total_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id']]);
-            $data[$k]['pickup_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_1]);
-            $data[$k]['pie_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_2]);
-            $data[$k]['pickup_pie_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_3]);
+            //$data[$k]['pickup_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_1]);
+            //$data[$k]['pie_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_2]);
+            //$data[$k]['pickup_pie_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_3]);
             $data[$k]['cancel_order'] = parent::count(['status' => BaseConstService::ORDER_STATUS_4, 'merchant_id' => $v['id']]);
             $data[$k]['additional_package'] = DB::table('additional_package')->where('company_id', auth()->user()->company_id)->where('merchant_id', $v['id'])->count();
             $data[$k]['total_recharge'] = $this->getRechargeStatisticsService()->sum('total_recharge_amount', ['merchant_id' => $v['id']]);
@@ -267,6 +273,23 @@ class HomeService extends BaseService
             'batch_count' => $batchCount,
             'tour_count' => $tourCount
         ];
+    }
+
+    /**
+     * 预约任务
+     * @return array
+     */
+    public function reservation()
+    {
+        $dateList = [];
+        $now = date('Y-m-d');
+        $dateList = $this->getTrackingOrderService()->getList(['execution_date' => ['>', $now]], ['*'], false)->pluck('execution_date')->toArray();
+        foreach ($dateList as $k => $v) {
+            $dateList[$k]['tour'] = $this->getTourService()->count(['execution_date' => $v['execution_date']]);
+            $dateList[$k]['batch'] = $this->getBatchService()->count(['execution_date' => $v['execution_date']]);
+            $dateList[$k]['tracking_order'] = $this->getBatchService()->count(['execution_date' => $v['execution_date'], 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]]);
+        }
+        return $dateList;
     }
 
     /**

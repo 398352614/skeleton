@@ -52,6 +52,8 @@ class Car extends BaseModel
         'outgoing_time',
         'car_brand_id',
         'car_model_id',
+        'car_length',
+        'gps_device_number',
         'ownership_type',
         'insurance_company',
         'insurance_type',

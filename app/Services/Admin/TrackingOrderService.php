@@ -31,6 +31,7 @@ use App\Traits\ExportTrait;
 use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
 /**
@@ -677,19 +678,42 @@ class TrackingOrderService extends BaseService
      */
     public function getAbleDateList($id)
     {
+//        $expired = BaseConstService::NO;
         if ($id < 0) {
             $dbOrder = $this->getOrderService()->getInfo(['id' => abs($id)], ['*'], false);
             if (empty($dbOrder)) {
                 throw new BusinessLogicException('数据不存在');
             }
             $params = Arr::only($dbOrder->toArray(), ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',]);
-            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
+//            $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+//            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
+//            if (!empty($trackingOrderPackageList)) {
+//                foreach ($trackingOrderPackageList as $k => $v) {
+//                    if ($v['expiration_status'] === BaseConstService::EXPIRATION_STATUS_2) {
+//                        $expired = BaseConstService::YES;
+//                    }
+//                    break;
+//                }
+//            }
+            if ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3) {
+                $address = [
+                    'place_country' => $dbOrder['second_place_country'], 'place_fullname' => $dbOrder['second_place_fullname'],
+                    'place_phone' => $dbOrder['second_place_phone'], 'place_post_code' => $dbOrder['second_place_post_code'],
+                    'place_house_number' => $dbOrder['second_place_house_number'], 'place_city' => $dbOrder['second_place_city'],
+                    'place_street' => $dbOrder['second_place_street'], 'place_address' => $dbOrder['second_place_address'],
+                    'place_lat' => $dbOrder['second_place_lat'], 'place_lon' => $dbOrder['second_place_lon'],
+                    'execution_date'=>$dbOrder['second_execution_date'],
+                    'type'=>BaseConstService::TRACKING_ORDER_TYPE_2
+                ];
+                $params = array_merge($params, $address);
+            }
         } else {
             $params = parent::getInfo(['id' => $id], ['*'], false);
             if (empty($params)) {
                 throw new BusinessLogicException('数据不存在');
             }
         }
+        Log::info('可选日期参数',$params->toArray());
         $data = $this->getLineService()->getScheduleList($params);
         return $data;
     }
