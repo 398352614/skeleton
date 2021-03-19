@@ -685,6 +685,7 @@ class TrackingOrderService extends BaseService
             }
             $params = Arr::only($dbOrder->toArray(), ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',]);
             $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
             if (!empty($trackingOrderPackageList)) {
                 foreach ($trackingOrderPackageList as $k => $v) {
                     if ($v['expiration_status'] === BaseConstService::EXPIRATION_STATUS_2) {
@@ -700,18 +701,17 @@ class TrackingOrderService extends BaseService
                     'place_house_number' => $dbOrder['second_place_house_number'], 'place_city' => $dbOrder['second_place_city'],
                     'place_street' => $dbOrder['second_place_street'], 'place_address' => $dbOrder['second_place_address'],
                     'place_lat' => $dbOrder['second_place_lat'], 'place_lon' => $dbOrder['second_place_lon'],
-                    'execution_date'=>$dbOrder['second_execution_date']
+                    'execution_date'=>$dbOrder['second_execution_date'],
+                    'type'=>BaseConstService::TRACKING_ORDER_TYPE_2
                 ];
                 $params = array_merge($params, $address);
             }
-            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
         } else {
             $params = parent::getInfo(['id' => $id], ['*'], false);
             if (empty($params)) {
                 throw new BusinessLogicException('数据不存在');
             }
         }
-        dd($params);
         $data = $this->getLineService()->getScheduleList($params);
         return $data;
     }
