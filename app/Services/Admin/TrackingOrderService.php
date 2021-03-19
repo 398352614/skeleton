@@ -693,12 +693,12 @@ class TrackingOrderService extends BaseService
                     'place_house_number' => $dbOrder['second_place_house_number'], 'place_city' => $dbOrder['second_place_city'],
                     'place_street' => $dbOrder['second_place_street'], 'place_address' => $dbOrder['second_place_address'],
                     'place_lat' => $dbOrder['second_place_lat'], 'place_lon' => $dbOrder['second_place_lon'],
-                    'execution_date'=>$dbOrder['second_execution_date'],
-                    'type'=>BaseConstService::TRACKING_ORDER_TYPE_2
+                    'execution_date' => $dbOrder['second_execution_date'],
+                    'type' => BaseConstService::TRACKING_ORDER_TYPE_2
                 ];
                 $params = array_merge($params, $address);
             }
-            $params = Arr::only($params, ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat','type']);
+//            $params = Arr::only($params, ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat', 'type']);
 //            $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
 //            $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
 //            if (!empty($trackingOrderPackageList)) {
@@ -716,7 +716,7 @@ class TrackingOrderService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
         }
-        Log::info('可选日期参数',collect($params)->toArray());
+        Log::info('可选日期参数', collect($params)->toArray());
         $data = $this->getLineService()->getScheduleList($params);
         return $data;
     }
