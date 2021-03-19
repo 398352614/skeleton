@@ -274,10 +274,26 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //智能管车
     Route::prefix('car-management')->group(function () {
-        //todo 车辆追踪
+        //车辆追踪
         Route::get('/track', 'RouteTrackingController@show')->name('car-management.index');
-        //todo 所有车辆追踪
+        //所有车辆追踪
         Route::get('/all-track', 'RouteTrackingController@index')->name('car-management.index');
+    });
+
+    //车辆事故
+    Route::prefix('car-accident')->group(function () {
+        //车辆事故列表
+        Route::get('/', 'CarAccidentController@index')->name('car-accident.index');
+        //车辆事故新增
+        Route::post('/', 'CarAccidentController@store')->name('car-accident.store');
+    });
+
+    //车辆维护
+    Route::prefix('car-maintain')->group(function () {
+        //车辆维护列表
+        Route::get('/', 'CarMaintainController@index')->name('car-maintain.index');
+        //车辆维护新增
+        Route::post('/', 'CarMaintainController@store')->name('car-maintain.store');
     });
 
     //设备管理
@@ -375,7 +391,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/batchPng', 'TourController@batchPng');
     });
 
-    //todo 取件线路-司机
+    //取件线路-司机
     Route::prefix('tour-driver')->group(function () {
         Route::get('/{tour_no}', 'TourDriverController@getListByTourNo');
     });

@@ -85,6 +85,9 @@ class BaseService
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function setFilterRules()
     {
         foreach ($this->filterRules as $k => $v) {
@@ -141,7 +144,9 @@ class BaseService
         return true;
     }
 
-
+    /**
+     * @return $this
+     */
     protected function locked()
     {
         if ($this->model instanceof OrderNoRule) {

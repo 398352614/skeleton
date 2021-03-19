@@ -40,6 +40,7 @@ class CarService extends BaseService
         $data['car_owner_ship_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carOwnerShipTypeList);
         $data['car_fuel_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carFuelTypeList);
         $data['car_transmission_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carTransmissionList);
+        $data['car_length_type_list'] = ConstTranslateTrait::$carLengthTypeList;
         return $data;
     }
 
@@ -52,6 +53,8 @@ class CarService extends BaseService
             'outgoing_time' => $this->formData['outgoing_time'] ?? null,
             'car_brand_id' => $this->formData['car_brand_id'],
             'car_model_id' => $this->formData['car_model_id'],
+            'car_length' => $this->formData['car_length'] ?? null,
+            'gps_device_number' => $this->formData['gps_device_number'] ?? '',
             'ownership_type' => $this->formData['ownership_type'] ?? 1,
             'insurance_company' => $this->formData['insurance_company'] ?? '',
             'insurance_type' => $this->formData['insurance_type'] ?? '',
@@ -79,6 +82,8 @@ class CarService extends BaseService
             'outgoing_time' => $this->formData['outgoing_time'],
             'car_brand_id' => $this->formData['car_brand_id'],
             'car_model_id' => $this->formData['car_model_id'],
+            'car_length' => $this->formData['car_length'] ?? null,
+            'gps_device_number' => $this->formData['gps_device_number'] ?? '',
             'ownership_type' => $this->formData['ownership_type'],
             'insurance_company' => $this->formData['insurance_company'],
             'insurance_type' => $this->formData['insurance_type'],

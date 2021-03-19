@@ -4,15 +4,12 @@ namespace App\Console\Commands;
 
 use App\Models\Company;
 use App\Models\Employee;
-use App\Models\Fee;
 use App\Models\Role;
-use App\Services\BaseConstService;
 use App\Traits\PermissionTrait;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class initPermission extends Command
 {

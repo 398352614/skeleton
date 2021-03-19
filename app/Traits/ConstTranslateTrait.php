@@ -93,6 +93,8 @@ trait ConstTranslateTrait
         BaseConstService::RECHARGE_NO_TYPE => '充值单号规则',
         BaseConstService::TRACKING_ORDER_NO_TYPE => '运单单号规则',
         BaseConstService::STOCK_EXCEPTION_NO_TYPE => '入库异常编号规则',
+        BaseConstService::CAR_ACCIDENT_NO_TYPE => '事故处理单号规则',
+        BaseConstService::CAR_MAINTAIN_NO_TYPE => '车辆维护流水号',
     ];
 
     //快捷方式列表
@@ -327,6 +329,45 @@ trait ConstTranslateTrait
         BaseConstService::CAR_OWNER_SHIP_TYPE_1 => '租赁（到期转私）',
         BaseConstService::CAR_OWNER_SHIP_TYPE_2 => '私有',
         BaseConstService::CAR_OWNER_SHIP_TYPE_3 => '租赁（到期转待定）',
+    ];
+
+    //车辆长度
+    public static $carLengthTypeList = [
+        BaseConstService::CAR_LENGTH_TYPE_1 => '4.2',
+        BaseConstService::CAR_LENGTH_TYPE_2 => '5.2',
+        BaseConstService::CAR_LENGTH_TYPE_3 => '6.2',
+        BaseConstService::CAR_LENGTH_TYPE_4 => '6.8',
+        BaseConstService::CAR_LENGTH_TYPE_5 => '7.2',
+        BaseConstService::CAR_LENGTH_TYPE_6 => '7.6',
+        BaseConstService::CAR_LENGTH_TYPE_7 => '8.2',
+        BaseConstService::CAR_LENGTH_TYPE_8 => '9.6',
+        BaseConstService::CAR_LENGTH_TYPE_9 => '12.5',
+        BaseConstService::CAR_LENGTH_TYPE_10 => '13.0',
+        BaseConstService::CAR_LENGTH_TYPE_11 => '13.5',
+        BaseConstService::CAR_LENGTH_TYPE_12 => '14.6',
+        BaseConstService::CAR_LENGTH_TYPE_13 => '15.0',
+        BaseConstService::CAR_LENGTH_TYPE_14 => '16.0',
+        BaseConstService::CAR_LENGTH_TYPE_15 => '16.5',
+        BaseConstService::CAR_LENGTH_TYPE_16 => '17.5',
+        BaseConstService::CAR_LENGTH_TYPE_17 => '18.0',
+        BaseConstService::CAR_LENGTH_TYPE_18 => '19.5',
+    ];
+
+    //车辆车型列表
+    public static $carModelTypeList = [
+        BaseConstService::CAR_MODEL_TYPE_1 => '厢车',
+        BaseConstService::CAR_MODEL_TYPE_2 => '高低板',
+        BaseConstService::CAR_MODEL_TYPE_3 => '平板车',
+        BaseConstService::CAR_MODEL_TYPE_4 => '高栏车',
+        BaseConstService::CAR_MODEL_TYPE_5 => '挂车',
+        BaseConstService::CAR_MODEL_TYPE_6 => '冷藏车',
+        BaseConstService::CAR_MODEL_TYPE_7 => '牵引车',
+        BaseConstService::CAR_MODEL_TYPE_8 => '新能源',
+        BaseConstService::CAR_MODEL_TYPE_9 => '吊车',
+        BaseConstService::CAR_MODEL_TYPE_10 => '叉车',
+        BaseConstService::CAR_MODEL_TYPE_11 => '油罐车',
+        BaseConstService::CAR_MODEL_TYPE_12 => '托平车',
+        BaseConstService::CAR_MODEL_TYPE_13 => '其他',
     ];
 
     //维修自理1-是2-否

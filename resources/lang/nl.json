@@ -788,7 +788,9 @@
 "订单为[:order_no],运单为[:tracking_order_no]不可出库":"De order is [: orderNee, de vrachtbrief is [: tracking]Foto van bestelling[no] niet toegestaan",
 "脚手架2":"Schaafplaat 2",
 "脚手架1":"Schaafplaat 1",
+"事故处理编号规则不存在或已被禁用，请先联系后台管理员":"Regel nummer van de afhandeling van ongevallen bestaat niet of is uitgeschakeld, gelieve eerst contact op te nemen met de achtergrondbeheerder",
 "订单修改推送":"Beweging voor wijziging",
+"事故处理单号规则":"Regels voor de behandeling van ongevallen",
 "下单":"Plaats een bestelling",
 "订单":"bestelling",
 "线路规划(邮编)":"Planning route (postcode)",
@@ -806,3 +808,4 @@
 "已超期":"Overlopende",
 "超期已处理":"Overmatig verwerkt"
 }
+

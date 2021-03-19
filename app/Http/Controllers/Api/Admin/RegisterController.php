@@ -107,7 +107,10 @@ class RegisterController extends BaseController
             BaseConstService::TOUR_NO_TYPE => BaseConstService::TOUR,
             BaseConstService::BATCH_EXCEPTION_NO_TYPE => BaseConstService::BATCH_EXCEPTION,
             BaseConstService::RECHARGE_NO_TYPE => BaseConstService::RECHARGE,
+            BaseConstService::STOCK_EXCEPTION_NO_TYPE => BaseConstService::STOCK_EXCEPTION,
             BaseConstService::TRACKING_ORDER_NO_TYPE => BaseConstService::TRACKING_ORDER,
+            BaseConstService::CAR_ACCIDENT_NO_TYPE => BaseConstService::CAR_ACCIDENT,
+            BaseConstService::CAR_MAINTAIN_NO_TYPE => BaseConstService::CAR_MAINTAIN,
         ];
         $rules = collect($rules)->map(function ($rule, $type) use ($company) {
             $prefix = $rule . substr('000' . $company->id, -4, 4);

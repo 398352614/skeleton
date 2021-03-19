@@ -10,6 +10,7 @@ use App\Services\Admin\BaseLineService;
 use App\Services\Admin\BatchExceptionService;
 use App\Services\Admin\BatchService;
 use App\Services\Admin\CarBrandService;
+use App\Services\Admin\CarMaintainDetailService;
 use App\Services\Admin\CarService;
 use App\Services\Admin\CompanyService;
 use App\Services\Admin\DriverService;
@@ -51,6 +52,9 @@ trait AdminServiceTrait
 {
     use FactoryInstanceTrait;
 
+    /**
+     * @return mixed
+     */
     public function getCompanyService()
     {
         return self::getInstance(CompanyService::class);
@@ -437,5 +441,14 @@ trait AdminServiceTrait
     public function getMerchantGroupLineService()
     {
         return self::getInstance(MerchantGroupLineService::class);
+    }
+
+    /**
+     * 获得车辆维修详情 Service
+     * @return CarMaintainDetailService
+     */
+    public function getCarMaintainDetailService()
+    {
+        return self::getInstance(CarMaintainDetailService::class);
     }
 }

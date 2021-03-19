@@ -44,6 +44,7 @@ class DriverValidate extends BaseValidate
         'bic'                           => 'nullable|string|max:100',
         'crop_type'                     => 'required|integer|in:1,2',
         'is_locked'                     => 'required|integer|in:1,2',
+        'type'                          => 'required|integer|in:1,2,3,4'
     ];
     public $scene = [
         //注册
@@ -69,6 +70,7 @@ class DriverValidate extends BaseValidate
             'bank_name',
             'iban',
             'bic',
+            'type',
             // 'crop_type',
         ],
         'update'             => [
@@ -90,6 +92,7 @@ class DriverValidate extends BaseValidate
             'bank_name',
             'iban',
             'bic',
+            'type',
             // 'crop_type',
         ],
         'resetPassword' => ['new_password','confirm_new_password'],
