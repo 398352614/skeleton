@@ -283,6 +283,9 @@ class OrderService extends BaseService
         if (empty($dbTrackingOrder)) {
             $dbTrackingOrder = null;
         }
+        if ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3 && $dbTrackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
+            $dbTrackingOrder = null;
+        }
         if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder->toArray(), $dbTrackingOrder)) {
             throw new BusinessLogicException('当前订单不支持再次派送，请联系管理员');
         }
@@ -629,18 +632,18 @@ class OrderService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
             $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5){
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5) {
             $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
         //验证包裹列表
-        if(!empty($params['package_list'])){
+        if (!empty($params['package_list'])) {
             $this->getPackageService()->check($params['package_list'], $orderNo);
             //有效日日期不得早于取派日期
-            foreach ($params['package_list'] as $k=>$v){
-                if(!empty($v['expiration_date']) && $v['expiration_date'] < $params['execution_date']){
+            foreach ($params['package_list'] as $k => $v) {
+                if (!empty($v['expiration_date']) && $v['expiration_date'] < $params['execution_date']) {
                     throw new BusinessLogicException('有效日期不得小于取派日期');
                 }
             }
