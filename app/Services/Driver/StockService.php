@@ -102,7 +102,9 @@ class StockService extends BaseService
             if ($row == false) {
                 throw new BusinessLogicException('操作失败');
             }
-            $row = $this->getTrackingOrderPackageService()->updateById($package['id'], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_2]);
+            if(!empty($trackingOrderPackage=$this->getTrackingOrderPackageService()->getInfo(['id'=>$package['id']],['*'],false))){
+                $row = $this->getTrackingOrderPackageService()->updateById($package['id'], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_2]);
+            }
             if ($row == false) {
                 throw new BusinessLogicException('操作失败');
             }
