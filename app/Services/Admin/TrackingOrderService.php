@@ -677,12 +677,32 @@ class TrackingOrderService extends BaseService
      */
     public function getAbleDateList($id)
     {
+        $expired = BaseConstService::YES;
         if ($id < 0) {
             $dbOrder = $this->getOrderService()->getInfo(['id' => abs($id)], ['*'], false);
             if (empty($dbOrder)) {
                 throw new BusinessLogicException('数据不存在');
             }
             $params = Arr::only($dbOrder->toArray(), ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',]);
+            $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder], ['*'], false);
+            if (!empty($trackingOrderPackageList)) {
+                foreach ($trackingOrderPackageList as $k => $v) {
+                    if ($v['expiration_status'] === BaseConstService::EXPIRATION_STATUS_2) {
+                        $expired = BaseConstService::NO;
+                    }
+                    break;
+                }
+            }
+            if ($expired == BaseConstService::YES) {
+                $address = [
+                    'place_country' => $dbOrder['second_place_country'], 'place_fullname' => $dbOrder['second_place_fullname'],
+                    'place_phone' => $dbOrder['second_place_phone'], 'place_post_code' => $dbOrder['second_place_post_code'],
+                    'place_house_number' => $dbOrder['second_place_house_number'], 'place_city' => $dbOrder['second_place_city'],
+                    'place_street' => $dbOrder['second_place_street'], 'place_address' => $dbOrder['second_place_address'],
+                    'place_lat' => $dbOrder['second_place_lat'], 'place_lon' => $dbOrder['second_place_lon']
+                ];
+                $params = array_merge($params, $address);
+            }
             $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
         } else {
             $params = parent::getInfo(['id' => $id], ['*'], false);
