@@ -10,6 +10,7 @@ use App\Services\Admin\BaseLineService;
 use App\Services\Admin\BatchExceptionService;
 use App\Services\Admin\BatchService;
 use App\Services\Admin\CarBrandService;
+use App\Services\Admin\CarMaintainDetailService;
 use App\Services\Admin\CarService;
 use App\Services\Admin\CompanyService;
 use App\Services\Admin\DriverService;
@@ -51,13 +52,16 @@ trait AdminServiceTrait
 {
     use FactoryInstanceTrait;
 
+    /**
+     * @return mixed
+     */
     public function getCompanyService()
     {
         return self::getInstance(CompanyService::class);
     }
 
     /**
-     * 商户服务
+     * 货主服务
      * @return MerchantService
      */
     public function getMerchantService()
@@ -301,7 +305,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户api 服务
+     * 货主api 服务
      * @return MerchantApiService
      */
     public function getMerchantApiService()
@@ -310,7 +314,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户充值api 服务
+     * 货主充值api 服务
      * @return MerchantRechargeService
      */
     public function getMerchantRechargeService()
@@ -319,7 +323,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户组管理 服务
+     * 货主组管理 服务
      * @return MerchantGroupService
      */
     public function getMerchantGroupService()
@@ -431,11 +435,20 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户组线路服务
+     * 货主组线路服务
      * @return MerchantGroupLineService
      */
     public function getMerchantGroupLineService()
     {
         return self::getInstance(MerchantGroupLineService::class);
+    }
+
+    /**
+     * 获得车辆维修详情 Service
+     * @return CarMaintainDetailService
+     */
+    public function getCarMaintainDetailService()
+    {
+        return self::getInstance(CarMaintainDetailService::class);
     }
 }

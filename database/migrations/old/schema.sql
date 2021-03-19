@@ -520,12 +520,12 @@ DROP TABLE IF EXISTS `merchant`;
 CREATE TABLE `merchant`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `company_id` int(11) NULL DEFAULT NULL COMMENT '公司ID',
-  `type` tinyint(4) NULL DEFAULT 1 COMMENT '类型1-个人2-商户',
+  `type` tinyint(4) NULL DEFAULT 1 COMMENT '类型1-个人2-货主',
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '名称',
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '邮箱',
   `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '密码',
   `settlement_type` tinyint(4) NULL DEFAULT 1 COMMENT '结算方式1-票结2-日结3-月结',
-  `merchant_group_id` int(11) NULL DEFAULT NULL COMMENT '商户组ID',
+  `merchant_group_id` int(11) NULL DEFAULT NULL COMMENT '货主组ID',
   `contacter` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '联系人',
   `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '电话',
   `address` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '联系地址',
@@ -546,7 +546,7 @@ DROP TABLE IF EXISTS `merchant_api`;
 CREATE TABLE `merchant_api`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `company_id` int(11) NULL DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) NULL DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) NULL DEFAULT NULL COMMENT '货主ID',
   `key` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT 'key',
   `secret` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT 'secret',
   `url` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '推送url',
@@ -597,7 +597,7 @@ DROP TABLE IF EXISTS `order`;
 CREATE TABLE `order`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `merchant_id` int(11) NULL DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) NULL DEFAULT NULL COMMENT '货主ID',
   `order_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '订单号',
   `execution_date` date NULL DEFAULT NULL COMMENT '取件/派件 日期',
   `batch_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '站点编号',
@@ -788,7 +788,7 @@ DROP TABLE IF EXISTS `receiver_address`;
 CREATE TABLE `receiver_address`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `merchant_id` int(11) NULL DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) NULL DEFAULT NULL COMMENT '货主ID',
   `receiver` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '收件人姓名',
   `receiver_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '收件人电话',
   `receiver_country` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '收件人国家',
@@ -833,7 +833,7 @@ DROP TABLE IF EXISTS `sender_address`;
 CREATE TABLE `sender_address`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `merchant_id` int(11) NULL DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) NULL DEFAULT NULL COMMENT '货主ID',
   `sender` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '发件人姓名',
   `sender_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '发件人电话',
   `sender_country` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '发件人国家',

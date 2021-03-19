@@ -14,7 +14,7 @@ class AlterOrderTrailAddColumn extends Migration
     public function up()
     {
         Schema::table('order_trail', function (Blueprint $table) {
-            $table->integer('merchant_id')->default(null)->nullable()->after('company_id')->comment('商户ID');
+            $table->integer('merchant_id')->default(null)->nullable()->after('company_id')->comment('货主ID');
         });
     }
 

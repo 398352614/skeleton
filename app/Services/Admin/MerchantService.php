@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户列表 服务
+ * 货主列表 服务
  * User: long
  * Date: 2019/12/24
  * Time: 20:06
@@ -121,7 +121,7 @@ class MerchantService extends BaseService
             throw new BusinessLogicException('修改失败，请重新操作');
         }
         $info = $info->toArray();
-        //若修改了商户组,则调整成员
+        //若修改了货主组,则调整成员
         if (intval($info['merchant_group_id']) !== intval($data['merchant_group_id'])) {
             MerchantGroup::query()->where('id', $info['merchant_group_id'])->decrement('count');
             MerchantGroup::query()->where('id', $data['merchant_group_id'])->increment('count');
@@ -137,7 +137,7 @@ class MerchantService extends BaseService
     {
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $params['merchant_group_id']], ['*'], false);
         if (empty($merchantGroup)) {
-            throw new BusinessLogicException('商户组不存在');
+            throw new BusinessLogicException('货主组不存在');
         }
         $params['country'] = CompanyTrait::getCountry();
     }
@@ -206,7 +206,7 @@ class MerchantService extends BaseService
     }
 
     /**
-     * 获取商户列表
+     * 获取货主列表
      * @param $where
      * @return mixed
      */

@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户组列表 服务
+ * 货主组列表 服务
  * User: long
  * Date: 2019/12/24
  * Time: 20:06
@@ -71,7 +71,7 @@ class MerchantGroupService extends BaseService
             throw new BusinessLogicException('新增失败,请重新操作');
         }
         $merchantGroupId = $merchantGroup->getAttribute('id');
-        //新增商户所有线路范围
+        //新增货主所有线路范围
         $this->getLineService()->storeAllPostCodeLineRangeByMerchantGroupId($merchantGroupId);
     }
 
@@ -100,13 +100,13 @@ class MerchantGroupService extends BaseService
     {
         $info = $this->getMerchantService()->getInfo(['merchant_group_id' => $id], ['*'], false);
         if (!empty($info)) {
-            throw new BusinessLogicException('当前商户组内还有成员,不能删除');
+            throw new BusinessLogicException('当前货主组内还有成员,不能删除');
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        //删除商户组的线路数据
+        //删除货主组的线路数据
         $rowCount = $this->getMerchantGroupLineRangeService()->delete(['merchant_group_id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
@@ -235,7 +235,7 @@ class MerchantGroupService extends BaseService
     }
 
     /**
-     * 修改用户组所有商户状态
+     * 修改用户组所有货主状态
      * @param $id
      * @param $data
      * @return string|void

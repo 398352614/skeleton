@@ -14,10 +14,10 @@ class AlterBatchAndTourAddColumnMerchantId extends Migration
     public function up()
     {
         Schema::table('batch', function (Blueprint $table) {
-            $table->integer('merchant_id')->default(0)->nullable()->after('company_id')->comment('商户ID');
+            $table->integer('merchant_id')->default(0)->nullable()->after('company_id')->comment('货主ID');
         });
         Schema::table('tour', function (Blueprint $table) {
-            $table->integer('merchant_id')->default(0)->nullable()->after('company_id')->comment('商户ID');
+            $table->integer('merchant_id')->default(0)->nullable()->after('company_id')->comment('货主ID');
         });
     }
 

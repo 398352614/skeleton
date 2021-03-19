@@ -303,7 +303,7 @@ trait ConstTranslateTrait
         BaseConstService::TOUR_STATUS_5 => '取派完成',
     ];
 
-    //商户端在途类型1-未取派-2-取派中3-取派完成
+    //货主端在途类型1-未取派-2-取派中3-取派完成
     public static $merchantTourStatusList = [
         BaseConstService::MERCHANT_TOUR_STATUS_1 => '未取派',
         BaseConstService::MERCHANT_TOUR_STATUS_2 => '取派中',
@@ -399,7 +399,7 @@ trait ConstTranslateTrait
         BaseConstService::ADMIN_IMAGE_DRIVER_DIR => '司机图片目录',
         BaseConstService::ADMIN_IMAGE_TOUR_DIR => '取件线路图片目录',
         BaseConstService::ADMIN_IMAGE_CANCEL_DIR => '取消取派图片目录',
-        BaseConstService::ADMIN_IMAGE_MERCHANT_DIR => '商户图片目录',
+        BaseConstService::ADMIN_IMAGE_MERCHANT_DIR => '货主图片目录',
     ];
 
     //司机端 图片目录
@@ -432,13 +432,13 @@ trait ConstTranslateTrait
         BaseConstService::DRIVER_FILE_TOUR_DIR => '取件线路文件目录'
     ];
 
-    //商户类型
+    //货主类型
     public static $merchantTypeList = [
         BaseConstService::MERCHANT_TYPE_1 => '个人',
-        BaseConstService::MERCHANT_TYPE_2 => '商户',
+        BaseConstService::MERCHANT_TYPE_2 => '货主',
     ];
 
-    //商户支付方式
+    //货主支付方式
     public static $merchantSettlementTypeList = [
         BaseConstService::MERCHANT_SETTLEMENT_TYPE_1 => '票结',
         BaseConstService::MERCHANT_SETTLEMENT_TYPE_2 => '日结',
@@ -446,7 +446,7 @@ trait ConstTranslateTrait
 
     ];
 
-    //商户状态
+    //货主状态
     public static $merchantStatusList = [
         BaseConstService::MERCHANT_STATUS_1 => '启用',
         BaseConstService::MERCHANT_STATUS_2 => '禁用',

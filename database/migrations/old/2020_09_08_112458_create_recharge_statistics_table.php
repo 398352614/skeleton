@@ -16,7 +16,7 @@ class CreateRechargeStatisticsTable extends Migration
         Schema::create('recharge_statistics', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
-            $table->integer('merchant_id')->default(null)->nullable()->comment('商户ID');
+            $table->integer('merchant_id')->default(null)->nullable()->comment('货主ID');
             $table->date('recharge_date')->default(null)->nullable()->comment('充值日期');
             $table->integer('driver_id')->default(null)->nullable()->comment('司机ID');
             $table->string('driver_name', 250)->default('')->nullable()->comment('司机姓名');

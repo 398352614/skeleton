@@ -143,11 +143,12 @@ trait LocationTrait
             if (($count == 0)/* || ($count > 3)*/) {
                 throw new \App\Exceptions\BusinessLogicException('国家，城市，街道，门牌号或邮编不正确，请仔细检查输入或联系客服');
             }
+            Log::info('返回值',$featureList);
             return [
                 'province' => $featureList[0]['properties']['state'] ?? '',
-                'city' => $city,
+                'city' => $featureList[0]['properties']['city']  ?? $city,
                 'district' => '',
-                'street' => $street,
+                'street' => $featureList[0]['properties']['street'] ??$street,
                 'house_number' => $houseNumber,
                 'lon' => $featureList[0]['geometry']['coordinates'][0],
                 'lat' => $featureList[0]['geometry']['coordinates'][1],

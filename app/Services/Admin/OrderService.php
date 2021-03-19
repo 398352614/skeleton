@@ -265,8 +265,21 @@ class OrderService extends BaseService
      */
     public function getAgainInfo($id)
     {
+        $expired = BaseConstService::NO;
         $dbOrder = parent::getInfoOfStatus(['id' => $id], false, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2], false);
         $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $dbOrder['order_no']], ['*'], false, ['created_at' => 'desc']);
+        $packageList = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+        if (!empty($packageList)) {
+            foreach ($packageList as $k => $v) {
+                if ($v['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
+                    $expired = BaseConstService::YES;
+                    break;
+                }
+            }
+        }
+        if ($expired == BaseConstService::YES) {
+            $dbTrackingOrder = null;
+        }
         if (empty($dbTrackingOrder)) {
             $dbTrackingOrder = null;
         }
@@ -606,10 +619,10 @@ class OrderService extends BaseService
         //获取经纬度
         $fields = ['place_house_number', 'place_city', 'place_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
-        //通过商户获取国家
+        //通过货主获取国家
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'], 'status' => BaseConstService::MERCHANT_STATUS_1], ['*'], false);
         if (empty($merchant)) {
-            throw new BusinessLogicException('商户不存在');
+            throw new BusinessLogicException('货主不存在');
         }
         //若邮编是纯数字，则认为是比利时邮编
         $country = CompanyTrait::getCountry();

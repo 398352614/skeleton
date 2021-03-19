@@ -127,11 +127,11 @@ class BaseConstService
     const SATURDAY = 6;
     const SUNDAY = 0;
 
-    //临时处理 正式服-商户ID(有用到，请勿删除)
+    //临时处理 正式服-货主ID(有用到，请勿删除)
     const ERP_MERCHANT_ID_1 = 7;
     const SHOP_MERCHANT_ID_2 = 8;
 
-    //临时处理 开发服-商户ID(有用到，请勿删除)
+    //临时处理 开发服-货主ID(有用到，请勿删除)
     const ERP_MERCHANT_ID_2 = 65;
     const SHOP_MERCHANT_ID_1 = 3;
 
@@ -427,16 +427,16 @@ class BaseConstService
     const PUSH_CANCEL_BATCH = 'cancel-batch';           //站点取消取派
 
 
-    //商户类型
+    //货主类型
     const MERCHANT_TYPE_1 = 1;
     const MERCHANT_TYPE_2 = 2;
 
-    //商户支付方式
+    //货主支付方式
     const MERCHANT_SETTLEMENT_TYPE_1 = 1;
     const MERCHANT_SETTLEMENT_TYPE_2 = 2;
     const MERCHANT_SETTLEMENT_TYPE_3 = 3;
 
-    //商户状态
+    //货主状态
     const MERCHANT_STATUS_1 = 1;
     const MERCHANT_STATUS_2 = 2;
 
@@ -464,7 +464,7 @@ class BaseConstService
     const RECHARGE_VERIFY_STATUS_1 = 1;
     const RECHARGE_VERIFY_STATUS_2 = 2;
 
-    //商户充值API状态
+    //货主充值API状态
     const MERCHANT_RECHARGE_STATUS_1 = 1;
     const MERCHANT_RECHARGE_STATUS_2 = 2;
 
@@ -489,7 +489,7 @@ class BaseConstService
     const EN = 'en';
     const NL = 'nl';
 
-    //商户端顺带功能状态
+    //货主端顺带功能状态
     const MERCHANT_ADDITIONAL_STATUS_1 = 1;
     const MERCHANT_ADDITIONAL_STATUS_2 = 2;
 
@@ -508,7 +508,7 @@ class BaseConstService
     const WAREHOUSE_PACKAGE_TYPE_1 = 1;
     const WAREHOUSE_PACKAGE_TYPE_2 = 2;
 
-    //商户端订单物流类型
+    //货主端订单物流类型
     const TRACK_STATUS_1 = 1;
     const TRACK_STATUS_2 = 2;
     const TRACK_STATUS_3 = 3;

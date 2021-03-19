@@ -119,7 +119,7 @@ class HomeService extends BaseService
     }
 
     /**
-     * 分商户统计
+     * 分货主统计
      * @param Carbon $day
      * @param $no
      * @return array
@@ -177,7 +177,7 @@ class HomeService extends BaseService
     //时间段订单统计
 
     /**
-     * 分商户时间段统计
+     * 分货主时间段统计
      * @param $params
      * @param $merchantId
      * @return array
@@ -205,7 +205,7 @@ class HomeService extends BaseService
     }
 
     /**
-     * 商户订单统计
+     * 货主订单统计
      * @return array
      */
     public function merchantCount()
@@ -237,7 +237,7 @@ class HomeService extends BaseService
     }
 
     /**
-     * 商户饼图统计
+     * 货主饼图统计
      * @return array
      */
     public function merchantTotalCount()

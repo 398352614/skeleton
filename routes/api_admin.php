@@ -57,9 +57,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/last-month', 'HomeController@lastMonthCount')->name('statistics.home');
         //时间段统计
         Route::get('/period', 'HomeController@periodCount')->name('statistics.home');
-        //商户统计详情
+        //货主统计详情
         Route::get('/merchant', 'HomeController@merchantCount')->name('statistics.home');
-        //商户统计概览
+        //货主统计概览
         Route::get('/merchant-total', 'HomeController@merchantTotalCount')->name('statistics.home');
         //今日概览
         Route::get('/today-overview', 'HomeController@todayOverview')->name('statistics.home');
@@ -429,9 +429,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'LineController@postcodeDestroy')->name('line.post-code-destroy');
         //导入
         Route::post('/import', 'LineController@postcodeLineImport')->name('line.post-code-import');
-        //商户线路范围详情
+        //货主线路范围详情
         Route::get('/{id}/merchant-group-line-range', 'MerchantGroupLineRangeController@show')->name('line.post-code-merchant-config');
-        //商户线路范围修改
+        //货主线路范围修改
         Route::put('/{id}/merchant-group-line-range', 'MerchantGroupLineRangeController@createOrUpdate')->name('line.post-code-merchant-config');
         /****************************************区域线路**************************************/
         //列表查询
@@ -625,7 +625,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('route', 'RouteTrackingController@route')->name('route-tracking.route');
     });
 
-    //商户管理
+    //货主管理
     Route::prefix('merchant')->group(function () {
         //列表查询
         Route::get('/', 'MerchantController@index')->name('merchant.index');
@@ -643,11 +643,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/status', 'MerchantController@status')->name('merchant.status');
         //批量启用禁用
         Route::put('/status', 'MerchantController@statusByList')->name('merchant.status');
-        //商户导出
+        //货主导出
         Route::get('/excel', 'MerchantController@excel')->name('merchant.excel');
     });
 
-    //商户授权API管理
+    //货主授权API管理
     Route::prefix('merchant-api')->group(function () {
         //列表查询
         Route::get('/', 'MerchantApiController@index')->name('merchant-api.index');
@@ -663,7 +663,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/status', 'MerchantApiController@status')->name('merchant-api.status');
     });
 
-    //商户组管理
+    //货主组管理
     Route::prefix('merchant-group')->group(function () {
         //列表查询
         Route::get('/', 'MerchantGroupController@index')->name('merchant-group.index');
@@ -783,9 +783,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'HolidayController@destroy')->name('holiday.destroy');
         //启用/禁用
         Route::put('/{id}/status', 'HolidayController@status')->name('holiday.status');
-        //获取商户列表
+        //获取货主列表
         Route::get('/merchant', 'HolidayController@merchantIndex')->name('holiday.merchant-index');
-        //新增商户列表
+        //新增货主列表
         Route::post('/{id}/merchant', 'HolidayController@storeMerchantList')->name('holiday.merchant-store');
 
         Route::delete('/{id}/merchant', 'HolidayController@destroyMerchant')->name('holiday.merchant-destroy');

@@ -151,7 +151,7 @@ class BaseLineService extends BaseService
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);
-        //若存在商户ID，则加
+        //若存在货主ID，则加
         if (!empty($merchantId)) {
             $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId], ['id', 'merchant_group_id'], false);
             if (empty($merchant)) return [];
@@ -204,14 +204,18 @@ class BaseLineService extends BaseService
         $country = CompanyTrait::getCountry();
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
             $country = BaseConstService::POSTCODE_COUNTRY_BE;
-        }        //获取邮编数字部分
+        }
+        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5){
+            $country = BaseConstService::POSTCODE_COUNTRY_DE;
+        }
+        //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
         $query = $this->getMerchantGroupLineRangeService()->query
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);
-        //若存在商户ID，则加
+        //若存在货主ID，则加
         if (!empty($merchantId)) {
             $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId], ['id', 'merchant_group_id'], false);
             if (empty($merchant)) return [];

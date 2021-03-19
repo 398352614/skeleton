@@ -139,7 +139,7 @@ class CurlClient
     }
 
     /**
-     * 商户接口请求
+     * 货主接口请求
      * @param $merchant
      * @param $params
      * @param $type

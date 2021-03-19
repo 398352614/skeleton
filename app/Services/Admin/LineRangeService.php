@@ -68,7 +68,7 @@ class LineRangeService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围新增失败');
         }
-        //删除商户线路范围
+        //删除货主线路范围
         $this->getMerchantGroupLineRangeService()->storeRangeList($lineId, $rangeList, $workdayList, $country);
     }
 

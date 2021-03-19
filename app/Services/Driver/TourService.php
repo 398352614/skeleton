@@ -988,10 +988,10 @@ class TourService extends BaseService
         foreach ($params as $k => $v) {
             $merchant = collect($merchantList)->where('id', $v['merchant_id'])->first();
             if (empty($merchant)) {
-                throw new BusinessLogicException('商户不存在，无法顺带包裹');
+                throw new BusinessLogicException('货主不存在，无法顺带包裹');
             }
             if ($merchant['additional_status'] == BaseConstService::MERCHANT_ADDITIONAL_STATUS_2) {
-                throw new BusinessLogicException('商户未开启顺带包裹服务');
+                throw new BusinessLogicException('货主未开启顺带包裹服务');
             }
             if (!empty($v['sticker_no'])) {
                 $data[$k]['sticker_amount'] = $stickerAmount;
