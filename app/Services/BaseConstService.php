@@ -20,7 +20,9 @@ class BaseConstService
     const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
     const STOCK_EXCEPTION = 'SE';
-    const RECHARGE = '';
+    const RECHARGE = 'RC';
+    const CAR_ACCIDENT = 'CA';
+    const CAR_MAINTAIN = 'CM';
 
     const CANCEL_TIMES = 3;
 
@@ -79,6 +81,10 @@ class BaseConstService
     const STOCK_EXCEPTION_NO_TYPE = 'stock_exception';
     //充值单号类型
     const RECHARGE_NO_TYPE = 'recharge';
+    //事故处理编号类型
+    const CAR_ACCIDENT_NO_TYPE = 'accident';
+    //车辆维护流水号
+    const CAR_MAINTAIN_NO_TYPE = 'maintain';
 
     //初始密码
     const INITIAL_PASSWORD = '12345678';
@@ -298,6 +304,41 @@ class BaseConstService
     const CAR_OWNER_SHIP_TYPE_1 = 1;
     const CAR_OWNER_SHIP_TYPE_2 = 2;
     const CAR_OWNER_SHIP_TYPE_3 = 3;
+
+    //车辆长度
+    const CAR_LENGTH_TYPE_1 = 1;
+    const CAR_LENGTH_TYPE_2 = 2;
+    const CAR_LENGTH_TYPE_3 = 3;
+    const CAR_LENGTH_TYPE_4 = 4;
+    const CAR_LENGTH_TYPE_5 = 5;
+    const CAR_LENGTH_TYPE_6 = 6;
+    const CAR_LENGTH_TYPE_7 = 7;
+    const CAR_LENGTH_TYPE_8 = 8;
+    const CAR_LENGTH_TYPE_9 = 9;
+    const CAR_LENGTH_TYPE_10 = 10;
+    const CAR_LENGTH_TYPE_11 = 11;
+    const CAR_LENGTH_TYPE_12 = 12;
+    const CAR_LENGTH_TYPE_13 = 13;
+    const CAR_LENGTH_TYPE_14 = 14;
+    const CAR_LENGTH_TYPE_15 = 15;
+    const CAR_LENGTH_TYPE_16 = 16;
+    const CAR_LENGTH_TYPE_17 = 17;
+    const CAR_LENGTH_TYPE_18 = 18;
+
+    //车辆车型
+    const CAR_MODEL_TYPE_1 = 1;
+    const CAR_MODEL_TYPE_2 = 2;
+    const CAR_MODEL_TYPE_3 = 3;
+    const CAR_MODEL_TYPE_4 = 4;
+    const CAR_MODEL_TYPE_5 = 5;
+    const CAR_MODEL_TYPE_6 = 6;
+    const CAR_MODEL_TYPE_7 = 7;
+    const CAR_MODEL_TYPE_8 = 8;
+    const CAR_MODEL_TYPE_9 = 9;
+    const CAR_MODEL_TYPE_10 = 10;
+    const CAR_MODEL_TYPE_11 = 11;
+    const CAR_MODEL_TYPE_12 = 12;
+    const CAR_MODEL_TYPE_13 = 13;
 
     //修理自理1-是2-否
     const CAR_REPAIR_1 = 1;

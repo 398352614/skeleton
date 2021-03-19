@@ -727,8 +727,17 @@ return [
         "is_show" => "是否显示",
         "retry_times" => "重试次数",
         "operator_id" => "操作人ID",
-
-
+        "driver_fullname"=>"司机姓名",
+        "deal_type"=>"处理方式：",
+        "accident_location"=>"事故地点",
+        "accident_date"=>"事故时间",
+        "accident_duty"=>"主被动,责任方：",
+        "accident_description"=>"事故描述",
+        "accident_picture"=>"事故照片",
+        "accident_no"=>"事故处理单号",
+        "insurance_indemnity"=>"保险是否赔付：",
+        "insurance_payment"=>"保险垫付款",
+        "insurance_description"=>"赔付描述",
         "is_admin" => "是否是管理员组",
         "pickup_min_count" => "派件最大订单量",
         "pie_min_count" => "派件最大订单量",
@@ -740,3 +749,4 @@ return [
         "second_content" => "附带内容",
     ]
 ];
+
