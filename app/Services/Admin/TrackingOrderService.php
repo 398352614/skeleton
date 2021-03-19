@@ -677,7 +677,7 @@ class TrackingOrderService extends BaseService
      */
     public function getAbleDateList($id)
     {
-        $expired = BaseConstService::YES;
+        $expired = BaseConstService::NO;
         if ($id < 0) {
             $dbOrder = $this->getOrderService()->getInfo(['id' => abs($id)], ['*'], false);
             if (empty($dbOrder)) {
@@ -688,7 +688,7 @@ class TrackingOrderService extends BaseService
             if (!empty($trackingOrderPackageList)) {
                 foreach ($trackingOrderPackageList as $k => $v) {
                     if ($v['expiration_status'] === BaseConstService::EXPIRATION_STATUS_2) {
-                        $expired = BaseConstService::NO;
+                        $expired = BaseConstService::YES;
                     }
                     break;
                 }
