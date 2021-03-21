@@ -36,8 +36,8 @@ class HomeService extends BaseService
         $batch = $this->getBatchService()->count(['execution_date' => $date]);
         $exceptionTrackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
         $trackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date]);
-        $exceptionPackage = $this->getStockExceptionService()->count(['execution_date' => $date]);
-        $package = $this->getStockExceptionService()->count(['execution_date' => $date]);
+        $exceptionPackage = $this->getStockExceptionService()->count(['created_at' => ['between', [today()->format('Y-m-d h:i:s'), today()->addDay()->format('Y-m-d h:i:s')]]]);
+        $package = $this->getPackageService()->count(['execution_date' => $date]);
         $totalOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]]]);
         $pickupOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_1]);
         $pieOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_2]);
@@ -55,7 +55,7 @@ class HomeService extends BaseService
             'exception_batch_' => $exceptionBatch,
             'batch' => $batch,
             'exception_tracking_order' => $exceptionTrackingOrder,
-            'tracking_order'=>$trackingOrder,
+            'tracking_order' => $trackingOrder,
             'exception_package' => $exceptionPackage,
             'package' => $package,
 
@@ -216,9 +216,9 @@ class HomeService extends BaseService
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['total_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id']]);
-            //$data[$k]['pickup_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_1]);
-            //$data[$k]['pie_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_2]);
-            //$data[$k]['pickup_pie_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_3]);
+            $data[$k]['pickup_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_1]);
+            $data[$k]['pie_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_2]);
+            $data[$k]['pickup_pie_order'] = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'merchant_id' => $v['id'], 'type' => BaseConstService::ORDER_TYPE_3]);
             $data[$k]['cancel_order'] = parent::count(['status' => BaseConstService::ORDER_STATUS_4, 'merchant_id' => $v['id']]);
             $data[$k]['additional_package'] = DB::table('additional_package')->where('company_id', auth()->user()->company_id)->where('merchant_id', $v['id'])->count();
             $data[$k]['total_recharge'] = $this->getRechargeStatisticsService()->sum('total_recharge_amount', ['merchant_id' => $v['id']]);
