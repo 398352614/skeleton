@@ -33,7 +33,7 @@ class HomeService extends BaseService
         $takingTour = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_4]);
         $doneTour = $this->getTourService()->count(['execution_date' => $date, 'status' => BaseConstService::TOUR_STATUS_5]);
         $exceptionBatch = $this->getBatchService()->count(['execution_date' => $date, 'exception_label' => BaseConstService::BATCH_EXCEPTION_2]);
-        $batch = $this->getBatchService()->count(['execution_date' => $date);
+        $batch = $this->getBatchService()->count(['execution_date' => $date]);
         $exceptionTrackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
         $trackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date]);
         $exceptionPackage = $this->getStockExceptionService()->count(['execution_date' => $date]);
