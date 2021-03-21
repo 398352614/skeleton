@@ -294,6 +294,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/', 'CarMaintainController@index')->name('car-maintain.index');
         //车辆维护新增
         Route::post('/', 'CarMaintainController@store')->name('car-maintain.store');
+        //批量删除
+        Route::delete('/list', 'CarMaintainController@destroyAll')->name('car-maintain.destroy');
+        //批量收票
+        Route::put('/ticket', 'CarMaintainController@ticketAll')->name('car-maintain.ticket');
     });
 
     //设备管理

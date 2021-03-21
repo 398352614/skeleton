@@ -16,6 +16,7 @@ use App\Http\Controllers\BaseController;
 use App\Services\Admin\CarMaintainService;
 
 /**
+ * 车辆维修保养
  * Class CarMaintainController
  * @package App\Http\Controllers\Api\Admin
  */
@@ -45,5 +46,21 @@ class CarMaintainController extends BaseController
     public function store()
     {
         return $this->service->create($this->data);
+    }
+
+    /**
+     * 批量删除
+     */
+    public function destroyAll()
+    {
+        return $this->service->destroyAll($this->data['id_list']);
+    }
+
+    /**
+     * 批量收票
+     */
+    public function ticketAll()
+    {
+        return $this->service->ticketAll($this->data['id_list']);
     }
 }

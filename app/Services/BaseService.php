@@ -28,7 +28,7 @@ class BaseService
     public $query;
 
     /**
-     * @var BaseModel
+     * @var BaseModel|Builder
      */
     public $model;
 
