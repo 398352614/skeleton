@@ -17,6 +17,7 @@ use App\Http\Controllers\BaseController;
 use App\Services\Admin\CarAccidentService;
 
 /**
+ * 车辆事故处理
  * Class CarAccident
  * @package App\Http\Controllers\Api\Admin
  */

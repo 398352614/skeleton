@@ -20,7 +20,7 @@ class AlterDriverTable extends Migration
 
     /**
      * Reverse the migrations.
-     *validation
+     *
      * @return void
      */
     public function down()

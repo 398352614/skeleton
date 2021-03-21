@@ -552,4 +552,12 @@ class BaseConstService
     const EXPIRATION_STATUS_1 = 1;
     const EXPIRATION_STATUS_2 = 2;
     const EXPIRATION_STATUS_3 = 3;
+
+    //维保类型:1-保养2-维修
+    const MAINTAIN_TYPE_1 = 1;
+    const MAINTAIN_TYPE_2 = 2;
+
+    //是否收票:1-是2-否
+    const IS_TICKET_1 = 1;
+    const IS_TICKET_2 = 2;
 }
