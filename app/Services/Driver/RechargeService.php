@@ -66,11 +66,11 @@ class RechargeService extends BaseService
     {
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'], 'status' => BaseConstService::RECHARGE_STATUS_1], ['*'], false);
         if (empty($merchant)) {
-            throw new BusinessLogicException('该商户未开启充值业务');
+            throw new BusinessLogicException('该货主未开启充值业务');
         }
         $merchantApi = MerchantApi::query()->where('merchant_id', $params['merchant_id'])->where('recharge_status', BaseConstService::MERCHANT_RECHARGE_STATUS_1)->first();
         if (empty($merchantApi['url']) || empty($merchantApi['secret']) || empty($merchantApi['key'])) {
-            throw new BusinessLogicException('该商户未开启充值业务');
+            throw new BusinessLogicException('该货主未开启充值业务');
         }
         $tour = $this->getTourService()->getInfo(['driver_id' => auth()->user()->id, 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
         if(empty($tour)){
@@ -175,11 +175,11 @@ class RechargeService extends BaseService
         $curl = new CurlClient();
         $merchant = MerchantApi::query()->where('merchant_id', $params['merchant_id'])->where('recharge_status', BaseConstService::MERCHANT_RECHARGE_STATUS_1)->first();
         if (empty($merchant)) {
-            throw new BusinessLogicException('该商户未开启充值业务');
+            throw new BusinessLogicException('该货主未开启充值业务');
         }
         $merchantApi = MerchantApi::query()->where('merchant_id', $params['merchant_id'])->where('recharge_status', BaseConstService::MERCHANT_RECHARGE_STATUS_1)->first();
         if (empty($merchantApi['url']) || empty($merchantApi['secret']) || empty($merchantApi['key'])) {
-            throw new BusinessLogicException('该商户未开启充值业务');
+            throw new BusinessLogicException('该货主未开启充值业务');
         }
         $res = $curl->merchantPost($merchant, $data);
         Log::info('返回值', $res);

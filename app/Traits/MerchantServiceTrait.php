@@ -52,7 +52,7 @@ Trait MerchantServiceTrait
     }
 
     /**
-     * 商户线路范围 服务
+     * 货主线路范围 服务
      * @return MerchantGroupLineRangeService
      */
     public function getMerchantGroupLineRangeService()
@@ -225,7 +225,7 @@ Trait MerchantServiceTrait
     }
 
     /**
-     * 商户组 服务
+     * 货主组 服务
      * @return MerchantGroupService
      */
     public function getMerchantGroupService()
@@ -261,7 +261,7 @@ Trait MerchantServiceTrait
     }
 
     /**
-     * 商户组线路 服务
+     * 货主组线路 服务
      * @return MerchantGroupLineService
      */
     public function getMerchantGroupLineService()

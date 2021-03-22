@@ -183,9 +183,9 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::get('getAllFeeList', 'FeeController@getAllFeeList');
     });
 
-    //商户管理
+    //货主管理
     Route::prefix('merchant')->group(function () {
-        //获取所有商户
+        //获取所有货主
         Route::get('/', 'MerchantController@index');
     });
 

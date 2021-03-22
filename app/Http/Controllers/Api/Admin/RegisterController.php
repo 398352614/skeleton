@@ -86,9 +86,9 @@ class RegisterController extends BaseController
             $this->addPermission($employee, $role);//初始化员工权限组
             $this->initCompanyOrderCodeRules($company);//初始化编号规则
             $transportPrice = $this->addTransportPrice($company);//初始化运价方案
-            $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化商户组
-            $merchant = $this->addMerchant($company, $merchantGroup);//初始化商户API
-            $this->addMerchantApi($company, $merchant);//初始化商户API
+            $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化货主组
+            $merchant = $this->addMerchant($company, $merchantGroup);//初始化货主API
+            $this->addMerchantApi($company, $merchant);//初始化货主API
             $this->addFee($company);//添加费用
             return 'true';
         });
@@ -221,7 +221,7 @@ class RegisterController extends BaseController
     }
 
     /**
-     * 初始化商户租
+     * 初始化货主租
      *
      * @param $company
      * @param $transportPrice
@@ -238,14 +238,14 @@ class RegisterController extends BaseController
             'is_default' => 1,
         ]);
         if ($merchantGroup === false) {
-            throw new BusinessLogicException('初始化商户组失败');
+            throw new BusinessLogicException('初始化货主组失败');
         }
         return $merchantGroup;
     }
 
 
     /**
-     * 初始化商户
+     * 初始化货主
      *
      * @param $company
      * @param $merchantGroup
@@ -269,14 +269,14 @@ class RegisterController extends BaseController
             'status' => 1,
         ]);
         if ($merchant === false) {
-            throw new BusinessLogicException('初始化商户失败');
+            throw new BusinessLogicException('初始化货主失败');
         }
         return $merchant;
     }
 
 
     /**
-     * 初始化商户API
+     * 初始化货主API
      *
      * @param $company
      * @param $merchant
@@ -294,7 +294,7 @@ class RegisterController extends BaseController
             'status' => 1,
         ]);
         if ($merchant === false) {
-            throw new BusinessLogicException('初始化商户API失败');
+            throw new BusinessLogicException('初始化货主API失败');
         }
     }
 

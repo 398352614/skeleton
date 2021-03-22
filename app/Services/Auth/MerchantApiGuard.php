@@ -75,11 +75,11 @@ class MerchantApiGuard implements Guard
     private function validCredentialSuccess($merchantApi)
     {
         if (intval($merchantApi->status) != BaseConstService::YES) {
-            throw new BusinessLogicException('当前商户没有API对接权限');
+            throw new BusinessLogicException('当前货主没有API对接权限');
         }
         $merchant = (new Merchant())->newQuery()->where('id', '=', $merchantApi->merchant_id)->first();
         if (empty($merchant)) {
-            throw new BusinessLogicException('商户不存在');
+            throw new BusinessLogicException('货主不存在');
         }
         $merchant->is_api = true;
         $this->user = $merchant;

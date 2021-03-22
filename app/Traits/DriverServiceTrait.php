@@ -246,7 +246,7 @@ Trait DriverServiceTrait
     }
 
     /**
-     * 商户线路范围 服务
+     * 货主线路范围 服务
      * @return MerchantGroupLineRangeService
      */
     public function getMerchantGroupLineRangeService()
@@ -292,7 +292,7 @@ Trait DriverServiceTrait
     }
 
     /**
-     * 获取商户组
+     * 获取货主组
      * @return StockExceptionService
      */
     public function getMerchantGroupService()

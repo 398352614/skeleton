@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户线路范围 服务
+ * 货主线路范围 服务
  * User: long
  * Date: 2020/8/13
  * Time: 13:46
@@ -31,14 +31,14 @@ class MerchantGroupLineService extends BaseService
     {
         foreach ($merchantGroupLineList as $k => $v) {
             if (empty($this->getMerchantGroupService()->getInfo(['id' => $v['merchant_group_id']], '*', false))) {
-                throw new BusinessLogicException('商户组不存在');
+                throw new BusinessLogicException('货主组不存在');
             }
         }
         if (collect($merchantGroupLineList)->sum('pickup_min_count') > $line['pickup_max_count']) {
-            throw new BusinessLogicException('各商户组取件最小订单量之和不得超过线路取件最大订单量');
+            throw new BusinessLogicException('各货主组取件最小订单量之和不得超过线路取件最大订单量');
         }
         if (collect($merchantGroupLineList)->sum('pie_min_count') > $line['pie_max_count']) {
-            throw new BusinessLogicException('各商户组派件最小订单量之和不得超过线路派件最大订单量');
+            throw new BusinessLogicException('各货主组派件最小订单量之和不得超过线路派件最大订单量');
         }
     }
 

@@ -7,7 +7,7 @@ use App\Traits\CountryTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
- * 商户表
+ * 货主表
  * Class Employee
  * @package App\Models
  */

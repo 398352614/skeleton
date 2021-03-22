@@ -16,7 +16,7 @@ class CreateTrackingOrderTable extends Migration
         Schema::create('tracking_order', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
-            $table->integer('merchant_id')->default(null)->nullable()->comment('商户ID');
+            $table->integer('merchant_id')->default(null)->nullable()->comment('货主ID');
             $table->string('out_user_id')->default('')->nullable()->comment('外部客户ID');
             $table->string('out_order_no', 50)->default('')->nullable()->comment('外部订单号');
             $table->string('order_no', 50)->default('')->nullable()->comment('订单号');

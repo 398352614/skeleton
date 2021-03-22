@@ -151,7 +151,7 @@ class BaseLineService extends BaseService
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);
-        //若存在商户ID，则加
+        //若存在货主ID，则加
         if (!empty($merchantId)) {
             $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId], ['id', 'merchant_group_id'], false);
             if (empty($merchant)) return [];
@@ -215,7 +215,7 @@ class BaseLineService extends BaseService
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);
-        //若存在商户ID，则加
+        //若存在货主ID，则加
         if (!empty($merchantId)) {
             $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId], ['id', 'merchant_group_id'], false);
             if (empty($merchant)) return [];

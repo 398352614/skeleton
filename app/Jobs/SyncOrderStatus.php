@@ -97,7 +97,7 @@ class SyncOrderStatus implements ShouldQueue
     }
 
     /**
-     * 获取商户信息
+     * 获取货主信息
      * @param $merchantIdList
      * @return array
      */
@@ -123,7 +123,7 @@ class SyncOrderStatus implements ShouldQueue
             $res = $this->curl->post($url, $postData);
             if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
                 app('log')->info('send notify failure');
-                Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+                Log::info('货主通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             }
         } catch (\Exception $ex) {
             Log::info(json_encode($postData, JSON_UNESCAPED_UNICODE));
@@ -142,7 +142,7 @@ class SyncOrderStatus implements ShouldQueue
         $res = $this->curl->merchantPost($merchant, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
-            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::info('货主通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('发送失败');
         }
     }

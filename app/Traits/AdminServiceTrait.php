@@ -57,7 +57,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户服务
+     * 货主服务
      * @return MerchantService
      */
     public function getMerchantService()
@@ -301,7 +301,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户api 服务
+     * 货主api 服务
      * @return MerchantApiService
      */
     public function getMerchantApiService()
@@ -310,7 +310,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户充值api 服务
+     * 货主充值api 服务
      * @return MerchantRechargeService
      */
     public function getMerchantRechargeService()
@@ -319,7 +319,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户组管理 服务
+     * 货主组管理 服务
      * @return MerchantGroupService
      */
     public function getMerchantGroupService()
@@ -431,7 +431,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户组线路服务
+     * 货主组线路服务
      * @return MerchantGroupLineService
      */
     public function getMerchantGroupLineService()

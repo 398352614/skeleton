@@ -458,19 +458,19 @@ class TransportPriceService extends BaseService
     }
 
     /**
-     * 通过商户ID获得运价方案
+     * 通过货主ID获得运价方案
      * @param $merchantId
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
     public function getTransportPriceIdByMerchantId($merchantId)
     {
-        //获取商户组
+        //获取货主组
         $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId], ['*'], false);
         if (empty($merchant)) {
-            throw new BusinessLogicException('商户不存在');
+            throw new BusinessLogicException('货主不存在');
         }
-        //获取商户组
+        //获取货主组
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $merchant['merchant_group_id']], ['*'], false);
         if (empty($merchant)) {
             return null;

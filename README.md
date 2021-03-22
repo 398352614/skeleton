@@ -19,9 +19,9 @@ laravel版本：6.18.27
 ### 4. 相关材料
   
 正式服管理员端地址：[https://tms-admin.eutechne.com](https://tms-admin.eutechne.com)  
-正式服商户端地址：[https://tms-business.eutechne.com](https://tms-business.eutechne.com)  
+正式服货主端地址：[https://tms-business.eutechne.com](https://tms-business.eutechne.com)  
 开发服管理员端地址：[https://dev-tms-admin.nle-tech.com](https://dev-tms-admin.nle-tech.com)  
-开发服商户端地址：[https://dev-tms-business.nle-tech.com](https://dev-tms-business.nle-tech.com)  
+开发服货主端地址：[https://dev-tms-business.nle-tech.com](https://dev-tms-business.nle-tech.com)  
   
 ## 二、项目部署
 ### 1.搭建环境
@@ -173,11 +173,11 @@ php artisan db:seed --class=AddressTemplateSeeder
 ## 三、使用说明
 ### 1. 项目结构
 #### 1.1 内部连接
-TMS项目后端与管理员端，商户端，司机端进行连接，其中管理员端与商户端为网页端，司机端为安卓端。  
+TMS项目后端与管理员端，货主端，司机端进行连接，其中管理员端与货主端为网页端，司机端为安卓端。  
 开发服管理员端接口地址：[https://dev-tms.nle-tech.com/api/admin](https://dev-tms.nle-tech.com/api/admin)  
 正式服管理员端接口地址：[https://tms-admin.eutechne.com/api/admin](https://tms-admin.eutechne.com/api/admin)  
-开发服商户端接口地址：[https://dev-tms.nle-tech.com/api/merchant](https://dev-tms.nle-tech.com/api/merchant)  
-正式服商户端接口地址：[https://tms-admin.eutechne.com/api/merchant](https://tms-admin.eutechne.com/api/merchant)  
+开发服货主端接口地址：[https://dev-tms.nle-tech.com/api/merchant](https://dev-tms.nle-tech.com/api/merchant)  
+正式服货主端接口地址：[https://tms-admin.eutechne.com/api/merchant](https://tms-admin.eutechne.com/api/merchant)  
 开发服司机端接口地址：[https://dev-tms.nle-tech.com/api/driver](https://dev-tms.nle-tech.com/api/driver)  
 正式服司机端接口地址：[https://tms-admin.eutechne.com/api/driver](https://tms-admin.eutechne.com/api/driver)  
 #### 1.2 业务外部连接
@@ -202,17 +202,17 @@ postcode.nl网站API地址：[https://api.postcode.nl/rest](https://api.postcode
 百度翻译文档：[https://api.fanyi.baidu.com/doc/21](https://api.fanyi.baidu.com/doc/21)
 
 ### 2. 业务流程
-本系统为SaaS平台，服务对象为运输公司、物流公司，服务内容主要为货物运输配套功能。可对接上游电商系统，也可直接面向普通个人客户。管理员端的主要功能为财务管理，公司管理，订单管理，出车管理，车队管理，配置管理。商户端主要功能为订单管理，配置管理。司机端主要功能为，任务管理，备忘录管理，第三方服务管理，包裹复核管理。管理员端是业务处理的枢纽，权限为最高权限，商户端主要为订单入口，司机端主要负责运输业务实现。
+本系统为SaaS平台，服务对象为运输公司、物流公司，服务内容主要为货物运输配套功能。可对接上游电商系统，也可直接面向普通个人客户。管理员端的主要功能为财务管理，公司管理，订单管理，出车管理，车队管理，配置管理。货主端主要功能为订单管理，配置管理。司机端主要功能为，任务管理，备忘录管理，第三方服务管理，包裹复核管理。管理员端是业务处理的枢纽，权限为最高权限，货主端主要为订单入口，司机端主要负责运输业务实现。
 #### 2.1 新建公司
 在登录页面点击注册，通过简单的信息填写便可以新建一个公司账号，但此时账号是无法进行实际使用。此时登录后会直接跳转到配置页面，在配置完整之前，其他功能是无法使用的。
 #### 2.2 配置线路
 在出车管理中，对线路进行配置，线路有较多参数，通过这些参数调整，可以控制订单自动分配线路的流向。分配好的订单会以运单的形式，成为整个系统的核心。
 #### 2.3 配置车队
 在车队管理中，新建司机和车辆，只有分配了司机与车辆的取件线路才能进行出车作业。司机端暂时没有注册功能，在管理员端注册好司机后，司机就可以在司机端登录了。
-#### 2.4 新建商户或客户
-在公司管理中，新建商户或客户，只有新建了商户或者客户后，才能以其为来源进行新增订单。
+#### 2.4 新建货主或客户
+在公司管理中，新建货主或客户，只有新建了货主或者客户后，才能以其为来源进行新增订单。
 #### 2.5 新增订单
-订单既可以通过商户端，也可以通过API或者手动添加。对于商户或者客户来说，订单是他们对于这个系统的唯一使用凭证。通过订单类型，可分为取件订单，派件订单，取派订单，不同的订单会生成不同的运单，在系统内部实际上是通过操作运单来进行作业的。取件订单会生成一个取件运单，派件订单会生成一个派件运单，取派订单会生成一个取件订单与一个派件订单。
+订单既可以通过货主端，也可以通过API或者手动添加。对于货主或者客户来说，订单是他们对于这个系统的唯一使用凭证。通过订单类型，可分为取件订单，派件订单，取派订单，不同的订单会生成不同的运单，在系统内部实际上是通过操作运单来进行作业的。取件订单会生成一个取件运单，派件订单会生成一个派件运单，取派订单会生成一个取件订单与一个派件订单。
 #### 2.6 分配取件线路
 进入取件线路管理，为取件线路分配司机和车辆，然后进入智能优化界面，自动优化或者手动优化线路，这样司机端就能获得一个系统给出的最优路径。智能优化功能是基于谷歌地图，腾讯地图API做的，本系统只根据业务进行了调用封装。
 #### 2.7 司机出库

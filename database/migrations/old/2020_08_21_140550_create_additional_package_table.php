@@ -17,7 +17,7 @@ class CreateAdditionalPackageTable extends Migration
             $table->integerIncrements('id');
 
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
-            $table->integer('merchant_id')->default(null)->nullable()->comment('商户ID');
+            $table->integer('merchant_id')->default(null)->nullable()->comment('货主ID');
             $table->string('batch_no')->default('')->nullable()->comment('站点编号');
             $table->string('package_no')->default('')->nullable()->comment('包裹编号');
             $table->date('execution_date')->default(null)->nullable()->comment('顺带日期');

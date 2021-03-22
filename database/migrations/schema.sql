@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `additional_package` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `tour_no` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '取件线路编号',
   `batch_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '站点编号',
   `package_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '包裹编号',
@@ -65,7 +65,7 @@ CREATE TABLE `additional_package` (
 CREATE TABLE `address` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `place_fullname` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '收件人姓名',
   `place_phone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '收件人电话',
   `place_country` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '收件人国家',
@@ -122,7 +122,7 @@ CREATE TABLE `api_times` (
 CREATE TABLE `batch` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'ID',
   `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT '0' COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT '0' COMMENT '货主ID',
   `batch_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '站点编号',
   `tour_no` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '取件线路编号',
   `line_id` int(11) DEFAULT NULL COMMENT '线路ID',
@@ -670,7 +670,7 @@ CREATE TABLE `line_range` (
 CREATE TABLE `material` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '订单编号',
   `tracking_order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '运单号',
   `execution_date` date DEFAULT NULL COMMENT '取派日期',
@@ -709,13 +709,13 @@ CREATE TABLE `merchant` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
   `code` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '用户编码',
-  `type` tinyint(4) DEFAULT '1' COMMENT '类型1-个人2-商户',
+  `type` tinyint(4) DEFAULT '1' COMMENT '类型1-个人2-货主',
   `name` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '名称',
   `email` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '邮箱',
   `password` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '密码',
   `country` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '国家',
   `settlement_type` tinyint(4) DEFAULT '1' COMMENT '结算方式1-票结2-日结3-月结',
-  `merchant_group_id` int(11) DEFAULT NULL COMMENT '商户组ID',
+  `merchant_group_id` int(11) DEFAULT NULL COMMENT '货主组ID',
   `contacter` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '联系人',
   `phone` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '电话',
   `address` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '联系地址',
@@ -734,7 +734,7 @@ CREATE TABLE `merchant` (
 CREATE TABLE `merchant_api` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `key` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT 'key',
   `secret` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT 'secret',
   `url` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '推送url',
@@ -777,7 +777,7 @@ CREATE TABLE `merchant_group` (
 CREATE TABLE `merchant_group_fee_config` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_group_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_group_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `fee_code` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '费用编码',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
@@ -792,7 +792,7 @@ CREATE TABLE `merchant_group_fee_config` (
 CREATE TABLE `merchant_group_line_range` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_group_id` int(11) DEFAULT '0' COMMENT '商户ID',
+  `merchant_group_id` int(11) DEFAULT '0' COMMENT '货主ID',
   `line_id` int(11) DEFAULT NULL COMMENT '线路ID',
   `post_code_start` int(11) DEFAULT NULL COMMENT '开始邮编',
   `post_code_end` int(11) DEFAULT NULL COMMENT '结束邮编',
@@ -812,7 +812,7 @@ CREATE TABLE `merchant_group_line_range` (
 CREATE TABLE `merchant_holiday` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `holiday_id` int(11) DEFAULT NULL COMMENT '放假ID',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
   `updated_at` datetime DEFAULT NULL COMMENT '修改时间'
@@ -827,7 +827,7 @@ CREATE TABLE `merchant_holiday` (
 CREATE TABLE `old_order` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'ID',
   `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '订单号',
   `execution_date` date DEFAULT NULL COMMENT '取件/派件 日期',
   `batch_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '站点编号',
@@ -893,7 +893,7 @@ CREATE TABLE `old_order` (
 CREATE TABLE `old_package` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `tour_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '取件线路编号',
   `batch_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '站点编号',
   `order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '订单编号',
@@ -928,7 +928,7 @@ CREATE TABLE `old_package` (
 CREATE TABLE `order` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'ID',
   `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '订单号',
   `tracking_order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '运单号',
   `execution_date` date DEFAULT NULL COMMENT '取件/派件 日期',
@@ -1064,7 +1064,7 @@ CREATE TABLE `order_operation` (
 CREATE TABLE `order_trail` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'ID',
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '订单号',
   `content` varchar(250) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '内容',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -1080,7 +1080,7 @@ CREATE TABLE `order_trail` (
 CREATE TABLE `package` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '订单编号',
   `tracking_order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '运单号',
   `execution_date` date DEFAULT NULL COMMENT '取派日期',
@@ -1146,7 +1146,7 @@ CREATE TABLE `print_template` (
 CREATE TABLE `recharge` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `recharge_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '充值单号',
   `tour_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '取件线路编号',
   `execution_date` date DEFAULT NULL COMMENT '取派日期',
@@ -1182,7 +1182,7 @@ CREATE TABLE `recharge` (
 CREATE TABLE `recharge_statistics` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `tour_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '取件线路编号',
   `execution_date` date DEFAULT NULL COMMENT '取派日期',
   `line_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '线路ID',
@@ -1365,7 +1365,7 @@ CREATE TABLE `test` (
 CREATE TABLE `third_party_log` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '订单号',
   `content` varchar(10000) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '内容',
   `created_at` datetime DEFAULT NULL COMMENT '创建时间',
@@ -1381,7 +1381,7 @@ CREATE TABLE `third_party_log` (
 CREATE TABLE `tour` (
   `id` int(11) UNSIGNED NOT NULL COMMENT 'ID',
   `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT '0' COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT '0' COMMENT '货主ID',
   `tour_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '取件线路编号',
   `line_id` int(11) DEFAULT NULL COMMENT '线路ID',
   `line_name` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '线路名',
@@ -1530,7 +1530,7 @@ CREATE TABLE `tour_material` (
 CREATE TABLE `tracking_order` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `out_user_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '外部客户ID',
   `out_order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '外部订单号',
   `order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '订单号',
@@ -1587,7 +1587,7 @@ CREATE TABLE `tracking_order` (
 CREATE TABLE `tracking_order_material` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `tour_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '取件线路编号',
   `batch_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '站点编号',
   `tracking_order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '运单号',
@@ -1613,7 +1613,7 @@ CREATE TABLE `tracking_order_material` (
 CREATE TABLE `tracking_order_package` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `tour_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '取件线路编号',
   `batch_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '站点编号',
   `tracking_order_no` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '运单编号',
@@ -1649,7 +1649,7 @@ CREATE TABLE `tracking_order_package` (
 CREATE TABLE `tracking_order_trail` (
   `id` int(10) UNSIGNED NOT NULL,
   `company_id` int(11) DEFAULT NULL COMMENT '公司ID',
-  `merchant_id` int(11) DEFAULT NULL COMMENT '商户ID',
+  `merchant_id` int(11) DEFAULT NULL COMMENT '货主ID',
   `order_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '订单号',
   `tracking_order_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '订单号',
   `content` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '内容',
