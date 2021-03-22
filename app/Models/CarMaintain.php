@@ -12,6 +12,9 @@
 
 namespace App\Models;
 
+
+use App\Traits\ConstTranslateTrait;
+
 /**
  * Class CarMaintain
  * @package App\Models
@@ -89,4 +92,22 @@ class CarMaintain extends BaseModel
         'created_at',
         'updated_at',
     ];
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function getMaintainTypeAttribute($value)
+    {
+        return ConstTranslateTrait::carMaintainType($value);
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function getIsTicketAttribute($value)
+    {
+        return ConstTranslateTrait::carMaintainTicket($value);
+    }
 }

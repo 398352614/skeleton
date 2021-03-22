@@ -560,4 +560,16 @@ class BaseConstService
     //是否收票:1-是2-否
     const IS_TICKET_1 = 1;
     const IS_TICKET_2 = 2;
+
+    //处理方式：1-保险2-公司赔付
+    const CAR_ACCIDENT_DEAL_TYPE_1 = 1;
+    const CAR_ACCIDENT_DEAL_TYPE_2 = 2;
+
+    //主被动,责任方：1-主动2-被动
+    const CAR_ACCIDENT_DUTY_TYPE_1 = 1;
+    const CAR_ACCIDENT_DUTY_TYPE_2 = 2;
+
+    //保险是否赔付：1-是2-否
+    const CAR_ACCIDENT_INS_PAY_TYPE_1 = 1;
+    const CAR_ACCIDENT_INS_PAY_TYPE_2 = 2;
 }

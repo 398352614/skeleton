@@ -75,6 +75,11 @@ use Illuminate\Support\Facades\App;
  * @method static operationList($args = null)
  * @method static transportPriceTypeList($args = null)
  * @method static expirationStatusList($args = null)
+ * @method static carMaintainType($args = null)
+ * @method static carMaintainTicket($args = null)
+ * @method static carAccidentDealType($args = null)
+ * @method static carAccidentDuty($args = null)
+ * @method static carAccidentInsPay($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -539,6 +544,31 @@ trait ConstTranslateTrait
         BaseConstService::EXPIRATION_STATUS_1 => '未超期',
         BaseConstService::EXPIRATION_STATUS_2 => '已超期',
         BaseConstService::EXPIRATION_STATUS_3 => '超期已处理',
+    ];
+
+    public static $carMaintainType = [
+        BaseConstService::MAINTAIN_TYPE_1 => '保养',
+        BaseConstService::MAINTAIN_TYPE_2 => '维修',
+    ];
+
+    public static $carMaintainTicket = [
+        BaseConstService::IS_TICKET_1 => '已收票',
+        BaseConstService::IS_TICKET_2 => '未收票',
+    ];
+
+    public static $carAccidentDealType = [
+        BaseConstService::CAR_ACCIDENT_DEAL_TYPE_1 => '保险',
+        BaseConstService::CAR_ACCIDENT_DEAL_TYPE_2 => '公司赔付',
+    ];
+
+    public static $carAccidentDuty = [
+        BaseConstService::CAR_ACCIDENT_DUTY_TYPE_1 => '主动',
+        BaseConstService::CAR_ACCIDENT_DUTY_TYPE_2 => '被动',
+    ];
+
+    public static $carAccidentInsPay = [
+        BaseConstService::CAR_ACCIDENT_INS_PAY_TYPE_1 => '是',
+        BaseConstService::CAR_ACCIDENT_INS_PAY_TYPE_2 => '否',
     ];
 
     /**

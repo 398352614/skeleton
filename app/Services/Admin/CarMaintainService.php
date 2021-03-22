@@ -12,10 +12,11 @@
 
 namespace App\Services\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\CarMaintainResource;
 use App\Models\CarMaintain;
 use App\Services\BaseConstService;
-use phpDocumentor\Reflection\Types\This;
+use App\Traits\ExportTrait;
 
 /**
  * Class CarMaintainService
@@ -23,6 +24,8 @@ use phpDocumentor\Reflection\Types\This;
  */
 class CarMaintainService extends BaseService
 {
+    use ExportTrait;
+
     /**
      * @var array
      */
@@ -32,6 +35,21 @@ class CarMaintainService extends BaseService
         'is_ticket' => ['=', 'is_ticket'],
         'maintain_factory' => ['=', 'maintain_factory'],
         'maintain_date' => ['between', ['begin_date', 'end_date']],
+    ];
+
+    /**
+     * 导出 Excel 头部
+     * @var string[]
+     */
+    public $exportExcelHeader = [
+        'maintain_no',
+        'car_no',
+        'maintain_type',
+        'distance',
+        'maintain_price',
+        'is_ticket',
+        'maintain_date',
+        'maintain_factory'
     ];
 
     /**
@@ -100,5 +118,31 @@ class CarMaintainService extends BaseService
             ->delete();
 
         $item->delete();
+    }
+
+    /**
+     * 导出 excel
+     * @throws BusinessLogicException
+     */
+    public function exportExcel()
+    {
+        $data = $this->setFilter()->getList();
+
+        if ($data->isEmpty()) {
+            throw new BusinessLogicException('数据不存在');
+        }
+
+        $cellData = [];
+        foreach ($data as $v) {
+            $cellData[] = array_only_fields_sort($v, $this->exportExcelHeader);
+        }
+        if (empty($cellData)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+
+        $dir = 'carMaintainOut';
+        $name = date('YmdHis') . auth()->user()->id;
+
+        return $this->excelExport($name, $this->exportExcelHeader, $cellData, $dir);
     }
 }

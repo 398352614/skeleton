@@ -25,7 +25,7 @@ return [
         "expect_pickup_quantity" => "取件数量",
         "expect_pie_quantity" => "派件数量",
         "express_first_no_one" => "快递单号1",
-        "express_first_no_two" => "快递单号2"
+        "express_first_no_two" => "快递单号2",
     ],
 
     "order" => [
@@ -118,7 +118,7 @@ return [
         'out_order_no' => "外部订单号",
         'mask_code' => "掩码",
         'material_code_list' => '材料代码',
-        'material_expect_quantity_list' => '材料数量'
+        'material_expect_quantity_list' => '材料数量',
     ],
 
     "carDistance" => [
@@ -128,7 +128,7 @@ return [
         'begin_distance' => '出库里程数',
         'end_distance' => '回库里程数',
         'expect_distance' => '预计里程数',
-        'handmade_actual_distance' => '实际里程数'
+        'handmade_actual_distance' => '实际里程数',
     ],
 
     'batchCount' => [
@@ -183,5 +183,16 @@ return [
         'sticker_amount' => '贴单费',
         'settlement_amount' => '运费',
         'created_at' => '创建时间',
-        ],
-    ];
+    ],
+
+    "carMaintainOut" => [
+        'maintain_no' => '流水号',
+        'car_no' => '车牌号',
+        'maintain_type' => '维保类型',
+        'distance' => '车辆行驶里程',
+        'maintain_price' => '费用总计',
+        'is_ticket' => '收票状态',
+        'maintain_date' => '维保时间',
+        'maintain_factory' => '维修厂名称'
+    ]
+];
