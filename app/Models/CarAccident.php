@@ -3,6 +3,8 @@
 namespace App\Models;
 
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 车辆事故表
  * Class CarAccident
@@ -88,4 +90,31 @@ class CarAccident extends BaseModel
         'updated_at',
         'operator',
     ];
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function getDealTypeAttribute($value)
+    {
+        return ConstTranslateTrait::carAccidentDealType($value);
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function getAccidentDutyAttribute($value)
+    {
+        return ConstTranslateTrait::carAccidentDuty($value);
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function getInsuranceIndemnityAttribute($value)
+    {
+        return ConstTranslateTrait::carAccidentInsPay($value);
+    }
 }

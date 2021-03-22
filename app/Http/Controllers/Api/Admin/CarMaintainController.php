@@ -33,6 +33,7 @@ class CarMaintainController extends BaseController
     }
 
     /**
+     * 列表
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function index()
@@ -41,6 +42,7 @@ class CarMaintainController extends BaseController
     }
 
     /**
+     * 新增
      * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
      */
     public function store()
@@ -49,7 +51,17 @@ class CarMaintainController extends BaseController
     }
 
     /**
+     * 导出 excel
+     * @return mixed
+     */
+    public function export()
+    {
+       return $this->service->exportExcel();
+    }
+
+    /**
      * 批量删除
+     * @return mixed
      */
     public function destroyAll()
     {
@@ -58,6 +70,7 @@ class CarMaintainController extends BaseController
 
     /**
      * 批量收票
+     * @return mixed
      */
     public function ticketAll()
     {
