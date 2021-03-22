@@ -117,13 +117,23 @@ class StockService extends BaseService
         }
         //包裹分拣
         $this->pickOut($package, $tour, $trackingOrder);
-        return [
-            'line_id' => $tour['line_id'] ?? '',
-            'line_name' => $tour['line_name'] ?? '',
-            'execution_date' => $executionDate,
-            'expiration_date' => $package['expiration_date'] ?? '',
-            'feature_logo' => $package['feature_logo'],
-        ];
+        if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
+            return [
+                'line_id' => $tour['line_id'] ?? '',
+                'line_name' => $tour['line_name'] ?? '',
+                'execution_date' => $executionDate,
+                'feature_logo' => $package['feature_logo'],
+                'expiration_date' => $package['expiration_date'] ?? '',
+            ];
+        } else {
+            return [
+                'line_id' => $tour['line_id'] ?? '',
+                'line_name' => $tour['line_name'] ?? '',
+                'execution_date' => $executionDate,
+                'expiration_date' => '',
+                'feature_logo' => $package['feature_logo'],
+            ];
+        }
     }
 
 
