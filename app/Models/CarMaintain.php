@@ -100,7 +100,7 @@ class CarMaintain extends BaseModel
      */
     public function getMaintainTypeAttribute($value): string
     {
-        return is_null($value) ? '' : ConstTranslateTrait::carMaintainType($value);
+        return empty($value) ? '' : ConstTranslateTrait::carMaintainType($value);
     }
 
     /**
@@ -109,6 +109,6 @@ class CarMaintain extends BaseModel
      */
     public function getIsTicketAttribute($value): string
     {
-        return is_null($value) ? '' : ConstTranslateTrait::carMaintainTicket($value);
+        return empty($value) ? '' : ConstTranslateTrait::carMaintainTicket($value);
     }
 }

@@ -97,7 +97,7 @@ class CarAccident extends BaseModel
      */
     public function getDealTypeAttribute($value): string
     {
-        return is_null($value) ? '' : ConstTranslateTrait::carAccidentDealType($value);
+        return empty($value) ? '' : ConstTranslateTrait::carAccidentDealType($value);
     }
 
     /**
@@ -106,7 +106,7 @@ class CarAccident extends BaseModel
      */
     public function getAccidentDutyAttribute($value): string
     {
-        return is_null($value) ? '' : ConstTranslateTrait::carAccidentDuty($value);
+        return empty($value) ? '' : ConstTranslateTrait::carAccidentDuty($value);
     }
 
     /**
@@ -115,6 +115,6 @@ class CarAccident extends BaseModel
      */
     public function getInsuranceIndemnityAttribute($value): string
     {
-        return is_null($value) ? '' : ConstTranslateTrait::carAccidentInsPay($value);
+        return empty($value) ? '' : ConstTranslateTrait::carAccidentInsPay($value);
     }
 }
