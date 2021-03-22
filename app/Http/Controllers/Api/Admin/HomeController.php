@@ -123,8 +123,20 @@ class HomeController extends BaseController
         return $this->service->orderAnalysis();
     }
 
+    /**
+     * 预约任务
+     * @return array
+     */
     public function reservation()
     {
         return $this->service->reservation();
+    }
+
+    /**
+     * 流程图
+     */
+    public function flow()
+    {
+        return $this->service->flow();
     }
 }

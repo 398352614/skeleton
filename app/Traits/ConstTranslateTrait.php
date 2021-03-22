@@ -108,8 +108,35 @@ trait ConstTranslateTrait
         BaseConstService::SHORT_CUT_TOUR_DISPATCH => '智能调度',
     ];
 
+    //快捷方式列表
+    public static $flowList = [
+        BaseConstService::FLOW_ORDER_STORE => '手动录单',
+        BaseConstService::FLOW_MERCHANT_API_INDEX => 'API对接',
+        BaseConstService::FLOW_ORDER_INDEX => '订单管理',
+        BaseConstService::FLOW_PACKAGE_INDEX => '包裹管理',
+        BaseConstService::FLOW_MATERIAL_INDEX => '材料管理',
+        BaseConstService::FLOW_TRACKING_ORDER_INDEX => '运单管理',
+        BaseConstService::FLOW_BATCH_INDEX => '站点管理',
+        BaseConstService::FLOW_TOUR_INDEX => '任务管理',
+        BaseConstService::FLOW_TOUR_INTELLIGENT_SCHEDULING => '智能调度',
+        BaseConstService::FLOW_DRIVER_INDEX => '司机管理',
+        BaseConstService::FLOW_CAR_INDEX => '车辆管理',
+        BaseConstService::FLOW_CAR_MANAGEMENT_INDEX => '智能管车'
+    ];
+
     //快捷方式路由列表(前端需要)
     public static $shortCutRouteList = [
+        BaseConstService::SHORT_CUT_ORDER_STORE => 'orderAdd',
+        BaseConstService::SHORT_CUT_ORDER_INDEX => 'OrderList',
+        BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => 'LinePlanningPostCode',
+        BaseConstService::SHORT_CUT_TRACKING_INDEX => 'WaybillManagement',
+        BaseConstService::SHORT_CUT_BATCH_INDEX => 'stationList',
+        BaseConstService::SHORT_CUT_TOUR_INDEX => 'lineTask',
+        BaseConstService::SHORT_CUT_TOUR_DISPATCH => 'intelligentDispatch',
+    ];
+
+    //流程图路由列表(前端需要)
+    public static $flowRouteList = [
         BaseConstService::SHORT_CUT_ORDER_STORE => 'orderAdd',
         BaseConstService::SHORT_CUT_ORDER_INDEX => 'OrderList',
         BaseConstService::SHORT_CUT_LINE_POST_CODE_INDEX => 'LinePlanningPostCode',

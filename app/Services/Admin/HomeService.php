@@ -297,6 +297,27 @@ class HomeService extends BaseService
         return $data;
     }
 
+    public function flow()
+    {
+        $flowList = ConstTranslateTrait::formatList(ConstTranslateTrait::$flowList);
+        $permissionList = auth()->user()->getAllPermissions()->filter(function ($permission, $key) {
+            return ($permission['type'] == 2);
+        })->keyBy('route_as')->toArray();
+        if (empty($permissionList)) return $flowList;
+        foreach ($flowList as $k=>$v)
+        {
+            if(!empty($permissionList[$v['id']])){
+                $flowList[$k]['permission']=BaseConstService::YES;
+            }
+        }
+        $flowList = array_create_index($flowList, 'id');
+        $flowRouteList = ConstTranslateTrait::$flowRouteList;
+        foreach ($flowList as &$shortCut) {
+            $shortCut['route'] = $flowRouteList[$shortCut['id']] ?? '';
+        }
+        return array_values($flowList);
+    }
+
     /**
      * 获取快捷方式列表
      * @return array

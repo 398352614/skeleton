@@ -48,6 +48,22 @@ class BaseConstService
     const SHORT_CUT_TOUR_INDEX = 'tour.index';
     const SHORT_CUT_TOUR_DISPATCH = 'tour.intelligent-scheduling';
 
+    //流程图
+    const FLOW_ORDER_STORE = 'order.store';
+    const FLOW_MERCHANT_API_INDEX = 'merchant-api.index';
+    const FLOW_ORDER_INDEX = 'order.index';
+    const FLOW_PACKAGE_INDEX = 'package.index';
+    const FLOW_MATERIAL_INDEX = 'material.index';
+    const FLOW_TRACKING_ORDER_INDEX = 'tracking-order.index';
+    const FLOW_BATCH_INDEX = 'batch.index';
+    const FLOW_TOUR_INDEX = 'tour.index';
+    const FLOW_TOUR_INTELLIGENT_SCHEDULING = 'tour.intelligent-scheduling';
+    const FLOW_DRIVER_INDEX = 'driver.index';
+    const FLOW_CAR_INDEX = 'car.index';
+    const FLOW_CAR_MANAGEMENT_INDEX = 'car-management.index';
+
+
+
     //是否需要验证
     const IS_AUTH_1 = 1;
     const IS_AUTH_2 = 2;
