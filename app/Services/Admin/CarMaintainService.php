@@ -115,7 +115,6 @@ class CarMaintainService extends BaseService
         $this->getCarMaintainDetailService()
             ->query
             ->where('maintain_no', $item->maintain_no)
-            ->withoutGlobalScopes()
             ->delete();
 
         $item->delete();
