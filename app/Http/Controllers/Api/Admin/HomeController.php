@@ -122,4 +122,9 @@ class HomeController extends BaseController
     {
         return $this->service->orderAnalysis();
     }
+
+    public function reservation()
+    {
+        return $this->service->reservation();
+    }
 }

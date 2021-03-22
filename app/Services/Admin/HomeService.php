@@ -8,6 +8,7 @@ use App\Models\Tour;
 use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use WebSocket\Base;
 
@@ -36,7 +37,7 @@ class HomeService extends BaseService
         $batch = $this->getBatchService()->count(['execution_date' => $date]);
         $exceptionTrackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date, 'exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
         $trackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date]);
-        $exceptionPackage = $this->getStockExceptionService()->count(['created_at' => ['between', [today()->format('Y-m-d h:i:s'), today()->addDay()->format('Y-m-d h:i:s')]]]);
+        $exceptionPackage = $this->getStockExceptionService()->count(['created_at' => ['between', [today()->format('Y-m-d H:i:s'), today()->addDay()->format('Y-m-d h:i:s')]]]);
         $package = $this->getPackageService()->count(['execution_date' => $date]);
         $totalOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]]]);
         $pickupOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_1]);
@@ -52,14 +53,14 @@ class HomeService extends BaseService
             'taking_tour' => $takingTour,
             'done_tour' => $doneTour,
 
-            'exception_batch_' => $exceptionBatch,
+            'exception_batch' => $exceptionBatch,
             'batch' => $batch,
             'exception_tracking_order' => $exceptionTrackingOrder,
             'tracking_order' => $trackingOrder,
             'exception_package' => $exceptionPackage,
             'package' => $package,
 
-            'total_order' => $totalOrder,
+            'rder' => $totalOrder,
             'pickup_order' => $pickupOrder,
             'pie_order' => $pieOrder,
             'pickup_pie_order' => $pickupPieOrder
@@ -281,15 +282,19 @@ class HomeService extends BaseService
      */
     public function reservation()
     {
-        $dateList = [];
+        $data=[];
         $now = date('Y-m-d');
         $dateList = $this->getTrackingOrderService()->getList(['execution_date' => ['>', $now]], ['*'], false)->pluck('execution_date')->toArray();
-        foreach ($dateList as $k => $v) {
-            $dateList[$k]['tour'] = $this->getTourService()->count(['execution_date' => $v['execution_date']]);
-            $dateList[$k]['batch'] = $this->getBatchService()->count(['execution_date' => $v['execution_date']]);
-            $dateList[$k]['tracking_order'] = $this->getBatchService()->count(['execution_date' => $v['execution_date'], 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]]);
+        if (empty($dateList)) {
+            return [];
         }
-        return $dateList;
+        foreach ($dateList as $k => $v) {
+            $data[$k]['date'] = $v;
+            $data[$k]['tour'] = $this->getTourService()->count(['execution_date' => $v]);
+            $data[$k]['batch'] = $this->getBatchService()->count(['execution_date' => $v]);
+            $data[$k]['tracking_order'] = $this->getBatchService()->count(['execution_date' => $v, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]]);
+        }
+        return $data;
     }
 
     /**
