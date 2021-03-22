@@ -69,6 +69,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/order-analysis', 'HomeController@orderAnalysis')->name('statistics.home');
         //获取快捷方式列表
         Route::get('/short-cut', 'HomeController@getShortCut')->name('statistics.home');
+        //预约任务
+        Route::get('/reservation', 'HomeController@reservation')->name('statistics.home');
     });
 
     //订单管理
