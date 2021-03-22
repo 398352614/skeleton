@@ -89,6 +89,7 @@ class CarMaintain extends BaseModel
         'maintain_description',
         'maintain_picture',
         'maintain_price',
+        'operator',
         'created_at',
         'updated_at',
     ];
