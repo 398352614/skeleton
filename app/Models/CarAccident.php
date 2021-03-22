@@ -95,26 +95,26 @@ class CarAccident extends BaseModel
      * @param $value
      * @return mixed
      */
-    public function getDealTypeAttribute($value)
+    public function getDealTypeAttribute($value): string
     {
-        return ConstTranslateTrait::carAccidentDealType($value);
+        return empty($value) ? '' : ConstTranslateTrait::carAccidentDealType($value);
     }
 
     /**
      * @param $value
      * @return mixed
      */
-    public function getAccidentDutyAttribute($value)
+    public function getAccidentDutyAttribute($value): string
     {
-        return ConstTranslateTrait::carAccidentDuty($value);
+        return empty($value) ? '' : ConstTranslateTrait::carAccidentDuty($value);
     }
 
     /**
      * @param $value
      * @return mixed
      */
-    public function getInsuranceIndemnityAttribute($value)
+    public function getInsuranceIndemnityAttribute($value): string
     {
-        return ConstTranslateTrait::carAccidentInsPay($value);
+        return empty($value) ? '' : ConstTranslateTrait::carAccidentInsPay($value);
     }
 }

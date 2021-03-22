@@ -74,6 +74,7 @@ class CarMaintainDetail extends BaseModel
      */
     protected $fillable = [
         'id',
+        'company_id',
         'maintain_no',
         'maintain_name',
         'fitting_name',
