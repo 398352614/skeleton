@@ -68,7 +68,8 @@ class CarMaintainService extends BaseService
      */
     public function create($data)
     {
-        $data['maintain_no'] = $this->getOrderNoRuleService()->createCarMaintainNO();
+        $data['operator']       = auth()->user()->fullname;
+        $data['maintain_no']    = $this->getOrderNoRuleService()->createCarMaintainNO();
 
         foreach ($data['maintain_detail'] as $k => $v) {
             $v['maintain_no'] = $data['maintain_no'];
