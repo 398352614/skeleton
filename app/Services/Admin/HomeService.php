@@ -39,6 +39,8 @@ class HomeService extends BaseService
         $trackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date]);
         $exceptionPackage = $this->getStockExceptionService()->count(['created_at' => ['between', [today()->format('Y-m-d H:i:s'), today()->addDay()->format('Y-m-d h:i:s')]]]);
         $package = $this->getPackageService()->count(['execution_date' => $date]);
+
+        $monthOrder=parent::count(['execution_date' => ['between', [Carbon::today()->startOfMonth()->format('Y-m-d H:i:s'), Carbon::today()->endOfMonth()->format('Y-m-d H:i:s')]], 'status' => BaseConstService::ORDER_STATUS_3]);
         $totalOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]]]);
         $pickupOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_1]);
         $pieOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_2]);
@@ -60,7 +62,8 @@ class HomeService extends BaseService
             'exception_package' => $exceptionPackage,
             'package' => $package,
 
-            'rder' => $totalOrder,
+            'month_order'=>$monthOrder,
+            'order' => $totalOrder,
             'pickup_order' => $pickupOrder,
             'pie_order' => $pieOrder,
             'pickup_pie_order' => $pickupPieOrder
