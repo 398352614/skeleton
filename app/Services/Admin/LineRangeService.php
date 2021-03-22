@@ -83,10 +83,25 @@ class LineRangeService extends BaseService
      */
     public function checkRange($rangeList, $country, $workdayList, $id = null)
     {
+        $DEList = 0;
+        $NLList = 0;
         if (empty($rangeList)) {
             throw new BusinessLogicException('邮编范围不能为空');
         }
         $length = count($rangeList);
+        $startList = collect($rangeList)->pluck('post_code_start')->toArray();
+        $endList = collect($rangeList)->pluck('post_code_end')->toArray();
+        $list = array_merge($startList, $endList);
+        foreach ($list as $k => $v) {
+            if ($v > 9999) {
+                $DEList = $DEList + 1;
+            } else {
+                $NLList = $NLList + 1;
+            }
+            if ($DEList > 0 & $NLList > 0) {
+                throw new BusinessLogicException('您选择的邮编范围跨越多个国家，暂不支持多国家线路');
+            }
+        }
         for ($i = 0; $i <= $length - 1; $i++) {
             for ($j = $i + 1; $j <= $length - 1; $j++) {
                 if (max($rangeList[$i]['post_code_start'], $rangeList[$j]['post_code_start']) <= min($rangeList[$i]['post_code_end'], $rangeList[$j]['post_code_end'])) {
@@ -101,7 +116,6 @@ class LineRangeService extends BaseService
             }
         }
     }
-
     /**
      * 检查邮编规则是否存在
      * @param $postcodeStart

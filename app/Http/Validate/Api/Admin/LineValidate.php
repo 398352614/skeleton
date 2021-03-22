@@ -34,8 +34,8 @@ class LineValidate extends BaseValidate
         'id_list' => 'required|string|checkIdList:100',
         'date' => 'required|date',
         //邮编列表
-        'item_list.*.post_code_start' => 'required|integer|between:1000,9999',
-        'item_list.*.post_code_end' => 'required|integer|between:1000,9999|gte:item_list.*.post_code_start',
+        'item_list.*.post_code_start' => 'required|integer|between:1000,99999',
+        'item_list.*.post_code_end' => 'required|integer|between:1000,99999|gte:item_list.*.post_code_start',
         'coordinate_list' => 'required',
         //区域列表
         'coordinate_list.*.*.lat' => 'required|string|max:30',
