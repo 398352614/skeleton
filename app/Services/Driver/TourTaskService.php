@@ -183,7 +183,7 @@ class TourTaskService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $tour->toArray();
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark', 'place_post_code', 'place_house_number'], false);
         return $trackingOrderList;
     }
 
@@ -200,7 +200,7 @@ class TourTaskService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $batch = $batch->toArray();
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark','place_post_code','place_house_number'], false);
         return $trackingOrderList;
     }
 
