@@ -40,7 +40,7 @@ class HomeService extends BaseService
         $exceptionPackage = $this->getStockExceptionService()->count(['created_at' => ['between', [today()->format('Y-m-d H:i:s'), today()->addDay()->format('Y-m-d h:i:s')]]]);
         $package = $this->getPackageService()->count(['execution_date' => $date]);
 
-        $monthOrder=parent::count(['execution_date' => ['between', [Carbon::today()->startOfMonth()->format('Y-m-d H:i:s'), Carbon::today()->endOfMonth()->format('Y-m-d H:i:s')]], 'status' => BaseConstService::ORDER_STATUS_3]);
+        $monthOrder = parent::count(['execution_date' => ['between', [Carbon::today()->startOfMonth()->format('Y-m-d H:i:s'), Carbon::today()->endOfMonth()->format('Y-m-d H:i:s')]], 'status' => BaseConstService::ORDER_STATUS_3]);
         $totalOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]]]);
         $pickupOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_1]);
         $pieOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_2]);
@@ -62,7 +62,7 @@ class HomeService extends BaseService
             'exception_package' => $exceptionPackage,
             'package' => $package,
 
-            'month_order'=>$monthOrder,
+            'month_order' => $monthOrder,
             'order' => $totalOrder,
             'pickup_order' => $pickupOrder,
             'pie_order' => $pieOrder,
@@ -138,6 +138,15 @@ class HomeService extends BaseService
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['graph'] = $this->orderCount($info[$k], $no, $v['id']);
         }
+        $countInfo = [];
+        for ($i = $no; $i >= 1; $i--) {
+            $date = $day->format('Y-m-d');
+            $expectCount = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'execution_date' => $date]);
+            $countInfo[$i] = ['date' => $date, 'order' => $expectCount];
+            $day = $day->subDay();
+        }
+        $countInfo = array_values(collect(array_values($countInfo))->sortBy('date')->toArray());
+        $data[] = ['merchant_name' => '总计', 'graph' => $countInfo];
         return $data;
     }
 
@@ -170,11 +179,27 @@ class HomeService extends BaseService
     public function periodCount($params)
     {
         $data = [];
+        $periodInfo = [];
         $merchantList = $this->getMerchantService()->getList();
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['graph'] = $this->periodCountByMerchant($params, $v['id']);
         }
+        $orderList = parent::getList(['status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]], ['*'], false);
+        //总计
+        $day = Carbon::create($params['begin_date']);
+        $endDay = Carbon::create($params['end_date']);
+        for ($i = 1; $day->lte($endDay); $i++) {
+            $date = $day->format('Y-m-d');
+            $orderCount = collect($orderList)->where('execution_date', $date)->count();
+            $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
+            $day = $day->addDay();
+        }
+
+        $data[] = [
+            'merchant_name' => '总计',
+            'graph' => array_values($periodInfo),
+        ];
         return $data;
     }
 
@@ -285,7 +310,7 @@ class HomeService extends BaseService
      */
     public function reservation()
     {
-        $data=[];
+        $data = [];
         $now = date('Y-m-d');
         $dateList = $this->getTrackingOrderService()->getList(['execution_date' => ['>', $now]], ['*'], false)->pluck('execution_date')->toArray();
         if (empty($dateList)) {
@@ -307,10 +332,9 @@ class HomeService extends BaseService
             return ($permission['type'] == 2);
         })->keyBy('route_as')->toArray();
         if (empty($permissionList)) return $flowList;
-        foreach ($flowList as $k=>$v)
-        {
-            if(!empty($permissionList[$v['id']])){
-                $flowList[$k]['permission']=BaseConstService::YES;
+        foreach ($flowList as $k => $v) {
+            if (!empty($permissionList[$v['id']])) {
+                $flowList[$k]['permission'] = BaseConstService::YES;
             }
         }
         $flowList = array_create_index($flowList, 'id');
