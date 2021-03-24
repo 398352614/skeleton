@@ -17,4 +17,5 @@ class StockInLogService extends BaseService
         parent::__construct($stockInLog, null, null);
     }
 
+
 }
