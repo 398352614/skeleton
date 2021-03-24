@@ -24,7 +24,6 @@ Route::namespace('Api\Driver')->middleware([])->group(function () {
     Route::put('password-reset', 'AuthController@resetPassword');
     Route::post('password-reset/apply', 'AuthController@applyOfReset');
     Route::get('/version', 'VersionController@check');//版本检查
-
 });
 /*
 |--------------------------------------------------------------------------
@@ -156,6 +155,12 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     Route::prefix('stock')->group(function () {
         //包裹分拣入库
         Route::put('/package-pick-out', 'StockController@packagePickOut');
+    });
+
+    //库存管理
+    Route::prefix('stock-in-log')->group(function () {
+        //包裹分拣入库
+        Route::get('/', 'StockInLogController@index');
     });
 
     //上传接口
