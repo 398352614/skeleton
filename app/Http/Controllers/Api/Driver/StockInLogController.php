@@ -9,7 +9,7 @@
 namespace App\Http\Controllers\Api\Driver;
 
 use App\Http\Controllers\BaseController;
-use App\Services\Admin\StockInLogService;
+use App\Services\Driver\StockInLogService;
 
 /**
  * Class StockInLogController
