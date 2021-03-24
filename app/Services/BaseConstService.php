@@ -23,6 +23,7 @@ class BaseConstService
     const RECHARGE = 'RC';
     const CAR_ACCIDENT = 'CA';
     const CAR_MAINTAIN = 'CM';
+    const SPARE_PARTS = 'SP';
 
     const CANCEL_TIMES = 3;
 
@@ -588,4 +589,21 @@ class BaseConstService
     //保险是否赔付：1-是2-否
     const CAR_ACCIDENT_INS_PAY_TYPE_1 = 1;
     const CAR_ACCIDENT_INS_PAY_TYPE_2 = 2;
+
+    //备品单位
+    const SPARE_PARTS_UNIT_TYPE_1 = 1;
+    const SPARE_PARTS_UNIT_TYPE_2 = 2;
+    const SPARE_PARTS_UNIT_TYPE_3 = 3;
+    const SPARE_PARTS_UNIT_TYPE_4 = 4;
+    const SPARE_PARTS_UNIT_TYPE_5 = 5;
+    const SPARE_PARTS_UNIT_TYPE_6 = 6;
+    const SPARE_PARTS_UNIT_TYPE_7 = 7;
+    const SPARE_PARTS_UNIT_TYPE_8 = 8;
+    const SPARE_PARTS_UNIT_TYPE_9 = 9;
+    const SPARE_PARTS_UNIT_TYPE_10 = 10;
+    const SPARE_PARTS_UNIT_TYPE_11 = 11;
+
+    //领取状态:1-正常2-已作废
+    const SPARE_PARTS_RECORD_TYPE_1 = 1;
+    const SPARE_PARTS_RECORD_TYPE_2 = 2;
 }

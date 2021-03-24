@@ -21,7 +21,7 @@ use App\Http\Validate\BaseValidate;
  */
 class CarAccidentValidate extends BaseValidate
 {
-    /**|
+    /**
      * @var array
      */
     public $customAttributes = [
