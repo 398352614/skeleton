@@ -21,6 +21,23 @@ class AddressService extends BaseService
     use ExportTrait;
 
     /**
+     * 导出 Excel 头部
+     * @var string[]
+     */
+    public $exportExcelHeader = [
+        'place_fullname',
+        'place_phone',
+        'place_country',
+        'place_province',
+        'place_post_code',
+        'place_house_number',
+        'place_city',
+        'place_district',
+        'place_street',
+        'place_address'
+    ];
+
+    /**
      * @var \string[][]
      */
     public $filterRules = [
@@ -165,11 +182,30 @@ class AddressService extends BaseService
 
     }
 
-    public function excelExport()
+    /**
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function export()
     {
         $data = $this->setFilter()->getList();
 
+        if ($data->isEmpty()) {
+            throw new BusinessLogicException(__('数据不存在'));
+        }
 
+        $cellData = [];
+        foreach ($data as $v) {
+            $cellData[] = array_only_fields_sort($v, $this->exportExcelHeader);
+        }
+        if (empty($cellData)) {
+            throw new BusinessLogicException(__('数据不存在'));
+        }
+
+        $dir = 'addressExcelExport';
+        $name = date('YmdHis') . auth()->user()->id;
+
+        return $this->excelExport($name, $this->exportExcelHeader, $cellData, $dir);
     }
 
 }

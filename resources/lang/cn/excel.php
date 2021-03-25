@@ -194,5 +194,18 @@ return [
         'is_ticket' => '收票状态',
         'maintain_date' => '维保时间',
         'maintain_factory' => '维修厂名称'
+    ],
+
+    "addressExcelExport" => [
+        'place_fullname' => '姓名',
+        'place_phone' => '手机号',
+        'place_country' => '国家',
+        'place_province' => '州/省',
+        'place_post_code' => '邮编',
+        'place_house_number' => '门牌号',
+        'place_city' => '城市',
+        'place_district' => '地区',
+        'place_street' => '街道',
+        'place_address' => '详细地址',
     ]
 ];
