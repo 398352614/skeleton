@@ -13,10 +13,16 @@ use App\Http\Resources\Api\Admin\AddressResource;
 use App\Models\Address;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
+use App\Traits\ExportTrait;
 use Illuminate\Support\Arr;
 
 class AddressService extends BaseService
 {
+    use ExportTrait;
+
+    /**
+     * @var \string[][]
+     */
     public $filterRules = [
         'merchant_id' => ['=', 'merchant_id'],
         'place_fullname' => ['like', 'place_fullname'],
@@ -24,6 +30,10 @@ class AddressService extends BaseService
         'type'=>['=','type']
     ];
 
+    /**
+     * AddressService constructor.
+     * @param  Address  $address
+     */
     public function __construct(Address $address)
     {
         parent::__construct($address, AddressResource::class, AddressResource::class);
@@ -152,11 +162,13 @@ class AddressService extends BaseService
 
     public function createByList()
     {
-        
+
     }
 
     public function excelExport()
     {
+        $data = $this->setFilter()->getList();
+
 
     }
 
