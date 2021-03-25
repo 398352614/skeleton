@@ -10,6 +10,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\OrderTemplate;
+use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Facades\Storage;
 
@@ -51,13 +52,35 @@ class OrderTemplateService extends BaseService
         $templateList = array_create_index(ConstTranslateTrait::formatList(ConstTranslateTrait::$printTemplateList), 'id');
         $disk = Storage::disk('admin_print_template_public');
         $fileList = $disk->allFiles();
+        $orderTemplate = parent::getInfo(['company_id' => auth()->user()->company_id]);
         foreach ($fileList as $file) {
             $fileName = explode('.', $file)[0];
             if (!empty($templateList[$fileName])) {
                 $templateList[$fileName]['url'] = $disk->url($file);
             }
         }
+        if ($orderTemplate['type'] == BaseConstService::ORDER_TEMPLATE_TYPE_1) {
+            $templateList[1]['is_default'] = BaseConstService::YES;
+            $templateList[2]['is_default'] = BaseConstService::NO;
+        }else{
+            $templateList[1]['is_default'] = BaseConstService::NO;
+            $templateList[2]['is_default'] = BaseConstService::YES;
+        }
         $data['template_list'] = array_values($templateList);
         return $data;
     }
+
+    /**
+     * 修改默认模板
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function changeDefault($params)
+    {
+        $row=parent::update(['company_id'=>auth()->user()->company_id],['type'=>$params['type']]);
+        if($row == false){
+            throw  new BusinessLogicException('操作失败');
+        }
+    }
+
 }
