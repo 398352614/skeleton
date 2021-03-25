@@ -38,4 +38,9 @@ class OrderTemplateController extends BaseController
     {
         return $this->service->updateById($id, $this->data);
     }
+
+    public function init()
+    {
+        return $this->service->init();
+    }
 }
