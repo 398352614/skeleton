@@ -1000,45 +1000,59 @@ class OrderService extends BaseService
         foreach ($orderList as $k => $v) {
             $newOrderList[$k]['order_no'] = $v['order_no'];
 
-            $newOrderList[$k]['sender_fullname'] = $v['place_fullname'];
-            $newOrderList[$k]['sender_phone'] = $v['place_phone'];
-            $newOrderList[$k]['sender_address'] = $v['place_address'];
-            $newOrderList[$k]['sender_street_house_number'] = $v['place_street'] . $v['place_house_number'];
-            $newOrderList[$k]['sender_post_code_city_country'] = $v['place_post_code'] . $v['place_city'] . $v['place_country'];
+            $newOrderList[$k]['sender']['fullname'] = $v['place_fullname'];
+            $newOrderList[$k]['sender']['phone'] = $v['place_phone'];
+            $newOrderList[$k]['sender']['country'] =$v['place_country'];
+            $newOrderList[$k]['sender']['province'] =$v['place_province'];
+            $newOrderList[$k]['sender']['city'] = $v['place_city'];
+            $newOrderList[$k]['sender']['district'] = $v['place_district'];
+            $newOrderList[$k]['sender']['post_code'] = $v['place_post_code'];
+            $newOrderList[$k]['sender']['street'] = $v['place_street'];
+            $newOrderList[$k]['sender']['house_number'] = $v['place_house_number'];
+            $newOrderList[$k]['sender']['address'] = $v['place_address'];
 
-
-            $newOrderList[$k]['receiver_fullname'] = $v['second_place_fullname'];
-            $newOrderList[$k]['receiver_phone'] = $v['second_place_phone'];
-            $newOrderList[$k]['receiver_address'] = $v['second_place_address'];
-            $newOrderList[$k]['receiver_street_house_number'] = $v['second_place_street'] . $v['second_place_house_number'];
-            $newOrderList[$k]['receiver_post_code_city_country'] = $v['second_place_post_code'] . $v['second_place_city'] . $v['second_place_country'];
+            $newOrderList[$k]['receiver']['fullname'] = $v['second_place_fullname'];
+            $newOrderList[$k]['receiver']['phone'] = $v['second_place_phone'];
+            $newOrderList[$k]['receiver']['country'] =$v['second_place_country'];
+            $newOrderList[$k]['receiver']['province'] =$v['second_place_province'];
+            $newOrderList[$k]['receiver']['city'] = $v['second_place_city'];
+            $newOrderList[$k]['receiver']['district'] = $v['second_place_district'];
+            $newOrderList[$k]['receiver']['post_code'] = $v['second_place_post_code'];
+            $newOrderList[$k]['receiver']['street'] = $v['second_place_street'];
+            $newOrderList[$k]['receiver']['house_number'] = $v['second_place_house_number'];
+            $newOrderList[$k]['receiver']['address'] = $v['second_place_address'];
 
             if ($v['type'] !== BaseConstService::ORDER_TYPE_3) {
-                $newOrderList[$k]['destination_province'] = $v['place_province'];
-                $newOrderList[$k]['destination_city'] = $v['place_city'];
-                $newOrderList[$k]['destination_district'] = $v['place_district'];
-                $newOrderList[$k]['destination_post_code'] = $v['place_post_code'];
-                $newOrderList[$k]['destination_street'] = $v['place_street'];
-                $newOrderList[$k]['destination_house_number'] = $v['place_house_number'];
-                $newOrderList[$k]['destination_country'] = $v['place_country'];
+                $newOrderList[$k]['destination']['country'] = $v['place_country'];
+                $newOrderList[$k]['destination']['province'] = $v['place_province'];
+                $newOrderList[$k]['destination']['city'] = $v['place_city'];
+                $newOrderList[$k]['destination']['district'] = $v['place_district'];
+                $newOrderList[$k]['destination']['post_code'] = $v['place_post_code'];
+                $newOrderList[$k]['destination']['street'] = $v['place_street'];
+                $newOrderList[$k]['destination']['house_number'] = $v['place_house_number'];
+                $newOrderList[$k]['destination']['address'] = $v['place_address'];
             } else {
-                $newOrderList[$k]['destination_province'] = $v['second_place_province'];
-                $newOrderList[$k]['destination_city'] = $v['second_place_city'];
-                $newOrderList[$k]['destination_district'] = $v['second_place_district'];
-                $newOrderList[$k]['destination_post_code'] = $v['second_place_post_code'];
-                $newOrderList[$k]['destination_street'] = $v['second_place_street'];
-                $newOrderList[$k]['destination_house_number'] = $v['second_place_house_number'];
-                $newOrderList[$k]['destination_country'] = $v['second_place_country'];
+                $newOrderList[$k]['destination']['country'] = $v['second_place_country'];
+                $newOrderList[$k]['destination']['province'] = $v['second_place_province'];
+                $newOrderList[$k]['destination']['city'] = $v['second_place_city'];
+                $newOrderList[$k]['destination']['district'] = $v['second_place_district'];
+                $newOrderList[$k]['destination']['post_code'] = $v['second_place_post_code'];
+                $newOrderList[$k]['destination']['street'] = $v['second_place_street'];
+                $newOrderList[$k]['destination']['house_number'] = $v['second_place_house_number'];
+                $newOrderList[$k]['destination']['address'] = $v['second_place_address'];
             }
             $newOrderList[$k]['tracking_order'] = $this->getTrackingOrderService()->getInfo(['order_no' => $v['order_no']], ['*'], false, ['created_at' => 'desc']);
             if (empty($newOrderList)) {
                 throw new BusinessLogicException('订单[:order_no]未生成运单，无法打印面单', 1000, ['order_no' => $v['order_no']]);
             }
-            $newOrderList[$k]['warehouse_street'] = $newOrderList[$k]['tracking_order']['warehouse_street'];
-            $newOrderList[$k]['warehouse_post_code'] = $newOrderList[$k]['tracking_order']['warehouse_post_code'];
-            $newOrderList[$k]['warehouse_house_number'] = $newOrderList[$k]['tracking_order']['warehouse_house_number'];
-            $newOrderList[$k]['warehouse_city'] = $newOrderList[$k]['tracking_order']['warehouse_city'];
-            $newOrderList[$k]['warehouse_country'] = $newOrderList[$k]['tracking_order']['warehouse_country'];
+            $newOrderList[$k]['warehouse']['country'] = $newOrderList[$k]['tracking_order']['warehouse_country'];
+            $newOrderList[$k]['warehouse']['province'] = $newOrderList[$k]['tracking_order']['warehouse_country'];
+            $newOrderList[$k]['warehouse']['city'] = $newOrderList[$k]['tracking_order']['warehouse_city'];
+            $newOrderList[$k]['warehouse']['district'] = $newOrderList[$k]['tracking_order']['warehouse_district'];
+            $newOrderList[$k]['warehouse']['post_code'] = $newOrderList[$k]['tracking_order']['warehouse_post_code'];
+            $newOrderList[$k]['warehouse']['street'] = $newOrderList[$k]['tracking_order']['warehouse_street'];
+            $newOrderList[$k]['warehouse']['house_number'] = $newOrderList[$k]['tracking_order']['warehouse_house_number'];
+            $newOrderList[$k]['warehouse']['address'] = $newOrderList[$k]['tracking_order']['warehouse_address'];
 
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
             $newOrderList[$k]['replace_amount'] = $v['replace_amount'];
@@ -1082,10 +1096,10 @@ class OrderService extends BaseService
     {
         $data = [];
         $fields = ['order_no', 'package_count', 'material_count', 'replace_amount', 'settlement_amount', 'order_barcode', 'first_package_barcode', 'first_package_no',
-            'sender_fullname', 'sender_phone', 'sender_address', 'sender_street', 'sender_house_number', 'sender_post_code', 'receiver_city', 'sender_province', 'sender_district', 'sender_country',
-            'receiver_fullname', 'receiver_phone', 'receiver_address', 'receiver_street', 'receiver_house_number', 'receiver_post_code', 'receiver_city', 'receiver_province', 'receiver_district', 'receiver_country',
-            'destination_province', 'destination_city', 'destination_district', 'destination_post_code',
-            'warehouse_country', 'warehouse_city', 'warehouse_house_number', 'warehouse_post_code', 'warehouse_street',
+            'sender',
+            'receiver',
+            'warehouse',
+            'destination'
         ];
         $orderTemplate = $this->getOrderTemplateService()->getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
         if (empty($orderTemplate)) {
@@ -1098,13 +1112,13 @@ class OrderService extends BaseService
             $data['template_name'] = 'PrintStandard2';
         }
         if ($orderTemplate['destination_mode'] == BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_1) {
-            $params['destination'] = $params['destination_province'] . $params['destination_city'] . $params['destination_district'];
+            $params['destination']['all'] = $params['destination']['province'] . $params['destination']['city'] . $params['destination']['district'];
         } elseif ($orderTemplate['destination_mode'] == BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_2) {
-            $params['destination'] = $params['destination_province'] . $params['destination_city'];
+            $params['destination']['all'] = $params['destination']['province'] . $params['destination']['city'];
         } elseif ($orderTemplate['destination_mode'] == BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_3) {
-            $params['destination'] = $params['destination_city'] . $params['destination_district'];
+            $params['destination']['all'] = $params['destination']['city'] . $params['destination']['district'];
         } elseif ($orderTemplate['destination_mode'] == BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_4) {
-            $params['destination'] = $params['destination_post_code'];
+            $params['destination']['all'] = $params['destination']['post_code'];
         }
         $data['template'] = Arr::except($orderTemplate, ['company_id', 'destination_mode', 'type', 'created_at', 'updated_at']);
         $data['template']['logo'] = $this->imageToBase64($data['template']['logo']);
@@ -1115,7 +1129,7 @@ class OrderService extends BaseService
 
     public function imageToBase64($url)
     {
-        if (!empty(file_get_contents($url))) {
+        if (file_exists($url)) {
             $image_info = getimagesize($url);
             $image_data = file_get_contents($url);
             $url = 'data:' . $image_info['mime'] . ';base64,' . chunk_split(base64_encode($image_data));
