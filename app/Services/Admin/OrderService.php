@@ -34,6 +34,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use mysql_xdevapi\Exception;
 
 class OrderService extends BaseService
 {
@@ -1127,12 +1128,20 @@ class OrderService extends BaseService
         return $data;
     }
 
+    /**
+     * 获取Logo的base64版本
+     * @param $url
+     * @return string
+     * @throws BusinessLogicException
+     */
     public function imageToBase64($url)
     {
-        if (file_exists($url)) {
+        try {
             $image_info = getimagesize($url);
             $image_data = file_get_contents($url);
             $url = 'data:' . $image_info['mime'] . ';base64,' . chunk_split(base64_encode($image_data));
+        }catch (\Exception $e){
+            throw new BusinessLogicException('logo不存在');
         }
         return $url;
     }
