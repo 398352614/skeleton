@@ -795,6 +795,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //订单打印模板
     Route::prefix('order-bill-template')->group(function () {
+        //初始化
+        Route::get('/init', 'OrderTemplateController@init')->name('print-template.show');
         //详情
         Route::get('/', 'OrderTemplateController@show')->name('print-template.show');
         //修改
