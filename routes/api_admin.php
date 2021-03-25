@@ -806,7 +806,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //修改
         Route::put('/', 'OrderTemplateController@update')->name('print-template.update');
         //修改
-        Route::put('/type', 'OrderTemplateController@changeDefault')->name('print-template.changeDefault');
+        Route::put('/type', 'OrderTemplateController@changeDefault')->name('print-template.update');
     });
 
     //费用管理
