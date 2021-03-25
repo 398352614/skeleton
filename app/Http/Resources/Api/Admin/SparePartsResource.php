@@ -29,6 +29,6 @@ class SparePartsResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->resource->toArray();
+        return array_merge(['sp_unit_id' => $this->resource->getOriginal('sp_unit')], $this->resource->toArray());
     }
 }
