@@ -1107,7 +1107,6 @@ class OrderService extends BaseService
             $params['destination'] = $params['destination_post_code'];
         }
         $data['template'] = Arr::except($orderTemplate, ['company_id', 'destination_mode', 'type', 'created_at', 'updated_at']);
-        $data['template']['logo'] = 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2919619415,2720260462&fm=26&gp=0.jpg';
         $data['template']['logo'] = $this->imageToBase64($data['template']['logo']);
         $params = Arr::only($params, $fields);
         $data['api'] = $params;
@@ -1116,7 +1115,6 @@ class OrderService extends BaseService
 
     public function imageToBase64($url)
     {
-        dd(file_get_contents($url));
         if (!empty(file_get_contents($url))) {
             $image_info = getimagesize($url);
             $image_data = file_get_contents($url);
