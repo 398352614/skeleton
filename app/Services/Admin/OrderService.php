@@ -1116,7 +1116,7 @@ class OrderService extends BaseService
 
     public function imageToBase64($url)
     {
-
+        dd(file_get_contents($url));
         if (!empty(file_get_contents($url))) {
             $image_info = getimagesize($url);
             $image_data = file_get_contents($url);
