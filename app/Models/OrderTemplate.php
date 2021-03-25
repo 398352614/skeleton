@@ -47,6 +47,7 @@ class OrderTemplate extends BaseModel
     protected $fillable = [
         'company_id',
         'destination_mode',
+        'type',
         'logo',
         'sender',
         'receiver',
