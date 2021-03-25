@@ -29,14 +29,13 @@ class OrderTemplateService extends BaseService
     }
 
     /**
-     * 创建或修改
-     * @param $id
+     * 修改
      * @param $params
      * @throws BusinessLogicException
      */
-    public function updateById($id, $params)
+    public function updateByCompanyId($params)
     {
-        $rowCount = $this->updateById($id, $params);
+        $rowCount = parent::update(['company_id' => auth()->user()->company_id], $params);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
@@ -52,7 +51,7 @@ class OrderTemplateService extends BaseService
         $templateList = array_create_index(ConstTranslateTrait::formatList(ConstTranslateTrait::$printTemplateList), 'id');
         $disk = Storage::disk('admin_print_template_public');
         $fileList = $disk->allFiles();
-        $orderTemplate = parent::getInfo(['company_id' => auth()->user()->company_id],['*'],false);
+        $orderTemplate = parent::getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
         foreach ($fileList as $file) {
             $fileName = explode('.', $file)[0];
             if (!empty($templateList[$fileName])) {
@@ -62,7 +61,7 @@ class OrderTemplateService extends BaseService
         if ($orderTemplate['type'] == BaseConstService::ORDER_TEMPLATE_TYPE_1) {
             $templateList[1]['is_default'] = BaseConstService::YES;
             $templateList[2]['is_default'] = BaseConstService::NO;
-        }else{
+        } else {
             $templateList[1]['is_default'] = BaseConstService::NO;
             $templateList[2]['is_default'] = BaseConstService::YES;
         }
@@ -77,8 +76,8 @@ class OrderTemplateService extends BaseService
      */
     public function changeDefault($params)
     {
-        $row=parent::update(['company_id'=>auth()->user()->company_id],['type'=>$params['type']]);
-        if($row == false){
+        $row = parent::update(['company_id' => auth()->user()->company_id], ['type' => $params['type']]);
+        if ($row == false) {
             throw  new BusinessLogicException('操作失败');
         }
     }

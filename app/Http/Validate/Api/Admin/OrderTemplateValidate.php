@@ -39,7 +39,7 @@ class OrderTemplateValidate extends BaseValidate
     public $scene = [
         'update' => ['type', 'destination_mode', 'logo', 'sender', 'receiver', 'destination', 'carrier', 'carrier_address', 'contents', 'package', 'material', 'count', 'replace_amount', 'settlement_amount'],
 
-        'type'=>['type'],
+        'type' => ['type'],
     ];
 }
 

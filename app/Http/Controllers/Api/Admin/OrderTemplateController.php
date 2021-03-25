@@ -29,14 +29,14 @@ class OrderTemplateController extends BaseController
     }
 
     /**
-     * 创建或修改
+     * 修改
      * @param $id
-     * @return bool|int
+     * @return void
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function update($id)
+    public function update()
     {
-        return $this->service->updateById($id, $this->data);
+        return $this->service->updateByCompanyId($this->data);
     }
 
     /**
