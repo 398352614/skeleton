@@ -33,6 +33,7 @@ use App\Services\Admin\PrintTemplateService;
 use App\Services\Admin\RechargeService;
 use App\Services\Admin\RechargeStatisticsService;
 use App\Services\Admin\RoleService;
+use App\Services\Admin\SparePartsStockService;
 use App\Services\Admin\StockExceptionService;
 use App\Services\Admin\StockInLogService;
 use App\Services\Admin\StockOutLogService;
@@ -465,5 +466,14 @@ trait AdminServiceTrait
     public function getCarMaintainDetailService()
     {
         return self::getInstance(CarMaintainDetailService::class);
+    }
+
+    /**
+     * 获取备品库存 Service
+     * @return SparePartsStockService
+     */
+    public function getSparePartsStockService()
+    {
+        return self::getInstance(SparePartsStockService::class);
     }
 }

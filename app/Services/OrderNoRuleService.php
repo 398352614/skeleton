@@ -206,7 +206,7 @@ class OrderNoRuleService extends BaseService
      */
     public function createCarMaintainNO()
     {
-        return $this->createNoBase(BaseConstService::CAR_MAINTAIN_NO_TYPE, '创建车辆维护流水号规则不存在或已被禁用，请先联系后台管理员');
+        return $this->createNoBase(BaseConstService::CAR_MAINTAIN_NO_TYPE, '车辆维护流水号规则不存在或已被禁用，请先联系后台管理员');
     }
 
     /**

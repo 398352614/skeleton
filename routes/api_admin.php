@@ -308,6 +308,26 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/ticket', 'CarMaintainController@ticketAll')->name('car-maintain.ticket');
     });
 
+    //备品管理
+    Route::prefix('spare-parts')->group(function () {
+        //备品列表
+        Route::get('/', 'SparePartsController@index')->name('spare-parts.index');
+        //备品新增
+        Route::post('/', 'SparePartsController@store')->name('spare-parts.store');
+        //新增初始化
+        Route::get('/init', 'SparePartsController@init')->name('spare-parts.init');
+        //库存列表
+        Route::get('/stock', 'SparePartsStockController@index')->name('spare-parts.stock');
+        //新增入库
+        Route::post('/stock', 'SparePartsStockController@store')->name('spare-parts.createStock');
+        //领用记录
+        Route::get('/record', 'SparePartsRecordController@index')->name('spare-parts.record');
+        //备品领取
+        Route::post('/record', 'SparePartsRecordController@store')->name('spare-parts.createRecord');
+        //领取作废
+        Route::get('/record/{id}', 'SparePartsRecordController@invalid')->name('spare-parts.invalid');
+    });
+
     //设备管理
     Route::prefix('device')->group(function () {
         //设备列表

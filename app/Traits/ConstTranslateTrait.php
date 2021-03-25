@@ -80,6 +80,8 @@ use Illuminate\Support\Facades\App;
  * @method static carAccidentDealType($args = null)
  * @method static carAccidentDuty($args = null)
  * @method static carAccidentInsPay($args = null)
+ * @method static sparePartsUnit($args = null)
+ * @method static sparePartsRecordStatus($args = null)
  * @method static orderTemplateDestinationModeList($args = null)
  * @method static orderTemplateTypeList($args = null)
  */
@@ -575,26 +577,31 @@ trait ConstTranslateTrait
         BaseConstService::EXPIRATION_STATUS_3 => '超期已处理',
     ];
 
+    //车辆维保类型
     public static $carMaintainType = [
         BaseConstService::MAINTAIN_TYPE_1 => '保养',
         BaseConstService::MAINTAIN_TYPE_2 => '维修',
     ];
 
+    //车辆维保收票状态
     public static $carMaintainTicket = [
         BaseConstService::IS_TICKET_1 => '已收票',
         BaseConstService::IS_TICKET_2 => '未收票',
     ];
 
+    //车辆事故处理方式
     public static $carAccidentDealType = [
         BaseConstService::CAR_ACCIDENT_DEAL_TYPE_1 => '保险',
         BaseConstService::CAR_ACCIDENT_DEAL_TYPE_2 => '公司赔付',
     ];
 
+    //车辆事故责任方
     public static $carAccidentDuty = [
         BaseConstService::CAR_ACCIDENT_DUTY_TYPE_1 => '主动',
         BaseConstService::CAR_ACCIDENT_DUTY_TYPE_2 => '被动',
     ];
 
+    //车辆事故保险是否赔付
     public static $carAccidentInsPay = [
         BaseConstService::CAR_ACCIDENT_INS_PAY_TYPE_1 => '是',
         BaseConstService::CAR_ACCIDENT_INS_PAY_TYPE_2 => '否',
@@ -610,6 +617,27 @@ trait ConstTranslateTrait
     public static $orderTemplateTypeList = [
         BaseConstService::ORDER_TEMPLATE_TYPE_1 => '模板一',
         BaseConstService::ORDER_TEMPLATE_TYPE_2 => '模板二',
+    ];
+
+    //备品单位
+    public static $sparePartsUnit = [
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_1 => '条',
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_2 => '桶',
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_3 => '米',
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_4 => '个',
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_5 => '瓶',
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_6 => '对',
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_7 => '箱',
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_8 => '台',
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_9 => '件',
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_10 => '把',
+        BaseConstService::SPARE_PARTS_UNIT_TYPE_11 => '张',
+    ];
+
+    //备品领取状态
+    public static $sparePartsRecordStatus = [
+        BaseConstService::SPARE_PARTS_RECORD_TYPE_1 => '正常',
+        BaseConstService::SPARE_PARTS_RECORD_TYPE_2 => '已作废',
     ];
 
     /**

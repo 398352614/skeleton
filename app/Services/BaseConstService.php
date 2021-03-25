@@ -23,6 +23,7 @@ class BaseConstService
     const RECHARGE = 'RC';
     const CAR_ACCIDENT = 'CA';
     const CAR_MAINTAIN = 'CM';
+    const SPARE_PARTS = 'SP';
 
     const CANCEL_TIMES = 3;
 
@@ -61,6 +62,7 @@ class BaseConstService
     const FLOW_DRIVER_INDEX = 'driver.index';
     const FLOW_CAR_INDEX = 'car.index';
     const FLOW_CAR_MANAGEMENT_INDEX = 'car-management.index';
+
 
 
     //是否需要验证
@@ -597,4 +599,21 @@ class BaseConstService
     //订单模板1-模板一2-模板二
     const ORDER_TEMPLATE_TYPE_1 = 1;
     const ORDER_TEMPLATE_TYPE_2 = 2;
+
+    //备品单位
+    const SPARE_PARTS_UNIT_TYPE_1 = 1;
+    const SPARE_PARTS_UNIT_TYPE_2 = 2;
+    const SPARE_PARTS_UNIT_TYPE_3 = 3;
+    const SPARE_PARTS_UNIT_TYPE_4 = 4;
+    const SPARE_PARTS_UNIT_TYPE_5 = 5;
+    const SPARE_PARTS_UNIT_TYPE_6 = 6;
+    const SPARE_PARTS_UNIT_TYPE_7 = 7;
+    const SPARE_PARTS_UNIT_TYPE_8 = 8;
+    const SPARE_PARTS_UNIT_TYPE_9 = 9;
+    const SPARE_PARTS_UNIT_TYPE_10 = 10;
+    const SPARE_PARTS_UNIT_TYPE_11 = 11;
+
+    //领取状态:1-正常2-已作废
+    const SPARE_PARTS_RECORD_TYPE_1 = 1;
+    const SPARE_PARTS_RECORD_TYPE_2 = 2;
 }
