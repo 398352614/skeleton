@@ -59,4 +59,22 @@ class SparePartsController extends BaseController
     {
         return $this->service->create($this->data);
     }
+
+    /**
+     * @param $id
+     * @return bool|int
+     */
+    public function update($id)
+    {
+       return $this->service->update(['id' => $id], $this->data);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function delete($id)
+    {
+        return $this->service->delete(['id' => $id]);
+    }
 }

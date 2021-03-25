@@ -42,6 +42,14 @@ class SparePartsValidate extends BaseValidate
             'sp_brand',
             'sp_model',
             'sp_unit'
+        ],
+
+        'update' => [
+            'sp_no',
+            'sp_name',
+            'sp_brand',
+            'sp_model',
+            'sp_unit'
         ]
     ];
 }
