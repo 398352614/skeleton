@@ -314,6 +314,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/', 'SparePartsController@index')->name('spare-parts.index');
         //备品新增
         Route::post('/', 'SparePartsController@store')->name('spare-parts.store');
+        //备品修改
+        Route::put('/{id}', 'SparePartsController@update')->name('spare-parts.update');
+        //备品删除
+        Route::delete('/{id}', 'SparePartsController@delete')->name('spare-parts.delete');
         //新增初始化
         Route::get('/init', 'SparePartsController@init')->name('spare-parts.init');
         //库存列表
