@@ -32,6 +32,7 @@ use App\Traits\LocationTrait;
 use App\Traits\PrintTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class OrderService extends BaseService
@@ -658,13 +659,13 @@ class OrderService extends BaseService
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['second_place_address'])) {
             $params['second_place_address'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
         }
-        //若存在外部订单号,则判断是否存在已预约的订单号
+        //若存在货号,则判断是否存在已预约的订单号
         if (!empty($params['out_order_no'])) {
             $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = parent::getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
             if (!empty($dbOrder)) {
-                throw new BusinessLogicException('外部订单号已存在', 1005, [], ['order_no' => $dbOrder->order_no, 'out_order_no' => $dbOrder->out_order_no, 'status' => $dbOrder->status]);
+                throw new BusinessLogicException('货号已存在', 1005, [], ['order_no' => $dbOrder->order_no, 'out_order_no' => $dbOrder->out_order_no, 'status' => $dbOrder->status]);
             }
         }
         //运价计算
@@ -988,7 +989,7 @@ class OrderService extends BaseService
     {
         $newOrderList = [];
         $orderList = parent::getList(['id' => ['in', explode_id_string($idList)]], ['*'], false)->toArray();
-        if(empty($orderList)){
+        if (empty($orderList)) {
             throw new BusinessLogicException('订单不存在');
         }
         $orderNoList = array_column($orderList, 'order_no');
@@ -1029,17 +1030,21 @@ class OrderService extends BaseService
                 $newOrderList[$k]['destination_house_number'] = $v['second_place_house_number'];
                 $newOrderList[$k]['destination_country'] = $v['second_place_country'];
             }
-            $newOrderList[$k]['tracking_order'] = $this->getTrackingOrderService()->getInfo(['order_no'=> $v['order_no']], ['*'], false, ['created_at' => 'desc']);
+            $newOrderList[$k]['tracking_order'] = $this->getTrackingOrderService()->getInfo(['order_no' => $v['order_no']], ['*'], false, ['created_at' => 'desc']);
             if (empty($newOrderList)) {
                 throw new BusinessLogicException('订单[:order_no]未生成运单，无法打印面单', 1000, ['order_no' => $v['order_no']]);
             }
-            $newOrderList[$k]['warehouse_street_house_number'] = $newOrderList[$k]['tracking_order']['warehouse_country'] . $newOrderList[$k]['tracking_order']['warehouse_house_number'];
-            $newOrderList[$k]['warehouse_post_code_city_country'] = $newOrderList[$k]['tracking_order']['warehouse_post_code'] . $newOrderList[$k]['tracking_order']['warehouse_city'] . $newOrderList[$k]['tracking_order']['warehouse_country'];
+            $newOrderList[$k]['warehouse_street'] = $newOrderList[$k]['tracking_order']['warehouse_street'];
+            $newOrderList[$k]['warehouse_post_code'] = $newOrderList[$k]['tracking_order']['warehouse_post_code'];
+            $newOrderList[$k]['warehouse_house_number'] = $newOrderList[$k]['tracking_order']['warehouse_house_number'];
+            $newOrderList[$k]['warehouse_city'] = $newOrderList[$k]['tracking_order']['warehouse_city'];
+            $newOrderList[$k]['warehouse_country'] = $newOrderList[$k]['tracking_order']['warehouse_country'];
+
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
             $newOrderList[$k]['replace_amount'] = $v['replace_amount'];
             $newOrderList[$k]['settlement_amount'] = $v['settlement_amount'];
             $newOrderList[$k]['package_count'] = !empty($packageList) ? collect($packageList[$v['order_no']])->sum('expect_quantity') : 0;
-            $newOrderList[$k]['material_count'] =!empty($materialList) ?  collect($materialList[$v['order_no']])->sum('expect_quantity'): 0;
+            $newOrderList[$k]['material_count'] = !empty($materialList) ? collect($materialList[$v['order_no']])->sum('expect_quantity') : 0;
             $newOrderList[$k]['package_list'] = !empty($packageList) ? $packageList[$v['order_no']] : [];
 
         }
@@ -1076,11 +1081,12 @@ class OrderService extends BaseService
     public function printForm($params)
     {
         $data = [];
-        $fields = ['order_no','package_count', 'material_count', 'replace_amount', 'settlement_amount', 'order_barcode', 'first_package_barcode','first_package_no',
-            'sender_fullname', 'sender_phone', 'sender_address', 'sender_street_house_number', 'receiver_post_code_city_country',
-            'receiver_fullname', 'receiver_phone', 'receiver_address', 'receiver_street_house_number', 'receiver_post_code_city_country',
-
-            'destination', 'warehouse_street_house_number', 'warehouse_post_code_city_country'];
+        $fields = ['order_no', 'package_count', 'material_count', 'replace_amount', 'settlement_amount', 'order_barcode', 'first_package_barcode', 'first_package_no',
+            'sender_fullname', 'sender_phone', 'sender_address', 'sender_street', 'sender_house_number', 'sender_post_code', 'receiver_city', 'sender_province', 'sender_district', 'sender_country',
+            'receiver_fullname', 'receiver_phone', 'receiver_address', 'receiver_street', 'receiver_house_number', 'receiver_post_code', 'receiver_city', 'receiver_province', 'receiver_district', 'receiver_country',
+            'destination_province', 'destination_city', 'destination_district', 'destination_post_code',
+            'warehouse_country', 'warehouse_city', 'warehouse_house_number', 'warehouse_post_code', 'warehouse_street',
+        ];
         $orderTemplate = $this->getOrderTemplateService()->getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
         if (empty($orderTemplate)) {
             throw new BusinessLogicException('未设置打印模板，请联系管理员设置打印模板');
@@ -1100,10 +1106,23 @@ class OrderService extends BaseService
         } elseif ($orderTemplate['destination_mode'] == BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_4) {
             $params['destination'] = $params['destination_post_code'];
         }
-        $data['template'] = Arr::except($orderTemplate, ['logo', 'company_id', 'destination_mode', 'type', 'created_at', 'updated_at']);
+        $data['template'] = Arr::except($orderTemplate, ['company_id', 'destination_mode', 'type', 'created_at', 'updated_at']);
+        $data['template']['logo'] = 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2919619415,2720260462&fm=26&gp=0.jpg';
+        $data['template']['logo'] = $this->imageToBase64($data['template']['logo']);
         $params = Arr::only($params, $fields);
         $data['api'] = $params;
         return $data;
+    }
+
+    public function imageToBase64($url)
+    {
+
+        if (!empty(file_get_contents($url))) {
+            $image_info = getimagesize($url);
+            $image_data = file_get_contents($url);
+            $url = 'data:' . $image_info['mime'] . ';base64,' . chunk_split(base64_encode($image_data));
+        }
+        return $url;
     }
 
     /**
