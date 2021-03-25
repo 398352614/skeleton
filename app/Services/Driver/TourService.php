@@ -1010,9 +1010,11 @@ class TourService extends BaseService
             $data[$k]['execution_date'] = $batch['execution_date'];
             $data[$k]['place_phone'] = $batch['place_phone'];
             $data[$k]['place_country'] = $batch['place_country'];
+            $data[$k]['place_province'] = $batch['place_province'];
             $data[$k]['place_post_code'] = $batch['place_post_code'];
             $data[$k]['place_house_number'] = $batch['place_house_number'];
             $data[$k]['place_city'] = $batch['place_city'];
+            $data[$k]['place_district'] = $batch['place_district'];
             $data[$k]['place_street'] = $batch['place_street'];
             $data[$k]['place_address'] = $batch['place_address'];
             $data[$k]['place_lon'] = $batch['place_lon'];

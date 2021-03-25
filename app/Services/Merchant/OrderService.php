@@ -921,9 +921,11 @@ class OrderService extends BaseService
                 'place_fullname',
                 'place_phone',
                 'place_country',
+                'place_province',
                 'place_post_code',
                 'place_house_number',
                 'place_city',
+                'place_district',
                 'place_street',
             ];
             //取经纬度

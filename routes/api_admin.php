@@ -113,6 +113,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/list', 'OrderController@destroyAll')->name('order.destroy');
         //批量打印
         Route::get('/pdf', 'OrderController@orderPrintAll')->name('order.print');
+        //批量打印面单
+        Route::get('/bill', 'OrderController@orderBillPrint')->name('order.print');
         //订单导出表格
         Route::get('/excel', 'OrderController@orderExport')->name('order.export');
         //同步订单状态列表
@@ -574,6 +576,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'AddressController@update')->name('address.update');
         //删除
         Route::delete('/{id}', 'AddressController@destroy')->name('address.destroy');
+        //导入模板
+        Route::get('/excel-template', 'AddressController@excelTemplate')->name('address.import');
+        //导入
+        Route::post('/excel', 'AddressController@import')->name('address.import');
+        //批量新增
+        Route::post('/list', 'AddressController@storeByList')->name('address.import');
+        //导出
+        Route::get('/excel', 'AddressController@excelExport')->name('address.export');
     });
 
     //国家管理
@@ -761,6 +771,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/show', 'PrintTemplateController@show')->name('print-template.show');
         //修改
         Route::put('/update', 'PrintTemplateController@update')->name('print-template.update');
+    });
+
+    //订单打印模板
+    Route::prefix('order-bill-template')->group(function () {
+        //详情
+        Route::get('/', 'OrderTemplateController@show')->name('print-template.show');
+        //修改
+        Route::put('/', 'OrderTemplateController@update')->name('print-template.update');
     });
 
     //费用管理

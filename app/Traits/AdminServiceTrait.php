@@ -27,6 +27,7 @@ use App\Services\Admin\MerchantGroupService;
 use App\Services\Admin\MerchantRechargeService;
 use App\Services\Admin\MerchantService;
 use App\Services\Admin\OrderService;
+use App\Services\Admin\OrderTemplateService;
 use App\Services\Admin\PackageService;
 use App\Services\Admin\PrintTemplateService;
 use App\Services\Admin\RechargeService;
@@ -184,6 +185,15 @@ trait AdminServiceTrait
     public function getTrackingOrderService()
     {
         return self::getInstance(TrackingOrderService::class);
+    }
+
+    /**
+     * 订单模板 服务
+     * @return OrderTemplateService
+     */
+    public function getOrderTemplateService()
+    {
+        return self::getInstance(OrderTemplateService::class);
     }
 
     /**
@@ -359,6 +369,7 @@ trait AdminServiceTrait
     }
 
     /**
+     * 充值服务
      * @return RechargeService
      */
     public function getRechargeService()
@@ -366,6 +377,10 @@ trait AdminServiceTrait
         return self::getInstance(RechargeService::class);
     }
 
+    /**
+     * 地址 服务
+     * @return AddressService
+     */
     public function getAddressService()
     {
         return self::getInstance(AddressService::class);

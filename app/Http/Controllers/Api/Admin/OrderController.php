@@ -185,6 +185,17 @@ class OrderController extends BaseController
     }
 
     /**
+     * 批量打印2
+     * @return mixed
+     * @throws BusinessLogicException
+     * @throws \Throwable
+     */
+    public function orderBillPrint()
+    {
+        return $this->service->orderBillPrint($this->data['id_list']);
+    }
+
+    /**
      * 同步订单状态列表
      */
     public function synchronizeStatusList()

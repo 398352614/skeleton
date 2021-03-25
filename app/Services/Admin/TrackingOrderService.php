@@ -68,9 +68,11 @@ class TrackingOrderService extends BaseService
         'place_fullname',
         'place_phone',
         'place_country',
+        'place_province',
         'place_post_code',
         'place_house_number',
         'place_city',
+        'place_district',
         'place_street',
         'place_address',
         'place_lon',
@@ -373,13 +375,14 @@ class TrackingOrderService extends BaseService
     public function storeAgain($dbOrder, $order, $trackingOrderType)
     {
         if (in_array($dbOrder['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
-            $address = Arr::only($order, ['place_country', 'place_fullname', 'place_phone', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lat', 'place_lon']);
+            $address = Arr::only($order, ['place_country', 'place_fullname', 'place_phone', 'place_province','place_post_code', 'place_house_number', 'place_city','place_district', 'place_street', 'place_address', 'place_lat', 'place_lon']);
         } else {
             if ($trackingOrderType == BaseConstService::TRACKING_ORDER_TYPE_1) {
-                $address = Arr::only($order, ['place_country', 'place_fullname', 'place_phone', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lat', 'place_lon']);
+                $address = Arr::only($order, ['place_country', 'place_fullname', 'place_phone', 'place_province','place_post_code', 'place_house_number', 'place_city', 'place_district','place_street', 'place_address', 'place_lat', 'place_lon']);
             } else {
                 $address = [
                     'place_country' => $order['second_place_country'], 'place_fullname' => $order['second_place_fullname'],
+                    'place_province' => $order['second_province'], 'place_district' => $order['second_district'],
                     'place_phone' => $order['second_place_phone'], 'place_post_code' => $order['second_place_post_code'],
                     'place_house_number' => $order['second_place_house_number'], 'place_city' => $order['second_place_city'],
                     'place_street' => $order['second_place_street'], 'place_address' => $order['second_place_address'],

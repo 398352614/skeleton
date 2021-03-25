@@ -20,7 +20,8 @@ class AddressService extends BaseService
     public $filterRules = [
         'merchant_id' => ['=', 'merchant_id'],
         'place_fullname' => ['like', 'place_fullname'],
-        'place_post_code' => ['like', 'place_post_code']
+        'place_post_code' => ['like', 'place_post_code'],
+        'type'=>['=','type']
     ];
 
     public function __construct(Address $address)
@@ -35,7 +36,7 @@ class AddressService extends BaseService
      */
     public function getUniqueWhere($data)
     {
-        $fields = ['merchant_id', 'place_country', 'place_fullname', 'place_phone', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address'];
+        $fields = ['type','merchant_id', 'place_country', 'place_fullname', 'place_phone', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address'];
         $where = Arr::only($data, $fields);
         return $where;
     }
@@ -139,5 +140,24 @@ class AddressService extends BaseService
         }
     }
 
+    public function importTemplate()
+    {
+
+    }
+
+    public function import()
+    {
+
+    }
+
+    public function createByList()
+    {
+        
+    }
+
+    public function excelExport()
+    {
+
+    }
 
 }

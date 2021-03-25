@@ -33,8 +33,8 @@ abstract class ATourNotify
     public static $tourFields = ['line_name', 'tour_no', 'execution_date', 'expect_distance', 'expect_time', 'driver_id', 'driver_name', 'driver_phone', 'car_id', 'car_no'];
 
     public static $batchFields = [
-        'tour_no', 'batch_no', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number',
-        'place_city', 'place_street', 'place_address', 'expect_arrive_time', 'expect_time', 'expect_distance', 'signature', 'cancel_remark',
+        'tour_no', 'batch_no', 'place_fullname', 'place_phone', 'place_country','place_province', 'place_post_code', 'place_house_number',
+        'place_city','place_district', 'place_street', 'place_address', 'expect_arrive_time', 'expect_time', 'expect_distance', 'signature', 'cancel_remark',
         'pay_type', 'pay_picture', 'status', 'auth_fullname', 'auth_birth_date'
     ];
 

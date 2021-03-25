@@ -80,6 +80,8 @@ use Illuminate\Support\Facades\App;
  * @method static carAccidentDealType($args = null)
  * @method static carAccidentDuty($args = null)
  * @method static carAccidentInsPay($args = null)
+ * @method static orderTemplateDestinationModeList($args = null)
+ * @method static orderTemplateTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -596,6 +598,18 @@ trait ConstTranslateTrait
     public static $carAccidentInsPay = [
         BaseConstService::CAR_ACCIDENT_INS_PAY_TYPE_1 => '是',
         BaseConstService::CAR_ACCIDENT_INS_PAY_TYPE_2 => '否',
+    ];
+
+    public static $orderTemplateDestinationModeList = [
+        BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_1 => '省市区',
+        BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_2 => '省市',
+        BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_3 => '市区',
+        BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_4 => '邮编',
+    ];
+
+    public static $orderTemplateTypeList = [
+        BaseConstService::ORDER_TEMPLATE_TYPE_1 => '模板一',
+        BaseConstService::ORDER_TEMPLATE_TYPE_2 => '模板二',
     ];
 
     /**

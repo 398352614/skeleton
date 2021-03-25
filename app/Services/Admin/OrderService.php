@@ -393,6 +393,7 @@ class OrderService extends BaseService
         $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $this->getTrackingOrderService()->end($dbOrder['tracking_order_no'] ?? '');
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
+        $this->stockUpdate($dbOrder);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
@@ -960,6 +961,152 @@ class OrderService extends BaseService
     }
 
     /**
+     * 批量订单面单打印
+     * @param $idList
+     * @return mixed
+     * @throws BusinessLogicException
+     * @throws \Throwable
+     */
+    public function orderBillPrint($idList)
+    {
+        $data = [];
+        $orderList = $this->printData($idList);
+        $orderList = $this->printBarcode($orderList);
+        foreach ($orderList as $k => $v) {
+            $data[] = $this->printForm($v);
+        }
+        return $data;
+    }
+
+    /**
+     * 获取打印数据
+     * @param $idList
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function printData($idList)
+    {
+        $newOrderList = [];
+        $orderList = parent::getList(['id' => ['in', explode_id_string($idList)]], ['*'], false)->toArray();
+        if(empty($orderList)){
+            throw new BusinessLogicException('订单不存在');
+        }
+        $orderNoList = array_column($orderList, 'order_no');
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'expect_quantity', 'express_first_no'], false)->toArray();
+        $packageList = array_create_group_index($packageList, 'order_no');
+        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'expect_quantity', 'code'], false)->toArray();
+        $materialList = array_create_group_index($materialList, 'order_no');
+        foreach ($orderList as $k => $v) {
+            $newOrderList[$k]['order_no'] = $v['order_no'];
+
+            $newOrderList[$k]['sender_fullname'] = $v['place_fullname'];
+            $newOrderList[$k]['sender_phone'] = $v['place_phone'];
+            $newOrderList[$k]['sender_address'] = $v['place_address'];
+            $newOrderList[$k]['sender_street_house_number'] = $v['place_street'] . $v['place_house_number'];
+            $newOrderList[$k]['sender_post_code_city_country'] = $v['place_post_code'] . $v['place_city'] . $v['place_country'];
+
+
+            $newOrderList[$k]['receiver_fullname'] = $v['second_place_fullname'];
+            $newOrderList[$k]['receiver_phone'] = $v['second_place_phone'];
+            $newOrderList[$k]['receiver_address'] = $v['second_place_address'];
+            $newOrderList[$k]['receiver_street_house_number'] = $v['second_place_street'] . $v['second_place_house_number'];
+            $newOrderList[$k]['receiver_post_code_city_country'] = $v['second_place_post_code'] . $v['second_place_city'] . $v['second_place_country'];
+
+            if ($v['type'] !== BaseConstService::ORDER_TYPE_3) {
+                $newOrderList[$k]['destination_province'] = $v['place_province'];
+                $newOrderList[$k]['destination_city'] = $v['place_city'];
+                $newOrderList[$k]['destination_district'] = $v['place_district'];
+                $newOrderList[$k]['destination_post_code'] = $v['place_post_code'];
+                $newOrderList[$k]['destination_street'] = $v['place_street'];
+                $newOrderList[$k]['destination_house_number'] = $v['place_house_number'];
+                $newOrderList[$k]['destination_country'] = $v['place_country'];
+            } else {
+                $newOrderList[$k]['destination_province'] = $v['second_place_province'];
+                $newOrderList[$k]['destination_city'] = $v['second_place_city'];
+                $newOrderList[$k]['destination_district'] = $v['second_place_district'];
+                $newOrderList[$k]['destination_post_code'] = $v['second_place_post_code'];
+                $newOrderList[$k]['destination_street'] = $v['second_place_street'];
+                $newOrderList[$k]['destination_house_number'] = $v['second_place_house_number'];
+                $newOrderList[$k]['destination_country'] = $v['second_place_country'];
+            }
+            $newOrderList[$k]['tracking_order'] = $this->getTrackingOrderService()->getInfo(['order_no'=> $v['order_no']], ['*'], false, ['created_at' => 'desc']);
+            if (empty($newOrderList)) {
+                throw new BusinessLogicException('订单[:order_no]未生成运单，无法打印面单', 1000, ['order_no' => $v['order_no']]);
+            }
+            $newOrderList[$k]['warehouse_street_house_number'] = $newOrderList[$k]['tracking_order']['warehouse_country'] . $newOrderList[$k]['tracking_order']['warehouse_house_number'];
+            $newOrderList[$k]['warehouse_post_code_city_country'] = $newOrderList[$k]['tracking_order']['warehouse_post_code'] . $newOrderList[$k]['tracking_order']['warehouse_city'] . $newOrderList[$k]['tracking_order']['warehouse_country'];
+            $newOrderList[$k]['mask_code'] = $v['mask_code'];
+            $newOrderList[$k]['replace_amount'] = $v['replace_amount'];
+            $newOrderList[$k]['settlement_amount'] = $v['settlement_amount'];
+            $newOrderList[$k]['package_count'] = !empty($packageList) ? collect($packageList[$v['order_no']])->sum('expect_quantity') : 0;
+            $newOrderList[$k]['material_count'] =!empty($materialList) ?  collect($materialList[$v['order_no']])->sum('expect_quantity'): 0;
+            $newOrderList[$k]['package_list'] = !empty($packageList) ? $packageList[$v['order_no']] : [];
+
+        }
+        return $newOrderList;
+    }
+
+    /**
+     * 按模板打印
+     * @param $orderList
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function printBarcode($orderList)
+    {
+        //若是通用打印模板,则需要将快递号转为条码
+        foreach ($orderList as $key => $order) {
+            $orderList[$key]['order_barcode'] = BarcodeTrait::generateOne($order['order_no']);
+            if (!empty($order['package_list'])) {
+                $orderList[$key]['first_package_barcode'] = BarcodeTrait::generateOne($order['package_list'][0]['express_first_no']);
+                $orderList[$key]['first_package_no'] = $order['package_list'][0]['express_first_no'];
+            } else {
+                $orderList[$key]['first_package_barcode'] = '';
+            }
+        }
+        return $orderList;
+    }
+
+    /**
+     * 打印序列化
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function printForm($params)
+    {
+        $data = [];
+        $fields = ['order_no','package_count', 'material_count', 'replace_amount', 'settlement_amount', 'order_barcode', 'first_package_barcode','first_package_no',
+            'sender_fullname', 'sender_phone', 'sender_address', 'sender_street_house_number', 'receiver_post_code_city_country',
+            'receiver_fullname', 'receiver_phone', 'receiver_address', 'receiver_street_house_number', 'receiver_post_code_city_country',
+
+            'destination', 'warehouse_street_house_number', 'warehouse_post_code_city_country'];
+        $orderTemplate = $this->getOrderTemplateService()->getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
+        if (empty($orderTemplate)) {
+            throw new BusinessLogicException('未设置打印模板，请联系管理员设置打印模板');
+        }
+        $orderTemplate = $orderTemplate->toArray();
+        if ($orderTemplate['type'] = BaseConstService::ORDER_TEMPLATE_TYPE_1) {
+            $data['template_name'] = 'PrintStandard';
+        } else {
+            $data['template_name'] = 'PrintStandard2';
+        }
+        if ($orderTemplate['destination_mode'] == BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_1) {
+            $params['destination'] = $params['destination_province'] . $params['destination_city'] . $params['destination_district'];
+        } elseif ($orderTemplate['destination_mode'] == BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_2) {
+            $params['destination'] = $params['destination_province'] . $params['destination_city'];
+        } elseif ($orderTemplate['destination_mode'] == BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_3) {
+            $params['destination'] = $params['destination_city'] . $params['destination_district'];
+        } elseif ($orderTemplate['destination_mode'] == BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_4) {
+            $params['destination'] = $params['destination_post_code'];
+        }
+        $data['template'] = Arr::except($orderTemplate, ['logo', 'company_id', 'destination_mode', 'type', 'created_at', 'updated_at']);
+        $params = Arr::only($params, $fields);
+        $data['api'] = $params;
+        return $data;
+    }
+
+    /**
      * 订单导出
      * @param $ids
      * @return array
@@ -1132,5 +1279,23 @@ class OrderService extends BaseService
             }
         }
         return;
+    }
+
+
+    /**
+     * 库存更新
+     * @param $order
+     * @throws BusinessLogicException
+     */
+    public function stockUpdate($order)
+    {
+        $expiredStockList = $this->getStockService()->getList(['order_no' => $order['order_no'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['*'], false);
+        if (!empty($expiredStockList)) {
+            $order = $this->getInfo(['order_no' => $order['order_no']], ['*'], false, ['id' => 'desc']);
+            if (empty($order)) {
+                throw new BusinessLogicException('订单不存在');
+            }
+            $this->getStockService()->update(['order_no' => $order['order_no'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_3]);
+        }
     }
 }

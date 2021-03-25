@@ -106,13 +106,13 @@ cd api
 supervisorctl restart all
 ```
 
-<h2 id='3'> 初始化项目 </h2>  
+### 2. 初始化项目
 #### 3.1 nginx配置
 在服务器上/etc/nginx/conf.d/文件夹中，新建.conf配置文件，在service下加上以下配置：  
 ```
 client_max_body_size 50M;
 client_body_buffer_size 1024M;
-```
+```  
 #### 3.2 框架初始化
 在根目录下，根据.env.example编写.env文件。  
 生成APP秘钥。  
@@ -144,7 +144,7 @@ php artisan migrate
 ```
 #### 3.4 缓存初始化
 地址模板缓存  
-```
+```OrderService
 php artisan address-template:cache
 ```
 邮编缓存
@@ -227,7 +227,7 @@ postcode.nl网站API地址：[https://api.postcode.nl/rest](https://api.postcode
 
 
 ### 3. 自定义命令
-在Laravel框架下，拥有便利的自定义artisan命令。在项目目录下的app/Console/Commonds文目录内，存放有所有的自定义artisan命令，其中可用的有以下命令。  
+在Laravel框架下，拥有便利的自定义artisan命令。在项目目录下的app/Console/Commands文目录内，存放有所有的自定义artisan命令，其中可用的有以下命令。  
 #### 3.1 抛错自动翻译
 ```
 php artisan translate

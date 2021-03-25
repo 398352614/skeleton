@@ -69,4 +69,25 @@ class AddressController extends BaseController
     {
         return $this->service->destroy($id);
     }
+
+    public function excelExport()
+    {
+        return $this->service->excelExport();
+
+    }
+
+    public function import()
+    {
+        return $this->service->import();
+    }
+
+    public function importTemplate()
+    {
+        return $this->service->importTemplate();
+    }
+
+    public function storeByList()
+    {
+        return $this->service->createByList();
+    }
 }

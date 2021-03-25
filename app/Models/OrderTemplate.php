@@ -2,20 +2,21 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
- * 线路表
+ * 地址模板 表
  * Class Employee
  * @package App\Models
  */
-class Warehouse extends BaseModel
+class OrderTemplate extends BaseModel
 {
     /**
-     * 司机实际取件导航
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'warehouse';
+    protected $table = 'order_template';
 
     /**
      * The primary key for the model.
@@ -45,21 +46,19 @@ class Warehouse extends BaseModel
      */
     protected $fillable = [
         'company_id',
-        'name',
-        'fullname',
-        'phone',
-        'country',
-        'province',
-        'post_code',
-        'house_number',
-        'city',
-        'district',
-        'street',
-        'address',
-        'lon',
-        'lat',
-        'created_at',
-        'updated_at',
+        'destination_mode',
+        'logo',
+        'sender',
+        'receiver',
+        'destination',
+        'carrier',
+        'carrier_address',
+        'contents',
+        'package',
+        'material',
+        'count',
+        'replace_amount',
+        'settlement_amount',
     ];
 
     /**
@@ -71,6 +70,11 @@ class Warehouse extends BaseModel
 
     ];
 
+    protected $appends = [
+        'destination_mode_name',
+        'type_name'
+    ];
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -78,8 +82,14 @@ class Warehouse extends BaseModel
      */
     protected $dates = [];
 
-    protected $appends = [
-        'country_name'
-    ];
 
+    public function getDestinationModeNameAttribute()
+    {
+        return empty($this->destination_mode) ? null : ConstTranslateTrait::orderTemplateDestinationModeList($this->destination_mode);
+    }
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::orderTemplateTypeList($this->type);
+    }
 }

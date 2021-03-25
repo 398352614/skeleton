@@ -137,6 +137,7 @@ trait LocationTrait
                 $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
                 $featureList = json_decode((string)($result->getBody()), TRUE)['features'];
             } catch (\Exception $ex) {
+                Log::info($ex->getMessage());
                 throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取具体信息，请稍后再尝试');
             }
             $count = count($featureList);
@@ -147,7 +148,7 @@ trait LocationTrait
             return [
                 'province' => $featureList[0]['properties']['state'] ?? '',
                 'city' => $featureList[0]['properties']['city']  ?? $city,
-                'district' => '',
+                'district' => $featureList[0]['properties']['district'] ?? '',
                 'street' => $featureList[0]['properties']['street'] ??$street,
                 'house_number' => $houseNumber,
                 'lon' => $featureList[0]['geometry']['coordinates'][0],

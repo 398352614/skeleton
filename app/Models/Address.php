@@ -49,15 +49,18 @@ class Address extends BaseModel
         'merchant_id',
         'place_phone',
         'place_country',
+        'place_province',
         'place_post_code',
         'place_house_number',
         'place_city',
+        'place_district',
         'place_street',
         'place_address',
         'place_lon',
         'place_lat',
         'created_at',
         'updated_at',
+        'type'
     ];
 
     /**

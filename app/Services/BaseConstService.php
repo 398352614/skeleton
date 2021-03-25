@@ -63,7 +63,6 @@ class BaseConstService
     const FLOW_CAR_MANAGEMENT_INDEX = 'car-management.index';
 
 
-
     //是否需要验证
     const IS_AUTH_1 = 1;
     const IS_AUTH_2 = 2;
@@ -588,4 +587,14 @@ class BaseConstService
     //保险是否赔付：1-是2-否
     const CAR_ACCIDENT_INS_PAY_TYPE_1 = 1;
     const CAR_ACCIDENT_INS_PAY_TYPE_2 = 2;
+
+    //订单目的地模式1-省市区2-省市3-市区4-邮编
+    const ORDER_TEMPLATE_DESTINATION_MODE_1 = 1;
+    const ORDER_TEMPLATE_DESTINATION_MODE_2 = 2;
+    const ORDER_TEMPLATE_DESTINATION_MODE_3 = 3;
+    const ORDER_TEMPLATE_DESTINATION_MODE_4 = 4;
+
+    //订单模板1-模板一2-模板二
+    const ORDER_TEMPLATE_TYPE_1 = 1;
+    const ORDER_TEMPLATE_TYPE_2 = 2;
 }

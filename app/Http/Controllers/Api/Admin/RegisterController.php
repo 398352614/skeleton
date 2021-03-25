@@ -18,6 +18,7 @@ use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
 use App\Models\OrderNoRule;
+use App\Models\OrderTemplate;
 use App\Models\Role;
 use App\Models\SpecialTimeCharging;
 use App\Models\TransportPrice;
@@ -90,9 +91,33 @@ class RegisterController extends BaseController
             $merchant = $this->addMerchant($company, $merchantGroup);//初始化货主API
             $this->addMerchantApi($company, $merchant);//初始化货主API
             $this->addFee($company);//添加费用
+            $this->addOrderTemplate($company);//添加打印模板
+
             return 'true';
         });
     }
+
+    public function addOrderTemplate($company)
+    {
+        OrderTemplate::create([
+            'company_id' => $company['id'],
+            'type' => BaseConstService::ORDER_TEMPLATE_TYPE_1,
+            'logo' => '',
+            'destination_mode' => BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_1,
+            'sender' => '发件人',
+            'receiver' => '收件人',
+            'destination' => '目的地',
+            'carrier' => '承运人',
+            'carrier_address' => '承运人地址',
+            'contents' => '物品信息',
+            'package' => '包裹',
+            'material' => '材料',
+            'count' => '数量',
+            'replace_amount' => '代收货款',
+            'settlement_amount' => '运费金额'
+        ]);
+    }
+
 
     /**
      * 初始化订单号规则
