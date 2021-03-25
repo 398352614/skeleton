@@ -93,7 +93,7 @@ class SparePartsRecordServices extends BaseService
             throw new BusinessLogicException(__('记录不存在'));
         }
 
-        if ($record['receive_status'] == BaseConstService::SPARE_PARTS_RECORD_TYPE_2) {
+        if ($record->getOriginal('receive_status') == BaseConstService::SPARE_PARTS_RECORD_TYPE_2) {
             throw new BusinessLogicException(__('该记录已经作废'));
         }
 

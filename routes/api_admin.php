@@ -329,7 +329,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //备品领取
         Route::post('/record', 'SparePartsRecordController@store')->name('spare-parts.createRecord');
         //领取作废
-        Route::get('/record/{id}', 'SparePartsRecordController@invalid')->name('spare-parts.invalid');
+        Route::put('/record/{id}', 'SparePartsRecordController@invalid')->name('spare-parts.invalid');
     });
 
     //设备管理
