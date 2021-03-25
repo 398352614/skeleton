@@ -52,7 +52,7 @@ class OrderTemplateService extends BaseService
         $templateList = array_create_index(ConstTranslateTrait::formatList(ConstTranslateTrait::$printTemplateList), 'id');
         $disk = Storage::disk('admin_print_template_public');
         $fileList = $disk->allFiles();
-        $orderTemplate = parent::getInfo(['company_id' => auth()->user()->company_id]);
+        $orderTemplate = parent::getInfo(['company_id' => auth()->user()->company_id],['*'],false);
         foreach ($fileList as $file) {
             $fileName = explode('.', $file)[0];
             if (!empty($templateList[$fileName])) {
