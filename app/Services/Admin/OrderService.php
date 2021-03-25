@@ -1000,6 +1000,7 @@ class OrderService extends BaseService
         $materialList = array_create_group_index($materialList, 'order_no');
         foreach ($orderList as $k => $v) {
             $newOrderList[$k]['order_no'] = $v['order_no'];
+            $newOrderList[$k]['mask_code'] = $v['mask_code'];
 
             $newOrderList[$k]['sender']['fullname'] = $v['place_fullname'];
             $newOrderList[$k]['sender']['phone'] = $v['place_phone'];
@@ -1096,7 +1097,7 @@ class OrderService extends BaseService
     public function printForm($params)
     {
         $data = [];
-        $fields = ['order_no', 'package_count', 'material_count', 'replace_amount', 'settlement_amount', 'order_barcode', 'first_package_barcode', 'first_package_no',
+        $fields = ['order_no', 'package_count', 'material_count', 'replace_amount', 'settlement_amount', 'order_barcode', 'first_package_barcode', 'first_package_no','mask_code',
             'sender',
             'receiver',
             'warehouse',
@@ -1141,7 +1142,6 @@ class OrderService extends BaseService
             $image_data = file_get_contents($url);
             $url = 'data:' . $image_info['mime'] . ';base64,' . chunk_split(base64_encode($image_data));
         }catch (\Exception $e){
-            throw new BusinessLogicException('logo不存在');
         }
         return $url;
     }
