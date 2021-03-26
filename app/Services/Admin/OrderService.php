@@ -1137,7 +1137,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('未设置打印模板，请联系管理员设置打印模板');
         }
         $orderTemplate = $orderTemplate->toArray();
-        if ($orderTemplate['type'] = BaseConstService::ORDER_TEMPLATE_TYPE_1) {
+        if ($orderTemplate['type'] == BaseConstService::ORDER_TEMPLATE_TYPE_1) {
             $data['template_name'] = 'PrintStandard';
         } else {
             $data['template_name'] = 'PrintStandard2';
