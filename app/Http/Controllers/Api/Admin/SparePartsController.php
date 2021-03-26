@@ -1,6 +1,6 @@
 <?php
 /**
- * Created by NLE.TECH INC.
+ * Created Hunan NLE Network Technology Co., Ltd.
  * User : Crazy_Ning
  * Date : 3/23/2021
  * Time : 4:49 PM

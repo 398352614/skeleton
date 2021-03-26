@@ -125,6 +125,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/neutralize', 'OrderController@neutralize')->name('order.neutralize');
         //运价估算
         Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
+        //客服记录列表
+        Route::get('/customer', 'OrderCustomerRecordController@list')->name('order.customer');
+        //客服记录新增
+        Route::post('/customer', 'OrderCustomerRecordController@store')->name('order.CreateCustomer');
+        //客服记录删除
+        Route::delete('/customer/{id}', 'OrderCustomerRecordController@delete')->name('order.DeleteCustomer');
     });
 
     //物流查询
