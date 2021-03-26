@@ -243,6 +243,8 @@ class OrderService extends BaseService
         }
         //新增订单明细列表
         $this->addAllItemList($params);
+        //新增订单费用列表
+        //$this->addAmountList($params);
         //生成运单
         $tour = $this->getTrackingOrderService()->storeByOrder($order);
         return [
@@ -732,6 +734,32 @@ class OrderService extends BaseService
     }
 
     /**
+     * 添加货物列表
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    private function addAmountList($params)
+    {
+        $dataList = [];
+        //若存在包裹列表,则新增包裹列表
+        if (!empty($params['amount_list'])) {
+            foreach ($params['amount_list'] as $k => $v) {
+                $dataList[$k]['order_no'] = $params['order_no'];
+                $dataList[$k]['expect_amount'] = $v['expect_amount'];
+                $dataList[$k]['actual_amount'] = 0.00;
+                $dataList[$k]['type'] = $v['type'];
+                $dataList[$k]['remark'] = '';
+                $dataList[$k]['in_total'] = $v['in_total'] ? $v['in_total'] : BaseConstService::YES;
+                $dataList[$k]['status'] = BaseConstService::ORDER_AMOUNT_STATUS_2;
+            }
+            $rowCount = $this->getPackageService()->insertAll($dataList);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('订单费用新增失败！');
+            }
+        }
+    }
+
+    /**
      * 修改
      * @param $id
      * @param $data
@@ -1004,8 +1032,8 @@ class OrderService extends BaseService
 
             $newOrderList[$k]['sender']['fullname'] = $v['place_fullname'];
             $newOrderList[$k]['sender']['phone'] = $v['place_phone'];
-            $newOrderList[$k]['sender']['country'] =$v['place_country'];
-            $newOrderList[$k]['sender']['province'] =$v['place_province'];
+            $newOrderList[$k]['sender']['country'] = $v['place_country'];
+            $newOrderList[$k]['sender']['province'] = $v['place_province'];
             $newOrderList[$k]['sender']['city'] = $v['place_city'];
             $newOrderList[$k]['sender']['district'] = $v['place_district'];
             $newOrderList[$k]['sender']['post_code'] = $v['place_post_code'];
@@ -1015,8 +1043,8 @@ class OrderService extends BaseService
 
             $newOrderList[$k]['receiver']['fullname'] = $v['second_place_fullname'];
             $newOrderList[$k]['receiver']['phone'] = $v['second_place_phone'];
-            $newOrderList[$k]['receiver']['country'] =$v['second_place_country'];
-            $newOrderList[$k]['receiver']['province'] =$v['second_place_province'];
+            $newOrderList[$k]['receiver']['country'] = $v['second_place_country'];
+            $newOrderList[$k]['receiver']['province'] = $v['second_place_province'];
             $newOrderList[$k]['receiver']['city'] = $v['second_place_city'];
             $newOrderList[$k]['receiver']['district'] = $v['second_place_district'];
             $newOrderList[$k]['receiver']['post_code'] = $v['second_place_post_code'];
@@ -1047,8 +1075,9 @@ class OrderService extends BaseService
             if (empty($newOrderList)) {
                 throw new BusinessLogicException('订单[:order_no]未生成运单，无法打印面单', 1000, ['order_no' => $v['order_no']]);
             }
+            $newOrderList[$k]['tracking_order'] = $newOrderList[$k]['tracking_order']->toArray();
             $newOrderList[$k]['warehouse']['country'] = $newOrderList[$k]['tracking_order']['warehouse_country'];
-            $newOrderList[$k]['warehouse']['province'] = $newOrderList[$k]['tracking_order']['warehouse_country'];
+            $newOrderList[$k]['warehouse']['province'] = $newOrderList[$k]['tracking_order']['warehouse_province'];
             $newOrderList[$k]['warehouse']['city'] = $newOrderList[$k]['tracking_order']['warehouse_city'];
             $newOrderList[$k]['warehouse']['district'] = $newOrderList[$k]['tracking_order']['warehouse_district'];
             $newOrderList[$k]['warehouse']['post_code'] = $newOrderList[$k]['tracking_order']['warehouse_post_code'];
@@ -1059,8 +1088,8 @@ class OrderService extends BaseService
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
             $newOrderList[$k]['replace_amount'] = $v['replace_amount'];
             $newOrderList[$k]['settlement_amount'] = $v['settlement_amount'];
-            $newOrderList[$k]['package_count'] = !empty($packageList) ? collect($packageList[$v['order_no']])->sum('expect_quantity') : 0;
-            $newOrderList[$k]['material_count'] = !empty($materialList) ? collect($materialList[$v['order_no']])->sum('expect_quantity') : 0;
+            $newOrderList[$k]['package_count'] = !empty($packageList[$v['order_no']]) ? collect($packageList[$v['order_no']])->sum('expect_quantity') : 0;
+            $newOrderList[$k]['material_count'] = !empty($materialList[$v['order_no']]) ? collect($materialList[$v['order_no']])->sum('expect_quantity') : 0;
             $newOrderList[$k]['package_list'] = !empty($packageList) ? $packageList[$v['order_no']] : [];
 
         }
@@ -1097,7 +1126,7 @@ class OrderService extends BaseService
     public function printForm($params)
     {
         $data = [];
-        $fields = ['order_no', 'package_count', 'material_count', 'replace_amount', 'settlement_amount', 'order_barcode', 'first_package_barcode', 'first_package_no','mask_code',
+        $fields = ['order_no', 'package_count', 'material_count', 'replace_amount', 'settlement_amount', 'order_barcode', 'first_package_barcode', 'first_package_no', 'mask_code',
             'sender',
             'receiver',
             'warehouse',
@@ -1141,7 +1170,7 @@ class OrderService extends BaseService
             $image_info = getimagesize($url);
             $image_data = file_get_contents($url);
             $url = 'data:' . $image_info['mime'] . ';base64,' . chunk_split(base64_encode($image_data));
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
         }
         return $url;
     }
