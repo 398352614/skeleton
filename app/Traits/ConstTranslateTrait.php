@@ -84,6 +84,7 @@ use Illuminate\Support\Facades\App;
  * @method static sparePartsRecordStatus($args = null)
  * @method static orderTemplateDestinationModeList($args = null)
  * @method static orderTemplateTypeList($args = null)
+ * @method static carLengthTypeList($args = null)
  */
 trait ConstTranslateTrait
 {

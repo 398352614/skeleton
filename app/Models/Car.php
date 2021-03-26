@@ -136,5 +136,13 @@ class Car extends BaseModel
         return empty($this->repair) ? null : ConstTranslateTrait::carRepairList($this->repair);
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getCarLengthAttribute($value): string
+    {
+        return empty($value) ? '' : ConstTranslateTrait::carLengthTypeList($value);
+    }
 }
 
