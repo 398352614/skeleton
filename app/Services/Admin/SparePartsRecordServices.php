@@ -87,7 +87,7 @@ class SparePartsRecordServices extends BaseService
      */
     public function invalid(int $id)
     {
-        $record = $this->query->find($id);
+        $record = $this->model->find($id);
 
         if (empty($record)) {
             throw new BusinessLogicException(__('记录不存在'));
@@ -97,7 +97,7 @@ class SparePartsRecordServices extends BaseService
             throw new BusinessLogicException(__('该记录已经作废'));
         }
 
-        $stock = $this->getSparePartsStockService()->query->where('sp_no', $record['sp_no'])->first();
+        $stock = $this->getSparePartsStockService()->model->where('sp_no', $record['sp_no'])->first();
 
         $stock->increment('stock_quantity', $record['receive_quantity']);
 

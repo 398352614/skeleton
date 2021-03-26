@@ -72,7 +72,7 @@ class SparePartsStockService extends BaseService
      */
     public function create($data)
     {
-        $check = $this->query->where('sp_no', $data['sp_no'])->first();
+        $check = $this->model->where('sp_no', $data['sp_no'])->first();
 
         if (empty($check)) {
             return parent::create($data);
