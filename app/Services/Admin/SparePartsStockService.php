@@ -25,7 +25,7 @@ class SparePartsStockService extends BaseService
      * @var \string[][]
      */
     public $filterRules = [
-        'sp_no' => ['=', 'sp_no'],
+
     ];
 
     /**
@@ -45,13 +45,25 @@ class SparePartsStockService extends BaseService
     {
         $this->query->join('spare_parts', 'spare_parts_stock.sp_no', '=', 'spare_parts.sp_no', 'left');
 
+        $this->query->select(['spare_parts_stock.*', 'spare_parts.sp_name', 'spare_parts.sp_brand', 'spare_parts.sp_model', 'spare_parts.sp_unit']);
+
+        return parent::getPageList();
+    }
+
+    /**
+     * @return bool
+     */
+    public function setFilterRules()
+    {
         if (array_key_exists('sp_name', $this->formData)) {
             $this->query->where('spare_parts.sp_name', 'like', "%".$this->formData['sp_name']."%");
         }
 
-        $this->query->select(['spare_parts_stock.*', 'spare_parts.sp_name', 'spare_parts.sp_brand', 'spare_parts.sp_model', 'spare_parts.sp_unit']);
+        if (array_key_exists('sp_no', $this->formData)) {
+            $this->query->where('spare_parts.sp_no', 'like', "%".$this->formData['sp_no']."%");
+        }
 
-        return parent::getPageList();
+        return parent::setFilterRules();
     }
 
     /**
@@ -60,7 +72,7 @@ class SparePartsStockService extends BaseService
      */
     public function create($data)
     {
-        $check = $this->query->where('sp_no', $data['sp_no'])->first();
+        $check = $this->model->where('sp_no', $data['sp_no'])->first();
 
         if (empty($check)) {
             return parent::create($data);

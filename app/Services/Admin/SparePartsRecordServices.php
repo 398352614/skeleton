@@ -66,7 +66,7 @@ class SparePartsRecordServices extends BaseService
      */
     public function create($data)
     {
-        $stock = $this->getSparePartsStockService()->query->where('sp_no', $data['sp_no'])->first();
+        $stock = $this->getSparePartsStockService()->model->where('sp_no', $data['sp_no'])->first();
 
         if (empty($stock)) {
             throw new BusinessLogicException(__('该备品没有库存'));
@@ -87,17 +87,17 @@ class SparePartsRecordServices extends BaseService
      */
     public function invalid(int $id)
     {
-        $record = $this->query->find($id);
+        $record = $this->model->find($id);
 
         if (empty($record)) {
             throw new BusinessLogicException(__('记录不存在'));
         }
 
-        if ($record['receive_status'] == BaseConstService::SPARE_PARTS_RECORD_TYPE_2) {
+        if ($record->getOriginal('receive_status') == BaseConstService::SPARE_PARTS_RECORD_TYPE_2) {
             throw new BusinessLogicException(__('该记录已经作废'));
         }
 
-        $stock = $this->getSparePartsStockService()->query->where('sp_no', $record['sp_no'])->first();
+        $stock = $this->getSparePartsStockService()->model->where('sp_no', $record['sp_no'])->first();
 
         $stock->increment('stock_quantity', $record['receive_quantity']);
 

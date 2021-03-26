@@ -70,9 +70,13 @@ class AddressController extends BaseController
         return $this->service->destroy($id);
     }
 
+    /**
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
     public function excelExport()
     {
-        return $this->service->excelExport();
+        return $this->service->export();
 
     }
 

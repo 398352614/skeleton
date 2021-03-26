@@ -129,7 +129,7 @@ class CarMaintainService extends BaseService
         $data = $this->setFilter()->getList();
 
         if ($data->isEmpty()) {
-            throw new BusinessLogicException('数据不存在');
+            throw new BusinessLogicException(__('数据不存在'));
         }
 
         $cellData = [];
@@ -137,7 +137,7 @@ class CarMaintainService extends BaseService
             $cellData[] = array_only_fields_sort($v, $this->exportExcelHeader);
         }
         if (empty($cellData)) {
-            throw new BusinessLogicException('数据不存在');
+            throw new BusinessLogicException(__('数据不存在'));
         }
 
         $dir = 'carMaintainOut';
