@@ -56,7 +56,7 @@ class CarMaintainController extends BaseController
      */
     public function export()
     {
-       return $this->service->exportExcel();
+       return $this->service->exportExcel($this->data['id_list']);
     }
 
     /**
