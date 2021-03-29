@@ -47,6 +47,7 @@ class TrackingOrderTrail extends BaseModel
         'company_id',
         'merchant_id',
         'order_no',
+        'type',
         'tracking_order_no',
         'content',
         'created_at',

@@ -98,7 +98,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取订单的运单列表
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList')->name('order.index');
         //获取订单的运单轨迹列表
-        Route::get('/{id}/tracking-order-trail', 'OrderController@getTrackingOrderTrailList')->name('order.tracking-order-trail-index');
+        Route::get('/{id}/tracking-order-trail', 'OrderController@getTrackingOrderTrailList')->name('order.index');
         //订单轨迹
         Route::get('/{order_no}/trail', 'OrderTrailController@index')->name('order.trail');
         //修改

@@ -125,6 +125,7 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
             'tracking_order_no' => $trackingOrder['tracking_order_no'],
             'order_no' => $trackingOrder['order_no'],
             'merchant_id' => $trackingOrder['merchant_id'],
+            'type' => $action,
             'content' => $content,
             'created_at' => $now,
             'updated_at' => $now
