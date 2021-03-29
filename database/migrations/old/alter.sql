@@ -26,7 +26,7 @@ ALTER TABLE memorandum MODIFY `content` varchar(250) CHARACTER SET utf8mb4 COLLA
 ALTER TABLE `order` MODIFY `order_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '订单号';
 ALTER TABLE `order` MODIFY `batch_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '站点编号';
 ALTER TABLE `order` MODIFY `tour_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '取件线路编号';
-ALTER TABLE `order` MODIFY `out_order_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '外部订单号';
+ALTER TABLE `order` MODIFY `out_order_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '货号';
 ALTER TABLE `order` MODIFY `express_first_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '快递单号1';
 ALTER TABLE `order` MODIFY `express_second_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '快递单号2';
 ALTER TABLE `order` MODIFY `source` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '来源';

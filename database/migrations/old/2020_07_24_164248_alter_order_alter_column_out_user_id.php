@@ -14,7 +14,7 @@ class AlterOrderAlterColumnOutUserId extends Migration
     public function up()
     {
         Schema::table('order', function (Blueprint $table) {
-            $table->string('out_user_id')->default('')->nullable()->after('type')->comment('外部客户ID')->change();
+            $table->string('out_user_id')->default('')->nullable()->after('type')->comment('客户单号')->change();
         });
     }
 
@@ -26,7 +26,7 @@ class AlterOrderAlterColumnOutUserId extends Migration
     public function down()
     {
         Schema::table('order', function (Blueprint $table) {
-            $table->integer('out_user_id')->default(0)->nullable()->after('type')->comment('外部客户ID')->change();
+            $table->integer('out_user_id')->default(0)->nullable()->after('type')->comment('客户单号')->change();
         });
     }
 }

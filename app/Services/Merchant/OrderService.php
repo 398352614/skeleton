@@ -567,13 +567,13 @@ class OrderService extends BaseService
         !empty($params['package_list']) && $this->getPackageService()->check($params['package_list'], $orderNo);
         //验证材料列表
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
-        //若存在外部订单号,则判断是否存在已预约的订单号
+        //若存在货号,则判断是否存在已预约的订单号
         if (!empty($params['out_order_no'])) {
             $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = parent::getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
             if (!empty($dbOrder)) {
-                throw new BusinessLogicException('外部订单号已存在', 1005, [], [
+                throw new BusinessLogicException('货号已存在', 1005, [], [
                     'order_no' => $dbOrder['order_no'],
                     'out_order_no' => $dbOrder['out_order_no'] ?? '',
                     'batch_no' => '',

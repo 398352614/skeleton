@@ -889,4 +889,16 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //审核
         Route::put('/{id}/deal', 'stockExceptionController@deal')->name('stock-exception.deal');
     });
+
+    //订单费用管理
+    Route::prefix('order-amount')->group(function () {
+        //查询
+        Route::get('/', 'orderAmountController@index')->name('order-amount.index');
+        //详情
+        Route::get('/{id}', 'orderAmountController@show')->name('order-amount.index');
+        //新增
+        Route::post('/', 'orderAmountController@store')->name('order-amount.store');
+        //修改
+        Route::put('/{id}', 'orderAmountController@update')->name('order-amount.update');
+    });
 });

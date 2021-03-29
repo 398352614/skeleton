@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\Api\BaseResource;
 use App\Models\BaseModel;
 use App\Models\OrderNoRule;
 use App\Traits\FactoryInstanceTrait;
@@ -65,6 +66,9 @@ class BaseService
 
     public function __construct(Model $model, $resource = null, $infoResource = null)
     {
+        if (empty($resource)) {
+            $resource = $infoResource = BaseResource::class;
+        }
         $this->model = $model;
         $this->query = $this->model::query();
         $this->resource = $resource;

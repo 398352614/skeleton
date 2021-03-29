@@ -64,7 +64,6 @@ class BaseConstService
     const FLOW_CAR_MANAGEMENT_INDEX = 'car-management.index';
 
 
-
     //是否需要验证
     const IS_AUTH_1 = 1;
     const IS_AUTH_2 = 2;
@@ -157,6 +156,7 @@ class BaseConstService
     const ORDER_TYPE_1 = 1;
     const ORDER_TYPE_2 = 2;
     const ORDER_TYPE_3 = 3;
+    const ORDER_TYPE_4 = 4;
 
     //订单出库状态1-可出库2-不可出库
     const OUT_STATUS_1 = 1;
@@ -616,4 +616,69 @@ class BaseConstService
     //领取状态:1-正常2-已作废
     const SPARE_PARTS_RECORD_TYPE_1 = 1;
     const SPARE_PARTS_RECORD_TYPE_2 = 2;
+
+    //运输方式
+    const ORDER_TRANSPORT_MODE_1 = 1;
+    const ORDER_TRANSPORT_MODE_2 = 2;
+
+    //订单始发地
+    const ORDER_ORIGIN_TYPE_1 = 1;
+    const ORDER_ORIGIN_TYPE_2 = 2;
+
+    //材料类型
+    const MATERIAL_TYPE_1 = 1;
+    const MATERIAL_TYPE_2 = 2;
+    const MATERIAL_TYPE_3 = 3;
+    const MATERIAL_TYPE_4 = 4;
+    const MATERIAL_TYPE_5 = 5;
+    const MATERIAL_TYPE_6 = 6;
+    const MATERIAL_TYPE_7 = 7;
+    const MATERIAL_TYPE_8 = 8;
+    const MATERIAL_TYPE_9 = 9;
+    const MATERIAL_TYPE_10 = 10;
+
+    //材料包装
+    const MATERIAL_PACK_TYPE_1 = 1;
+    const MATERIAL_PACK_TYPE_2 = 2;
+    const MATERIAL_PACK_TYPE_3 = 3;
+    const MATERIAL_PACK_TYPE_4 = 4;
+    const MATERIAL_PACK_TYPE_5 = 5;
+    const MATERIAL_PACK_TYPE_6 = 6;
+    const MATERIAL_PACK_TYPE_7 = 7;
+    const MATERIAL_PACK_TYPE_8 = 8;
+    const MATERIAL_PACK_TYPE_9 = 9;
+    const MATERIAL_PACK_TYPE_10 = 10;
+    const MATERIAL_PACK_TYPE_11 = 11;
+    const MATERIAL_PACK_TYPE_12 = 12;
+
+    //包裹特性
+    const PACKAGE_FEATURE_1 = 1;
+    const PACKAGE_FEATURE_2 = 2;
+    const PACKAGE_FEATURE_3 = 3;
+    const PACKAGE_FEATURE_4 = 4;
+
+    //控货方式
+    const ORDER_CONTROL_MODE_1 = 1;
+    const ORDER_CONTROL_MODE_2 = 2;
+
+    //费用类型
+    const ORDER_AMOUNT_TYPE_1 = 1;
+    const ORDER_AMOUNT_TYPE_2 = 2;
+    const ORDER_AMOUNT_TYPE_3 = 3;
+    const ORDER_AMOUNT_TYPE_4 = 4;
+    const ORDER_AMOUNT_TYPE_5 = 5;
+    const ORDER_AMOUNT_TYPE_6 = 6;
+    const ORDER_AMOUNT_TYPE_7 = 7;
+    const ORDER_AMOUNT_TYPE_8 = 8;
+    const ORDER_AMOUNT_TYPE_9 = 9;
+    const ORDER_AMOUNT_TYPE_10 = 10;
+    const ORDER_AMOUNT_TYPE_11 = 11;
+
+    //支付状态
+    const ORDER_AMOUNT_STATUS_1 = 1;
+    const ORDER_AMOUNT_STATUS_2 = 2;
+    const ORDER_AMOUNT_STATUS_3 = 3;
+    const ORDER_AMOUNT_STATUS_4 = 4;
+    const ORDER_AMOUNT_STATUS_5 = 5;
+
 }

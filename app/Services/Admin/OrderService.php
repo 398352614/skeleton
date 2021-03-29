@@ -208,7 +208,11 @@ class OrderService extends BaseService
         if (empty($dbOrder)) {
             throw new BusinessLogicException('订单不存在！');
         }
-        return $this->getTrackingOrderService()->getList(['order_no' => $dbOrder->order_no], ['*'], true);
+        $dbTrackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $dbOrder->order_no], ['*'], true);
+        if (empty($dbTrackingOrder)) return [];
+        $dbTrackingOrder['package_list'] = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['*'], false)->toArray();
+        $dbTrackingOrder['material_list'] = $this->getTrackingOrderMaterialService()->getList(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['*'], false)->toArray();
+        return $dbTrackingOrder;
     }
 
     public function initStore()
@@ -244,7 +248,7 @@ class OrderService extends BaseService
         //新增订单明细列表
         $this->addAllItemList($params);
         //新增订单费用列表
-        //$this->addAmountList($params);
+        $this->addAmountList($params);
         //生成运单
         $tour = $this->getTrackingOrderService()->storeByOrder($order);
         return [
@@ -801,6 +805,13 @@ class OrderService extends BaseService
             throw new BusinessLogicException('修改失败，请重新操作');
         }
         //新增包裹列表和材料列表
+        $this->addAllItemList($data);
+        //删除费用
+        $rowCount = $this->getMaterialService()->delete(['order_no' => $dbOrder['order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
+        //新增费用
         $this->addAllItemList($data);
         /******************************判断是否需要更换站点(取派日期+收货方地址 验证)***************************************/
         $this->getTrackingOrderService()->updateByOrder($data);

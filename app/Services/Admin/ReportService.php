@@ -182,7 +182,7 @@ class ReportService extends BaseService
             }
         }
         $info = $this->countByPayType($info, $batchList);
-        //将订单的外部订单号赋值给其所有包裹
+        //将订单的货号赋值给其所有包裹
         foreach ($packageList as $k => $v) {
             $packageList[$k]['out_order_no'] = collect($orderList)->where('order_no', $v['order_no'])->first()['out_order_no'] ?? '';
         }

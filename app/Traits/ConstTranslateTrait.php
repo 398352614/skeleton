@@ -85,6 +85,8 @@ use Illuminate\Support\Facades\App;
  * @method static orderTemplateDestinationModeList($args = null)
  * @method static orderTemplateTypeList($args = null)
  * @method static carLengthTypeList($args = null)
+ * @method static orderAmountTypeList($args = null)
+ * @method static orderAmountStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -193,9 +195,10 @@ trait ConstTranslateTrait
     //订单类型1-取件2-派件3-取派
     public static $orderTypeList = [
         BaseConstService::ORDER_TYPE_0 => '全部',
-        BaseConstService::ORDER_TYPE_1 => '取件',
-        BaseConstService::ORDER_TYPE_2 => '派件',
-        BaseConstService::ORDER_TYPE_3 => '取派件'
+        BaseConstService::ORDER_TYPE_1 => '提货->仓库',
+        BaseConstService::ORDER_TYPE_2 => '仓库->配送',
+        BaseConstService::ORDER_TYPE_3 => '提货->仓库->配送',
+        BaseConstService::ORDER_TYPE_4 => '提货->配送'
     ];
 
     //订单来源1-手动添加2-批量导入3-第三方
@@ -214,7 +217,7 @@ trait ConstTranslateTrait
     //订单状态
     public static $orderStatusList = [
         BaseConstService::ORDER_STATUS_0 => '全部',
-        BaseConstService::ORDER_STATUS_1 => '待取派',
+        BaseConstService::ORDER_STATUS_1 => '待受理',
         BaseConstService::ORDER_STATUS_2 => '取派中',
         BaseConstService::ORDER_STATUS_3 => '已完成',
         BaseConstService::ORDER_STATUS_4 => '取派失败',
@@ -224,19 +227,19 @@ trait ConstTranslateTrait
     //运单类型1-取2-派
     public static $trackingOrderTypeList = [
         BaseConstService::TRACKING_ORDER_TYPE_0 => '全部',
-        BaseConstService::TRACKING_ORDER_TYPE_1 => '取件',
-        BaseConstService::TRACKING_ORDER_TYPE_2 => '派件',
+        BaseConstService::TRACKING_ORDER_TYPE_1 => '提货',
+        BaseConstService::TRACKING_ORDER_TYPE_2 => '配送',
     ];
 
     //订单状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-回收站
     public static $trackingOrderStatusList = [
         BaseConstService::TRACKING_ORDER_STATUS_0 => '全部',
-        BaseConstService::TRACKING_ORDER_STATUS_1 => '待分配',
-        BaseConstService::TRACKING_ORDER_STATUS_2 => '已分配',
-        BaseConstService::TRACKING_ORDER_STATUS_3 => '待出库',
-        BaseConstService::TRACKING_ORDER_STATUS_4 => '取派中',
-        BaseConstService::TRACKING_ORDER_STATUS_5 => '已完成',
-        BaseConstService::TRACKING_ORDER_STATUS_6 => '取消取派',
+        BaseConstService::TRACKING_ORDER_STATUS_1 => '待受理',
+        BaseConstService::TRACKING_ORDER_STATUS_2 => '已接单',
+        BaseConstService::TRACKING_ORDER_STATUS_3 => '已装货',
+        BaseConstService::TRACKING_ORDER_STATUS_4 => '在途',
+        BaseConstService::TRACKING_ORDER_STATUS_5 => '已签收',
+        BaseConstService::TRACKING_ORDER_STATUS_6 => '取消',
         BaseConstService::TRACKING_ORDER_STATUS_7 => '回收站',
     ];
 
@@ -608,6 +611,7 @@ trait ConstTranslateTrait
         BaseConstService::CAR_ACCIDENT_INS_PAY_TYPE_2 => '否',
     ];
 
+    //订单面单目的地模式
     public static $orderTemplateDestinationModeList = [
         BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_1 => '省市区',
         BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_2 => '省市',
@@ -615,6 +619,7 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_TEMPLATE_DESTINATION_MODE_4 => '邮编',
     ];
 
+    //订单模板类型
     public static $orderTemplateTypeList = [
         BaseConstService::ORDER_TEMPLATE_TYPE_1 => '模板一',
         BaseConstService::ORDER_TEMPLATE_TYPE_2 => '模板二',
@@ -639,6 +644,86 @@ trait ConstTranslateTrait
     public static $sparePartsRecordStatus = [
         BaseConstService::SPARE_PARTS_RECORD_TYPE_1 => '正常',
         BaseConstService::SPARE_PARTS_RECORD_TYPE_2 => '已作废',
+    ];
+
+    //订单运输模式
+    public static $orderTransportModeList = [
+        BaseConstService::ORDER_TRANSPORT_MODE_1 => '整车',
+        BaseConstService::ORDER_TRANSPORT_MODE_2 => '零担'
+    ];
+
+    //订单始发地
+    public static $orderOriginTypeList = [
+        BaseConstService::ORDER_ORIGIN_TYPE_1 => '从仓库出发，回到仓库',
+        BaseConstService::ORDER_ORIGIN_TYPE_2 => '装货地',
+    ];
+
+    //材料类型
+    public static $materialTypeList = [
+        BaseConstService::MATERIAL_TYPE_1 => '包装材料',
+        BaseConstService::MATERIAL_TYPE_2 => '家电家居',
+        BaseConstService::MATERIAL_TYPE_3 => '五金配件',
+        BaseConstService::MATERIAL_TYPE_4 => '机械大件',
+        BaseConstService::MATERIAL_TYPE_5 => '工业原料',
+        BaseConstService::MATERIAL_TYPE_6 => '服装纺织',
+        BaseConstService::MATERIAL_TYPE_7 => '生活商品',
+        BaseConstService::MATERIAL_TYPE_8 => '电子科技',
+        BaseConstService::MATERIAL_TYPE_9 => '装修建材',
+        BaseConstService::MATERIAL_TYPE_10 => '其他',
+    ];
+
+    //材料包装
+    public static $materialPackTypeList = [
+        BaseConstService::MATERIAL_PACK_TYPE_1 => '纸箱',
+        BaseConstService::MATERIAL_PACK_TYPE_2 => '铁桶',
+        BaseConstService::MATERIAL_PACK_TYPE_3 => '纤袋',
+        BaseConstService::MATERIAL_PACK_TYPE_4 => '泡沫箱',
+        BaseConstService::MATERIAL_PACK_TYPE_5 => '托盘',
+        BaseConstService::MATERIAL_PACK_TYPE_6 => 'ICB桶',
+        BaseConstService::MATERIAL_PACK_TYPE_7 => '木框',
+        BaseConstService::MATERIAL_PACK_TYPE_8 => '异性',
+        BaseConstService::MATERIAL_PACK_TYPE_9 => '塑料桶',
+        BaseConstService::MATERIAL_PACK_TYPE_10 => '铁架',
+        BaseConstService::MATERIAL_PACK_TYPE_11 => '裸装',
+        BaseConstService::MATERIAL_PACK_TYPE_12 => '其他',
+
+    ];
+
+    //包裹特性
+    public static $packageFeatureList = [
+        BaseConstService::PACKAGE_FEATURE_1 => '常温',
+        BaseConstService::PACKAGE_FEATURE_2 => '风房',
+        BaseConstService::PACKAGE_FEATURE_3 => '冷藏',
+        BaseConstService::PACKAGE_FEATURE_4 => '预售',
+    ];
+
+    //控货方式
+    public static $orderControlModeList = [
+        BaseConstService::ORDER_CONTROL_MODE_1 => '无',
+        BaseConstService::ORDER_CONTROL_MODE_2 => '等通知放货',
+    ];
+
+    //金额种类
+    public static $orderAmountTypeList = [
+        BaseConstService::ORDER_AMOUNT_TYPE_1 => '货物价值',
+        BaseConstService::ORDER_AMOUNT_TYPE_2 => '保价费',
+        BaseConstService::ORDER_AMOUNT_TYPE_3 => '包装费',
+        BaseConstService::ORDER_AMOUNT_TYPE_4 => '送货费',
+        BaseConstService::ORDER_AMOUNT_TYPE_5 => '上楼费',
+        BaseConstService::ORDER_AMOUNT_TYPE_6 => '接货费',
+        BaseConstService::ORDER_AMOUNT_TYPE_7 => '装卸费',
+        BaseConstService::ORDER_AMOUNT_TYPE_8 => '其他费用',
+        BaseConstService::ORDER_AMOUNT_TYPE_9 => '代收货款',
+        BaseConstService::ORDER_AMOUNT_TYPE_10 => '货款手续费',
+        BaseConstService::ORDER_AMOUNT_TYPE_11 => '基础运费',
+    ];
+
+    public static $orderAmountStatusList = [
+        BaseConstService::ORDER_AMOUNT_STATUS_1 => '预产生',
+        BaseConstService::ORDER_AMOUNT_STATUS_2 => '已产生',
+        BaseConstService::ORDER_AMOUNT_STATUS_3 => '已支付',
+        BaseConstService::ORDER_AMOUNT_STATUS_4 => '已入账',
+        BaseConstService::ORDER_AMOUNT_STATUS_5 => '已取消',
     ];
 
     /**

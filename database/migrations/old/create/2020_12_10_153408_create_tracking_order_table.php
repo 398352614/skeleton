@@ -17,8 +17,8 @@ class CreateTrackingOrderTable extends Migration
             $table->integerIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
             $table->integer('merchant_id')->default(null)->nullable()->comment('货主ID');
-            $table->string('out_user_id')->default('')->nullable()->comment('外部客户ID');
-            $table->string('out_order_no', 50)->default('')->nullable()->comment('外部订单号');
+            $table->string('out_user_id')->default('')->nullable()->comment('客户单号');
+            $table->string('out_order_no', 50)->default('')->nullable()->comment('货号');
             $table->string('order_no', 50)->default('')->nullable()->comment('订单号');
             $table->string('tracking_order_no', 50)->default('')->nullable()->comment('运单号');
             $table->string('batch_no', 50)->default('')->nullable()->comment('站点编号');
