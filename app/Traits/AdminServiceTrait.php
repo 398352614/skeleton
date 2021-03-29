@@ -49,6 +49,7 @@ use App\Services\Admin\WareHouseService;
 use App\Services\ApiServices\GoogleApiService;
 use App\Services\OrderNoRuleService;
 use App\Services\PackageNoRuleService;
+use App\Services\TrackingOrderTrailService;
 
 trait AdminServiceTrait
 {
@@ -213,6 +214,15 @@ trait AdminServiceTrait
     public function getTrackingOrderMaterialService()
     {
         return self::getInstance(TrackingOrderMaterialService::class);
+    }
+
+    /**
+     * 运单轨迹 服务
+     * @return TrackingOrderTrailService
+     */
+    public function getTrackingOrderTrailService()
+    {
+        return self::getInstance(TrackingOrderTrailService::class);
     }
 
     /**

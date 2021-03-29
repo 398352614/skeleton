@@ -97,6 +97,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::post('/list', 'OrderController@storeByList')->name('order.store-list');
         //获取订单的运单列表
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList')->name('order.index');
+        //获取订单的运单轨迹列表
+        Route::get('/{id}/tracking-order-trail', 'OrderController@getTrackingOrderTrailList')->name('order.tracking-order-trail-index');
         //订单轨迹
         Route::get('/{order_no}/trail', 'OrderTrailController@index')->name('order.trail');
         //修改
@@ -151,6 +153,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::prefix('tracking-order-trail')->group(function () {
         //列表查询
         Route::get('/{tracking_order_no}', 'TrackingOrderTrailController@index')->name('tracking-order-trail.index');
+        //列表查询
+        Route::post('/{tracking_order_no}', 'TrackingOrderTrailController@store')->name('order.tracking-order-trail-store');
     });
 
     Route::prefix('package')->group(function () {
@@ -893,12 +897,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //订单费用管理
     Route::prefix('order-amount')->group(function () {
         //查询
-        Route::get('/', 'orderAmountController@index')->name('order-amount.index');
+        Route::get('/', 'orderAmountController@index')->name('order.amount-index');
         //详情
-        Route::get('/{id}', 'orderAmountController@show')->name('order-amount.index');
+        Route::get('/{id}', 'orderAmountController@show')->name('order.amount-index');
         //新增
-        Route::post('/', 'orderAmountController@store')->name('order-amount.store');
+        Route::post('/', 'orderAmountController@store')->name('order.amount-store');
         //修改
-        Route::put('/{id}', 'orderAmountController@update')->name('order-amount.update');
+        Route::put('/{id}', 'orderAmountController@update')->name('order.amount-update');
     });
 });

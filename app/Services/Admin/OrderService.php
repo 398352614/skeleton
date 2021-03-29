@@ -209,10 +209,21 @@ class OrderService extends BaseService
             throw new BusinessLogicException('订单不存在！');
         }
         $dbTrackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $dbOrder->order_no], ['*'], true);
-        if (empty($dbTrackingOrder)) return [];
+        if (empty($dbTrackingOrder['tracking_order_no'])) return [];
         $dbTrackingOrder['package_list'] = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['*'], false)->toArray();
         $dbTrackingOrder['material_list'] = $this->getTrackingOrderMaterialService()->getList(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['*'], false)->toArray();
         return $dbTrackingOrder;
+    }
+
+    public function getTrackingOrderTrailList($id)
+    {
+        $order = parent::getInfo(['id' => $id], ['*'], false);
+        if(empty($order)){
+            return [];
+        }
+        $trackingOrderList = $this->getTrackingOrderTrailService()->getList(['order_no' => $order['order_no']], ['*'], false);
+        $data=$trackingOrderList->groupBy('tracking_order_list')->sortByDesc('id');
+        return $data;
     }
 
     public function initStore()

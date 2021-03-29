@@ -420,6 +420,7 @@ class BaseConstService
     const TRACKING_ORDER_TRAIL_REMOVE_BATCH = 12;
     const TRACKING_ORDER_TRAIL_REMOVE_TOUR = 13;
     const TRACKING_ORDER_TRAIL_DELETE = 14;
+    const TRACKING_ORDER_TRAIL_CUSTOMER = 15;
 
     //通知类型
     const NOTIFY_OUT_WAREHOUSE = 'out-warehouse';       //出库通知
@@ -680,5 +681,6 @@ class BaseConstService
     const ORDER_AMOUNT_STATUS_3 = 3;
     const ORDER_AMOUNT_STATUS_4 = 4;
     const ORDER_AMOUNT_STATUS_5 = 5;
+
 
 }

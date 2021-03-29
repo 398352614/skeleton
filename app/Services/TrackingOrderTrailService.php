@@ -24,6 +24,21 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
         parent::__construct($trackingOrderTrail, TrackingOrderTrailResource::class, TrackingOrderTrailResource::class);
     }
 
+    /**
+     * 手动新增
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function store($params)
+    {
+        $params['operator'] = auth()->user()->fullname;
+        $row = parent::create($params);
+        if ($row == false) {
+            throw new BusinessLogicException('新增失败');
+        }
+
+    }
+
     public static function storeByTour($tour, int $action)
     {
         $trackingOrderList = TrackingOrder::query()->select(self::$selectFields)->where('tour_no', $tour['tour_no'])->get()->toArray();
@@ -52,7 +67,7 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
         dispatch(new AddData('tracking-order-trail', $data));
     }
 
-    public static function trackingOrderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [],$list=false)
+    public static function trackingOrderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [], $list = false)
     {
         //根据不同的类型生成不同的content
         $content = '';
@@ -129,7 +144,7 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
      */
     public function index($trackingOrderNo)
     {
-        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no'=> $trackingOrderNo],['*'],false);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $trackingOrderNo], ['*'], false);
         if (empty($trackingOrder)) {
             throw new BusinessLogicException('数据不存在');
         }

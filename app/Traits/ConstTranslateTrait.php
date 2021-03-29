@@ -718,6 +718,7 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_AMOUNT_TYPE_11 => '基础运费',
     ];
 
+    //订单费用状态
     public static $orderAmountStatusList = [
         BaseConstService::ORDER_AMOUNT_STATUS_1 => '预产生',
         BaseConstService::ORDER_AMOUNT_STATUS_2 => '已产生',
@@ -725,6 +726,26 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_AMOUNT_STATUS_4 => '已入账',
         BaseConstService::ORDER_AMOUNT_STATUS_5 => '已取消',
     ];
+
+    //订单轨迹类型
+    public static $trackingOrderTrailTypeList = [
+        BaseConstService::TRACKING_ORDER_TRAIL_CREATED => '开单',
+        BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH => '加入站点',
+        BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR => '加入任务',
+        BaseConstService::TRACKING_ORDER_TRAIL_ASSIGN_DRIVER => '分配司机',
+        BaseConstService::TRACKING_ORDER_TRAIL_REVENUE_OUTLETS => '加入网点',
+        BaseConstService::TRACKING_ORDER_TRAIL_LOCK => '已装货',
+        BaseConstService::TRACKING_ORDER_TRAIL_DELIVERING => '在途',
+        BaseConstService::TRACKING_ORDER_TRAIL_DELIVERED => '已签收',
+        BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER => '取消',
+        BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_ASSIGN_DRIVER => '取消司机',
+        BaseConstService::TRACKING_ORDER_TRAIL_UN_LOCK => '取消装货',
+        BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH => '移出站点',
+        BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR => '移出任务',
+        BaseConstService::TRACKING_ORDER_TRAIL_DELETE => '删除',
+        BaseConstService::TRACKING_ORDER_TRAIL_CUSTOMER => '自定义',
+    ];
+
 
     /**
      * 格式化常量列表

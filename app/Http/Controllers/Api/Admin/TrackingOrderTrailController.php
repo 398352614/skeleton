@@ -31,4 +31,13 @@ class TrackingOrderTrailController extends BaseController
     {
         return $this->service->index($trackingOrderNo);
     }
+
+    /**
+     * 手动新增
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function store()
+    {
+        return $this->service->store($this->data);
+    }
 }

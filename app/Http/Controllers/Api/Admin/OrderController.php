@@ -64,6 +64,16 @@ class OrderController extends BaseController
     }
 
     /**
+     * 获取订单的运单轨迹列表
+     * @param $id
+     * @return array
+     */
+    public function getTrackingOrderTrailList($id)
+    {
+        return $this->service->getTrackingOrderTrailList($id);
+    }
+
+    /**
      * 订单统计
      * @return array
      * @throws BusinessLogicException

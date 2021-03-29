@@ -15,8 +15,8 @@ class CreateOrderAmountTable extends Migration
     {
         Schema::create('order_amount', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
-            $table->integer('order_no',50)->default('')->nullable()->comment('订单号');
+            $table->integer('company_id')->default(0)->nullable()->comment('公司ID');
+            $table->string('order_no',50)->default('')->nullable()->comment('订单号');
             $table->decimal('expect_amount', 16, 2)->default(0.00)->nullable()->comment('预计金额');
             $table->decimal('actual_amount', 16, 2)->default(0.00)->nullable()->comment('实际金额');
             $table->tinyInteger('type')->default(8)->nullable()->comment('运费类型');
