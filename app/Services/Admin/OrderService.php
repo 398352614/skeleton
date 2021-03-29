@@ -208,10 +208,24 @@ class OrderService extends BaseService
         if (empty($dbOrder)) {
             throw new BusinessLogicException('订单不存在！');
         }
-        $dbTrackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $dbOrder->order_no], ['*'], true);
-        if(!empty($dbTrackingOrder->tracking_order_no)){
-            $dbTrackingOrder['package_list'] = $this->getPackageService()->getList(['tracking_order_no' => $dbTrackingOrder->tracking_order_no], ['*'], false)->toArray();
-            $dbTrackingOrder['material_list'] = $this->getMaterialService()->getList(['tracking_order_no' => $dbTrackingOrder->tracking_order_no], ['*'], false)->toArray();
+        $dbTrackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $dbOrder->order_no], ['*'], false);
+        foreach ($dbTrackingOrder as $k => $v) {
+            if (!empty($v->tracking_order_no)) {
+                $dbTrackingOrder[$k]['package_list'] = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => $v->tracking_order_no], ['*'], false)->toArray();
+                $dbTrackingOrder[$k]['material_list'] = $this->getTrackingOrderMaterialService()->getList(['tracking_order_no' => $v->tracking_order_no], ['*'], false)->toArray();
+                $batch[$k] = $this->getBatchService()->getInfo(['batch_no' => $v['batch_no']], ['*'], false);
+                if (!empty($batch[$k])) {
+                    $dbTrackingOrder[$k]['sign_time'] = $batch[$k]['sign_time'];
+                } else {
+                    $dbTrackingOrder[$k]['sign_time'] = null;
+                }
+                $tour[$k] = $this->getTourService()->getInfo(['tour_no' => $v['tour_no']], ['*'], false);
+                if (!empty($tour[$k])) {
+                    $dbTrackingOrder[$k]['begin_time'] = $tour[$k]['begin_time'];
+                } else {
+                    $dbTrackingOrder[$k]['begin_time'] = null;
+                }
+            }
         }
         return $dbTrackingOrder;
     }
@@ -219,11 +233,11 @@ class OrderService extends BaseService
     public function getTrackingOrderTrailList($id)
     {
         $order = parent::getInfo(['id' => $id], ['*'], false);
-        if(empty($order)){
+        if (empty($order)) {
             return [];
         }
         $trackingOrderList = $this->getTrackingOrderTrailService()->getList(['order_no' => $order['order_no']], ['*'], false);
-        $data=$trackingOrderList->groupBy('tracking_order_list')->sortByDesc('id');
+        $data = $trackingOrderList->groupBy('tracking_order_list')->sortByDesc('id');
         return $data;
     }
 

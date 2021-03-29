@@ -170,6 +170,9 @@ class BaseConstService
     //订单结算方式1-寄付2-到付
     const ORDER_SETTLEMENT_TYPE_1 = 1;
     const ORDER_SETTLEMENT_TYPE_2 = 2;
+    const ORDER_SETTLEMENT_TYPE_3 = 3;
+    const ORDER_SETTLEMENT_TYPE_4 = 4;
+    const ORDER_SETTLEMENT_TYPE_5 = 5;
 
     //运单类型1-取2-派
     const TRACKING_ORDER_TYPE_0 = 0;

@@ -210,8 +210,12 @@ trait ConstTranslateTrait
 
     //订单结算方式1-寄付2-到付
     public static $orderSettlementTypeList = [
-        BaseConstService::ORDER_SETTLEMENT_TYPE_1 => '寄付',
-        BaseConstService::ORDER_SETTLEMENT_TYPE_2 => '到付',
+        BaseConstService::ORDER_SETTLEMENT_TYPE_1 => '现付',
+        BaseConstService::ORDER_SETTLEMENT_TYPE_2 => '回单付',
+        BaseConstService::ORDER_SETTLEMENT_TYPE_3 => '周结',
+        BaseConstService::ORDER_SETTLEMENT_TYPE_4 => '月结',
+        BaseConstService::ORDER_SETTLEMENT_TYPE_5 => '免费',
+
     ];
 
     //订单状态
