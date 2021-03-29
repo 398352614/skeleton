@@ -186,9 +186,11 @@ class AddressService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function export()
+    public function export($idList)
     {
-        $data = $this->setFilter()->getList();
+        $idList = explode_id_string($idList);
+
+        $data = $this->query->whereIn('id', $idList)->get();
 
         if ($data->isEmpty()) {
             throw new BusinessLogicException(__('数据不存在'));

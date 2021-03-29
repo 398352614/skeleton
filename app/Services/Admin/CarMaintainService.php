@@ -124,16 +124,18 @@ class CarMaintainService extends BaseService
      * 导出 excel
      * @throws BusinessLogicException
      */
-    public function exportExcel()
+    public function exportExcel($idList)
     {
-        $data = $this->setFilter()->getList();
+        $idList = explode_id_string($idList);
+
+        $data = $this->query->whereIn('id', $idList)->get();
 
         if ($data->isEmpty()) {
             throw new BusinessLogicException(__('数据不存在'));
         }
 
         $cellData = [];
-        foreach ($data as $v) {
+        foreach ($data->toArray() as $v) {
             $cellData[] = array_only_fields_sort($v, $this->exportExcelHeader);
         }
         if (empty($cellData)) {

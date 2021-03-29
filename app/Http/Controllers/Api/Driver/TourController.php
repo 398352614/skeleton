@@ -88,7 +88,6 @@ class TourController extends BaseController
     {
         list($tour, $cancelTrackingOrderList) = $this->service->outWarehouse($id, $this->data);
         TourTrait::afterOutWarehouse($tour, $cancelTrackingOrderList);
-        return;
     }
 
     /**
@@ -170,7 +169,6 @@ class TourController extends BaseController
     {
         list($tour, $batch, $cancelTrackingOrderList) = $this->service->batchCancel($id, $this->data);
         TourTrait::afterBatchCancel($tour, $batch, $cancelTrackingOrderList);
-        return;
     }
 
     /**
@@ -216,7 +214,6 @@ class TourController extends BaseController
     {
         $tour = $this->service->inWarehouse($id, $this->data);
         TourTrait::afterBackWarehouse($tour);
-        return;
     }
 
     /**

@@ -76,8 +76,7 @@ class AddressController extends BaseController
      */
     public function excelExport()
     {
-        return $this->service->export();
-
+        return $this->service->export($this->data['id_list']);
     }
 
     public function import()
