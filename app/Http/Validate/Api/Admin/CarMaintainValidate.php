@@ -49,7 +49,14 @@ class CarMaintainValidate extends BaseValidate
      */
     public $scene = [
         'store' => [
-            'car_id', 'car_no', 'maintain_type', 'maintain_date', 'maintain_factory', 'is_ticket', 'maintain_description', 'maintain_picture', 'maintain_detail'
+            'car_id',
+            'car_no',
+            'maintain_type',
+            'maintain_date',
+            'maintain_factory',
+            'is_ticket',
+            'maintain_description',
+            'maintain_detail'
         ]
     ];
 }
