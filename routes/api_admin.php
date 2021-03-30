@@ -318,6 +318,12 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/', 'CarAccidentController@index')->name('car-accident.index');
         //车辆事故新增
         Route::post('/', 'CarAccidentController@store')->name('car-accident.store');
+        //车辆事故详情
+        Route::get('/{id}', 'CarAccidentController@detail')->name('car-accident.detail');
+        //车辆事故更新
+        Route::put('/{id}', 'CarAccidentController@update')->name('car-accident.update');
+        //批量删除
+        Route::delete('/list', 'CarAccidentController@destroyAll')->name('car-accident.destroy');
     });
 
     //车辆维护

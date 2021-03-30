@@ -48,4 +48,31 @@ class CarAccidentController extends BaseController
     {
         return $this->service->create($this->data);
     }
+
+    /**
+     * 批量删除
+     * @return mixed
+     */
+    public function destroyAll()
+    {
+        return $this->service->destroyAll($this->data['id_list']);
+    }
+
+    /**
+     * @param $id
+     * @return int
+     */
+    public function update($id)
+    {
+        return $this->service->update(['id' => $id], $this->data);
+    }
+
+    /**
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function detail($id)
+    {
+        return $this->service->getInfo(['id' => $id], ['*'], false);
+    }
 }

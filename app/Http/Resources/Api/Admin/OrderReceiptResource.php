@@ -29,6 +29,8 @@ class OrderReceiptResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        $operator = $this->getOperator($this->operator_id, $this->operator_type);
+
+        return parent::toArray($request) + ['operator' => $operator];
     }
 }

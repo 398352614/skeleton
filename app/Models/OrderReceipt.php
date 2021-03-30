@@ -12,6 +12,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * Class OrderReceipt
  * @package App\Models
@@ -85,4 +87,38 @@ class OrderReceipt extends BaseModel
         'created_at',
         'updated_at',
     ];
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getFileSizeAttribute($value)
+    {
+        return formatBytes($value);
+    }
+
+    /**
+     * @param  int|null  $id
+     * @param  string|null  $type
+     * @return string
+     */
+    public function getOperator(?int $id, ?string $type)
+    {
+        if (empty($id) || empty($type)) {
+            return '';
+        }
+
+        /** @var Model $model */
+        $model = '';
+
+        if ($type == 'admin') {
+            $model = Employee::query();
+        }
+
+        if ($type == 'drive') {
+            $model = Driver::query();
+        }
+
+        return $model->where('id', $id)->value('fullname') ?? '';
+    }
 }

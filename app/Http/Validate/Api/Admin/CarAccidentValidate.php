@@ -44,9 +44,9 @@ class CarAccidentValidate extends BaseValidate
         'accident_description' => 'string',
         'accident_picture' => 'string',
         'insurance_indemnity' => 'required_if:deal_type,1|in:1,2|integer',
-        'insurance_payment' => 'required_if:deal_type,1|integer',
+        'insurance_payment' => 'required_if:deal_type,1|numeric',
         'insurance_description' => 'string',
-        'insurance_price' => 'required|integer',
+        'insurance_price' => 'required|numeric',
         'insurance_date' => 'required_if:insurance_indemnity,1|date'
     ];
 
@@ -72,5 +72,24 @@ class CarAccidentValidate extends BaseValidate
             'insurance_price',
             'insurance_date'
         ],
+
+        'update' => [
+            'car_id',
+            'driver_id',
+            'car_no',
+            'driver_fullname',
+            'driver_phone',
+            'deal_type',
+            'accident_location',
+            'accident_date',
+            'accident_duty',
+            'accident_description',
+            'accident_picture',
+            'insurance_indemnity',
+            'insurance_payment',
+            'insurance_description',
+            'insurance_price',
+            'insurance_date'
+        ]
     ];
 }
