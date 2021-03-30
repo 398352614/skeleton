@@ -26,6 +26,7 @@ class AddressValidate extends BaseValidate
         'place_lon' => 'required|string|max:50',
         'place_lat' => 'required|string|max:50',
         'merchant_id' => 'required|integer',
+        'list'=>'required|string'
     ];
 
     public $scene = [
@@ -36,6 +37,9 @@ class AddressValidate extends BaseValidate
         'update' => [
             'place_fullname', 'place_phone', 'place_post_code', 'place_house_number',
             'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat', 'merchant_id'
+        ],
+        'storeByList'=>[
+            'list'
         ]
     ];
 }

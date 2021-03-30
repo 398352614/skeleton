@@ -101,10 +101,11 @@ class AddressController extends BaseController
     /**
      * 导入检查
      * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
      */
-    public function importCheck()
+    public function importCheckByList()
     {
-        return $this->service->importCheck();
+        return $this->service->importCheckByList($this->data);
     }
 
     /**

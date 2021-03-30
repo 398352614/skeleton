@@ -10,6 +10,9 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\AddressResource;
+use App\Http\Validate\Api\Admin\AddressImportValidate;
+use App\Http\Validate\Api\Merchant\OrderImportValidate;
+use App\Http\Validate\BaseValidate;
 use App\Models\Address;
 use App\Services\BaseConstService;
 use App\Services\CommonService;
@@ -19,9 +22,12 @@ use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
 use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
+use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class AddressService extends BaseService
 {
@@ -228,25 +234,29 @@ class AddressService extends BaseService
         $params['dir'] = 'addressTemplate';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         Log::info('begin-path', $params);
-        $params['path'] = str_replace(config('app.url') . '/storage/merchant/file', storage_path('app/public/merchant/file'), $params['path']);
+        $params['path'] = str_replace(config('app.url') . '/storage/admin/file', storage_path('app/public/admin/file'), $params['path']);
         Log::info('end-path', $params);
         $row = collect($this->addressExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
+        foreach ($row as $k => $v) {
+            $row[$k] = array_filter($row[$k]);
+        }
         //表头验证
         $headings = array_values(__('excel.addressExcelExport'));
         if ($row[0] !== $headings) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
+        $headings = $this->importExcelHeader;
         $data = [];
         for ($i = 2; $i < count($row); $i++) {
             $data[$i - 2] = collect($headings)->combine($row[$i])->toArray();
         }
         //数据处理
-        $countryNameList = array_unique(collect($data)->pluck('place_country_name')->toArray());
+        $countryNameList = array_unique(collect($data)->pluck('place_country')->toArray());
         $countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {
             $data[$i] = array_map('strval', $data[$i]);
             //反向翻译
-            $data[$i]['country'] = $countryShortList[$data[$i]['country']] ?? $data[$i]['country'];
+            $data[$i]['place_country'] = $countryShortList[$data[$i]['place_country']] ?? $data[$i]['place_country'];
         }
         return $data;
     }
@@ -277,6 +287,7 @@ class AddressService extends BaseService
         $list = json_decode($params['list'], true);
         for ($i = 0; $i < count($list); $i++) {
             $list[$i] = $this->form($list[$i]);
+            $list[$i]['merchant_id'] = $params['merchant_id'];
             empty($list[$i]['place_country']) && $list[$i]['place_country'] = CompanyTrait::getCountry();
             try {
                 $this->store($list[$i]);
@@ -284,11 +295,6 @@ class AddressService extends BaseService
                 throw new BusinessLogicException(__('行') . ($i + 1) . ':' . $e->getMessage());
             }
         }
-    }
-
-    public function importCheck()
-    {
-
     }
 
     /**
@@ -331,4 +337,66 @@ class AddressService extends BaseService
         return $this->excelExport($name, $this->exportExcelHeader, $cellData, $dir);
     }
 
+    /**
+     * 批量导入验证
+     * @param $params
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function importCheckByList($params)
+    {
+        $list = json_decode($params['list'], true);
+        for ($i = 0, $j = count($list); $i < $j; $i++) {
+            $list[$i] = $this->importCheck($list[$i]);
+        }
+        return $list;
+    }
+
+    /**
+     * 单条导入验证
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function importCheck($data)
+    {
+        $data['status'] = BaseConstService::YES;
+        $data['log'] = [];
+        $list = [];
+        $validate = new AddressImportValidate();
+        $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message));
+        if ($validator->fails()) {
+            $key = $validator->errors()->keys();
+            foreach ($key as $v) {
+                $list[$v] = $validator->errors()->first($v);
+            }
+        }
+        //判断是否唯一
+        $where = $this->getUniqueWhere($data);
+        !empty($dbInfo['id']) && $where = Arr::add($where, 'id', ['<>', $dbInfo['id']]);
+        $info = parent::getInfo($where, ['*'], false);
+        if (!empty($info)) {
+            throw new BusinessLogicException('地址已存在，不能重复添加');
+        }
+        //如果没传经纬度，就通过第三方API获取经纬度
+        if (empty($data['place_lon']) || empty($data['place_lat'])) {
+            try {
+                $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
+            } catch (BusinessLogicException $e) {
+                $data['status'] = BaseConstService::NO;
+                $data['log'] = __($e->getMessage(), $e->replace);
+            } catch (\Exception $e) {
+            }
+            $data['place_country'] = $data['place_country'] ?? $info['country'];
+            $data['place_province'] = $data['place_province'] ?? $info['province'];
+            $data['place_post_code'] = $data['place_post_code'] ?? $info['post_code'];
+            $data['place_house_number'] = $data['place_house_number'] ?? $info['house_number'];
+            $data['place_city'] = $data['place_city'] ?? $info['city'];
+            $data['place_district'] = $data['place_district'] ?? $info['district'];
+            $data['place_street'] = $data['place_street'] ?? $info['street'];
+            $data['place_lon'] = $data['place_lon'] ?? $info['lon'];
+            $data['place_lat'] = $data['place_lat'] ?? $info['lat'];
+        }
+        return $data;
+    }
 }

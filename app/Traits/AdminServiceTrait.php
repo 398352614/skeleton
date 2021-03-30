@@ -309,7 +309,7 @@ trait AdminServiceTrait
 
     /**
      * 上传服务
-     * @return mixed
+     * @return UploadService
      */
     public function getUploadService()
     {

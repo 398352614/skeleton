@@ -90,7 +90,6 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 }
                 //设置字体大小
                 $event->sheet->getDelegate()->getStyle('A1:' . $endColumn . '1')->getFont()->setSize(12);
-
                 /*********************************订单导入模板*****************************/
                 if ($this->title === 'template') {
                     //冻结单元格
