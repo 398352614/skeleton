@@ -313,6 +313,7 @@ class HomeService extends BaseService
         $data = [];
         $now = date('Y-m-d');
         $dateList = $this->getTrackingOrderService()->getList(['execution_date' => ['>', $now]], ['*'], false)->pluck('execution_date')->toArray();
+        $dateList=array_unique($dateList);
         if (empty($dateList)) {
             return [];
         }
