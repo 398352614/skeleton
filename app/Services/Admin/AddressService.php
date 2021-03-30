@@ -360,15 +360,15 @@ class AddressService extends BaseService
      */
     public function importCheck($data)
     {
-        $data['status'] = BaseConstService::YES;
-        $data['log'] = [];
-        $list = [];
+        $status = BaseConstService::YES;
+        $error['log'] = [];
         $validate = new AddressImportValidate();
         $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message));
         if ($validator->fails()) {
+            $status = BaseConstService::NO;
             $key = $validator->errors()->keys();
             foreach ($key as $v) {
-                $list[$v] = $validator->errors()->first($v);
+                $error[$v] = $validator->errors()->first($v);
             }
         }
         //判断是否唯一
@@ -383,8 +383,8 @@ class AddressService extends BaseService
             try {
                 $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
             } catch (BusinessLogicException $e) {
-                $data['status'] = BaseConstService::NO;
-                $data['log'] = __($e->getMessage(), $e->replace);
+                $status = BaseConstService::NO;
+                $error['log'] = __($e->getMessage(), $e->replace);
             } catch (\Exception $e) {
             }
             $data['place_country'] = $data['place_country'] ?? $info['country'];
@@ -394,9 +394,9 @@ class AddressService extends BaseService
             $data['place_city'] = $data['place_city'] ?? $info['city'];
             $data['place_district'] = $data['place_district'] ?? $info['district'];
             $data['place_street'] = $data['place_street'] ?? $info['street'];
-            $data['place_lon'] = $data['place_lon'] ?? $info['lon'];
-            $data['place_lat'] = $data['place_lat'] ?? $info['lat'];
+            $data['place_lon'] = $data['place_lon'] ?? '';
+            $data['place_lat'] = $data['place_lat'] ?? '';
         }
-        return $data;
+        return ['status'=>$status,'error'=>$error,'data'=>$data];
     }
 }

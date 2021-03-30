@@ -635,7 +635,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //导出
         Route::get('/excel', 'AddressController@excelExport')->name('address.index');
         //检查
-        Route::post('/check', 'AddressController@importCheckByList')->name('address.index');
+        Route::post('/excel-check', 'AddressController@importCheckByList')->name('address.index');
     });
 
     //国家管理
