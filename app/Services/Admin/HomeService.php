@@ -41,7 +41,7 @@ class HomeService extends BaseService
         $package = $this->getPackageService()->count(['execution_date' => $date]);
 
         $monthOrder = parent::count(['execution_date' => ['between', [Carbon::today()->startOfMonth()->format('Y-m-d H:i:s'), Carbon::today()->endOfMonth()->format('Y-m-d H:i:s')]], 'status' => BaseConstService::ORDER_STATUS_3]);
-        $monthOrder = parent::count(['execution_date' => ['between', [Carbon::today()->startOfMonth()->format('Y-m-d H:i:s'), Carbon::today()->endOfDay()->format('Y-m-d H:i:s')]], 'status' => BaseConstService::ORDER_STATUS_3]);
+        $totalOrder = parent::count(['execution_date' => ['between', [Carbon::today()->startOfMonth()->format('Y-m-d H:i:s'), Carbon::today()->endOfDay()->format('Y-m-d H:i:s')]], 'status' => BaseConstService::ORDER_STATUS_3]);
         $pickupOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_1]);
         $pieOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_2]);
         $pickupPieOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_3]);
