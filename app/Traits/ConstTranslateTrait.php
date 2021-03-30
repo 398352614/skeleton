@@ -709,17 +709,17 @@ trait ConstTranslateTrait
 
     //金额种类
     public static $orderAmountTypeList = [
-        BaseConstService::ORDER_AMOUNT_TYPE_1 => '货物价值',
-        BaseConstService::ORDER_AMOUNT_TYPE_2 => '保价费',
-        BaseConstService::ORDER_AMOUNT_TYPE_3 => '包装费',
-        BaseConstService::ORDER_AMOUNT_TYPE_4 => '送货费',
-        BaseConstService::ORDER_AMOUNT_TYPE_5 => '上楼费',
-        BaseConstService::ORDER_AMOUNT_TYPE_6 => '接货费',
-        BaseConstService::ORDER_AMOUNT_TYPE_7 => '装卸费',
-        BaseConstService::ORDER_AMOUNT_TYPE_8 => '其他费用',
-        BaseConstService::ORDER_AMOUNT_TYPE_9 => '代收货款',
-        BaseConstService::ORDER_AMOUNT_TYPE_10 => '货款手续费',
-        BaseConstService::ORDER_AMOUNT_TYPE_11 => '基础运费',
+        BaseConstService::ORDER_AMOUNT_TYPE_1 => '基础运费',
+        BaseConstService::ORDER_AMOUNT_TYPE_2 => '货物价值',
+        BaseConstService::ORDER_AMOUNT_TYPE_3 => '保价费',
+        BaseConstService::ORDER_AMOUNT_TYPE_4 => '包装费',
+        BaseConstService::ORDER_AMOUNT_TYPE_5 => '送货费',
+        BaseConstService::ORDER_AMOUNT_TYPE_6 => '上楼费',
+        BaseConstService::ORDER_AMOUNT_TYPE_7 => '接货费',
+        BaseConstService::ORDER_AMOUNT_TYPE_8 => '装卸费',
+        BaseConstService::ORDER_AMOUNT_TYPE_9 => '其他费用',
+        BaseConstService::ORDER_AMOUNT_TYPE_10 => '代收货款',
+        BaseConstService::ORDER_AMOUNT_TYPE_11 => '货款手续费',
     ];
 
     //订单费用状态
