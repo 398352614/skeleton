@@ -806,8 +806,7 @@ class OrderService extends BaseService
     /**
      * 添加货物列表
      * @param $params
-     * @param $batch
-     * @param $tour
+     * @param int $status
      * @throws BusinessLogicException
      */
     private function addAllItemList($params, $status = BaseConstService::ORDER_STATUS_1)

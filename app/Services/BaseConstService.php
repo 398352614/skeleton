@@ -384,6 +384,7 @@ class BaseConstService
     const ADMIN_FILE_APK_DIR = 'package';
     const ADMIN_FILE_TEMPLATE_DIR = 'template';
     const ADMIN_FILE_LINE_DIR = 'line';
+    const ADMIN_FILE_ADDRESS_TEMPLATE_DIR = 'addressTemplate';
 
     //司机端 文件目录
     const DRIVER_FILE_TOUR_DIR = 'tour';

@@ -30,6 +30,8 @@ class OrderValidate extends BaseValidate
         'nature' => 'nullable|integer|in:1,2,3,4,5',
         'settlement_type' => 'required|in:1,2',
         'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
+        'expect_total_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
+        'actual_total_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
         'replace_amount' => 'nullable|numeric|gte:0',
         'delivery' => 'nullable|integer|in:1,2',
         'place_fullname' => 'required|string|max:50',
@@ -66,7 +68,7 @@ class OrderValidate extends BaseValidate
         'package_list.*.express_first_no' => 'required_with:package_list|string|max:50|regex:/^[0-9a-zA-Z]([0-9a-zA-Z])*[0-9a-zA-Z]$/',
         'package_list.*.express_second_no' => 'nullable|string|max:50',
         'package_list.*.is_auth' => 'sometimes|integer|in:1,2',
-        'package_list.*.expiration_date'=>'nullable|date|',
+        'package_list.*.expiration_date' => 'nullable|date|',
         //材料列表
         'material_list.*.name' => 'nullable|string|max:50',
         'material_list.*.code' => 'required_with:material_list|string|max:50',
@@ -81,7 +83,7 @@ class OrderValidate extends BaseValidate
     public $scene = [
         'store' => [
             'merchant_id', 'execution_date', 'second_execution_date',
-            'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
+            'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'expect_total_amount', 'actual_amount',
             //发货人信息
             'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
             'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
@@ -91,12 +93,12 @@ class OrderValidate extends BaseValidate
             //备注
             'special_remark', 'remark',
             //包裹列表
-            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no','package_list.*.expiration_date',
+            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
         'update' => [
-            'merchant_id', 'execution_date', 'second_execution_date',
+            'merchant_id', 'execution_date', 'second_execution_date', 'expect_total_amount', 'actual_amount',
             'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
@@ -107,7 +109,7 @@ class OrderValidate extends BaseValidate
             //备注
             'special_remark', 'remark',
             //包裹列表
-            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no','package_list.*.expiration_date',
+            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
         ],
@@ -120,7 +122,21 @@ class OrderValidate extends BaseValidate
         'orderPrintAll' => ['id_list'],
         //'orderExport'=>['id_list']
         'synchronizeStatusList' => ['id_list'],
-        'priceCount' => ['distance', 'package_list', 'package_list.*.weight']
+        'priceCount' => ['distance',
+            'merchant_id', 'execution_date', 'second_execution_date',
+            'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'expect_total_amount', 'actual_amount',
+            //发货人信息
+            'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
+            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
+            //收货人信息
+            'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number',
+            'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',
+            //备注
+            'special_remark', 'remark',
+            //包裹列表
+            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
+            //材料列表
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark']
     ];
 
     public $message = [

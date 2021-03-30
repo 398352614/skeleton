@@ -627,13 +627,13 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //删除
         Route::delete('/{id}', 'AddressController@destroy')->name('address.destroy');
         //导入模板
-        Route::get('/excel-template', 'AddressController@excelTemplate')->name('address.import');
+        Route::get('/excel-template', 'AddressController@excelTemplate')->name('address.index');
         //导入
-        Route::post('/excel', 'AddressController@import')->name('address.import');
+        Route::post('/excel', 'AddressController@import')->name('address.index');
         //批量新增
-        Route::post('/list', 'AddressController@storeByList')->name('address.import');
+        Route::post('/list', 'AddressController@storeByList')->name('address.index');
         //导出
-        Route::get('/excel', 'AddressController@excelExport')->name('address.export');
+        Route::get('/excel', 'AddressController@excelExport')->name('address.index');
     });
 
     //国家管理

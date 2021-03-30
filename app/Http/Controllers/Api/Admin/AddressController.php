@@ -79,18 +79,40 @@ class AddressController extends BaseController
         return $this->service->export($this->data['id_list']);
     }
 
+    /**
+     * 导入
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
     public function import()
     {
-        return $this->service->import();
+        return $this->service->import($this->data);
     }
 
-    public function importTemplate()
+    /**
+     * 获取模板
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function excelTemplate()
     {
-        return $this->service->importTemplate();
+        return $this->service->excelTemplate();
     }
 
+    /**
+     * 导入检查
+     * @return mixed
+     */
+    public function importCheck()
+    {
+        return $this->service->importCheck();
+    }
+
+    /**
+     * 批量新增
+     * @throws \App\Exceptions\BusinessLogicException
+     */
     public function storeByList()
     {
-        return $this->service->createByList();
+        return $this->service->createByList($this->data);
     }
 }

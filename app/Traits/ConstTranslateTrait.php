@@ -457,7 +457,8 @@ trait ConstTranslateTrait
         BaseConstService::ADMIN_FILE_CAR_DIR => '车辆文件目录',
         BaseConstService::ADMIN_FILE_ORDER_DIR => '订单文件目录',
         BaseConstService::ADMIN_FILE_APK_DIR => '安装包目录',
-        BaseConstService::ADMIN_FILE_TEMPLATE_DIR => '表格模板目录',
+        BaseConstService::ADMIN_FILE_TEMPLATE_DIR => '订单表格模板目录',
+        BaseConstService::ADMIN_FILE_ADDRESS_TEMPLATE_DIR => '地址表格模板目录',
         BaseConstService::ADMIN_FILE_LINE_DIR => '线路目录'
     ];
 

@@ -162,6 +162,9 @@ class UploadService
         if ($params['dir'] === 'template') {
             $params['name'] = 'order_import_template.xlsx';
         }
+        if ($params['dir'] === 'addressTemplate') {
+            $params['name'] = 'address_import_template.xlsx';
+        }
         if ($params['dir'] === 'line') {
             $params['name'] = 'line.csv';
         }

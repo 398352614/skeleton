@@ -6,6 +6,7 @@
 namespace App\Traits;
 
 
+use App\Imports\AddressImport;
 use App\Imports\LineImport;
 use App\Imports\OrderImport;
 use Maatwebsite\Excel\Facades\Excel;
@@ -20,4 +21,7 @@ Trait ImportTrait
         return Excel::toArray(new lineImport, $path);
     }
 
+    public function addressExcelImport($path){
+        return Excel::toArray(new AddressImport, $path);
+    }
 }
