@@ -37,4 +37,16 @@ class OrderReceiptService extends BaseService
     {
         parent::__construct($model, OrderReceiptResource::class, $infoResource);
     }
+
+    /**
+     * @param $data
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
+     */
+    public function create($data)
+    {
+        $data['operator_type']  = 'admin';
+        $data['operator_id']    = auth()->user()->id;
+
+        return parent::create($data);
+    }
 }

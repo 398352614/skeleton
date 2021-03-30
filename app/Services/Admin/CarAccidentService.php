@@ -52,4 +52,18 @@ class CarAccidentService extends BaseService
 
         return parent::create($data);
     }
+
+    /**
+     * 批量删除
+     * @param $idList
+     * @throws \Exception
+     */
+    public function destroyAll($idList)
+    {
+        $idList = explode_id_string($idList);
+
+        foreach ($idList as $id) {
+            $this->query->where('id', $id)->delete();
+        }
+    }
 }
