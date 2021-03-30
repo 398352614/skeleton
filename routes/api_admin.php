@@ -127,12 +127,28 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/neutralize', 'OrderController@neutralize')->name('order.neutralize');
         //运价估算
         Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
+    });
+
+    //订单客服
+    Route::prefix('order-customer')->group(function () {
         //客服记录列表
-        Route::get('/customer', 'OrderCustomerRecordController@list')->name('order.customer');
+        Route::get('/', 'OrderCustomerRecordController@list')->name('order.customer');
         //客服记录新增
-        Route::post('/customer', 'OrderCustomerRecordController@store')->name('order.CreateCustomer');
+        Route::post('/', 'OrderCustomerRecordController@store')->name('order.create-customer');
         //客服记录删除
-        Route::delete('/customer/{id}', 'OrderCustomerRecordController@delete')->name('order.DeleteCustomer');
+        Route::delete('/{id}', 'OrderCustomerRecordController@delete')->name('order.delete-customer');
+    });
+
+    //订单回单
+    Route::prefix('order-receipt')->group(function () {
+        //回单列表
+        Route::get('/', 'OrderReceiptController@list')->name('order.receipt');
+        //回单新增
+        Route::post('/', 'OrderReceiptController@store')->name('order.create-receipt');
+        //回单更新
+        Route::put('/{id}', 'OrderReceiptController@update')->name('order.update-receipt');
+        //回单删除
+        Route::delete('/{id}', 'OrderReceiptController@delete')->name('order.delete-receipt');
     });
 
     //物流查询
@@ -670,7 +686,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('file-dir', 'UploadController@getFileDirList');
         //下载
         Route::post('file-download', 'UploadController@fileDownload');
-
+        //文件上传
         Route::post('file', 'UploadController@fileUpload');
     });
 

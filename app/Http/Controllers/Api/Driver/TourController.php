@@ -191,7 +191,6 @@ class TourController extends BaseController
     {
         list($tour, $batch) = $this->service->batchSign($id, $this->data);
         TourTrait::afterBatchSign($tour, $batch);
-        return;
     }
 
     /**
