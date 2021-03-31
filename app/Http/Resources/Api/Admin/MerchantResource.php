@@ -23,6 +23,7 @@ class MerchantResource extends JsonResource
             'type' => $this->type,
             'type_name' => $this->type_name,
             'name' => $this->name,
+            'short_name' => $this->short_name,
             'email' => $this->email,
             'country' => $this->country,
             'settlement_type' => $this->settlement_type,
@@ -36,6 +37,12 @@ class MerchantResource extends JsonResource
             'status' => $this->status,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
+            'invoice_title'=>$this->invoice_title,
+            'taxpayer_code'=>$this->taxpayer_code,
+            'bank'=>$this->bank,
+            'bank_account'=>$this->bank_account,
+            'billing_address'=>$this->billing_address,
+            'billing_email'=>$this->billing_email,
         ];
     }
 

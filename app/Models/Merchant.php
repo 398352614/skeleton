@@ -52,6 +52,7 @@ class Merchant extends Authenticatable implements JWTSubject
         'code',
         'type',
         'name',
+        'short_name',
         'email',
         'password',
         'country',
@@ -61,9 +62,15 @@ class Merchant extends Authenticatable implements JWTSubject
         'phone',
         'address',
         'avatar',
+        'invoice_title',
+        'taxpayer_code',
+        'bank',
+        'bank_account',
+        'billing_address',
+        'billing_email',
         'status',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**

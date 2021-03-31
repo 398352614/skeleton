@@ -28,7 +28,7 @@ class OrderValidate extends BaseValidate
         'type' => 'required|integer|in:1,2,3',
         'out_user_id' => 'nullable|integer',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
-        'settlement_type' => 'required|in:1,2',
+        'settlement_type' => 'nullable|in:1,2',
         'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
         'expect_total_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
         'actual_total_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
@@ -78,6 +78,9 @@ class OrderValidate extends BaseValidate
         'distance' => 'nullable|integer|gte:0',
         'id_list' => 'required|string|checkIdList:100',
         'tour_no' => 'nullable|string|max:50',
+        'receipt_type' => 'nullable|integer|in:1',
+        'receipt_count' => 'required|integer|gte:0',
+        'create_date' => 'nullable|date',
     ];
 
     public $scene = [
@@ -95,7 +98,8 @@ class OrderValidate extends BaseValidate
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
-            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
+            'receipt_type','receipt_count','create_date'
         ],
         'update' => [
             'merchant_id', 'execution_date', 'second_execution_date', 'expect_total_amount', 'actual_amount',
@@ -111,7 +115,8 @@ class OrderValidate extends BaseValidate
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
-            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
+            'receipt_type','receipt_count','create_date'
         ],
         'again' => [
             'execution_date',
