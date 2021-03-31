@@ -19,8 +19,8 @@ class AlterMerchantAddInvoiceTitleColumns extends Migration
             $table->date('taxpayer_code')->default(null)->nullable()->comment('纳税人识别码')->after('invoice_title');
             $table->date('bank')->default(null)->nullable()->comment('开户行')->after('taxpayer_code');
             $table->date('bank_account')->default(null)->nullable()->comment('开户账号')->after('bank');
-            $table->date('billing_address')->default(null)->nullable()->comment('寄票地址')->after('bank_account');
-            $table->date('billing_email')->default(null)->nullable()->comment('收票邮箱')->after('billing_address');
+            $table->date('invoice_address')->default(null)->nullable()->comment('寄票地址')->after('bank_account');
+            $table->date('invoice_email')->default(null)->nullable()->comment('收票邮箱')->after('invoice_address');
         });
     }
 

@@ -38,8 +38,8 @@ class MerchantResource extends JsonResource
             'taxpayer_code'=>$this->taxpayer_code,
             'bank'=>$this->bank,
             'bank_account'=>$this->bank_account,
-            'billing_address'=>$this->billing_address,
-            'billing_email'=>$this->billing_email,
+            'invoice_address'=>$this->invoice_address,
+            'invoice_email'=>$this->invoice_email,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ];
