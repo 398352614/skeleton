@@ -79,7 +79,7 @@ class OrderValidate extends BaseValidate
         'id_list' => 'required|string|checkIdList:100',
         'tour_no' => 'nullable|string|max:50',
         'receipt_type' => 'nullable|integer|in:1',
-        'receipt_count' => 'required|integer|gte:0',
+        'receipt_count' => 'nullable|integer|gte:0',
         'create_date' => 'nullable|date',
     ];
 
