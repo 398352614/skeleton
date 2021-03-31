@@ -62,9 +62,15 @@ class OrderAmountController extends BaseController
     public function update($id)
     {
         unset($this->data['order_no']);
-        $row= $this->service->updateById($id, $this->data);
-        if($row== false){
+        $row = $this->service->updateById($id, $this->data);
+        if ($row == false) {
             throw new BusinessLogicException('修改失败');
         }
+    }
+
+
+    public function destroy($id)
+    {
+        return $this->service->destroy($id);
     }
 }

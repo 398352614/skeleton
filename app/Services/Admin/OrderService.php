@@ -232,19 +232,18 @@ class OrderService extends BaseService
 
     public function getTrackingOrderTrailList($id)
     {
-        $data=[];
+        $data = [];
         $order = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($order)) {
             return [];
         }
         $trackingOrderList = $this->getTrackingOrderTrailService()->getList(['order_no' => $order['order_no']], ['*'], false);
         $trackingOrderTrailList = $trackingOrderList->groupBy('tracking_order_no')->sortByDesc('id');
-        foreach ($trackingOrderTrailList as $k=>$v)
-        {
-            $data[$k]['tracking_order_no']=$k;
-            $data[$k]['tracking_order_trail']=$v;
+        foreach ($trackingOrderTrailList as $k => $v) {
+            $data[$k]['tracking_order_no'] = $k;
+            $data[$k]['tracking_order_trail'] = $v;
         }
-        $data=array_values($data);
+        $data = array_values($data);
         return $data;
     }
 
@@ -786,8 +785,12 @@ class OrderService extends BaseService
                 $dataList[$k]['actual_amount'] = 0.00;
                 $dataList[$k]['type'] = $v['type'];
                 $dataList[$k]['remark'] = '';
-                $dataList[$k]['in_total'] = $v['in_total'] ? $v['in_total'] : BaseConstService::YES;
                 $dataList[$k]['status'] = BaseConstService::ORDER_AMOUNT_STATUS_2;
+                if (!empty($v['in_total'])) {
+                    $dataList[$k]['in_total'] = $v['in_total'];
+                } else {
+                    $dataList[$k]['in_total'] = BaseConstService::YES;
+                }
             }
             $rowCount = $this->getPackageService()->insertAll($dataList);
             if ($rowCount === false) {

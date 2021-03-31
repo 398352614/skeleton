@@ -151,6 +151,20 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'OrderReceiptController@delete')->name('order.delete-receipt');
     });
 
+    //订单费用管理
+    Route::prefix('order-amount')->group(function () {
+        //查询
+        Route::get('/', 'orderAmountController@index')->name('order.amount');
+        //详情
+        Route::get('/{id}', 'orderAmountController@show')->name('order.show-amount');
+        //新增
+        Route::post('/', 'orderAmountController@store')->name('order.store-amount');
+        //修改
+        Route::put('/{id}', 'orderAmountController@update')->name('order.update-amount');
+        //删除
+        Route::put('/{id}', 'orderAmountController@destroy')->name('order.destroy-amount');
+    });
+
     //物流查询
     Route::prefix('trail')->group(function () {
         //列表查询
@@ -918,15 +932,4 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/deal', 'stockExceptionController@deal')->name('stock-exception.deal');
     });
 
-    //订单费用管理
-    Route::prefix('order-amount')->group(function () {
-        //查询
-        Route::get('/', 'orderAmountController@index')->name('order.index');
-        //详情
-        Route::get('/{id}', 'orderAmountController@show')->name('order.index');
-        //新增
-        Route::post('/', 'orderAmountController@store')->name('order.store');
-        //修改
-        Route::put('/{id}', 'orderAmountController@update')->name('order.update');
-    });
 });
