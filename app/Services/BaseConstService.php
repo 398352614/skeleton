@@ -686,5 +686,6 @@ class BaseConstService
     const ORDER_AMOUNT_STATUS_4 = 4;
     const ORDER_AMOUNT_STATUS_5 = 5;
 
-
+    //订单回单要求
+    const ORDER_RECEIPT_TYPE_1 = 1;
 }

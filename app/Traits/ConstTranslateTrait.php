@@ -90,7 +90,7 @@ use Illuminate\Support\Facades\App;
  * @method static orderAmountStatusList($args = null)
  * @method static materialTypeList($args = null)
  * @method static materialPackTypeList($args = null)
-
+ * @method static orderReceiptTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -760,6 +760,10 @@ trait ConstTranslateTrait
         BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR => '移出任务',
         BaseConstService::TRACKING_ORDER_TRAIL_DELETE => '删除',
         BaseConstService::TRACKING_ORDER_TRAIL_CUSTOMER => '自定义',
+    ];
+
+    public static $orderReceiptTypeList = [
+        BaseConstService::ORDER_RECEIPT_TYPE_1 => '原单返回',
     ];
 
 

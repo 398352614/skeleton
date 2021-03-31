@@ -107,7 +107,10 @@ class Order extends BaseModel
         'transport_price_type',
         'transport_price_id',
         'expect_total_amount',
-        'actual_total_amount'
+        'actual_total_amount',
+        'receipt_type',
+        'receipt_count',
+        'create_date'
     ];
 
     /**
