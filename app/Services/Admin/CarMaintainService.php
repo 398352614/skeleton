@@ -33,7 +33,7 @@ class CarMaintainService extends BaseService
         'car_no' => ['=', 'car_no'],
         'maintain_type' => ['=', 'maintain_type'],
         'is_ticket' => ['=', 'is_ticket'],
-        'maintain_factory' => ['=', 'maintain_factory'],
+        'maintain_factory' => ['like', 'maintain_factory'],
         'maintain_date' => ['between', ['begin_date', 'end_date']],
     ];
 

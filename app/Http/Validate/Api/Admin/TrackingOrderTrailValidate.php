@@ -11,7 +11,7 @@ namespace App\Http\Validate\Api\Admin;
 
 use App\Http\Validate\BaseValidate;
 
-class TrackingOrderValidate extends BaseValidate
+class TrackingOrderTrailValidate extends BaseValidate
 {
     public $customAttributes = [
 

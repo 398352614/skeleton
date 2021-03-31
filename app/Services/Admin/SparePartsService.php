@@ -25,7 +25,7 @@ class SparePartsService extends BaseService
      * @var array
      */
     public $filterRules = [
-        'sp_no' => ['=', 'sp_no'],
+        'sp_no' => ['like', 'sp_no'],
         'sp_name' => ['like', 'sp_name'],
         'created_at' => ['between', ['begin_date', 'end_date']],
     ];
