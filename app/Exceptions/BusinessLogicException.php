@@ -26,6 +26,14 @@ class BusinessLogicException extends Exception
 
     public $data = '';
 
+    /**
+     * BusinessLogicException constructor.
+     * @param  string  $message
+     * @param  int  $code
+     * @param  array  $replace
+     * @param  string  $data
+     * @param  Throwable|null  $previous
+     */
     public function __construct($message = "", $code = 1000, $replace = [], $data = '', Throwable $previous = null)
     {
         $this->replace = $replace;
@@ -33,17 +41,18 @@ class BusinessLogicException extends Exception
         parent::__construct($message, $code, $previous);
     }
 
-
     /**
-     * @param Exception $exception
-     * @throws Exception
+     *
      */
     public function report()
     {
         Log::error('错误', ['message' => $this->message, 'code' => $this->code]);
     }
 
-
+    /**
+     * @param $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function render($request)
     {
         return response()->json($this->responseFormat($this->getCode(), $this->data, $this->getMessage(), $this->replace));

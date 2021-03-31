@@ -29,7 +29,7 @@ class SparePartsValidate extends BaseValidate
         'sp_name' => 'required|string|max:50',
         'sp_brand' => 'required|string|max:50',
         'sp_model' => 'required|string|max:50',
-        'sp_unit' => 'required|integer|in:1,2,3,4,5,6,7,8,9,10,11',
+        'sp_unit' => 'required|integer|between:1,11',
     ];
 
     /**

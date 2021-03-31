@@ -27,6 +27,7 @@ class SparePartsRecordServices extends BaseService
      * @var array
      */
     public $filterRules = [
+        'sp_no' => ['like', 'sp_no'],
         'receive_person' => ['like', 'receive_person'],
         'car_no' => ['like', 'car_no'],
         'receive_status' => ['=', 'receive_status'],

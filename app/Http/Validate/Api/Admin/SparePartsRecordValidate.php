@@ -29,10 +29,10 @@ class SparePartsRecordValidate extends BaseValidate
         'sp_no' => 'required|string|exists:spare_parts,sp_no',
         'car_no' => 'required|string',
         'receive_price' => 'required|numeric',
-        'receive_quantity' => 'required|integer',
+        'receive_quantity' => 'required|integer|gte:1',
         'receive_person' => 'required|string|max:50',
-        'receive_remark' => 'required|string',
-        'receive_date' => 'required|date',
+        'receive_remark' => 'string',
+        'receive_date' => 'date',
         'receive_status' => 'integer|in:1,2'
     ];
 
