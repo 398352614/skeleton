@@ -336,7 +336,7 @@ class TrackingOrderService extends BaseService
      */
     private function addAllItemList($orderNo, $trackingOrder)
     {
-        $packageList = $this->getPackageService()->getList(['order_no' => $orderNo, 'status' => ['in', [BaseConstService::PACKAGE_TYPE_1, BaseConstService::PACKAGE_TYPE_2]]], ['*'], false)->toArray();
+        $packageList = $this->getPackageService()->getList(['order_no' => $orderNo, 'status' => ['in', [1, 2]]], ['*'], false)->toArray();
         if (!empty($packageList)) {
             data_set($packageList, '*.tour_no', $trackingOrder['tour_no']);
             data_set($packageList, '*.batch_no', $trackingOrder['batch_no']);

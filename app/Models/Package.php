@@ -102,11 +102,11 @@ class Package extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return (empty($this->status)  || ($this->status >= 6)) ? null : ConstTranslateTrait::packageStatusList($this->status);
+        return (empty($this->status) || ($this->status >= 6)) ? null : ConstTranslateTrait::packageStatusList($this->status);
     }
 
     public function getTypeNameAttribute()
     {
-        return empty($this->type) ? null : ConstTranslateTrait::orderTypeList($this->type);
+        return empty($this->type) ? null : ConstTranslateTrait::packageTypeList($this->type);
     }
 }

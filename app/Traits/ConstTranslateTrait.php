@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\App;
  * @method static trackingOrderStatusList($args = null)
  * @method static orderStatusList($args = null)
  * @method static packageStatusList($args = null)
+ * @method static packageTypeList($args = null)
  * @method static warehousePackageTypeList($args = null)
  * @method static orderExceptionLabelList($args = null)
  * @method static orderNatureList($args = null)
@@ -87,6 +88,9 @@ use Illuminate\Support\Facades\App;
  * @method static carLengthTypeList($args = null)
  * @method static orderAmountTypeList($args = null)
  * @method static orderAmountStatusList($args = null)
+ * @method static materialTypeList($args = null)
+ * @method static materialPackTypeList($args = null)
+
  */
 trait ConstTranslateTrait
 {
@@ -199,6 +203,13 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_TYPE_2 => '仓库->配送',
         BaseConstService::ORDER_TYPE_3 => '提货->仓库->配送',
         BaseConstService::ORDER_TYPE_4 => '提货->配送'
+    ];
+
+    //订单类型1-取件2-派件3-取派
+    public static $packageTypeList = [
+        BaseConstService::PACKAGE_TYPE_1 => '取件',
+        BaseConstService::PACKAGE_TYPE_2 => '派件',
+        BaseConstService::PACKAGE_TYPE_3 => '取派件',
     ];
 
     //订单来源1-手动添加2-批量导入3-第三方

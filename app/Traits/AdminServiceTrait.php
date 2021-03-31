@@ -26,6 +26,7 @@ use App\Services\Admin\MerchantGroupLineService;
 use App\Services\Admin\MerchantGroupService;
 use App\Services\Admin\MerchantRechargeService;
 use App\Services\Admin\MerchantService;
+use App\Services\Admin\OrderAmountService;
 use App\Services\Admin\OrderService;
 use App\Services\Admin\OrderTemplateService;
 use App\Services\Admin\PackageService;
@@ -169,6 +170,15 @@ trait AdminServiceTrait
     public function getMaterialService()
     {
         return self::getInstance(MaterialService::class);
+    }
+
+    /**
+     * 订单费用 服务
+     * @return OrderAmountService
+     */
+    public function getOrderAmountService()
+    {
+        return self::getInstance(OrderAmountService::class);
     }
 
     /**

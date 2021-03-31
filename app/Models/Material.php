@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 材料表
  * Class Employee
@@ -50,6 +52,8 @@ class Material extends BaseModel
         'order_no',
         'execution_date',
         'name',
+        'type',
+        'pack_type',
         'code',
         'out_order_no',
         'expect_quantity',
@@ -68,10 +72,25 @@ class Material extends BaseModel
 
     ];
 
+    protected $appends = [
+        'type_name',
+        'pack_type_name'
+    ];
+
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = [];
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::materialTypeList($this->type);
+    }
+
+    public function getPackTypeNameAttribute()
+    {
+        return empty($this->pack_type) ? null : ConstTranslateTrait::materialPackTypeList($this->pack_type);
+    }
 }

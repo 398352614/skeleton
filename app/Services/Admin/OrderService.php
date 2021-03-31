@@ -708,15 +708,15 @@ class OrderService extends BaseService
             }
         }
         //运价计算
-        $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
-//        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
-//            $params['distance'] = 1000;
-//        } else {
-        $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
-//        }
-        $params['distance'] = $params['distance'] / 1000;
-        $params = $this->getTransportPriceService()->priceCount($params);
-        $params['distance'] = $params['distance'] * 1000;
+//        $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
+////        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
+////            $params['distance'] = 1000;
+////        } else {
+//        $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+////        }
+//        $params['distance'] = $params['distance'] / 1000;
+//        $params = $this->getTransportPriceService()->priceCount($params);
+//        $params['distance'] = $params['distance'] * 1000;
         return $params;
     }
 
@@ -792,7 +792,7 @@ class OrderService extends BaseService
                     $dataList[$k]['in_total'] = BaseConstService::YES;
                 }
             }
-            $rowCount = $this->getPackageService()->insertAll($dataList);
+            $rowCount = $this->getOrderAmountService()->insertAll($dataList);
             if ($rowCount === false) {
                 throw new BusinessLogicException('订单费用新增失败！');
             }
@@ -848,7 +848,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('修改失败，请重新操作');
         }
         //新增费用
-        $this->addAllItemList($data);
+        $this->addAmountList($data);
         /******************************判断是否需要更换站点(取派日期+收货方地址 验证)***************************************/
         $this->getTrackingOrderService()->updateByOrder($data);
     }
