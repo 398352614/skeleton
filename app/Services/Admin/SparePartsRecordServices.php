@@ -35,6 +35,11 @@ class SparePartsRecordServices extends BaseService
     ];
 
     /**
+     * @var string[]
+     */
+    public $orderBy = ['id' => 'desc'];
+
+    /**
      * SparePartsRecordServices constructor.
      * @param  SparePartsRecord  $model
      * @param  null  $infoResource

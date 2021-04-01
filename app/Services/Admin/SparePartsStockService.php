@@ -29,6 +29,11 @@ class SparePartsStockService extends BaseService
     ];
 
     /**
+     * @var string[]
+     */
+    public $orderBy = ['id' => 'desc'];
+
+    /**
      * SparePartsStockService constructor.
      * @param  SparePartsStock  $model
      * @param  null  $infoResource
