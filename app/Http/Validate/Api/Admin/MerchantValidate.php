@@ -31,6 +31,7 @@ class MerchantValidate extends BaseValidate
         'avatar' => 'nullable|string|max:250',
         'status' => 'required|integer|in:1,2',
         'password' => 'required|string|max:100',
+        'introduction' => 'nullable|string|',
         'confirm_password' => 'required|string|same:password',
     ];
 

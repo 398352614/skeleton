@@ -64,10 +64,10 @@ class OrderAmount extends BaseModel
      * @var array
      */
     protected $hidden = [
-        'type_name'
     ];
 
     protected $appends = [
+        'type_name'
     ];
 
     /**
