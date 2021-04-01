@@ -164,7 +164,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //修改
         Route::put('/{id}', 'OrderAmountController@update')->name('order.index');
         //删除
-        Route::put('/{id}', 'OrderAmountController@destroy')->name('order.index');
+        Route::delete('/{id}', 'OrderAmountController@destroy')->name('order.index');
     });
 
     //物流查询
