@@ -156,15 +156,15 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //订单费用管理
     Route::prefix('order-amount')->group(function () {
         //查询
-        Route::get('/', 'orderAmountController@index')->name('order.index');
+        Route::get('/', 'OrderAmountController@index')->name('order.index');
         //详情
-        Route::get('/{id}', 'orderAmountController@show')->name('order.index');
+        Route::get('/{id}', 'OrderAmountController@show')->name('order.index');
         //新增
-        Route::post('/', 'orderAmountController@store')->name('order.index');
+        Route::post('/', 'OrderAmountController@store')->name('order.index');
         //修改
-        Route::put('/{id}', 'orderAmountController@update')->name('order.index');
+        Route::put('/{id}', 'OrderAmountController@update')->name('order.index');
         //删除
-        Route::put('/{id}', 'orderAmountController@destroy')->name('order.index');
+        Route::put('/{id}', 'OrderAmountController@destroy')->name('order.index');
     });
 
     //物流查询
