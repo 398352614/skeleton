@@ -726,16 +726,16 @@ class OrderService extends BaseService
             }
         }
         //运价计算
-        $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
-//        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
-//            $params['distance'] = 1000;
-//        } else {
-        $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
-//        }
-        $params['distance'] = $params['distance'] / 1000;
-        $params = $this->getTransportPriceService()->priceCount($params);
-        $params['distance'] = $params['distance'] * 1000;
-        return $params;
+//        $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
+////        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
+////            $params['distance'] = 1000;
+////        } else {
+//        $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+////        }
+//        $params['distance'] = $params['distance'] / 1000;
+//        $params = $this->getTransportPriceService()->priceCount($params);
+//        $params['distance'] = $params['distance'] * 1000;
+//        return $params;
     }
 
     /**
@@ -763,7 +763,8 @@ class OrderService extends BaseService
                     ->put('second_execution_date', $params['second_execution_date'] ?? null)
                     ->put('status', $status)
                     ->put('expiration_status', BaseConstService::EXPIRATION_STATUS_1)
-                    ->put('type', $params['type']);
+                    ->put('type', $params['type'])
+                    ->put('feature_logo',$params['feature_logo'] ?? '');
             })->toArray();
             $rowCount = $this->getPackageService()->insertAll($packageList);
             if ($rowCount === false) {
