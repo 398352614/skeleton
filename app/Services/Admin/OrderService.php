@@ -298,6 +298,24 @@ class OrderService extends BaseService
     }
 
     /**
+     * 获取仓库
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getWareHouse($params)
+    {
+        //获取线路
+        $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
+        //获取仓库
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        if (empty($warehouse)) {
+            throw new BusinessLogicException('仓库不存在');
+        }
+        return $warehouse;
+    }
+
+    /**
      * 获取继续派送(再次取派)信息
      * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null

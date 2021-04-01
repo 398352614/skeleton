@@ -242,4 +242,14 @@ class OrderController extends BaseController
     {
         return $this->service->priceCount($this->data);
     }
+
+    /**
+     * 获取仓库
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getWarehouse()
+    {
+        return $this->service->getWareHouse($this->data);
+    }
 }

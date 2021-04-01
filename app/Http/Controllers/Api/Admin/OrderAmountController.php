@@ -69,6 +69,11 @@ class OrderAmountController extends BaseController
     }
 
 
+    /**
+     * 删除
+     * @param $id
+     * @throws BusinessLogicException
+     */
     public function destroy($id)
     {
         return $this->service->destroy($id);

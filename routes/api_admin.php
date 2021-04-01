@@ -127,6 +127,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/neutralize', 'OrderController@neutralize')->name('order.neutralize');
         //运价估算
         Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
+        //获取仓库
+        Route::get('/warehouse', 'OrderController@getWarehouse')->name('order.price-count');
     });
 
     //订单客服

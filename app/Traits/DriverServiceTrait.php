@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Services\Driver\MemorandumService;
 use App\Services\Driver\MerchantGroupService;
 use App\Services\Driver\StockExceptionService;
 use App\Services\Driver\AdditionalPackageService;
@@ -214,6 +215,15 @@ Trait DriverServiceTrait
     public function getTourService()
     {
         return self::getInstance(TourService::class);
+    }
+
+    /**
+     * 备忘录服务
+     * @return MemorandumService
+     */
+    public function getMemorandumService()
+    {
+        return self::getInstance(MemorandumService::class);
     }
 
 

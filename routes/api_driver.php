@@ -37,6 +37,13 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     Route::put('refresh', 'AuthController@refresh');
     Route::put('my-password', 'AuthController@updatePassword');
 
+    //主页统计
+    Route::prefix('statistics')->group(function () {
+        //主页
+        Route::get('/', 'HomeController@home')->name('statistics.home');
+
+    });
+
     //备忘录管理
     Route::prefix('memorandum')->group(function () {
         //列表查询
