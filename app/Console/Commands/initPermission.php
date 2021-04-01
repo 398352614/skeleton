@@ -17,10 +17,10 @@ class initPermission extends Command
 
     /**
      * The name and signature of the console command.
-     *
+     * mode=1为重置修改，否则为增量修改
      * @var string
      */
-    protected $signature = 'permission:init';
+    protected $signature = 'permission:init {--mode= : mode}';
 
     /**
      * The console command description.
@@ -66,7 +66,21 @@ class initPermission extends Command
                     }
                 }
                 //给管理员权限组补齐权限
-                $role->syncPermissions(array_column($basePermissionList, 'id'));
+                if ($this->option('mode') == 1) {
+                    //重置修改
+                    $role->syncPermissions(array_column($basePermissionList, 'id'));
+                } else {
+                    //增量修改
+                    $addPermissionList=[];
+                    $oldPermissionList = collect($role->getAllPermissions())->pluck('id')->toArray();
+                    $basePermissionList = collect($basePermissionList)->pluck('id')->toArray();
+                    foreach ($basePermissionList as $k => $v) {
+                        if (!in_array($v, $oldPermissionList)) {
+                            $addPermissionList[] = $v;
+                        }
+                    }
+                    $role->givePermissionTo($addPermissionList);
+                }
             }
         } catch (\Exception $e) {
             $this->info($e);
