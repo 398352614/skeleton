@@ -41,6 +41,7 @@ class MemorandumService extends BaseService
      */
     public function store($params)
     {
+        $params['create_date']=today()->format('Y-m-d');
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('备忘录新增失败');
