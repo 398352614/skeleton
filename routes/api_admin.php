@@ -128,7 +128,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //运价估算
         Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
         //获取仓库
-        Route::get('/warehouse', 'OrderController@getWarehouse')->name('order.price-count');
+        Route::get('/warehouse', 'OrderController@getWarehouse')->name('order.store');
     });
 
     //订单客服
@@ -649,15 +649,15 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //删除
         Route::delete('/{id}', 'AddressController@destroy')->name('address.destroy');
         //导入模板
-        Route::get('/excel-template', 'AddressController@excelTemplate')->name('address.index');
+        Route::get('/excel-template', 'AddressController@excelTemplate')->name('address.import');
         //导入
-        Route::post('/excel', 'AddressController@import')->name('address.index');
+        Route::post('/excel', 'AddressController@import')->name('address.import');
         //批量新增
-        Route::post('/list', 'AddressController@storeByList')->name('address.index');
-        //导出
-        Route::get('/excel', 'AddressController@excelExport')->name('address.index');
+        Route::post('/list', 'AddressController@storeByList')->name('address.import');
         //检查
-        Route::post('/excel-check', 'AddressController@importCheckByList')->name('address.index');
+        Route::post('/excel-check', 'AddressController@importCheckByList')->name('address.import');
+        //导出
+        Route::get('/excel', 'AddressController@excelExport')->name('address.export');
     });
 
     //国家管理
