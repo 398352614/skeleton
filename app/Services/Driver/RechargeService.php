@@ -9,6 +9,7 @@ use App\Models\MerchantApi;
 use App\Models\Recharge;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -38,7 +39,15 @@ class RechargeService extends BaseService
     public function getPageList()
     {
         $this->query->where('company_id', auth()->user()->company_id)->where('driver_id', auth()->user()->id)->where(['status' => BaseConstService::RECHARGE_STATUS_3])->orderByDesc('updated_at');
-        return parent::getPageList();
+        $data = parent::getPageList();
+        foreach ($data as $k => $v) {
+            $rechargeStatistics = $this->getRechargeStatisticsService()->getInfo(['id' => $v['recharge_statistics_id']], ['*'], false);
+            if (!empty($rechargeStatistics)) {
+                $data[$k]['recharge_statistics_status'] = $rechargeStatistics->toArray()['status'];
+                $data[$k]['recharge_statistics_status_name'] = ConstTranslateTrait::rechargeStatisticsStatusList($data[$k]['recharge_statistics_status']);
+            }
+        }
+        return $data;
     }
 
     /**
@@ -73,11 +82,11 @@ class RechargeService extends BaseService
             throw new BusinessLogicException('该货主未开启充值业务');
         }
         $tour = $this->getTourService()->getInfo(['driver_id' => auth()->user()->id, 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
-        if(empty($tour)){
+        if (empty($tour)) {
             throw new BusinessLogicException('线路未出库，无法进行现金充值');
         }
-        $trackingOrderList=$this->getTrackingOrderService()->getList(['tour_no'=>$tour['tour_no']],['*'],false);
-        if($trackingOrderList->isEmpty()){
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
+        if ($trackingOrderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
         $params = Arr::only($params, ['merchant_id', 'out_user_name']);
@@ -98,11 +107,11 @@ class RechargeService extends BaseService
             $params['out_user_phone'] = $res['data']['phone'];
             $params['recharge_date'] = Carbon::today()->format('Y-m-d');
             $params['driver_verify_status'] = BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_1;
-            $params['tour_no']=$tour['tour_no'];
-            $params['execution_date']=$tour['execution_date'];
-            $params['line_id']=$tour['line_id'];
-            $params['line_name']=$tour['line_name'];
-            $params=Arr::except($params,'verify_date');
+            $params['tour_no'] = $tour['tour_no'];
+            $params['execution_date'] = $tour['execution_date'];
+            $params['line_id'] = $tour['line_id'];
+            $params['line_name'] = $tour['line_name'];
+            $params = Arr::except($params, 'verify_date');
             $row = parent::create($params);
             if ($row == false) {
                 throw new BusinessLogicException('拉取第三方用户信息失败');

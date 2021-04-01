@@ -91,6 +91,7 @@ use Illuminate\Support\Facades\App;
  * @method static materialTypeList($args = null)
  * @method static materialPackTypeList($args = null)
  * @method static orderReceiptTypeList($args = null)
+ * @method static rechargeStatisticsStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -198,7 +199,7 @@ trait ConstTranslateTrait
 
     //订单类型1-取件2-派件3-取派
     public static $orderTypeList = [
-        BaseConstService::ORDER_TYPE_0 => '全部',
+//        BaseConstService::ORDER_TYPE_0 => '全部',
         BaseConstService::ORDER_TYPE_1 => '提货->仓库',
         BaseConstService::ORDER_TYPE_2 => '仓库->配送',
         BaseConstService::ORDER_TYPE_3 => '提货->仓库->配送',
@@ -530,6 +531,11 @@ trait ConstTranslateTrait
         BaseConstService::RECHARGE_STATUS_1 => '充值中',
         BaseConstService::RECHARGE_STATUS_2 => '充值失败',
         BaseConstService::RECHARGE_STATUS_3 => '充值完成',
+    ];
+
+    public static $rechargeStatisticsStatusList = [
+        BaseConstService::RECHARGE_STATISTICS_STATUS_1 => '未上交',
+        BaseConstService::RECHARGE_STATISTICS_STATUS_2 => '已上交'
     ];
 
     public static $verifyStatusList = [

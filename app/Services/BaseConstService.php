@@ -482,6 +482,10 @@ class BaseConstService
     const RECHARGE_STATUS_2 = 2;
     const RECHARGE_STATUS_3 = 3;
 
+    //充值入账状态
+    const RECHARGE_STATISTICS_STATUS_1 = 1;
+    const RECHARGE_STATISTICS_STATUS_2 = 2;
+
     //审核状态
     const RECHARGE_VERIFY_STATUS_1 = 1;
     const RECHARGE_VERIFY_STATUS_2 = 2;
