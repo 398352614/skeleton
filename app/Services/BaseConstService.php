@@ -324,6 +324,7 @@ class BaseConstService
     const CAR_OWNER_SHIP_TYPE_1 = 1;
     const CAR_OWNER_SHIP_TYPE_2 = 2;
     const CAR_OWNER_SHIP_TYPE_3 = 3;
+    const CAR_OWNER_SHIP_TYPE_4 = 4;
 
     //车辆长度
     const CAR_LENGTH_TYPE_1 = 1;

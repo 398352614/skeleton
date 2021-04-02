@@ -41,6 +41,7 @@ class CarService extends BaseService
         $data['car_fuel_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carFuelTypeList);
         $data['car_transmission_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carTransmissionList);
         $data['car_length_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carLengthTypeList);
+        $data['car_model_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carModelTypeList);
         return $data;
     }
 

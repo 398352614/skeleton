@@ -10,6 +10,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 
 class initPermission extends Command
 {
@@ -42,7 +43,7 @@ class initPermission extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
@@ -66,43 +67,38 @@ class initPermission extends Command
                     }
                 }
                 //给管理员权限组补齐权限
-//                if ($this->option('mode') == 1) {
+                if ($this->option('mode') == 1) {
                     //重置修改
-                    $role->syncPermissions(array_column($basePermissionList, 'id'));
-//                } else {
-//                    //增量修改
-//                    $addPermissionList=[];
-//                    $oldPermissionList = collect($role->getAllPermissions())->pluck('id')->toArray();
-//                    $basePermissionList = collect($basePermissionList)->pluck('id')->toArray();
-//                    foreach ($basePermissionList as $k => $v) {
-//                        if (!in_array($v, $oldPermissionList)) {
-//                            $addPermissionList[] = $v;
-//                        }
-//                    }
-//                    dd($oldPermissionList);
-//                    $role->givePermissionTo($addPermissionList);
-//                }
+                    $role->syncPermissions($basePermissionList);
+                } else {
+                    //增量修改
+                    $oldPermissionList = collect($role->getAllPermissions())->pluck('id')->toArray();
+                    $addPermissionList = array_diff($basePermissionList, $oldPermissionList);
+                    $role->givePermissionTo($addPermissionList);
+                }
             }
+            $this->info('successful');
         } catch (\Exception $e) {
-            $this->info($e);
+            $this->info($e->getMessage() . "\n");
             $this->info('permission init failed');
-            return;
         }
-        $this->info('successful');
-        return;
     }
 
+    /**
+     * @return mixed
+     */
     public static function getPermissionList()
     {
         $tag = config('tms.cache_tags.permission');
+        Artisan::call('permission:cache');
         $permissionList = Cache::tags($tag)->get('permission_list');
-        if (empty($permissionList)) {
-            Artisan::call('permission:cache');
-            $permissionList = Cache::tags($tag)->get('permission_list');
-        }
-        return $permissionList;
+        return collect($permissionList)->pluck('id')->toArray();
     }
 
+    /**
+     * @param $employee
+     * @param $role
+     */
     protected function addPermission($employee, $role)
     {
         $employee->syncRoles($role);

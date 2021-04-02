@@ -28,7 +28,7 @@ class OrderReceiptValidate extends BaseValidate
         'file_name' => 'required|string',
         'file_type' => 'required|string',
         'file_size' => 'required|integer',
-        'file_url' => 'required|string'
+        'file_url' => 'required|string|url'
     ];
 
     /**
