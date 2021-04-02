@@ -66,9 +66,6 @@ class CarAccidentService extends BaseService
     public function destroyAll($idList)
     {
         $idList = explode_id_string($idList);
-
-        foreach ($idList as $id) {
-            $this->query->where('id', $id)->delete();
-        }
+        $this->query->whereIn('id', $idList)->delete();
     }
 }
