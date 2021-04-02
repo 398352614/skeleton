@@ -42,7 +42,6 @@ class OrderCustomerRecordController extends BaseController
     }
 
     /**
-     * @param $id
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function list()

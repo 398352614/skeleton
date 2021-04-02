@@ -34,7 +34,7 @@
         "tymon/jwt-auth": "^1.0.0-rc.5",
         "vinkla/hashids": "^7.0",
         "workerman/gateway-worker": "^3.0",
-      "ext-mysql_xdevapi": "*"
+        "ext-mysql_xdevapi": "*"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

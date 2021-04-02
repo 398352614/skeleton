@@ -38,6 +38,11 @@ class CarMaintainService extends BaseService
     ];
 
     /**
+     * @var string[]
+     */
+    public $orderBy = ['id' => 'desc'];
+
+    /**
      * 导出 Excel 头部
      * @var string[]
      */

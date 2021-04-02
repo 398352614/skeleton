@@ -32,6 +32,11 @@ class CarAccidentService extends BaseService
     ];
 
     /**
+     * @var string[]
+     */
+    public $orderBy = ['id' => 'desc'];
+
+    /**
      * CarAccidentService constructor.
      * @param  CarAccident  $model
      */
