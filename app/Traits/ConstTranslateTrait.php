@@ -86,6 +86,7 @@ use Illuminate\Support\Facades\App;
  * @method static orderTemplateDestinationModeList($args = null)
  * @method static orderTemplateTypeList($args = null)
  * @method static carLengthTypeList($args = null)
+ * @method static carModelTypeList($args = null)
  * @method static orderAmountTypeList($args = null)
  * @method static orderAmountStatusList($args = null)
  * @method static materialTypeList($args = null)
@@ -380,11 +381,12 @@ trait ConstTranslateTrait
         BaseConstService::CAR_FUEL_TYPE_4 => '电动'
     ];
 
-    //租赁类型1-租赁（到期转私）2-私有3-租赁（到期转待定）
+    //租赁类型1-租赁（到期转私）2-私有3-租赁（到期转待定）4-临调车
     public static $carOwnerShipTypeList = [
         BaseConstService::CAR_OWNER_SHIP_TYPE_1 => '租赁（到期转私）',
         BaseConstService::CAR_OWNER_SHIP_TYPE_2 => '私有',
         BaseConstService::CAR_OWNER_SHIP_TYPE_3 => '租赁（到期转待定）',
+        BaseConstService::CAR_OWNER_SHIP_TYPE_4 => '临调车',
     ];
 
     //车辆长度

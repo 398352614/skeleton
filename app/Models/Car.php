@@ -53,6 +53,7 @@ class Car extends BaseModel
         'car_brand_id',
         'car_model_id',
         'car_length',
+        'car_model_type',
         'gps_device_number',
         'ownership_type',
         'insurance_company',
@@ -143,6 +144,15 @@ class Car extends BaseModel
     public function getCarLengthAttribute($value): string
     {
         return empty($value) ? '' : ConstTranslateTrait::carLengthTypeList($value);
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getCarModelTypeAttribute($value): string
+    {
+        return empty($value) ? '' : ConstTranslateTrait::carModelTypeList($value);
     }
 }
 

@@ -39,8 +39,9 @@ class CarValidate extends BaseValidate
         'cn_name' => 'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
         'en_name' => 'required|string|uniqueIgnore:car_brand,id,company_id|uniqueIgnore:car_model,id,company_id',
         'brand_id' => 'required',
-        'car_length' => 'required|integer',
+        'car_length' => 'required|integer|between:1,18',
         'gps_device_number' => 'string',
+        'car_model_type' => 'required|integer|between:1,13',
 
         //包裹列表
         'relate_material_list.*.name' => 'nullable|string|max:50',
@@ -67,7 +68,8 @@ class CarValidate extends BaseValidate
             'relate_material_list.*.material_name',
             'relate_material_list.*.material_url',
             'car_length',
-            'gps_device_number'
+            'gps_device_number',
+            'car_model_type'
         ],
         'update' => [
             'car_no',
@@ -88,7 +90,8 @@ class CarValidate extends BaseValidate
             'relate_material_list.*.material_name',
             'relate_material_list.*.material_url',
             'car_length',
-            'gps_device_number'
+            'gps_device_number',
+            'car_model_type'
         ],
         'lock' => [
             'is_locked',
