@@ -73,7 +73,7 @@ class AddressService extends BaseService
      */
     public $filterRules = [
         'merchant_id' => ['=', 'merchant_id'],
-        'place_fullname' => ['like', 'place_fullname'],
+        'place_fullname,place_phone,place_address' => ['like', 'place_fullname'],
         'place_post_code' => ['like', 'place_post_code'],
         'type' => ['=', 'type']
     ];
