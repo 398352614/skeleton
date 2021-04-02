@@ -16,7 +16,7 @@ class CarResource extends JsonResource
     {
         return array_merge([
             'car_length_id' => $this->resource->getOriginal('car_length'),
-            'car_model_type_id' => $this->resource->getOrginal('car_model_type')
+            'car_model_type_id' => $this->resource->getOriginal('car_model_type')
         ], parent::toArray($request));
     }
 }

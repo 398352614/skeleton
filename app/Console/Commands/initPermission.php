@@ -42,7 +42,7 @@ class initPermission extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
@@ -82,15 +82,16 @@ class initPermission extends Command
                     $role->givePermissionTo($addPermissionList);
                 }
             }
+            $this->info('successful');
         } catch (\Exception $e) {
             $this->info($e);
             $this->info('permission init failed');
-            return;
         }
-        $this->info('successful');
-        return;
     }
 
+    /**
+     * @return mixed
+     */
     public static function getPermissionList()
     {
         $tag = config('tms.cache_tags.permission');
@@ -102,6 +103,10 @@ class initPermission extends Command
         return $permissionList;
     }
 
+    /**
+     * @param $employee
+     * @param $role
+     */
     protected function addPermission($employee, $role)
     {
         $employee->syncRoles($role);
