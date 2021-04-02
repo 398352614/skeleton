@@ -185,8 +185,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::prefix('tracking-order-trail')->group(function () {
         //列表查询
         Route::get('/{tracking_order_no}', 'TrackingOrderTrailController@index')->name('tracking-order-trail.index');
-        //列表查询
+        //列表新增
         Route::post('/{tracking_order_no}', 'TrackingOrderTrailController@store')->name('order.tracking-order-trail-store');
+        //列表查询
+        Route::delete('/id', 'TrackingOrderTrailController@destroy')->name('order.tracking-order-trail-destroy');
     });
 
     Route::prefix('package')->group(function () {

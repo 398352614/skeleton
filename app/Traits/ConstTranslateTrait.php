@@ -92,6 +92,8 @@ use Illuminate\Support\Facades\App;
  * @method static materialPackTypeList($args = null)
  * @method static orderReceiptTypeList($args = null)
  * @method static rechargeStatisticsStatusList($args = null)
+ * @method static orderTransportModeList($args = null)
+ * @method static orderOriginTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
