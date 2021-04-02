@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 运单轨迹表
  * Class TrackingOrderTrail
@@ -68,6 +70,10 @@ class TrackingOrderTrail extends BaseModel
      */
     protected $dates = [];
 
+    protected $appends = [
+        'type_name'
+    ];
+
     /**
      * 翻译
      * @param $value
@@ -85,5 +91,10 @@ class TrackingOrderTrail extends BaseModel
         } else {
             return !empty($value) ? __($value) : null;
         }
+    }
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::trackingOrderTrailTypeList($this->type);
     }
 }

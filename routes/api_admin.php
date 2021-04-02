@@ -98,7 +98,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //获取订单的运单列表
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList')->name('order.index');
         //获取订单的运单轨迹列表
-        Route::get('/{id}/tracking-order-trail', 'OrderController@getTrackingOrderTrailList')->name('order.index');
+        Route::get('/{id}/tracking-order-trail', 'OrderController@getTrackingOrderTrailList')->name('order.tracking-order-trail');
         //订单轨迹
         Route::get('/{order_no}/trail', 'OrderTrailController@index')->name('order.trail');
         //修改
@@ -188,7 +188,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表新增
         Route::post('/{tracking_order_no}', 'TrackingOrderTrailController@store')->name('order.tracking-order-trail-store');
         //列表查询
-        Route::delete('/id', 'TrackingOrderTrailController@destroy')->name('order.tracking-order-trail-destroy');
+        Route::delete('/{id}', 'TrackingOrderTrailController@destroy')->name('order.tracking-order-trail-destroy');
     });
 
     Route::prefix('package')->group(function () {

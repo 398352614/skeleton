@@ -94,6 +94,7 @@ use Illuminate\Support\Facades\App;
  * @method static rechargeStatisticsStatusList($args = null)
  * @method static orderTransportModeList($args = null)
  * @method static orderOriginTypeList($args = null)
+ * @method static trackingOrderTrailTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
