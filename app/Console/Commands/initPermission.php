@@ -66,21 +66,22 @@ class initPermission extends Command
                     }
                 }
                 //给管理员权限组补齐权限
-                if ($this->option('mode') == 1) {
+//                if ($this->option('mode') == 1) {
                     //重置修改
                     $role->syncPermissions(array_column($basePermissionList, 'id'));
-                } else {
-                    //增量修改
-                    $addPermissionList=[];
-                    $oldPermissionList = collect($role->getAllPermissions())->pluck('id')->toArray();
-                    $basePermissionList = collect($basePermissionList)->pluck('id')->toArray();
-                    foreach ($basePermissionList as $k => $v) {
-                        if (!in_array($v, $oldPermissionList)) {
-                            $addPermissionList[] = $v;
-                        }
-                    }
-                    $role->givePermissionTo($addPermissionList);
-                }
+//                } else {
+//                    //增量修改
+//                    $addPermissionList=[];
+//                    $oldPermissionList = collect($role->getAllPermissions())->pluck('id')->toArray();
+//                    $basePermissionList = collect($basePermissionList)->pluck('id')->toArray();
+//                    foreach ($basePermissionList as $k => $v) {
+//                        if (!in_array($v, $oldPermissionList)) {
+//                            $addPermissionList[] = $v;
+//                        }
+//                    }
+//                    dd($oldPermissionList);
+//                    $role->givePermissionTo($addPermissionList);
+//                }
             }
         } catch (\Exception $e) {
             $this->info($e);
