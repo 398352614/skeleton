@@ -159,4 +159,17 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
     {
         return parent::create($data);
     }
+
+    /**
+     * 删除
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        $rowCount = parent::delete(['id' => $id]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('删除失败，请重新操作');
+        }
+    }
 }

@@ -193,6 +193,7 @@ class OrderService extends BaseService
         }
         $dbOrder['package_list'] = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['material_list'] = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+        $dbOrder['amount_list'] = $this->getOrderAmountService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         return $dbOrder;
     }
 
@@ -764,7 +765,7 @@ class OrderService extends BaseService
                     ->put('status', $status)
                     ->put('expiration_status', BaseConstService::EXPIRATION_STATUS_1)
                     ->put('type', $params['type'])
-                    ->put('feature_logo',$params['feature_logo'] ?? '');
+                    ->put('feature_logo', $params['feature_logo'] ?? '');
             })->toArray();
             $rowCount = $this->getPackageService()->insertAll($packageList);
             if ($rowCount === false) {

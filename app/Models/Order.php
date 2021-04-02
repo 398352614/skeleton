@@ -208,4 +208,14 @@ class Order extends BaseModel
         return empty($this->transport_price_type) ? null : ConstTranslateTrait::transportPriceTypeList($this->transport_price_type);
     }
 
+    public function getTransportModeNameAttribute()
+    {
+        return empty($this->transport_mode) ? null : ConstTranslateTrait::orderTransportModeList($this->transport_mode);
+    }
+
+    public function getOriginTypeNameAttribute()
+    {
+        return empty($this->origin_type) ? null : ConstTranslateTrait::orderOriginTypeList($this->origin_type);
+    }
+
 }

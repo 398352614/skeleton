@@ -15,6 +15,8 @@ class TrackingOrderTrailResource extends JsonResource
             'content' => $this->content,
             'created_at' => (string) $this->created_at,
             'updated_at' => (string) $this->updated_at,
+            'type'=>$this->type,
+            'type_name'=>$this->type_name
         ];
     }
 }

@@ -40,4 +40,14 @@ class TrackingOrderTrailController extends BaseController
     {
         return $this->service->store($this->data);
     }
+
+    /**
+     * 手动删除
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        return $this->service->destroy($this->$id);
+    }
 }
