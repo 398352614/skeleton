@@ -313,7 +313,7 @@ class HomeService extends BaseService
         $data = [];
         $now = date('Y-m-d');
         $dateList = $this->getTrackingOrderService()->getList(['execution_date' => ['>', $now]], ['*'], false)->pluck('execution_date')->toArray();
-        $dateList=array_unique($dateList);
+        $dateList = array_unique($dateList);
         if (empty($dateList)) {
             return [];
         }
@@ -323,6 +323,7 @@ class HomeService extends BaseService
             $data[$k]['batch'] = $this->getBatchService()->count(['execution_date' => $v]);
             $data[$k]['tracking_order'] = $this->getBatchService()->count(['execution_date' => $v, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]]);
         }
+        $data = array_values($data);
         return $data;
     }
 
