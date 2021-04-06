@@ -27,7 +27,7 @@ class HomeService extends BaseService
     {
         $date = Carbon::today()->format('Y-m-d');
         //当日订单
-        $preparingOrder = parent::count(['execution_date' => $date, 'status' => BaseConstService::ORDER_STATUS_1]);//待分配
+        $preparingTrackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date, 'status' => ['in',[BaseConstService::TRACKING_ORDER_STATUS_1,BaseConstService::TRACKING_ORDER_STATUS_2,BaseConstService::TRACKING_ORDER_STATUS_3]]]);//待分配
         $preparingBatch = $this->getBatchService()->count(['execution_date' => $date, 'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT]]]);
         $preparingTour = $this->getTourService()->count(['execution_date' => $date, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]]]);
         $tour = $this->getTourService()->count(['execution_date' => $date]);
@@ -47,7 +47,7 @@ class HomeService extends BaseService
         $pickupPieOrder = parent::count(['execution_date' => $date, 'status' => ['<>', [BaseConstService::ORDER_STATUS_5]], 'type' => BaseConstService::ORDER_TYPE_3]);
         return [
             //订单统计
-            'preparing_order' => $preparingOrder,
+            'preparing_tracking_order' => $preparingTrackingOrder,
             'preparing_batch' => $preparingBatch,
             'preparing_tour' => $preparingTour,
 
@@ -320,8 +320,15 @@ class HomeService extends BaseService
         foreach ($dateList as $k => $v) {
             $data[$k]['date'] = $v;
             $data[$k]['tour'] = $this->getTourService()->count(['execution_date' => $v]);
-            $data[$k]['batch'] = $this->getBatchService()->count(['execution_date' => $v]);
-            $data[$k]['tracking_order'] = $this->getBatchService()->count(['execution_date' => $v, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]]);
+            $data[$k]['batch'] = $this->getBatchService()->count(['execution_date' => $v, 'status' => ['<>', BaseConstService::BATCH_CANCEL]]);
+            $data[$k]['tracking_order'] = $this->getBatchService()->count(['execution_date' => $v, 'status' => ['in',
+                [
+                    BaseConstService::TRACKING_ORDER_STATUS_1,
+                    BaseConstService::TRACKING_ORDER_STATUS_2,
+                    BaseConstService::TRACKING_ORDER_STATUS_3,
+                    BaseConstService::TRACKING_ORDER_STATUS_4,
+                    BaseConstService::TRACKING_ORDER_STATUS_5,
+                ]]]);
         }
         $data = array_values($data);
         return $data;
