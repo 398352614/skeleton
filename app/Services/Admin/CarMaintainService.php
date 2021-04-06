@@ -115,7 +115,7 @@ class CarMaintainService extends BaseService
      */
     public function destroy(int $id)
     {
-        $item = $this->model->find($id);
+        $item = $this->model->findOrFail($id);
 
         $this->getCarMaintainDetailService()
             ->query
