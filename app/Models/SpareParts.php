@@ -98,4 +98,13 @@ class SpareParts extends BaseModel
     {
         return ConstTranslateTrait::sparePartsUnit($value);
     }
+
+    /**
+     * @param  string  $sp_no
+     * @return int|mixed
+     */
+    public function getStock(string $sp_no): int
+    {
+        return SparePartsStock::query()->where('sp_no', $sp_no)->value('stock_quantity') ?? 0;
+    }
 }
