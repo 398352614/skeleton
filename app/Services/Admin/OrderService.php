@@ -1106,7 +1106,6 @@ class OrderService extends BaseService
         foreach ($orderList as $k => $v) {
             $newOrderList[$k]['order_no'] = $v['order_no'];
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
-
             $newOrderList[$k]['sender']['fullname'] = $v['place_fullname'];
             $newOrderList[$k]['sender']['phone'] = $v['place_phone'];
             $newOrderList[$k]['sender']['country'] = $v['place_country'];
@@ -1161,7 +1160,12 @@ class OrderService extends BaseService
             $newOrderList[$k]['warehouse']['street'] = $newOrderList[$k]['tracking_order']['warehouse_street'];
             $newOrderList[$k]['warehouse']['house_number'] = $newOrderList[$k]['tracking_order']['warehouse_house_number'];
             $newOrderList[$k]['warehouse']['address'] = $newOrderList[$k]['tracking_order']['warehouse_address'];
-
+            //填充仓库
+            if ($newOrderList[$k]['type'] == BaseConstService::ORDER_TYPE_1) {
+                $newOrderList[$k]['receiver'] = $newOrderList[$k]['warehouse'];
+            }elseif ($newOrderList[$k]['type'] == BaseConstService::ORDER_TYPE_2){
+                $newOrderList[$k]['sender'] = $newOrderList[$k]['warehouse'];
+            }
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
             $newOrderList[$k]['replace_amount'] = $v['replace_amount'];
             $newOrderList[$k]['settlement_amount'] = $v['settlement_amount'];
