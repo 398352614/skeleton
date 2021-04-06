@@ -129,8 +129,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
         //获取仓库
         Route::get('/warehouse', 'OrderController@getWarehouse')->name('order.store');
-        //获取可分配路线日期
-        Route::get('/{id}/get-date', 'OrderController@getAbleDateList');
+        //通过地址获取可分配的路线日期列表
+        Route::get('/get-date', 'OrderController@getAbleDateListByAddress');
     });
 
     //订单客服
