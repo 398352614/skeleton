@@ -52,7 +52,7 @@ class CarValidate extends BaseValidate
         'store' => [
             'car_no',
             'car_brand_id',
-            'car_model_id',
+//            'car_model_id',
             'ownership_type',
             'insurance_company',
             'insurance_type',
@@ -74,7 +74,7 @@ class CarValidate extends BaseValidate
         'update' => [
             'car_no',
             'car_brand_id',
-            'car_model_id',
+//            'car_model_id',
             'ownership_type',
             'insurance_company',
             'insurance_type',
