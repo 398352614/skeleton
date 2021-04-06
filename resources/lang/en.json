@@ -1083,4 +1083,9 @@
     "取消装货": "Cancel loading",
     "移出站点": "Move out of site",
     "移出任务": "Remove task"
+
+,"临调车":"Temporary shunting",
+"未上交":"Not handed in",
+"已上交":"Submitted",
+"原单返回":"Original order return"
 }

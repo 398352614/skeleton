@@ -98,4 +98,13 @@ class SparePartsRecord extends BaseModel
     {
         return ConstTranslateTrait::sparePartsRecordStatus($value);
     }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function getSpUnit($value)
+    {
+        return ConstTranslateTrait::sparePartsUnit($value);
+    }
 }

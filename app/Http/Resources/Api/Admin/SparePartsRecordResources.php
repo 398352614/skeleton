@@ -27,6 +27,9 @@ class SparePartsRecordResources extends JsonResource
      */
     public function toArray($request)
     {
-        return array_merge(parent::toArray($request), ['price_total' => $this->receive_quantity * $this->receive_price]);
+        return array_merge(parent::toArray($request), [
+            'price_total' => $this->receive_quantity * $this->receive_price,
+            'sp_unit' => $this->resource->getSpUnit($this->sp_unit)
+        ]);
     }
 }

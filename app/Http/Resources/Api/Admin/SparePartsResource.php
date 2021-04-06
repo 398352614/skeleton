@@ -31,7 +31,7 @@ class SparePartsResource extends JsonResource
     {
         return array_merge([
             'sp_unit_id' => $this->resource->getOriginal('sp_unit'),
-            'stock_quantity' => $this->resource->getStock($this->sp_no)
+            'stock_now' => $this->resource->getStock($this->sp_no)
         ], $this->resource->toArray());
     }
 }
