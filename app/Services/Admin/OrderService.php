@@ -1161,9 +1161,9 @@ class OrderService extends BaseService
             $newOrderList[$k]['warehouse']['house_number'] = $newOrderList[$k]['tracking_order']['warehouse_house_number'];
             $newOrderList[$k]['warehouse']['address'] = $newOrderList[$k]['tracking_order']['warehouse_address'];
             //填充仓库
-            if ($newOrderList[$k]['type'] == BaseConstService::ORDER_TYPE_1) {
+            if ($v['type'] == BaseConstService::ORDER_TYPE_1) {
                 $newOrderList[$k]['receiver'] = $newOrderList[$k]['warehouse'];
-            }elseif ($newOrderList[$k]['type'] == BaseConstService::ORDER_TYPE_2){
+            }elseif ($v['type'] == BaseConstService::ORDER_TYPE_2){
                 $newOrderList[$k]['sender'] = $newOrderList[$k]['warehouse'];
             }
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
