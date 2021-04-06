@@ -48,6 +48,6 @@ class TrackingOrderTrailController extends BaseController
      */
     public function destroy($id)
     {
-        return $this->service->destroy($this->$id);
+        return $this->service->destroy($id);
     }
 }
