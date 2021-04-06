@@ -23,7 +23,6 @@ class RechargeService extends BaseService
     public $filterRules = [
         'merchant_id' => ['like', 'merchant_id'],
         'status' => ['=', 'status'],
-        'recharge_statistics_status' => ['=', 'recharge_statistics_status'],
         'recharge_no' => ['=', 'recharge_no'],
         'recharge_date' => ['between', ['begin_date', 'end_date']],
     ];
@@ -39,6 +38,11 @@ class RechargeService extends BaseService
      */
     public function getPageList()
     {
+        if (!empty($this->formData['recharge_statistics_status'])) {
+            $rechargeStatisticsList = $this->getRechargeStatisticsService()->getList(['driver_id' => auth()->user()->id], ['*'], false);
+            $tourList = $rechargeStatisticsList->where('status', $this->formData['recharge_statistics_status'])->pluck('tour_no')->toArray();
+            $this->query->whereIn('tour_no', $tourList);
+        }
         $this->query->where('company_id', auth()->user()->company_id)->where('driver_id', auth()->user()->id)->where(['status' => BaseConstService::RECHARGE_STATUS_3])->orderByDesc('updated_at');
         $data = parent::getPageList();
         foreach ($data as $k => $v) {
