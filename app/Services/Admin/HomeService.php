@@ -27,7 +27,7 @@ class HomeService extends BaseService
     {
         $date = Carbon::today()->format('Y-m-d');
         //当日订单
-        $preparingTrackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date, 'status' => ['in',[BaseConstService::TRACKING_ORDER_STATUS_1,BaseConstService::TRACKING_ORDER_STATUS_2,BaseConstService::TRACKING_ORDER_STATUS_3]]]);//待分配
+        $preparingTrackingOrder = $this->getTrackingOrderService()->count(['execution_date' => $date, 'status' => ['in', [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3]]]);//待分配
         $preparingBatch = $this->getBatchService()->count(['execution_date' => $date, 'status' => ['in', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT]]]);
         $preparingTour = $this->getTourService()->count(['execution_date' => $date, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]]]);
         $tour = $this->getTourService()->count(['execution_date' => $date]);
@@ -329,6 +329,9 @@ class HomeService extends BaseService
                     BaseConstService::TRACKING_ORDER_STATUS_4,
                     BaseConstService::TRACKING_ORDER_STATUS_5,
                 ]]]);
+            if($data[$k]['tour'] == 0 && $data[$k]['batch']==0 && $data[$k]['tracking_order']==0){
+                unset($data[$k]);
+            }
         }
         $data = array_values($data);
         return $data;
