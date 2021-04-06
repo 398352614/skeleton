@@ -23,6 +23,7 @@ class RechargeService extends BaseService
     public $filterRules = [
         'merchant_id' => ['like', 'merchant_id'],
         'status' => ['=', 'status'],
+        'recharge_statistics_status' => ['=', 'recharge_statistics_status'],
         'recharge_no' => ['=', 'recharge_no'],
         'recharge_date' => ['between', ['begin_date', 'end_date']],
     ];
