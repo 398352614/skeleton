@@ -43,6 +43,7 @@ class MerchantResource extends JsonResource
             'bank_account'=>$this->bank_account,
             'invoice_address'=>$this->invoice_address,
             'invoice_email'=>$this->invoice_email,
+            'introduction'=>$this->introduction
         ];
     }
 
