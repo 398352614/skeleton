@@ -258,6 +258,16 @@ class OrderService extends BaseService
         return $data;
     }
 
+    /**
+     * 通过地址获取可选日期
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getAbleDateListByAddress($params)
+    {
+        return $this->getTrackingOrderService()->getAbleDateListByAddress($params);
+    }
 
     /**
      * 订单新增

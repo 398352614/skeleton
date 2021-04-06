@@ -33,6 +33,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class TrackingOrderService
@@ -119,6 +120,35 @@ class TrackingOrderService extends BaseService
         return $data;
     }
 
+    /**
+     * 通过地址获得可选日期
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getAbleDateListByAddress($params)
+    {
+        $this->validate($params);
+        $data = $this->getLineService()->getScheduleList($params);
+        return $data;
+    }
+
+    /**
+     * 获取可选日期验证
+     * @param $info
+     * @throws BusinessLogicException
+     */
+    public function validate($info)
+    {
+        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2,3', 'place_lon' => 'required|string|max:50', 'place_lat' => 'required|string|max:50']);
+        } else {
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2,3', 'place_post_code' => 'required|string|max:50']);
+        }
+        if ($validator->fails()) {
+            throw new BusinessLogicException('地址数据不正确，无法拉取可选日期', 3001);
+        }
+    }
 
     /**
      * 订单统计

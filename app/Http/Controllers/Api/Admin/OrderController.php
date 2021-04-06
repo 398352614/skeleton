@@ -98,6 +98,16 @@ class OrderController extends BaseController
     }
 
     /**
+     * 通过地址获取可选日期
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getAbleDateListByAddress()
+    {
+        return $this->service->getAbleDateListByAddress($this->data);
+    }
+
+    /**
      * 订单批量导入
      * @return array
      * @throws BusinessLogicException
