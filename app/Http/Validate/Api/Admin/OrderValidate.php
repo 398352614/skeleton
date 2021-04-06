@@ -99,7 +99,7 @@ class OrderValidate extends BaseValidate
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
-            'receipt_type','receipt_count','create_date'
+            'receipt_type', 'receipt_count', 'create_date'
         ],
         'update' => [
             'merchant_id', 'execution_date', 'second_execution_date', 'expect_total_amount', 'actual_amount',
@@ -116,7 +116,7 @@ class OrderValidate extends BaseValidate
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
-            'receipt_type','receipt_count','create_date'
+            'receipt_type', 'receipt_count', 'create_date'
         ],
         'again' => [
             'execution_date',
@@ -142,7 +142,7 @@ class OrderValidate extends BaseValidate
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'],
-        'getWareHouse'=>'place_post_code','execution_date','type'
+        'getWareHouse' => 'place_post_code', 'execution_date', 'type', 'merchant_id'
     ];
 
     public $message = [
