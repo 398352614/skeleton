@@ -155,6 +155,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'OrderReceiptController@delete')->name('order.delete-receipt');
     });
 
+    //订单默认配置
+    Route::prefix('order-config')->group(function () {
+        //获取配置
+        Route::get('/', 'OrderDefaultConfigController@detail')->name('order.config');
+        //更新配置
+        Route::put('/', 'OrderDefaultConfigController@update')->name('order.config');
+    });
+
     //订单费用管理
     Route::prefix('order-amount')->group(function () {
         //查询

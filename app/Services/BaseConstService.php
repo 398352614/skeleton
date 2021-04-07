@@ -294,10 +294,6 @@ class BaseConstService
     const BATCH_PAY_TYPE_3 = 3;
     const BATCH_PAY_TYPE_4 = 4;
 
-    //driver 司机合作类型
-    const DRIVER_HIRE = 1;
-    const DRIVER_CONTRACTOR = 2;
-
     //driver 司机状态
     const DRIVER_TO_NORMAL = 1;
     const DRIVER_TO_LOCK = 2;
@@ -468,6 +464,12 @@ class BaseConstService
     const DRIVER_EVENT_BATCH_ARRIVED = 2;
     const DRIVER_EVENT_BATCH_DEPART = 3;
     const DRIVER_EVENT_BACK_WAREHOUSE = 4;
+
+    //司机类型
+    const DRIVER_TYPE_1 = 1;
+    const DRIVER_TYPE_2 = 2;
+    const DRIVER_TYPE_3 = 3;
+    const DRIVER_TYPE_4 = 4;
 
     //展示方式1-全部展示2-按线路规则展示
     const ALL_SHOW = 1;

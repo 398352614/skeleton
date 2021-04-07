@@ -52,8 +52,8 @@ class CarService extends BaseService
         return $this->create([
             'car_no' => $this->formData['car_no'],
             'outgoing_time' => $this->formData['outgoing_time'] ?? null,
-            'car_brand_id' => $this->formData['car_brand_id'],
-            'car_model_id' => $this->formData['car_model_id'],
+            'car_brand_id' => $this->formData['car_brand_id'] ?? null,
+            'car_model_id' => $this->formData['car_model_id'] ?? null,
             'car_length' => $this->formData['car_length'] ?? null,
             'gps_device_number' => $this->formData['gps_device_number'] ?? '',
             'ownership_type' => $this->formData['ownership_type'] ?? 1,

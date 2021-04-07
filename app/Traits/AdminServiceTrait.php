@@ -27,6 +27,7 @@ use App\Services\Admin\MerchantGroupService;
 use App\Services\Admin\MerchantRechargeService;
 use App\Services\Admin\MerchantService;
 use App\Services\Admin\OrderAmountService;
+use App\Services\Admin\OrderDefaultConfigService;
 use App\Services\Admin\OrderService;
 use App\Services\Admin\OrderTemplateService;
 use App\Services\Admin\PackageService;
@@ -495,5 +496,14 @@ trait AdminServiceTrait
     public function getSparePartsStockService()
     {
         return self::getInstance(SparePartsStockService::class);
+    }
+
+    /**
+     * 获取订单默认配置 Service
+     * @return OrderDefaultConfigService
+     */
+    public function getOrderDefaultConfigService()
+    {
+        return self::getInstance(OrderDefaultConfigService::class);
     }
 }

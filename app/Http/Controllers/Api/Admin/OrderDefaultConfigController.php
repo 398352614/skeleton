@@ -6,7 +6,7 @@
  * Time : 6:46 PM
  * Email: i@nizer.in
  * Blog : nizer.in
- * FileName: OrderDetaultConfigController.php
+ * FileName: OrderDefaultConfigController.php
  */
 
 
@@ -41,10 +41,10 @@ class OrderDefaultConfigController extends BaseController
     }
 
     /**
-     * @return int
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
      */
     public function update()
     {
-        return $this->service->update([], $this->data);
+        return $this->service->updateOrCreate([], $this->data);
     }
 }

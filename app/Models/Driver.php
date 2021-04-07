@@ -116,8 +116,20 @@ class Driver extends Authenticatable implements JWTSubject
         ];
     }
 
+    /**
+     * @return null
+     */
     public function getIsLockedNameAttribute()
     {
         return empty($this->is_locked) ? null : ConstTranslateTrait::driverStatusList($this->is_locked);
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getTypeAttribute($value)
+    {
+        return empty($value) ? '' : ConstTranslateTrait::driverTypeList($value);
     }
 }

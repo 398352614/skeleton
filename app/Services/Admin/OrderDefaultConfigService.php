@@ -30,4 +30,12 @@ class OrderDefaultConfigService extends BaseService
     {
         parent::__construct($model, OrderDefaultConfigResource::class, $infoResource);
     }
+
+    /**
+     *
+     */
+    public function init()
+    {
+        $this->updateOrCreate([], []);
+    }
 }
