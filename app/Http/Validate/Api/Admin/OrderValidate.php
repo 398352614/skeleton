@@ -25,7 +25,7 @@ class OrderValidate extends BaseValidate
         'execution_date' => 'required|date|after_or_equal:today',
         'second_execution_date' => 'nullable|date|after_or_equal:today',
         'list_mode' => 'sometimes|required|in:1,2',
-        'type' => 'required|integer|in:1,2,3',
+        'type' => 'required|integer|in:1,2,3,4',
         'out_user_id' => 'nullable|integer',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
         'settlement_type' => 'nullable|in:1,2,3,4,5',
