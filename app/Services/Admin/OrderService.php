@@ -738,11 +738,11 @@ class OrderService extends BaseService
         }
         //运价计算
         $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
-//        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
-//            $params['distance'] = 1000;
-//        } else {
+        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
+            $params['distance'] = 1000;
+        } else {
         $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
-//        }
+        }
         $params['distance'] = $params['distance'] / 1000;
         $params = $this->getTransportPriceService()->priceCount($params);
         $params['distance'] = $params['distance'] * 1000;
