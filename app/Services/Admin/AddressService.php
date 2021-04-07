@@ -35,6 +35,16 @@ class AddressService extends BaseService
     use ImportTrait;
 
     /**
+     * @var \string[][]
+     */
+    public $filterRules = [
+        'merchant_id' => ['=', 'merchant_id'],
+        'place_fullname,place_phone,place_address' => ['like', 'place_fullname'],
+        'place_post_code' => ['like', 'place_post_code'],
+        'type' => ['=', 'type']
+    ];
+
+    /**
      * 导出 Excel 头部
      * @var string[]
      */
@@ -68,15 +78,7 @@ class AddressService extends BaseService
         'place_address'
     ];
 
-    /**
-     * @var \string[][]
-     */
-    public $filterRules = [
-        'merchant_id' => ['=', 'merchant_id'],
-        'place_fullname,place_phone,place_address' => ['like', 'place_fullname'],
-        'place_post_code' => ['like', 'place_post_code'],
-        'type' => ['=', 'type']
-    ];
+
 
     /**
      * AddressService constructor.
