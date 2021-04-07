@@ -96,6 +96,7 @@ use Illuminate\Support\Facades\App;
  * @method static orderTransportModeList($args = null)
  * @method static orderOriginTypeList($args = null)
  * @method static trackingOrderTrailTypeList($args = null)
+ * @method static addressTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -776,6 +777,11 @@ trait ConstTranslateTrait
 
     public static $orderReceiptTypeList = [
         BaseConstService::ORDER_RECEIPT_TYPE_1 => '原单返回',
+    ];
+
+    public static $addressTypeList = [
+        BaseConstService::ADDRESS_TYPE_1 => '发件人',
+        BaseConstService::ADDRESS_TYPE_2 => '收件人',
     ];
 
 
