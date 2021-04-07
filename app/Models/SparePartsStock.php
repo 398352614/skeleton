@@ -13,6 +13,8 @@
 namespace App\Models;
 
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * Class SparePartsStock
  * @package App\Models
@@ -81,4 +83,13 @@ class SparePartsStock extends BaseModel
         'created_at',
         'updated_at',
     ];
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function getSpUnit($value)
+    {
+        return ConstTranslateTrait::sparePartsUnit($value);
+    }
 }
