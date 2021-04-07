@@ -110,7 +110,8 @@ class Order extends BaseModel
         'actual_total_amount',
         'receipt_type',
         'receipt_count',
-        'create_date'
+        'create_date',
+        'transport_mode',
     ];
 
     /**
