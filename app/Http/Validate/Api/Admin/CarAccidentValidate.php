@@ -46,7 +46,7 @@ class CarAccidentValidate extends BaseValidate
         'insurance_indemnity' => 'required_if:deal_type,1|in:1,2|integer',
         'insurance_payment' => 'required_if:deal_type,1|numeric',
         'insurance_description' => 'string',
-        'insurance_price' => 'required|numeric',
+        'insurance_price' => 'required_if:insurance_indemnity,1|numeric',
         'insurance_date' => 'required_if:insurance_indemnity,1|date'
     ];
 

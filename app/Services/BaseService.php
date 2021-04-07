@@ -84,8 +84,10 @@ class BaseService
      */
     public function setFilter()
     {
-        if ($this->filters)
+        if ($this->filters) {
             static::buildQuery($this->query, $this->filters);
+        }
+
         return $this;
     }
 
@@ -109,6 +111,7 @@ class BaseService
                 }
             }
         }
+
         return true;
     }
 
@@ -122,6 +125,7 @@ class BaseService
                 $this->query->orderBy($key, $value);
             }
         }
+
         return $this;
     }
 
@@ -131,6 +135,7 @@ class BaseService
     public function getPaginate()
     {
         $this->per_page = $this->request->input('per_page', 200);
+
         return $this->query->paginate($this->per_page);
     }
 
@@ -145,6 +150,7 @@ class BaseService
                 'per_page' => 'integer|in:10,20,50,100,200',
             ]);
         }
+
         return true;
     }
 
@@ -158,6 +164,7 @@ class BaseService
         } else {
             $this->query->sharedLock();
         }
+
         return $this;
     }
 
@@ -172,15 +179,20 @@ class BaseService
 
     /**
      * 获取列表并锁定
-     * @param array $where
-     * @param array $selectFields
-     * @param bool $isResource
-     * @param array $groupFields
-     * @param array $orderFields
+     * @param  array  $where
+     * @param  array  $selectFields
+     * @param  bool  $isResource
+     * @param  array  $groupFields
+     * @param  array  $orderFields
      * @return array|Builder[]|Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getListLock($where = [], $selectFields = ['*'], $isResource = true, $groupFields = [], $orderFields = [])
-    {
+    public function getListLock(
+        $where = [],
+        $selectFields = ['*'],
+        $isResource = true,
+        $groupFields = [],
+        $orderFields = []
+    ) {
         return $this->locked()->getList($where, $selectFields, $isResource, $groupFields, $orderFields);
     }
 
@@ -194,8 +206,13 @@ class BaseService
      * @param $orderFields
      * @return Builder[]|Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getList($where = [], $selectFields = ['*'], $isResource = true, $groupFields = [], $orderFields = [])
-    {
+    public function getList(
+        $where = [],
+        $selectFields = ['*'],
+        $isResource = true,
+        $groupFields = [],
+        $orderFields = []
+    ) {
         if (!empty($where)) {
             SearchTrait::buildQuery($this->query, $where);
         }
@@ -214,6 +231,7 @@ class BaseService
             $data = $this->query->get($selectFields);
         }
         $this->query = $this->model::query();
+
         return $data;
     }
 
@@ -221,9 +239,9 @@ class BaseService
     /**
      * 获取详情,并加锁
      * @param $where
-     * @param array $selectFields
-     * @param bool $isResource
-     * @param array $orderFields
+     * @param  array  $selectFields
+     * @param  bool  $isResource
+     * @param  array  $orderFields
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
     public function getInfoLock($where, $selectFields = ['*'], $isResource = true, $orderFields = [])
@@ -241,6 +259,7 @@ class BaseService
         if (empty($data)) {
             return null;
         }
+
         return $this->locked()->getInfo($where, $selectFields, $isResource, $orderFields);
     }
 
@@ -249,8 +268,8 @@ class BaseService
      * 获取详情
      * @param $where
      * @param $selectFields
-     * @param bool $isResource
-     * @param array $orderFields
+     * @param  bool  $isResource
+     * @param  array  $orderFields
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
     public function getInfo($where, $selectFields = ['*'], $isResource = true, $orderFields = [])
@@ -265,18 +284,21 @@ class BaseService
         $data = $this->query->first($selectFields);
         if (empty($data)) {
             $this->query = $this->model::query();
+
             return [];
         };
         if ($isResource) {
             $data = $this->infoResource::make($data)->toArray(request());
         }
         $this->query = $this->model::query();
+
         return $data;
     }
 
     public function create($data)
     {
         $this->query = $this->model::query();
+
         return $this->query->create(Arr::only($data, $this->model->getFillable()));
     }
 
@@ -286,6 +308,7 @@ class BaseService
         foreach ($data as $key => $item) {
             $data[$key] = Arr::only($item, $fields);
         }
+
         return $this->model->insertAll($data);
     }
 
@@ -297,6 +320,7 @@ class BaseService
             $data['company_id'] = auth()->user()->company_id;
         }
         $data['created_at'] = $data['updated_at'] = now();
+
         return $this->query->insertGetId($data);
     }
 
@@ -312,6 +336,7 @@ class BaseService
         SearchTrait::buildQuery($this->query, $where);
         $rowCount = $this->query->update(Arr::only($data, $this->model->getFillable()));
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -325,8 +350,10 @@ class BaseService
     {
         $this->query = $this->model::query();
         $query = $this->query->findOrFail($id);
-        $rowCount = $query->update(Arr::only($data, Arr::except($this->model->getFillable(), ['company_id', 'order_no', 'batch_no', 'tour_no'])));
+        $rowCount = $query->update(Arr::only($data,
+            Arr::except($this->model->getFillable(), ['company_id', 'order_no', 'batch_no', 'tour_no'])));
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -343,6 +370,7 @@ class BaseService
         $query = $this->query->findOrFail($id);
         $rowCount = $query->increment($field, $data[$field], Arr::except($data, $data[$field]));
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -359,6 +387,7 @@ class BaseService
         SearchTrait::buildQuery($this->query, $where);
         $rowCount = $this->query->increment($field, $data[$field], Arr::except($data, $data[$field]));
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -376,6 +405,7 @@ class BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，清重新操作');
         }
+
         return 'true';
     }
 
@@ -386,6 +416,7 @@ class BaseService
         SearchTrait::buildQuery($this->query, $where);
         $rowCount = $this->query->delete();
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -406,6 +437,7 @@ class BaseService
         }
         $rowCount = $this->delete(['id' => ['in', $idList]]);
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -417,6 +449,7 @@ class BaseService
         }
         $count = $this->query->count();
         $this->query = $this->model::query();
+
         return empty($count) ? 0 : $count;
     }
 
@@ -427,6 +460,7 @@ class BaseService
         }
         $sum = $this->query->sum($field);
         $this->query = $this->model::query();
+
         return !empty($sum) ? $sum : 0;
     }
 
@@ -448,9 +482,19 @@ class BaseService
         if (!in_array(intval($info['status']), Arr::wrap($status))) {
             throw new BusinessLogicException('当前状态是[:status_name]，不能操作', 1000, ['status_name' => $info['status_name']]);
         }
+
         return $isToArray ? $info->toArray() : $info;
     }
 
+    /**
+     * @param  array  $where
+     * @param  array  $data
+     * @return Builder|Model
+     */
+    public function updateOrCreate(array $where, array $data)
+    {
+        return $this->query->updateOrCreate($where, $data);
+    }
 
     /**
      * @param $name
@@ -470,7 +514,7 @@ class BaseService
                 }
             }
             return FactoryInstanceTrait::getInstance($className, $arguments);
-        };
+        }
         throw new BusinessLogicException('方法不存在');
     }
 }

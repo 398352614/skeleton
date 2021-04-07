@@ -441,8 +441,10 @@ trait ConstTranslateTrait
 
     //司机合作类型
     public static $driverTypeList = [
-        BaseConstService::DRIVER_HIRE => '雇佣',
-        BaseConstService::DRIVER_CONTRACTOR => '包线',
+        BaseConstService::DRIVER_TYPE_1 => '自有车司机',
+        BaseConstService::DRIVER_TYPE_2 => '承包车司机',
+        BaseConstService::DRIVER_TYPE_3 => '长期合作司机',
+        BaseConstService::DRIVER_TYPE_4 => '临时调用司机',
     ];
 
     //司机锁定状态
