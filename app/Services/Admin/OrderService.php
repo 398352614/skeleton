@@ -775,7 +775,7 @@ class OrderService extends BaseService
                     ->put('status', $status)
                     ->put('expiration_status', BaseConstService::EXPIRATION_STATUS_1)
                     ->put('type', $params['type'])
-                    ->put('feature_logo', $params['feature_logo'] ?? '');
+                    ->put('feature_logo', $item['feature_logo'] ?? '');
             })->toArray();
             $rowCount = $this->getPackageService()->insertAll($packageList);
             if ($rowCount === false) {
