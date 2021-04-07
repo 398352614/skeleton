@@ -1197,11 +1197,48 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
+        //删除费用
+        $rowCount = $this->getOrderAmountService()->delete(['order_no' => $dbOrder['order_no']]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
+        //新增费用
+        $this->addAmountList($params);
         //新增包裹和材料
         $dbOrder['package_list'] = $params['package_list'] ?? [];
         $dbOrder['material_list'] = $params['material_list'] ?? [];
         $this->addAllItemList($dbOrder);
         $this->getTrackingOrderService()->updateItemListByOrderNo($dbOrder['order_no'], $params);
+    }
+
+    /**
+     * 添加货物列表
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    private function addAmountList($params)
+    {
+        $dataList = [];
+        //若存在包裹列表,则新增包裹列表
+        if (!empty($params['amount_list'])) {
+            foreach ($params['amount_list'] as $k => $v) {
+                $dataList[$k]['order_no'] = $params['order_no'];
+                $dataList[$k]['expect_amount'] = $v['expect_amount'];
+                $dataList[$k]['actual_amount'] = 0.00;
+                $dataList[$k]['type'] = $v['type'];
+                $dataList[$k]['remark'] = '';
+                $dataList[$k]['status'] = BaseConstService::ORDER_AMOUNT_STATUS_2;
+                if (!empty($v['in_total'])) {
+                    $dataList[$k]['in_total'] = $v['in_total'];
+                } else {
+                    $dataList[$k]['in_total'] = BaseConstService::YES;
+                }
+            }
+            $rowCount = $this->getOrderAmountService()->insertAll($dataList);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('订单费用新增失败！');
+            }
+        }
     }
 
     /**

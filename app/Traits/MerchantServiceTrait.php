@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Services\Admin\OrderAmountService;
 use App\Services\Merchant\AddressService;
 use App\Services\Merchant\BatchExceptionService;
 use App\Services\Merchant\BatchService;
@@ -114,6 +115,14 @@ Trait MerchantServiceTrait
         return self::getInstance(TrackingOrderService::class);
     }
 
+    /**
+     * 订单费用
+     * @return OrderAmountService
+     */
+    public function getOrderAmountService()
+    {
+        return self::getInstance(OrderAmountService::class);
+    }
 
     /**
      * 运单包裹表

@@ -738,11 +738,11 @@ class OrderService extends BaseService
         }
         //运价计算
         $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
-//        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
-//            $params['distance'] = 1000;
-//        } else {
-        $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
-//        }
+        if (config('tms.true_app_env') == 'local' || config('tms.true_app_env') == 'local') {
+            $params['distance'] = 1000;
+        } else {
+            $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+        }
         $params['distance'] = $params['distance'] / 1000;
         $params = $this->getTransportPriceService()->priceCount($params);
         $params['distance'] = $params['distance'] * 1000;
@@ -873,7 +873,7 @@ class OrderService extends BaseService
         //新增包裹列表和材料列表
         $this->addAllItemList($data);
         //删除费用
-        $rowCount = $this->getMaterialService()->delete(['order_no' => $dbOrder['order_no']]);
+        $rowCount = $this->getOrderAmountService()->delete(['order_no' => $dbOrder['order_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
@@ -1163,7 +1163,7 @@ class OrderService extends BaseService
             //填充仓库
             if ($v['type'] == BaseConstService::ORDER_TYPE_1) {
                 $newOrderList[$k]['receiver'] = $newOrderList[$k]['warehouse'];
-            }elseif ($v['type'] == BaseConstService::ORDER_TYPE_2){
+            } elseif ($v['type'] == BaseConstService::ORDER_TYPE_2) {
                 $newOrderList[$k]['sender'] = $newOrderList[$k]['warehouse'];
             }
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
