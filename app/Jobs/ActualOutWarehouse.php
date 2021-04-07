@@ -90,7 +90,7 @@ class ActualOutWarehouse implements ShouldQueue
             try {
                 if (!empty($sortBatch)) {
                     Log::info('batch_ids:' . json_encode(array_column($batchList, 'id'), JSON_UNESCAPED_UNICODE));
-                    $tourService->updateBatchIndex(['tour_no' => $this->tour_no, 'batch_ids' => array_column($batchList, 'id')]);
+                    $tourService->updateBatchIndex(['tour_no' => $this->tour_no, 'batch_ids' => array_values(array_column($batchList, 'id'))]);
                 } else {
                     $tourService->autoOpTour(['tour_no' => $this->tour_no]);
                 }

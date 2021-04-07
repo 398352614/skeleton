@@ -1124,6 +1124,7 @@ class TourService extends BaseService
         $batchList = array_merge($batchList, $ingBatchList);
         if ($onlyId == true) {
             $batchList = array_column($batchList, 'id');
+            $batchList = array_values($batchList);
         }
         return $batchList;
     }
