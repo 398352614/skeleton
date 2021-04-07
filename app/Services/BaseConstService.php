@@ -696,4 +696,8 @@ class BaseConstService
 
     //订单回单要求
     const ORDER_RECEIPT_TYPE_1 = 1;
+
+    //地址类型
+    const ADDRESS_TYPE_1 = 1;
+    const ADDRESS_TYPE_2 = 2;
 }
