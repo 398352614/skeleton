@@ -226,12 +226,12 @@ class OrderService extends BaseService
                 } else {
                     $dbTrackingOrder[$k]['begin_time'] = null;
                 }
-//                $dbTrackingOrder['time_list'][] = ['type' => __(BaseConstService::CREATED_TIME), 'time' => $dbTrackingOrder['created_at']];
-                if (!empty($dbTrackingOrder['begin_time'])) {
-                    $dbTrackingOrder['time_list'][] = ['type' => __(BaseConstService::BEGIN_TIME), 'time' => $dbTrackingOrder['begin_time']];
+                $dbTrackingOrder[$k]['time_list'][] = ['type' => __(BaseConstService::CREATED_TIME), 'time' => $dbTrackingOrder[$k]['created_at']];
+                if (!empty($dbTrackingOrder[$k]['begin_time'])) {
+                    $dbTrackingOrder[$k]['time_list'][] = ['type' => __(BaseConstService::BEGIN_TIME), 'time' => $dbTrackingOrder[$k]['begin_time']];
                 }
-                if (!empty($dbTrackingOrder['sign_time'])) {
-                    $dbTrackingOrder['time_list'][] = ['type' => __(BaseConstService::SIGN_TIME), 'time' => $dbTrackingOrder['sign_time']];
+                if (!empty($dbTrackingOrder[$k]['sign_time'])) {
+                    $dbTrackingOrder[$k]['time_list'][] = ['type' => __(BaseConstService::SIGN_TIME), 'time' => $dbTrackingOrder[$k]['sign_time']];
                 }
             }
         }
