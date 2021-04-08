@@ -700,4 +700,23 @@ class BaseConstService
     //地址类型
     const ADDRESS_TYPE_1 = 1;
     const ADDRESS_TYPE_2 = 2;
+
+    //地图前端类型
+    const MAP_CONFIG_FRONT_TYPE_1 = 1;
+    const MAP_CONFIG_FRONT_TYPE_2 = 2;
+    const MAP_CONFIG_FRONT_TYPE_3 = 3;
+
+    //地图后端类型
+    const MAP_CONFIG_BACK_TYPE_1 = 1;
+    const MAP_CONFIG_BACK_TYPE_2 = 2;
+    const MAP_CONFIG_BACK_TYPE_3 = 3;
+
+    //地图手持端类型
+    const MAP_CONFIG_MOBILE_TYPE_1 = 1;
+    const MAP_CONFIG_MOBILE_TYPE_2 = 2;
+    const MAP_CONFIG_MOBILE_TYPE_3 = 3;
+
+    const CREATED_TIME = '创建时间';
+    const BEGIN_TIME = '发车时间';
+    const SIGN_TIME = '签收时间';
 }
