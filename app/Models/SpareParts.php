@@ -90,6 +90,10 @@ class SpareParts extends BaseModel
         'deleted_at',
     ];
 
+    protected $casts = [
+        'id' => 'int'
+    ];
+
     /**
      * @param $value
      * @return mixed
