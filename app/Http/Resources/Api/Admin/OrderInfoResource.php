@@ -32,6 +32,8 @@ class OrderInfoResource extends JsonResource
             'transport_mode' => $this->transport_mode,
             'transport_mode_name'=>$this->transport_mode_name,
             'origin_type' => $this->origin_type,
+            'control_mode'=> $this->control_mode,
+            'control_mode_name'=> $this->control_mode_name,
             'origin_type_name' => $this->origin_type_name,
             'type' => $this->type,
             'type_name' => $this->type_name,

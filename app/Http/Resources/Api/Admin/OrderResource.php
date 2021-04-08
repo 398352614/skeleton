@@ -32,6 +32,8 @@ class OrderResource extends JsonResource
             'status' => $this->status,
             'status_name' => $this->status_name,
             'out_status' => $this->out_status,
+            'control_mode'=> $this->control_mode,
+            'control_mode_name'=> $this->control_mode_name,
             'out_status_name' => $this->out_status_name,
             'execution_date' => $this->execution_date,
             'second_execution_date' => $this->second_execution_date,
