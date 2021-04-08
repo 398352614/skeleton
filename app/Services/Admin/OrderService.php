@@ -771,6 +771,9 @@ class OrderService extends BaseService
                 if (!empty($params['package_list'][$k]['feature_logo']) && in_array($params['package_list'][$k]['feature_logo'], array_keys($relationship))) {
                     $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']];
                 }
+                if(empty($params['package_list'][$k]['express_second_no'])){
+                    $params['package_list'][$k]['express_second_no']='';
+                }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
                 $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'actual_weight', 'settlement_amount', 'count_settlement_amount', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
