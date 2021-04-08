@@ -31,7 +31,8 @@ class CarAccidentResource extends JsonResource
     {
         return array_merge($this->resource->toArray(), [
             'deal_type_name' => $this->resource->getDealType($this->resource->deal_type),
-            'accident_duty_name' => $this->resource->getAccidentDuty($this->resource->accident_duty)
+            'accident_duty_name' => $this->resource->getAccidentDuty($this->resource->accident_duty),
+            'insurance_indemnity_name' => $this->resource->getInsuranceIndemnity($this->resource->insurance_indemnit)
         ]);
     }
 }

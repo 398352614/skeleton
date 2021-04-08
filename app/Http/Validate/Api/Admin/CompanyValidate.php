@@ -17,6 +17,10 @@ class CompanyValidate extends BaseValidate
         'contacts' => 'sometimes|nullable|string|max:50',
         'phone' => 'sometimes|nullable|string|max:50|regex:/^[0-9]([0-9-])*[0-9]$/',
         'address' => 'sometimes|nullable|string|max:250',
+        'web_site' => 'sometimes|nullable|string|max:250',
+        'system_name' => 'sometimes|nullable|string|max:50',
+        'logo_url' => 'sometimes|nullable|string|max:250',
+        'login_logo_url' => 'sometimes|nullable|string|max:250',
     ];
 
     public $scene = [
@@ -26,6 +30,10 @@ class CompanyValidate extends BaseValidate
             'contacts',
             'phone',
             'address',
+            'web_site',
+            'system_name',
+            'logo_url',
+            'login_logo_url',
         ],
     ];
 }
