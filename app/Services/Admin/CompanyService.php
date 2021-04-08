@@ -41,13 +41,17 @@ class CompanyService extends BaseService
                     'id' => auth()->user()->company_id,
                 ],
                 [
-                    'name' => $data['name'] ?? '',
-                    'contacts' => $data['contacts'] ?? '',
-                    'phone' => $data['phone'] ?? '',
-                    'country' => $data['country'] ?? '',
-                    'address' => $data['address'] ?? '',
+                    'name'              => $data['name'] ?? '',
+                    'contacts'          => $data['contacts'] ?? '',
+                    'phone'             => $data['phone'] ?? '',
+                    'country'           => $data['country'] ?? '',
+                    'address'           => $data['address'] ?? '',
+                    'web_site'          => $data['web_site'] ?? '',
+                    'system_name'       => $data['system_name'] ?? '',
+                    'logo_url'          => $data['logo_url'] ?? '',
+                    'login_logo_url'    => $data['login_logo_url'] ?? '',
                 ]
-            ) !== 0;
+            ) != 0;
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }

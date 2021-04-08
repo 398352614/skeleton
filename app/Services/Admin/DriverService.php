@@ -80,7 +80,7 @@ class DriverService extends BaseService
             'address' => $this->formData['address'] ?? '',
             'country' => CompanyTrait::getCountry(),
             'lisence_number' => $this->formData['lisence_number'] ?? '',
-            'lisence_valid_date' => $this->formData['lisence_valid_date'] ?? null,
+            'lisence_valid_date' => empty($this->formData['lisence_valid_date']) ? null : $this->formData['lisence_valid_date'],
             'lisence_type' => $this->formData['lisence_type'] ?? null,
             'lisence_material' => $this->formData['lisence_material'] ?? '',
             'lisence_material_name' => $this->formData['lisence_material_name'] ?? '',
