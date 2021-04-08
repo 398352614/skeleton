@@ -76,6 +76,9 @@ class OrderValidate extends BaseValidate
 
         'order_no' => 'nullable|string|max:50',
         'order_no_list' => 'required|string',
+
+        'amount_list.*.expect_amount' => 'required_with:amount_list|gte:0',
+        'amount_list.*.type' => 'required_with:amount_list|integer|in:1,2,3,4,5,6,7,8,9,10,11',
     ];
 
     public $scene = [
@@ -93,7 +96,8 @@ class OrderValidate extends BaseValidate
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no','package_list.*.expiration_date',
             //材料列表
-            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
+            'amount_list.*.expect_amount','amount_list.*.type',
         ],
         'update' => [
             'merchant_id', 'execution_date', 'second_execution_date', 'mask_code',
@@ -109,7 +113,8 @@ class OrderValidate extends BaseValidate
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no','package_list.*.expiration_date',
             //材料列表
-            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
+            'amount_list.*.expect_amount','amount_list.*.type',
         ],
         'updateSecondDate' => ['second_execution_date'],
         'updateAddressDate' => ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street','order_no','execution_date'],

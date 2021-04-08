@@ -82,7 +82,7 @@ class OrderValidate extends BaseValidate
         'receipt_count' => 'nullable|integer|gte:0',
         'create_date' => 'nullable|date',
 
-        'amount_list.*.expect_amount' => 'required_with:amount_list||max:50|gte:0',
+        'amount_list.*.expect_amount' => 'required_with:amount_list|gte:0',
         'amount_list.*.type' => 'required_with:amount_list|integer|in:1,2,3,4,5,6,7,8,9,10,11',
 
     ];
