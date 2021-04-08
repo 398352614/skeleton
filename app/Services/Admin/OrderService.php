@@ -194,13 +194,6 @@ class OrderService extends BaseService
         $dbOrder['package_list'] = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['material_list'] = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['amount_list'] = $this->getOrderAmountService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
-        $dbOrder['time_list'][] = ['type' => __(BaseConstService::CREATED_TIME), 'time' => $dbOrder['created_at']];
-        if (!empty($dbOrder['begin_time'])) {
-            $dbOrder['time_list'][] = ['type' => __(BaseConstService::BEGIN_TIME), 'time' => $dbOrder['begin_time']];
-        }
-        if (!empty($dbOrder['sign_time'])) {
-            $dbOrder['time_list'][] = ['type' => __(BaseConstService::SIGN_TIME), 'time' => $dbOrder['sign_time']];
-        }
         return $dbOrder;
     }
 
@@ -232,6 +225,13 @@ class OrderService extends BaseService
                     $dbTrackingOrder[$k]['begin_time'] = $tour[$k]['begin_time'];
                 } else {
                     $dbTrackingOrder[$k]['begin_time'] = null;
+                }
+                $dbTrackingOrder['time_list'][] = ['type' => __(BaseConstService::CREATED_TIME), 'time' => $dbTrackingOrder['created_at']];
+                if (!empty($dbTrackingOrder['begin_time'])) {
+                    $dbTrackingOrder['time_list'][] = ['type' => __(BaseConstService::BEGIN_TIME), 'time' => $dbTrackingOrder['begin_time']];
+                }
+                if (!empty($dbTrackingOrder['sign_time'])) {
+                    $dbTrackingOrder['time_list'][] = ['type' => __(BaseConstService::SIGN_TIME), 'time' => $dbTrackingOrder['sign_time']];
                 }
             }
         }
