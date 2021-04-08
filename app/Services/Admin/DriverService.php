@@ -90,6 +90,7 @@ class DriverService extends BaseService
             'bank_name' => $this->formData['bank_name'] ?? '',
             'iban' => $this->formData['iban'] ?? '',
             'bic' => $this->formData['bic'] ?? '',
+            'type'=>$this->formData['type'] ?? '',
             // 'crop_type'             => $this->formData['crop_type'],
         ];
 
