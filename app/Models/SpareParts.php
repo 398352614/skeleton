@@ -91,7 +91,7 @@ class SpareParts extends BaseModel
     ];
 
     protected $casts = [
-        'id' => 'int'
+        'sp_unit' => 'int'
     ];
 
     /**
