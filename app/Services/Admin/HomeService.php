@@ -162,7 +162,7 @@ class HomeService extends BaseService
         $countInfo = [];
         for ($i = $no; $i >= 1; $i--) {
             $date = $day->format('Y-m-d');
-            $expectCount = parent::count(['merchant_id' => $merchantId, 'status' => ['<>', BaseConstService::ORDER_STATUS_5], 'execution_date' => $date]);
+            $expectCount = parent::count(['merchant_id' => $merchantId, 'status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]], 'execution_date' => $date]);
             $countInfo[$i] = ['date' => $date, 'order' => $expectCount];
             $day = $day->subDay();
         }
@@ -185,7 +185,7 @@ class HomeService extends BaseService
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['graph'] = $this->periodCountByMerchant($params, $v['id']);
         }
-        $orderList = parent::getList(['status' => ['<>', BaseConstService::ORDER_STATUS_5]], ['*'], false);
+        $orderList = parent::getList(['status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]]], ['*'], false);
         //总计
         $day = Carbon::create($params['begin_date']);
         $endDay = Carbon::create($params['end_date']);
@@ -221,7 +221,7 @@ class HomeService extends BaseService
         if (empty($params['end_date'])) {
             throw new BusinessLogicException('请选择结束时间');
         }
-        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['<>', BaseConstService::ORDER_STATUS_5]], ['*'], false);
+        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['in', [ BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_3]]], ['*'], false);
         $day = Carbon::create($params['begin_date']);
         $endDay = Carbon::create($params['end_date']);
         for ($i = 1; $day->lte($endDay); $i++) {
@@ -329,7 +329,7 @@ class HomeService extends BaseService
                     BaseConstService::TRACKING_ORDER_STATUS_4,
                     BaseConstService::TRACKING_ORDER_STATUS_5,
                 ]]]);
-            if($data[$k]['tour'] == 0 && $data[$k]['batch']==0 && $data[$k]['tracking_order']==0){
+            if ($data[$k]['tour'] == 0 && $data[$k]['batch'] == 0 && $data[$k]['tracking_order'] == 0) {
                 unset($data[$k]);
             }
         }
