@@ -71,20 +71,9 @@ class CarAccidentController extends BaseController
     /**
      * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
-     * @throws BusinessLogicException
      */
     public function detail($id)
     {
-        $data = $this->service->getInfo(['id' => $id], ['*'], false);
-
-        if (is_null($data)) {
-            throw new  BusinessLogicException(__('数据不存在'));
-        }
-
-        return array_merge($data, [
-            'deal_type_name' => $this->service->model->getDealType($data['deal_type']),
-            'accident_duty_name' => $this->service->model->getAccidentDuty($data['accident_duty']),
-            'insurance_indemnity_name' => $this->service->model->getInsuranceIndemnity($data['insurance_indemnity'])
-        ]);
+        return $this->service->getInfo(['id' => $id], ['*'], false);
     }
 }

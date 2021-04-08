@@ -12,6 +12,7 @@
 
 namespace App\Services\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\CarAccidentResource;
 use App\Models\CarAccident;
 
@@ -57,6 +58,29 @@ class CarAccidentService extends BaseService
         $data['insurance_date'] = empty($data['insurance_date']) ? null : $data['insurance_date'];
 
         return parent::create($data);
+    }
+
+    /**
+     * @param $where
+     * @param  string[]  $selectFields
+     * @param  bool  $isResource
+     * @param  array  $orderFields
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getInfo($where, $selectFields = ['*'], $isResource = true, $orderFields = [])
+    {
+        $data = parent::getInfo($where, $selectFields, $isResource);
+
+        if (empty($data)) {
+            throw new  BusinessLogicException(__('数据不存在'));
+        }
+
+        return array_merge($data->toArray(), [
+            'deal_type_name' => $this->model->getDealType($data['deal_type']),
+            'accident_duty_name' => $this->model->getAccidentDuty($data['accident_duty']),
+            'insurance_indemnity_name' => $this->model->getInsuranceIndemnity($data['insurance_indemnity'])
+        ]);
     }
 
     /**
