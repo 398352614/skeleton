@@ -81,6 +81,10 @@ class OrderValidate extends BaseValidate
         'receipt_type' => 'nullable|integer|in:1',
         'receipt_count' => 'nullable|integer|gte:0',
         'create_date' => 'nullable|date',
+
+        'amount_list.*.expect_amount' => 'required_with:amount_list||max:50|gte:0',
+        'amount_list.*.type' => 'required_with:amount_list|integer|in:1,2,3,4,5,6,7,8,9,10.11',
+
     ];
 
     public $scene = [
@@ -99,7 +103,7 @@ class OrderValidate extends BaseValidate
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
-            'receipt_type', 'receipt_count', 'create_date'
+            'receipt_type', 'receipt_count', 'create_date','amount_list.*.expect_amount','amount_list.*.type'
         ],
         'update' => [
             'merchant_id', 'execution_date', 'second_execution_date', 'expect_total_amount', 'actual_amount',
@@ -116,7 +120,7 @@ class OrderValidate extends BaseValidate
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
-            'receipt_type', 'receipt_count', 'create_date'
+            'receipt_type', 'receipt_count', 'create_date','amount_list.*.expect_amount','amount_list.*.type'
         ],
         'again' => [
             'execution_date',
@@ -141,7 +145,8 @@ class OrderValidate extends BaseValidate
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
-            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'],
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark','amount_list.*.expect_amount','amount_list.*.type'
+        ],
         'getWareHouse' => 'place_post_code', 'execution_date', 'type', 'merchant_id'
     ];
 
