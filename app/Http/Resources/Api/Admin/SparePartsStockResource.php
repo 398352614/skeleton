@@ -28,8 +28,7 @@ class SparePartsStockResource extends JsonResource
     public function toArray($request)
     {
         return array_merge(parent::toArray($request), [
-            'sp_unit' => $this->resource->getSpUnit($this->sp_unit),
-            'sp_unit_id' => $this->resource->getOriginal('sp_unit'),
+            'sp_unit_name' => $this->resource->getSpUnit($this->resource->sp_unit),
         ]);
     }
 }
