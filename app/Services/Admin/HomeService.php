@@ -321,7 +321,7 @@ class HomeService extends BaseService
             $data[$k]['date'] = $v;
             $data[$k]['tour'] = $this->getTourService()->count(['execution_date' => $v]);
             $data[$k]['batch'] = $this->getBatchService()->count(['execution_date' => $v, 'status' => ['<>', BaseConstService::BATCH_CANCEL]]);
-            $data[$k]['tracking_order'] = $this->getBatchService()->count(['execution_date' => $v, 'status' => ['in',
+            $data[$k]['tracking_order'] = $this->getTrackingOrderService()->count(['execution_date' => $v, 'status' => ['in',
                 [
                     BaseConstService::TRACKING_ORDER_STATUS_1,
                     BaseConstService::TRACKING_ORDER_STATUS_2,
