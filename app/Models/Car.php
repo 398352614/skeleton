@@ -141,7 +141,7 @@ class Car extends BaseModel
      * @param $value
      * @return string
      */
-    public function getCarLengthAttribute($value): string
+    public function getCarLength($value): string
     {
         return empty($value) ? '' : ConstTranslateTrait::carLengthTypeList($value);
     }
@@ -150,7 +150,7 @@ class Car extends BaseModel
      * @param $value
      * @return string
      */
-    public function getCarModelTypeAttribute($value): string
+    public function getCarModelType($value): string
     {
         return empty($value) ? '' : ConstTranslateTrait::carModelTypeList($value);
     }

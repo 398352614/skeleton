@@ -128,7 +128,7 @@ class Driver extends Authenticatable implements JWTSubject
      * @param $value
      * @return string
      */
-    public function getTypeAttribute($value)
+    public function getType($value)
     {
         return empty($value) ? '' : ConstTranslateTrait::driverTypeList($value);
     }

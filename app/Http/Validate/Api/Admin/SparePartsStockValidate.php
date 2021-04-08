@@ -26,7 +26,7 @@ class SparePartsStockValidate extends BaseValidate
      */
     public $rules = [
         'sp_no' => 'required|string|max:50|exists:spare_parts,sp_no',
-        'stock_quantity' => 'required|integer'
+        'stock_quantity' => 'required|integer|gte:0'
     ];
 
     /**

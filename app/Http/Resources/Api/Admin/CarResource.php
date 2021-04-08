@@ -15,8 +15,8 @@ class CarResource extends JsonResource
     public function toArray($request)
     {
         return array_merge([
-            'car_length_id' => $this->resource->getOriginal('car_length'),
-            'car_model_type_id' => $this->resource->getOriginal('car_model_type')
+            'car_length_name' => $this->resource->getCarLength($this->car_length),
+            'car_model_type_name' => $this->resource->getCarModelType($this->car_model_type)
         ], parent::toArray($request));
     }
 }
