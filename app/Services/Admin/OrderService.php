@@ -194,6 +194,13 @@ class OrderService extends BaseService
         $dbOrder['package_list'] = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['material_list'] = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['amount_list'] = $this->getOrderAmountService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
+        $dbOrder['time_list'][] = ['type' => __(BaseConstService::CREATED_TIME), 'time' => $dbOrder['created_time']];
+        if (!empty($dbOrder['begin_time'])) {
+            $dbOrder['time_list'][] = ['type' => __(BaseConstService::BEGIN_TIME), 'time' => $dbOrder['begin_time']];
+        }
+        if (!empty($dbOrder['sign_time'])) {
+            $dbOrder['time_list'][] = ['type' => __(BaseConstService::SIGN_TIME), 'time' => $dbOrder['sign_time']];
+        }
         return $dbOrder;
     }
 
@@ -741,7 +748,7 @@ class OrderService extends BaseService
         if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
             $params['distance'] = 1000;
         } else {
-        $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+            $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         }
         $params['distance'] = $params['distance'] / 1000;
         $params = $this->getTransportPriceService()->priceCount($params);
@@ -1162,7 +1169,7 @@ class OrderService extends BaseService
             //填充仓库
             if ($v['type'] == BaseConstService::ORDER_TYPE_1) {
                 $newOrderList[$k]['receiver'] = $newOrderList[$k]['warehouse'];
-            }elseif ($v['type'] == BaseConstService::ORDER_TYPE_2){
+            } elseif ($v['type'] == BaseConstService::ORDER_TYPE_2) {
                 $newOrderList[$k]['sender'] = $newOrderList[$k]['warehouse'];
             }
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
