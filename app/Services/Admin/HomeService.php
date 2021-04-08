@@ -185,7 +185,7 @@ class HomeService extends BaseService
             $data[$k]['merchant_name'] = $v['name'];
             $data[$k]['graph'] = $this->periodCountByMerchant($params, $v['id']);
         }
-        $orderList = parent::getList(['status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]], ['*'], false);
+        $orderList = parent::getList(['status' => ['<>', BaseConstService::ORDER_STATUS_5]], ['*'], false);
         //总计
         $day = Carbon::create($params['begin_date']);
         $endDay = Carbon::create($params['end_date']);
@@ -221,7 +221,7 @@ class HomeService extends BaseService
         if (empty($params['end_date'])) {
             throw new BusinessLogicException('请选择结束时间');
         }
-        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_7]], ['*'], false);
+        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['<>', BaseConstService::ORDER_STATUS_5]], ['*'], false);
         $day = Carbon::create($params['begin_date']);
         $endDay = Carbon::create($params['end_date']);
         for ($i = 1; $day->lte($endDay); $i++) {
