@@ -194,7 +194,7 @@ class OrderService extends BaseService
         $dbOrder['package_list'] = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['material_list'] = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['amount_list'] = $this->getOrderAmountService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
-        $dbOrder['time_list'][] = ['type' => __(BaseConstService::CREATED_TIME), 'time' => $dbOrder['created_time']];
+        $dbOrder['time_list'][] = ['type' => __(BaseConstService::CREATED_TIME), 'time' => $dbOrder['created_at']];
         if (!empty($dbOrder['begin_time'])) {
             $dbOrder['time_list'][] = ['type' => __(BaseConstService::BEGIN_TIME), 'time' => $dbOrder['begin_time']];
         }
