@@ -70,9 +70,14 @@ class OrderAmountService extends BaseService
      */
     public function destroy($id)
     {
+        $data = parent::getInfo(['id' => $id], ['*'], false);
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('删除失败，请重新操作');
+        }
+        //重算总费用
+        if (!empty($data['order_no'])) {
+            $this->countAmount($data['order_no']);
         }
     }
 
@@ -84,12 +89,12 @@ class OrderAmountService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $row= parent::updateById($id, $data);
-        if($row == false){
+        $row = parent::updateById($id, $data);
+        if ($row == false) {
             throw new BusinessLogicException('修改失败');
         }
         //重算总费用
-        if(!empty($data['order_no'])){
+        if (!empty($data['order_no'])) {
             $this->countAmount($data['order_no']);
         }
     }
@@ -103,7 +108,7 @@ class OrderAmountService extends BaseService
     {
         $actualTotalAmount = parent::sum('actual_amount', ['order_no' => $orderNo]);
         $expectTotalAmount = parent::sum('expect_amount', ['order_no' => $orderNo]);
-        $rowCount = parent::update(['order_no' => $orderNo], ['actual_total_amount' => $actualTotalAmount, 'expect_total_amount' => $expectTotalAmount]);
+        $rowCount = $this->getOrderService()->update(['order_no' => $orderNo], ['actual_total_amount' => $actualTotalAmount, 'expect_total_amount' => $expectTotalAmount]);
         if ($rowCount === false) {
             throw new BusinessLogicException('金额统计失败');
         }
