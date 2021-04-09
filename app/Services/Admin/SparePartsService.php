@@ -12,6 +12,7 @@
 
 namespace App\Services\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\SparePartsResource;
 use App\Models\SpareParts;
 
@@ -55,5 +56,23 @@ class SparePartsService extends BaseService
         $data['operator']   = auth()->user()->fullname;
 
         return parent::create($data);
+    }
+
+    /**
+     * @param $where
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function delete($where)
+    {
+        $sparePart = $this->model->findOrFail($where['id']);
+
+        $stock = $this->model->getStock($sparePart['sp_no']);
+
+        if ($stock > 0) {
+            throw new BusinessLogicException(__('该备品已有库存不能删除'));
+        }
+
+        return parent::delete($where);
     }
 }

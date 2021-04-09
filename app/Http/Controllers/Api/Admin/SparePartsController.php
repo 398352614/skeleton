@@ -62,7 +62,7 @@ class SparePartsController extends BaseController
 
     /**
      * @param $id
-     * @return bool|int
+     * @return int
      */
     public function update($id)
     {
