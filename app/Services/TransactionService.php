@@ -38,8 +38,7 @@ class TransactionService
     function __call($method, $arguments)
     {
         if (in_array($method, $this->exceptMethods)) {
-            $return = call_user_func_array([$this->service, $method], !empty($arguments) ? $arguments : []);
-            return $return;
+            return call_user_func_array([$this->service, $method], !empty($arguments) ? $arguments : []);
         }
         // show/get/query/find 表示只读事物
         $pattern = '/^(show\w*)$|^(get\w*)$|^(select\w*)$|^(query\w*)$|^(find\w*)$|^(export\w*)|^(index\w*)$/';
@@ -63,7 +62,6 @@ class TransactionService
      */
     public function transaction($method, array $param)
     {
-        $return = null;
         try {
             // 开启事物
             DB::beginTransaction();

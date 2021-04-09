@@ -90,15 +90,20 @@ class SpareParts extends BaseModel
         'deleted_at',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
     protected $casts = [
         'sp_unit' => 'int'
     ];
 
     /**
-     * @param $value
+     * @param  int  $value
      * @return mixed
      */
-    public function getSpUnit($value)
+    public function getSpUnit(int $value)
     {
         return ConstTranslateTrait::sparePartsUnit($value);
     }
