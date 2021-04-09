@@ -88,6 +88,7 @@ class SparePartsRecordServices extends BaseService
     }
 
     /**
+     * 领用记录作废
      * @param  int  $id
      * @throws BusinessLogicException
      */

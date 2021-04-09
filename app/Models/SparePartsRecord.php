@@ -100,10 +100,10 @@ class SparePartsRecord extends BaseModel
     }
 
     /**
-     * @param $value
+     * @param  int  $value
      * @return mixed
      */
-    public function getSpUnit($value)
+    public function getSpUnit(int $value)
     {
         return ConstTranslateTrait::sparePartsUnit($value);
     }
