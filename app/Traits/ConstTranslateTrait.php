@@ -97,6 +97,9 @@ use Illuminate\Support\Facades\App;
  * @method static orderOriginTypeList($args = null)
  * @method static trackingOrderTrailTypeList($args = null)
  * @method static addressTypeList($args = null)
+ * @method static mapConfigMobileTypeList($args = null)
+ * @method static mapConfigBackTypeList($args = null)
+ * @method static mapConfigFrontTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -786,6 +789,23 @@ trait ConstTranslateTrait
         BaseConstService::ADDRESS_TYPE_2 => '收件人',
     ];
 
+    public static $mapConfigFrontTypeList = [
+        BaseConstService::MAP_CONFIG_FRONT_TYPE_1 => '谷歌',
+        BaseConstService::MAP_CONFIG_FRONT_TYPE_2 => '百度',
+        BaseConstService::MAP_CONFIG_FRONT_TYPE_3 => '腾讯'
+    ];
+
+    public static $mapConfigBackTypeList = [
+        BaseConstService::MAP_CONFIG_BACK_TYPE_1 => '谷歌',
+        BaseConstService::MAP_CONFIG_BACK_TYPE_2 => '百度',
+        BaseConstService::MAP_CONFIG_BACK_TYPE_3 => '腾讯'
+    ];
+
+    public static $mapConfigMobileTypeList = [
+        BaseConstService::MAP_CONFIG_MOBILE_TYPE_1 => '谷歌',
+        BaseConstService::MAP_CONFIG_MOBILE_TYPE_2 => '百度',
+        BaseConstService::MAP_CONFIG_MOBILE_TYPE_3 => '腾讯'
+    ];
 
     /**
      * 格式化常量列表
