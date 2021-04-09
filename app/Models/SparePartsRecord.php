@@ -91,10 +91,10 @@ class SparePartsRecord extends BaseModel
     ];
 
     /**
-     * @param $value
+     * @param  int  $value
      * @return mixed
      */
-    public function getReceiveStatusAttribute($value)
+    public function getReceiveStatus(int $value)
     {
         return ConstTranslateTrait::sparePartsRecordStatus($value);
     }

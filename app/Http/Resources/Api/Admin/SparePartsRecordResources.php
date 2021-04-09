@@ -30,6 +30,7 @@ class SparePartsRecordResources extends JsonResource
         return array_merge($this->resource->toArray(), [
             'price_total' => $this->receive_quantity * $this->receive_price,
             'sp_unit_name' => $this->resource->getSpUnit($this->sp_unit),
+            'receive_status_name' => $this->resource->getReceiveStatus($this->receive_status)
         ]);
     }
 }
