@@ -50,15 +50,15 @@ class OrderAmountService extends BaseService
      */
     public function store($params)
     {
-        $order=$this->getOrderService()->getInfo(['order_no'=>$params['order_no']],['*'],false);
-        if(empty($order)){
+        $order = $this->getOrderService()->getInfo(['order_no' => $params['order_no']], ['*'], false);
+        if (empty($order)) {
             throw new BusinessLogicException('订单不存在');
         }
         $params['actual_amount'] = 0.00;
         $params['in_total'] = $params['in_total'] ? $params['in_total'] : BaseConstService::YES;
         $params['status'] = BaseConstService::ORDER_AMOUNT_STATUS_2;
-        $row=parent::create($params);
-        if($row == false){
+        $row = parent::create($params);
+        if ($row == false) {
             throw new BusinessLogicException('新增失败');
         }
     }
@@ -73,6 +73,39 @@ class OrderAmountService extends BaseService
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('删除失败，请重新操作');
+        }
+    }
+
+    /**
+     * @param $id
+     * @param $data
+     * @return bool|int|void
+     * @throws BusinessLogicException
+     */
+    public function updateById($id, $data)
+    {
+        $row= parent::updateById($id, $data);
+        if($row == false){
+            throw new BusinessLogicException('修改失败');
+        }
+        //重算总费用
+        if(!empty($data['order_no'])){
+            $this->countAmount($data['order_no']);
+        }
+    }
+
+    /**
+     * 计算订单总费用
+     * @param $orderNo
+     * @throws BusinessLogicException
+     */
+    public function countAmount($orderNo)
+    {
+        $actualTotalAmount = parent::sum('actual_amount', ['order_no' => $orderNo]);
+        $expectTotalAmount = parent::sum('expect_amount', ['order_no' => $orderNo]);
+        $rowCount = parent::update(['order_no' => $orderNo], ['actual_total_amount' => $actualTotalAmount, 'expect_total_amount' => $expectTotalAmount]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('金额统计失败');
         }
     }
 }
