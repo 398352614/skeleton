@@ -358,10 +358,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::prefix('car-maintain')->group(function () {
         //车辆维护列表
         Route::get('/', 'CarMaintainController@index')->name('car-maintain.index');
-        //维护数据导出
-        Route::get('/export', 'CarMaintainController@export')->name('car-maintain.export');
         //车辆维护新增
         Route::post('/', 'CarMaintainController@store')->name('car-maintain.store');
+        //车辆维护详情
+        Route::get('/{id}', 'CarMaintainController@detail')->name('car-maintain.detail');
+        //车辆维护更新
+        Route::put('/{id}', 'CarMaintainController@update')->name('car-maintain.update');
+        //维护数据导出
+        Route::get('/export', 'CarMaintainController@export')->name('car-maintain.export');
         //批量删除
         Route::delete('/list', 'CarMaintainController@destroyAll')->name('car-maintain.destroy');
         //批量收票

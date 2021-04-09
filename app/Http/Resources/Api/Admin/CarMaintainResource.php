@@ -29,6 +29,9 @@ class CarMaintainResource extends JsonResource
      */
     public function toArray($request)
     {
-        return $this->resource->toArray();
+        return array_merge($this->resource->toArray(), [
+            'maintain_type_name' => $this->resource->getMaintainType($this->maintain_type),
+            'is_ticket_name' => $this->resource->getIsTicket($this->is_ticket)
+        ]);
     }
 }

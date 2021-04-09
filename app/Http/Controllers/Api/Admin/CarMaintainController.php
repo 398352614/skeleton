@@ -51,6 +51,25 @@ class CarMaintainController extends BaseController
     }
 
     /**
+     * 详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function detail($id)
+    {
+        return $this->service->getInfo(['id' => $id], ['*'], false);
+    }
+
+    /**
+     * @param $id
+     * @return int
+     */
+    public function update($id)
+    {
+        return $this->service->update(['id' => $id], $this->data);
+    }
+
+    /**
      * 导出 excel
      * @return mixed
      */
