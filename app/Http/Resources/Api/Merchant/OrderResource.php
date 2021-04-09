@@ -52,6 +52,7 @@ class OrderResource extends JsonResource
             'transport_price_type'=>$this->transport_price_type,
             'transport_price_type_name'=>$this->transport_price_type_name,
             'receipt_type'=>$this->receipt_type,
+            'receipt_type_name' => $this->receipt_type_name,
             'receipt_count'=>$this->receipt_count,
             'create_date'=>$this->create_date,
             'created_at' => (string)$this->created_at,
