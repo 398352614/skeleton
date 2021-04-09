@@ -135,7 +135,8 @@ class Order extends BaseModel
         'country_name',
         'settlement_type_name',
         'source_name',
-        'transport_price_type_name'
+        'transport_price_type_name',
+        'receipt_type_name'
     ];
 
     /**
@@ -219,4 +220,8 @@ class Order extends BaseModel
         return empty($this->origin_type) ? null : ConstTranslateTrait::orderOriginTypeList($this->origin_type);
     }
 
+    public function getReceiptTypeNameAttribute()
+    {
+        return empty($this->receipt_type) ? null : ConstTranslateTrait::orderReceiptTypeList($this->receipt_type);
+    }
 }
