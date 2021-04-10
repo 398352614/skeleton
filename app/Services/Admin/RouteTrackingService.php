@@ -172,6 +172,6 @@ class RouteTrackingService extends BaseService
                 $info[$k]['car_no'] = $info[$k]['id'] = $info[$k]['lat'] = $info[$k]['lon'] = $info[$k]['line_name'] = $info[$k]['time'] = $info[$k]['tour_no'] = '';
             }
         }
-        return $info;
+        return $info ?? [];
     }
 }
