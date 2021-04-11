@@ -101,6 +101,14 @@ class CarMaintainService extends BaseService
                 ->model->where('maintain_no', $data['maintain_no'])
                 ->get()->toArray() ?? [];
 
+        $data['material_price_total'] = 0;
+        $data['hour_price_total'] = 0;
+
+        foreach ($data['maintain_detail'] as $v) {
+            $data['material_price_total'] += $v['material_price'];
+            $data['hour_price_total'] += $v['hour_price'];
+        }
+
         $data['maintain_type_name'] = $this->model->getMaintainType($data['maintain_type']);
         $data['is_ticket_name'] = $this->model->getIsTicket($data['is_ticket']);
 
