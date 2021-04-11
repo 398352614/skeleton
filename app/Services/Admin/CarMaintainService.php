@@ -76,12 +76,51 @@ class CarMaintainService extends BaseService
         $data['operator']       = auth()->user()->fullname;
         $data['maintain_no']    = $this->getOrderNoRuleService()->createCarMaintainNO();
 
-        foreach ($data['maintain_detail'] as $k => $v) {
-            $v['maintain_no'] = $data['maintain_no'];
-            $this->getCarMaintainDetailService()->create($v);
-        }
+        $this->saveDetail($data['maintain_detail'], $data['maintain_no']);
 
         return parent::create($data);
+    }
+
+    /**
+     * @param $where
+     * @param  string[]  $selectFields
+     * @param  bool  $isResource
+     * @param  array  $orderFields
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getInfo($where, $selectFields = ['*'], $isResource = true, $orderFields = [])
+    {
+        $data = parent::getInfo($where, $selectFields, $isResource, $orderFields);
+
+        if (empty($data)) {
+            throw new BusinessLogicException(__('数据不存在'));
+        }
+
+        $data['maintain_detail'] = $this->getCarMaintainDetailService()
+                ->model->where('maintain_no', $data['maintain_no'])
+                ->get()->toArray() ?? [];
+
+        $data['maintain_type_name'] = $this->model->getMaintainType($data['maintain_type']);
+        $data['is_ticket_name'] = $this->model->getIsTicket($data['is_ticket']);
+
+        return $data;
+    }
+
+    /**
+     * @param $where
+     * @param $data
+     * @return int
+     * @throws \Exception
+     */
+    public function update($where, $data)
+    {
+        $item = $this->model->findOrFail($where['id']);
+
+        $this->deleteDetail($item['maintain_no']);
+        $this->saveDetail($data['maintain_detail'], $item['maintain_no']);
+
+        return parent::update($where, $data);
     }
 
     /**
@@ -151,5 +190,26 @@ class CarMaintainService extends BaseService
         $name = date('YmdHis') . auth()->user()->id;
 
         return $this->excelExport($name, $this->exportExcelHeader, $cellData, $dir);
+    }
+
+    /**
+     * @param  array  $detail
+     * @param  string  $no
+     */
+    protected function saveDetail(array $detail, string $no)
+    {
+        foreach ($detail as $v) {
+            $v['maintain_no'] = $no;
+            $this->getCarMaintainDetailService()->create($v);
+        }
+    }
+
+    /**
+     * @param  string  $no
+     * @throws \Exception
+     */
+    protected function deleteDetail(string $no)
+    {
+        $this->getCarMaintainDetailService()->model->where('maintain_no', $no)->delete();
     }
 }

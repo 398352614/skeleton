@@ -32,10 +32,10 @@ class OrderDefaultConfigService extends BaseService
     }
 
     /**
-     *
+     * @param  array  $data
      */
-    public function init()
+    public function init(array $data)
     {
-        $this->updateOrCreate([], []);
+        $this->create($data);
     }
 }

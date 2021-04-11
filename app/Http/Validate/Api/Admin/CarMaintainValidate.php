@@ -41,7 +41,13 @@ class CarMaintainValidate extends BaseValidate
         'maintain_description' => 'string',
         'maintain_detail' => 'required|array',
         'maintain_picture' => 'required|string',
-        'maintain_price' => 'required|numeric|gte:0'
+        'maintain_price' => 'required|numeric|gte:0',
+
+        //费用明细
+        'maintain_detail.*.fitting_quantity' => 'required|integer',
+        'maintain_detail.*.fitting_unit' => 'required',
+        'maintain_detail.*.fitting_price' => 'required|numeric',
+        'maintain_detail.*.hour_price' => 'required|numeric',
     ];
 
     /**
@@ -56,7 +62,24 @@ class CarMaintainValidate extends BaseValidate
             'maintain_factory',
             'is_ticket',
             'maintain_description',
-            'maintain_detail'
+            'maintain_detail',
+
+            //费用明细
+            'maintain_detail.*.fitting_quantity', 'maintain_detail.*.fitting_unit', 'maintain_detail.*.fitting_price', 'maintain_detail.*.hour_price'
+        ],
+
+        'update' => [
+            'car_id',
+            'car_no',
+            'maintain_type',
+            'maintain_date',
+            'maintain_factory',
+            'is_ticket',
+            'maintain_description',
+            'maintain_detail',
+
+            //费用明细
+            'maintain_detail.*.fitting_quantity', 'maintain_detail.*.fitting_unit', 'maintain_detail.*.fitting_price', 'maintain_detail.*.hour_price'
         ]
     ];
 }
