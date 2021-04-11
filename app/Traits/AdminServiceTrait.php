@@ -497,13 +497,4 @@ trait AdminServiceTrait
     {
         return self::getInstance(SparePartsStockService::class);
     }
-
-    /**
-     * 获取订单默认配置 Service
-     * @return OrderDefaultConfigService
-     */
-    public function getOrderDefaultConfigService()
-    {
-        return self::getInstance(OrderDefaultConfigService::class);
-    }
 }
