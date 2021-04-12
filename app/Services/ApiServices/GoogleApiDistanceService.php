@@ -5,8 +5,10 @@ namespace App\Services\ApiServices;
 
 
 use App\Exceptions\BusinessLogicException;
+use App\Models\MapConfig;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use App\Traits\CompanyTrait;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
 
@@ -28,7 +30,8 @@ class GoogleApiDistanceService
     {
         $this->client = new \GuzzleHttp\Client();
         $this->url = config('tms.map_url');
-        $this->key = config('tms.map_key');
+        //$this->key = CompanyTrait::getCompany(auth()->user()->company_id)['map_config']['google_key'];
+        $this->key = MapConfig::query()->where('company_id',auth()->user()->company_id)->first()->toArray()['google_key'];
     }
 
     /**

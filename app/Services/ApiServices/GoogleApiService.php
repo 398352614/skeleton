@@ -4,11 +4,13 @@ namespace App\Services\ApiServices;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
+use App\Models\MapConfig;
 use App\Models\Tour;
 use App\Services\Admin\ApiTimesService;
 use App\Services\BaseConstService;
 use App\Services\BaseServices\XLDirectionService;
 use App\Services\CurlClient;
+use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
 use App\Traits\UpdateTourTimeAndDistanceTrait;
 use Illuminate\Support\Facades\Log;
@@ -39,7 +41,8 @@ class GoogleApiService
     {
         $this->client = new CurlClient;
         $this->url = config('tms.api_url');
-        $this->key = config('tms.api_key');
+        //$this->key = CompanyTrait::getCompany(auth()->user()->company_id)['map_config']['google_key'];
+        $this->key = MapConfig::query()->where('company_id',auth()->user()->company_id)->first()->toArray()['google_key'];
         $this->secret = config('tms.api_secret');
     }
 

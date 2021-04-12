@@ -6,10 +6,12 @@ namespace App\Services\ApiServices;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
+use App\Models\MapConfig;
 use App\Models\Tour;
 use App\Services\Admin\ApiTimesService;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
 use Illuminate\Support\Facades\Log;
 
@@ -34,7 +36,8 @@ class TenCentApiDistanceService
     public function __construct()
     {
         $this->client = new CurlClient();;
-        $this->key = config('tms.tencent_api_key');
+        //$this->key = CompanyTrait::getCompany(auth()->user()->company_id)['map_config']['tencent_key'];
+        $this->key = MapConfig::query()->where('company_id',auth()->user()->company_id)->first()->toArray()['tencent_key'];
         $this->url = config('tms.tencent_api_url');
         $this->distance_url = config('tms.tencent_distance_matrix_api_url');
     }

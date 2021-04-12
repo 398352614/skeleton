@@ -123,6 +123,7 @@ class DriverService extends BaseService
             }
             $this->query->where('is_locked', '=', BaseConstService::DRIVER_TO_NORMAL);
         }
+        $this->query->orderByDesc('id');
         return parent::getPageList();
     }
 }

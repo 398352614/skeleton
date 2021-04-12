@@ -93,4 +93,10 @@ class CarAccidentService extends BaseService
         $idList = explode_id_string($idList);
         $this->query->whereIn('id', $idList)->delete();
     }
+
+    public function getPageList()
+    {
+        $this->query->orderByDesc('id');
+        return parent::getPageList();
+    }
 }

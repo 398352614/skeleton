@@ -8,6 +8,7 @@
 
 namespace App\Services\ApiServices;
 
+use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
 
@@ -18,20 +19,20 @@ class TourOptimizationService
     public static function getOpInstance($companyId)
     {
         $company = CompanyTrait::getCompany($companyId);
-        if (!empty($company['map']) && ($company['map'] == 'google')) {
-            return self::getInstance(GoogleApiService::class);
-        } else {
+        if (!empty($company['map_config']['back_type']) && ($company['map_config']['back_type'] == BaseConstService::MAP_CONFIG_BACK_TYPE_3)) {
             return self::getInstance(TenCentApiService::class);
+        } else {
+            return self::getInstance(GoogleApiService::class);
         }
     }
 
     public static function getDistanceInstance($companyId)
     {
         $company = CompanyTrait::getCompany($companyId);
-        if (!empty($company['map']) && ($company['map'] == 'google')) {
-            return self::getInstance(GoogleApiDistanceService::class);
-        } else {
+        if (!empty($company['map_config']['back_type']) && ($company['map_config']['back_type'] == BaseConstService::MAP_CONFIG_BACK_TYPE_3)) {
             return self::getInstance(TenCentApiDistanceService::class);
+        } else {
+            return self::getInstance(GoogleApiDistanceService::class);
         }
     }
 }

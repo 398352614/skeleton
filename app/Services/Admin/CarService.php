@@ -148,6 +148,7 @@ class CarService extends BaseService
             }
             $this->query->where('is_locked', '=', BaseConstService::DRIVER_TO_NORMAL);
         }
+        $this->query->orderByDesc('id');
         $info = parent::getPageList();
         foreach ($info as $k => $v) {
             $info[$k]['relate_material_list'] = json_decode($info[$k]['relate_material_list']);

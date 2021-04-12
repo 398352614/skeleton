@@ -401,4 +401,10 @@ class AddressService extends BaseService
         }
         return ['status'=>$status,'error'=>$error,'data'=>$data];
     }
+
+    public function getPageList()
+    {
+        $this->query->orderByDesc('id');
+        return parent::getPageList();
+    }
 }
