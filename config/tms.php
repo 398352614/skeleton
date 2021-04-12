@@ -9,6 +9,7 @@ return [
     'push_url' => env('PUSH_URL', 'dev-tms.nle-tech.com/socket'),
     'country_path' => storage_path(env('COUNTRY_PATH')),
     'postcode_path' => storage_path(env('POSTCODE_PATH')),
+    'permission_path' => storage_path(env('PERMISSION_PATH')),
     'app_env' => env('APP_ENV'),
 
     //百度
@@ -47,8 +48,8 @@ return [
     'eushop_merchant_id' => env('EUSHOP_MERCHANT_ID'),
     'admin_email' => env('ADMIN_EMAIL'),
     'true_app_env' => env('TRUE_APP_ENV'),
-    'tcp_merchant_id'=>env('TCP_MERCHANT_ID'),
-    'http_proxy'=>env('VPN_HTTP_PROXY'),
-    'https_proxy'=>env('VPN_HTTPS_PROXY'),
-    'post_code_de'=>env('POST_CODE_DE')
+    'tcp_merchant_id' => env('TCP_MERCHANT_ID'),
+    'http_proxy' => env('VPN_HTTP_PROXY'),
+    'https_proxy' => env('VPN_HTTPS_PROXY'),
+    'post_code_de' => env('POST_CODE_DE')
 ];
