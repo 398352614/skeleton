@@ -17,6 +17,7 @@ use App\Models\KilometresCharging;
 use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
+use App\Models\OrderDefaultConfig;
 use App\Models\OrderNoRule;
 use App\Models\OrderTemplate;
 use App\Models\Role;
@@ -92,6 +93,7 @@ class RegisterController extends BaseController
             $this->addMerchantApi($company, $merchant);//初始化货主API
             $this->addFee($company);//添加费用
             $this->addOrderTemplate($company);//添加打印模板
+            $this->addOrderDefaultConfig($company); //添加订单默认配置
 
             return 'true';
         });
@@ -351,6 +353,17 @@ class RegisterController extends BaseController
         if ($fee === false) {
             throw new BusinessLogicException('费用初始化失败');
         }
+    }
+
+    /**
+     * 添加订单默认配置
+     * @param $company
+     */
+    private function addOrderDefaultConfig($company)
+    {
+        OrderDefaultConfig::create([
+            'company_id' => $company->id
+        ]);
     }
 
     /**
