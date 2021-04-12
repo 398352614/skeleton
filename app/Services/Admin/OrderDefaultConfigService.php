@@ -33,9 +33,28 @@ class OrderDefaultConfigService extends BaseService
 
     /**
      * @param  array  $data
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
      */
     public function init(array $data)
     {
-        $this->create($data);
+        return $this->create($data);
+    }
+
+    /**
+     * @param $where
+     * @param  string[]  $selectFields
+     * @param  bool  $isResource
+     * @param  array  $orderFields
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function getInfo($where, $selectFields = ['*'], $isResource = true, $orderFields = [])
+    {
+        $data = parent::getInfo($where, $selectFields, $isResource, $orderFields);
+
+        if (empty($data)) {
+            return $this->init([]);
+        } else {
+            return $data;
+        }
     }
 }
