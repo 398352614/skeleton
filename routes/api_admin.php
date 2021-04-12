@@ -866,13 +866,13 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //订单打印模板
     Route::prefix('order-bill-template')->group(function () {
         //初始化
-        Route::get('/init', 'OrderTemplateController@init')->name('print-template.show');
+        Route::get('/', 'OrderTemplateController@index')->name('print-template.show');
         //详情
-        Route::get('/', 'OrderTemplateController@show')->name('print-template.show');
+        Route::get('/{id}', 'OrderTemplateController@show')->name('print-template.show');
         //修改
-        Route::put('/', 'OrderTemplateController@update')->name('print-template.update');
-        //修改
-        Route::put('/type', 'OrderTemplateController@changeDefault')->name('print-template.update');
+        Route::put('/{id}', 'OrderTemplateController@update')->name('print-template.update');
+        //设置默认
+        Route::put('/{id}/default', 'OrderTemplateController@changeDefault')->name('print-template.update');
     });
 
     //费用管理
@@ -948,6 +948,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'stockExceptionController@show')->name('stock-exception.index');
         //审核
         Route::put('/{id}/deal', 'stockExceptionController@deal')->name('stock-exception.deal');
+    });
+
+    //地图配置
+    Route::prefix('map-config')->group(function () {
+        //详情
+        Route::get('/', 'mapConfigController@show')->name('map-config.show');
+        //修改
+        Route::get('/', 'mapConfigController@update')->name('map-config.update');
     });
 
 });

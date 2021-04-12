@@ -23,37 +23,39 @@ class OrderTemplateController extends BaseController
         parent::__construct($service, $exceptMethods);
     }
 
-    public function show()
+    public function show($id)
     {
-        return $this->service->show();
+        return $this->service->show($id);
     }
 
     /**
      * 修改
      * @param $id
-     * @return void
+     * @return bool|int
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function update()
+    public function update($id)
     {
-        return $this->service->updateByCompanyId($this->data);
+        return $this->service->updateById($id, $this->data);
     }
 
     /**
      * 展示模板
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function init()
+    public function index()
     {
-        return $this->service->init();
+        return $this->service->getPageList();
     }
 
     /**
      * 修改默认模板
+     * @param $id
+     * @return void
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function changeDefault()
+    public function changeDefault($id)
     {
-        return $this->service->changeDefault($this->data);
+        return $this->service->changeDefault($id);
     }
 }

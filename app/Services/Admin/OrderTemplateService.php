@@ -22,64 +22,72 @@ class OrderTemplateService extends BaseService
         parent::__construct($model, $resource, $infoResource);
     }
 
-    public function show()
-    {
-        $info = parent::getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
-        return $info;
-    }
 
     /**
-     * 修改
-     * @param $params
+     * @param $id
+     * @param $data
+     * @return bool|int|void
      * @throws BusinessLogicException
      */
-    public function updateByCompanyId($params)
+    public function updateById($id, $data)
     {
-        $rowCount = parent::update(['company_id' => auth()->user()->company_id], $params);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败');
+        $row = parent::updateById($id, $data);
+        if ($row == false) {
+            throw new BusinessLogicException('修改失败');
         }
     }
 
     /**
      * 初始化
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function init()
+    public function index()
     {
         $data = [];
-        $templateList = array_create_index(ConstTranslateTrait::formatList(ConstTranslateTrait::$printTemplateList), 'id');
-        $disk = Storage::disk('admin_print_template_public');
-        $fileList = $disk->allFiles();
-        $orderTemplate = parent::getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
-        foreach ($fileList as $file) {
-            $fileName = explode('.', $file)[0];
-            if (!empty($templateList[$fileName])) {
-                $templateList[$fileName]['url'] = $disk->url($file);
-            }
-        }
-        if ($orderTemplate['type'] == BaseConstService::ORDER_TEMPLATE_TYPE_1) {
-            $templateList[1]['is_default'] = BaseConstService::YES;
-            $templateList[2]['is_default'] = BaseConstService::NO;
-        } else {
-            $templateList[1]['is_default'] = BaseConstService::NO;
-            $templateList[2]['is_default'] = BaseConstService::YES;
-        }
-        $data['template_list'] = array_values($templateList);
+//        $templateList = array_create_index(ConstTranslateTrait::formatList(ConstTranslateTrait::$printTemplateList), 'id');
+//        $disk = Storage::disk('admin_print_template_public');
+//        $fileList = $disk->allFiles();
+//        foreach ($fileList as $file) {
+//            $fileName = explode('.', $file)[0];
+//            if (!empty($templateList[$fileName])) {
+//                $templateList[$fileName]['url'] = $disk->url($file);
+//            }
+//        }
+//        $data['template_list'] = array_values($templateList);
+        $data = parent::getPageList();
         return $data;
     }
 
     /**
      * 修改默认模板
-     * @param $params
+     * @param $id
      * @throws BusinessLogicException
      */
-    public function changeDefault($params)
+    public function changeDefault($id)
     {
-        $row = parent::update(['company_id' => auth()->user()->company_id], ['type' => $params['type']]);
+        $row = parent::updateById($id, ['is_default' => BaseConstService::ORDER_TEMPLATE_IS_DEFAULT_1]);
         if ($row == false) {
-            throw  new BusinessLogicException('操作失败');
+            throw new BusinessLogicException('修改失败');
         }
+        $row = parent::update(['id' => ['<>', $id]], ['is_default' => BaseConstService::ORDER_TEMPLATE_IS_DEFAULT_2]);
+        if ($row == false) {
+            throw new BusinessLogicException('修改失败');
+        }
+    }
+
+    /**
+     * 获取详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function show($id)
+    {
+        $info = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        return $info;
     }
 
 }
