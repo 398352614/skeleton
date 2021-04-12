@@ -42,7 +42,7 @@ class GoogleApiService
         $this->client = new CurlClient;
         $this->url = config('tms.api_url');
         //$this->key = CompanyTrait::getCompany(auth()->user()->company_id)['map_config']['google_key'];
-        $this->key = MapConfig::query()->where('company_id',auth()->user()->company_id)->first()->toArray()['google_key'];
+        $this->key = MapConfig::query()->where('company_id',auth()->user()->company_id)->first()->toArray()['google_key'] ?? '';
         $this->secret = config('tms.api_secret');
     }
 
