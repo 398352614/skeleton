@@ -26,6 +26,7 @@ class RechargeResource extends JsonResource
             'recharge_amount' => $this->recharge_amount,
             'recharge_statistics_status' => $this->recharge_statistics_status,
             'recharge_statistics_status_name' => $this->recharge_statistics_status_name,
+            'line_name'=>$this->line_name,
             'remark' => $this->remark,
             'status' => $this->status,
             'created_at' => (string)$this->created_at,
