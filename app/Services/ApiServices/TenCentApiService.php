@@ -38,11 +38,18 @@ class TenCentApiService
 
     public function __construct()
     {
+        $company = auth('admin')->user();
+        if (empty($company)) {
+            $company = auth('merchant')->user();
+        }
+        if (empty($company)) {
+            $company = auth('driver')->user();
+        }
         $this->client = new CurlClient;
         $this->url = config('tms.tencent_api_url');
         $this->distance_url = config('tms.tencent_distance_matrix_api_url');
         //$this->key = CompanyTrait::getCompany(auth()->user()->company_id)['map_config']['tencent_key'];
-        $mapConfig = MapConfig::query()->where('company_id', auth()->user()->company_id)->first();
+        $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
         if (!empty($mapConfig)) {
             $this->key = $mapConfig->toArray()['tencent_key'];
         }else{
