@@ -42,8 +42,12 @@ class TenCentApiService
         $this->url = config('tms.tencent_api_url');
         $this->distance_url = config('tms.tencent_distance_matrix_api_url');
         //$this->key = CompanyTrait::getCompany(auth()->user()->company_id)['map_config']['tencent_key'];
-        $this->key = MapConfig::query()->where('company_id',auth()->user()->company_id)->first()->toArray()['tencent_key'];
-    }
+        $mapConfig = MapConfig::query()->where('company_id', auth()->user()->company_id)->first();
+        if (!empty($mapConfig)) {
+            $this->key = $mapConfig->toArray()['tencent_key'];
+        }else{
+            $this->key ='';
+        }    }
 
     /**
      * 自动更新tour
