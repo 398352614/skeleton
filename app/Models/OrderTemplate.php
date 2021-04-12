@@ -48,6 +48,7 @@ class OrderTemplate extends BaseModel
         'company_id',
         'destination_mode',
         'type',
+        'is_default',
         'logo',
         'sender',
         'receiver',
@@ -73,7 +74,8 @@ class OrderTemplate extends BaseModel
 
     protected $appends = [
         'destination_mode_name',
-        'type_name'
+        'type_name',
+        'is_default_name'
     ];
 
     /**
@@ -92,5 +94,10 @@ class OrderTemplate extends BaseModel
     public function getTypeNameAttribute()
     {
         return empty($this->type) ? null : ConstTranslateTrait::orderTemplateTypeList($this->type);
+    }
+
+    public function getIsDefaultNameAttribute()
+    {
+        return empty($this->is_default) ? null : ConstTranslateTrait::orderTemplateIsDefaultList($this->is_default);
     }
 }

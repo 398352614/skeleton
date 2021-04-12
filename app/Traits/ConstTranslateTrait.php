@@ -100,6 +100,7 @@ use Illuminate\Support\Facades\App;
  * @method static mapConfigMobileTypeList($args = null)
  * @method static mapConfigBackTypeList($args = null)
  * @method static mapConfigFrontTypeList($args = null)
+ * @method static orderTemplateIsDefaultList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -805,6 +806,11 @@ trait ConstTranslateTrait
         BaseConstService::MAP_CONFIG_MOBILE_TYPE_1 => '谷歌',
         BaseConstService::MAP_CONFIG_MOBILE_TYPE_2 => '百度',
         BaseConstService::MAP_CONFIG_MOBILE_TYPE_3 => '腾讯'
+    ];
+
+    public static $orderTemplateIsDefaultList = [
+        BaseConstService::ORDER_TEMPLATE_IS_DEFAULT_1 => '默认',
+        BaseConstService::ORDER_TEMPLATE_IS_DEFAULT_2 => '非默认',
     ];
 
     /**
