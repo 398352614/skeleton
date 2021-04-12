@@ -27,6 +27,7 @@ use App\Models\KilometresCharging;
 use App\Models\Line;
 use App\Models\LineArea;
 use App\Models\LineRange;
+use App\Models\MapConfig;
 use App\Models\Material;
 use App\Models\Merchant;
 use App\Models\MerchantApi;
@@ -140,6 +141,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof PackageNoRule))
                 && (!($model instanceof StockException))
                 && (!($model instanceof MerchantGroup))
+                && (!($model instanceof MapConfig))
                 && (!in_array('driver_id', $whereColumns))
                 && (!Str::contains($sql, "IFNULL(driver_id,0) <> -1"))
             ) {
@@ -180,6 +182,7 @@ class CompanyScope implements Scope
                 && !($model instanceof HolidayDate)
                 && (!($model instanceof MerchantGroup))
                 && !($model instanceof MerchantGroupLineRange)
+                && (!($model instanceof MapConfig))
                 && (!in_array('merchant_id', $whereColumns))
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . '=' . $user->id);
