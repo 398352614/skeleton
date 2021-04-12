@@ -719,4 +719,7 @@ class BaseConstService
     const CREATED_TIME = '创建时间';
     const BEGIN_TIME = '发车时间';
     const SIGN_TIME = '签收时间';
+
+    const ORDER_TEMPLATE_IS_DEFAULT_1 = 1;
+    const ORDER_TEMPLATE_IS_DEFAULT_2 = 2;
 }
