@@ -94,9 +94,26 @@ class RegisterController extends BaseController
             $this->addFee($company);//添加费用
             $this->addOrderTemplate($company);//添加打印模板
             $this->addOrderDefaultConfig($company); //添加订单默认配置
+            $this->addMapConfig($company); //添加订单默认配置
 
             return 'true';
         });
+    }
+
+    public function addMapConfig($company)
+    {
+        MapConfig::create([
+            'company_id' => $company['id'],
+            'front_type' => BaseConstService::MAP_CONFIG_FRONT_TYPE_1,
+            'back_type' => BaseConstService::MAP_CONFIG_BACK_TYPE_1,
+            'mobile_type' => BaseConstService::MAP_CONFIG_MOBILE_TYPE_1,
+            'google_key' => '',
+            'google_secret' => '',
+            'baidu_key' => '',
+            'baidu_secret' => '',
+            'tencent_key' => '',
+            'tencent_secret' => '',
+        ]);
     }
 
     public function addOrderTemplate($company)
