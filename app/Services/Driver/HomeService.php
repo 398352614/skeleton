@@ -25,8 +25,8 @@ class HomeService extends BaseService
         $date = Carbon::today()->format('Y-m-d');
         //当日订单
 
-        $todayTotalTour = $this->getTourService()->count(['execution_date' => $date, 'driver_id' => auth()->user()->id]);
-        $todayDoneTour = $this->getTourService()->count(['execution_date' => $date, 'driver_id' => auth()->user()->id, 'status' => BaseConstService::TOUR_STATUS_5]);
+        $todayTotalBatch = $this->getBatchService()->count(['execution_date' => $date, 'driver_id' => auth()->user()->id]);
+        $todayDoneBatch = $this->getBatchService()->count(['execution_date' => $date, 'driver_id' => auth()->user()->id, 'status' => BaseConstService::BATCH_CHECKOUT]);
         $takingTour = $this->getTourService()->count(['driver_id' => auth()->user()->id, 'status' => ['in', [BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]]);
         $doneTour = $this->getTourService()->count(['driver_id' => auth()->user()->id, 'status' => BaseConstService::TOUR_STATUS_5]);
         $memorandum = $this->getMemorandumService()->count();
@@ -34,8 +34,8 @@ class HomeService extends BaseService
             //订单统计
 
 
-            'today_total_tour' => $todayTotalTour,
-            'today_done_tour' => $todayDoneTour,
+            'today_total_tour' => $todayTotalBatch,
+            'today_done_tour' => $todayDoneBatch,
 
             'taking_tour' => $takingTour,
             'done_tour' => $doneTour,
