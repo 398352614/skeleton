@@ -111,7 +111,7 @@ return [
     */
 
     'watchers' => [
-        Watchers\CacheWatcher::class => env('TELESCOPE_CACHE_WATCHER', true),
+        //Watchers\CacheWatcher::class => env('TELESCOPE_CACHE_WATCHER', true),
 
         Watchers\CommandWatcher::class => [
             'enabled' => env('TELESCOPE_COMMAND_WATCHER', true),
