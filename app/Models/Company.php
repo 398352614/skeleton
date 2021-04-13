@@ -49,6 +49,8 @@ class Company extends BaseModel
         'phone',
         'country',
         'address',
+        'lon',
+        'lat',
         'web_site',
         'system_name',
         'logo_url',
