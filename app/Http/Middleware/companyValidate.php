@@ -55,16 +55,16 @@ class companyValidate extends Middleware
             if (!Arr::has(self::getCompany(auth()->user()->company_id), $arr)) {
                 throw new BusinessLogicException('请先联系管理员到配置管理，填写高级配置内容');
             }
-            $mapConfig = MapConfig::query()->where('company_id', auth()->user()->company_id)->first();
-            if (empty($mapConfig) ||
-                (
-                    empty($mapConfig->toArray()['google_key']) &&
-                    empty($mapConfig->toArray()['tencent_key']) &&
-                    empty($mapConfig->toArray()['baidu_key'])
-                )
-            ) {
-                throw new BusinessLogicException('请先联系管理员到配置管理，填写高级配置内容');
-            }
+//            $mapConfig = MapConfig::query()->where('company_id', auth()->user()->company_id)->first();
+//            if (empty($mapConfig) ||
+//                (
+//                    empty($mapConfig->toArray()['google_key']) &&
+//                    empty($mapConfig->toArray()['tencent_key']) &&
+//                    empty($mapConfig->toArray()['baidu_key'])
+//                )
+//            ) {
+//                throw new BusinessLogicException('请先联系管理员到配置管理，填写高级配置内容');
+//            }
         }
     }
 
