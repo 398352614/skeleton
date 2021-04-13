@@ -101,6 +101,7 @@ use Illuminate\Support\Facades\App;
  * @method static mapConfigBackTypeList($args = null)
  * @method static mapConfigFrontTypeList($args = null)
  * @method static orderTemplateIsDefaultList($args = null)
+ * @method static feePayerList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -811,6 +812,11 @@ trait ConstTranslateTrait
     public static $orderTemplateIsDefaultList = [
         BaseConstService::ORDER_TEMPLATE_IS_DEFAULT_1 => '默认',
         BaseConstService::ORDER_TEMPLATE_IS_DEFAULT_2 => '非默认',
+    ];
+
+    public static $feePayerList = [
+        BaseConstService::FEE_PAYER_1 => 1,
+        BaseConstService::FEE_PAYER_2 => 2
     ];
 
     /**

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Company;
 use App\Models\Fee;
 use App\Services\BaseConstService;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Console\Command;
 
 class initFee extends Command
@@ -48,6 +49,7 @@ class initFee extends Command
                     'company_id' => $company['id'],
                     'name' => '贴单费用',
                     'code' => BaseConstService::STICKER,
+                    'level'=>1,
                     'amount' => 7.00
                 ]);
             }
@@ -57,8 +59,24 @@ class initFee extends Command
                     'company_id' => $company['id'],
                     'name' => '提货费用',
                     'code' => BaseConstService::DELIVERY,
+                    'level'=>1,
                     'amount' => 10.00
                 ]);
+            }
+            $list = ConstTranslateTrait::orderAmountTypeList();
+            foreach ($list as $k => $v) {
+                $data[$k] = Fee::query()->where('company_id', $company['id'])->where('name', $v)->first();
+                if (empty($data[$k])) {
+                    Fee::create([
+                        'company_id' => $company['id'],
+                        'name' => $v,
+                        'code' => $k,
+                        'level'=>2,
+                        'amount' => 0.00,
+                        'is_valuable' => BaseConstService::YES,
+                        'payer' => BaseConstService::FEE_PAYER_1,
+                    ]);
+                }
             }
         }
         $this->info('fee init successful!');

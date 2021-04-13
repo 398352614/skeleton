@@ -36,6 +36,10 @@ class BaseConstService
     const YES = 1;
     const NO = 2;
 
+    //支付方1-货主2-客户
+    const FEE_PAYER_1 = 1;
+    const FEE_PAYER_2 = 2;
+
     //权限类型1-菜单2-按钮
     const PERMISSION_TYPE_1 = 1;
     const PERMISSION_TYPE_2 = 2;
