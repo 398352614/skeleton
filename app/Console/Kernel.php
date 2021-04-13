@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('telescope:prune --hours=1')->everyMinute()->onOneServer()->emailOutputTo(config('tms.admin_email'));
+        $schedule->command('telescope:prune --hours=1')->daily()->onOneServer()->emailOutputTo(config('tms.admin_email'));
         $schedule->command('db:backup')->dailyAt('1:00')->onOneServer()->emailOutputTo(config('tms.admin_email'));
         $schedule->command('route:retry')->cron('*/'.BaseConstService::ROUTE_RETRY_INTERVAL_TIME.' * * * *')->onOneServer();
     }
