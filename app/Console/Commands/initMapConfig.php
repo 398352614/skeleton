@@ -59,6 +59,6 @@ class initMapConfig extends Command
                 ]);
             }
         }
-        $this->info('fee init successful!');
+        $this->info('company map config init successful!');
     }
 }

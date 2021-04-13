@@ -953,9 +953,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //地图配置
     Route::prefix('map-config')->group(function () {
         //详情
-        Route::get('/', 'mapConfigController@show')->name('map-config.show');
+        Route::get('/', 'MapConfigController@show')->name('holiday.update');
         //修改
-        Route::get('/', 'mapConfigController@update')->name('map-config.update');
+        Route::put('/', 'MapConfigController@update')->name('holiday.update');
     });
 
 });
