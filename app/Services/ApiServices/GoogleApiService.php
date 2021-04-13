@@ -37,6 +37,10 @@ class GoogleApiService
      */
     protected $client;
 
+    /**
+     * GoogleApiService constructor.
+     * @throws BusinessLogicException
+     */
     public function __construct()
     {
         $company = auth('admin')->user();

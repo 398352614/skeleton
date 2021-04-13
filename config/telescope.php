@@ -92,7 +92,7 @@ return [
     */
 
     'ignore_paths' => [
-        '/api/merchant_api/order-dispatch-info'
+        'api/merchant_api/order-dispatch-info'
     ],
 
     'ignore_commands' => [
