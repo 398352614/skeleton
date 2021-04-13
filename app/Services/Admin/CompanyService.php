@@ -46,6 +46,8 @@ class CompanyService extends BaseService
                     'phone'             => $data['phone'] ?? '',
                     'country'           => $data['country'] ?? '',
                     'address'           => $data['address'] ?? '',
+                    'lon'               => $data['lon'] ?? '',
+                    'lat'               => $data['lat'] ?? '',
                     'web_site'          => $data['web_site'] ?? '',
                     'system_name'       => $data['system_name'] ?? '',
                     'logo_url'          => $data['logo_url'] ?? '',
