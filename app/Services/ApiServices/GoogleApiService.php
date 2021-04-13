@@ -46,6 +46,12 @@ class GoogleApiService
         if (empty($company)) {
             $company = auth('driver')->user();
         }
+        if(empty(($company))) {
+            $company = auth()->user();
+        }
+        if(empty($company)){
+            throw new BusinessLogicException('公司不存在');
+        }
         $this->client = new CurlClient;
         $this->url = config('tms.api_url');
         //$this->key = CompanyTrait::getCompany(auth()->user()->company_id)['map_config']['google_key'];
