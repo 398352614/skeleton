@@ -68,4 +68,20 @@ class CompanyConfigController extends BaseController
     {
         return $this->service->setUnitConfig($this->data);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function rule_show()
+    {
+        return $this->service->getRuleConfig();
+    }
+
+    /**
+     * @return int
+     */
+    public function rule_update()
+    {
+        return $this->service->setRuleConfig($this->data);
+    }
 }

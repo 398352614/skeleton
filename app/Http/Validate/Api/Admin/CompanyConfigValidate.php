@@ -12,14 +12,15 @@ class CompanyConfigValidate extends BaseValidate
 
 
     public $rules = [
-        'line_rule' => 'required|integer|in:1,2',
-        'address_template_id' => 'required|integer|in:1,2',
-        'weight_unit' => 'required|integer|in:1,2',
-        'show_type' => 'nullable|string|max:50',
-        'currency_unit' => 'required|integer|in:1,2,3',
-        'volume_unit' => 'required|integer|in:1,2',
-        'map' => 'required|string|max:50',
-        'stock_exception_verify'=>'nullable|integer|in:1,2'
+        'line_rule'                 => 'required|integer|in:1,2',
+        'scheduling_rule'           => 'required|integer|in:1,2',
+        'address_template_id'       => 'required|integer|in:1,2',
+        'weight_unit'               => 'required|integer|in:1,2',
+        'show_type'                 => 'nullable|string|max:50',
+        'currency_unit'             => 'required|integer|in:1,2,3',
+        'volume_unit'               => 'required|integer|in:1,2',
+        'map'                       => 'required|string|max:50',
+        'stock_exception_verify'    => 'nullable|integer|in:1,2'
     ];
 
     public $scene = [
@@ -35,6 +36,11 @@ class CompanyConfigValidate extends BaseValidate
             'weight_unit',
             'currency_unit',
             'volume_unit'
+        ],
+
+        'rule_update' => [
+            'line_rule',
+            'scheduling_rule'
         ]
     ];
 }

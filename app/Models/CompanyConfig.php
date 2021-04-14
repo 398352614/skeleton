@@ -49,6 +49,7 @@ class CompanyConfig extends BaseModel
         'company_id',
         'address_template_id',
         'line_rule',
+        'scheduling_rule',
         'show_type',
         'weight_unit',
         'currency_unit',
@@ -83,9 +84,11 @@ class CompanyConfig extends BaseModel
      * @var string[]
      */
     protected $casts = [
-        'weight_unit' => 'int',
-        'currency_unit' => 'int',
-        'volume_unit' => 'int'
+        'weight_unit'       => 'int',
+        'currency_unit'     => 'int',
+        'volume_unit'       => 'int',
+        'scheduling_rule'   => 'int',
+        'line_rule'         => 'int'
     ];
 
 

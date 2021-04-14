@@ -73,4 +73,24 @@ class CompanyConfigService extends BaseService
             'volume_unit'   => $data['volume_unit'],
         ]);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getRuleConfig()
+    {
+        return $this->query->select(['line_rule', 'scheduling_rule'])->get();
+    }
+
+    /**
+     * @param  array  $data
+     * @return int
+     */
+    public function setRuleConfig(array $data)
+    {
+        return $this->update(['company_id' => auth()->user()->company_id], [
+           'line_rule'          => $data['line_rule'],
+            'scheduling_rule'   => $data['scheduling_rule']
+        ]);
+    }
 }

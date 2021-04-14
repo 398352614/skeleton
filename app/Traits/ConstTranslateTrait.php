@@ -841,6 +841,11 @@ trait ConstTranslateTrait
         BaseConstService::VOLUME_UNIT_TYPE_2 => '立方米',
     ];
 
+    public static $schedulingTypeList = [
+        BaseConstService::SCHEDULING_TYPE_1 => '自动调度',
+        BaseConstService::SCHEDULING_TYPE_2 => '手动调度',
+    ];
+
     /**
      * 格式化常量列表
      * @param $list
