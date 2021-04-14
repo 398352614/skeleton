@@ -3802,7 +3802,7 @@
     {
         "id": 334,
         "parent_id": 330,
-        "name": "地图引擎查看",
+        "name": "查看",
         "route": "",
         "route_as": "",
         "level": 5,
@@ -3815,7 +3815,7 @@
     {
         "id": 335,
         "parent_id": 330,
-        "name": "地图引擎修改",
+        "name": "修改",
         "route": "",
         "route_as": "",
         "level": 5,
@@ -3841,7 +3841,7 @@
     {
         "id": 337,
         "parent_id": 336,
-        "name": "计量单位查看",
+        "name": "查看",
         "route": "",
         "route_as": "",
         "level": 5,
@@ -3854,20 +3854,7 @@
     {
         "id": 338,
         "parent_id": 336,
-        "name": "计量单位修改",
-        "route": "",
-        "route_as": "",
-        "level": 5,
-        "sort_id": 1,
-        "type": 2,
-        "is_show": 2,
-        "created_at": "2021-04-07 14:16:24",
-        "updated_at": "2021-04-07 14:16:24"
-    },
-    {
-        "id": 339,
-        "parent_id": 336,
-        "name": "计量单位修改",
+        "name": "修改",
         "route": "",
         "route_as": "",
         "level": 5,
