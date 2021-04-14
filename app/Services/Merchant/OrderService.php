@@ -205,11 +205,7 @@ class OrderService extends BaseService
 
     public function initStore()
     {
-        $data = [];
-        $data['nature_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderNatureList);
-        $data['settlement_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$orderSettlementTypeList);
-        $data['type'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$trackingOrderTypeList);
-        $data['feature_logo_list'] = ['常温', '雪花', '风扇'];
+        $data['default_config_list'] = $this->getOrderDefaultConfigService()->getInfo([], ['*'], false);
         return $data;
     }
 
@@ -595,7 +591,7 @@ class OrderService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
             $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5){
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5) {
             $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         //获取经纬度
@@ -637,7 +633,7 @@ class OrderService extends BaseService
             if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
                 $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
             }
-            if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5){
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5) {
                 $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
             }
             //获取经纬度
