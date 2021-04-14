@@ -52,4 +52,25 @@ class CompanyConfigService extends BaseService
         }
         Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getUnitConfig()
+    {
+        return $this->query->select(['weight_unit', 'currency_unit', 'volume_unit'])->get();
+    }
+
+    /**
+     * @param  array  $data
+     * @return int
+     */
+    public function setUnitConfig(array $data)
+    {
+        return $this->update(['id' => $data['id']], [
+            'weight_unit'   => $data['weight_unit'],
+            'currency_unit' => $data['currency_unit'],
+            'volume_unit'   => $data['volume_unit'],
+        ]);
+    }
 }

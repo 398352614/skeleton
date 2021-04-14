@@ -578,6 +578,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/address-template', 'CompanyConfigController@getAddressTemplateList')->name('company-config.show');
         //修改
         Route::put('/update', 'CompanyConfigController@update')->name('company-config.update');
+        //计量单位设置
+        Route::get('/unit', 'CompanyController@unit_show')->name('company-config.unit');
+        Route::put('/unit', 'CompanyController@unit_update')->name('company-config.unit');
     });
 
     Route::prefix('special-scenes-config')->group(function () {
