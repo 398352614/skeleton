@@ -819,6 +819,28 @@ trait ConstTranslateTrait
         BaseConstService::FEE_PAYER_2 => 2
     ];
 
+    publiC static $weightUnitTypeList = [
+        BaseConstService::WEIGHT_UNIT_TYPE_1 => '千克',
+        BaseConstService::WEIGHT_UNIT_TYPE_2 => '磅',
+    ];
+
+    public static $currencyUnitTypeList = [
+        BaseConstService::CURRENCY_UNIT_TYPE_1 => '人民币',
+        BaseConstService::CURRENCY_UNIT_TYPE_2 => '美元',
+        BaseConstService::CURRENCY_UNIT_TYPE_3 => '欧元',
+    ];
+
+    public static $currencyUnitTypeSymbol = [
+        BaseConstService::CURRENCY_UNIT_TYPE_1 => '¥',
+        BaseConstService::CURRENCY_UNIT_TYPE_2 => '$',
+        BaseConstService::CURRENCY_UNIT_TYPE_3 => '€',
+    ];
+
+    public static $volumeUnitTypeList = [
+        BaseConstService::VOLUME_UNIT_TYPE_1 => '立方厘米',
+        BaseConstService::VOLUME_UNIT_TYPE_2 => '立方米',
+    ];
+
     /**
      * 格式化常量列表
      * @param $list

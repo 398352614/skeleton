@@ -726,4 +726,17 @@ class BaseConstService
 
     const ORDER_TEMPLATE_IS_DEFAULT_1 = 1;
     const ORDER_TEMPLATE_IS_DEFAULT_2 = 2;
+
+    //重量单位
+    const WEIGHT_UNIT_TYPE_1 = 1;
+    const WEIGHT_UNIT_TYPE_2 = 2;
+
+    //货币单位
+    const CURRENCY_UNIT_TYPE_1 = 1;
+    const CURRENCY_UNIT_TYPE_2 = 2;
+    const CURRENCY_UNIT_TYPE_3 = 3;
+
+    //体积单位
+    const VOLUME_UNIT_TYPE_1 = 1;
+    const VOLUME_UNIT_TYPE_2 = 2;
 }

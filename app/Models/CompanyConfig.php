@@ -79,6 +79,15 @@ class CompanyConfig extends BaseModel
      */
     protected $dates = [];
 
+    /**
+     * @var string[]
+     */
+    protected $casts = [
+        'weight_unit' => 'int',
+        'currency_unit' => 'int',
+        'volume_unit' => 'int'
+    ];
+
 
     public function getLineRuleNameAttribute()
     {

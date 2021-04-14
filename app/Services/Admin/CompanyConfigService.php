@@ -67,7 +67,7 @@ class CompanyConfigService extends BaseService
      */
     public function setUnitConfig(array $data)
     {
-        return $this->update(['id' => $data['id']], [
+        return $this->update(['company_id' => auth()->user()->company_id], [
             'weight_unit'   => $data['weight_unit'],
             'currency_unit' => $data['currency_unit'],
             'volume_unit'   => $data['volume_unit'],
