@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Services\Admin\OrderAmountService;
+use App\Services\Admin\OrderDefaultConfigService;
 use App\Services\Merchant\AddressService;
 use App\Services\Merchant\BatchExceptionService;
 use App\Services\Merchant\BatchService;
@@ -168,6 +169,15 @@ Trait MerchantServiceTrait
     public function getMaterialService()
     {
         return self::getInstance(MaterialService::class);
+    }
+
+    /**
+     * 订单默认配置 服务
+     * @return OrderDefaultConfigService
+     */
+    public function getOrderDefaultConfigService()
+    {
+        return self::getInstance(OrderDefaultConfigService::class);
     }
 
     /**

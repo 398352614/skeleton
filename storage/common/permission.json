@@ -1520,22 +1520,10 @@
         "created_at": "2021-01-07 14:16:24",
         "updated_at": "2021-01-07 14:16:24"
     },
-    {
-        "id": 129,
-        "parent_id": 128,
-        "name": "企业信息",
-        "route": "",
-        "route_as": "",
-        "level": 2,
-        "sort_id": 1,
-        "type": 1,
-        "is_show": 2,
-        "created_at": "2021-01-07 14:16:24",
-        "updated_at": "2021-01-07 14:16:24"
-    },
+
     {
         "id": 130,
-        "parent_id": 319,
+        "parent_id": 320,
         "name": "企业信息配置",
         "route": "",
         "route_as": "",
@@ -1572,19 +1560,7 @@
         "created_at": "2021-01-07 14:16:24",
         "updated_at": "2021-01-07 14:16:24"
     },
-    {
-        "id": 133,
-        "parent_id": 129,
-        "name": "高级配置",
-        "route": "",
-        "route_as": "",
-        "level": 3,
-        "sort_id": 1,
-        "type": 1,
-        "is_show": 2,
-        "created_at": "2021-01-07 14:16:24",
-        "updated_at": "2021-01-07 14:16:24"
-    },
+
     {
         "id": 134,
         "parent_id": 133,
@@ -1832,19 +1808,7 @@
         "created_at": "2021-01-07 14:16:24",
         "updated_at": "2021-01-07 14:16:24"
     },
-    {
-        "id": 156,
-        "parent_id": 128,
-        "name": "参数配置",
-        "route": "",
-        "route_as": "",
-        "level": 2,
-        "sort_id": 1,
-        "type": 1,
-        "is_show": 2,
-        "created_at": "2021-01-07 14:16:24",
-        "updated_at": "2021-01-07 14:16:24"
-    },
+
     {
         "id": 157,
         "parent_id": 304,
@@ -2079,19 +2043,7 @@
         "created_at": "2021-01-07 14:16:24",
         "updated_at": "2021-01-07 14:16:24"
     },
-    {
-        "id": 178,
-        "parent_id": 128,
-        "name": "特殊配置",
-        "route": "",
-        "route_as": "",
-        "level": 2,
-        "sort_id": 1,
-        "type": 1,
-        "is_show": 2,
-        "created_at": "2021-01-07 14:16:24",
-        "updated_at": "2021-01-07 14:16:24"
-    },
+
     {
         "id": 179,
         "parent_id": 315,
@@ -2341,7 +2293,7 @@
     },
     {
         "id": 209,
-        "parent_id": 309,
+        "parent_id": 308,
         "name": "邮编划分",
         "route": "",
         "route_as": "",
@@ -2354,7 +2306,7 @@
     },
     {
         "id": 210,
-        "parent_id": 309,
+        "parent_id": 308,
         "name": "区域划分",
         "route": "",
         "route_as": "",
@@ -3595,7 +3547,7 @@
         "route_as": "",
         "level": 3,
         "sort_id": 1,
-        "type": 2,
+        "type": 1,
         "is_show": 2,
         "created_at": "2021-01-07 14:16:24",
         "updated_at": "2021-01-07 14:16:24"
@@ -3608,7 +3560,7 @@
         "route_as": "",
         "level": 4,
         "sort_id": 1,
-        "type": 2,
+        "type": 1,
         "is_show": 2,
         "created_at": "2021-01-07 14:16:24",
         "updated_at": "2021-01-07 14:16:24"
@@ -3647,7 +3599,7 @@
         "route_as": "",
         "level": 3,
         "sort_id": 1,
-        "type": 2,
+        "type": 1,
         "is_show": 2,
         "created_at": "2021-01-07 14:16:24",
         "updated_at": "2021-01-07 14:16:24"
@@ -3660,7 +3612,7 @@
         "route_as": "",
         "level": 3,
         "sort_id": 1,
-        "type": 2,
+        "type": 1,
         "is_show": 2,
         "created_at": "2021-01-07 14:16:24",
         "updated_at": "2021-01-07 14:16:24"
@@ -3828,6 +3780,84 @@
         "route": "",
         "route_as": "company-config.unit",
         "level": 4,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2,
+        "created_at": "2021-04-07 14:16:24",
+        "updated_at": "2021-04-07 14:16:24"
+    },
+    {
+        "id": 330,
+        "parent_id": 304,
+        "name": "地图引擎",
+        "route": "",
+        "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2,
+        "created_at": "2021-04-07 14:16:24",
+        "updated_at": "2021-04-07 14:16:24"
+    },
+    {
+        "id": 334,
+        "parent_id": 330,
+        "name": "查看",
+        "route": "",
+        "route_as": "",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2,
+        "created_at": "2021-04-07 14:16:24",
+        "updated_at": "2021-04-07 14:16:24"
+    },
+    {
+        "id": 335,
+        "parent_id": 330,
+        "name": "修改",
+        "route": "",
+        "route_as": "",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2,
+        "created_at": "2021-04-07 14:16:24",
+        "updated_at": "2021-04-07 14:16:24"
+    },
+    {
+        "id": 336,
+        "parent_id": 304,
+        "name": "计量单位",
+        "route": "",
+        "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2,
+        "created_at": "2021-04-07 14:16:24",
+        "updated_at": "2021-04-07 14:16:24"
+    },
+    {
+        "id": 337,
+        "parent_id": 336,
+        "name": "查看",
+        "route": "",
+        "route_as": "",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2,
+        "created_at": "2021-04-07 14:16:24",
+        "updated_at": "2021-04-07 14:16:24"
+    },
+    {
+        "id": 338,
+        "parent_id": 336,
+        "name": "修改",
+        "route": "",
+        "route_as": "",
+        "level": 5,
         "sort_id": 1,
         "type": 2,
         "is_show": 2,
