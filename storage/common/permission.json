@@ -3774,19 +3774,6 @@
         "updated_at": "2021-01-07 14:16:24"
     },
     {
-        "id": 329,
-        "parent_id": 133,
-        "name": "计量单位设置",
-        "route": "",
-        "route_as": "company-config.unit",
-        "level": 4,
-        "sort_id": 1,
-        "type": 2,
-        "is_show": 2,
-        "created_at": "2021-04-07 14:16:24",
-        "updated_at": "2021-04-07 14:16:24"
-    },
-    {
         "id": 330,
         "parent_id": 304,
         "name": "地图引擎",
@@ -3843,7 +3830,7 @@
         "parent_id": 336,
         "name": "查看",
         "route": "",
-        "route_as": "",
+        "route_as": "company-config.unit",
         "level": 5,
         "sort_id": 1,
         "type": 2,
@@ -3856,7 +3843,7 @@
         "parent_id": 336,
         "name": "修改",
         "route": "",
-        "route_as": "",
+        "route_as": "company-config.unit",
         "level": 5,
         "sort_id": 1,
         "type": 2,
