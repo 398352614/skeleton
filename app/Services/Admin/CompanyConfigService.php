@@ -58,7 +58,7 @@ class CompanyConfigService extends BaseService
      */
     public function getUnitConfig()
     {
-        return $this->query->select(['weight_unit', 'currency_unit', 'volume_unit'])->get();
+        return $this->query->select(['weight_unit', 'currency_unit', 'volume_unit'])->first();
     }
 
     /**
@@ -79,7 +79,7 @@ class CompanyConfigService extends BaseService
      */
     public function getRuleConfig()
     {
-        return $this->query->select(['line_rule', 'scheduling_rule'])->get();
+        return $this->query->select(['line_rule', 'scheduling_rule'])->first();
     }
 
     /**
@@ -89,7 +89,7 @@ class CompanyConfigService extends BaseService
     public function setRuleConfig(array $data)
     {
         return $this->update(['company_id' => auth()->user()->company_id], [
-           'line_rule'          => $data['line_rule'],
+            'line_rule'          => $data['line_rule'],
             'scheduling_rule'   => $data['scheduling_rule']
         ]);
     }
