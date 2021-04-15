@@ -739,4 +739,8 @@ class BaseConstService
     //体积单位
     const VOLUME_UNIT_TYPE_1 = 1;
     const VOLUME_UNIT_TYPE_2 = 2;
+
+    //调度规则
+    const SCHEDULING_TYPE_1 = 1;
+    const SCHEDULING_TYPE_2 = 2;
 }
