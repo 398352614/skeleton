@@ -102,6 +102,12 @@ use Illuminate\Support\Facades\App;
  * @method static mapConfigFrontTypeList($args = null)
  * @method static orderTemplateIsDefaultList($args = null)
  * @method static feePayerList($args = null)
+ * @method static weightUnitTypeList($args = null)
+ * @method static weightUnitTypeSymbol($args = null)
+ * @method static currencyUnitTypeList($args = null)
+ * @method static currencyUnitTypeSymbol($args = null)
+ * @method static volumeUnitTypeList($args = null)
+ * @method static volumeUnitTypeSymbol($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -824,6 +830,11 @@ trait ConstTranslateTrait
         BaseConstService::WEIGHT_UNIT_TYPE_2 => '磅',
     ];
 
+    publiC static $weightUnitTypeSymbol = [
+        BaseConstService::WEIGHT_UNIT_TYPE_1 => 'kg',
+        BaseConstService::WEIGHT_UNIT_TYPE_2 => 'G',
+    ];
+
     public static $currencyUnitTypeList = [
         BaseConstService::CURRENCY_UNIT_TYPE_1 => '人民币',
         BaseConstService::CURRENCY_UNIT_TYPE_2 => '美元',
@@ -839,6 +850,11 @@ trait ConstTranslateTrait
     public static $volumeUnitTypeList = [
         BaseConstService::VOLUME_UNIT_TYPE_1 => '立方厘米',
         BaseConstService::VOLUME_UNIT_TYPE_2 => '立方米',
+    ];
+
+    public static $volumeUnitTypeSymbol = [
+        BaseConstService::VOLUME_UNIT_TYPE_1 => 'cm³',
+        BaseConstService::VOLUME_UNIT_TYPE_2 => 'm³',
     ];
 
     public static $schedulingTypeList = [
