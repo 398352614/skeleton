@@ -297,10 +297,10 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_EXCEPTION_LABEL_2 => '异常'
     ];
 
-    //订单性质1-包裹2-材料
+    //订单性质1-包裹2-货物
     public static $orderNatureList = [
         BaseConstService::ORDER_NATURE_1 => '包裹',
-        BaseConstService::ORDER_NATURE_2 => '材料',
+        BaseConstService::ORDER_NATURE_2 => '货物',
     ];
 
     //支付方式1-现金支付2-银行卡支付
