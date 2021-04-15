@@ -1507,19 +1507,7 @@
         "created_at": "2021-01-07 14:16:24",
         "updated_at": "2021-01-07 14:16:24"
     },
-    {
-        "id": 128,
-        "parent_id": 0,
-        "name": "配置管理",
-        "route": "",
-        "route_as": "",
-        "level": 1,
-        "sort_id": 1,
-        "type": 1,
-        "is_show": 2,
-        "created_at": "2021-01-07 14:16:24",
-        "updated_at": "2021-01-07 14:16:24"
-    },
+
 
     {
         "id": 130,
@@ -1654,7 +1642,7 @@
     },
     {
         "id": 142,
-        "parent_id": 328,
+        "parent_id": 297,
         "name": "员工",
         "route": "",
         "route_as": "",
@@ -3410,6 +3398,19 @@
         "updated_at": "2021-03-30 15:24:58"
     },
     {
+        "id": 297,
+        "parent_id": 0,
+        "name": "员工管理",
+        "route": "",
+        "route_as": "",
+        "level": 1,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2,
+        "created_at": "2021-01-07 14:16:24",
+        "updated_at": "2021-01-07 14:16:24"
+    },
+    {
         "id": 298,
         "parent_id": 122,
         "name": "导入",
@@ -3761,7 +3762,7 @@
         "updated_at": "2021-01-07 14:16:24"
     },
     {
-        "id": 328,
+        "id": 297,
         "parent_id": 0,
         "name": "员工管理",
         "route": "",
