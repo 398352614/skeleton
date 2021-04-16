@@ -862,6 +862,11 @@ trait ConstTranslateTrait
         BaseConstService::SCHEDULING_TYPE_2 => '手动调度',
     ];
 
+    public static $schedulingTypeTips = [
+        BaseConstService::SCHEDULING_TYPE_1 => '下单后生成运单，自动对运单进行线路分配',
+        BaseConstService::SCHEDULING_TYPE_2 => '下单后不生成运单，需手动分配线路',
+    ];
+
     /**
      * 格式化常量列表
      * @param $list
