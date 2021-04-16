@@ -53,7 +53,7 @@ class CompanyService extends BaseService
                     'logo_url'          => $data['logo_url'] ?? '',
                     'login_logo_url'    => $data['login_logo_url'] ?? '',
                 ]
-            ) != 0;
+            ) !== 0;
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
