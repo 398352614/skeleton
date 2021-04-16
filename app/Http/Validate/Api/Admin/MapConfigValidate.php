@@ -18,7 +18,7 @@ class MapConfigValidate extends BaseValidate
     ];
 
     public $rules = [
-        'front_type' => 'required|integer|in:1,2,3',
+        'front_type' => 'nullable|integer|in:1,2,3',
         'back_type' => 'required|integer|in:1,2,3',
         'mobile_type' => 'nullable|integer|in:1,2,3',
         'google_key' => 'nullable|string|max:250',
