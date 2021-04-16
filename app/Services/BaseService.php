@@ -55,8 +55,14 @@ class BaseService
      */
     public $filterRules = [];
 
+    /**
+     * @var array
+     */
     public $orderBy = [];
 
+    /**
+     * @var int
+     */
     public $per_page = 10;
 
     /**
@@ -76,8 +82,38 @@ class BaseService
         $this->request = request();
         $this->formData = $this->request->all();
         $this->setFilterRules();
+        $this->initOrderBy();
     }
 
+    /**
+     *
+     */
+    protected function initOrderBy()
+    {
+        $fillAble = $this->model->getFillable();
+
+        $orderBy = $this->request->get('order_by');
+
+        if (empty($orderBy)) {
+            return;
+        }
+
+        $orderBy = explode(',', $orderBy);
+
+        foreach ($orderBy as $item) {
+            [$key, $sort] = explode('=', $item);
+
+            if (!in_array($sort, ['asc', 'desc'])) {
+                continue;
+            }
+
+            if (!in_array($key, $fillAble)) {
+                continue;
+            }
+
+            $this->orderBy[$key] = $sort;
+        }
+    }
 
     /**
      * @return $this

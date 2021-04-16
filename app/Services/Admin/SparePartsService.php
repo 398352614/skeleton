@@ -46,9 +46,11 @@ class SparePartsService extends BaseService
         parent::__construct($model, SparePartsResource::class, $infoResource);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getPageList()
     {
-        $this->query->orderByDesc('id');
         return parent::getPageList();
     }
 
