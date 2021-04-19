@@ -964,4 +964,17 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/', 'MapConfigController@update')->name('holiday.update');
     });
 
+    //邮件模板
+    Route::prefix('email-template')->group(function () {
+        //列表
+        Route::get('/', 'EmailTemplateController@index')->name('email-template.index');
+        //新增
+        Route::post('/', 'EmailTemplateController@store')->name('email-template.store');
+        //详情
+        Route::get('/{id}', 'EmailTemplateController@detail')->name('email-template.detail');
+        //修改
+        Route::put('/{id}', 'EmailTemplateController@update')->name('email-template.update');
+        //删除
+        Route::delete('/{id}', 'EmailTemplateController@destroy')->name('email-template.destroy');
+    });
 });

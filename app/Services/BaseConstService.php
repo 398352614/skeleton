@@ -743,4 +743,13 @@ class BaseConstService
     //调度规则
     const SCHEDULING_TYPE_1 = 1;
     const SCHEDULING_TYPE_2 = 2;
+
+    //邮件模板类型
+    const EMAIL_TEMPLATE_TYPE_1 = 1;
+    const EMAIL_TEMPLATE_TYPE_2 = 2;
+    const EMAIL_TEMPLATE_TYPE_3 = 3;
+
+    //邮件模板状态
+    const EMAIL_TEMPLATE_STATUS_1 = 1;
+    const EMAIL_TEMPLATE_STATUS_2 = 2;
 }

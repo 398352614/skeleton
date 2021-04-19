@@ -108,6 +108,8 @@ use Illuminate\Support\Facades\App;
  * @method static currencyUnitTypeSymbol($args = null)
  * @method static volumeUnitTypeList($args = null)
  * @method static volumeUnitTypeSymbol($args = null)
+ * @method static emailTemplateTypeList($args = null)
+ * @method static emailTemplateStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -825,38 +827,45 @@ trait ConstTranslateTrait
         BaseConstService::FEE_PAYER_2 => 2
     ];
 
+    //重量单位
     publiC static $weightUnitTypeList = [
         BaseConstService::WEIGHT_UNIT_TYPE_1 => '千克',
         BaseConstService::WEIGHT_UNIT_TYPE_2 => '磅',
     ];
 
+    //重量单位符号
     publiC static $weightUnitTypeSymbol = [
         BaseConstService::WEIGHT_UNIT_TYPE_1 => 'kg',
         BaseConstService::WEIGHT_UNIT_TYPE_2 => 'G',
     ];
 
+    //货币单位
     public static $currencyUnitTypeList = [
         BaseConstService::CURRENCY_UNIT_TYPE_1 => '人民币',
         BaseConstService::CURRENCY_UNIT_TYPE_2 => '美元',
         BaseConstService::CURRENCY_UNIT_TYPE_3 => '欧元',
     ];
 
+    //货币单位符号
     public static $currencyUnitTypeSymbol = [
         BaseConstService::CURRENCY_UNIT_TYPE_1 => '¥',
         BaseConstService::CURRENCY_UNIT_TYPE_2 => '$',
         BaseConstService::CURRENCY_UNIT_TYPE_3 => '€',
     ];
 
+    //体积单位
     public static $volumeUnitTypeList = [
         BaseConstService::VOLUME_UNIT_TYPE_1 => '立方厘米',
         BaseConstService::VOLUME_UNIT_TYPE_2 => '立方米',
     ];
 
+    //体积单位符号
     public static $volumeUnitTypeSymbol = [
         BaseConstService::VOLUME_UNIT_TYPE_1 => 'cm³',
         BaseConstService::VOLUME_UNIT_TYPE_2 => 'm³',
     ];
 
+    //调度规则
     public static $schedulingTypeList = [
         BaseConstService::SCHEDULING_TYPE_1 => '自动调度',
         BaseConstService::SCHEDULING_TYPE_2 => '手动调度',
@@ -865,6 +874,19 @@ trait ConstTranslateTrait
     public static $schedulingTypeTips = [
         BaseConstService::SCHEDULING_TYPE_1 => '下单后生成运单，自动对运单进行线路分配',
         BaseConstService::SCHEDULING_TYPE_2 => '下单后不生成运单，需手动分配线路',
+    ];
+
+    //邮件模板类型
+    public static $emailTemplateTypeList = [
+        BaseConstService::EMAIL_TEMPLATE_TYPE_1 => '注册',
+        BaseConstService::EMAIL_TEMPLATE_TYPE_2 => '找回密码',
+        BaseConstService::EMAIL_TEMPLATE_TYPE_3 => '下单'
+    ];
+
+    //邮件模板状态
+    public static $emailTemplateStatusList = [
+        BaseConstService::EMAIL_TEMPLATE_STATUS_1 => '开启',
+        BaseConstService::EMAIL_TEMPLATE_STATUS_2 => '关闭',
     ];
 
     /**
