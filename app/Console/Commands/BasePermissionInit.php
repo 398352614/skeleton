@@ -19,13 +19,18 @@ use Workerman\Worker;
 
 class BasePermissionInit extends Command
 {
-    protected $signature = 'base-permission:init';
+    protected $signature = 'base-permission:init {--id= : company id}';
 
     protected $description = 'Base permission init';
 
     public function handle()
     {
+
         try {
+            $command = empty($this->option('id'))
+                ? 'permission:init'
+                : 'permission:init --id=' . $this->option('id');
+
             DB::table('permissions')->delete();
 
             $permissionList = json_decode(file_get_contents(config('tms.permission_path')));
@@ -35,7 +40,7 @@ class BasePermissionInit extends Command
 
             DB::table('permissions')->insert($permissionList);
 
-            Artisan::call('permission:init');
+            Artisan::call($command);
 
             $this->info('successful');
         } catch (\Exception $e) {

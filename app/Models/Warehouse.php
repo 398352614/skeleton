@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Jiaxincui\ClosureTable\Traits\ClosureTable;
+
 /**
  * 线路表
  * Class Employee
@@ -9,6 +11,7 @@ namespace App\Models;
  */
 class Warehouse extends BaseModel
 {
+    use ClosureTable;
     /**
      * 司机实际取件导航
      * The table associated with the model.

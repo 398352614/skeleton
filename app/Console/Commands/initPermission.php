@@ -10,7 +10,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Permission;
 
 class initPermission extends Command
 {
@@ -21,7 +20,7 @@ class initPermission extends Command
      * mode=1为重置修改，否则为增量修改
      * @var string
      */
-    protected $signature = 'permission:init {--mode= : mode}';
+    protected $signature = 'permission:init {--mode= : mode} {--id= : company id}';
 
     /**
      * The console command description.
@@ -48,17 +47,21 @@ class initPermission extends Command
     public function handle()
     {
         try {
-            $companyList = Company::query()->get(['id'])->toArray();
+            $companyList = empty($this->option('id'))
+                ? Company::query()->get(['id'])->toArray()
+                : Company::query()->where('id', $this->option('id'))->get(['id'])->toArray();
+
             $basePermissionList = self::getPermissionList();
+
             foreach ($companyList as $company) {
                 $this->info($company['id']);
                 $role = Role::query()->where('company_id', $company['id'])->where('is_admin', 1)->first();
                 if (empty($role)) {
                     //新建管理员权限组
                     $role = Role::create([
-                        'company_id' => $company['id'],
-                        'name' => '管理员组',
-                        'is_admin' => 1,
+                        'company_id'    => $company['id'],
+                        'name'          => '管理员组',
+                        'is_admin'      => 1,
                     ]);
                     $employee = Employee::query()->where('company_id', $company['id'])->orderBy('id')->first();
                     if (empty(DB::table('model_has_roles')->where('employee_id', $employee['id'])->first())) {
