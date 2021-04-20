@@ -743,7 +743,7 @@
     {
         "id": 62,
         "parent_id": 239,
-        "name": "设备管理",
+        "name": "车辆设备",
         "route": "",
         "route_as": "",
         "level": 2,
@@ -2214,7 +2214,7 @@
     },
     {
         "id": 202,
-        "parent_id": 62,
+        "parent_id": 313,
         "name": "设备绑定",
         "route": "",
         "route_as": "",
@@ -2628,6 +2628,7 @@
         "created_at": "2021-01-07 14:16:24",
         "updated_at": "2021-01-07 14:16:24"
     },
+
     {
         "id": 238,
         "parent_id": 8,
