@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Jiaxincui\ClosureTable\Traits\ClosureTable;
-
 use App\Traits\ConstTranslateTrait;
 
 /**
@@ -21,6 +20,11 @@ class Warehouse extends BaseModel
      * @var string
      */
     protected $table = 'warehouse';
+
+    /**
+     * @var string
+     */
+    protected $closureTable = 'warehouse_closure';
 
     /**
      * The primary key for the model.
