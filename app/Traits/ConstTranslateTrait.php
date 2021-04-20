@@ -122,11 +122,11 @@ trait ConstTranslateTrait
     //编号类型
     public static $noTypeList = [
         BaseConstService::ORDER_NO_TYPE => '订单编号规则',
+        BaseConstService::TRACKING_ORDER_NO_TYPE => '运单单号规则',
         BaseConstService::BATCH_NO_TYPE => '站点编号规则',
-        BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
         BaseConstService::TOUR_NO_TYPE => '取件线路编号规则',
         BaseConstService::RECHARGE_NO_TYPE => '充值单号规则',
-        BaseConstService::TRACKING_ORDER_NO_TYPE => '运单单号规则',
+        BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
         BaseConstService::STOCK_EXCEPTION_NO_TYPE => '入库异常编号规则',
         BaseConstService::CAR_ACCIDENT_NO_TYPE => '事故处理单号规则',
         BaseConstService::CAR_MAINTAIN_NO_TYPE => '车辆维护流水号',
