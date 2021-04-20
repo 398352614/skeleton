@@ -836,7 +836,7 @@ trait ConstTranslateTrait
     //重量单位符号
     publiC static $weightUnitTypeSymbol = [
         BaseConstService::WEIGHT_UNIT_TYPE_1 => 'kg',
-        BaseConstService::WEIGHT_UNIT_TYPE_2 => 'G',
+        BaseConstService::WEIGHT_UNIT_TYPE_2 => 'lb',
     ];
 
     //货币单位
