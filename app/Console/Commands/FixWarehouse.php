@@ -50,6 +50,7 @@ class FixWarehouse extends Command
             foreach ($companyList as $company) {
                 $warehouse = MapConfig::query()->where('company_id', $company['id'])->first();
                 if (empty($company)) {
+                    dd($company);
                     $this->info('公司不存在');
                 }
                 if (empty($warehouse)) {
