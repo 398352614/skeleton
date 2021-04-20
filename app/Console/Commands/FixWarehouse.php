@@ -52,7 +52,7 @@ class FixWarehouse extends Command
                 if (empty($warehouse)) {
                     $warehouse = Warehouse::create([
                         'name' => $company['email'],
-                        'company_id' => $company->id,
+                        'company_id' => $company['id'],
                         'type' => BaseConstService::WAREHOUSE_TYPE_2,
                         'is_center' => BaseConstService::NO,
                         'acceptance_type' => BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3,
