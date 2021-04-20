@@ -207,7 +207,7 @@ class RegisterController extends BaseController
             'name' => $data['email'],
             'company_id' => $company->id,
             'type' => BaseConstService::WAREHOUSE_TYPE_2,
-            'is_center' => BaseConstService::YES,
+            'is_center' => BaseConstService::NO,
             'acceptance_type' => BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3,
             'line_ids' => '',
         ]);
