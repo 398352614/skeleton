@@ -48,6 +48,7 @@ class FixWarehouse extends Command
             //给每个公司新增一个根网点
             $companyList = Company::query()->get(['id'])->toArray();
             foreach ($companyList as $company) {
+                dd($company);
                 $warehouse = MapConfig::query()->where('company_id', $company['id'])->first();
                 if (empty($company)) {
                     dd($company);
