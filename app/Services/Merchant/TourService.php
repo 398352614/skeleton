@@ -118,10 +118,10 @@ class TourService extends BaseService
      */
     private function joinNewTour($batch, $line, $quantity)
     {
-        //获取仓库信息
+        //获取网点信息
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
-            throw new BusinessLogicException('仓库不存在！');
+            throw new BusinessLogicException('网点不存在！');
         }
         $warehouse = $warehouse->toArray();
         $tourNo = $this->getOrderNoRuleService()->createTourNo();

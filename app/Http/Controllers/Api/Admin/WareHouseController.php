@@ -1,6 +1,6 @@
 <?php
 /**
- * 仓库管理
+ * 网点管理
  * User: long
  * Date: 2019/12/25
  * Time: 15:16
@@ -70,4 +70,35 @@ class WareHouseController extends BaseController
     {
         return $this->service->destroy($id);
     }
+
+    /**
+     * 删除
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Collection
+     * @throws BusinessLogicException
+     */
+    public function getLineList($id)
+    {
+        return $this->service->getLineList($id);
+    }
+
+//    /**
+//     * 删除
+//     * @param $id
+//     * @throws BusinessLogicException
+//     */
+//    public function addLine($id)
+//    {
+//        return $this->service->addLine($id,$this->data);
+//    }
+
+//    /**
+//     * 删除
+//     * @param $id
+//     * @throws BusinessLogicException
+//     */
+//    public function removeLine($id)
+//    {
+//        return $this->service->removeLine($id,$this->data);
+//    }
 }

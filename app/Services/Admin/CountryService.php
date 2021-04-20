@@ -102,7 +102,7 @@ class CountryService extends BaseService
         }
         $warehouse = $this->getWareHouseService()->getInfo([], ['id'], false);
         if (!empty($warehouse)) {
-            throw new BusinessLogicException('已存在仓库，不能删除国家');
+            throw new BusinessLogicException('已存在网点，不能删除国家');
         }
         $line = $this->getLineService()->getInfo([], ['id'], false);
         if (!empty($line)) {

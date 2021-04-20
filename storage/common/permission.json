@@ -1589,7 +1589,7 @@
     {
         "id": 136,
         "parent_id": 304,
-        "name": "仓库地址设置",
+        "name": "网点地址设置",
         "route": "",
         "route_as": "",
         "level": 3,

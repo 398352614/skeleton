@@ -19,7 +19,8 @@ class EmployeeValidate extends BaseValidate
         'phone' => 'sometimes|nullable|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
         'remark' => 'sometimes|nullable|string|max:250',
         'confirm_password' => 'required|same:password',
-        'role_id' => 'required|integer'
+        'role_id' => 'required|integer',
+        'warehouse_id'=>'required|integer'
     ];
 
     public $scene = [
@@ -30,7 +31,8 @@ class EmployeeValidate extends BaseValidate
             'phone',
             'remark',
             'password',
-            'role_id'
+            'role_id',
+            'warehouse_id'
         ],
         'update' => [
             'fullname',
@@ -38,7 +40,8 @@ class EmployeeValidate extends BaseValidate
             'email',
             'phone',
             'remark',
-            'role_id'
+            'role_id',
+            'warehouse_id'
         ],
         'resetPassword' => [
             'password',

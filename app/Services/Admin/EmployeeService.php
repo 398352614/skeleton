@@ -16,6 +16,7 @@ class EmployeeService extends BaseService
     public $filterRules = [
         'email' => ['like', 'email'],
         'fullname' => ['like', 'fullname'],
+        'warehouse_id'=>['=','warehouse_id']
     ];
 
     public function __construct(Employee $employee)
@@ -73,6 +74,7 @@ class EmployeeService extends BaseService
      */
     public function store(array $data)
     {
+        $data = $this->check($data);
         $role = Role::findById($data['role_id']);
         $employee = parent::create(
             [
@@ -100,6 +102,7 @@ class EmployeeService extends BaseService
      */
     public function updateById($id, $data)
     {
+        $data = $this->check($data);
         $role = Role::findById($data['role_id']);
         $employee = $this->model::findOrFail($id);
         $adminRoleId = $this->getRoleService()->getAdminRoleId();
@@ -117,6 +120,20 @@ class EmployeeService extends BaseService
             throw new BusinessLogicException('修改员工失败');
         }
         $employee->syncRoles($role);
+    }
+
+    /**
+     * @param $data
+     * @return
+     * @throws BusinessLogicException
+     */
+    public function check($data)
+    {
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $data['warehouse_id']], ['*'], false);
+        if (empty($warehouse)) {
+            throw new BusinessLogicException('网点不存在');
+        }
+        return $data;
     }
 
     /**

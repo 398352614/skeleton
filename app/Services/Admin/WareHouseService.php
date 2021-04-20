@@ -1,6 +1,6 @@
 <?php
 /**
- * 仓库服务
+ * 网点服务
  * User: long
  * Date: 2019/12/21
  * Time: 11:21
@@ -50,7 +50,7 @@ class WareHouseService extends BaseService
         $this->fillData($params);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
-            throw new BusinessLogicException('仓库新增失败,请重新操作');
+            throw new BusinessLogicException('网点新增失败,请重新操作');
         }
     }
 
@@ -63,15 +63,38 @@ class WareHouseService extends BaseService
      */
     public function updateById($id, $data)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], false);
-        if (empty($info)) {
+        $dbData = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($dbData)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $this->fillData($data, $info->toArray());
+        $lineIdList = $data['line_ids'];
+        $this->check($dbData, $lineIdList);
+        $this->fillData($data, $dbData->toArray());
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('仓库修改失败，请重新操作');
+            throw new BusinessLogicException('网点修改失败，请重新操作');
         }
+        //更新线路的网点ID
+        $this->getLineService()->updateWarehouse($dbData['id'], $lineIdList);
+        //更新上级网点
+        $parentWarehouse = parent::getInfo(['id' => $data['parent_id']], ['*'], false);
+        if (empty($parentWarehouse)) {
+            throw new BusinessLogicException('网点不存在');
+        }
+        $more = array_diff(explode(',', $data['line_ids']), explode(',', $dbData['line_ids']));
+        $less = array_diff(explode(',', $dbData['line_ids']), explode(',', $data['line_ids']));
+        if (!empty($more)) {
+            $parentWarehouse['line_ids'] = implode(',', array_diff(json_decode($parentWarehouse['line_ids']), $more));
+        } elseif (!empty($less)) {
+            $parentWarehouse['line_ids'] = implode(',', array_merge(json_decode($parentWarehouse['line_ids']), $less));
+        } else {
+            return;
+        }
+        $row = parent::update(['id' => $dbData['parent_id']], ['line_ids' => $parentWarehouse['line_ids']]);
+        if ($row == false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        $this->getLineService()->updateWarehouse($dbData['parent_id'], $parentWarehouse['line_ids']);
     }
 
     /**
@@ -95,14 +118,115 @@ class WareHouseService extends BaseService
      */
     public function destroy($id)
     {
-        //删除仓库前 先验证线路是否存在
-        $line = $this->getLineService()->getInfo(['warehouse_id' => $id], ['id'], false);
-        if (!empty($line)) {
-            throw new BusinessLogicException('存在当前仓库的线路,请先删除线路');
+        //删除网点前 先验证线路是否存在
+        $line = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($line)) {
+            return;
+        }
+        if (!empty($line->toArray()['line_ids'])) {
+            throw new BusinessLogicException('请先删除线路该网点下的线路');
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('仓库删除失败，请重新操作');
+            throw new BusinessLogicException('网点删除失败，请重新操作');
+        }
+    }
+
+    /**
+     * 获取网点下所有线路
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getLineList($id)
+    {
+        return $this->getLineService()->getPageListByWarehouse($id);
+    }
+
+//    /**
+//     * 添加线路至网点
+//     * @param $id
+//     * @param $params
+//     * @throws BusinessLogicException
+//     */
+//    public function addLine($id, $params)
+//    {
+//        $lineIdList = $params['line_ids'];
+//        $lineList = $this->getLineService()->getList(['id' => ['in', $lineIdList]], ['*'], false);
+//        $warehouse = parent::getInfo(['id' => $id], ['*'], false);
+//        $this->check($warehouse, $lineList);
+//        //从上级网点移除
+//        $parentLineIdList = array_diff($lineIdList, $params['line_ids']);
+//        $row = parent::update(['id' => $warehouse->toArray()['parent_id']], ['line_ids' => $parentLineIdList]);
+//        if ($row == false) {
+//            throw new BusinessLogicException('操作失败');
+//        }
+//        $this->getLineService()->updateWarehouse($warehouse['parent_id'], $parentLineIdList);
+//        //新增线路
+//        $row = parent::update(['id' => $id], ['line_ids' => $lineIdList]);
+//        if ($row == false) {
+//            throw new BusinessLogicException('操作失败');
+//        }
+//        $this->getLineService()->updateWarehouse($warehouse['id'], $lineIdList);
+//    }
+
+//    /**
+//     * 移除线路
+//     * @param $id
+//     * @param $params
+//     * @throws BusinessLogicException
+//     */
+//    public function removeLine($id, $params)
+//    {
+//        $removeLineIdList = $params['line_ids'];
+//        $warehouse = parent::getInfo(['id' => $id], ['*'], false);
+//        if (empty($warehouse)) {
+//            throw new BusinessLogicException('网点不存在');
+//        }
+//        $warehouse = $warehouse->toArray();
+//        $lineIdList = array_diff($warehouse['line_ids'], $removeLineIdList);
+//        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent_id']], ['*'], false);
+//        if (empty($parentWarehouse)) {
+//            throw new BusinessLogicException('网点不存在');
+//        }
+//        $parentWarehouse = $parentWarehouse->toArray();
+//        $parentLineIdList = array_merge($parentWarehouse['line_ids'], $params['line_ids']);
+//        //从上级网点新增
+//        $row = parent::update(['id' => $warehouse['parent_id']], ['line_ids' => $parentLineIdList]);
+//        if ($row == false) {
+//            throw new BusinessLogicException('操作失败');
+//        }
+//        $this->getLineService()->updateWarehouse($warehouse['parent_id'], $parentLineIdList);
+//        //移除线路
+//        $row = parent::update(['id' => $id], ['line_ids' => $lineIdList]);
+//        if ($row == false) {
+//            throw new BusinessLogicException('操作失败');
+//        }
+//        $this->getLineService()->updateWarehouse($warehouse['id'], $lineIdList);
+//    }
+
+    /**
+     * 检查
+     * @param $warehouse
+     * @param $lineIdList
+     * @throws BusinessLogicException
+     */
+    public function check($warehouse, $lineIdList)
+    {
+        $lineIdList = explode(',', $lineIdList);
+        $siblingLineIdList = [];
+        //检查上级网点是否有这些线路
+        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent_id']], '*', false);
+        $parentLineIdList = $parentWarehouse->toArray()['line_ids'];
+        if (!empty(array_diff($lineIdList, $parentLineIdList))) {
+            throw new BusinessLogicException('所选线路不在上级网点中，请先将线路分配至上级网点');
+        }
+        //检查同级网点是否无这些线路
+        $siblingWarehouseList = parent::getList(['parent_id' => $warehouse['parent_id'], 'id' => ['<>', $warehouse['id']]], '*', false);
+        foreach ($siblingWarehouseList as $k => $v) {
+            $siblingLineIdList = array_merge($siblingLineIdList, $v['line_ids']);
+        }
+        if (!empty(array_diff($lineIdList, $siblingLineIdList))) {
+            throw new BusinessLogicException('所选线路在同级其他网点中，请先将其移除');
         }
     }
 }

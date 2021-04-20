@@ -274,7 +274,7 @@ Trait DriverServiceTrait
     }
 
     /**
-     * 仓库 服务
+     * 网点 服务
      * @return WareHouseService
      */
     public function getWareHouseService()

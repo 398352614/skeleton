@@ -788,7 +788,7 @@ class OrderService extends BaseService
                 }
             }
         }
-        //检查仓库
+        //检查网点
         try {
             $line = $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
             $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);

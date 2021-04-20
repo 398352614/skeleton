@@ -127,7 +127,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/neutralize', 'OrderController@neutralize')->name('order.neutralize');
         //运价估算
         Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
-        //获取仓库
+        //获取网点
         Route::get('/warehouse', 'OrderController@getWarehouse')->name('order.store');
         //通过地址获取可分配的路线日期列表
         Route::get('/get-date', 'OrderController@getAbleDateListByAddress');
@@ -548,9 +548,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //批量修改状态
         Route::put('/status', 'LineController@statusByList')->name('line.status');
 
+        //流程测试
+        Route::get('/test', 'LineController@test')->name('line.test');
     });
 
-    //仓库管理
+    //网点管理
     Route::prefix('warehouse')->group(function () {
         //列表查询
         Route::get('/', 'WareHouseController@index')->name('warehouse.index');
@@ -562,6 +564,13 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'WareHouseController@update')->name('warehouse.update');
         //删除
         Route::delete('/{id}', 'WareHouseController@destroy')->name('warehouse.destroy');
+
+        //查看线路
+        Route::get('/{id}/line', 'WareHouseController@getLineList')->name('warehouse.index');
+//        //新增线路
+//        Route::put('/{id}/line', 'WareHouseController@addLine')->name('warehouse.update');
+//        //删除线路
+//        Route::delete('/{id}/line', 'WareHouseController@removeLine')->name('warehouse.update');
     });
 
     //公司信息
@@ -712,7 +721,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/driver', 'DriverController@index');
         //获取权限组列表
         Route::get('/role', 'RoleController@index');
-        //获取仓库列表
+        //获取网点列表
         Route::get('/warehouse', 'WareHouseController@index');
         //获取车辆列表
         Route::get('/car', 'CarController@index');

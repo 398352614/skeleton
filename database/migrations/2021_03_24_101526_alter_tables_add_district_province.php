@@ -28,8 +28,8 @@ class AlterTablesAddDistrictProvince extends Migration
             $table->string('second_place_district')->default('')->comment('发件人区县')->after('second_place_city');
         });
         Schema::table('batch', function (Blueprint $table) {
-            $table->string('place_province')->default('')->comment('仓库省份')->after('place_country');
-            $table->string('place_district')->default('')->comment('仓库区县')->after('place_city');
+            $table->string('place_province')->default('')->comment('网点省份')->after('place_country');
+            $table->string('place_district')->default('')->comment('网点区县')->after('place_city');
         });
         Schema::table('tour', function (Blueprint $table) {
             $table->string('warehouse_province')->default('')->comment('收件人省份')->after('warehouse_country');
@@ -38,12 +38,12 @@ class AlterTablesAddDistrictProvince extends Migration
         Schema::table('tracking_order', function (Blueprint $table) {
             $table->string('place_province')->default('')->comment('收件人省份')->after('place_country');
             $table->string('place_district')->default('')->comment('收件人区县')->after('place_city');
-            $table->string('warehouse_province')->default('')->comment('仓库省份')->after('warehouse_country');
-            $table->string('warehouse_district')->default('')->comment('仓库区县')->after('warehouse_city');
+            $table->string('warehouse_province')->default('')->comment('网点省份')->after('warehouse_country');
+            $table->string('warehouse_district')->default('')->comment('网点区县')->after('warehouse_city');
         });
         Schema::table('additional_package', function (Blueprint $table) {
-            $table->string('place_province')->default('')->comment('仓库省份')->after('place_country');
-            $table->string('place_district')->default('')->comment('仓库区县')->after('place_city');
+            $table->string('place_province')->default('')->comment('网点省份')->after('place_country');
+            $table->string('place_district')->default('')->comment('网点区县')->after('place_city');
         });
     }
 

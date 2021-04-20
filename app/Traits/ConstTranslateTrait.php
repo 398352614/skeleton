@@ -108,6 +108,9 @@ use Illuminate\Support\Facades\App;
  * @method static currencyUnitTypeSymbol($args = null)
  * @method static volumeUnitTypeList($args = null)
  * @method static volumeUnitTypeSymbol($args = null)
+ * @method static warehouseTypeList($args = null)
+ * @method static warehouseAcceptanceTypeList($args = null)
+ * @method static warehouseIsCenterTypeList($args = null)
  * @method static emailTemplateTypeList($args = null)
  * @method static emailTemplateStatusList($args = null)
  */
@@ -218,17 +221,17 @@ trait ConstTranslateTrait
     //订单类型1-取件2-派件3-取派
     public static $orderTypeList = [
 //        BaseConstService::ORDER_TYPE_0 => '全部',
-        BaseConstService::ORDER_TYPE_1 => '提货->仓库',
-        BaseConstService::ORDER_TYPE_2 => '仓库->配送',
-        BaseConstService::ORDER_TYPE_3 => '提货->仓库->配送',
+        BaseConstService::ORDER_TYPE_1 => '提货->网点',
+        BaseConstService::ORDER_TYPE_2 => '网点->配送',
+        BaseConstService::ORDER_TYPE_3 => '提货->网点->配送',
         BaseConstService::ORDER_TYPE_4 => '提货->配送'
     ];
 
     //订单类型1-取件2-派件3-取派
     public static $packageTypeList = [
-        BaseConstService::PACKAGE_TYPE_1 => '提货->仓库',
-        BaseConstService::PACKAGE_TYPE_2 => '仓库->配送',
-        BaseConstService::PACKAGE_TYPE_3 => '提货->仓库->配送',
+        BaseConstService::PACKAGE_TYPE_1 => '提货->网点',
+        BaseConstService::PACKAGE_TYPE_2 => '网点->配送',
+        BaseConstService::PACKAGE_TYPE_3 => '提货->网点->配送',
         BaseConstService::PACKAGE_TYPE_4 => '提货->配送',
     ];
 
@@ -293,7 +296,7 @@ trait ConstTranslateTrait
         BaseConstService::PACKAGE_STATUS_5 => '回收站',
     ];
 
-    //仓库包裹类型1-入库2-出库
+    //网点包裹类型1-入库2-出库
     public static $warehousePackageTypeList = [
         BaseConstService::WAREHOUSE_PACKAGE_TYPE_1,
         BaseConstService::WAREHOUSE_PACKAGE_TYPE_2,
@@ -532,10 +535,10 @@ trait ConstTranslateTrait
     ];
 
     public static $driverEventList = [
-        BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE => '司机从仓库出发',
+        BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE => '司机从网点出发',
         BaseConstService::DRIVER_EVENT_BATCH_ARRIVED => '司机到达客户家',
         BaseConstService::DRIVER_EVENT_BATCH_DEPART => '司机从客户家离开',
-        BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE => '司机返回仓库',
+        BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE => '司机返回网点',
     ];
 
     //费用等级
@@ -698,7 +701,7 @@ trait ConstTranslateTrait
 
     //订单始发地
     public static $orderOriginTypeList = [
-        BaseConstService::ORDER_ORIGIN_TYPE_1 => '从仓库出发，回到仓库',
+        BaseConstService::ORDER_ORIGIN_TYPE_1 => '从网点出发，回到网点',
         BaseConstService::ORDER_ORIGIN_TYPE_2 => '装货地',
     ];
 
@@ -887,6 +890,22 @@ trait ConstTranslateTrait
     public static $emailTemplateStatusList = [
         BaseConstService::EMAIL_TEMPLATE_STATUS_1 => '开启',
         BaseConstService::EMAIL_TEMPLATE_STATUS_2 => '关闭',
+    ];
+
+    public static $warehouseTypeList = [
+        BaseConstService::WAREHOUSE_TYPE_1 => '加盟',
+        BaseConstService::WAREHOUSE_TYPE_2 => '自营',
+    ];
+
+    public static $warehouseAcceptanceTypeList = [
+        BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1 => '取件',
+        BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2 => '派件',
+        BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3 => '仓配一体',
+    ];
+
+    public static $warehouseIsCenterTypeList = [
+        BaseConstService::WAREHOUSE_IS_CENTER_1 => '是',
+        BaseConstService::WAREHOUSE_IS_CENTER_2 => '否',
     ];
 
     /**

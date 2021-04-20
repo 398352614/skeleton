@@ -373,10 +373,10 @@ class TourService extends BaseService
      */
     private function joinNewTour($batch, $line, $quantity)
     {
-        //获取仓库信息
+        //获取网点信息
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
-            throw new BusinessLogicException('仓库不存在！');
+            throw new BusinessLogicException('网点不存在！');
         }
         $warehouse = $warehouse->toArray();
         $tourNo = $this->getOrderNoRuleService()->createTourNo();
@@ -778,7 +778,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $info['batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
-        //如果已回仓库，处理仓库相关数据
+        //如果已回网点，处理网点相关数据
         if ($info['status'] == BaseConstService::TOUR_STATUS_5) {
             $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], false);
             if (empty($batchList)) {

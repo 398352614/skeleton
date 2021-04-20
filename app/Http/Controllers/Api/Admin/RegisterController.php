@@ -23,6 +23,7 @@ use App\Models\OrderTemplate;
 use App\Models\Role;
 use App\Models\SpecialTimeCharging;
 use App\Models\TransportPrice;
+use App\Models\Warehouse;
 use App\Models\WeightCharging;
 use App\Services\Admin\CompanyService;
 use App\Services\BaseConstService;
@@ -82,14 +83,14 @@ class RegisterController extends BaseController
             if ($company === false) {
                 throw new BusinessLogicException('企业注册失败');
             }
-
-            $employee = $this->addEmployee($company, $data);//初始化管理员帐户
+            $warehouse = $this->addWarehouse($company, $data);
+            $employee = $this->addEmployee($company, $data, $warehouse);//初始化管理员帐户
             $role = $this->addRole($company);//初始化权限组
             $this->addPermission($employee, $role);//初始化员工权限组
             $this->initCompanyOrderCodeRules($company);//初始化编号规则
             $transportPrice = $this->addTransportPrice($company);//初始化运价方案
             $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化货主组
-            $merchant = $this->addMerchant($company, $merchantGroup);//初始化货主API
+            $merchant = $this->addMerchant($company, $merchantGroup,$warehouse);//初始化货主API
             $this->addMerchantApi($company, $merchant);//初始化货主API
             $this->addFee($company);//添加费用
             $this->addOrderTemplate($company);//添加打印模板
@@ -200,13 +201,26 @@ class RegisterController extends BaseController
         return count($data) === count($rules);
     }
 
+    public function addWarehouse($company, $data)
+    {
+        return Warehouse::create([
+            'name' => $data['email'],
+            'company_id' => $company->id,
+            'type' => BaseConstService::WAREHOUSE_TYPE_2,
+            'is_center' => BaseConstService::YES,
+            'acceptance_type' => BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3,
+            'line_ids' => '',
+        ]);
+    }
+
     /**
      * 添加管理员初始用户组
      * @param Company $company
      * @param array $data
+     * @param $warehouse
      * @return mixed
      */
-    protected function addEmployee(Company $company, array $data)
+    protected function addEmployee(Company $company, array $data, $warehouse)
     {
         return Employee::create([
             'email' => $data['email'],
@@ -215,7 +229,8 @@ class RegisterController extends BaseController
             'fullname' => $data['email'],
             'company_id' => $company->id,
             'username' => $data['email'],
-            'is_admin' => 1
+            'is_admin' => 1,
+            'warehouse_id' => $warehouse->id
         ]);
     }
 
@@ -315,10 +330,11 @@ class RegisterController extends BaseController
      *
      * @param $company
      * @param $merchantGroup
+     * @param $warehouse
      * @return mixed
      * @throws BusinessLogicException
      */
-    protected function addMerchant($company, $merchantGroup)
+    protected function addMerchant($company, $merchantGroup,$warehouse)
     {
         $merchant = Merchant::create([
             'company_id' => $company->id,
@@ -333,6 +349,7 @@ class RegisterController extends BaseController
             'address' => $company->address,
             'avatar' => '',
             'status' => 1,
+            'warehouse_id'=>$warehouse->id
         ]);
         if ($merchant === false) {
             throw new BusinessLogicException('初始化货主失败');

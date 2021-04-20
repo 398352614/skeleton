@@ -40,10 +40,10 @@ use Throwable;
  * @property  TourMaterial $tourMaterialModel
  * 取件线路流程
  * 1.开始装货 取件线路状态 已分配-待出库
- * 2.出仓库   取件线路状态 待出库-取派中
+ * 2.出网点   取件线路状态 待出库-取派中
  * 3.确认出库 取件线路智能调度
  * 4.到达站点 取件线路状态 取派中  有三种情况:1-签收 2-异常上报 3-取消取派
- * 5.回仓库   取件线路状态 取派中-已完成
+ * 5.回网点   取件线路状态 取派中-已完成
  */
 class TourService extends BaseService
 {
@@ -1085,7 +1085,7 @@ class TourService extends BaseService
             $tourMaterialList = array_create_index($tourMaterialList, 'code');
             foreach ($materialList as $materialId => $material) {
                 if (empty($tourMaterialList[$material['code']])) {
-                    throw new BusinessLogicException('未从仓库取材料[:code]', 1000, ['code' => $material['code']]);
+                    throw new BusinessLogicException('未从网点取材料[:code]', 1000, ['code' => $material['code']]);
                 }
                 if (intval($pageMaterialList[$materialId]['actual_quantity']) > intval($material['expect_quantity'])) {
                     throw new BusinessLogicException('材料数量不得超过预计材料数量');
@@ -1161,7 +1161,7 @@ class TourService extends BaseService
         }
         $tour = $tour->toArray();
         if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_4) {
-            throw new BusinessLogicException('取件线路当前状态不允许回仓库');
+            throw new BusinessLogicException('取件线路当前状态不允许回网点');
         }
         $batchCount = $this->getBatchService()->count(['tour_no' => $tour['tour_no'], 'status' => ['not in', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL]]]);
         if ($batchCount !== 0) {
@@ -1398,7 +1398,7 @@ class TourService extends BaseService
     {
         $tour = parent::getInfo(['id' => $id, 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
         if (empty($tour)) {
-            throw new BusinessLogicException('数据不存在');
+            return;
         }
         //站点处理
         $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_DELIVERING], ['*'], false);
@@ -1474,10 +1474,10 @@ class TourService extends BaseService
      */
     private function joinNewTour($batch, $line, $quantity)
     {
-        //获取仓库信息
+        //获取网点信息
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
-            throw new BusinessLogicException('仓库不存在！');
+            throw new BusinessLogicException('网点不存在！');
         }
         $warehouse = $warehouse->toArray();
         $tourNo = $this->getOrderNoRuleService()->createTourNo();

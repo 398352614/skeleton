@@ -434,7 +434,7 @@ class BaseConstService
     const NOTIFY_ARRIVED_BATCH = 'arrive-batch';        //到达站点通知
     const NOTIFY_ASSIGN_BATCH = 'assign-batch';         //签收站点通知
     const NOTIFY_CANCEL_BATCH = 'assign-batch';         //取消派送站点通知(也叫签收)
-    const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回仓库通知
+    const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回网点通知
     const NOTIFY_ORDER_EXECUTION_DATE_UPDATE = 'update-execution-date'; //修改取派日期通知
     const NOTIFY_ORDER_CANCEL = 'cancel-order';     //订单取消通知
     const NOTIFY_ORDER_DELETE = 'delete-order';     //订单删除通知
@@ -538,7 +538,7 @@ class BaseConstService
     const PACKAGE_TYPE_3 = 3;
     const PACKAGE_TYPE_4 = 4;
 
-    //包裹仓库类型1-入库2-出库
+    //包裹网点类型1-入库2-出库
     const WAREHOUSE_PACKAGE_TYPE_1 = 1;
     const WAREHOUSE_PACKAGE_TYPE_2 = 2;
 
@@ -743,6 +743,16 @@ class BaseConstService
     //调度规则
     const SCHEDULING_TYPE_1 = 1;
     const SCHEDULING_TYPE_2 = 2;
+
+    const WAREHOUSE_TYPE_1 = 1;
+    const WAREHOUSE_TYPE_2 = 2;
+
+    const WAREHOUSE_ACCEPTANCE_TYPE_1 = 1;
+    const WAREHOUSE_ACCEPTANCE_TYPE_2 = 2;
+    const WAREHOUSE_ACCEPTANCE_TYPE_3 = 3;
+
+    const WAREHOUSE_IS_CENTER_1 = 1;
+    const WAREHOUSE_IS_CENTER_2 = 2;
 
     //邮件模板类型
     const EMAIL_TEMPLATE_TYPE_1 = 1;

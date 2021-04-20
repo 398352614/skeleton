@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Jiaxincui\ClosureTable\Traits\ClosureTable;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 线路表
  * Class Employee
@@ -49,16 +51,23 @@ class Warehouse extends BaseModel
     protected $fillable = [
         'company_id',
         'name',
+        'type',
+        'is_center',
+        'acceptance_type',
+        'line_ids',
         'fullname',
+        'company_name',
         'phone',
+        'email',
+        'avatar',
         'country',
         'province',
         'post_code',
         'house_number',
         'city',
         'district',
-        'street',
         'address',
+        'street',
         'lon',
         'lat',
         'created_at',
@@ -82,7 +91,24 @@ class Warehouse extends BaseModel
     protected $dates = [];
 
     protected $appends = [
-        'country_name'
+        'type_name',
+        'acceptance_type_name',
+        'is_center_name',
     ];
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::warehouseTypeList($this->type);
+    }
+
+    public function getAcceptanceTypeNameAttribute()
+    {
+        return empty($this->acceptance_type) ? null : ConstTranslateTrait::warehouseAcceptanceTypeList($this->acceptance_type);
+    }
+
+    public function getIsCenterNameAttribute()
+    {
+        return empty($this->is_center) ? null : ConstTranslateTrait::warehouseIsCenterTypeList($this->is_center);
+    }
 
 }

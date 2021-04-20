@@ -316,7 +316,7 @@ class OrderService extends BaseService
     }
 
     /**
-     * 获取仓库
+     * 获取网点
      * @param $params
      * @return array
      * @throws BusinessLogicException
@@ -325,10 +325,10 @@ class OrderService extends BaseService
     {
         //获取线路
         $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
-        //获取仓库
+        //获取网点
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
-            throw new BusinessLogicException('仓库不存在');
+            throw new BusinessLogicException('网点不存在');
         }
         return $warehouse;
     }
@@ -699,7 +699,7 @@ class OrderService extends BaseService
         //获取经纬度
         $fields = ['place_house_number', 'place_city', 'place_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
-        //通过货主获取国家
+        //检验货主
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'], 'status' => BaseConstService::MERCHANT_STATUS_1], ['*'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('货主不存在');
@@ -750,9 +750,7 @@ class OrderService extends BaseService
         } else {
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         }
-        $params['distance'] = $params['distance'] / 1000;
         $params = $this->getTransportPriceService()->priceCount($params);
-        $params['distance'] = $params['distance'] * 1000;
         return $params;
     }
 
@@ -1169,7 +1167,7 @@ class OrderService extends BaseService
             $newOrderList[$k]['warehouse']['street'] = $newOrderList[$k]['tracking_order']['warehouse_street'];
             $newOrderList[$k]['warehouse']['house_number'] = $newOrderList[$k]['tracking_order']['warehouse_house_number'];
             $newOrderList[$k]['warehouse']['address'] = $newOrderList[$k]['tracking_order']['warehouse_address'];
-            //填充仓库
+            //填充网点
             if ($v['type'] == BaseConstService::ORDER_TYPE_1) {
                 $newOrderList[$k]['receiver'] = $newOrderList[$k]['warehouse'];
             } elseif ($v['type'] == BaseConstService::ORDER_TYPE_2) {

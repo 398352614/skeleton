@@ -16,6 +16,7 @@ use App\Traits\ConstTranslateTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 class LineService extends BaseLineService
 {
@@ -95,7 +96,7 @@ class LineService extends BaseLineService
             $info['work_day_list'] = implode(',', array_values(array_unique(array_column($lineRangeList->toArray(), 'schedule'))));
         }
         $merchantGroupCountList = $this->getMerchantGroupLineService()->getList(['line_id' => $id], ['merchant_group_id', 'pickup_min_count', 'pie_min_count'], false);
-        $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in',$merchantGroupCountList->pluck('merchant_group_id')->toArray()]], ['*'], false);
+        $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantGroupCountList->pluck('merchant_group_id')->toArray()]], ['*'], false);
         foreach ($merchantGroupCountList as $k => $v) {
             $merchantGroupCountList[$k]['merchant_group_name'] = $merchantGroupList->where('id', $v['merchant_group_id'])->first()['name'] ?? '';
         }
@@ -315,6 +316,131 @@ class LineService extends BaseLineService
         $rowCount = $this->getLineAreaService()->delete(['line_id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围删除失败');
+        }
+    }
+
+    /**
+     * 通过网点ID获取线路列表
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getPageListByWarehouse($id)
+    {
+        $this->query->where('warehouse_id', $id);
+        return $this->getPageList();
+    }
+
+    /**
+     * 批量修改线路的网点ID
+     * @param $warehouseId
+     * @param $lineIdList
+     * @throws BusinessLogicException
+     */
+    public function updateWarehouse($warehouseId, $lineIdList)
+    {
+        $lineIdList = explode(',', $lineIdList);
+        $row = parent::update(['id' => ['in', $lineIdList]], ['warehouse_id' => $warehouseId]);
+        if ($row == false) {
+            throw new BusinessLogicException('更新线路失败');
+        }
+    }
+
+    /**
+     * 测试
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function test($data)
+    {
+        $pickupWarehouse = $this->getWareHouseByAddress($this->pickupAddress($data));
+        $pickupData = $this->centerCheck($pickupWarehouse, []);
+        $pieWarehouse = $this->getWareHouseByAddress($this->pieAddress($data));
+        $pieData = $this->centerCheck($pieWarehouse, []);
+        $data = array_merge($pickupWarehouse, $pickupData, array_reverse($pieData), $pieWarehouse);
+        return $data;
+    }
+
+    /**
+     * 取件路径
+     * @param $data
+     * @return array
+     */
+    public function pickupAddress($data)
+    {
+        return Arr::only($data, [
+            'fullname' => $data['place_fullname'],
+            'phone' => $data['place_phone'],
+            'country' => $data['place_country'],
+            'province' => $data['place_province'],
+            'post_code' => $data['place_post_code'],
+            'house_number' => $data['place_house_number'],
+            'city' => $data['place_city'],
+            'district' => $data['place_district'],
+            'street' => $data['place_street'],
+            'address' => $data['place_address'],
+            'lat' => $data['place_lat'],
+            'lon' => $data['place_lon'],
+            'execution_date' => $data['execution_date']
+        ]);
+    }
+
+    /**
+     * 派件路径
+     * @param $data
+     * @return array
+     */
+    public function pieAddress($data)
+    {
+        return [
+            'fullname' => $data['second_place_fullname'],
+            'phone' => $data['second_place_phone'],
+            'country' => $data['second_place_country'],
+            'province' => $data['second_place_province'],
+            'post_code' => $data['second_place_post_code'],
+            'house_number' => $data['second_place_house_number'],
+            'city' => $data['second_place_city'],
+            'district' => $data['second_place_district'],
+            'street' => $data['second_place_street'],
+            'address' => $data['second_place_address'],
+            'lat' => $data['second_place_lat'],
+            'lon' => $data['second_place_lon'],
+            'execution_date' => $data['second_execution_date']
+        ];
+
+    }
+
+    /**
+     * 通过地址获取网点
+     * @param $data
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getWareHouseByAddress($data)
+    {
+        $line = $this->getBaseLineService()->getInfoByRule($data);
+        //获取网点
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        if (empty($warehouse)) {
+            throw new BusinessLogicException('网点不存在');
+        }
+        return $warehouse;
+    }
+
+    /**
+     * 回溯上级节点，直至遇到分拨中心
+     * @param $warehouse
+     * @param $data
+     * @return
+     */
+    public function centerCheck($warehouse, $data)
+    {
+        if ($warehouse['is_center'] == BaseConstService::NO || $warehouse['parent_id'] == 0) {
+            $parentWarehouse = $this->getWareHouseService()->getInfo(['id' => $warehouse['parent_id']], ['*'], false);
+            array_push($data, $parentWarehouse);
+            $this->centerCheck($parentWarehouse, $data);
+        } else {
+            return $data;
         }
     }
 }

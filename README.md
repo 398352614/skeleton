@@ -73,19 +73,19 @@ tms_dev_env_redis_1
 按顺序分别为定时任务，数据库，服务器，php命令行，php扩展，数据库网页版，缓存。其中还有supervisor及wkhtmltopdf安装在php-cli的虚拟容器中，因为某些原因并未单独拿出来作为容器管理。
 
 ### 2. 项目部署与维护
-该项目利用github进行代码管理，放置在nle-tech的仓库中，其中正式服分支为deploy，开发服分支为develop。  
+该项目利用github进行代码管理，放置在nle-tech的网点中，其中正式服分支为deploy，开发服分支为develop。  
 #### 2.1 安装git
 访问git官网下载git。  
 下载地址：[https://git-scm.com/downloads](https://git-scm.com/downloads)
 #### 2.2 从github上下载项目工程
- github仓库地址：[https://github.com/nletech/tms-api](https://github.com/nletech/tms-api)
+ github网点地址：[https://github.com/nletech/tms-api](https://github.com/nletech/tms-api)
 通过克隆，下载到服务器上。
 注意：应在docker环境文件夹同层新建www文件夹，再在www文件夹内git clone克隆项目代码。  
 ```gitexclude
 git clone https://github.com/nletech/tms-api/tree/deploy;
 ```
 #### 2.3 更新
-以开发服为例，在本地克隆后，在项目目录下，对代码进行了任何更改，可首先将代码上传到开发服仓库上。
+以开发服为例，在本地克隆后，在项目目录下，对代码进行了任何更改，可首先将代码上传到开发服网点上。
 ```
 git push 
 ```
@@ -223,7 +223,7 @@ postcode.nl网站API地址：[https://api.postcode.nl/rest](https://api.postcode
 #### 2.8 站点签收
 站点的定义是同一个目的地，同一个客户，同一取派日期，同一条取件线路下的运单集合，是系统内的虚拟概念，层级高低依次为线路，线路任务，站点，运单。司机只要选择好客户签收的包裹，如有支付，执行支付流程，然后让客户统一签名即可完成签收。
 #### 2.9 司机入库
-所有站点取送完成后，需要进行入库操作，仓库对取回的包裹进行核实，然后统一签名即可完成入库。司机入库后，既完成了整个系统的主流程。
+所有站点取送完成后，需要进行入库操作，网点对取回的包裹进行核实，然后统一签名即可完成入库。司机入库后，既完成了整个系统的主流程。
 
 
 ### 3. 自定义命令

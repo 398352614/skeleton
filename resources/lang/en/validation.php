@@ -190,7 +190,7 @@ return [
         'second_place_address' => 'second place address',
         'second_place_lon' => 'second place lon',
         'second_place_lat' => 'second place lat',
-        //仓库地址信息
+        //网点地址信息
         'warehouse_fullname' => 'warehouse fullname',
         'warehouse_phone' => 'warehouse phone',
         'warehouse_country' => 'warehouse country',

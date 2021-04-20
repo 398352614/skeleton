@@ -14,9 +14,9 @@ class AlterTourAddColumnsWareHouseExpectTime extends Migration
     public function up()
     {
         Schema::table('tour', function (Blueprint $table) {
-            $table->integer('warehouse_expect_time')->default(0)->after('warehouse_lat')->comment('抵达仓库预计耗时');
-            $table->integer('warehouse_expect_distance')->default(0)->after('warehouse_expect_time')->comment('抵达仓库预计历程');
-            $table->dateTime('warehouse_expect_arrive_time')->default(null)->after('warehouse_expect_distance')->comment('抵达仓库预计时间');
+            $table->integer('warehouse_expect_time')->default(0)->after('warehouse_lat')->comment('抵达网点预计耗时');
+            $table->integer('warehouse_expect_distance')->default(0)->after('warehouse_expect_time')->comment('抵达网点预计历程');
+            $table->dateTime('warehouse_expect_arrive_time')->default(null)->after('warehouse_expect_distance')->comment('抵达网点预计时间');
         });
     }
 

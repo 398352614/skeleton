@@ -14,7 +14,7 @@ class AlterTourAddColumn extends Migration
     public function up()
     {
         Schema::table('tour', function (Blueprint $table) {
-            $table->string('warehouse_country', 20)->default('')->nullable()->after('warehouse_phone')->comment('仓库国家');
+            $table->string('warehouse_country', 20)->default('')->nullable()->after('warehouse_phone')->comment('网点国家');
         });
     }
 

@@ -254,7 +254,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * 获取仓库
+     * 获取网点
      * @return array
      * @throws BusinessLogicException
      */

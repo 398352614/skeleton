@@ -90,7 +90,7 @@ trait TourTrait
 
     public static function afterBackWarehouse($tour)
     {
-        //触发返回仓库
+        //触发返回网点
         event(new BackWarehouse($tour));
 
         event(new \App\Events\TourNotify\BackWarehouse($tour));

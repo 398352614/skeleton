@@ -40,7 +40,7 @@ trait UpdateTourTimeAndDistanceTrait
                 'warehouse_expect_time' => 0,
                 'warehouse_expect_arrive_time' => null
             ];
-            //若取件线路未结束，则仓库更新预计
+            //若取件线路未结束，则网点更新预计
             if (in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4])) {
                 $warehouse['warehouse_expect_arrive_time'] = date('Y-m-d H:i:s', time() + $data['loc_res'][$tour->tour_no . $tour->tour_no]['time']);
                 $warehouse['warehouse_expect_distance'] = $data['loc_res'][$tour->tour_no . $tour->tour_no]['distance'];

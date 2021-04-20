@@ -250,7 +250,7 @@ class TrackingOrderService extends BaseService
      */
     private function store($params, $orderNo)
     {
-        //填充仓库信息
+        //填充网点信息
         $line = $this->fillWarehouseInfo($params, BaseConstService::YES);
         //生成运单号
         $params['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
@@ -1038,7 +1038,7 @@ class TrackingOrderService extends BaseService
 
 
     /**
-     * 填充仓库信息
+     * 填充网点信息
      * @param $params
      * @param $merchantAlone
      * @return array
@@ -1048,10 +1048,10 @@ class TrackingOrderService extends BaseService
     {
         //获取线路
         $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
-        //获取仓库
+        //获取网点
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
-            throw new BusinessLogicException('仓库不存在');
+            throw new BusinessLogicException('网点不存在');
         }
         //填充发件人信息
         $params = array_merge($params, [

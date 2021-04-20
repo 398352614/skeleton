@@ -65,7 +65,7 @@ class TenCentApiService
      */
     public function autoUpdateTour(Tour $tour)
     {
-        /***********************@**********1.获取仓库到所有站点的距离和时间********************************************/
+        /***********************@**********1.获取网点到所有站点的距离和时间********************************************/
         //获取并更新站点
         $keyIndex = 1;
         if ($tour->status != BaseConstService::TOUR_STATUS_4) { // 未取派的情况下,所有 batch 都是未取派的
@@ -105,7 +105,7 @@ class TenCentApiService
                 Batch::query()->where('batch_no', $batchs[$res['result']['optimal_order'][$key] - 1]['batch_no'])->update($data);
                 $keyIndex++;
             }
-            /*********************************2.获取最后一个站点到仓库的距离和时间*****************************************/
+            /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
             $lastPointIndex = last($res['result']['optimal_order']);
             $backWarehouseElement = $this->distanceMatrix([$batchs[$lastPointIndex - 1]['location'], $tour->driver_location]);
             $backElement = $backWarehouseElement[0][1];
@@ -162,7 +162,7 @@ class TenCentApiService
                 ]);
                 $key++;
             }
-            /*********************************2.获取最后一个站点到仓库的距离和时间*****************************************/
+            /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
             $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
             $backElement = $backWarehouseElement[0][1];
             $tourData = [

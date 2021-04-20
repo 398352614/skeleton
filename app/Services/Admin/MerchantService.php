@@ -135,6 +135,10 @@ class MerchantService extends BaseService
      */
     public function check(&$params)
     {
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
+        if (empty($warehouse)) {
+            throw new BusinessLogicException('网点不存在');
+        }
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $params['merchant_group_id']], ['*'], false);
         if (empty($merchantGroup)) {
             throw new BusinessLogicException('货主组不存在');

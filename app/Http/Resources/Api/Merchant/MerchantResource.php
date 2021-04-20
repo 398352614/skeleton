@@ -42,6 +42,8 @@ class MerchantResource extends JsonResource
             'invoice_email'=>$this->invoice_email,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
+            'warehouse_id'=>$this->warehouse_id
+
         ];
     }
 

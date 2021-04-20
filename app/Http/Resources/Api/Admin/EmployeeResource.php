@@ -22,6 +22,7 @@ class EmployeeResource extends JsonResource
             'is_admin' => $this->is_admin,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'warehouse_id'=>$this->warehouse_id
         ];
     }
 }
