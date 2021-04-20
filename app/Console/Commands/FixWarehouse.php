@@ -49,9 +49,12 @@ class FixWarehouse extends Command
             $companyList = Company::query()->get(['id'])->toArray();
             foreach ($companyList as $company) {
                 $warehouse = MapConfig::query()->where('company_id', $company['id'])->first();
+                if (empty($company)) {
+                    $this->info('公司不存在');
+                }
                 if (empty($warehouse)) {
                     $warehouse = Warehouse::create([
-                        'name' => $company['email'] ?? '',
+                        'name' => $company['email'],
                         'company_id' => $company->id,
                         'type' => BaseConstService::WAREHOUSE_TYPE_2,
                         'is_center' => BaseConstService::NO,
