@@ -77,7 +77,7 @@ class WareHouseService extends BaseService
         //更新线路的网点ID
         $this->getLineService()->updateWarehouse($dbData['id'], $lineIdList);
         //更新上级网点
-        $parentWarehouse = parent::getInfo(['id' => $data['parent_id']], ['*'], false);
+        $parentWarehouse = parent::getInfo(['id' => $data['parent']], ['*'], false);
         if (empty($parentWarehouse)) {
             throw new BusinessLogicException('网点不存在');
         }
@@ -90,11 +90,11 @@ class WareHouseService extends BaseService
         } else {
             return;
         }
-        $row = parent::update(['id' => $dbData['parent_id']], ['line_ids' => $parentWarehouse['line_ids']]);
+        $row = parent::update(['id' => $dbData['parent']], ['line_ids' => $parentWarehouse['line_ids']]);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $this->getLineService()->updateWarehouse($dbData['parent_id'], $parentWarehouse['line_ids']);
+        $this->getLineService()->updateWarehouse($dbData['parent'], $parentWarehouse['line_ids']);
     }
 
     /**
@@ -156,11 +156,11 @@ class WareHouseService extends BaseService
 //        $this->check($warehouse, $lineList);
 //        //从上级网点移除
 //        $parentLineIdList = array_diff($lineIdList, $params['line_ids']);
-//        $row = parent::update(['id' => $warehouse->toArray()['parent_id']], ['line_ids' => $parentLineIdList]);
+//        $row = parent::update(['id' => $warehouse->toArray()['parent']], ['line_ids' => $parentLineIdList]);
 //        if ($row == false) {
 //            throw new BusinessLogicException('操作失败');
 //        }
-//        $this->getLineService()->updateWarehouse($warehouse['parent_id'], $parentLineIdList);
+//        $this->getLineService()->updateWarehouse($warehouse['parent'], $parentLineIdList);
 //        //新增线路
 //        $row = parent::update(['id' => $id], ['line_ids' => $lineIdList]);
 //        if ($row == false) {
@@ -184,18 +184,18 @@ class WareHouseService extends BaseService
 //        }
 //        $warehouse = $warehouse->toArray();
 //        $lineIdList = array_diff($warehouse['line_ids'], $removeLineIdList);
-//        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent_id']], ['*'], false);
+//        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], ['*'], false);
 //        if (empty($parentWarehouse)) {
 //            throw new BusinessLogicException('网点不存在');
 //        }
 //        $parentWarehouse = $parentWarehouse->toArray();
 //        $parentLineIdList = array_merge($parentWarehouse['line_ids'], $params['line_ids']);
 //        //从上级网点新增
-//        $row = parent::update(['id' => $warehouse['parent_id']], ['line_ids' => $parentLineIdList]);
+//        $row = parent::update(['id' => $warehouse['parent']], ['line_ids' => $parentLineIdList]);
 //        if ($row == false) {
 //            throw new BusinessLogicException('操作失败');
 //        }
-//        $this->getLineService()->updateWarehouse($warehouse['parent_id'], $parentLineIdList);
+//        $this->getLineService()->updateWarehouse($warehouse['parent'], $parentLineIdList);
 //        //移除线路
 //        $row = parent::update(['id' => $id], ['line_ids' => $lineIdList]);
 //        if ($row == false) {
@@ -215,13 +215,13 @@ class WareHouseService extends BaseService
         $lineIdList = explode(',', $lineIdList);
         $siblingLineIdList = [];
         //检查上级网点是否有这些线路
-        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent_id']], '*', false);
+        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], '*', false);
         $parentLineIdList = $parentWarehouse->toArray()['line_ids'];
         if (!empty(array_diff($lineIdList, $parentLineIdList))) {
             throw new BusinessLogicException('所选线路不在上级网点中，请先将线路分配至上级网点');
         }
         //检查同级网点是否无这些线路
-        $siblingWarehouseList = parent::getList(['parent_id' => $warehouse['parent_id'], 'id' => ['<>', $warehouse['id']]], '*', false);
+        $siblingWarehouseList = parent::getList(['parent' => $warehouse['parent'], 'id' => ['<>', $warehouse['id']]], '*', false);
         foreach ($siblingWarehouseList as $k => $v) {
             $siblingLineIdList = array_merge($siblingLineIdList, $v['line_ids']);
         }

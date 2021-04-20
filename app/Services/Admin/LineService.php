@@ -435,8 +435,8 @@ class LineService extends BaseLineService
      */
     public function centerCheck($warehouse, $data)
     {
-        if ($warehouse['is_center'] == BaseConstService::NO || $warehouse['parent_id'] == 0) {
-            $parentWarehouse = $this->getWareHouseService()->getInfo(['id' => $warehouse['parent_id']], ['*'], false);
+        if ($warehouse['is_center'] == BaseConstService::NO || $warehouse['parent'] == 0) {
+            $parentWarehouse = $this->getWareHouseService()->getInfo(['id' => $warehouse['parent']], ['*'], false);
             array_push($data, $parentWarehouse);
             $this->centerCheck($parentWarehouse, $data);
         } else {

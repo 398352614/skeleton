@@ -57,7 +57,7 @@ class FixWarehouse extends Command
                         'is_center' => BaseConstService::NO,
                         'acceptance_type' => BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3,
                         'line_ids' => '',
-                        'parent_id' => 0
+                        'parent' => 0
                     ]);
                 }
                 Employee::query()->where('company_id', $company['id'])->update(['warehouse_id' => $warehouse['id']]);

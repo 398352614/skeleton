@@ -70,6 +70,7 @@ class Warehouse extends BaseModel
         'street',
         'lon',
         'lat',
+        'parent',
         'created_at',
         'updated_at',
     ];

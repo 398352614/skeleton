@@ -39,11 +39,12 @@ class WareHouseValidate extends BaseValidate
         'address' => 'checkAddress|nullable|string|max:250',
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
+        'parent'=>'required|integer',
     ];
 
     public $scene = [
-        'store' => ['name', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat'],
-        'update' => ['name', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat']
+        'store' => ['parent','name', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat'],
+        'update' => ['parent','name', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat']
     ];
 }
 
