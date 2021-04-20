@@ -51,7 +51,7 @@ class FixWarehouse extends Command
                 $warehouse = MapConfig::query()->where('company_id', $company['id'])->first();
                 if (empty($warehouse)) {
                     $warehouse = Warehouse::create([
-                        'name' => $company['email'],
+                        'name' => $company['email'] ?? '',
                         'company_id' => $company->id,
                         'type' => BaseConstService::WAREHOUSE_TYPE_2,
                         'is_center' => BaseConstService::NO,
