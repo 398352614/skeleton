@@ -617,7 +617,7 @@ class OrderService extends BaseService
         $typeList = array_flip(ConstTranslateTrait::$trackingOrderTypeList);
         $settlementList = array_flip(ConstTranslateTrait::$orderSettlementTypeList);
         $deliveryList = ['是' => 1, '否' => 2, 'Yes' => 1, 'No' => 2];
-        $itemList = array_flip(ConstTranslateTrait::$orderNatureList);
+        $itemList = array_flip(ConstTranslateTrait::$orderConfigNatureList);
         //$countryNameList = array_unique(collect($data)->pluck('place_country_name')->toArray());
         //$countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {

@@ -220,6 +220,7 @@ class BaseConstService
     //订单性质1-包裹2-材料
     const ORDER_NATURE_1 = 1;
     const ORDER_NATURE_2 = 2;
+    const ORDER_NATURE_3 = 3;
 
     //线路规划 是否新增取件线路 1-是2-否
     const IS_INCREMENT_1 = 1;

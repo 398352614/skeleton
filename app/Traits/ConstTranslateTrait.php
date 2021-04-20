@@ -110,6 +110,7 @@ use Illuminate\Support\Facades\App;
  * @method static volumeUnitTypeSymbol($args = null)
  * @method static emailTemplateTypeList($args = null)
  * @method static emailTemplateStatusList($args = null)
+ * @method static orderConfigNatureList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -306,9 +307,16 @@ trait ConstTranslateTrait
     ];
 
     //订单性质1-包裹2-货物
-    public static $orderNatureList = [
+    public static $orderConfigNatureList = [
         BaseConstService::ORDER_NATURE_1 => '包裹',
         BaseConstService::ORDER_NATURE_2 => '货物',
+    ];
+
+    //订单配置性质1-包裹2-货物
+    public static $orderNatureList = [
+        BaseConstService::ORDER_NATURE_1 => '全部',
+        BaseConstService::ORDER_NATURE_2 => '包裹',
+        BaseConstService::ORDER_NATURE_3 => '货物',
     ];
 
     //支付方式1-现金支付2-银行卡支付
