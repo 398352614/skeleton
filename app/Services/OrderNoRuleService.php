@@ -24,6 +24,12 @@ class OrderNoRuleService extends BaseService
         parent::__construct($orderNoRule, OrderNoRuleResource::class);
     }
 
+    public function getPageList()
+    {
+        $this->query->orderBy('id');
+        return parent::getPageList();
+    }
+
     /**
      * 新增初始化
      * @return array
