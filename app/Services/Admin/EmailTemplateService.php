@@ -12,6 +12,7 @@
 
 namespace App\Services\Admin;
 
+use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\EmailTemplateResource;
 use App\Models\EmailTemplate;
 
@@ -36,5 +37,21 @@ class EmailTemplateService extends BaseService
     public function __construct(EmailTemplate $model, $infoResource = null)
     {
         parent::__construct($model, EmailTemplateResource::class, $infoResource);
+    }
+
+    /**
+     * @param $data
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
+     * @throws BusinessLogicException
+     */
+    public function create($data)
+    {
+        $check = $this->query->where('type', $data['type'])->first();
+
+        if (!empty($check)) {
+            throw new BusinessLogicException(__('该类型的邮件模板已添加'));
+        }
+
+        return parent::create($data);
     }
 }

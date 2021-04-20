@@ -58,7 +58,7 @@ class WareHouseService extends BaseService
      * 通过ID修改
      * @param $id
      * @param $data
-     * @return bool|int|void
+     * @return void
      * @throws BusinessLogicException
      */
     public function updateById($id, $data)
