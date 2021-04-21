@@ -228,10 +228,10 @@ class OrderService extends BaseService
                 }
                 $dbTrackingOrder[$k]['time_list'] = [['type' => __(BaseConstService::CREATED_TIME), 'time' => (string)$v['created_at']]];
                 if (!empty($dbTrackingOrder[$k]['begin_time'])) {
-                    $dbTrackingOrder[$k]['time_list'] = array_merge($v['time_list'],[['type' => __(BaseConstService::BEGIN_TIME), 'time' => $v['begin_time']]]);
+                    $dbTrackingOrder[$k]['time_list'] = array_merge($v['time_list'], [['type' => __(BaseConstService::BEGIN_TIME), 'time' => $v['begin_time']]]);
                 }
                 if (!empty($dbTrackingOrder[$k]['sign_time'])) {
-                    $dbTrackingOrder[$k]['time_list'] = array_merge($v['time_list'],[['type' => __(BaseConstService::SIGN_TIME), 'time' => $v['sign_time']]]);
+                    $dbTrackingOrder[$k]['time_list'] = array_merge($v['time_list'], [['type' => __(BaseConstService::SIGN_TIME), 'time' => $v['sign_time']]]);
                 }
             }
         }
@@ -302,7 +302,7 @@ class OrderService extends BaseService
         //生成运单
         $tour = $this->getTrackingOrderService()->storeByOrder($order);
         return [
-            'id'=>$order['id'],
+            'id' => $order['id'],
             'order_no' => $params['order_no'],
             'out_order_no' => $params['out_order_no'] ?? '',
             'batch_no' => '',
@@ -356,11 +356,9 @@ class OrderService extends BaseService
         }
         if ($expired == BaseConstService::YES) {
             $dbTrackingOrder = null;
-        }
-        if (empty($dbTrackingOrder)) {
+        } elseif (empty($dbTrackingOrder)) {
             $dbTrackingOrder = null;
-        }
-        if ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3 && $dbTrackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
+        } elseif ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3 && $dbTrackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
             $dbTrackingOrder = null;
         }
         if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder->toArray(), $dbTrackingOrder)) {
@@ -770,8 +768,8 @@ class OrderService extends BaseService
                 if (!empty($params['package_list'][$k]['feature_logo']) && in_array($params['package_list'][$k]['feature_logo'], array_keys($relationship))) {
                     $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']];
                 }
-                if(empty($params['package_list'][$k]['express_second_no'])){
-                    $params['package_list'][$k]['express_second_no']='';
+                if (empty($params['package_list'][$k]['express_second_no'])) {
+                    $params['package_list'][$k]['express_second_no'] = '';
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
