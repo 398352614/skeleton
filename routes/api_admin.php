@@ -566,7 +566,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'WareHouseController@destroy')->name('warehouse.destroy');
         //树节点
         Route::get('/tree', 'WareHouseController@tree')->name('warehouse.index');
-
+        //移动节点
+        Route::put('/{id}/move/{parent}', 'WareHouseController@move')->name('warehouse.index');
         //查看线路
         Route::get('/{id}/line', 'WareHouseController@getLineList')->name('warehouse.index');
 //        //新增线路
