@@ -44,6 +44,7 @@ class FeeService extends BaseService
      */
     public function store($params)
     {
+        $params['is_valuable'] = BaseConstService::YES;
         $params['level'] = BaseConstService::FEE_LEVEL_2;
         $rowCount = parent::create($params);
         if ($rowCount === false) {
