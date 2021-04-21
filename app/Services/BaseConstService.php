@@ -762,4 +762,12 @@ class BaseConstService
     //邮件模板状态
     const EMAIL_TEMPLATE_STATUS_1 = 1;
     const EMAIL_TEMPLATE_STATUS_2 = 2;
+
+    //线路测试状态
+    const LINE_TEST_STATUS_1 = 1;
+    const LINE_TEST_STATUS_2 = 2;
+    const LINE_TEST_STATUS_3 = 3;
+    const LINE_TEST_STATUS_4 = 4;
+    const LINE_TEST_STATUS_5 = 5;
+    const LINE_TEST_STATUS_6 = 6;
 }

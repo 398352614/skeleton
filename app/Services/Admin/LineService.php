@@ -14,6 +14,7 @@ use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use Carbon\Carbon;
+use Doctrine\DBAL\Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -327,9 +328,9 @@ class LineService extends BaseLineService
     public function getPageListByWarehouse($ids)
     {
         $this->query->whereIn('id', $ids);
-        if(CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE){
+        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
             return $this->postcodeIndex();
-        }else{
+        } else {
             return $this->areaIndex(2);
         }
     }
@@ -358,10 +359,16 @@ class LineService extends BaseLineService
     public function test($data)
     {
         $pickupWarehouse = $this->getWareHouseByAddress($this->pickupAddress($data));
-        $pickupData = $this->centerCheck($pickupWarehouse, []);
+        $pickupData = $this->centerCheck($pickupWarehouse, $pickupWarehouse, BaseConstService::ORDER_TYPE_1);
         $pieWarehouse = $this->getWareHouseByAddress($this->pieAddress($data));
-        $pieData = $this->centerCheck($pieWarehouse, []);
-        $data = array_merge($pickupWarehouse, $pickupData, array_reverse($pieData), $pieWarehouse);
+        $pieData = $this->centerCheck($pieWarehouse, $pieWarehouse, BaseConstService::ORDER_TYPE_2);
+        $data = array_values(array_filter(array_merge(
+            [$this->formAddress($this->pickupAddress($data))],
+            $pickupData,
+            array_reverse($pieData),
+            [$this->formAddress($this->pieAddress($data))]
+        )));
+        $data = $this->formTest($data);
         return $data;
     }
 
@@ -372,21 +379,25 @@ class LineService extends BaseLineService
      */
     public function pickupAddress($data)
     {
-        return Arr::only($data, [
-            'fullname' => $data['place_fullname'],
-            'phone' => $data['place_phone'],
-            'country' => $data['place_country'],
-            'province' => $data['place_province'],
-            'post_code' => $data['place_post_code'],
-            'house_number' => $data['place_house_number'],
-            'city' => $data['place_city'],
-            'district' => $data['place_district'],
-            'street' => $data['place_street'],
-            'address' => $data['place_address'],
-            'lat' => $data['place_lat'],
-            'lon' => $data['place_lon'],
+        if (empty($data['place_country'])) {
+            $data['place_country'] = CompanyTrait::getCompany()['country'];
+        }
+        return [
+            'type' => BaseConstService::TRACKING_ORDER_TYPE_1,
+            'place_fullname' => $data['place_fullname'],
+            'place_phone' => $data['place_phone'],
+            'place_country' => $data['place_country'],
+            'place_province' => $data['place_province'] ?? '',
+            'place_post_code' => $data['place_post_code'],
+            'place_house_number' => $data['place_house_number'],
+            'place_city' => $data['place_city'],
+            'place_district' => $data['place_district'] ?? '',
+            'place_street' => $data['place_street'],
+            'place_address' => $data['place_address'],
+            'place_lat' => $data['place_lat'],
+            'place_lon' => $data['place_lon'],
             'execution_date' => $data['execution_date']
-        ]);
+        ];
     }
 
     /**
@@ -397,21 +408,30 @@ class LineService extends BaseLineService
     public function pieAddress($data)
     {
         return [
-            'fullname' => $data['second_place_fullname'],
-            'phone' => $data['second_place_phone'],
-            'country' => $data['second_place_country'],
-            'province' => $data['second_place_province'],
-            'post_code' => $data['second_place_post_code'],
-            'house_number' => $data['second_place_house_number'],
-            'city' => $data['second_place_city'],
-            'district' => $data['second_place_district'],
-            'street' => $data['second_place_street'],
-            'address' => $data['second_place_address'],
-            'lat' => $data['second_place_lat'],
-            'lon' => $data['second_place_lon'],
+            'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
+            'place_fullname' => $data['second_place_fullname'],
+            'place_phone' => $data['second_place_phone'],
+            'place_country' => $data['second_place_country'],
+            'place_province' => $data['second_place_province'] ?? '',
+            'place_post_code' => $data['second_place_post_code'],
+            'place_house_number' => $data['second_place_house_number'],
+            'place_city' => $data['second_place_city'],
+            'place_district' => $data['second_place_district'] ?? '',
+            'place_street' => $data['second_place_street'],
+            'place_address' => $data['second_place_address'],
+            'place_lat' => $data['second_place_lat'],
+            'place_lon' => $data['second_place_lon'],
             'execution_date' => $data['second_execution_date']
         ];
+    }
 
+    public function formAddress($data)
+    {
+        return [
+            'type' => $data['type'],
+            'name' => $data['place_fullname'],
+            'is_center' => 3
+        ];
     }
 
     /**
@@ -428,6 +448,7 @@ class LineService extends BaseLineService
         if (empty($warehouse)) {
             throw new BusinessLogicException('网点不存在');
         }
+        $warehouse = collect($warehouse)->toArray();
         return $warehouse;
     }
 
@@ -435,16 +456,65 @@ class LineService extends BaseLineService
      * 回溯上级节点，直至遇到分拨中心
      * @param $warehouse
      * @param $data
-     * @return
+     * @param $type
+     * @return array
      */
-    public function centerCheck($warehouse, $data)
+    public function centerCheck($warehouse, $data, $type)
     {
-        if ($warehouse['is_center'] == BaseConstService::NO || $warehouse['parent'] == 0) {
+        $warehouse['type'] = $type;
+        if ($warehouse['is_center'] == BaseConstService::NO && $warehouse['parent'] !== 0) {
             $parentWarehouse = $this->getWareHouseService()->getInfo(['id' => $warehouse['parent']], ['*'], false);
-            array_push($data, $parentWarehouse);
-            $this->centerCheck($parentWarehouse, $data);
+            $data[] = [$parentWarehouse];
+            $this->centerCheck($parentWarehouse, $data, $type);
         } else {
-            return $data;
+            return [[
+                'name' => $data['name'],
+                'is_center' => $data['is_center'],
+                'type' => $data['type']
+            ]];
         }
+    }
+
+    public function formTest(array $data)
+    {
+        for ($i = 0, $j = count($data) - 1; $i < $j; $i++) {
+            if ($data[$i] == $data[$i + 1]) {
+                $data[$i + 1]['type'] = BaseConstService::ORDER_TYPE_3;
+                unset($data[$i]);
+            }
+        }
+        $data = array_values($data);
+        //类型1分拨3-寄件人1，类型2分拨3-收件人，类型1分拨2-网点取件，类型2分拨2-网点派件，类型3分拨2-网点取件/派件，其他-分拨中心
+        for ($i = 0, $j = count($data); $i < $j; $i++) {
+            if ($data[$i]['type'] == BaseConstService::ORDER_TYPE_1 &&
+                $data[$i]['is_center'] == 3
+            ) {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_1;
+            } elseif ($data[$i]['type'] == BaseConstService::ORDER_TYPE_2 &&
+                $data[$i]['is_center'] == 3
+            ) {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_5;
+            } elseif ($data[$i]['type'] == BaseConstService::ORDER_TYPE_1 &&
+                $data[$i]['is_center'] == BaseConstService::WAREHOUSE_IS_CENTER_2
+            ) {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_2;
+            } elseif ($data[$i]['type'] == BaseConstService::ORDER_TYPE_2 &&
+                $data[$i]['is_center'] == BaseConstService::WAREHOUSE_IS_CENTER_2
+            ) {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_4;
+            } elseif ($data[$i]['type'] == BaseConstService::ORDER_TYPE_3 &&
+                $data[$i]['is_center'] == BaseConstService::WAREHOUSE_IS_CENTER_2
+            ) {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_6;
+            } else {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_3;
+            }
+        }
+        $array = [1 => '分拨中心', 2 => '网点', 3 => '客户地址'];
+        foreach ($data as $k => $v) {
+            $data[$k]['status_name'] = ConstTranslateTrait::lineTestStatusList($v['status']);
+            $data[$k]['is_center_name'] = $array[$v['is_center']];
+        }
+        return $data;
     }
 }

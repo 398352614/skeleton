@@ -113,6 +113,7 @@ use Illuminate\Support\Facades\App;
  * @method static warehouseIsCenterTypeList($args = null)
  * @method static emailTemplateTypeList($args = null)
  * @method static emailTemplateStatusList($args = null)
+ * @method static lineTestStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -906,6 +907,15 @@ trait ConstTranslateTrait
     public static $warehouseIsCenterTypeList = [
         BaseConstService::WAREHOUSE_IS_CENTER_1 => '是',
         BaseConstService::WAREHOUSE_IS_CENTER_2 => '否',
+    ];
+
+    public static $lineTestStatusList = [
+        BaseConstService::LINE_TEST_STATUS_1 => '寄件人',
+        BaseConstService::LINE_TEST_STATUS_2 => '网点取件',
+        BaseConstService::LINE_TEST_STATUS_3 => '分拨中心',
+        BaseConstService::LINE_TEST_STATUS_4 => '网点派件',
+        BaseConstService::LINE_TEST_STATUS_5 => '收件人',
+        BaseConstService::LINE_TEST_STATUS_6 => '网点取件/派件',
     ];
 
     /**
