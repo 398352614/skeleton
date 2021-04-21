@@ -230,7 +230,7 @@ trait ConstTranslateTrait
         BaseConstService::PACKAGE_TYPE_1 => '提货->仓库',
         BaseConstService::PACKAGE_TYPE_2 => '仓库->配送',
         BaseConstService::PACKAGE_TYPE_3 => '提货->仓库->配送',
-        BaseConstService::PACKAGE_TYPE_4 => '提货->配送',
+        BaseConstService::PACKAGE_TYPE_4 => '直送',
     ];
 
     //订单来源1-手动添加2-批量导入3-第三方
