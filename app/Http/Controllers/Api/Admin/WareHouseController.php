@@ -19,11 +19,18 @@ use App\Services\Admin\WareHouseService;
  */
 class WareHouseController extends BaseController
 {
+    /**
+     * WareHouseController constructor.
+     * @param  WareHouseService  $service
+     */
     public function __construct(WareHouseService $service)
     {
         parent::__construct($service);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function index()
     {
         return $this->service->getPageList();
@@ -39,7 +46,6 @@ class WareHouseController extends BaseController
     {
         return $this->service->show($id);
     }
-
 
     /**
      * 新增
@@ -69,6 +75,15 @@ class WareHouseController extends BaseController
     public function destroy($id)
     {
         return $this->service->destroy($id);
+    }
+
+    /**
+     * 树节点
+     * @return array|mixed
+     */
+    public function tree()
+    {
+        return $this->service->getTree();
     }
 
     /**

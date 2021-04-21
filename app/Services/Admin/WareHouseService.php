@@ -14,12 +14,23 @@ use App\Models\Warehouse;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 
+/**
+ * Class WareHouseService
+ * @package App\Services\Admin
+ */
 class WareHouseService extends BaseService
 {
+    /**
+     * @var \string[][]
+     */
     public $filterRules = [
         'country' => ['=', 'country'],
     ];
 
+    /**
+     * WareHouseService constructor.
+     * @param  Warehouse  $warehouse
+     */
     public function __construct(Warehouse $warehouse)
     {
         parent::__construct($warehouse, WareHouseResource::class, WareHouseResource::class);
@@ -58,7 +69,7 @@ class WareHouseService extends BaseService
      * 通过ID修改
      * @param $id
      * @param $data
-     * @return bool|int|void
+     * @return void
      * @throws BusinessLogicException
      */
     public function updateById($id, $data)
@@ -228,5 +239,13 @@ class WareHouseService extends BaseService
         if (!empty(array_diff($lineIdList, $siblingLineIdList))) {
             throw new BusinessLogicException('所选线路在同级其他网点中，请先将其移除');
         }
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function getTree(): array
+    {
+        return Warehouse::getRoots()->first()->getTree() ?? [];
     }
 }

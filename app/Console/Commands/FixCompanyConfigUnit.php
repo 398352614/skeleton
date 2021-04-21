@@ -49,7 +49,7 @@ class FixCompanyConfigUnit extends Command
                 case 'kg' : {
                     $datum->weight_unit = BaseConstService::WEIGHT_UNIT_TYPE_1;
                 }
-                case 'G': {
+                case 'lb': {
                     $datum->weight_unit = BaseConstService::WEIGHT_UNIT_TYPE_2;
                 }
             }
