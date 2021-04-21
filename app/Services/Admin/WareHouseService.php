@@ -29,7 +29,7 @@ class WareHouseService extends BaseService
 
     /**
      * WareHouseService constructor.
-     * @param  Warehouse  $warehouse
+     * @param Warehouse $warehouse
      */
     public function __construct(Warehouse $warehouse)
     {
@@ -44,7 +44,7 @@ class WareHouseService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], true);
+        $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -150,7 +150,9 @@ class WareHouseService extends BaseService
      */
     public function getLineList($id)
     {
-        return $this->getLineService()->getPageListByWarehouse($id);
+        $warehouse = parent::getInfo(['id' => $id], ['*'], false);
+        $ids = explode(',', $warehouse['line_ids']);
+        return $this->getLineService()->getPageListByWarehouse($ids);
     }
 
 //    /**

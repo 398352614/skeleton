@@ -321,12 +321,12 @@ class LineService extends BaseLineService
 
     /**
      * 通过网点ID获取线路列表
-     * @param $id
+     * @param $ids
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getPageListByWarehouse($id)
+    public function getPageListByWarehouse($ids)
     {
-        $this->query->where('warehouse_id', $id);
+        $this->query->whereIn('id', $ids);
         return $this->getPageList();
     }
 
