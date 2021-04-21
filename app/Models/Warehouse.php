@@ -104,7 +104,12 @@ class Warehouse extends BaseModel
 
     public function getAcceptanceTypeNameAttribute()
     {
-        return empty($this->acceptance_type) ? null : ConstTranslateTrait::warehouseAcceptanceTypeList($this->acceptance_type);
+        $data = explode(',', $this->acceptance_type);
+        foreach ($data as $k => $v) {
+            $data[$k] = ConstTranslateTrait::warehouseAcceptanceTypeList($v);
+        }
+        $data = implode(',', $data);
+        return empty($this->acceptance_type) ? null : $data;
     }
 
     public function getIsCenterNameAttribute()
