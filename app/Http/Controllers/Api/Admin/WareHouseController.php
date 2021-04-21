@@ -87,6 +87,15 @@ class WareHouseController extends BaseController
     }
 
     /**
+     * @param  int  $id
+     * @param  int  $parent
+     */
+    public function move(int $id, int $parent)
+    {
+        $this->service->moveNode($id, $parent);
+    }
+
+    /**
      * 删除
      * @param $id
      * @return \Illuminate\Database\Eloquent\Collection

@@ -26,6 +26,7 @@ use App\Models\TransportPrice;
 use App\Models\Warehouse;
 use App\Models\WeightCharging;
 use App\Services\Admin\CompanyService;
+use App\Services\Admin\WareHouseService;
 use App\Services\BaseConstService;
 use App\Traits\PermissionTrait;
 use Illuminate\Http\JsonResponse;
@@ -203,14 +204,19 @@ class RegisterController extends BaseController
 
     public function addWarehouse($company, $data)
     {
-        return Warehouse::create([
+        $warehouse = Warehouse::create([
             'name' => $data['email'],
             'company_id' => $company->id,
             'type' => BaseConstService::WAREHOUSE_TYPE_2,
             'is_center' => BaseConstService::NO,
             'acceptance_type' => BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3,
             'line_ids' => '',
+            'parent' => 0
         ]);
+
+        (new WareHouseService(new Warehouse))->createRoot($warehouse);
+
+        return $warehouse;
     }
 
     /**

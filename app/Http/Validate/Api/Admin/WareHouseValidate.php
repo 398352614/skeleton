@@ -23,7 +23,7 @@ class WareHouseValidate extends BaseValidate
         'type' => 'required|integer|in:1,2',
         'is_center' => 'required|integer|in:1,2',
         'acceptance_type' => 'required|integer|in:1,2,3',
-        'line_ids'=>'required|text',
+        'line_ids' => 'required|text',
         'fullname' => 'required|string|max:50',
         'company_name' => 'required|string|max:50',
         'phone' => 'required|string|max:20',
@@ -39,12 +39,18 @@ class WareHouseValidate extends BaseValidate
         'address' => 'checkAddress|nullable|string|max:250',
         'lon' => 'required|string|max:50',
         'lat' => 'required|string|max:50',
-        'parent'=>'required|integer',
+        'parent' => 'required|integer|gte:0',
     ];
 
     public $scene = [
-        'store' => ['parent','name', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat'],
-        'update' => ['parent','name', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar', 'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat']
+        'store' => [
+            'name', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar',
+            'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat', 'parent'
+        ],
+        'update' => [
+            'name', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar',
+            'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat', 'parent'
+        ],
     ];
 }
 

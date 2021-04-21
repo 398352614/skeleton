@@ -10,6 +10,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\WareHouseResource;
+use App\Models\Institution;
 use App\Models\Warehouse;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
@@ -54,15 +55,17 @@ class WareHouseService extends BaseService
     /**
      * 新增
      * @param $params
+     * @return bool
      * @throws BusinessLogicException
      */
     public function store($params)
     {
+        $this->checkDistance($params['parent']);
         $this->fillData($params);
-        $rowCount = parent::create($params);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('网点新增失败,请重新操作');
-        }
+
+        $warehouse = parent::create($params);
+
+        return $warehouse->moveTo($params['parent']);
     }
 
     /**
@@ -137,6 +140,17 @@ class WareHouseService extends BaseService
         if (!empty($line->toArray()['line_ids'])) {
             throw new BusinessLogicException('请先删除线路该网点下的线路');
         }
+
+        /** @var Warehouse $warehouse */
+        $warehouse = Warehouse::findOrFail($id);
+        if ($this->isRoot($warehouse)) {
+            throw new BusinessLogicException('无法删除根网点');
+        }
+
+        if ($this->hasChildren($warehouse)) {
+            throw new BusinessLogicException('请先删除子网点');
+        }
+
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('网点删除失败，请重新操作');
@@ -249,5 +263,63 @@ class WareHouseService extends BaseService
     public function getTree(): array
     {
         return Warehouse::getRoots()->first()->getTree() ?? [];
+    }
+
+    /**
+     * 检查层数
+     *
+     * @param $parent
+     * @throws BusinessLogicException
+     */
+    public function checkDistance($parent)
+    {
+        $distance = Warehouse::findOrFail($parent)->getRoot()->distance;
+        if ($distance > 3) {
+            throw new BusinessLogicException('网点层级最高为3级');
+        }
+    }
+
+    /**
+     * 创建树
+     *
+     * @param  Warehouse  $warehouse
+     * @return bool
+     */
+    public function createRoot(Warehouse $warehouse)
+    {
+        return $warehouse->makeRoot();
+    }
+
+    /**
+     * 移动到某一个节点下面
+     */
+    public function moveNode(int $id, int $parent)
+    {
+        /** @var Warehouse $warehouse */
+        $warehouse = Warehouse::findOrFail($id);
+
+        return $warehouse->moveTo($parent);
+    }
+
+    /**
+     * 是否有孩子节点
+     *
+     * @param  Warehouse  $warehouse
+     * @return bool
+     */
+    protected function hasChildren(Warehouse $warehouse): bool
+    {
+        return $warehouse->getChildren()->count() > 0;
+    }
+
+    /**
+     * 是否是根节点
+     *
+     * @param  Warehouse  $warehouse
+     * @return bool
+     */
+    protected function isRoot(Warehouse $warehouse): bool
+    {
+        return $warehouse->isRoot();
     }
 }
