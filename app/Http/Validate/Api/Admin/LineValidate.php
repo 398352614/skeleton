@@ -40,6 +40,29 @@ class LineValidate extends BaseValidate
         //区域列表
         'coordinate_list.*.*.lat' => 'required|string|max:30',
         'coordinate_list.*.*.lon' => 'required|string|max:30',
+        'place_fullname' => 'required|string|max:50',
+        'place_province' => 'nullable|string|max:50',
+        'place_post_code' => 'required|string|max:50',
+        'place_house_number' => 'required|string|max:50',
+        'place_city' => 'nullable|string|max:50',
+        'place_district' => 'nullable|string|max:50',
+        'place_street' => 'nullable|string|max:50',
+        'place_address' => 'nullable|string|max:250',
+        'place_lon' => 'required|string|max:50',
+        'place_lat' => 'required|string|max:50',
+        'second_place_fullname' => 'required|string|max:50',
+        'second_place_phone' => 'nullable|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'second_place_province' => 'nullable|string|max:50',
+        'second_place_post_code' => 'required|string|max:50',
+        'second_place_house_number' => 'required|string|max:50',
+        'second_place_city' => 'nullable|string|max:50',
+        'second_place_district' => 'nullable|string|max:50',
+        'second_place_street' => 'nullable|string|max:50',
+        'second_place_address' => 'nullable|string|max:250',
+        'second_place_lon' => 'required|string|max:50',
+        'second_place_lat' => 'required|string|max:50',
+        'execution_date' => 'required|date|after_or_equal:today',
+        'second_execution_date' => 'required|date|after_or_equal:today',
     ];
 
     public $scene = [
@@ -63,7 +86,30 @@ class LineValidate extends BaseValidate
             'coordinate_list', 'coordinate_list.*.*.lat', 'coordinate_list.*.*.lon', 'status'
         ],
         'statusByList' => ['id_list', 'status'],
-        'getListByDate' => ['date']
+        'getListByDate' => ['date'],
+        'test' => [
+            'place_fullname',
+            'place_phone',
+            'place_post_code',
+            'place_house_number',
+            'place_city',
+            'place_street',
+            'place_address',
+            'place_lon',
+            'place_lat',
+            'execution_date',
+            'second_place_fullname',
+            'second_place_phone',
+            'second_place_country',
+            'second_place_post_code',
+            'second_place_house_number',
+            'second_place_city',
+            'second_place_street',
+            'second_place_address',
+            'second_place_lon',
+            'second_place_lat',
+            'second_execution_date',
+        ]
     ];
 }
 
