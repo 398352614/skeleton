@@ -1172,6 +1172,11 @@ class OrderService extends BaseService
             } elseif ($v['type'] == BaseConstService::ORDER_TYPE_2 && empty($newOrderList[$k]['sender']['fullname'])) {
                 $newOrderList[$k]['sender'] = $newOrderList[$k]['warehouse'];
             }
+            if ($v['type'] == BaseConstService::ORDER_TYPE_2) {
+                $a = $newOrderList[$k]['sender'];
+                $newOrderList[$k]['sender'] = $newOrderList[$k]['receiver'];
+                $newOrderList[$k]['receiver'] = $a;
+            }
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
             $newOrderList[$k]['replace_amount'] = $v['replace_amount'];
             $newOrderList[$k]['settlement_amount'] = $v['settlement_amount'];
