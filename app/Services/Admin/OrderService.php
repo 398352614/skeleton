@@ -302,6 +302,7 @@ class OrderService extends BaseService
         //生成运单
         $tour = $this->getTrackingOrderService()->storeByOrder($order);
         return [
+            'id'=>$order['id'],
             'order_no' => $params['order_no'],
             'out_order_no' => $params['out_order_no'] ?? '',
             'batch_no' => '',
@@ -750,9 +751,7 @@ class OrderService extends BaseService
         } else {
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         }
-        $params['distance'] = $params['distance'] / 1000;
         $params = $this->getTransportPriceService()->priceCount($params);
-        $params['distance'] = $params['distance'] * 1000;
         return $params;
     }
 
