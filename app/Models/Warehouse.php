@@ -11,7 +11,6 @@ use Jiaxincui\ClosureTable\Traits\ClosureTable;
  */
 class Warehouse extends BaseModel
 {
-    use ClosureTable;
     /**
      * 司机实际取件导航
      * The table associated with the model.
