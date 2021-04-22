@@ -26,7 +26,7 @@ class AlterWarehouseAddColumns extends Migration
             $table->integer('warehouse_id')->default(null)->nullable()->after('username')->comment('网点ID');
         });
         Schema::table('merchant', function (Blueprint $table) {
-            $table->integer('below_warehouse')->default(null)->nullable()->after('name')->comment('是否签约网点1-是2-否');
+            $table->tinyInteger('below_warehouse')->default(2)->nullable()->after('name')->comment('是否签约网点1-是2-否');
             $table->integer('warehouse_id')->default(null)->nullable()->after('below_warehouse')->comment('网点ID');
         });
     }

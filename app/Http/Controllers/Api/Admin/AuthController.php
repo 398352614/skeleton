@@ -42,7 +42,7 @@ class AuthController extends Controller
             throw new BusinessLogicException('用户名或密码错误！');
         }
 
-        if (auth('admin')->user()->forbid_login === 1) {
+        if (auth('admin')->user()->forbid_login == 1) {
             auth('admin')->logout();
 
             throw new BusinessLogicException('暂时无法登录，请联系管理员！');

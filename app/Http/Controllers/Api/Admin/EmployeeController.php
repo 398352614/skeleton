@@ -93,4 +93,12 @@ class EmployeeController extends BaseController
 
         return failed();
     }
+
+    /**
+     * 批量修改状态
+     */
+    public function setLoginByList()
+    {
+        return $this->service->setLoginByList($this->data);
+    }
 }

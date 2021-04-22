@@ -34,6 +34,7 @@ class MerchantValidate extends BaseValidate
         'warehouse_id' => 'required|integer',
         'introduction' => 'nullable|string|',
         'confirm_password' => 'required|string|same:password',
+        'below_warehouse' => 'required|integer|in:1,2',
     ];
 
     public $scene = [
@@ -49,7 +50,8 @@ class MerchantValidate extends BaseValidate
             'address',
             'avatar',
             'status',
-            'warehouse_id'
+            'warehouse_id',
+            'below_warehouse'
         ],
         'update' => [
             'type',
@@ -63,7 +65,8 @@ class MerchantValidate extends BaseValidate
             'address',
             'avatar',
             'status',
-            'warehouse_id'
+            'warehouse_id',
+            'below_warehouse'
         ],
         'updatePassword' => [
             'password', 'confirm_password'

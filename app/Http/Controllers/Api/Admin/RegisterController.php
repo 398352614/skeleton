@@ -14,6 +14,7 @@ use App\Models\Employee;
 use App\Models\Fee;
 use App\Models\Institution;
 use App\Models\KilometresCharging;
+use App\Models\MapConfig;
 use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
@@ -55,9 +56,9 @@ class RegisterController extends BaseController
     {
         $data = $request->all();
 
-        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
-            throw new BusinessLogicException('验证码错误');
-        }
+//        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
+//            throw new BusinessLogicException('验证码错误');
+//        }
 
         RegisterController::deleteVerifyCode($data['email']);
 

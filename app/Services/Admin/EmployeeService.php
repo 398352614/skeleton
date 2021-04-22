@@ -6,7 +6,9 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\EmployeeResource;
 use App\Models\Employee;
 use App\Models\Role;
+use App\Services\BaseConstService;
 use App\Traits\HasLoginControlTrait;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class EmployeeService extends BaseService
@@ -16,7 +18,7 @@ class EmployeeService extends BaseService
     public $filterRules = [
         'email' => ['like', 'email'],
         'fullname' => ['like', 'fullname'],
-        'warehouse_id'=>['=','warehouse_id']
+        'warehouse_id' => ['=', 'warehouse_id']
     ];
 
     public function __construct(Employee $employee)
@@ -191,5 +193,18 @@ class EmployeeService extends BaseService
         $companyId = auth()->user()->company_id;
         $adminEmployee = $this->model->newQuery()->where('company_id', $companyId)->where('is_admin', 1)->first();
         return $adminEmployee->id ?? null;
+    }
+
+    /**
+     * 批量修改状态
+     * @param $data
+     */
+    public function setLoginByList($data)
+    {
+        $idList = explode_id_string($data['id_list']);
+        if ($data['status'] == BaseConstService::NO) {
+            $data['status'] = false;
+        }
+        $this->forbidLogin($idList, $data['status']);
     }
 }

@@ -619,6 +619,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'EmployeeController@destroy')->name('employees.destroy');
         //禁止登录
         Route::put('/{id}/forbid-login/{enabled}', 'EmployeeController@setLogin')->name('employees.set-login');
+        //批量启用禁用
+        Route::put('/forbid-login', 'EmployeeController@setLoginByList')->name('employees.set-login');
         //修改员工密码
         Route::put('/{id}/password', 'EmployeeController@resetPassword')->name('employees.reset-password');
     });
