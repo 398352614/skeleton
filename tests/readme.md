@@ -16,6 +16,8 @@ composer global require --dev phpunit/phpunit
 
 ### 基本格式
 
+所有测试类都需要继承 `Tests\TestCase`
+
 - 测试类命名： `类名 + Test` ， eg `FooClassTest`
 - 测试方法命名： `test + 方法名`, eg `testFoo`
 
