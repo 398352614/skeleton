@@ -12,7 +12,6 @@ use App\Mail\SendResetCode;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\Fee;
-use App\Models\Institution;
 use App\Models\KilometresCharging;
 use App\Models\MapConfig;
 use App\Models\Merchant;

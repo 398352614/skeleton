@@ -16,21 +16,4 @@ abstract class TestCase extends BaseTestCase
     protected $token = '';
 
     use CreatesApplication;
-
-    /**
-     *
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $response = $this->postJson('/api/admin/login', [
-           'username' => env('USER_NAME'),
-           'password' => env('PASS_WORD')
-        ]);
-
-        $data = json_decode($response->getContent(), true);
-
-        $this->token = 'Bearer ' . $data['data']['access_token'];
-    }
 }
