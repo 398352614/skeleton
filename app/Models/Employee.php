@@ -76,6 +76,8 @@ class Employee extends Authenticatable implements JWTSubject
         'forbid_login',
         'is_admin',
         'warehouse_id',
+        'address',
+        'avatar',
         'created_at',
         'updated_at',
     ];

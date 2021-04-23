@@ -19,10 +19,12 @@ class EmployeeResource extends JsonResource
             'forbid_login' => $this->forbid_login,
             'role_id' => $this->role_id,
             'role_id_name' => $this->role_id_name,
+            'address' => $this->address,
+            'avatar' => $this->avatar,
             'is_admin' => $this->is_admin,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'warehouse_id'=>$this->warehouse_id
+            'warehouse_id' => $this->warehouse_id
         ];
     }
 }

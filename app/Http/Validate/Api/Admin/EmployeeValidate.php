@@ -20,7 +20,10 @@ class EmployeeValidate extends BaseValidate
         'remark' => 'sometimes|nullable|string|max:250',
         'confirm_password' => 'required|same:password',
         'role_id' => 'required|integer',
-        'warehouse_id'=>'required|integer'
+        'warehouse_id' => 'required|integer',
+        'address' => 'nullable|string',
+        'avatar' => 'nullable|string'
+
     ];
 
     public $scene = [
@@ -32,7 +35,9 @@ class EmployeeValidate extends BaseValidate
             'remark',
             'password',
             'role_id',
-            'warehouse_id'
+            'warehouse_id',
+            'address',
+            'avatar'
         ],
         'update' => [
             'fullname',
@@ -41,7 +46,9 @@ class EmployeeValidate extends BaseValidate
             'phone',
             'remark',
             'role_id',
-            'warehouse_id'
+            'warehouse_id',
+            'address',
+            'avatar'
         ],
         'resetPassword' => [
             'password',
