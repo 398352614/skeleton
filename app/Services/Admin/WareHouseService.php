@@ -65,7 +65,9 @@ class WareHouseService extends BaseService
 
         $warehouse = parent::create($params);
 
-        return $warehouse->moveTo($params['parent']);
+        $warehouse->moveTo($params['parent']);
+
+        return $warehouse;
     }
 
     /**
@@ -243,14 +245,14 @@ class WareHouseService extends BaseService
         $siblingLineIdList = [];
         //检查上级网点是否有这些线路
         $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], '*', false);
-        $parentLineIdList = $parentWarehouse->toArray()['line_ids'];
+        $parentLineIdList = $parentWarehouse->toArray()['line_ids'] ?? [];
         if (!empty(array_diff($lineIdList, $parentLineIdList))) {
             throw new BusinessLogicException('所选线路不在上级网点中，请先将线路分配至上级网点');
         }
         //检查同级网点是否无这些线路
         $siblingWarehouseList = parent::getList(['parent' => $warehouse['parent'], 'id' => ['<>', $warehouse['id']]], '*', false);
         foreach ($siblingWarehouseList as $k => $v) {
-            $siblingLineIdList = array_merge($siblingLineIdList, $v['line_ids']);
+            $siblingLineIdList = array_merge($siblingLineIdList, $v['line_ids'] ?? []);
         }
         if (!empty(array_diff($lineIdList, $siblingLineIdList))) {
             throw new BusinessLogicException('所选线路在同级其他网点中，请先将其移除');
