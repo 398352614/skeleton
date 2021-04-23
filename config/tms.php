@@ -10,6 +10,7 @@ return [
     'country_path' => storage_path(env('COUNTRY_PATH')),
     'postcode_path' => storage_path(env('POSTCODE_PATH')),
     'permission_path' => storage_path(env('PERMISSION_PATH')),
+    'error_code_path' => storage_path(env('ERROR_CODE_PATH')),
     'app_env' => env('APP_ENV'),
 
     //百度
@@ -38,7 +39,8 @@ return [
     'cache_tags' => [
         'company' => 'company',
         'address_template' => 'address_template',
-        'permission' => env('PERMISSION_CACHE', 'permission:')
+        'permission' => env('PERMISSION_CACHE', 'permission:'),
+        'error_code' => 'error_code'
     ],
     'wechat_push' => env('WECHAT_PUSH'),
     'env' => env('APP_ENV'),
