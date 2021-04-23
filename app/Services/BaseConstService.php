@@ -770,4 +770,8 @@ class BaseConstService
     const LINE_TEST_STATUS_4 = 4;
     const LINE_TEST_STATUS_5 = 5;
     const LINE_TEST_STATUS_6 = 6;
+
+    //禁止登录1-禁止2-不禁止
+    const EMPLOYEE_FORBID_LOGIN_1 = 1;
+    const EMPLOYEE_FORBID_LOGIN_2 = 0;
 }

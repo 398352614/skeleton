@@ -37,11 +37,14 @@ class EmployeeService extends BaseService
         }
         if (!empty($employeeIdList)) $this->filters['id'] = ['in', $employeeIdList];
         $list = parent::getPageList();
+        $warehouseIdList = $list->pluck('warehouse_id')->toArray();
+        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $warehouseIdList]],['*'],false)->keyBy('id');
         if (empty($list)) return $list;
         foreach ($list as &$employee) {
             $role = $this->getEmployeeRole($employee->id);
             $employee['role_id'] = $role['id'] ?? null;
             $employee['role_id_name'] = $role['name'] ?? '';
+            $employee['warehouse_name'] = $warehouseList[$employee['warehouse_id']] ?? '';
         }
         return $list;
     }

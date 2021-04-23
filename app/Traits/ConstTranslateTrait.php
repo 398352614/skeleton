@@ -114,6 +114,8 @@ use Illuminate\Support\Facades\App;
  * @method static emailTemplateTypeList($args = null)
  * @method static emailTemplateStatusList($args = null)
  * @method static lineTestStatusList($args = null)
+ * @method static orderConfigNatureList($args = null)
+ * @method static employeeForbidLoginList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -840,7 +842,7 @@ trait ConstTranslateTrait
     //重量单位符号
     publiC static $weightUnitTypeSymbol = [
         BaseConstService::WEIGHT_UNIT_TYPE_1 => 'kg',
-        BaseConstService::WEIGHT_UNIT_TYPE_2 => 'G',
+        BaseConstService::WEIGHT_UNIT_TYPE_2 => 'lb',
     ];
 
     //货币单位
@@ -916,6 +918,12 @@ trait ConstTranslateTrait
         BaseConstService::LINE_TEST_STATUS_4 => '网点派件',
         BaseConstService::LINE_TEST_STATUS_5 => '收件人',
         BaseConstService::LINE_TEST_STATUS_6 => '网点取件/派件',
+    ];
+
+    //员工状态
+    public static $employeeForbidLoginList = [
+        BaseConstService::EMPLOYEE_FORBID_LOGIN_1 => '禁用',
+        BaseConstService::EMPLOYEE_FORBID_LOGIN_2 => '启用',
     ];
 
     /**
