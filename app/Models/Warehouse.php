@@ -54,6 +54,7 @@ class Warehouse extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'code',
         'name',
         'type',
         'is_center',

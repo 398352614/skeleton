@@ -18,6 +18,7 @@ class WareHouseResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'type' => $this->type,
+            'code' => $this->code,
             'type_name' => $this->type_name,
             'is_center' => $this->is_center,
             'is_center_name' => $this->is_center_name,

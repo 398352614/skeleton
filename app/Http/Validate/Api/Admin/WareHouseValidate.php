@@ -20,6 +20,7 @@ class WareHouseValidate extends BaseValidate
 
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:warehouse,id,company_id',
+        'code' => 'required|string|max:50|uniqueIgnore:warehouse,id,company_id',
         'type' => 'required|integer|in:1,2',
         'is_center' => 'required|integer|in:1,2',
         'acceptance_type' => 'required|integer|in:1,2,3',
@@ -44,11 +45,11 @@ class WareHouseValidate extends BaseValidate
 
     public $scene = [
         'store' => [
-            'name', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar',
+            'name', 'code','type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar',
             'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat', 'parent'
         ],
         'update' => [
-            'name', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar',
+            'name', 'code','type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar',
             'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat', 'parent'
         ],
     ];
