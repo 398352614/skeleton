@@ -145,6 +145,7 @@ class Employee extends Authenticatable implements JWTSubject
 
     public function getForbidLoginNameAttribute()
     {
-        return empty($this->forbid_login) ? null : ConstTranslateTrait::employeeForbidLoginList($this->forbid_login);
+        return ConstTranslateTrait::employeeForbidLoginList($this->forbid_login);
     }
+
 }
