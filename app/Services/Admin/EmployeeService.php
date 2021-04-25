@@ -56,6 +56,8 @@ class EmployeeService extends BaseService
         $role = $this->getEmployeeRole($employee['id']);
         $employee['role_id'] = $role['id'] ?? null;
         $employee['role_id_name'] = $role['name'] ?? '';
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $employee['warehouse_id']],['*'],false)->toArray();
+        $employee['warehouse_name'] = $warehouse['name'] ?? '';
         return $employee;
     }
 
