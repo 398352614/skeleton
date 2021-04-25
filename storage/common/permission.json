@@ -3837,6 +3837,58 @@
         "is_show": 2,
         "created_at": "2021-04-07 14:16:24",
         "updated_at": "2021-04-07 14:16:24"
+    },
+    {
+        "id": 339,
+        "parent_id": 308,
+        "name": "测试流程",
+        "route": "",
+        "route_as": "",
+        "level": 4,
+        "sort_id": 1,
+        "type": 1,
+        "is_show": 2,
+        "created_at": "2021-04-07 14:16:24",
+        "updated_at": "2021-04-07 14:16:24"
+    },
+    {
+        "id": 340,
+        "parent_id": 339,
+        "name": "测试",
+        "route": "",
+        "route_as": "line.test",
+        "level": 5,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2,
+        "created_at": "2021-04-07 14:16:24",
+        "updated_at": "2021-04-07 14:16:24"
+    },
+    {
+        "id": 341,
+        "parent_id": 264,
+        "name": "详情",
+        "route": "",
+        "route_as": "car-maintain.detail",
+        "level": 4,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2,
+        "created_at": "2021-03-22 11:55:03",
+        "updated_at": "2021-03-22 11:55:05"
+    },
+    {
+        "id": 342,
+        "parent_id": 264,
+        "name": "更新",
+        "route": "",
+        "route_as": "car-maintain.update",
+        "level": 4,
+        "sort_id": 1,
+        "type": 2,
+        "is_show": 2,
+        "created_at": "2021-03-22 11:55:03",
+        "updated_at": "2021-03-22 11:55:05"
     }
 ]
 
