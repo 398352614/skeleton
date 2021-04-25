@@ -71,7 +71,6 @@ class MapConfigService extends BaseService
     public function show()
     {
         $data= $this->getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
-        dd($data);
         if(empty($data)){
             throw new BusinessLogicException('数据不存在');
         }
