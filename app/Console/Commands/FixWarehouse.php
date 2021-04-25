@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Company;
 use App\Models\Employee;
+use App\Models\Line;
 use App\Models\MapConfig;
 use App\Models\Warehouse;
 use App\Services\BaseConstService;
@@ -56,11 +57,13 @@ class FixWarehouse extends Command
                         'type' => BaseConstService::WAREHOUSE_TYPE_2,
                         'is_center' => BaseConstService::NO,
                         'acceptance_type' => BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3,
-                        'line_ids' => '',
                         'parent' => 0
                     ]);
                 }
                 Employee::query()->where('company_id', $company['id'])->update(['warehouse_id' => $warehouse['id']]);
+                $rootWarehouse = Warehouse::query()->where('company_id', $company['id'])->where('parent', '=', 0)->first()->toArray();
+                $lineIds = Line::query()->where('warehouse_id', $rootWarehouse['id'])->pluck('id')->toArray();
+                Warehouse::query()->where('id', $rootWarehouse['id'])->update(['line_ids' => implode(',', $lineIds)]);
             }
             //给每个员工填充根网点
         } catch (\Exception $e) {
