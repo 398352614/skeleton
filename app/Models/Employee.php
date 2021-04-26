@@ -79,6 +79,7 @@ class Employee extends Authenticatable implements JWTSubject
         'warehouse_id',
         'address',
         'avatar',
+        'address',
         'created_at',
         'updated_at',
     ];
