@@ -1224,7 +1224,7 @@ class OrderService extends BaseService
             'warehouse',
             'destination'
         ];
-        $orderTemplate = $this->getOrderTemplateService()->getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
+        $orderTemplate = $this->getOrderTemplateService()->getInfo(['company_id' => auth()->user()->company_id,'is_default'=>BaseConstService::YES], ['*'], false);
         if (empty($orderTemplate)) {
             throw new BusinessLogicException('未设置打印模板，请联系管理员设置打印模板');
         }
