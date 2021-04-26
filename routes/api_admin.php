@@ -754,7 +754,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //修改
         Route::put('/{id}', 'MerchantController@update')->name('merchant.update');
         //修改密码
-        Route::put('/{id}/update-password', 'MerchantController@updatePassword')->name('merchant.update-password');
+        Route::put('/{id}/password', 'MerchantController@updatePassword')->name('merchant.update-password');
         //启用/禁用
         Route::put('/{id}/status', 'MerchantController@status')->name('merchant.status');
         //批量启用禁用
