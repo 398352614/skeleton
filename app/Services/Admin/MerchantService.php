@@ -88,7 +88,7 @@ class MerchantService extends BaseService
     public function store($params)
     {
         $this->check($params);
-        $params['password'] = Hash::make(BaseConstService::INITIAL_PASSWORD);
+        $params['password'] = Hash::make($params['password'] ?? BaseConstService::INITIAL_PASSWORD);
         $merchant = parent::create($params);
         if ($merchant === false) {
             throw new BusinessLogicException('新增失败,请重新操作');
