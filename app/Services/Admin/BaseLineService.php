@@ -128,10 +128,15 @@ class BaseLineService extends BaseService
      */
     public function check(&$params, $dbInfo = [])
     {
+        $rootWarehouse = $this->getWareHouseService()->getInfo(['parent' => 0], ['*'], false);
+        if(empty($rootWarehouse)){
+            throw new BusinessLogicException('网点不存在');
+        }
+        $params['warehouse_id']=$rootWarehouse->toArray()['warehouse_id'];
         $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
-        if(CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE){
-            foreach ($params['item_list'] as $k=>$v){
-                if($v['post_code_start'] >9999 || $v['post_code_end'] >9999){
+        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
+            foreach ($params['item_list'] as $k => $v) {
+                if ($v['post_code_start'] > 9999 || $v['post_code_end'] > 9999) {
                     $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
                     break;
                 }
@@ -360,7 +365,7 @@ class BaseLineService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
             $country = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5){
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5) {
             $country = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         //获取邮编数字部分
@@ -395,7 +400,7 @@ class BaseLineService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
             $country = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5){
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5) {
             $country = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         //获取邮编数字部分
@@ -424,7 +429,7 @@ class BaseLineService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
             $country = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5){
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5) {
             $country = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         //获取邮编数字部分

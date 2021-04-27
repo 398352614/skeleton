@@ -20,7 +20,7 @@ class LineValidate extends BaseValidate
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:line,id,company_id',
         'country' => 'nullable|string|max:50',
-        'warehouse_id' => 'required|integer',
+        'warehouse_id' => 'nullable|integer',
         'pickup_max_count' => 'required|integer|lte:10000|gte:0',
         'pie_max_count' => 'required|integer|lte:10000|gte:0',
         'is_increment' => 'required|integer|in:1,2',
