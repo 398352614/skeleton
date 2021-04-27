@@ -132,7 +132,7 @@ class BaseLineService extends BaseService
         if(empty($rootWarehouse)){
             throw new BusinessLogicException('网点不存在');
         }
-        $params['warehouse_id']=$rootWarehouse->toArray()['warehouse_id'];
+        $params['warehouse_id']=$rootWarehouse->toArray()['id'];
         $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
             foreach ($params['item_list'] as $k => $v) {
