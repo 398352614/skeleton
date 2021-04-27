@@ -1182,8 +1182,7 @@ class OrderService extends BaseService
             $newOrderList[$k]['settlement_amount'] = $v['settlement_amount'];
             $newOrderList[$k]['package_count'] = !empty($packageList[$v['order_no']]) ? collect($packageList[$v['order_no']])->sum('expect_quantity') : 0;
             $newOrderList[$k]['material_count'] = !empty($materialList[$v['order_no']]) ? collect($materialList[$v['order_no']])->sum('expect_quantity') : 0;
-            $newOrderList[$k]['package_list'] = !empty($packageList) ? $packageList[$v['order_no']] : [];
-
+            $newOrderList[$k]['package_list'] = !empty($packageList[$v['order_no']]) ? $packageList[$v['order_no']] : [];
         }
         return $newOrderList;
     }
