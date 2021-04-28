@@ -184,7 +184,7 @@ class WareHouseService extends BaseService
         if(empty($parentWarehouse)){
             throw new BusinessLogicException('没有可选线路');
         }
-        return $this->getLineService()->getPageListByWarehouse($parentWarehouse);
+        return $this->getLineService()->getPageListByWarehouse($parentWarehouse['id']);
     }
 
 //    /**
