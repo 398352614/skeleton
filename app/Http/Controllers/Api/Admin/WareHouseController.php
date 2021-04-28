@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\WareHouseService;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class WarehouseController
@@ -29,7 +30,7 @@ class WareHouseController extends BaseController
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function index()
     {
@@ -96,14 +97,24 @@ class WareHouseController extends BaseController
     }
 
     /**
-     * 删除
+     * 获取网点下的线路列表
      * @param $id
-     * @return \Illuminate\Database\Eloquent\Collection
-     * @throws BusinessLogicException
+     * @return Collection
      */
     public function getLineList($id)
     {
         return $this->service->getLineList($id);
+    }
+
+    /**
+     * 获取网点可选的线路列表
+     * @param $id
+     * @return Collection
+     * @throws BusinessLogicException
+     */
+    public function getAbleLineList($id)
+    {
+        return $this->service->getAbleLineList($id);
     }
 
 //    /**

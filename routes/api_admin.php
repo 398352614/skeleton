@@ -570,6 +570,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/move/{parent}', 'WareHouseController@move')->name('warehouse.index');
         //查看线路
         Route::get('/{id}/line', 'WareHouseController@getLineList')->name('warehouse.index');
+        //查看可选线路
+        Route::get('/{id}/all-line', 'WareHouseController@getLineList')->name('warehouse.index');
 //        //新增线路
 //        Route::put('/{id}/line', 'WareHouseController@addLine')->name('warehouse.update');
 //        //删除线路
