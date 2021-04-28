@@ -16,6 +16,7 @@ use App\Traits\ConstTranslateTrait;
 use Carbon\Carbon;
 use Doctrine\DBAL\Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
@@ -323,11 +324,26 @@ class LineService extends BaseLineService
     /**
      * 通过网点ID获取线路列表
      * @param $ids
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
-    public function getPageListByWarehouse($ids)
+    public function getPageListByIds($ids)
     {
         $this->query->whereIn('id', $ids);
+        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
+            return $this->postcodeIndex();
+        } else {
+            return $this->areaIndex(2);
+        }
+    }
+
+    /**
+     * 通过网点ID获取线路列表
+     * @param $warehouseId
+     * @return Collection
+     */
+    public function getPageListByWarehouse($warehouseId)
+    {
+        $this->query->where('warehouse_id', $warehouseId);
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
             return $this->postcodeIndex();
         } else {

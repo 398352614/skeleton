@@ -168,7 +168,23 @@ class WareHouseService extends BaseService
     {
         $warehouse = parent::getInfo(['id' => $id], ['*'], false);
         $ids = explode(',', $warehouse['line_ids']);
-        return $this->getLineService()->getPageListByWarehouse($ids);
+        return $this->getLineService()->getPageListByIds($ids);
+    }
+
+    /**
+     * 获取网点可选线路（获取直属上级网点的线路）
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Collection
+     * @throws BusinessLogicException
+     */
+    public function getAbleLineList($id)
+    {
+        $warehouse = parent::getInfo(['id' => $id], ['*'], false);
+        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent_id']], ['*'], false);
+        if(empty($parentWarehouse)){
+            throw new BusinessLogicException('没有可选线路');
+        }
+        return $this->getLineService()->getPageListByWarehouse($parentWarehouse);
     }
 
 //    /**
@@ -284,7 +300,7 @@ class WareHouseService extends BaseService
     /**
      * 创建树
      *
-     * @param  Warehouse  $warehouse
+     * @param Warehouse $warehouse
      * @return bool
      */
     public function createRoot(Warehouse $warehouse)
@@ -306,7 +322,7 @@ class WareHouseService extends BaseService
     /**
      * 是否有孩子节点
      *
-     * @param  Warehouse  $warehouse
+     * @param Warehouse $warehouse
      * @return bool
      */
     protected function hasChildren(Warehouse $warehouse): bool
@@ -317,7 +333,7 @@ class WareHouseService extends BaseService
     /**
      * 是否是根节点
      *
-     * @param  Warehouse  $warehouse
+     * @param Warehouse $warehouse
      * @return bool
      */
     protected function isRoot(Warehouse $warehouse): bool
