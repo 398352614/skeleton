@@ -571,7 +571,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //查看线路
         Route::get('/{id}/line', 'WareHouseController@getLineList')->name('warehouse.index');
         //查看可选线路
-        Route::get('/{id}/all-line', 'WareHouseController@getLineList')->name('warehouse.index');
+        Route::get('/{id}/all-line', 'WareHouseController@getAbleLineList')->name('warehouse.index');
 //        //新增线路
 //        Route::put('/{id}/line', 'WareHouseController@addLine')->name('warehouse.update');
 //        //删除线路
@@ -992,5 +992,33 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'EmailTemplateController@update')->name('email-template.update');
         //删除
         Route::delete('/{id}', 'EmailTemplateController@destroy')->name('email-template.destroy');
+    });
+
+    //袋号管理
+    Route::prefix('bag')->group(function () {
+        //列表
+        Route::get('/', 'BagController@index')->name('bag.index');
+        //新增（扫描）
+        Route::post('/', 'BagController@store')->name('bag.store');
+        //详情
+        Route::get('/{id}', 'BagController@detail')->name('bag.detail');
+        //修改（扫描）
+        Route::put('/{id}', 'BagController@update')->name('bag.update');
+        //删除
+        Route::delete('/{id}', 'BagController@destroy')->name('bag.destroy');
+    });
+
+    //车次管理
+    Route::prefix('shift')->group(function () {
+        //列表
+        Route::get('/', 'BagController@index')->name('bag.index');
+        //新增（扫描）
+        Route::post('/', 'BagController@store')->name('bag.store');
+        //详情
+        Route::get('/{id}', 'BagController@detail')->name('bag.detail');
+        //修改（扫描）
+        Route::put('/{id}', 'BagController@update')->name('bag.update');
+        //删除
+        Route::delete('/{id}', 'BagController@destroy')->name('bag.destroy');
     });
 });
