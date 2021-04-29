@@ -101,16 +101,18 @@ class WareHouseService extends BaseService
         $more = array_diff(explode(',', $data['line_ids']), explode(',', $dbData['line_ids']));
         $less = array_diff(explode(',', $dbData['line_ids']), explode(',', $data['line_ids']));
         if (!empty($more)) {
-            $parentWarehouse['line_ids'] = implode(',', array_diff(explode(',', $parentWarehouse['line_ids']), $more));
+            $lineIdList = array_diff(explode(',', $parentWarehouse['line_ids']), $more);
         } elseif (!empty($less)) {
-            $parentWarehouse['line_ids'] = implode(',', array_merge(explode(',', $parentWarehouse['line_ids']), $less));
+            $lineIdList = array_merge(explode(',', $parentWarehouse['line_ids']), $less);
         } else {
             return;
         }
-        $row = parent::update(['id' => $dbData['parent']], ['line_ids' => $parentWarehouse['line_ids']]);
-        if ($row == false) {
-            throw new BusinessLogicException('操作失败');
-        }
+        $this->getLineService()->updateWarehouse($dbData['parent'], $lineIdList);
+
+//        $row = parent::update(['id' => $dbData['parent']], ['line_ids' => $parentWarehouse['line_ids']]);
+//        if ($row == false) {
+//            throw new BusinessLogicException('操作失败');
+//        }
     }
 
     /**
