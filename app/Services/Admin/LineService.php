@@ -128,6 +128,9 @@ class LineService extends BaseLineService
         $this->getLineRangeService()->storeAll($lineId, $params['item_list'], $params['country'], $params['work_day_list']);
         //最小订单量批量新增
         $this->getMerchantGroupLineService()->storeAll($lineId, $params['merchant_group_count_list']);
+        //更新网点
+        $rootWarehouse = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->company_id, 'parent' => 0], ['*'], false);
+        $this->getWareHouseService()->updateById($rootWarehouse['id'], ['line_ids' => $rootWarehouse['line_ids'] . ',' . $lineId]);
     }
 
     /**
@@ -206,6 +209,11 @@ class LineService extends BaseLineService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
+        //更新网点
+        $rootWarehouse = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->company_id, 'parent' => 0], ['*'], false);
+        $lineIds = str_replace($id, '', $rootWarehouse['line_ids']);
+        $lineIds = str_replace(',,', ',', $lineIds);
+        $this->getWareHouseService()->updateById($rootWarehouse['id'], ['line_ids' => $lineIds]);
     }
 
     /**
