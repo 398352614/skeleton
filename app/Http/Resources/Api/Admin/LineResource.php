@@ -37,7 +37,8 @@ class LineResource extends JsonResource
             'work_day_list' => !empty($this->work_day_list) ? $this->getWorkDayList($this->work_day_list) : '',
             'coordinate_list' => $this->coordinate_list ?? null,
             'merchant_group_count_list' => $this->merchant_group_count_list ?? null,
-            'status' => $this->status
+            'status' => $this->status,
+            'warehouse_name'=>$this->warehouse_name
         ];
     }
 

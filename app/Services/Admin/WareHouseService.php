@@ -140,7 +140,7 @@ class WareHouseService extends BaseService
             return;
         }
         if (!empty($line->toArray()['line_ids'])) {
-            throw new BusinessLogicException('请先删除线路该网点下的线路');
+            throw new BusinessLogicException('请先删除该网点下的线路');
         }
 
         /** @var Warehouse $warehouse */
@@ -181,7 +181,7 @@ class WareHouseService extends BaseService
     {
         $warehouse = parent::getInfo(['id' => $id], ['*'], false);
         $parentWarehouse = parent::getInfo(['id' => $warehouse['parent_id']], ['*'], false);
-        if(empty($parentWarehouse)){
+        if (empty($parentWarehouse)) {
             throw new BusinessLogicException('没有可选线路');
         }
         return $this->getLineService()->getPageListByWarehouse($parentWarehouse['id']);
@@ -261,7 +261,7 @@ class WareHouseService extends BaseService
         $siblingLineIdList = [];
         //检查上级网点是否有这些线路
         $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], '*', false);
-        $parentLineIdList = $parentWarehouse->toArray()['line_ids'] ?? [];
+        $parentLineIdList = explode(',', $parentWarehouse->toArray()['line_ids']) ?? [];
         if (!empty(array_diff($lineIdList, $parentLineIdList))) {
             throw new BusinessLogicException('所选线路不在上级网点中，请先将线路分配至上级网点');
         }

@@ -23,7 +23,7 @@ class WareHouseValidate extends BaseValidate
         'code' => 'required|string|max:50|uniqueIgnore:warehouse,id,company_id',
         'type' => 'required|integer|in:1,2',
         'is_center' => 'required|integer|in:1,2',
-        'acceptance_type' => 'required|integer|in:1,2,3',
+        'acceptance_type' => 'nullable|integer',
         'line_ids' => 'required|text',
         'fullname' => 'required|string|max:50',
         'company_name' => 'required|string|max:50',
