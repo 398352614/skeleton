@@ -86,7 +86,7 @@ class WareHouseService extends BaseService
         $lineIdList = $data['line_ids'];
         $this->check($dbData, $lineIdList);
         $this->fillData($data, $dbData->toArray());
-        unset($data['created_at'],$data['updated_at']);
+        unset($data['created_at'], $data['updated_at']);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('网点修改失败，请重新操作');
@@ -101,9 +101,9 @@ class WareHouseService extends BaseService
         $more = array_diff(explode(',', $data['line_ids']), explode(',', $dbData['line_ids']));
         $less = array_diff(explode(',', $dbData['line_ids']), explode(',', $data['line_ids']));
         if (!empty($more)) {
-            $parentWarehouse['line_ids'] = implode(',', array_diff(json_decode($parentWarehouse['line_ids']), $more));
+            $parentWarehouse['line_ids'] = implode(',', array_diff(explode(',', $parentWarehouse['line_ids']), $more));
         } elseif (!empty($less)) {
-            $parentWarehouse['line_ids'] = implode(',', array_merge(json_decode($parentWarehouse['line_ids']), $less));
+            $parentWarehouse['line_ids'] = implode(',', array_merge(explode(',', $parentWarehouse['line_ids']), $less));
         } else {
             return;
         }
@@ -111,7 +111,6 @@ class WareHouseService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $this->getLineService()->updateWarehouse($dbData['parent'], $parentWarehouse['line_ids']);
     }
 
     /**
@@ -280,8 +279,10 @@ class WareHouseService extends BaseService
                 $siblingLineIdList = array_merge($siblingLineIdList, explode(',', $v['line_ids']));
             }
         }
-        if (!empty(array_diff($lineIdList, $siblingLineIdList))) {
-            throw new BusinessLogicException('所选线路在同级其他网点中，请先将其移除');
+        foreach ($lineIdList as $k => $v) {
+            if (in_array($v, $siblingLineIdList)) {
+                throw new BusinessLogicException('所选线路在同级其他网点中，请先将其移除');
+            }
         }
     }
 
