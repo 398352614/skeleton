@@ -84,9 +84,9 @@ class WareHouseService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $lineIdList = $data['line_ids'];
-        unset($data['parent']);
         $this->check($dbData, $lineIdList);
         $this->fillData($data, $dbData->toArray());
+        unset($data['created_at'],$data['updated_at']);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('网点修改失败，请重新操作');
@@ -280,7 +280,7 @@ class WareHouseService extends BaseService
                 $siblingLineIdList = array_merge($siblingLineIdList, explode(',', $v['line_ids']));
             }
         }
-        if (!empty(array_diff($siblingLineIdList, $lineIdList))) {
+        if (!empty(array_diff($lineIdList, $siblingLineIdList))) {
             throw new BusinessLogicException('所选线路在同级其他网点中，请先将其移除');
         }
     }
