@@ -30,7 +30,7 @@ class OrderDefaultConfigValidate extends BaseValidate
         'receipt_type' => 'required|integer|between:1,1',
         'receipt_count' => 'required|integer|gte:0',
         'control_mode' => 'required|integer|between:1,2',
-        'nature' => 'required|integer|between:1,2',
+        'nature' => 'required|integer|in:1,2,3',
         'address_template_id' => 'required|integer|between:1,2',
     ];
 

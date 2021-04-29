@@ -361,7 +361,11 @@ class LineService extends BaseLineService
      */
     public function updateWarehouse($warehouseId, $lineIdList)
     {
-        $lineIdList = explode(',', $lineIdList);
+        if ($lineIdList == '') {
+            return;
+        } else {
+            $lineIdList = explode(',', $lineIdList);
+        }
         $row = parent::update(['id' => ['in', $lineIdList]], ['warehouse_id' => $warehouseId]);
         if ($row == false) {
             throw new BusinessLogicException('更新线路失败');

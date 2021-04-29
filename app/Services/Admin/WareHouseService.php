@@ -84,6 +84,7 @@ class WareHouseService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $lineIdList = $data['line_ids'];
+        unset($data['parent']);
         $this->check($dbData, $lineIdList);
         $this->fillData($data, $dbData->toArray());
         $rowCount = parent::updateById($id, $data);
@@ -95,7 +96,7 @@ class WareHouseService extends BaseService
         //更新上级网点
         $parentWarehouse = parent::getInfo(['id' => $data['parent']], ['*'], false);
         if (empty($parentWarehouse)) {
-            throw new BusinessLogicException('网点不存在');
+            return;
         }
         $more = array_diff(explode(',', $data['line_ids']), explode(',', $dbData['line_ids']));
         $less = array_diff(explode(',', $dbData['line_ids']), explode(',', $data['line_ids']));
@@ -180,7 +181,7 @@ class WareHouseService extends BaseService
     public function getAbleLineList($id)
     {
         $warehouse = parent::getInfo(['id' => $id], ['*'], false);
-        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent_id']], ['*'], false);
+        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], ['*'], false);
         if (empty($parentWarehouse)) {
             throw new BusinessLogicException('没有可选线路');
         }
@@ -257,20 +258,29 @@ class WareHouseService extends BaseService
      */
     public function check($warehouse, $lineIdList)
     {
-        $lineIdList = explode(',', $lineIdList);
+        if (empty($lineIdList)) {
+            $lineIdList = [];
+        } else {
+            $lineIdList = explode(',', $lineIdList);
+        }
         $siblingLineIdList = [];
         //检查上级网点是否有这些线路
-        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], '*', false);
-        $parentLineIdList = explode(',', $parentWarehouse->toArray()['line_ids']) ?? [];
+        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], ['*'], false);
+        if (empty($parentWarehouse)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $parentLineIdList = explode(',', $parentWarehouse['line_ids']) ?? [];
         if (!empty(array_diff($lineIdList, $parentLineIdList))) {
             throw new BusinessLogicException('所选线路不在上级网点中，请先将线路分配至上级网点');
         }
         //检查同级网点是否无这些线路
         $siblingWarehouseList = parent::getList(['parent' => $warehouse['parent'], 'id' => ['<>', $warehouse['id']]], '*', false);
         foreach ($siblingWarehouseList as $k => $v) {
-            $siblingLineIdList = array_merge($siblingLineIdList, $v['line_ids'] ?? []);
+            if (!empty($v['line_ids'])) {
+                $siblingLineIdList = array_merge($siblingLineIdList, explode(',', $v['line_ids']));
+            }
         }
-        if (!empty(array_diff($lineIdList, $siblingLineIdList))) {
+        if (!empty(array_diff($siblingLineIdList, $lineIdList))) {
             throw new BusinessLogicException('所选线路在同级其他网点中，请先将其移除');
         }
     }
