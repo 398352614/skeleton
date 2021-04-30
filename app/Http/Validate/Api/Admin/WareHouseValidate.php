@@ -14,7 +14,7 @@ use App\Http\Validate\BaseValidate;
 class WareHouseValidate extends BaseValidate
 {
     public $customAttributes = [
-
+        'code'=>'网点编码'
     ];
 
 
