@@ -103,7 +103,7 @@ class WareHouseService extends BaseService
         //更新线路的网点ID
         $this->getLineService()->updateWarehouse($dbData['id'], $lineIdList);
         //更新上级网点
-        $parentWarehouse = parent::getInfo(['id' => $data['parent']], ['*'], false);
+        $parentWarehouse = parent::getInfo(['id' => $dbData['parent']], ['*'], false);
         if (empty($parentWarehouse)) {
             return;
         }
