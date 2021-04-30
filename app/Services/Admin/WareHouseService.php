@@ -53,7 +53,7 @@ class WareHouseService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info['parent_name'] = $parentWarehouse['name'];
+        $info['parent_name'] = $parentWarehouse->toArray()['name'];
         return $info;
     }
 
@@ -271,7 +271,7 @@ class WareHouseService extends BaseService
     {
         $siblingLineIdList = [];
         //检查上级网点是否有这些线路
-        if($warehouse['parent'] !== 0){
+        if ($warehouse['parent'] !== 0) {
             $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], ['*'], false);
             if (empty($parentWarehouse)) {
                 throw new BusinessLogicException('数据不存在');
