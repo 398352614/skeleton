@@ -49,6 +49,11 @@ class WareHouseService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
+        $parentWarehouse = parent::getInfo(['id' => $info['parent']], ['*'], false);
+        if (empty($info)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $info['parent_name'] = $parentWarehouse['name'];
         return $info;
     }
 
@@ -266,24 +271,26 @@ class WareHouseService extends BaseService
         }
         $siblingLineIdList = [];
         //检查上级网点是否有这些线路
-        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], ['*'], false);
-        if (empty($parentWarehouse)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        $parentLineIdList = explode(',', $parentWarehouse['line_ids']) ?? [];
-        if (!empty(array_diff($lineIdList, $parentLineIdList))) {
-            throw new BusinessLogicException('所选线路不在上级网点中，请先将线路分配至上级网点');
-        }
-        //检查同级网点是否无这些线路
-        $siblingWarehouseList = parent::getList(['parent' => $warehouse['parent'], 'id' => ['<>', $warehouse['id']]], '*', false);
-        foreach ($siblingWarehouseList as $k => $v) {
-            if (!empty($v['line_ids'])) {
-                $siblingLineIdList = array_merge($siblingLineIdList, explode(',', $v['line_ids']));
+        if($warehouse['parent'] !== 0){
+            $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], ['*'], false);
+            if (empty($parentWarehouse)) {
+                throw new BusinessLogicException('数据不存在');
             }
-        }
-        foreach ($lineIdList as $k => $v) {
-            if (in_array($v, $siblingLineIdList)) {
-                throw new BusinessLogicException('所选线路在同级其他网点中，请先将其移除');
+            $parentLineIdList = explode(',', $parentWarehouse['line_ids']) ?? [];
+            if (!empty(array_diff($lineIdList, $parentLineIdList))) {
+                throw new BusinessLogicException('所选线路不在上级网点中，请先将线路分配至上级网点');
+            }
+            //检查同级网点是否无这些线路
+            $siblingWarehouseList = parent::getList(['parent' => $warehouse['parent'], 'id' => ['<>', $warehouse['id']]], '*', false);
+            foreach ($siblingWarehouseList as $k => $v) {
+                if (!empty($v['line_ids'])) {
+                    $siblingLineIdList = array_merge($siblingLineIdList, explode(',', $v['line_ids']));
+                }
+            }
+            foreach ($lineIdList as $k => $v) {
+                if (in_array($v, $siblingLineIdList)) {
+                    throw new BusinessLogicException('所选线路在同级其他网点中，请先将其移除');
+                }
             }
         }
     }
