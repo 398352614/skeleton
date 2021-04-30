@@ -89,6 +89,11 @@ class WareHouseService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $lineIdList = $data['line_ids'];
+        if (empty($lineIdList)) {
+            $lineIdList = [];
+        } else {
+            $lineIdList = explode(',', $lineIdList);
+        }
         $this->check($dbData, $lineIdList);
         $this->fillData($data, $dbData->toArray());
         unset($data['created_at'], $data['updated_at']);
@@ -264,11 +269,6 @@ class WareHouseService extends BaseService
      */
     public function check($warehouse, $lineIdList)
     {
-        if (empty($lineIdList)) {
-            $lineIdList = [];
-        } else {
-            $lineIdList = explode(',', $lineIdList);
-        }
         $siblingLineIdList = [];
         //检查上级网点是否有这些线路
         if($warehouse['parent'] !== 0){
