@@ -21,7 +21,7 @@ class WareHouseValidate extends BaseValidate
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:warehouse,id,company_id',
         'code' => 'required|string|max:50|uniqueIgnore:warehouse,id,company_id',
-        'type' => 'required|integer|in:1,2',
+        'type' => 'nullable|integer|in:1,2',
         'is_center' => 'required|integer|in:1,2',
         'acceptance_type' => 'nullable|string',
         'line_ids' => 'required|text',
@@ -29,7 +29,7 @@ class WareHouseValidate extends BaseValidate
         'company_name' => 'required|string|max:50',
         'phone' => 'required|string|max:20',
         'email' => 'required|string|max:250',
-        'avatar' => 'required|string|max:250',
+        'avatar' => 'nullable|string|max:250',
         'country' => 'nullable|string|max:50',
         'province' => 'nullable|string|max:50',
         'city' => 'required|string|max:50',
