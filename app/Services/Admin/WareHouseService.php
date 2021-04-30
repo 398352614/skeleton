@@ -50,10 +50,9 @@ class WareHouseService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $parentWarehouse = parent::getInfo(['id' => $info['parent']], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
+        if (!empty($parentWarehouse)) {
+            $info['parent_name'] = $parentWarehouse['name'];
         }
-        $info['parent_name'] = $parentWarehouse->toArray()['name'];
         return $info;
     }
 
