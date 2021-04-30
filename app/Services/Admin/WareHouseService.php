@@ -164,6 +164,9 @@ class WareHouseService extends BaseService
             throw new BusinessLogicException('请先删除子网点');
         }
 
+        if (!empty($this->getEmployeeService()->getList(['warehouse_id' => $id], ['*'], false))) {
+            throw new BusinessLogicException('请先删除该网点下的所有员工');
+        }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('网点删除失败，请重新操作');

@@ -512,7 +512,7 @@ class LineService extends BaseLineService
             }
         }
         $data = array_values($data);
-        //类型1分拨3-寄件人1，类型2分拨3-收件人，类型1分拨2-网点取件，类型2分拨2-网点派件，类型3分拨2-网点取件/派件，其他-分拨中心
+        //类型1分拨3-寄件人，类型2分拨3-收件人，类型1分拨2-网点取件，类型2分拨2-网点派件，类型3分拨2-网点取件/派件，其他-分拨中心
         for ($i = 0, $j = count($data); $i < $j; $i++) {
             if ($data[$i]['type'] == BaseConstService::ORDER_TYPE_1 &&
                 $data[$i]['is_center'] == 3
