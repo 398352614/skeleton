@@ -38,7 +38,7 @@ class EmployeeService extends BaseService
         if (!empty($employeeIdList)) $this->filters['id'] = ['in', $employeeIdList];
         $list = parent::getPageList();
         $warehouseIdList = $list->pluck('warehouse_id')->unique()->toArray();
-        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $warehouseIdList]],['*'],false)->keyBy('id');
+        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $warehouseIdList]], ['*'], false)->keyBy('id');
         if (empty($list)) return $list;
         foreach ($list as &$employee) {
             $role = $this->getEmployeeRole($employee->id);
@@ -83,16 +83,7 @@ class EmployeeService extends BaseService
     {
         $data = $this->check($data);
         $role = Role::findById($data['role_id']);
-        $employee = parent::create(
-            [
-                'fullname' => $data['fullname'],
-                'username' => $data['username'],
-                'email' => $data['email'],
-                'phone' => $data['phone'] ?? '',
-                'remark' => $data['remark'] ?? '',
-                'password' => bcrypt($data['password']),
-            ]
-        );
+        $employee = parent::create($data);
         if ($employee === false) {
             throw new BusinessLogicException('新建员工失败');
         }
@@ -134,6 +125,7 @@ class EmployeeService extends BaseService
         if (empty($warehouse)) {
             throw new BusinessLogicException('网点不存在');
         }
+        unset($data['password'], $data['email']);
         return $data;
     }
 
