@@ -322,7 +322,7 @@ class WareHouseService extends BaseService
     public function checkDistance($parent)
     {
         $distance = Warehouse::findOrFail($parent)->getRoot()->distance;
-        if ($distance > 3) {
+        if ($distance > 2) {
             throw new BusinessLogicException('网点层级最高为3级');
         }
     }
