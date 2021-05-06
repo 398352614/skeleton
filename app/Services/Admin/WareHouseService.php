@@ -14,6 +14,8 @@ use App\Models\Institution;
 use App\Models\Warehouse;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class WareHouseService
@@ -40,7 +42,7 @@ class WareHouseService extends BaseService
     /**
      * 获取详情
      * @param $id
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function show($id)
@@ -146,16 +148,11 @@ class WareHouseService extends BaseService
     public function destroy($id)
     {
         //删除网点前 先验证线路是否存在
-        $line = parent::getInfo(['id' => $id], ['*'], false);
-        if (empty($line)) {
+        $warehouse = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($warehouse)) {
             return;
         }
-        if (!empty($line->toArray()['line_ids'])) {
-            throw new BusinessLogicException('请先删除该网点下的线路');
-        }
-
         /** @var Warehouse $warehouse */
-        $warehouse = Warehouse::findOrFail($id);
         if ($this->isRoot($warehouse)) {
             throw new BusinessLogicException('无法删除根网点');
         }
@@ -164,12 +161,23 @@ class WareHouseService extends BaseService
             throw new BusinessLogicException('请先删除子网点');
         }
 
-        if (!empty($this->getEmployeeService()->getList(['warehouse_id' => $id], ['*'], false))) {
+        if (!empty($this->getEmployeeService()->getList(['warehouse_id' => $id], ['*'], false)->toArray())) {
             throw new BusinessLogicException('请先删除该网点下的所有员工');
         }
-        $rowCount = parent::delete(['id' => $id]);
-        if ($rowCount === false) {
+        $row = parent::delete(['id' => $id]);
+        if ($row === false) {
             throw new BusinessLogicException('网点删除失败，请重新操作');
+        }
+        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], ['*'], false);
+        $row = $this->getLineService()->update(['warehouse_id' => $id], ['warehouse_id' => $parentWarehouse['id']]);
+        if ($row === false) {
+            throw new BusinessLogicException('操作失败');
+        }
+        if(!empty($warehouse['line_ids'])){
+            $row = parent::updateById($parentWarehouse['id'], ['line_ids' => $parentWarehouse['line_ids'].','.$warehouse['line_ids']]);
+            if ($row === false) {
+                throw new BusinessLogicException('操作失败');
+            }
         }
     }
 
