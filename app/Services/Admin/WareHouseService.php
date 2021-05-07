@@ -96,6 +96,7 @@ class WareHouseService extends BaseService
         } else {
             $lineIdList = explode(',', $lineIdList);
         }
+        $data['line_ids']=$lineIdList;
         $this->check($dbData, $lineIdList);
         $this->fillData($data, $dbData->toArray());
         unset($data['created_at'], $data['updated_at']);
