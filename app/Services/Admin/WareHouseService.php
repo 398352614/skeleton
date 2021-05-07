@@ -96,7 +96,6 @@ class WareHouseService extends BaseService
         } else {
             $lineIdList = explode(',', $lineIdList);
         }
-        $data['line_ids'] = $lineIdList;
         $this->check($dbData, $lineIdList);
         $this->fillData($data, $dbData->toArray());
         unset($data['created_at'], $data['updated_at']);
@@ -118,7 +117,7 @@ class WareHouseService extends BaseService
         } elseif (!empty($less)) {
             $lineIdList = array_merge(explode(',', $parentWarehouse['line_ids']), $less);
         } else {
-            return;
+            $lineIdList = [];
         }
         $this->getLineService()->updateWarehouse($dbData['parent'], $lineIdList);
 
