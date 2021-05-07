@@ -345,6 +345,7 @@ class LineService extends BaseLineService
     {
         $this->query->whereIn('id', $ids);
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
+            unset($this->formData['post_code']);
             return $this->postcodeIndex();
         } else {
             return $this->areaIndex(2);
@@ -360,6 +361,7 @@ class LineService extends BaseLineService
     {
         $this->query->where('warehouse_id', $warehouseId);
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
+            unset($this->formData['post_code']);
             return $this->postcodeIndex();
         } else {
             return $this->areaIndex(2);
