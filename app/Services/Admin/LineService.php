@@ -374,6 +374,7 @@ class LineService extends BaseLineService
      */
     public function updateWarehouse($warehouseId, $lineIdList)
     {
+        dd($warehouseId,$lineIdList);
         if (empty($lineIdList)) {
             return;
         }
