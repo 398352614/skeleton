@@ -344,8 +344,8 @@ class LineService extends BaseLineService
     public function getPageListByIds($ids)
     {
         $this->query->whereIn('id', $ids);
+        dd(CompanyTrait::getLineRule());
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
-            unset($this->formData);
             return $this->postcodeIndex();
         } else {
             return $this->areaIndex(2);
