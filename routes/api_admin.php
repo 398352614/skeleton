@@ -1001,7 +1001,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //新增（扫描）
         Route::post('/', 'BagController@store')->name('bag.store');
         //详情
-        Route::get('/{id}', 'BagController@detail')->name('bag.detail');
+        Route::get('/{id}', 'BagController@show')->name('bag.show');
         //修改（扫描）
         Route::put('/{id}', 'BagController@update')->name('bag.update');
         //删除
@@ -1015,7 +1015,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //新增（扫描）
         Route::post('/', 'BagController@store')->name('bag.store');
         //详情
-        Route::get('/{id}', 'BagController@detail')->name('bag.detail');
+        Route::get('/{id}', 'BagController@show')->name('bag.show');
         //修改（扫描）
         Route::put('/{id}', 'BagController@update')->name('bag.update');
         //删除

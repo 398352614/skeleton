@@ -228,10 +228,10 @@ class OrderService extends BaseService
                 }
                 $dbTrackingOrder[$k]['time_list'] = [['type' => __(BaseConstService::CREATED_TIME), 'time' => (string)$v['created_at']]];
                 if (!empty($dbTrackingOrder[$k]['begin_time'])) {
-                    $dbTrackingOrder[$k]['time_list'] = array_merge($v['time_list'],[['type' => __(BaseConstService::BEGIN_TIME), 'time' => $v['begin_time']]]);
+                    $dbTrackingOrder[$k]['time_list'] = array_merge($v['time_list'], [['type' => __(BaseConstService::BEGIN_TIME), 'time' => $v['begin_time']]]);
                 }
                 if (!empty($dbTrackingOrder[$k]['sign_time'])) {
-                    $dbTrackingOrder[$k]['time_list'] = array_merge($v['time_list'],[['type' => __(BaseConstService::SIGN_TIME), 'time' => $v['sign_time']]]);
+                    $dbTrackingOrder[$k]['time_list'] = array_merge($v['time_list'], [['type' => __(BaseConstService::SIGN_TIME), 'time' => $v['sign_time']]]);
                 }
             }
         }
@@ -302,6 +302,7 @@ class OrderService extends BaseService
         //生成运单
         $tour = $this->getTrackingOrderService()->storeByOrder($order);
         return [
+            'id' => $order['id'],
             'order_no' => $params['order_no'],
             'out_order_no' => $params['out_order_no'] ?? '',
             'batch_no' => '',
@@ -355,11 +356,9 @@ class OrderService extends BaseService
         }
         if ($expired == BaseConstService::YES) {
             $dbTrackingOrder = null;
-        }
-        if (empty($dbTrackingOrder)) {
+        } elseif (empty($dbTrackingOrder)) {
             $dbTrackingOrder = null;
-        }
-        if ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3 && $dbTrackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
+        } elseif ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3 && $dbTrackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
             $dbTrackingOrder = null;
         }
         if (!$trackingOrderType = $this->getTrackingOrderType($dbOrder->toArray(), $dbTrackingOrder)) {
@@ -617,7 +616,7 @@ class OrderService extends BaseService
         $typeList = array_flip(ConstTranslateTrait::$trackingOrderTypeList);
         $settlementList = array_flip(ConstTranslateTrait::$orderSettlementTypeList);
         $deliveryList = ['是' => 1, '否' => 2, 'Yes' => 1, 'No' => 2];
-        $itemList = array_flip(ConstTranslateTrait::$orderNatureList);
+        $itemList = array_flip(ConstTranslateTrait::$orderConfigNatureList);
         //$countryNameList = array_unique(collect($data)->pluck('place_country_name')->toArray());
         //$countryShortList = CountryTrait::getShortListByName($countryNameList);
         for ($i = 0; $i < count($data); $i++) {
@@ -769,8 +768,8 @@ class OrderService extends BaseService
                 if (!empty($params['package_list'][$k]['feature_logo']) && in_array($params['package_list'][$k]['feature_logo'], array_keys($relationship))) {
                     $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']];
                 }
-                if(empty($params['package_list'][$k]['express_second_no'])){
-                    $params['package_list'][$k]['express_second_no']='';
+                if (empty($params['package_list'][$k]['express_second_no'])) {
+                    $params['package_list'][$k]['express_second_no'] = '';
                 }
             }
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
@@ -1167,19 +1166,23 @@ class OrderService extends BaseService
             $newOrderList[$k]['warehouse']['street'] = $newOrderList[$k]['tracking_order']['warehouse_street'];
             $newOrderList[$k]['warehouse']['house_number'] = $newOrderList[$k]['tracking_order']['warehouse_house_number'];
             $newOrderList[$k]['warehouse']['address'] = $newOrderList[$k]['tracking_order']['warehouse_address'];
-            //填充网点
-            if ($v['type'] == BaseConstService::ORDER_TYPE_1) {
+            //第三方填充仓库
+            if ($v['type'] == BaseConstService::ORDER_TYPE_1 && empty($newOrderList[$k]['receiver']['fullname'])) {
                 $newOrderList[$k]['receiver'] = $newOrderList[$k]['warehouse'];
-            } elseif ($v['type'] == BaseConstService::ORDER_TYPE_2) {
+            } elseif ($v['type'] == BaseConstService::ORDER_TYPE_2 && empty($newOrderList[$k]['sender']['fullname'])) {
                 $newOrderList[$k]['sender'] = $newOrderList[$k]['warehouse'];
+            }
+            if ($v['type'] == BaseConstService::ORDER_TYPE_2) {
+                $a = $newOrderList[$k]['sender'];
+                $newOrderList[$k]['sender'] = $newOrderList[$k]['receiver'];
+                $newOrderList[$k]['receiver'] = $a;
             }
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
             $newOrderList[$k]['replace_amount'] = $v['replace_amount'];
             $newOrderList[$k]['settlement_amount'] = $v['settlement_amount'];
             $newOrderList[$k]['package_count'] = !empty($packageList[$v['order_no']]) ? collect($packageList[$v['order_no']])->sum('expect_quantity') : 0;
             $newOrderList[$k]['material_count'] = !empty($materialList[$v['order_no']]) ? collect($materialList[$v['order_no']])->sum('expect_quantity') : 0;
-            $newOrderList[$k]['package_list'] = !empty($packageList) ? $packageList[$v['order_no']] : [];
-
+            $newOrderList[$k]['package_list'] = !empty($packageList[$v['order_no']]) ? $packageList[$v['order_no']] : [];
         }
         return $newOrderList;
     }
@@ -1220,7 +1223,7 @@ class OrderService extends BaseService
             'warehouse',
             'destination'
         ];
-        $orderTemplate = $this->getOrderTemplateService()->getInfo(['company_id' => auth()->user()->company_id], ['*'], false);
+        $orderTemplate = $this->getOrderTemplateService()->getInfo(['company_id' => auth()->user()->company_id, 'is_default' => BaseConstService::YES], ['*'], false);
         if (empty($orderTemplate)) {
             throw new BusinessLogicException('未设置打印模板，请联系管理员设置打印模板');
         }

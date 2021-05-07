@@ -387,7 +387,7 @@ class BaseService
         $this->query = $this->model::query();
         $query = $this->query->findOrFail($id);
         $rowCount = $query->update(Arr::only($data,
-            Arr::except($this->model->getFillable(), ['company_id', 'order_no', 'batch_no', 'tour_no'])));
+            Arr::except($this->model->getFillable(), ['updated_at','created_at','company_id', 'order_no', 'batch_no', 'tour_no','parent'])));
         $this->query = $this->model::query();
 
         return $rowCount;

@@ -116,6 +116,11 @@ use Illuminate\Support\Facades\App;
  * @method static lineTestStatusList($args = null)
  * @method static orderConfigNatureList($args = null)
  * @method static employeeForbidLoginList($args = null)
+ * @method static shiftStatusList($args = null)
+ * @method static bagStatusList($args = null)
+ * @method static trackingPackageStatusList($args = null)
+ * @method static shiftLoadTypeList($args = null)
+ *
  */
 trait ConstTranslateTrait
 {
@@ -124,6 +129,40 @@ trait ConstTranslateTrait
         BaseConstService::YES => '是',
         BaseConstService::NO => '否'
     ];
+
+    //包裹转运状态1-待装袋2-待装车3-待发车4-运输中5-已到车6-已卸货7-已拆袋
+    public static $trackingPackageStatusList = [
+        BaseConstService::TRACKING_PACKAGE_STATUS_1 => '未装袋',
+        BaseConstService::TRACKING_PACKAGE_STATUS_2 => '未装车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_3 => '未发车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_4 => '已发车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_5 => '已到车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_6 => '已卸车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_7 => '已拆袋',
+    ];
+
+    //袋号状态:1-待发车2-运输中3-待卸车4-待拆袋5-已拆袋
+    public static $bagStatusList = [
+        BaseConstService::BAG_STATUS_1 => '未发车',
+        BaseConstService::BAG_STATUS_2 => '已发车',
+        BaseConstService::BAG_STATUS_3 => '已到车',
+        BaseConstService::BAG_STATUS_4 => '未拆袋',
+        BaseConstService::BAG_STATUS_5 => '已拆袋',
+    ];
+
+    //车次状态1-待发车2-运输中3-已到车4-已卸货
+    public static $shiftStatusList = [
+        BaseConstService::SHIFT_STATUS_1 => '未发车',
+        BaseConstService::SHIFT_STATUS_2 => '已发车',
+        BaseConstService::SHIFT_STATUS_3 => '未卸车',
+        BaseConstService::SHIFT_STATUS_4 => '已卸车',
+    ];
+
+    public static $trackingPackageList =
+        [
+            BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_1 => 1,
+            BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2 => 2,
+        ];
 
     //编号类型
     public static $noTypeList = [
@@ -135,7 +174,10 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
         BaseConstService::STOCK_EXCEPTION_NO_TYPE => '入库异常编号规则',
         BaseConstService::CAR_ACCIDENT_NO_TYPE => '事故处理单号规则',
-        BaseConstService::CAR_MAINTAIN_NO_TYPE => '车辆维护流水号',
+        BaseConstService::CAR_MAINTAIN_NO_TYPE => '车辆维护流水号规则',
+        BaseConstService::TRACKING_PACKAGE_NO_TYPE => '转运单号规则',
+        BaseConstService::BAG_NO_TYPE => '袋号规则',
+        BaseConstService::SHIFT_NO_TYPE => '车辆维护流水号规则',
     ];
 
     //快捷方式列表
@@ -147,6 +189,12 @@ trait ConstTranslateTrait
         BaseConstService::SHORT_CUT_BATCH_INDEX => '站点',
         BaseConstService::SHORT_CUT_TOUR_INDEX => '线路任务',
         BaseConstService::SHORT_CUT_TOUR_DISPATCH => '智能调度',
+    ];
+
+    //车次装车类型
+    public static $shiftLoadTypeList = [
+        BaseConstService::SHIFT_LOAD_TYPE_1 => '单号',
+        BaseConstService::SHIFT_LOAD_TYPE_2 => '袋号',
     ];
 
     //快捷方式列表
@@ -312,9 +360,16 @@ trait ConstTranslateTrait
     ];
 
     //订单性质1-包裹2-货物
-    public static $orderNatureList = [
+    public static $orderConfigNatureList = [
         BaseConstService::ORDER_NATURE_1 => '包裹',
         BaseConstService::ORDER_NATURE_2 => '货物',
+    ];
+
+    //订单配置性质1-包裹2-货物
+    public static $orderNatureList = [
+        BaseConstService::ORDER_NATURE_1 => '全部',
+        BaseConstService::ORDER_NATURE_2 => '包裹',
+        BaseConstService::ORDER_NATURE_3 => '货物',
     ];
 
     //支付方式1-现金支付2-银行卡支付

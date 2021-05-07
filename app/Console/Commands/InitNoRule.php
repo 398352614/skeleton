@@ -46,12 +46,25 @@ class InitNoRule extends Command
             $this->info('number rule init failed!');
             return;
         }
-
+        $rules = [
+            BaseConstService::BATCH_NO_TYPE => BaseConstService::BATCH,
+            BaseConstService::ORDER_NO_TYPE => BaseConstService::TMS,
+            BaseConstService::TOUR_NO_TYPE => BaseConstService::TOUR,
+            BaseConstService::BATCH_EXCEPTION_NO_TYPE => BaseConstService::BATCH_EXCEPTION,
+            BaseConstService::RECHARGE_NO_TYPE => BaseConstService::RECHARGE,
+            BaseConstService::STOCK_EXCEPTION_NO_TYPE => BaseConstService::STOCK_EXCEPTION,
+            BaseConstService::TRACKING_ORDER_NO_TYPE => BaseConstService::TRACKING_ORDER,
+            BaseConstService::CAR_ACCIDENT_NO_TYPE => BaseConstService::CAR_ACCIDENT,
+            BaseConstService::CAR_MAINTAIN_NO_TYPE => BaseConstService::CAR_MAINTAIN,
+            BaseConstService::TRACKING_PACKAGE_NO_TYPE => BaseConstService::TRACKING_PACKAGE,
+            BaseConstService::BAG_NO_TYPE => BaseConstService::BAG,
+            BaseConstService::SHIFT_NO_TYPE => BaseConstService::SHIFT,
+        ];
         foreach ($companyList as $company) {
             foreach (ConstTranslateTrait::$noTypeList as $k => $v) {
                 $orderNoRule = OrderNoRule::query()->where('company_id', $company['id'])->where('type', $k)->first();
                 if (empty($orderNoRule)) {
-                    $prefix = $k . $company['company_code'];
+                    $prefix = $rules[$k] . $company['company_code'];
                     OrderNoRule::create([
                         'company_id' => $company['id'],
                         'type' => $k,

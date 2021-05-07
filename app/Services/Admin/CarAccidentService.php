@@ -54,7 +54,7 @@ class CarAccidentService extends BaseService
     public function create($data)
     {
         $data['operator'] = auth()->user()->fullname;
-        $data['accident_no'] = $this->getOrderNoRuleService()->createCarAccidentNO();
+        $data['accident_no'] = $this->getOrderNoRuleService()->createCarAccidentNo();
         $data['insurance_date'] = empty($data['insurance_date']) ? null : $data['insurance_date'];
 
         return parent::create($data);

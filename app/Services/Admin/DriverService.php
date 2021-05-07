@@ -69,8 +69,12 @@ class DriverService extends BaseService
      */
     public function driverRegister()
     {
+        if (empty($this->formData['warehouse_id'])) {
+            $this->formData['warehouse_id'] = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->id, 'parent' => 0], ['*'], false)->toArray()['id'];
+        }
         $driver = [
             'email' => $this->formData['email'],
+            'warehouse_id' => $this->formData['warehouse_id'],
             'password' => Hash::make($this->formData['password']),
             'fullname' => $this->formData['fullname'],
             'gender' => $this->formData['gender'],
@@ -90,7 +94,7 @@ class DriverService extends BaseService
             'bank_name' => $this->formData['bank_name'] ?? '',
             'iban' => $this->formData['iban'] ?? '',
             'bic' => $this->formData['bic'] ?? '',
-            'type'=>$this->formData['type'] ?? '',
+            'type' => $this->formData['type'] ?? '',
             // 'crop_type'             => $this->formData['crop_type'],
         ];
 

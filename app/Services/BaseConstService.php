@@ -24,6 +24,12 @@ class BaseConstService
     const CAR_ACCIDENT = 'CA';
     const CAR_MAINTAIN = 'CM';
     const SPARE_PARTS = 'SP';
+    const TRACKING_PACKAGE = 'TP';
+    const BAG = 'BAG';
+    const SHIFT = 'SHIFT';
+
+    const SHIFT_LOAD_TYPE_1 = 1;
+    const SHIFT_LOAD_TYPE_2 = 2;
 
     const CANCEL_TIMES = 3;
 
@@ -105,6 +111,12 @@ class BaseConstService
     const CAR_ACCIDENT_NO_TYPE = 'accident';
     //车辆维护流水号
     const CAR_MAINTAIN_NO_TYPE = 'maintain';
+    //转运单号
+    const TRACKING_PACKAGE_NO_TYPE = 'tracking_package';
+    //袋号
+    const BAG_NO_TYPE = 'bag';
+    //车次号
+    const SHIFT_NO_TYPE = 'shift';
 
     //初始密码
     const INITIAL_PASSWORD = '12345678';
@@ -220,6 +232,7 @@ class BaseConstService
     //订单性质1-包裹2-材料
     const ORDER_NATURE_1 = 1;
     const ORDER_NATURE_2 = 2;
+    const ORDER_NATURE_3 = 3;
 
     //线路规划 是否新增取件线路 1-是2-否
     const IS_INCREMENT_1 = 1;
@@ -774,4 +787,34 @@ class BaseConstService
     //禁止登录1-禁止2-不禁止
     const EMPLOYEE_FORBID_LOGIN_1 = 1;
     const EMPLOYEE_FORBID_LOGIN_2 = 0;
+
+    //包裹转运状态1-待装袋2-待装车3-待发车4-运输中5-已到车6-已卸货7-已拆袋
+    const TRACKING_PACKAGE_STATUS_1 = 1;
+    const TRACKING_PACKAGE_STATUS_2 = 2;
+    const TRACKING_PACKAGE_STATUS_3 = 3;
+    const TRACKING_PACKAGE_STATUS_4 = 4;
+    const TRACKING_PACKAGE_STATUS_5 = 5;
+    const TRACKING_PACKAGE_STATUS_6 = 6;
+    const TRACKING_PACKAGE_STATUS_7 = 7;
+
+    //袋号状态1-待装车2-待发车3-运输中4-已到车5-已卸货6-已拆袋
+    const BAG_STATUS_1 = 1;
+    const BAG_STATUS_2 = 2;
+    const BAG_STATUS_3 = 3;
+    const BAG_STATUS_4 = 4;
+    const BAG_STATUS_5 = 5;
+
+    //车次状态1-待发车2-运输中3-已到车4-已卸货
+    const SHIFT_STATUS_1 = 1;
+    const SHIFT_STATUS_2 = 2;
+    const SHIFT_STATUS_3 = 3;
+    const SHIFT_STATUS_4 = 4;
+
+    //转运单类型1-分拨2-中转
+    const TRACKING_PACKAGE_TYPE_1 = 1;
+    const TRACKING_PACKAGE_TYPE_2 = 2;
+
+    //转运单类型1-长途2-短途
+    const TRACKING_PACKAGE_DISTANCE_TYPE_1 = 1;
+    const TRACKING_PACKAGE_DISTANCE_TYPE_2 = 2;
 }

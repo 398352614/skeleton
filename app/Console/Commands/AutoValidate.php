@@ -47,7 +47,7 @@ class AutoValidate extends Command
         try {
             $this->autoValidate();
             $this->info('The translation success.');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->info('The translation fail:' . $e->getMessage());
         }
         return;

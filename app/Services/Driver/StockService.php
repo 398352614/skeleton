@@ -64,31 +64,54 @@ class StockService extends BaseService
 
 
     /**
-     * 包裹分拣入库
+     * 分拨
      * @param $packageNo
      * @return array
      * @throws BusinessLogicException
      */
-    public function packagePickOut($packageNo)
+    public function allocate($packageNo)
     {
-        $trackingOrder = $tour = $line = [];
         //存在验证
         $package = $this->getPackageService()->getInfo(['express_first_no' => $packageNo], ['*'], false, ['created_at' => 'desc']);
         if (empty($package)) {
             throw new BusinessLogicException('当前包裹不存在系统中');
         }
-        //在库验证
-        //$this->stockExistCheck($package);
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
         //异常验证
-        $this->stockExceptionCheck($order);
-        if (!in_array($package->status, [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2])) {
-            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
+        $this->check($package, $order, $type);
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => auth()->user()->warehouse_id], ['*'], false)->toArray();
+        $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
+        $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
+        $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
+        if (auth()->user()->warehouse_id == $pieWarehouse['id']) {
+            //如果本网点为该包裹的派件网点，则生成派件运单进行派送
+            return $this->createTrackingOrder($order, $type);
+        } elseif (auth()->user()->warehouse_id == $pieCenter['id']) {
+            //如果本网点为该包裹的派件网点所属的分拨中心，则生成分拨转运单
+            return $this->createTrackingPackage($package, $warehouse, $pieWarehouse, BaseConstService::TRACKING_PACKAGE_TYPE_1);
+        } elseif ($warehouse['is_center'] == BaseConstService::YES) {
+            //如果本网点为其他分拨中心，则生成中转转运单
+            return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
+        } elseif ($pieWarehouse['id'] == $pickupWarehouse['id']) {
+            //如果本网点为同分拨中心的网点，则生成短途中转转运单
+            return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2, BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2);
+        } else {
+            //如果本网点为其他分拨中心的网点，则生成长途中国转转运单
+            return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
         }
-        if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
-            throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
-        }
+    }
+
+    /**
+     * 创建派件运单
+     * @param $order
+     * @param $type
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function createTrackingOrder($order, $type)
+    {
+        $trackingOrder = $tour = $line = [];
         //获取最近可选日期
         $executionDate = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['execution_date'] : $order['second_execution_date'];
         if (empty($executionDate) || Carbon::today()->gte($executionDate . ' 00:00:00')) {
@@ -115,10 +138,11 @@ class StockService extends BaseService
             $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
             $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
         }
-        //包裹分拣
-        $this->pickOut($package, $tour, $trackingOrder);
+        //包裹入库
+        $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
+                'express_first_no' => $package['express_first_no'],
                 'line_id' => $tour['line_id'] ?? '',
                 'line_name' => $tour['line_name'] ?? '',
                 'execution_date' => $executionDate,
@@ -127,6 +151,7 @@ class StockService extends BaseService
             ];
         } else {
             return [
+                'express_first_no' => $package['express_first_no'],
                 'line_id' => $tour['line_id'] ?? '',
                 'line_name' => $tour['line_name'] ?? '',
                 'execution_date' => $executionDate,
@@ -136,15 +161,93 @@ class StockService extends BaseService
         }
     }
 
+    /**
+     * 创建转运单
+     * @param $package
+     * @param $warehouse
+     * @param $nextWarehouse
+     * @param $trackingPackageType
+     * @param int $trackingPackageDistanceType
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function createTrackingPackage($package, $warehouse, $nextWarehouse, $trackingPackageType, $trackingPackageDistanceType = BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2)
+    {
+        $trackingPackage = $this->getTrackingPackageService()->create([
+            'tracking_package_no'=>$this->getOrderNoRuleService()->createTrackingPackageNo(),
+            'express_first_no' => $package['express_first_no'],
+            'order_no' => $package['express_first_no'],
+            'bag_no' => '',
+            'shift_no' => '',
+            'status' => BaseConstService::TRACKING_PACKAGE_STATUS_1,
+            'type' => $trackingPackageType,
+            'distance_type' => $trackingPackageDistanceType,
+            'weight' => $package['weight'],
+            'warehouse_id' => $warehouse['id'],
+            'warehouse_name' => $warehouse['name'],
+            'next_warehouse_id' => $nextWarehouse['id'],
+            'next_warehouse_name' => $nextWarehouse['name'],
+            'pack_time' => null,
+            'pack_operator' => '',
+            'pack_operator_id' => null,
+            'unpack_time' => null,
+            'unpack_operator' => '',
+            'unpack_operator_id' => null
+        ]);
+        $this->trackingPackageStockIn($package, $trackingPackage);
+
+        return [
+            'express_first_no' => $package['express_first_no'],
+            'type' => $trackingPackageType,
+            'next_warehouse_name' => $nextWarehouse['id']
+        ];
+    }
 
     /**
-     * 分拣入库
+     * 转运单入库
+     * @param $package
+     * @param $trackingPackage
+     * @throws BusinessLogicException
+     */
+    public function trackingPackageStockIn($package, $trackingPackage)
+    {
+        $dbPackage = parent::getInfoLock(['express_first_no' => $package['express_first_no']], ['*'], false);
+        if (!empty($dbPackage)) {
+            throw  new BusinessLogicException('当前包裹已入库');
+        }
+        //加入库存
+        $stockData = [
+            'line_id' => '',
+            'line_name' => '',
+            'tracking_order_no' => '',
+            'expiration_date' => null,
+            'expiration_status' => 1,
+            'operator' => auth()->user()->fullname,
+            'operator_id' => auth()->user()->id,
+            'order_no' => $package['order_no'],
+            'express_first_no' => $package['express_first_no']
+        ];
+        $rowCount = parent::create($stockData);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        //生成入库日志
+        $rowCount = $this->getStockInLogService()->create($stockData);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+        //推送入库信息
+        dispatch(new \App\Jobs\PackagePickOut([$package]));
+    }
+
+    /**
+     * 运单入库
      * @param $package
      * @param $tour
      * @param $trackingOrder
      * @throws BusinessLogicException
      */
-    public function pickOut($package, $tour, $trackingOrder)
+    public function trackingOrderStockIn($package, $tour, $trackingOrder)
     {
         $dbPackage = parent::getInfoLock(['express_first_no' => $package['express_first_no']], ['*'], false);
         if (!empty($dbPackage)) {
@@ -171,7 +274,7 @@ class StockService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        //推送入库分拣信息
+        //推送入库信息
         dispatch(new \App\Jobs\PackagePickOut([$package]));
     }
 
@@ -252,6 +355,25 @@ class StockService extends BaseService
         $trackingOrder['execution_date'] = $executionDate;
         $trackingOrder['type'] = $type;
         return array_merge($trackingOrder, Arr::only($order, ['merchant_id', 'order_no', 'out_user_id', 'out_order_no', 'mask_code', 'special_remark']));
+    }
+
+    /**
+     * 检查
+     * @param $package
+     * @param $order
+     * @param $type
+     * @throws BusinessLogicException
+     */
+    public function check($package, $order, $type)
+    {
+        //$this->stockExistCheck($package);
+        $this->stockExceptionCheck($order);
+        if (!in_array($package->status, [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2])) {
+            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
+        }
+        if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
+            throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
+        }
     }
 
 }

@@ -43,6 +43,7 @@ class FixOrderTemplate extends Command
     {
         $data = [];
         $companyList = Company::query()->get(['*'])->toArray();
+        OrderTemplate::query()->where('type',BaseConstService::ORDER_TEMPLATE_TYPE_2)->delete();
         foreach ($companyList as $k => $company) {
             $data[$k] = [
                 'company_id' => $company['id'],

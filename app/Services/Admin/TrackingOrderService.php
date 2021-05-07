@@ -412,7 +412,7 @@ class TrackingOrderService extends BaseService
             } else {
                 $address = [
                     'place_country' => $order['second_place_country'], 'place_fullname' => $order['second_place_fullname'],
-                    'place_province' => $order['second_province'], 'place_district' => $order['second_district'],
+                    'place_province' => $order['second_province'] ?? '', 'place_district' => $order['second_district'] ?? '',
                     'place_phone' => $order['second_place_phone'], 'place_post_code' => $order['second_place_post_code'],
                     'place_house_number' => $order['second_place_house_number'], 'place_city' => $order['second_place_city'],
                     'place_street' => $order['second_place_street'], 'place_address' => $order['second_place_address'],

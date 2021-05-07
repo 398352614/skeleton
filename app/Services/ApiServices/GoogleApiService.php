@@ -43,28 +43,29 @@ class GoogleApiService
      */
     public function __construct()
     {
-        $company = auth('admin')->user();
-        if (empty($company)) {
-            $company = auth('merchant')->user();
-        }
-        if (empty($company)) {
-            $company = auth('driver')->user();
-        }
-        if(empty(($company))) {
-            $company = auth()->user();
-        }
-        if(empty($company)){
-            throw new BusinessLogicException('公司不存在');
-        }
+//        $company = auth('admin')->user();
+//        if (empty($company)) {
+//            $company = auth('merchant')->user();
+//        }
+//        if (empty($company)) {
+//            $company = auth('driver')->user();
+//        }
+//        if(empty(($company))) {
+//            $company = auth()->user();
+//        }
+//        if(empty($company)){
+//            throw new BusinessLogicException('公司不存在');
+//        }
+//        $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
+//        if (!empty($mapConfig)) {
+//            $this->key = $mapConfig->toArray()['google_key'];
+//        } else {
+//            $this->key = '';
+//        }
+//        //$this->key = CompanyTrait::getCompany(auth()->user()->company_id)['map_config']['google_key'];
         $this->client = new CurlClient;
         $this->url = config('tms.api_url');
-        //$this->key = CompanyTrait::getCompany(auth()->user()->company_id)['map_config']['google_key'];
-        $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
-        if (!empty($mapConfig)) {
-            $this->key = $mapConfig->toArray()['google_key'];
-        } else {
-            $this->key = '';
-        }
+        $this->key = config('tms.api_key');
         $this->secret = config('tms.api_secret');
     }
 

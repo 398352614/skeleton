@@ -9,6 +9,7 @@ namespace App\Models\Scope;
 use App\Models\AdditionalPackage;
 use App\Models\AddressTemplate;
 use App\Models\ApiTimes;
+use App\Models\Bag;
 use App\Models\Batch;
 use App\Models\BatchException;
 use App\Models\Car;
@@ -44,6 +45,7 @@ use App\Models\Permission;
 use App\Models\Recharge;
 use App\Models\Role;
 use App\Models\RouteTracking;
+use App\Models\Shift;
 use App\Models\SpecialTimeCharging;
 use App\Models\Stock;
 use App\Models\StockException;
@@ -58,6 +60,7 @@ use App\Models\TrackingOrder;
 use App\Models\TrackingOrderMaterial;
 use App\Models\TrackingOrderPackage;
 use App\Models\TrackingOrderTrail;
+use App\Models\TrackingPackage;
 use App\Models\TransportPrice;
 use App\Models\Warehouse;
 use App\Models\WeightCharging;
@@ -142,6 +145,9 @@ class CompanyScope implements Scope
                 && (!($model instanceof StockException))
                 && (!($model instanceof MerchantGroup))
                 && (!($model instanceof MapConfig))
+                && (!($model instanceof Bag))
+                && (!($model instanceof Shift))
+                && (!($model instanceof TrackingPackage))
                 && (!in_array('driver_id', $whereColumns))
                 && (!Str::contains($sql, "IFNULL(driver_id,0) <> -1"))
             ) {

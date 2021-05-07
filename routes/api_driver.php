@@ -161,7 +161,7 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     //库存管理
     Route::prefix('stock')->group(function () {
         //包裹分拣入库
-        Route::put('/package-pick-out', 'StockController@packagePickOut');
+        Route::put('/package-pick-out', 'StockController@allocate');
     });
 
     //库存管理
@@ -229,5 +229,43 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::get('/', 'stockExceptionController@index');
         //上报
         Route::post('/', 'stockExceptionController@store');
+    });
+
+    //袋号管理
+    Route::prefix('bag')->group(function () {
+        //列表
+        Route::get('/', 'BagController@index');
+        //新增（扫描）
+        Route::post('/', 'BagController@store');
+        //详情
+        Route::get('/{id}', 'BagController@show');
+        //删除
+        Route::delete('/{id}', 'BagController@destroy');
+        //扫描包裹
+        Route::post('/{id}/package', 'BagController@addPackage');
+        //移除包裹
+        Route::delete('/{id}/package', 'BagController@removePackage');
+    });
+
+    //车次管理
+    Route::prefix('shift')->group(function () {
+        //列表
+        Route::get('/', 'ShiftController@index');
+        //新增（扫描）
+        Route::post('/', 'ShiftController@store');
+        //详情
+        Route::get('/{id}', 'ShiftController@show');
+        //修改（扫描）
+        Route::put('/{id}', 'ShiftController@update');
+        //删除
+        Route::delete('/{id}', 'ShiftController@destroy');
+        //更换车辆
+        Route::put('/{id}/changeCar', 'TourController@changeCar');
+        //司机出库
+        Route::put('/{id}/outWarehouse', 'ShiftController@outWarehouse');
+        //司机卸车
+        Route::post('/{id}/unload', 'ShiftController@unload');
+        //司机入库
+        Route::put('/{id}/inWarehouse', 'ShiftController@inWarehouse');
     });
 });

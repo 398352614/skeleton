@@ -200,7 +200,7 @@ class OrderNoRuleService extends BaseService
      * 创建事故处理单号
      * @throws BusinessLogicException
      */
-    public function createCarAccidentNO()
+    public function createCarAccidentNo()
     {
         return $this->createNoBase(BaseConstService::CAR_ACCIDENT_NO_TYPE, '事故处理编号规则不存在或已被禁用，请先联系后台管理员');
     }
@@ -210,10 +210,41 @@ class OrderNoRuleService extends BaseService
      * @return string
      * @throws BusinessLogicException
      */
-    public function createCarMaintainNO()
+    public function createCarMaintainNo()
     {
         return $this->createNoBase(BaseConstService::CAR_MAINTAIN_NO_TYPE, '车辆维护流水号规则不存在或已被禁用，请先联系后台管理员');
     }
+
+    /**
+     * 创建转运单号
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function createTrackingPackageNo()
+    {
+        return $this->createNoBase(BaseConstService::TRACKING_PACKAGE_NO_TYPE, '转运单号规则不存在或已被禁用，请先联系后台管理员');
+    }
+
+    /**
+     * 创建袋号
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function createBagNo()
+    {
+        return $this->createNoBase(BaseConstService::BAG_NO_TYPE, '袋号规则不存在或已被禁用，请先联系后台管理员');
+    }
+
+    /**
+     * 创建车次号
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function createShiftNo()
+    {
+        return $this->createNoBase(BaseConstService::SHIFT_NO_TYPE, '车次号规则不存在或已被禁用，请先联系后台管理员');
+    }
+
 
     /**
      * 创建各种规则的编号

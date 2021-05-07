@@ -9,7 +9,6 @@
 namespace App\Services\Driver;
 
 use App\Models\Warehouse;
-use App\Services\BaseService;
 
 class WareHouseService extends BaseService
 {

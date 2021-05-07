@@ -2,8 +2,12 @@
 
 namespace App\Traits;
 
+use App\Services\Driver\BagService;
+use App\Services\Driver\BaseLineService;
+use App\Services\Driver\BaseWarehouseService;
 use App\Services\Driver\MemorandumService;
 use App\Services\Driver\MerchantGroupService;
+use App\Services\Driver\ShiftService;
 use App\Services\Driver\StockExceptionService;
 use App\Services\Driver\AdditionalPackageService;
 use App\Services\Driver\BatchExceptionService;
@@ -29,6 +33,7 @@ use App\Services\Driver\TourTaskService;
 use App\Services\Driver\TrackingOrderMaterialService;
 use App\Services\Driver\TrackingOrderPackageService;
 use App\Services\Driver\TrackingOrderService;
+use App\Services\Driver\TrackingPackageService;
 use App\Services\Driver\WareHouseService;
 use App\Services\OrderNoRuleService;
 use App\Services\PackageNoRuleService;
@@ -143,6 +148,32 @@ Trait DriverServiceTrait
         return self::getInstance(TrackingOrderService::class);
     }
 
+    /**
+     * 转运单 服务
+     * @return TrackingPackageService
+     */
+    public function getTrackingPackageService()
+    {
+        return self::getInstance(TrackingPackageService::class);
+    }
+
+    /**
+     * 袋号 服务
+     * @return BagService
+     */
+    public function getBagService()
+    {
+        return self::getInstance(BagService::class);
+    }
+
+    /**
+     * 车次 服务
+     * @return ShiftService
+     */
+    public function getShiftService()
+    {
+        return self::getInstance(ShiftService::class);
+    }
 
     /**
      * 运单包裹表
@@ -283,6 +314,15 @@ Trait DriverServiceTrait
     }
 
     /**
+     * 网点基础服务
+     * @return BaseWarehouseService
+     */
+    public function getBaseWarehouseService()
+    {
+        return self::getInstance(BaseWarehouseService::class);
+    }
+
+    /**
      * 运单编号规则
      * @return PackageNoRuleService
      */
@@ -302,11 +342,20 @@ Trait DriverServiceTrait
     }
 
     /**
-     * 获取货主组
+     * 货主组 服务
      * @return StockExceptionService
      */
     public function getMerchantGroupService()
     {
         return self::getInstance(MerchantGroupService::class);
+    }
+
+    /**
+     * 基础线路 服务
+     * @return BaseLineService
+     */
+    public function getBaseLineService()
+    {
+        return self::getInstance(BaseLineService::class);
     }
 }

@@ -42,7 +42,6 @@ if (!function_exists('success')) {
     }
 }
 
-
 if (!function_exists('array_create_group_index')) {
     /**
      * 根据$field，数组列表进行分组并创建索引
