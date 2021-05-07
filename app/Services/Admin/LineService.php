@@ -130,7 +130,12 @@ class LineService extends BaseLineService
         $this->getMerchantGroupLineService()->storeAll($lineId, $params['merchant_group_count_list']);
         //更新网点
         $rootWarehouse = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->company_id, 'parent' => 0], ['*'], false);
-        $this->getWareHouseService()->updateById($rootWarehouse['id'], ['line_ids' => $rootWarehouse['line_ids'] . ',' . $lineId]);
+        if ($rootWarehouse['line_ids'] == '') {
+            $lineIds = $lineId;
+        } else {
+            $lineIds = $rootWarehouse['line_ids'] . ',' . $lineId;
+        }
+        $this->getWareHouseService()->updateById($rootWarehouse['id'], ['line_ids' => $lineIds]);
     }
 
     /**
@@ -369,7 +374,7 @@ class LineService extends BaseLineService
      */
     public function updateWarehouse($warehouseId, $lineIdList)
     {
-        if(empty($lineIdList)){
+        if (empty($lineIdList)) {
             return;
         }
         $row = parent::update(['id' => ['in', $lineIdList]], ['warehouse_id' => $warehouseId]);
