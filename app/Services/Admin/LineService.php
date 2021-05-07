@@ -378,10 +378,10 @@ class LineService extends BaseLineService
             return;
         }
         $row = parent::update(['id' => ['in', $lineIdList]], ['warehouse_id' => $warehouseId]);
-        dd(parent::getInfo(['id'=>['in',$lineIdList]],['*'],false));
         if ($row == false) {
             throw new BusinessLogicException('更新线路失败');
         }
+        dd(1);
     }
 
     /**
