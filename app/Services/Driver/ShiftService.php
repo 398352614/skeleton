@@ -19,7 +19,7 @@ class ShiftService extends BaseService
 {
     public $filterRules = [
         'status' => ['=', 'status'],
-
+        'bag_no' => ['like', 'bag_no']
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -74,15 +74,19 @@ class ShiftService extends BaseService
     /**
      * 新增
      * @param array $data
+     * @return array
      * @throws BusinessLogicException
      */
     public function store(array $data)
     {
-        $data['shift_no']=$this->getOrderNoRuleService()->createShiftNo();
+        $data['shift_no'] = $this->getOrderNoRuleService()->createShiftNo();
         $rowCount = parent::create($data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
+        return [
+            'shift_no' => $data['shift_no'],
+        ];
     }
 
     /**

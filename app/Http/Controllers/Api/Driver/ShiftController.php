@@ -11,7 +11,7 @@ namespace App\Http\Controllers\Api\Driver;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
-use App\Services\Driver\StockService;
+use App\Services\Driver\ShiftService;
 
 /**
  * Class StockController

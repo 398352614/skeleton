@@ -17,7 +17,7 @@ class BagService extends BaseService
 {
     public $filterRules = [
         'status' => ['=', 'status'],
-
+        'bag_no' => ['like', 'bag_no']
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -55,17 +55,32 @@ class BagService extends BaseService
     /**
      * 新增
      * @param array $data
+     * @return array
      * @throws BusinessLogicException
      */
     public function store(array $data)
     {
         $data['bag_no'] = $this->getOrderNoRuleService()->createBagNo();
         $data['warehouse_id'] = auth()->user()->warehouse_id;
-        $data['warehouse_name'] = $this->getWareHouseService()->getInfo(['id'=>auth()->user()->warehouse_id],['*'],false)->toArray()['name'];
+        $data['warehouse_name'] = $this->getWareHouseService()->getInfo(['id' => auth()->user()->warehouse_id], ['*'], false);
+        if (!empty($data['warehouse_name'])) {
+            $data['warehouse_name'] = $data['warehouse_name']['name'];
+        } else {
+            $data['warehouse_name'] = '';
+        }
+        $data['next_warehouse_name'] = $this->getWareHouseService()->getInfo(['id' => $data['next_warehouse_id']], ['*'], false);
+        if (!empty($data['next_warehouse_name'])) {
+            $data['next_warehouse_name'] = $data['next_warehouse_name']['name'];
+        } else {
+            $data['next_warehouse_name'] = '';
+        }
         $rowCount = parent::create($data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
+        return [
+            'bag_no' => $data['bag_no'],
+        ];
     }
 
     /**
