@@ -40,7 +40,7 @@ class LineValidate extends BaseValidate
         //区域列表
         'coordinate_list.*.*.lat' => 'required|string|max:30',
         'coordinate_list.*.*.lon' => 'required|string|max:30',
-``        'place_fullname' => 'required|string|max:50',
+        'place_fullname' => 'required|string|max:50',
         'place_province' => 'nullable|string|max:50',
         'place_post_code' => 'required|string|max:50',
         'place_house_number' => 'required|string|max:50',
