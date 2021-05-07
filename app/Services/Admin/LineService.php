@@ -378,7 +378,6 @@ class LineService extends BaseLineService
         if (empty($lineIdList)) {
             return;
         }
-        dd($lineIdList);
         $row = parent::update(['id' => ['in', $lineIdList]], ['warehouse_id' => $warehouseId]);
     }
 
