@@ -15,6 +15,7 @@ use App\Models\Warehouse;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -184,7 +185,7 @@ class WareHouseService extends BaseService
     /**
      * 获取网点下所有线路
      * @param $id
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public function getLineList($id)
     {
@@ -195,18 +196,12 @@ class WareHouseService extends BaseService
 
     /**
      * 获取网点可选线路（获取直属上级网点的线路）
-     * @param $id
-     * @return \Illuminate\Database\Eloquent\Collection
-     * @throws BusinessLogicException
+     * @param $parentId
+     * @return Collection
      */
-    public function getAbleLineList($id)
+    public function getAbleLineList($parentId)
     {
-        $warehouse = parent::getInfo(['id' => $id], ['*'], false);
-        $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], ['*'], false);
-        if (empty($parentWarehouse)) {
-            throw new BusinessLogicException('没有可选线路');
-        }
-        return $this->getLineService()->getPageListByWarehouse($parentWarehouse['id']);
+        return $this->getLineService()->getPageListByWarehouse($parentId);
     }
 
 //    /**
