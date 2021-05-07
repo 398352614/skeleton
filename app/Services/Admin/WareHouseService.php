@@ -96,7 +96,7 @@ class WareHouseService extends BaseService
         } else {
             $lineIdList = explode(',', $lineIdList);
         }
-        $data['line_ids']=$lineIdList;
+        $data['line_ids'] = $lineIdList;
         $this->check($dbData, $lineIdList);
         $this->fillData($data, $dbData->toArray());
         unset($data['created_at'], $data['updated_at']);
@@ -111,8 +111,8 @@ class WareHouseService extends BaseService
         if (empty($parentWarehouse)) {
             return;
         }
-        $more = array_diff(explode(',', $data['line_ids']), explode(',', $dbData['line_ids']));
-        $less = array_diff(explode(',', $dbData['line_ids']), explode(',', $data['line_ids']));
+        $more = array_diff($data['line_ids'], explode(',', $dbData['line_ids']));
+        $less = array_diff(explode(',', $dbData['line_ids']), $data['line_ids']);
         if (!empty($more)) {
             $lineIdList = array_diff(explode(',', $parentWarehouse['line_ids']), $more);
         } elseif (!empty($less)) {
@@ -175,8 +175,8 @@ class WareHouseService extends BaseService
         if ($row === false) {
             throw new BusinessLogicException('操作失败');
         }
-        if(!empty($warehouse['line_ids'])){
-            $row = parent::updateById($parentWarehouse['id'], ['line_ids' => $parentWarehouse['line_ids'].','.$warehouse['line_ids']]);
+        if (!empty($warehouse['line_ids'])) {
+            $row = parent::updateById($parentWarehouse['id'], ['line_ids' => $parentWarehouse['line_ids'] . ',' . $warehouse['line_ids']]);
             if ($row === false) {
                 throw new BusinessLogicException('操作失败');
             }
