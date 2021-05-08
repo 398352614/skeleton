@@ -110,11 +110,15 @@ class WareHouseService extends BaseService
         if (empty($parentWarehouse)) {
             return;
         }
-        $less = array_diff(explode(',', $dbData['line_ids']), explode(',', $data['line_ids']));
-        if (!empty($less)) {
-            $lineIdList = array_diff(explode(',', $parentWarehouse['line_ids']), $less);
-            $this->getLineService()->updateWarehouse($dbData['parent'], $lineIdList);
+
+        $less = [];
+        //检查每个原线路列表，如果没出现在新线路列表中，则代表删去了，应回归上级网点
+        foreach (explode(',', $dbData['line_ids']) as $k => $v) {
+            if (!in_array($v, explode(',', $data['line_ids']))) {
+                $less[] = $v;
+            }
         }
+        $this->getLineService()->updateWarehouse($dbData['parent'], $less);
 //        $row = parent::update(['id' => $dbData['parent']], ['line_ids' => $parentWarehouse['line_ids']]);
 //        if ($row == false) {
 //            throw new BusinessLogicException('操作失败');
@@ -185,7 +189,7 @@ class WareHouseService extends BaseService
     public function getLineList($id)
     {
         $warehouse = parent::getInfo(['id' => $id], ['*'], false);
-        if(empty($warehouse)){
+        if (empty($warehouse)) {
             throw new BusinessLogicException('网点不存在');
         }
         $ids = explode(',', $warehouse['line_ids']);
