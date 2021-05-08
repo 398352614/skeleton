@@ -119,12 +119,6 @@ class WareHouseService extends BaseService
         } else {
             return;
         }
-        $lineIdList = implode(',', $lineIdList);
-        $rowCount = parent::updateById($parentWarehouse['id'], ['line_ids' => $lineIdList]);
-        $lineIdList = explode(',', $lineIdList);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('网点修改失败，请重新操作');
-        }
         $this->getLineService()->updateWarehouse($dbData['parent'], $lineIdList);
 
 //        $row = parent::update(['id' => $dbData['parent']], ['line_ids' => $parentWarehouse['line_ids']]);
@@ -197,7 +191,7 @@ class WareHouseService extends BaseService
     public function getLineList($id)
     {
         $warehouse = parent::getInfo(['id' => $id], ['*'], false);
-        if (empty($warehouse)) {
+        if(empty($warehouse)){
             throw new BusinessLogicException('网点不存在');
         }
         $ids = explode(',', $warehouse['line_ids']);
