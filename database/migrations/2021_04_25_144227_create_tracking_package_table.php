@@ -38,7 +38,6 @@ class CreateTrackingPackageTable extends Migration
             $table->string('unpack_operator_id')->default('')->nullable()->comment('拆袋操作人ID');
 
 
-
             $table->timestamps();
         });
     }

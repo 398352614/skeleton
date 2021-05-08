@@ -37,7 +37,8 @@ class CreateShiftTable extends Migration
             $table->dateTime('actual_time')->default(null)->nullable()->comment('实际时间');
             $table->integer('expect_distance')->default(0)->nullable()->comment('预计里程');
             $table->integer('actual_distance')->default(0)->nullable()->comment('实际里程');
-            $table->dateTime('lave_distance')->default(0)->nullable()->comment('剩余里程');
+            $table->timestamps();
+
         });
     }
 
