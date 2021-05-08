@@ -270,4 +270,10 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         //司机入库
         Route::put('/{id}/inWarehouse', 'ShiftController@inWarehouse');
     });
+
+    //仓库管理
+    Route::prefix('warehouse')->group(function () {
+        //列表
+        Route::get('/', 'WarehouseController@index');
+    });
 });
