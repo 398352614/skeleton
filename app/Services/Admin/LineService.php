@@ -375,11 +375,11 @@ class LineService extends BaseLineService
      */
     public function updateWarehouse($warehouseId, $lineIdList)
     {
-        if (empty($lineIdList) || $lineIdList[0] == '') {
+        if (empty($lineIdList) || array_values($lineIdList) == ['']) {
             return;
         }
         $row = parent::update(['id' => ['in', $lineIdList]], ['warehouse_id' => $warehouseId]);
-        if($row ==false){
+        if ($row == false) {
             throw new BusinessLogicException('更新线路所属网点失败');
         }
     }
