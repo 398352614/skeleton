@@ -103,24 +103,18 @@ class WareHouseService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('网点修改失败，请重新操作');
         }
-        //更新线路的网点ID
+        //增加，更新线路的网点ID
         $this->getLineService()->updateWarehouse($dbData['id'], $lineIdList);
-        //更新上级网点
+        //减少，更新线路的上级网点ID
         $parentWarehouse = parent::getInfo(['id' => $dbData['parent']], ['*'], false);
         if (empty($parentWarehouse)) {
             return;
         }
-        $more = array_diff(explode(',', $data['line_ids']), explode(',', $dbData['line_ids']));
         $less = array_diff(explode(',', $dbData['line_ids']), explode(',', $data['line_ids']));
-        if (!empty($more)) {
-            $lineIdList = array_diff(explode(',', $parentWarehouse['line_ids']), $more);
-        } elseif (!empty($less)) {
-            $lineIdList = array_merge(explode(',', $parentWarehouse['line_ids']), $less);
-        } else {
-            return;
+        if (!empty($less)) {
+            $lineIdList = array_diff(explode(',', $parentWarehouse['line_ids']), $less);
+            $this->getLineService()->updateWarehouse($dbData['parent'], $lineIdList);
         }
-        $this->getLineService()->updateWarehouse($dbData['parent'], $lineIdList);
-
 //        $row = parent::update(['id' => $dbData['parent']], ['line_ids' => $parentWarehouse['line_ids']]);
 //        if ($row == false) {
 //            throw new BusinessLogicException('操作失败');
