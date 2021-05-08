@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Collection;
  * @package App\Http\Controllers\Api\Admin
  * @property WareHouseService $service
  */
-class WareHouseController extends BaseController
+class WarehouseController extends BaseController
 {
     /**
      * WareHouseController constructor.
