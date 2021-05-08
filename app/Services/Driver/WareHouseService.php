@@ -16,4 +16,11 @@ class WareHouseService extends BaseService
     {
         parent::__construct($warehouse, $resource, $infoResource);
     }
+
+    public function getPageList()
+    {
+        $rootWarehouse = parent::getInfo(['parent' => 0], ['*'], false);
+        $this->query->where('id', '<>', $rootWarehouse['id']);
+        return parent::getPageList();
+    }
 }

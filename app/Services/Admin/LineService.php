@@ -375,7 +375,7 @@ class LineService extends BaseLineService
      */
     public function updateWarehouse($warehouseId, $lineIdList)
     {
-        if (empty($lineIdList)) {
+        if (empty($lineIdList) || $lineIdList[0] == '') {
             return;
         }
         $row = parent::update(['id' => ['in', $lineIdList]], ['warehouse_id' => $warehouseId]);
