@@ -7,7 +7,7 @@ use Carbon\CarbonInterval;
 
 /**
  * bag 袋，转运过程中的包裹集合，相当于取派过程中的订单。
-     * Class Bag
+ * Class Bag
  * @package App\Models
  */
 class Shift extends BaseModel
@@ -45,15 +45,25 @@ class Shift extends BaseModel
     protected $fillable = [
         'company_id',
         'merchant_id',
-        'bag_no',
         'shift_no',
         'status',
         'weight',
+        'package_count',
         'driver_id',
         'driver_name',
         'car_no',
+        'car_id',
         'remark',
-
+        'begin_time',
+        'end_time',
+        'expect_time',
+        'actual_time',
+        'expect_distance',
+        'actual_distance',
+        'warehouse_id',
+        'warehouse_name',
+        'next_warehouse_id',
+        'next_warehouse_name',
         'created_at',
         'updated_at',
 

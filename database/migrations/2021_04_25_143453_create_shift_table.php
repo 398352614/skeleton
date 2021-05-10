@@ -21,15 +21,15 @@ class CreateShiftTable extends Migration
             $table->decimal('weight', 2)->default(0.00)->nullable()->comment('包裹总重量');
             $table->integer('package_count')->default(0)->nullable()->comment('包裹数量');
 
-            $table->string('warehouse_id')->default('')->nullable()->comment('所在网点ID');
+            $table->integer('warehouse_id')->default(null)->nullable()->comment('所在网点ID');
             $table->string('warehouse_name')->default('')->nullable()->comment('所在网点名称');
-            $table->string('next_warehouse_id')->default('')->nullable()->comment('目的地网点ID');
+            $table->integer('next_warehouse_id')->default(null)->nullable()->comment('目的地网点ID');
             $table->string('next_warehouse_name')->default('')->nullable()->comment('目的地网点名称');
 
-            $table->string('driver_id')->default('')->nullable()->comment('司机名称');
+            $table->integer('driver_id')->default(null)->nullable()->comment('司机名称');
             $table->string('driver_name')->default('')->nullable()->comment('司机姓名');
+            $table->integer('car_id')->default(null)->nullable()->comment('车辆ID');
             $table->string('car_no')->default('')->nullable()->comment('车牌号');
-            $table->string('car_id')->default('')->nullable()->comment('车辆ID');
 
             $table->dateTime('begin_time')->default(null)->nullable()->comment('发车时间');
             $table->dateTime('end_time')->default(null)->nullable()->comment('到车时间');

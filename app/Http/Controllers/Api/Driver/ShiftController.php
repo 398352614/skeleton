@@ -88,6 +88,16 @@ class ShiftController extends BaseController
     }
 
     /**
+     * @param $id
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function unloadItemList($id)
+    {
+        return $this->service->unloadItemList($id, $this->data);
+    }
+
+    /**
      * 发车
      * @param $id
      * @return \Illuminate\Database\Eloquent\Builder|mixed
@@ -95,7 +105,7 @@ class ShiftController extends BaseController
      */
     public function outWarehouse($id)
     {
-        return $this->service->unpackPackage($id, $this->data);
+        return $this->service->outWarehouse($id);
     }
 
     /**
@@ -106,6 +116,6 @@ class ShiftController extends BaseController
      */
     public function inWarehouse($id)
     {
-        return $this->service->unpackPackage($id, $this->data);
+        return $this->service->inWarehouse($id);
     }
 }

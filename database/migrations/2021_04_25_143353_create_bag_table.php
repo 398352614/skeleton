@@ -22,17 +22,17 @@ class CreateBagTable extends Migration
             $table->decimal('weight', 2)->default(0.00)->nullable()->comment('包裹总重量');
             $table->integer('package_count')->default(0)->nullable()->comment('包裹数量');
 
-            $table->string('warehouse_id')->default('')->nullable()->comment('所在网点ID');
+            $table->integer('warehouse_id')->default(null)->nullable()->comment('所在网点ID');
             $table->string('warehouse_name')->default('')->nullable()->comment('所在网点名称');
-            $table->string('next_warehouse_id')->default('')->nullable()->comment('目的地网点ID');
+            $table->integer('next_warehouse_id')->default(null)->nullable()->comment('目的地网点ID');
             $table->string('next_warehouse_name')->default('')->nullable()->comment('目的地网点名称');
 
             $table->dateTime('load_time')->default(null)->nullable()->comment('装车时间');
             $table->string('load_operator')->default('')->nullable()->comment('装车操作人');
-            $table->string('load_operator_id')->default('')->nullable()->comment('装车操作人ID');
+            $table->integer('load_operator_id')->default(null)->nullable()->comment('装车操作人ID');
             $table->dateTime('unload_time')->default(null)->nullable()->comment('卸车时间');
             $table->string('unload_operator')->default('')->nullable()->comment('卸车操作人');
-            $table->string('unload_operator_id')->default('')->nullable()->comment('卸车操作人ID');
+            $table->integer('unload_operator_id')->default(null)->nullable()->comment('卸车操作人ID');
             $table->timestamps();
         });
     }

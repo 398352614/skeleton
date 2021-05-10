@@ -80,6 +80,7 @@ class BagService extends BaseService
         }
         return [
             'bag_no' => $data['bag_no'],
+            'id' => $rowCount->id
         ];
     }
 
@@ -230,13 +231,14 @@ class BagService extends BaseService
         }
         $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['express_first_no']], ['*'], false);
         if (!empty($trackingPackage) || $trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_2) {
-            $row = $this->getTrackingPackageService()->updateById($package['id'], [
+            $row = $this->getTrackingPackageService()->updateById($trackingPackage['id'], [
                 'status' => BaseConstService::TRACKING_PACKAGE_STATUS_1,
                 'bag_no' => '',
                 'pack_time' => null,
                 'pack_operator' => '',
-                'pack_operator_id' => '',
+                'pack_operator_id' => null,
             ]);
+
             if ($row == false) {
                 throw new BusinessLogicException('操作失败');
             }
@@ -274,7 +276,6 @@ class BagService extends BaseService
                 throw new BusinessLogicException('操作失败');
             }
         }
-        $this->recount($id);
         if (count($trackingPackageList) == 1) {
             return $trackingPackageList[0];
         }

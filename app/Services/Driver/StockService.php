@@ -86,7 +86,7 @@ class StockService extends BaseService
         $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
         if (auth()->user()->warehouse_id == $pieWarehouse['id']) {
             //如果本网点为该包裹的派件网点，则生成派件运单进行派送
-            return $this->createTrackingOrder($order, $type);
+            return $this->createTrackingOrder($package, $order, $type);
         } elseif (auth()->user()->warehouse_id == $pieCenter['id']) {
             //如果本网点为该包裹的派件网点所属的分拨中心，则生成分拨转运单
             return $this->createTrackingPackage($package, $warehouse, $pieWarehouse, BaseConstService::TRACKING_PACKAGE_TYPE_1);
@@ -104,12 +104,13 @@ class StockService extends BaseService
 
     /**
      * 创建派件运单
+     * @param $package
      * @param $order
      * @param $type
      * @return array
      * @throws BusinessLogicException
      */
-    public function createTrackingOrder($order, $type)
+    public function createTrackingOrder($package, $order, $type)
     {
         $trackingOrder = $tour = $line = [];
         //获取最近可选日期
@@ -174,7 +175,7 @@ class StockService extends BaseService
     public function createTrackingPackage($package, $warehouse, $nextWarehouse, $trackingPackageType, $trackingPackageDistanceType = BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2)
     {
         $trackingPackage = $this->getTrackingPackageService()->create([
-            'tracking_package_no'=>$this->getOrderNoRuleService()->createTrackingPackageNo(),
+            'tracking_package_no' => $this->getOrderNoRuleService()->createTrackingPackageNo(),
             'express_first_no' => $package['express_first_no'],
             'order_no' => $package['express_first_no'],
             'bag_no' => '',
@@ -199,7 +200,8 @@ class StockService extends BaseService
         return [
             'express_first_no' => $package['express_first_no'],
             'type' => $trackingPackageType,
-            'next_warehouse_name' => $nextWarehouse['id']
+            'next_warehouse_id' => $nextWarehouse['id'],
+            'next_warehouse_name' => $nextWarehouse['name']
         ];
     }
 

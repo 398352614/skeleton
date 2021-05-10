@@ -262,11 +262,15 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         //删除
         Route::delete('/{id}', 'ShiftController@destroy');
         //更换车辆
-        Route::put('/{id}/changeCar', 'TourController@changeCar');
+        Route::put('/{id}/changeCar', 'ShiftController@changeCar');
+        //装车
+        Route::post('/{id}/load', 'ShiftController@loadItem');
+        //移除内容物
+        Route::delete('/{id}/load', 'ShiftController@removeItem');
+        //卸车
+        Route::post('/{id}/unload', 'ShiftController@unloadItem');
         //司机出库
         Route::put('/{id}/outWarehouse', 'ShiftController@outWarehouse');
-        //司机卸车
-        Route::post('/{id}/unload', 'ShiftController@unload');
         //司机入库
         Route::put('/{id}/inWarehouse', 'ShiftController@inWarehouse');
     });

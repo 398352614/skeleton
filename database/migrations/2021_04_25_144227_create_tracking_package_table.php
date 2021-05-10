@@ -25,17 +25,17 @@ class CreateTrackingPackageTable extends Migration
             $table->tinyInteger('distance_type')->default(1)->nullable()->comment('状态:1-长途2-短途');
             $table->decimal('weight', 2)->default(0.00)->nullable()->comment('包裹重量');
 
-            $table->string('warehouse_id')->default('')->nullable()->comment('所在网点ID');
+            $table->integer('warehouse_id')->default(null)->nullable()->comment('所在网点ID');
             $table->string('warehouse_name')->default('')->nullable()->comment('所在网点名称');
-            $table->string('next_warehouse_id')->default('')->nullable()->comment('目的地网点ID');
+            $table->integer('next_warehouse_id')->default(null)->nullable()->comment('目的地网点ID');
             $table->string('next_warehouse_name')->default('')->nullable()->comment('目的地网点名称');
 
             $table->dateTime('pack_time')->default(null)->nullable()->comment('装袋时间');
             $table->string('pack_operator')->default('')->nullable()->comment('装袋操作人');
-            $table->string('pack_operator_id')->default('')->nullable()->comment('装袋操作人ID');
+            $table->integer('pack_operator_id')->default(null)->nullable()->comment('装袋操作人ID');
             $table->dateTime('unpack_time')->default(null)->nullable()->comment('拆袋时间');
             $table->string('unpack_operator')->default('')->nullable()->comment('拆袋操作人');
-            $table->string('unpack_operator_id')->default('')->nullable()->comment('拆袋操作人ID');
+            $table->integer('unpack_operator_id')->default(null)->nullable()->comment('拆袋操作人ID');
 
 
             $table->timestamps();
