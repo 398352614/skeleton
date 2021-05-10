@@ -110,6 +110,18 @@ return [
         'lat' => [
             'required' => '系统无法获取该地址的位置信息',
         ],
+        'place_lon' => [
+            'required' => '系统无法获取该地址的位置信息',
+        ],
+        'place_lat' => [
+            'required' => '系统无法获取该地址的位置信息',
+        ],
+        'second_place_lon' => [
+            'required' => '系统无法获取该地址的位置信息',
+        ],
+        'second_place_lat' => [
+            'required' => '系统无法获取该地址的位置信息',
+        ],
         //包裹列表
         'package_list.*.id' => [
             'required_with' => '包裹ID是必须的',
@@ -747,7 +759,7 @@ return [
         "expiration_status" => "超期状态",
         "actual_weight" => "实际重量",
         "second_content" => "附带内容",
-    
+
 
 
 "place_province"=>"收件人省份",
