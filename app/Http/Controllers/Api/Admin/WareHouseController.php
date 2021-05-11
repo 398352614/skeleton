@@ -22,7 +22,7 @@ class WareHouseController extends BaseController
 {
     /**
      * WareHouseController constructor.
-     * @param  WareHouseService  $service
+     * @param WareHouseService $service
      */
     public function __construct(WareHouseService $service)
     {
@@ -69,6 +69,26 @@ class WareHouseController extends BaseController
     }
 
     /**
+     * 批量新增线路
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function addLineList($id)
+    {
+        return $this->service->addLineList($id, $this->data);
+    }
+
+    /**
+     * 批量移除线路
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function removeLineList($id)
+    {
+        return $this->service->removeLineList($id, $this->data);
+    }
+
+    /**
      * 删除
      * @param $id
      * @throws BusinessLogicException
@@ -88,8 +108,8 @@ class WareHouseController extends BaseController
     }
 
     /**
-     * @param  int  $id
-     * @param  int  $parent
+     * @param int $id
+     * @param int $parent
      */
     public function move(int $id, int $parent)
     {
@@ -100,6 +120,7 @@ class WareHouseController extends BaseController
      * 获取网点下的线路列表
      * @param $id
      * @return Collection
+     * @throws BusinessLogicException
      */
     public function getLineList($id)
     {

@@ -24,7 +24,7 @@ class WareHouseValidate extends BaseValidate
         'type' => 'nullable|integer|in:1,2',
         'is_center' => 'required|integer|in:1,2',
         'acceptance_type' => 'nullable|string',
-        'line_ids' => 'required|text',
+        'line_ids' => 'nullable|text',
         'fullname' => 'required|string|max:50',
         'company_name' => 'required|string|max:50',
         'phone' => 'required|string|max:20',

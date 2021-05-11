@@ -62,7 +62,7 @@ class WareHouseService extends BaseService
     /**
      * 新增
      * @param $params
-     * @return bool
+     * @return Builder|Model
      * @throws BusinessLogicException
      */
     public function store($params)
@@ -99,30 +99,70 @@ class WareHouseService extends BaseService
         $this->check($dbData, $lineIdList);
         $this->fillData($data, $dbData->toArray());
         unset($data['created_at'], $data['updated_at']);
+        $data['line_ids'] = $dbData['line_ids'];
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('网点修改失败，请重新操作');
         }
+        return;
+//        //增加，更新线路的网点ID
+//        $this->getLineService()->updateWarehouse($dbData['id'], $lineIdList);
+//        //减少，更新线路的上级网点ID
+//        $parentWarehouse = parent::getInfo(['id' => $dbData['parent']], ['*'], false);
+//        if (empty($parentWarehouse)) {
+//            return;
+//        }
+//
+//        $less = [];
+//        //检查每个原线路列表，如果没出现在新线路列表中，则代表删去了，应回归上级网点
+//        foreach (explode(',', $dbData['line_ids']) as $k => $v) {
+//            if (!in_array($v, explode(',', $data['line_ids']))) {
+//                $less[] = $v;
+//            }
+//        }
+//        $this->getLineService()->updateWarehouse($dbData['parent'], $less);
+////        $row = parent::update(['id' => $dbData['parent']], ['line_ids' => $parentWarehouse['line_ids']]);
+////        if ($row == false) {
+////            throw new BusinessLogicException('操作失败');
+////        }
+    }
+
+    /**
+     * 批量新增线路
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function addLineList($id, $params)
+    {
+        $dbData = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($dbData)) {
+            throw new BusinessLogicException('数据不存在');
+        }
         //增加，更新线路的网点ID
-        $this->getLineService()->updateWarehouse($dbData['id'], $lineIdList);
+        $addList = explode(',', $params['line_ids']);
+        $this->getLineService()->updateWarehouse($id, $addList);
+
+    }
+
+    /**
+     * @param $id
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function removeLineList($id, $params)
+    {
+        $dbData = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($dbData)) {
+            throw new BusinessLogicException('数据不存在');
+        }
         //减少，更新线路的上级网点ID
         $parentWarehouse = parent::getInfo(['id' => $dbData['parent']], ['*'], false);
         if (empty($parentWarehouse)) {
             return;
         }
-
-        $less = [];
-        //检查每个原线路列表，如果没出现在新线路列表中，则代表删去了，应回归上级网点
-        foreach (explode(',', $dbData['line_ids']) as $k => $v) {
-            if (!in_array($v, explode(',', $data['line_ids']))) {
-                $less[] = $v;
-            }
-        }
+        $less = explode(',', $params['line_ids']);
         $this->getLineService()->updateWarehouse($dbData['parent'], $less);
-//        $row = parent::update(['id' => $dbData['parent']], ['line_ids' => $parentWarehouse['line_ids']]);
-//        if ($row == false) {
-//            throw new BusinessLogicException('操作失败');
-//        }
     }
 
     /**
