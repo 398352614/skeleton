@@ -576,10 +576,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::post('/{id}/line', 'WareHouseController@addLineList')->name('warehouse.index');
         //移除线路
         Route::delete('/{id}/all-line', 'WareHouseController@removeLineList')->name('warehouse.index');
-//        //新增线路
-//        Route::put('/{id}/line', 'WareHouseController@addLine')->name('warehouse.update');
-//        //删除线路
-//        Route::delete('/{id}/line', 'WareHouseController@removeLine')->name('warehouse.update');
+        //新增线路
+        Route::post('/{id}/line', 'WareHouseController@addLine')->name('warehouse.update');
+        //删除线路
+        Route::delete('/{id}/line', 'WareHouseController@removeLine')->name('warehouse.update');
     });
 
     //公司信息
