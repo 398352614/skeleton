@@ -139,6 +139,15 @@ class WareHouseService extends BaseService
         if (empty($dbData)) {
             throw new BusinessLogicException('数据不存在');
         }
+        if ($dbData['line_ids'] == '') {
+            $lineIds = $params['line_ids'];
+        } else {
+            $lineIds = $dbData['line_ids'] . ',' . $params['line_ids'];
+        }
+        $rowCount = parent::updateById($id, ['line_ids' => $lineIds]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('网点修改失败，请重新操作');
+        }
         //增加，更新线路的网点ID
         $addList = explode(',', $params['line_ids']);
         $this->getLineService()->updateWarehouse($id, $addList);
