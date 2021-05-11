@@ -577,9 +577,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //移除线路
         Route::delete('/{id}/all-line', 'WareHouseController@removeLineList')->name('warehouse.index');
         //新增线路
-        Route::post('/{id}/line', 'WareHouseController@addLine')->name('warehouse.update');
+        Route::post('/{id}/line', 'WareHouseController@addLineList')->name('warehouse.update');
         //删除线路
-        Route::delete('/{id}/line', 'WareHouseController@removeLine')->name('warehouse.update');
+        Route::delete('/{id}/line', 'WareHouseController@removeLineList')->name('warehouse.update');
     });
 
     //公司信息
