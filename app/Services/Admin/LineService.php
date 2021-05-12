@@ -363,12 +363,12 @@ class LineService extends BaseLineService
     public function getPageListByWarehouse($warehouseId)
     {
         $this->query->where('warehouse_id', $warehouseId);
-        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
+//        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
             unset($this->formData);
             return $this->postcodeIndex();
-        } else {
-            return $this->areaIndex(2);
-        }
+//        } else {
+//            return $this->areaIndex(2);
+//        }
     }
 
     /**
