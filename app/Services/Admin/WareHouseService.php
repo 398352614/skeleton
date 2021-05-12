@@ -165,6 +165,19 @@ class WareHouseService extends BaseService
         if (empty($dbData)) {
             throw new BusinessLogicException('数据不存在');
         }
+        $removeLineList = explode(',', $params['line_ids']);
+        $lineList = explode(',', $dbData['line_ids']);
+        $newLineList = [];
+        foreach ($lineList as $K => $v) {
+            if (!in_array($v, $removeLineList)) {
+                $newLineList[] = $v;
+            }
+        }
+        $newLineList = implode(',', $newLineList);
+        $rowCount = parent::updateById($id, ['line_ids' => $newLineList]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('网点修改失败，请重新操作');
+        }
         //减少，更新线路的上级网点ID
         $parentWarehouse = parent::getInfo(['id' => $dbData['parent']], ['*'], false);
         if (empty($parentWarehouse)) {
