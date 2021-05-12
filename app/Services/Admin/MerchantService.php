@@ -33,7 +33,8 @@ class MerchantService extends BaseService
         'status' => ['=', 'status'],
         'code' => ['like', 'code'],
         'name' => ['like', 'name'],
-        'email' => ['like', 'email']
+        'email' => ['like', 'email'],
+        'acceptance_type' => ['like', 'acceptance_type']
     ];
 
     protected $headings = [
@@ -138,6 +139,9 @@ class MerchantService extends BaseService
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
             throw new BusinessLogicException('网点不存在');
+        }
+        if (strpos($warehouse['acceptance_type'], BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3)) {
+            throw new BusinessLogicException('网点未配置仓配一体，无法选择该网点');
         }
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $params['merchant_group_id']], ['*'], false);
         if (empty($merchantGroup)) {
