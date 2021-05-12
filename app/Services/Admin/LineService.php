@@ -116,6 +116,8 @@ class LineService extends BaseLineService
      */
     public function postcodeStore($params)
     {
+        $rootWarehouse = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->company_id, 'parent' => 0], ['*'], false);
+        $params['warehouse_id'] = $rootWarehouse['id'];
         //基础验证
         $this->check($params);
         //邮编范围验证
@@ -129,13 +131,15 @@ class LineService extends BaseLineService
         //最小订单量批量新增
         $this->getMerchantGroupLineService()->storeAll($lineId, $params['merchant_group_count_list']);
         //更新网点
-        $rootWarehouse = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->company_id, 'parent' => 0], ['*'], false);
         if ($rootWarehouse['line_ids'] == '') {
             $lineIds = $lineId;
         } else {
             $lineIds = $rootWarehouse['line_ids'] . ',' . $lineId;
         }
-        $this->getWareHouseService()->update(['id' => $rootWarehouse['id']], ['line_ids' => $lineIds]);
+        $row = $this->getWareHouseService()->update(['id' => $rootWarehouse['id']], ['line_ids' => $lineIds]);
+        if ($row == false) {
+            throw new BusinessLogicException('更新失败');
+        }
     }
 
     /**
