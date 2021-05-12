@@ -167,6 +167,16 @@ class WareHouseService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $removeLineList = explode(',', $params['line_ids']);
+        $childWarehouseList = parent::getList(['parent' => $dbData['id']], ['*'], false);
+        if (!empty($childWarehouseList)) {
+            $childWarehouseList = $childWarehouseList->toArray();
+            foreach ($childWarehouseList as $k => $v) {
+                if (!empty($v['line_ids']) && array_intersect($removeLineList, explode(',', $v['line_ids']))) {
+                    throw new BusinessLogicException('请先删除下级网点的该线路');
+                }
+            }
+        }
+
         $lineList = explode(',', $dbData['line_ids']);
         $newLineList = [];
         foreach ($lineList as $K => $v) {
