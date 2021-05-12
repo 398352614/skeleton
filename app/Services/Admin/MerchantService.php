@@ -34,7 +34,6 @@ class MerchantService extends BaseService
         'code' => ['like', 'code'],
         'name' => ['like', 'name'],
         'email' => ['like', 'email'],
-        'acceptance_type' => ['like', 'acceptance_type']
     ];
 
     protected $headings = [

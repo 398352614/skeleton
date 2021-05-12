@@ -29,6 +29,7 @@ class WareHouseService extends BaseService
      */
     public $filterRules = [
         'country' => ['=', 'country'],
+        'acceptance_type' => ['like', 'acceptance_type']
     ];
 
     /**
