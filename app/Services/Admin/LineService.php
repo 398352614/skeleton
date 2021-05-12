@@ -135,7 +135,7 @@ class LineService extends BaseLineService
         } else {
             $lineIds = $rootWarehouse['line_ids'] . ',' . $lineId;
         }
-        $this->getWareHouseService()->updateById($rootWarehouse['id'], ['line_ids' => $lineIds]);
+        $this->getWareHouseService()->update(['id' => $rootWarehouse['id']], ['line_ids' => $lineIds]);
     }
 
     /**
@@ -218,7 +218,7 @@ class LineService extends BaseLineService
         $rootWarehouse = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->company_id, 'parent' => 0], ['*'], false);
         $lineIds = str_replace($id, '', $rootWarehouse['line_ids']);
         $lineIds = str_replace(',,', ',', $lineIds);
-        $this->getWareHouseService()->updateById($rootWarehouse['id'], ['line_ids' => $lineIds]);
+        $this->getWareHouseService()->update(['id' => $rootWarehouse['id']], ['line_ids' => $lineIds]);
     }
 
     /**
