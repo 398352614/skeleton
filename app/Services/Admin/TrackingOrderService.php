@@ -274,6 +274,7 @@ class TrackingOrderService extends BaseService
         //验证网点是否承接取件/派件
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         $acceptTypeList = explode(',', $warehouse['accept_type']);
+        dd($acceptTypeList);
         if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $acceptTypeList) &&
             $params['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
             throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
