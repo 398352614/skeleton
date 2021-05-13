@@ -50,7 +50,7 @@ use App\Services\Admin\TransportPriceService;
 use App\Services\Admin\UploadService;
 use App\Services\Admin\WareHouseService;
 use App\Services\ApiServices\GoogleApiService;
-use App\Services\Driver\TrackingPackageService;
+use App\Services\Admin\TrackingPackageService;
 use App\Services\OrderNoRuleService;
 use App\Services\PackageNoRuleService;
 use App\Services\TrackingOrderTrailService;
