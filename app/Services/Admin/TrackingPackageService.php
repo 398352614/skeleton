@@ -34,7 +34,7 @@ class TrackingPackageService extends BaseService
      */
     public function storeByOrder($order)
     {
-        $packageList = $this->getPackageService()->getList(['order_no', $order['order_no'], false]);
+        $packageList = $this->getPackageService()->getList(['order_no', $order['order_no']], ['*'], false);
         foreach ($packageList as $k => $v) {
             $this->getStockService()->allocate($v);
         }
