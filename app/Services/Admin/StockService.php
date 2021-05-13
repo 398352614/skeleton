@@ -36,11 +36,12 @@ class StockService extends BaseService
     /**
      * 分拨
      * @param $packageNo
+     * @param $warehouseId
      * @param bool $check
      * @return array
      * @throws BusinessLogicException
      */
-    public function allocate($packageNo, $check = true)
+    public function allocate($packageNo, $warehouseId, $check = true)
     {
         //存在验证
         $package = $this->getPackageService()->getInfo(['express_first_no' => $packageNo], ['*'], false, ['created_at' => 'desc']);
@@ -49,19 +50,18 @@ class StockService extends BaseService
         }
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
-        if($check == true){
+        if ($check == true) {
             $this->check($package, $order, $type);
-
         }
         //异常验证
-        $warehouse = $this->getWareHouseService()->getInfo(['id' => auth()->user()->warehouse_id], ['*'], false)->toArray();
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $warehouseId], ['*'], false)->toArray();
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
         $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
-        if (auth()->user()->warehouse_id == $pieWarehouse['id']) {
+        if ($warehouseId == $pieWarehouse['id']) {
             //如果本网点为该包裹的派件网点，则生成派件运单进行派送
             return $this->createTrackingOrder($package, $order, $type);
-        } elseif (auth()->user()->warehouse_id == $pieCenter['id']) {
+        } elseif ($warehouseId == $pieCenter['id']) {
             //如果本网点为该包裹的派件网点所属的分拨中心，则生成分拨转运单
             return $this->createTrackingPackage($package, $warehouse, $pieWarehouse, BaseConstService::TRACKING_PACKAGE_TYPE_1);
         } elseif ($warehouse['is_center'] == BaseConstService::YES) {

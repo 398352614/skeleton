@@ -302,7 +302,7 @@ class OrderService extends BaseService
         //生成运单
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
         if ($merchant['below_warehouse'] == BaseConstService::YES && $params['type'] == BaseConstService::ORDER_TYPE_2) {
-            $this->getTrackingPackageService()->storeByOrder($order);
+            $this->getTrackingPackageService()->storeByOrder($order, $merchant['warehouse_id']);
         } else {
             $tour = $this->getTrackingOrderService()->storeByOrder($order);
         }
@@ -329,10 +329,15 @@ class OrderService extends BaseService
      */
     public function getWareHouse($params)
     {
-        //获取线路
-        $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
-        //获取网点
-        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
+        if ($merchant['below_warehouse'] == BaseConstService::YES && $params['type'] == BaseConstService::ORDER_TYPE_2) {
+            $warehouse = $this->getWareHouseService()->getInfo(['id' => $merchant['warehouse_id']], ['*'], false);
+        } else {
+            //获取线路
+            $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
+            //获取网点
+            $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        }
         if (empty($warehouse)) {
             throw new BusinessLogicException('网点不存在');
         }
@@ -763,7 +768,7 @@ class OrderService extends BaseService
             if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $pickupAcceptanceTypeList)) {
                 throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
             }
-        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2 ) {
+        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2) {
             $pieWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);//特殊处理
             $pieAcceptanceTypeList = explode(',', $pieWarehouse['acceptance_type']);
             if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $pieAcceptanceTypeList)) {
