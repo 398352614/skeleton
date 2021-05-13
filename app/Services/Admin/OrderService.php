@@ -302,9 +302,7 @@ class OrderService extends BaseService
         //生成运单
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
         if ($merchant['below_warehouse'] == BaseConstService::YES && $params['type'] == BaseConstService::ORDER_TYPE_2) {
-            $warehouse = $this->getWareHouseService()->getInfo(['id' => $merchant['warehouse_id']], ['*'], false);
-
-            $this->getTrackingPackageService()->storeByOrder($params);
+            $this->getTrackingPackageService()->storeByOrder($order);
         } else {
             $tour = $this->getTrackingOrderService()->storeByOrder($order);
         }

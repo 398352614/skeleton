@@ -27,4 +27,17 @@ class TrackingPackageService extends BaseService
         parent::__construct($model);
     }
 
+    /**
+     * 通过订单批量新增转运单
+     * @param $order
+     * @throws BusinessLogicException
+     */
+    public function storeByOrder($order)
+    {
+        $packageList = $this->getPackageService()->getList(['order_no', $order['order_no'], false]);
+        foreach ($packageList as $k => $v) {
+            $this->getStockService()->allocate($v);
+        }
+    }
+
 }
