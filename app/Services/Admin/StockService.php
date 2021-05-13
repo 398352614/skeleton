@@ -36,6 +36,7 @@ class StockService extends BaseService
     /**
      * 分拨
      * @param $packageNo
+     * @param bool $check
      * @return array
      * @throws BusinessLogicException
      */
