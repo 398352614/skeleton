@@ -531,7 +531,7 @@ class ShiftService extends BaseService
             }
         }
         $this->emptyCheck($shift);
-        return ;
+        return;
     }
 
     /**
@@ -586,13 +586,8 @@ class ShiftService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('到车失败');
         }
-        $row = $this->getTrackingPackageService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::TRACKING_PACKAGE_STATUS_5]);
-        if ($row == false) {
-            throw new BusinessLogicException('到车失败');
-        }
-        $row = $this->getBagService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::BAG_STATUS_4]);
-        if ($row == false) {
-            throw new BusinessLogicException('到车失败');
-        }
+        $this->getTrackingPackageService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::TRACKING_PACKAGE_STATUS_5]);
+        $this->getBagService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::BAG_STATUS_4]);
+
     }
 }
