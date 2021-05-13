@@ -762,31 +762,47 @@ class OrderService extends BaseService
         }
         $params = $this->getTransportPriceService()->priceCount($params);
         //验证取件网点及派件网点是否承接取件/派件
-        if ($params['type'] == BaseConstService::ORDER_TYPE_1) {
-            $pickupWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);
-            $pickupAcceptanceTypeList = explode(',', $pickupWarehouse['acceptance_type']);
-            if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $pickupAcceptanceTypeList)) {
-                throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
+        if ($merchant['below_warehouse'] == BaseConstService::YES) {
+            $belowWarehouse = $this->getWareHouseService()->getInfo(['id' => $merchant['warehouse_id']], ['*'], false);
+            $belowAcceptanceTypeList = explode(',', $belowWarehouse['acceptance_type']);
+            if ($params['type'] == BaseConstService::ORDER_TYPE_1 && !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $belowAcceptanceTypeList)
+            ) {
+                throw new BusinessLogicException('货主所属网点不承接取件订单');
+            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2 && !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $belowAcceptanceTypeList)) {
+                throw new BusinessLogicException('货主所属网点不承接派件订单');
+            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3 &&
+                !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $belowAcceptanceTypeList) &&
+                !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $belowAcceptanceTypeList)
+            ) {
+                throw new BusinessLogicException('货主所属网点不承接取派订单');
             }
-        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2) {
-            $pieWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);//特殊处理
-            $pieAcceptanceTypeList = explode(',', $pieWarehouse['acceptance_type']);
-            if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $pieAcceptanceTypeList)) {
-                throw new BusinessLogicException('该收件人地址所属区域，网点不承接派件订单');
-            }
-        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
-            $pickupWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);
-            $pieWarehouse = $this->getLineService()->getPieWarehouseByOrder($params);
-            $pickupAcceptanceTypeList = explode(',', $pickupWarehouse['acceptance_type']);
-            $pieAcceptanceTypeList = explode(',', $pieWarehouse['acceptance_type']);
-            if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $pickupAcceptanceTypeList)) {
-                throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
-            }
-            if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $pieAcceptanceTypeList)) {
-                throw new BusinessLogicException('该收件人地址所属区域，网点不承接派件订单');
+        } else {
+            if ($params['type'] == BaseConstService::ORDER_TYPE_1) {
+                $pickupWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);
+                $pickupAcceptanceTypeList = explode(',', $pickupWarehouse['acceptance_type']);
+                if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $pickupAcceptanceTypeList)
+                ) {
+                    throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
+                }
+            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2) {
+                $pieWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);//特殊处理
+                $pieAcceptanceTypeList = explode(',', $pieWarehouse['acceptance_type']);
+                if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $pieAcceptanceTypeList)) {
+                    throw new BusinessLogicException('该收件人地址所属区域，网点不承接派件订单');
+                }
+            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
+                $pickupWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);
+                $pieWarehouse = $this->getLineService()->getPieWarehouseByOrder($params);
+                $pickupAcceptanceTypeList = explode(',', $pickupWarehouse['acceptance_type']);
+                $pieAcceptanceTypeList = explode(',', $pieWarehouse['acceptance_type']);
+                if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $pickupAcceptanceTypeList)) {
+                    throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
+                }
+                if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $pieAcceptanceTypeList)) {
+                    throw new BusinessLogicException('该收件人地址所属区域，网点不承接派件订单');
+                }
             }
         }
-
         return $params;
     }
 
@@ -796,7 +812,8 @@ class OrderService extends BaseService
      * @param int $status
      * @throws BusinessLogicException
      */
-    private function addAllItemList($params, $status = BaseConstService::ORDER_STATUS_1)
+    private
+    function addAllItemList($params, $status = BaseConstService::ORDER_STATUS_1)
     {
         $relationship = ['雪花' => '冷冻', '风扇' => '风房'];
         //若存在包裹列表,则新增包裹列表
@@ -847,7 +864,8 @@ class OrderService extends BaseService
      * @param $params
      * @throws BusinessLogicException
      */
-    private function addAmountList($params)
+    private
+    function addAmountList($params)
     {
         $dataList = [];
         //若存在包裹列表,则新增包裹列表
@@ -879,7 +897,8 @@ class OrderService extends BaseService
      * @return bool|int|void
      * @throws BusinessLogicException
      */
-    public function updateById($id, $data)
+    public
+    function updateById($id, $data)
     {
         unset($data['order_no'], $data['tour_no'], $data['batch_no']);
         //获取信息
@@ -933,7 +952,8 @@ class OrderService extends BaseService
      * @return bool
      * @throws BusinessLogicException
      */
-    public function updateBaseInfo($dbInfo, $data)
+    public
+    function updateBaseInfo($dbInfo, $data)
     {
         $newData = Arr::only($data, array_keys($dbInfo));
         $columns = ['special_remark'];
@@ -984,7 +1004,8 @@ class OrderService extends BaseService
      * @param $trackingOrder
      * @throws BusinessLogicException
      */
-    public function updateByTrackingOrder($trackingOrder)
+    public
+    function updateByTrackingOrder($trackingOrder)
     {
         $dbOrder = $this->getInfoOfStatus(['order_no' => $trackingOrder['order_no']], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         if (empty($dbOrder)) {
@@ -1020,7 +1041,8 @@ class OrderService extends BaseService
      * @return string
      * @throws BusinessLogicException
      */
-    public function destroy($id)
+    public
+    function destroy($id)
     {
         //获取信息
         $dbOrder = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_5]);
@@ -1053,7 +1075,8 @@ class OrderService extends BaseService
      * @param $idList
      * @throws BusinessLogicException
      */
-    public function destroyAll($idList)
+    public
+    function destroyAll($idList)
     {
         $idList = explode_id_string($idList);
         foreach ($idList as $id) {
@@ -1068,7 +1091,8 @@ class OrderService extends BaseService
      * @throws BusinessLogicException
      * @throws \Throwable
      */
-    public function orderPrintAll($idList)
+    public
+    function orderPrintAll($idList)
     {
         $printTemplate = $this->getPrintTemplateService()->getInfo([], ['id', 'type'], false);
         if (empty($printTemplate)) {
@@ -1117,7 +1141,8 @@ class OrderService extends BaseService
      * @throws BusinessLogicException
      * @throws \Throwable
      */
-    public function orderBillPrint($idList)
+    public
+    function orderBillPrint($idList)
     {
         $data = [];
         $orderList = $this->printData($idList);
@@ -1134,7 +1159,8 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function printData($idList)
+    public
+    function printData($idList)
     {
         $newOrderList = [];
         $orderList = parent::getList(['id' => ['in', explode_id_string($idList)]], ['*'], false)->toArray();
@@ -1230,7 +1256,8 @@ class OrderService extends BaseService
      * @return mixed
      * @throws \Throwable
      */
-    public function printBarcode($orderList)
+    public
+    function printBarcode($orderList)
     {
         //若是通用打印模板,则需要将快递号转为条码
         foreach ($orderList as $key => $order) {
@@ -1251,7 +1278,8 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function printForm($params)
+    public
+    function printForm($params)
     {
         $data = [];
         $fields = ['order_no', 'package_count', 'material_count', 'replace_amount', 'settlement_amount', 'order_barcode', 'first_package_barcode', 'first_package_no', 'mask_code',
@@ -1292,7 +1320,8 @@ class OrderService extends BaseService
      * @return string
      * @throws BusinessLogicException
      */
-    public function imageToBase64($url)
+    public
+    function imageToBase64($url)
     {
         try {
             $image_info = getimagesize($url);
@@ -1309,7 +1338,8 @@ class OrderService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function orderExport()
+    public
+    function orderExport()
     {
         $orderList = $this->setFilter()->getList();
         //特殊处理
@@ -1383,7 +1413,8 @@ class OrderService extends BaseService
      * @param $idList
      * @param bool $stockException
      */
-    public function synchronizeStatusList($idList, $stockException = false)
+    public
+    function synchronizeStatusList($idList, $stockException = false)
     {
         //获取订单列表
         $idList = explode_id_string($idList);
@@ -1447,7 +1478,8 @@ class OrderService extends BaseService
      * @param $id
      * @throws BusinessLogicException
      */
-    public function neutralize($id)
+    public
+    function neutralize($id)
     {
         $order = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($order)) {
@@ -1484,7 +1516,8 @@ class OrderService extends BaseService
      * @param $order
      * @throws BusinessLogicException
      */
-    public function stockUpdate($order)
+    public
+    function stockUpdate($order)
     {
         $expiredStockList = $this->getStockService()->getList(['order_no' => $order['order_no'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['*'], false);
         if (!empty($expiredStockList)) {
