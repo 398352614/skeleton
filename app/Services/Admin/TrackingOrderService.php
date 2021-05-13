@@ -970,7 +970,7 @@ class TrackingOrderService extends BaseService
      */
     public function fillWarehouseInfo(&$params, $merchantAlone = BaseConstService::NO)
     {
-        $merchant = $this->getInfo(['id' => $params['merchant_id']]);
+        $merchant = $this->getInfo(['id' => $params['merchant_id']],['*'],false);
         if ($merchant['below_warehouse'] == BaseConstService::YES) {
             $warehouse = $this->getWareHouseService()->getInfo(['id' => $merchant['warehouse_id']], ['*'], false);
         } else {
