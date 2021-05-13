@@ -350,7 +350,7 @@ class LineService extends BaseLineService
     {
         $this->query->whereIn('id', $ids);
 //        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
-            return $this->postcodeIndex();
+        return $this->postcodeIndex();
 //        } else {
 //            return $this->areaIndex(2);
 //        }
@@ -365,8 +365,8 @@ class LineService extends BaseLineService
     {
         $this->query->where('warehouse_id', $warehouseId);
 //        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
-            unset($this->formData);
-            return $this->postcodeIndex();
+        unset($this->formData);
+        return $this->postcodeIndex();
 //        } else {
 //            return $this->areaIndex(2);
 //        }
@@ -527,6 +527,7 @@ class LineService extends BaseLineService
             $parentWarehouse = $this->getWareHouseService()->getInfo(['id' => $warehouse['parent']], ['*'], false);
             $data[] = [$parentWarehouse];
             $this->centerCheck($parentWarehouse, $data, $type);
+            return [];
         } else {
             return [[
                 'name' => $data['name'],
