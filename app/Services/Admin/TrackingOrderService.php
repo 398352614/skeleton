@@ -960,16 +960,10 @@ class TrackingOrderService extends BaseService
      */
     public function fillWarehouseInfo(&$params, $merchantAlone = BaseConstService::NO)
     {
-        $line=[];
-        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
-        if ($merchant['below_warehouse'] == BaseConstService::YES) {
-            $warehouse = $this->getWareHouseService()->getInfo(['id' => $merchant['warehouse_id']], ['*'], false);
-        } else {
-            //获取线路
-            $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
-            //获取网点
-            $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
-        }
+        //获取线路
+        $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
+        //获取网点
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
             throw new BusinessLogicException('网点不存在');
         }

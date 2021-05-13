@@ -111,7 +111,7 @@ class StockService extends BaseService
             $trackingOrder = $this->form($order, $executionDate, $type);
             //生成运单号
             $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
-            $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
+            $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], true);
         }
         //包裹入库
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
