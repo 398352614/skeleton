@@ -271,16 +271,6 @@ class TrackingOrderService extends BaseService
     {
         //填充网点信息
         $line = $this->fillWarehouseInfo($params, BaseConstService::YES);
-        //验证网点是否承接取件/派件
-        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
-        $acceptanceTypeList = explode(',', $warehouse['acceptance_type']);
-        if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $acceptanceTypeList) &&
-            $params['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
-            throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
-        } elseif (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $acceptanceTypeList) &&
-            $params['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
-            throw new BusinessLogicException('该收件人地址所属区域，网点不承接派件订单');
-        }
         //生成运单号
         $params['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
         /**********************************************生成运单********************************************************/

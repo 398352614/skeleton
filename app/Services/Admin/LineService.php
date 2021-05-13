@@ -474,6 +474,28 @@ class LineService extends BaseLineService
     }
 
     /**
+     * 获取订单的取件网点
+     * @param $order
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getPickupWarehouseByOrder($order)
+    {
+        return $this->getWareHouseByAddress($this->pickupAddress($order));
+    }
+
+    /**
+     * 获取订单的派件网点
+     * @param $order
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getPieWarehouseByOrder($order)
+    {
+        return $this->getWareHouseByAddress($this->pieAddress($order));
+    }
+
+    /**
      * 通过地址获取网点
      * @param $data
      * @return array|Builder|Model|object|null
