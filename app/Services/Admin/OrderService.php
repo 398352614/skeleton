@@ -300,7 +300,12 @@ class OrderService extends BaseService
         //新增订单费用列表
         $this->addAmountList($params);
         //生成运单
-        $tour = $this->getTrackingOrderService()->storeByOrder($order);
+        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
+        if ($merchant['below_warehouse'] == BaseConstService::YES) {
+            $warehouse = $this->getWareHouseService()->getInfo(['id' => $merchant['warehouse_id']], ['*'], false);
+        } else {
+            $tour = $this->getTrackingOrderService()->storeByOrder($order);
+        }
         return [
             'id' => $order['id'],
             'order_no' => $params['order_no'],
@@ -373,10 +378,11 @@ class OrderService extends BaseService
 
     /**
      * @param $order
-     * @params $trackingOrder
+     * @param TrackingOrder|null $trackingOrder
      * @return int|null
+     * @params $trackingOrder
      */
-    private function getTrackingOrderType($order, TrackingOrder $trackingOrder = null)
+    public function getTrackingOrderType($order, TrackingOrder $trackingOrder = null)
     {
         (empty($trackingOrder)) && $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no']], ['*'], false, ['created_at' => 'desc']);
         //1.运单不存在,直接获取运单类型
@@ -750,6 +756,21 @@ class OrderService extends BaseService
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         }
         $params = $this->getTransportPriceService()->priceCount($params);
+        //验证网点是否承接取件/派件
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['id'], ['*'], false]);
+        $acceptTypeList = explode(',', $warehouse['accept_type']);
+        if (
+            !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $acceptTypeList) &&
+            in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])
+        ) {
+            throw new BusinessLogicException('该收件人地址所属区域，网点不承接取件订单');
+        } elseif (
+            !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $acceptTypeList) &&
+            in_array($params['type'], [BaseConstService::ORDER_TYPE_2, BaseConstService::ORDER_TYPE_3])
+        ) {
+            throw new BusinessLogicException('该发件人地址所属区域，网点不承接派件订单');
+        }
+
         return $params;
     }
 
