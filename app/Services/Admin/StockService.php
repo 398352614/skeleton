@@ -39,7 +39,7 @@ class StockService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function allocate($packageNo)
+    public function allocate($packageNo, $check = true)
     {
         //存在验证
         $package = $this->getPackageService()->getInfo(['express_first_no' => $packageNo], ['*'], false, ['created_at' => 'desc']);
@@ -48,8 +48,11 @@ class StockService extends BaseService
         }
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
+        if($check == true){
+            $this->check($package, $order, $type);
+
+        }
         //异常验证
-        $this->check($package, $order, $type);
         $warehouse = $this->getWareHouseService()->getInfo(['id' => auth()->user()->warehouse_id], ['*'], false)->toArray();
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
