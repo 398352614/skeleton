@@ -7,6 +7,7 @@ use App\Services\Admin\AddressService;
 use App\Services\Admin\AddressTemplateService;
 use App\Services\Admin\ApiTimesService;
 use App\Services\Admin\BaseLineService;
+use App\Services\Admin\BaseWarehouseService;
 use App\Services\Admin\BatchExceptionService;
 use App\Services\Admin\BatchService;
 use App\Services\Admin\CarBrandService;
@@ -49,6 +50,7 @@ use App\Services\Admin\TransportPriceService;
 use App\Services\Admin\UploadService;
 use App\Services\Admin\WareHouseService;
 use App\Services\ApiServices\GoogleApiService;
+use App\Services\Driver\TrackingPackageService;
 use App\Services\OrderNoRuleService;
 use App\Services\PackageNoRuleService;
 use App\Services\TrackingOrderTrailService;
@@ -156,6 +158,15 @@ trait AdminServiceTrait
     }
 
     /**
+     * 基础网点 服务
+     * @return BaseWarehouseService
+     */
+    public function getBaseWarehouseService()
+    {
+        return self::getInstance(BaseWarehouseService::class);
+    }
+
+    /**
      * 包裹 服务
      * @return PackageService
      */
@@ -198,6 +209,15 @@ trait AdminServiceTrait
     public function getTrackingOrderService()
     {
         return self::getInstance(TrackingOrderService::class);
+    }
+
+    /**
+     * 转运单 服务
+     * @return TrackingPackageService
+     */
+    public function getTrackingPackageService()
+    {
+        return self::getInstance(TrackingPackageService::class);
     }
 
     /**
