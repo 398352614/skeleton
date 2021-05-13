@@ -140,7 +140,7 @@ class MerchantService extends BaseService
             if (empty($warehouse)) {
                 throw new BusinessLogicException('网点不存在');
             }
-            if (strstr($warehouse['acceptance_type'], BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3)) {
+            if (strstr($warehouse['acceptance_type'], strval(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3))) {
                 throw new BusinessLogicException('网点未配置仓配一体，无法选择该网点');
             }
         }
