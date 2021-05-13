@@ -756,21 +756,6 @@ class OrderService extends BaseService
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         }
         $params = $this->getTransportPriceService()->priceCount($params);
-        //验证网点是否承接取件/派件
-        $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
-        $acceptTypeList = explode(',', $warehouse['accept_type']);
-        if (
-            !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $acceptTypeList) &&
-            in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])
-        ) {
-            throw new BusinessLogicException('该收件人地址所属区域，网点不承接取件订单');
-        } elseif (
-            !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $acceptTypeList) &&
-            in_array($params['type'], [BaseConstService::ORDER_TYPE_2, BaseConstService::ORDER_TYPE_3])
-        ) {
-            throw new BusinessLogicException('该发件人地址所属区域，网点不承接派件订单');
-        }
-
         return $params;
     }
 
