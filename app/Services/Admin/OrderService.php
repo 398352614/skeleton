@@ -757,7 +757,7 @@ class OrderService extends BaseService
         }
         $params = $this->getTransportPriceService()->priceCount($params);
         //验证网点是否承接取件/派件
-        $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['id'], ['*'], false]);
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['id']], ['*'], false);
         $acceptTypeList = explode(',', $warehouse['accept_type']);
         if (
             !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $acceptTypeList) &&
