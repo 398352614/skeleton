@@ -498,7 +498,7 @@ class ShiftService extends BaseService
         ], ['*'], false);
         $bag = $this->getBagService()->getList([
             'shift_no' => $shift['shift_no'],
-            'status' => BaseConstService::BAG_STATUS_4
+            'status' => BaseConstService::BAG_STATUS_3
         ], ['*'], false);
         if ($trackingPackageList->isEmpty() && $bag->isEmpty()) {
             $row = parent::updateById($shift['id'], [
