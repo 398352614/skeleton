@@ -276,8 +276,31 @@ class BagService extends BaseService
                 throw new BusinessLogicException('操作失败');
             }
         }
+        $this->emptyCheck($bag);
         if (count($trackingPackageList) == 1) {
             return $trackingPackageList[0];
+        }
+    }
+
+    /**
+     * 车次卸完检查
+     * @param $bag
+     * @throws BusinessLogicException
+     */
+    public function emptyCheck($bag)
+    {
+        $trackingPackageList = $this->getTrackingPackageService()->getList([
+            'bag_no' => $bag['bag_no'],
+            'status' => BaseConstService::TRACKING_PACKAGE_STATUS_6
+        ], ['*'], false);
+
+        if ($trackingPackageList->isEmpty()) {
+            $row = parent::updateById($bag['id'], [
+                'status' => BaseConstService::BAG_STATUS_5
+            ]);
+            if ($row == false) {
+                throw new BusinessLogicException('操作失败');
+            }
         }
     }
 }
