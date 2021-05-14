@@ -527,10 +527,14 @@ class ShiftService extends BaseService
         foreach ($data['item_list'] as $k => $v) {
             if ($v['shift_type'] == BaseConstService::SHIFT_LOAD_TYPE_1) {
                 $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $v['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
-                $this->unloadTrackingPackage($trackingPackage, $shift);
+                if(!empty($trackingPackage)){
+                    $this->unloadTrackingPackage($trackingPackage, $shift);
+                }
             } else {
-                $bag = $this->getBagService()->getInfo(['bag_no' => $v['bag_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
-                $this->unloadBag($bag, $shift);
+                $bag = $this->getBagService()->getInfo(['bag_no' => $v['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
+                if(!empty($bag)){
+                    $this->unloadBag($bag, $shift);
+                }
             }
         }
         $this->emptyCheck($shift);
