@@ -465,17 +465,19 @@ class ShiftService extends BaseService
         if ($bag['status'] !== BaseConstService::BAG_STATUS_3) {
             throw new BusinessLogicException('状态错误');
         }
-        $row = $this->getBagService()->updateById($bag['id'], [
+        $this->getBagService()->updateById($bag['id'], [
             'status' => BaseConstService::BAG_STATUS_4,
             'unload_time' => now(),
             'unload_operator' => auth()->user()->fullname,
             'unload_operator_id' => auth()->user()->id,
         ]);
         //更新袋子里的包裹
-        $row = $this->getTrackingPackageService()->update(['bag_no', $bag['bag_no']], [
+        $row = $this->getTrackingPackageService()->update(['bag_no'=> $bag['bag_no']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_6
         ]);
-
+        if ($row == false) {
+            throw new BusinessLogicException('操作失败');
+        }
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_2,
             'item_no' => $bag['bag_no'],
