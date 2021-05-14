@@ -88,6 +88,6 @@ class TrackingPackage extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::shiftStatusList($this->status);
+        return empty($this->status) ? null : ConstTranslateTrait::trackingOrderStatusList($this->status);
     }
 }
