@@ -68,7 +68,7 @@ class ShiftService extends BaseService
                 $v['item_no'] = BaseConstService::SHIFT_LOAD_TYPE_2;
             }
             foreach ($itemList as $k => $v) {
-                $itemList[$k] = Arr::only($v, ['item_no', 'next_warehouse_name', 'weight', 'package_count','shift_type']);
+                $itemList[$k] = Arr::only($v, ['item_no', 'next_warehouse_name', 'weight', 'package_count', 'shift_type']);
             }
         }
         $info['item_list'] = $itemList;
@@ -503,7 +503,7 @@ class ShiftService extends BaseService
             'shift_no' => $shift['shift_no'],
             'status' => BaseConstService::BAG_STATUS_4
         ], ['*'], false);
-        if (empty($trackingPackageList) && empty($bag)) {
+        if ($trackingPackageList->isEmpty() && $bag->isEmpty()) {
             $row = parent::updateById($shift['id'], [
                 'status' => BaseConstService::SHIFT_STATUS_4
             ]);
