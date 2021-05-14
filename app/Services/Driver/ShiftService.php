@@ -68,7 +68,7 @@ class ShiftService extends BaseService
                 $v['item_no'] = BaseConstService::SHIFT_LOAD_TYPE_2;
             }
             foreach ($itemList as $k => $v) {
-                $itemList[$k] = Arr::only($v, ['item_no', 'next_warehouse_name', 'weight', 'package_count']);
+                $itemList[$k] = Arr::only($v, ['item_no', 'next_warehouse_name', 'weight', 'package_count','shift_type']);
             }
         }
         $info['item_List'] = $itemList;
