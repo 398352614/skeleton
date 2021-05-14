@@ -396,9 +396,9 @@ class ShiftService extends BaseService
         $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
         $bag = $this->getBagService()->getInfo(['bag_no' => $data['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
         if (!empty($trackingPackage) && empty($bag)) {
-            $info = $this->unloadTrackingPackage($bag, $shift);
+            $info = $this->unloadTrackingPackage($trackingPackage, $shift);
         } elseif (empty($trackingPackage) && !empty($bag)) {
-            $info = $this->unloadBag($trackingPackage, $shift);
+            $info = $this->unloadBag($bag, $shift);
         } elseif (empty($trackingPackage) && empty($bag)) {
             throw new BusinessLogicException('包裹或袋号不属于该车次');
         } else {
