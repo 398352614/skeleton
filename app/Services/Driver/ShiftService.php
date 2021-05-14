@@ -462,7 +462,7 @@ class ShiftService extends BaseService
         if ($bag['status'] == BaseConstService::BAG_STATUS_4) {
             throw new BusinessLogicException('重复扫描');
         }
-        if ($bag['status'] !== BaseConstService::BAG_STATUS_4) {
+        if ($bag['status'] !== BaseConstService::BAG_STATUS_3) {
             throw new BusinessLogicException('状态错误');
         }
         $row = $this->getBagService()->updateById($bag['id'], [
