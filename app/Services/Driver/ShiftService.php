@@ -61,12 +61,17 @@ class ShiftService extends BaseService
             $info['bag_list'][$k]['shift_type'] = BaseConstService::SHIFT_LOAD_TYPE_2;
             $info['bag_list'][$k]['item_no'] = $v['bag_no'];
         }
-        $info['item_List'] = array_merge($info['tracking_package_list']->toArray(), $info['bag_list']->toArray());
-        $info['item_List'] = collect($info['item_List'])->sortBy('created_at');
-        foreach ($info['item_List'] as $k => $v) {
-            $info['bag_list'][$k]['item_no'] = BaseConstService::SHIFT_LOAD_TYPE_2;
-            $info['item_List'][$k] = Arr::only($v, ['item_no', 'next_warehouse_name', 'weight', 'package_count']);
+        $itemList = array_merge($info['tracking_package_list']->toArray(), $info['bag_list']->toArray());
+        if (!empty($itemList)) {
+            $itemList = collect($itemList)->sortBy('created_at');
+            foreach ($itemList as &$v) {
+                $v['item_no'] = BaseConstService::SHIFT_LOAD_TYPE_2;
+            }
+            foreach ($itemList as $k => $v) {
+                $itemList[$k] = Arr::only($v, ['item_no', 'next_warehouse_name', 'weight', 'package_count']);
+            }
         }
+        $info['item_List'] = $itemList;
         unset($info['tracking_package_list'], $info['bag_list']);
         return $info;
     }
