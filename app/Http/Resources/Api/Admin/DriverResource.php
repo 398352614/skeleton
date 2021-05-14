@@ -41,7 +41,9 @@ class DriverResource extends JsonResource
             'is_locked_name'                => $this->is_locked_name,
             'created_at'                    => (string)$this->created_at,
             'type'                          => $this->type,
-            'type_name'                     => $this->resource->getType($this->type)
+            'type_name'                     => $this->resource->getType($this->type),
+            'warehouse_id'                     => $this->warehouse_id,
+            'warehouse_name'                     => $this->warehouse_name
         ];
     }
 }

@@ -128,6 +128,11 @@ class DriverService extends BaseService
             $this->query->where('is_locked', '=', BaseConstService::DRIVER_TO_NORMAL);
         }
         $this->query->orderByDesc('id');
-        return parent::getPageList();
+        $data = parent::getPageList();
+        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $data->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id')->toArray();
+        foreach ($data as $k => $v) {
+            $data[$k]['warehouse_name'] = $warehouseList[$v['warehouse_id']]['name'] ?? '';
+        }
+        return $data;
     }
 }
