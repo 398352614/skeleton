@@ -459,14 +459,14 @@ class ShiftService extends BaseService
      */
     public function unloadBag($bag, $shift)
     {
-        if ($bag['status'] == BaseConstService::BAG_STATUS_5) {
+        if ($bag['status'] == BaseConstService::BAG_STATUS_4) {
             throw new BusinessLogicException('重复扫描');
         }
         if ($bag['status'] !== BaseConstService::BAG_STATUS_4) {
             throw new BusinessLogicException('状态错误');
         }
         $row = $this->getBagService()->updateById($bag['id'], [
-            'status' => BaseConstService::BAG_STATUS_5,
+            'status' => BaseConstService::BAG_STATUS_4,
             'unload_time' => now(),
             'unload_operator' => auth()->user()->fullname,
             'unload_operator_id' => auth()->user()->id,
@@ -524,7 +524,7 @@ class ShiftService extends BaseService
         if (empty($shift)) {
             throw new BusinessLogicException('数据不存在');
         }
-        foreach ($data as $k => $v) {
+        foreach ($data['item_list'] as $k => $v) {
             if ($v['shift_type'] == BaseConstService::SHIFT_LOAD_TYPE_1) {
                 $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $v['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
                 $this->unloadTrackingPackage($trackingPackage, $shift);

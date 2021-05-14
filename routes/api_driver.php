@@ -269,6 +269,8 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::delete('/{id}/load', 'ShiftController@removeItem');
         //卸车
         Route::post('/{id}/unload', 'ShiftController@unloadItem');
+        //批量卸车
+        Route::post('/{id}unloadList', 'ShiftController@unloadItemList');
         //司机出库
         Route::put('/{id}/outWarehouse', 'ShiftController@outWarehouse');
         //司机入库

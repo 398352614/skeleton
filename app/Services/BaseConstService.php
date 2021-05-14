@@ -797,12 +797,13 @@ class BaseConstService
     const TRACKING_PACKAGE_STATUS_6 = 6;
     const TRACKING_PACKAGE_STATUS_7 = 7;
 
-    //袋号状态1-待装车2-待发车3-运输中4-已到车5-已卸货6-已拆袋
+    //袋号状态1-未发车2-已发车3-已到车4-未拆袋5-已拆袋
     const BAG_STATUS_1 = 1;
     const BAG_STATUS_2 = 2;
     const BAG_STATUS_3 = 3;
     const BAG_STATUS_4 = 4;
     const BAG_STATUS_5 = 5;
+
 
     //车次状态1-待发车2-运输中3-已到车4-已卸货
     const SHIFT_STATUS_1 = 1;
