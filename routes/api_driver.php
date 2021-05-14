@@ -246,7 +246,7 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         //移除包裹
         Route::delete('/{id}/pack', 'BagController@removePackage');
         //包裹拆袋扫描
-        Route::delete('/{id}/unpack', 'BagController@unpackPackage');
+        Route::post('/{id}/unpack', 'BagController@unpackPackage');
     });
 
     //车次管理
