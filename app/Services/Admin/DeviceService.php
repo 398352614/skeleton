@@ -53,11 +53,11 @@ class DeviceService extends BaseService
 
     public function getPageList()
     {
-        if(!empty($this->formData['driver_name'])){
-            $driverList=$this->getDriverService()->getList(['fullname'=>$this->formData['driver_name']]);
-            if(!empty($driver)){
-                $driverIdList=$driverList->pluck('id')->toArray();
-                $this->query->whereIn('driver_id',$driverIdList);;
+        if (!empty($this->formData['driver_name'])) {
+            $driverList = $this->getDriverService()->getList(['fullname' => $this->formData['driver_name']]);
+            if (!empty($driverList)) {
+                $driverIdList = $driverList->pluck('id')->toArray();
+                $this->query->whereIn('driver_id', $driverIdList);;
             }
         }
         return parent::getPageList();
