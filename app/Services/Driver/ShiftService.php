@@ -471,9 +471,6 @@ class ShiftService extends BaseService
             'unload_operator' => auth()->user()->fullname,
             'unload_operator_id' => auth()->user()->id,
         ]);
-        if ($row == false) {
-            throw new BusinessLogicException('操作失败');
-        }
         //更新袋子里的包裹
         $row = $this->getTrackingPackageService()->update(['bag_no', $bag['bag_no']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_6
