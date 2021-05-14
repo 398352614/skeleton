@@ -26,7 +26,6 @@ class DeviceService extends BaseService
     public $filterRules = [
         'number' => ['like', 'keyword'],
         'driver_id' => ['=', 'driver_id'],
-        'driver_name' => ['like', 'driver_name'],
     ];
 
     public function __construct(Device $model)
