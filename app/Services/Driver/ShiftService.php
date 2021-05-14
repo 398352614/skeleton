@@ -594,7 +594,7 @@ class ShiftService extends BaseService
             throw new BusinessLogicException('到车失败');
         }
         $this->getTrackingPackageService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::TRACKING_PACKAGE_STATUS_5]);
-        $this->getBagService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::BAG_STATUS_4]);
+        $this->getBagService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::BAG_STATUS_3]);
 
     }
 }
