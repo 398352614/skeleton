@@ -512,6 +512,7 @@ class LineService extends BaseLineService
             throw new BusinessLogicException('网点不存在');
         }
         $warehouse = collect($warehouse)->toArray();
+        $warehouse['type'] = $data['type'];
         return $warehouse;
     }
 
