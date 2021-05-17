@@ -367,8 +367,10 @@ class WareHouseService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
             $parentLineIdList = explode(',', $parentWarehouse['line_ids']) ?? [];
-            if (!empty(array_diff($lineIdList, $parentLineIdList))) {
-                throw new BusinessLogicException('所选线路不在上级网点中，请先将线路分配至上级网点');
+            foreach ($lineIdList as $k => $v) {
+                if (!in_array($v, $parentLineIdList)) {
+                    throw new BusinessLogicException('所选线路不在上级网点中，请先将线路分配至上级网点');
+                }
             }
             //检查同级网点是否无这些线路
             if (empty($warehouse['id'])) {
