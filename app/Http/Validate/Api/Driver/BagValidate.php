@@ -21,12 +21,14 @@ class BagValidate extends BaseValidate
         'driver_name' => 'nullable|string',
         'car_no' => 'nullable|string',
         'remark' => 'nullable|string',
-        'next_warehouse_id' => 'required|string'
+        'next_warehouse_id' => 'required|string',
+        'express_first_no_list' => 'required|array'
     ];
 
     public $scene = [
         'store' => ['bag_no', 'shift_no', 'status', 'weight', 'driver_id', 'driver_name', 'car_no', 'next_warehouse_id', 'remark'],
-        'update' => ['bag_no', 'shift_no', 'status', 'weight', 'driver_id', 'driver_name', 'car_no', 'next_warehouse_id', 'remark']
+        'update' => ['bag_no', 'shift_no', 'status', 'weight', 'driver_id', 'driver_name', 'car_no', 'next_warehouse_id', 'remark'],
+        'unpackPackage'=>['express_first_no_list']
     ];
 
     public $message = [

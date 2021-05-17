@@ -259,7 +259,7 @@ class BagService extends BaseService
         if (empty($bag)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $trackingPackageList = $this->getTrackingPackageService()->getList(['express_first_no' => $data['express_first_no_list']], ['*'], false);
+        $trackingPackageList = $this->getTrackingPackageService()->getList(['express_first_no' => ['in', $data['express_first_no_list']]], ['*'], false);
         foreach ($trackingPackageList as $k) {
             if ($k['bag_no'] !== $bag['bag_no']) {
                 throw new BusinessLogicException('包裹不属于该袋号');
