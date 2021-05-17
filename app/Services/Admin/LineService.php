@@ -398,13 +398,15 @@ class LineService extends BaseLineService
     public function test($data)
     {
         $pickupWarehouse = $this->getWareHouseByAddress($this->pickupAddress($data));
-        $pickupData = $this->centerCheck($pickupWarehouse, $pickupWarehouse, BaseConstService::ORDER_TYPE_1);
+        $pickupWarehouseList = [$pickupWarehouse];
+        $this->centerCheck($pickupWarehouseList, $pickupWarehouse, BaseConstService::ORDER_TYPE_1);
         $pieWarehouse = $this->getWareHouseByAddress($this->pieAddress($data));
-        $pieData = $this->centerCheck($pieWarehouse, $pieWarehouse, BaseConstService::ORDER_TYPE_2);
+        $pieWarehouseList = [$pieWarehouse];
+        $this->centerCheck($pieWarehouseList, $pieWarehouse, BaseConstService::ORDER_TYPE_2);
         $data = array_values(array_filter(array_merge(
             [$this->formAddress($this->pickupAddress($data))],
-            $pickupData,
-            array_reverse($pieData),
+            $pickupWarehouseList,
+            array_reverse($pieWarehouseList),
             [$this->formAddress($this->pieAddress($data))]
         )));
         $data = $this->formTest($data);
@@ -520,20 +522,13 @@ class LineService extends BaseLineService
      * @param $type
      * @return array
      */
-    public function centerCheck($warehouse, $data, $type)
+    public function centerCheck(&$data, $warehouse, $type)
     {
         $warehouse['type'] = $type;
         if ($warehouse['is_center'] == BaseConstService::NO && $warehouse['parent'] !== 0) {
             $parentWarehouse = $this->getWareHouseService()->getInfo(['id' => $warehouse['parent']], ['*'], false);
-            $data[] = [$parentWarehouse];
-            $this->centerCheck($parentWarehouse, $data, $type);
-            return [];
-        } else {
-            return [[
-                'name' => $data['name'],
-                'is_center' => $data['is_center'],
-                'type' => $data['type']
-            ]];
+            $data[] = Arr::only($parentWarehouse->toArray(), ['name', 'is_center', 'type']);
+            return $this->centerCheck($data, $parentWarehouse, $type);
         }
     }
 
@@ -571,6 +566,7 @@ class LineService extends BaseLineService
             } else {
                 $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_3;
             }
+            $data[$i] = Arr::only($data[$i], ['type', 'name', 'is_center', 'status']);
         }
         $array = [1 => '分拨中心', 2 => '网点', 3 => '客户地址'];
         foreach ($data as $k => $v) {
