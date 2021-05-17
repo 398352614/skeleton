@@ -11,7 +11,6 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Models\CompanyConfig;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Cache;
 
 class CompanyConfigService extends BaseService
 {
@@ -51,9 +50,7 @@ class CompanyConfigService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        $rootKey = config('tms.cache_prefix.company');
-        $tag = config('tms.cache_tags.company');
-        Cache::tags($tag)->forget($rootKey . auth()->user()->company_id);
+        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
     }
 
     /**
