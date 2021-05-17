@@ -140,7 +140,6 @@ class TrackingOrderService extends BaseService
      */
     public function validate($info)
     {
-        dd(CompanyTrait::getLineRule());
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
             $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'place_lon' => 'required|string|max:50', 'place_lat' => 'required|string|max:50']);
         } else {
