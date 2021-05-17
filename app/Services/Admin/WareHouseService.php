@@ -70,11 +70,15 @@ class WareHouseService extends BaseService
     {
         $this->checkDistance($params['parent']);
         $this->fillData($params);
-
+        if ($params['line_ids'] == '') {
+            $lineIdList = [];
+        } else {
+            $lineIdList = explode(',', $params['line_ids']);
+        }
+        $this->check($params, $lineIdList);
         $warehouse = parent::create($params);
-
+        $this->getLineService()->updateWarehouse($warehouse['id'], $lineIdList);
         $warehouse->moveTo($params['parent']);
-
         return $warehouse;
     }
 
@@ -367,7 +371,11 @@ class WareHouseService extends BaseService
                 throw new BusinessLogicException('所选线路不在上级网点中，请先将线路分配至上级网点');
             }
             //检查同级网点是否无这些线路
-            $siblingWarehouseList = parent::getList(['parent' => $warehouse['parent'], 'id' => ['<>', $warehouse['id']]], '*', false);
+            if (empty($warehouse['id'])) {
+                $siblingWarehouseList = parent::getList(['parent' => $warehouse['parent']], ['*'], false);
+            } else {
+                $siblingWarehouseList = parent::getList(['parent' => $warehouse['parent'], 'id' => ['<>', $warehouse['id']]], ['*'], false);
+            }
             foreach ($siblingWarehouseList as $k => $v) {
                 if (!empty($v['line_ids'])) {
                     $siblingLineIdList = array_merge($siblingLineIdList, explode(',', $v['line_ids']));
