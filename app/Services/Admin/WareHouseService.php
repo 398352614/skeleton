@@ -91,16 +91,16 @@ class WareHouseService extends BaseService
         if (empty($dbData)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $lineIdList = $data['line_ids'];
-        if (empty($lineIdList)) {
-            $lineIdList = [];
-        } else {
-            $lineIdList = explode(',', $lineIdList);
-        }
+//        $lineIdList = $data['line_ids'];
+//        if (empty($lineIdList)) {
+//            $lineIdList = [];
+//        } else {
+//            $lineIdList = explode(',', $lineIdList);
+//        }
+        //不修改line_ids
+//                $this->check($dbData, $lineIdList);
         $this->fillData($data, $dbData->toArray());
         unset($data['created_at'], $data['updated_at']);
-        //不修改line_ids
-        //        $this->check($dbData, $lineIdList);
         $data['line_ids'] = $dbData['line_ids'];
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
