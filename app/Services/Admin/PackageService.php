@@ -46,8 +46,7 @@ class PackageService extends BaseService
             $this->query->whereIn('order_no', $orderList)->where('order_no', 'like', $this->formData['order_no']);
         }
         $this->query->orderByDesc('updated_at');
-        $data= parent::getPageList();
-
+        return parent::getPageList();
     }
 
     /**

@@ -95,8 +95,7 @@ class LineValidate extends BaseValidate
             'place_city',
             'place_street',
             'place_address',
-            'place_lon',
-            'place_lat',
+
             'execution_date',
             'second_place_fullname',
             'second_place_phone',
@@ -106,8 +105,7 @@ class LineValidate extends BaseValidate
             'second_place_city',
             'second_place_street',
             'second_place_address',
-            'second_place_lon',
-            'second_place_lat',
+
             'second_execution_date',
         ]
     ];
