@@ -404,6 +404,7 @@ class LineService extends BaseLineService
         $pieWarehouseList = [$pieWarehouse];
         $this->centerCheck($pieWarehouseList, $pieWarehouse, BaseConstService::ORDER_TYPE_2);
         if ($pickupWarehouse['id'] == $pieWarehouse['id']) {
+            $pickupWarehouse['type'] = 3;
             $data = array_values(array_filter(array_merge(
                 [$this->formAddress($this->pickupAddress($data))],
                 [$pickupWarehouse],
