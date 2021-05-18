@@ -762,21 +762,21 @@ class OrderService extends BaseService
         }
         $params = $this->getTransportPriceService()->priceCount($params);
         //验证取件网点及派件网点是否承接取件/派件
-        if ($merchant['below_warehouse'] == BaseConstService::YES) {
-            $belowWarehouse = $this->getWareHouseService()->getInfo(['id' => $merchant['warehouse_id']], ['*'], false);
-            $belowAcceptanceTypeList = explode(',', $belowWarehouse['acceptance_type']);
-            if ($params['type'] == BaseConstService::ORDER_TYPE_1 && !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $belowAcceptanceTypeList)
-            ) {
-                throw new BusinessLogicException('货主所属网点不承接取件订单');
-            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2 && !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $belowAcceptanceTypeList)) {
-                throw new BusinessLogicException('货主所属网点不承接派件订单');
-            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3 &&
-                !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $belowAcceptanceTypeList) &&
-                !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $belowAcceptanceTypeList)
-            ) {
-                throw new BusinessLogicException('货主所属网点不承接取派订单');
-            }
-        } else {
+//        if ($merchant['below_warehouse'] == BaseConstService::YES) {
+//            $belowWarehouse = $this->getWareHouseService()->getInfo(['id' => $merchant['warehouse_id']], ['*'], false);
+//            $belowAcceptanceTypeList = explode(',', $belowWarehouse['acceptance_type']);
+//            if ($params['type'] == BaseConstService::ORDER_TYPE_1 && !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $belowAcceptanceTypeList)
+//            ) {
+//                throw new BusinessLogicException('货主所属网点不承接取件订单');
+//            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2 && !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $belowAcceptanceTypeList)) {
+//                throw new BusinessLogicException('货主所属网点不承接派件订单');
+//            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3 &&
+//                !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $belowAcceptanceTypeList) &&
+//                !in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $belowAcceptanceTypeList)
+//            ) {
+//                throw new BusinessLogicException('货主所属网点不承接取派订单');
+//            }
+//        } else {
             if ($params['type'] == BaseConstService::ORDER_TYPE_1) {
                 $pickupWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);
                 $pickupAcceptanceTypeList = explode(',', $pickupWarehouse['acceptance_type']);
@@ -802,7 +802,7 @@ class OrderService extends BaseService
                     throw new BusinessLogicException('该收件人地址所属区域，网点不承接派件订单');
                 }
             }
-        }
+//        }
         return $params;
     }
 
