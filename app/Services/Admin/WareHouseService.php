@@ -235,11 +235,9 @@ class WareHouseService extends BaseService
         if ($this->isRoot($warehouse)) {
             throw new BusinessLogicException('无法删除根网点');
         }
-
         if ($this->hasChildren($warehouse)) {
             throw new BusinessLogicException('请先删除子网点');
         }
-
         if (!empty($this->getEmployeeService()->getList(['warehouse_id' => $id], ['*'], false)->toArray())) {
             throw new BusinessLogicException('请先删除该网点下的所有员工');
         }
