@@ -403,12 +403,20 @@ class LineService extends BaseLineService
         $pieWarehouse = $this->getWareHouseByAddress($this->pieAddress($data));
         $pieWarehouseList = [$pieWarehouse];
         $this->centerCheck($pieWarehouseList, $pieWarehouse, BaseConstService::ORDER_TYPE_2);
-        $data = array_values(array_filter(array_merge(
-            [$this->formAddress($this->pickupAddress($data))],
-            $pickupWarehouseList,
-            array_reverse($pieWarehouseList),
-            [$this->formAddress($this->pieAddress($data))]
-        )));
+        if ($pickupWarehouse['id'] == $pieWarehouse['id']) {
+            $data = array_values(array_filter(array_merge(
+                [$this->formAddress($this->pickupAddress($data))],
+                [$pickupWarehouse],
+                [$this->formAddress($this->pieAddress($data))]
+            )));
+        }else{
+            $data = array_values(array_filter(array_merge(
+                [$this->formAddress($this->pickupAddress($data))],
+                $pickupWarehouseList,
+                array_reverse($pieWarehouseList),
+                [$this->formAddress($this->pieAddress($data))]
+            )));
+        }
         $data = $this->formTest($data);
         return $data;
     }
@@ -536,7 +544,7 @@ class LineService extends BaseLineService
     public function formTest(array $data)
     {
         for ($i = 0, $j = count($data) - 1; $i < $j; $i++) {
-            if ($data[$i] == $data[$i + 1]) {
+            if ($data[$i]['name'] == $data[$i + 1]['name']) {
                 $data[$i + 1]['type'] = BaseConstService::ORDER_TYPE_3;
                 unset($data[$i]);
             }
