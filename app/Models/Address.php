@@ -60,6 +60,7 @@ class Address extends BaseModel
         'place_lat',
         'created_at',
         'updated_at',
+        'unique_code',
         'type'
     ];
 

@@ -51,7 +51,8 @@ class PackageService extends BaseService
         $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['express_first_no' => $expressFirstNoList], ['*'], false);
         $trackingPackageList = $this->getTrackingPackageService()->getList(['express_first_no' => $expressFirstNoList], ['*'], false);
         foreach ($data as $v) {
-            $trackingOrderPackage =$trackingOrderPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->toArray();
+            $trackingOrderPackage = $trackingOrderPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->toArray();
+            $stock = $this->getStockService()->getList(['express_first_no' => $v['express_first_no']], ['*'], false);
             $trackingPackage = $trackingPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->toArray();
             if (!empty($trackingPackage)) {
                 $v['warehouse_id'] = $trackingPackage['warehouse_id'];
