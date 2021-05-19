@@ -53,11 +53,10 @@ class StockService extends BaseService
         if ($check == true) {
             $this->check($package, $order, $type);
         }
-        //异常验证
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $warehouseId], ['*'], false)->toArray();
+        $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
-        $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
         if ($warehouseId == $pieWarehouse['id']) {
             //如果本网点为该包裹的派件网点，则生成派件运单进行派送
             return $this->createTrackingOrder($package, $order, $type);
@@ -113,10 +112,13 @@ class StockService extends BaseService
             $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
             $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], true);
         }
+        //更改包裹阶段
+        $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         //包裹入库
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
+                'type'=>BaseConstService::TRACKING_PACKAGE_TYPE_3,
                 'express_first_no' => $package['express_first_no'],
                 'line_id' => $tour['line_id'] ?? '',
                 'line_name' => $tour['line_name'] ?? '',
@@ -126,6 +128,7 @@ class StockService extends BaseService
             ];
         } else {
             return [
+                'type'=>BaseConstService::TRACKING_PACKAGE_TYPE_3,
                 'express_first_no' => $package['express_first_no'],
                 'line_id' => $tour['line_id'] ?? '',
                 'line_name' => $tour['line_name'] ?? '',
@@ -169,8 +172,9 @@ class StockService extends BaseService
             'unpack_operator' => '',
             'unpack_operator_id' => null
         ]);
+        //更改包裹阶段
+        $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         $this->trackingPackageStockIn($package, $trackingPackage);
-
         return [
             'express_first_no' => $package['express_first_no'],
             'type' => $trackingPackageType,

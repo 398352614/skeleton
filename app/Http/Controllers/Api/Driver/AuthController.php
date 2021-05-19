@@ -11,10 +11,12 @@ use App\Http\Controllers\Api\Admin\RegisterController;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\Driver;
+use App\Models\Warehouse;
 use App\Services\BaseConstService;
 use App\Services\FeeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -98,6 +100,7 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth('driver')->factory()->getTTL() * 60,
             'company_config' => $this->getCompanyConfig(auth('driver')->user()->company_id),
+            'warehouse' => $this->getWarehouse(auth('driver')->user()->warehouse_id),
             'is_bind' => $this->isBindDevice(auth('driver')->user()->id)
         ];
     }
@@ -117,6 +120,13 @@ class AuthController extends Controller
             'sticker_amount' => $stickerAmount,
             'delivery_amount' => $deliveryAmount
         ];
+    }
+
+    private function getWarehouse($warehouseId)
+    {
+        $warehouse = Warehouse::query()->where('id', $warehouseId)->first()->toArray();
+        $warehouse = Arr::only($warehouse, ['id', 'name', 'is_center']);
+        return $warehouse;
     }
 
     /**

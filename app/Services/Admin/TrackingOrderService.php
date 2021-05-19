@@ -373,6 +373,7 @@ class TrackingOrderService extends BaseService
             data_set($packageList, '*.tracking_order_no', $trackingOrder['tracking_order_no']);
             data_set($packageList, '*.type', $trackingOrder['type']);
             data_set($packageList, '*.status', $trackingOrder['status']);
+            data_set($packageList, '*.stage', BaseConstService::PACKAGE_STAGE_1);
             data_set($packageList, '*.execution_date', $trackingOrder['execution_date']);
             $rowCount = $this->getTrackingOrderPackageService()->insertAll($packageList);
             if ($rowCount === false) {

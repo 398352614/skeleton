@@ -46,7 +46,20 @@ class PackageService extends BaseService
             $this->query->whereIn('order_no', $orderList)->where('order_no', 'like', $this->formData['order_no']);
         }
         $this->query->orderByDesc('updated_at');
-        return parent::getPageList();
+        $data = parent::getPageList();
+        $expressFirstNoList = $data->pluck('express_first_no')->toArray();
+        $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['express_first_no' => $expressFirstNoList], ['*'], false);
+        $trackingPackageList = $this->getTrackingPackageService()->getList(['express_first_no' => $expressFirstNoList], ['*'], false);
+        foreach ($data as $v) {
+            $trackingOrderPackage =$trackingOrderPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->toArray();
+            $trackingPackage = $trackingPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->toArray();
+            if (!empty($trackingPackage)) {
+                $v['warehouse_id'] = $trackingPackage['warehouse_id'];
+                $v['next_warehouse_id'] = $trackingPackage['next_warehouse_id'];
+                $v['warehouse_name'] = $trackingPackage['warehouse_name'];
+                $v['next_warehouse_name'] = $trackingPackage['next_warehouse_name'];
+            }
+        }
     }
 
     /**

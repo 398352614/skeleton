@@ -164,6 +164,14 @@ trait ConstTranslateTrait
             BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2 => 2,
         ];
 
+    //包裹阶段
+    public static $packageStageList =
+        [
+            BaseConstService::PACKAGE_STAGE_1 => '取件',
+            BaseConstService::PACKAGE_STAGE_2 => '中转',
+            BaseConstService::PACKAGE_STAGE_3 => '派件'
+        ];
+
     //编号类型
     public static $noTypeList = [
         BaseConstService::ORDER_NO_TYPE => '订单编号规则',

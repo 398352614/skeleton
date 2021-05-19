@@ -21,8 +21,8 @@ class CreateTrackingPackageTable extends Migration
             $table->string('bag_no',50)->default('')->nullable()->comment('袋号');
             $table->string('shift_no',50)->default('')->nullable()->comment('车次号');
             $table->tinyInteger('status')->default(1)->nullable()->comment('状态:1-待装袋2-待装车3-待发车4-运输中5-待卸车6-待拆袋7-已完成');
-            $table->tinyInteger('type')->default(1)->nullable()->comment('状态:1-分拨2-中转');
-            $table->tinyInteger('distance_type')->default(1)->nullable()->comment('状态:1-长途2-短途');
+            $table->tinyInteger('type')->default(1)->nullable()->comment('类型:1-分拨2-中转');
+            $table->tinyInteger('distance_type')->default(1)->nullable()->comment('距离类型:1-长途2-短途');
             $table->decimal('weight', 2)->default(0.00)->nullable()->comment('包裹重量');
 
             $table->integer('warehouse_id')->default(null)->nullable()->comment('所在网点ID');

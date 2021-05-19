@@ -811,11 +811,17 @@ class BaseConstService
     const SHIFT_STATUS_3 = 3;
     const SHIFT_STATUS_4 = 4;
 
-    //转运单类型1-分拨2-中转
+    //转运单类型1-分拨2-中转3-派送
     const TRACKING_PACKAGE_TYPE_1 = 1;
     const TRACKING_PACKAGE_TYPE_2 = 2;
+    const TRACKING_PACKAGE_TYPE_3 = 3;
 
     //转运单类型1-长途2-短途
     const TRACKING_PACKAGE_DISTANCE_TYPE_1 = 1;
     const TRACKING_PACKAGE_DISTANCE_TYPE_2 = 2;
+
+    //包裹阶段1-取件2-中转3-派件
+    const PACKAGE_STAGE_1 = 1;
+    const PACKAGE_STAGE_2 = 2;
+    const PACKAGE_STAGE_3 = 3;
 }
