@@ -13,6 +13,7 @@ use App\Models\Scope\CompanyScope;
 use App\Models\Scope\HasCompanyId;
 use App\Traits\CompanyTrait;
 use App\Traits\CountryTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class BaseModel extends Model
@@ -138,5 +139,23 @@ class BaseModel extends Model
     public function getCountryNameAttribute()
     {
         return empty($this->country) ? null : CountryTrait::getCountryName($this->country);
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getCreatedAtAttribute()
+    {
+        return (new Carbon($this->attributes['created_at']))->setTimezone(auth()->user()->timezone ?? config('tms.timezone'))->toDateTimeString();
+    }
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function getUpdatedAtAttribute()
+    {
+        return (new Carbon($this->attributes['updated_at']))->setTimezone(auth()->user()->timezone ?? config('tms.timezone'))->toDateTimeString();
     }
 }

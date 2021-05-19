@@ -42,7 +42,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::put('my-password', 'AuthController@updatePassword');
     //获取当前用户权限
     Route::get('/permission', 'AuthController@getPermission');
-
+    //获取当前用户权限
+    Route::put('/timezone', 'AuthController@updateTimezone');
     //主页统计
     Route::prefix('statistics')->group(function () {
         //主页

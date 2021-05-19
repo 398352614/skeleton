@@ -431,6 +431,10 @@ class OrderService extends BaseService
             throw new BusinessLogicException('当前包裹已生成对应运单');
         }
         $params = array_merge($dbOrder, $params);
+        $packageStageList = $this->getPackageService()->getList(['order_no', $dbOrder], ['*'], false)->pluck('stage')->toArray();
+        if (in_array(BaseConstService::PACKAGE_STAGE_2, $packageStageList)) {
+            throw new BusinessLogicException('订单处于中转过程，无法再次生成运单');
+        }
         return $this->getTrackingOrderService()->storeAgain($dbOrder, $params, $trackingOrderType);
     }
 
@@ -777,31 +781,31 @@ class OrderService extends BaseService
 //                throw new BusinessLogicException('货主所属网点不承接取派订单');
 //            }
 //        } else {
-            if ($params['type'] == BaseConstService::ORDER_TYPE_1) {
-                $pickupWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);
-                $pickupAcceptanceTypeList = explode(',', $pickupWarehouse['acceptance_type']);
-                if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $pickupAcceptanceTypeList)
-                ) {
-                    throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
-                }
-            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2) {
-                $pieWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);//特殊处理
-                $pieAcceptanceTypeList = explode(',', $pieWarehouse['acceptance_type']);
-                if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $pieAcceptanceTypeList)) {
-                    throw new BusinessLogicException('该收件人地址所属区域，网点不承接派件订单');
-                }
-            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
-                $pickupWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);
-                $pieWarehouse = $this->getLineService()->getPieWarehouseByOrder($params);
-                $pickupAcceptanceTypeList = explode(',', $pickupWarehouse['acceptance_type']);
-                $pieAcceptanceTypeList = explode(',', $pieWarehouse['acceptance_type']);
-                if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $pickupAcceptanceTypeList)) {
-                    throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
-                }
-                if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $pieAcceptanceTypeList)) {
-                    throw new BusinessLogicException('该收件人地址所属区域，网点不承接派件订单');
-                }
+        if ($params['type'] == BaseConstService::ORDER_TYPE_1) {
+            $pickupWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);
+            $pickupAcceptanceTypeList = explode(',', $pickupWarehouse['acceptance_type']);
+            if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $pickupAcceptanceTypeList)
+            ) {
+                throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
             }
+        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2) {
+            $pieWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);//特殊处理
+            $pieAcceptanceTypeList = explode(',', $pieWarehouse['acceptance_type']);
+            if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $pieAcceptanceTypeList)) {
+                throw new BusinessLogicException('该收件人地址所属区域，网点不承接派件订单');
+            }
+        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
+            $pickupWarehouse = $this->getLineService()->getPickupWarehouseByOrder($params);
+            $pieWarehouse = $this->getLineService()->getPieWarehouseByOrder($params);
+            $pickupAcceptanceTypeList = explode(',', $pickupWarehouse['acceptance_type']);
+            $pieAcceptanceTypeList = explode(',', $pieWarehouse['acceptance_type']);
+            if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1, $pickupAcceptanceTypeList)) {
+                throw new BusinessLogicException('该发件人地址所属区域，网点不承接取件订单');
+            }
+            if (!in_array(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2, $pieAcceptanceTypeList)) {
+                throw new BusinessLogicException('该收件人地址所属区域，网点不承接派件订单');
+            }
+        }
 //        }
         return $params;
     }
