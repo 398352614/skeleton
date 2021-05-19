@@ -143,6 +143,8 @@ class MerchantService extends BaseService
             if (strstr($warehouse['acceptance_type'], strval(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3)) == false) {
                 throw new BusinessLogicException('网点未配置仓配一体，无法选择该网点');
             }
+        }else{
+            unset($params['warehouse_id']);
         }
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $params['merchant_group_id']], ['*'], false);
         if (empty($merchantGroup)) {

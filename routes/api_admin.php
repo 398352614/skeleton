@@ -1025,4 +1025,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //删除
         Route::delete('/{id}', 'BagController@destroy')->name('bag.destroy');
     });
+
+    //转运单管理
+    Route::prefix('tracking-package')->group(function () {
+        //列表
+        Route::get('/', 'TrackingPackageController@index');
+    });
 });
