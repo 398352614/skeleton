@@ -841,6 +841,7 @@ class OrderService extends BaseService
                 BaseConstService::ORDER_TYPE_1 => BaseConstService::PACKAGE_STAGE_1,
                 BaseConstService::ORDER_TYPE_2 => BaseConstService::PACKAGE_STAGE_3,
                 BaseConstService::ORDER_TYPE_3 => BaseConstService::PACKAGE_STAGE_1,
+                BaseConstService::ORDER_TYPE_4 => BaseConstService::PACKAGE_STAGE_1,
             ];
             $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $array, $status) {
                 $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'actual_weight', 'settlement_amount', 'count_settlement_amount', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
