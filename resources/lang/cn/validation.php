@@ -110,6 +110,12 @@ return [
         'lat' => [
             'required' => '系统无法获取该地址的位置信息',
         ],
+        'place_lon' => [
+            'required' => '系统无法获取该地址的位置信息',
+        ],
+        'place_lat' => [
+            'required' => '系统无法获取该地址的位置信息',
+        ],
         //包裹列表
         'package_list.*.id' => [
             'required_with' => '包裹ID是必须的',
