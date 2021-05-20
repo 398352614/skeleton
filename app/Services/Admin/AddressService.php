@@ -201,7 +201,6 @@ class AddressService extends BaseService
         foreach ($fields as $v) {
             array_key_exists($v,$data) && $data[$v] = trim($data[$v]);
         }
-        dd($data);
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
