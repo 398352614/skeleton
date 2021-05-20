@@ -221,13 +221,13 @@ class TourTaskService extends BaseService
 
     /**
      * 获取运单列表
-     * @param $id
+     * @param $params
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getTrackingOrderList($id)
+    public function getTrackingOrderList($params)
     {
-        $tour = parent::getInfo(['id' => $id], ['tour_no'], false);
+        $tour = parent::getInfo(['tour_no' => $params['tour_no']], ['tour_no'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }

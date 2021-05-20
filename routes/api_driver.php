@@ -109,7 +109,7 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         //获取取件线路
         Route::get('/get-tour', 'TourController@getTourList');
         //获取订单及包裹
-        Route::get('/', 'TourTaskController@getOrderList');
+        Route::get('/', 'TourTaskController@getTrackingOrderList');
     });
 
     //取件线路 管理
