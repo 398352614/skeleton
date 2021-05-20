@@ -199,8 +199,9 @@ class AddressService extends BaseService
             'place_post_code', 'place_street', 'place_house_number',
             'place_address'];
         foreach ($fields as $v) {
-            array_key_exists($data, $v) && $data[$v] = trim($data[$v]);
+            array_key_exists($v,$data) && $data[$v] = trim($data[$v]);
         }
+        dd($data);
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
