@@ -43,7 +43,7 @@ class OrderValidate extends BaseValidate
         'place_district' => 'nullable|string|max:50',
         'place_street' => 'required|string|max:50',
         'place_address' => 'checkAddress|nullable|string|max:250',
-        'place_lon' => 'nullable|string|max:50',
+        'place_lon' => 'required|string|max:50',
         'place_lat' => 'nullable|string|max:50',
         'second_place_fullname' => 'required_if:type,3|string|max:50',
         'second_place_phone' => 'required_if:type,3|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',

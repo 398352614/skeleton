@@ -24,7 +24,7 @@ class AddressValidate extends BaseValidate
         'place_street' => 'required|string|max:50',
         'place_address' => 'checkAddress|nullable|string|max:250',
         'place_lon' => 'required|string|max:50',
-        'place_lat' => 'required|string|max:50',
+        'place_lat' => 'nullable|string|max:50',
         'merchant_id' => 'required|integer',
         'list'=>'required|string'
     ];
