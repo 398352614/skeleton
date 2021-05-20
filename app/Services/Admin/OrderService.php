@@ -850,7 +850,7 @@ class OrderService extends BaseService
                     ->put('execution_date', $params['execution_date'])
                     ->put('second_execution_date', $params['second_execution_date'] ?? null)
                     ->put('status', $status)
-                    ->put('stage', $array($params['type']))
+                    ->put('stage', $array[$params['type']])
                     ->put('expiration_status', BaseConstService::EXPIRATION_STATUS_1)
                     ->put('type', $params['type']);
             })->toArray();
