@@ -25,13 +25,16 @@ class ShiftValidate extends BaseValidate
         'next_warehouse_id' => 'required|string',
         'item_list' => 'required',
         'item_list.*.shift_type' => 'required|integer',
-        'item_list.*.item_no' => 'required|string'
+        'item_list.*.item_no' => 'required|string',
+        'item_no' => 'required|string',
+        'ignore_rule' => 'required|integer|in:1,2'
     ];
 
     public $scene = [
         'store' => ['shift_no', 'status', 'weight', 'package_count', 'driver_id', 'driver_name', 'car_no', 'car_id', 'remark'],
         'update' => ['shift_no', 'status', 'weight', 'package_count', 'driver_id', 'driver_name', 'car_no', 'car_id', 'remark'],
-        'unloadItemList' => ['item_list', 'item_list.*.shift_type', 'item_list.*.item_no']
+        'unloadItemList' => ['item_list', 'item_list.*.shift_type', 'item_list.*.item_no'],
+        'loadItem'=>['ignore_rule']
     ];
 
     public $message = [
