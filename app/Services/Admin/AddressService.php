@@ -194,6 +194,13 @@ class AddressService extends BaseService
      */
     public function check(&$data, $id = null)
     {
+        $fields = ['place_fullname', 'place_phone',
+            'place_country', 'place_province', 'place_city', 'place_district',
+            'place_post_code', 'place_street', 'place_house_number',
+            'place_address'];
+        foreach ($fields as $v) {
+            array_key_exists($data, $v) && $data[$v] = trim($data[$v]);
+        }
         $info = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
