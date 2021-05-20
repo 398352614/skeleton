@@ -120,7 +120,7 @@ use Illuminate\Support\Facades\App;
  * @method static bagStatusList($args = null)
  * @method static trackingPackageStatusList($args = null)
  * @method static shiftLoadTypeList($args = null)
- *
+ * @method static packageStageList($args = null)
  */
 trait ConstTranslateTrait
 {

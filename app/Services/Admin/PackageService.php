@@ -9,6 +9,7 @@ use App\Models\MerchantApi;
 use App\Models\Package;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -29,7 +30,8 @@ class PackageService extends BaseService
         'express_first_no,order_no,out_order_no' => ['like', 'keyword'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'express_first_no' => ['like', 'express_first_no'],
-        'out_order_no' => ['like', 'out_order_no']
+        'out_order_no' => ['like', 'out_order_no'],
+        'stage' => ['=', 'stage']
     ];
 
     /**
@@ -48,19 +50,30 @@ class PackageService extends BaseService
         $this->query->orderByDesc('updated_at');
         $data = parent::getPageList();
         $expressFirstNoList = $data->pluck('express_first_no')->toArray();
-        $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['express_first_no' => $expressFirstNoList], ['*'], false);
-        $trackingPackageList = $this->getTrackingPackageService()->getList(['express_first_no' => $expressFirstNoList], ['*'], false);
-        foreach ($data as $v) {
-            $trackingOrderPackage = $trackingOrderPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->toArray();
-            $stock = $this->getStockService()->getList(['express_first_no' => $v['express_first_no']], ['*'], false);
-            $trackingPackage = $trackingPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->toArray();
-            if (!empty($trackingPackage)) {
-                $v['warehouse_id'] = $trackingPackage['warehouse_id'];
-                $v['next_warehouse_id'] = $trackingPackage['next_warehouse_id'];
-                $v['warehouse_name'] = $trackingPackage['warehouse_name'];
-                $v['next_warehouse_name'] = $trackingPackage['next_warehouse_name'];
+        $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['express_first_no' => ['in', $expressFirstNoList]], ['*'], false);
+        $trackingPackageList = $this->getTrackingPackageService()->getList(['express_first_no' => ['in', $expressFirstNoList]], ['*'], false);
+        foreach ($data as $k => $v) {
+            $stockInLog = $this->getStockService()->getInfo(['express_first_no' => $v['express_first_no']], ['*'], false, ['id' => 'asc']);
+            if ($data[$k]['stage'] == BaseConstService::PACKAGE_STAGE_2) {
+                $trackingPackage = $trackingPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->first->toArray();
+                $data[$k]['warehouse_id'] = $trackingPackage['warehouse_id'];
+                $data[$k]['next_warehouse_id'] = $trackingPackage['next_warehouse_id'];
+                $data[$k]['warehouse_name'] = $trackingPackage['warehouse_name'];
+                $data[$k]['next_warehouse_name'] = $trackingPackage['next_warehouse_name'];
+                $data[$k]['shift_no'] = $trackingPackage['shift_no'];
+                $data[$k]['bag_no'] = $trackingPackage['bag_no'];
+                $data[$k]['status'] = $trackingPackage['status'];
+                $data[$k]['true_status_name'] = ConstTranslateTrait::trackingPackageStatusList($trackingPackage['status']);
+            } else {
+                $trackingOrderPackage = $trackingOrderPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->first->toArray();
+                $data[$k]['status'] = $trackingOrderPackage['status'] ?? null;
+                $data[$k]['true_status_name'] = ConstTranslateTrait::trackingOrderStatusList($trackingOrderPackage['status']);
             }
+            $data[$k]['second_execution_date'] = $stockInLog['execution_date'] ?? null;
+            $data[$k]['stock_in_time'] = $stockInLog['created_at'] ?? null;
+            $data[$k]['stage_status_name'] = $data[$k]['stage_name'] . '-' . $data[$k]['true_status_name'];
         }
+        return $data;
     }
 
     /**

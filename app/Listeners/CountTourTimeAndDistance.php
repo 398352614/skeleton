@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\AfterTourInit;
-use App\Services\GoogleApiService;
+use App\Services\ApiServices\GoogleApiService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class CountTourTimeAndDistance implements ShouldQueue
@@ -16,7 +16,7 @@ class CountTourTimeAndDistance implements ShouldQueue
     /**
      * Create the event listener.
      *
-     * @return void
+     * @param GoogleApiService $client
      */
     public function __construct(GoogleApiService $client)
     {

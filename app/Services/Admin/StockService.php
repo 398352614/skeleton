@@ -118,7 +118,7 @@ class StockService extends BaseService
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
-                'type'=>BaseConstService::TRACKING_PACKAGE_TYPE_3,
+                'type' => BaseConstService::TRACKING_PACKAGE_TYPE_3,
                 'express_first_no' => $package['express_first_no'],
                 'line_id' => $tour['line_id'] ?? '',
                 'line_name' => $tour['line_name'] ?? '',
@@ -128,7 +128,7 @@ class StockService extends BaseService
             ];
         } else {
             return [
-                'type'=>BaseConstService::TRACKING_PACKAGE_TYPE_3,
+                'type' => BaseConstService::TRACKING_PACKAGE_TYPE_3,
                 'express_first_no' => $package['express_first_no'],
                 'line_id' => $tour['line_id'] ?? '',
                 'line_name' => $tour['line_name'] ?? '',

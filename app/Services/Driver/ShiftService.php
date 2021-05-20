@@ -156,28 +156,29 @@ class ShiftService extends BaseService
      * 验证
      * @param $bag
      * @param $trackingPackage
+     * @param int $ignore_rule
      * @throws BusinessLogicException
      */
-    public function check(&$bag, $trackingPackage)
-    {
-        if (empty($trackingPackage) || in_array($trackingPackage['status'], [
-                BaseConstService::TRACKING_PACKAGE_STATUS_4,
-                BaseConstService::TRACKING_PACKAGE_STATUS_5,
-                BaseConstService::TRACKING_PACKAGE_STATUS_6,
-                BaseConstService::TRACKING_PACKAGE_STATUS_7,
-            ])) {
-            throw new BusinessLogicException('包裹状态错误');
-        }
-        if ($trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_2) {
-            throw new BusinessLogicException('包裹已装袋，请勿重复扫描');
-        }
-        if ($trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_3) {
-            throw new BusinessLogicException('包裹已装车，不允许装袋');
-        }
-        if ($bag['next_warehouse_id'] !== $trackingPackage['next_warehouse_id']) {
-            throw new BusinessLogicException('包裹与袋号的下一站不一致');
-        }
-    }
+//    public function check(&$bag, $trackingPackage, $ignore_rule = BaseConstService::NO)
+//    {
+//        if (empty($trackingPackage) || in_array($trackingPackage['status'], [
+//                BaseConstService::TRACKING_PACKAGE_STATUS_4,
+//                BaseConstService::TRACKING_PACKAGE_STATUS_5,
+//                BaseConstService::TRACKING_PACKAGE_STATUS_6,
+//                BaseConstService::TRACKING_PACKAGE_STATUS_7,
+//            ])) {
+//            throw new BusinessLogicException('包裹状态错误');
+//        }
+//        if ($trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_2) {
+//            throw new BusinessLogicException('包裹已装袋，请勿重复扫描');
+//        }
+//        if ($trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_3) {
+//            throw new BusinessLogicException('包裹已装车，不允许装袋');
+//        }
+//        if ($bag['next_warehouse_id'] !== $trackingPackage['next_warehouse_id'] && $ignore_rule) {
+//            throw new BusinessLogicException('包裹与袋号的下一站不一致',5009);
+//        }
+//    }
 
     /**
      * 内容物扫描
@@ -206,10 +207,10 @@ class ShiftService extends BaseService
                 throw new BusinessLogicException('包裹号和袋号同时存在', 5007);
             } elseif ($data['is_bag'] == BaseConstService::YES) {
                 //is_bag为1时取袋
-                $info = $this->loadBag($bag, $shift);
+                $info = $this->loadBag($bag, $shift, $data['ignore_rule']);
             } else {
                 //is_bag为2时取包裹
-                $info = $this->loadTrackingPackage($trackingPackage, $shift);
+                $info = $this->loadTrackingPackage($trackingPackage, $shift, $data['ignore_rule']);
             }
         } else {
             //包裹和袋均不存在报错
@@ -223,10 +224,11 @@ class ShiftService extends BaseService
      * 袋号装车
      * @param $bag
      * @param $shift
+     * @param int $ignoreRule
      * @return array
      * @throws BusinessLogicException
      */
-    public function loadBag($bag, $shift)
+    public function loadBag($bag, $shift, $ignoreRule = BaseConstService::NO)
     {
         if ($bag['status'] == BaseConstService::BAG_STATUS_2) {
             throw new BusinessLogicException('重复扫描');
@@ -234,8 +236,8 @@ class ShiftService extends BaseService
         if ($bag['status'] !== BaseConstService::BAG_STATUS_1) {
             throw new BusinessLogicException('状态错误');
         }
-        if ($bag['next_warehouse_id'] !== $shift['next_warehouse_id']) {
-            throw new BusinessLogicException('袋号与下一站不一致');
+        if ($bag['next_warehouse_id'] !== $shift['next_warehouse_id'] && $ignoreRule == BaseConstService::NO) {
+            throw new BusinessLogicException('袋号与下一站不一致', 5009);
         }
         $this->getBagService()->updateById($bag['id'], [
             'status' => BaseConstService::BAG_STATUS_2,
@@ -264,10 +266,11 @@ class ShiftService extends BaseService
      * 包裹装车
      * @param $trackingPackage
      * @param $shift
+     * @param int $ignoreRule
      * @return array
      * @throws BusinessLogicException
      */
-    public function loadTrackingPackage($trackingPackage, $shift)
+    public function loadTrackingPackage($trackingPackage, $shift, $ignoreRule = BaseConstService::NO)
     {
         if ($trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_3) {
             throw new BusinessLogicException('重复扫描');
@@ -275,8 +278,8 @@ class ShiftService extends BaseService
         if (!in_array($trackingPackage['status'], [BaseConstService::TRACKING_PACKAGE_STATUS_1, BaseConstService::TRACKING_PACKAGE_STATUS_2])) {
             throw new BusinessLogicException('状态错误');
         }
-        if ($trackingPackage['next_warehouse_id'] !== $shift['next_warehouse_id']) {
-            throw new BusinessLogicException('袋号与下一站不一致');
+        if ($trackingPackage['next_warehouse_id'] !== $shift['next_warehouse_id'] && $ignoreRule == BaseConstService::NO) {
+            throw new BusinessLogicException('袋号与下一站不一致', 5009);
         }
         $row = $this->getTrackingPackageService()->updateById($trackingPackage['id'], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
@@ -472,7 +475,7 @@ class ShiftService extends BaseService
             'unload_operator_id' => auth()->user()->id,
         ]);
         //更新袋子里的包裹
-        $row = $this->getTrackingPackageService()->update(['bag_no'=> $bag['bag_no']], [
+        $row = $this->getTrackingPackageService()->update(['bag_no' => $bag['bag_no']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_6
         ]);
         if ($row == false) {
@@ -526,12 +529,12 @@ class ShiftService extends BaseService
         foreach ($data['item_list'] as $k => $v) {
             if ($v['shift_type'] == BaseConstService::SHIFT_LOAD_TYPE_1) {
                 $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $v['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
-                if(!empty($trackingPackage)){
+                if (!empty($trackingPackage)) {
                     $this->unloadTrackingPackage($trackingPackage, $shift);
                 }
             } else {
                 $bag = $this->getBagService()->getInfo(['bag_no' => $v['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
-                if(!empty($bag)){
+                if (!empty($bag)) {
                     $this->unloadBag($bag, $shift);
                 }
             }

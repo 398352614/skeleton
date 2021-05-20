@@ -31,6 +31,6 @@ class StockController extends BaseController
      */
     public function allocate()
     {
-        return $this->service->allocate($this->data['express_first_no']);
+        return $this->service->allocate($this->data['express_first_no'], $this->data['ignore_rule']);
     }
 }

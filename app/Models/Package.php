@@ -74,6 +74,7 @@ class Package extends BaseModel
         'is_auth',
         'auth_fullname',
         'auth_birth_date',
+        'stage_name',
         'created_at',
         'updated_at'
     ];
@@ -108,5 +109,10 @@ class Package extends BaseModel
     public function getTypeNameAttribute()
     {
         return empty($this->type) ? null : ConstTranslateTrait::packageTypeList($this->type);
+    }
+
+    public function getStageNameAttribute()
+    {
+        return empty($this->stage) ? null : ConstTranslateTrait::packageStageList($this->stage);
     }
 }

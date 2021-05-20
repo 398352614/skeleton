@@ -66,10 +66,11 @@ class StockService extends BaseService
     /**
      * 分拨
      * @param $packageNo
+     * @param int $ignoreRule
      * @return array
      * @throws BusinessLogicException
      */
-    public function allocate($packageNo)
+    public function allocate($packageNo, $ignoreRule = BaseConstService::NO)
     {
         //存在验证
         $package = $this->getPackageService()->getInfo(['express_first_no' => $packageNo], ['*'], false, ['created_at' => 'desc']);
@@ -84,6 +85,9 @@ class StockService extends BaseService
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
         $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
+        if ($package['stage'] == BaseConstService::PACKAGE_STAGE_1 && $pickupWarehouse['id'] !== $warehouse['id'] && $ignoreRule == BaseConstService::YES) {
+            throw new BusinessLogicException('该包裹不应在此网点入库', 5008);
+        }
         if (auth()->user()->warehouse_id == $pieWarehouse['id']) {
             //如果本网点为该包裹的派件网点，则生成派件运单进行派送
             return $this->createTrackingOrder($package, $order, $type);

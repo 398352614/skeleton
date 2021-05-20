@@ -135,7 +135,7 @@ class BagService extends BaseService
         if (empty($trackingPackage)) {
             throw new BusinessLogicException('包裹阶段错误');
         }
-        $this->check($bag, $trackingPackage);
+        $this->check($bag, $trackingPackage, $data['ignore_rule']);
         $row = $this->getTrackingPackageService()->updateById($trackingPackage['id'], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
             'bag_no' => $bag['bag_no'],
@@ -154,9 +154,10 @@ class BagService extends BaseService
      * 验证
      * @param $bag
      * @param $trackingPackage
+     * @param int $ignore_rule
      * @throws BusinessLogicException
      */
-    public function check(&$bag, $trackingPackage)
+    public function check(&$bag, $trackingPackage, $ignore_rule = BaseConstService::NO)
     {
         if (empty($trackingPackage) || in_array($trackingPackage['status'], [
                 BaseConstService::TRACKING_PACKAGE_STATUS_4,
@@ -172,8 +173,8 @@ class BagService extends BaseService
         if ($trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_3) {
             throw new BusinessLogicException('包裹已装车，不允许装袋');
         }
-        if ($bag['next_warehouse_id'] !== $trackingPackage['next_warehouse_id']) {
-            throw new BusinessLogicException('包裹与袋号的下一站不一致');
+        if ($bag['next_warehouse_id'] !== $trackingPackage['next_warehouse_id'] && $ignore_rule) {
+            throw new BusinessLogicException('包裹与袋号的下一站不一致', 5009);
         }
     }
 

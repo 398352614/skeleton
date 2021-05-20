@@ -715,7 +715,7 @@ class OrderService extends BaseService
             'place_post_code', 'place_street', 'place_house_number',
             'place_address'];
         foreach ($fields as $v) {
-            array_key_exists($v,$params) && $params[$v] = trim($params[$v]);
+            array_key_exists($v, $params) && $params[$v] = trim($params[$v]);
         }
         //获取经纬度
         $fields = ['place_house_number', 'place_city', 'place_street'];
@@ -837,7 +837,12 @@ class OrderService extends BaseService
                     $params['package_list'][$k]['express_second_no'] = '';
                 }
             }
-            $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
+            $array = [
+                BaseConstService::ORDER_TYPE_1 => BaseConstService::PACKAGE_STAGE_1,
+                BaseConstService::ORDER_TYPE_2 => BaseConstService::PACKAGE_STAGE_3,
+                BaseConstService::ORDER_TYPE_3 => BaseConstService::PACKAGE_STAGE_1,
+            ];
+            $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $array, $status) {
                 $collectItem = collect($item)->only(['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'actual_weight', 'settlement_amount', 'count_settlement_amount', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
                 return $collectItem
                     ->put('order_no', $params['order_no'])
@@ -845,6 +850,7 @@ class OrderService extends BaseService
                     ->put('execution_date', $params['execution_date'])
                     ->put('second_execution_date', $params['second_execution_date'] ?? null)
                     ->put('status', $status)
+                    ->put('stage', $array($params['type']))
                     ->put('expiration_status', BaseConstService::EXPIRATION_STATUS_1)
                     ->put('type', $params['type']);
             })->toArray();

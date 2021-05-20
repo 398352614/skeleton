@@ -127,6 +127,20 @@ class GoogleApiService
     }
 
     /**
+     * 获取线路信息
+     */
+    public function LineInfo2($lineCode)
+    {
+        $api = '/api/line-info';
+
+        $path = $this->url . $api . $this->makeSign(time()) . "&line_code=$lineCode";
+
+        $res = $this->client->get($path);
+
+        return $res;
+    }
+
+    /**
      * 更新司机位置
      */
     public function PushDriverLocation($data)
