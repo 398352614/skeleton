@@ -43,6 +43,14 @@ class FixPackage extends Command
     {
         $this->info('begin:' . now());
         try {
+            $trackingPackageList = DB::table('tracking_package')->get();
+            $packageList = DB::table('package')->get();
+
+//            foreach ($trackingPackageList as $k=>$v) {
+//                DB::table('tracking_package')->where('express_first_no',$v->express_first_no)
+//                    ->update(['order_no'=>
+//                        $packageList->where('express_first_no',$v->express_first_no)->first()->order_no]);
+//            }
             $packageList = DB::table('package')->get()->toArray();
             $count = count($packageList);
             foreach ($packageList as $k => $v) {
@@ -64,7 +72,8 @@ class FixPackage extends Command
                         DB::table('package')->where('express_first_no', $v->express_first_no)->update(['stage' => BaseConstService::PACKAGE_STAGE_2]);
                     } elseif (!empty($trackingPackage) && !empty($trackingOrder)) {
                         //大条件：既有运单，也有转运单
-                        if ($trackingPackage->created_at > $trackingOrder->created_at) {
+                        //装运单的创建时间早于运单的创建时间则，最新创建的是运单
+                        if ($trackingPackage->created_at < $trackingOrder->created_at) {
                             //小条件：最新创建的是运单，则包裹阶段为派件
                             DB::table('package')->where('express_first_no', $v->express_first_no)->update(['stage' => BaseConstService::PACKAGE_STAGE_3]);
                         } else {
