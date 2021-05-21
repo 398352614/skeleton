@@ -181,7 +181,7 @@ class StockService extends BaseService
         $trackingPackage = $this->getTrackingPackageService()->create([
             'tracking_package_no' => $this->getOrderNoRuleService()->createTrackingPackageNo(),
             'express_first_no' => $package['express_first_no'],
-            'order_no' => $package['express_first_no'],
+            'order_no' => $package['order_no'],
             'bag_no' => '',
             'shift_no' => '',
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_1,
