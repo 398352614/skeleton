@@ -65,6 +65,7 @@ class Package extends BaseModel
         'expect_quantity',
         'actual_quantity',
         'status',
+        'stage',
         'sticker_no',
         'settlement_amount',
         'count_settlement_amount',
