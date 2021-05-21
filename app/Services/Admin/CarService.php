@@ -17,6 +17,7 @@ class CarService extends BaseService
 
     public $filterRules = [
         'status' => ['=', 'status'],
+        'car_no'=>['like','car_no']
     ];
 
     public $headings = [

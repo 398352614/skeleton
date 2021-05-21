@@ -16,7 +16,8 @@ class DriverService extends BaseService
     public $filterRules = [
         'status' => ['=', 'status'],
         'email' => ['=', 'email'],
-        'phone' => ['=', 'phone']
+        'phone' => ['=', 'phone'],
+        'fullname' => ['like', 'fullname']
     ];
 
     public function __construct(Driver $driver)
