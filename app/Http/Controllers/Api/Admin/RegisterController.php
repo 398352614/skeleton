@@ -10,6 +10,7 @@ use App\Http\Controllers\BaseController;
 use App\Mail\SendRegisterCode;
 use App\Mail\SendResetCode;
 use App\Models\Company;
+use App\Models\CompanyConfig;
 use App\Models\Employee;
 use App\Models\Fee;
 use App\Models\KilometresCharging;
@@ -91,12 +92,13 @@ class RegisterController extends BaseController
             $this->initCompanyOrderCodeRules($company);//初始化编号规则
             $transportPrice = $this->addTransportPrice($company);//初始化运价方案
             $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化货主组
-            $merchant = $this->addMerchant($company, $merchantGroup,$warehouse);//初始化货主API
+            $merchant = $this->addMerchant($company, $merchantGroup, $warehouse);//初始化货主API
             $this->addMerchantApi($company, $merchant);//初始化货主API
             $this->addFee($company);//添加费用
             $this->addOrderTemplate($company);//添加打印模板
             $this->addOrderDefaultConfig($company); //添加订单默认配置
             $this->addMapConfig($company); //添加订单默认配置
+            $this->addCompanyConfig($company); //添加公司配置
 
             return 'true';
         });
@@ -343,7 +345,7 @@ class RegisterController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    protected function addMerchant($company, $merchantGroup,$warehouse)
+    protected function addMerchant($company, $merchantGroup, $warehouse)
     {
         $merchant = Merchant::create([
             'company_id' => $company->id,
@@ -358,7 +360,7 @@ class RegisterController extends BaseController
             'address' => $company->address,
             'avatar' => '',
             'status' => 1,
-            'warehouse_id'=>$warehouse->id
+            'warehouse_id' => $warehouse->id
         ]);
         if ($merchant === false) {
             throw new BusinessLogicException('初始化货主失败');
@@ -610,6 +612,29 @@ class RegisterController extends BaseController
         }
 
         return '0001';
+    }
+
+    /**
+     * @param $company
+     * @throws BusinessLogicException
+     */
+    public function addCompanyConfig($company)
+    {
+        $fee = CompanyConfig::create([
+            'company_id' => $company['id'],
+            'line_rule' => BaseConstService::LINE_RULE_POST_CODE,
+            'show_type' => BaseConstService::ALL_SHOW,
+            'address_template_id' => BaseConstService::ADDRESS_TYPE_1,
+            'stock_exception_verify' => BaseConstService::NO,
+            'weight_unit' => BaseConstService::WEIGHT_UNIT_TYPE_2,
+            'currency_unit' => BaseConstService::CURRENCY_UNIT_TYPE_3,
+            'volume_unit' => BaseConstService::VOLUME_UNIT_TYPE_2,
+            'map' => 'google',
+            'scheduling_rule' => BaseConstService::SCHEDULING_TYPE_1
+        ]);
+        if ($fee === false) {
+            throw new BusinessLogicException('费用初始化失败');
+        }
     }
 
 }
