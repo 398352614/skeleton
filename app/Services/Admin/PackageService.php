@@ -52,22 +52,29 @@ class PackageService extends BaseService
         $expressFirstNoList = $data->pluck('express_first_no')->toArray();
         $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['express_first_no' => ['in', $expressFirstNoList]], ['*'], false);
         $trackingPackageList = $this->getTrackingPackageService()->getList(['express_first_no' => ['in', $expressFirstNoList]], ['*'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tracking_order_no' => ['in', $data->pluck('tracking_order_no')->toArray()]], ['*'], false);
+
         foreach ($data as $k => $v) {
             $stockInLog = $this->getStockService()->getInfo(['express_first_no' => $v['express_first_no']], ['*'], false, ['id' => 'asc']);
             if ($data[$k]['stage'] == BaseConstService::PACKAGE_STAGE_2) {
                 $trackingPackage = $trackingPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->first->toArray();
-                $data[$k]['warehouse_id'] = $trackingPackage['warehouse_id'];
-                $data[$k]['next_warehouse_id'] = $trackingPackage['next_warehouse_id'];
-                $data[$k]['warehouse_name'] = $trackingPackage['warehouse_name'];
-                $data[$k]['next_warehouse_name'] = $trackingPackage['next_warehouse_name'];
-                $data[$k]['shift_no'] = $trackingPackage['shift_no'];
-                $data[$k]['bag_no'] = $trackingPackage['bag_no'];
-                $data[$k]['status'] = $trackingPackage['status'];
-                $data[$k]['true_status_name'] = ConstTranslateTrait::trackingPackageStatusList($trackingPackage['status']);
+                if (!empty($trackingPackage)) {
+                    $data[$k]['warehouse_id'] = $trackingPackage['warehouse_id'];
+                    $data[$k]['next_warehouse_id'] = $trackingPackage['next_warehouse_id'];
+                    $data[$k]['warehouse_name'] = $trackingPackage['warehouse_name'];
+                    $data[$k]['next_warehouse_name'] = $trackingPackage['next_warehouse_name'];
+                    $data[$k]['shift_no'] = $trackingPackage['shift_no'];
+                    $data[$k]['bag_no'] = $trackingPackage['bag_no'];
+                    $data[$k]['status'] = $trackingPackage['status'];
+                    $data[$k]['true_status_name'] = ConstTranslateTrait::trackingPackageStatusList($trackingPackage['status']);
+                }
             } else {
                 $trackingOrderPackage = $trackingOrderPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->first->toArray();
-                $data[$k]['status'] = $trackingOrderPackage['status'] ?? null;
-                $data[$k]['true_status_name'] = ConstTranslateTrait::trackingOrderStatusList($trackingOrderPackage['status']);
+                if (!empty($trackingOrderPackage)) {
+                    $data[$k]['warehouse_name'] = $trackingOrderList->where('tracking_order_no',$v['tracking_order_no'])->first()['status'] ?? null;
+                    $data[$k]['status'] = $trackingOrderPackage['status'] ?? null;
+                    $data[$k]['true_status_name'] = ConstTranslateTrait::trackingOrderStatusList($trackingOrderPackage['status']);
+                }
             }
             $data[$k]['second_execution_date'] = $stockInLog['execution_date'] ?? null;
             $data[$k]['stock_in_time'] = $stockInLog['created_at'] ?? null;
