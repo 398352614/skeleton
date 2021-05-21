@@ -273,9 +273,6 @@ class AuthController extends Controller
             throw new BusinessLogicException('时区 必填');
         }
         $res =DB::table('employee')->where('id', auth()->user()->id)->update(['timezone' => $data['timezone']]);
-        if ($res == false) {
-            throw new BusinessLogicException('切换时区失败');
-        }
         return success();
     }
 }
