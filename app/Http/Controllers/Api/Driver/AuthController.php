@@ -19,6 +19,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -271,7 +272,7 @@ class AuthController extends Controller
         if(empty($data['timezone'])){
             throw new BusinessLogicException('时区 必填');
         }
-        $res = Employee::query()->where('id', auth()->user()->id)->update(['timezone' => $data['timezone']]);
+        $res =DB::table('employee')->where('id', auth()->user()->id)->update(['timezone' => $data['timezone']]);
         if ($res == false) {
             throw new BusinessLogicException('切换时区失败');
         }
