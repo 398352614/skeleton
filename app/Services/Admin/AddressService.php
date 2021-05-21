@@ -204,9 +204,11 @@ class AddressService extends BaseService
         foreach ($fields as $v) {
             array_key_exists($v, $data) && $data[$v] = trim($data[$v]);
         }
-        $info = parent::getInfo(['id' => $id], ['*'], false);
-        if (empty($info)) {
-            throw new BusinessLogicException('数据不存在');
+        if (!empty($id)) {
+            $info = parent::getInfo(['id' => $id], ['*'], false);
+            if (empty($info)) {
+                throw new BusinessLogicException('数据不存在');
+            }
         }
         $data['place_country'] = !empty($dbInfo['place_country']) ? $dbInfo['place_country'] : CompanyTrait::getCountry();
         //验证商家是否存在
