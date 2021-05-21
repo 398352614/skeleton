@@ -344,7 +344,6 @@ class BaseService
         foreach ($data as $key => $item) {
             $data[$key] = Arr::only($item, $fields);
         }
-
         return $this->model->insertAll($data);
     }
 
