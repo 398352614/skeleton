@@ -23,14 +23,16 @@ class BagValidate extends BaseValidate
         'remark' => 'nullable|string',
         'next_warehouse_id' => 'required|string',
         'express_first_no_list' => 'required|array',
-        'ignore_rule' => 'required|integer|in:1,2'
+        'ignore_rule' => 'required|integer|in:1,2',
+        'express_first_no'=>'required|string'
     ];
 
     public $scene = [
         'store' => ['bag_no', 'shift_no', 'status', 'weight', 'driver_id', 'driver_name', 'car_no', 'next_warehouse_id', 'remark'],
         'update' => ['bag_no', 'shift_no', 'status', 'weight', 'driver_id', 'driver_name', 'car_no', 'next_warehouse_id', 'remark'],
         'unpackPackage' => ['express_first_no_list'],
-        'packPackage' => ['ignore_rule', 'express_first_no']
+        'packPackage' => ['ignore_rule', 'express_first_no'],
+        'removePackage'=>['express_first_no']
     ];
 
     public $message = [
