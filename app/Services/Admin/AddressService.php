@@ -299,7 +299,7 @@ class AddressService extends BaseService
         }
         //表头验证
         $headings = array_values(__('excel.addressExcelExport'));
-        if ($row[0] !== $headings) {
+        if (empty($row) || $row[0] !== $headings) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
         $headings = $this->importExcelHeader;
