@@ -99,7 +99,6 @@ trait LocationTrait
             $body = $res->getBody();
             $stringBody = (string)$body;
             $arrayBody = json_decode($stringBody, TRUE);
-
             if ($res->getStatusCode() !== 200) {
                 throw new \App\Exceptions\BusinessLogicException('邮编或门牌号码不正确，请仔细检查输入或联系客服');
             }
@@ -112,6 +111,7 @@ trait LocationTrait
                 'district' => $arrayBody['municipality'],//相当于是区
                 'street' => $arrayBody['street'],
                 'house_number' => $arrayBody['houseNumber'],
+                'post_code'=>$postCode,
                 'lat' => $arrayBody['latitude'],
                 'lon' => $arrayBody['longitude'],
             ];
@@ -151,6 +151,7 @@ trait LocationTrait
                 'district' => $featureList[0]['properties']['district'] ?? '',
                 'street' => $featureList[0]['properties']['street'] ??$street,
                 'house_number' => $houseNumber,
+                'post_code'=>$postCode,
                 'lon' => $featureList[0]['geometry']['coordinates'][0],
                 'lat' => $featureList[0]['geometry']['coordinates'][1],
             ];
