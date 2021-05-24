@@ -361,7 +361,7 @@ class AddressService extends BaseService
      */
     public function form($data)
     {
-        $data = Arr::only($data, $this->importExcelHeader);
+        $data = Arr::only($data, array_merge($this->importExcelHeader,['place_lon','place_lat']));
         return $data;
     }
 
