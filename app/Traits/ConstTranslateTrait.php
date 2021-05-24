@@ -201,7 +201,7 @@ trait ConstTranslateTrait
 
     //车次装车类型
     public static $shiftLoadTypeList = [
-        BaseConstService::SHIFT_LOAD_TYPE_1 => '单号',
+        BaseConstService::SHIFT_LOAD_TYPE_1 => '包裹单号',
         BaseConstService::SHIFT_LOAD_TYPE_2 => '袋号',
     ];
 
