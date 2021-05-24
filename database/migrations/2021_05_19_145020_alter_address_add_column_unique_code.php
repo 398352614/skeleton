@@ -14,7 +14,7 @@ class AlterAddressAddColumnUniqueCode extends Migration
     public function up()
     {
         Schema::table('address', function (Blueprint $table) {
-//            $table->dropIndex('all_address');
+            $table->dropIndex('all_address');
             $table->string('unique_code')->default(null)->nullable()->after('type')->comment('唯一码');
             $table->unique('unique_code', 'unique_code');
         });
