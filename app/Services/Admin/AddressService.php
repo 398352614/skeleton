@@ -194,7 +194,7 @@ class AddressService extends BaseService
      */
     public function check(&$data, $id = null)
     {
-        if (empty($data['place_lon'] || empty($data['place_lat']))) {
+        if (empty($data['place_lon']) || empty($data['place_lat'])) {
             throw new BusinessLogicException('地址无法定位，请选择其他地址');
         }
         $fields = ['place_fullname', 'place_phone',
