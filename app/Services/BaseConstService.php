@@ -24,6 +24,12 @@ class BaseConstService
     const CAR_ACCIDENT = 'CA';
     const CAR_MAINTAIN = 'CM';
     const SPARE_PARTS = 'SP';
+    const TRACKING_PACKAGE = 'TP';
+    const BAG = 'BAG';
+    const SHIFT = 'SHIFT';
+
+    const SHIFT_LOAD_TYPE_1 = 1;
+    const SHIFT_LOAD_TYPE_2 = 2;
 
     const CANCEL_TIMES = 3;
 
@@ -105,6 +111,12 @@ class BaseConstService
     const CAR_ACCIDENT_NO_TYPE = 'accident';
     //车辆维护流水号
     const CAR_MAINTAIN_NO_TYPE = 'maintain';
+    //转运单号
+    const TRACKING_PACKAGE_NO_TYPE = 'tracking_package';
+    //袋号
+    const BAG_NO_TYPE = 'bag';
+    //车次号
+    const SHIFT_NO_TYPE = 'shift';
 
     //初始密码
     const INITIAL_PASSWORD = '12345678';
@@ -435,7 +447,7 @@ class BaseConstService
     const NOTIFY_ARRIVED_BATCH = 'arrive-batch';        //到达站点通知
     const NOTIFY_ASSIGN_BATCH = 'assign-batch';         //签收站点通知
     const NOTIFY_CANCEL_BATCH = 'assign-batch';         //取消派送站点通知(也叫签收)
-    const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回仓库通知
+    const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回网点通知
     const NOTIFY_ORDER_EXECUTION_DATE_UPDATE = 'update-execution-date'; //修改取派日期通知
     const NOTIFY_ORDER_CANCEL = 'cancel-order';     //订单取消通知
     const NOTIFY_ORDER_DELETE = 'delete-order';     //订单删除通知
@@ -539,7 +551,7 @@ class BaseConstService
     const PACKAGE_TYPE_3 = 3;
     const PACKAGE_TYPE_4 = 4;
 
-    //包裹仓库类型1-入库2-出库
+    //包裹网点类型1-入库2-出库
     const WAREHOUSE_PACKAGE_TYPE_1 = 1;
     const WAREHOUSE_PACKAGE_TYPE_2 = 2;
 
@@ -745,6 +757,16 @@ class BaseConstService
     const SCHEDULING_TYPE_1 = 1;
     const SCHEDULING_TYPE_2 = 2;
 
+    const WAREHOUSE_TYPE_1 = 1;
+    const WAREHOUSE_TYPE_2 = 2;
+
+    const WAREHOUSE_ACCEPTANCE_TYPE_1 = 1;
+    const WAREHOUSE_ACCEPTANCE_TYPE_2 = 2;
+    const WAREHOUSE_ACCEPTANCE_TYPE_3 = 3;
+
+    const WAREHOUSE_IS_CENTER_1 = 1;
+    const WAREHOUSE_IS_CENTER_2 = 2;
+
     //邮件模板类型
     const EMAIL_TEMPLATE_TYPE_1 = 1;
     const EMAIL_TEMPLATE_TYPE_2 = 2;
@@ -753,4 +775,53 @@ class BaseConstService
     //邮件模板状态
     const EMAIL_TEMPLATE_STATUS_1 = 1;
     const EMAIL_TEMPLATE_STATUS_2 = 2;
+
+    //线路测试状态
+    const LINE_TEST_STATUS_1 = 1;
+    const LINE_TEST_STATUS_2 = 2;
+    const LINE_TEST_STATUS_3 = 3;
+    const LINE_TEST_STATUS_4 = 4;
+    const LINE_TEST_STATUS_5 = 5;
+    const LINE_TEST_STATUS_6 = 6;
+
+    //禁止登录1-禁止2-不禁止
+    const EMPLOYEE_FORBID_LOGIN_1 = 1;
+    const EMPLOYEE_FORBID_LOGIN_2 = 0;
+
+    //包裹转运状态1-待装袋2-待装车3-待发车4-运输中5-已到车6-已卸货7-已拆袋
+    const TRACKING_PACKAGE_STATUS_1 = 1;
+    const TRACKING_PACKAGE_STATUS_2 = 2;
+    const TRACKING_PACKAGE_STATUS_3 = 3;
+    const TRACKING_PACKAGE_STATUS_4 = 4;
+    const TRACKING_PACKAGE_STATUS_5 = 5;
+    const TRACKING_PACKAGE_STATUS_6 = 6;
+    const TRACKING_PACKAGE_STATUS_7 = 7;
+
+    //袋号状态1-未发车2-已发车3-已到车4-未拆袋5-已拆袋
+    const BAG_STATUS_1 = 1;
+    const BAG_STATUS_2 = 2;
+    const BAG_STATUS_3 = 3;
+    const BAG_STATUS_4 = 4;
+    const BAG_STATUS_5 = 5;
+
+
+    //车次状态1-待发车2-运输中3-已到车4-已卸货
+    const SHIFT_STATUS_1 = 1;
+    const SHIFT_STATUS_2 = 2;
+    const SHIFT_STATUS_3 = 3;
+    const SHIFT_STATUS_4 = 4;
+
+    //转运单类型1-分拨2-中转3-派送
+    const TRACKING_PACKAGE_TYPE_1 = 1;
+    const TRACKING_PACKAGE_TYPE_2 = 2;
+    const TRACKING_PACKAGE_TYPE_3 = 3;
+
+    //转运单类型1-长途2-短途
+    const TRACKING_PACKAGE_DISTANCE_TYPE_1 = 1;
+    const TRACKING_PACKAGE_DISTANCE_TYPE_2 = 2;
+
+    //包裹阶段1-取件2-中转3-派件
+    const PACKAGE_STAGE_1 = 1;
+    const PACKAGE_STAGE_2 = 2;
+    const PACKAGE_STAGE_3 = 3;
 }

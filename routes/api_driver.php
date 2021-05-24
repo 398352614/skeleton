@@ -36,7 +36,8 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     Route::get('me', 'AuthController@me');
     Route::put('refresh', 'AuthController@refresh');
     Route::put('my-password', 'AuthController@updatePassword');
-
+    //切换时区
+    Route::put('/timezone', 'AuthController@updateTimezone');
     //主页统计
     Route::prefix('statistics')->group(function () {
         //主页

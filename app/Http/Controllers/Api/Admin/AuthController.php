@@ -42,7 +42,7 @@ class AuthController extends Controller
             throw new BusinessLogicException('用户名或密码错误！');
         }
 
-        if (auth('admin')->user()->forbid_login === 1) {
+        if (auth('admin')->user()->forbid_login == 1) {
             auth('admin')->logout();
 
             throw new BusinessLogicException('暂时无法登录，请联系管理员！');
@@ -202,6 +202,25 @@ class AuthController extends Controller
         auth('admin')->refresh(true);
         if ($res) {
             auth('admin')->logout();
+        }
+        return success();
+    }
+
+    /**
+     * 修改时区
+     * @param Request $request
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updateTimezone(Request $request)
+    {
+        $data = $request->all();
+        if(empty($data['timezone'])){
+            throw new BusinessLogicException('时区 必填');
+        }
+        $res = Employee::query()->where('id', auth()->user()->id)->update(['timezone' => $data['timezone']]);
+        if ($res == false) {
+            throw new BusinessLogicException('切换时区失败');
         }
         return success();
     }

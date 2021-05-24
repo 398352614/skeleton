@@ -11,11 +11,15 @@ use App\Http\Controllers\Api\Admin\RegisterController;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\Driver;
+use App\Models\Employee;
+use App\Models\Warehouse;
 use App\Services\BaseConstService;
 use App\Services\FeeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -98,6 +102,7 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth('driver')->factory()->getTTL() * 60,
             'company_config' => $this->getCompanyConfig(auth('driver')->user()->company_id),
+            'warehouse' => $this->getWarehouse(auth('driver')->user()->warehouse_id),
             'is_bind' => $this->isBindDevice(auth('driver')->user()->id)
         ];
     }
@@ -117,6 +122,13 @@ class AuthController extends Controller
             'sticker_amount' => $stickerAmount,
             'delivery_amount' => $deliveryAmount
         ];
+    }
+
+    private function getWarehouse($warehouseId)
+    {
+        $warehouse = Warehouse::query()->where('id', $warehouseId)->first()->toArray();
+        $warehouse = Arr::only($warehouse, ['id', 'name', 'is_center']);
+        return $warehouse;
     }
 
     /**
@@ -245,6 +257,22 @@ class AuthController extends Controller
             return failed();
         }
 
+        return success();
+    }
+
+    /**
+     * 修改时区
+     * @param Request $request
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updateTimezone(Request $request)
+    {
+        $data = $request->all();
+        if(empty($data['timezone'])){
+            throw new BusinessLogicException('时区 必填');
+        }
+        $res =DB::table('driver')->where('id', auth()->user()->id)->update(['timezone' => $data['timezone']]);
         return success();
     }
 }

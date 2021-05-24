@@ -108,9 +108,19 @@ use Illuminate\Support\Facades\App;
  * @method static currencyUnitTypeSymbol($args = null)
  * @method static volumeUnitTypeList($args = null)
  * @method static volumeUnitTypeSymbol($args = null)
+ * @method static warehouseTypeList($args = null)
+ * @method static warehouseAcceptanceTypeList($args = null)
+ * @method static warehouseIsCenterTypeList($args = null)
  * @method static emailTemplateTypeList($args = null)
  * @method static emailTemplateStatusList($args = null)
+ * @method static lineTestStatusList($args = null)
  * @method static orderConfigNatureList($args = null)
+ * @method static employeeForbidLoginList($args = null)
+ * @method static shiftStatusList($args = null)
+ * @method static bagStatusList($args = null)
+ * @method static trackingPackageStatusList($args = null)
+ * @method static shiftLoadTypeList($args = null)
+ * @method static packageStageList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -119,6 +129,48 @@ trait ConstTranslateTrait
         BaseConstService::YES => '是',
         BaseConstService::NO => '否'
     ];
+
+    //包裹转运状态1-待装袋2-待装车3-待发车4-运输中5-已到车6-已卸货7-已拆袋
+    public static $trackingPackageStatusList = [
+        BaseConstService::TRACKING_PACKAGE_STATUS_1 => '未装袋',
+        BaseConstService::TRACKING_PACKAGE_STATUS_2 => '未装车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_3 => '未发车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_4 => '已发车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_5 => '已到车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_6 => '已卸车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_7 => '已拆袋',
+    ];
+
+    //袋号状态:1-待发车2-运输中3-待卸车4-待拆袋5-已拆袋
+    public static $bagStatusList = [
+        BaseConstService::BAG_STATUS_1 => '未发车',
+        BaseConstService::BAG_STATUS_2 => '已发车',
+        BaseConstService::BAG_STATUS_3 => '已到车',
+        BaseConstService::BAG_STATUS_4 => '未拆袋',
+        BaseConstService::BAG_STATUS_5 => '已拆袋',
+    ];
+
+    //车次状态1-待发车2-运输中3-已到车4-已卸货
+    public static $shiftStatusList = [
+        BaseConstService::SHIFT_STATUS_1 => '未发车',
+        BaseConstService::SHIFT_STATUS_2 => '已发车',
+        BaseConstService::SHIFT_STATUS_3 => '未卸车',
+        BaseConstService::SHIFT_STATUS_4 => '已卸车',
+    ];
+
+    public static $trackingPackageList =
+        [
+            BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_1 => 1,
+            BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2 => 2,
+        ];
+
+    //包裹阶段
+    public static $packageStageList =
+        [
+            BaseConstService::PACKAGE_STAGE_1 => '取件',
+            BaseConstService::PACKAGE_STAGE_2 => '中转',
+            BaseConstService::PACKAGE_STAGE_3 => '派件'
+        ];
 
     //编号类型
     public static $noTypeList = [
@@ -130,7 +182,10 @@ trait ConstTranslateTrait
         BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
         BaseConstService::STOCK_EXCEPTION_NO_TYPE => '入库异常编号规则',
         BaseConstService::CAR_ACCIDENT_NO_TYPE => '事故处理单号规则',
-        BaseConstService::CAR_MAINTAIN_NO_TYPE => '车辆维护流水号',
+        BaseConstService::CAR_MAINTAIN_NO_TYPE => '车辆维护流水号规则',
+        BaseConstService::TRACKING_PACKAGE_NO_TYPE => '转运单号规则',
+        BaseConstService::BAG_NO_TYPE => '袋号规则',
+        BaseConstService::SHIFT_NO_TYPE => '车辆维护流水号规则',
     ];
 
     //快捷方式列表
@@ -142,6 +197,12 @@ trait ConstTranslateTrait
         BaseConstService::SHORT_CUT_BATCH_INDEX => '站点',
         BaseConstService::SHORT_CUT_TOUR_INDEX => '线路任务',
         BaseConstService::SHORT_CUT_TOUR_DISPATCH => '智能调度',
+    ];
+
+    //车次装车类型
+    public static $shiftLoadTypeList = [
+        BaseConstService::SHIFT_LOAD_TYPE_1 => '单号',
+        BaseConstService::SHIFT_LOAD_TYPE_2 => '袋号',
     ];
 
     //快捷方式列表
@@ -219,18 +280,18 @@ trait ConstTranslateTrait
     //订单类型1-取件2-派件3-取派
     public static $orderTypeList = [
 //        BaseConstService::ORDER_TYPE_0 => '全部',
-        BaseConstService::ORDER_TYPE_1 => '提货->仓库',
-        BaseConstService::ORDER_TYPE_2 => '仓库->配送',
-        BaseConstService::ORDER_TYPE_3 => '提货->仓库->配送',
-        BaseConstService::ORDER_TYPE_4 => '直送'
+        BaseConstService::ORDER_TYPE_1 => '提货->网点',
+        BaseConstService::ORDER_TYPE_2 => '网点->配送',
+        BaseConstService::ORDER_TYPE_3 => '提货->网点->配送',
+        BaseConstService::ORDER_TYPE_4 => '提货->配送'
     ];
 
     //订单类型1-取件2-派件3-取派
     public static $packageTypeList = [
-        BaseConstService::PACKAGE_TYPE_1 => '提货->仓库',
-        BaseConstService::PACKAGE_TYPE_2 => '仓库->配送',
-        BaseConstService::PACKAGE_TYPE_3 => '提货->仓库->配送',
-        BaseConstService::PACKAGE_TYPE_4 => '直送',
+        BaseConstService::PACKAGE_TYPE_1 => '提货->网点',
+        BaseConstService::PACKAGE_TYPE_2 => '网点->配送',
+        BaseConstService::PACKAGE_TYPE_3 => '提货->网点->配送',
+        BaseConstService::PACKAGE_TYPE_4 => '提货->配送',
     ];
 
     //订单来源1-手动添加2-批量导入3-第三方
@@ -294,7 +355,7 @@ trait ConstTranslateTrait
         BaseConstService::PACKAGE_STATUS_5 => '回收站',
     ];
 
-    //仓库包裹类型1-入库2-出库
+    //网点包裹类型1-入库2-出库
     public static $warehousePackageTypeList = [
         BaseConstService::WAREHOUSE_PACKAGE_TYPE_1,
         BaseConstService::WAREHOUSE_PACKAGE_TYPE_2,
@@ -540,10 +601,10 @@ trait ConstTranslateTrait
     ];
 
     public static $driverEventList = [
-        BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE => '司机从仓库出发',
+        BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE => '司机从网点出发',
         BaseConstService::DRIVER_EVENT_BATCH_ARRIVED => '司机到达客户家',
         BaseConstService::DRIVER_EVENT_BATCH_DEPART => '司机从客户家离开',
-        BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE => '司机返回仓库',
+        BaseConstService::DRIVER_EVENT_BACK_WAREHOUSE => '司机返回网点',
     ];
 
     //费用等级
@@ -706,7 +767,7 @@ trait ConstTranslateTrait
 
     //订单始发地
     public static $orderOriginTypeList = [
-        BaseConstService::ORDER_ORIGIN_TYPE_1 => '从仓库出发，回到仓库',
+        BaseConstService::ORDER_ORIGIN_TYPE_1 => '从网点出发，回到网点',
         BaseConstService::ORDER_ORIGIN_TYPE_2 => '装货地',
     ];
 
@@ -895,6 +956,37 @@ trait ConstTranslateTrait
     public static $emailTemplateStatusList = [
         BaseConstService::EMAIL_TEMPLATE_STATUS_1 => '开启',
         BaseConstService::EMAIL_TEMPLATE_STATUS_2 => '关闭',
+    ];
+
+    public static $warehouseTypeList = [
+        BaseConstService::WAREHOUSE_TYPE_1 => '加盟',
+        BaseConstService::WAREHOUSE_TYPE_2 => '自营',
+    ];
+
+    public static $warehouseAcceptanceTypeList = [
+        BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1 => '取件',
+        BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2 => '派件',
+        BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3 => '仓配一体',
+    ];
+
+    public static $warehouseIsCenterTypeList = [
+        BaseConstService::WAREHOUSE_IS_CENTER_1 => '是',
+        BaseConstService::WAREHOUSE_IS_CENTER_2 => '否',
+    ];
+
+    public static $lineTestStatusList = [
+        BaseConstService::LINE_TEST_STATUS_1 => '寄件人',
+        BaseConstService::LINE_TEST_STATUS_2 => '网点取件',
+        BaseConstService::LINE_TEST_STATUS_3 => '分拨中心',
+        BaseConstService::LINE_TEST_STATUS_4 => '网点派件',
+        BaseConstService::LINE_TEST_STATUS_5 => '收件人',
+        BaseConstService::LINE_TEST_STATUS_6 => '网点取件/派件',
+    ];
+
+    //员工状态
+    public static $employeeForbidLoginList = [
+        BaseConstService::EMPLOYEE_FORBID_LOGIN_1 => '禁用',
+        BaseConstService::EMPLOYEE_FORBID_LOGIN_2 => '启用',
     ];
 
     /**

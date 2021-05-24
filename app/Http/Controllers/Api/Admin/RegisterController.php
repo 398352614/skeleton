@@ -10,10 +10,11 @@ use App\Http\Controllers\BaseController;
 use App\Mail\SendRegisterCode;
 use App\Mail\SendResetCode;
 use App\Models\Company;
+use App\Models\CompanyConfig;
 use App\Models\Employee;
 use App\Models\Fee;
-use App\Models\Institution;
 use App\Models\KilometresCharging;
+use App\Models\MapConfig;
 use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
@@ -23,8 +24,10 @@ use App\Models\OrderTemplate;
 use App\Models\Role;
 use App\Models\SpecialTimeCharging;
 use App\Models\TransportPrice;
+use App\Models\Warehouse;
 use App\Models\WeightCharging;
 use App\Services\Admin\CompanyService;
+use App\Services\Admin\WareHouseService;
 use App\Services\BaseConstService;
 use App\Traits\PermissionTrait;
 use Illuminate\Http\JsonResponse;
@@ -53,9 +56,9 @@ class RegisterController extends BaseController
     {
         $data = $request->all();
 
-        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
-            throw new BusinessLogicException('验证码错误');
-        }
+//        if ($data['code'] !== RegisterController::getVerifyCode($data['email'])) {
+//            throw new BusinessLogicException('验证码错误');
+//        }
 
         RegisterController::deleteVerifyCode($data['email']);
 
@@ -82,19 +85,20 @@ class RegisterController extends BaseController
             if ($company === false) {
                 throw new BusinessLogicException('企业注册失败');
             }
-
-            $employee = $this->addEmployee($company, $data);//初始化管理员帐户
+            $warehouse = $this->addWarehouse($company, $data);
+            $employee = $this->addEmployee($company, $data, $warehouse);//初始化管理员帐户
             $role = $this->addRole($company);//初始化权限组
             $this->addPermission($employee, $role);//初始化员工权限组
             $this->initCompanyOrderCodeRules($company);//初始化编号规则
             $transportPrice = $this->addTransportPrice($company);//初始化运价方案
             $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化货主组
-            $merchant = $this->addMerchant($company, $merchantGroup);//初始化货主API
+            $merchant = $this->addMerchant($company, $merchantGroup, $warehouse);//初始化货主API
             $this->addMerchantApi($company, $merchant);//初始化货主API
             $this->addFee($company);//添加费用
             $this->addOrderTemplate($company);//添加打印模板
             $this->addOrderDefaultConfig($company); //添加订单默认配置
             $this->addMapConfig($company); //添加订单默认配置
+            $this->addCompanyConfig($company); //添加公司配置
 
             return 'true';
         });
@@ -174,6 +178,9 @@ class RegisterController extends BaseController
             BaseConstService::TRACKING_ORDER_NO_TYPE => BaseConstService::TRACKING_ORDER,
             BaseConstService::CAR_ACCIDENT_NO_TYPE => BaseConstService::CAR_ACCIDENT,
             BaseConstService::CAR_MAINTAIN_NO_TYPE => BaseConstService::CAR_MAINTAIN,
+            BaseConstService::TRACKING_PACKAGE_NO_TYPE => BaseConstService::TRACKING_PACKAGE,
+            BaseConstService::BAG_NO_TYPE => BaseConstService::BAG,
+            BaseConstService::SHIFT_NO_TYPE => BaseConstService::SHIFT,
         ];
         $rules = collect($rules)->map(function ($rule, $type) use ($company) {
             $prefix = $rule . substr('000' . $company->id, -4, 4);
@@ -200,13 +207,31 @@ class RegisterController extends BaseController
         return count($data) === count($rules);
     }
 
+    public function addWarehouse($company, $data)
+    {
+        $warehouse = Warehouse::create([
+            'name' => $data['email'],
+            'company_id' => $company->id,
+            'type' => BaseConstService::WAREHOUSE_TYPE_2,
+            'is_center' => BaseConstService::NO,
+            'acceptance_type' => BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_1 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_2 . ',' . BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3,
+            'line_ids' => '',
+            'parent' => 0
+        ]);
+
+        (new WareHouseService(new Warehouse))->createRoot($warehouse);
+
+        return $warehouse;
+    }
+
     /**
      * 添加管理员初始用户组
      * @param Company $company
      * @param array $data
+     * @param $warehouse
      * @return mixed
      */
-    protected function addEmployee(Company $company, array $data)
+    protected function addEmployee(Company $company, array $data, $warehouse)
     {
         return Employee::create([
             'email' => $data['email'],
@@ -215,7 +240,8 @@ class RegisterController extends BaseController
             'fullname' => $data['email'],
             'company_id' => $company->id,
             'username' => $data['email'],
-            'is_admin' => 1
+            'is_admin' => 1,
+            'warehouse_id' => $warehouse->id
         ]);
     }
 
@@ -315,10 +341,11 @@ class RegisterController extends BaseController
      *
      * @param $company
      * @param $merchantGroup
+     * @param $warehouse
      * @return mixed
      * @throws BusinessLogicException
      */
-    protected function addMerchant($company, $merchantGroup)
+    protected function addMerchant($company, $merchantGroup, $warehouse)
     {
         $merchant = Merchant::create([
             'company_id' => $company->id,
@@ -333,6 +360,7 @@ class RegisterController extends BaseController
             'address' => $company->address,
             'avatar' => '',
             'status' => 1,
+            'warehouse_id' => $warehouse->id
         ]);
         if ($merchant === false) {
             throw new BusinessLogicException('初始化货主失败');
@@ -584,6 +612,29 @@ class RegisterController extends BaseController
         }
 
         return '0001';
+    }
+
+    /**
+     * @param $company
+     * @throws BusinessLogicException
+     */
+    public function addCompanyConfig($company)
+    {
+        $fee = CompanyConfig::create([
+            'company_id' => $company['id'],
+            'line_rule' => BaseConstService::LINE_RULE_POST_CODE,
+            'show_type' => BaseConstService::ALL_SHOW,
+            'address_template_id' => BaseConstService::ADDRESS_TYPE_1,
+            'stock_exception_verify' => BaseConstService::NO,
+            'weight_unit' => BaseConstService::WEIGHT_UNIT_TYPE_2,
+            'currency_unit' => BaseConstService::CURRENCY_UNIT_TYPE_3,
+            'volume_unit' => BaseConstService::VOLUME_UNIT_TYPE_2,
+            'map' => 'google',
+            'scheduling_rule' => BaseConstService::SCHEDULING_TYPE_1
+        ]);
+        if ($fee === false) {
+            throw new BusinessLogicException('费用初始化失败');
+        }
     }
 
 }
