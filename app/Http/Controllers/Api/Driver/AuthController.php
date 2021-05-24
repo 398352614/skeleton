@@ -102,7 +102,7 @@ class AuthController extends Controller
             'token_type' => 'bearer',
             'expires_in' => auth('driver')->factory()->getTTL() * 60,
             'company_config' => $this->getCompanyConfig(auth('driver')->user()->company_id),
-            'warehouse' => $this->getWarehouse(auth('driver')->user()->warehouse_id),
+//            'warehouse' => $this->getWarehouse(auth('driver')->user()->warehouse_id),
             'is_bind' => $this->isBindDevice(auth('driver')->user()->id)
         ];
     }
