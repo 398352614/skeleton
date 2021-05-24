@@ -434,6 +434,8 @@ class AddressService extends BaseService
         if (empty($data['place_lon']) || empty($data['place_lat'])) {
             try {
                 $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
+                $data['place_lon'] = $info['place_lon'] ?? '';
+                $data['place_lat'] = $info['place_lat'] ?? '';
             } catch (BusinessLogicException $e) {
                 $status = BaseConstService::NO;
                 $error['log'] = __($e->getMessage(), $e->replace);
