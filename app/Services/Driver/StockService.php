@@ -85,7 +85,7 @@ class StockService extends BaseService
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
         $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
-        if ($package['stage'] == BaseConstService::PACKAGE_STAGE_1 && $pickupWarehouse['id'] !== $warehouse['id'] && $ignoreRule == BaseConstService::YES) {
+        if ($package['stage'] == BaseConstService::PACKAGE_STAGE_1 && $pickupWarehouse['id'] !== $warehouse['id'] && $ignoreRule == BaseConstService::NO) {
             throw new BusinessLogicException('该包裹不应在此网点入库', 5008);
         }
         if (auth()->user()->warehouse_id == $pieWarehouse['id']) {
