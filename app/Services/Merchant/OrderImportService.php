@@ -102,13 +102,13 @@ class OrderImportService extends BaseService
     public function templateExport()
     {
         $cellData[0] =[
-            __('取件'),
+            __('提货'),
             __('示例，此行数据不会被导入'),
             __('1XXXXXXXXXX'),
             __('41X000'),
             __('C8栋808'),
             '2020-01-01',
-            __('寄付'),
+            __('现付'),
             '7.00',
             '0.00',
             'outNo001',
