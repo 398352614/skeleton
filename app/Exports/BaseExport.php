@@ -104,7 +104,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     $event->sheet->getDelegate()->getStyle('H1:H102')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
                     $event->sheet->getDelegate()->getStyle('I1:I102')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
                     //$countryList=implode(',',collect(self::getInstance(CommonService::class)->getCountryList())->pluck('name')->toArray());
-                    $typeList = implode(',', [__('取件'), __('派件')]);
+                    $typeList = implode(',', [__('提货'), __('配送')]);
                     $settlementList = implode(',', [__('寄付'), __('到付')]);
                     $deliveryList = implode(',', [__('是'), __('否')]);
                     $itemList = implode(',', [__('包裹'), __('材料')]);
