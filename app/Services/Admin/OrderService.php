@@ -431,7 +431,7 @@ class OrderService extends BaseService
             throw new BusinessLogicException('当前包裹已生成对应运单');
         }
         $params = array_merge($dbOrder, $params);
-        $packageStageList = $this->getPackageService()->getList(['order_no', $dbOrder], ['*'], false)->pluck('stage')->toArray();
+        $packageStageList = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false)->pluck('stage')->toArray();
         if (in_array(BaseConstService::PACKAGE_STAGE_2, $packageStageList)) {
             throw new BusinessLogicException('订单处于中转过程，无法再次生成运单');
         }
