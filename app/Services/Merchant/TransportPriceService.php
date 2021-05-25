@@ -183,8 +183,8 @@ class TransportPriceService extends BaseService
     public function stepWeightStepDistance($data, $transportPrice)
     {
         foreach ($data['package_list'] as $k => $package) {
-            $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
-            $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
+            $weightPrice = $this->getWeightPrice($package['weight'] ?? 1, $transportPrice);
+            $distancePrice = $this->getDistancePrice($data['distance'] ?? 1, $transportPrice);
             if ($weightPrice == null && $distancePrice !== null) {
                 $weightPrice = 1;
             } elseif ($weightPrice !== null && $distancePrice == null) {
