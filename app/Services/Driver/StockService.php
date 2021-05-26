@@ -68,7 +68,7 @@ class StockService extends BaseService
      * @param $shift
      * @throws BusinessLogicException
      */
-    public function trackingPackageOutWarehouse($trackingPackageList,$shift)
+    public function trackingPackageOutWarehouse($trackingPackageList, $shift)
     {
         $trackingPackageList = array_create_index($trackingPackageList, 'express_first_no');
         $dbPackageList = parent::getList(['express_first_no' => ['in', array_column($trackingPackageList, 'express_first_no')]], ['express_first_no'], false)->toArray();
@@ -117,7 +117,7 @@ class StockService extends BaseService
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
         $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
-        $pickupCenter=$this->getBaseWarehouseService()->getCenter($pickupWarehouse);
+        $pickupCenter = $this->getBaseWarehouseService()->getCenter($pickupWarehouse);
         if ($package['stage'] == BaseConstService::PACKAGE_STAGE_1 && $pickupWarehouse['id'] !== $warehouse['id'] && $ignoreRule == BaseConstService::NO) {
             throw new BusinessLogicException('该包裹不应在此网点入库', 5008);
         }
