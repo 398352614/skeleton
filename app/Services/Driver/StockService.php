@@ -91,18 +91,20 @@ class StockService extends BaseService
         if (auth()->user()->warehouse_id == $pieWarehouse['id']) {
             //如果本网点为该包裹的派件网点，则生成派件运单进行派送
             return $this->createTrackingOrder($package, $order, $type);
-        } elseif (auth()->user()->warehouse_id == $pieCenter['id']) {
-            //如果本网点为该包裹的派件网点所属的分拨中心，则生成分拨转运单
-            return $this->createTrackingPackage($package, $warehouse, $pieWarehouse, BaseConstService::TRACKING_PACKAGE_TYPE_1);
-        } elseif ($warehouse['is_center'] == BaseConstService::YES) {
-            //如果本网点为其他分拨中心，则生成中转转运单
-            return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
-        } elseif ($pieWarehouse['id'] == $pickupWarehouse['id']) {
-            //如果本网点为同分拨中心的网点，则生成短途中转转运单
-            return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2, BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2);
         } else {
-            //如果本网点为其他分拨中心的网点，则生成长途中国转转运单
-            return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
+            if (auth()->user()->warehouse_id == $pieCenter['id']) {
+                //如果本网点为该包裹的派件网点所属的分拨中心，则生成分拨转运单
+                return $this->createTrackingPackage($package, $warehouse, $pieWarehouse, BaseConstService::TRACKING_PACKAGE_TYPE_1);
+            } elseif ($warehouse['is_center'] == BaseConstService::YES) {
+                //如果本网点为其他分拨中心，则生成中转转运单
+                return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
+            } elseif ($pieWarehouse['id'] == $pickupWarehouse['id']) {
+                //如果本网点为同分拨中心的网点，则生成短途中转转运单
+                return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2, BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2);
+            } else {
+                //如果本网点为其他分拨中心的网点，则生成长途中国转转运单
+                return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
+            }
         }
     }
 

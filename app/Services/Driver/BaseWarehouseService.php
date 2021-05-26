@@ -83,7 +83,7 @@ class BaseWarehouseService extends BaseService
      */
     public function getWareHouseByAddress($data)
     {
-        $line = $this->getBaseLineService()->getInfoByRule($data);
+        $line = $this->getBaseLineService()->getInfoByRuleWithOutCheck($data);
         //获取网点
         $warehouse = $this->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {

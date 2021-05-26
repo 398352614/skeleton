@@ -167,7 +167,7 @@ class BaseConstService
     const ERP_MERCHANT_ID_2 = 65;
     const SHOP_MERCHANT_ID_1 = 3;
 
-    //订单类型1-取2-派3-取派
+    //订单类型1-取2-派3-取派4-取派
     const ORDER_TYPE_0 = 0;
     const ORDER_TYPE_1 = 1;
     const ORDER_TYPE_2 = 2;
@@ -439,6 +439,25 @@ class BaseConstService
     const TRACKING_ORDER_TRAIL_REMOVE_TOUR = 13;
     const TRACKING_ORDER_TRAIL_DELETE = 14;
     const TRACKING_ORDER_TRAIL_CUSTOMER = 15;
+
+    /**
+     * package_trail 包裹轨迹常量
+     */
+    const PACKAGE_TRAIL_CREATED = 1;//包裹创建
+    const PACKAGE_TRAIL_PICKUP = 2;//取件中
+    const PACKAGE_TRAIL_PICKUP_DONE = 3;//取件完成
+    const PACKAGE_TRAIL_ALLOCATE = 4;//入库分拣
+    const PACKAGE_TRAIL_PACK = 5;//装袋
+    const PACKAGE_TRAIL_LOAD = 6;//装车
+    const PACKAGE_TRAIL_OUT = 7;//发车
+    const PACKAGE_TRAIL_IN = 8;//到车
+    const PACKAGE_TRAIL_UNLOAD = 9;//卸车
+    const PACKAGE_TRAIL_UNPACK = 10;//拆袋
+    const PACKAGE_TRAIL_PIE = 11;//派件中
+    const PACKAGE_TRAIL_PIE_DONE = 12;//派件完成
+    const PACKAGE_TRAIL_PICKUP_CANCEL = 13;//取件失败
+    const PACKAGE_TRAIL_PIE_CANCEL = 14;//派件失败
+    const PACKAGE_TRAIL_DELETED = 15;//回收站
 
     //通知类型
     const NOTIFY_OUT_WAREHOUSE = 'out-warehouse';       //出库通知
