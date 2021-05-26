@@ -57,6 +57,7 @@ class StockService extends BaseService
         $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
+        $pickupCenter=$this->getBaseWarehouseService()->getCenter($pickupWarehouse);
         if ($warehouseId == $pieWarehouse['id']) {
             //如果本网点为该包裹的派件网点，则生成派件运单进行派送
             return $this->createTrackingOrder($package, $order, $type);
@@ -68,10 +69,10 @@ class StockService extends BaseService
             return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
         } elseif ($pieWarehouse['id'] == $pickupWarehouse['id']) {
             //如果本网点为同分拨中心的网点，则生成短途中转转运单
-            return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2, BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2);
+            return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2, BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_1);
         } else {
             //如果本网点为其他分拨中心的网点，则生成长途中国转转运单
-            return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
+            return $this->createTrackingPackage($package, $warehouse, $pickupCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
         }
     }
 

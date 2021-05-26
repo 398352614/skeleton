@@ -112,11 +112,12 @@ class StockService extends BaseService
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);
         //异常验证
-        $this->check($package, $order, $type);
+//        $this->check($package, $order, $type);
         $warehouse = $this->getWareHouseService()->getInfo(['id' => auth()->user()->warehouse_id], ['*'], false)->toArray();
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
         $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
+        $pickupCenter=$this->getBaseWarehouseService()->getCenter($pickupWarehouse);
         if ($package['stage'] == BaseConstService::PACKAGE_STAGE_1 && $pickupWarehouse['id'] !== $warehouse['id'] && $ignoreRule == BaseConstService::NO) {
             throw new BusinessLogicException('该包裹不应在此网点入库', 5008);
         }
@@ -135,7 +136,7 @@ class StockService extends BaseService
                 return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2, BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2);
             } else {
                 //如果本网点为其他分拨中心的网点，则生成长途中国转转运单
-                return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
+                return $this->createTrackingPackage($package, $warehouse, $pickupCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
             }
         }
     }
@@ -213,7 +214,7 @@ class StockService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function createTrackingPackage($package, $warehouse, $nextWarehouse, $trackingPackageType, $trackingPackageDistanceType = BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2)
+    public function createTrackingPackage($package, $warehouse, $nextWarehouse, $trackingPackageType, $trackingPackageDistanceType = BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_1)
     {
         $trackingPackage = $this->getTrackingPackageService()->create([
             'tracking_package_no' => $this->getOrderNoRuleService()->createTrackingPackageNo(),
