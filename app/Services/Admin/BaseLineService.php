@@ -234,6 +234,26 @@ class BaseLineService extends BaseService
     }
 
     /**
+     * 获取线路信息
+     * @param $info
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getInfoByRuleWithoutCheck($info)
+    {
+        $lineRange = $this->getLineRange($info,BaseConstService::NO);
+        $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+        }
+        $line = $line->toArray();
+        if (intval($line['status']) === BaseConstService::OFF) {
+            throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);
+        }
+        return $line;
+    }
+
+    /**
      * 验证规则
      * @param $info
      * @param $line

@@ -74,12 +74,17 @@ class BaseWarehouseService extends BaseService
     /**
      * 通过地址获取网点
      * @param $data
+     * @param bool $withOutCheck
      * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
-    public function getWareHouseByAddress($data)
+    public function getWareHouseByAddress($data, $withOutCheck = false)
     {
-        $line = $this->getBaseLineService()->getInfoByRule($data);
+        if ($withOutCheck == false) {
+            $line = $this->getBaseLineService()->getInfoByRule($data);
+        } else {
+            $line = $this->getBaseLineService()->getInfoByRuleWithoutCheck($data);
+        }
         //获取网点
         $warehouse = $this->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
@@ -98,7 +103,7 @@ class BaseWarehouseService extends BaseService
     public function getPickupWarehouseByOrder($order)
     {
         $pickupAddress = $this->pickupAddress($order);
-        return $this->getWareHouseByAddress($pickupAddress);
+        return $this->getWareHouseByAddress($pickupAddress, true);
     }
 
     /**
@@ -148,7 +153,7 @@ class BaseWarehouseService extends BaseService
      */
     public function fromWarehouseToCenter(&$warehouse)
     {
-        $data =[$warehouse];
+        $data = [$warehouse];
         if ($warehouse['is_center'] == BaseConstService::NO && $warehouse['parent'] !== 0) {
             $warehouse = $this->getInfo(['id' => $warehouse['parent']], ['*'], false);
             $data[] = [$warehouse];
