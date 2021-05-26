@@ -62,6 +62,38 @@ class StockService extends BaseService
         }
     }
 
+    /**
+     * 转运出库
+     * @param $trackingPackageList
+     * @param $shift
+     * @throws BusinessLogicException
+     */
+    public function trackingPackageOutWarehouse($trackingPackageList,$shift)
+    {
+        $trackingPackageList = array_create_index($trackingPackageList, 'express_first_no');
+        $dbPackageList = parent::getList(['express_first_no' => ['in', array_column($trackingPackageList, 'express_first_no')]], ['express_first_no'], false)->toArray();
+        parent::delete(['express_first_no' => ['in', array_column($trackingPackageList, 'express_first_no')]]);
+        if (empty($dbPackageList)) return;
+        $stockDataList = [];
+        foreach ($dbPackageList as $dbPackage) {
+            $no = $dbPackage['express_first_no'];
+            $stockDataList[] = [
+                'line_id' => '',
+                'line_name' => '',
+                'tracking_order_no' => '',
+                'execution_date' => '',
+                'operator' => auth()->user()->fullname,
+                'operator_id' => auth()->user()->id,
+                'order_no' => $trackingPackageList[$no]['order_no'],
+                'express_first_no' => $no
+            ];
+        }
+        $rowCount = $this->getStockOutLogService()->insertAll($stockDataList);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
+    }
+
 
     /**
      * 分拨
