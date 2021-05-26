@@ -235,7 +235,7 @@ class StockService extends BaseService
         }
         //加入库存
         $stockData = [
-            'line_id' => $tour['line_id'] ?? '',
+            'line_id' => $tour['line_id'] ?? null,
             'line_name' => $tour['line_name'] ?? '',
             'tracking_order_no' => $trackingOrder['tracking_order_no'] ?? '',
             'expiration_date' => $package['expiration_date'] ?? '',
