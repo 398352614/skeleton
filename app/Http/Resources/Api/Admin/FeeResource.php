@@ -24,8 +24,8 @@ class FeeResource extends JsonResource
             'status_name' => $this->status_name,
             'is_valuable'=>$this->is_valuable,
             'payer'=>$this->payer,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s')
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }
