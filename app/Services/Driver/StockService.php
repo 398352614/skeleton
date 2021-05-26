@@ -238,7 +238,7 @@ class StockService extends BaseService
             'unpack_operator_id' => null
         ]);
         //更改包裹阶段
-        $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
+        $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_2]);
         $this->trackingPackageStockIn($package, $trackingPackage);
         return [
             'express_first_no' => $package['express_first_no'],
