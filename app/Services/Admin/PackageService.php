@@ -71,7 +71,12 @@ class PackageService extends BaseService
             } else {
                 $trackingOrderPackage = $trackingOrderPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->first->toArray();
                 if (!empty($trackingOrderPackage)) {
-                    $data[$k]['warehouse_name'] = $trackingOrderList->where('tracking_order_no',$v['tracking_order_no'])->first()['warehouse_name'] ?? null;
+                    if($trackingOrderPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1){
+                        $data[$k]['next_warehouse_name'] = $trackingOrderList->where('tracking_order_no',$v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
+                    }else{
+                        $data[$k]['warehouse_name'] = $trackingOrderList->where('tracking_order_no',$v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
+                    }
+                    $data[$k]['warehouse_name'] = $trackingOrderList->where('tracking_order_no',$v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
                     $data[$k]['status'] = $trackingOrderPackage['status'] ?? null;
                     $data[$k]['true_status_name'] = ConstTranslateTrait::trackingOrderStatusList($trackingOrderPackage['status']);
                 }
