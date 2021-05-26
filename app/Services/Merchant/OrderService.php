@@ -815,17 +815,25 @@ class OrderService extends BaseService
                     $params['package_list'][$k]['feature_logo'] = $relationship[$params['package_list'][$k]['feature_logo']];
                 }
             }
-            $packageList = collect($params['package_list'])->map(function ($item, $key) use ($params, $status) {
-                $collectItem = collect($item)->only(['name', 'actual_weight', 'count_settlement_amount', 'settlement_amount', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo', 'weight', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
-                return $collectItem
-                    ->put('order_no', $params['order_no'])
-                    ->put('merchant_id', $params['merchant_id'])
-                    ->put('execution_date', $params['execution_date'] ?? null)
-                    ->put('tracking_order_no', $params['tracking_order_no'] ?? '')
-                    ->put('status', $status)
-                    ->put('second_execution_date', $params['second_execution_date'] ?? null)
-                    ->put('type', $params['type']);
-            })->toArray();
+            $array = [
+                BaseConstService::ORDER_TYPE_1 => BaseConstService::PACKAGE_STAGE_1,
+                BaseConstService::ORDER_TYPE_2 => BaseConstService::PACKAGE_STAGE_3,
+                BaseConstService::ORDER_TYPE_3 => BaseConstService::PACKAGE_STAGE_1,
+                BaseConstService::ORDER_TYPE_4 => BaseConstService::PACKAGE_STAGE_1,
+            ];
+            $packageList = [];
+            foreach ($params['package_list'] as $k => $v) {
+                $packageList[$k] = Arr::only($v, ['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo',
+                    'weight', 'actual_weight', 'settlement_amount', 'count_settlement_amount', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
+                $packageList[$k]['order_no'] = $params['order_no'];
+                $packageList[$k]['merchant_id'] = $params['merchant_id'];
+                $packageList[$k]['execution_date'] = $params['execution_date'];
+                $packageList[$k]['second_execution_date'] = $params['second_execution_date'] ?? null;
+                $packageList[$k]['status'] = $status;
+                $packageList[$k]['stage'] = $array[$params['type']];
+                $packageList[$k]['expiration_status'] = BaseConstService::EXPIRATION_STATUS_1;
+                $packageList[$k]['type'] = $params['type'];
+            }
             $rowCount = $this->getPackageService()->insertAll($packageList);
             if ($rowCount === false) {
                 throw new BusinessLogicException('订单包裹新增失败！');
