@@ -117,8 +117,9 @@ class StockService extends BaseService
     public function createTrackingOrder($package, $order, $type)
     {
         $trackingOrder = $tour = $line = [];
-        //获取最近可选日期
+        //获取日期1取2派
         $executionDate = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['execution_date'] : $order['second_execution_date'];
+        //若日期为空则自动拉取最近可选日期
         if (empty($executionDate) || Carbon::today()->gte($executionDate . ' 00:00:00')) {
             $placeCode = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_post_code'] : $order['second_place_post_code'];
             list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
@@ -144,7 +145,6 @@ class StockService extends BaseService
             $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
         }
         //包裹入库
-        $package['execution_date'] = $executionDate;
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
