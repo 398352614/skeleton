@@ -131,7 +131,7 @@ class BagService extends BaseService
         if (empty($package)) {
             throw new BusinessLogicException('包裹不存在');
         }
-        $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['express_first_no']], ['*'], false);
+        $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['express_first_no']], ['*'], false, ['id' => 'desc']);
         if (empty($trackingPackage)) {
             throw new BusinessLogicException('包裹阶段错误');
         }
@@ -230,7 +230,7 @@ class BagService extends BaseService
         if (empty($package)) {
             throw new BusinessLogicException('包裹不存在');
         }
-        $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['express_first_no']], ['*'], false);
+        $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['express_first_no']], ['*'], false, ['id' => 'desc']);
         if (!empty($trackingPackage) || $trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_2) {
             $row = $this->getTrackingPackageService()->updateById($trackingPackage['id'], [
                 'status' => BaseConstService::TRACKING_PACKAGE_STATUS_1,

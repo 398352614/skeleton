@@ -193,7 +193,7 @@ class ShiftService extends BaseService
         if (empty($shift)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no']], ['*'], false);
+        $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no']], ['*'], false, ['id' => 'desc']);
         $bag = $this->getBagService()->getInfo(['bag_no' => $data['item_no']], ['*'], false);
         //袋存在，包裹不存在取袋
         if (empty($trackingPackage) && !empty($bag)) {
@@ -349,7 +349,7 @@ class ShiftService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         if (!empty($data['shift_type']) && $data['shift_type'] == BaseConstService::SHIFT_LOAD_TYPE_1) {
-            $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no']], ['*'], false);
+            $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no']], ['*'], false, ['id' => 'desc']);
             if (!empty($trackingPackage) || $trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_2) {
                 $row = $this->getTrackingPackageService()->updateById($trackingPackage['id'], [
                     'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
@@ -396,7 +396,7 @@ class ShiftService extends BaseService
         if (empty($shift)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
+        $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false, ['id' => 'desc']);
         $bag = $this->getBagService()->getInfo(['bag_no' => $data['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
         if (!empty($trackingPackage) && empty($bag)) {
             $info = $this->unloadTrackingPackage($trackingPackage, $shift);
@@ -528,7 +528,7 @@ class ShiftService extends BaseService
         }
         foreach ($data['item_list'] as $k => $v) {
             if ($v['shift_type'] == BaseConstService::SHIFT_LOAD_TYPE_1) {
-                $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $v['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
+                $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $v['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false, ['id' => 'desc']);
                 if (!empty($trackingPackage)) {
                     $this->unloadTrackingPackage($trackingPackage, $shift);
                 }
