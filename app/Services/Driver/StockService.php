@@ -144,6 +144,7 @@ class StockService extends BaseService
             $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
         }
         //包裹入库
+        $package['execution_date'] = $executionDate;
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
@@ -264,6 +265,7 @@ class StockService extends BaseService
             'line_id' => $tour['line_id'] ?? null,
             'line_name' => $tour['line_name'] ?? '',
             'tracking_order_no' => $trackingOrder['tracking_order_no'] ?? '',
+            'execution_date' => $package['execution_date'],
             'expiration_date' => $package['expiration_date'] ?? '',
             'expiration_status' => $package['expiration_status'] ?? 1,
             'operator' => auth()->user()->fullname,

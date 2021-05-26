@@ -20,7 +20,7 @@ class StockInLogService extends BaseService
 
     public function getPageList()
     {
-        $this->query->orderByDesc('id');
+        $this->query->whereNotNull('line_id')->orderByDesc('id');
         return parent::getPageList();
     }
 
