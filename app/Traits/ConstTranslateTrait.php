@@ -168,9 +168,9 @@ trait ConstTranslateTrait
     //包裹阶段
     public static $packageStageList =
         [
-            BaseConstService::PACKAGE_STAGE_1 => '取件',
+            BaseConstService::PACKAGE_STAGE_1 => '提货',
             BaseConstService::PACKAGE_STAGE_2 => '中转',
-            BaseConstService::PACKAGE_STAGE_3 => '派件'
+            BaseConstService::PACKAGE_STAGE_3 => '配送'
         ];
 
     //编号类型
