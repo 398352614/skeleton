@@ -224,7 +224,7 @@ class StockService extends BaseService
         }
         //加入库存
         $stockData = [
-            'line_id' => '',
+            'line_id' => null,
             'line_name' => '',
             'tracking_order_no' => '',
             'expiration_date' => null,
