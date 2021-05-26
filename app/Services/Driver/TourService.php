@@ -1488,7 +1488,7 @@ class TourService extends BaseService
                 'line_name' => $line['name'],
                 'execution_date' => $batch['execution_date'],
                 'warehouse_id' => $warehouse['id'],
-                'warehouse_name' => $warehouse['fullname'],
+                'warehouse_name' => $warehouse['name'],
                 'warehouse_phone' => $warehouse['phone'],
                 'warehouse_country' => $warehouse['country'],
                 'warehouse_post_code' => $warehouse['post_code'],
