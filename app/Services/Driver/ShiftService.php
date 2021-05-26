@@ -249,6 +249,7 @@ class ShiftService extends BaseService
         //更新袋子里的包裹
         $row = $this->getTrackingPackageService()->update(['bag_no' => $bag['bag_no']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_3,
+            'shift_no' => $shift['shift_no']
         ]);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
