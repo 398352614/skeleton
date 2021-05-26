@@ -76,7 +76,6 @@ class PackageService extends BaseService
                     }else{
                         $data[$k]['warehouse_name'] = $trackingOrderList->where('tracking_order_no',$v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
                     }
-                    $data[$k]['warehouse_name'] = $trackingOrderList->where('tracking_order_no',$v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
                     $data[$k]['status'] = $trackingOrderPackage['status'] ?? null;
                     $data[$k]['true_status_name'] = ConstTranslateTrait::trackingOrderStatusList($trackingOrderPackage['status']);
                 }
