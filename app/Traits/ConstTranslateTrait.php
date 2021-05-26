@@ -121,6 +121,7 @@ use Illuminate\Support\Facades\App;
  * @method static trackingPackageStatusList($args = null)
  * @method static shiftLoadTypeList($args = null)
  * @method static packageStageList($args = null)
+ * @method static packageTrailTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -132,12 +133,12 @@ trait ConstTranslateTrait
 
     //包裹转运状态1-待装袋2-待装车3-待发车4-运输中5-已到车6-已卸货7-已拆袋
     public static $trackingPackageStatusList = [
-        BaseConstService::TRACKING_PACKAGE_STATUS_1 => '未装袋',
-        BaseConstService::TRACKING_PACKAGE_STATUS_2 => '未装车',
-        BaseConstService::TRACKING_PACKAGE_STATUS_3 => '未发车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_1 => '已入库',
+        BaseConstService::TRACKING_PACKAGE_STATUS_2 => '已装袋',
+        BaseConstService::TRACKING_PACKAGE_STATUS_3 => '已装车',
         BaseConstService::TRACKING_PACKAGE_STATUS_4 => '已发车',
         BaseConstService::TRACKING_PACKAGE_STATUS_5 => '已到车',
-        BaseConstService::TRACKING_PACKAGE_STATUS_6 => '已卸车',
+        BaseConstService::TRACKING_PACKAGE_STATUS_6 => '未拆袋',
         BaseConstService::TRACKING_PACKAGE_STATUS_7 => '已拆袋',
     ];
 
@@ -857,6 +858,28 @@ trait ConstTranslateTrait
         BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR => '移出任务',
         BaseConstService::TRACKING_ORDER_TRAIL_DELETE => '删除',
         BaseConstService::TRACKING_ORDER_TRAIL_CUSTOMER => '自定义',
+    ];
+
+    /**
+     * 包裹轨迹类型
+     * @var array
+     */
+    public static $packageTrailTypeList = [
+        BaseConstService:: PACKAGE_TRAIL_CREATED => 1,//包裹创建
+        BaseConstService:: PACKAGE_TRAIL_PICKUP => 2,//取件中
+        BaseConstService:: PACKAGE_TRAIL_PICKUP_DONE => 3,//取件完成
+        BaseConstService:: PACKAGE_TRAIL_ALLOCATE => 4,//入库分拣
+        BaseConstService:: PACKAGE_TRAIL_PACK => 5,//装袋
+        BaseConstService:: PACKAGE_TRAIL_LOAD => 6,//装车
+        BaseConstService:: PACKAGE_TRAIL_OUT => 7,//发车
+        BaseConstService:: PACKAGE_TRAIL_IN => 8,//到车
+        BaseConstService:: PACKAGE_TRAIL_UNLOAD => 9,//卸车
+        BaseConstService:: PACKAGE_TRAIL_UNPACK => 10,//拆袋
+        BaseConstService:: PACKAGE_TRAIL_PIE => 11,//派件中
+        BaseConstService:: PACKAGE_TRAIL_PIE_DONE => 12,//派件完成
+        BaseConstService:: PACKAGE_TRAIL_PICKUP_CANCEL => 13,//取件失败
+        BaseConstService:: PACKAGE_TRAIL_PIE_CANCEL => 14,//派件失败
+        BaseConstService:: PACKAGE_TRAIL_DELETED => 15,//回收站
     ];
 
     public static $orderReceiptTypeList = [

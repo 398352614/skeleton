@@ -146,6 +146,8 @@ class StockService extends BaseService
             $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
             $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
         }
+        //更改包裹阶段
+        $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         //包裹入库
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
@@ -202,8 +204,9 @@ class StockService extends BaseService
             'unpack_operator' => '',
             'unpack_operator_id' => null
         ]);
+        //更改包裹阶段
+        $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         $this->trackingPackageStockIn($package, $trackingPackage);
-
         return [
             'express_first_no' => $package['express_first_no'],
             'type' => $trackingPackageType,

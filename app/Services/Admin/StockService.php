@@ -115,7 +115,6 @@ class StockService extends BaseService
         //更改包裹阶段
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         //包裹入库
-        $package['execution_date'] = $executionDate;
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
