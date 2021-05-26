@@ -66,7 +66,7 @@ class BaseLineService extends BaseService
      * @return array
      * @throws BusinessLogicException
      */
-    public function getInfoByRuleWithOutCheck($info)
+    public function getInfoByRuleWithoutCheck($info)
     {
         $lineRange = $this->getLineRange($info,BaseConstService::NO);
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
