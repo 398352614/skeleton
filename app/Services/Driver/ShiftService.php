@@ -20,7 +20,7 @@ class ShiftService extends BaseService
 {
     public $filterRules = [
         'status' => ['=', 'status'],
-        'bag_no' => ['like', 'bag_no']
+        'shift_no' => ['like', 'shift_no']
     ];
 
     public $orderBy = ['id' => 'desc'];
@@ -32,13 +32,13 @@ class ShiftService extends BaseService
 
     /**
      * 查询
-     * @return void
+     * @return Collection
      * @throws BusinessLogicException
      */
     public function getPageList()
     {
         $data= parent::getPageList();
-        if($data->isEmpty()){
+        if($data->isEmpty() && $this->formData['status'] == BaseConstService::SHIFT_STATUS_2){
             throw new BusinessLogicException('当前无已发车车次');
         }
         return $data;
