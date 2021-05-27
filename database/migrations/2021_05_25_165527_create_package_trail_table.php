@@ -20,6 +20,8 @@ class CreatePackageTrailTable extends Migration
             $table->string('express_first_no')->default('')->nullable()->comment('包裹单号');
             $table->string('order_no')->default('')->nullable()->comment('订单号');
             $table->string('content')->default('')->nullable()->comment('内容');
+            $table->tinyInteger('type')->default(null)->nullable()->comment('类型');
+
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');
 
