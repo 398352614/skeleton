@@ -24,6 +24,7 @@ use App\Services\ApiServices\GoogleApiService;
 use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
+use App\Services\PackageTrailService;
 use App\Services\TrackingOrderTrailService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
@@ -304,6 +305,7 @@ class TrackingOrderService extends BaseService
         } else {
             OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
         }
+        PackageTrailService::storeByTrackingOrderList($trackingOrder,BaseConstService::PACKAGE_TRAIL_CREATED);
         return $tour;
     }
 
@@ -485,6 +487,7 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         OrderTrailService::orderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::ORDER_TRAIL_DELETE);
+        PackageTrailService::storeByTrackingOrder($dbTrackingOrder, BaseConstService::PACKAGE_TRAIL_DELETED);
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_DELETE);
     }
 

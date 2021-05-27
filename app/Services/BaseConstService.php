@@ -33,6 +33,11 @@ class BaseConstService
 
     const CANCEL_TIMES = 3;
 
+    const BATCH_CANCEL_TYPE_1 = 1;
+    const BATCH_CANCEL_TYPE_2 = 2;
+    const BATCH_CANCEL_TYPE_3 = 3;
+
+
     //邮编国家
     const POSTCODE_COUNTRY_BE = 'BE';
     const POSTCODE_COUNTRY_NL = 'NL';

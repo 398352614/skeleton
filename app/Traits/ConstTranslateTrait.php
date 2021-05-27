@@ -122,6 +122,7 @@ use Illuminate\Support\Facades\App;
  * @method static shiftLoadTypeList($args = null)
  * @method static packageStageList($args = null)
  * @method static packageTrailTypeList($args = null)
+ * @method static batchCancelTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -961,6 +962,13 @@ trait ConstTranslateTrait
     public static $schedulingTypeList = [
         BaseConstService::SCHEDULING_TYPE_1 => '自动调度',
         BaseConstService::SCHEDULING_TYPE_2 => '手动调度',
+    ];
+
+    //站点取消原因
+    public static $batchCancelTypeList = [
+        BaseConstService:: BATCH_CANCEL_TYPE_1 => "客户不在家",
+        BaseConstService:: BATCH_CANCEL_TYPE_2 => "另约时间",
+        BaseConstService:: BATCH_CANCEL_TYPE_3 => "其他原因"
     ];
 
     public static $schedulingTypeTips = [

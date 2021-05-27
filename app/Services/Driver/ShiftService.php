@@ -9,6 +9,7 @@ use App\Http\Resources\Api\Driver\ShiftResource;
 use App\Models\Shift;
 use App\Services\BaseConstService;
 use App\Services\Driver\BaseService;
+use App\Services\PackageTrailService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -50,7 +51,7 @@ class ShiftService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info['tracking_package_list'] = $this->getTrackingPackageService()->query->where('shift_no',$info['shift_no'])->where('bag_no','')->get();
+        $info['tracking_package_list'] = $this->getTrackingPackageService()->query->where('shift_no', $info['shift_no'])->where('bag_no', '')->get();
         $info['bag_list'] = $this->getBagService()->getList(['shift_no' => $info['shift_no']], ['*'], false);
         foreach ($info['tracking_package_list'] as $k => $v) {
             $info['tracking_package_list'][$k]['shift_type'] = BaseConstService::SHIFT_LOAD_TYPE_1;
@@ -132,7 +133,7 @@ class ShiftService extends BaseService
         //已装袋包裹回已装袋状态
         $bagList = $this->getBagService()->getList(['shift_no' => $shift['shift_no']], ['*'], false);
         if (!empty($bagList)) {
-            $this->getTrackingPackageService()->update(['bag_no' => ['in',$bagList->pluck(['bag_no'])->toArray()]], [
+            $this->getTrackingPackageService()->update(['bag_no' => ['in', $bagList->pluck(['bag_no'])->toArray()]], [
                 'status' => BaseConstService::TRACKING_PACKAGE_STATUS_1,
                 'shift_no' => '',
                 'pack_time' => null,
@@ -254,6 +255,7 @@ class ShiftService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
+        PackageTrailService::storeByBag($bag, BaseConstService::PACKAGE_TRAIL_LOAD);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_2,
             'item_no' => $bag['bag_no'],
@@ -292,6 +294,7 @@ class ShiftService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
+        PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_LOAD, $shift);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_1,
             'item_no' => $trackingPackage['express_first_no'],
@@ -447,6 +450,7 @@ class ShiftService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
+        PackageTrailService::storeByTrackingPackageList($trackingPackage, BaseConstService::PACKAGE_TRAIL_UNLOAD, $shift);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_1,
             'item_no' => $trackingPackage['express_first_no'],
@@ -482,6 +486,7 @@ class ShiftService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
+        PackageTrailService::storeByBag($bag, BaseConstService::PACKAGE_TRAIL_UNLOAD);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_2,
             'item_no' => $bag['bag_no'],
@@ -578,6 +583,7 @@ class ShiftService extends BaseService
         }
         //包裹出库
         $this->getStockService()->trackingPackageOutWarehouse($trackingPackageList, $shift);
+        PackageTrailService::storeByShift($shift, BaseConstService::PACKAGE_TRAIL_OUT);
     }
 
     /**
@@ -600,7 +606,7 @@ class ShiftService extends BaseService
         }
         $this->getTrackingPackageService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::TRACKING_PACKAGE_STATUS_5]);
         $this->getBagService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::BAG_STATUS_3]);
-
+        PackageTrailService::storeByShift($shift, BaseConstService::PACKAGE_TRAIL_IN);
     }
 
 

@@ -20,6 +20,7 @@ use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\FeeService;
 use App\Services\OrderTrailService;
+use App\Services\PackageTrailService;
 use App\Services\TrackingOrderTrailService;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\TourRedisLockTrait;
@@ -955,8 +956,18 @@ class TourService extends BaseService
                 } else {
                     $packageData = array_merge($packageData, ['actual_quantity' => 1]);
                 }
+                if ($dbPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
+                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PICKUP_DONE);
+                } else {
+                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PIE_DONE, $batch);
+                }
             } else {
                 $packageData = ['status' => BaseConstService::TRACKING_ORDER_STATUS_6];
+                if ($dbPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
+                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL);
+                } else {
+                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PIE_CANCEL, $batch);
+                }
             }
             $rowCount = $this->getTrackingOrderPackageService()->update(['id' => $dbPackage['id']], $packageData);
             if ($rowCount === false) {

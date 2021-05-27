@@ -69,6 +69,8 @@ class AddData implements ShouldQueue
             $query = OrderTrail::query();
         } elseif ($this->type == 'tracking-order-trail') {
             $query = TrackingOrderTrail::query();
+        } elseif ($this->type == 'package-trail') {
+            $query = OrderTrail::query();
         } elseif ($this->type == 'tour-event') {
             $query = TourDriverEvent::query();
         } else {

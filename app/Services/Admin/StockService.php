@@ -12,6 +12,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\StockResource;
 use App\Models\Stock;
 use App\Services\BaseConstService;
+use App\Services\PackageTrailService;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -117,6 +118,7 @@ class StockService extends BaseService
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         //包裹入库
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
+        PackageTrailService::storeByTrackingOrderList([$package],BaseConstService::PACKAGE_TRAIL_ALLOCATE);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
                 'type' => BaseConstService::TRACKING_PACKAGE_TYPE_3,
@@ -176,6 +178,7 @@ class StockService extends BaseService
         //更改包裹阶段
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_2]);
         $this->trackingPackageStockIn($package, $trackingPackage);
+        PackageTrailService::storeByTrackingPackageList([$package],BaseConstService::PACKAGE_TRAIL_ALLOCATE);
         return [
             'express_first_no' => $package['express_first_no'],
             'type' => $trackingPackageType,

@@ -8,6 +8,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Driver\BagResource;
 use App\Models\Bag;
 use App\Services\BaseConstService;
+use App\Services\PackageTrailService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -146,6 +147,7 @@ class BagService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
+        PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_PACK,$bag);
         $this->recount($id);
         return $trackingPackage;
     }
@@ -278,6 +280,7 @@ class BagService extends BaseService
             }
         }
         $this->emptyCheck($bag);
+        PackageTrailService::storeByTrackingPackageList($trackingPackageList, BaseConstService::PACKAGE_TRAIL_UNPACK,$bag);
         if (count($trackingPackageList) == 1) {
             return $trackingPackageList[0];
         }
