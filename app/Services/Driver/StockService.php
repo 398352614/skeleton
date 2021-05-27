@@ -184,7 +184,8 @@ class StockService extends BaseService
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         //包裹入库
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
-        PackageTrailService::storeByTrackingOrderList([$package],BaseConstService::PACKAGE_TRAIL_ALLOCATE);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['*'], false);
+        PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingOrder);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
                 'express_first_no' => $package['express_first_no'],
@@ -242,7 +243,7 @@ class StockService extends BaseService
         //更改包裹阶段
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_2]);
         $this->trackingPackageStockIn($package, $trackingPackage);
-        PackageTrailService::storeByTrackingPackageList([$package],BaseConstService::PACKAGE_TRAIL_ALLOCATE);
+        PackageTrailService::storeByTrackingPackageList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingPackage);
         return [
             'express_first_no' => $package['express_first_no'],
             'type' => $trackingPackageType,
