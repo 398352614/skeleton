@@ -105,7 +105,6 @@ class PackageTrailService extends \App\Services\Admin\BaseService
                 break;
         }
         $now = now();
-        dd($package);
         $data = [
             'company_id' => $package['company_id'] ?? auth()->user()->company_id,
             'express_first_no' => $package['express_first_no'],
