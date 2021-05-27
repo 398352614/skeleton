@@ -21,13 +21,13 @@ class PackageTrailService extends \App\Services\Admin\BaseService
      * 运单字段
      * @var array
      */
-    public static $trackingOrderPackageFields = ['company_id', 'merchant_id', 'order_no', 'tracking_order_no'];
+    public static $trackingOrderPackageFields = ['company_id', 'merchant_id', 'order_no', 'tracking_order_no','express_first_no'];
 
     /**
      * 转运单字段
      * @var array
      */
-    public static $trackingPackageFields = ['company_id', 'merchant_id', 'order_no', 'warehouse_id', 'warehouse_name', 'next_warehouse_id', 'next_warehouse_name'];
+    public static $trackingPackageFields = ['company_id', 'merchant_id', 'order_no', 'warehouse_id', 'warehouse_name', 'next_warehouse_id', 'next_warehouse_name','express_first_no'];
 
     /**
      * 查询条件
@@ -47,6 +47,30 @@ class PackageTrailService extends \App\Services\Admin\BaseService
     {
         $trackingOrderPackageList = TrackingOrderPackage::query()->select(self::$trackingOrderPackageFields)->where('tour_no', $tour['tour_no'])->get()->toArray();
         !empty($trackingOrderPackageList) && self::storeByTrackingOrderList($trackingOrderPackageList, $action, $tour);
+    }
+
+    public static function storeByBatch($batch, int $action)
+    {
+        $trackingOrderPackageList = TrackingOrderPackage::query()->select(self::$trackingOrderPackageFields)->where('batch_no', $batch['batch_no'])->get()->toArray();
+        !empty($trackingOrderPackageList) && self::storeByTrackingOrderList($trackingOrderPackageList, $action, $batch);
+    }
+
+    public static function storeByBag($bag, int $action)
+    {
+        $trackingPackageList = TrackingPackage::query()->select(self::$trackingPackageFields)->where('bag_no', $bag['bag_no'])->get()->toArray();
+        !empty($trackingPackageList) && self::storeByTrackingPackageList($trackingPackageList, $action, $bag);
+    }
+
+    public static function storeByShift($shift, int $action)
+    {
+        $trackingPackageList = TrackingPackage::query()->select(self::$trackingPackageFields)->where('shift_no', $shift['shift_no'])->get()->toArray();
+        !empty($trackingPackageList) && self::storeByTrackingPackageList($trackingPackageList, $action, $shift);
+    }
+
+    public static function storeByTrackingOrder($trackingOrderList, int $action)
+    {
+        $trackingOrderPackageList = TrackingOrderPackage::query()->select(self::$trackingOrderPackageFields)->whereIn('tracking_order_no', $trackingOrderList)->get()->toArray();
+        !empty($trackingOrderPackageList) && self::storeByTrackingOrderList($trackingOrderPackageList, $action);
     }
 
     /**
@@ -122,17 +146,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         }
     }
 
-    public static function storeByBatch($batch, int $action)
-    {
-        $trackingOrderPackageList = TrackingOrderPackage::query()->select(self::$trackingOrderPackageFields)->where('batch_no', $batch['batch_no'])->get()->toArray();
-        !empty($trackingOrderPackageList) && self::storeByTrackingOrderList($trackingOrderPackageList, $action, $batch);
-    }
 
-    public static function storeByBag($bag, int $action)
-    {
-        $trackingPackageList = TrackingPackage::query()->select(self::$trackingPackageFields)->where('bag_no', $bag['bag_no'])->get()->toArray();
-        !empty($trackingPackageList) && self::storeByTrackingPackageList($trackingPackageList, $action, $bag);
-    }
 
     /**
      * 按运单批量新增
@@ -210,17 +224,6 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         }
     }
 
-    public static function storeByShift($shift, int $action)
-    {
-        $trackingPackageList = TrackingPackage::query()->select(self::$trackingPackageFields)->where('shift_no', $shift['shift_no'])->get()->toArray();
-        !empty($trackingPackageList) && self::storeByTrackingPackageList($trackingPackageList, $action, $shift);
-    }
-
-    public static function storeByTrackingOrder($trackingOrderList, int $action)
-    {
-        $trackingOrderPackageList = TrackingOrderPackage::query()->select(self::$trackingOrderPackageFields)->whereIn('tracking_order_no', $trackingOrderList)->get()->toArray();
-        !empty($trackingOrderPackageList) && self::storeByTrackingOrderList($trackingOrderPackageList, $action);
-    }
 
     /**
      * 手动新增
