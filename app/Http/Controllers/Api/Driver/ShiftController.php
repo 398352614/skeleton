@@ -118,4 +118,15 @@ class ShiftController extends BaseController
     {
         return $this->service->inWarehouse($id);
     }
+
+    /**
+     * 到车
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Builder|mixed
+     * @throws BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        return $this->service->destroy($id);
+    }
 }
