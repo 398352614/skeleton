@@ -80,7 +80,6 @@ class PackageService extends BaseService
                     $data[$k]['true_status_name'] = ConstTranslateTrait::trackingOrderStatusList($trackingOrderPackage['status']);
                 }
             }
-            $data[$k]['second_execution_date'] = $stockInLog['execution_date'] ?? null;
             $data[$k]['stock_in_time'] = $stockInLog['created_at'] ?? null;
             $data[$k]['stage_status_name'] = $data[$k]['stage_name'] . '-' . $data[$k]['true_status_name'];
         }
