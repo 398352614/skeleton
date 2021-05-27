@@ -50,7 +50,7 @@ class ShiftService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info['tracking_package_list'] = $this->getTrackingPackageService()->getList(['shift_no' => $info['shift_no']], ['*'], false);
+        $info['tracking_package_list'] = $this->getTrackingPackageService()->getList(['shift_no' => $info['shift_no'],'bag_no'=>['<>','']], ['*'], false);
         $info['bag_list'] = $this->getBagService()->getList(['shift_no' => $info['shift_no']], ['*'], false);
         foreach ($info['tracking_package_list'] as $k => $v) {
             $info['tracking_package_list'][$k]['shift_type'] = BaseConstService::SHIFT_LOAD_TYPE_1;
