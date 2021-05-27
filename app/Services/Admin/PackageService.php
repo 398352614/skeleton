@@ -47,7 +47,7 @@ class PackageService extends BaseService
             $orderList = $this->getOrderService()->getList(['merchant_id' => $this->formData['merchant_id']], ['*'], false);
             $this->query->whereIn('order_no', $orderList)->where('order_no', 'like', $this->formData['order_no']);
         }
-        $this->query->orderByDesc('updated_at');
+        $this->query->orderByDesc('id');
         $data = parent::getPageList();
         $expressFirstNoList = $data->pluck('express_first_no')->toArray();
         $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['express_first_no' => ['in', $expressFirstNoList]], ['*'], false);
