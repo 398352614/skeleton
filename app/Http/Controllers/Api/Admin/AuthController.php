@@ -50,6 +50,21 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
     }
 
+    public function validation()
+    {
+        $validate = [];
+        $cnValidate = include base_path('resources/lang/cn/validation.php');
+        $cnValidate = array_flip($cnValidate['attributes']);
+        $enValidate = include base_path('resources/lang/en/validation.php');
+        $enValidate = $enValidate['attributes'];
+        foreach ($cnValidate as $k => $v) {
+            $validate[$k] = $enValidate[$v] ?? $v;
+        }
+        $translate = file_get_contents(base_path('resources/lang/en.json'));
+        $translate = collect(json_decode($translate))->toArray();
+        return array_merge($translate, $validate);
+    }
+
     /**
      *
      * @return JsonResponse
@@ -215,7 +230,7 @@ class AuthController extends Controller
     public function updateTimezone(Request $request)
     {
         $data = $request->all();
-        if(empty($data['timezone'])){
+        if (empty($data['timezone'])) {
             throw new BusinessLogicException('时区 必填');
         }
         $res = Employee::query()->where('id', auth()->user()->id)->update(['timezone' => $data['timezone']]);

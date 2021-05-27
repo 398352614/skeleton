@@ -30,6 +30,8 @@ Route::namespace('Api\Admin')->group(function () {
     Route::get('/tour/callback', 'TourController@callback');
     // 取消 redis 锁
     Route::get('/tour/unlock-redis', 'TourController@unlockRedis');
+    // 翻译
+    Route::get('/translate', 'AuthController@validation');
 });
 
 //认证
