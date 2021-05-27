@@ -32,11 +32,16 @@ class ShiftService extends BaseService
 
     /**
      * 查询
-     * @return Builder[]|Collection|AnonymousResourceCollection
+     * @return void
+     * @throws BusinessLogicException
      */
     public function getPageList()
     {
-        return parent::getPageList();
+        $data= parent::getPageList();
+        if($data->isEmpty()){
+            throw new BusinessLogicException('当前无已发车车次');
+        }
+        return $data;
     }
 
     /**
