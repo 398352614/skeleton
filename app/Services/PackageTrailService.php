@@ -251,7 +251,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         if (empty($package)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $package['package_trail_list'] = parent::getList(['express_first_no' => $expressFirstNo], ['*'], false, ['id' => 'desc']);
+        $package['package_trail_list'] = parent::getList(['express_first_no' => $expressFirstNo], ['*'], false,[], ['id' => 'desc']);
         return $package;
     }
 
