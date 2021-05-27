@@ -83,6 +83,6 @@ class Bag extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::batchStatusList($this->status);
+        return empty($this->status) ? null : ConstTranslateTrait::bagStatusList($this->status);
     }
 }
