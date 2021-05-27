@@ -290,7 +290,7 @@ class ShiftService extends BaseService
             throw new BusinessLogicException('袋号与下一站不一致', 5009);
         }
         $row = $this->getTrackingPackageService()->updateById($trackingPackage['id'], [
-            'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
+            'status' => BaseConstService::TRACKING_PACKAGE_STATUS_3,
             'shift_no' => $shift['shift_no'],
             'load_time' => now(),
             'load_operator' => auth()->user()->fullname,
