@@ -231,7 +231,7 @@ class StockService extends BaseService
             'line_id' => $tour['line_id'] ?? null,
             'line_name' => $tour['line_name'] ?? '',
             'tracking_order_no' => $trackingOrder['tracking_order_no'] ?? '',
-            'execution_date' => $package['execution_date'],
+            'execution_date' => $package['second_execution_date'],
             'expiration_date' => $package['expiration_date'] ?? '',
             'expiration_status' => $package['expiration_status'] ?? 1,
             'operator' => auth()->user()->fullname,

@@ -163,8 +163,7 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     Route::prefix('stock')->group(function () {
         //包裹分拣入库
         Route::put('/package-pick-out', 'StockController@allocate');
-        //包裹分拣入库
-        Route::put('/history', 'StockController@history');
+
     });
 
     //库存管理
