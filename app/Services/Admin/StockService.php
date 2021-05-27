@@ -192,10 +192,6 @@ class StockService extends BaseService
      */
     public function trackingPackageStockIn($package, $trackingPackage)
     {
-        $dbPackage = parent::getInfoLock(['express_first_no' => $package['express_first_no']], ['*'], false);
-        if (!empty($dbPackage)) {
-            throw  new BusinessLogicException('当前包裹已入库');
-        }
         //加入库存
         $stockData = [
             'line_id' => null,
@@ -230,10 +226,6 @@ class StockService extends BaseService
      */
     public function trackingOrderStockIn($package, $tour, $trackingOrder)
     {
-        $dbPackage = parent::getInfoLock(['express_first_no' => $package['express_first_no']], ['*'], false);
-        if (!empty($dbPackage)) {
-            throw  new BusinessLogicException('当前包裹已入库');
-        }
         //加入库存
         $stockData = [
             'line_id' => $tour['line_id'] ?? null,
