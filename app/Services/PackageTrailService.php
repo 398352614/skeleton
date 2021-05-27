@@ -59,6 +59,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
     {
         $data = [];
         foreach ($packageList as $key => $package) {
+            $package=collect($package)->toArray();
             $data[] = self::trackingOrderStatusChangeCreateTrail($package, $action, $params ?? $package, true);
         }
         dispatch(new AddData('package-trail', $data));

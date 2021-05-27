@@ -186,6 +186,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/order/{order_no}', 'OrderTrailController@index')->name('trail.index');
         //列表查询
         Route::get('/tracking-order/{tracking_order_no}', 'TrackingOrderTrailController@index')->name('trail.index');
+        //列表查询
+        Route::get('/package/{express_first_no}', 'PackageTrailController@index')->name('trail.index');
     });
 
     //订单轨迹管理
@@ -211,6 +213,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'PackageController@show')->name('package.show');
         //填充包裹信息
         Route::put('fill-package', 'PackageController@fillWeightInfo');
+    });
+
+    Route::prefix('package-trail')->group(function () {
+        //列表查询
+        Route::get('/', 'PackageTrailController@index')->name('package.index');
     });
 
     //库存管理
