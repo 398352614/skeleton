@@ -103,7 +103,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         }
         $now = now();
         $data = [
-            'company_id' => $package['company_id'],
+            'company_id' => $package['company_id'] ?? auth()->user()->company_id,
             'express_first_no' => $package['express_first_no'],
             'order_no' => $package['order_no'],
             'merchant_id' => $package['merchant_id'],
