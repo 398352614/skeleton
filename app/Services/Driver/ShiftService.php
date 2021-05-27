@@ -51,8 +51,13 @@ class ShiftService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info['tracking_package_list'] = $this->getTrackingPackageService()->query->where('shift_no', $info['shift_no'])->where('bag_no', '')->get();
-        $info['bag_list'] = $this->getBagService()->getList(['shift_no' => $info['shift_no']], ['*'], false);
+        if($info['status'] == BaseConstService::SHIFT_STATUS_3){
+            $info['tracking_package_list'] = $this->getTrackingPackageService()->query->where('shift_no', $info['shift_no'])->where('status',BaseConstService::TRACKING_PACKAGE_STATUS_5)->where('bag_no', '')->get();
+            $info['bag_list'] = $this->getBagService()->getList(['shift_no' => $info['shift_no'],'status'=>BaseConstService::BAG_STATUS_3], ['*'], false);
+        }else{
+            $info['tracking_package_list'] = $this->getTrackingPackageService()->query->where('shift_no', $info['shift_no'])->where('bag_no', '')->get();
+            $info['bag_list'] = $this->getBagService()->getList(['shift_no' => $info['shift_no']], ['*'], false);
+        }
         foreach ($info['tracking_package_list'] as $k => $v) {
             $info['tracking_package_list'][$k]['shift_type'] = BaseConstService::SHIFT_LOAD_TYPE_1;
             $info['tracking_package_list'][$k]['item_no'] = $v['express_first_no'];

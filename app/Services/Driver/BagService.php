@@ -49,7 +49,11 @@ class BagService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info['tracking_package_list'] = $this->getTrackingPackageService()->getList(['bag_no' => $info['bag_no']], ['*'], false);
+        if ($info['status'] == BaseConstService::BAG_STATUS_4) {
+            $info['tracking_package_list'] = $this->getTrackingPackageService()->getList(['bag_no' => $info['bag_no'], 'status' => BaseConstService::TRACKING_PACKAGE_STATUS_6], ['*'], false);
+        } else {
+            $info['tracking_package_list'] = $this->getTrackingPackageService()->getList(['bag_no' => $info['bag_no']], ['*'], false);
+        }
         return $info;
     }
 
@@ -147,7 +151,7 @@ class BagService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_PACK,$bag);
+        PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_PACK, $bag);
         $this->recount($id);
         return $trackingPackage;
     }
@@ -280,7 +284,7 @@ class BagService extends BaseService
             }
         }
         $this->emptyCheck($bag);
-        PackageTrailService::storeByTrackingPackageList($trackingPackageList, BaseConstService::PACKAGE_TRAIL_UNPACK,$bag);
+        PackageTrailService::storeByTrackingPackageList($trackingPackageList, BaseConstService::PACKAGE_TRAIL_UNPACK, $bag);
         if (count($trackingPackageList) == 1) {
             return $trackingPackageList[0];
         }
