@@ -17,6 +17,7 @@ use App\Traits\CompanyTrait;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class StockService extends BaseService
@@ -113,7 +114,7 @@ class StockService extends BaseService
         }
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
         $type = $this->getOrderService()->getTrackingOrderType($order);//异常验证
-        $this->check($package, $order, $type);
+//        $this->check($package, $order, $type);
         $warehouse = $this->getWareHouseService()->getInfo(['id' => auth()->user()->warehouse_id], ['*'], false)->toArray();
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
@@ -179,8 +180,11 @@ class StockService extends BaseService
             //生成运单号
             $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
             try {
+                DB::beginTransaction();
                 $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
+                DB::commit();
             } catch (BusinessLogicException $e) {
+                DB::rollBack();
                 if ($e->getCode() == 5010) {
                     $placeCode = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_post_code'] : $order['second_place_post_code'];
                     list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
