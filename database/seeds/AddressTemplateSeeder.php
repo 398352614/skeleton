@@ -15,7 +15,7 @@ class AddressTemplateSeeder extends Seeder
         //删除tile_adhesive_dosage表中所有数据
         DB::table('address_template')->whereRaw('1')->delete();
         //将自增ID初始值设置为1
-        DB::select('alter table address_template AUTO_INCREMENT=1;');
+        DB::raw("alter table address_template AUTO_INCREMENT=1;");
         $now = now();
         //地址模板1
         $address1 = [
@@ -34,8 +34,10 @@ class AddressTemplateSeeder extends Seeder
             'address' => 'required|string|max:250',
             'alternate_address' => 'nullable|string|max:250',
         ];
-        DB::table('address_template')->insert(['template' => json_encode($address1, JSON_UNESCAPED_UNICODE), 'created_at' => $now, 'updated_at' => $now]);
-        DB::table('address_template')->insert(['template' => json_encode($address2, JSON_UNESCAPED_UNICODE), 'created_at' => $now, 'updated_at' => $now]);
+        DB::table('address_template')->insert([
+            ['template' => json_encode($address1, JSON_UNESCAPED_UNICODE), 'created_at' => $now, 'updated_at' => $now],
+            ['template' => json_encode($address2, JSON_UNESCAPED_UNICODE), 'created_at' => $now, 'updated_at' => $now]
+        ]);
         \Illuminate\Support\Facades\Artisan::call('address-template:cache');
     }
 }

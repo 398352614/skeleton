@@ -253,13 +253,16 @@ class ShiftService extends BaseService
         if ($bag['next_warehouse_id'] !== $shift['next_warehouse_id'] && $ignoreRule == BaseConstService::NO) {
             throw new BusinessLogicException('袋号与下一站不一致', 5009);
         }
-        $this->getBagService()->updateById($bag['id'], [
+        $row=$this->getBagService()->updateById($bag['id'], [
             'status' => BaseConstService::BAG_STATUS_2,
             'shift_no' => $shift['shift_no'],
             'load_time' => now()->format('Y-m-d H:i:s'),
             'load_operator' => auth()->user()->fullname,
             'load_operator_id' => auth()->user()->id,
         ]);
+        if($row == false){
+            throw new BusinessLogicException('更新袋号失败');
+        }
         //更新袋子里的包裹
         $row = $this->getTrackingPackageService()->update(['bag_no' => $bag['bag_no']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_3,
