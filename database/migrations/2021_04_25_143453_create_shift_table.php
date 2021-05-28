@@ -18,7 +18,7 @@ class CreateShiftTable extends Migration
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
             $table->string('shift_no', 50)->default('')->nullable()->comment('车次号');
             $table->tinyInteger('status')->default(1)->comment('状态:1-未发车2-已发车3-未卸车4-已卸车');
-            $table->decimal('weight', 2)->default(0.00)->nullable()->comment('包裹总重量');
+            $table->decimal('weight', 16,2)->default(0.00)->nullable()->comment('包裹总重量');
             $table->integer('package_count')->default(0)->nullable()->comment('包裹数量');
 
             $table->integer('warehouse_id')->default(null)->nullable()->comment('所在网点ID');

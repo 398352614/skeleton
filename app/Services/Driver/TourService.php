@@ -921,8 +921,10 @@ class TourService extends BaseService
         $packageList = collect($packageList)->unique('id')->keyBy('id')->toArray();
         $packageIdList = array_keys($packageList);
         $totalStickerAmount = $totalDeliveryAmount = 0.00;
-        $dbPackageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['id', 'order_no', 'batch_no', 'type'], false)->toArray();
+        $dbPackageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['*'], false)->toArray();
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tracking_order_no' => ['in',collect($dbPackageList)->pluck('tracking_order_no')->toArray()]], ['*'], false);
         foreach ($dbPackageList as $dbPackage) {
+            $trackingOrder = $trackingOrderList->where('tracking_order_no')->first();
             //判断是否签收
             if (in_array(intval($dbPackage['id']), $packageIdList)) {
                 $packageData = ['status' => BaseConstService::TRACKING_ORDER_STATUS_5, 'auth_fullname' => $params['auth_fullname'] ?? '', 'auth_birth_date' => !empty($params['auth_birth_date']) ? $params['auth_birth_date'] : null];
@@ -957,16 +959,16 @@ class TourService extends BaseService
                     $packageData = array_merge($packageData, ['actual_quantity' => 1]);
                 }
                 if ($dbPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
-                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PICKUP_DONE, $batch);
+                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PICKUP_DONE, $trackingOrder);
                 } else {
-                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PIE_DONE, $batch);
+                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PIE_DONE, $trackingOrder);
                 }
             } else {
                 $packageData = ['status' => BaseConstService::TRACKING_ORDER_STATUS_6];
                 if ($dbPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
-                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL, $batch);
+                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL, $trackingOrder);
                 } else {
-                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PIE_CANCEL, $batch);
+                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PIE_CANCEL, $trackingOrder);
                 }
             }
             $rowCount = $this->getTrackingOrderPackageService()->update(['id' => $dbPackage['id']], $packageData);

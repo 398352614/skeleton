@@ -21,13 +21,13 @@ class PackageTrailService extends \App\Services\Admin\BaseService
      * 运单字段
      * @var array
      */
-    public static $trackingOrderPackageFields = ['company_id', 'merchant_id', 'order_no', 'tracking_order_no','express_first_no'];
+    public static $trackingOrderPackageFields = ['company_id', 'merchant_id', 'order_no', 'tracking_order_no', 'express_first_no'];
 
     /**
      * 转运单字段
      * @var array
      */
-    public static $trackingPackageFields = ['company_id', 'merchant_id', 'order_no', 'warehouse_id', 'warehouse_name', 'next_warehouse_id', 'next_warehouse_name','express_first_no'];
+    public static $trackingPackageFields = ['company_id', 'merchant_id', 'order_no', 'warehouse_id', 'warehouse_name', 'next_warehouse_id', 'next_warehouse_name', 'express_first_no'];
 
     /**
      * 查询条件
@@ -67,10 +67,10 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         !empty($trackingPackageList) && self::storeByTrackingPackageList($trackingPackageList, $action, $shift);
     }
 
-    public static function storeByTrackingOrder($trackingOrderList, int $action,$params)
+    public static function storeByTrackingOrder($trackingOrderList, int $action, $params = null)
     {
         $trackingOrderPackageList = TrackingOrderPackage::query()->select(self::$trackingOrderPackageFields)->whereIn('tracking_order_no', $trackingOrderList)->get()->toArray();
-        !empty($trackingOrderPackageList) && self::storeByTrackingOrderList($trackingOrderPackageList, $action,$params);
+        !empty($trackingOrderPackageList) && self::storeByTrackingOrderList($trackingOrderPackageList, $action, $params);
     }
 
     /**
@@ -82,11 +82,11 @@ class PackageTrailService extends \App\Services\Admin\BaseService
     public static function storeByTrackingOrderList(array $packageList, int $action, $params = null)
     {
         $data = [];
-        if(empty($packageList[0])){
-            $packageList=[$packageList];
+        if (empty($packageList[0])) {
+            $packageList = [$packageList];
         }
         foreach ($packageList as $key => $package) {
-            $package=collect($package)->toArray();
+            $package = collect($package)->toArray();
             $data[] = self::trackingOrderStatusChangeCreateTrail($package, $action, $params ?? $package, true);
         }
         dispatch(new AddData('package-trail', $data));
@@ -115,13 +115,13 @@ class PackageTrailService extends \App\Services\Admin\BaseService
                 $content = sprintf("您的包裹取件被取消，原因：[%s]。如有疑问请电联快递员[%s]，电话：[%s]", ConstTranslateTrait::batchCancelTypeList($params['cancel_type']), $params['driver_name'], $params['driver_phone']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_PIE_CANCEL:
-                $content = sprintf("您的包裹派件被取消，原因：[%s]。如有疑问请电联快递员[%s]，电话：[%s]", $params['driver_name'], ConstTranslateTrait::batchCancelTypeList($params['cancel_type']),$params['driver_phone']);
+                $content = sprintf("您的包裹派件被取消，原因：[%s]。如有疑问请电联快递员[%s]，电话：[%s]", $params['driver_name'], ConstTranslateTrait::batchCancelTypeList($params['cancel_type']), $params['driver_phone']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_DELETED:
                 $content = '您的包裹已取消';
                 break;
             case BaseConstService::PACKAGE_TRAIL_ALLOCATE:
-                $content = sprintf("您的包裹在[%s]进行入库处理，操作员：[%s]", $params['warehouse_fullname'],$params['operator']);
+                $content = sprintf("您的包裹在[%s]进行入库处理，操作员：[%s]", $params['warehouse_fullname'], $params['operator']);
                 break;
 
             default:
@@ -145,7 +145,6 @@ class PackageTrailService extends \App\Services\Admin\BaseService
             return $data;
         }
     }
-
 
 
     /**
@@ -251,7 +250,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         if (empty($package)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $package['package_trail_list'] = parent::getList(['express_first_no' => $expressFirstNo], ['*'], false,[], ['id' => 'desc']);
+        $package['package_trail_list'] = parent::getList(['express_first_no' => $expressFirstNo], ['*'], false, [], ['id' => 'desc']);
         return $package;
     }
 
