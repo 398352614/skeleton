@@ -97,7 +97,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         if (!empty($params['cancel_type'])) {
             $cancel = ConstTranslateTrait::batchCancelTypeList($params['cancel_type']);
         } else {
-            $cancel = '';
+            $cancel = '其他原因';
         }
         //根据不同的类型生成不同的content
         switch ($action) {
