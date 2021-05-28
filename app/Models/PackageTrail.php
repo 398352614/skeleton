@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 包裹轨迹轨迹表
  * Class TrackingOrderTrail
@@ -81,5 +83,14 @@ class PackageTrail extends BaseModel
         } else {
             return !empty($value) ? __($value) : null;
         }
+    }
+
+    protected $appends = [
+        'type_name'
+    ];
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::packageTrailTypeList($this->type);
     }
 }

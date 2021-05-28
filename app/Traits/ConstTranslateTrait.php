@@ -866,21 +866,21 @@ trait ConstTranslateTrait
      * @var array
      */
     public static $packageTrailTypeList = [
-        BaseConstService:: PACKAGE_TRAIL_CREATED => 1,//包裹创建
-        BaseConstService:: PACKAGE_TRAIL_PICKUP => 2,//取件中
-        BaseConstService:: PACKAGE_TRAIL_PICKUP_DONE => 3,//取件完成
-        BaseConstService:: PACKAGE_TRAIL_ALLOCATE => 4,//入库分拣
-        BaseConstService:: PACKAGE_TRAIL_PACK => 5,//装袋
-        BaseConstService:: PACKAGE_TRAIL_LOAD => 6,//装车
-        BaseConstService:: PACKAGE_TRAIL_OUT => 7,//发车
-        BaseConstService:: PACKAGE_TRAIL_IN => 8,//到车
-        BaseConstService:: PACKAGE_TRAIL_UNLOAD => 9,//卸车
-        BaseConstService:: PACKAGE_TRAIL_UNPACK => 10,//拆袋
-        BaseConstService:: PACKAGE_TRAIL_PIE => 11,//派件中
-        BaseConstService:: PACKAGE_TRAIL_PIE_DONE => 12,//派件完成
-        BaseConstService:: PACKAGE_TRAIL_PICKUP_CANCEL => 13,//取件失败
-        BaseConstService:: PACKAGE_TRAIL_PIE_CANCEL => 14,//派件失败
-        BaseConstService:: PACKAGE_TRAIL_DELETED => 15,//回收站
+        BaseConstService::PACKAGE_TRAIL_CREATED => '待取件',//包裹创建
+        BaseConstService::PACKAGE_TRAIL_PICKUP => '待取件',//取件中
+        BaseConstService::PACKAGE_TRAIL_PICKUP_DONE => '已取件',//取件完成
+        BaseConstService::PACKAGE_TRAIL_ALLOCATE => '已取件',//入库分拣
+        BaseConstService::PACKAGE_TRAIL_PACK => '运输中',//装袋
+        BaseConstService::PACKAGE_TRAIL_LOAD => '运输中',//装车
+        BaseConstService::PACKAGE_TRAIL_OUT => '运输中',//发车
+        BaseConstService::PACKAGE_TRAIL_IN => '运输中',//到车
+        BaseConstService::PACKAGE_TRAIL_UNLOAD =>'运输中',//卸车
+        BaseConstService::PACKAGE_TRAIL_UNPACK => '运输中',//拆袋
+        BaseConstService::PACKAGE_TRAIL_PIE => '派件中',//派件中
+        BaseConstService::PACKAGE_TRAIL_PIE_DONE => '已签收',//派件完成
+        BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL => '取件失败',//取件失败
+        BaseConstService::PACKAGE_TRAIL_PIE_CANCEL => '派件失败',//派件失败
+        BaseConstService::PACKAGE_TRAIL_DELETED => '已取消',//回收站
     ];
 
     public static $orderReceiptTypeList = [
