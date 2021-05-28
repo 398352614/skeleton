@@ -56,7 +56,7 @@ class PackageService extends BaseService
 
         foreach ($data as $k => $v) {
             $stockInLog = $this->getStockService()->getInfo(['express_first_no' => $v['express_first_no']], ['*'], false, ['id' => 'asc']);
-            if ($data[$k]['stage'] == BaseConstService::PACKAGE_STAGE_2) {
+            if ($v['stage'] == BaseConstService::PACKAGE_STAGE_2) {
                 $trackingPackage = $trackingPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->first->toArray();
                 if (!empty($trackingPackage)) {
                     $data[$k]['warehouse_id'] = $trackingPackage['warehouse_id'];
@@ -71,13 +71,18 @@ class PackageService extends BaseService
             } else {
                 $trackingOrderPackage = $trackingOrderPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->first->toArray();
                 if (!empty($trackingOrderPackage)) {
-                    if($trackingOrderPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1){
-                        $data[$k]['next_warehouse_name'] = $trackingOrderList->where('tracking_order_no',$v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
-                    }else{
-                        $data[$k]['warehouse_name'] = $trackingOrderList->where('tracking_order_no',$v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
+                    if ($trackingOrderPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
+                        $data[$k]['next_warehouse_name'] = $trackingOrderList->where('tracking_order_no', $v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
+                    } else {
+                        $data[$k]['warehouse_name'] = $trackingOrderList->where('tracking_order_no', $v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
                     }
                     $data[$k]['status'] = $trackingOrderPackage['status'] ?? null;
                     $data[$k]['true_status_name'] = ConstTranslateTrait::trackingOrderStatusList($trackingOrderPackage['status']);
+                }
+                if ($v['stage'] == BaseConstService::PACKAGE_STAGE_3 && $v['type'] == BaseConstService::PACKAGE_TYPE_2) {
+                    $data[$k]['second_execution_date'] = $v['execution_date'];
+                } elseif ($v['stage'] == BaseConstService::PACKAGE_STAGE_1) {
+                    $data[$k]['second_execution_date'] = null;
                 }
             }
             $data[$k]['stock_in_time'] = $stockInLog['created_at'] ?? null;

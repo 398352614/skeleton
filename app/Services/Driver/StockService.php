@@ -14,6 +14,7 @@ use App\Models\Stock;
 use App\Services\BaseConstService;
 use App\Services\PackageTrailService;
 use App\Traits\CompanyTrait;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -111,8 +112,7 @@ class StockService extends BaseService
             throw new BusinessLogicException('当前包裹不存在系统中');
         }
         $order = $this->getOrderService()->getInfo(['order_no' => $package->order_no], ['*'], false)->toArray();
-        $type = $this->getOrderService()->getTrackingOrderType($order);
-        //异常验证
+        $type = $this->getOrderService()->getTrackingOrderType($order);//异常验证
         $this->check($package, $order, $type);
         $warehouse = $this->getWareHouseService()->getInfo(['id' => auth()->user()->warehouse_id], ['*'], false)->toArray();
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
@@ -178,7 +178,17 @@ class StockService extends BaseService
             $trackingOrder = $this->form($order, $executionDate, $type);
             //生成运单号
             $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
-            $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
+            try {
+                $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
+            } catch (BusinessLogicException $e) {
+                if ($e->getCode() == 5010) {
+                    $placeCode = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_post_code'] : $order['second_place_post_code'];
+                    list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
+                    $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
+                } else {
+                    throw $e;
+                }
+            }
         }
         //更改包裹阶段
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
@@ -221,7 +231,7 @@ class StockService extends BaseService
     {
         $trackingPackage = $this->getTrackingPackageService()->create([
             'tracking_package_no' => $this->getOrderNoRuleService()->createTrackingPackageNo(),
-            'merchant_id'=>$package['merchant_id'],
+            'merchant_id' => $package['merchant_id'],
             'express_first_no' => $package['express_first_no'],
             'order_no' => $package['order_no'],
             'bag_no' => '',

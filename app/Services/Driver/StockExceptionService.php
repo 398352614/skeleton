@@ -103,7 +103,7 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('上报异常失败，请重新操作');
         }
         if (empty(CompanyTrait::getCompany()['stock_exception_verify']) || CompanyTrait::getCompany()['stock_exception_verify'] == BaseConstService::STOCK_EXCEPTION_VERIFY_2) {
-            return $this->autoDeal($stockException);
+            return $this->autoDeal($stockException,$params['ignore_rule'] ?? null);
         }
 
     }
@@ -111,10 +111,11 @@ class StockExceptionService extends BaseService
     /**
      * 自动处理
      * @param $stockException
+     * @param $ignoreRule
      * @return array
      * @throws BusinessLogicException
      */
-    public function autoDeal($stockException)
+    public function autoDeal($stockException,$ignoreRule)
     {
         if (empty($stockException)) {
             throw new BusinessLogicException('数据不存在');
@@ -143,7 +144,7 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('订单不存在');
         }
         $this->getOrderService()->synchronizeStatusList($order['id'],true);
-        return $this->getStockService()->allocate($stockException['express_first_no']);
+        return $this->getStockService()->allocate($stockException['express_first_no'],$ignoreRule);
     }
 
     /**

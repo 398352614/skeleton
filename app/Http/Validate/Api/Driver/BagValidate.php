@@ -22,7 +22,7 @@ class BagValidate extends BaseValidate
         'car_no' => 'nullable|string',
         'remark' => 'nullable|string',
         'next_warehouse_id' => 'required|string',
-        'express_first_no_list' => 'required|array',
+        'express_first_no_list' => 'required|string',
         'ignore_rule' => 'required|integer|in:1,2',
         'express_first_no'=>'required|string'
     ];

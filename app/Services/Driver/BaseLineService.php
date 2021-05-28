@@ -68,7 +68,7 @@ class BaseLineService extends BaseService
      */
     public function getInfoByRuleWithoutCheck($info)
     {
-        $lineRange = $this->getLineRange($info,BaseConstService::NO);
+        $lineRange = $this->getLineRange($info, BaseConstService::NO);
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
@@ -161,7 +161,7 @@ class BaseLineService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
             $country = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5){
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5) {
             $country = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         //获取邮编数字部分
@@ -196,7 +196,7 @@ class BaseLineService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
             $country = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5){
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5) {
             $country = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         //获取邮编数字部分
@@ -225,7 +225,7 @@ class BaseLineService extends BaseService
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
             $country = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        if($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5){
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5) {
             $country = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         //获取邮编数字部分
@@ -382,7 +382,7 @@ class BaseLineService extends BaseService
     {
         if (date('Y-m-d') == $info['execution_date']) {
             if (time() > strtotime($info['execution_date'] . ' ' . $line['order_deadline'])) {
-                throw new BusinessLogicException('当天下单已超过截止时间');
+                throw new BusinessLogicException('当天下单已超过截止时间', 5010);
             }
         }
         return;
