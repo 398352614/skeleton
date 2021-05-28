@@ -158,12 +158,12 @@ class PackageTrailService extends \App\Services\Admin\BaseService
      * @param int $action
      * @param null $params
      */
-    public static function storeByTrackingPackageList(array $packageList, int $action, $params = null)
+    public static function storeByTrackingPackageList($packageList, $action, $params = null)
     {
         $data = [];
-        foreach ($packageList as $key => $Package) {
-            $Package = collect($Package)->toArray();
-            $data[] = self::trackingPackageStatusChangeCreateTrail($Package, $action, $params ?? $Package, true);
+        foreach ($packageList as $key => $package) {
+            $package = collect($package)->toArray();
+            $data[] = self::trackingPackageStatusChangeCreateTrail($package, $action, $params ?? $package, true);
         }
         dispatch(new AddData('package-trail', $data));
     }
