@@ -957,14 +957,14 @@ class TourService extends BaseService
                     $packageData = array_merge($packageData, ['actual_quantity' => 1]);
                 }
                 if ($dbPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
-                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PICKUP_DONE);
+                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PICKUP_DONE, $batch);
                 } else {
                     PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PIE_DONE, $batch);
                 }
             } else {
                 $packageData = ['status' => BaseConstService::TRACKING_ORDER_STATUS_6];
                 if ($dbPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
-                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL);
+                    PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL, $batch);
                 } else {
                     PackageTrailService::storeByTrackingOrderList([$dbPackage], BaseConstService::PACKAGE_TRAIL_PIE_CANCEL, $batch);
                 }
