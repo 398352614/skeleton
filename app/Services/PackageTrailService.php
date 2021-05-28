@@ -157,6 +157,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
     {
         $data = [];
         foreach ($packageList as $key => $Package) {
+            $Package=collect($Package)->toArray();
             $data[] = self::trackingPackageStatusChangeCreateTrail($Package, $action, $params ?? $Package, true);
         }
         dispatch(new AddData('package-trail', $data));
@@ -193,7 +194,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
                 $content = sprintf("您的包裹在[%s]进行拆袋处理，操作员：[%s]", $trackingPackage['warehouse_name'], $params['unpack_operator']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_ALLOCATE:
-                $content = sprintf("您的包裹在[%s]进行入库处理，操作员：[%s]", $params['next_warehouse_name'], $trackingPackage['operator']);
+                $content = sprintf("您的包裹在[%s]进行入库处理，操作员：[%s]", $params['next_warehouse_name'], $params['operator']);
                 break;
 
             default:

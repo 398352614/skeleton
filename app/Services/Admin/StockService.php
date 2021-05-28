@@ -58,7 +58,7 @@ class StockService extends BaseService
         $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
-        $pickupCenter=$this->getBaseWarehouseService()->getCenter($pickupWarehouse);
+        $pickupCenter = $this->getBaseWarehouseService()->getCenter($pickupWarehouse);
         if ($warehouseId == $pieWarehouse['id']) {
             //如果本网点为该包裹的派件网点，则生成派件运单进行派送
             return $this->createTrackingOrder($package, $order, $type);
@@ -119,7 +119,8 @@ class StockService extends BaseService
         //包裹入库
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $tour['tracking_order_no']], ['*'], false);
-        PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingOrder);
+        $stockInLog = $this->trackingOrderStockIn($package, $tour, $trackingOrder);
+        PackageTrailService::storeByTrackingPackageList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stockInLog);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
                 'type' => BaseConstService::TRACKING_PACKAGE_TYPE_3,
@@ -178,8 +179,8 @@ class StockService extends BaseService
         ]);
         //更改包裹阶段
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_2]);
-        $this->trackingPackageStockIn($package, $trackingPackage);
-        PackageTrailService::storeByTrackingPackageList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingPackage);
+        $stockInLog = $this->trackingPackageStockIn($package, $trackingPackage);
+        PackageTrailService::storeByTrackingPackageList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stockInLog);
         return [
             'express_first_no' => $package['express_first_no'],
             'type' => $trackingPackageType,
@@ -192,6 +193,7 @@ class StockService extends BaseService
      * 转运单入库
      * @param $package
      * @param $trackingPackage
+     * @return array
      * @throws BusinessLogicException
      */
     public function trackingPackageStockIn($package, $trackingPackage)
@@ -219,6 +221,7 @@ class StockService extends BaseService
         }
         //推送入库信息
         dispatch(new \App\Jobs\PackagePickOut([$package]));
+        return $stockData;
     }
 
     /**
@@ -254,6 +257,7 @@ class StockService extends BaseService
         }
         //推送入库信息
         dispatch(new \App\Jobs\PackagePickOut([$package]));
+        return $stockData;
     }
 
     /**
