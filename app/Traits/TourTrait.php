@@ -37,9 +37,9 @@ trait TourTrait
         if(!empty($trackingOrderList)){
             foreach ($trackingOrderList as $k=>$v){
                 if($v['type'] == BaseConstService::TRACKING_ORDER_TYPE_1){
-                    PackageTrailService::storeByTrackingOrder($v,BaseConstService::PACKAGE_TRAIL_PICKUP);
+                    PackageTrailService::storeByTrackingOrder($v,BaseConstService::PACKAGE_TRAIL_PICKUP,$tour);
                 }else{
-                    PackageTrailService::storeByTrackingOrder($v, BaseConstService::PACKAGE_TRAIL_PIE);
+                    PackageTrailService::storeByTrackingOrder($v, BaseConstService::PACKAGE_TRAIL_PIE,$tour);
                 }
             }
         }
