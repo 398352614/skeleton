@@ -305,7 +305,7 @@ class TrackingOrderService extends BaseService
         } else {
             OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
         }
-        PackageTrailService::storeByTrackingOrder($trackingOrder,BaseConstService::PACKAGE_TRAIL_CREATED);
+        PackageTrailService::storeByTrackingOrder($trackingOrder,BaseConstService::PACKAGE_TRAIL_CREATED,null);
         return $tour;
     }
 
@@ -487,7 +487,7 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('操作失败,请重新操作');
         }
         OrderTrailService::orderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::ORDER_TRAIL_DELETE);
-        PackageTrailService::storeByTrackingOrder($dbTrackingOrder, BaseConstService::PACKAGE_TRAIL_DELETED);
+        PackageTrailService::storeByTrackingOrder($dbTrackingOrder, BaseConstService::PACKAGE_TRAIL_DELETED,null);
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_DELETE);
     }
 
