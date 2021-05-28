@@ -129,7 +129,7 @@ class StockService extends BaseService
             if (auth()->user()->warehouse_id == $pieCenter['id']) {
                 //如果本网点为该包裹的派件网点所属的分拨中心，则生成分拨转运单
                 return $this->createTrackingPackage($package, $warehouse, $pieWarehouse, BaseConstService::TRACKING_PACKAGE_TYPE_1);
-            } elseif ($warehouse['is_center'] == BaseConstService::YES) {
+            } elseif ($warehouse['is_center'] == BaseConstService::YES || $warehouse['parent'] == 0) {
                 //如果本网点为其他分拨中心，则生成中转转运单
                 return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
             } elseif ($pieWarehouse['id'] == $pickupWarehouse['id']) {
@@ -419,7 +419,7 @@ class StockService extends BaseService
      */
     public function check($package, $order, $type)
     {
-        $this->stockExistCheck($package);
+//        $this->stockExistCheck($package);
 //        $this->stockExceptionCheck($order);
 //        if (!in_array($package->status, [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2])) {
 //            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
