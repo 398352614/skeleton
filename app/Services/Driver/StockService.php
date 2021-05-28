@@ -424,7 +424,7 @@ class StockService extends BaseService
     public function check($package, $order, $type)
     {
         $this->stockExistCheck($package);
-//        $this->stockExceptionCheck($order);
+        $this->stockExceptionCheck($order);
 //        if (!in_array($package->status, [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2])) {
 //            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
 //        }
