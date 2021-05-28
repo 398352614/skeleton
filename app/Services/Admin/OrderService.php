@@ -240,19 +240,22 @@ class OrderService extends BaseService
 
     public function getTrackingOrderTrailList($id)
     {
-        $data = [];
         $order = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($order)) {
             return [];
         }
-        $trackingOrderList = $this->getTrackingOrderTrailService()->getList(['order_no' => $order['order_no']], ['*'], false);
-        $trackingOrderTrailList = $trackingOrderList->groupBy('tracking_order_no')->sortByDesc('id');
-        foreach ($trackingOrderTrailList as $k => $v) {
-            $data[$k]['tracking_order_no'] = $k;
-            $data[$k]['tracking_order_trail'] = $v;
+        $trackingOrderTrailList = $this->getTrackingOrderTrailService()->getList(['order_no' => $order['order_no']], ['*'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => $order['order_no']], ['tracking_order_no', 'place_lon', 'place_lat', 'place_address', 'place_fullname','batch_no','type'], false);
+        foreach ($trackingOrderList as $k => $v) {
+            $tour = $this->getTourService()->getInfo(['tour_no' => $v['tour_no']], ['*'], false);
+            $batch = $this->getBatchService()->getInfo(['batch_no' => $v['batch_no']], ['*'], false);
+            $trackingOrderList[$k]['driver_lon'] = $tour->driverLocation['longitude'] ?? '';
+            $trackingOrderList[$k]['driver_lat'] = $tour->driverLocation['latitude'] ?? '';
+            $trackingOrderList[$k]['driver_lat'] = $tour->driverLocation['latitude'] ?? '';
+            $trackingOrderList[$k]['expect_arrive_time'] = $batch['expect_arrive_time'] ?? null;
+            $trackingOrderList[$k]['tracking_order_trail'] = array_values($trackingOrderTrailList->where('tracking_order_no', $v['tracking_order_no'])->sortByDesc('id')->all());
         }
-        $data = array_values($data);
-        return $data;
+        return $trackingOrderList;
     }
 
     public function initStore()
