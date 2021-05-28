@@ -37,8 +37,8 @@ class ShiftService extends BaseService
      */
     public function getPageList()
     {
-        $data= parent::getPageList();
-        if($data->isEmpty() && $this->formData['status'] == BaseConstService::SHIFT_STATUS_2){
+        $data = parent::getPageList();
+        if ($data->isEmpty() && $this->formData['status'] == BaseConstService::SHIFT_STATUS_2) {
             throw new BusinessLogicException('当前无已发车车次');
         }
         return $data;
@@ -56,10 +56,10 @@ class ShiftService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        if($info['status'] == BaseConstService::SHIFT_STATUS_3){
-            $info['tracking_package_list'] = $this->getTrackingPackageService()->query->where('shift_no', $info['shift_no'])->where('status',BaseConstService::TRACKING_PACKAGE_STATUS_5)->where('bag_no', '')->get();
-            $info['bag_list'] = $this->getBagService()->getList(['shift_no' => $info['shift_no'],'status'=>BaseConstService::BAG_STATUS_3], ['*'], false);
-        }else{
+        if ($info['status'] == BaseConstService::SHIFT_STATUS_3) {
+            $info['tracking_package_list'] = $this->getTrackingPackageService()->query->where('shift_no', $info['shift_no'])->where('status', BaseConstService::TRACKING_PACKAGE_STATUS_5)->where('bag_no', '')->get();
+            $info['bag_list'] = $this->getBagService()->getList(['shift_no' => $info['shift_no'], 'status' => BaseConstService::BAG_STATUS_3], ['*'], false);
+        } else {
             $info['tracking_package_list'] = $this->getTrackingPackageService()->query->where('shift_no', $info['shift_no'])->where('bag_no', '')->get();
             $info['bag_list'] = $this->getBagService()->getList(['shift_no' => $info['shift_no']], ['*'], false);
         }
@@ -205,7 +205,7 @@ class ShiftService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no']], ['*'], false, ['id' => 'desc']);
-        if(!empty($trackingPackage) && $trackingPackage['status'] ==BaseConstService::TRACKING_PACKAGE_STATUS_5){
+        if (!empty($trackingPackage) && $trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_5) {
             throw new BusinessLogicException('包裹已装袋，请扫描袋号');
         }
         $bag = $this->getBagService()->getInfo(['bag_no' => $data['item_no']], ['*'], false);
@@ -253,14 +253,14 @@ class ShiftService extends BaseService
         if ($bag['next_warehouse_id'] !== $shift['next_warehouse_id'] && $ignoreRule == BaseConstService::NO) {
             throw new BusinessLogicException('袋号与下一站不一致', 5009);
         }
-        $row=$this->getBagService()->updateById($bag['id'], [
+        $row = $this->getBagService()->update(['bag_no' => $bag['bag_no']], [
             'status' => BaseConstService::BAG_STATUS_2,
             'shift_no' => $shift['shift_no'],
             'load_time' => now()->format('Y-m-d H:i:s'),
             'load_operator' => auth()->user()->fullname,
             'load_operator_id' => auth()->user()->id,
         ]);
-        if($row == false){
+        if ($row == false) {
             throw new BusinessLogicException('更新袋号失败');
         }
         //更新袋子里的包裹
@@ -450,7 +450,7 @@ class ShiftService extends BaseService
     public function unloadTrackingPackage($trackingPackage, $shift)
     {
 
-        if (in_array($trackingPackage['status'],[ BaseConstService::TRACKING_PACKAGE_STATUS_6,BaseConstService::TRACKING_PACKAGE_STATUS_7])) {
+        if (in_array($trackingPackage['status'], [BaseConstService::TRACKING_PACKAGE_STATUS_6, BaseConstService::TRACKING_PACKAGE_STATUS_7])) {
             throw new BusinessLogicException('重复扫描');
         }
         if (!in_array($trackingPackage['status'], [BaseConstService::TRACKING_PACKAGE_STATUS_4, BaseConstService::TRACKING_PACKAGE_STATUS_5])) {
