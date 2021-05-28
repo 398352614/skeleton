@@ -444,7 +444,7 @@ class ShiftService extends BaseService
     public function unloadTrackingPackage($trackingPackage, $shift)
     {
 
-        if ($trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_6) {
+        if (in_array($trackingPackage['status'],[ BaseConstService::TRACKING_PACKAGE_STATUS_6,BaseConstService::TRACKING_PACKAGE_STATUS_7])) {
             throw new BusinessLogicException('重复扫描');
         }
         if (!in_array($trackingPackage['status'], [BaseConstService::TRACKING_PACKAGE_STATUS_4, BaseConstService::TRACKING_PACKAGE_STATUS_5])) {
@@ -460,7 +460,7 @@ class ShiftService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        PackageTrailService::storeByTrackingPackageList($trackingPackage, BaseConstService::PACKAGE_TRAIL_UNLOAD, $shift);
+        PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_UNLOAD, $shift);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_1,
             'item_no' => $trackingPackage['express_first_no'],
