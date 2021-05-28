@@ -94,6 +94,11 @@ class PackageTrailService extends \App\Services\Admin\BaseService
 
     public static function trackingOrderStatusChangeCreateTrail(array $package, int $action, $params = [], $list = false)
     {
+        if (!empty($params['cancel_type'])) {
+            $cancel = ConstTranslateTrait::batchCancelTypeList($params['cancel_type']);
+        } else {
+            $cancel = '';
+        }
         //根据不同的类型生成不同的content
         switch ($action) {
             case BaseConstService::PACKAGE_TRAIL_CREATED:
@@ -112,10 +117,10 @@ class PackageTrailService extends \App\Services\Admin\BaseService
                 $content = sprintf("您的包裹已签收，如有疑问请电联快递员[%s]，电话：[%s]", $params['driver_name'], $params['driver_phone']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL:
-                $content = sprintf("您的包裹取件被取消，原因：[%s]。如有疑问请电联快递员[%s]，电话：[%s]", ConstTranslateTrait::batchCancelTypeList($params['cancel_type']), $params['driver_name'], $params['driver_phone']);
+                $content = sprintf("您的包裹取件被取消，原因：[%s]。如有疑问请电联快递员[%s]，电话：[%s]", $cancel, $params['driver_name'], $params['driver_phone']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_PIE_CANCEL:
-                $content = sprintf("您的包裹派件被取消，原因：[%s]。如有疑问请电联快递员[%s]，电话：[%s]", $params['driver_name'], ConstTranslateTrait::batchCancelTypeList($params['cancel_type']), $params['driver_phone']);
+                $content = sprintf("您的包裹派件被取消，原因：[%s]。如有疑问请电联快递员[%s]，电话：[%s]", $cancel, $params['driver_name'], $params['driver_phone']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_DELETED:
                 $content = '您的包裹已取消';
@@ -157,7 +162,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
     {
         $data = [];
         foreach ($packageList as $key => $Package) {
-            $Package=collect($Package)->toArray();
+            $Package = collect($Package)->toArray();
             $data[] = self::trackingPackageStatusChangeCreateTrail($Package, $action, $params ?? $Package, true);
         }
         dispatch(new AddData('package-trail', $data));
