@@ -205,6 +205,9 @@ class ShiftService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no']], ['*'], false, ['id' => 'desc']);
+        if($trackingPackage['status'] ==BaseConstService::TRACKING_PACKAGE_STATUS_5){
+            throw new BusinessLogicException('包裹已装袋，请扫描袋号');
+        }
         $bag = $this->getBagService()->getInfo(['bag_no' => $data['item_no']], ['*'], false);
         //袋存在，包裹不存在取袋
         if (empty($trackingPackage) && !empty($bag)) {
