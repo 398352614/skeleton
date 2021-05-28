@@ -18,6 +18,7 @@ use App\Traits\ImportTrait;
 use App\Traits\MapAreaTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
@@ -46,32 +47,53 @@ class BaseWarehouseService extends BaseService
     public function getPieWarehouseByOrder($order)
     {
         $pieAddress = $this->pieAddress($order);
-        return $this->getWareHouseByAddress($pieAddress);
+        if (empty($order['execution_date']) && empty($order['second_execution_date'])) {
+            return $this->getWareHouseByAddress($pieAddress, true);
+        } else {
+            return $this->getWareHouseByAddress($pieAddress);
+        }
     }
 
     /**
      * 派件地址
      * @param $data
      * @return array
+     * @throws BusinessLogicException
      */
     public function pieAddress($data)
     {
-        return [
-            'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
-            'place_fullname' => $data['second_place_fullname'],
-            'place_phone' => $data['second_place_phone'],
-            'place_country' => $data['second_place_country'],
-            'place_province' => $data['second_place_province'] ?? '',
-            'place_post_code' => $data['second_place_post_code'],
-            'place_house_number' => $data['second_place_house_number'],
-            'place_city' => $data['second_place_city'],
-            'place_district' => $data['second_place_district'] ?? '',
-            'place_street' => $data['second_place_street'],
-            'place_address' => $data['second_place_address'],
-            'place_lat' => $data['second_place_lat'],
-            'place_lon' => $data['second_place_lon'],
-            'execution_date' => $data['second_execution_date']
-        ];
+        if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+            if (empty($data['place_country'])) {
+                $data['place_country'] = CompanyTrait::getCompany()['country'];
+            }
+            $fields = ['place_fullname', 'place_phone', 'place_country', 'place_province', 'place_post_code', 'place_house_number', 'place_city', 'place_district',
+                'place_street', 'place_address', 'place_lat', 'place_lon', 'execution_date'];
+            $data = Arr::only($data, $fields);
+        } elseif (in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])) {
+            if (empty($data['second_place_country'])) {
+                $data['second_place_country'] = CompanyTrait::getCompany()['country'];
+            }
+            $data = [
+                'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
+                'place_fullname' => $data['second_place_fullname'],
+                'place_phone' => $data['second_place_phone'],
+                'place_country' => $data['second_place_country'],
+                'place_province' => $data['second_place_province'] ?? '',
+                'place_post_code' => $data['second_place_post_code'],
+                'place_house_number' => $data['second_place_house_number'],
+                'place_city' => $data['second_place_city'],
+                'place_district' => $data['second_place_district'] ?? '',
+                'place_street' => $data['second_place_street'],
+                'place_address' => $data['second_place_address'],
+                'place_lat' => $data['second_place_lat'],
+                'place_lon' => $data['second_place_lon'],
+                'execution_date' => $data['second_execution_date']
+            ];
+        }else{
+            throw new BusinessLogicException('订单状态不对');
+        }
+        $data['type'] = BaseConstService::TRACKING_ORDER_TYPE_1;
+        return $data;
     }
 
 
@@ -107,7 +129,11 @@ class BaseWarehouseService extends BaseService
     public function getPickupWarehouseByOrder($order)
     {
         $pickupAddress = $this->pickupAddress($order);
-        return $this->getWareHouseByAddress($pickupAddress, true);
+        if (empty($order['execution_date']) && empty($order['second_execution_date'])) {
+            return $this->getWareHouseByAddress($pickupAddress, true);
+        } else {
+            return $this->getWareHouseByAddress($pickupAddress);
+        }
     }
 
     /**
@@ -120,22 +146,11 @@ class BaseWarehouseService extends BaseService
         if (empty($data['place_country'])) {
             $data['place_country'] = CompanyTrait::getCompany()['country'];
         }
-        return [
-            'type' => BaseConstService::TRACKING_ORDER_TYPE_1,
-            'place_fullname' => $data['place_fullname'],
-            'place_phone' => $data['place_phone'],
-            'place_country' => $data['place_country'],
-            'place_province' => $data['place_province'] ?? '',
-            'place_post_code' => $data['place_post_code'],
-            'place_house_number' => $data['place_house_number'],
-            'place_city' => $data['place_city'],
-            'place_district' => $data['place_district'] ?? '',
-            'place_street' => $data['place_street'],
-            'place_address' => $data['place_address'],
-            'place_lat' => $data['place_lat'],
-            'place_lon' => $data['place_lon'],
-            'execution_date' => $data['execution_date']
-        ];
+        $fields = ['place_fullname', 'place_phone', 'place_country', 'place_province', 'place_post_code', 'place_house_number', 'place_city', 'place_district',
+            'place_street', 'place_address', 'place_lat', 'place_lon', 'execution_date'];
+        $data = Arr::only($data, $fields);
+        $data['type'] = BaseConstService::TRACKING_ORDER_TYPE_1;
+        return $data;
     }
 
     /**
