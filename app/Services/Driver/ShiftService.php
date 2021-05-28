@@ -599,6 +599,7 @@ class ShiftService extends BaseService
     /**
      * 车次到车
      * @param $id
+     * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
      */
     public function inWarehouse($id)
@@ -617,6 +618,7 @@ class ShiftService extends BaseService
         $this->getTrackingPackageService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::TRACKING_PACKAGE_STATUS_5]);
         $this->getBagService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::BAG_STATUS_3]);
         PackageTrailService::storeByShift($shift, BaseConstService::PACKAGE_TRAIL_IN);
+        return $shift;
     }
 
 
