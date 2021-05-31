@@ -379,7 +379,7 @@ class ShiftService extends BaseService
             $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no']], ['*'], false, ['id' => 'desc']);
             if (!empty($trackingPackage) && $trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_3) {
                 $row = $this->getTrackingPackageService()->update(['id' => $trackingPackage['id']], [
-                    'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
+                    'status' => BaseConstService::TRACKING_PACKAGE_STATUS_1,
                     'shift_no' => '',
                     'load_time' => null,
                     'load_operator' => '',
