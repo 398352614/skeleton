@@ -50,7 +50,7 @@ class StockService extends BaseService
             $no = $dbPackage['express_first_no'];
             $stockDataList[] = [
                 'line_id' => $tour['line_id'],
-                'warehouse_id'=>auth()->user()->warehouse['id'],
+                'warehouse_id'=>auth()->user()->warehouse_id,
                 'line_name' => $tour['line_name'],
                 'tracking_order_no' => $packageList[$no]['tracking_order_no'],
                 'execution_date' => $tour['execution_date'],
@@ -83,7 +83,7 @@ class StockService extends BaseService
             $no = $dbPackage['express_first_no'];
             $stockDataList[] = [
                 'line_id' => '',
-                'warehouse_id'=>auth()->user()->warehouse['id'],
+                'warehouse_id'=>auth()->user()->warehouse_id,
                 'line_name' => '',
                 'tracking_order_no' => '',
                 'execution_date' => '',
@@ -281,7 +281,7 @@ class StockService extends BaseService
         $stockData = [
             'line_id' => null,
             'line_name' => '',
-            'warehouse_id'=>auth()->user()->warehouse['id'],
+            'warehouse_id'=>auth()->user()->warehouse_id,
             'tracking_order_no' => '',
             'expiration_date' => null,
             'expiration_status' => 1,
@@ -316,7 +316,7 @@ class StockService extends BaseService
         $stockData = [
             'line_id' => $tour['line_id'] ?? null,
             'line_name' => $tour['line_name'] ?? '',
-            'warehouse_id'=>auth()->user()->warehouse['id'],
+            'warehouse_id'=>auth()->user()->warehouse_id,
             'tracking_order_no' => $trackingOrder['tracking_order_no'] ?? '',
             'execution_date' => $trackingOrder['execution_date'] ?? '',
             'expiration_date' => $package['expiration_date'] ?? '',
