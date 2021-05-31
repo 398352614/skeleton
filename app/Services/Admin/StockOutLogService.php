@@ -20,10 +20,24 @@ class StockOutLogService extends BaseService
         'order_no' => ['like', 'order_no'],
         'line_id' => ['=', 'line_id'],
         'line_name' => ['like', 'line_name'],
+        'warehouse_id'=>['=','warehouse_id']
     ];
 
     public function __construct(StockOutLog $stockOutLog)
     {
         parent::__construct($stockOutLog, StockOutResource::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getPageList()
+    {
+        $data = parent::getPageList();
+        $warehouseList = $this->getWareHouseService()->getList(['id' => $data->pluck('warehouse_id')->toArray()], ['*'], false)->keyBy('id');
+        foreach ($data as $k => $v) {
+            $data[$k]['warehouse_name'] = $warehouseList[$v['warehouse_id']]['name'] ?? '';
+        }
+        return $data;
     }
 }
