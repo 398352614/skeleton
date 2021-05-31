@@ -282,7 +282,7 @@ class ShiftService extends BaseService
             'shift_no' => $shift['shift_no'],
             'car_no' => $shift['car_no'],
             'next_warehouse_name' => $bag['next_warehouse_id'],
-            'weight'=>$bag['weight']
+            'weight' => $bag['weight']
         ];
     }
 
@@ -322,7 +322,7 @@ class ShiftService extends BaseService
             'shift_no' => $shift['shift_no'],
             'car_no' => $shift['car_no'],
             'next_warehouse_name' => $trackingPackage['next_warehouse_id'],
-            'weight'=>$trackingPackage['weight']
+            'weight' => $trackingPackage['weight']
         ];
     }
 
@@ -466,7 +466,7 @@ class ShiftService extends BaseService
         if (!in_array($trackingPackage['status'], [BaseConstService::TRACKING_PACKAGE_STATUS_4, BaseConstService::TRACKING_PACKAGE_STATUS_5])) {
             throw new BusinessLogicException('状态错误');
         }
-        $row = $this->getTrackingPackageService()->updateById($trackingPackage['id'], [
+        $row = $this->getTrackingPackageService()->update(['id' => $trackingPackage['id']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_7,
             'shift_no' => $shift['shift_no'],
             'unload_time' => now(),
