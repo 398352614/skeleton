@@ -120,6 +120,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof TrackingOrderPackage))
                 && (!($model instanceof Batch))
                 && (!($model instanceof TourMaterial))
+                && (!($model instanceof MerchantGroupLine))
                 && (!($model instanceof TourDelay))
                 && (!($model instanceof Merchant))
                 && (!($model instanceof TourLog))

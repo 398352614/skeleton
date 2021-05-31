@@ -6,6 +6,7 @@ use App\Services\Driver\BagService;
 use App\Services\Driver\BaseLineService;
 use App\Services\Driver\BaseWarehouseService;
 use App\Services\Driver\MemorandumService;
+use App\Services\Driver\MerchantGroupLineService;
 use App\Services\Driver\MerchantGroupService;
 use App\Services\Driver\ShiftService;
 use App\Services\Driver\StockExceptionService;
@@ -48,6 +49,14 @@ Trait DriverServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * @return MerchantGroupLineService
+     */
+    public function getMerchantGroupLineService()
+    {
+        return self::getInstance(MerchantGroupLineService::class);
     }
 
     /**

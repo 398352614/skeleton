@@ -50,7 +50,7 @@ class StockService extends BaseService
             $no = $dbPackage['express_first_no'];
             $stockDataList[] = [
                 'line_id' => $tour['line_id'],
-                'warehouse_id'=>auth()->user()->warehouse_id,
+                'warehouse_id' => auth()->user()->warehouse_id,
                 'line_name' => $tour['line_name'],
                 'tracking_order_no' => $packageList[$no]['tracking_order_no'],
                 'execution_date' => $tour['execution_date'],
@@ -83,7 +83,7 @@ class StockService extends BaseService
             $no = $dbPackage['express_first_no'];
             $stockDataList[] = [
                 'line_id' => '',
-                'warehouse_id'=>auth()->user()->warehouse_id,
+                'warehouse_id' => auth()->user()->warehouse_id,
                 'line_name' => '',
                 'tracking_order_no' => '',
                 'execution_date' => '',
@@ -127,7 +127,15 @@ class StockService extends BaseService
         }
         if (auth()->user()->warehouse_id == $pieWarehouse['id']) {
             //如果本网点为该包裹的派件网点，则生成派件运单进行派送
-            return $this->createTrackingOrder($package, $order, $type);
+            $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $package['order_no'],
+                'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
+                'status' => ['<>', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7]]], ['*'], false);
+            if (empty($dbTrackingOrder)) {
+                return $this->createTrackingOrder($package, $order, $type);
+            } else {
+                //如果已有派件运单则加入派件运单
+                return $this->joinTrackingOrder($package, $dbTrackingOrder);
+            }
         } else {
             if (auth()->user()->warehouse_id == $pieCenter['id']) {
                 //如果本网点为该包裹的派件网点所属的分拨中心，则生成分拨转运单
@@ -200,7 +208,61 @@ class StockService extends BaseService
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         //包裹入库
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
-        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $trackingOrder['tracking_order_no']], ['*'], false);
+        if(!empty($tour)){
+            $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $tour['tracking_order_no']], ['*'], false);
+            PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingOrder);
+        }else{
+            PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $package);
+        }
+
+        if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
+            return [
+                'express_first_no' => $package['express_first_no'],
+                'line_id' => $tour['line_id'] ?? '',
+                'line_name' => $tour['line_name'] ?? '',
+                'execution_date' => $executionDate,
+                'feature_logo' => $package['feature_logo'],
+                'expiration_date' => $package['expiration_date'] ?? '',
+            ];
+        } else {
+            return [
+                'express_first_no' => $package['express_first_no'],
+                'line_id' => $tour['line_id'] ?? '',
+                'line_name' => $tour['line_name'] ?? '',
+                'execution_date' => $executionDate,
+                'expiration_date' => '',
+                'feature_logo' => $package['feature_logo'],
+            ];
+        }
+    }
+
+    /**
+     * @param $package
+     * @param $trackingOrder
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function joinTrackingOrder($package, $trackingOrder)
+    {
+        $tour = $line = [];
+        //获取日期1取2派
+        $executionDate = $trackingOrder['execution_date'];
+        //有效期验证,未超期的自动生成派件运单
+        if (!empty($package['expiration_date']) && $executionDate > $package['expiration_date']) {
+            $package['expiration_status'] = BaseConstService::EXPIRATION_STATUS_2;
+            $row = $this->getPackageService()->updateById($package['id'], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_2]);
+            if ($row == false) {
+                throw new BusinessLogicException('操作失败');
+            }
+            if (!empty($this->getTrackingOrderPackageService()->getInfo(['express_first_no' => $package['express_first_no']], ['*'], false, ['id' => 'desc']))) {
+                $row = $this->getTrackingOrderPackageService()->update(['express_first_no' => $package['express_first_no']], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_2]);
+                if ($row == false) {
+                    throw new BusinessLogicException('操作失败');
+                }
+            }
+        }
+        //包裹入库
+        $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingOrder);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
@@ -281,7 +343,7 @@ class StockService extends BaseService
         $stockData = [
             'line_id' => null,
             'line_name' => '',
-            'warehouse_id'=>auth()->user()->warehouse_id,
+            'warehouse_id' => auth()->user()->warehouse_id,
             'tracking_order_no' => '',
             'expiration_date' => null,
             'expiration_status' => 1,
@@ -316,7 +378,7 @@ class StockService extends BaseService
         $stockData = [
             'line_id' => $tour['line_id'] ?? null,
             'line_name' => $tour['line_name'] ?? '',
-            'warehouse_id'=>auth()->user()->warehouse_id,
+            'warehouse_id' => auth()->user()->warehouse_id,
             'tracking_order_no' => $trackingOrder['tracking_order_no'] ?? '',
             'execution_date' => $trackingOrder['execution_date'] ?? '',
             'expiration_date' => $package['expiration_date'] ?? '',
@@ -432,9 +494,9 @@ class StockService extends BaseService
 //        if (!in_array($package->status, [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2])) {
 //            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
 //        }
-        if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
-            throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
-        }
+//        if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
+//            throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
+//        }
+//    }
     }
-
 }
