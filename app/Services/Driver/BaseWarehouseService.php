@@ -47,7 +47,10 @@ class BaseWarehouseService extends BaseService
     public function getPieWarehouseByOrder($order)
     {
         $pieAddress = $this->pieAddress($order);
-        if (empty($order['execution_date']) && empty($order['second_execution_date'])) {
+        if (
+            (empty($order['execution_date']) && empty($order['second_execution_date'])) ||
+            ($order['type'] == BaseConstService::ORDER_TYPE_3 && empty($order['second_execution_date']))
+        ) {
             return $this->getWareHouseByAddress($pieAddress, true);
         } else {
             return $this->getWareHouseByAddress($pieAddress);
@@ -89,7 +92,7 @@ class BaseWarehouseService extends BaseService
                 'place_lon' => $data['second_place_lon'],
                 'execution_date' => $data['second_execution_date']
             ];
-        }else{
+        } else {
             throw new BusinessLogicException('订单状态不对');
         }
         $data['type'] = BaseConstService::TRACKING_ORDER_TYPE_1;
@@ -129,7 +132,10 @@ class BaseWarehouseService extends BaseService
     public function getPickupWarehouseByOrder($order)
     {
         $pickupAddress = $this->pickupAddress($order);
-        if (empty($order['execution_date']) && empty($order['second_execution_date'])) {
+        if (
+            (empty($order['execution_date']) && empty($order['second_execution_date'])) ||
+            ($order['type'] == BaseConstService::ORDER_TYPE_3 && empty($order['second_execution_date']))
+        ) {
             return $this->getWareHouseByAddress($pickupAddress, true);
         } else {
             return $this->getWareHouseByAddress($pickupAddress);
