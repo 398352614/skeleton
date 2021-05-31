@@ -82,7 +82,11 @@ class ShiftService extends BaseService
                 $itemList[$k] = Arr::only($v, ['item_no', 'next_warehouse_name', 'weight', 'package_count', 'shift_type']);
             }
         }
-        $info['item_list'] = array_values($itemList->toArray());
+        if(!empty($itemList)){
+            $info['item_list'] = array_values($itemList->toArray());
+        }else{
+            $info['item_list']=[];
+        }
         unset($info['tracking_package_list'], $info['bag_list']);
         return $info;
     }
