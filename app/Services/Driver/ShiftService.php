@@ -82,10 +82,10 @@ class ShiftService extends BaseService
                 $itemList[$k] = Arr::only($v, ['item_no', 'next_warehouse_name', 'weight', 'package_count', 'shift_type']);
             }
         }
-        if(!empty($itemList)){
+        if (!empty($itemList)) {
             $info['item_list'] = array_values($itemList->toArray());
-        }else{
-            $info['item_list']=[];
+        } else {
+            $info['item_list'] = [];
         }
         unset($info['tracking_package_list'], $info['bag_list']);
         return $info;
@@ -374,8 +374,8 @@ class ShiftService extends BaseService
         }
         if (!empty($data['shift_type']) && $data['shift_type'] == BaseConstService::SHIFT_LOAD_TYPE_1) {
             $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no']], ['*'], false, ['id' => 'desc']);
-            if (!empty($trackingPackage) || $trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_2) {
-                $row = $this->getTrackingPackageService()->update(['id'=>$trackingPackage['id']], [
+            if (!empty($trackingPackage) && $trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_3) {
+                $row = $this->getTrackingPackageService()->update(['id' => $trackingPackage['id']], [
                     'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
                     'shift_no' => '',
                     'load_time' => null,
@@ -388,18 +388,19 @@ class ShiftService extends BaseService
             }
         } else {
             $bag = $this->getBagService()->getInfo(['bag_no' => $data['item_no']], ['*'], false);
-            if (!empty($bag) || $bag['status'] == BaseConstService::BAG_STATUS_2) {
-                $row = $this->getBagService()->update(['bag_no'=>$bag['bag_no']], [
+            if (!empty($bag) && $bag['status'] == BaseConstService::BAG_STATUS_2) {
+                $row = $this->getBagService()->update(['bag_no' => $bag['bag_no']], [
                     'status' => BaseConstService::BAG_STATUS_1,
                     'shift_no' => '',
                     'load_time' => null,
                     'load_operator' => '',
                     'load_operator_id' => null,
                 ]);
-                if($row){
+                if ($row) {
                     throw new BusinessLogicException('删除失败');
                 }
                 $row = $this->getTrackingPackageService()->update(['bag_no' => $bag['bag_no']], [
+                    'shift_no' => '',
                     'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
                 ]);
                 if ($row == false) {
