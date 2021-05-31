@@ -117,7 +117,6 @@ class StockService extends BaseService
         //更改包裹阶段
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         //包裹入库
-        $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $tour['tracking_order_no']], ['*'], false);
         $stockInLog = $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         PackageTrailService::storeByTrackingPackageList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stockInLog);
@@ -202,6 +201,7 @@ class StockService extends BaseService
         $stockData = [
             'line_id' => null,
             'line_name' => '',
+            'warehouse_id'=>auth()->user()->warehouse['id'],
             'tracking_order_no' => '',
             'expiration_date' => null,
             'expiration_status' => 1,
@@ -229,6 +229,7 @@ class StockService extends BaseService
      * @param $package
      * @param $tour
      * @param $trackingOrder
+     * @return array
      * @throws BusinessLogicException
      */
     public function trackingOrderStockIn($package, $tour, $trackingOrder)
@@ -237,6 +238,7 @@ class StockService extends BaseService
         $stockData = [
             'line_id' => $tour['line_id'] ?? null,
             'line_name' => $tour['line_name'] ?? '',
+            'warehouse_id'=>auth()->user()->warehouse['id'],
             'tracking_order_no' => $trackingOrder['tracking_order_no'] ?? '',
             'execution_date' => $package['second_execution_date'],
             'expiration_date' => $package['expiration_date'] ?? '',

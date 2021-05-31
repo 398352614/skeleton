@@ -28,6 +28,7 @@ class ShiftController extends BaseController
     /**
      * 查询
      * @return \Illuminate\Database\Eloquent\Collection
+     * @throws BusinessLogicException
      */
     public function index()
     {
