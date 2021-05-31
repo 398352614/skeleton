@@ -145,7 +145,7 @@ class BagService extends BaseService
             throw new BusinessLogicException('包裹阶段错误');
         }
         $this->check($bag, $trackingPackage, $data['ignore_rule']);
-        $row = $this->getTrackingPackageService()->updateById($trackingPackage['id'], [
+        $row = $this->getTrackingPackageService()->update(['id' => $trackingPackage['id']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
             'bag_no' => $bag['bag_no'],
             'pack_time' => now(),
@@ -242,7 +242,7 @@ class BagService extends BaseService
         }
         $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['express_first_no']], ['*'], false, ['id' => 'desc']);
         if (!empty($trackingPackage) || $trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_2) {
-            $row = $this->getTrackingPackageService()->updateById($trackingPackage['id'], [
+            $row = $this->getTrackingPackageService()->update(['id' => $trackingPackage['id']], [
                 'status' => BaseConstService::TRACKING_PACKAGE_STATUS_1,
                 'bag_no' => '',
                 'pack_time' => null,
@@ -307,7 +307,7 @@ class BagService extends BaseService
         ], ['*'], false);
 
         if ($trackingPackageList->isEmpty()) {
-            $row = parent::updateById($bag['id'], [
+            $row = parent::update(['id' => $bag['id']], [
                 'status' => BaseConstService::BAG_STATUS_5
             ]);
             if ($row == false) {

@@ -305,7 +305,7 @@ class ShiftService extends BaseService
         if ($trackingPackage['next_warehouse_id'] !== $shift['next_warehouse_id'] && $ignoreRule == BaseConstService::NO) {
             throw new BusinessLogicException('袋号与下一站不一致', 5009);
         }
-        $row = $this->getTrackingPackageService()->updateById($trackingPackage['id'], [
+        $row = $this->getTrackingPackageService()->update(['id'=>$trackingPackage['id']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_3,
             'shift_no' => $shift['shift_no'],
             'load_time' => now(),
@@ -340,7 +340,7 @@ class ShiftService extends BaseService
         $trackingPackageList = $this->getTrackingPackageService()->getList(['shift_no' => $shift['shift_no']], ['weight'], false);
         $totalWeight = $trackingPackageList->sum('weight');
         $totalCount = count($trackingPackageList);
-        $this->updateById($id, ['weight' => $totalWeight, 'package_count' => $totalCount]);
+        parent::updateById($id, ['weight' => $totalWeight, 'package_count' => $totalCount]);
     }
 
     /**

@@ -181,7 +181,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         //根据不同的类型生成不同的content
         switch ($action) {
             case BaseConstService::PACKAGE_TRAIL_PACK:
-                $content = sprintf("您的包裹在[%s]进行装袋处理，操作员：[%s]", $trackingPackage['warehouse_name'], $params['pack_operator']);
+                $content = sprintf("您的包裹在[%s]进行装袋处理，操作员：[%s]", $trackingPackage['warehouse_name'], $trackingPackage['pack_operator']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_LOAD:
                 $content = sprintf("您的包裹在[%s]进行装车处理，操作员：[%s]", $trackingPackage['warehouse_name'], $params['load_operator']);
@@ -196,7 +196,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
                 $content = sprintf("您的包裹在[%s]进行卸车处理，操作员：[%s]", $trackingPackage['warehouse_name'], $params['unload_operator']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_UNPACK:
-                $content = sprintf("您的包裹在[%s]进行拆袋处理，操作员：[%s]", $trackingPackage['warehouse_name'], $params['unpack_operator']);
+                $content = sprintf("您的包裹在[%s]进行拆袋处理，操作员：[%s]", $trackingPackage['warehouse_name'], $trackingPackage['unpack_operator']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_ALLOCATE:
                 $content = sprintf("您的包裹在[%s]进行入库处理，操作员：[%s]", $params['next_warehouse_name'], $params['operator']);
