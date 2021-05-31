@@ -428,6 +428,9 @@ class ShiftService extends BaseService
         }
         $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $data['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false, ['id' => 'desc']);
         $bag = $this->getBagService()->getInfo(['bag_no' => $data['item_no'], 'shift_no' => $shift['shift_no']], ['*'], false);
+        if (!empty($trackingPackage) && $trackingPackage['status'] == BaseConstService::TRACKING_PACKAGE_STATUS_5) {
+            throw new BusinessLogicException('包裹已装袋，请扫描袋号卸袋');
+        }
         if (!empty($trackingPackage) && empty($bag)) {
             $info = $this->unloadTrackingPackage($trackingPackage, $shift);
         } elseif (empty($trackingPackage) && !empty($bag)) {
