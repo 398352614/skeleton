@@ -34,7 +34,7 @@ class StockInLogService extends BaseService
     public function getPageList()
     {
         $data = parent::getPageList();
-        $warehouseList = $this->getWareHouseService()->getList(['id' => $data->pluck('warehouse_id')->toArray()], ['*'], false)->keyBy('id');
+        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in',$data->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id');
         foreach ($data as $k => $v) {
             $data[$k]['warehouse_name'] = $warehouseList[$v['warehouse_id']]['name'] ?? '';
         }
