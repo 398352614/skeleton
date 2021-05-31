@@ -117,6 +117,10 @@ class BagService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('删除失败，请重新操作');
         }
+        $shift = $this->getShiftService()->getInfo(['shift_no' => $bag['shift_no']], ['*'], false);
+        if (!empty($shift)) {
+            $this->getShiftService()->recount($shift['id']);
+        }
     }
 
     /**
@@ -266,7 +270,7 @@ class BagService extends BaseService
         if (empty($bag)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $trackingPackageList = $this->getTrackingPackageService()->getList(['express_first_no' => ['in', $data['express_first_no_list']],'bag_no'=>$bag['bag_no']], ['*'], false);
+        $trackingPackageList = $this->getTrackingPackageService()->getList(['express_first_no' => ['in', $data['express_first_no_list']], 'bag_no' => $bag['bag_no']], ['*'], false);
         foreach ($trackingPackageList as $k) {
             if ($k['bag_no'] !== $bag['bag_no']) {
                 throw new BusinessLogicException('包裹不属于该袋号');
