@@ -245,9 +245,9 @@ class OrderService extends BaseService
         }
         $trackingOrder = $trackingOrder->toArray();
         //2.当运单存在时，若运单不是取派完成或者取派失败,则表示已存在取派的运单
-        if (!in_array($trackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])) {
-            return null;
-        }
+//        if (!in_array($trackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])) {
+//            return null;
+//        }
         //3.当运单存在时，若运单为取派失败,则新增取派失败的运单
         if ($trackingOrder['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
             return $trackingOrder['type'];
@@ -257,9 +257,9 @@ class OrderService extends BaseService
             return null;
         }
         //5.当运单存在时，当运单为取派完成，当订单为取派件,若运单为派件类型，则表示不需要新增运单
-        if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
-            return null;
-        }
+//        if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
+//            return null;
+//        }
         //6.当运单存在时，当运单为取派完成，当订单为取派件,若运单为取件类型，则表示新增派件派件运单
         return BaseConstService::TRACKING_ORDER_TYPE_2;
     }
