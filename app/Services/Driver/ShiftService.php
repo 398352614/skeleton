@@ -390,7 +390,7 @@ class ShiftService extends BaseService
             }
         } else {
             $bag = $this->getBagService()->getInfo(['bag_no' => $data['item_no']], ['*'], false);
-            if (!empty($bag) && $bag['status'] == BaseConstService::BAG_STATUS_2) {
+            if (!empty($bag) && $bag['status'] == BaseConstService::BAG_STATUS_1) {
                 $row = $this->getBagService()->update(['bag_no' => $bag['bag_no']], [
                     'status' => BaseConstService::BAG_STATUS_1,
                     'shift_no' => '',
