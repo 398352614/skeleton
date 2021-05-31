@@ -20,7 +20,7 @@ class ShiftService extends BaseService
 {
     public $filterRules = [
         'status' => ['=', 'status'],
-        'shift_no' => ['like', 'shift_no']
+        'shift_no' => ['=', 'shift_no']
     ];
 
     public $orderBy = ['id' => 'desc'];

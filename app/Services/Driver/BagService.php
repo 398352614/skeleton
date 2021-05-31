@@ -18,7 +18,7 @@ class BagService extends BaseService
 {
     public $filterRules = [
         'status' => ['=', 'status'],
-        'bag_no' => ['like', 'bag_no']
+        'bag_no' => ['=', 'bag_no']
     ];
 
     public $orderBy = ['id' => 'desc'];
