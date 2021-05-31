@@ -499,7 +499,7 @@ class ShiftService extends BaseService
         if ($bag['status'] !== BaseConstService::BAG_STATUS_3) {
             throw new BusinessLogicException('状态错误');
         }
-        $this->getBagService()->updateById($bag['id'], [
+        $this->getBagService()->update(['id' => $bag['id']], [
             'status' => BaseConstService::BAG_STATUS_4,
             'unload_time' => now(),
             'unload_operator' => auth()->user()->fullname,
