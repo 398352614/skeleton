@@ -281,7 +281,7 @@ class ShiftService extends BaseService
             'item_no' => $bag['bag_no'],
             'shift_no' => $shift['shift_no'],
             'car_no' => $shift['car_no'],
-            'next_warehouse_name' => $bag['next_warehouse_id'],
+            'next_warehouse_name' => $bag['next_warehouse_name'],
             'weight' => $bag['weight']
         ];
     }
@@ -321,7 +321,7 @@ class ShiftService extends BaseService
             'item_no' => $trackingPackage['express_first_no'],
             'shift_no' => $shift['shift_no'],
             'car_no' => $shift['car_no'],
-            'next_warehouse_name' => $trackingPackage['next_warehouse_id'],
+            'next_warehouse_name' => $trackingPackage['next_warehouse_name'],
             'weight' => $trackingPackage['weight']
         ];
     }
