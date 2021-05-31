@@ -135,7 +135,7 @@ class ShiftService extends BaseService
         }
         //未装袋包裹回未装袋状态
         $this->getTrackingPackageService()->update(['shift_no' => $shift['shift_no'], 'bag_no' => ''], [
-            'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
+            'status' => BaseConstService::TRACKING_PACKAGE_STATUS_1,
             'shift_no' => '',
             'pack_time' => null,
             'pack_operator' => '',
@@ -148,7 +148,7 @@ class ShiftService extends BaseService
         $bagList = $this->getBagService()->getList(['shift_no' => $shift['shift_no']], ['*'], false);
         if (!empty($bagList)) {
             $this->getTrackingPackageService()->update(['bag_no' => ['in', $bagList->pluck(['bag_no'])->toArray()]], [
-                'status' => BaseConstService::TRACKING_PACKAGE_STATUS_1,
+                'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
                 'shift_no' => '',
                 'pack_time' => null,
                 'pack_operator' => '',
