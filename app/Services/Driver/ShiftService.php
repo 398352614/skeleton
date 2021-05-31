@@ -388,14 +388,17 @@ class ShiftService extends BaseService
             }
         } else {
             $bag = $this->getBagService()->getInfo(['bag_no' => $data['item_no']], ['*'], false);
-            if (!empty($bag) && $bag['status'] == BaseConstService::BAG_STATUS_2) {
-                $row = $this->getBagService()->updateById($bag['id'], [
+            if (!empty($bag) || $bag['status'] == BaseConstService::BAG_STATUS_2) {
+                $row = $this->getBagService()->update(['bag_no'=>$bag['bag_no']], [
                     'status' => BaseConstService::BAG_STATUS_1,
                     'shift_no' => '',
                     'load_time' => null,
                     'load_operator' => '',
                     'load_operator_id' => null,
                 ]);
+                if($row){
+                    throw new BusinessLogicException('删除失败');
+                }
                 $row = $this->getTrackingPackageService()->update(['bag_no' => $bag['bag_no']], [
                     'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
                 ]);
