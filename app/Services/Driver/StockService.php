@@ -208,7 +208,7 @@ class StockService extends BaseService
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         //包裹入库
         $this->trackingOrderStockIn($package, $tour, $trackingOrder);
-        if(!empty($tour)){
+        if(!empty($tour['tracking_order_no'])){
             $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $tour['tracking_order_no']], ['*'], false);
             PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingOrder);
         }else{
