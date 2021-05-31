@@ -398,7 +398,7 @@ class ShiftService extends BaseService
                     'load_operator' => '',
                     'load_operator_id' => null,
                 ]);
-                if ($row) {
+                if ($row == false) {
                     throw new BusinessLogicException('删除失败');
                 }
                 $row = $this->getTrackingPackageService()->update(['bag_no' => $bag['bag_no']], [
