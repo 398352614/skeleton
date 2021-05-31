@@ -282,7 +282,8 @@ class ShiftService extends BaseService
             'shift_no' => $shift['shift_no'],
             'car_no' => $shift['car_no'],
             'next_warehouse_name' => $bag['next_warehouse_name'],
-            'weight' => $bag['weight']
+            'weight' => $bag['weight'],
+            'package_count'=>$bag['package_count']
         ];
     }
 
