@@ -70,6 +70,7 @@ class GoogleApiDistanceService
         } else {
             $options = [];
         }
+        dd($options);
         $res = $this->client->request('GET', $url, $options);
         $body = $res->getBody();
         $stringBody = (string)$body;
