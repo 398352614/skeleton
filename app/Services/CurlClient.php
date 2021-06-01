@@ -160,6 +160,7 @@ class CurlClient
 
     public function get($url, $option = [])
     {
+        dd($option);
         try {
             //php 7.4兼容
             //https://cloud.tencent.com/developer/article/1489213
