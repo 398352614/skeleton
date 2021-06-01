@@ -139,6 +139,7 @@ class GoogleApiService2
         } else {
             $options = [];
         }
+        dd($options);
         $res = $this->client->get($url, $options);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
             Log::info('google-api请求url', ['url' => $url]);
