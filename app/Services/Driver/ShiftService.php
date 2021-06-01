@@ -605,7 +605,7 @@ class ShiftService extends BaseService
         }
         $bag = $this->getBagService()->getList(['shift_no' => $shift['shift_no']], ['*'], false);
         if ($bag->isNotEmpty()) {
-            $row = $this->getBagService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::BAG_STATUS_3]);
+            $row = $this->getBagService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::BAG_STATUS_2]);
             if ($row == false) {
                 throw new BusinessLogicException('出车失败3');
             }
