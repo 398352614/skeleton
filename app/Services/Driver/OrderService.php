@@ -258,9 +258,9 @@ class OrderService extends BaseService
             return null;
         }
         //5.当运单存在时，当运单为取派完成，当订单为取派件,若运单为派件类型，则表示不需要新增运单
-//        if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
-//            return null;
-//        }
+        if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
+            return null;
+        }
         //6.当运单存在时，当运单为取派完成，当订单为取派件,若运单为取件类型，则表示新增派件派件运单
         return BaseConstService::TRACKING_ORDER_TYPE_2;
     }
