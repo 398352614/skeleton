@@ -124,9 +124,9 @@ class GoogleApiService2
      */
     protected function getSort($url, $origin, $wayPointList)
     {
-        $wayPoints='';
-        foreach ($wayPointList as $v){
-            $wayPoints='|'.$v;
+        $wayPoints = '';
+        foreach ($wayPointList as $v) {
+            $wayPoints = '|' . $v;
         }
         $query = "json?origin={$origin}&waypoints=optimize:true{$wayPoints}&destination={$origin}&key={$this->key}";
         $url = $url . '?' . $query;
@@ -202,7 +202,7 @@ class GoogleApiService2
         } else {
             $options = [];
         }
-        $res = $this->client->get($url);
+        $res = $this->client->get($url, $options);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
             Log::info('google-api请求url', ['url' => $url]);
             Log::info('google-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));

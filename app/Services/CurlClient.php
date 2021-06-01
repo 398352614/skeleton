@@ -158,7 +158,7 @@ class CurlClient
         return $this->postJson($merchant['url'], $data, $next, $auth);
     }
 
-    public function get($url)
+    public function get($url, $option = [])
     {
         try {
             //php 7.4兼容
@@ -172,7 +172,7 @@ class CurlClient
                     ]
                 ]
             );
-            $res = $this->http->request('GET', $url);
+            $res = $this->http->request('GET', $url, $option);
             // app('log')->info('测试 url'.$url);
         } catch (\Exception $e) {
             app('log')->info('请求地址' . $url . '出错');
