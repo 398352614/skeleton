@@ -75,7 +75,8 @@ class GoogleApiService2
             $res = $this->getSort($this->url, $origin, array_column($batchs, 'location'));
             $distance = $time = 0;
             $nowTime = time();
-            foreach ($res['routes']['legs'] as $key => $element) {
+            array_pop($res['routes'][0]['legs']);
+            foreach ($res['routes'][0]['legs'] as $key => $element) {
                 $distance += $element['distance']['value'];
                 $time += $element['duration']['value'] * 60;
                 $data = [
@@ -84,12 +85,12 @@ class GoogleApiService2
                     'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time),
                     'sort_id' => $keyIndex
                 ];
-                Batch::query()->where('batch_no', $batchs[$res['routes']['waypoint_order'][$key]]['batch_no'])->update($data);
+                Batch::query()->where('batch_no', $batchs[$res['routes'][0]['waypoint_order'][$key]]['batch_no'])->update($data);
                 $keyIndex++;
             }
             /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
-            $lastPointIndex = last($res['routes']['legs']);
-            $backWarehouseElement = $this->distanceMatrix([$batchs[$lastPointIndex - 1]['location'], $tour->driver_location]);
+            $lastPointIndex = $res['routes'][0]['waypoint_order'][$key];
+            $backWarehouseElement = $this->distanceMatrix([$batchs[$lastPointIndex]['location'], $tour->driver_location]);
             $backElement = $backWarehouseElement[0][1];
             $tourData = [
                 'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']['value'] * 60),
@@ -101,13 +102,12 @@ class GoogleApiService2
                 ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
                 || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
             ) {
-                $tourData['expect_distance'] = $distance + $backElement['distance'];
-                $tourData['expect_time'] = $time + $backElement['duration'];
+                $tourData['expect_distance'] = $distance + $backElement['distance']['value'];
+                $tourData['expect_time'] = $time + $backElement['duration']['value'];
             }
             Log::info('auto-tour-data', $tourData);
             Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
-            dd($exception);
             throw new BusinessLogicException('线路自动更新失败');
         }
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
@@ -117,8 +117,8 @@ class GoogleApiService2
     /**
      * 获取最优顺序
      * @param $url
-     * @param $from
-     * @param $to
+     * @param $origin
+     * @param $wayPointList
      * @return mixed|null
      * @throws BusinessLogicException
      */
@@ -126,17 +126,25 @@ class GoogleApiService2
     {
         $wayPoints = '';
         foreach ($wayPointList as $v) {
-            $wayPoints = '|' . $v;
+            $wayPoints = $wayPoints . '|' . $v;
         }
-        $query = "json?origin={$origin}&waypoints=optimize:true{$wayPoints}&destination={$origin}&key={$this->key}";
-        $url = $url . '?' . $query;
-        $res = $this->client->get($url);
+        $query = "directions/json?origin={$origin}&waypoints=optimize:true{$wayPoints}&destination={$origin}&key={$this->key}";
+        $url = $url . $query;
+        if (config('tms.true_app_env') == 'develop') {
+            $options = [
+                'proxy' => [
+                    'http' => config('tms.http_proxy'),
+                    'https' => config('tms.https_proxy')
+                ]];
+        } else {
+            $options = [];
+        }
+        $res = $this->client->get($url, $options);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
             Log::info('google-api请求url', ['url' => $url]);
             Log::info('google-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             throw new BusinessLogicException('google-api请求报错');
         }
-        dd($res);
         return $res;
     }
 
@@ -156,9 +164,9 @@ class GoogleApiService2
         $groupPoints = (count($points) <= self::MAX_POINTS) ? [$points] : array_chunk($points, self::MAX_POINTS);
         $groupCount = count($groupPoints);
         for ($count = $groupCount, $i = 0; $i < $count; $i++) {
-            $res = $this->getDistance($this->distance_url, $groupPoints[$i], $groupPoints[$i]);
+            $res = $this->getDistance($this->url, $groupPoints[$i], $groupPoints[$i]);
             for ($gCount = count($groupPoints[$i]), $element = 0; $element < $gCount - 1; $element++) {
-                $elements[$index][$index + 1] = $res['result']['rows'][$element]['elements'][$element + 1];
+                $elements[$index][$index + 1] = $res['rows'][$element]['elements'][$element + 1];
                 $index++;
             }
             $index++;
@@ -170,7 +178,7 @@ class GoogleApiService2
                 $startPoints[] = implode(',', $points[self::MAX_POINTS * $k - 1]);
                 $endPoints[] = implode(',', $points[self::MAX_POINTS * $k]);
             }
-            $res = $this->getDistance($this->distance_url, $startPoints, $endPoints);
+            $res = $this->getDistance($this->url, $startPoints, $endPoints);
             for ($k = 1; $k <= $groupCount; $k++) {
                 $elements[self::MAX_POINTS * $k - 1][self::MAX_POINTS * $k] = $res['result']['rows'][$k - 1]['elements'][$k];
             }
@@ -188,12 +196,11 @@ class GoogleApiService2
      */
     protected function getDistance($url, $from, $to)
     {
-        $from = is_array($from) ? implode(';', array_filter($from)) : $from;
-        $to = is_array($to) ? implode(';', array_filter($to)) : $to;
+        $from = is_array($from) ? implode('|', array_filter($from)) : $from;
+        $to = is_array($to) ? implode('|', array_filter($to)) : $to;
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
         $url = $url . $query;
         Log::info('路由' . $url);
-        dd(config('tms.true_app_env'));
         if (config('tms.true_app_env') == 'develop') {
             $options = [
                 'proxy' => [
