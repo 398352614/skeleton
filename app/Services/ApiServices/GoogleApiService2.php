@@ -193,6 +193,7 @@ class GoogleApiService2
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
         $url = $url . $query;
         Log::info('路由' . $url);
+        dd(config('tms.true_app_env'));
         if (config('tms.true_app_env') == 'develop') {
             $options = [
                 'proxy' => [
@@ -202,7 +203,6 @@ class GoogleApiService2
         } else {
             $options = [];
         }
-        dd($options);
         $res = $this->client->get($url, $options);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
             Log::info('google-api请求url', ['url' => $url]);
