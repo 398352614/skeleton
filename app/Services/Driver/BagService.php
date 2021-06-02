@@ -290,7 +290,7 @@ class BagService extends BaseService
                 throw new BusinessLogicException('操作失败');
             }
             foreach ($trackingPackageList as $k => $v) {
-                $trackingPackageList[$k] = array_merge($v, $data);
+                $trackingPackageList[$k] = array_merge($v->toArray(), $data);
             }
             PackageTrailService::storeByTrackingPackageList($trackingPackageList, BaseConstService::PACKAGE_TRAIL_UNPACK);
         }
