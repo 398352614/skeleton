@@ -276,7 +276,7 @@ class ShiftService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('更新袋号失败');
         }
-        $bag = array_merge($bag, $data);
+        $bag = array_merge($bag->toArray(), $data);
         PackageTrailService::storeByBag($bag, BaseConstService::PACKAGE_TRAIL_LOAD);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_2,
