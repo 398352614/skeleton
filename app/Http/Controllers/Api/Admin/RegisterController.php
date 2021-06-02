@@ -219,7 +219,7 @@ class RegisterController extends BaseController
             'parent' => 0
         ]);
 
-        (new WareHouseService(new Warehouse))->createRoot($warehouse);
+//        (new WareHouseService(new Warehouse))->createRoot($warehouse);
 
         return $warehouse;
     }
