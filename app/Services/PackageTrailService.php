@@ -199,7 +199,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
                 $content = sprintf("您的包裹在[%s]进行拆袋处理，操作员：[%s]", $trackingPackage['warehouse_name'], $trackingPackage['unpack_operator']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_ALLOCATE:
-                $content = sprintf("您的包裹在[%s]进行入库处理，操作员：[%s]", $params['next_warehouse_name'], $params['operator']);
+                $content = sprintf("您的包裹在[%s]进行入库处理，操作员：[%s]", $params['warehouse_name'], $params['operator']);
                 break;
 
             default:

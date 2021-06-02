@@ -212,6 +212,7 @@ class StockService extends BaseService
             $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $tour['tracking_order_no']], ['*'], false);
             PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingOrder);
         } else {
+            $stock['warehouse_name'] = $this->getWareHouseService()->getInfo(['id' => $stock['warehouse_id']], ['*'], false);
             PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stock);
         }
 
