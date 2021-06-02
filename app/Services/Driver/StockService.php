@@ -207,12 +207,12 @@ class StockService extends BaseService
         //更改包裹阶段
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
         //包裹入库
-        $this->trackingOrderStockIn($package, $tour, $trackingOrder);
-        if(!empty($tour['tracking_order_no'])){
+        $stock = $this->trackingOrderStockIn($package, $tour, $trackingOrder);
+        if (!empty($tour['tracking_order_no'])) {
             $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $tour['tracking_order_no']], ['*'], false);
             PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingOrder);
-        }else{
-            PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $package);
+        } else {
+            PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stock);
         }
 
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
@@ -262,8 +262,8 @@ class StockService extends BaseService
             }
         }
         //包裹入库
-        $this->trackingOrderStockIn($package, $tour, $trackingOrder);
-        PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingOrder);
+        $stock = $this->trackingOrderStockIn($package, $tour, $trackingOrder);
+        PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stock);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
                 'express_first_no' => $package['express_first_no'],
@@ -321,8 +321,8 @@ class StockService extends BaseService
         ]);
         //更改包裹阶段
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_2]);
-        $this->trackingPackageStockIn($package, $trackingPackage);
-        PackageTrailService::storeByTrackingPackageList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingPackage);
+        $stock = $this->trackingPackageStockIn($package, $trackingPackage);
+        PackageTrailService::storeByTrackingPackageList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stock);
         return [
             'express_first_no' => $package['express_first_no'],
             'type' => $trackingPackageType,
@@ -335,6 +335,7 @@ class StockService extends BaseService
      * 转运单入库
      * @param $package
      * @param $trackingPackage
+     * @return array
      * @throws BusinessLogicException
      */
     public function trackingPackageStockIn($package, $trackingPackage)
@@ -352,17 +353,18 @@ class StockService extends BaseService
             'order_no' => $package['order_no'],
             'express_first_no' => $package['express_first_no']
         ];
-        $rowCount = parent::create($stockData);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败，请重新操作');
-        }
         //生成入库日志
         $rowCount = $this->getStockInLogService()->create($stockData);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
+        $rowCount = parent::create($stockData);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
         //推送入库信息
         dispatch(new \App\Jobs\PackagePickOut([$package]));
+        return $rowCount->getAttributes();
     }
 
     /**
@@ -370,6 +372,7 @@ class StockService extends BaseService
      * @param $package
      * @param $tour
      * @param $trackingOrder
+     * @return mixed
      * @throws BusinessLogicException
      */
     public function trackingOrderStockIn($package, $tour, $trackingOrder)
@@ -388,17 +391,18 @@ class StockService extends BaseService
             'order_no' => $package['order_no'],
             'express_first_no' => $package['express_first_no']
         ];
-        $rowCount = parent::create($stockData);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败，请重新操作');
-        }
         //生成入库日志
         $rowCount = $this->getStockInLogService()->create($stockData);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
+        $rowCount = parent::create($stockData);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('操作失败，请重新操作');
+        }
         //推送入库信息
         dispatch(new \App\Jobs\PackagePickOut([$package]));
+        return $rowCount->getAttributes();
     }
 
     /**

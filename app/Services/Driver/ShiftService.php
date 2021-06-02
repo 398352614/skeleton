@@ -257,15 +257,13 @@ class ShiftService extends BaseService
         if ($bag['next_warehouse_id'] !== $shift['next_warehouse_id'] && $ignoreRule == BaseConstService::NO) {
             throw new BusinessLogicException('袋号与下一站不一致', 5009);
         }
-        $row = $this->getBagService()->update(['bag_no' => $bag['bag_no']], [
+        $data = [
             'shift_no' => $shift['shift_no'],
             'load_time' => now()->format('Y-m-d H:i:s'),
             'load_operator' => auth()->user()->fullname,
             'load_operator_id' => auth()->user()->id,
-        ]);
-        if ($row == false) {
-            throw new BusinessLogicException('更新袋号失败');
-        }
+        ];
+
         //更新袋子里的包裹
         $row = $this->getTrackingPackageService()->update(['bag_no' => $bag['bag_no']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_3,
@@ -274,6 +272,11 @@ class ShiftService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
+        $row = $this->getBagService()->update(['bag_no' => $bag['bag_no']], $data);
+        if ($row == false) {
+            throw new BusinessLogicException('更新袋号失败');
+        }
+        $bag = array_merge($bag, $data);
         PackageTrailService::storeByBag($bag, BaseConstService::PACKAGE_TRAIL_LOAD);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_2,
@@ -282,7 +285,7 @@ class ShiftService extends BaseService
             'car_no' => $shift['car_no'],
             'next_warehouse_name' => $bag['next_warehouse_name'],
             'weight' => $bag['weight'],
-            'package_count'=>$bag['package_count']
+            'package_count' => $bag['package_count']
         ];
     }
 
@@ -305,16 +308,18 @@ class ShiftService extends BaseService
         if ($trackingPackage['next_warehouse_id'] !== $shift['next_warehouse_id'] && $ignoreRule == BaseConstService::NO) {
             throw new BusinessLogicException('袋号与下一站不一致', 5009);
         }
-        $row = $this->getTrackingPackageService()->update(['id'=>$trackingPackage['id']], [
+        $data = [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_3,
             'shift_no' => $shift['shift_no'],
             'load_time' => now(),
             'load_operator' => auth()->user()->fullname,
             'load_operator_id' => auth()->user()->id,
-        ]);
+        ];
+        $row = $this->getTrackingPackageService()->update(['id' => $trackingPackage['id']], $data);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
+        $shift = array_merge($shift, $data);
         PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_LOAD, $shift);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_1,
@@ -469,16 +474,18 @@ class ShiftService extends BaseService
         if (!in_array($trackingPackage['status'], [BaseConstService::TRACKING_PACKAGE_STATUS_4, BaseConstService::TRACKING_PACKAGE_STATUS_5])) {
             throw new BusinessLogicException('状态错误');
         }
-        $row = $this->getTrackingPackageService()->update(['id' => $trackingPackage['id']], [
+        $data = [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_7,
             'shift_no' => $shift['shift_no'],
             'unload_time' => now(),
             'unload_operator' => auth()->user()->fullname,
             'unload_operator_id' => auth()->user()->id,
-        ]);
+        ];
+        $row = $this->getTrackingPackageService()->update(['id' => $trackingPackage['id']], $data);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
+        $shift = array_merge($shift, $data);
         PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_UNLOAD, $shift);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_1,
@@ -502,12 +509,14 @@ class ShiftService extends BaseService
         if ($bag['status'] !== BaseConstService::BAG_STATUS_3) {
             throw new BusinessLogicException('状态错误');
         }
-        $this->getBagService()->update(['id' => $bag['id']], [
+        $data = [
             'status' => BaseConstService::BAG_STATUS_4,
             'unload_time' => now(),
             'unload_operator' => auth()->user()->fullname,
             'unload_operator_id' => auth()->user()->id,
-        ]);
+        ];
+        $this->getBagService()->update(['id' => $bag['id']], $data);
+        $bag = array_merge($bag, $data);
         //更新袋子里的包裹
         $row = $this->getTrackingPackageService()->update(['bag_no' => $bag['bag_no']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_6

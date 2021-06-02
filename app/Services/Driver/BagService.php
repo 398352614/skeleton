@@ -145,16 +145,18 @@ class BagService extends BaseService
             throw new BusinessLogicException('包裹阶段错误');
         }
         $this->check($bag, $trackingPackage, $data['ignore_rule']);
-        $row = $this->getTrackingPackageService()->update(['id' => $trackingPackage['id']], [
+        $data = [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_2,
             'bag_no' => $bag['bag_no'],
             'pack_time' => now(),
             'pack_operator' => auth()->user()->fullname,
             'pack_operator_id' => auth()->user()->id,
-        ]);
+        ];
+        $row = $this->getTrackingPackageService()->update(['id' => $trackingPackage['id']], $data);
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
+        $bag = array_merge($bag, $data);
         PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_PACK, $bag);
         $this->recount($id);
         return $trackingPackage;
@@ -277,18 +279,20 @@ class BagService extends BaseService
             }
         }
         if (!empty($trackingPackageList)) {
-            $row = $this->getTrackingPackageService()->update(['id' => ['in', $trackingPackageList->pluck('id')->toArray()]], [
+            $data = [
                 'status' => BaseConstService::TRACKING_PACKAGE_STATUS_7,
                 'unpack_time' => now(),
                 'unpack_operator' => auth()->user()->fullname,
                 'unpack_operator_id' => auth()->user()->id,
-            ]);
+            ];
+            $row = $this->getTrackingPackageService()->update(['id' => ['in', $trackingPackageList->pluck('id')->toArray()]], $data);
             if ($row == false) {
                 throw new BusinessLogicException('操作失败');
             }
+            $bag = array_merge($bag, $data);
+            PackageTrailService::storeByTrackingPackageList($trackingPackageList, BaseConstService::PACKAGE_TRAIL_UNPACK, $bag);
         }
         $this->emptyCheck($bag);
-        PackageTrailService::storeByTrackingPackageList($trackingPackageList, BaseConstService::PACKAGE_TRAIL_UNPACK, $bag);
         if (count($trackingPackageList) == 1) {
             return $trackingPackageList[0];
         }
