@@ -156,7 +156,7 @@ class BagService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $bag = array_merge($bag, $data);
+        $bag = array_merge($bag->toArray(), $data);
         PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_PACK, $bag);
         $this->recount($id);
         return $trackingPackage;
@@ -289,7 +289,7 @@ class BagService extends BaseService
             if ($row == false) {
                 throw new BusinessLogicException('操作失败');
             }
-            $bag = array_merge($bag, $data);
+            $bag = array_merge($bag->toArray(), $data);
             PackageTrailService::storeByTrackingPackageList($trackingPackageList, BaseConstService::PACKAGE_TRAIL_UNPACK, $bag);
         }
         $this->emptyCheck($bag);
