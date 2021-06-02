@@ -319,7 +319,7 @@ class ShiftService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $shift = array_merge($shift, $data);
+        $shift = array_merge($shift->toArray(), $data);
         PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_LOAD, $shift);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_1,
@@ -485,7 +485,7 @@ class ShiftService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $shift = array_merge($shift, $data);
+        $shift = array_merge($shift->toArray(), $data);
         PackageTrailService::storeByTrackingPackageList([$trackingPackage], BaseConstService::PACKAGE_TRAIL_UNLOAD, $shift);
         return [
             'shift_type' => BaseConstService::SHIFT_LOAD_TYPE_1,
@@ -516,7 +516,7 @@ class ShiftService extends BaseService
             'unload_operator_id' => auth()->user()->id,
         ];
         $this->getBagService()->update(['id' => $bag['id']], $data);
-        $bag = array_merge($bag, $data);
+        $bag = array_merge($bag->toArray(), $data);
         //更新袋子里的包裹
         $row = $this->getTrackingPackageService()->update(['bag_no' => $bag['bag_no']], [
             'status' => BaseConstService::TRACKING_PACKAGE_STATUS_6
