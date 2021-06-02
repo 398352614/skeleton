@@ -14,6 +14,7 @@ use App\Models\MapConfig;
 use App\Models\Tour;
 use App\Services\Admin\ApiTimesService;
 use App\Services\BaseConstService;
+use App\Services\BaseServices\XLDirectionService;
 use App\Services\CurlClient;
 use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
@@ -64,54 +65,33 @@ class GoogleApiService2
             return true;
         }
         $batchs = [];
-        $origin = implode(',', $tour->driver_location);
+        $driverLoc = [
+            'batch_no' => 'driver_location',
+            'place_lat' => $tour->driver_location['latitude'],
+            'place_lon' => $tour->driver_location['longitude'],
+        ];
         foreach ($orderBatchs as $key => $batch) {
             $batchs[] = [
                 'batch_no' => $batch->batch_no,
-                'location' => implode(',', [$batch->place_lat, $batch->place_lon])
+                'place_lat' => $batch->place_lat,
+                'place_lon' => $batch->place_lon
             ];
         }
-        try {
-            $res = $this->getSort($this->url, $origin, array_column($batchs, 'location'));
-            $distance = $time = 0;
-            $nowTime = time();
-            array_pop($res['routes'][0]['legs']);
-            foreach ($res['routes'][0]['legs'] as $key => $element) {
-                $distance += $element['distance']['value'];
-                $time += $element['duration']['value'] * 60;
-                $data = [
-                    'expect_distance' => $distance,
-                    'expect_time' => $time,
-                    'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time),
-                    'sort_id' => $keyIndex
-                ];
-                Batch::query()->where('batch_no', $batchs[$res['routes'][0]['waypoint_order'][$key]]['batch_no'])->update($data);
-                $keyIndex++;
-            }
-            /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
-            $lastPointIndex = $res['routes'][0]['waypoint_order'][$key];
-            $backWarehouseElement = $this->distanceMatrix([$batchs[$lastPointIndex]['location'], $tour->driver_location]);
-            $backElement = $backWarehouseElement[0][1];
-            $tourData = [
-                'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']['value'] * 60),
-                'warehouse_expect_distance' => $distance + $backElement['distance']['value'],
-                'warehouse_expect_time' => $time + $backElement['duration']['value']
-            ];
-            // 只有未更新过的线路需要更新期望时间和距离
-            if (
-                ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
-                || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
-            ) {
-                $tourData['expect_distance'] = $distance + $backElement['distance']['value'];
-                $tourData['expect_time'] = $time + $backElement['duration']['value'];
-            }
-            Log::info('auto-tour-data', $tourData);
-            Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
-        } catch (BusinessLogicException $exception) {
-            throw new BusinessLogicException('线路自动更新失败');
+        $batchNos = (new XLDirectionService())->GetRoute(array_merge([$driverLoc], $batchs));
+        if (empty($batchNos)) {
+            throw new BusinessLogicException('优化线路失败');
         }
-        FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
-        return $res;
+        $nextBatch = null;
+        foreach ($batchNos as $k => $batchNo) {
+            Batch::where('batch_no', $batchNo)->update(['sort_id' => $key + $k]);
+            if (!$nextBatch) {
+                $nextBatch = Batch::where('batch_no', $batchNo)->first();
+            }
+        }
+        if (empty($nextBatch)) {
+            throw new BusinessLogicException('优化失败');
+        }
+        $this->updateTour($tour, $nextBatch->batch_no);
     }
 
     /**

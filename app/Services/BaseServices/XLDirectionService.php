@@ -57,7 +57,6 @@ class XLDirectionService
             app('log')->info('线路规划失败或者不可靠');
             return [];
         }
-
         $res = [];
 
         foreach ($resp['route'] as $key => $loc) {

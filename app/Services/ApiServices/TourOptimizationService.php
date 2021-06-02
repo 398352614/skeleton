@@ -22,7 +22,7 @@ class TourOptimizationService
         if (!empty($company['map_config']['back_type']) && ($company['map_config']['back_type'] == BaseConstService::MAP_CONFIG_BACK_TYPE_3)) {
             return self::getInstance(TenCentApiService::class);
         } else {
-            return self::getInstance(GoogleApiService2::class);
+            return self::getInstance(GoogleApiService::class);
         }
     }
 
