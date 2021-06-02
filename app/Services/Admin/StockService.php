@@ -121,7 +121,7 @@ class StockService extends BaseService
         //包裹入库
         $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $tour['tracking_order_no']], ['*'], false);
         $stock = $this->trackingOrderStockIn($package, $tour, $trackingOrder);
-        $stock['warehouse_name'] = $this->getWareHouseService()->getInfo(['id' => $stock['warehouse_id']], ['*'], false)['warehouse_name'] ?? '';
+        $stock['warehouse_name'] = $this->getWareHouseService()->getInfo(['id' => $stock['warehouse_id']], ['*'], false)['name'] ?? '';
 
         PackageTrailService::storeByTrackingPackageList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stock);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
@@ -183,7 +183,7 @@ class StockService extends BaseService
         //更改包裹阶段
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_2]);
         $stock = $this->trackingPackageStockIn($package, $trackingPackage);
-        $stock['warehouse_name'] = $this->getWareHouseService()->getInfo(['id' => $stock['warehouse_id']], ['*'], false)['warehouse_name'] ?? '';
+        $stock['warehouse_name'] = $this->getWareHouseService()->getInfo(['id' => $stock['warehouse_id']], ['*'], false)['name'] ?? '';
         PackageTrailService::storeByTrackingPackageList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stock);
         return [
             'express_first_no' => $package['express_first_no'],
