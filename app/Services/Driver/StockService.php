@@ -209,14 +209,7 @@ class StockService extends BaseService
         //包裹入库
         $stock = $this->trackingOrderStockIn($package, $tour, $trackingOrder);
         $stock['warehouse_name'] = $this->getWareHouseService()->getInfo(['id' => $stock['warehouse_id']], ['*'], false)['name'] ?? '';
-        if (!empty($tour['tracking_order_no'])) {
-            $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $tour['tracking_order_no']], ['*'], false);
-            PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $trackingOrder);
-        } else {
-            $stock['warehouse_name'] = $this->getWareHouseService()->getInfo(['id' => $stock['warehouse_id']], ['*'], false)['name'] ?? '';
-            PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stock);
-        }
-
+        PackageTrailService::storeByTrackingOrderList([$package], BaseConstService::PACKAGE_TRAIL_ALLOCATE, $stock);
         if ($package['expiration_status'] == BaseConstService::EXPIRATION_STATUS_2) {
             return [
                 'express_first_no' => $package['express_first_no'],
