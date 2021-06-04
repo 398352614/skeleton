@@ -10,7 +10,7 @@ use App\Services\Consumer\PackageTrailService;
 /**
  * Class PackageController
  * @package App\Http\Controllers\Api\Consumer
- * @property PackageService $service
+ * @property PackageTrailService $service
  */
 class PackageTrailController extends BaseController
 {
@@ -27,6 +27,7 @@ class PackageTrailController extends BaseController
     /**
      * 列表查询
      * @return mixed
+     * @throws BusinessLogicException
      */
     public function index()
     {
