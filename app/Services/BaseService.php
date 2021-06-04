@@ -215,11 +215,11 @@ class BaseService
 
     /**
      * 获取列表并锁定
-     * @param  array  $where
-     * @param  array  $selectFields
-     * @param  bool  $isResource
-     * @param  array  $groupFields
-     * @param  array  $orderFields
+     * @param array $where
+     * @param array $selectFields
+     * @param bool $isResource
+     * @param array $groupFields
+     * @param array $orderFields
      * @return array|Builder[]|Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function getListLock(
@@ -228,7 +228,8 @@ class BaseService
         $isResource = true,
         $groupFields = [],
         $orderFields = []
-    ) {
+    )
+    {
         return $this->locked()->getList($where, $selectFields, $isResource, $groupFields, $orderFields);
     }
 
@@ -248,7 +249,8 @@ class BaseService
         $isResource = true,
         $groupFields = [],
         $orderFields = []
-    ) {
+    )
+    {
         if (!empty($where)) {
             SearchTrait::buildQuery($this->query, $where);
         }
@@ -275,9 +277,9 @@ class BaseService
     /**
      * 获取详情,并加锁
      * @param $where
-     * @param  array  $selectFields
-     * @param  bool  $isResource
-     * @param  array  $orderFields
+     * @param array $selectFields
+     * @param bool $isResource
+     * @param array $orderFields
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
     public function getInfoLock($where, $selectFields = ['*'], $isResource = true, $orderFields = [])
@@ -304,8 +306,8 @@ class BaseService
      * 获取详情
      * @param $where
      * @param $selectFields
-     * @param  bool  $isResource
-     * @param  array  $orderFields
+     * @param bool $isResource
+     * @param array $orderFields
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
     public function getInfo($where, $selectFields = ['*'], $isResource = true, $orderFields = [])
@@ -386,7 +388,7 @@ class BaseService
         $this->query = $this->model::query();
         $query = $this->query->findOrFail($id);
         $rowCount = $query->update(Arr::only($data,
-            Arr::except($this->model->getFillable(), ['updated_at','created_at','company_id', 'order_no', 'batch_no', 'tour_no','parent'])));
+            Arr::except($this->model->getFillable(), ['updated_at', 'created_at', 'company_id', 'order_no', 'batch_no', 'tour_no', 'parent'])));
         $this->query = $this->model::query();
 
         return $rowCount;
@@ -522,8 +524,8 @@ class BaseService
     }
 
     /**
-     * @param  array  $where
-     * @param  array  $data
+     * @param array $where
+     * @param array $data
      * @return Builder|Model
      */
     public function updateOrCreate(array $where, array $data)

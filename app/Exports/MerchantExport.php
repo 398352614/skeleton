@@ -14,15 +14,15 @@ use Maatwebsite\Excel\Events\AfterSheet;
 // 设置工作䈬名称
 // 在工作表流程结束时会引发事件
 
-class MerchantExport implements FromArray, WithTitle, WithEvents, WithStrictNullComparison,WithHeadings
+class MerchantExport implements FromArray, WithTitle, WithEvents, WithStrictNullComparison, WithHeadings
 {
     private $data;
     private $headings;
 
-    public function __construct($data,$headings)
+    public function __construct($data, $headings)
     {
-        $this->data =$data;
-        $this->headings=$headings;
+        $this->data = $data;
+        $this->headings = $headings;
     }
 
     public function array(): array
@@ -34,8 +34,8 @@ class MerchantExport implements FromArray, WithTitle, WithEvents, WithStrictNull
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
-                    // 合并单元格
+            AfterSheet::class => function (AfterSheet $event) {
+                // 合并单元格
                 //$event->sheet->getDelegate()->setMergeCells(['A1:O1', 'A2:C2', 'D2:O2']);
                 // 冻结窗格
                 //$event->sheet->getDelegate()->freezePane('A1');
@@ -46,7 +46,7 @@ class MerchantExport implements FromArray, WithTitle, WithEvents, WithStrictNull
                 //设置单元格内容垂直居中
                 $event->sheet->getDelegate()->getStyle('A1:I100')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 // 定义列宽度
-                $widths = ['A' => 10, 'B' => 10, 'C' => 25,'D'=>15,'E'=>10,'F'=>10,'G'=>20,'H'=>25,'I'=>10];
+                $widths = ['A' => 10, 'B' => 10, 'C' => 25, 'D' => 15, 'E' => 10, 'F' => 10, 'G' => 20, 'H' => 25, 'I' => 10];
                 foreach ($widths as $k => $v) {
                     $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                 }

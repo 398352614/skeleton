@@ -7,6 +7,7 @@ namespace App\Traits;
 
 use App\Exceptions\BusinessLogicException;
 use App\Exports\BaseExport;
+use App\Exports\OrderExport;
 use App\Exports\PlanExport;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -25,11 +26,11 @@ trait ExportTrait
     public function translate($headings, $dir)
     {
         if (is_array($headings[0])) {
-            $systemHeadings = array_keys(__('excel.plan'));
             for ($i = 0, $j = count($headings); $i < $j; $i++) {
-                for ($k = 0, $l = count($headings[$i]); $k < $l; $k++) {
-                    if (in_array($headings[$i][$k], $systemHeadings)) {
-                        $headings[$i][$k] = __('excel.' . $dir . '.' . $headings[$i][$k]);
+                foreach ($headings[$i] as $k => $v) {
+                    $headings[$i][$k] = __('excel.' . $dir . '.' . $i . '.' . $v);
+                    if ($dir == 'order') {
+                        $headings[$i][$k] = $headings[$i][$k] . $this->getUnit($v);
                     }
                 }
             }
@@ -53,8 +54,8 @@ trait ExportTrait
      */
     public function excelExport($name, $headings, $data, $dir, $params = [])
     {
-        if($dir=='batchCount'){
-            $headings[1]=$this->translate($headings[1],$dir);
+        if ($dir == 'batchCount') {
+            $headings[1] = $this->translate($headings[1], $dir);
         }
         $headings = $this->translate($headings, $dir);
         $subPath = auth()->user()->company_id . DIRECTORY_SEPARATOR . $dir;
@@ -62,6 +63,8 @@ trait ExportTrait
         try {
             if ($dir == 'plan') {
                 $rowCount = Excel::store(new PlanExport($data, $headings, $name, $dir, $params), $path);
+            } elseif ($dir == 'order') {
+                $rowCount = Excel::store(new OrderExport($data, $headings, $name, $dir), $path);
             } else {
                 $rowCount = Excel::store(new BaseExport($data, $headings, $name, $dir), $path);
             }
@@ -99,5 +102,54 @@ trait ExportTrait
             'name' => $params['name'],
             'path' => $this->txtDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name'])
         ];
+    }
+
+    public function getUnit($heading)
+    {
+        $currency = [
+            "amount_1",
+            "amount_2",
+            "amount_3",
+            "amount_4",
+            "amount_5",
+            "amount_6",
+            "amount_7",
+            "amount_8",
+            "amount_9",
+            "amount_10",
+            "amount_11",
+            'settlement_amount'
+        ];
+        $weight = [
+            "package_weight_1",
+            "package_weight_2",
+            "package_weight_3",
+            "package_weight_4",
+            "package_weight_5",
+
+            "material_weight_1",
+            "material_weight_2",
+            "material_weight_3",
+            "material_weight_4",
+            "material_weight_5",
+        ];
+        $volume = [
+
+            "material_size_1",
+            "material_size_2",
+            "material_size_3",
+            "material_size_4",
+            "material_size_5",
+        ];
+        if (in_array($heading, $currency)) {
+            $unit = '('.ConstTranslateTrait::currencyUnitTypeSymbol(CompanyTrait::getCompany()['currency_unit']).')';
+        } elseif (in_array($heading, $weight)) {
+            $unit = '('.ConstTranslateTrait::weightUnitTypeSymbol(CompanyTrait::getCompany()['weight_unit']).')';
+        } elseif (in_array($heading, $volume)) {
+            $unit = '('.ConstTranslateTrait::volumeUnitTypeSymbol(CompanyTrait::getCompany()['volume_unit']).')';
+        } else {
+            $unit = '';
+        }
+        return $unit;
     }
 }

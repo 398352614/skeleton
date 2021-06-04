@@ -95,9 +95,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //模板导出
         Route::get('/template', 'OrderImportController@templateExport')->name('order.template-export');
         //批量导入
-        Route::post('/import', 'OrderController@import')->name('order.import-list');
+        Route::post('/import', 'OrderImportController@import')->name('order.import-list');
         //批量新增
-        Route::post('/list', 'OrderController@storeByList')->name('order.store-list');
+        Route::post('/list', 'OrderImportController@storeByList')->name('order.store-list');
         //获取订单的运单列表
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList')->name('order.index');
         //获取订单的运单轨迹列表
@@ -144,6 +144,18 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::post('/', 'OrderCustomerRecordController@store')->name('order.create-customer');
         //客服记录删除
         Route::delete('/{id}', 'OrderCustomerRecordController@delete')->name('order.delete-customer');
+    });
+
+    //订单导入
+    Route::prefix('order-import')->group(function () {
+        //获取模板
+        Route::get('/template', 'OrderImportController@templateExport')->name('order.import-list');
+        //导入
+        Route::post('/', 'OrderImportController@import')->name('order.import-list');
+        //检查
+        Route::post('/check', 'OrderImportController@importCheck')->name('order.import-list');
+        //批量新增
+        Route::post('/list', 'OrderImportController@createByList')->name('order.import-list');
     });
 
     //订单回单

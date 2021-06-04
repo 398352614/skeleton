@@ -438,7 +438,7 @@ class OrderService extends BaseService
         }
         //数量验证
         if (count($data) > 100) {
-            throw new BusinessLogicException('导入订单数量不得超过100个');
+            throw new BusinessLogicException('导入订单数量不得超过200个');
         }
         //$id = $this->orderImportLog($params);
         //数据处理

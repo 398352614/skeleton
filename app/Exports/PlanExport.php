@@ -76,9 +76,9 @@ class PlanExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 // 合并单元格
                 //$event->sheet->getDelegate()->setMergeCells(['A1:'.$endColumn.'1']);
                 //设置行高
-/*                for ($i = 2; $i < 100; $i++) {
-                    $event->sheet->getDelegate()->getRowDimension($i)->setRowHeight(16);
-                }*/
+                /*                for ($i = 2; $i < 100; $i++) {
+                                    $event->sheet->getDelegate()->getRowDimension($i)->setRowHeight(16);
+                                }*/
                 //设置单元格内容自动转行
                 $event->sheet->getDelegate()->getStyle('A1:G100')->getAlignment()->setWrapText(TRUE);
                 // 设置单元格内容水平靠右
@@ -103,7 +103,7 @@ class PlanExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 $sortArray[0] = 0;
                 $data = [];
                 for ($i = 0, $j = count($sortArray); $i < $j; $i++) {
-                    if(!empty($sortArray[$i + 1])){
+                    if (!empty($sortArray[$i + 1])) {
                         $data[$i][0] = $sortArray[$i] + 1 + 6;
                         $data[$i][1] = $sortArray[$i + 1] + 6;
                     }

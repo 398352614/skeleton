@@ -123,6 +123,9 @@ use Illuminate\Support\Facades\App;
  * @method static packageStageList($args = null)
  * @method static packageTrailTypeList($args = null)
  * @method static batchCancelTypeList($args = null)
+ * @method static orderControlModeList($args = null)
+ * @method static packageFeatureList($args = null)
+ *
  */
 trait ConstTranslateTrait
 {
