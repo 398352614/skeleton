@@ -93,4 +93,5 @@ class PackageTrail extends BaseModel
     {
         return empty($this->type) ? null : ConstTranslateTrait::packageTrailTypeList($this->type);
     }
+
 }

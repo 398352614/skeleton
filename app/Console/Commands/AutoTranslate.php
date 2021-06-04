@@ -153,6 +153,12 @@ class AutoTranslate extends Command
             $v = str_replace('"', '', $v);
             $array[] = $v;
         }
+        preg_match_all("/\"[\x7f-\xff](.*)\"/U", $txt, $x);
+        foreach (array_unique($x[0]) as $v) {
+            $v = str_replace("'", '', $v);
+            $v = str_replace('"', '', $v);
+            $array[] = $v;
+        }
         return $array;
     }
 
