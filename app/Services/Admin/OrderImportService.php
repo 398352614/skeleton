@@ -432,7 +432,7 @@ class OrderImportService extends BaseService
     {
         $list = json_decode($params['list'], true);
         for ($i = 0; $i < count($list); $i++) {
-            $list[$i] = $this->form($list[$i]['data']);
+            $list[$i] = $this->form($list[$i]);
             try {
                 $this->getOrderService()->store($list[$i], BaseConstService::ORDER_SOURCE_2);
             } catch (BusinessLogicException $e) {
