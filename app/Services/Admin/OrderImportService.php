@@ -29,6 +29,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use mysql_xdevapi\Exception;
 
 class OrderImportService extends BaseService
 {
@@ -167,7 +168,7 @@ class OrderImportService extends BaseService
         $error = [];
         $validate = new OrderImportValidate;
         $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message));
-        if ($validator->failed()) {
+        if ($validator->fails()) {
             $key = $validator->errors()->keys();
             foreach ($key as $v) {
                 $error[$v] = $validator->errors()->first($v);
@@ -195,7 +196,7 @@ class OrderImportService extends BaseService
             $data = $this->fillAddress($data);
         } catch (BusinessLogicException $e) {
             $error['log'] = $e->getMessage();
-        }
+        }catch (\Exception $w){}
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
             $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
