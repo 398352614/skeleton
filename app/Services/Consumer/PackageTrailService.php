@@ -35,7 +35,12 @@ class PackageTrailService extends BaseService
      */
     public function getPageList()
     {
-        $packageList = Package::query()->where('express_first_no', $this->formData['express_first_no'])->where('company_id', $this->formData['company_id'])->get();
+        if(empty($this->formData['company_id'])){
+            $packageList = Package::query()->where('express_first_no', $this->formData['express_first_no'])->get();
+        }else{
+            $packageList = Package::query()->where('express_first_no', $this->formData['express_first_no'])->where('company_id', $this->formData['company_id'])->get();
+        }
+
         if ($packageList->isEmpty()) {
             throw new BusinessLogicException('查无结果，请检查单号和快递公司是否有误');
         }
