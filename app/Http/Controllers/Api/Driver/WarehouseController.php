@@ -36,6 +36,10 @@ class WarehouseController extends BaseController
         return $this->service->getPageList();
     }
 
+    /**
+     * 网点首页
+     * @return array
+     */
     public function home()
     {
         return $this->service->home();

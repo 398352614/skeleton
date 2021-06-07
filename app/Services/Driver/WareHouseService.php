@@ -34,11 +34,13 @@ class WareHouseService extends BaseService
         $notUnloadShiftCount = $this->getShiftService()->count(array_merge($where, ['status' => BaseConstService::SHIFT_STATUS_3]));
         $notUnpackBagCount = $this->getBagService()->count(array_merge($where, ['status' => BaseConstService::BAG_STATUS_4]));
         return [
-            'not_out_bag' => $notOutBagCount,
-            'not_out_shift' => $notOutShiftCount,
-            'not_in_shift' => $notInShiftCount,
-            'not_unload_shift' => $notUnloadShiftCount,
-            'not_unpack_bag' => $notUnpackBagCount,
+            'count'=>[
+                'not_out_bag' => $notOutBagCount,
+                'not_out_shift' => $notOutShiftCount,
+                'not_in_shift' => $notInShiftCount,
+                'not_unload_shift' => $notUnloadShiftCount,
+                'not_unpack_bag' => $notUnpackBagCount
+            ]
         ];
     }
 }
