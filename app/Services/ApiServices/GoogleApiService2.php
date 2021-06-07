@@ -144,8 +144,6 @@ class GoogleApiService2
             Log::info('tour-data', $tourData);
             Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
-            dd($exception);
-
             throw new BusinessLogicException('线路更新失败');
         }
     }
