@@ -81,7 +81,7 @@ return [
             "amount_4" => "包装费",
             "amount_5" => "送货费",
             "amount_6" => "上楼费",
-            "amount_7" => "送货费",
+            "amount_7" => "接货费",
             "amount_8" => "装卸费",
             "amount_9" => "其他费用",
             "amount_10" => "代收货款",
