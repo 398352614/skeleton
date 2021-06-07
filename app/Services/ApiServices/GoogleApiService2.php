@@ -104,48 +104,51 @@ class GoogleApiService2
     public function updateTour(Tour $tour, $nextCode, $driverLocation = [])
     {
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
-        $orderBatchs = $orderBatchs->keyBy('batch_no')->map(function ($batch) {
-            return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon]);
-        })->toArray();
-        if (empty($driverLocation)) {
-            $driverLocation = ['latitude' => $tour->warehouse_lat, 'longitude' => $tour->warehouse_lon];
-        }
-        try {
-            $res = $this->distanceMatrix(array_merge([$driverLocation], array_values($orderBatchs)));
-            $distance = $time = 0;
-            $nowTime = time();
-            $key = 0;
-            foreach ($orderBatchs as $batchNo => $batch) {
-                $distance += $res[$key][$key + 1]['distance'];
-                $time += $res[$key][$key + 1]['duration'];
-                Batch::query()->where('batch_no', $batchNo)->update([
-                    'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time),
-                    'expect_distance' => $distance,
-                    'expect_time' => $time
-                ]);
-                $key++;
+        if(!collect($orderBatchs)->isEmpty()){
+            $orderBatchs = $orderBatchs->keyBy('batch_no')->map(function ($batch) {
+                return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon]);
+            })->toArray();
+            if (empty($driverLocation)) {
+                $driverLocation = ['latitude' => $tour->warehouse_lat, 'longitude' => $tour->warehouse_lon];
             }
-            /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
-            $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
-            $backElement = $backWarehouseElement[0][1];
-            $tourData = [
-                'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']),
-                'warehouse_expect_distance' => $distance + $backElement['distance'],
-                'warehouse_expect_time' => $time + $backElement['duration']
-            ];
-            // 只有未更新过的线路需要更新期望时间和距离
-            if (
-                ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
-                || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
-            ) {
-                $tourData['expect_distance'] = $distance + $backElement['distance'];
-                $tourData['expect_time'] = $time + $backElement['duration'];
+            try {
+                $res = $this->distanceMatrix(array_merge([$driverLocation], array_values($orderBatchs)));
+                $distance = $time = 0;
+                $nowTime = time();
+                $key = 0;
+                foreach ($orderBatchs as $batchNo => $batch) {
+                    $distance += $res[$key][$key + 1]['distance']['value'];
+                    $time += $res[$key][$key + 1]['duration']['value'];
+                    Batch::query()->where('batch_no', $batchNo)->update([
+                        'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time),
+                        'expect_distance' => $distance,
+                        'expect_time' => $time
+                    ]);
+                    $key++;
+                }
+                /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
+                $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
+                $backElement = $backWarehouseElement[0][1];
+                $tourData = [
+                    'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']['value']),
+                    'warehouse_expect_distance' => $distance + $backElement['distance']['value'],
+                    'warehouse_expect_time' => $time + $backElement['duration']['value']
+                ];
+                // 只有未更新过的线路需要更新期望时间和距离
+                if (
+                    ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
+                    || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
+                ) {
+                    $tourData['expect_distance'] = $distance + $backElement['distance']['value'];
+                    $tourData['expect_time'] = $time + $backElement['duration']['value'];
+                }
+                Log::info('tour-data', $tourData);
+                Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
+            } catch (BusinessLogicException $exception) {
+                throw new BusinessLogicException('线路更新失败');
             }
-            Log::info('tour-data', $tourData);
-            Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
-        } catch (BusinessLogicException $exception) {
-            throw new BusinessLogicException('线路更新失败');
         }
+
     }
 
     /**
