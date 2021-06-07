@@ -102,7 +102,7 @@ class OrderNoRuleService extends BaseService
     {
         $params['string_length'] = empty($params['string_length']) ? 0 : $params['string_length'];
         if (strlen($params['prefix']) + $params['int_length'] + $params['string_length'] > BaseConstService::ORDER_NO_RULE_LENGTH) {
-            throw new BusinessLogicException("单号规则总长度不得超过:length位", 1000, ['length' => BaseConstService::ORDER_NO_RULE_LENGTH]);
+            throw new BusinessLogicException("单号规则总长度不得超过[:length]位", 1000, ['length' => BaseConstService::ORDER_NO_RULE_LENGTH]);
         }
         $info = DB::table('order_no_rule')->where('type', $params['type'])->where('prefix', $params['prefix'])->first();
         if (!empty($info) && $info->id != $id) {

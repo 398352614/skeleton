@@ -492,9 +492,9 @@ class StockService extends BaseService
     {
         $this->stockExistCheck($package);
         $this->stockExceptionCheck($order);
-//        if (!in_array($package->status, [BaseConstService::PACKAGE_STATUS_1, BaseConstService::PACKAGE_STATUS_2])) {
-//            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
-//        }
+        if ($package->stage == BaseConstService::PACKAGE_STAGE_2 && $package->status == BaseConstService::PACKAGE_STATUS_3) {
+            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
+        }
         if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
             throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
         }
