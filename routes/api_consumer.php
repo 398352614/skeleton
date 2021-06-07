@@ -17,4 +17,5 @@ Route::namespace('Api\Consumer')->group(function () {
     //查询物流轨迹
     Route::get('package-trail', 'PackageTrailController@index');
     Route::get('company', 'CompanyController@index');
+    Route::get('order-trail', 'OrderTrailController@index');
 });
