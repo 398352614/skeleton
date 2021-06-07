@@ -196,7 +196,8 @@ class OrderImportService extends BaseService
             $data = $this->fillAddress($data);
         } catch (BusinessLogicException $e) {
             $error['log'] = $e->getMessage();
-        }catch (\Exception $w){}
+        } catch (\Exception $w) {
+        }
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
             $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
@@ -430,7 +431,13 @@ class OrderImportService extends BaseService
      */
     public function createByList($params)
     {
-        $list = json_decode($params['list'], true);
+        if (is_string($params['list'])) {
+            $list = json_decode($params['list'], true);
+        } elseif (is_array($params['list'])) {
+            $list = $params['list'];
+        } else {
+            throw new BusinessLogicException('格式不正确');
+        }
         for ($i = 0; $i < count($list); $i++) {
             $list[$i] = $this->form($list[$i]);
             try {
@@ -485,8 +492,8 @@ class OrderImportService extends BaseService
         }
         $data = Arr::only($data, [
             "create_date", "type", "merchant_id", "out_user_id", "out_order_no",
-            "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street","place_lon","place_lat", "execution_date",
-            "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date","second_place_lon","second_place_lat",
+            "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date",
+            "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat",
             "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
 
