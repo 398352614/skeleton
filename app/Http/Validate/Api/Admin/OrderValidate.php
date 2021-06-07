@@ -22,7 +22,7 @@ class OrderValidate extends BaseValidate
         'batch_no' => 'nullable|string|max:50',
         'out_order_no' => 'nullable|string|max:50',
         'mask_code' => "nullable|string|max:50",
-        'execution_date' => 'required|date|after_or_equal:today',
+        'execution_date' => 'nullable|date|after_or_equal:today',
         'second_execution_date' => 'nullable|date|after_or_equal:today',
         'list_mode' => 'sometimes|required|in:1,2',
         'type' => 'required|integer|in:1,2,3,4',
