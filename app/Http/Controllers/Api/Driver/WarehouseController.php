@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Api\Driver;
 
-use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Driver\WareHouseService;
 use Illuminate\Database\Eloquent\Collection;
@@ -37,5 +36,9 @@ class WarehouseController extends BaseController
         return $this->service->getPageList();
     }
 
+    public function home()
+    {
+        return $this->service->home();
+    }
 
 }

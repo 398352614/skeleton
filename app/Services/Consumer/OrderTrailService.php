@@ -5,6 +5,7 @@ namespace App\Services\Consumer;
 use App\Exceptions\BusinessLogicException;
 use App\Models\Company;
 use App\Models\Order;
+use App\Models\OrderTrail;
 use App\Models\Package;
 use App\Models\PackageTrail;
 use App\Models\Scope\CompanyScope;
@@ -24,7 +25,7 @@ class OrderTrailService extends BaseService
         'order_no' => ['=', 'order_no']
     ];
 
-    public function __construct(PackageTrail $model)
+    public function __construct(OrderTrail $model)
     {
         parent::__construct($model);
     }

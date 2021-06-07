@@ -283,6 +283,8 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     Route::prefix('warehouse')->group(function () {
         //列表
         Route::get('/', 'WarehouseController@index');
+        //列表
+        Route::get('/home', 'WarehouseController@home');
     });
 
     //转运单管理
@@ -290,4 +292,6 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         //列表
         Route::get('/', 'TrackingPackageController@index');
     });
+
+
 });
