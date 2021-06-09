@@ -6,6 +6,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Order;
 use App\Services\BaseConstService;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 class HomeService extends BaseService
 {
@@ -15,154 +16,123 @@ class HomeService extends BaseService
     }
 
     /**
-     * 默认今日总计和本周数据
-     * @return array
-     * @throws BusinessLogicException
-     * @throws \Exception
-     */
-    public function home(){
-        $end=Carbon::today();
-        $begin=Carbon::today()->startOfWeek();
-        $data=$this->data($end,$end);
-        $data['graph']=$this->orderCount($begin,$end);
-        return $data;
-    }
-
-    public function all(){
-        $order=$this->query->whereNotNull('execution_date')->pluck('execution_date')->toArray();
-        if(empty($order)) {
-            $end=$begin=Carbon::today();
-        }else {
-            asort($order);
-            $order=array_values(array_unique($order));
-            $begin=Carbon::create($order[0]);
-            $end=Carbon::create($order[count($order)-1]);
-        }
-        $data=$this->data($begin,$end);
-        $data['graph']=$this->orderCount($begin,$end);
-        return $data;
-    }
-
-    /**
      * 本周订单统计
      * @return array
      * @throws \Exception
      */
-    public function thisWeekCount(){
-        $end=Carbon::today();
-        $begin=Carbon::today()->startOfWeek();
-        $data=$this->data($begin,$end);
-        $data['graph']=$this->orderCount($begin,$end);
-        return $data;
+    public function thisWeekCount()
+    {
+        $day = Carbon::today();
+        $no = $day->dayOfWeek;
+        if ($no === 0) {
+            $no = $no + 7;
+        }
+        return $this->orderCount($day, $no);
     }
 
     /**
      * 上周订单统计
      * @return array
-     * @throws BusinessLogicException
+     * @throws \Exception
      */
-    public function lastWeekCount(){
-        $end=Carbon::today()->subWeek()->endOfWeek();
-        $begin=Carbon::today()->subWeek()->startOfWeek();
-        $data=$this->data($begin,$end);
-        $data['graph']=$this->orderCount($begin,$end);
-        return $data;
+    public function lastWeekCount()
+    {
+        $day = Carbon::today()->subWeek()->endOfWeek();
+        $no = $day->dayOfWeek + 7;
+        return $this->orderCount($day, $no);
     }
 
     /**
      * 本月订单统计
      * @return array
-     * @throws BusinessLogicException
+     * @throws \Exception
      */
-    public function thisMonthCount(){
-        $end=Carbon::today();
-        $begin=Carbon::today()->startOfMonth();
-        $data=$this->data($begin,$end);
-        $data['graph']=$this->orderCount($begin,$end);
-        return $data;
+    public function thisMonthCount()
+    {
+        $day = Carbon::today();
+        $no = $day->day;
+        return $this->orderCount($day, $no);
     }
 
     /**
      * 上月订单统计
      * @return array
-     * @throws BusinessLogicException
+     * @throws \Exception
      */
-    public function lastMonthCount(){
-        $end=Carbon::today()->subMonth()->endOfMonth();
-        $begin=Carbon::today()->subMonth()->startOfMonth();
-        $data=$this->data($begin,$end);
-        $data['graph']=$this->orderCount($begin,$end);
-        return $data;
+    public function lastMonthCount()
+    {
+        $day = Carbon::today()->subMonth()->endOfMonth();
+        $no = $day->daysInMonth;
+        return $this->orderCount($day, $no);
     }
 
     /**
-     * 时间段订单统计
+     * 基础统计
+     * @param Carbon $day
+     * @param $no
      * @return array
-     * @throws BusinessLogicException
+     * @throws \Exception
      */
-    public function periodCount($params){
-        if(empty($params['begin_date'])){
-            throw new BusinessLogicException('请选择开始时间');
+    public function orderCount(Carbon $day, $no)
+    {
+        $countInfo = [];
+        for ($i = $no; $i >= 1; $i--) {
+            $date = $day->format('Y-m-d');
+            $expectCount = parent::count(['status' => ['<>', BaseConstService::ORDER_STATUS_5], 'execution_date' => $date]);
+            $countInfo[$i] = ['date' => $date, 'order' => $expectCount];
+            $day = $day->subDay();
         }
-        if(empty($params['end_date'])){
-            throw new BusinessLogicException('请选择结束时间');
-        }
-        $begin=Carbon::create($params['begin_date']);
-        $end=Carbon::create($params['end_date']);
-        $data=$this->data($begin,$end);
-        $data['graph']=$this->orderCount($begin,$end);
-        return $data;
-    }
-
-    /**
-     * 订单总数据统计
-     * @param \Carbon\Carbon $begin
-     * @param \Carbon\Carbon $end
-     * @return array
-     */
-    public function data(Carbon $begin,Carbon $end){
-        $info=$this->query->whereBetween('execution_date',[$begin->format('Y-m-d'),$end->format('Y-m-d')])->get();
-        $allOrder=count($info);
-        $pickupOrder=count(collect($info)->where('type','=',BaseConstService::ORDER_TYPE_1));
-        $peiOrder=count(collect($info)->where('type','=',BaseConstService::ORDER_TYPE_2));
-        $prepareOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_STATUS_1));
-        $doingOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_STATUS_2));
-        $signedOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_STATUS_3));
-        $cancelOrder=count(collect($info)->where('status','=',BaseConstService::ORDER_STATUS_4));
-        $exceptionOrder=count(collect($info)->where('exception_label','=',BaseConstService::ORDER_EXCEPTION_LABEL_2));
-        return[
-            'all' => $allOrder,
-            'pickup'=>$pickupOrder,
-            'pie'=>$peiOrder,
-            'prepare'=>$prepareOrder,
-            'doing'=>$doingOrder,
-            'done'=>$signedOrder,
-            'exception'=>$exceptionOrder,
-            'cancel'=>$cancelOrder,
-            ];
-    }
-
-    /**
-     * 订单每日数据表
-     * @param Carbon $begin
-     * @param Carbon $end
-     * @return array
-     */
-    public function orderCount(Carbon $begin,Carbon $end){
-        $countInfo=[];
-        if ($begin === $end){
-            $date =$end->format('Y-m-d');
-            $orderCount=$this->count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_3]);
-            $countInfo[0]=['date'=>$date,'orderCount'=>$orderCount];
-        }else{
-            for($i=0,$j=$end->diffInDays($begin);$i<=$j;$i++){
-                $date =$begin->format('Y-m-d');
-                $orderCount=$this->count(['execution_date'=>$date,'status' => BaseConstService::ORDER_STATUS_3]);
-                $countInfo[$i]=['date'=>$date,'orderCount'=>$orderCount];
-                $begin =$begin->addDay();
-            }
-            $countInfo = array_values(collect(array_values($countInfo))->sortBy('date')->toArray());
-        }
+        $countInfo = array_values(collect(array_values($countInfo))->sortBy('date')->toArray());
         return $countInfo;
+    }
+
+    /**
+     * 时间段统计
+     * @param $params
+     * @return array
+     */
+    public function periodCount($params)
+    {
+        $countInfo = [];
+        $orderList = parent::getList(['status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]]], ['*'], false);
+        //总计
+        $day = \Illuminate\Support\Carbon::create($params['begin_date']);
+        $endDay = Carbon::create($params['end_date']);
+        for ($i = 1; $day->lte($endDay); $i++) {
+            $date = $day->format('Y-m-d');
+            $orderCount = collect($orderList)->where('execution_date', $date)->count();
+            $countInfo[$i] = ['date' => $date, 'order' => $orderCount];
+            $day = $day->addDay();
+        }
+        $countInfo = array_values(collect(array_values($countInfo))->sortBy('date')->toArray());
+        return $countInfo;
+    }
+
+    /**
+     * 今日概览
+     * @return array
+     */
+    public function todayOverview()
+    {
+        $info = $this->query->where('execution_date', date('Y-m-d'))->get();
+        $doingOrder = count(collect($info)->where('status', '=', BaseConstService::ORDER_STATUS_2));
+        $signedOrder = count(collect($info)->where('status', '=', BaseConstService::ORDER_STATUS_3));
+        $cancelOrder = count(collect($info)->where('status', '=', BaseConstService::ORDER_STATUS_4));
+        return [
+            'doing' => $doingOrder,
+            'done' => $signedOrder,
+            'cancel' => $cancelOrder
+        ];
+    }
+
+    /**
+     * 订单动态
+     * @return Collection
+     */
+    public function trail()
+    {
+        $this->per_page = 5;
+        $this->orderBy = ['id' => 'desc'];
+        return $this->getOrderTrailService()->getPageList();
     }
 }

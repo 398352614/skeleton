@@ -528,132 +528,6 @@ class OrderService extends BaseService
         return $cancelOrderList;
     }
 
-
-    /**
-     * 订单批量新增
-     * @param $params
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function createByList($params)
-    {
-        $list = json_decode($params['list'], true);
-        for ($i = 0; $i < count($list); $i++) {
-            //处理格式
-            $list[$i]['package_list'] = [];
-            $list[$i]['material_list'] = [];
-            for ($j = 0; $j < 5; $j++) {
-                if ($list[$i]['item_type_' . ($j + 1)] === 1) {
-                    $list[$i]['package_list'][$j]['name'] = $list[$i]['item_name_' . ($j + 1)];
-                    $list[$i]['package_list'][$j]['express_first_no'] = $list[$i]['item_number_' . ($j + 1)];
-                    $list[$i]['package_list'][$j]['weight'] = $list[$i]['item_weight_' . ($j + 1)] ?? 1;
-                    $list[$i]['package_list'][$j]['quantity'] = $list[$i]['item_count_' . ($j + 1)] ?? 1;
-                    $list[$i]['package_list'][$j]['express_second_no'] = '';
-                    $list[$i]['package_list'][$j]['out_order_no'] = '';
-                    $list[$i]['package_list'] = array_values($list[$i]['package_list']);
-                } elseif ($list[$i]['item_type_' . ($j + 1)] === 2) {
-                    $list[$i]['material_list'][$j]['name'] = $list[$i]['item_name_' . ($j + 1)];
-                    $list[$i]['material_list'][$j]['code'] = $list[$i]['item_number_' . ($j + 1)];
-                    $list[$i]['material_list'][$j]['remark'] = '';
-                    $list[$i]['material_list'][$j]['quantity'] = $list[$i]['item_count_' . ($j + 1)] ?? 1;
-                    $list[$i]['material_list'][$j]['out_order_no'] = '';
-                    $list[$i]['material_list'] = array_values($list[$i]['material_list']);
-                }
-            }
-            $list[$i] = Arr::only($list[$i], [
-                'merchant_id',
-                'type',
-                'place_fullname',
-                'place_phone',
-                'place_country',
-                'place_post_code',
-                'place_house_number',
-                'place_address',
-                'execution_date',
-                'settlement_type',
-                'settlement_amount',
-                'replace_amount',
-                'out_order_no',
-                'delivery',
-                'remark',
-                'package_list',
-                'material_list']);
-            //获取经纬度
-            $info = $this->getAddressService()->getInfo($list[$i]);
-            $list[$i]['second_place_fullname'] = $list[$i]['second_place_phone'] = $list[$i]['second_place_country'] = $list[$i]['second_place_post_code']
-                = $list[$i]['second_place_house_number'] = $list[$i]['second_place_address'] = $list[$i]['second_place_city'] = $list[$i]['second_place_street']
-                = $list[$i]['place_city'] = $list[$i]['place_street'] = '';
-            if (empty($info)) {
-                $info = $this->getLocation($list[$i]['place_country'], $list[$i]['place_city'], $list[$i]['place_street'], $list[$i]['place_house_number'], $list[$i]['place_post_code']);
-            }
-            $list[$i]['lon'] = $info['lon'];
-            $list[$i]['lat'] = $info['lat'];
-            try {
-                $this->store($list[$i], true);
-            } catch (businesslogicexception $e) {
-                throw new BusinessLogicException(__('第:line行：', ['line' => $i + 1]) . __($e->getMessage()));
-            } catch (\Exception $e) {
-                throw new BusinessLogicException(__('第:line行：', ['line' => $i + 1]) . __($e->getMessage()));
-            }
-        }
-        return;
-    }
-
-    /**
-     * 订单导入
-     * @param $params
-     * @return array
-     * @throws BusinessLogicException
-     */
-    public function import($params)
-    {
-        //文件读取
-        $params['dir'] = 'order';
-        $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
-        $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
-        $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
-        //表头验证
-        $headings = array_values(__('excel.order'));
-        if ($row[1] !== $headings) {
-            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
-        }
-        //将表头和每条数据组合
-        $headings = OrderImportService::$headings;
-        $data = [];
-        for ($i = 2; $i < count($row); $i++) {
-            $data[$i - 2] = collect($headings)->combine($row[$i])->toArray();
-        }
-        //数量验证
-        if (count($data) > 100) {
-            throw new BusinessLogicException('导入订单数量不得超过200个');
-        }
-        //$id = $this->orderImportLog($params);
-        //数据处理
-        $typeList = array_flip(ConstTranslateTrait::$trackingOrderTypeList);
-        $settlementList = array_flip(ConstTranslateTrait::$orderSettlementTypeList);
-        $deliveryList = ['是' => 1, '否' => 2, 'Yes' => 1, 'No' => 2];
-        $itemList = array_flip(ConstTranslateTrait::$orderConfigNatureList);
-        //$countryNameList = array_unique(collect($data)->pluck('place_country_name')->toArray());
-        //$countryShortList = CountryTrait::getShortListByName($countryNameList);
-        for ($i = 0; $i < count($data); $i++) {
-            //反向翻译
-            $data[$i]['type'] = $typeList[$data[$i]['type']];
-            $data[$i]['settlement_type'] = $settlementList[$data[$i]['settlement_type']];
-            $data[$i]['delivery'] = $deliveryList[$data[$i]['delivery']] ?? 1;
-            $data[$i]['delivery_name'] = $data[$i]['delivery'] ?? __('是');
-            for ($j = 0; $j < 5; $j++) {
-                $data[$i]['item_type_' . ($j + 1)] = $itemList[$data[$i]['item_type_' . ($j + 1)]] ?? 0;
-            }
-            //日期如果是excel时间格式，转换成短横连接格式
-            if (is_numeric($data[$i]['execution_date'])) {
-                $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
-            }
-            $data[$i] = array_map('strval', $data[$i]);
-            empty($data[$i]['place_country']) && $data[$i]['place_country'] = CompanyTrait::getCountry();//填充收件人国家
-        }
-        return $data;
-    }
-
     /**
      * 运价计算
      * @param $order
@@ -732,7 +606,15 @@ class OrderService extends BaseService
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = parent::getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
             if (!empty($dbOrder)) {
-                throw new BusinessLogicException('货号已存在', 1005, [], ['order_no' => $dbOrder->order_no, 'out_order_no' => $dbOrder->out_order_no, 'status' => $dbOrder->status]);
+                throw new BusinessLogicException('货号已存在', 1005, [], [
+                    'order_no' => $dbOrder['order_no'],
+                    'out_order_no' => $dbOrder['out_order_no'] ?? '',
+                    'batch_no' => '',
+                    'tour_no' => '',
+                    'line' => ['line_id' => null, 'line_name' => ''],
+                    'execution_date' => $dbOrder->execution_date,
+                    'second_execution_date' => $dbOrder->second_execution_date ?? null
+                ]);
             }
         }
         //运价计算

@@ -2,8 +2,12 @@
 
 namespace App\Traits;
 
-use App\Services\Admin\OrderAmountService;
-use App\Services\Admin\OrderDefaultConfigService;
+use App\Services\Merchant\BaseWarehouseService;
+use App\Services\Merchant\OrderAmountService;
+use App\Services\Merchant\OrderDefaultConfigService;
+use App\Services\Merchant\OrderTemplateService;
+use App\Services\Merchant\StockService;
+use App\Services\Merchant\TrackingPackageService;
 use App\Services\Merchant\AddressService;
 use App\Services\Merchant\BatchExceptionService;
 use App\Services\Merchant\BatchService;
@@ -29,11 +33,41 @@ use App\Services\Merchant\TransportPriceService;
 use App\Services\Merchant\UploadService;
 use App\Services\Merchant\WareHouseService;
 use App\Services\OrderNoRuleService;
+use App\Services\OrderTrailService;
 use App\Services\PackageNoRuleService;
 
 Trait MerchantServiceTrait
 {
     use FactoryInstanceTrait;
+
+    /**
+     * 基础网点 服务
+     * @return BaseWarehouseService
+     */
+    public function getBaseWarehouseService()
+    {
+        return self::getInstance(BaseWarehouseService::class);
+
+    }
+
+    /**
+     * 订单模板 服务
+     * @return OrderTemplateService
+     */
+    public function getOrderTemplateService()
+    {
+        return self::getInstance(OrderTemplateService::class);
+
+    }
+
+    /**
+     * 库存 服务
+     * @return StockService
+     */
+    public function getStockService()
+    {
+        return self::getInstance(StockService::class);
+    }
 
     /**
      * 商家 服务
@@ -42,6 +76,24 @@ Trait MerchantServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * 订单轨迹 服务
+     * @return OrderTrailService
+     */
+    public function getOrderTrailService()
+    {
+        return self::getInstance(OrderTrailService::class);
+    }
+
+    /**
+     * 中转单 服务
+     * @return TrackingPackageService
+     */
+    public function getTrackingPackageService()
+    {
+        return self::getInstance(TrackingPackageService::class);
     }
 
     /**

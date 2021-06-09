@@ -38,7 +38,7 @@ class OrderTrailService extends BaseService
      */
     public function index($orderNo)
     {
-        $order = $this->getOrderService()->getInfo(['order_no'=> $orderNo],['*'],false);
+        $order = $this->getOrderService()->getInfo(['order_no' => $orderNo], ['*'], false);
         if (empty($order)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -132,6 +132,7 @@ class OrderTrailService extends BaseService
             'order_no' => $trackingOrder['order_no'],
             'merchant_id' => $trackingOrder['merchant_id'],
             'content' => $content,
+            'type' => $action,
             'created_at' => $now,
             'updated_at' => $now
         ];

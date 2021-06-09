@@ -46,6 +46,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::get('/permission', 'AuthController@getPermission');
     //切换时区
     Route::put('/timezone', 'AuthController@updateTimezone');
+
     //主页统计
     Route::prefix('statistics')->group(function () {
         //主页

@@ -183,7 +183,7 @@ class BaseService
         if ($this->request->input('per_page')) {
             $this->request->validate([
                 'page' => 'integer',
-                'per_page' => 'integer|in:10,20,50,100,200',
+                'per_page' => 'integer|in:5,10,20,50,100,200',
             ]);
         }
 

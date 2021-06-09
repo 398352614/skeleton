@@ -40,19 +40,111 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
 
     //主页统计
     Route::prefix('statistics')->group(function () {
-        //本周统计
+        /**
+         * @api {get} /merchant/this-week 本周订单总量
+         * @apiGroup 首页
+         * @apiName 本周订单总量
+         * @apiVersion 1.0.0
+         * @apiSuccess {Number} code    状态码，200：请求成功
+         * @apiSuccess {String} msg   提示信息
+         * @apiSuccess {Object} data    返回数据
+         * @apiSuccess {Object} data.date    日期
+         * @apiSuccess {Object} data.order    订单数
+         * @apiSuccessExample {json} Success-Response:
+         * {"code":200,"data":[{"date":"2021-06-07","order":0},{"date":"2021-06-08","order":0},{"date":"2021-06-09","order":2}],"msg":"successful"}
+         */
         Route::get('/this-week', 'HomeController@thisWeekCount')->name('statistics.home');
-        //上周统计
+
+        /**
+         * @api {get} /merchant/last-week 上周订单总量
+         * @apiGroup 首页
+         * @apiName 上周订单总量
+         * @apiVersion 1.0.0
+         * @apiSuccess {Number} code    状态码，200：请求成功
+         * @apiSuccess {String} msg   提示信息
+         * @apiSuccess {Object} data    返回数据
+         * @apiSuccess {Object} data.date    日期
+         * @apiSuccess {Object} data.order    订单数
+         * @apiSuccessExample {json} Success-Response:
+         * {"code":200,"data":[{"date":"2021-06-07","order":0},{"date":"2021-06-08","order":0},{"date":"2021-06-09","order":2}],"msg":"successful"}
+         */
         Route::get('/last-week', 'HomeController@lastWeekCount')->name('statistics.home');
-        //本月统计
+
+        /**
+         * @api {get} /merchant/this-month 本月订单总量
+         * @apiGroup 首页
+         * @apiName 本月订单总量
+         * @apiVersion 1.0.0
+         * @apiSuccess {Number} code    状态码，200：请求成功
+         * @apiSuccess {String} msg   提示信息
+         * @apiSuccess {Object} data    返回数据
+         * @apiSuccess {Object} data.date    日期
+         * @apiSuccess {Object} data.order    订单数
+         * @apiSuccessExample {json} Success-Response:
+         * {"code":200,"data":[{"date":"2021-06-07","order":0},{"date":"2021-06-08","order":0},{"date":"2021-06-09","order":2}],"msg":"successful"}
+         */
         Route::get('/this-month', 'HomeController@thisMonthCount')->name('statistics.home');
-        //上月统计
+
+        /**
+         * @api {get} /merchant/last-month 上月订单总量
+         * @apiGroup 首页
+         * @apiName 上月订单总量
+         * @apiVersion 1.0.0
+         * @apiSuccess {Number} code    状态码，200：请求成功
+         * @apiSuccess {String} msg   提示信息
+         * @apiSuccess {Object} data    返回数据
+         * @apiSuccess {Object} data.date    日期
+         * @apiSuccess {Object} data.order    订单数
+         * @apiSuccessExample {json} Success-Response:
+         * {"code":200,"data":[{"date":"2021-06-07","order":0},{"date":"2021-06-08","order":0},{"date":"2021-06-09","order":2}],"msg":"successful"}
+         */
         Route::get('/last-month', 'HomeController@lastMonthCount')->name('statistics.home');
-        //时间段统计
+
+        /**
+         * @api {get} /merchant/period 时间段订单总量
+         * @apiGroup 首页
+         * @apiName 时间段订单总量
+         * @apiVersion 1.0.0
+         * @apiParam {date} begin_date    [必填]起始日期
+         * @apiParam {date} end_date    [必填]终止日期
+         * @apiSuccess {Number} code    状态码，200：请求成功
+         * @apiSuccess {String} msg   提示信息
+         * @apiSuccess {Object} data    返回数据
+         * @apiSuccess {Object} data.date    日期
+         * @apiSuccess {Object} data.order    订单数
+         * @apiSuccessExample {json} Success-Response:
+         * {"code":200,"data":[{"date":"2021-06-07","order":0},{"date":"2021-06-08","order":0},{"date":"2021-06-09","order":2}],"msg":"successful"}
+         */
         Route::get('/period', 'HomeController@periodCount')->name('statistics.home');
-        //今日概览
+
+        /**
+         * @api {get} /merchant/this-week 今日订单情况
+         * @apiGroup 首页
+         * @apiName 今日订单情况
+         * @apiVersion 1.0.0
+         * @apiSuccess {Number} code    状态码，200：请求成功
+         * @apiSuccess {String} msg   提示信息
+         * @apiSuccess {Object} data    返回数据
+         * @apiSuccess {Object} data.date    日期
+         * @apiSuccess {Object} data.order    订单数
+         * @apiSuccessExample {json} Success-Response:
+         * {"code":200,"data":{"doing":0,"done":0,"cancel":0},"msg":"successful"}
+         */
         Route::get('/today-overview', 'HomeController@todayOverview')->name('statistics.home');
-        //订单动态
+
+        /**
+         * @api {get} /merchant/this-week 订单动态
+         * @apiGroup 首页
+         * @apiName 订单动态
+         * @apiVersion 1.0.0
+         * @apiSuccess {Number} code    状态码，200：请求成功
+         * @apiSuccess {String} msg   提示信息
+         * @apiSuccess {Object} data    返回数据
+         * @apiSuccess {Object} data.date    日期
+         * @apiSuccess {Object} data.order    订单数
+         * @apiSuccessExample {json} Success-Response:
+         * {"code":200,"data":[{"date":"2021-06-07","order":0},{"date":"2021-06-08","order":0},{"date":"2021-06-09","order":2}],"msg":"successful"}
+         */
         Route::get('/trail', 'HomeController@orderAnalysis')->name('statistics.home');
 
 
