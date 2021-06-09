@@ -9,7 +9,6 @@ namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Merchant\AuthService;
-use Illuminate\Http\JsonResponse;
 
 /**
  * Class AuthController
@@ -38,7 +37,7 @@ class AuthController extends BaseController
 
     /**
      * 个人信息
-     * @return JsonResponse
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
      */
     public function me()
     {
@@ -71,5 +70,15 @@ class AuthController extends BaseController
     public function updatePassword()
     {
         return $this->service->updatePassword($this->data);
+    }
+
+    /**
+     * 切换时区
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function updateTimezone()
+    {
+        return $this->service->updateTimezone($this->data);
     }
 }

@@ -10,10 +10,10 @@ namespace App\Services\Merchant;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Merchant\MerchantResource;
+use App\Models\Employee;
 use App\Models\Merchant;
 use App\Traits\CompanyTrait;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -25,7 +25,7 @@ class AuthService extends BaseService
      */
     public function __construct(Merchant $model)
     {
-        parent::__construct($model, MerchantResource::class);
+        parent::__construct($model, MerchantResource::class, MerchantResource::class);
     }
 
     /**
@@ -41,7 +41,7 @@ class AuthService extends BaseService
             'password' => $params['password']
         ];
 
-        if (empty(Merchant::query()->where( $this->username(),$params['username'])->first())){
+        if (empty(Merchant::query()->where($this->username(), $params['username'])->first())) {
             throw new BusinessLogicException('邮箱未注册，请先注册');
         }
 
@@ -108,14 +108,11 @@ class AuthService extends BaseService
 
     /**
      * 个人信息
-     * @return JsonResponse
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
      */
     public function me()
     {
-        $user=auth('merchant')->user();
-        //不可删除
-        $user->company_config = DB::table('company_config')->where('company_id',auth('merchant')->user()->company_id)->first();
-        return response()->json($user);
+        return parent::getInfo(['id' => auth()->user()->id], ['*'], true);
     }
 
     /**
@@ -153,6 +150,24 @@ class AuthService extends BaseService
         $res = $merchant->update(['password' => bcrypt($params['new_password'])]);
         if ($res) {
             auth('merchant')->logout();
+        }
+        return success();
+    }
+
+    /**
+     * 切换时区
+     * @param $params
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updateTimezone($params)
+    {
+        if (empty($params['timezone'])) {
+            throw new BusinessLogicException('时区 必填');
+        }
+        $res = Merchant::query()->where('id', auth()->user()->id)->update(['timezone' => $params['timezone']]);
+        if ($res == false) {
+            throw new BusinessLogicException('切换时区失败');
         }
         return success();
     }
