@@ -215,6 +215,171 @@ define({ "api": [
     ]
   },
   {
+    "type": "post",
+    "url": "/merchant/password-reset/apply",
+    "title": "获取重置密码验证码",
+    "group": "用户认证",
+    "name": "获取重置密码验证码",
+    "version": "1.0.0",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"Accept-Encoding: gzip, deflate\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>[必填]邮箱</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"code\":200,\"data\":\"\\u9a8c\\u8bc1\\u7801\\u53d1\\u9001\\u6210\\u529f\",\"msg\":\"successful\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchant/api_merchant.php",
+    "groupTitle": "用户认证",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant/password-reset/apply"
+      }
+    ]
+  },
+  {
+    "type": "post",
+    "url": "/merchant/password-reset",
+    "title": "重置密码",
+    "group": "用户认证",
+    "name": "重置密码",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "email",
+            "description": "<p>[必填]邮箱</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "code",
+            "description": "<p>[必填]验证码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "new_password",
+            "description": "<p>[必填]新密码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "confirm_new_password",
+            "description": "<p>[必填]重复新密码</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"code\":200,\"data\":[],\"msg\":\"successful\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchant/api_merchant.php",
+    "groupTitle": "用户认证",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant/password-reset"
+      }
+    ]
+  },
+  {
     "type": "get",
     "url": "/merchant/statistics/last-week",
     "title": "上周订单总量",

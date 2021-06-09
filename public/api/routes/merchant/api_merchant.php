@@ -55,16 +55,15 @@ Route::namespace('Api\Merchant')->group(function () {
     Route::post('login', 'AuthController@login');
 
     /**
-     * @api {post} /merchant/password-reset 获取重置密码验证码
+     * @api {post} /merchant/password-reset/apply 获取重置密码验证码
      * @apiGroup 用户认证
      * @apiName 获取重置密码验证码
      * @apiVersion 1.0.0
      *
-     * @apiHeader {string} language 语言：中文-cn；英文-en。
      * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
      * @apiHeaderExample {json} Header-Example:
      * {
-     *       "language": "Accept-Encoding: gzip, deflate"
+     *       "language": "en"
      *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
      *     }
      * @apiParam {String} email    [必填]邮箱
@@ -84,15 +83,17 @@ Route::namespace('Api\Merchant')->group(function () {
      * @apiName 重置密码
      * @apiVersion 1.0.0
      *
-     * @apiHeader {string} language 语言：中文-cn；英文-en。
      * @apiParam {String} email    [必填]邮箱
+     * @apiParam {String} code    [必填]验证码
+     * @apiParam {String} new_password    [必填]新密码
+     * @apiParam {String} confirm_new_password    [必填]重复新密码
      *
      * @apiSuccess {Number} code    状态码，200：请求成功
      * @apiSuccess {String} msg   提示信息
      * @apiSuccess {Object} data    返回数据
      *
      * @apiSuccessExample {json} Success-Response:
-     * {"code":200,"data":"\u9a8c\u8bc1\u7801\u53d1\u9001\u6210\u529f","msg":"successful"}
+     * {"code":200,"data":[],"msg":"successful"}
      */
     Route::put('password-reset', 'RegisterController@resetPassword');
     //修改密码
@@ -121,11 +122,10 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
          * @apiGroup 首页
          * @apiName 本周订单总量
          * @apiVersion 1.0.0
-         * @apiHeader {string} language 语言：中文-cn；英文-en。
          * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
          * @apiHeaderExample {json} Header-Example:
          * {
-         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "language": "en"
          *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
          *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
@@ -146,7 +146,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
          * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
          * @apiHeaderExample {json} Header-Example:
          * {
-         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "language": "en"
          *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
          *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
@@ -167,7 +167,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
          * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
          * @apiHeaderExample {json} Header-Example:
          * {
-         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "language": "en"
          *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
          *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
@@ -188,7 +188,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
          * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
          * @apiHeaderExample {json} Header-Example:
          * {
-         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "language": "en"
          *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
          *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
@@ -209,7 +209,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
          * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
          * @apiHeaderExample {json} Header-Example:
          * {
-         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "language": "en"
          *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
          *     }
          * @apiParam {date} begin_date    [必填]起始日期
@@ -232,7 +232,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
          * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
          * @apiHeaderExample {json} Header-Example:
          * {
-         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "language": "en"
          *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
          *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
