@@ -326,12 +326,7 @@ class OrderService extends BaseService
         //新增订单费用列表
         $this->addAmountList($params);
         //生成运单
-        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
-        if ($merchant['below_warehouse'] == BaseConstService::YES && $params['type'] == BaseConstService::ORDER_TYPE_2) {
-            $this->getTrackingPackageService()->storeByOrder($order, $merchant['warehouse_id']);
-        } else {
-            $tour = $this->getTrackingOrderService()->storeByOrder($order);
-        }
+        $tour = $this->getTrackingOrderService()->storeByOrder($order);
         return [
             'id' => $order['id'],
             'order_no' => $params['order_no'],
@@ -367,7 +362,7 @@ class OrderService extends BaseService
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
             foreach ($secondPlace as $k => $v) {
                 if (empty($data[$v])) {
-                    $data = $this->fillSecondPlaceAddress($data);
+                    $data = $this->fillPlaceAddress($data);
                     break;
                 }
             }
@@ -686,7 +681,7 @@ class OrderService extends BaseService
         $fields = ['place_house_number', 'place_city', 'place_street'];
         $params = array_merge(array_fill_keys($fields, ''), $params);
         //检验货主
-        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'], 'status' => BaseConstService::MERCHANT_STATUS_1], ['*'], false);
+        $merchant = $this->getMerchantService()->getInfo(['id' => auth()->user()->id, 'status' => BaseConstService::MERCHANT_STATUS_1], ['*'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('货主不存在');
         }
@@ -778,7 +773,7 @@ class OrderService extends BaseService
                 $packageList[$k] = Arr::only($v, ['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo',
                     'weight', 'actual_weight', 'settlement_amount', 'count_settlement_amount', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
                 $packageList[$k]['order_no'] = $params['order_no'];
-                $packageList[$k]['merchant_id'] = $params['merchant_id'];
+                $packageList[$k]['merchant_id'] = auth()->user()->id;
                 $packageList[$k]['execution_date'] = $params['execution_date'];
                 $packageList[$k]['second_execution_date'] = $params['second_execution_date'] ?? null;
                 $packageList[$k]['status'] = $status;
@@ -1398,7 +1393,6 @@ class OrderService extends BaseService
         }
         return $url;
     }
-
 
 
     /**

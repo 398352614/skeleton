@@ -37,6 +37,7 @@ use App\Models\MerchantGroupLine;
 use App\Models\MerchantGroupLineRange;
 use App\Models\MerchantRecharge;
 use App\Models\Order;
+use App\Models\OrderAmount;
 use App\Models\OrderNoRule;
 use App\Models\OrderTrail;
 use App\Models\Package;
@@ -164,6 +165,7 @@ class CompanyScope implements Scope
                 && !($model instanceof BaseLineService)
                 && !($model instanceof MerchantGroupLine)
                 && !($model instanceof Tour)
+                && !($model instanceof OrderAmount)
                 && !($model instanceof Line)
                 && !($model instanceof LineRange)
                 && !($model instanceof LineArea)

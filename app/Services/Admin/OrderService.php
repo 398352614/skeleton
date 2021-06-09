@@ -303,12 +303,7 @@ class OrderService extends BaseService
         //新增订单费用列表
         $this->addAmountList($params);
         //生成运单
-        $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
-        if ($merchant['below_warehouse'] == BaseConstService::YES && $params['type'] == BaseConstService::ORDER_TYPE_2) {
-            $this->getTrackingPackageService()->storeByOrder($order, $merchant['warehouse_id']);
-        } else {
-            $tour = $this->getTrackingOrderService()->storeByOrder($order);
-        }
+        $tour = $this->getTrackingOrderService()->storeByOrder($order);
         return [
             'id' => $order['id'],
             'order_no' => $params['order_no'],

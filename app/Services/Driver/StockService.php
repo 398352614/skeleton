@@ -127,15 +127,15 @@ class StockService extends BaseService
         }
         if (auth()->user()->warehouse_id == $pieWarehouse['id']) {
             //如果本网点为该包裹的派件网点，则生成派件运单进行派送
-            $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $package['order_no'],
-                'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
-                'status' => ['<>', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7]]], ['*'], false);
-            if (empty($dbTrackingOrder)) {
+//            $dbTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $package['order_no'],
+//                'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
+//                'status' => ['<>', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7]]], ['*'], false);
+//            if (empty($dbTrackingOrder)) {
                 return $this->createTrackingOrder($package, $order, $type);
-            } else {
-                //如果已有派件运单则加入派件运单
-                return $this->joinTrackingOrder($package, $dbTrackingOrder);
-            }
+//            } else {
+//                //如果已有派件运单则加入派件运单
+//                return $this->joinTrackingOrder($package, $dbTrackingOrder);
+//            }
         } else {
             if (auth()->user()->warehouse_id == $pieCenter['id']) {
                 //如果本网点为该包裹的派件网点所属的分拨中心，则生成分拨转运单

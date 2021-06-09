@@ -14,12 +14,88 @@ use Illuminate\Support\Facades\Route;
 */
 //公共接口
 Route::namespace('Api\Merchant')->group(function () {
-    //登录
+    /**
+     * @api {post} /merchant/login 登录
+     * @apiGroup 用户认证
+     * @apiName 登录
+     * @apiVersion 1.0.0
+     *
+     * @apiHeader {string} language 语言：中文-cn；英文-en。
+
+     * @apiParam {String} username    [必填]用户名
+     * @apiParam {String} password    [必填]密码
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    返回数据
+     * @apiSuccess {String} data.username    用户名
+     * @apiSuccess {String} data.access_token    认证令牌
+     * @apiSuccess {String} data.token_type    令牌类型
+     * @apiSuccess {String} data.expires_in    令牌有效时间
+     *
+     * @apiSuccess {Object} data.company_config   公司配置
+     * @apiSuccess {String} data.company_config.id    公司配置ID
+     * @apiSuccess {String} data.company_config.company_code    公司编号
+     * @apiSuccess {String} data.company_config.name    公司名称
+     * @apiSuccess {String} data.company_config.line_rule    线路规则：1-邮编；2-区域。
+     * @apiSuccess {String} data.company_config.show_type    展示方式：1-全部展示；2-按线路规则展示。
+     * @apiSuccess {String} data.company_config.address_template_id   地址模板ID：1-模板一；2-模板二。
+     * @apiSuccess {String} data.company_config.stock_exception_verify    是否开启入库异常审核：1-开启；2-关闭。
+     * @apiSuccess {String} data.company_config.weight_unit    重量单位
+     * @apiSuccess {String} data.company_config.currency_unit    货币单位
+     * @apiSuccess {String} data.company_config.volume_unit    体积单位
+     * @apiSuccess {String} data.company_config.map    地图引擎
+     * @apiSuccess {String} data.company_config.country    国家代号
+     * @apiSuccess {String} data.company_config.country_en_name    国家英文名
+     * @apiSuccess {String} data.company_config.country_cn_name    国家中文名
+     *
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":{"username":"ERP\u56fd\u9645","company_id":3,"access_token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvbWVyY2hhbnRcL2xvZ2luIiwiaWF0IjoxNjIzMjI4ODY1LCJleHAiOjE2MjgwNjcyNjUsIm5iZiI6MTYyMzIyODg2NSwianRpIjoiTEJOaXpOTGhIVTZrd2ttZCIsInN1YiI6NjUsInBydiI6IjkzYmRjYzU4ZGQwMWNlMzZlYzU2ZTMyYjViYjU4MGQ4MzAzMmZkMTgiLCJyb2xlIjoibWVyY2hhbnQifQ.LpBWSItYcjeFuSwEf_FIqa2qO7BXe57biqSrsELk6n4","token_type":"bearer","expires_in":4838400,"company_config":{"id":3,"company_code":"0003","name":"\u7ea2\u5154TMS","line_rule":1,"show_type":1,"address_template_id":1,"stock_exception_verify":2,"weight_unit":2,"currency_unit":3,"volume_unit":2,"map":"google","country":"NL","country_en_name":"Netherlands","country_cn_name":"\u8377\u5170"}},"msg":"successful"}
+     */
     Route::post('login', 'AuthController@login');
-    //修改密码验证码
+
+    /**
+     * @api {post} /merchant/password-reset 获取重置密码验证码
+     * @apiGroup 用户认证
+     * @apiName 获取重置密码验证码
+     * @apiVersion 1.0.0
+     *
+     * @apiHeader {string} language 语言：中文-cn；英文-en。
+     * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
+     * @apiHeaderExample {json} Header-Example:
+     * {
+     *       "language": "Accept-Encoding: gzip, deflate"
+     *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
+     *     }
+     * @apiParam {String} email    [必填]邮箱
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    返回数据
+     *
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":"\u9a8c\u8bc1\u7801\u53d1\u9001\u6210\u529f","msg":"successful"}
+     */
+    Route::post('password-reset/apply', 'RegisterController@applyOfReset');
+
+    /**
+     * @api {post} /merchant/password-reset 重置密码
+     * @apiGroup 用户认证
+     * @apiName 重置密码
+     * @apiVersion 1.0.0
+     *
+     * @apiHeader {string} language 语言：中文-cn；英文-en。
+     * @apiParam {String} email    [必填]邮箱
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    返回数据
+     *
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":"\u9a8c\u8bc1\u7801\u53d1\u9001\u6210\u529f","msg":"successful"}
+     */
     Route::put('password-reset', 'RegisterController@resetPassword');
     //修改密码
-    Route::post('password-reset/apply', 'RegisterController@applyOfReset');
     //Route::post('register', 'RegisterController@store');
     //Route::post('register/apply', 'RegisterController@applyOfRegister');
     //Route::put('password-reset/verify', 'RegisterController@verifyResetCode');
@@ -41,10 +117,17 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
     //主页统计
     Route::prefix('statistics')->group(function () {
         /**
-         * @api {get} /merchant/this-week 本周订单总量
+         * @api {get} /merchant/statistics/this-week 本周订单总量
          * @apiGroup 首页
          * @apiName 本周订单总量
          * @apiVersion 1.0.0
+         * @apiHeader {string} language 语言：中文-cn；英文-en。
+         * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
+         * @apiHeaderExample {json} Header-Example:
+         * {
+         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
+         *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
          * @apiSuccess {String} msg   提示信息
          * @apiSuccess {Object} data    返回数据
@@ -56,10 +139,16 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/this-week', 'HomeController@thisWeekCount')->name('statistics.home');
 
         /**
-         * @api {get} /merchant/last-week 上周订单总量
+         * @api {get} /merchant/statistics/last-week 上周订单总量
          * @apiGroup 首页
          * @apiName 上周订单总量
          * @apiVersion 1.0.0
+         * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
+         * @apiHeaderExample {json} Header-Example:
+         * {
+         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
+         *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
          * @apiSuccess {String} msg   提示信息
          * @apiSuccess {Object} data    返回数据
@@ -71,10 +160,16 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/last-week', 'HomeController@lastWeekCount')->name('statistics.home');
 
         /**
-         * @api {get} /merchant/this-month 本月订单总量
+         * @api {get} /merchant/statistics/this-month 本月订单总量
          * @apiGroup 首页
          * @apiName 本月订单总量
          * @apiVersion 1.0.0
+         * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
+         * @apiHeaderExample {json} Header-Example:
+         * {
+         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
+         *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
          * @apiSuccess {String} msg   提示信息
          * @apiSuccess {Object} data    返回数据
@@ -86,10 +181,16 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/this-month', 'HomeController@thisMonthCount')->name('statistics.home');
 
         /**
-         * @api {get} /merchant/last-month 上月订单总量
+         * @api {get} /merchant/statistics/last-month 上月订单总量
          * @apiGroup 首页
          * @apiName 上月订单总量
          * @apiVersion 1.0.0
+         * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
+         * @apiHeaderExample {json} Header-Example:
+         * {
+         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
+         *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
          * @apiSuccess {String} msg   提示信息
          * @apiSuccess {Object} data    返回数据
@@ -101,10 +202,16 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/last-month', 'HomeController@lastMonthCount')->name('statistics.home');
 
         /**
-         * @api {get} /merchant/period 时间段订单总量
+         * @api {get} /merchant/statistics/period 时间段订单总量
          * @apiGroup 首页
          * @apiName 时间段订单总量
          * @apiVersion 1.0.0
+         * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
+         * @apiHeaderExample {json} Header-Example:
+         * {
+         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
+         *     }
          * @apiParam {date} begin_date    [必填]起始日期
          * @apiParam {date} end_date    [必填]终止日期
          * @apiSuccess {Number} code    状态码，200：请求成功
@@ -118,10 +225,16 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/period', 'HomeController@periodCount')->name('statistics.home');
 
         /**
-         * @api {get} /merchant/this-week 今日订单情况
+         * @api {get} /merchant/statistics/this-week 今日订单情况
          * @apiGroup 首页
          * @apiName 今日订单情况
          * @apiVersion 1.0.0
+         * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
+         * @apiHeaderExample {json} Header-Example:
+         * {
+         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
+         *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
          * @apiSuccess {String} msg   提示信息
          * @apiSuccess {Object} data    返回数据
@@ -133,10 +246,16 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/today-overview', 'HomeController@todayOverview')->name('statistics.home');
 
         /**
-         * @api {get} /merchant/this-week 订单动态
+         * @api {get} /merchant/statistics/this-week 订单动态
          * @apiGroup 首页
          * @apiName 订单动态
          * @apiVersion 1.0.0
+         * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
+         * @apiHeaderExample {json} Header-Example:
+         * {
+         *       "language": "Accept-Encoding: gzip, deflate"
+         *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
+         *     }
          * @apiSuccess {Number} code    状态码，200：请求成功
          * @apiSuccess {String} msg   提示信息
          * @apiSuccess {Object} data    返回数据
