@@ -20,7 +20,7 @@ Route::namespace('Api\Merchant')->group(function () {
      * @apiName 登录
      * @apiVersion 1.0.0
      *
-     * @apiHeader {string} language 语言：中文-cn；英文-en。
+     * @apiHeader {string} language 语言：cn-中文；en-英文。
 
      * @apiParam {String} username    [必填]用户名
      * @apiParam {String} password    [必填]密码
@@ -104,11 +104,78 @@ Route::namespace('Api\Merchant')->group(function () {
 
 //认证
 Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:merchant'])->group(function () {
-    //个人信息
+    /**
+     * @api {put} /merchant/password-reset 个人资料
+     * @apiGroup 用户认证
+     * @apiName 个人资料
+     * @apiVersion 1.0.0
+     *
+     * @apiParam {String} origin_password    [必填]原密码
+     * @apiParam {String} new_password    [必填]新密码
+     * @apiParam {String} new_confirm_password    [必填]重复新密码
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    返回数据
+     * @apiSuccess {String} data.id
+     * @apiSuccess {String} data.company_id
+     * @apiSuccess {String} data.code
+     * @apiSuccess {String} data.type
+     * @apiSuccess {String} data.name
+     * @apiSuccess {String} data.below_warehouse
+     * @apiSuccess {String} data.warehouse_id
+     * @apiSuccess {String} data.short_name
+     * @apiSuccess {String} data.introduction
+     * @apiSuccess {String} data.email
+     * @apiSuccess {String} data.country
+     * @apiSuccess {String} data.settlement_type
+     * @apiSuccess {String} data.merchant_group_id
+     * @apiSuccess {String} data.contacter
+     * @apiSuccess {String} data.phone
+     * @apiSuccess {String} data.address
+     * @apiSuccess {String} data.avatar
+     * @apiSuccess {String} data.invoice_title
+     * @apiSuccess {String} data.taxpayer_code
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+     * @apiSuccess {String} data.
+
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":{"id":65,"company_id":3,"code":"00065","type":2,"name":"ERP\u56fd\u9645","below_warehouse":2,"warehouse_id":null,"short_name":"0","introduction":"Nederlands Express\uff0cNLE\u8377\u5170\u5feb\u9012\uff08\u4ee5\u4e0b\u7b80\u79f0NLE\uff09\u603b\u90e8\u4f4d\u4e8e\u8377\u5170\uff0c\u662f\u8377\u5170\u6700\u65e9\u4e14\u6700\u5927\u4e00\u5bb6\u4ece\u4e8b\u56fd\u9645\u7269\u6d41\u901f\u9012\u3001\u4ed3\u50a8\u8fd0\u8425\u3001\u7a7a\u8fd0\u3001\u8d27\u4ee3\u7b49\u7269\u6d41\u914d\u9001\u89e3\u51b3\u65b9\u6848\u7684\u4e13\u4e1a\u56fd\u9645\u7269\u6d41\u516c\u53f8\u3002","email":"erp@nle-tech.com","country":"NL","settlement_type":1,"merchant_group_id":53,"contacter":"\u8054\u7cfb\u4eba1","phone":"1312121211","address":"\u8be6\u7ec6\u5730\u57401","avatar":"\u5934\u50cf","invoice_title":"1","taxpayer_code":"0000-00-00","bank":"0000-00-00","bank_account":"0000-00-00","invoice_address":"0000-00-00","invoice_email":"0000-00-00","status":1,"created_at":"2020-07-14 16:45:36","updated_at":"2021-06-09 12:54:46","company_config":{"id":3,"company_id":3,"line_rule":1,"show_type":1,"address_template_id":1,"stock_exception_verify":2,"weight_unit":2,"currency_unit":3,"volume_unit":2,"map":"google","created_at":"2020-03-13 12:00:09","updated_at":"2021-06-08 06:14:09","scheduling_rule":1},"settlement_type_name":"\u7968\u7ed3","status_name":"\u542f\u7528","type_name":"\u8d27\u4e3b","country_name":"\u8377\u5170","additional_status":1,"advance_days":0,"appointment_days":10,"delay_time":0,"pickup_count":1,"pie_count":2,"merchant_group":{"id":53,"company_id":3,"name":"ERP\u56fd\u9645\u7ec4","transport_price_id":67,"count":3,"is_default":2,"additional_status":1,"advance_days":0,"appointment_days":10,"delay_time":0,"pickup_count":1,"pie_count":2,"created_at":"2020-12-28 03:26:41","updated_at":"2021-03-18 09:00:48","additional_status_name":"\u5f00\u542f"}},"msg":"successful"}
+     */
     Route::get('me', 'AuthController@me');
     //登出
     Route::post('logout', 'AuthController@logout');
-    //修改密码
+    /**
+     * @api {put} /merchant/password-reset 修改密码
+     * @apiGroup 用户认证
+     * @apiName 修改密码
+     * @apiVersion 1.0.0
+     *
+     * @apiParam {String} origin_password    [必填]原密码
+     * @apiParam {String} new_password    [必填]新密码
+     * @apiParam {String} new_confirm_password    [必填]重复新密码
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    返回数据
+     *
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":[],"msg":"successful"}
+     */
     Route::put('my-password', 'AuthController@updatePassword');
     //修改个人信息
     Route::put('', 'MerchantController@update');

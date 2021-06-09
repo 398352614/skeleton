@@ -6,12 +6,6 @@ use App\Http\Validate\BaseValidate;
 
 class AuthValidate extends BaseValidate
 {
-    public $customAttributes = [
-
-
-    ];
-
-
     public $rules = [
         'username' => 'required|string',
         'password' => 'required|string',

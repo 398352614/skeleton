@@ -7,185 +7,69 @@
 
 namespace App\Http\Controllers\Api\Merchant;
 
-use App\Exceptions\BusinessLogicException;
-use App\Http\Controllers\Controller;
-use App\Models\Employee;
-use App\Models\Merchant;
-use App\Traits\CompanyTrait;
+use App\Http\Controllers\BaseController;
+use App\Services\Merchant\AuthService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
-class AuthController extends Controller
+/**
+ * Class AuthController
+ * @package App\Http\Controllers\Api\Merchant
+ * @property AuthService $service
+ */
+class AuthController extends BaseController
 {
     /**
-     * @param Request $request
-     * @return array
-     * @throws BusinessLogicException
-     * @api {POST}  api/merchant/login 商家端:登录
-     * @apiName register
-     * @apiGroup user-register
-     * @apiPermission api
-     * @apiVersion 1.0.0
-     * @apiDescription 注册
-     * @apiParam {String}   username                  账号
-     * @apiParam {String}   password                  密码
-     * @apiParam {String}   password                 密码
-     * @apiParam {String}   confirm_password         确认密码
-     * @apiParam {String}   code                     注册验证码 -- 暂时不需
-     * @apiSuccessExample {json}  返回示例
-     * HTTP/1.1 200 OK
-     * {
-     *  "code":200,
-     *  "msg":"注册成功",
-     *  "data":{}
-     * }
+     * @param AuthService $service
      */
-    public function login(Request $request)
+    public function __construct(AuthService $service)
     {
-        //$this->validateLogin($request);
-
-        $credentials = [
-            $this->username() => $request['username'],
-            'password' => $request['password']
-        ];
-
-        if (empty(Merchant::query()->where( $this->username(),$request['username'])->first())){
-            throw new BusinessLogicException('邮箱未注册，请先注册');
-        }
-
-        if (!$token = $this->guard()->attempt($credentials)) {
-            throw new BusinessLogicException('用户名或密码错误！');
-        }
-
-        if (auth('merchant')->user()->status === 2) {
-            auth('merchant')->logout();
-
-            throw new BusinessLogicException('暂时无法登录，请联系管理员！');
-        }
-
-        auth('merchant')->user()->is_api = false;
-
-        return $this->respondWithToken($token);
+        parent::__construct($service);
     }
 
     /**
-     *
+     * 登录
+     * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function login()
+    {
+        return $this->service->login($this->data);
+    }
+
+    /**
+     * 个人信息
      * @return JsonResponse
      */
     public function me()
     {
-        $user=auth('merchant')->user();
-        //不可删除
-        $user->company_config = DB::table('company_config')->where('company_id',auth('merchant')->user()->company_id)->first();
-        return response()->json($user);
+        return $this->service->me();
     }
 
     /**
+     * 登出
      * @return string
      */
     public function logout()
     {
-        auth('merchant')->logout();
-
-        return '注销成功！';
+        return $this->service->logout();
     }
 
     /**
+     * 刷新令牌
      * @return array
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth('merchant')->refresh());
+        return $this->service->refresh();
     }
 
     /**
-     * @param $token
+     * 更新密码
      * @return array
+     * @throws \App\Exceptions\BusinessLogicException
      */
-    protected function respondWithToken($token)
+    public function updatePassword()
     {
-        return [
-            'username' => auth('merchant')->user()->name,
-            'company_id' => auth('merchant')->user()->company_id,
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('merchant')->factory()->getTTL() * 60,
-            'company_config' => CompanyTrait::getCompany(auth('merchant')->user()->company_id)
-        ];
-    }
-
-    /**
-     * Validate the user login request.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return void
-     */
-    protected function validateLogin(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
-    }
-
-    /**
-     * Get the login username to be used by the controller.
-     *
-     * @return string
-     */
-    protected function username()
-    {
-        $username = request()->get('username');
-
-        if (preg_match('/^(?:\+?86)?1(?:3\d{3}|5[^4\D]\d{2}|8\d{3}|7(?:[35678]\d{2}|4(?:0\d|1[0-2]|9\d))|9[189]\d{2}|66\d{2})\d{6}$/', $username)) {
-            return 'phone';
-        } elseif (filter_var($username, FILTER_VALIDATE_EMAIL)) {
-            return 'email';
-        } else {
-            return 'name';
-        }
-    }
-
-    /**
-     * Get the guard to be used during authentication.
-     *
-     * @return \Illuminate\Contracts\Auth\StatefulGuard
-     */
-    protected function guard()
-    {
-        return Auth::guard('merchant');
-    }
-
-    /**
-     * 更新自己的密码
-     *
-     * @param Request $request
-     * @return array
-     * @throws BusinessLogicException
-     */
-    public function updatePassword(Request $request)
-    {
-        $data = $request->all();
-
-        /** @var Employee $employee */
-        $merchant = \auth('merchant')->user();
-
-        if (!password_verify($data['origin_password'], $merchant->password)) {
-            throw new BusinessLogicException('原密码不正确');
-        }
-
-        $res = $merchant->update(
-            [
-                'password' => bcrypt($data['new_password'])
-            ]
-        );
-
-        if ($res) {
-            auth('merchant')->logout();
-        }
-
-        return success();
+        return $this->service->updatePassword($this->data);
     }
 }
