@@ -102,7 +102,8 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::delete('/{id}/remove-batch', 'OrderController@removeFromBatch');
         //批量打印面单
         Route::get('/bill', 'OrderController@orderBillPrint')->name('order.print');
-
+        //获取网点
+        Route::get('/warehouse', 'OrderController@getWarehouse')->name('order.store');
     });
 
     //物流状态管理

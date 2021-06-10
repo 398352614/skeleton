@@ -86,26 +86,6 @@ class OrderController extends OrderBaseController
     }
 
     /**
-     * 订单批量导入
-     * @return array
-     * @throws BusinessLogicException
-     */
-    public function import()
-    {
-        return $this->service->import($this->data);
-    }
-
-    /**
-     * 批量新增
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function storeByList()
-    {
-        return $this->service->createByList($this->data);
-    }
-
-    /**
      * 修改
      * @param $id
      * @return bool|int|void
@@ -221,25 +201,6 @@ class OrderController extends OrderBaseController
         return $this->service->end($id);
     }
 
-
-    /**
-     * 批量检查
-     * @return array
-     */
-    public function importCheckByList()
-    {
-        return $this->service->importCheckByList($this->data);
-    }
-
-    /**
-     * 检查
-     * @throws BusinessLogicException
-     */
-    public function importCheck()
-    {
-        return $this->service->importCheck($this->data);
-    }
-
     /**
      * 修改订单出库状态
      * @param $id
@@ -296,12 +257,22 @@ class OrderController extends OrderBaseController
     /**
      * 取消预约
      * @param $id
-     * @return mixed
+     * @return void
      * @throws BusinessLogicException
      */
     public function removeFromBatch($id)
     {
         return $this->service->removeFromBatch($id);
+    }
+
+    /**
+     * 获取网点
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getWarehouse()
+    {
+        return $this->service->getWareHouse($this->data);
     }
 
     /**

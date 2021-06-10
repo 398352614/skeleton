@@ -206,9 +206,7 @@ class RegisterController extends BaseController
         // }
 
         // RegisterController::deleteVerifyCode($data['email'], 'RESET');
-
         $merchant = Merchant::where('email', $data['email'])->firstOrFail();
-
         $res = $merchant->update([
             'password' => bcrypt($data['new_password']),
         ]);

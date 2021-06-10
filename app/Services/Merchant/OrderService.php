@@ -1500,8 +1500,9 @@ class OrderService extends BaseService
         $trackingOrder = $this->getTrackingOrderByOrderId($id);
         if (empty($trackingOrder)) {
             return;
+        }else{
+            return $this->getTrackingOrderService()->removeFromBatch($trackingOrder['id']);
         }
-        return $this->getTrackingOrderService()->removeFromBatch($trackingOrder['id']);
     }
 
     /**

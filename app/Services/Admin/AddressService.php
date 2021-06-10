@@ -294,18 +294,21 @@ class AddressService extends BaseService
         $params['path'] = str_replace(config('app.url') . '/storage/admin/file', storage_path('app/public/admin/file'), $params['path']);
         Log::info('end-path', $params);
         $row = collect($this->addressExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
+        $row[0] = array_filter($row[0]);
+        $newRow=[];
         foreach ($row as $k => $v) {
-            $row[$k] = array_filter($row[$k]);
+            for ($i = 0, $j = count($row[0]); $i < $j; $i++) {
+                $newRow[$k][$i] = $row[$k][$i];
+            }
         }
         //表头验证
         $headings = array_values(__('excel.addressExcelExport'));
-        if (empty($row) || $row[0] !== $headings) {
+        if (empty($newRow) || $newRow[0] !== $headings) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
-        $headings = $this->importExcelHeader;
         $data = [];
-        for ($i = 2; $i < count($row); $i++) {
-            $data[$i - 2] = collect($headings)->combine($row[$i])->toArray();
+        for ($i = 2; $i < count($newRow); $i++) {
+            $data[$i - 2] = collect($this->importExcelHeader)->combine($newRow[$i])->toArray();
         }
         //数据处理
         $countryNameList = array_unique(collect($data)->pluck('place_country')->toArray());
@@ -361,7 +364,7 @@ class AddressService extends BaseService
      */
     public function form($data)
     {
-        $data = Arr::only($data, array_merge($this->importExcelHeader,['place_lon','place_lat']));
+        $data = Arr::only($data, array_merge($this->importExcelHeader, ['place_lon', 'place_lat']));
         return $data;
     }
 

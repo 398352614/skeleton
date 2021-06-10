@@ -288,7 +288,6 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_TYPE_1 => '提货->网点',
         BaseConstService::ORDER_TYPE_2 => '网点->配送',
         BaseConstService::ORDER_TYPE_3 => '提货->网点->配送',
-        BaseConstService::ORDER_TYPE_4 => '提货->配送'
     ];
 
     //订单类型1-取件2-派件3-取派
