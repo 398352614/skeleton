@@ -15,34 +15,16 @@ class OrderImportController extends BaseController
 {
     public function __construct(OrderImportService $service)
     {
-        $this->service = $service;
+        parent::__construct($service);
     }
 
-    /**
-     * 上传导入模板
-     * @throws BusinessLogicException
-     */
-    public function uploadTemplate()
-    {
-        return $this->service->uploadTemplate();
-    }
-
-    /**
-     * 获取导入模板（无效）
-     * @return mixed
-     */
-    public function getTemplate()
-    {
-        return $this->service->getTemplate();
-    }
 
     /**
      * 获取导入模板
      * @return array
-     * @throws BusinessLogicException
+     * @throws \App\Exceptions\BusinessLogicException
      */
-    public function templateExport()
-    {
+    public function templateExport(){
         return $this->service->templateExport();
     }
 
@@ -60,9 +42,39 @@ class OrderImportController extends BaseController
      * @param $id
      * @return mixed
      */
-    public function show($id)
+    public function show($id){
+        return $this->service->getInfo(['id'=>$id],['*'],true);
+    }
+
+    /**
+     * 订单导入
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function import()
     {
-        return $this->service->getInfo(['id' => $id], ['*'], true);
+        return $this->service->import($this->data);
+    }
+
+
+    /**
+     * 导入检查
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function importCheck()
+    {
+        return $this->service->importCheck($this->data);
+    }
+
+    /**
+     * 批量新增
+     * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function createByList()
+    {
+        return $this->service->createByList($this->data);
     }
 
 }

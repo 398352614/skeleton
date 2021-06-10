@@ -39,6 +39,7 @@ use App\Models\MerchantRecharge;
 use App\Models\Order;
 use App\Models\OrderAmount;
 use App\Models\OrderNoRule;
+use App\Models\OrderTemplate;
 use App\Models\OrderTrail;
 use App\Models\Package;
 use App\Models\PackageNoRule;
@@ -181,6 +182,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Package)
                 && !($model instanceof Material)
                 && !($model instanceof OrderNoRule)
+                && !($model instanceof OrderTemplate)
                 && !($model instanceof Warehouse)
                 && !($model instanceof OrderTrail)
                 && !($model instanceof TrackingOrderTrail)

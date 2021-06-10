@@ -316,4 +316,15 @@ class OrderController extends OrderBaseController
     {
         return $this->service->priceCount($this->data);
     }
+
+    /**
+     * 订单打印
+     * @return mixed
+     * @throws BusinessLogicException
+     * @throws \Throwable
+     */
+    public function orderBillPrint()
+    {
+        return $this->service->orderBillPrint($this->data);
+    }
 }

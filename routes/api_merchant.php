@@ -107,9 +107,9 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
     });
 
     //物流状态管理
-    Route::prefix('order-trail')->group(function () {
+    Route::prefix('trail')->group(function () {
         //rest api 放在最后
-        Route::get('/{order_no}', 'OrderTrailController@index')->name('order-trail.index');
+        Route::get('/order/{order_no}', 'OrderTrailController@index')->name('order-trail.index');
     });
 
     //订单导入
@@ -124,7 +124,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::post('/list', 'OrderImportController@createByList')->name('order.import-list');
     });
 
-    //收件人地址管理
+    //地址管理
     Route::prefix('address')->group(function () {
         //列表查询
         Route::get('/', 'AddressController@index');

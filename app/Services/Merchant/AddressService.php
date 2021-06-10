@@ -9,6 +9,7 @@
 namespace App\Services\Merchant;
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\Api\Merchant\AddressInfoResource;
 use App\Http\Resources\Api\Merchant\AddressResource;
 use App\Models\Address;
 use App\Services\CommonService;
@@ -19,12 +20,14 @@ class AddressService extends BaseService
 {
     public function __construct(Address $address)
     {
-        parent::__construct($address, AddressResource::class, AddressResource::class);
+        parent::__construct($address, AddressResource::class, AddressInfoResource::class);
     }
 
     public $filterRules = [
         'place_fullname' => ['like', 'place_fullname'],
         'place_post_code' => ['like', 'place_post_code'],
+        'place_phone' => ['like', 'place_fullname'],
+        'type' => ['=', 'type'],
     ];
 
     /**
@@ -47,11 +50,10 @@ class AddressService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], false);
+        $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $info = $info->toArray();
         return $info;
     }
 

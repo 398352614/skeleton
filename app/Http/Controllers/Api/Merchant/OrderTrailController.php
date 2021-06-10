@@ -24,6 +24,9 @@ class OrderTrailController extends BaseController
     }
 
     /**
+     * @param $orderNo
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws \App\Exceptions\BusinessLogicException
      * @api {GET}  api/admin/ order-trail 管理员端:车辆列表
      * @apiName index
      * @apiGroup admin-car

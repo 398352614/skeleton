@@ -912,7 +912,7 @@ class TrackingOrderService extends BaseService
         }
         /********************************************2.改变站点****************************************************/
         $this->changeBatch(Arr::only($dbTrackingOrder, ['batch_no', 'tour_no', 'type', 'execution_date']), $trackingOrder, $line, $params['batch_no'] ?? null, null, false, true);
-        return 'true';
+        return;
     }
 
     /**

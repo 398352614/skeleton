@@ -167,7 +167,6 @@ class OrderService extends BaseService
                 $this->query->whereIn('order_no', $trackingOrderList);
             }
         }
-        dd(auth()->user()->id);
         $list = parent::getPageList();
         foreach ($list as $k => $v) {
             $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);
@@ -1070,7 +1069,7 @@ class OrderService extends BaseService
     public function validate($info)
     {
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_AREA) {
-            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'lon' => 'required|string|max:50', 'lat' => 'required|string|max:50']);
+            $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'place_lon' => 'required|string|max:50', 'place_lat' => 'required|string|max:50']);
         } else {
             $validator = Validator::make($info, ['type' => 'required|integer|in:1,2', 'place_post_code' => 'required|string|max:50']);
         }
