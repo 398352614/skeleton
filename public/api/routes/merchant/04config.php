@@ -24,9 +24,6 @@ use Illuminate\Support\Facades\Route;
      * @apiGroup 04config
      * @apiVersion 1.0.0
      * @apiUse auth
-     * @apiParam {String} origin_password    [必填]原密码
-     * @apiParam {String} new_password    [必填]新密码
-     * @apiParam {String} new_confirm_password    [必填]重复新密码
      *
      * @apiSuccess {Number} code    状态码，200：请求成功
      * @apiSuccess {String} msg   提示信息
