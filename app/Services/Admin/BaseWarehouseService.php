@@ -85,8 +85,8 @@ class BaseWarehouseService extends BaseService
                 'place_district' => $data['second_place_district'] ?? '',
                 'place_street' => $data['second_place_street'],
                 'place_address' => $data['second_place_address'],
-                'place_lat' => $data['second_place_lat'],
-                'place_lon' => $data['second_place_lon'],
+                'place_lat' => $data['second_place_lat'] ?? '',
+                'place_lon' => $data['second_place_lon'] ?? '',
                 'execution_date' => $data['second_execution_date']
             ];
         }else{

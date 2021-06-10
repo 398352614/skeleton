@@ -191,18 +191,17 @@ class OrderImportService extends BaseService
         if (empty($data['package_no_1']) && empty($data['material_code_1'])) {
             $error['log'] = __('订单中必须存在一个包裹或一种货物');
         }
-        //填充地址
-        try {
-            $data = $this->fillAddress($data);
-        } catch (BusinessLogicException $e) {
-            $error['log'] = $e->getMessage();
-        } catch (\Exception $w) {
-        }
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
             $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['second_place_address'])) {
             $data['second_place_address'] = CommonService::addressFieldsSortCombine($data, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
+        }
+        //填充地址
+        try {
+            $data = $this->fillAddress($data);
+        } catch (BusinessLogicException $e) {
+            $error['log'] = $e->getMessage();
         }
         //若存在货号,则判断是否存在已预约的订单号
         if (!empty($data['out_order_no'])) {

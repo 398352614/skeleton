@@ -331,14 +331,6 @@ class OrderService extends BaseService
             'id' => $order['id'],
             'order_no' => $params['order_no'],
             'out_order_no' => $params['out_order_no'] ?? '',
-            'batch_no' => '',
-            'tour_no' => '',
-            'line' => [
-                'line_id' => $tour['line_id'] ?? null,
-                'line_name' => $tour['line_name'] ?? '',
-            ],
-            'execution_date' => $order->execution_date,
-            'second_execution_date' => $order->second_execution_date ?? null
         ];
     }
 
@@ -720,7 +712,7 @@ class OrderService extends BaseService
             $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = parent::getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
-            if (!empty($dbOrder)) {
+            if (auth()->user()->getAttribute('is_api') == true && !empty($order)) {
                 throw new BusinessLogicException('货号已存在', 1005, [], [
                     'order_no' => $dbOrder['order_no'],
                     'out_order_no' => $dbOrder['out_order_no'] ?? '',

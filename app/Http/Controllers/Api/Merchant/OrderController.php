@@ -225,7 +225,6 @@ class OrderController extends OrderBaseController
     /**
      * 批量检查
      * @return array
-     * @throws BusinessLogicException
      */
     public function importCheckByList()
     {

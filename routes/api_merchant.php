@@ -17,9 +17,9 @@ Route::namespace('Api\Merchant')->group(function () {
     //登录
     Route::post('login', 'AuthController@login');
     //修改密码验证码
-    Route::put('password-reset', 'RegisterController@resetPassword');
+    Route::put('password/reset', 'RegisterController@resetPassword');
     //修改密码
-    Route::post('password-reset/apply', 'RegisterController@applyOfReset');
+    Route::post('password/code', 'RegisterController@applyOfReset');
     //Route::post('register', 'RegisterController@store');
     //Route::post('register/apply', 'RegisterController@applyOfRegister');
     //Route::put('password-reset/verify', 'RegisterController@verifyResetCode');
@@ -28,15 +28,17 @@ Route::namespace('Api\Merchant')->group(function () {
 //认证
 Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:merchant'])->group(function () {
     //个人信息
-    Route::get('me', 'AuthController@me');
+    Route::get('', 'AuthController@me');
     //登出
     Route::post('logout', 'AuthController@logout');
     //修改密码
-    Route::put('my-password', 'AuthController@updatePassword');
+    Route::put('password', 'AuthController@updatePassword');
     //修改个人信息
     Route::put('', 'MerchantController@update');
     //切换时区
-    Route::put('/timezone', 'AuthController@updateTimezone');
+    Route::put('timezone', 'AuthController@updateTimezone');
+    //公司信息
+    Route::get('company', 'CompanyController@show');
 
     //主页统计
     Route::prefix('statistics')->group(function () {
