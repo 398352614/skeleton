@@ -245,7 +245,7 @@ class OrderService extends BaseService
             return [];
         }
         $trackingOrderTrailList = $this->getTrackingOrderTrailService()->getList(['order_no' => $order['order_no']], ['*'], false);
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => $order['order_no']], ['tracking_order_no', 'place_lon', 'place_lat', 'place_address', 'place_fullname', 'batch_no', 'type'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => $order['order_no']], ['tracking_order_no', 'place_lon', 'place_lat', 'place_address', 'place_fullname', 'batch_no', 'type'], false,[],['id'=>'desc']);
         foreach ($trackingOrderList as $k => $v) {
             $tour = $this->getTourService()->getInfo(['tour_no' => $v['tour_no']], ['*'], false);
             $batch = $this->getBatchService()->getInfo(['batch_no' => $v['batch_no']], ['*'], false);

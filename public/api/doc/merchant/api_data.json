@@ -1993,6 +1993,676 @@
     }
   },
   {
+    "type": "post",
+    "url": "/merchant/order",
+    "title": "订单新增",
+    "name": "订单新增",
+    "group": "05order",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "order_no",
+            "description": "<p>订单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "execution_date",
+            "description": "<p>取派日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_execution_date",
+            "description": "<p>取派日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "create_date",
+            "description": "<p>开单日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "out_order_no",
+            "description": "<p>外部订单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "mask_code",
+            "description": "<p>掩码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "source",
+            "description": "<p>来源</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "source_name",
+            "description": "<p>来源名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>类型:1-取2-派3-取派</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "out_user_id",
+            "description": "<p>外部客户ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "nature",
+            "description": "<p>性质:1-包裹2-材料3-文件4-增值服务5-其他</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "settlement_type",
+            "description": "<p>结算类型1-寄付2-到付</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "settlement_amount",
+            "description": "<p>结算金额</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "replace_amount",
+            "description": "<p>代收货款</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "status",
+            "description": "<p>状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_fullname",
+            "description": "<p>收件人姓名</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_phone",
+            "description": "<p>收件人电话</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_country",
+            "description": "<p>收件人国家</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_country_name",
+            "description": "<p>收件人国家名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_post_code",
+            "description": "<p>收件人邮编</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_house_number",
+            "description": "<p>收件人门牌号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_city",
+            "description": "<p>收件人城市</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_street",
+            "description": "<p>收件人街道</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_address",
+            "description": "<p>收件人详细地址</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_fullname",
+            "description": "<p>发件人姓名</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_phone",
+            "description": "<p>发件人电话</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_country",
+            "description": "<p>发件人国家</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_country_name",
+            "description": "<p>发件人国家名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_province",
+            "description": "<p>发件人省份</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_post_code",
+            "description": "<p>发件人邮编</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_house_number",
+            "description": "<p>发件人门牌号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_city",
+            "description": "<p>发件人城市</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_district",
+            "description": "<p>发件人区县</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_street",
+            "description": "<p>发件人街道</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_address",
+            "description": "<p>发件人详细地址</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "special_remark",
+            "description": "<p>特殊事项</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "starting_price",
+            "description": "<p>起步价</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "transport_price_type",
+            "description": "<p>运价方案ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "receipt_type",
+            "description": "<p>回单要求</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "receipt_type_name",
+            "description": "<p>回单要求名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "receipt_count",
+            "description": "<p>回单数量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "package_list",
+            "description": "<p>包裹列表</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.expiration_date",
+            "description": "<p>有效日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.name",
+            "description": "<p>包裹名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.express_first_no",
+            "description": "<p>快递单号1</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.express_second_no",
+            "description": "<p>快递单号2</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.feature_logo",
+            "description": "<p>特性标志</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.out_order_no",
+            "description": "<p>外部标识</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.weight",
+            "description": "<p>重量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.size",
+            "description": "<p>重量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.actual_weight",
+            "description": "<p>实际重量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.expect_quantity",
+            "description": "<p>预计数量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.actual_quantity",
+            "description": "<p>实际数量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.sticker_no",
+            "description": "<p>贴单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.settlement_amount",
+            "description": "<p>结算金额</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.count_settlement_amount",
+            "description": "<p>估算运费</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.sticker_amount",
+            "description": "<p>贴单费用</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.delivery_amount",
+            "description": "<p>提货费用</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.is_auth",
+            "description": "<p>是否需要身份验证1-是2-否</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.auth_fullname",
+            "description": "<p>身份人姓名</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.auth_birth_date",
+            "description": "<p>身份人出身年月</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "material_list",
+            "description": "<p>材料列表</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.execution_date",
+            "description": "<p>取派日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.name",
+            "description": "<p>材料名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.code",
+            "description": "<p>材料代码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.out_order_no",
+            "description": "<p>外部标识</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.expect_quantity",
+            "description": "<p>预计数量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.actual_quantity",
+            "description": "<p>实际数量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.pack_type",
+            "description": "<p>包装类型</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.type",
+            "description": "<p>类型</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.weight",
+            "description": "<p>重量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.size",
+            "description": "<p>体积</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "amount_list",
+            "description": "<p>费用列表</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount_list.id",
+            "description": "<p>费用ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount_list.expect_amount",
+            "description": "<p>预计金额</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount_list.actual_amount",
+            "description": "<p>实际金额</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount_list.type",
+            "description": "<p>运费类型</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount_list.remark",
+            "description": "<p>备注</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.id",
+            "description": "<p>ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.order_no",
+            "description": "<p>订单号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.out_order_no",
+            "description": "<p>外部订单号</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"code\":200,\"data\":{\"id\":4207,\"order_no\":\"SMAAAEM0001\",\"out_order_no\":\"DEVV21904566802\"},\"msg\":\"successful\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchant/05order.php",
+    "groupTitle": "订单管理",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant/order"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
     "type": "get",
     "url": "/merchant",
     "title": "订单查询",
@@ -2613,7 +3283,7 @@
   },
   {
     "type": "get",
-    "url": "/merchant/:id",
+    "url": "/merchant/{id}",
     "title": "订单详情",
     "name": "订单详情",
     "group": "05order",
@@ -2659,15 +3329,848 @@
             "group": "Success 200",
             "type": "String",
             "optional": false,
-            "field": "data.data1",
-            "description": "<p>返回数据</p>"
+            "field": "data.id",
+            "description": "<p>订单ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.company_id",
+            "description": "<p>公司ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.merchant_id",
+            "description": "<p>商户ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.merchant_id_name",
+            "description": "<p>商户名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.order_no",
+            "description": "<p>订单号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.execution_date",
+            "description": "<p>取派日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.create_date",
+            "description": "<p>开单日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.out_order_no",
+            "description": "<p>外部订单号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.mask_code",
+            "description": "<p>掩码</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.source",
+            "description": "<p>来源</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.source_name",
+            "description": "<p>来源名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.type",
+            "description": "<p>类型:1-取2-派3-取派</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.out_user_id",
+            "description": "<p>外部客户ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.nature",
+            "description": "<p>性质:1-包裹2-材料3-文件4-增值服务5-其他</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.settlement_type",
+            "description": "<p>结算类型1-寄付2-到付</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.settlement_amount",
+            "description": "<p>结算金额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.replace_amount",
+            "description": "<p>代收货款</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.status",
+            "description": "<p>状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_fullname",
+            "description": "<p>收件人姓名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_phone",
+            "description": "<p>收件人电话</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_country",
+            "description": "<p>收件人国家</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_country_name",
+            "description": "<p>收件人国家名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_post_code",
+            "description": "<p>收件人邮编</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_house_number",
+            "description": "<p>收件人门牌号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_city",
+            "description": "<p>收件人城市</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_street",
+            "description": "<p>收件人街道</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_address",
+            "description": "<p>收件人详细地址</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_fullname",
+            "description": "<p>发件人姓名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_phone",
+            "description": "<p>发件人电话</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_country",
+            "description": "<p>发件人国家</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_country_name",
+            "description": "<p>发件人国家名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_province",
+            "description": "<p>发件人省份</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_post_code",
+            "description": "<p>发件人邮编</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_house_number",
+            "description": "<p>发件人门牌号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_city",
+            "description": "<p>发件人城市</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_district",
+            "description": "<p>发件人区县</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_street",
+            "description": "<p>发件人街道</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_address",
+            "description": "<p>发件人详细地址</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.special_remark",
+            "description": "<p>特殊事项</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.starting_price",
+            "description": "<p>起步价</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.transport_price_type",
+            "description": "<p>运价方案ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.transport_price_type_name",
+            "description": "<p>运价方案名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.receipt_type",
+            "description": "<p>回单要求</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.receipt_type_name",
+            "description": "<p>回单要求名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.receipt_count",
+            "description": "<p>回单数量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.created_at",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.updated_at",
+            "description": "<p>修改时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.package_list",
+            "description": "<p>包裹列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.id",
+            "description": "<p>包裹ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.company_id",
+            "description": "<p>公司ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.merchant_id",
+            "description": "<p>货主ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.order_no",
+            "description": "<p>订单编号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.tracking_order_no",
+            "description": "<p>运单号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.execution_date",
+            "description": "<p>取件日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.second_execution_date",
+            "description": "<p>派件日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.expiration_date",
+            "description": "<p>有效日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.expiration_status",
+            "description": "<p>超期状态1-未超期2-已超期3-超期已处理</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.type",
+            "description": "<p>类型1-取2-派</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.name",
+            "description": "<p>包裹名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.express_first_no",
+            "description": "<p>快递单号1</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.express_second_no",
+            "description": "<p>快递单号2</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.feature_logo",
+            "description": "<p>特性标志</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.feature",
+            "description": "<p>特性</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.out_order_no",
+            "description": "<p>外部标识</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.weight",
+            "description": "<p>重量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.size",
+            "description": "<p>重量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.actual_weight",
+            "description": "<p>实际重量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.expect_quantity",
+            "description": "<p>预计数量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.actual_quantity",
+            "description": "<p>实际数量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.status",
+            "description": "<p>状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.stage",
+            "description": "<p>阶段1-取件2-中转3-派件</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.sticker_no",
+            "description": "<p>贴单号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.settlement_amount",
+            "description": "<p>结算金额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.count_settlement_amount",
+            "description": "<p>估算运费</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.sticker_amount",
+            "description": "<p>贴单费用</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.delivery_amount",
+            "description": "<p>提货费用</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.is_auth",
+            "description": "<p>是否需要身份验证1-是2-否</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.auth_fullname",
+            "description": "<p>身份人姓名</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.auth_birth_date",
+            "description": "<p>身份人出身年月</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.created_at",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.updated_at",
+            "description": "<p>修改时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.status_name",
+            "description": "<p>状态名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.type_name",
+            "description": "<p>类型名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.material_list",
+            "description": "<p>材料列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.id",
+            "description": "<p>材料ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.company_id",
+            "description": "<p>公司ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.merchant_id",
+            "description": "<p>商户ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.tour_no",
+            "description": "<p>取件线路编号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.batch_no",
+            "description": "<p>站点编号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.tracking_order_no",
+            "description": "<p>运单号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.order_no",
+            "description": "<p>订单编号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.execution_date",
+            "description": "<p>取派日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.name",
+            "description": "<p>材料名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.code",
+            "description": "<p>材料代码</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.out_order_no",
+            "description": "<p>外部标识</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.expect_quantity",
+            "description": "<p>预计数量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.actual_quantity",
+            "description": "<p>实际数量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.pack_type",
+            "description": "<p>包装类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.type",
+            "description": "<p>类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.weight",
+            "description": "<p>重量</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.size",
+            "description": "<p>体积</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.created_at",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.updated_at",
+            "description": "<p>修改时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.material_list.type_name",
+            "description": "<p>类型名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.amount_list",
+            "description": "<p>费用列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.id",
+            "description": "<p>费用ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.company_id",
+            "description": "<p>公司ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.order_no",
+            "description": "<p>订单号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.expect_amount",
+            "description": "<p>预计金额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.actual_amount",
+            "description": "<p>实际金额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.type",
+            "description": "<p>运费类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.in_total",
+            "description": "<p>计入总费用1-计入2-不计入</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.status",
+            "description": "<p>状态1-预产生2-已产生3-已支付4-已取消</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.created_at",
+            "description": "<p>创建时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.updated_at",
+            "description": "<p>修改时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.amount_list.type_name",
+            "description": "<p>类型名称</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\"code\":200,\"data\":[],\"msg\":\"successful\"}",
+          "content": "{\"code\":200,\"data\":{\"id\":4206,\"company_id\":3,\"merchant_id\":3,\"merchant_id_name\":\"\\u6b27\\u4e9a\\u5546\\u57ce\",\"order_no\":\"SMAAAEL0001\",\"execution_date\":\"2021-06-10\",\"out_order_no\":\"\",\"create_date\":\"2021-06-09\",\"mask_code\":\"\",\"source\":\"2\",\"source_name\":\"\\u6279\\u91cf\\u5bfc\\u5165\",\"type\":3,\"out_user_id\":\"12036\",\"nature\":1,\"settlement_type\":0,\"settlement_amount\":\"10.00\",\"replace_amount\":\"0.00\",\"status\":1,\"second_place_fullname\":\"EVA\",\"second_place_phone\":\"636985217\",\"second_place_country\":\"\",\"second_place_country_name\":null,\"second_place_post_code\":\"9746TN\",\"second_place_house_number\":\"3-91\",\"second_place_city\":\"\",\"second_place_street\":\"\",\"second_place_address\":\"9746TN 3-91\",\"place_fullname\":\"test\",\"place_phone\":\"123654789\",\"place_country\":\"NL\",\"place_country_name\":\"\\u8377\\u5170\",\"place_province\":\"\",\"place_post_code\":\"1183GT\",\"place_house_number\":\"1\",\"place_city\":\"\",\"place_district\":\"\",\"place_street\":\"\",\"place_address\":\"1 1183GT\",\"special_remark\":\"\",\"remark\":\"\",\"unique_code\":\"\",\"starting_price\":\"10.00\",\"transport_price_type\":\"1\",\"transport_price_type_name\":\"\\u9636\\u68af\\u4e58\\u79ef\\u503c\\u8ba1\\u7b97\\uff08\\u56fa\\u5b9a\\u8d39\\u7528+\\uff08\\u6bcf\\u5355\\u4f4d\\u91cd\\u91cf\\u4ef7\\u683c*\\u91cd\\u91cf\\u4ef7\\u683c\\uff09*\\uff08\\u6bcf\\u5355\\u4f4d\\u91cc\\u7a0b\\u4ef7\\u683c*\\u91cc\\u7a0b\\u4ef7\\u683c\\uff09\\uff09\",\"receipt_type\":0,\"receipt_type_name\":null,\"receipt_count\":0,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"package_list\":[{\"id\":5080,\"company_id\":3,\"merchant_id\":3,\"order_no\":\"SMAAAEL0001\",\"tracking_order_no\":\"YD00030005577\",\"execution_date\":\"2021-06-10\",\"second_execution_date\":\"2021-06-10\",\"expiration_date\":null,\"expiration_status\":1,\"type\":3,\"name\":\"\",\"express_first_no\":\"10181\",\"express_second_no\":\"\",\"feature_logo\":\"\",\"feature\":1,\"out_order_no\":\"\",\"weight\":\"0.00\",\"size\":1,\"actual_weight\":\"\",\"expect_quantity\":1,\"actual_quantity\":0,\"status\":1,\"stage\":1,\"sticker_no\":\"\",\"settlement_amount\":\"0.00\",\"count_settlement_amount\":\"0.00\",\"sticker_amount\":null,\"delivery_amount\":null,\"remark\":\"\",\"is_auth\":2,\"auth_fullname\":\"\",\"auth_birth_date\":null,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"status_name\":\"\\u672a\\u53d6\\u6d3e\",\"type_name\":\"\\u63d0\\u8d27->\\u7f51\\u70b9->\\u914d\\u9001\"}],\"material_list\":[{\"id\":831,\"company_id\":3,\"merchant_id\":3,\"tour_no\":\"\",\"batch_no\":\"\",\"tracking_order_no\":\"YD00030005577\",\"order_no\":\"SMAAAEL0001\",\"execution_date\":\"2021-06-10\",\"name\":\"\",\"code\":\"102\",\"out_order_no\":\"\",\"expect_quantity\":1,\"actual_quantity\":0,\"pack_type\":1,\"type\":1,\"weight\":\"1.00\",\"size\":\"1.00\",\"unit_price\":\"1.00\",\"remark\":\"\",\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u5305\\u88c5\\u6750\\u6599\",\"pack_type_name\":\"\\u7eb8\\u7bb1\"}],\"amount_list\":[{\"id\":2005,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":0,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":null},{\"id\":2006,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":1,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u57fa\\u7840\\u8fd0\\u8d39\"},{\"id\":2007,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":2,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u8d27\\u7269\\u4ef7\\u503c\"},{\"id\":2008,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":3,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u4fdd\\u4ef7\\u8d39\"},{\"id\":2009,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":4,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u5305\\u88c5\\u8d39\"},{\"id\":2010,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":5,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u9001\\u8d27\\u8d39\"},{\"id\":2011,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":6,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u4e0a\\u697c\\u8d39\"},{\"id\":2012,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":7,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u63a5\\u8d27\\u8d39\"},{\"id\":2013,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":8,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u88c5\\u5378\\u8d39\"},{\"id\":2014,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":9,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u5176\\u4ed6\\u8d39\\u7528\"},{\"id\":2015,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":10,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u4ee3\\u6536\\u8d27\\u6b3e\"},{\"id\":2016,\"company_id\":3,\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":11,\"remark\":\"\",\"in_total\":1,\"status\":2,\"created_at\":\"2021-06-10 10:03:51\",\"updated_at\":\"2021-06-10 10:03:51\",\"type_name\":\"\\u8d27\\u6b3e\\u624b\\u7eed\\u8d39\"}]},\"msg\":\"successful\"}",
           "type": "json"
         }
       ]
@@ -2676,7 +4179,7 @@
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/:id"
+        "url": "https://dev-tms.nle-tech.com/api/merchant/{id}"
       }
     ],
     "header": {

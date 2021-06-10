@@ -129,7 +129,7 @@ Route::prefix('order')->group(function () {
 
     //获取详情
     /**
-     * @api {get} /merchant/:id 订单详情
+     * @api {get} /merchant/{id} 订单详情
      * @apiName 订单详情
      * @apiGroup 05order
      * @apiVersion 1.0.0
@@ -140,37 +140,389 @@ Route::prefix('order')->group(function () {
      * @apiSuccess {Number} code    状态码，200：请求成功
      * @apiSuccess {String} msg   提示信息
      * @apiSuccess {Object} data    返回数据
-     * @apiSuccess {String} data.data1    返回数据
+     * @apiSuccess {String} data.id    订单ID
+     * @apiSuccess {String} data.company_id 公司ID
+     * @apiSuccess {String} data.merchant_id 商户ID
+     * @apiSuccess {String} data.merchant_id_name 商户名称
+     * @apiSuccess {String} data.order_no 订单号
+     * @apiSuccess {String} data.execution_date 取派日期
+     * @apiSuccess {String} data.create_date 开单日期
+     * @apiSuccess {String} data.out_order_no 外部订单号
+     * @apiSuccess {String} data.mask_code 掩码
+     * @apiSuccess {String} data.source 来源
+     * @apiSuccess {String} data.source_name 来源名称
+     * @apiSuccess {String} data.type 类型:1-取2-派3-取派
+     * @apiSuccess {String} data.out_user_id 外部客户ID
+     * @apiSuccess {String} data.nature 性质:1-包裹2-材料3-文件4-增值服务5-其他
+     * @apiSuccess {String} data.settlement_type 结算类型1-寄付2-到付
+     * @apiSuccess {String} data.settlement_amount 结算金额
+     * @apiSuccess {String} data.replace_amount 代收货款
+     * @apiSuccess {String} data.status 状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
+     * @apiSuccess {String} data.second_place_fullname 收件人姓名
+     * @apiSuccess {String} data.second_place_phone 收件人电话
+     * @apiSuccess {String} data.second_place_country 收件人国家
+     * @apiSuccess {String} data.second_place_country_name 收件人国家名称
+     * @apiSuccess {String} data.second_place_post_code 收件人邮编
+     * @apiSuccess {String} data.second_place_house_number 收件人门牌号
+     * @apiSuccess {String} data.second_place_city 收件人城市
+     * @apiSuccess {String} data.second_place_street 收件人街道
+     * @apiSuccess {String} data.second_place_address 收件人详细地址
+     * @apiSuccess {String} data.place_fullname 发件人姓名
+     * @apiSuccess {String} data.place_phone 发件人电话
+     * @apiSuccess {String} data.place_country 发件人国家
+     * @apiSuccess {String} data.place_country_name 发件人国家名称
+     * @apiSuccess {String} data.place_province 发件人省份
+     * @apiSuccess {String} data.place_post_code 发件人邮编
+     * @apiSuccess {String} data.place_house_number 发件人门牌号
+     * @apiSuccess {String} data.place_city 发件人城市
+     * @apiSuccess {String} data.place_district 发件人区县
+     * @apiSuccess {String} data.place_street 发件人街道
+     * @apiSuccess {String} data.place_address 发件人详细地址
+     * @apiSuccess {String} data.special_remark 特殊事项
+     * @apiSuccess {String} data.remark 备注
+     * @apiSuccess {String} data.starting_price 起步价
+     * @apiSuccess {String} data.transport_price_type 运价方案ID
+     * @apiSuccess {String} data.transport_price_type_name 运价方案名称
+     * @apiSuccess {String} data.receipt_type 回单要求
+     * @apiSuccess {String} data.receipt_type_name 回单要求名称
+     * @apiSuccess {String} data.receipt_count 回单数量
+     * @apiSuccess {String} data.created_at 创建时间
+     * @apiSuccess {String} data.updated_at 修改时间
+     * @apiSuccess {Object} data.package_list 包裹列表
+     * @apiSuccess {String} data.package_list.id 包裹ID
+     * @apiSuccess {String} data.package_list.company_id 公司ID
+     * @apiSuccess {String} data.package_list.merchant_id 货主ID
+     * @apiSuccess {String} data.package_list.order_no 订单编号
+     * @apiSuccess {String} data.package_list.tracking_order_no 运单号
+     * @apiSuccess {String} data.package_list.execution_date 取件日期
+     * @apiSuccess {String} data.package_list.second_execution_date 派件日期
+     * @apiSuccess {String} data.package_list.expiration_date 有效日期
+     * @apiSuccess {String} data.package_list.expiration_status 超期状态1-未超期2-已超期3-超期已处理
+     * @apiSuccess {String} data.package_list.type 类型1-取2-派
+     * @apiSuccess {String} data.package_list.name 包裹名称
+     * @apiSuccess {String} data.package_list.express_first_no 快递单号1
+     * @apiSuccess {String} data.package_list.express_second_no 快递单号2
+     * @apiSuccess {String} data.package_list.feature_logo 特性标志
+     * @apiSuccess {String} data.package_list.feature 特性
+     * @apiSuccess {String} data.package_list.out_order_no 外部标识
+     * @apiSuccess {String} data.package_list.weight 重量
+     * @apiSuccess {String} data.package_list.size 重量
+     * @apiSuccess {String} data.package_list.actual_weight 实际重量
+     * @apiSuccess {String} data.package_list.expect_quantity 预计数量
+     * @apiSuccess {String} data.package_list.actual_quantity 实际数量
+     * @apiSuccess {String} data.package_list.status 状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
+     * @apiSuccess {String} data.package_list.stage 阶段1-取件2-中转3-派件
+     * @apiSuccess {String} data.package_list.sticker_no 贴单号
+     * @apiSuccess {String} data.package_list.settlement_amount 结算金额
+     * @apiSuccess {String} data.package_list.count_settlement_amount 估算运费
+     * @apiSuccess {String} data.package_list.sticker_amount 贴单费用
+     * @apiSuccess {String} data.package_list.delivery_amount 提货费用
+     * @apiSuccess {String} data.package_list.remark 备注
+     * @apiSuccess {String} data.package_list.is_auth 是否需要身份验证1-是2-否
+     * @apiSuccess {String} data.package_list.auth_fullname 身份人姓名
+     * @apiSuccess {String} data.package_list.auth_birth_date 身份人出身年月
+     * @apiSuccess {String} data.package_list.created_at 创建时间
+     * @apiSuccess {String} data.package_list.updated_at 修改时间
+     * @apiSuccess {String} data.package_list.status_name 状态名称
+     * @apiSuccess {String} data.package_list.type_name 类型名称
+     * @apiSuccess {Object} data.material_list 材料列表
+     * @apiSuccess {String} data.material_list.id 材料ID
+     * @apiSuccess {String} data.material_list.company_id 公司ID
+     * @apiSuccess {String} data.material_list.merchant_id 商户ID
+     * @apiSuccess {String} data.material_list.tour_no 取件线路编号
+     * @apiSuccess {String} data.material_list.batch_no 站点编号
+     * @apiSuccess {String} data.material_list.tracking_order_no 运单号
+     * @apiSuccess {String} data.material_list.order_no 订单编号
+     * @apiSuccess {String} data.material_list.execution_date 取派日期
+     * @apiSuccess {String} data.material_list.name 材料名称
+     * @apiSuccess {String} data.material_list.code 材料代码
+     * @apiSuccess {String} data.material_list.out_order_no 外部标识
+     * @apiSuccess {String} data.material_list.expect_quantity 预计数量
+     * @apiSuccess {String} data.material_list.actual_quantity 实际数量
+     * @apiSuccess {String} data.material_list.pack_type 包装类型
+     * @apiSuccess {String} data.material_list.type 类型
+     * @apiSuccess {String} data.material_list.weight 重量
+     * @apiSuccess {String} data.material_list.size 体积
+     * @apiSuccess {String} data.material_list.remark 备注
+     * @apiSuccess {String} data.material_list.created_at 创建时间
+     * @apiSuccess {String} data.material_list.updated_at 修改时间
+     * @apiSuccess {String} data.material_list.type_name 类型名称
+     * @apiSuccess {Object} data.amount_list 费用列表
+     * @apiSuccess {String} data.amount_list.id 费用ID
+     * @apiSuccess {String} data.amount_list.company_id 公司ID
+     * @apiSuccess {String} data.amount_list.order_no 订单号
+     * @apiSuccess {String} data.amount_list.expect_amount 预计金额
+     * @apiSuccess {String} data.amount_list.actual_amount 实际金额
+     * @apiSuccess {String} data.amount_list.type 运费类型
+     * @apiSuccess {String} data.amount_list.remark 备注
+     * @apiSuccess {String} data.amount_list.in_total 计入总费用1-计入2-不计入
+     * @apiSuccess {String} data.amount_list.status 状态1-预产生2-已产生3-已支付4-已取消
+     * @apiSuccess {String} data.amount_list.created_at 创建时间
+     * @apiSuccess {String} data.amount_list.updated_at 修改时间
+     * @apiSuccess {String} data.amount_list.type_name 类型名称
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":{"id":4206,"company_id":3,"merchant_id":3,"merchant_id_name":"\u6b27\u4e9a\u5546\u57ce","order_no":"SMAAAEL0001","execution_date":"2021-06-10","out_order_no":"","create_date":"2021-06-09","mask_code":"","source":"2","source_name":"\u6279\u91cf\u5bfc\u5165","type":3,"out_user_id":"12036","nature":1,"settlement_type":0,"settlement_amount":"10.00","replace_amount":"0.00","status":1,"second_place_fullname":"EVA","second_place_phone":"636985217","second_place_country":"","second_place_country_name":null,"second_place_post_code":"9746TN","second_place_house_number":"3-91","second_place_city":"","second_place_street":"","second_place_address":"9746TN 3-91","place_fullname":"test","place_phone":"123654789","place_country":"NL","place_country_name":"\u8377\u5170","place_province":"","place_post_code":"1183GT","place_house_number":"1","place_city":"","place_district":"","place_street":"","place_address":"1 1183GT","special_remark":"","remark":"","unique_code":"","starting_price":"10.00","transport_price_type":"1","transport_price_type_name":"\u9636\u68af\u4e58\u79ef\u503c\u8ba1\u7b97\uff08\u56fa\u5b9a\u8d39\u7528+\uff08\u6bcf\u5355\u4f4d\u91cd\u91cf\u4ef7\u683c*\u91cd\u91cf\u4ef7\u683c\uff09*\uff08\u6bcf\u5355\u4f4d\u91cc\u7a0b\u4ef7\u683c*\u91cc\u7a0b\u4ef7\u683c\uff09\uff09","receipt_type":0,"receipt_type_name":null,"receipt_count":0,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","package_list":[{"id":5080,"company_id":3,"merchant_id":3,"order_no":"SMAAAEL0001","tracking_order_no":"YD00030005577","execution_date":"2021-06-10","second_execution_date":"2021-06-10","expiration_date":null,"expiration_status":1,"type":3,"name":"","express_first_no":"10181","express_second_no":"","feature_logo":"","feature":1,"out_order_no":"","weight":"0.00","size":1,"actual_weight":"","expect_quantity":1,"actual_quantity":0,"status":1,"stage":1,"sticker_no":"","settlement_amount":"0.00","count_settlement_amount":"0.00","sticker_amount":null,"delivery_amount":null,"remark":"","is_auth":2,"auth_fullname":"","auth_birth_date":null,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","status_name":"\u672a\u53d6\u6d3e","type_name":"\u63d0\u8d27->\u7f51\u70b9->\u914d\u9001"}],"material_list":[{"id":831,"company_id":3,"merchant_id":3,"tour_no":"","batch_no":"","tracking_order_no":"YD00030005577","order_no":"SMAAAEL0001","execution_date":"2021-06-10","name":"","code":"102","out_order_no":"","expect_quantity":1,"actual_quantity":0,"pack_type":1,"type":1,"weight":"1.00","size":"1.00","unit_price":"1.00","remark":"","created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u5305\u88c5\u6750\u6599","pack_type_name":"\u7eb8\u7bb1"}],"amount_list":[{"id":2005,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":0,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":null},{"id":2006,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":1,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u57fa\u7840\u8fd0\u8d39"},{"id":2007,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":2,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u8d27\u7269\u4ef7\u503c"},{"id":2008,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":3,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u4fdd\u4ef7\u8d39"},{"id":2009,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":4,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u5305\u88c5\u8d39"},{"id":2010,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":5,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u9001\u8d27\u8d39"},{"id":2011,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":6,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u4e0a\u697c\u8d39"},{"id":2012,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":7,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u63a5\u8d27\u8d39"},{"id":2013,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":8,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u88c5\u5378\u8d39"},{"id":2014,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":9,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u5176\u4ed6\u8d39\u7528"},{"id":2015,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":10,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u4ee3\u6536\u8d27\u6b3e"},{"id":2016,"company_id":3,"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":11,"remark":"","in_total":1,"status":2,"created_at":"2021-06-10 10:03:51","updated_at":"2021-06-10 10:03:51","type_name":"\u8d27\u6b3e\u624b\u7eed\u8d39"}]},"msg":"successful"}
+     */
+    Route::get('/{id}', 'OrderController@show');
 
+    /**
+     * @api {post} /merchant/order 订单新增
+     * @apiName 订单新增
+     * @apiGroup 05order
+     * @apiVersion 1.0.0
+     * @apiUse auth
+     * @apiParam {String} order_no 订单号
+     * @apiParam {String} execution_date 取派日期
+     * @apiParam {String} second_execution_date 取派日期
+     * @apiParam {String} create_date 开单日期
+     * @apiParam {String} out_order_no 外部订单号
+     * @apiParam {String} mask_code 掩码
+     * @apiParam {String} source 来源
+     * @apiParam {String} source_name 来源名称
+     * @apiParam {String} type 类型:1-取2-派3-取派
+     * @apiParam {String} out_user_id 外部客户ID
+     * @apiParam {String} nature 性质:1-包裹2-材料3-文件4-增值服务5-其他
+     * @apiParam {String} settlement_type 结算类型1-寄付2-到付
+     * @apiParam {String} settlement_amount 结算金额
+     * @apiParam {String} replace_amount 代收货款
+     * @apiParam {String} status 状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
+     * @apiParam {String} second_place_fullname 收件人姓名
+     * @apiParam {String} second_place_phone 收件人电话
+     * @apiParam {String} second_place_country 收件人国家
+     * @apiParam {String} second_place_country_name 收件人国家名称
+     * @apiParam {String} second_place_post_code 收件人邮编
+     * @apiParam {String} second_place_house_number 收件人门牌号
+     * @apiParam {String} second_place_city 收件人城市
+     * @apiParam {String} second_place_street 收件人街道
+     * @apiParam {String} second_place_address 收件人详细地址
+     * @apiParam {String} place_fullname 发件人姓名
+     * @apiParam {String} place_phone 发件人电话
+     * @apiParam {String} place_country 发件人国家
+     * @apiParam {String} place_country_name 发件人国家名称
+     * @apiParam {String} place_province 发件人省份
+     * @apiParam {String} place_post_code 发件人邮编
+     * @apiParam {String} place_house_number 发件人门牌号
+     * @apiParam {String} place_city 发件人城市
+     * @apiParam {String} place_district 发件人区县
+     * @apiParam {String} place_street 发件人街道
+     * @apiParam {String} place_address 发件人详细地址
+     * @apiParam {String} special_remark 特殊事项
+     * @apiParam {String} remark 备注
+     * @apiParam {String} starting_price 起步价
+     * @apiParam {String} transport_price_type 运价方案ID
+     * @apiParam {String} receipt_type 回单要求
+     * @apiParam {String} receipt_type_name 回单要求名称
+     * @apiParam {String} receipt_count 回单数量
+     * @apiParam {Object} package_list 包裹列表
+     * @apiParam {String} package_list.expiration_date 有效日期
+     * @apiParam {String} package_list.name 包裹名称
+     * @apiParam {String} package_list.express_first_no 快递单号1
+     * @apiParam {String} package_list.express_second_no 快递单号2
+     * @apiParam {String} package_list.feature_logo 特性标志
+     * @apiParam {String} package_list.out_order_no 外部标识
+     * @apiParam {String} package_list.weight 重量
+     * @apiParam {String} package_list.size 重量
+     * @apiParam {String} package_list.actual_weight 实际重量
+     * @apiParam {String} package_list.expect_quantity 预计数量
+     * @apiParam {String} package_list.actual_quantity 实际数量
+     * @apiParam {String} package_list.sticker_no 贴单号
+     * @apiParam {String} package_list.settlement_amount 结算金额
+     * @apiParam {String} package_list.count_settlement_amount 估算运费
+     * @apiParam {String} package_list.sticker_amount 贴单费用
+     * @apiParam {String} package_list.delivery_amount 提货费用
+     * @apiParam {String} package_list.remark 备注
+     * @apiParam {String} package_list.is_auth 是否需要身份验证1-是2-否
+     * @apiParam {String} package_list.auth_fullname 身份人姓名
+     * @apiParam {String} package_list.auth_birth_date 身份人出身年月
+     * @apiParam {Object} material_list 材料列表
+     * @apiParam {String} material_list.execution_date 取派日期
+     * @apiParam {String} material_list.name 材料名称
+     * @apiParam {String} material_list.code 材料代码
+     * @apiParam {String} material_list.out_order_no 外部标识
+     * @apiParam {String} material_list.expect_quantity 预计数量
+     * @apiParam {String} material_list.actual_quantity 实际数量
+     * @apiParam {String} material_list.pack_type 包装类型
+     * @apiParam {String} material_list.type 类型
+     * @apiParam {String} material_list.weight 重量
+     * @apiParam {String} material_list.size 体积
+     * @apiParam {String} material_list.remark 备注
+     * @apiParam {Object} amount_list 费用列表
+     * @apiParam {String} amount_list.id 费用ID
+     * @apiParam {String} amount_list.expect_amount 预计金额
+     * @apiParam {String} amount_list.actual_amount 实际金额
+     * @apiParam {String} amount_list.type 运费类型
+     * @apiParam {String} amount_list.remark 备注
+     *
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    返回数据
+     * @apiSuccess {String} data.id    ID
+     * @apiSuccess {String} data.order_no    订单号
+     * @apiSuccess {String} data.out_order_no    外部订单号
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":{"id":4207,"order_no":"SMAAAEM0001","out_order_no":"DEVV21904566802"},"msg":"successful"}
+     */
+    //新增
+    Route::post('/', 'OrderController@store');
+
+    /**
+     * @api {put} /merchant/order/{id} 订单修改
+     * @apiName 订单修改
+     * @apiGroup 05order
+     * @apiVersion 1.0.0
+     * @apiUse auth
+     * @apiParam {String} id 订单ID
+     * @apiParam {String} order_no 订单号
+     * @apiParam {String} execution_date 取派日期
+     * @apiParam {String} second_execution_date 取派日期
+     * @apiParam {String} create_date 开单日期
+     * @apiParam {String} out_order_no 外部订单号
+     * @apiParam {String} mask_code 掩码
+     * @apiParam {String} source 来源
+     * @apiParam {String} source_name 来源名称
+     * @apiParam {String} type 类型:1-取2-派3-取派
+     * @apiParam {String} out_user_id 外部客户ID
+     * @apiParam {String} nature 性质:1-包裹2-材料3-文件4-增值服务5-其他
+     * @apiParam {String} settlement_type 结算类型1-寄付2-到付
+     * @apiParam {String} settlement_amount 结算金额
+     * @apiParam {String} replace_amount 代收货款
+     * @apiParam {String} status 状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
+     * @apiParam {String} second_place_fullname 收件人姓名
+     * @apiParam {String} second_place_phone 收件人电话
+     * @apiParam {String} second_place_country 收件人国家
+     * @apiParam {String} second_place_country_name 收件人国家名称
+     * @apiParam {String} second_place_post_code 收件人邮编
+     * @apiParam {String} second_place_house_number 收件人门牌号
+     * @apiParam {String} second_place_city 收件人城市
+     * @apiParam {String} second_place_street 收件人街道
+     * @apiParam {String} second_place_address 收件人详细地址
+     * @apiParam {String} place_fullname 发件人姓名
+     * @apiParam {String} place_phone 发件人电话
+     * @apiParam {String} place_country 发件人国家
+     * @apiParam {String} place_country_name 发件人国家名称
+     * @apiParam {String} place_province 发件人省份
+     * @apiParam {String} place_post_code 发件人邮编
+     * @apiParam {String} place_house_number 发件人门牌号
+     * @apiParam {String} place_city 发件人城市
+     * @apiParam {String} place_district 发件人区县
+     * @apiParam {String} place_street 发件人街道
+     * @apiParam {String} place_address 发件人详细地址
+     * @apiParam {String} special_remark 特殊事项
+     * @apiParam {String} remark 备注
+     * @apiParam {String} starting_price 起步价
+     * @apiParam {String} transport_price_type 运价方案ID
+     * @apiParam {String} receipt_type 回单要求
+     * @apiParam {String} receipt_type_name 回单要求名称
+     * @apiParam {String} receipt_count 回单数量
+     * @apiParam {Object} package_list 包裹列表
+     * @apiParam {String} package_list.expiration_date 有效日期
+     * @apiParam {String} package_list.name 包裹名称
+     * @apiParam {String} package_list.express_first_no 快递单号1
+     * @apiParam {String} package_list.express_second_no 快递单号2
+     * @apiParam {String} package_list.feature_logo 特性标志
+     * @apiParam {String} package_list.out_order_no 外部标识
+     * @apiParam {String} package_list.weight 重量
+     * @apiParam {String} package_list.size 重量
+     * @apiParam {String} package_list.actual_weight 实际重量
+     * @apiParam {String} package_list.expect_quantity 预计数量
+     * @apiParam {String} package_list.actual_quantity 实际数量
+     * @apiParam {String} package_list.sticker_no 贴单号
+     * @apiParam {String} package_list.settlement_amount 结算金额
+     * @apiParam {String} package_list.count_settlement_amount 估算运费
+     * @apiParam {String} package_list.sticker_amount 贴单费用
+     * @apiParam {String} package_list.delivery_amount 提货费用
+     * @apiParam {String} package_list.remark 备注
+     * @apiParam {String} package_list.is_auth 是否需要身份验证1-是2-否
+     * @apiParam {String} package_list.auth_fullname 身份人姓名
+     * @apiParam {String} package_list.auth_birth_date 身份人出身年月
+     * @apiParam {Object} material_list 材料列表
+     * @apiParam {String} material_list.execution_date 取派日期
+     * @apiParam {String} material_list.name 材料名称
+     * @apiParam {String} material_list.code 材料代码
+     * @apiParam {String} material_list.out_order_no 外部标识
+     * @apiParam {String} material_list.expect_quantity 预计数量
+     * @apiParam {String} material_list.actual_quantity 实际数量
+     * @apiParam {String} material_list.pack_type 包装类型
+     * @apiParam {String} material_list.type 类型
+     * @apiParam {String} material_list.weight 重量
+     * @apiParam {String} material_list.size 体积
+     * @apiParam {String} material_list.remark 备注
+     * @apiParam {Object} amount_list 费用列表
+     * @apiParam {String} amount_list.id 费用ID
+     * @apiParam {String} amount_list.expect_amount 预计金额
+     * @apiParam {String} amount_list.actual_amount 实际金额
+     * @apiParam {String} amount_list.type 运费类型
+     * @apiParam {String} amount_list.remark 备注
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    返回数据
 
      * @apiSuccessExample {json} Success-Response:
      * {"code":200,"data":[],"msg":"successful"}
      */
-    Route::get('/{id}', 'OrderController@show');
-    //新增
-    Route::post('/', 'OrderController@store');
     //修改
     Route::put('/{id}', 'OrderController@update');
+
+    /**
+     * @api {delete} /merchant/{id} 订单删除
+     * @apiName 订单删除
+     * @apiGroup 05order
+     * @apiVersion 1.0.0
+     * @apiUse auth
+     *
+     * @apiParam {String} id 订单ID
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    返回数据
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":[],"msg":"successful"}
+     */
     //删除
     Route::delete('/{id}', 'OrderController@destroy');
 
-    //获取继续派送(再次取派)信息
-    Route::get('/{id}/again-info', 'OrderController@getAgainInfo');
-    //继续派送(再次取派)
-    Route::put('/{id}/again', 'OrderController@again');
-    //终止派送
-    Route::put('/{id}/end', 'OrderController@end');
+//    //获取继续派送(再次取派)信息
+//    Route::get('/{id}/again-info', 'OrderController@getAgainInfo');
+//    //继续派送(再次取派)
+//    Route::put('/{id}/again', 'OrderController@again');
+//    //终止派送
+//    Route::put('/{id}/end', 'OrderController@end');
 
-    //订单追踪
-    //Route::get('/{id}/track', 'OrderController@track');
-    //批量更新电话日期
-    //Route::post('/update-phone-date-list', 'OrderController@updateByApiList');
-    //获取订单的运单列表
-    //Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList');
-    //修改订单地址
-    //Route::put('/{id}/update-address-date', 'OrderController@updateAddressDate');
+    /**
+     * @api {delete} /merchant/{id} 通过订单获取可选日期
+     * @apiName 通过订单获取可选日期
+     * @apiGroup 05order
+     * @apiVersion 1.0.0
+     * @apiUse auth
+     *
+     * @apiParam {String} id 订单ID
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    日期数组
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":["2021-06-11","2021-06-13","2021-06-16","2021-06-18","2021-06-20"],"msg":"successful"}
+     */
     //获取可分配路线日期
     Route::get('/{id}/get-date', 'OrderController@getAbleDateList');
+
+    /**
+     * @api {delete} /merchant/{id} 订单删除
+     * @apiName 订单删除
+     * @apiGroup 05order
+     * @apiVersion 1.0.0
+     * @apiUse auth
+     *
+     * @apiParam {String} id 订单ID
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    返回数据
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":[],"msg":"successful"}
+     */
     //通过地址获取可分配的路线日期列表
     Route::get('/get-date', 'OrderController@getAbleDateListByAddress');
     //分配至站点
