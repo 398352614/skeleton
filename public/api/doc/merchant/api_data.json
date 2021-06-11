@@ -4091,7 +4091,7 @@
   },
   {
     "type": "get",
-    "url": "/merchant",
+    "url": "/merchant/order",
     "title": "订单查询",
     "name": "订单查询",
     "group": "05order",
@@ -4588,7 +4588,7 @@
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant"
+        "url": "https://dev-tms.nle-tech.com/api/merchant/order"
       }
     ],
     "header": {
@@ -4710,7 +4710,7 @@
   },
   {
     "type": "get",
-    "url": "/merchant/{id}",
+    "url": "/merchant/order/{id}",
     "title": "订单详情",
     "name": "订单详情",
     "group": "05order",
@@ -5606,7 +5606,7 @@
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/{id}"
+        "url": "https://dev-tms.nle-tech.com/api/merchant/order/{id}"
       }
     ],
     "header": {

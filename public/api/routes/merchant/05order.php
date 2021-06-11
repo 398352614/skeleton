@@ -129,7 +129,7 @@ Route::prefix('order')->group(function () {
 
     //获取详情
     /**
-     * @api {get} /merchant/{id} 订单详情
+     * @api {get} /merchant/order/{id} 订单详情
      * @apiName 订单详情
      * @apiGroup 05order
      * @apiVersion 1.0.0
