@@ -423,6 +423,7 @@ class BaseConstService
     const ORDER_TRAIL_UPDATE = 8;
     const ORDER_TRAIL_CLOSED = 9;
     const ORDER_TRAIL_DELETE = 10;
+    const ORDER_TRAIL_ALL_FINISH = 11;
 
     /**
      * order_trail 订单轨迹常量

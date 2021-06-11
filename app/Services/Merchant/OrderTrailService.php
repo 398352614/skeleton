@@ -38,7 +38,7 @@ class OrderTrailService extends BaseService
     public function show($id)
     {
         $order = $this->getOrderService()->getInfo(['id' => $id], ['*'], true);
-        if(!empty($order)){
+        if (!empty($order)) {
             if ($order['type'] == BaseConstService::ORDER_TYPE_1) {
                 $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1], ['*'], ['id' => 'desc']);
                 $order['pickup_warehouse_lon'] = $trackingOrder['warehouse_lon'];
@@ -55,7 +55,18 @@ class OrderTrailService extends BaseService
                 $order['pie_warehouse_lon'] = $pieTrackingOrder['warehouse_lon'];
                 $order['pie_warehouse_lat'] = $pieTrackingOrder['warehouse_lat'];
             }
-            $order['trail_list'] = parent::getList(['order_no' => $order['order_no']], ['*'], true, [], ['id' => 'desc']);
+            $list = parent::getList(['order_no' => $order['order_no']], ['*'], true, [], ['id' => 'asc']);
+            $a = 0;
+            foreach ($list as $k => $v) {
+                if ($list[$k]['type'] == BaseConstService::ORDER_TRAIL_FINISH) {
+                    $a = $a + 1;
+                }
+                if ($a == 2) {
+                    $list[$k]['type'] = BaseConstService::ORDER_TRAIL_ALL_FINISH;
+                    $a = 0;
+                }
+            }
+            $order['trail_list']=array_reverse(collect($list)->toArray());
             return $order;
         }
 
