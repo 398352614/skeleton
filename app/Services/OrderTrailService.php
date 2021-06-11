@@ -143,4 +143,12 @@ class OrderTrailService extends BaseService
             return $data;
         }
     }
+
+    public function merchantHome()
+    {
+        $this->formData['per_page'] = 5;
+        $this->orderBy = ['id' => 'desc'];
+        $this->query->whereIn('type', [BaseConstService::ORDER_TRAIL_START, BaseConstService::ORDER_TRAIL_FINISH]);
+        return parent::getPageList();
+    }
 }

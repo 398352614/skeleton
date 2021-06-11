@@ -77,7 +77,7 @@ class HomeController extends BaseController
 
     /**
      * 总计统计
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function trail()
     {

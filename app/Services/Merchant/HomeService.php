@@ -131,8 +131,6 @@ class HomeService extends BaseService
      */
     public function trail()
     {
-        $this->per_page = 5;
-        $this->orderBy = ['id' => 'desc'];
-        return $this->getOrderTrailService()->getPageList();
+        return $this->getOrderTrailService()->merchantHome();
     }
 }
