@@ -6,7 +6,7 @@ use App\Services\Merchant\BaseWarehouseService;
 use App\Services\Merchant\OrderAmountService;
 use App\Services\Merchant\OrderDefaultConfigService;
 use App\Services\Merchant\OrderTemplateService;
-use App\Services\merchant\OrderTrailService;
+use App\Services\Merchant\OrderTrailService;
 use App\Services\Merchant\StockService;
 use App\Services\Merchant\TrackingPackageService;
 use App\Services\Merchant\AddressService;
