@@ -49,14 +49,16 @@ class TourTaskService extends BaseService
      */
     public function getPageList()
     {
-        if($this->formData['sort_by'] == 'execution_date' && $this->formData['sort']== BaseConstService::YES){
-            $this->query->orderByDesc('execution_date');
-        }elseif($this->formData['sort_by'] == 'execution_date'  && $this->formData['sort']== BaseConstService::NO){
-            $this->query->orderBy('execution_date');
-        }elseif($this->formData['sort_by'] == 'end_time'  && $this->formData['sort']== BaseConstService::YES){
-            $this->query->orderByDesc('end_time');
-        }elseif($this->formData['sort_by'] == 'end_time'  && $this->formData['sort']== BaseConstService::NO){
-            $this->query->orderBy('end_time');
+        if(!empty($this->formData['sort_by']) && !empty($this->formData['sort'])){
+            if($this->formData['sort_by'] == 'execution_date' && $this->formData['sort']== BaseConstService::YES){
+                $this->query->orderByDesc('execution_date');
+            }elseif($this->formData['sort_by'] == 'execution_date'  && $this->formData['sort']== BaseConstService::NO){
+                $this->query->orderBy('execution_date');
+            }elseif($this->formData['sort_by'] == 'end_time'  && $this->formData['sort']== BaseConstService::YES){
+                $this->query->orderByDesc('end_time');
+            }elseif($this->formData['sort_by'] == 'end_time'  && $this->formData['sort']== BaseConstService::NO){
+                $this->query->orderBy('end_time');
+            }
         }
         //若状态为1000,则表示当前任务
         if (!empty($this->filters['status'][1]) && (intval($this->filters['status'][1]) === 1000)) {
