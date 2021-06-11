@@ -1,4 +1,4 @@
-{
+define({
   "name": "红兔TMS API文档",
   "version": "1.0.0",
   "description": "本文档提供TMS接口文档供开发人员作为参考，文档使用RESTful风格，如有疑问请联系开发者",
@@ -9,8 +9,8 @@
   "defaultVersion": "0.0.0",
   "generator": {
     "name": "apidoc",
-    "time": "2021-06-11T10:42:49.337Z",
+    "time": "2021-06-11T10:44:42.387Z",
     "url": "https://apidocjs.com",
     "version": "0.28.1"
   }
-}
+});

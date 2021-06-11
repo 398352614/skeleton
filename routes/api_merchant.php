@@ -39,6 +39,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
     Route::put('timezone', 'AuthController@updateTimezone');
     //公司信息
     Route::get('company', 'CompanyController@show');
+    Route::post('order-dispatch-info/{id}', 'LineController@getOrderDispatchInfo');//获取可选日期
 
     //主页统计
     Route::prefix('statistics')->group(function () {
@@ -134,6 +135,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //删除
         Route::delete('/{id}', 'AddressController@destroy');
     });
+
 
     //运价管理
     Route::prefix('transport-price')->group(function () {
