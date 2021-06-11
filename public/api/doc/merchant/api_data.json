@@ -5784,7 +5784,7 @@
             "type": "String",
             "optional": false,
             "field": "data.trail_list.type",
-            "description": "<p>轨迹类型5，6为仓库</p>"
+            "description": "<p>轨迹类型1-起点，11-终点，5，6为仓库</p>"
           },
           {
             "group": "Success 200",
