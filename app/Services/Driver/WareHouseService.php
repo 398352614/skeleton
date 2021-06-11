@@ -22,7 +22,7 @@ class WareHouseService extends BaseService
     {
 //        $rootWarehouse = parent::getInfo(['parent' => 0], ['*'], false);
 //        $this->query->where('id', '<>', $rootWarehouse['id']);
-        return parent::getPageList();
+        return Warehouse::getRoots()->first()->getTree() ?? [];
     }
 
     public function home()
@@ -42,5 +42,13 @@ class WareHouseService extends BaseService
                 'not_unpack_bag' => $notUnpackBagCount
             ]
         ];
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function getTree(): array
+    {
+        return Warehouse::getRoots()->first()->getTree() ?? [];
     }
 }
