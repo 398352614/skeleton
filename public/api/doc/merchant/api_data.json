@@ -928,7 +928,7 @@
   },
   {
     "type": "get",
-    "url": "/merchant/statistics/this-week",
+    "url": "/merchant/statistics/today-overview",
     "title": "今日订单情况",
     "name": "今日订单情况",
     "group": "03home",
@@ -985,7 +985,7 @@
     "groupTitle": "首页",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/this-week"
+        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/today-overview"
       }
     ],
     "header": {
@@ -1315,7 +1315,7 @@
   },
   {
     "type": "get",
-    "url": "/merchant/statistics/this-week",
+    "url": "/merchant/statistics/order-trail",
     "title": "订单动态",
     "name": "订单动态",
     "group": "03home",
@@ -1372,7 +1372,7 @@
     "groupTitle": "首页",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/this-week"
+        "url": "https://dev-tms.nle-tech.com/api/merchant/statistics/order-trail"
       }
     ],
     "header": {

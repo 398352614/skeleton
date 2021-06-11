@@ -63,7 +63,7 @@ Route::prefix('order')->group(function () {
     Route::get('/count', 'OrderController@ordercount');
     //列表查询
     /**
-     * @api {get} /merchant 订单查询
+     * @api {get} /merchant/order 订单查询
      * @apiName 订单查询
      * @apiGroup 05order
      * @apiVersion 1.0.0
