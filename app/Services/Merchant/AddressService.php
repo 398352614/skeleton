@@ -26,7 +26,7 @@ class AddressService extends BaseService
     public $filterRules = [
         'place_fullname' => ['like', 'place_fullname'],
         'place_post_code' => ['like', 'place_post_code'],
-        'place_phone' => ['like', 'place_fullname'],
+        'place_phone' => ['like', 'place_phone'],
         'type' => ['=', 'type'],
     ];
 

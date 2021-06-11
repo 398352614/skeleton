@@ -104,13 +104,10 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/bill', 'OrderController@orderBillPrint')->name('order.print');
         //获取网点
         Route::get('/warehouse', 'OrderController@getWarehouse')->name('order.store');
+        //订单轨迹
+        Route::get('/{id}/trail', 'OrderTrailController@show')->name('order-trail.index');
     });
 
-    //物流状态管理
-    Route::prefix('trail')->group(function () {
-        //rest api 放在最后
-        Route::get('/order/{order_no}', 'OrderTrailController@index')->name('order-trail.index');
-    });
 
     //订单导入
     Route::prefix('order-import')->group(function () {

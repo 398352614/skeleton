@@ -167,6 +167,7 @@ class CompanyScope implements Scope
                 && !($model instanceof MerchantGroupLine)
                 && !($model instanceof Tour)
                 && !($model instanceof OrderAmount)
+                && !($model instanceof OrderTrail)
                 && !($model instanceof Line)
                 && !($model instanceof LineRange)
                 && !($model instanceof LineArea)

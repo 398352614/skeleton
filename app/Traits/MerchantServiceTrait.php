@@ -6,6 +6,7 @@ use App\Services\Merchant\BaseWarehouseService;
 use App\Services\Merchant\OrderAmountService;
 use App\Services\Merchant\OrderDefaultConfigService;
 use App\Services\Merchant\OrderTemplateService;
+use App\Services\merchant\OrderTrailService;
 use App\Services\Merchant\StockService;
 use App\Services\Merchant\TrackingPackageService;
 use App\Services\Merchant\AddressService;
@@ -33,7 +34,6 @@ use App\Services\Merchant\TransportPriceService;
 use App\Services\Merchant\UploadService;
 use App\Services\Merchant\WareHouseService;
 use App\Services\OrderNoRuleService;
-use App\Services\OrderTrailService;
 use App\Services\PackageNoRuleService;
 
 Trait MerchantServiceTrait
