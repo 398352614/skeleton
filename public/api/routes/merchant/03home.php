@@ -104,7 +104,7 @@ Route::prefix('statistics')->group(function () {
     Route::get('/period', 'HomeController@periodCount')->name('statistics.home');
 
     /**
-     * @api {get} /merchant/statistics/this-week 今日订单情况
+     * @api {get} /merchant/statistics/today-overview 今日订单情况
      * @apiName 今日订单情况
      * @apiGroup 03home
      * @apiVersion 1.0.0
@@ -120,7 +120,7 @@ Route::prefix('statistics')->group(function () {
     Route::get('/today-overview', 'HomeController@todayOverview')->name('statistics.home');
 
     /**
-     * @api {get} /merchant/statistics/this-week 订单动态
+     * @api {get} /merchant/statistics/order-trail 订单动态
      * @apiName 订单动态
      * @apiGroup 03home
      * @apiVersion 1.0.0

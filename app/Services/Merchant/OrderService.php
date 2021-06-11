@@ -661,6 +661,7 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        unset($params['created_at'],$params['updated_at']);
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         $fields = ['place_fullname', 'place_phone',
             'place_country', 'place_province', 'place_city', 'place_district',
