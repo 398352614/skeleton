@@ -5639,6 +5639,207 @@
   },
   {
     "type": "get",
+    "url": "/merchant/order/{id}/trail",
+    "title": "订单轨迹",
+    "name": "订单轨迹",
+    "group": "05order",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>订单ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.id",
+            "description": "<p>订单ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.order_no",
+            "description": "<p>订单号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.type",
+            "description": "<p>类型1-取件2-派件3-取派件，类型为1以发件人为起点取件仓库为终点，类型为2以收件人为终点，派件仓库为起点，类型为3以发件人为起点，收件人为终点，依次经过取件仓库和派件仓库</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_lon",
+            "description": "<p>发件人经度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_lat",
+            "description": "<p>发件人纬度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_lon",
+            "description": "<p>收件人经度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.second_place_lat",
+            "description": "<p>收件人纬度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.pickup_warehouse_lon",
+            "description": "<p>取件仓库经度 取派件仓库如果重复则只渲染一个</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.pickup_warehouse_lat",
+            "description": "<p>派件仓库纬度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.pie_warehouse_lon",
+            "description": "<p>派件仓库经度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.pie_warehouse_lat",
+            "description": "<p>派件仓库纬度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.trail_list",
+            "description": "<p>轨迹列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.trail_list.id",
+            "description": "<p>轨迹ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.trail_list.content",
+            "description": "<p>轨迹内容</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.trail_list.type",
+            "description": "<p>轨迹类型5，6为仓库</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.trail_list.created_at",
+            "description": "<p>创建时间</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"code\":200,\"data\":{\"id\":4224,\"company_id\":3,\"merchant_id\":121,\"merchant_id_name\":\"\\u540c\\u57ce\\u6d3e\\u9001\",\"order_no\":\"SMAAAFC0001\",\"execution_date\":\"2021-06-12\",\"second_execution_date\":\"2021-06-12\",\"out_order_no\":\"BG609NL2077\",\"mask_code\":\"2058\",\"source\":\"3\",\"source_name\":\"\\u7b2c\\u4e09\\u65b9\",\"list_mode\":1,\"transport_mode\":1,\"transport_mode_name\":\"\\u6574\\u8f66\",\"origin_type\":1,\"control_mode\":1,\"control_mode_name\":null,\"origin_type_name\":\"\\u4ece\\u7f51\\u70b9\\u51fa\\u53d1\\uff0c\\u56de\\u5230\\u7f51\\u70b9\",\"type\":3,\"type_name\":\"\\u63d0\\u8d27->\\u7f51\\u70b9->\\u914d\\u9001\",\"out_user_id\":\"904566\",\"nature\":1,\"settlement_type\":1,\"settlement_type_name\":\"\\u73b0\\u4ed8\",\"settlement_amount\":\"25.00\",\"replace_amount\":\"0.00\",\"delivery\":2,\"delivery_name\":\"\\u5426\",\"status\":2,\"sticker_amount\":\"0.00\",\"delivery_amount\":\"0.00\",\"status_name\":\"\\u53d6\\u6d3e\\u4e2d\",\"second_place_fullname\":\"Ann\",\"second_place_phone\":\"0031123456789\",\"second_place_country\":\"NL\",\"second_place_country_name\":\"\\u8377\\u5170\",\"second_place_province\":\"Noord-Holland\",\"second_place_post_code\":\"1118CP\",\"second_place_house_number\":\"202\",\"second_place_city\":\"Schiphol\",\"second_place_district\":\"Haarlemmermeer\",\"second_place_street\":\"Evert van de Beekstraat\",\"second_place_address\":\"NL Schiphol Evert van de Beekstraat 202 1118CP\",\"second_place_lon\":\"4.74791023\",\"second_place_lat\":\"52.30389933\",\"place_fullname\":\"Nie\",\"place_phone\":\"0031123654789\",\"place_country\":\"NL\",\"place_country_name\":\"\\u8377\\u5170\",\"place_province\":\"\",\"place_post_code\":\"1055RZ\",\"place_house_number\":\"94\",\"place_city\":\"Amsterdam\",\"place_district\":\"\",\"place_street\":\"Nieuwpoortstraat\",\"place_address\":\"NL Amsterdam Nieuwpoortstraat 94 1055RZ\",\"place_lon\":\"4.85681831\",\"place_lat\":\"52.38420131\",\"special_remark\":null,\"remark\":null,\"starting_price\":\"5.00\",\"transport_price_type\":\"2\",\"transport_price_type_name\":\"\\u9636\\u68af\\u56fa\\u5b9a\\u503c\\u8ba1\\u7b97\\uff08\\u56fa\\u5b9a\\u8d39\\u7528+\\uff08\\u91cd\\u91cf\\u4ef7\\u683c\\u6863\\uff09*\\uff08\\u91cc\\u7a0b\\u4ef7\\u683c\\u6863\\uff09\\uff09\",\"receipt_type\":1,\"receipt_type_name\":\"\\u539f\\u5355\\u8fd4\\u56de\",\"receipt_count\":0,\"create_date\":null,\"created_at\":\"2021-06-11 07:37:54\",\"updated_at\":\"2021-06-11 07:41:50\",\"item_list\":null,\"expect_total_amount\":\"0.00\",\"actual_total_amount\":\"0.00\",\"pickup_warehouse_lon\":\"4.87510019\",\"pickup_warehouse_lat\":\"52.31153083\",\"pie_warehouse_lon\":null,\"pie_warehouse_lat\":null,\"trail_list\":[{\"id\":11331,\"company_id\":3,\"type\":6,\"order_no\":\"SMAAAFC0001\",\"content\":\"\\u8ba2\\u5355[\\u6d3e\\u4ef6]\\u5931\\u8d25\",\"created_at\":\"2021-06-11 07:42:39\"},{\"id\":11330,\"company_id\":3,\"type\":4,\"order_no\":\"SMAAAFC0001\",\"content\":\"\\u8ba2\\u5355[\\u6d3e\\u4ef6]\\u5f00\\u59cb\",\"created_at\":\"2021-06-11 07:41:50\"},{\"id\":11329,\"company_id\":3,\"type\":2,\"order_no\":\"SMAAAFC0001\",\"content\":\"\\u8ba2\\u5355[\\u6d3e\\u4ef6]\\u51c6\\u5907\\u4e2d\\uff0c\\u8d27\\u54c1\\u5df2\\u9501\\u5b9a\",\"created_at\":\"2021-06-11 07:41:35\"},{\"id\":11328,\"company_id\":3,\"type\":7,\"order_no\":\"SMAAAFC0001\",\"content\":\"\\u8ba2\\u5355[\\u6d3e\\u4ef6]\\u8fd0\\u5355\\u521b\\u5efa\\uff0c\\u751f\\u6210\\u8fd0\\u5355\\u53f7[YD00030005603]\\uff0c\\u65e5\\u671f[2021-06-12]\",\"created_at\":\"2021-06-11 07:40:53\"},{\"id\":11327,\"company_id\":3,\"type\":5,\"order_no\":\"SMAAAFC0001\",\"content\":\"\\u8ba2\\u5355[\\u53d6\\u4ef6]\\u5b8c\\u6210\",\"created_at\":\"2021-06-11 07:39:46\"},{\"id\":11326,\"company_id\":3,\"type\":4,\"order_no\":\"SMAAAFC0001\",\"content\":\"\\u8ba2\\u5355[\\u53d6\\u4ef6]\\u5f00\\u59cb\",\"created_at\":\"2021-06-11 07:39:14\"},{\"id\":11325,\"company_id\":3,\"type\":2,\"order_no\":\"SMAAAFC0001\",\"content\":\"\\u8ba2\\u5355[\\u53d6\\u4ef6]\\u51c6\\u5907\\u4e2d\\uff0c\\u8d27\\u54c1\\u5df2\\u9501\\u5b9a\",\"created_at\":\"2021-06-11 07:39:05\"},{\"id\":11324,\"company_id\":3,\"type\":1,\"order_no\":\"SMAAAFC0001\",\"content\":\"\\u8ba2\\u5355\\u521b\\u5efa\\u6210\\u529f\\uff0c\\u8ba2\\u5355\\u53f7[SMAAAFC0001]\\uff0c\\u751f\\u6210\\u8fd0\\u5355\\u53f7[YD00030005602]\",\"created_at\":\"2021-06-11 07:37:54\"}]},\"msg\":\"successful\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchant/05order.php",
+    "groupTitle": "订单管理",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant/order/{id}/trail"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
+    "type": "get",
     "url": "/merchant/order/get-date",
     "title": "通过地址获取可选日期",
     "name": "通过地址获取可选日期",
@@ -8080,98 +8281,6 @@
     "sampleRequest": [
       {
         "url": "https://dev-tms.nle-tech.com/api/merchant/order-import/template"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "language",
-            "description": "<p>语言cn-中文en-英文。</p>"
-          },
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Header-Example:",
-          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
-          "type": "json"
-        }
-      ]
-    }
-  },
-  {
-    "type": "get",
-    "url": "/trail/order",
-    "title": "订单轨迹",
-    "name": "订单轨迹",
-    "group": "07trail",
-    "version": "1.0.0",
-    "parameter": {
-      "examples": [
-        {
-          "title": "Param-Response:",
-          "content": "{\"timezone\":\"GMT+00:00\"}",
-          "type": "json"
-        }
-      ]
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "Number",
-            "optional": false,
-            "field": "code",
-            "description": "<p>状态码，200：请求成功</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "msg",
-            "description": "<p>提示信息</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "Object",
-            "optional": false,
-            "field": "data",
-            "description": "<p>返回数据</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "data.data1",
-            "description": "<p>返回数据</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\"code\":200,\"data\":[],\"msg\":\"successful\"}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "public/api/routes/merchant/07trail.php",
-    "groupTitle": "轨迹",
-    "sampleRequest": [
-      {
-        "url": "https://dev-tms.nle-tech.com/api/trail/order"
       }
     ],
     "header": {
