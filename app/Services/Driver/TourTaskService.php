@@ -27,7 +27,8 @@ class TourTaskService extends BaseService
 {
     public $filterRules = [
         'execution_date' => ['=', 'execution_date'],
-        'status' => ['=', 'status']
+        'status' => ['=', 'status'],
+        'tour_no'=>['like','tour_no']
     ];
 
     public $orderBy = [
@@ -48,6 +49,15 @@ class TourTaskService extends BaseService
      */
     public function getPageList()
     {
+        if($this->formData['sort_by'] == 'execution_date' && $this->formData['sort']== BaseConstService::YES){
+            $this->query->orderByDesc('execution_date');
+        }elseif($this->formData['sort_by'] == 'execution_date'  && $this->formData['sort']== BaseConstService::NO){
+            $this->query->orderBy('execution_date');
+        }elseif($this->formData['sort_by'] == 'end_time'  && $this->formData['sort']== BaseConstService::YES){
+            $this->query->orderByDesc('end_time');
+        }elseif($this->formData['sort_by'] == 'end_time'  && $this->formData['sort']== BaseConstService::NO){
+            $this->query->orderBy('end_time');
+        }
         //若状态为1000,则表示当前任务
         if (!empty($this->filters['status'][1]) && (intval($this->filters['status'][1]) === 1000)) {
             $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
