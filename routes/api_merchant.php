@@ -55,7 +55,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //今日概览
         Route::get('/today-overview', 'HomeController@todayOverview')->name('statistics.home');
         //订单动态
-        Route::get('/order-trail', 'HomeController@orderAnalysis')->name('statistics.home');
+        Route::get('/order-trail', 'HomeController@trail')->name('statistics.home');
 
 
     });
