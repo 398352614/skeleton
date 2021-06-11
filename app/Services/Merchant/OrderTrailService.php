@@ -6,7 +6,7 @@
  * Time: 14:53
  */
 
-namespace App\Services\merchant;
+namespace App\Services\Merchant;
 
 use App\Http\Resources\Api\OrderTrailResource;
 use App\Models\OrderTrail;
