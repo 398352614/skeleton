@@ -49,7 +49,7 @@ class OrderTrailService extends BaseService
         } elseif ($order['type'] == BaseConstService::ORDER_TYPE_3) {
             $pickupTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1], ['*'], ['id' => 'desc']);
             $order['pickup_warehouse_lon'] = $pickupTrackingOrder['warehouse_lon'];
-            $order['pickup_warehouse_lon'] = $pickupTrackingOrder['warehouse_lat'];
+            $order['pickup_warehouse_lat'] = $pickupTrackingOrder['warehouse_lat'];
             $pieTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2], ['*'], ['id' => 'desc']);
             $order['pie_warehouse_lon'] = $pieTrackingOrder['warehouse_lon'];
             $order['pie_warehouse_lat'] = $pieTrackingOrder['warehouse_lat'];

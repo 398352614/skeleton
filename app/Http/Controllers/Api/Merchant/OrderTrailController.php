@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
-use App\Services\merchant\OrderTrailService;
+use App\Services\Merchant\OrderTrailService;
 
 /**
  * Class OrderTrailController
