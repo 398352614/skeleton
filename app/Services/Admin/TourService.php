@@ -788,7 +788,11 @@ class TourService extends BaseService
             }
             $batchList = $batchList->toArray();
             $batch = collect($batchList)->sortByDesc('actual_arrive_time')->first();
-            $info['warehouse_actual_time'] = strtotime($info['end_time']) - strtotime($batch['actual_arrive_time']);
+            if(!empty($batch['actual_arrive_time'])){
+                $info['warehouse_actual_time'] = strtotime($info['end_time']) - strtotime($batch['actual_arrive_time']);
+            }else{
+                $info['warehouse_actual_time'] = strtotime($info['end_time']);
+            }
             if (!$info['warehouse_actual_time'] == 0) {
                 $warehouseActualTimeHuman = CarbonInterval::second($info['warehouse_actual_time'])->cascade()->forHumans();
             } else {
