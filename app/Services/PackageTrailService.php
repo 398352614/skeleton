@@ -252,7 +252,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
      */
     public function index($expressFirstNo)
     {
-        $package = $this->getPackageService()->getInfo(['express_first_no' => $expressFirstNo], ['express_first_no'], false);
+        $package = $this->getPackageService()->getInfo(['express_first_no' => $expressFirstNo], ['*'], false);
         if (empty($package)) {
             throw new BusinessLogicException('数据不存在');
         }
