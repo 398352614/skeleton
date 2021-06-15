@@ -329,7 +329,7 @@ class OrderImportService extends BaseService
             $data['place_lat'] = $info['lat'];
             $data['place_lon'] = $info['lon'];
         } else {
-            $data = array_merge($data, $address);
+            $data = array_merge($data, collect($address)->toArray());
         }
         return $data;
     }
