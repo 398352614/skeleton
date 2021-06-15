@@ -190,13 +190,13 @@ class PackageTrailService extends \App\Services\Admin\BaseService
                 $content = sprintf("您的包裹在[%s]已装车，正在发往[%s]，操作员：[%s]", $params['warehouse_name'], $params['next_warehouse_name'], $params['driver_name']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_IN:
-                $content = sprintf("您的包裹到达[%s]，操作员：[%s]", $params['next_warehouse_name'], auth()->user()->fullname);
+                $content = sprintf("您的包裹到达[%s]，操作员：[%s]", auth()->user()->warehouse_name, auth()->user()->fullname);
                 break;
             case BaseConstService::PACKAGE_TRAIL_UNLOAD:
-                $content = sprintf("您的包裹在[%s]进行卸车处理，操作员：[%s]", $trackingPackage['warehouse_name'], $params['unload_operator']);
+                $content = sprintf("您的包裹在[%s]进行卸车处理，操作员：[%s]", auth()->user()->warehouse_name, auth()->user()->fullname);
                 break;
             case BaseConstService::PACKAGE_TRAIL_UNPACK:
-                $content = sprintf("您的包裹在[%s]进行拆袋处理，操作员：[%s]", $trackingPackage['warehouse_name'], $trackingPackage['unpack_operator']);
+                $content = sprintf("您的包裹在[%s]进行拆袋处理，操作员：[%s]", auth()->user()->warehouse_name, auth()->user()->fullname);
                 break;
             case BaseConstService::PACKAGE_TRAIL_ALLOCATE:
                 $content = sprintf("您的包裹在[%s]进行入库处理，操作员：[%s]", $params['warehouse_name'], $params['operator']);
