@@ -343,13 +343,15 @@ class OrderService extends BaseService
      */
     public function record($params)
     {
-        if (in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
-            $this->getAddressService()->store($params);
-        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
-            $this->getAddressService()->store($params);
-            $address = $this->pieAddress($params);
-            $this->getAddressService()->store($address);
-        }
+        try {
+            if (in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
+                $this->getAddressService()->store($params);
+            } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
+                $this->getAddressService()->store($params);
+                $address = $this->pieAddress($params);
+                $this->getAddressService()->store($address);
+            }
+        }catch (BusinessLogicException $e){}
     }
 
     /**
