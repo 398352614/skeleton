@@ -351,7 +351,8 @@ class OrderService extends BaseService
                 $address = $this->pieAddress($params);
                 $this->getAddressService()->store($address);
             }
-        }catch (BusinessLogicException $e){}
+        } catch (BusinessLogicException $e) {
+        }
     }
 
     /**
@@ -708,6 +709,7 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        $params['merchant_id'] = auth()->user()->id;
         unset($params['created_at'], $params['updated_at']);
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         $fields = ['place_fullname', 'place_phone',
