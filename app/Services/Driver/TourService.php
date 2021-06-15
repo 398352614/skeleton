@@ -669,13 +669,13 @@ class TourService extends BaseService
         }
         //包裹轨迹
         $packageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $batch['batch_no']], ['*'], false);
-        $pickupPackageList = $packageList->where('type', BaseConstService::PACKAGE_TYPE_1, $batch);
+        $pickupPackageList = $packageList->where('type', BaseConstService::PACKAGE_TYPE_1);
         if (!empty($pickupPackageList)) {
-            PackageTrailService::storeByTrackingOrderList($pickupPackageList, BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL);
+            PackageTrailService::storeByTrackingOrderList($pickupPackageList, BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL, $batch);
         }
-        $piePackageList = $packageList->where('type', BaseConstService::PACKAGE_TYPE_2, $batch);
+        $piePackageList = $packageList->where('type', BaseConstService::PACKAGE_TYPE_2);
         if (!empty($piePackageList)) {
-            PackageTrailService::storeByTrackingOrderList($piePackageList, BaseConstService::PACKAGE_TRAIL_PIE_CANCEL);
+            PackageTrailService::storeByTrackingOrderList($piePackageList, BaseConstService::PACKAGE_TRAIL_PIE_CANCEL, $batch);
         }
         $this->getOrderService()->batchCancel($batch['batch_no']);
         return [$tour, $batch, $cancelTrackingOrderList];
