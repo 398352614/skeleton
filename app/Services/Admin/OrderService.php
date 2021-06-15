@@ -328,11 +328,8 @@ class OrderService extends BaseService
      */
     public function record($params)
     {
-        if ($params['type'] == BaseConstService::ORDER_TYPE_1) {
-            $this->recordAddress($params, BaseConstService::ORDER_TYPE_1);
-        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2) {
-            $address = $this->pieAddress($params);
-            $this->recordAddress($address, BaseConstService::ORDER_TYPE_2);
+        if (in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
+            $this->recordAddress($params, $params['type']);
         } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
             $this->recordAddress($params, BaseConstService::ORDER_TYPE_1);
             $address = $this->pieAddress($params);

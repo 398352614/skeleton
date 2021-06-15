@@ -327,6 +327,8 @@ class OrderService extends BaseService
         $this->addAmountList($params);
         //生成运单
         $tour = $this->getTrackingOrderService()->storeByOrder($order);
+        //自动记录
+        $this->record($params);
         return [
             'id' => $order['id'],
             'order_no' => $params['order_no'],
@@ -341,11 +343,8 @@ class OrderService extends BaseService
      */
     public function record($params)
     {
-        if ($params['type'] == BaseConstService::ORDER_TYPE_1) {
-            $this->recordAddress($params, BaseConstService::ORDER_TYPE_1);
-        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2) {
-            $address = $this->pieAddress($params);
-            $this->recordAddress($address, BaseConstService::ORDER_TYPE_2);
+        if (in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
+            $this->recordAddress($params, $params['type']);
         } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
             $this->recordAddress($params, BaseConstService::ORDER_TYPE_1);
             $address = $this->pieAddress($params);
@@ -721,7 +720,7 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-        unset($params['created_at'],$params['updated_at']);
+        unset($params['created_at'], $params['updated_at']);
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         $fields = ['place_fullname', 'place_phone',
             'place_country', 'place_province', 'place_city', 'place_district',
@@ -1561,7 +1560,7 @@ class OrderService extends BaseService
         $trackingOrder = $this->getTrackingOrderByOrderId($id);
         if (empty($trackingOrder)) {
             return;
-        }else{
+        } else {
             return $this->getTrackingOrderService()->removeFromBatch($trackingOrder['id']);
         }
     }
