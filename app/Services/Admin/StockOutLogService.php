@@ -23,6 +23,9 @@ class StockOutLogService extends BaseService
         'warehouse_id'=>['=','warehouse_id']
     ];
 
+    public $orderBy = ['id' => 'desc'];
+
+
     public function __construct(StockOutLog $stockOutLog)
     {
         parent::__construct($stockOutLog, StockOutResource::class);

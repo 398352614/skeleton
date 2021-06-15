@@ -23,6 +23,8 @@ class StockInLogService extends BaseService
         'warehouse_id' => ['=', 'warehouse_id']
     ];
 
+    public $orderBy = ['id' => 'desc'];
+
     public function __construct(StockInLog $stockInLog)
     {
         parent::__construct($stockInLog, StockInResource::class);

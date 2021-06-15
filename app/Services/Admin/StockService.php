@@ -27,11 +27,11 @@ class StockService extends BaseService
         'line_id' => ['=', 'line_id'],
         'line_name' => ['like', 'line_name'],
         'expiration_status' => ['=', 'expiration_status'],
-        'warehouse_id'=>['=','warehouse_id']
+        'warehouse_id' => ['=', 'warehouse_id']
 
     ];
 
-    public $orderBy=['id'=>'desc'];
+    public $orderBy = ['id' => 'desc'];
 
     public function __construct(Stock $stock)
     {
@@ -201,7 +201,7 @@ class StockService extends BaseService
     public function getPageList()
     {
         $data = parent::getPageList();
-        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in',$data->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id');
+        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $data->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id');
         foreach ($data as $k => $v) {
             $data[$k]['warehouse_name'] = $warehouseList[$v['warehouse_id']]['name'] ?? '';
         }
@@ -221,7 +221,7 @@ class StockService extends BaseService
         $stockData = [
             'line_id' => null,
             'line_name' => '',
-            'warehouse_id'=>auth()->user()->warehouse_id,
+            'warehouse_id' => auth()->user()->warehouse_id,
             'tracking_order_no' => '',
             'expiration_date' => null,
             'expiration_status' => 1,
@@ -258,7 +258,7 @@ class StockService extends BaseService
         $stockData = [
             'line_id' => $tour['line_id'] ?? null,
             'line_name' => $tour['line_name'] ?? '',
-            'warehouse_id'=>auth()->user()->warehouse_id,
+            'warehouse_id' => auth()->user()->warehouse_id,
             'tracking_order_no' => $trackingOrder['tracking_order_no'] ?? '',
             'execution_date' => $package['second_execution_date'],
             'expiration_date' => $package['expiration_date'] ?? '',
