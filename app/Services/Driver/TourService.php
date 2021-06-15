@@ -668,7 +668,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
         //包裹轨迹
-        $packageList = $this->getPackageService()->getList(['batch_no' => $batch['batch_no']], ['*'], false);
+        $packageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $batch['batch_no']], ['*'], false);
         $pickupPackageList = $packageList->where('type', BaseConstService::PACKAGE_TYPE_1, $batch);
         if (!empty($pickupPackageList)) {
             PackageTrailService::storeByTrackingOrderList($pickupPackageList, BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL);
