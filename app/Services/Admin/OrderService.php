@@ -346,6 +346,7 @@ class OrderService extends BaseService
     {
 
         $data = [
+            'merchant_id'=>$data['merchant_id'],
             'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
             'place_fullname' => $data['second_place_fullname'],
             'place_phone' => $data['second_place_phone'],

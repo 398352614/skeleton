@@ -95,6 +95,7 @@ class AddressService extends BaseService
      */
     public function store($params)
     {
+        $params['merchant_id'] = auth()->user()->id;
         $this->check($params);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
