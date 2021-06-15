@@ -305,6 +305,7 @@ class TrackingOrderService extends BaseService
         } else {
             OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
         }
+        //包裹轨迹
         PackageTrailService::storeByTrackingOrder($trackingOrder,BaseConstService::PACKAGE_TRAIL_CREATED,null);
         return $tour;
     }

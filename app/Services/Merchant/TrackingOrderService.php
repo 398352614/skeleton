@@ -283,6 +283,8 @@ class TrackingOrderService extends BaseService
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
         //订单轨迹-订单创建
         OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
+        //包裹轨迹
+        PackageTrailService::storeByTrackingOrder($trackingOrder,BaseConstService::PACKAGE_TRAIL_CREATED,null);
         return $tour;
     }
 
@@ -725,18 +727,18 @@ class TrackingOrderService extends BaseService
         $data = ['tracking_order_no' => $trackingOrder['tracking_order_no']];
         if (in_array($order['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2]) && empty($order['second_place_fullname'])) {
             $data = array_merge($data, [
-                'second_place_fullname' => $trackingOrder['warehouse_place_fullname'],
-                'second_place_phone' => $trackingOrder['warehouse_place_phone'],
-                'second_place_country' => $trackingOrder['warehouse_place_country'],
-                'second_place_province' => $trackingOrder['warehouse_place_province'],
-                'second_place_post_code' => $trackingOrder['warehouse_place_post_code'],
-                'second_place_house_number' => $trackingOrder['warehouse_place_house_number'],
-                'second_place_city' => $trackingOrder['warehouse_place_city'],
-                'second_place_district' => $trackingOrder['warehouse_place_district'],
-                'second_place_street' => $trackingOrder['warehouse_place_house_number'],
-                'second_place_address' => $trackingOrder['warehouse_place_city'],
-                'second_place_lon' => $trackingOrder['warehouse_place_district'],
-                'second_place_lat' => $trackingOrder['warehouse_place_district'],
+                'second_place_fullname' => $trackingOrder['warehouse_fullname'],
+                'second_place_phone' => $trackingOrder['warehouse_phone'],
+                'second_place_country' => $trackingOrder['warehouse_country'],
+                'second_place_province' => $trackingOrder['warehouse_province'],
+                'second_place_post_code' => $trackingOrder['warehouse_post_code'],
+                'second_place_house_number' => $trackingOrder['warehouse_house_number'],
+                'second_place_city' => $trackingOrder['warehouse_city'],
+                'second_place_district' => $trackingOrder['warehouse_district'],
+                'second_place_street' => $trackingOrder['warehouse_house_number'],
+                'second_place_address' => $trackingOrder['warehouse_city'],
+                'second_place_lon' => $trackingOrder['warehouse_district'],
+                'second_place_lat' => $trackingOrder['warehouse_district'],
             ]);
         }
         $rowCount = $this->getOrderService()->update(['order_no' => $order['order_no']], $data);
