@@ -462,6 +462,34 @@ class OrderImportService extends BaseService
     {
         $data['package_list'] = [];
         $data['material_list'] = [];
+        if($data['type'] == BaseConstService::ORDER_TYPE_2){
+            $data['warehouse_province'] = $newData['second_place_province'] ?? '';
+            $data['warehouse_city'] = $newData['second_place_city'];
+            $data['warehouse_district'] = $newData['second_place_district'] ?? '';
+            $data['warehouse_street'] = $newData['second_place_street'];
+            $data['warehouse_house_number'] = $newData['second_place_house_number'];
+            $data['warehouse_post_code'] = $newData['second_place_post_code'];
+            $data['warehouse_lat'] = $newData['second_place_lat'] ?? '';
+            $data['warehouse_lon'] = $newData['second_place_lon'] ?? '';
+
+            $data['second_place_province'] = $newData['place_province'] ?? '';
+            $data['second_place_city'] = $newData['place_city'];
+            $data['second_place_district'] = $newData['place_district'] ?? '';
+            $data['second_place_street'] = $newData['place_street'];
+            $data['second_place_house_number'] = $newData['place_house_number'];
+            $data['second_place_post_code'] = $newData['place_post_code'];
+            $data['second_place_lat'] = $newData['place_lat'] ?? '';
+            $data['second_place_lon'] = $newData['place_lon'] ?? '';
+
+            $data['place_province'] = $newData['warehouse_province'] ?? '';
+            $data['place_city'] = $newData['warehouse_city'];
+            $data['place_district'] = $newData['warehouse_district'] ?? '';
+            $data['place_street'] = $newData['warehouse_street'];
+            $data['place_house_number'] = $newData['warehouse_house_number'];
+            $data['place_post_code'] = $newData['place_post_code'];
+            $data['place_lat'] = $newData['warehouse_lat'] ?? '';
+            $data['place_lon'] = $newData['warehouse_lon'] ?? '';
+        }
         for ($j = 0; $j < 5; $j++) {
             if (!empty($data['package_no_' . ($j + 1)])) {
                 $data['package_list'][$j]['name'] = $data['package_name_' . ($j + 1)] ?? '';
