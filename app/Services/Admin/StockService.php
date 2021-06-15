@@ -31,6 +31,8 @@ class StockService extends BaseService
 
     ];
 
+    public $orderBy=['id'=>'desc'];
+
     public function __construct(Stock $stock)
     {
         parent::__construct($stock, StockResource::class);
