@@ -810,6 +810,10 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
+        $rowCount = $this->getTrackingOrderService()->update(['order_no', $data['order_no']], Arr::only($data, $columns));
+        if ($rowCount === false) {
+            throw new BusinessLogicException('修改失败，请重新操作');
+        }
         return true;
     }
 
