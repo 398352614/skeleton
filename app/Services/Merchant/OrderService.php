@@ -344,11 +344,11 @@ class OrderService extends BaseService
     public function record($params)
     {
         if (in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
-            $this->recordAddress($params, $params['type']);
+            $this->getAddressService()->store($params);
         } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
-            $this->recordAddress($params, BaseConstService::ORDER_TYPE_1);
+            $this->getAddressService()->store($params);
             $address = $this->pieAddress($params);
-            $this->recordAddress($address, BaseConstService::ORDER_TYPE_2);
+            $this->getAddressService()->store($address);
         }
     }
 
@@ -377,20 +377,6 @@ class OrderService extends BaseService
             'execution_date' => $data['second_execution_date']
         ];
         return $data;
-    }
-
-    /**
-     * 记录非重复地址
-     * @param $params
-     * @param $type
-     */
-    public function recordAddress($params, $type)
-    {
-        $params['type'] = $type;
-        $info = $this->getAddressService()->getInfoByUnique($params);
-        if (empty($info)) {
-            $this->getAddressService()->create($params);
-        }
     }
 
     /**

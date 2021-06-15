@@ -43,6 +43,36 @@ class AddressService extends BaseService
     }
 
     /**
+     * 通过唯一组合字段获取信息
+     * @param $data
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function getInfoByUnique($data)
+    {
+        return parent::getInfo(['unique_code' => $this->getUniqueCode($data)], ['*'], false);
+    }
+
+    /**
+     * 获取唯一码
+     * @param $data
+     * @return string
+     */
+    public function getUniqueCode($data)
+    {
+        $allAddress = '';
+        $fields = [
+            'type', 'merchant_id', 'place_fullname', 'place_phone',
+            'place_country', 'place_province', 'place_city', 'place_district',
+            'place_post_code', 'place_street', 'place_house_number',
+            'place_address'
+        ];
+        foreach ($fields as $k => $v) {
+            $allAddress = $allAddress . ($data[$v] ?? '');
+        }
+        return md5($allAddress);
+    }
+
+    /**
      * 获取详情
      * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
@@ -55,16 +85,6 @@ class AddressService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         return $info;
-    }
-
-    /**
-     * 通过唯一组合字段获取信息
-     * @param $data
-     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
-     */
-    public function getInfoByUnique($data)
-    {
-        return parent::getInfo($this->getUniqueWhere($data), ['*'], false);
     }
 
 
