@@ -333,6 +333,14 @@ class OrderService extends BaseService
             'id' => $order['id'],
             'order_no' => $params['order_no'],
             'out_order_no' => $params['out_order_no'] ?? '',
+            'batch_no' => '',
+            'tour_no' => '',
+            'line' => [
+                'line_id' => $tour['line_id'] ?? null,
+                'line_name' => $tour['line_name'] ?? '',
+            ],
+            'execution_date' => $order->execution_date,
+            'second_execution_date' => $order->second_execution_date ?? null
         ];
     }
 
