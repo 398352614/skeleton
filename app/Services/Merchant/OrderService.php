@@ -347,6 +347,7 @@ class OrderService extends BaseService
             if (in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
                 $this->getAddressService()->store($params);
             } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
+                $params['type'] = BaseConstService::ORDER_TYPE_1;
                 $this->getAddressService()->store($params);
                 $address = $this->pieAddress($params);
                 $this->getAddressService()->store($address);

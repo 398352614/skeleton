@@ -194,6 +194,7 @@ class AddressService extends BaseService
      */
     public function check(&$data, $id = null)
     {
+
         if (empty($data['place_lon']) || empty($data['place_lat'])) {
             throw new BusinessLogicException('地址无法定位，请选择其他地址');
         }
@@ -210,6 +211,7 @@ class AddressService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
         }
+
         $data['place_country'] = !empty($dbInfo['place_country']) ? $dbInfo['place_country'] : CompanyTrait::getCountry();
         //验证商家是否存在
         $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id']], ['id', 'country'], false);
@@ -219,6 +221,7 @@ class AddressService extends BaseService
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
             $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
+
         $this->uniqueCheck($data, $id);
     }
 

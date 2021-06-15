@@ -332,11 +332,13 @@ class OrderService extends BaseService
             if (in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2])) {
                 $this->getAddressService()->store($params);
             } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
+                $params['type'] = BaseConstService::ORDER_TYPE_1;
                 $this->getAddressService()->store($params);
                 $address = $this->pieAddress($params);
                 $this->getAddressService()->store($address);
             }
-        }catch (BusinessLogicException $e){}
+        } catch (BusinessLogicException $e) {
+        }
     }
 
     /**
@@ -348,7 +350,7 @@ class OrderService extends BaseService
     {
 
         $data = [
-            'merchant_id'=>$data['merchant_id'],
+            'merchant_id' => $data['merchant_id'],
             'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
             'place_fullname' => $data['second_place_fullname'],
             'place_phone' => $data['second_place_phone'],
