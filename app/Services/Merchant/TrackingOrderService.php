@@ -707,10 +707,11 @@ class TrackingOrderService extends BaseService
 
     /**
      * 填充运单信息至订单
-     * @param $orderNo
+     * @param $order
      * @param $trackingOrder
-     * @params $fillMaterial
+     * @param bool $fillMaterial
      * @throws BusinessLogicException
+     * @params $fillMaterial
      */
     public function fillToOrder($order, $trackingOrder, $fillMaterial = true)
     {
@@ -730,15 +731,15 @@ class TrackingOrderService extends BaseService
                 'second_place_fullname' => $trackingOrder['warehouse_fullname'],
                 'second_place_phone' => $trackingOrder['warehouse_phone'],
                 'second_place_country' => $trackingOrder['warehouse_country'],
-                'second_place_province' => $trackingOrder['warehouse_province'],
+                'second_place_province' => $trackingOrder['warehouse_province'] ?? '',
                 'second_place_post_code' => $trackingOrder['warehouse_post_code'],
                 'second_place_house_number' => $trackingOrder['warehouse_house_number'],
                 'second_place_city' => $trackingOrder['warehouse_city'],
-                'second_place_district' => $trackingOrder['warehouse_district'],
+                'second_place_district' => $trackingOrder['warehouse_district'] ?? '',
                 'second_place_street' => $trackingOrder['warehouse_house_number'],
                 'second_place_address' => $trackingOrder['warehouse_city'],
-                'second_place_lon' => $trackingOrder['warehouse_district'],
-                'second_place_lat' => $trackingOrder['warehouse_district'],
+                'second_place_lon' => $trackingOrder['warehouse_lon'],
+                'second_place_lat' => $trackingOrder['warehouse_lat'],
             ]);
         }
         $rowCount = $this->getOrderService()->update(['order_no' => $order['order_no']], $data);
