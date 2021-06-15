@@ -225,8 +225,8 @@ class BatchService extends BaseService
             'place_city' => $trackingOrder['place_city'],
             'place_street' => $trackingOrder['place_street'],
             'place_address' => $trackingOrder['place_address'],
-            'place_lon' => $trackingOrder['place_lon'],
-            'place_lat' => $trackingOrder['place_lat'],
+            'place_lon' => $trackingOrder['place_lon'] ?? '',
+            'place_lat' => $trackingOrder['place_lat'] ?? '',
             'merchant_id' => $line['range_merchant_id'] ?? 0
         ];
         if (intval($trackingOrder['type']) === 1) {

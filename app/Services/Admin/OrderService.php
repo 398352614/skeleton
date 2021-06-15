@@ -338,6 +338,7 @@ class OrderService extends BaseService
                 $this->getAddressService()->store($address);
             }
         } catch (BusinessLogicException $e) {
+            Log::info($e);
         }
     }
 
