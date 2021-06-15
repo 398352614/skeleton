@@ -667,6 +667,11 @@ class TourService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('取消取派失败，请重新操作');
         }
+        $packageList = $this->getPackageService()->getList(['batch_no' => $batch['batch_no']], ['*'], false);
+        $pickupPackageList = $packageList->where('type', BaseConstService::PACKAGE_TYPE_1, $batch);
+        PackageTrailService::storeByTrackingOrderList($pickupPackageList, BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL);
+        $piePackageList = $packageList->where('type', BaseConstService::PACKAGE_TYPE_2, $batch);
+        PackageTrailService::storeByTrackingOrderList($piePackageList, BaseConstService::PACKAGE_TRAIL_PIE_CANCEL);
         $this->getOrderService()->batchCancel($batch['batch_no']);
         return [$tour, $batch, $cancelTrackingOrderList];
     }
@@ -922,7 +927,7 @@ class TourService extends BaseService
         $packageIdList = array_keys($packageList);
         $totalStickerAmount = $totalDeliveryAmount = 0.00;
         $dbPackageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['*'], false)->toArray();
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tracking_order_no' => ['in',collect($dbPackageList)->pluck('tracking_order_no')->toArray()]], ['*'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tracking_order_no' => ['in', collect($dbPackageList)->pluck('tracking_order_no')->toArray()]], ['*'], false);
         foreach ($dbPackageList as $dbPackage) {
             $trackingOrder = $trackingOrderList->where('tracking_order_no')->first();
             //判断是否签收
