@@ -245,7 +245,7 @@ class OrderService extends BaseService
             return [];
         }
         $trackingOrderTrailList = $this->getTrackingOrderTrailService()->getList(['order_no' => $order['order_no']], ['*'], false);
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => $order['order_no']], ['tracking_order_no', 'place_lon', 'place_lat', 'place_address', 'place_fullname', 'batch_no', 'type'], false,[],['id'=>'desc']);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => $order['order_no']], ['tracking_order_no', 'place_lon', 'place_lat', 'place_address', 'place_fullname', 'batch_no', 'type'], false, [], ['id' => 'desc']);
         foreach ($trackingOrderList as $k => $v) {
             $tour = $this->getTourService()->getInfo(['tour_no' => $v['tour_no']], ['*'], false);
             $batch = $this->getBatchService()->getInfo(['batch_no' => $v['batch_no']], ['*'], false);
@@ -304,6 +304,8 @@ class OrderService extends BaseService
         $this->addAmountList($params);
         //生成运单
         $tour = $this->getTrackingOrderService()->storeByOrder($order);
+        //自动记录
+        $this->record($params);
         return [
             'id' => $order['id'],
             'order_no' => $params['order_no'],
@@ -317,6 +319,61 @@ class OrderService extends BaseService
             'execution_date' => $order->execution_date,
             'second_execution_date' => $order->second_execution_date ?? null
         ];
+    }
+
+    /**
+     * 记录地址
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function record($params)
+    {
+        if ($params['type'] == BaseConstService::ORDER_TYPE_1) {
+            $this->recordAddress($params, BaseConstService::ORDER_TYPE_1);
+        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_2) {
+            $address = $this->pieAddress($params);
+            $this->recordAddress($address, BaseConstService::ORDER_TYPE_2);
+        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_3) {
+            $this->recordAddress($params, BaseConstService::ORDER_TYPE_1);
+            $address = $this->pieAddress($params);
+            $this->recordAddress($address, BaseConstService::ORDER_TYPE_2);
+        }
+    }
+
+    /**
+     * 记录非重复地址
+     * @param $params
+     * @param $type
+     */
+    public function recordAddress($params, $type)
+    {
+        $params['type'] = $type;
+        $info = $this->getAddressService()->getInfoByUnique($params);
+        if (empty($info)) {
+            $this->getAddressService()->create($params);
+        }
+    }
+
+    public function pieAddress($data)
+    {
+
+        $data = [
+            'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
+            'place_fullname' => $data['second_place_fullname'],
+            'place_phone' => $data['second_place_phone'],
+            'place_country' => $data['second_place_country'],
+            'place_province' => $data['second_place_province'] ?? '',
+            'place_post_code' => $data['second_place_post_code'],
+            'place_house_number' => $data['second_place_house_number'],
+            'place_city' => $data['second_place_city'],
+            'place_district' => $data['second_place_district'] ?? '',
+            'place_street' => $data['second_place_street'],
+            'place_address' => $data['second_place_address'],
+            'place_lat' => $data['second_place_lat'] ?? '',
+            'place_lon' => $data['second_place_lon'] ?? '',
+            'execution_date' => $data['second_execution_date']
+        ];
+        return $data;
     }
 
     /**
