@@ -40,11 +40,9 @@ class OrderImportService extends BaseService
     public static $headings = [
         [
             "base", "", "", "", "",
+            "other", "", "", "", "", "", "", "", "", "", "",
             "sender", "", "", "", "", "", "",
             "receiver", "", "", "", "", "", "",
-            "amount", "", "", "", "", "", "", "", "", "", "",
-            "settlement", "",
-            "other", "", "", "", "",
             "package_1", "", "", "", "", "", "",
             "package_2", "", "", "", "", "", "",
             "package_3", "", "", "", "", "", "",
@@ -57,12 +55,9 @@ class OrderImportService extends BaseService
             "material_5", "", "", "", "", "", "", "", "", "",
         ],
         [
-            "create_date", "type", "merchant", "out_user_id", "out_order_no",
+            "type", "out_user_id", "out_order_no", "special_remark",
             "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
             "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
-            "amount_1", "amount_2", "amount_3", "amount_4", "amount_5", "amount_6", "amount_7", "amount_8", "amount_9", "amount_10", "amount_11",
-            "settlement_amount", "settlement_type",
-            "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
             "package_no_1", "package_name_1", "package_weight_1", "package_feature_1", "package_remark_1", "package_expiration_date_1", "package_out_order_no_1",
             "package_no_2", "package_name_2", "package_weight_2", "package_feature_2", "package_remark_2", "package_expiration_date_2", "package_out_order_no_2",
             "package_no_3", "package_name_3", "package_weight_3", "package_feature_3", "package_remark_3", "package_expiration_date_3", "package_out_order_no_3",

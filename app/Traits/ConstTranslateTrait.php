@@ -604,6 +604,13 @@ trait ConstTranslateTrait
         BaseConstService::MERCHANT_STATUS_2 => '禁用',
     ];
 
+
+    public static $merchantOrderTypeList = [
+        BaseConstService::MERCHANT_ORDER_TYPE_1 => '取件',
+        BaseConstService::MERCHANT_ORDER_TYPE_2 => '派件',
+        BaseConstService::MERCHANT_ORDER_TYPE_3 => '取派件',
+    ];
+
     public static $driverEventList = [
         BaseConstService::DRIVER_EVENT_OUT_WAREHOUSE => '司机从网点出发',
         BaseConstService::DRIVER_EVENT_BATCH_ARRIVED => '司机到达客户家',
@@ -876,7 +883,7 @@ trait ConstTranslateTrait
         BaseConstService::PACKAGE_TRAIL_LOAD => '运输中',//装车
         BaseConstService::PACKAGE_TRAIL_OUT => '运输中',//发车
         BaseConstService::PACKAGE_TRAIL_IN => '运输中',//到车
-        BaseConstService::PACKAGE_TRAIL_UNLOAD =>'运输中',//卸车
+        BaseConstService::PACKAGE_TRAIL_UNLOAD => '运输中',//卸车
         BaseConstService::PACKAGE_TRAIL_UNPACK => '运输中',//拆袋
         BaseConstService::PACKAGE_TRAIL_PIE => '派件中',//派件中
         BaseConstService::PACKAGE_TRAIL_PIE_DONE => '已签收',//派件完成

@@ -183,9 +183,11 @@ class OrderImportService extends BaseService
         $country = CompanyTrait::getCountry();
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['place_post_code'])) {
             $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+            $data['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
         }
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($data['place_post_code']) == 5) {
             $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+            $data['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         //包裹材料验证
         if (empty($data['package_no_1']) && empty($data['material_code_1'])) {

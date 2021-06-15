@@ -501,6 +501,12 @@ class BaseConstService
     const MERCHANT_STATUS_1 = 1;
     const MERCHANT_STATUS_2 = 2;
 
+    //商户订单类型
+    const MERCHANT_ORDER_TYPE_1 = 1;
+    const MERCHANT_ORDER_TYPE_2 = 2;
+    const MERCHANT_ORDER_TYPE_3 = 3;
+
+
     //司机事件1-司机出库2-司机到达站点3-司机从站点出发4-司机回仓
     const DRIVER_EVENT_OUT_WAREHOUSE = 1;
     const DRIVER_EVENT_BATCH_ARRIVED = 2;
