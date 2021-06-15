@@ -32,6 +32,7 @@ class OrderInfoResource extends JsonResource
             'out_user_id' => $this->out_user_id,
             'nature' => $this->nature,
             'settlement_type' => $this->settlement_type,
+            'settlement_type_name' => $this->settlement_type_name,
             'settlement_amount' => $this->settlement_amount,
             'count_settlement_amount'=>$this->count_settlement_amount,
             'replace_amount' => $this->replace_amount,
