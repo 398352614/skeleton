@@ -50,6 +50,7 @@ class Driver extends Authenticatable implements JWTSubject
     protected $fillable = [
         'company_id',
         'warehouse_id',
+        'warehouse_name',
         'timezone',
         'email',
         'encrypt',

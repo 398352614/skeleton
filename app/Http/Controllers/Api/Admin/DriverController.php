@@ -17,7 +17,10 @@ class DriverController extends BaseController
 {
     use ConstTranslateTrait;
 
-
+    /**
+     * DriverController constructor.
+     * @param DriverService $service
+     */
     public function __construct(DriverService $service)
     {
         parent::__construct($service);
@@ -27,6 +30,11 @@ class DriverController extends BaseController
     public function index(Request $request)
     {
         return $this->service->getPageList();
+    }
+
+    public function store($params)
+    {
+        return $this->service->store($params);
     }
 
     /**
