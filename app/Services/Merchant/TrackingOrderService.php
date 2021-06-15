@@ -269,7 +269,7 @@ class TrackingOrderService extends BaseService
         /*******************************************生成运单包裹和材料***************************************************/
         $this->addAllItemList($orderNo, $trackingOrder);
         //自动记录
-        $this->record($trackingOrder);
+        //$this->record($trackingOrder);
         //重新统计站点金额
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
         //重新统计取件线路金额
