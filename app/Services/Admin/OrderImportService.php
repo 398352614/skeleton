@@ -539,13 +539,14 @@ class OrderImportService extends BaseService
             }
         }
         for ($i = 0; $i < 12; $i++) {
-            $data['amount_list'][$i]['type'] = $i;
+            $data['amount_list'][$i]['type'] = $i + 1;
             if (empty($data['amount_' . ($i + 1)])) {
                 $data['amount_list'][$i]['expect_amount'] = 0;
             } else {
                 $data['amount_list'][$i]['expect_amount'] = $data['amount_' . ($i + 1)];
             }
         }
+        dd($data['amount_list']);
         $data = Arr::only($data, [
             "create_date", "type", "merchant_id", "out_user_id", "out_order_no",
             "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date",

@@ -524,7 +524,7 @@ class OrderImportService extends BaseService
             }
         }
         for ($i = 0; $i < 12; $i++) {
-            $data['amount_list'][$i]['type'] = $i;
+            $data['amount_list'][$i]['type'] = $i + 1;
             if (empty($data['amount_' . ($i + 1)])) {
                 $data['amount_list'][$i]['expect_amount'] = 0;
             } else {
