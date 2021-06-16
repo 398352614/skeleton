@@ -10,6 +10,7 @@ use App\Models\Package;
 use App\Models\PackageTrail;
 use App\Models\Scope\CompanyScope;
 use App\Services\BaseService;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 
@@ -55,6 +56,14 @@ class OrderTrailService extends BaseService
             $orderList[$k]['company_web_site'] = $company['web_site'];
             $orderList[$k]['company_logo_url'] = $company['logo_url'];
             $orderList[$k]['order_trail'] = parent::getList(['order_no' => $v['order_no'], 'company_id' => $v['company_id']], ['*'], false, [], ['id' => 'desc']);
+            if ($this->formData['language'] == 'en') {
+                foreach ($orderList[$k]['order_trail'] as $x => $y) {
+                    $content = $y['content'];
+                    $content = str_replace('取件', 'Pick-up', $content);
+                    $content = str_replace('取件', 'Pick-up', $content);
+                    $orderList[$k]['order_trail'][$x]['content'] = $content;
+                }
+            }
         }
         return $orderList;
     }
