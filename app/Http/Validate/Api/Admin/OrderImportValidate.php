@@ -61,7 +61,7 @@ class OrderImportValidate extends BaseValidate
         "package_feature_1" => 'nullable|integer|in:1,2,3,4',
         "package_remark_1" => 'nullable|string',
         "package_expiration_date_1" => 'nullable|date',
-        "package_out_order_no_1" => 'nullable|string|max:50|uniqueIgnore:order,id',
+        "package_out_order_no_1" => 'nullable|string|max:50',
 
         "package_no_2" => 'nullable|string|max:50',
         "package_name_2" => 'nullable|string|max:50',
@@ -69,7 +69,7 @@ class OrderImportValidate extends BaseValidate
         "package_feature_2" => 'nullable|integer|in:1,2,3,4',
         "package_remark_2" => 'nullable|string',
         "package_expiration_date_2" => 'nullable|date',
-        "package_out_order_no_2" => 'nullable|string|max:50|uniqueIgnore:order,id',
+        "package_out_order_no_2" => 'nullable|string|max:50',
 
         "package_no_3" => 'nullable|string|max:50',
         "package_name_3" => 'nullable|string|max:50',
@@ -77,7 +77,7 @@ class OrderImportValidate extends BaseValidate
         "package_feature_3" => 'nullable|integer|in:1,2,3,4',
         "package_remark_3" => 'nullable|string',
         "package_expiration_date_3" => 'nullable|date',
-        "package_out_order_no_3" => 'nullable|string|max:50|uniqueIgnore:order,id',
+        "package_out_order_no_3" => 'nullable|string|max:50',
 
         "package_no_4" => 'nullable|string|max:50',
         "package_name_4" => 'nullable|string|max:50',
@@ -85,7 +85,7 @@ class OrderImportValidate extends BaseValidate
         "package_feature_4" => 'nullable|integer|in:1,2,3,4',
         "package_remark_4" => 'nullable|string',
         "package_expiration_date_4" => 'nullable|date',
-        "package_out_order_no_4" => 'nullable|string|max:50|uniqueIgnore:order,id',
+        "package_out_order_no_4" => 'nullable|string|max:50',
 
         "package_no_5" => 'nullable|string|max:50',
         "package_name_5" => 'nullable|string|max:50',
@@ -93,7 +93,7 @@ class OrderImportValidate extends BaseValidate
         "package_feature_5" => 'nullable|integer|in:1,2,3,4',
         "package_remark_5" => 'nullable|string',
         "package_expiration_date_5" => 'nullable|date',
-        "package_out_order_no_5" => 'nullable|string|max:50|uniqueIgnore:order,id',
+        "package_out_order_no_5" => 'nullable|string|max:50',
 
         "material_code_1" => 'nullable|string|max:50',
         "material_name_1" => 'nullable|string|max:50',
