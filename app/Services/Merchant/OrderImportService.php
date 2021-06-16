@@ -128,6 +128,9 @@ class OrderImportService extends BaseService
         $info = [];
         $package = [];
         $material = [];
+        if (empty($params['list'])) {
+            throw new BusinessLogicException('数据不能为空');
+        }
         $list = json_decode($params['list'], true);
         for ($i = 0, $j = count($list); $i < $j; $i++) {
             $list[$i] = $this->check($list[$i]);
@@ -212,6 +215,9 @@ class OrderImportService extends BaseService
                 ->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5])->first();
             if (!empty($package[$j])) {
                 $list['error']['package_no_' . ($j + 1)] = __('包裹') . ($j + 1) . __('编号有重复');
+            }
+            if (empty($data['package_no_' . $j]['weight'])) {
+                $data['package_no_' . $j]['weight'] = 1;
             }
             //有效期判断
             if (!empty($data['package_no_' . $j]) && !empty($data['package_expiration_date_' . ($j + 1)]) && $data['package_expiration_date_' . ($j + 1)] < $data['execution_date']) {
