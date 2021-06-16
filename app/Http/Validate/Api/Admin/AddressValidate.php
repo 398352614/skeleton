@@ -45,5 +45,12 @@ class AddressValidate extends BaseValidate
             'list'
         ]
     ];
+
+    public $message = [
+        'place_fullname.required_unless' => '姓名 是必须的',
+        'place_post_code.required' => '邮编 是必须的',
+        'place_phone.required' => '电话 是必须的',
+        'place_house_number.required' => '门牌号 是必须的',
+    ];
 }
 
