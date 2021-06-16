@@ -2,6 +2,8 @@
 
 namespace App\Exports;
 
+use App\Models\Merchant;
+use App\Traits\ConstTranslateTrait;
 use App\Traits\FactoryInstanceTrait;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -327,6 +329,27 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     ];
                     foreach ($column as $k => $v) {
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
+                    }
+                }
+                if ($this->type === 'tour') {
+                    //下拉
+                    $arrayList = [
+                        'A' => implode(',', array_values(ConstTranslateTrait::addressTypeList())),
+                    ];
+                    foreach ($arrayList as $k => $v) {
+                        for ($i = 0; $i < 200; $i++) {
+                            $event->sheet->getDelegate()->getcell($k . ($i + 3))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                                ->setErrorStyle(DataValidation::STYLE_INFORMATION)
+                                ->setAllowBlank(true)
+                                ->setShowInputMessage(true)
+                                ->setShowErrorMessage(true)
+                                ->setShowDropDown(true)
+                                ->setErrorTitle(__('输入的值有误'))
+                                ->setError(__('输入的值有误'))
+                                ->setPromptTitle('')
+                                ->setPrompt('')
+                                ->setFormula1('"' . $v . '"');
+                        }
                     }
                 }
             }
