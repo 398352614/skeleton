@@ -264,7 +264,7 @@ class AddressService extends BaseService
     public function excelTemplate()
     {
         $cellData[0] = [
-            __('提货->网点'),
+            __('发件人'),
             __('示例，此行数据不会被导入'),
             __('1XXXXXXXXXX'),
             __('中国'),
