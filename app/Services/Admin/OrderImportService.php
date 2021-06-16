@@ -249,6 +249,9 @@ class OrderImportService extends BaseService
         } else {
             $status = BaseConstService::YES;
         }
+        if(!empty($error['merchant_id'])){
+            $error['merchant']=$error['merchant_id'];
+        }
         $data = Arr::except($data, ["warehouse_fullname",
             "warehouse_phone",
             "warehouse_country",
