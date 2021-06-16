@@ -111,7 +111,7 @@ class OrderImportService extends BaseService
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
         if(count($row) < 3){
-            throw new BusinessLogicException('表格数据不能为空');
+            throw new BusinessLogicException('模板内无有效数据');
         }
         $newRow = [];
         foreach ($row as $k => $v) {
