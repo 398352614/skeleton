@@ -407,15 +407,15 @@ class OrderImportService extends BaseService
             }
             for ($j = 0; $j < 5; $j++) {
                 if (!empty($data[$i]['package_feature_' . ($j + 1)])) {
-                    $data[$i]['package_feature_' . ($j + 1) . 'name'] = $data[$i]['package_feature_' . ($j + 1)];
+                    $data[$i]['package_feature_' . ($j + 1) . '_name'] = $data[$i]['package_feature_' . ($j + 1)];
                     $data[$i]['package_feature_' . ($j + 1)] = $packageFeatureList[$data[$i]['package_feature_' . ($j + 1)]];
                 }
                 if (!empty($data[$i]['material_type_' . ($j + 1)])) {
-                    $data[$i]['material_type_' . ($j + 1) . 'name'] = $data[$i]['material_type_' . ($j + 1)];
+                    $data[$i]['material_type_' . ($j + 1) . '_name'] = $data[$i]['material_type_' . ($j + 1)];
                     $data[$i]['material_type_' . ($j + 1)] = $materialTypeList[$data[$i]['material_type_' . ($j + 1)]];
                 }
                 if (!empty($data[$i]['material_pack_type_' . ($j + 1)])) {
-                    $data[$i]['material_pack_type_' . ($j + 1) . 'name'] = $data[$i]['material_pack_type_' . ($j + 1)];
+                    $data[$i]['material_pack_type_' . ($j + 1) . '_name'] = $data[$i]['material_pack_type_' . ($j + 1)];
                     $data[$i]['material_pack_type_' . ($j + 1)] = $materialPackTypeList[$data[$i]['material_pack_type_' . ($j + 1)]];
                 }
                 is_numeric($data[$i]['package_expiration_date_' . ($j + 1)]) && $data[$i]['package_expiration_date_' . ($j + 1)] = date('Y-m-d', ($data[$i]['package_expiration_date_' . ($j + 1)] - 25569) * 24 * 3600);
