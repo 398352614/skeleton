@@ -471,14 +471,14 @@ class OrderImportService extends BaseService
         $data['material_list'] = [];
         if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
             unset(
-                $data['place_province'],
-                $data['place_city'],
-                $data['place_district'],
-                $data['place_street'],
-                $data['place_house_number'],
-                $data['place_post_code'],
-                $data['place_lat'],
-                $data['place_lon'],
+                $data['second_place_province'],
+                $data['second_place_city'],
+                $data['second_place_district'],
+                $data['second_place_street'],
+                $data['second_place_house_number'],
+                $data['second_place_post_code'],
+                $data['second_place_lat'],
+                $data['second_place_lon'],
             );
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
             $data['place_province'] = $data['second_place_province'] ?? '';
