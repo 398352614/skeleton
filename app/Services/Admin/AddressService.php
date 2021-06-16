@@ -44,6 +44,7 @@ class AddressService extends BaseService
      * @var string[]
      */
     public $exportExcelHeader = [
+        'type',
         'place_fullname',
         'place_phone',
         'place_country',
@@ -61,6 +62,7 @@ class AddressService extends BaseService
      * @var string[]
      */
     public $importExcelHeader = [
+        'type',
         'place_fullname',
         'place_phone',
         'place_country',
@@ -261,6 +263,7 @@ class AddressService extends BaseService
     public function excelTemplate()
     {
         $cellData[0] = [
+            __('提货->网点'),
             __('示例，此行数据不会被导入'),
             __('1XXXXXXXXXX'),
             __('中国'),

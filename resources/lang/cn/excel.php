@@ -453,6 +453,7 @@ return [
     ],
 
     "addressExcelExport" => [
+        'type' => '类型',
         'place_fullname' => '姓名',
         'place_phone' => '手机号',
         'place_country' => '国家',
