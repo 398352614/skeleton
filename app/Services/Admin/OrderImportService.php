@@ -223,7 +223,7 @@ class OrderImportService extends BaseService
             if (!empty($package[$j])) {
                 $list['error']['package_no_' . ($j + 1)] = __('包裹') . ($j + 1) . __('编号有重复');
             }
-            if (!empty($data['package_no_'.$j]) && empty($data['package_weight_' . $j])) {
+            if (!empty($data['package_no_' . $j]) && empty($data['package_weight_' . $j])) {
                 $data['package_weight_' . $j] = 1;
             }
             //有效期判断
@@ -514,10 +514,10 @@ class OrderImportService extends BaseService
                 $data['package_list'][$j]['name'] = $data['package_name_' . ($j + 1)] ?? '';
                 $data['package_list'][$j]['express_first_no'] = $data['package_no_' . ($j + 1)];
                 $data['package_list'][$j]['weight'] = $data['package_weight_' . ($j + 1)] ?? 1;
-                if(!empty($data['package_feature_' . ($j + 1)])){
+                if (!empty($data['package_feature_' . ($j + 1)])) {
                     $data['package_list'][$j]['feature_logo'] = ConstTranslateTrait::packageFeatureList($data['package_feature_' . ($j + 1)]);
-                }else{
-                    $data['package_list'][$j]['feature_logo']='';
+                } else {
+                    $data['package_list'][$j]['feature_logo'] = '';
                 }
                 $data['package_list'][$j]['remark'] = $data['package_remark_' . ($j + 1)] ?? '';
                 $data['package_list'][$j]['expiration_date'] = $data['package_expiration_date_' . ($j + 1)] ?? null;
@@ -540,7 +540,11 @@ class OrderImportService extends BaseService
         }
         for ($i = 0; $i < 12; $i++) {
             $data['amount_list'][$i]['type'] = $i;
-            empty($data['amount_' . ($j + 1)]) ? $data['amount_list'][$i]['expect_amount'] = 0 : $data['amount_list'][$i]['expect_amount'] = $data['amount_' . ($j + 1)];
+            if (empty($data['amount_' . ($i + 1)])) {
+                $data['amount_list'][$i]['expect_amount'] = 0;
+            } else {
+                $data['amount_list'][$i]['expect_amount'] = $data['amount_' . ($i + 1)];
+            }
         }
         $data = Arr::only($data, [
             "create_date", "type", "merchant_id", "out_user_id", "out_order_no",

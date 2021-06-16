@@ -525,7 +525,11 @@ class OrderImportService extends BaseService
         }
         for ($i = 0; $i < 12; $i++) {
             $data['amount_list'][$i]['type'] = $i;
-            empty($data['amount_' . ($j + 1)]) ? $data['amount_list'][$i]['expect_amount'] = 0 : $data['amount_list'][$i]['expect_amount'] = $data['amount_' . ($j + 1)];
+            if (empty($data['amount_' . ($i + 1)])) {
+                $data['amount_list'][$i]['expect_amount'] = 0;
+            } else {
+                $data['amount_list'][$i]['expect_amount'] = $data['amount_' . ($i + 1)];
+            }
         }
         $data = Arr::only($data, [
             "create_date", "type", "merchant_id", "out_user_id", "out_order_no",
