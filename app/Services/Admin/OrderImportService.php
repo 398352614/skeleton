@@ -505,7 +505,6 @@ class OrderImportService extends BaseService
                 $data['second_place_lat'],
                 $data['second_place_lon'],
                 $data['second_execution_date'],
-
             );
         }
         for ($j = 0; $j < 5; $j++) {
