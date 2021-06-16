@@ -43,6 +43,14 @@ class OrderTrailService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $order['order_trail_list'] = parent::getList(['order_no' => $orderNo], ['*'], false);
+        if (app('request')->header('language') == 'en') {
+            foreach ($order['order_trail_list'] as $x => $y) {
+                $content = $y['content'];
+                $content = str_replace('取件', 'Pick-up', $content);
+                $content = str_replace('派件', 'Delivery', $content);
+                $order['order_trail_list'][$x]['content'] = $content;
+            }
+        }
         $order['package_list'] = $this->getPackageService()->getList(['order_no' => $orderNo], ['*'], false);
         $order['material_list'] = $this->getMaterialService()->getList(['order_no' => $orderNo], ['*'], false);
         return $order;
