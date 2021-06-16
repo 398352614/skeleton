@@ -315,11 +315,11 @@ class AddressService extends BaseService
         //数据处理
         $countryNameList = array_unique(collect($data)->pluck('place_country')->toArray());
         $countryShortList = CountryTrait::getShortListByName($countryNameList);
+        $addressTypeList = array_flip(ConstTranslateTrait::addressTypeList());
         for ($i = 0; $i < count($data); $i++) {
-            $addressTypeList = array_flip(ConstTranslateTrait::addressTypeList());
-
             $data[$i] = array_map('strval', $data[$i]);
             //反向翻译
+            $data[$i]['place_country_name'] = $data[$i]['place_country'];
             $data[$i]['place_country'] = $countryShortList[$data[$i]['place_country']] ?? $data[$i]['place_country'];
             if (!empty($data[$i]['type'])) {
                 $data[$i]['type_name'] = $data[$i]['type'];
