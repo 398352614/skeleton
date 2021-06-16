@@ -484,6 +484,8 @@ class OrderImportService extends BaseService
                 $data['second_execution_date'],
             );
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+            $data['place_fullname'] = $data['second_place_fullname'] ?? '';
+            $data['place_phone'] = $data['second_place_phone'] ?? '';
             $data['place_province'] = $data['second_place_province'] ?? '';
             $data['place_city'] = $data['second_place_city'];
             $data['place_district'] = $data['second_place_district'] ?? '';
