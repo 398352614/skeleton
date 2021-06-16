@@ -504,34 +504,6 @@ class OrderImportService extends BaseService
                 $data['second_place_lon']
             );
         }
-//        if($data['type'] == BaseConstService::ORDER_TYPE_2){
-//            $data['warehouse_province'] = $data['second_place_province'] ?? '';
-//            $data['warehouse_city'] = $data['second_place_city'];
-//            $data['warehouse_district'] = $data['second_place_district'] ?? '';
-//            $data['warehouse_street'] = $data['second_place_street'];
-//            $data['warehouse_house_number'] = $data['second_place_house_number'];
-//            $data['warehouse_post_code'] = $data['second_place_post_code'];
-//            $data['warehouse_lat'] = $data['second_place_lat'] ?? '';
-//            $data['warehouse_lon'] = $data['second_place_lon'] ?? '';
-//
-//            $data['second_place_province'] = $data['place_province'] ?? '';
-//            $data['second_place_city'] = $data['place_city'];
-//            $data['second_place_district'] = $data['place_district'] ?? '';
-//            $data['second_place_street'] = $data['place_street'];
-//            $data['second_place_house_number'] = $data['place_house_number'];
-//            $data['second_place_post_code'] = $data['place_post_code'];
-//            $data['second_place_lat'] = $data['place_lat'] ?? '';
-//            $data['second_place_lon'] = $data['place_lon'] ?? '';
-//
-//            $data['place_province'] = $data['warehouse_province'] ?? '';
-//            $data['place_city'] = $data['warehouse_city'];
-//            $data['place_district'] = $data['warehouse_district'] ?? '';
-//            $data['place_street'] = $data['warehouse_street'];
-//            $data['place_house_number'] = $data['warehouse_house_number'];
-//            $data['place_post_code'] = $data['warehouse_post_code'];
-//            $data['place_lat'] = $data['warehouse_lat'] ?? '';
-//            $data['place_lon'] = $data['warehouse_lon'] ?? '';
-//        }
         for ($j = 0; $j < 5; $j++) {
             if (!empty($data['package_no_' . ($j + 1)])) {
                 $data['package_list'][$j]['name'] = $data['package_name_' . ($j + 1)] ?? '';

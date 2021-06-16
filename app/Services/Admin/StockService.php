@@ -116,7 +116,7 @@ class StockService extends BaseService
             $trackingOrder = $this->form($order, $executionDate, $type);
             //生成运单号
             $trackingOrder['tracking_order_no'] = $this->getOrderNoRuleService()->createTrackingOrderNo();
-            $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], true);
+            $tour = $this->getTrackingOrderService()->store($trackingOrder, $order, true);
         }
         //更改包裹阶段
         $this->getPackageService()->updateById($package['id'], ['stage' => BaseConstService::PACKAGE_STAGE_3]);
