@@ -60,7 +60,7 @@ class OrderTrailService extends BaseService
                 foreach ($orderList[$k]['order_trail'] as $x => $y) {
                     $content = $y['content'];
                     $content = str_replace('取件', 'Pick-up', $content);
-                    $content = str_replace('取件', 'Pick-up', $content);
+                    $content = str_replace('派件', 'Delivery', $content);
                     $orderList[$k]['order_trail'][$x]['content'] = $content;
                 }
             }
