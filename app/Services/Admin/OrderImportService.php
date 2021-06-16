@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use mysql_xdevapi\Exception;
+use WebSocket\Base;
 
 class OrderImportService extends BaseService
 {
@@ -252,8 +253,8 @@ class OrderImportService extends BaseService
         } else {
             $status = BaseConstService::YES;
         }
-        if(!empty($error['merchant_id'])){
-            $error['merchant']=$error['merchant_id'];
+        if (!empty($error['merchant_id'])) {
+            $error['merchant'] = $error['merchant_id'];
         }
         $data = Arr::except($data, ["warehouse_fullname",
             "warehouse_phone",
@@ -468,6 +469,37 @@ class OrderImportService extends BaseService
     {
         $data['package_list'] = [];
         $data['material_list'] = [];
+        if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
+            unset(
+                $data['place_province'],
+                $data['place_city'],
+                $data['place_district'],
+                $data['place_street'],
+                $data['place_house_number'],
+                $data['place_post_code'],
+                $data['place_lat'],
+                $data['place_lon'],
+            );
+        } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+            $data['place_province'] = $data['second_place_province'] ?? '';
+            $data['place_city'] = $data['second_place_city'];
+            $data['place_district'] = $data['second_place_district'] ?? '';
+            $data['place_street'] = $data['second_place_street'];
+            $data['place_house_number'] = $data['second_place_house_number'];
+            $data['place_post_code'] = $data['second_place_post_code'];
+            $data['place_lat'] = $data['second_place_lat'] ?? '';
+            $data['place_lon'] = $data['second_place_lon'] ?? '';
+            unset(
+                $data['second_place_province'],
+                $data['second_place_city'],
+                $data['second_place_district'],
+                $data['second_place_street'],
+                $data['second_place_house_number'],
+                $data['second_place_post_code'],
+                $data['second_place_lat'],
+                $data['second_place_lon']
+            );
+        }
 //        if($data['type'] == BaseConstService::ORDER_TYPE_2){
 //            $data['warehouse_province'] = $data['second_place_province'] ?? '';
 //            $data['warehouse_city'] = $data['second_place_city'];
