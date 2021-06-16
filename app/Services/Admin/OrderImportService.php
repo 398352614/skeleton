@@ -223,7 +223,7 @@ class OrderImportService extends BaseService
             if (!empty($package[$j])) {
                 $list['error']['package_no_' . ($j + 1)] = __('包裹') . ($j + 1) . __('编号有重复');
             }
-            if (empty($data['package_weight_' . $j])) {
+            if (!empty($data['package_no_'.$j]) && empty($data['package_weight_' . $j])) {
                 $data['package_weight_' . $j] = 1;
             }
             //有效期判断

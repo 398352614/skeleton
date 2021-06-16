@@ -216,7 +216,7 @@ class OrderImportService extends BaseService
             if (!empty($package[$j])) {
                 $list['error']['package_no_' . ($j + 1)] = __('包裹') . ($j + 1) . __('编号有重复');
             }
-            if (empty($data['package_weight_' . $j])) {
+            if (!empty($data['package_no_'.$j]) && empty($data['package_weight_' . $j])) {
                 $data['package_weight_' . $j] = 1;
             }
             //有效期判断
@@ -503,7 +503,8 @@ class OrderImportService extends BaseService
                     $data['package_list'][$j]['feature_logo'] = ConstTranslateTrait::packageFeatureList($data['package_feature_' . ($j + 1)]);
                 }else{
                     $data['package_list'][$j]['feature_logo']='';
-                }                $data['package_list'][$j]['remark'] = $data['package_remark_' . ($j + 1)] ?? '';
+                }
+                $data['package_list'][$j]['remark'] = $data['package_remark_' . ($j + 1)] ?? '';
                 $data['package_list'][$j]['expiration_date'] = $data['package_expiration_date_' . ($j + 1)] ?? null;
                 $data['package_list'][$j]['out_order_no'] = $data['package_out_order_no_' . ($j + 1)] ?? '';
                 $data['package_list'] = array_values($data['package_list']);
