@@ -481,6 +481,7 @@ class OrderImportService extends BaseService
                 $data['second_place_post_code'],
                 $data['second_place_lat'],
                 $data['second_place_lon'],
+                $data['second_execution_date'],
             );
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
             $data['place_province'] = $data['second_place_province'] ?? '';
@@ -491,6 +492,7 @@ class OrderImportService extends BaseService
             $data['place_post_code'] = $data['second_place_post_code'];
             $data['place_lat'] = $data['second_place_lat'] ?? '';
             $data['place_lon'] = $data['second_place_lon'] ?? '';
+            $data['execution_date'] = $data['second_execution_date'];
             unset(
                 $data['second_place_fullname'],
                 $data['second_place_phone'],
@@ -501,7 +503,9 @@ class OrderImportService extends BaseService
                 $data['second_place_house_number'],
                 $data['second_place_post_code'],
                 $data['second_place_lat'],
-                $data['second_place_lon']
+                $data['second_place_lon'],
+                $data['second_execution_date'],
+
             );
         }
         for ($j = 0; $j < 5; $j++) {
