@@ -338,7 +338,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     ];
                     foreach ($arrayList as $k => $v) {
                         for ($i = 0; $i < 200; $i++) {
-                            $event->sheet->getDelegate()->getcell($k . ($i + 3))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                            $event->sheet->getDelegate()->getcell($k . ($i + 2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
                                 ->setErrorStyle(DataValidation::STYLE_INFORMATION)
                                 ->setAllowBlank(true)
                                 ->setShowInputMessage(true)
