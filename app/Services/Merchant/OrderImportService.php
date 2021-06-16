@@ -39,35 +39,35 @@ class OrderImportService extends BaseService
 
     public static $headings = [
         [
-            "base", "", "", "", "",
-            "other", "", "", "", "", "", "", "", "", "", "",
+            "base",
+            "other", "", "",
             "sender", "", "", "", "", "", "",
             "receiver", "", "", "", "", "", "",
-            "package_1", "", "", "", "", "", "",
-            "package_2", "", "", "", "", "", "",
-            "package_3", "", "", "", "", "", "",
-            "package_4", "", "", "", "", "", "",
-            "package_5", "", "", "", "", "", "",
-            "material_1", "", "", "", "", "", "", "", "", "",
-            "material_2", "", "", "", "", "", "", "", "", "",
-            "material_3", "", "", "", "", "", "", "", "", "",
-            "material_4", "", "", "", "", "", "", "", "", "",
-            "material_5", "", "", "", "", "", "", "", "", "",
+            "package_1", "", "", "", "", "",
+            "package_2", "", "", "", "", "",
+            "package_3", "", "", "", "", "",
+            "package_4", "", "", "", "", "",
+            "package_5", "", "", "", "", "",
+            "material_1", "", "", "", "", "", "", "", "",
+            "material_2", "", "", "", "", "", "", "", "",
+            "material_3", "", "", "", "", "", "", "", "",
+            "material_4", "", "", "", "", "", "", "", "",
+            "material_5", "", "", "", "", "", "", "", "",
         ],
         [
             "type", "out_user_id", "out_order_no", "special_remark",
             "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
             "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
-            "package_no_1", "package_name_1", "package_weight_1", "package_feature_1", "package_remark_1", "package_expiration_date_1", "package_out_order_no_1",
-            "package_no_2", "package_name_2", "package_weight_2", "package_feature_2", "package_remark_2", "package_expiration_date_2", "package_out_order_no_2",
-            "package_no_3", "package_name_3", "package_weight_3", "package_feature_3", "package_remark_3", "package_expiration_date_3", "package_out_order_no_3",
-            "package_no_4", "package_name_4", "package_weight_4", "package_feature_4", "package_remark_4", "package_expiration_date_4", "package_out_order_no_4",
-            "package_no_5", "package_name_5", "package_weight_5", "package_feature_5", "package_remark_5", "package_expiration_date_5", "package_out_order_no_5",
-            "material_code_1", "material_name_1", "material_count_1", "material_weight_1", "material_size_1", "material_type_1", "material_pack_type_1", "material_price_1", "material_remark_1", "material_out_order_no_1",
-            "material_code_2", "material_name_2", "material_count_2", "material_weight_2", "material_size_2", "material_type_2", "material_pack_type_2", "material_price_2", "material_remark_2", "material_out_order_no_2",
-            "material_code_3", "material_name_3", "material_count_3", "material_weight_3", "material_size_3", "material_type_3", "material_pack_type_3", "material_price_3", "material_remark_3", "material_out_order_no_3",
-            "material_code_4", "material_name_4", "material_count_4", "material_weight_4", "material_size_4", "material_type_4", "material_pack_type_4", "material_price_4", "material_remark_4", "material_out_order_no_4",
-            "material_code_5", "material_name_5", "material_count_5", "material_weight_5", "material_size_5", "material_type_5", "material_pack_type_5", "material_price_5", "material_remark_5", "material_out_order_no_5"
+            "package_no_1", "package_name_1", "package_weight_1", "package_feature_1", "package_remark_1", "package_expiration_date_1",
+            "package_no_2", "package_name_2", "package_weight_2", "package_feature_2", "package_remark_2", "package_expiration_date_2",
+            "package_no_3", "package_name_3", "package_weight_3", "package_feature_3", "package_remark_3", "package_expiration_date_3",
+            "package_no_4", "package_name_4", "package_weight_4", "package_feature_4", "package_remark_4", "package_expiration_date_4",
+            "package_no_5", "package_name_5", "package_weight_5", "package_feature_5", "package_remark_5", "package_expiration_date_5",
+            "material_code_1", "material_name_1", "material_count_1", "material_weight_1", "material_size_1", "material_type_1", "material_pack_type_1", "material_price_1", "material_remark_1",
+            "material_code_2", "material_name_2", "material_count_2", "material_weight_2", "material_size_2", "material_type_2", "material_pack_type_2", "material_price_2", "material_remark_2",
+            "material_code_3", "material_name_3", "material_count_3", "material_weight_3", "material_size_3", "material_type_3", "material_pack_type_3", "material_price_3", "material_remark_3",
+            "material_code_4", "material_name_4", "material_count_4", "material_weight_4", "material_size_4", "material_type_4", "material_pack_type_4", "material_price_4", "material_remark_4",
+            "material_code_5", "material_name_5", "material_count_5", "material_weight_5", "material_size_5", "material_type_5", "material_pack_type_5", "material_price_5", "material_remark_5",
         ]
     ];
 
@@ -79,7 +79,7 @@ class OrderImportService extends BaseService
     public function templateExport()
     {
         $cellData[0] = [];
-        return $this->excelExport('template', self::$headings, $cellData, 'order');
+        return $this->excelExport('merchantOrderTemplate', self::$headings, $cellData, 'merchantOrder');
     }
 
     /**
@@ -95,22 +95,30 @@ class OrderImportService extends BaseService
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
         $params['path'] = str_replace(env('APP_URL') . '/storage/', 'public//', $params['path']);
         $row = collect($this->orderExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
+        $row = array_values($row);
         //表头验证
-        $firstHeadings = array_values(__('excel.order.0'));
-        $secondHeadings = array_values(__('excel.order.1'));
+        $firstHeadings = array_values(__('excel.merchantOrder.0'));
+        $secondHeadings = array_values(__('excel.merchantOrder.1'));
         foreach ($row[1] as $k => $v) {
-            $row[1][$k] = preg_replace('/\(.*\)/', '', $v);
+            if (!empty($v)) {
+                $row[1][$k] = preg_replace('/\(.*\)/', '', $v);
+            }
         }
-        $importHeadings = [];
+        $importHeadings = $importHeadings2 = [];
         foreach ($row[0] as $k => $v) {
             if ($v !== null) {
                 $importHeadings[] = $v;
             }
         }
-        if ($importHeadings !== $firstHeadings || array_diff($row[1], $secondHeadings) !== []) {
+        foreach ($row[1] as $k => $v) {
+            if ($v !== null) {
+                $importHeadings2[] = $v;
+            }
+        }
+        if ($importHeadings !== $firstHeadings || array_diff($importHeadings2, $secondHeadings) !== []) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
-        if(count($row) < 3){
+        if (count($row) < 3) {
             throw new BusinessLogicException('模板内无有效数据');
         }
         $newRow = [];
@@ -119,7 +127,7 @@ class OrderImportService extends BaseService
                 $newRow[$k][$i] = $row[$k][$i];
             }
         }
-        $newRow=array_values($newRow);
+        $newRow = array_values($newRow);
         //数量验证
         if (count($row) > 202) {
             throw new BusinessLogicException('导入订单数量不得超过200个');
@@ -179,11 +187,6 @@ class OrderImportService extends BaseService
                 $error[$v] = $validator->errors()->first($v);
             }
         }
-        //检验货主
-        $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id'], 'status' => BaseConstService::MERCHANT_STATUS_1], ['*'], false);
-        if (empty($merchant)) {
-            $error['merchant_id'] = __('货主不存在');
-        }
         //填充地址(若邮编是纯数字，则认为是比利时邮编)
         $country = CompanyTrait::getCountry();
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['place_post_code'])) {
@@ -226,7 +229,7 @@ class OrderImportService extends BaseService
             if (!empty($package[$j])) {
                 $list['error']['package_no_' . ($j + 1)] = __('包裹') . ($j + 1) . __('编号有重复');
             }
-            if (!empty($data['package_no_'.$j]) && empty($data['package_weight_' . $j])) {
+            if (!empty($data['package_no_' . $j]) && empty($data['package_weight_' . $j])) {
                 $data['package_weight_' . $j] = 1;
             }
             //有效期判断
@@ -379,31 +382,15 @@ class OrderImportService extends BaseService
             $data[$i - 2] = collect($headings)->combine($row[$i])->toArray();
         }
         //数据处理
-        $orderTypeList = array_flip(ConstTranslateTrait::orderTypeList());
-        $orderSettlementList = array_flip(ConstTranslateTrait::orderSettlementTypeList());
-        $controlModeList = array_flip(ConstTranslateTrait::orderControlModeList());
-        $receiptTypeList = array_flip(ConstTranslateTrait::orderReceiptTypeList());
+        $merchantOrderTypeList = array_flip(ConstTranslateTrait::merchantOrderTypeList());
         $packageFeatureList = array_flip(ConstTranslateTrait::packageFeatureList());
         $materialTypeList = array_flip(ConstTranslateTrait::materialTypeList());
         $materialPackTypeList = array_flip(ConstTranslateTrait::materialPackTypeList());
         for ($i = 0; $i < count($data); $i++) {
             //反向翻译
-            $data[$i]['merchant_id'] = Merchant::query()->where('name', $data[$i]['merchant'])->first()['id'] ?? $data[$i]['merchant'];
             if (!empty($data[$i]['type'])) {
                 $data[$i]['type_name'] = $data[$i]['type'];
-                $data[$i]['type'] = $orderTypeList[$data[$i]['type']];
-            }
-            if (!empty($data[$i]['settlement_type'])) {
-                $data[$i]['settlement_type_name'] = $data[$i]['settlement_type'];
-                $data[$i]['settlement_type'] = $orderSettlementList[$data[$i]['settlement_type']];
-            }
-            if (!empty($data[$i]['control_mode'])) {
-                $data[$i]['control_mode_name'] = $data[$i]['control_mode'];
-                $data[$i]['control_mode'] = $controlModeList[$data[$i]['control_mode']];
-            }
-            if (!empty($data[$i]['receipt_type'])) {
-                $data[$i]['receipt_type_name'] = $data[$i]['receipt_type'];
-                $data[$i]['receipt_type'] = $receiptTypeList[$data[$i]['receipt_type']];
+                $data[$i]['type'] = $merchantOrderTypeList[$data[$i]['type']];
             }
             for ($j = 0; $j < 5; $j++) {
                 if (!empty($data[$i]['package_feature_' . ($j + 1)])) {
@@ -422,7 +409,6 @@ class OrderImportService extends BaseService
             }
             //日期如果是excel时间格式，转换成短横连接格式
             is_numeric($data[$i]['execution_date']) && $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
-            is_numeric($data[$i]['create_date']) && $data[$i]['create_date'] = date('Y-m-d', ($data[$i]['create_date'] - 25569) * 24 * 3600);
             is_numeric($data[$i]['second_execution_date']) && $data[$i]['second_execution_date'] = date('Y-m-d', ($data[$i]['second_execution_date'] - 25569) * 24 * 3600);
             $data[$i] = array_map('strval', $data[$i]);
             empty($data[$i]['place_country']) && $data[$i]['place_country'] = CompanyTrait::getCountry();//填充收件人国家
@@ -509,10 +495,10 @@ class OrderImportService extends BaseService
                 $data['package_list'][$j]['name'] = $data['package_name_' . ($j + 1)] ?? '';
                 $data['package_list'][$j]['express_first_no'] = $data['package_no_' . ($j + 1)];
                 $data['package_list'][$j]['weight'] = $data['package_weight_' . ($j + 1)] ?? 1;
-                if(!empty($data['package_feature_' . ($j + 1)])){
+                if (!empty($data['package_feature_' . ($j + 1)])) {
                     $data['package_list'][$j]['feature_logo'] = ConstTranslateTrait::packageFeatureList($data['package_feature_' . ($j + 1)]);
-                }else{
-                    $data['package_list'][$j]['feature_logo']='';
+                } else {
+                    $data['package_list'][$j]['feature_logo'] = '';
                 }
                 $data['package_list'][$j]['remark'] = $data['package_remark_' . ($j + 1)] ?? '';
                 $data['package_list'][$j]['expiration_date'] = $data['package_expiration_date_' . ($j + 1)] ?? null;
@@ -542,7 +528,7 @@ class OrderImportService extends BaseService
             }
         }
         $data = Arr::only($data, [
-            "create_date", "type", "merchant_id", "out_user_id", "out_order_no",
+            "type", "out_user_id", "out_order_no",
             "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date",
             "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat",
             "settlement_amount", "settlement_type",

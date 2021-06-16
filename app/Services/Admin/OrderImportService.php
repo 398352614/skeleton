@@ -111,7 +111,7 @@ class OrderImportService extends BaseService
             $row[1][$k] = preg_replace('/\(.*\)/', '', $v);
         }
         $newRow = [];
-        foreach ($row[0] as $k => $v) {
+        foreach ($row[1] as $k => $v) {
             if ($v !== null) {
                 $newRow[] = $v;
             }

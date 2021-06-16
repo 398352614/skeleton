@@ -13,9 +13,7 @@ class OrderImportValidate extends BaseValidate
     ];
 
     public $rules = [
-        "create_date" => 'required|date',
         "type" => 'required|integer|in:1,2,3',
-        "merchant" => 'required|string',
         "out_user_id" => 'nullable|string',
         'out_order_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
         'place_fullname' => 'required_unless:type,2|string|max:50',

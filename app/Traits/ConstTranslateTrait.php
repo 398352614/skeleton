@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\App;
  * @method static trackingOrderTypeList($args = null)
  * @method static orderTypeList($args = null)
  * @method static orderSettlementTypeList($args = null)
+ * @method static merchantOrderTypeList($args = null)
  * @method static outStatusList($args = null)
  * @method static trackingOrderStatusList($args = null)
  * @method static orderStatusList($args = null)

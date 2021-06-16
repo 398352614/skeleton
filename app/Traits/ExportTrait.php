@@ -7,6 +7,7 @@ namespace App\Traits;
 
 use App\Exceptions\BusinessLogicException;
 use App\Exports\BaseExport;
+use App\Exports\MerchantOrderExport;
 use App\Exports\OrderExport;
 use App\Exports\PlanExport;
 use Illuminate\Support\Carbon;
@@ -65,6 +66,8 @@ trait ExportTrait
                 $rowCount = Excel::store(new PlanExport($data, $headings, $name, $dir, $params), $path);
             } elseif ($dir == 'order') {
                 $rowCount = Excel::store(new OrderExport($data, $headings, $name, $dir), $path);
+            }elseif ($dir == 'merchantOrder') {
+                $rowCount = Excel::store(new MerchantOrderExport($data, $headings, $name, $dir), $path);
             } else {
                 $rowCount = Excel::store(new BaseExport($data, $headings, $name, $dir), $path);
             }

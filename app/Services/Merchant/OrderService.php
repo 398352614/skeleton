@@ -443,7 +443,7 @@ class OrderService extends BaseService
         $address = $this->getAddressService()->getInfoByUnique($data);
         if (empty($address)) {
             $info = LocationTrait::getLocation(
-                $data['place_country'],
+                $data['place_country'] ?? auth()->user()->country,
                 $data['place_city'] ?? '',
                 $data['place_street'] ?? '',
                 $data['place_house_number'] ?? '',
