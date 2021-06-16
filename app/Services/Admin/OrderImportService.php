@@ -471,6 +471,8 @@ class OrderImportService extends BaseService
         $data['material_list'] = [];
         if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
             unset(
+                $data['second_place_fullname'],
+                $data['second_place_phone'],
                 $data['second_place_province'],
                 $data['second_place_city'],
                 $data['second_place_district'],
@@ -490,6 +492,8 @@ class OrderImportService extends BaseService
             $data['place_lat'] = $data['second_place_lat'] ?? '';
             $data['place_lon'] = $data['second_place_lon'] ?? '';
             unset(
+                $data['second_place_fullname'],
+                $data['second_place_phone'],
                 $data['second_place_province'],
                 $data['second_place_city'],
                 $data['second_place_district'],
