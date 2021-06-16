@@ -192,7 +192,14 @@ class AddressService extends BaseService
      */
     public function check(&$data, $id = null)
     {
-
+        if(auth()->user()->company_id !== 'NL'){
+            if(empty($data['place_city'])){
+                throw new BusinessLogicException('城市是必填的');
+            }
+            if(empty($data['place_street'])){
+                throw new BusinessLogicException('街道是必填的');
+            }
+        }
         if (empty($data['place_lon']) || empty($data['place_lat'])) {
             throw new BusinessLogicException('地址无法定位，请选择其他地址');
         }
