@@ -310,7 +310,7 @@ class AddressService extends BaseService
         if ($row[0] !== $headings) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
-        if(count($row) < 2){
+        if (count($row) < 2) {
             throw new BusinessLogicException('表格数据不能为空');
         }
         $newRow = [];
@@ -319,7 +319,7 @@ class AddressService extends BaseService
                 $newRow[$k][$i] = $row[$k][$i];
             }
         }
-        $newRow=array_values($newRow);
+        $newRow = array_values($newRow);
         $data = [];
         for ($i = 1; $i < count($newRow); $i++) {
             $data[$i - 1] = collect($this->importExcelHeader)->combine($newRow[$i])->toArray();
@@ -443,7 +443,7 @@ class AddressService extends BaseService
         $status = BaseConstService::YES;
         $error['log'] = [];
         $validate = new AddressImportValidate();
-        $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message));
+        $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message), $validate->customAttributes);
         if ($validator->fails()) {
             $status = BaseConstService::NO;
             $key = $validator->errors()->keys();

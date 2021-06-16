@@ -9,7 +9,16 @@ use App\Http\Validate\BaseValidate;
 class AddressImportValidate extends BaseValidate
 {
     public $customAttributes = [
-
+        'place_fullname' => '发件人',
+        'place_phone' => '电话',
+        'place_country' => '国家',
+        'place_province' => '省份',
+        'place_post_code' => '邮编',
+        'place_house_number' => '门牌号',
+        'place_city' => '城市',
+        'place_district' => '区县',
+        'place_street' => '街道',
+        'place_address' => '地址',
     ];
 
     public $rules = [
@@ -24,7 +33,7 @@ class AddressImportValidate extends BaseValidate
         'place_street' => 'nullable|string|max:50',
         'place_address' => 'nullable|string|max:50',
     ];
-
     public $message = [
+
     ];
 }
