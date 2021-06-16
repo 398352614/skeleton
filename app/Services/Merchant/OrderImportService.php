@@ -101,20 +101,30 @@ class OrderImportService extends BaseService
         foreach ($row[1] as $k => $v) {
             $row[1][$k] = preg_replace('/\(.*\)/', '', $v);
         }
-        $newRow = [];
+        $importHeadings = [];
         foreach ($row[0] as $k => $v) {
             if ($v !== null) {
-                $newRow[] = $v;
+                $importHeadings[] = $v;
             }
         }
-        if ($newRow !== $firstHeadings || array_diff($row[1], $secondHeadings) !== []) {
+        if ($importHeadings !== $firstHeadings || array_diff($row[1], $secondHeadings) !== []) {
             throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
         }
+        if(count($row) < 3){
+            throw new BusinessLogicException('表格数据不能为空');
+        }
+        $newRow = [];
+        foreach ($row as $k => $v) {
+            for ($i = 0, $j = count($row[0]); $i < $j; $i++) {
+                $newRow[$k][$i] = $row[$k][$i];
+            }
+        }
+        $newRow=array_values($newRow);
         //数量验证
         if (count($row) > 202) {
             throw new BusinessLogicException('导入订单数量不得超过200个');
         }
-        return $this->importForm($row);
+        return $this->importForm($newRow);
     }
 
     /**

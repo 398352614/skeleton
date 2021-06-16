@@ -192,11 +192,11 @@ class AddressService extends BaseService
      */
     public function check(&$data, $id = null)
     {
-        if(auth()->user()->company_id !== 'NL'){
-            if(empty($data['place_city'])){
+        if (auth()->user()->company_id !== 'NL') {
+            if (empty($data['place_city'])) {
                 throw new BusinessLogicException('城市是必填的');
             }
-            if(empty($data['place_street'])){
+            if (empty($data['place_street'])) {
                 throw new BusinessLogicException('街道是必填的');
             }
         }
@@ -304,17 +304,22 @@ class AddressService extends BaseService
         Log::info('end-path', $params);
         $row = collect($this->addressExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
         $row[0] = array_filter($row[0]);
-        $newRow=[];
+
+        //表头验证
+        $headings = array_values(__('excel.addressExcelExport'));
+        if ($row[0] !== $headings) {
+            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
+        }
+        if(count($row) < 2){
+            throw new BusinessLogicException('表格数据不能为空');
+        }
+        $newRow = [];
         foreach ($row as $k => $v) {
             for ($i = 0, $j = count($row[0]); $i < $j; $i++) {
                 $newRow[$k][$i] = $row[$k][$i];
             }
         }
-        //表头验证
-        $headings = array_values(__('excel.addressExcelExport'));
-        if (empty($newRow) || $newRow[0] !== $headings) {
-            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
-        }
+        $newRow=array_values($newRow);
         $data = [];
         for ($i = 1; $i < count($newRow); $i++) {
             $data[$i - 1] = collect($this->importExcelHeader)->combine($newRow[$i])->toArray();
