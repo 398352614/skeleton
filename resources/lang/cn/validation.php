@@ -283,6 +283,12 @@ return [
         'code' => [
             'regex' => '编码规则必须是大写'
         ],
+        'place_fullname' => [
+            'required_unless' => '发件人姓名是必须的'
+        ],
+        'second_place_fullname' => [
+            'required_unless' => '收件人姓名是必须的'
+        ]
     ],
 
     /*
@@ -312,24 +318,24 @@ return [
         'name' => '名称',
         'contacts' => '负责人',
         'address' => '详细地址',
-        'place_fullname' => '收件人姓名',
-        'place_phone' => '收件人电话',
-        'place_country' => '收件人国家',
-        'place_post_code' => '收件人邮编',
-        'place_house_number' => '收件人门牌号',
-        'place_city' => '收件人城市',
-        'place_street' => '收件人街道',
-        'place_address' => '收件人地址',
+        'place_fullname' => '发件人姓名',
+        'place_phone' => '发件人电话',
+        'place_country' => '发件人国家',
+        'place_post_code' => '发件人邮编',
+        'place_house_number' => '发件人门牌号',
+        'place_city' => '发件人城市',
+        'place_street' => '发件人街道',
+        'place_address' => '发件人地址',
         'place_lon' => '经度',
         'place_lat' => '纬度',
-        'second_place_fullname' => '发件人姓名',
-        'second_place_phone' => '发件人电话',
-        'second_place_country' => '发件人国家',
-        'second_place_post_code' => '发件人邮编',
-        'second_place_house_number' => '发件人门牌号',
-        'second_place_city' => '发件人城市',
-        'second_place_street' => '发件人街道',
-        'second_place_address' => '发件人详细地址',
+        'second_place_fullname' => '收件人姓名',
+        'second_place_phone' => '收件人电话',
+        'second_place_country' => '收件人国家',
+        'second_place_post_code' => '收件人邮编',
+        'second_place_house_number' => '收件人门牌号',
+        'second_place_city' => '收件人城市',
+        'second_place_street' => '收件人街道',
+        'second_place_address' => '收件人详细地址',
         'house_number' => '门牌号',
         //Admin-BatchException
         'deal_remark' => '处理内容',
