@@ -327,4 +327,5 @@ class OrderController extends OrderBaseController
     {
         return $this->service->orderBillPrint($this->data);
     }
+
 }

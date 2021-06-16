@@ -107,6 +107,8 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/warehouse', 'OrderController@getWarehouse')->name('order.store');
         //订单轨迹
         Route::get('/{id}/trail', 'OrderTrailController@show')->name('order-trail.index');
+        //运价估算
+        Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
     });
 
 

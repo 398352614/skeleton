@@ -682,5 +682,109 @@ Route::prefix('order')->group(function () {
      * @apiSuccess {String} data.trail_list.created_at 创建时间
      * @apiSuccessExample {json} Success-Response:
      * {"code":200,"data":{"id":4222,"company_id":3,"merchant_id":121,"merchant_id_name":"\u540c\u57ce\u6d3e\u9001","order_no":"SMAAAFA0001","execution_date":"2021-06-12","second_execution_date":"2021-06-12","out_order_no":"BG608NL2075","mask_code":"2056","source":"3","source_name":"\u7b2c\u4e09\u65b9","list_mode":1,"transport_mode":1,"transport_mode_name":"\u6574\u8f66","origin_type":1,"control_mode":1,"control_mode_name":null,"origin_type_name":"\u4ece\u7f51\u70b9\u51fa\u53d1\uff0c\u56de\u5230\u7f51\u70b9","type":3,"type_name":"\u63d0\u8d27->\u7f51\u70b9->\u914d\u9001","out_user_id":"904566","nature":1,"settlement_type":1,"settlement_type_name":"\u73b0\u4ed8","settlement_amount":"25.00","replace_amount":"0.00","delivery":2,"delivery_name":"\u5426","status":3,"sticker_amount":"0.00","delivery_amount":"0.00","status_name":"\u5df2\u5b8c\u6210","second_place_fullname":"Ann","second_place_phone":"0031123456789","second_place_country":"NL","second_place_country_name":"\u8377\u5170","second_place_province":"Noord-Holland","second_place_post_code":"1118CP","second_place_house_number":"202","second_place_city":"Schiphol","second_place_district":"Haarlemmermeer","second_place_street":"Evert van de Beekstraat","second_place_address":"NL Schiphol Evert van de Beekstraat 202 1118CP","second_place_lon":"4.74791023","second_place_lat":"52.30389933","place_fullname":"Nie","place_phone":"0031123654789","place_country":"NL","place_country_name":"\u8377\u5170","place_province":"","place_post_code":"1055RZ","place_house_number":"94","place_city":"Amsterdam","place_district":"","place_street":"Nieuwpoortstraat","place_address":"NL Amsterdam Nieuwpoortstraat 94 1055RZ","place_lon":"4.85681831","place_lat":"52.38420131","special_remark":null,"remark":null,"starting_price":"5.00","transport_price_type":"2","transport_price_type_name":"\u9636\u68af\u56fa\u5b9a\u503c\u8ba1\u7b97\uff08\u56fa\u5b9a\u8d39\u7528+\uff08\u91cd\u91cf\u4ef7\u683c\u6863\uff09*\uff08\u91cc\u7a0b\u4ef7\u683c\u6863\uff09\uff09","receipt_type":1,"receipt_type_name":"\u539f\u5355\u8fd4\u56de","receipt_count":0,"create_date":null,"created_at":"2021-06-11 05:57:47","updated_at":"2021-06-11 06:08:59","item_list":null,"expect_total_amount":"0.00","actual_total_amount":"0.00","pickup_warehouse_lon":"4.87510019","pickup_warehouse_lat":"52.31153083","pie_warehouse_lon":null,"pie_warehouse_lat":null,"trail_list":[{"id":11319,"company_id":3,"type":11,"order_no":"SMAAAFA0001","content":"\u8ba2\u5355[\u6d3e\u4ef6]\u5b8c\u6210","created_at":"2021-06-11 06:09:00"},{"id":11316,"company_id":3,"type":4,"order_no":"SMAAAFA0001","content":"\u8ba2\u5355[\u6d3e\u4ef6]\u5f00\u59cb","created_at":"2021-06-11 06:08:16"},{"id":11313,"company_id":3,"type":2,"order_no":"SMAAAFA0001","content":"\u8ba2\u5355[\u6d3e\u4ef6]\u51c6\u5907\u4e2d\uff0c\u8d27\u54c1\u5df2\u9501\u5b9a","created_at":"2021-06-11 06:07:37"},{"id":11310,"company_id":3,"type":7,"order_no":"SMAAAFA0001","content":"\u8ba2\u5355[\u6d3e\u4ef6]\u8fd0\u5355\u521b\u5efa\uff0c\u751f\u6210\u8fd0\u5355\u53f7[YD00030005599]\uff0c\u65e5\u671f[2021-06-12]","created_at":"2021-06-11 06:03:38"},{"id":11308,"company_id":3,"type":5,"order_no":"SMAAAFA0001","content":"\u8ba2\u5355[\u53d6\u4ef6]\u5b8c\u6210","created_at":"2021-06-11 06:00:31"},{"id":11305,"company_id":3,"type":4,"order_no":"SMAAAFA0001","content":"\u8ba2\u5355[\u53d6\u4ef6]\u5f00\u59cb","created_at":"2021-06-11 06:00:00"},{"id":11302,"company_id":3,"type":2,"order_no":"SMAAAFA0001","content":"\u8ba2\u5355[\u53d6\u4ef6]\u51c6\u5907\u4e2d\uff0c\u8d27\u54c1\u5df2\u9501\u5b9a","created_at":"2021-06-11 05:59:50"},{"id":11299,"company_id":3,"type":1,"order_no":"SMAAAFA0001","content":"\u8ba2\u5355\u521b\u5efa\u6210\u529f\uff0c\u8ba2\u5355\u53f7[SMAAAFA0001]\uff0c\u751f\u6210\u8fd0\u5355\u53f7[YD00030005597]","created_at":"2021-06-11 05:57:47"}]},"msg":"successful"}     */
+
+
+    /**
+     * @api {get} /merchant/order/price-count 运价估算
+     * @apiName 运价估算
+     * @apiGroup 05order
+     * @apiVersion 1.0.0
+     * @apiUse auth
+     *
+     * @apiParam {String} order_no 订单号
+     * @apiParam {String} execution_date 取派日期
+     * @apiParam {String} second_execution_date 取派日期
+     * @apiParam {String} create_date 开单日期
+     * @apiParam {String} out_order_no 外部订单号
+     * @apiParam {String} mask_code 掩码
+     * @apiParam {String} source 来源
+     * @apiParam {String} source_name 来源名称
+     * @apiParam {String} type 类型:1-取2-派3-取派
+     * @apiParam {String} out_user_id 外部客户ID
+     * @apiParam {String} nature 性质:1-包裹2-材料3-文件4-增值服务5-其他
+     * @apiParam {String} settlement_type 结算类型1-寄付2-到付
+     * @apiParam {String} settlement_amount 结算金额
+     * @apiParam {String} replace_amount 代收货款
+     * @apiParam {String} status 状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站
+     * @apiParam {String} second_place_fullname 收件人姓名
+     * @apiParam {String} second_place_phone 收件人电话
+     * @apiParam {String} second_place_country 收件人国家
+     * @apiParam {String} second_place_country_name 收件人国家名称
+     * @apiParam {String} second_place_post_code 收件人邮编
+     * @apiParam {String} second_place_house_number 收件人门牌号
+     * @apiParam {String} second_place_city 收件人城市
+     * @apiParam {String} second_place_street 收件人街道
+     * @apiParam {String} second_place_address 收件人详细地址
+     * @apiParam {String} place_fullname 发件人姓名
+     * @apiParam {String} place_phone 发件人电话
+     * @apiParam {String} place_country 发件人国家
+     * @apiParam {String} place_country_name 发件人国家名称
+     * @apiParam {String} place_province 发件人省份
+     * @apiParam {String} place_post_code 发件人邮编
+     * @apiParam {String} place_house_number 发件人门牌号
+     * @apiParam {String} place_city 发件人城市
+     * @apiParam {String} place_district 发件人区县
+     * @apiParam {String} place_street 发件人街道
+     * @apiParam {String} place_address 发件人详细地址
+     * @apiParam {String} special_remark 特殊事项
+     * @apiParam {String} remark 备注
+     * @apiParam {String} starting_price 起步价
+     * @apiParam {String} transport_price_type 运价方案ID
+     * @apiParam {String} receipt_type 回单要求
+     * @apiParam {String} receipt_type_name 回单要求名称
+     * @apiParam {String} receipt_count 回单数量
+     * @apiParam {Object} package_list 包裹列表
+     * @apiParam {String} package_list.expiration_date 有效日期
+     * @apiParam {String} package_list.name 包裹名称
+     * @apiParam {String} package_list.express_first_no 快递单号1
+     * @apiParam {String} package_list.express_second_no 快递单号2
+     * @apiParam {String} package_list.feature_logo 特性标志
+     * @apiParam {String} package_list.out_order_no 外部标识
+     * @apiParam {String} package_list.weight 重量
+     * @apiParam {String} package_list.size 重量
+     * @apiParam {String} package_list.actual_weight 实际重量
+     * @apiParam {String} package_list.expect_quantity 预计数量
+     * @apiParam {String} package_list.actual_quantity 实际数量
+     * @apiParam {String} package_list.sticker_no 贴单号
+     * @apiParam {String} package_list.settlement_amount 结算金额
+     * @apiParam {String} package_list.count_settlement_amount 估算运费
+     * @apiParam {String} package_list.sticker_amount 贴单费用
+     * @apiParam {String} package_list.delivery_amount 提货费用
+     * @apiParam {String} package_list.remark 备注
+     * @apiParam {String} package_list.is_auth 是否需要身份验证1-是2-否
+     * @apiParam {String} package_list.auth_fullname 身份人姓名
+     * @apiParam {String} package_list.auth_birth_date 身份人出身年月
+     * @apiParam {Object} material_list 材料列表
+     * @apiParam {String} material_list.execution_date 取派日期
+     * @apiParam {String} material_list.name 材料名称
+     * @apiParam {String} material_list.code 材料代码
+     * @apiParam {String} material_list.out_order_no 外部标识
+     * @apiParam {String} material_list.expect_quantity 预计数量
+     * @apiParam {String} material_list.actual_quantity 实际数量
+     * @apiParam {String} material_list.pack_type 包装类型
+     * @apiParam {String} material_list.type 类型
+     * @apiParam {String} material_list.weight 重量
+     * @apiParam {String} material_list.size 体积
+     * @apiParam {String} material_list.remark 备注
+     * @apiParam {Object} amount_list 费用列表
+     * @apiParam {String} amount_list.id 费用ID
+     * @apiParam {String} amount_list.expect_amount 预计金额
+     * @apiParam {String} amount_list.actual_amount 实际金额
+     * @apiParam {String} amount_list.type 运费类型
+     * @apiParam {String} amount_list.remark 备注
+     *
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    返回数据
+     * @apiSuccess {String} data.distance    距离
+     * @apiSuccess {String} data.count_settlement_amount    预计运费
+     * @apiSuccess {String} data.starting_price    固定费用
+     * @apiSuccess {String} data.package_list.count_settlement_amount    包裹运费
+
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":[],"msg":"successful"}
+     */
+    //运价估算
+    Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
 });
 
