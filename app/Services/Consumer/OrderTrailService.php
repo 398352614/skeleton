@@ -56,7 +56,7 @@ class OrderTrailService extends BaseService
             $orderList[$k]['company_web_site'] = $company['web_site'];
             $orderList[$k]['company_logo_url'] = $company['logo_url'];
             $orderList[$k]['order_trail'] = parent::getList(['order_no' => $v['order_no'], 'company_id' => $v['company_id']], ['*'], false, [], ['id' => 'desc']);
-            if ($this->formData['language'] == 'en') {
+            if (app('request')->header('language') == 'en') {
                 foreach ($orderList[$k]['order_trail'] as $x => $y) {
                     $content = $y['content'];
                     $content = str_replace('取件', 'Pick-up', $content);
