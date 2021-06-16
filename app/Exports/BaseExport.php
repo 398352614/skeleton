@@ -331,7 +331,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                     }
                 }
-                if ($this->type === 'addressTemplate') {
+                if ($this->type === 'addressExcelExport') {
                     //下拉
                     $arrayList = [
                         'A' => implode(',', array_values(ConstTranslateTrait::addressTypeList())),
