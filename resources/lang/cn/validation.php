@@ -304,6 +304,7 @@ return [
 
     'attributes' => [
         //Common-attributes
+        'merchant' => '货主',
         'country' => '所在国家',
         'cn_name' => '中文名称',
         'en_name' => '英文名称',
