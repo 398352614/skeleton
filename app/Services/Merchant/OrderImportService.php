@@ -178,6 +178,7 @@ class OrderImportService extends BaseService
      */
     public function check($data)
     {
+        $data['merchant_id'] = auth()->user()->id;
         $error = [];
         $validate = new OrderImportValidate;
         $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message));

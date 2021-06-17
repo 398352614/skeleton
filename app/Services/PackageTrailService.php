@@ -103,7 +103,6 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         } else {
             $cancel = '其他原因';
         }
-        dd($package);
         //根据不同的类型生成不同的content
         switch ($action) {
             case BaseConstService::PACKAGE_TRAIL_CREATED:
