@@ -86,8 +86,8 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         {
             if(!is_array($v)){
                 $packageList = [$packageList];
+                break;
             }
-            break;
         }
         foreach ($packageList as $key => $package) {
             $package = collect($package)->toArray();
