@@ -548,7 +548,7 @@ class OrderImportService extends BaseService
                 $data['material_list'] = array_values($data['material_list']);
             }
         }
-        for ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 11; $i++) {
             $data['amount_list'][$i]['type'] = $i + 1;
             if (empty($data['amount_' . ($i + 1)])) {
                 $data['amount_list'][$i]['expect_amount'] = 0;
