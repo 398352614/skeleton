@@ -82,8 +82,12 @@ class PackageTrailService extends \App\Services\Admin\BaseService
     public static function storeByTrackingOrderList(array $packageList, int $action, $params = null)
     {
         $data = [];
-        if (empty($packageList[0])) {
-            $packageList = [$packageList];
+        foreach ($packageList as $k=>$v)
+        {
+            if(!is_array($v)){
+                $packageList = [$packageList];
+            }
+            break;
         }
         foreach ($packageList as $key => $package) {
             $package = collect($package)->toArray();

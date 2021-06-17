@@ -252,8 +252,9 @@ class OrderImportService extends BaseService
             $data = $this->getTransportPriceService()->priceCount($data);
         } catch (BusinessLogicException $e) {
             $error['log'] = __($e->getMessage(), $e->replace);
-        } catch (\Exception $e) {
         }
+        //算钱
+        $data['expect_total_amount'] = $data['count_settlement_amount'];
         if (!empty($error)) {
             $status = BaseConstService::NO;
         } else {
