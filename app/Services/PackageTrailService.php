@@ -174,8 +174,6 @@ class PackageTrailService extends \App\Services\Admin\BaseService
             break;
         }
         foreach ($packageList as $key => $package) {
-            dd($packageList,$package);
-
             $package = collect($package)->toArray();
             $data[] = self::trackingPackageStatusChangeCreateTrail($package, $action, $params ?? $package, true);
         }
