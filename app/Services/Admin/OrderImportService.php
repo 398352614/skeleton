@@ -111,7 +111,7 @@ class OrderImportService extends BaseService
             $row[1][$k] = preg_replace('/\(.*\)/', '', $v);
         }
         $newRow = [];
-        foreach ($row[1] as $k => $v) {
+        foreach ($row[0] as $k => $v) {
             if ($v !== null) {
                 $newRow[] = $v;
             }
@@ -556,7 +556,6 @@ class OrderImportService extends BaseService
                 $data['amount_list'][$i]['expect_amount'] = $data['amount_' . ($i + 1)];
             }
         }
-        dd($data['amount_list']);
         $data = Arr::only($data, [
             "create_date", "type", "merchant_id", "out_user_id", "out_order_no",
             "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date",
