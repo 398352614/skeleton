@@ -84,7 +84,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         $data = [];
         foreach ($packageList as $k=>$v)
         {
-            if(!is_array($v)){
+            if(!is_array($v) && !is_object($v)){
                 $packageList = [$packageList];
             }
             break;
@@ -167,12 +167,15 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         $data = [];
         foreach ($packageList as $k=>$v)
         {
-            if(!is_array($v)){
+            if(!is_array($v) && !is_object($v)){
                 $packageList = [$packageList];
+                dd($packageList);
             }
             break;
         }
         foreach ($packageList as $key => $package) {
+            dd($packageList,$package);
+
             $package = collect($package)->toArray();
             $data[] = self::trackingPackageStatusChangeCreateTrail($package, $action, $params ?? $package, true);
         }
