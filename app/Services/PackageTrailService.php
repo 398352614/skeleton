@@ -86,8 +86,8 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         {
             if(!is_array($v)){
                 $packageList = [$packageList];
-                break;
             }
+            break;
         }
         foreach ($packageList as $key => $package) {
             $package = collect($package)->toArray();
@@ -166,6 +166,13 @@ class PackageTrailService extends \App\Services\Admin\BaseService
     public static function storeByTrackingPackageList($packageList, $action, $params = null)
     {
         $data = [];
+        foreach ($packageList as $k=>$v)
+        {
+            if(!is_array($v)){
+                $packageList = [$packageList];
+            }
+            break;
+        }
         foreach ($packageList as $key => $package) {
             $package = collect($package)->toArray();
             $data[] = self::trackingPackageStatusChangeCreateTrail($package, $action, $params ?? $package, true);
