@@ -43,12 +43,4 @@ class WareHouseService extends BaseService
             ]
         ];
     }
-
-    /**
-     * @return array|mixed
-     */
-    public function getTree(): array
-    {
-        return Warehouse::getRoots()->first()->getTree() ?? [];
-    }
 }

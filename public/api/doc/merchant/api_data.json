@@ -7789,6 +7789,13 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
+            "field": "expect_total_amount",
+            "description": "<p>费用合计</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
             "field": "list",
             "description": "<p>多个订单数据</p>"
           },
@@ -8756,6 +8763,13 @@
             "optional": false,
             "field": "data.data.count_settlement_amount",
             "description": "<p>预计运价</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.data.expect_total_amount",
+            "description": "<p>费用合计</p>"
           }
         ]
       },
