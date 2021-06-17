@@ -255,7 +255,7 @@ class OrderImportService extends BaseService
             $error['log'] = __($e->getMessage(), $e->replace);
         }
         //算钱
-        $data['expect_total_amount'] = $data['count_settlement_amount'];
+        $data['expect_total_amount'] = $data['count_settlement_amount'] ?? 0;
         if (!empty($error)) {
             $status = BaseConstService::NO;
         } else {
