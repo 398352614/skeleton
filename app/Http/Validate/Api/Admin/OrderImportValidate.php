@@ -158,8 +158,8 @@ class OrderImportValidate extends BaseValidate
         'place_post_code.required' => '邮编 是必须的',
         'place_phone.required' => '电话 是必须的',
         'place_house_number.required' => '门牌号 是必须的',
-        'execution_date.required_unless' => '取派日期是必须的',
-        'second_execution_date.required_unless' => '取派日期是必须的',
+        'execution_date.required_unless' => '取件日期是必须的',
+        'second_execution_date.required_unless' => '派件日期是必须的',
     ];
 
     public $scene = [
