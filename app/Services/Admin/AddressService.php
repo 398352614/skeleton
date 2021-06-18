@@ -321,8 +321,8 @@ class AddressService extends BaseService
         }
         $newRow = array_values($newRow);
         $data = [];
-        for ($i = 1; $i < count($newRow); $i++) {
-            $data[$i - 1] = collect($this->importExcelHeader)->combine($newRow[$i])->toArray();
+        for ($i = 2; $i < count($newRow); $i++) {
+            $data[$i-2] = collect($this->importExcelHeader)->combine($newRow[$i])->toArray();
         }
         //数据处理
         $countryNameList = array_unique(collect($data)->pluck('place_country')->toArray());
