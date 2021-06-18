@@ -759,15 +759,15 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('订单包裹新增失败！');
             }
         }
+        $materialList=[];
         //若材料存在,则新增材料列表
         if (!empty($params['material_list'])) {
-            $materialList = collect($params['material_list'])->map(function ($item, $key) use ($params) {
-                $collectItem = collect($item)->only(['name', 'code', 'out_order_no', 'expect_quantity', 'remark']);
-                return $collectItem
-                    ->put('order_no', $params['order_no'])
-                    ->put('merchant_id', $params['merchant_id'])
-                    ->put('execution_date', $params['execution_date']);
-            })->toArray();
+            foreach ($params['material_list'] as $k => $v) {
+                $materialList[$k]=Arr::only($v,['name', 'code', 'out_order_no','weight','size','unit_price', 'expect_quantity', 'remark']);
+                $materialList[$k]['order_no'] = $params['order_no'];
+                $materialList[$k]['merchant_id'] = $params['merchant_id'];
+                $materialList[$k]['execution_date'] = $params['execution_date'];
+            }
             $rowCount = $this->getMaterialService()->insertAll($materialList);
             if ($rowCount === false) {
                 throw new BusinessLogicException('订单材料新增失败！');

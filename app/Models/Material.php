@@ -59,6 +59,9 @@ class Material extends BaseModel
         'expect_quantity',
         'actual_quantity',
         'remark',
+        'weight',
+        'size',
+        'price',
         'created_at',
         'updated_at'
     ];
