@@ -21,7 +21,7 @@ class OrderValidate extends BaseValidate
         'batch_no' => 'nullable|string|max:50',
         'out_group_order_no' => 'nullable|string|max:50',
         'out_order_no' => 'nullable|string|max:50',
-        'execution_date' => 'required_if:type,3|date|after_or_equal:today',
+        'execution_date' => 'nullable|date|after_or_equal:today',
         'second_execution_date' => 'nullable|date|after_or_equal:today',
         'type' => 'required|integer|in:1,2,3',
         'out_user_id' => 'nullable|integer',
