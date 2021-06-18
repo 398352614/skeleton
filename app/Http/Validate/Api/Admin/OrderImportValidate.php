@@ -154,10 +154,14 @@ class OrderImportValidate extends BaseValidate
     ];
 
     public $message = [
-        'place_fullname.required_unless' => '姓名 是必须的',
+        'place_fullname.required_unless' => '发件人 是必须的',
         'place_post_code.required' => '邮编 是必须的',
         'place_phone.required' => '电话 是必须的',
         'place_house_number.required' => '门牌号 是必须的',
+        'second_place_fullname.required_unless' => '收件人 是必须的',
+        'second_place_post_code.required' => '邮编 是必须的',
+        'second_place_phone.required' => '电话 是必须的',
+        'second_place_house_number.required' => '门牌号 是必须的',
         'execution_date.required_unless' => '取件日期是必须的',
         'second_execution_date.required_unless' => '派件日期是必须的',
     ];

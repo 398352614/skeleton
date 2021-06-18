@@ -45,15 +45,16 @@ use Illuminate\Support\Facades\Route;
  * @apiGroup 01order
  * @apiVersion 1.0.0
  * @apiUse auth
- * @apiParam {String} order_no 订单号
- * @apiParam {String} execution_date 取派日期
- * @apiParam {String} second_execution_date 取派日期
+ * @apiDescription 订单新增有两种模式，当类型为取件或者派件时，只需要填写取派日期execution_date和地址(以'place_'为前缀的字段)，当类型为取派件时，第二取派日期second_execution_date和第二地址(以'second_place_'为前缀的字段)也需要填写，第二用户地址为派件地址，另一个为取件。
+ * @apiParam {String} order_no[必填] 订单号
+ * @apiParam {String} execution_date [必填]取派日期。
+ * @apiParam {String} second_execution_date [必填]取派日期。若订单类型为取派件，则此项必填。
  * @apiParam {String} create_date 开单日期
  * @apiParam {String} out_order_no 外部订单号
  * @apiParam {String} mask_code 掩码
  * @apiParam {String} source 来源
  * @apiParam {String} source_name 来源名称
- * @apiParam {String} type 类型:1-取2-派3-取派
+ * @apiParam {String} type[必填] 类型:1-取2-派3-取派
  * @apiParam {String} out_user_id 外部客户ID
  * @apiParam {String} nature 性质:1-包裹2-材料3-文件4-增值服务5-其他
  * @apiParam {String} settlement_type 结算类型1-寄付2-到付
@@ -69,12 +70,11 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {String} second_place_street 收件人街道
  * @apiParam {String} second_place_address 收件人详细地址
  * @apiParam {String} place_fullname 发件人姓名
- * @apiParam {String} place_phone 发件人电话
- * @apiParam {String} place_country 发件人国家
- * @apiParam {String} place_country_name 发件人国家名称
+ * @apiParam {String} place_phone[必填]  发件人电话
+ * @apiParam {String} place_country[必填]  发件人国家
  * @apiParam {String} place_province 发件人省份
- * @apiParam {String} place_post_code 发件人邮编
- * @apiParam {String} place_house_number 发件人门牌号
+ * @apiParam {String} place_post_code[必填] 发件人邮编
+ * @apiParam {String} place_house_number[必填] 发件人门牌号
  * @apiParam {String} place_city 发件人城市
  * @apiParam {String} place_district 发件人区县
  * @apiParam {String} place_street 发件人街道
@@ -89,7 +89,7 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {Object} package_list 包裹列表
  * @apiParam {String} package_list.expiration_date 有效日期
  * @apiParam {String} package_list.name 包裹名称
- * @apiParam {String} package_list.express_first_no 快递单号1
+ * @apiParam {String} package_list.express_first_no[必填] 快递单号
  * @apiParam {String} package_list.express_second_no 快递单号2
  * @apiParam {String} package_list.feature_logo 特性标志
  * @apiParam {String} package_list.out_order_no 外部标识
@@ -110,7 +110,7 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {Object} material_list 材料列表
  * @apiParam {String} material_list.execution_date 取派日期
  * @apiParam {String} material_list.name 材料名称
- * @apiParam {String} material_list.code 材料代码
+ * @apiParam {String} material_list.code[必填] 材料代码
  * @apiParam {String} material_list.out_order_no 外部标识
  * @apiParam {String} material_list.expect_quantity 预计数量
  * @apiParam {String} material_list.actual_quantity 实际数量
@@ -167,7 +167,7 @@ Route::post('cancel-all-order', 'OrderController@destroyAll');//批量删除订�
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiDescription 当订单的控货方式选择为等通知放货时，订单默认无法出库，只有等货主请求该接口，才能让这些订单变为可出库状态。
- * @apiParam {String} order_no 订单编号[必填]
+ * @apiParam {String} order_no[必填] 订单编号
  * @apiParam {String} out_status 是否允许出库，1-允许2-不允许。
  * @apiSuccess {Number} code    状态码，200：请求成功
  * @apiSuccess {String} msg   提示信息
@@ -185,8 +185,8 @@ Route::post('order-out-status', 'OrderController@updateOutStatus');//出库
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiDescription 通过地址获取可预约日期，线路分配规则为邮编的情况，邮编必填；线路分配规则为区域的情况，经纬度必填，线路分配规则请在管理员端-配置管理-调度管理-调度规则页面确认或修改。
- * @apiParam {String} order_no 订单编号[必填]
- * @apiParam {String} type 类型1-取件2-派件[必填]
+ * @apiParam {String} order_no[必填] 订单编号
+ * @apiParam {String} type[必填] 类型1-取件2-派件
  * @apiParam {String} place_lon 经度
  * @apiParam {String} place_lat 纬度
  * @apiParam {String} place_post_code 邮编
@@ -206,7 +206,7 @@ Route::post('post-code-date-list', 'LineController@getDateListByPostCode');//获
  * @apiGroup 01order
  * @apiVersion 1.0.0
  * @apiUse auth
- * @apiParam {String} order_no 订单编号[必填]
+ * @apiParam {String} order_no[必填] 订单编号
  *
  * @apiSuccess {Number} code    状态码，200：请求成功
  * @apiSuccess {String} msg   提示信息
@@ -241,17 +241,17 @@ Route::post('/again-order-info', 'OrderController@getAgainInfo');//获取继续�
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiDescription 只有取件和派件过程中，取消的订单才能进行继续派送。继续派送会重新进行取派，该接口提供客户地址，客户电话，客户姓名的修改，填写新的地址信息后，会按新的地址信息进行取派。
- * @apiParam {String} order_no 订单编号[必填]
- * @apiParam {String} place_fullname
- * @apiParam {String} place_phone
- * @apiParam {String} place_province
- * @apiParam {String} place_post_code
- * @apiParam {String} place_house_number
- * @apiParam {String} place_city
- * @apiParam {String} place_district
- * @apiParam {String} place_street
- * @apiParam {String} place_lon 经度
- * @apiParam {String} place_lat 纬度
+ * @apiParam {String} order_no[必填] 订单编号
+ * @apiParam {String} place_fullname 客户姓名
+ * @apiParam {String} place_phone 客户电话
+ * @apiParam {String} place_province 客户省份
+ * @apiParam {String} place_post_code 客户邮编
+ * @apiParam {String} place_house_number 客户门牌号
+ * @apiParam {String} place_city 客户城市
+ * @apiParam {String} place_district 客户地区
+ * @apiParam {String} place_street 客户街道
+ * @apiParam {String} place_lon 客户经度
+ * @apiParam {String} place_lat 客户纬度
  * @apiParam {String} place_post_code 邮编
  *
  * @apiSuccess {Number} code    状态码，200：请求成功
@@ -269,7 +269,7 @@ Route::post('/again-order', 'OrderController@again'); //继续派送(再次取�
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiDescription 只有取件和派件过程中，取消的订单才能进行终止派送。终止派送后，订单会变成取派失败状态，不能再进行继续派送。
- * @apiParam {String} order_no 订单编号[必填]
+ * @apiParam {String} order_no[必填] 订单编号
  *
  * @apiSuccess {Number} code    状态码，200：请求成功
  * @apiSuccess {String} msg   提示信息
@@ -288,7 +288,7 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiDescription 只有待受理的订单才能进行修改。
- * @apiParam {String} order_no 订单号[必填]
+ * @apiParam {String} order_no[必填] 订单号
  * @apiParam {String} execution_date 取派日期
  * @apiParam {String} second_execution_date 取派日期
  * @apiParam {String} create_date 开单日期
@@ -304,7 +304,6 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiParam {String} second_place_fullname 收件人姓名
  * @apiParam {String} second_place_phone 收件人电话
  * @apiParam {String} second_place_country 收件人国家
- * @apiParam {String} second_place_country_name 收件人国家名称
  * @apiParam {String} second_place_post_code 收件人邮编
  * @apiParam {String} second_place_house_number 收件人门牌号
  * @apiParam {String} second_place_city 收件人城市
@@ -313,7 +312,6 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiParam {String} place_fullname 发件人姓名
  * @apiParam {String} place_phone 发件人电话
  * @apiParam {String} place_country 发件人国家
- * @apiParam {String} place_country_name 发件人国家名称
  * @apiParam {String} place_province 发件人省份
  * @apiParam {String} place_post_code 发件人邮编
  * @apiParam {String} place_house_number 发件人门牌号
