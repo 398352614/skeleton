@@ -28,184 +28,184 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.username",
             "description": "<p>用户名</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_id",
             "description": "<p>公司ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.access_token",
             "description": "<p>令牌</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.token_type",
             "description": "<p>令牌类型</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.expires_in",
             "description": "<p>令牌过期时间（秒）</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.company_config",
             "description": "<p>公司配置</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.id",
             "description": "<p>公司配置ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.company_code",
             "description": "<p>公司编号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.name",
             "description": "<p>公司名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.line_rule",
             "description": "<p>线路规则1-邮编2-区域</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.show_type",
             "description": "<p>展示方式1-全部展示2-按线路规则展示</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.address_template_id",
             "description": "<p>地址模板ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.stock_exception_verify",
             "description": "<p>是否开启入库异常审核1-开启2-关闭</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.weight_unit",
             "description": "<p>重量单位</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.currency_unit",
             "description": "<p>货币单位</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.volume_unit",
             "description": "<p>体积单位</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.map",
             "description": "<p>地图引擎</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.country",
             "description": "<p>公司国家</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.country_en_name",
             "description": "<p>公司国家英文名</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.country_cn_name",
             "description": "<p>公司国家中文名</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.weight_unit_symbol",
             "description": "<p>重量单位标志</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.currency_unit_symbol",
             "description": "<p>货币单位标志</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_config.volume_unit_symbol",
@@ -299,23 +299,23 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
@@ -388,23 +388,23 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
@@ -484,23 +484,23 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
@@ -560,142 +560,142 @@ define({ "api": [
     "version": "1.0.0",
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.id",
             "description": "<p>公司ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_code",
             "description": "<p>公司编号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.email",
             "description": "<p>邮箱</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.name",
             "description": "<p>公司名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.contacts",
             "description": "<p>公司联系人</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.phone",
             "description": "<p>公司电话</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.country",
             "description": "<p>公司国家</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.address",
             "description": "<p>公司ag_address</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.lat",
             "description": "<p>返纬度</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.lon",
             "description": "<p>经度</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.created_at",
             "description": "<p>创建时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.updated_at",
             "description": "<p>修改时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.web_site",
             "description": "<p>企业网址</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.system_name",
             "description": "<p>系统名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.logo_url",
             "description": "<p>企业Logo</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.login_logo_url",
             "description": "<p>登录页Logo</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.country_name",
@@ -755,37 +755,37 @@ define({ "api": [
     "version": "1.0.0",
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.date",
             "description": "<p>日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.order",
@@ -845,37 +845,37 @@ define({ "api": [
     "version": "1.0.0",
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.date",
             "description": "<p>日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.order",
@@ -935,37 +935,37 @@ define({ "api": [
     "version": "1.0.0",
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.date",
             "description": "<p>日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.order",
@@ -1052,37 +1052,37 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.date",
             "description": "<p>日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.order",
@@ -1142,37 +1142,37 @@ define({ "api": [
     "version": "1.0.0",
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.date",
             "description": "<p>日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.order",
@@ -1232,37 +1232,37 @@ define({ "api": [
     "version": "1.0.0",
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.date",
             "description": "<p>日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.order",
@@ -1322,37 +1322,37 @@ define({ "api": [
     "version": "1.0.0",
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.date",
             "description": "<p>日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.order",
@@ -1412,100 +1412,100 @@ define({ "api": [
     "version": "1.0.0",
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.id",
             "description": "<p>ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_id",
             "description": "<p>公司ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.key",
             "description": "<p>key</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.secret",
             "description": "<p>secret</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.url",
             "description": "<p>url</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.white_ip_list",
             "description": "<p>ip白名单</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.status",
             "description": "<p>状态1-是2-否</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.push_mode",
             "description": "<p>推送方式1-老模式2-详情模式3-简略模式4-自定义模式</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.recharge_status",
             "description": "<p>充值通道1-开启2关闭</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.created_at",
             "description": "<p>创建时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.updated_at",
             "description": "<p>更新时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.status_name",
@@ -1538,121 +1538,121 @@ define({ "api": [
     "version": "1.0.0",
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.id",
             "description": "<p>货主ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_id",
             "description": "<p>货主公司ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.name",
             "description": "<p>货主名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.email",
             "description": "<p>货主邮箱</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.country",
             "description": "<p>货主国家</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.merchant_group_id",
             "description": "<p>商户组ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.contacter",
             "description": "<p>货主联系人</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.phone",
             "description": "<p>货主电话</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.address",
             "description": "<p>货主ag_address</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.avatar",
             "description": "<p>货主头像</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.status",
             "description": "<p>货主状态1-启用2-禁用</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.timezone",
             "description": "<p>时区</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.settlement_type",
             "description": "<p>结算方式1-票结2-日结3-月结</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.settlement_type_name",
@@ -1739,23 +1739,23 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
@@ -1822,23 +1822,23 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
@@ -1925,23 +1925,23 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
@@ -2014,23 +2014,23 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
@@ -2670,23 +2670,23 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
@@ -2759,23 +2759,23 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
@@ -2855,520 +2855,520 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.id",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.is_default",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.logo",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.sender",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.receiver",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.destination",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.carrier",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.carrier_address",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.contents",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.package",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.material",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.count",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.replace_amount",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.settlement_amount",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.destination_mode_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.type_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.template.is_default_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.order_no",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.mask_code",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.fullname",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.phone",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.country",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.province",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.city",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.district",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.post_code",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.street",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.house_number",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.replace_amount",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.settlement_amount",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.package_count",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.material_count",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.order_barcode",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.first_package_barcode",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.sender.first_package_no",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver.fullname",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver.phone",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver.country",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver.province",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver.city",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver.district",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver.post_code",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver.street",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver.house_number",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.receiver.address",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination.fullname",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination.phone",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination.country",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination.province",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination.city",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination.district",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination.post_code",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination.street",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination.house_number",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.destination.address",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse.fullname",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse.phone",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse.country",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse.province",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse.city",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse.district",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse.post_code",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse.street",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse.house_number",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.api.warehouse.address",
@@ -4001,44 +4001,44 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.id",
             "description": "<p>ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.order_no",
             "description": "<p>订单号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.out_order_no",
@@ -4167,408 +4167,408 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.data",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.id",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.company_id",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.merchant_id",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.merchant_id_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.order_no",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.source",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.source_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.mask_code",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.list_mode",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.type",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.type_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.out_user_id",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.express_first_no",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.express_second_no",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.status",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.status_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.out_status",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.out_status_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.execution_date",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.batch_no",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.tour_no",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.line_id",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.line_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.out_order_no",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.out_group_order_no",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.exception_label",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.exception_label_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.place_post_code",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.exception_stage_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.place_house_number",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.driver_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.driver_phone",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.starting_price",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.transport_price_type",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.transport_price_type_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.receipt_type",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.receipt_type_name",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.receipt_count",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.create_date",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.created_at",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.data.updated_at",
             "description": ""
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.links",
             "description": "<p>跳转信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.links.first",
             "description": "<p>第一页</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.links.last",
             "description": "<p>最后一页</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.links.prev",
             "description": "<p>前一页</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.links.next",
             "description": "<p>后一页</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.meta",
             "description": "<p>页码信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.meta.current_page",
             "description": "<p>当前页码</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.meta.from",
             "description": "<p>起始条数</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.meta.last_page",
             "description": "<p>末页页码</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.meta.path",
             "description": "<p>地址</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.meta.per_page",
             "description": "<p>每页显示条数</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.meta.to",
             "description": "<p>终止条数</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.meta.total",
@@ -4641,23 +4641,23 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
@@ -4730,863 +4730,863 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.id",
             "description": "<p>订单ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.company_id",
             "description": "<p>公司ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.merchant_id",
             "description": "<p>商户ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.merchant_id_name",
             "description": "<p>商户名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.order_no",
             "description": "<p>订单号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.execution_date",
             "description": "<p>取派日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.create_date",
             "description": "<p>开单日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.out_order_no",
             "description": "<p>外部订单号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.mask_code",
             "description": "<p>掩码</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.source",
             "description": "<p>来源</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.source_name",
             "description": "<p>来源名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.type",
             "description": "<p>类型:1-取2-派3-取派</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.out_user_id",
             "description": "<p>外部客户ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.nature",
             "description": "<p>性质:1-包裹2-材料3-文件4-增值服务5-其他</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.settlement_type",
             "description": "<p>结算类型1-寄付2-到付</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.settlement_amount",
             "description": "<p>结算金额</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.replace_amount",
             "description": "<p>代收货款</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.status",
             "description": "<p>状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_fullname",
             "description": "<p>收件人姓名</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_phone",
             "description": "<p>收件人电话</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_country",
             "description": "<p>收件人国家</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_country_name",
             "description": "<p>收件人国家名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_post_code",
             "description": "<p>收件人邮编</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_house_number",
             "description": "<p>收件人门牌号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_city",
             "description": "<p>收件人城市</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_street",
             "description": "<p>收件人街道</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_address",
             "description": "<p>收件人详细地址</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_fullname",
             "description": "<p>发件人姓名</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_phone",
             "description": "<p>发件人电话</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_country",
             "description": "<p>发件人国家</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_country_name",
             "description": "<p>发件人国家名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_province",
             "description": "<p>发件人省份</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_post_code",
             "description": "<p>发件人邮编</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_house_number",
             "description": "<p>发件人门牌号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_city",
             "description": "<p>发件人城市</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_district",
             "description": "<p>发件人区县</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_street",
             "description": "<p>发件人街道</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_address",
             "description": "<p>发件人详细地址</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.special_remark",
             "description": "<p>特殊事项</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.remark",
             "description": "<p>备注</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.starting_price",
             "description": "<p>起步价</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.transport_price_type",
             "description": "<p>运价方案ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.transport_price_type_name",
             "description": "<p>运价方案名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.receipt_type",
             "description": "<p>回单要求</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.receipt_type_name",
             "description": "<p>回单要求名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.receipt_count",
             "description": "<p>回单数量</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.created_at",
             "description": "<p>创建时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.updated_at",
             "description": "<p>修改时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.package_list",
             "description": "<p>包裹列表</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.id",
             "description": "<p>包裹ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.company_id",
             "description": "<p>公司ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.merchant_id",
             "description": "<p>货主ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.order_no",
             "description": "<p>订单编号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.tracking_order_no",
             "description": "<p>运单号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.execution_date",
             "description": "<p>取件日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.second_execution_date",
             "description": "<p>派件日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.expiration_date",
             "description": "<p>有效日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.expiration_status",
             "description": "<p>超期状态1-未超期2-已超期3-超期已处理</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.type",
             "description": "<p>类型1-取2-派</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.name",
             "description": "<p>包裹名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.express_first_no",
             "description": "<p>快递单号1</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.express_second_no",
             "description": "<p>快递单号2</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.feature_logo",
             "description": "<p>特性标志</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.feature",
             "description": "<p>特性</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.out_order_no",
             "description": "<p>外部标识</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.weight",
             "description": "<p>重量</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.size",
             "description": "<p>重量</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.actual_weight",
             "description": "<p>实际重量</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.expect_quantity",
             "description": "<p>预计数量</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.actual_quantity",
             "description": "<p>实际数量</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.status",
             "description": "<p>状态1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.stage",
             "description": "<p>阶段1-取件2-中转3-派件</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.sticker_no",
             "description": "<p>贴单号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.settlement_amount",
             "description": "<p>结算金额</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.count_settlement_amount",
             "description": "<p>估算运费</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.sticker_amount",
             "description": "<p>贴单费用</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.delivery_amount",
             "description": "<p>提货费用</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.remark",
             "description": "<p>备注</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.is_auth",
             "description": "<p>是否需要身份验证1-是2-否</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.auth_fullname",
             "description": "<p>身份人姓名</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.auth_birth_date",
             "description": "<p>身份人出身年月</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.created_at",
             "description": "<p>创建时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.updated_at",
             "description": "<p>修改时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.status_name",
             "description": "<p>状态名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.package_list.type_name",
             "description": "<p>类型名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.material_list",
             "description": "<p>材料列表</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.id",
             "description": "<p>材料ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.company_id",
             "description": "<p>公司ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.merchant_id",
             "description": "<p>商户ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.tour_no",
             "description": "<p>取件线路编号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.batch_no",
             "description": "<p>站点编号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.tracking_order_no",
             "description": "<p>运单号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.order_no",
             "description": "<p>订单编号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.execution_date",
             "description": "<p>取派日期</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.name",
             "description": "<p>材料名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.code",
             "description": "<p>材料代码</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.out_order_no",
             "description": "<p>外部标识</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.expect_quantity",
             "description": "<p>预计数量</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.actual_quantity",
             "description": "<p>实际数量</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.pack_type",
             "description": "<p>包装类型</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.type",
             "description": "<p>类型</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.weight",
             "description": "<p>重量</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.size",
             "description": "<p>体积</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.remark",
             "description": "<p>备注</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.created_at",
             "description": "<p>创建时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.updated_at",
             "description": "<p>修改时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.material_list.type_name",
             "description": "<p>类型名称</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.amount_list",
             "description": "<p>费用列表</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.id",
             "description": "<p>费用ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.company_id",
             "description": "<p>公司ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.order_no",
             "description": "<p>订单号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.expect_amount",
             "description": "<p>预计金额</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.actual_amount",
             "description": "<p>实际金额</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.type",
             "description": "<p>运费类型</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.remark",
             "description": "<p>备注</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.in_total",
             "description": "<p>计入总费用1-计入2-不计入</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.status",
             "description": "<p>状态1-预产生2-已产生3-已支付4-已取消</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.created_at",
             "description": "<p>创建时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.updated_at",
             "description": "<p>修改时间</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.amount_list.type_name",
@@ -5659,135 +5659,135 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",
             "description": "<p>提示信息</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data",
             "description": "<p>返回数据</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.id",
             "description": "<p>订单ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.order_no",
             "description": "<p>订单号</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.type",
             "description": "<p>类型1-取件2-派件3-取派件，类型为1以发件人为起点取件仓库为终点，类型为2以收件人为终点，派件仓库为起点，类型为3以发件人为起点，收件人为终点，依次经过取件仓库和派件仓库</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_lon",
             "description": "<p>发件人经度</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.place_lat",
             "description": "<p>发件人纬度</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_lon",
             "description": "<p>收件人经度</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.second_place_lat",
             "description": "<p>收件人纬度</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.pickup_warehouse_lon",
             "description": "<p>取件仓库经度 取派件仓库如果重复则只渲染一个</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.pickup_warehouse_lat",
             "description": "<p>派件仓库纬度</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.pie_warehouse_lon",
             "description": "<p>派件仓库经度</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.pie_warehouse_lat",
             "description": "<p>派件仓库纬度</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.trail_list",
             "description": "<p>轨迹列表</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Object",
             "optional": false,
             "field": "data.trail_list.id",
             "description": "<p>轨迹ID</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.trail_list.content",
             "description": "<p>轨迹内容</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.trail_list.type",
             "description": "<p>轨迹类型1-起点，11-终点，5，6为仓库</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "data.trail_list.created_at",
@@ -6420,16 +6420,16 @@ define({ "api": [
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success": [
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "Number",
             "optional": false,
             "field": "code",
             "description": "<p>状态码，200：请求成功</p>"
           },
           {
-            "group": "Success 200",
+            "group": "Success",
             "type": "String",
             "optional": false,
             "field": "msg",

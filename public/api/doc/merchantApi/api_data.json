@@ -1,17 +1,32 @@
 [
   {
     "type": "post",
-    "url": "/api/merchant_api/post-code-date-list",
-    "title": "获取可选日期",
-    "name": "获取可选日期",
-    "group": "01order",
-    "permission": [
-      {
-        "name": "merchant"
-      }
-    ],
+    "url": "/merchant_api",
+    "title": "全局说明",
+    "name": "全局说明",
+    "group": "00api",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n    }",
+          "type": "json"
+        }
+      ]
+    },
+    "description": "<p>加密方式示例文件，暂时仅提供php版本，下载地址：<code>www.rrtms.com<code></p>",
     "version": "1.0.0",
-    "description": "<p>通过地址，获取可下单的日期</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -19,7 +34,436 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "receiver_post_code",
+            "field": "key",
+            "description": "<p>[必填]  秘钥：从管理员端新增货主时，会自动生成一个key，在资料管理-API对接管理中，可查询对应key，用以确认货主身份。</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "sign",
+            "description": "<p>[必填]  签名：签名是以secret和data以一定加密方式形成的签名，每次请求都会验证key和sign以验证数据可靠。key或sign任一项不正确，请求都将被拒绝。从管理员端新增货主时，会自动生成一个secret，在资料管理-API对接管理中，可查询对应secret。sign的生成规则为：1，平铺data内的数组，生成一个字符串；2，将1的结果与secret连接起来；3，对2的结果其进行url编码；4，将3的结果全部转化为大写。</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "timestamp",
+            "description": "<p>[必填]  时间戳：发送请求时的时间戳。</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data",
+            "description": "<p>[必填]  主体数据。以下所有接口的参数都是以json的形式放在这个参数里。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Param-Response:",
+          "content": "{\"key\":\"请在此处填上货主的key\",\"sign\":\"以货主的secret和主体数据生成的动态签名\",\"timestamp\":1623986460,\"data\":{\"order_no\":\"TMS1000000001\",\"...\":\"...\"}}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "3001",
+            "description": "<p>数据验证未通过</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "optional": false,
+            "field": "1000",
+            "description": "<p>业务逻辑抛错</p>"
+          }
+        ]
+      }
+    },
+    "filename": "public/api/routes/merchantApi/01order.php",
+    "groupTitle": "全局说明",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant_api"
+      }
+    ]
+  },
+  {
+    "type": "post",
+    "url": "/merchant/order-out-status",
+    "title": "允许出库",
+    "name": "允许出库",
+    "group": "01order",
+    "version": "1.0.0",
+    "description": "<p>当订单的控货方式选择为等通知放货时，订单默认无法出库，只有等货主请求该接口，才能让这些订单变为可出库状态。</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "order_no_list",
+            "description": "<p>一个或多个订单号，以逗号连接</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "no_push",
+            "description": "<p>是否推送1-是，货主通过该API删除订单，不会通知货主该订单已删除。2-否，货主通过该API删除订单，仍会通知货主订单已删除。</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.data1",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"code\":200,\"data\":[],\"msg\":\"successful\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantApi/01order.php",
+    "groupTitle": "订单管理",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant/order-out-status"
+      }
+    ]
+  },
+  {
+    "type": "post",
+    "url": "/merchant/cancel-all-order",
+    "title": "取消预约",
+    "name": "删除订单",
+    "group": "01order",
+    "version": "1.0.0",
+    "description": "<p>订单状态分为1-待受理2-取派中3-已完成4-取派失败5-回收站，取消预约功能只有订单在待受理状态才能使用。取消预约后，无法通过货主端恢复。</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "order_no_list",
+            "description": "<p>一个或多个订单号，以逗号连接</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "no_push",
+            "description": "<p>是否推送1-是，货主通过该API删除订单，不会通知货主该订单已删除。2-否，货主通过该API删除订单，仍会通知货主订单已删除。</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.data1",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"code\":200,\"data\":[],\"msg\":\"successful\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantApi/01order.php",
+    "groupTitle": "订单管理",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant/cancel-all-order"
+      }
+    ]
+  },
+  {
+    "type": "get",
+    "url": "/merchant/order/order-dispatch-info",
+    "title": "物流查询",
+    "name": "物流查询",
+    "group": "01order",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "order_no",
+            "description": "<p>订单编号。</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.expect_distance",
+            "description": "<p>预计里程</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.actual_distance",
+            "description": "<p>实际里程</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.expect_time",
+            "description": "<p>预计耗时(秒)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.actual_time",
+            "description": "<p>实际耗时(秒)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.expect_arrive_time",
+            "description": "<p>预计到达时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.actual_arrive_time",
+            "description": "<p>实际到达时间</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.place_lon",
+            "description": "<p>客户经度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.place_lat",
+            "description": "<p>客户纬度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.driver_lon",
+            "description": "<p>司机经度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.driver_lat",
+            "description": "<p>司机纬度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.out_order_no",
+            "description": "<p>外部订单号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data.rest_batch",
+            "description": "<p>剩余站点数，指运到该客户之前，还有多少个客户没运。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"code\":200,\"data\":{\"expect_distance\":0.04,\"actual_distance\":null,\"expect_time\":null,\"actual_time\":12,\"expect_arrive_time\":\"2020-05-12 16:43:22\",\"actual_arrive_time\":\"2020-05-12 16:42:43\",\"place_lon\":\"4.87510019\",\"place_lat\":\"52.311530833\",\"driver_lon\":\"4.87510019\",\"driver_lat\":\"52.31153083\",\"out_order_no\":\"12\",\"rest_batch\":1},\"msg\":\"successful\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantApi/01order.php",
+    "groupTitle": "订单管理",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant/order/order-dispatch-info"
+      }
+    ]
+  },
+  {
+    "type": "get",
+    "url": "/merchant/order/again-order",
+    "title": "继续派送",
+    "name": "继续派送",
+    "group": "01order",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>订单ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>类型1-取件2-派件</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_lon",
+            "description": "<p>经度</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_lat",
+            "description": "<p>纬度</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_post_code",
             "description": "<p>邮编</p>"
           }
         ]
@@ -54,26 +498,22 @@
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\"code\":200,\"msg\":\"\",\"data\":[]}",
-          "type": "json"
-        }
-      ]
-    },
-    "error": {
-      "examples": [
-        {
-          "title": "Error-Response:",
-          "content": "{\"code\":1000,\"msg\":\"提错提示\"}",
+          "content": "{\"code\":200,\"data\":[\"2021-06-11\",\"2021-06-13\",\"2021-06-16\",\"2021-06-18\",\"2021-06-20\"],\"msg\":\"successful\"}",
           "type": "json"
         }
       ]
     },
     "filename": "public/api/routes/merchantApi/01order.php",
-    "groupTitle": "订单管理"
+    "groupTitle": "订单管理",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant/order/again-order"
+      }
+    ]
   },
   {
     "type": "post",
-    "url": "/merchant/order",
+    "url": "/merchant_api/order",
     "title": "订单新增",
     "name": "订单新增",
     "group": "01order",
@@ -710,45 +1150,18 @@
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order"
+        "url": "https://dev-tms.nle-tech.com/api/merchant_api/order"
       }
-    ],
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "language",
-            "description": "<p>语言cn-中文en-英文。</p>"
-          },
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Header-Example:",
-          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
-          "type": "json"
-        }
-      ]
-    }
+    ]
   },
   {
-    "type": "get",
-    "url": "/merchant/order/get-date",
-    "title": "通过地址获取可选日期",
-    "name": "通过地址获取可选日期",
+    "type": "post",
+    "url": "/merchant_api/post-code-date-list",
+    "title": "通过地址获取可预约日期",
+    "name": "通过地址获取可预约日期",
     "group": "01order",
     "version": "1.0.0",
-    "description": "<p>地址模板为一时，经纬度必填；地址模板为二时，邮编必填。</p>",
+    "description": "<p>线路分配规则为邮编的情况，邮编必填；线路分配规则为区域的情况，经纬度必填，线路分配规则请在管理员端-配置管理-调度管理-调度规则页面确认或修改。</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -828,35 +1241,8 @@
     "groupTitle": "订单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/get-date"
+        "url": "https://dev-tms.nle-tech.com/api/merchant_api/post-code-date-list"
       }
-    ],
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "language",
-            "description": "<p>语言cn-中文en-英文。</p>"
-          },
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Header-Example:",
-          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
-          "type": "json"
-        }
-      ]
-    }
+    ]
   }
 ]

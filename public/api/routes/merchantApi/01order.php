@@ -4,18 +4,40 @@ use Illuminate\Support\Facades\Route;
 
 /**
  * @apiDefine auth
- * @apiHeader {string} language 语言cn-中文en-英文。
- * @apiHeader {string} Authorization [必填]令牌，以bearer加空格加令牌为格式。
- * @apiHeaderExample {json} Header-Example:
- * {
- *       "language": "en"
- *       "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw"
- *     }
  */
 
 /**
  * @apiDefine 01order 订单管理
  */
+
+/**
+ * @apiDefine 00api 全局说明
+ */
+
+/**
+ * @api {post} /merchant_api 全局说明
+ * @apiName 全局说明
+ * @apiGroup 00api
+ * @apiHeader {string} language 语言cn-中文en-英文。
+ * @apiHeaderExample {json} Header-Example:
+ * {
+ *       "language": "en"
+ *     }
+ * @apiDescription 加密方式示例文件，暂时仅提供php版本，下载地址：<code>www.rrtms.com<code>
+ * @apiVersion 1.0.0
+ * @apiParam {String} key[必填]  秘钥：从管理员端新增货主时，会自动生成一个key，在资料管理-API对接管理中，可查询对应key，用以确认货主身份。
+ * @apiParam {String} sign[必填]  签名：签名是以secret和data以一定加密方式形成的签名，每次请求都会验证key和sign以验证数据可靠。key或sign任一项不正确，请求都将被拒绝。从管理员端新增货主时，会自动生成一个secret，在资料管理-API对接管理中，可查询对应secret。sign的生成规则为：1，平铺data内的数组，生成一个字符串；2，将1的结果与secret连接起来；3，对2的结果其进行url编码；4，将3的结果全部转化为大写。
+ * @apiParam {String} timestamp[必填]  时间戳：发送请求时的时间戳。
+ * @apiParam {String} data[必填]  主体数据。以下所有接口的参数都是以json的形式放在这个参数里。
+ * @apiParamExample {json} Param-Response:
+ * {"key":"请在此处填上货主的key","sign":"以货主的secret和主体数据生成的动态签名","timestamp":1623986460,"data":{"order_no":"TMS1000000001","...":"..."}}
+ *
+ * @apiSuccess {Number} code    状态码，200：请求成功
+ * @apiSuccess {String} msg   提示信息
+ * @apiSuccess {Object} data    返回数据
+ * @apiError 3001 数据验证未通过
+ * @apiError 1000 业务逻辑抛错
+*/
 
 /**
  * @api {post} /merchant_api/order 订单新增
@@ -116,15 +138,18 @@ use Illuminate\Support\Facades\Route;
 //新增
 Route::post('order', 'OrderController@store')->name('merchant_api.order.store');//新增订单
 
+Route::post('cancel-order', 'OrderController@destroy');//删除订单
+
+Route::post('order-update-address', 'OrderController@updateAddressDate');//修改订单地址日期
+
 /**
- * @api {post} /merchant/order-cancel 删除订单
+ * @api {post} /merchant/cancel-all-order 取消预约
  * @apiName 删除订单
  * @apiGroup 01order
  * @apiVersion 1.0.0
  * @apiUse auth
- * @apiDescription 订单状态分为1-待受理2-取派中3-已完成4-取派失败5-回收站，删除订单功能只有订单在待受理状态才能使用。
- * @apiParam {String} order_no 订单号
- * @apiParam {String} remark 备注
+ * @apiDescription 订单状态分为1-待受理2-取派中3-已完成4-取派失败5-回收站，取消预约功能只有订单在待受理状态才能使用。取消预约后，无法通过货主端恢复。
+ * @apiParam {String} order_no_list 一个或多个订单号，以逗号连接
  * @apiParam {String} no_push 是否推送1-是，货主通过该API删除订单，不会通知货主该订单已删除。2-否，货主通过该API删除订单，仍会通知货主订单已删除。
  * @apiSuccess {Number} code    状态码，200：请求成功
  * @apiSuccess {String} msg   提示信息
@@ -133,19 +158,33 @@ Route::post('order', 'OrderController@store')->name('merchant_api.order.store');
  * @apiSuccessExample {json} Success-Response:
  * {"code":200,"data":[],"msg":"successful"}
  */
-Route::post('cancel-order', 'OrderController@destroy');//删除订单
-
-Route::post('order-update-address', 'OrderController@updateAddressDate');//修改订单地址日期
 Route::post('cancel-all-order', 'OrderController@destroyAll');//批量删除订单
-Route::post('order-out-status', 'OrderController@updateOutStatus');//出库
 
 /**
- * @api {post} /merchant_api/post-code-date-list 通过地址获取可选日期
- * @apiName 通过地址获取可选日期
+ * @api {post} /merchant/order-out-status 允许出库
+ * @apiName 允许出库
  * @apiGroup 01order
  * @apiVersion 1.0.0
  * @apiUse auth
- * @apiDescription 地址模板为一时，经纬度必填；地址模板为二时，邮编必填。
+ * @apiDescription 当订单的控货方式选择为等通知放货时，订单默认无法出库，只有等货主请求该接口，才能让这些订单变为可出库状态。
+ * @apiParam {String} order_no_list 一个或多个订单号，以逗号连接
+ * @apiParam {String} no_push 是否推送1-是，货主通过该API删除订单，不会通知货主该订单已删除。2-否，货主通过该API删除订单，仍会通知货主订单已删除。
+ * @apiSuccess {Number} code    状态码，200：请求成功
+ * @apiSuccess {String} msg   提示信息
+ * @apiSuccess {Object} data    返回数据
+ * @apiSuccess {String} data.data1    返回数据
+ * @apiSuccessExample {json} Success-Response:
+ * {"code":200,"data":[],"msg":"successful"}
+ */
+Route::post('order-out-status', 'OrderController@updateOutStatus');//出库
+
+/**
+ * @api {post} /merchant_api/post-code-date-list 通过地址获取可预约日期
+ * @apiName 通过地址获取可预约日期
+ * @apiGroup 01order
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiDescription 线路分配规则为邮编的情况，邮编必填；线路分配规则为区域的情况，经纬度必填，线路分配规则请在管理员端-配置管理-调度管理-调度规则页面确认或修改。
  * @apiParam {String} id 订单ID
  * @apiParam {String} type 类型1-取件2-派件
  * @apiParam {String} place_lon 经度
@@ -162,22 +201,30 @@ Route::post('post-code-date-list', 'LineController@getDateListByPostCode');//获
 
 
 /**
- * @api {get} /merchant/order/get-date 物流查询
+ * @api {get} /merchant/order/order-dispatch-info 物流查询
  * @apiName 物流查询
  * @apiGroup 01order
  * @apiVersion 1.0.0
  * @apiUse auth
- * @apiParam {String} id 订单ID
- * @apiParam {String} type 类型1-取件2-派件
- * @apiParam {String} place_lon 经度
- * @apiParam {String} place_lat 纬度
- * @apiParam {String} place_post_code 邮编
+ * @apiParam {String} order_no 订单编号。
  *
  * @apiSuccess {Number} code    状态码，200：请求成功
  * @apiSuccess {String} msg   提示信息
  * @apiSuccess {Object} data    返回数据
+ * @apiSuccess {Object} data.expect_distance    预计里程
+ * @apiSuccess {Object} data.actual_distance    实际里程
+ * @apiSuccess {Object} data.expect_time    预计耗时(秒)
+ * @apiSuccess {Object} data.actual_time    实际耗时(秒)
+ * @apiSuccess {Object} data.expect_arrive_time    预计到达时间
+ * @apiSuccess {Object} data.actual_arrive_time    实际到达时间
+ * @apiSuccess {Object} data.place_lon    客户经度
+ * @apiSuccess {Object} data.place_lat    客户纬度
+ * @apiSuccess {Object} data.driver_lon    司机经度
+ * @apiSuccess {Object} data.driver_lat    司机纬度
+ * @apiSuccess {Object} data.out_order_no    外部订单号
+ * @apiSuccess {Object} data.rest_batch    剩余站点数，指运到该客户之前，还有多少个客户没运。
  * @apiSuccessExample {json} Success-Response:
- * {"code":200,"data":["2021-06-11","2021-06-13","2021-06-16","2021-06-18","2021-06-20"],"msg":"successful"}
+ * {"code":200,"data":{"expect_distance":0.04,"actual_distance":null,"expect_time":null,"actual_time":12,"expect_arrive_time":"2020-05-12 16:43:22","actual_arrive_time":"2020-05-12 16:42:43","place_lon":"4.87510019","place_lat":"52.311530833","driver_lon":"4.87510019","driver_lat":"52.31153083","out_order_no":"12","rest_batch":1},"msg":"successful"}
  */
 Route::post('order-dispatch-info', 'OrderController@getOrderDispatchInfo');//派送情况
 Route::post('order-update-phone-date', 'OrderController@updateByApi');//修改订单
@@ -206,24 +253,7 @@ Route::post('/again-order-info', 'OrderController@getAgainInfo');//获取继续�
  * {"code":200,"data":["2021-06-11","2021-06-13","2021-06-16","2021-06-18","2021-06-20"],"msg":"successful"}
  */
 Route::post('/again-order', 'OrderController@again'); //继续派送(再次取派)
-/**
- * @api {get} /merchant/order/get-date 物流查询
- * @apiName 物流查询
- * @apiGroup 01order
- * @apiVersion 1.0.0
- * @apiUse auth
- * @apiParam {String} id 订单ID
- * @apiParam {String} type 类型1-取件2-派件
- * @apiParam {String} place_lon 经度
- * @apiParam {String} place_lat 纬度
- * @apiParam {String} place_post_code 邮编
- *
- * @apiSuccess {Number} code    状态码，200：请求成功
- * @apiSuccess {String} msg   提示信息
- * @apiSuccess {Object} data    返回数据
- * @apiSuccessExample {json} Success-Response:
- * {"code":200,"data":["2021-06-11","2021-06-13","2021-06-16","2021-06-18","2021-06-20"],"msg":"successful"}
- */
+
 Route::post('/end-order', 'OrderController@end');//终止派送
 Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//修改派送日期
 //    Route::post('/get-all-line-range', 'LineController@getAllLineRange');//获取所有邮编
