@@ -57,19 +57,20 @@ class BaseWarehouseService extends BaseService
     /**
      * 派件地址
      * @param $data
+     * @param int $force
      * @return array
      * @throws BusinessLogicException
      */
-    public function pieAddress($data)
+    public function pieAddress($data, $force = 1)
     {
-        if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+        if ($force == 1 && $data['type'] == BaseConstService::ORDER_TYPE_2) {
             if (empty($data['place_country'])) {
                 $data['place_country'] = CompanyTrait::getCompany()['country'];
             }
             $fields = ['place_fullname', 'place_phone', 'place_country', 'place_province', 'place_post_code', 'place_house_number', 'place_city', 'place_district',
                 'place_street', 'place_address', 'place_lat', 'place_lon', 'execution_date'];
             $data = Arr::only($data, $fields);
-        } elseif (in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])) {
+        } elseif ($force == 2 || in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])) {
             if (empty($data['second_place_country'])) {
                 $data['second_place_country'] = CompanyTrait::getCompany()['country'];
             }
@@ -89,7 +90,7 @@ class BaseWarehouseService extends BaseService
                 'place_lon' => $data['second_place_lon'] ?? '',
                 'execution_date' => $data['second_execution_date']
             ];
-        }else{
+        } else {
             throw new BusinessLogicException('订单状态不对');
         }
         $data['type'] = BaseConstService::TRACKING_ORDER_TYPE_1;

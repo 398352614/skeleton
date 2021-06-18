@@ -365,7 +365,7 @@ class OrderImportService extends BaseService
     public function fillSecondPlaceAddress($data)
     {
         //反转参数
-        $address = $this->getBaseWarehouseService()->pieAddress($data);
+        $address = $this->getBaseWarehouseService()->pieAddress($data, 2);
         $newData = array_merge($data, $address);
         $newData = $this->fillPlaceAddress($newData);
         //将结果反转
