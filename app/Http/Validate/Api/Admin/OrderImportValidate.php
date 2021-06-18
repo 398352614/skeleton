@@ -9,8 +9,7 @@ use App\Http\Validate\BaseValidate;
 class OrderImportValidate extends BaseValidate
 {
     public $customAttributes = [
-        'place_fullname' => '发件人',
-        'second_place_fullname' => '发件人',
+
     ];
 
     public $rules = [

@@ -11,7 +11,7 @@ namespace App\Services\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\OrderImportInfoResource;
 use App\Http\Resources\Api\Admin\OrderImportResource;
-use App\Http\Validate\Api\Merchant\OrderImportValidate;
+use App\Http\Validate\Api\Admin\OrderImportValidate;
 use App\Http\Validate\BaseValidate;
 use App\Models\Merchant;
 use App\Models\OrderImportLog;
