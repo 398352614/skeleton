@@ -31,7 +31,7 @@ class OrderImportValidate extends BaseValidate
         'second_place_phone' => 'required_unless:type,1|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
         'second_place_country' => 'nullable|string|max:20',
         'second_place_post_code' => 'required_unless:type,1|string|max:50',
-        'second_place_house_number' => 'required_unless:type,1|string|max:50',
+        'second_place_house_number' => 'required_unless:type,1|max:50',
         "second_place_city" => 'nullable|string|max:50',
         "second_place_street" => 'nullable|string|max:50',
         'second_execution_date' => 'required_unless:type,1|date|after_or_equal:today',
