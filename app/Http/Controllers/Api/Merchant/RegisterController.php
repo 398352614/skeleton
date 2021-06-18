@@ -153,7 +153,7 @@ class RegisterController extends BaseController
         ]);*/
 
         if (empty(Merchant::query()->where($this->username(), $request['email'])->first())) {
-            throw new BusinessLogicException('用户不存在，请检查用户名');
+            throw new BusinessLogicException('该邮箱未注册，请联系管理员');
         }
 
         return RegisterController::sendCode($request->input('email'), 'RESET');
