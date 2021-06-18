@@ -465,12 +465,12 @@ class AddressService extends BaseService
             } catch (\Exception $e) {
             }
             $data['place_country'] = $data['place_country'] ?? CompanyTrait::getCountry();
-            $data['place_province'] = $data['place_province'] ?? $info['province'];
             $data['place_post_code'] = $data['place_post_code'] ?? $info['post_code'];
             $data['place_house_number'] = $data['place_house_number'] ?? $info['house_number'];
-            $data['place_city'] = $data['place_city'] ?? $info['city'];
-            $data['place_district'] = $data['place_district'] ?? $info['district'];
-            $data['place_street'] = $data['place_street'] ?? $info['street'];
+            $data['place_city'] = empty($data['place_city']) ? $info['city'] : $data['place_city'];
+            $data['place_street'] = empty($data['place_street']) ? $info['street'] : $data['place_street'];
+            $data['place_district'] = empty($data['place_district']) ? $info['district'] : $data['place_district'];
+            $data['place_province'] = empty($data['place_province']) ? $info['province'] : $data['place_province'];
             $data['place_lon'] = $data['place_lon'] ?? '';
             $data['place_lat'] = $data['place_lat'] ?? '';
         }

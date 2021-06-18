@@ -42,7 +42,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "sign",
-            "description": "<p>[必填]  签名：签名是以secret和data以一定加密方式形成的签名，每次请求都会验证key和sign以验证数据可靠。key或sign任一项不正确，请求都将被拒绝。从管理员端新增货主时，会自动生成一个secret，在资料管理-API对接管理中，可查询对应secret。sign的生成规则为：1，平铺data内的数组，生成一个字符串；2，将1的结果与secret连接起来；3，对2的结果其进行url编码；4，将3的结果全部转化为大写。</p>"
+            "description": "<p>[必填]  签名：sgin是以secret和data以一定加密方式形成的签名，每次请求都会验证key和sign以验证数据可靠。key或sign任一项不正确，请求都将被拒绝。从管理员端新增货主时，会自动生成一个secret，在资料管理-API对接管理中，可查询对应secret。sign的生成规则为：1，平铺data内的数组，生成一个字符串；2，将1的结果与secret连接起来；3，对2的结果其进行url编码；4，将3的结果全部转化为大写。</p>"
           },
           {
             "group": "Parameter",
@@ -136,15 +136,15 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "order_no_list",
-            "description": "<p>一个或多个订单号，以逗号连接</p>"
+            "field": "order_no",
+            "description": "<p>订单编号[必填]</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "no_push",
-            "description": "<p>是否推送1-是，货主通过该API删除订单，不会通知货主该订单已删除。2-否，货主通过该API删除订单，仍会通知货主订单已删除。</p>"
+            "field": "out_status",
+            "description": "<p>是否允许出库，1-允许2-不允许。</p>"
           }
         ]
       }
@@ -191,7 +191,7 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/merchantApi/01order.php",
-    "groupTitle": "订单管理",
+    "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
         "url": "https://dev-tms.nle-tech.com/api/merchant/order-out-status"
@@ -224,7 +224,14 @@ define({ "api": [
             "description": "<p>是否推送1-是，货主通过该API删除订单，不会通知货主该订单已删除。2-否，货主通过该API删除订单，仍会通知货主订单已删除。</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"order_no_list\":\"TMS00001,TMS00002,TMS00003\",\"no_push\":1}",
+          "type": "json"
+        }
+      ]
     },
     "success": {
       "fields": {
@@ -248,13 +255,6 @@ define({ "api": [
             "type": "Object",
             "optional": false,
             "field": "data",
-            "description": "<p>返回数据</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "String",
-            "optional": false,
-            "field": "data.data1",
             "description": "<p>返回数据</p>"
           }
         ]
@@ -268,7 +268,7 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/merchantApi/01order.php",
-    "groupTitle": "订单管理",
+    "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
         "url": "https://dev-tms.nle-tech.com/api/merchant/cancel-all-order"
@@ -276,7 +276,7 @@ define({ "api": [
     ]
   },
   {
-    "type": "get",
+    "type": "post",
     "url": "/merchant/order/order-dispatch-info",
     "title": "物流查询",
     "name": "物流查询",
@@ -290,7 +290,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "order_no",
-            "description": "<p>订单编号。</p>"
+            "description": "<p>订单编号[必填]</p>"
           }
         ]
       }
@@ -321,84 +321,84 @@ define({ "api": [
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.expect_distance",
-            "description": "<p>预计里程</p>"
+            "description": "<p>预计里程（公里）</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.actual_distance",
-            "description": "<p>实际里程</p>"
+            "description": "<p>实际里程（公里）</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.expect_time",
             "description": "<p>预计耗时(秒)</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.actual_time",
             "description": "<p>实际耗时(秒)</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.expect_arrive_time",
             "description": "<p>预计到达时间</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.actual_arrive_time",
             "description": "<p>实际到达时间</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.place_lon",
             "description": "<p>客户经度</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.place_lat",
             "description": "<p>客户纬度</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.driver_lon",
             "description": "<p>司机经度</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.driver_lat",
             "description": "<p>司机纬度</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.out_order_no",
             "description": "<p>外部订单号</p>"
           },
           {
             "group": "Success 200",
-            "type": "Object",
+            "type": "String",
             "optional": false,
             "field": "data.rest_batch",
             "description": "<p>剩余站点数，指运到该客户之前，还有多少个客户没运。</p>"
@@ -414,7 +414,7 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/merchantApi/01order.php",
-    "groupTitle": "订单管理",
+    "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
         "url": "https://dev-tms.nle-tech.com/api/merchant/order/order-dispatch-info"
@@ -422,12 +422,13 @@ define({ "api": [
     ]
   },
   {
-    "type": "get",
-    "url": "/merchant/order/again-order",
-    "title": "继续派送",
-    "name": "继续派送",
+    "type": "post",
+    "url": "/merchant/order/end-order",
+    "title": "终止派送",
+    "name": "终止派送",
     "group": "01order",
     "version": "1.0.0",
+    "description": "<p>只有取件和派件过程中，取消的订单才能进行终止派送。终止派送后，订单会变成取派失败状态，不能再进行继续派送。</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -435,36 +436,8 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "id",
-            "description": "<p>订单ID</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "type",
-            "description": "<p>类型1-取件2-派件</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "place_lon",
-            "description": "<p>经度</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "place_lat",
-            "description": "<p>纬度</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "place_post_code",
-            "description": "<p>邮编</p>"
+            "field": "order_no",
+            "description": "<p>订单编号[必填]</p>"
           }
         ]
       }
@@ -498,16 +471,779 @@ define({ "api": [
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\"code\":200,\"data\":[\"2021-06-11\",\"2021-06-13\",\"2021-06-16\",\"2021-06-18\",\"2021-06-20\"],\"msg\":\"successful\"}",
+          "content": "{\"code\":200,\"data\":[],\"msg\":\"successful\"}",
           "type": "json"
         }
       ]
     },
     "filename": "public/api/routes/merchantApi/01order.php",
-    "groupTitle": "订单管理",
+    "groupTitle": "接口使用方法",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant/order/end-order"
+      }
+    ]
+  },
+  {
+    "type": "post",
+    "url": "/merchant/order/again-order",
+    "title": "继续派送",
+    "name": "继续派送",
+    "group": "01order",
+    "version": "1.0.0",
+    "description": "<p>只有取件和派件过程中，取消的订单才能进行继续派送。继续派送会重新进行取派，该接口提供客户地址，客户电话，客户姓名的修改，填写新的地址信息后，会按新的地址信息进行取派。</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "order_no",
+            "description": "<p>订单编号[必填]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_fullname",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_phone",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_province",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_post_code",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_house_number",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_city",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_district",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_street",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_lon",
+            "description": "<p>经度</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_lat",
+            "description": "<p>纬度</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"code\":200,\"data\":[],\"msg\":\"successful\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantApi/01order.php",
+    "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
         "url": "https://dev-tms.nle-tech.com/api/merchant/order/again-order"
+      }
+    ]
+  },
+  {
+    "type": "post",
+    "url": "/merchant_api/order-update",
+    "title": "订单修改",
+    "name": "订单修改",
+    "group": "01order",
+    "version": "1.0.0",
+    "description": "<p>只有待受理的订单才能进行修改。</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "order_no",
+            "description": "<p>订单号[必填]</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "execution_date",
+            "description": "<p>取派日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_execution_date",
+            "description": "<p>取派日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "create_date",
+            "description": "<p>开单日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "out_order_no",
+            "description": "<p>外部订单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "mask_code",
+            "description": "<p>掩码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "source",
+            "description": "<p>来源</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "source_name",
+            "description": "<p>来源名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "out_user_id",
+            "description": "<p>外部客户ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "nature",
+            "description": "<p>性质:1-包裹2-材料3-文件4-增值服务5-其他</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "settlement_type",
+            "description": "<p>结算类型1-寄付2-到付</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "settlement_amount",
+            "description": "<p>结算金额</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "replace_amount",
+            "description": "<p>代收货款</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_fullname",
+            "description": "<p>收件人姓名</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_phone",
+            "description": "<p>收件人电话</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_country",
+            "description": "<p>收件人国家</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_country_name",
+            "description": "<p>收件人国家名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_post_code",
+            "description": "<p>收件人邮编</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_house_number",
+            "description": "<p>收件人门牌号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_city",
+            "description": "<p>收件人城市</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_street",
+            "description": "<p>收件人街道</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_address",
+            "description": "<p>收件人详细地址</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_fullname",
+            "description": "<p>发件人姓名</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_phone",
+            "description": "<p>发件人电话</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_country",
+            "description": "<p>发件人国家</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_country_name",
+            "description": "<p>发件人国家名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_province",
+            "description": "<p>发件人省份</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_post_code",
+            "description": "<p>发件人邮编</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_house_number",
+            "description": "<p>发件人门牌号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_city",
+            "description": "<p>发件人城市</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_district",
+            "description": "<p>发件人区县</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_street",
+            "description": "<p>发件人街道</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_address",
+            "description": "<p>发件人详细地址</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "special_remark",
+            "description": "<p>特殊事项</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "starting_price",
+            "description": "<p>起步价</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "transport_price_type",
+            "description": "<p>运价方案ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "receipt_type",
+            "description": "<p>回单要求</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "receipt_type_name",
+            "description": "<p>回单要求名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "receipt_count",
+            "description": "<p>回单数量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "package_list",
+            "description": "<p>包裹列表</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.expiration_date",
+            "description": "<p>有效日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.name",
+            "description": "<p>包裹名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.express_first_no",
+            "description": "<p>快递单号1</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.express_second_no",
+            "description": "<p>快递单号2</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.feature_logo",
+            "description": "<p>特性标志</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.out_order_no",
+            "description": "<p>外部标识</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.weight",
+            "description": "<p>重量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.size",
+            "description": "<p>重量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.actual_weight",
+            "description": "<p>实际重量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.expect_quantity",
+            "description": "<p>预计数量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.actual_quantity",
+            "description": "<p>实际数量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.sticker_no",
+            "description": "<p>贴单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.settlement_amount",
+            "description": "<p>结算金额</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.count_settlement_amount",
+            "description": "<p>估算运费</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.sticker_amount",
+            "description": "<p>贴单费用</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.delivery_amount",
+            "description": "<p>提货费用</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.is_auth",
+            "description": "<p>是否需要身份验证1-是2-否</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.auth_fullname",
+            "description": "<p>身份人姓名</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "package_list.auth_birth_date",
+            "description": "<p>身份人出身年月</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "material_list",
+            "description": "<p>材料列表</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.execution_date",
+            "description": "<p>取派日期</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.name",
+            "description": "<p>材料名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.code",
+            "description": "<p>材料代码</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.out_order_no",
+            "description": "<p>外部标识</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.expect_quantity",
+            "description": "<p>预计数量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.actual_quantity",
+            "description": "<p>实际数量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.pack_type",
+            "description": "<p>包装类型</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.type",
+            "description": "<p>类型</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.weight",
+            "description": "<p>重量</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.size",
+            "description": "<p>体积</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "material_list.remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object",
+            "optional": false,
+            "field": "amount_list",
+            "description": "<p>费用列表</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount_list.id",
+            "description": "<p>费用ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount_list.expect_amount",
+            "description": "<p>预计金额</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount_list.actual_amount",
+            "description": "<p>实际金额</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount_list.type",
+            "description": "<p>运费类型</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount_list.remark",
+            "description": "<p>备注</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.id",
+            "description": "<p>ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.order_no",
+            "description": "<p>订单号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.out_order_no",
+            "description": "<p>外部订单号</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"code\":200,\"data\":[],\"msg\":\"successful\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantApi/01order.php",
+    "groupTitle": "接口使用方法",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant_api/order-update"
       }
     ]
   },
@@ -618,13 +1354,6 @@ define({ "api": [
             "optional": false,
             "field": "replace_amount",
             "description": "<p>代收货款</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "status",
-            "description": "<p>状态:1-待分配2-已分配3-待出库4-取派中5-已签收6-取消取派7-收回站</p>"
           },
           {
             "group": "Parameter",
@@ -1147,7 +1876,7 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/merchantApi/01order.php",
-    "groupTitle": "订单管理",
+    "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
         "url": "https://dev-tms.nle-tech.com/api/merchant_api/order"
@@ -1157,11 +1886,11 @@ define({ "api": [
   {
     "type": "post",
     "url": "/merchant_api/post-code-date-list",
-    "title": "通过地址获取可预约日期",
+    "title": "获取可预约日期",
     "name": "通过地址获取可预约日期",
     "group": "01order",
     "version": "1.0.0",
-    "description": "<p>线路分配规则为邮编的情况，邮编必填；线路分配规则为区域的情况，经纬度必填，线路分配规则请在管理员端-配置管理-调度管理-调度规则页面确认或修改。</p>",
+    "description": "<p>通过地址获取可预约日期，线路分配规则为邮编的情况，邮编必填；线路分配规则为区域的情况，经纬度必填，线路分配规则请在管理员端-配置管理-调度管理-调度规则页面确认或修改。</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -1169,15 +1898,15 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "id",
-            "description": "<p>订单ID</p>"
+            "field": "order_no",
+            "description": "<p>订单编号[必填]</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "type",
-            "description": "<p>类型1-取件2-派件</p>"
+            "description": "<p>类型1-取件2-派件[必填]</p>"
           },
           {
             "group": "Parameter",
@@ -1238,7 +1967,7 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/merchantApi/01order.php",
-    "groupTitle": "订单管理",
+    "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
         "url": "https://dev-tms.nle-tech.com/api/merchant_api/post-code-date-list"
