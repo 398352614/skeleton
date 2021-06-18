@@ -70,14 +70,11 @@ class BaseWarehouseService extends BaseService
             $fields = ['place_fullname', 'place_phone', 'place_country', 'place_province', 'place_post_code', 'place_house_number', 'place_city', 'place_district',
                 'place_street', 'place_address', 'place_lat', 'place_lon', 'execution_date'];
             $data = Arr::only($data, $fields);
-            $data['type'] = BaseConstService::TRACKING_ORDER_TYPE_1;
-
         } elseif ($force == 2 || in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])) {
             if (empty($data['second_place_country'])) {
                 $data['second_place_country'] = CompanyTrait::getCompany()['country'];
             }
             $data = [
-                'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
                 'place_fullname' => $data['second_place_fullname'],
                 'place_phone' => $data['second_place_phone'],
                 'place_country' => $data['second_place_country'],

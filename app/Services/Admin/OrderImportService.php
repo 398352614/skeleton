@@ -247,8 +247,7 @@ class OrderImportService extends BaseService
                 $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, BaseConstService::YES);
                 $this->getTrackingOrderService()->fillWarehouseInfo($data, BaseConstService::NO);
             } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
-                $data['type'] = BaseConstService::ORDER_TYPE_1;
-                $address = $this->getBaseWarehouseService()->pieAddress($data);
+                $address = $this->getBaseWarehouseService()->pieAddress($data,2);
                 $newData = array_merge($data, $address);
                 $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
             }
@@ -266,7 +265,7 @@ class OrderImportService extends BaseService
                     $totalAmount = $totalAmount + $data['amount_' . ($i + 1)];
                 }
             }
-            $data['expect_total_amount'] = $totalAmount + $data;
+            $data['expect_total_amount'] = $totalAmount + $data['count_settlement_amount'];
         } catch (BusinessLogicException $e) {
             $error['log'] = __($e->getMessage(), $e->replace);
         } catch (\Exception $e) {
