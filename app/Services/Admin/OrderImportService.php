@@ -245,9 +245,14 @@ class OrderImportService extends BaseService
             //检查网点
             if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
                 $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, BaseConstService::YES);
+                $this->getTrackingOrderService()->fillWarehouseInfo($data, BaseConstService::NO);
+            } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+                $data['type'] = BaseConstService::ORDER_TYPE_1;
+                $address = $this->getBaseWarehouseService()->pieAddress($data);
+                $newData = array_merge($data, $address);
+                $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
             }
             //运价计算
-            $this->getTrackingOrderService()->fillWarehouseInfo($data, BaseConstService::NO);
             if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
                 $data['distance'] = 1000;
             } else {
@@ -337,7 +342,6 @@ class OrderImportService extends BaseService
                 $data['place_house_number'] ?? '',
                 $data['place_post_code'] ?? ''
             );
-            dd($info);
             $data['place_province'] = $info['province'];
             $data['place_city'] = $info['city'];
             $data['place_district'] = $info['district'];
