@@ -29,7 +29,6 @@ trait LocationTrait
     public static function getLocation($country, $city, $street, $houseNumber, $postCode)
     {
         $key = sprintf("%s:%s-%s-%s", 'location', $country, $postCode, $houseNumber);
-
         return Cache::rememberForever($key, self::getLocationDetail($country, $city, $street, $houseNumber, $postCode));
     }
 
