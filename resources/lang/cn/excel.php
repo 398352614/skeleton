@@ -453,16 +453,16 @@ return [
     ],
 
     "addressExcelExport" => [
-        'type' => '类型',
-        'place_fullname' => '姓名',
-        'place_phone' => '手机号',
+        'type' => '*类型',
+        'place_fullname' => '*姓名',
+        'place_phone' => '*手机号',
         'place_country' => '国家',
         'place_province' => '州/省',
-        'place_post_code' => '邮编',
-        'place_house_number' => '门牌号',
-        'place_city' => '城市',
+        'place_post_code' => '*邮编',
+        'place_house_number' => '*门牌号',
+        'place_city' => '*城市',
         'place_district' => '地区',
-        'place_street' => '街道',
+        'place_street' => '*街道',
         'place_address' => '详细地址',
     ]
 ];

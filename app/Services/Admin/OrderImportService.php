@@ -247,7 +247,7 @@ class OrderImportService extends BaseService
                 $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, BaseConstService::YES);
                 $this->getTrackingOrderService()->fillWarehouseInfo($data, BaseConstService::NO);
             } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
-                $address = $this->getBaseWarehouseService()->pieAddress($data,2);
+                $address = $this->getBaseWarehouseService()->pieAddress($data, 2);
                 $newData = array_merge($data, $address);
                 $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
             }
