@@ -216,7 +216,6 @@ class OrderImportService extends BaseService
         } catch (BusinessLogicException $e) {
             $error['log'] = $e->getMessage();
         }
-        dd($data);
         //若存在货号,则判断是否存在已预约的订单号
         if (!empty($data['out_order_no'])) {
             $where = ['out_order_no' => $data['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
