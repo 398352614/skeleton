@@ -259,6 +259,14 @@ class OrderImportService extends BaseService
                 $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($data);
             }
             $data = $this->getTransportPriceService()->priceCount($data);
+            //费用总计
+            $totalAmount = 0;
+            for ($i = 0; $i < 11; $i++) {
+                if (empty($data['amount_' . ($i + 1)])) {
+                    $totalAmount = $totalAmount + $data['amount_' . ($i + 1)];
+                }
+            }
+            $data['expect_total_amount'] = $totalAmount + $data;
         } catch (BusinessLogicException $e) {
             $error['log'] = __($e->getMessage(), $e->replace);
         } catch (\Exception $e) {
