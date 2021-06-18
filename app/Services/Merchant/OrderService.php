@@ -718,6 +718,9 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        if (auth()->user()->getAttribute('is_api') == true) {
+            $params['create_date'] = today()->format('Y-m-d');
+        }
         $params['merchant_id'] = auth()->user()->id;
         unset($params['created_at'], $params['updated_at']);
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
