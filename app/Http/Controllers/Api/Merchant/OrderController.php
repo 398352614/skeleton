@@ -165,7 +165,7 @@ class OrderController extends OrderBaseController
      */
     public function destroyAll()
     {
-        return $this->service->destroyAll($this->data['order_no_list']);
+        return $this->service->destroyAll($this->data);
     }
 
 

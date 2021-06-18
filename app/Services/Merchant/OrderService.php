@@ -1178,16 +1178,16 @@ class OrderService extends BaseService
 
     /**
      * 批量删除
-     * @param $orderNoList
+     * @param $params
      * @return string
      * @throws BusinessLogicException
      */
-    public function destroyAll($orderNoList)
+    public function destroyAll($params)
     {
-        $orderNoList = array_filter(explode(',', $orderNoList));
+        $orderNoList = array_filter(explode(',', $params['order_no_list']));
         foreach ($orderNoList as $orderNo) {
             try {
-                $this->destroy($orderNo, ['no_push' => 1]);
+                $this->destroy($orderNo, $params);
             } catch (BusinessLogicException $exception) {
                 throw new BusinessLogicException('批量删除失败,订单[:order_no]删除失败,原因-[:exception_info]', 1000, array_merge(['order_no' => $orderNo, 'exception_info' => $exception->getMessage()], $exception->replace));
             }
