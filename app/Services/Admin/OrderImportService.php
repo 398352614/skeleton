@@ -292,14 +292,14 @@ class OrderImportService extends BaseService
         if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
             foreach ($place as $k => $v) {
                 if (empty($data[$v])) {
-                    $data = $this->fillSecondPlaceAddress($data);
+                    $data = $this->fillPlaceAddress($data);
                     break;
                 }
             }
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
             foreach ($secondPlace as $k => $v) {
                 if (empty($data[$v])) {
-                    $data = $this->fillPlaceAddress($data);
+                    $data = $this->fillSecondPlaceAddress($data);
                     break;
                 }
             }
@@ -337,6 +337,7 @@ class OrderImportService extends BaseService
                 $data['place_house_number'] ?? '',
                 $data['place_post_code'] ?? ''
             );
+            dd($info);
             $data['place_province'] = $info['province'];
             $data['place_city'] = $info['city'];
             $data['place_district'] = $info['district'];
