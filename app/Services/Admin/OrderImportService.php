@@ -261,14 +261,13 @@ class OrderImportService extends BaseService
             //费用总计
             $totalAmount = 0;
             for ($i = 0; $i < 11; $i++) {
-                if (empty($data['amount_' . ($i + 1)])) {
+                if (!empty($data['amount_' . ($i + 1)])) {
                     $totalAmount = $totalAmount + $data['amount_' . ($i + 1)];
                 }
             }
             $data['expect_total_amount'] = $totalAmount + $data['count_settlement_amount'];
         } catch (BusinessLogicException $e) {
             $error['log'] = __($e->getMessage(), $e->replace);
-        } catch (\Exception $e) {
         }
         if (!empty($error)) {
             $status = BaseConstService::NO;
