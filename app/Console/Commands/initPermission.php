@@ -55,13 +55,13 @@ class initPermission extends Command
 
             foreach ($companyList as $company) {
                 $this->info($company['id']);
-                $role = Role::query()->where('company_id', $company['id'])->where('is_admin','=', 1)->first();
+                $role = Role::query()->where('company_id', $company['id'])->where('is_admin', '=', 1)->first();
                 if (empty($role)) {
                     //新建管理员权限组
-                    $role = Role::create([
-                        'company_id'    => $company['id'],
-                        'name'          => '管理员组',
-                        'is_admin'      => 1,
+                    $role = DB::table('role')->insert([
+                        'company_id' => $company['id'],
+                        'name' => '管理员组',
+                        'is_admin' => 1,
                     ]);
                     $employee = Employee::query()->where('company_id', $company['id'])->orderBy('id')->first();
                     if (empty(DB::table('model_has_roles')->where('employee_id', $employee['id'])->first())) {
