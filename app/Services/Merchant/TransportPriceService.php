@@ -151,11 +151,11 @@ class TransportPriceService extends BaseService
         foreach ($data['package_list'] as $k => $package) {
             !empty($package['weight']) && $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
             !empty($package['distance']) && $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
-            if ($weightPrice == null && $distancePrice !== null) {
+            if (empty($weightPrice) && !empty($distancePrice)) {
                 $weightPrice = 1;
-            } elseif ($weightPrice !== null && $distancePrice == null) {
+            } elseif (!empty($weightPrice)&& empty($distancePrice)) {
                 $distancePrice = 1;
-            } elseif ($weightPrice == null && $distancePrice == null) {
+            } elseif (empty($weightPrice) && empty($distancePrice)) {
                 $weightPrice = $distancePrice = 0;
             }
             //公式
