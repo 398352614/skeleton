@@ -41,19 +41,19 @@ class OrderTrailService extends BaseService
         if (!empty($order)) {
             if ($order['type'] == BaseConstService::ORDER_TYPE_1) {
                 $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1], ['*'], ['id' => 'desc']);
-                $order['pickup_warehouse_lon'] = $trackingOrder['warehouse_lon'];
-                $order['pickup_warehouse_lat'] = $trackingOrder['warehouse_lat'];
+                $order['pickup_warehouse_lon'] = $trackingOrder['warehouse_lon'] ?? '';
+                $order['pickup_warehouse_lat'] = $trackingOrder['warehouse_lat'] ?? '';
             } elseif ($order['type'] == BaseConstService::ORDER_TYPE_2) {
                 $trackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2], ['*'], ['id' => 'desc']);
-                $order['pie_warehouse_lon'] = $trackingOrder['warehouse_lon'];
-                $order['pie_warehouse_lat'] = $trackingOrder['warehouse_lat'];
+                $order['pie_warehouse_lon'] = $trackingOrder['warehouse_lon'] ?? '';
+                $order['pie_warehouse_lat'] = $trackingOrder['warehouse_lat'] ?? '';
             } elseif ($order['type'] == BaseConstService::ORDER_TYPE_3) {
                 $pickupTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1], ['*'], ['id' => 'desc']);
-                $order['pickup_warehouse_lon'] = $pickupTrackingOrder['warehouse_lon'];
-                $order['pickup_warehouse_lat'] = $pickupTrackingOrder['warehouse_lat'];
+                $order['pickup_warehouse_lon'] = $pickupTrackingOrder['warehouse_lon'] ?? '';
+                $order['pickup_warehouse_lat'] = $pickupTrackingOrder['warehouse_lat'] ?? '';
                 $pieTrackingOrder = $this->getTrackingOrderService()->getInfo(['order_no' => $order['order_no'], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2], ['*'], ['id' => 'desc']);
-                $order['pie_warehouse_lon'] = $pieTrackingOrder['warehouse_lon'];
-                $order['pie_warehouse_lat'] = $pieTrackingOrder['warehouse_lat'];
+                $order['pie_warehouse_lon'] = $pieTrackingOrder['warehouse_lon'] ?? '';
+                $order['pie_warehouse_lat'] = $pieTrackingOrder['warehouse_lat'] ?? '';
             }
             $list = parent::getList(['order_no' => $order['order_no']], ['*'], true, [], ['id' => 'asc']);
             $a = 0;
