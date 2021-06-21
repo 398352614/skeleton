@@ -27,7 +27,7 @@ class OrderValidate extends BaseValidate
         'out_user_id' => 'nullable|integer',
         'mask_code' => 'nullable|string|max:50',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
-        'settlement_type' => 'required|in:1,2',
+        'settlement_type' => 'required|in:1,2,3,4,5',
         'settlement_amount' => 'nullable|numeric|gte:0',
         'replace_amount' => 'nullable|numeric|gte:0',
         'delivery' => 'nullable|integer|in:1,2',
