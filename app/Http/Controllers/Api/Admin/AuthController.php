@@ -71,6 +71,7 @@ class AuthController extends Controller
     {
         /**@var Role $role */
         $role = auth('admin')->user()->roles->first();
+        dd($role);
         if (empty($role)) return [];
         $rolePermissionList = $role->getAllPermissions();
         if ($rolePermissionList->isEmpty()) return [];
