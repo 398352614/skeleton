@@ -149,8 +149,8 @@ class TransportPriceService extends BaseService
     public function multiplyWeightMultiplyDistance($data, $transportPrice)
     {
         foreach ($data['package_list'] as $k => $package) {
-            $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
-            $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
+            !empty($package['weight']) && $weightPrice = $this->getWeightPrice($package['weight'], $transportPrice);
+            !empty($package['distance']) && $distancePrice = $this->getDistancePrice($data['distance'], $transportPrice);
             if ($weightPrice == null && $distancePrice !== null) {
                 $weightPrice = 1;
             } elseif ($weightPrice !== null && $distancePrice == null) {
