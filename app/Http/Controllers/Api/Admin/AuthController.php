@@ -70,9 +70,10 @@ class AuthController extends Controller
     public function getPermission()
     {
         /**@var Role $role */
-        $role = auth('admin')->user()->roles->first();
-        if (empty($role)) return [];
+//        $role = auth('admin')->user()->roles->first();
+//        if (empty($role)) return [];
         $rolePermissionList = $role->getAllPermissions();
+        dd($rolePermissionList);
         if ($rolePermissionList->isEmpty()) return [];
         $rolePermissionList = $rolePermissionList->map(function ($permission, $key) {
             return $permission->only(['id', 'parent_id', 'name', 'route_as', 'type']);
