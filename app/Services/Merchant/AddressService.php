@@ -30,6 +30,10 @@ class AddressService extends BaseService
         'type' => ['=', 'type'],
     ];
 
+    public $orderBy=[
+        'updated_at'=>'desc',
+    ];
+
     /**
      * 获取唯一性条件
      * @param $data
