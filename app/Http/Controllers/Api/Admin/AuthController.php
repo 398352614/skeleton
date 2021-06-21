@@ -70,7 +70,6 @@ class AuthController extends Controller
     public function getPermission()
     {
         /**@var Role $role */
-        dd(auth('admin')->user());
         $role = auth('admin')->user()->roles->first();
         if (empty($role)) return [];
         $rolePermissionList = $role->getAllPermissions();
@@ -109,7 +108,6 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        dd(auth('admin')->user()->roles->first());
         /**@var Role $role */
         $role = auth('admin')->user()->roles->first();
         if (empty($role)) {
