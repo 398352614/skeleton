@@ -109,6 +109,7 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        dd(auth('admin')->user()->roles->first());
         /**@var Role $role */
         $role = auth('admin')->user()->roles->first();
         if (empty($role)) {
