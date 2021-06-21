@@ -101,6 +101,7 @@ class AuthService extends BaseService
             'company_id' => auth('merchant')->user()->company_id,
             'access_token' => $token,
             'token_type' => 'bearer',
+            'contacter'=>\auth('merchant')->user()->contacter,
             'expires_in' => auth('merchant')->factory()->getTTL() * 60,
             'company_config' => CompanyTrait::getCompany(auth('merchant')->user()->company_id)
         ];
