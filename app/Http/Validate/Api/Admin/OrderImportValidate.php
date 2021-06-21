@@ -22,7 +22,7 @@ class OrderImportValidate extends BaseValidate
         'place_phone' => 'required_unless:type,2|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
         'place_country' => 'nullable|string|max:20',
         'place_post_code' => 'required_unless:type,2|string|max:50',
-        'place_house_number' => 'required_unless:type,2|string|max:50',
+        'place_house_number' => 'required_unless:type,2|max:50',
         "place_city" => 'nullable|string|max:50',
         "place_street" => 'nullable|string|max:50',
         'execution_date' => 'required_unless:type,2|date|after_or_equal:today',
