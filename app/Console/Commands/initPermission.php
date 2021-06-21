@@ -56,7 +56,7 @@ class initPermission extends Command
             foreach ($companyList as $company) {
                 $this->info($company['id']);
                 $role = Role::query()->where('company_id', $company['id'])->where('is_admin', 1)->first();
-                if (empty($role)) {
+                if (empty($role->toArray())) {
                     //新建管理员权限组
                     $role = Role::create([
                         'company_id'    => $company['id'],
