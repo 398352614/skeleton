@@ -156,10 +156,10 @@ class GoogleApiService
             'location' => $batchs,
         ];
         app('log')->info('更新线路传送给 api 端的参数为:', $params);
-        Log::info(now()->setTimezone('Europe/Amsterdam'));
-        Log::info(now()->setTimezone('Asia/Shanghai'));
+        Log::info(now()->setTimezone('Europe/Amsterdam')->timestamp);
+        Log::info(now()->setTimezone('Asia/Shanghai')->timestamp);
 
-        $this->client->postJson($this->url . $api . $this->makeSign(now('GMT+0100')->timestamp), $params);
+        $this->client->postJson($this->url . $api . $this->makeSign(now()->setTimezone('Europe/Amsterdam')->timestamp), $params);
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         //更新距离和时间
         $this->multiUpdateTourTimeAndDistance($tour);
