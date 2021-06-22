@@ -70,7 +70,7 @@ class AuthController extends Controller
     public function getPermission()
     {
         /**@var Role $role */
-        dd(auth()->user()->roles->first());
+        dd(auth('admin')->user()->roles);
         $role = auth('admin')->user()->roles->first() ?? auth()->user()->roles->first();
         if (empty($role)) return [];
         $rolePermissionList = $role->getAllPermissions();
