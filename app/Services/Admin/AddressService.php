@@ -453,6 +453,9 @@ class AddressService extends BaseService
         }
         //判断是否唯一
         $this->uniqueCheck($data);
+        if(empty($data['place_country'])){
+            $data['place_country'] = CompanyTrait::getCountry();
+        }
         //如果没传经纬度，就通过第三方API获取经纬度
         if (empty($data['place_lon']) || empty($data['place_lat'])) {
             try {
@@ -462,7 +465,6 @@ class AddressService extends BaseService
             } catch (BusinessLogicException $e) {
                 $status = BaseConstService::NO;
                 $error['log'] = __($e->getMessage(), $e->replace);
-            } catch (\Exception $e) {
             }
             $data['place_country'] = $data['place_country'] ?? CompanyTrait::getCountry();
             $data['place_post_code'] = $data['place_post_code'] ?? $info['post_code'];
