@@ -577,7 +577,7 @@ class TrackingOrderService extends BaseService
                 'second_place_house_number' => $trackingOrder['warehouse_house_number'],
                 'second_place_city' => $trackingOrder['warehouse_city'],
                 'second_place_district' => $trackingOrder['warehouse_district'] ?? '',
-                'second_place_street' => $trackingOrder['warehouse_house_number'],
+                'second_place_street' => $trackingOrder['warehouse_place_street'],
                 'second_place_address' => $trackingOrder['warehouse_city'],
                 'second_place_lon' => $trackingOrder['warehouse_lon'],
                 'second_place_lat' => $trackingOrder['warehouse_lat'],
