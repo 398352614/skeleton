@@ -131,7 +131,7 @@ class StockService extends BaseService
 //                'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
 //                'status' => ['<>', [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6, BaseConstService::TRACKING_ORDER_STATUS_7]]], ['*'], false);
 //            if (empty($dbTrackingOrder)) {
-                return $this->createTrackingOrder($package, $order, $type);
+            return $this->createTrackingOrder($package, $order, $type);
 //            } else {
 //                //如果已有派件运单则加入派件运单
 //                return $this->joinTrackingOrder($package, $dbTrackingOrder);
@@ -492,7 +492,8 @@ class StockService extends BaseService
     {
         $this->stockExistCheck($package);
         $this->stockExceptionCheck($order);
-        if ($package->stage == BaseConstService::PACKAGE_STAGE_2 && $package->status == BaseConstService::PACKAGE_STATUS_3) {
+        //中转取派中
+        if ($package->stage == BaseConstService::PACKAGE_STAGE_2 && $package->status == BaseConstService::PACKAGE_STATUS_2) {
             throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
         }
         if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
