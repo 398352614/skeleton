@@ -92,7 +92,6 @@ class GoogleApiService
     public function LineInfo($lineCode)
     {
         $api = '/api/line-info';
-        dd(now('GMT+0100'));
         $path = $this->url . $api . $this->makeSign(now('GMT+0100')) . "&line_code=$lineCode";
 
         $res = $this->client->get($path);
@@ -157,7 +156,6 @@ class GoogleApiService
             'location' => $batchs,
         ];
         app('log')->info('更新线路传送给 api 端的参数为:', $params);
-        dd(now('GMT+0100'));
         $this->client->postJson($this->url . $api . $this->makeSign(now('GMT+0100')), $params);
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         //更新距离和时间
