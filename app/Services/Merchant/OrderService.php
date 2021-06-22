@@ -724,7 +724,7 @@ class OrderService extends BaseService
             $params['create_date'] = today()->format('Y-m-d');
         }
         $params['merchant_id'] = auth()->user()->id;
-        unset($params['created_at'], $params['updated_at'],$params['status']);
+        unset($params['created_at'], $params['updated_at'],$params['status'],$params['id']);
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         $fields = ['place_fullname', 'place_phone',
             'place_country', 'place_province', 'place_city', 'place_district',
