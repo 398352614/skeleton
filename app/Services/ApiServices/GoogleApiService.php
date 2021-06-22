@@ -81,10 +81,7 @@ class GoogleApiService
 
         app('log')->info('初始化线路传送给 api 端的参数为:', $params);
 
-        Log::info(now('GMT+0100'));
-        Log::info(time());
-        dd(now('NL'));
-        $res = $this->client->postJson($this->url . $api . $this->makeSign(now('NL')), $params);
+        $res = $this->client->postJson($this->url . $api . $this->makeSign(now('GMT+0100')), $params);
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         return $res;
     }
@@ -96,7 +93,7 @@ class GoogleApiService
     {
         $api = '/api/line-info';
 
-        $path = $this->url . $api . $this->makeSign(time()) . "&line_code=$lineCode";
+        $path = $this->url . $api . $this->makeSign(now('GMT+0100')) . "&line_code=$lineCode";
 
         $res = $this->client->get($path);
 
@@ -117,7 +114,7 @@ class GoogleApiService
         // ];
         $api = '/api/update-driver';
 
-        $res = $this->client->postJson($this->url . $api . $this->makeSign(time()), $data);
+        $res = $this->client->postJson($this->url . $api . $this->makeSign(now('GMT+0100')), $data);
 
         return $res;
     }
@@ -160,7 +157,7 @@ class GoogleApiService
             'location' => $batchs,
         ];
         app('log')->info('更新线路传送给 api 端的参数为:', $params);
-        $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
+        $this->client->postJson($this->url . $api . $this->makeSign(now('GMT+0100')), $params);
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         //更新距离和时间
         $this->multiUpdateTourTimeAndDistance($tour);
