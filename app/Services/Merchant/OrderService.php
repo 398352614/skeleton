@@ -326,7 +326,9 @@ class OrderService extends BaseService
         //新增订单费用列表
         $this->addAmountList($params);
         //生成运单
-        $tour = $this->getTrackingOrderService()->storeByOrder($order);
+        if (!empty($params['execution_date'])) {
+            $tour = $this->getTrackingOrderService()->storeByOrder($order);
+        }
         //自动记录
         $this->record($params);
         return [
