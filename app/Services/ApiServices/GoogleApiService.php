@@ -83,7 +83,7 @@ class GoogleApiService
 
         Log::info(now('NL'));
         Log::info(time());
-        $res = $this->client->postJson($this->url . $api . $this->makeSign(time()), $params);
+        $res = $this->client->postJson($this->url . $api . $this->makeSign(now('NL')), $params);
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         return $res;
     }
