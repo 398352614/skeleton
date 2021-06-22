@@ -92,7 +92,7 @@ class GoogleApiService
     public function LineInfo($lineCode)
     {
         $api = '/api/line-info';
-
+        dd(now('GMT+0100'));
         $path = $this->url . $api . $this->makeSign(now('GMT+0100')) . "&line_code=$lineCode";
 
         $res = $this->client->get($path);
