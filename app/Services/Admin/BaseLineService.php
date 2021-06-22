@@ -652,7 +652,7 @@ class BaseLineService extends BaseService
                 $mixPickupCount = 0;
                 $mixPieCount = 0;
                 //只有超过本身最小订单量再进行判断
-                $merchantGroupId = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false)->toArray()['merchant_group_id'];
+                $merchantGroupId = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false)['merchant_group_id'];
                 $merchantIdList = $this->getMerchantService()->getlist(['merchant_group_id' => $merchantGroupId], ['*'], false)->pluck(['id'])->toArray();
                 $pickupCount = $this->getTrackingOrderservice()->count(['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date'],
                     'status' => ['in', $status], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1]);
