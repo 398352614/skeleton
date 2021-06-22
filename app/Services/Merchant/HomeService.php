@@ -117,7 +117,7 @@ class HomeService extends BaseService
         $info = $this->query->where('execution_date', date('Y-m-d'))->get();
         $doingOrder = count(collect($info)->where('status', '=', BaseConstService::ORDER_STATUS_2));
         $signedOrder = count(collect($info)->where('status', '=', BaseConstService::ORDER_STATUS_3));
-        $cancelOrder = count(collect($info)->where('status', '=', BaseConstService::ORDER_STATUS_4));
+        $cancelOrder = count(collect($info)->whereIn('status', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]));
         return [
             'doing' => $doingOrder,
             'done' => $signedOrder,
