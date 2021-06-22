@@ -19,6 +19,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use WebSocket\Base;
 
 class StockService extends BaseService
 {
@@ -492,9 +493,10 @@ class StockService extends BaseService
     {
         $this->stockExistCheck($package);
         $this->stockExceptionCheck($order);
+        $trackingPackage = $this->getTrackingPackageService()->getInfo(['express_first_no' => $package['express_first_no']], ['*'], false, ['id' => 'desc']);
         //中转取派中
-        if ($package->stage == BaseConstService::PACKAGE_STAGE_2 && $package->status == BaseConstService::PACKAGE_STATUS_2) {
-            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $package->status_name]);
+        if ($package->stage == BaseConstService::PACKAGE_STAGE_2 && !empty($trackingPackage) && $trackingPackage['status'] !== BaseConstService::TRACKING_PACKAGE_STATUS_7) {
+            throw new BusinessLogicException('当前包裹状态为[:status_name],不能分拣入库', 1000, ['status_name' => $trackingPackage['status_name']]);
         }
         if (empty($type) || ($type != BaseConstService::TRACKING_ORDER_TYPE_2)) {
             throw new BusinessLogicException('当前包裹不能生成对应派件运单或已生成派件运单');
