@@ -120,13 +120,32 @@ class AddressService extends BaseService
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $this->check($data, $info->toArray());
+        $this->check($data, $id);
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
     }
 
+    /**
+     * 唯一性判断
+     * @param $data
+     * @param null $id
+     * @throws BusinessLogicException
+     */
+    public function uniqueCheck(&$data, $id = null)
+    {
+        //判断是否唯一
+        $data['unique_code'] = $this->getUniqueCode($data);
+        if (!empty($id)) {
+            $info = parent::getInfo(['unique_code' => $data['unique_code'], 'id' => ['<>', $id]], ['*'], false);
+        } else {
+            $info = parent::getInfo(['unique_code' => $data['unique_code']], ['*'], false);
+        }
+        if (!empty($info)) {
+            throw new BusinessLogicException('地址已存在，不能重复添加');
+        }
+    }
 
     /**
      * 验证
@@ -134,19 +153,44 @@ class AddressService extends BaseService
      * @param array $dbInfo
      * @throws BusinessLogicException
      */
-    public function check(&$data, $dbInfo = [])
+    public function check(&$data,  $id = null)
     {
+        if (auth()->user()->company_id !== 'NL') {
+            if (empty($data['place_city'])) {
+                throw new BusinessLogicException('城市是必填的');
+            }
+            if (empty($data['place_street'])) {
+                throw new BusinessLogicException('街道是必填的');
+            }
+        }
+        if (empty($data['place_lon']) || empty($data['place_lat'])) {
+            throw new BusinessLogicException('地址无法定位，请选择其他地址');
+        }
+        $fields = ['place_fullname', 'place_phone',
+            'place_country', 'place_province', 'place_city', 'place_district',
+            'place_post_code', 'place_street', 'place_house_number',
+            'place_address'];
+        foreach ($fields as $v) {
+            array_key_exists($v, $data) && $data[$v] = trim($data[$v]);
+        }
+        if (!empty($id)) {
+            $info = parent::getInfo(['id' => $id], ['*'], false);
+            if (empty($info)) {
+                throw new BusinessLogicException('数据不存在');
+            }
+        }
+
         $data['place_country'] = !empty($dbInfo['place_country']) ? $dbInfo['place_country'] : CompanyTrait::getCountry();
+        //验证商家是否存在
+        $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id']], ['id', 'country'], false);
+        if (empty($merchant)) {
+            throw new BusinessLogicException('货主不存在，请重新选择货主');
+        }
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
             $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
-        //判断是否唯一
-        $where = $this->getUniqueWhere($data);
-        !empty($dbInfo['id']) && $where = Arr::add($where, 'id', ['<>', $dbInfo['id']]);
-        $info = parent::getInfo($where, ['*'], false);
-        if (!empty($info)) {
-            throw new BusinessLogicException('地址已存在，不能重复添加');
-        }
+
+        $this->uniqueCheck($data, $id);
 
     }
 
