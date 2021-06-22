@@ -129,10 +129,10 @@ class BaseLineService extends BaseService
     public function check(&$params, $dbInfo = [])
     {
         $rootWarehouse = $this->getWareHouseService()->getInfo(['parent' => 0], ['*'], false);
-        if(empty($rootWarehouse)){
+        if (empty($rootWarehouse)) {
             throw new BusinessLogicException('网点不存在');
         }
-        $params['warehouse_id']=$rootWarehouse->toArray()['id'];
+        $params['warehouse_id'] = $rootWarehouse->toArray()['id'];
         $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
         if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
             foreach ($params['item_list'] as $k => $v) {
@@ -241,7 +241,7 @@ class BaseLineService extends BaseService
      */
     public function getInfoByRuleWithoutCheck($info)
     {
-        $lineRange = $this->getLineRange($info,BaseConstService::NO);
+        $lineRange = $this->getLineRange($info, BaseConstService::NO);
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (empty($line)) {
             throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
@@ -652,7 +652,12 @@ class BaseLineService extends BaseService
                 $mixPickupCount = 0;
                 $mixPieCount = 0;
                 //只有超过本身最小订单量再进行判断
-                $merchantGroupId = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false)['merchant_group_id'];
+                $merchantGroupId = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
+                if (empty($merchantGroupId)) {
+                    throw new BusinessLogicException('商户组不存在');
+                } else {
+                    $merchantGroupId = $merchantGroupId->toArray()['merchant_group_id'];
+                }
                 $merchantIdList = $this->getMerchantService()->getlist(['merchant_group_id' => $merchantGroupId], ['*'], false)->pluck(['id'])->toArray();
                 $pickupCount = $this->getTrackingOrderservice()->count(['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date'],
                     'status' => ['in', $status], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1]);
