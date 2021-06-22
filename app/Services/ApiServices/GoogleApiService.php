@@ -156,8 +156,8 @@ class GoogleApiService
             'location' => $batchs,
         ];
         app('log')->info('更新线路传送给 api 端的参数为:', $params);
-        Log::info(now('GMT+0100')->timestamp);
-        Log::info(now()->timestamp);
+        Log::info(now()->setTimezone('Europe/Amsterdam'));
+        Log::info(now()->setTimezone('Asia/Shanghai'));
 
         $this->client->postJson($this->url . $api . $this->makeSign(now('GMT+0100')->timestamp), $params);
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
