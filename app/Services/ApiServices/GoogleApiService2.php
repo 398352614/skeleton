@@ -191,6 +191,7 @@ class GoogleApiService2
                 $elements[self::MAX_POINTS * $k - 1][self::MAX_POINTS * $k] = $res['result']['rows'][$k - 1]['elements'][$k];
             }
         }
+        $elements=array_values($elements);
         return $elements;
     }
 
