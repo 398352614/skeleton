@@ -52,7 +52,7 @@ class XLDirectionService
 
     public function getTour(array $locSeq): array
     {
-        $resp = $this->curl->post(self::BASE_URL . 'tour/', json_encode(['locations' => $locSeq]), 0);
+        $resp = $this->curl->post(self::BASE_URL . 'tour/', ['locations' => $locSeq], 0);
         if (!$resp || !$resp['feasible']) {
             app('log')->info('线路规划失败或者不可靠');
             return [];
