@@ -113,7 +113,7 @@ class LineRangeService extends BaseService
         //当前是否已存在邮编
         foreach ($rangeList as $range) {
             if ($this->checkIfPostcodeIntervalOverlap($range['post_code_start'], $range['post_code_end'], $country, $workdayList, $id)) {
-                throw new BusinessLogicException("邮编:post_code_start到:post_code_end已存在", 1000, ['post_code_start' => $range['post_code_start'], 'post_code_end' => $range['post_code_end']]);
+                throw new BusinessLogicException("邮编[:post_code_start]到[:post_code_end]已存在", 1000, ['post_code_start' => $range['post_code_start'], 'post_code_end' => $range['post_code_end']]);
             }
         }
     }

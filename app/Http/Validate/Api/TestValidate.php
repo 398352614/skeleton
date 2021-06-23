@@ -18,7 +18,7 @@ class TestValidate extends BaseValidate
     ];
 
     public $rules = [
-        'name' => 'required|uniqueIgnore:test,id',
+        'name' => 'nullable|uniqueIgnore:test,id',
     ];
     public $scene = [
         'store' => ['name'],

@@ -1124,4 +1124,34 @@
 "运单分配司机，司机姓名[%s]，联系方式[%s]":"Bestuurder toegewezen per vrachtbrief, naam van de bestuurder en contactgegevens",
 "客户不在家":"De klant is niet thuis",
 "另约时间":"Een andere keer."
+
+,"该邮箱未注册，请联系管理员":"De mailbox is niet geregistreerd, neem contact op met de beheerder",
+"经过中间件,当前的 :tour_no 为:":"Na middleware, de huidige: TourNee was als volgt:",
+"电话":"Telefoon",
+"国家":"land",
+"省份":"provincie",
+"门牌号":"Nummer van het huis",
+"城市":"stad",
+"区县":"district en provincie",
+"街道":"straat",
+"地址":"adres",
+"姓名 是必须的":"Naam is vereist",
+"邮编 是必须的":"Zip code is een must",
+"电话 是必须的":"De telefoon is een must",
+"门牌号 是必须的":"Huisnummer is een must",
+"发件人 是必须的":"De afzender is vereist",
+"收件人 是必须的":"De ontvanger is vereist",
+"取件日期是必须的":"Datum ophalen is vereist",
+"派件日期是必须的":"Leverdatum is vereist",
+"城市是必填的":"Stad is vereist",
+"街道是必填的":"Straat is vereist",
+"模板内无有效数据":"Er zijn geen geldige gegevens in het sjabloon",
+"商户组不存在":"Merchant groep bestaat niet",
+"格式不正确":"Verkeerd formaat",
+"数据不能为空":"Gegevens mogen niet leeg zijn",
+"提错提示":"Tips voor fouten",
+"邮编[:post_code_start]到[:post_code_end]已存在":"Zip-code: Post-onderdelencodenaam uStart) naar [: post]codenaam u[Einde] bestaat al",
+"单号规则总长度不得超过[:length]位":"De totale lengte van de regel van het volgnummer mag niet groter zijn dan [: lengte] cijfers"
+,"到达[:params]客户家":"Aankomst bij [: params] huis van de klant"
+,"从[:params]客户家离开":"Vertrekken van [: params] huis van de klant"
 }
