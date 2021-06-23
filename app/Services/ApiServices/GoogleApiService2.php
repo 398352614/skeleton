@@ -129,19 +129,22 @@ class GoogleApiService2
                 }
                 /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
                 $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
-                Log::info('1',$backWarehouseElement[0][1]);
+                Log::info('1', $backWarehouseElement[0][1]);
                 $backElement = $backWarehouseElement[0][1];
-                if (!$backElement['status'] == "ZERO_RESULTS") {
+                if ($backElement['status'] !== "ZERO_RESULTS") {
                     $tourData = [
                         'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']['value']),
                         'warehouse_expect_distance' => $distance + $backElement['distance']['value'],
                         'warehouse_expect_time' => $time + $backElement['duration']['value']
                     ];
+                    Log::info(((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0)));
+                    Log::info(in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]));
                     // 只有未更新过的线路需要更新期望时间和距离
                     if (
                         ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
                         || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
                     ) {
+                        Log::info($backElement['distance']['value']);
                         $tourData['expect_distance'] = $distance + $backElement['distance']['value'];
                         $tourData['expect_time'] = $time + $backElement['duration']['value'];
                     }
