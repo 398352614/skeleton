@@ -65,7 +65,7 @@ class CurlClient
             if ($auth) {
                 $response = $this->http->post($url, ['auth' => $auth, 'form_params' => $params]);
             } else {
-                $response = $this->http->post($url, ['data' => $params]);
+                $response = $this->http->post($url, ['form_params' => $params]);
             }
         } catch (\Exception $e) {
             if ($next >= 2) {
