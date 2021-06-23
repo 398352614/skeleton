@@ -105,7 +105,6 @@ class GoogleApiService2
     {
         Log::info(1);
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
-        Log::info('batchs', $orderBatchs);
         if (!collect($orderBatchs)->isEmpty()) {
             $orderBatchs = $orderBatchs->keyBy('batch_no')->map(function ($batch) {
                 return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon]);
