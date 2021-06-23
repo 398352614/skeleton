@@ -103,8 +103,10 @@ class GoogleApiService2
      */
     public function updateTour(Tour $tour, $nextCode, $driverLocation = [])
     {
+        Log::info(1);
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
-        if(!collect($orderBatchs)->isEmpty()){
+        Log::info('batchs', $orderBatchs);
+        if (!collect($orderBatchs)->isEmpty()) {
             $orderBatchs = $orderBatchs->keyBy('batch_no')->map(function ($batch) {
                 return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon]);
             })->toArray();
@@ -129,7 +131,7 @@ class GoogleApiService2
                 /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
                 $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
                 $backElement = $backWarehouseElement[0][1];
-                if(!$backElement['status'] == "ZERO_RESULTS"){
+                if (!$backElement['status'] == "ZERO_RESULTS") {
                     $tourData = [
                         'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']['value']),
                         'warehouse_expect_distance' => $distance + $backElement['distance']['value'],
@@ -150,6 +152,7 @@ class GoogleApiService2
                 throw new BusinessLogicException('线路更新失败');
             }
         }
+        Log::info(2);
 
     }
 
