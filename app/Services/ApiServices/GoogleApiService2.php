@@ -129,7 +129,7 @@ class GoogleApiService2
                 }
                 /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
                 $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
-                Log::info('1',$backWarehouseElement);
+                Log::info('1',$backWarehouseElement[0][1]);
                 $backElement = $backWarehouseElement[0][1];
                 if (!$backElement['status'] == "ZERO_RESULTS") {
                     $tourData = [
@@ -191,7 +191,6 @@ class GoogleApiService2
                 $elements[self::MAX_POINTS * $k - 1][self::MAX_POINTS * $k] = $res['result']['rows'][$k - 1]['elements'][$k];
             }
         }
-        $elements=array_values($elements);
         return $elements;
     }
 
