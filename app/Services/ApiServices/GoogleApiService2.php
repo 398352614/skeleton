@@ -129,6 +129,7 @@ class GoogleApiService2
                 }
                 /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
                 $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
+                Log::info('1',$backWarehouseElement);
                 $backElement = $backWarehouseElement[0][1];
                 if (!$backElement['status'] == "ZERO_RESULTS") {
                     $tourData = [
