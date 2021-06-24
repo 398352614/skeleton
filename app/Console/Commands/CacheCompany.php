@@ -54,7 +54,7 @@ class CacheCompany extends Command
             if (!empty($companyId)) {
                 $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name']);
                 $company = Company::query()->where('id', $companyId)->first();
-                $companyConfig = !empty($company->companyConfig) ? Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'stock_exception_verify', 'line_rule', 'show_type', 'weight_unit', 'currency_unit', 'volume_unit', 'weight_unit_name', 'currency_unit_name', 'volume_unit_name', 'map']) : [];
+                $companyConfig = !empty($company->companyConfig) ? Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'stock_exception_verify', 'line_rule', 'show_type', 'weight_unit','weight_unit_symbol', 'currency_unit', 'currency_unit_symbol', 'volume_unit', 'volume_unit_symbol','weight_unit_name', 'currency_unit_name', 'volume_unit_name', 'map']) : [];
                 if(!empty($companyConfig['weight_unit'])){
                     $companyConfig['weight_unit_symbol']=ConstTranslateTrait::weightUnitTypeSymbol($companyConfig['weight_unit']);
                 }
