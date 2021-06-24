@@ -378,7 +378,7 @@ class OrderService extends BaseService
             'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
             'place_fullname' => $data['second_place_fullname'],
             'place_phone' => $data['second_place_phone'],
-            'place_country' => $data['second_place_country'],
+            'place_country' => $data['second_place_country'] ?? '',
             'place_province' => $data['second_place_province'] ?? '',
             'place_post_code' => $data['second_place_post_code'],
             'place_house_number' => $data['second_place_house_number'],
