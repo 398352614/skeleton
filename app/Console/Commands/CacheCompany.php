@@ -54,8 +54,8 @@ class CacheCompany extends Command
             //1.若只缓存一个企业
             if (!empty($companyId)) {
                 $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name'])->toArray();
-                $company = Company::query()->where('id', $companyId)->first();
-                $companyConfig = CompanyConfig::query()->where('company_id', $companyId)->first();
+                $company = Company::query()->where('id', $companyId)->first()->toArray();
+                $companyConfig = CompanyConfig::query()->where('company_id', $companyId)->first()->toArray();
                 if(!empty($companyConfig['weight_unit'])){
                     $companyConfig['weight_unit_symbol']=ConstTranslateTrait::weightUnitTypeSymbol($companyConfig['weight_unit']);
                 }
