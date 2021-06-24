@@ -715,7 +715,8 @@ class OrderService extends BaseService
         }
         $params['merchant_id'] = auth()->user()->id;
         unset($params['created_at'], $params['updated_at'], $params['status'], $params['id']);
-        $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
+        !empty($params['place_post_code']) && $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
+        !empty($params['second_place_post_code']) && $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
         $fields = ['place_fullname', 'place_phone',
             'place_country', 'place_province', 'place_city', 'place_district',
             'place_post_code', 'place_street', 'place_house_number',
