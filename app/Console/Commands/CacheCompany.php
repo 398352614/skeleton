@@ -53,7 +53,7 @@ class CacheCompany extends Command
             $tag = config('tms.cache_tags.company');
             //1.若只缓存一个企业
             if (!empty($companyId)) {
-                $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name']);
+                $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name'])->toArray();
                 $company = Company::query()->where('id', $companyId)->first();
                 $companyConfig = CompanyConfig::query()->where('company_id', $companyId)->first();
                 if(!empty($companyConfig['weight_unit'])){
