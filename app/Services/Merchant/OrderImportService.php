@@ -229,7 +229,7 @@ class OrderImportService extends BaseService
             $error['log'] = __('订单中必须存在一个包裹或一种货物');
         }
         //填充地址
-        try {
+//        try {
             $data = $this->fillAddress($data);
             //填充地址
             if ((CompanyTrait::getAddressTemplateId() == 1)) {
@@ -248,9 +248,9 @@ class OrderImportService extends BaseService
                 $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
                 $data = $this->getAddressService()->warehouseToSecondPlace($newData, $data);
             }
-        } catch (BusinessLogicException $e) {
-            $error['log'] = $e->getMessage();
-        }
+//        } catch (BusinessLogicException $e) {
+//            $error['log'] = $e->getMessage();
+//        }
         //若存在货号,则判断是否存在已预约的订单号
         if (!empty($data['out_order_no'])) {
             $where = ['out_order_no' => $data['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
