@@ -774,7 +774,7 @@ class OrderService extends BaseService
             $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = parent::getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
-            if (!empty($order)) {
+            if (!empty($dbOrder)) {
                 throw new BusinessLogicException('货号已存在', 1005, [], [
                     'order_no' => $dbOrder['order_no'],
                     'out_order_no' => $dbOrder['out_order_no'] ?? '',
