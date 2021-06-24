@@ -192,11 +192,21 @@ class OrderImportService extends BaseService
         }
         //填充地址(若邮编是纯数字，则认为是比利时邮编)
         $country = CompanyTrait::getCountry();
-        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['place_post_code'])) {
-            $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+        if(in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])){
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['place_post_code'])) {
+                $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+            }
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($data['place_post_code']) == 5) {
+                $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+            }
         }
-        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($data['place_post_code']) == 5) {
-            $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+        if(in_array($data['type'], [BaseConstService::ORDER_TYPE_2, BaseConstService::ORDER_TYPE_3])){
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['second_place_post_code'])) {
+                $data['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+            }
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($data['second_place_post_code']) == 5) {
+                $data['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+            }
         }
         if (in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3]) && (empty($data['place_country']) || $data['place_country'] !== 'NL')) {
             if (empty($data['place_street'])) {
