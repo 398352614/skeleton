@@ -485,9 +485,20 @@ class OrderImportService extends BaseService
      * 格式化新增数据
      * @param $data
      * @return mixed
+     * @throws BusinessLogicException
      */
     public function form($data)
     {
+        //取件，派件运单填充仓库
+        if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+            $newData = $this->getAddressService()->secondPlaceToPlace($data);
+            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+            $data = $this->getAddressService()->warehouseToPlace($newData, $data);
+        } elseif ($data['type'] == BaseConstService::ORDER_TYPE_1) {
+            $newData = $data;
+            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+            $data = $this->getAddressService()->warehouseToSecondPlace($newData, $data);
+        }
         $data['package_list'] = [];
         $data['material_list'] = [];
         for ($j = 0; $j < 5; $j++) {
