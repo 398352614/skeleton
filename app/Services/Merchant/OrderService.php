@@ -843,13 +843,13 @@ class OrderService extends BaseService
         }
         //若材料存在,则新增材料列表
         if (!empty($params['material_list'])) {
+            $materialList = [];
             foreach ($params['material_list'] as $k => $v) {
                 unset($v['created_at'], $v['updated_at'], $v['merchant_id'], $v['expect_quantity'], $v['tracking_order_no']);
                 $materialList[$k]['order_no'] = $params['order_no'];
                 $materialList[$k]['merchant_id'] = auth()->user()->id;
                 $materialList[$k]['execution_date'] = $params['execution_date'];
             }
-
             $rowCount = $this->getMaterialService()->insertAll($materialList);
             if ($rowCount === false) {
                 throw new BusinessLogicException('订单材料新增失败！');
