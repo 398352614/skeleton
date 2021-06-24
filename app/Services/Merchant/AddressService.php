@@ -385,16 +385,16 @@ class AddressService extends BaseService
 
     public function unsetPlace($data)
     {
-        foreach ($this->place as $k=>$v){
-            unset($data[$k]);
+        foreach ($this->place as $k => $v) {
+            unset($data[$v]);
         }
         return $data;
     }
 
     public function unsetSecondPlace(array $data)
     {
-        foreach ($this->secondPlace as $k=>$v){
-            unset($data[$k]);
+        foreach ($this->secondPlace as $k => $v) {
+            unset($data[$v]);
         }
         return $data;
     }
