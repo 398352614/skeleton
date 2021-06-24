@@ -227,20 +227,21 @@ class TourTaskService extends BaseService
      */
     public function getTrackingOrderList()
     {
-        $tour = parent::getInfo(['tour_no' => $this->formData['tour_no']], ['tour_no'], false);
+        $tour = $this->query->where('tour_no', $params['tour_no'])->where('driver_id', '<>', 0)->orWhereNull('driver_id')->first();
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }
+        $tour=$tour->toArray();
         //获取所有运单列表
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour->tour_no], ['order_no', 'tracking_order_no'], false);
-        if(empty($trackingOrderList)){
-            throw new  BusinessLogicException('运单不存在');
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['order_no', 'tracking_order_no'], false);
+        if (empty($trackingOrderList)){
+            throw new BusinessLogicException('运单不存在');
         }
+        $trackingOrderList=$trackingOrderList->toArray();
         //获取所有包裹列表
-        $packageList = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => ['in', $trackingOrderList->pluck('tracking_order_no')->toArray()]], ['order_no', 'express_first_no', 'feature_logo'],false);
+        $packageList = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => ['in', array_column($trackingOrderList, 'tracking_order_no')]], ['order_no', 'express_first_no', 'feature_logo']);
         $packageList = array_create_group_index($packageList, 'order_no');
         //将包裹列表和材料列表放在对应订单下
-        $trackingOrderList=$trackingOrderList->toArray();
         $trackingOrderList = array_map(function ($trackingOrder) use ($packageList) {
             $trackingOrder['package_list'] = $packageList[$trackingOrder['order_no']] ?? [];
             return $trackingOrder;
