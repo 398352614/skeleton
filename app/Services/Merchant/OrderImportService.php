@@ -202,25 +202,25 @@ class OrderImportService extends BaseService
             $error['log'] = __('订单中必须存在一个包裹或一种货物');
         }
         //填充地址
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
-            $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
-        }
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['second_place_address'])) {
-            $data['second_place_address'] = CommonService::addressFieldsSortCombine($data, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
-        }
-        //填充地址
         try {
-        $data = $this->fillAddress($data);
-        //取件，派件运单填充仓库
-        if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
-            $newData = $this->getAddressService()->secondPlaceToPlace($data);
-            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-            $data = $this->getAddressService()->warehouseToPlace($newData, $data);
-        } elseif($data['type'] == BaseConstService::ORDER_TYPE_1) {
-            $newData = $data;
-            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-            $data = $this->getAddressService()->warehouseToSecondPlace($newData, $data);
-        }
+            $data = $this->fillAddress($data);
+            //填充地址
+            if ((CompanyTrait::getAddressTemplateId() == 1)) {
+                $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
+            }
+            if ((CompanyTrait::getAddressTemplateId() == 1)) {
+                $data['second_place_address'] = CommonService::addressFieldsSortCombine($data, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
+            }
+            //取件，派件运单填充仓库
+            if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+                $newData = $this->getAddressService()->secondPlaceToPlace($data);
+                $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+                $data = $this->getAddressService()->warehouseToPlace($newData, $data);
+            } elseif ($data['type'] == BaseConstService::ORDER_TYPE_1) {
+                $newData = $data;
+                $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+                $data = $this->getAddressService()->warehouseToSecondPlace($newData, $data);
+            }
         } catch (BusinessLogicException $e) {
             $error['log'] = $e->getMessage();
         }
@@ -250,18 +250,18 @@ class OrderImportService extends BaseService
             }
         }
         try {
-        //检查网点
-        if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
-            $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, BaseConstService::YES);
-        }
-        //运价计算
+            //检查网点
+            if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
+                $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, BaseConstService::YES);
+            }
+            //运价计算
 
-        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
-            $data['distance'] = 1000;
-        } else {
-            $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($data);
-        }
-        $data = $this->getTransportPriceService()->priceCount($data);
+            if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
+                $data['distance'] = 1000;
+            } else {
+                $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($data);
+            }
+            $data = $this->getTransportPriceService()->priceCount($data);
         } catch (BusinessLogicException $e) {
             $error['log'] = __($e->getMessage(), $e->replace);
         }
@@ -506,7 +506,7 @@ class OrderImportService extends BaseService
             'package_list',
             'material_list',
         ]);
-        $data['source']= BaseConstService::ORDER_SOURCE_3;
+        $data['source'] = BaseConstService::ORDER_SOURCE_3;
         return $data;
     }
 }

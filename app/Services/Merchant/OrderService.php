@@ -311,7 +311,6 @@ class OrderService extends BaseService
      */
     public function store($params, $orderSource = BaseConstService::ORDER_SOURCE_1)
     {
-        $params = $this->fillAddress($params);
         //数据验证
         $this->check($params);
         //设置订单来源
@@ -781,6 +780,7 @@ class OrderService extends BaseService
         }
         //运价计算
         $params = $this->fillAnotherAddressByApi($params);
+        $params = $this->fillAddress($params);
         if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
             $params['distance'] = 1000;
         } else {
@@ -799,28 +799,15 @@ class OrderService extends BaseService
     public function fillAnotherAddressByApi($params)
     {
         if (!empty($params['source']) && $params['source'] == BaseConstService::ORDER_SOURCE_3) {
-            $params = $this->fillAnotherAddress($params);
-        } else {
             if ($params['type'] == BaseConstService::ORDER_TYPE_2) {
                 $params = $this->getAddressService()->changePlaceAndSecondPlace($params);
+                $params['execution_date']=$params['second_execution_date'];
+                unset($params['second_execution_date']);
             }
-            $params = $this->fillAnotherAddress($params);
-        }
-        return $params;
-    }
-
-    /**
-     * @param $params
-     * @return mixed
-     * @throws BusinessLogicException
-     */
-    public function fillAnotherAddress($params)
-    {
-        if ($params['type'] == BaseConstService::ORDER_TYPE_2) {
-            $newData = $this->getAddressService()->secondPlaceToPlace($params);
+            $newData = $params;
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-            $params = $this->getAddressService()->warehouseToPlace($newData, $params);
-        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_1) {
+            $params = $this->getAddressService()->warehouseToSecondPlace($newData, $params);
+        } else {
             $newData = $params;
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
             $params = $this->getAddressService()->warehouseToSecondPlace($newData, $params);
