@@ -798,7 +798,7 @@ class OrderService extends BaseService
      */
     public function fillAnotherAddressByApi($params)
     {
-        if ($params['source'] == BaseConstService::ORDER_SOURCE_3) {
+        if (!empty($params['source']) && $params['source'] == BaseConstService::ORDER_SOURCE_3) {
             $this->fillAnotherAddress($params);
         } else {
             if($params['type'] == BaseConstService::ORDER_TYPE_2){
