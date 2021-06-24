@@ -724,7 +724,7 @@ class OrderService extends BaseService
             $params['create_date'] = today()->format('Y-m-d');
         }
         $params['merchant_id'] = auth()->user()->id;
-        unset($params['created_at'], $params['updated_at'],$params['status'],$params['id']);
+        unset($params['created_at'], $params['updated_at'], $params['status'], $params['id']);
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         $fields = ['place_fullname', 'place_phone',
             'place_country', 'place_province', 'place_city', 'place_district',
@@ -826,8 +826,7 @@ class OrderService extends BaseService
             ];
             $packageList = [];
             foreach ($params['package_list'] as $k => $v) {
-                $packageList[$k] = Arr::only($v, ['name', 'express_first_no', 'express_second_no', 'out_order_no', 'feature_logo',
-                    'weight', 'actual_weight', 'settlement_amount', 'count_settlement_amount', 'expect_quantity', 'remark', 'is_auth', 'expiration_date']);
+                unset($v['created_at'], $v['updated_at'], $v['merchant_id'], $v['order_no'], $v['status'], $v['stage'], $v['type'],$v['id']);
                 $packageList[$k]['order_no'] = $params['order_no'];
                 $packageList[$k]['merchant_id'] = auth()->user()->id;
                 $packageList[$k]['execution_date'] = $params['execution_date'];
@@ -844,13 +843,13 @@ class OrderService extends BaseService
         }
         //若材料存在,则新增材料列表
         if (!empty($params['material_list'])) {
-            $materialList = collect($params['material_list'])->map(function ($item, $key) use ($params) {
-                $collectItem = collect($item)->only(['name', 'code', 'out_order_no', 'expect_quantity', 'remark']);
-                return $collectItem
-                    ->put('order_no', $params['order_no'])
-                    ->put('merchant_id', $params['merchant_id'])
-                    ->put('execution_date', $params['execution_date'] ?? null);
-            })->toArray();
+            foreach ($params['material_list'] as $k => $v) {
+                unset($v['created_at'], $v['updated_at'], $v['merchant_id'], $v['expect_quantity'], $v['tracking_order_no']);
+                $materialList[$k]['order_no'] = $params['order_no'];
+                $materialList[$k]['merchant_id'] = auth()->user()->id;
+                $materialList[$k]['execution_date'] = $params['execution_date'];
+            }
+
             $rowCount = $this->getMaterialService()->insertAll($materialList);
             if ($rowCount === false) {
                 throw new BusinessLogicException('订单材料新增失败！');
