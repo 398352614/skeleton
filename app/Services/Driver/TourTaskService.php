@@ -239,7 +239,7 @@ class TourTaskService extends BaseService
      */
     public function getTrackingOrderList($params)
     {
-        $tour = parent::getInfo(['tour_no' => $params['tour_no'], 'driver_id' => ['>', -1]], ['tour_no'], false);
+        $tour = $this->query->where('tour_no', $params['tour_no'])->where('driver_id', '<>', 0)->orWhereNull('driver_id')->get();
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }
