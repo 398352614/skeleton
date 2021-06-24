@@ -363,7 +363,7 @@ class OrderImportService extends BaseService
             $data['place_lon'] = empty($data['place_lon']) ? $info['lon'] : $data['place_lon'];
             if($data['place_country'] == 'NL'){
                 $data['place_city'] = $info['city'];
-                $data['place_street'] = $info['place_street'];
+                $data['place_street'] = $info['street'];
             }
         }
         return $data;
