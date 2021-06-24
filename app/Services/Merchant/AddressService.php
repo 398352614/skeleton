@@ -382,4 +382,20 @@ class AddressService extends BaseService
         }
         return $data;
     }
+
+    public function unsetPlace($data)
+    {
+        foreach ($this->place as $k=>$v){
+            unset($data[$k]);
+        }
+        return $data;
+    }
+
+    public function unsetSecondPlace(array $data)
+    {
+        foreach ($this->secondPlace as $k=>$v){
+            unset($data[$k]);
+        }
+        return $data;
+    }
 }

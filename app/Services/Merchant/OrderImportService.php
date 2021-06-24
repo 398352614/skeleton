@@ -272,7 +272,6 @@ class OrderImportService extends BaseService
                 $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, BaseConstService::YES);
             }
             //运价计算
-
             if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
                 $data['distance'] = 1000;
             } else {
@@ -299,6 +298,12 @@ class OrderImportService extends BaseService
             "warehouse_address",
             "warehouse_lon",
             "warehouse_lat"]);
+        if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
+            $data = $this->getAddressService()->unsetSecondPlace($data);
+        }
+        if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+            $data = $this->getAddressService()->unsetPlace($data);
+        }
         return ['status' => $status, 'error' => $error, 'data' => $data];
     }
 
