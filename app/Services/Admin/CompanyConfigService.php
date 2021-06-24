@@ -62,16 +62,17 @@ class CompanyConfigService extends BaseService
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
      * @return int
      */
     public function setUnitConfig(array $data)
     {
-        return $this->update(['company_id' => auth()->user()->company_id], [
-            'weight_unit'   => $data['weight_unit'],
+        $this->update(['company_id' => auth()->user()->company_id], [
+            'weight_unit' => $data['weight_unit'],
             'currency_unit' => $data['currency_unit'],
-            'volume_unit'   => $data['volume_unit'],
+            'volume_unit' => $data['volume_unit'],
         ]);
+        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
     }
 
     /**
@@ -89,11 +90,11 @@ class CompanyConfigService extends BaseService
      */
     public function setRuleConfig(array $data)
     {
-        $row= $this->update(['company_id' => auth()->user()->company_id], [
-            'line_rule'         => $data['line_rule'],
-            'scheduling_rule'   => $data['scheduling_rule']
+        $row = $this->update(['company_id' => auth()->user()->company_id], [
+            'line_rule' => $data['line_rule'],
+            'scheduling_rule' => $data['scheduling_rule']
         ]);
-        if($row ==false){
+        if ($row == false) {
             throw new BusinessLogicException('更新失败');
         }
         Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
