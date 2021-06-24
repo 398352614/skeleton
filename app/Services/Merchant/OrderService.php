@@ -806,19 +806,21 @@ class OrderService extends BaseService
      */
     public function fillAnotherAddressByApi($params)
     {
-        if (!empty($params['source']) && $params['source'] == BaseConstService::ORDER_SOURCE_3) {
-            if ($params['type'] == BaseConstService::ORDER_TYPE_2) {
-                $params = $this->getAddressService()->changePlaceAndSecondPlace($params);
-                $params['execution_date'] = $params['second_execution_date'];
-                unset($params['second_execution_date']);
+        if($params['type'] !== BaseConstService::ORDER_TYPE_3){
+            if (!empty($params['source']) && $params['source'] == BaseConstService::ORDER_SOURCE_3) {
+                if ($params['type'] == BaseConstService::ORDER_TYPE_2) {
+                    $params = $this->getAddressService()->changePlaceAndSecondPlace($params);
+                    $params['execution_date'] = $params['second_execution_date'];
+                    unset($params['second_execution_date']);
+                }
+                $newData = $params;
+                $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+                $params = $this->getAddressService()->warehouseToSecondPlace($newData, $params);
+            } else {
+                $newData = $params;
+                $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+                $params = $this->getAddressService()->warehouseToSecondPlace($newData, $params);
             }
-            $newData = $params;
-            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-            $params = $this->getAddressService()->warehouseToSecondPlace($newData, $params);
-        } else {
-            $newData = $params;
-            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-            $params = $this->getAddressService()->warehouseToSecondPlace($newData, $params);
         }
         return $params;
     }
