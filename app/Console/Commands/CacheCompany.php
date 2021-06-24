@@ -45,7 +45,7 @@ class CacheCompany extends Command
      */
     public function handle()
     {
-        try {
+//        try {
             //获取公司ID
             $companyId = $this->option('company_id');
             //获取配置
@@ -101,9 +101,9 @@ class CacheCompany extends Command
             }
             $this->info('cache company list successful');
             return;
-        } catch (\Exception $ex) {
-            $this->error($ex->getMessage());
-            return;
-        }
+//        } catch (\Exception $ex) {
+//            $this->error($ex->getMessage());
+//            return;
+//        }
     }
 }
