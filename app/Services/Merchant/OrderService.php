@@ -824,9 +824,9 @@ class OrderService extends BaseService
                 BaseConstService::ORDER_TYPE_3 => BaseConstService::PACKAGE_STAGE_1,
                 BaseConstService::ORDER_TYPE_4 => BaseConstService::PACKAGE_STAGE_1,
             ];
-            $packageList = [];
-            foreach ($params['package_list'] as $k => $v) {
-                unset($v['created_at'], $v['updated_at'], $v['merchant_id'], $v['order_no'], $v['status'], $v['stage'], $v['type'],$v['id']);
+            $packageList = $params['package_list'];
+            foreach ($packageList as $k => $v) {
+                $packageList[$k]=Arr::except($v,['created_at','updated_at','merchant_id','order_no','status','stage','type','id']);
                 $packageList[$k]['order_no'] = $params['order_no'];
                 $packageList[$k]['merchant_id'] = auth()->user()->id;
                 $packageList[$k]['execution_date'] = $params['execution_date'];
@@ -843,9 +843,9 @@ class OrderService extends BaseService
         }
         //若材料存在,则新增材料列表
         if (!empty($params['material_list'])) {
-            $materialList = [];
-            foreach ($params['material_list'] as $k => $v) {
-                unset($v['created_at'], $v['updated_at'], $v['merchant_id'], $v['expect_quantity'], $v['tracking_order_no']);
+            $materialList = $params['material_list'];
+            foreach ($materialList as $k => $v) {
+                $materialList[$k]=Arr::except($v,['created_at','updated_at','merchant_id','expect_quantity','actual_quantity','tracking_order_no','id']);
                 $materialList[$k]['order_no'] = $params['order_no'];
                 $materialList[$k]['merchant_id'] = auth()->user()->id;
                 $materialList[$k]['execution_date'] = $params['execution_date'];
