@@ -192,7 +192,7 @@ class OrderImportService extends BaseService
         }
         //填充地址(若邮编是纯数字，则认为是比利时邮编)
         $country = CompanyTrait::getCountry();
-        if(in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])){
+        if (in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])) {
             if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['place_post_code'])) {
                 $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
             }
@@ -200,7 +200,7 @@ class OrderImportService extends BaseService
                 $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
             }
         }
-        if(in_array($data['type'], [BaseConstService::ORDER_TYPE_2, BaseConstService::ORDER_TYPE_3])){
+        if (in_array($data['type'], [BaseConstService::ORDER_TYPE_2, BaseConstService::ORDER_TYPE_3])) {
             if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['second_place_post_code'])) {
                 $data['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
             }
@@ -325,35 +325,13 @@ class OrderImportService extends BaseService
      */
     public function fillAddress($data)
     {
-        $place = ["place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat"];
-        $secondPlace = ["second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat"];
         if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
-            foreach ($place as $k => $v) {
-                if (empty($data[$v])) {
-                    $data = $this->fillPlaceAddress($data);
-                    break;
-                }
-            }
+            $data = $this->fillPlaceAddress($data);
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
-            foreach ($secondPlace as $k => $v) {
-                if (empty($data[$v])) {
-                    $data = $this->fillSecondPlaceAddress($data);
-                    break;
-                }
-            }
+            $data = $this->fillSecondPlaceAddress($data);
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_3) {
-            foreach ($place as $k => $v) {
-                if (empty($data[$v])) {
-                    $data = $this->fillPlaceAddress($data);
-                    break;
-                }
-            }
-            foreach ($secondPlace as $k => $v) {
-                if (empty($data[$v])) {
-                    $data = $this->fillSecondPlaceAddress($data);
-                    break;
-                }
-            }
+            $data = $this->fillPlaceAddress($data);
+            $data = $this->fillSecondPlaceAddress($data);
         }
         return $data;
     }
@@ -375,16 +353,18 @@ class OrderImportService extends BaseService
                 $data['place_house_number'] ?? '',
                 $data['place_post_code'] ?? ''
             );
-            $data['place_province'] = $info['province'];
-            $data['place_city'] = $info['city'];
-            $data['place_district'] = $info['district'];
-            $data['place_street'] = $info['street'];
-            $data['place_house_number'] = $info['house_number'];
-            $data['place_post_code'] = $info['post_code'];
-            $data['place_lat'] = $info['lat'];
-            $data['place_lon'] = $info['lon'];
-        } else {
-            $data = array_merge($data, $address);
+            $data['place_city'] = empty($data['place_city']) ? $info['city'] : $data['place_city'];
+            $data['place_street'] = empty($data['place_street']) ? $info['street'] : $data['place_street'];
+            $data['place_district'] = empty($data['place_district']) ? $info['district'] : $data['place_district'];
+            $data['place_province'] = empty($data['place_province']) ? $info['province'] : $data['place_province'];
+            $data['place_house_number'] = empty($data['place_house_number']) ? $info['house_number'] : $data['place_house_number'];
+            $data['place_post_code'] = empty($data['place_post_code']) ? $info['post_code'] : $data['place_post_code'];
+            $data['place_lat'] = empty($data['place_lat']) ? $info['lat'] : $data['place_lat'];
+            $data['place_lon'] = empty($data['place_lon']) ? $info['lon'] : $data['place_lon'];
+            if($data['place_country'] == 'NL'){
+                $data['place_city'] = $info['city'];
+                $data['place_street'] = $info['place_street'];
+            }
         }
         return $data;
     }
