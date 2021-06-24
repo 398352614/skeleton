@@ -257,23 +257,23 @@ class OrderImportService extends BaseService
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = $this->getOrderService()->getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
             if (!empty($dbOrder)) {
-                $list['error']['out_order_no'] = __('货号已存在');
+                $error['out_order_no'] = __('货号已存在');
             }
         }
 
         for ($j = 0; $j < 5; $j++) {
             //包裹重复性判断
-            $package[$j] = Package::query()->where('express_first_no', $data['package_no_' . ($j + 1)])
+            $package[$j] = Package::query()->where('express_first_no', $data['package_no_' . ($j + 1)])->whereNotNull('merchant_id')
                 ->whereNotIn('status', [BaseConstService::PACKAGE_STATUS_4, BaseConstService::PACKAGE_STATUS_5])->first();
             if (!empty($package[$j])) {
-                $list['error']['package_no_' . ($j + 1)] = __('包裹') . ($j + 1) . __('编号有重复');
+                $error['package_no_' . ($j + 1)] = __('包裹') . ($j + 1) . __('编号有重复');
             }
             if (!empty($data['package_no_' . $j]) && empty($data['package_weight_' . $j])) {
                 $data['package_weight_' . $j] = 1;
             }
             //有效期判断
             if (!empty($data['package_no_' . $j]) && !empty($data['package_expiration_date_' . ($j + 1)]) && $data['package_expiration_date_' . ($j + 1)] < $data['execution_date']) {
-                $list['error'] = __('有效日期不得小于取派日期');
+                $error['log'] = __('有效日期不得小于取派日期');
             }
         }
         try {
