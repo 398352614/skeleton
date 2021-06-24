@@ -28,7 +28,7 @@ class TourTaskService extends BaseService
     public $filterRules = [
         'execution_date' => ['=', 'execution_date'],
         'status' => ['=', 'status'],
-        'tour_no'=>['like','tour_no']
+        'tour_no' => ['like', 'tour_no']
     ];
 
     public $orderBy = [
@@ -49,14 +49,14 @@ class TourTaskService extends BaseService
      */
     public function getPageList()
     {
-        if(!empty($this->formData['sort_by']) && !empty($this->formData['sort'])){
-            if($this->formData['sort_by'] == 'execution_date' && $this->formData['sort']== BaseConstService::YES){
+        if (!empty($this->formData['sort_by']) && !empty($this->formData['sort'])) {
+            if ($this->formData['sort_by'] == 'execution_date' && $this->formData['sort'] == BaseConstService::YES) {
                 $this->query->orderByDesc('execution_date');
-            }elseif($this->formData['sort_by'] == 'execution_date'  && $this->formData['sort']== BaseConstService::NO){
+            } elseif ($this->formData['sort_by'] == 'execution_date' && $this->formData['sort'] == BaseConstService::NO) {
                 $this->query->orderBy('execution_date');
-            }elseif($this->formData['sort_by'] == 'end_time'  && $this->formData['sort']== BaseConstService::YES){
+            } elseif ($this->formData['sort_by'] == 'end_time' && $this->formData['sort'] == BaseConstService::YES) {
                 $this->query->orderByDesc('end_time');
-            }elseif($this->formData['sort_by'] == 'end_time'  && $this->formData['sort']== BaseConstService::NO){
+            } elseif ($this->formData['sort_by'] == 'end_time' && $this->formData['sort'] == BaseConstService::NO) {
                 $this->query->orderBy('end_time');
             }
         }
@@ -212,7 +212,7 @@ class TourTaskService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $batch = $batch->toArray();
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark','place_post_code','place_house_number'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark', 'place_post_code', 'place_house_number'], false);
         return $trackingOrderList;
     }
 
@@ -239,7 +239,7 @@ class TourTaskService extends BaseService
      */
     public function getTrackingOrderList($params)
     {
-        $tour = parent::getInfo(['tour_no' => $params['tour_no']], ['tour_no'], false);
+        $tour = parent::getInfo(['tour_no' => $params['tour_no'], 'driver_id' => ['<>', null]], ['tour_no'], false);
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }
