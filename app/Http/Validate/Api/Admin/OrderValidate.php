@@ -24,7 +24,7 @@ class OrderValidate extends BaseValidate
         'mask_code' => "nullable|string|max:50",
         'execution_date' => 'nullable|date|after_or_equal:today',
         'second_execution_date' => 'nullable|date|after_or_equal:today',
-        'list_mode' => 'sometimes|required|in:1,2',
+        'list_mode' => 'nullable',
         'type' => 'required|integer|in:1,2,3,4',
         'out_user_id' => 'nullable|integer',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
