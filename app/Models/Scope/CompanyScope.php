@@ -164,6 +164,7 @@ class CompanyScope implements Scope
             if (!($model instanceof Batch)
                 && !($model instanceof CompanyConfig)
                 && !($model instanceof BaseLineService)
+                && !($model instanceof Stock)
                 && !($model instanceof MerchantGroupLine)
                 && !($model instanceof Tour)
                 && !($model instanceof OrderAmount)
