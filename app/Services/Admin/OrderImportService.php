@@ -261,7 +261,7 @@ class OrderImportService extends BaseService
             //费用总计
             $totalAmount = 0;
             for ($i = 0; $i < 11; $i++) {
-                if (!empty($data['amount_' . ($i + 1)])) {
+                if (!empty($data['amount_' . ($i + 1)]) & !in_array($i + 1, [BaseConstService::ORDER_AMOUNT_TYPE_2, BaseConstService::ORDER_AMOUNT_TYPE_10, BaseConstService::ORDER_AMOUNT_TYPE_11])) {
                     $totalAmount = $totalAmount + $data['amount_' . ($i + 1)];
                 }
             }
