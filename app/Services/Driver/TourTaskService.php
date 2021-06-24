@@ -243,6 +243,7 @@ class TourTaskService extends BaseService
         if (empty($tour)) {
             throw new BusinessLogicException('取件线路不存在');
         }
+        $tour=$tour->toArray();
         //获取所有运单列表
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour->tour_no], ['order_no', 'tracking_order_no'], false);
         //获取所有包裹列表
