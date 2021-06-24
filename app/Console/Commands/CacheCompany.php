@@ -67,7 +67,7 @@ class CacheCompany extends Command
                 }
                 $mapConfig = MapConfig::query()->where('company_id', $companyId)->first();
                 $company = array_merge(
-                    Arr::only($company->getAttributes(), ['id', 'name', 'company_code']),
+                    Arr::only($company, ['id', 'name', 'company_code']),
                     $companyConfig,
                     ['country' => $country['short'] ?? '', 'country_en_name' => $country['en_name'] ?? '', 'country_cn_name' => $country['cn_name'] ?? '']
                 //, ['map_config' => $mapConfig]
