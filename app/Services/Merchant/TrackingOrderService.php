@@ -1130,7 +1130,9 @@ class TrackingOrderService extends BaseService
         $trackingOrder = parent::getInfo(['tracking_order_no' => $trackingOrderNo], ['*'], false);
         if (empty($trackingOrder)) return;
         if (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_7])) {
-            throw new BusinessLogicException('当前运单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
+            //throw new BusinessLogicException('当前运单正在[:status_name]', 1000, ['status_name' => $trackingOrder->status_name]);
+            throw new BusinessLogicException('当前订单不支持终止派送，请联系管理员');
+
         }
         if (in_array($trackingOrder->status, [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
             $this->removeFromBatch($trackingOrder->id);
