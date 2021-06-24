@@ -24,6 +24,7 @@ use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
+use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -198,23 +199,19 @@ class OrderImportService extends BaseService
             $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         if (in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3]) && $data['place_country'] !== 'NL') {
-            if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
-                if (empty($data['place_street'])) {
-                    $error['place_street'] = __('街道 是必填项');
-                }
-                if (empty($data['place_city'])) {
-                    $error['place_city'] = __('城市 是必填项');
-                }
+            if (empty($data['place_street'])) {
+                $error['place_street'] = __('街道 是必填项');
+            }
+            if (empty($data['place_city'])) {
+                $error['place_city'] = __('城市 是必填项');
             }
         }
-        if (in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3]) && $data['second_place_country'] !== 'NL') {
-            if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
-                if (empty($data['second_place_street'])) {
-                    $error['second_place_street'] = __('街道 是必填项');
-                }
-                if (empty($data['second_place_city'])) {
-                    $error['second_place_city'] = __('城市 是必填项');
-                }
+        if (in_array($data['type'], [BaseConstService::ORDER_TYPE_2, BaseConstService::ORDER_TYPE_3]) && $data['second_place_country'] !== 'NL') {
+            if (empty($data['second_place_street'])) {
+                $error['second_place_street'] = __('街道 是必填项');
+            }
+            if (empty($data['second_place_city'])) {
+                $error['second_place_city'] = __('城市 是必填项');
             }
         }
         //包裹材料验证
