@@ -734,14 +734,21 @@ class OrderService extends BaseService
         }
         //若邮编是纯数字，则认为是比利时邮编
         $country = CompanyTrait::getCountry();
-        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
-            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+        if(in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])){
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
+                $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+            }
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5) {
+                $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+            }
         }
-        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5) {
-            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
-        }
-        if (empty($params['package_list']) && empty($params['material_list'])) {
-            throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
+        if(in_array($params['type'], [BaseConstService::ORDER_TYPE_2, BaseConstService::ORDER_TYPE_3])){
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['second_place_post_code'])) {
+                $params['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+            }
+            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['second_place_post_code']) == 5) {
+                $params['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+            }
         }
         //验证包裹列表
         if (!empty($params['package_list'])) {
