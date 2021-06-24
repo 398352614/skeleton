@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Services\Merchant\BaseLineService;
 use App\Services\Merchant\BaseWarehouseService;
 use App\Services\Merchant\OrderAmountService;
 use App\Services\Merchant\OrderDefaultConfigService;
@@ -50,6 +51,13 @@ Trait MerchantServiceTrait
 
     }
 
+    /**
+     * @return BaseLineService
+     */
+    public function getBaseLineService()
+    {
+        return self::getInstance(BaseLineService::class);
+    }
     /**
      * 订单模板 服务
      * @return OrderTemplateService

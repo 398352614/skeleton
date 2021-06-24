@@ -179,7 +179,7 @@ class OrderImportService extends BaseService
     public function check($data)
     {
         $data['merchant_id'] = auth()->user()->id;
-        $data['settlement_type']=auth()->user()->settlement_type;
+        $data['settlement_type'] = auth()->user()->settlement_type;
         $error = [];
         $validate = new OrderImportValidate;
         $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message));
@@ -208,8 +208,19 @@ class OrderImportService extends BaseService
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['second_place_address'])) {
             $data['second_place_address'] = CommonService::addressFieldsSortCombine($data, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
         }
+        //填充地址
         try {
-            $data = $this->fillAddress($data);
+        $data = $this->fillAddress($data);
+        //取件，派件运单填充仓库
+        if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+            $newData = $this->getAddressService()->secondPlaceToPlace($data);
+            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+            $data = $this->getAddressService()->warehouseToPlace($newData, $data);
+        } elseif($data['type'] == BaseConstService::ORDER_TYPE_1) {
+            $newData = $data;
+            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+            $data = $this->getAddressService()->warehouseToSecondPlace($newData, $data);
+        }
         } catch (BusinessLogicException $e) {
             $error['log'] = $e->getMessage();
         }
@@ -239,18 +250,18 @@ class OrderImportService extends BaseService
             }
         }
         try {
-            //检查网点
-            if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
-                $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, BaseConstService::YES);
-            }
-            //运价计算
-            $this->getTrackingOrderService()->fillWarehouseInfo($data, BaseConstService::NO);
-            if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
-                $data['distance'] = 1000;
-            } else {
-                $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($data);
-            }
-            $data = $this->getTransportPriceService()->priceCount($data);
+        //检查网点
+        if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
+            $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, BaseConstService::YES);
+        }
+        //运价计算
+
+        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
+            $data['distance'] = 1000;
+        } else {
+            $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($data);
+        }
+        $data = $this->getTransportPriceService()->priceCount($data);
         } catch (BusinessLogicException $e) {
             $error['log'] = __($e->getMessage(), $e->replace);
         }
@@ -354,19 +365,9 @@ class OrderImportService extends BaseService
      */
     public function fillSecondPlaceAddress($data)
     {
-        //反转参数
-        $address = $this->getBaseWarehouseService()->pieAddress($data);
-        $newData = array_merge($data, $address);
+        $newData = $this->getAddressService()->secondPlaceToPlace($data);
         $newData = $this->fillPlaceAddress($newData);
-        //将结果反转
-        $data['second_place_province'] = $newData['place_province'];
-        $data['second_place_city'] = $newData['place_city'];
-        $data['second_place_district'] = $newData['place_district'];
-        $data['second_place_street'] = $newData['place_street'];
-        $data['second_place_house_number'] = $newData['place_house_number'];
-        $data['second_place_post_code'] = $newData['place_post_code'];
-        $data['second_place_lat'] = $newData['place_lat'];
-        $data['second_place_lon'] = $newData['place_lon'];
+        $data = $this->getAddressService()->placeToSecondPlace($newData, $data);
         return $data;
     }
 
@@ -457,41 +458,6 @@ class OrderImportService extends BaseService
     {
         $data['package_list'] = [];
         $data['material_list'] = [];
-        if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
-            unset(
-                $data['second_place_fullname'],
-                $data['second_place_phone'],
-                $data['second_place_province'],
-                $data['second_place_city'],
-                $data['second_place_district'],
-                $data['second_place_street'],
-                $data['second_place_house_number'],
-                $data['second_place_post_code'],
-                $data['second_place_lat'],
-                $data['second_place_lon'],
-            );
-        } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
-            $data['place_province'] = $data['second_place_province'] ?? '';
-            $data['place_city'] = $data['second_place_city'];
-            $data['place_district'] = $data['second_place_district'] ?? '';
-            $data['place_street'] = $data['second_place_street'];
-            $data['place_house_number'] = $data['second_place_house_number'];
-            $data['place_post_code'] = $data['second_place_post_code'];
-            $data['place_lat'] = $data['second_place_lat'] ?? '';
-            $data['place_lon'] = $data['second_place_lon'] ?? '';
-            unset(
-                $data['second_place_fullname'],
-                $data['second_place_phone'],
-                $data['second_place_province'],
-                $data['second_place_city'],
-                $data['second_place_district'],
-                $data['second_place_street'],
-                $data['second_place_house_number'],
-                $data['second_place_post_code'],
-                $data['second_place_lat'],
-                $data['second_place_lon']
-            );
-        }
         for ($j = 0; $j < 5; $j++) {
             if (!empty($data['package_no_' . ($j + 1)])) {
                 $data['package_list'][$j]['name'] = $data['package_name_' . ($j + 1)] ?? '';
@@ -540,6 +506,7 @@ class OrderImportService extends BaseService
             'package_list',
             'material_list',
         ]);
+        $data['source']= BaseConstService::ORDER_SOURCE_3;
         return $data;
     }
 }

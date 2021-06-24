@@ -284,7 +284,7 @@ class TrackingOrderService extends BaseService
         //订单轨迹-订单创建
         OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
         //包裹轨迹
-        PackageTrailService::storeByTrackingOrder($trackingOrder,BaseConstService::PACKAGE_TRAIL_CREATED,null);
+        PackageTrailService::storeByTrackingOrder($trackingOrder, BaseConstService::PACKAGE_TRAIL_CREATED, null);
         return $tour;
     }
 
@@ -726,22 +726,6 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('操作失败，请重新操作');
         }
         $data = ['tracking_order_no' => $trackingOrder['tracking_order_no']];
-        if (in_array($order['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_2]) && empty($order['second_place_fullname'])) {
-            $data = array_merge($data, [
-                'second_place_fullname' => $trackingOrder['warehouse_fullname'],
-                'second_place_phone' => $trackingOrder['warehouse_phone'],
-                'second_place_country' => $trackingOrder['warehouse_country'],
-                'second_place_province' => $trackingOrder['warehouse_province'] ?? '',
-                'second_place_post_code' => $trackingOrder['warehouse_post_code'],
-                'second_place_house_number' => $trackingOrder['warehouse_house_number'],
-                'second_place_city' => $trackingOrder['warehouse_city'],
-                'second_place_district' => $trackingOrder['warehouse_district'] ?? '',
-                'second_place_street' => $trackingOrder['warehouse_street'],
-                'second_place_address' => $trackingOrder['warehouse_address'],
-                'second_place_lon' => $trackingOrder['warehouse_lon'],
-                'second_place_lat' => $trackingOrder['warehouse_lat'],
-            ]);
-        }
         $rowCount = $this->getOrderService()->update(['order_no' => $order['order_no']], $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
@@ -1073,6 +1057,39 @@ class TrackingOrderService extends BaseService
     {
         //获取线路
         $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
+        //获取网点
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        if (empty($warehouse)) {
+            throw new BusinessLogicException('网点不存在');
+        }
+        //填充发件人信息
+        $params = array_merge($params, [
+            'warehouse_fullname' => $warehouse['name'],
+            'warehouse_phone' => $warehouse['phone'],
+            'warehouse_country' => $warehouse['country'],
+            'warehouse_post_code' => $warehouse['post_code'],
+            'warehouse_house_number' => $warehouse['house_number'],
+            'warehouse_city' => $warehouse['city'],
+            'warehouse_street' => $warehouse['street'],
+            'warehouse_address' => $warehouse['address'],
+            'warehouse_lon' => $warehouse['lon'],
+            'warehouse_lat' => $warehouse['lat']
+        ]);
+        return $line;
+    }
+
+    /**
+     * 填充网点信息
+     * @param $params
+     * @param $merchantAlone
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function fillWarehouseInfoByPieOrder(&$params, $merchantAlone = BaseConstService::NO)
+    {
+        $data = $this->getBaseWarehouseService()->pieAddress($params);
+        //获取线路
+        $line = $this->getLineService()->getInfoByRule($data, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
         //获取网点
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {

@@ -34,6 +34,7 @@ use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
 use App\Traits\PrintTrait;
+use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -413,7 +414,7 @@ class OrderService extends BaseService
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
             foreach ($secondPlace as $k => $v) {
                 if (empty($data[$v])) {
-                    $data = $this->fillPlaceAddress($data);
+                    $data = $this->fillSecondPlaceAddress($data);
                     break;
                 }
             }
@@ -473,19 +474,9 @@ class OrderService extends BaseService
      */
     public function fillSecondPlaceAddress($data)
     {
-        //反转参数
-        $address = $this->getBaseWarehouseService()->pieAddress($data);
-        $newData = array_merge($data, $address);
+        $newData = $this->getAddressService()->secondPlaceToPlace($data);
         $newData = $this->fillPlaceAddress($newData);
-        //将结果反转
-        $data['second_place_province'] = $newData['place_province'];
-        $data['second_place_city'] = $newData['place_city'];
-        $data['second_place_district'] = $newData['place_district'];
-        $data['second_place_street'] = $newData['place_street'];
-        $data['second_place_house_number'] = $newData['place_house_number'];
-        $data['second_place_post_code'] = $newData['place_post_code'];
-        $data['second_place_lat'] = $newData['place_lat'];
-        $data['second_place_lon'] = $newData['place_lon'];
+        $data = $this->getAddressService()->placeToSecondPlace($newData, $data);
         return $data;
     }
 
@@ -789,13 +780,51 @@ class OrderService extends BaseService
             }
         }
         //运价计算
-        $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
+        $params = $this->fillAnotherAddressByApi($params);
         if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
             $params['distance'] = 1000;
         } else {
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         }
         $params = $this->getTransportPriceService()->priceCount($params);
+        return $params;
+    }
+
+    /**
+     * 填充另一个地址
+     * @param $params
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function fillAnotherAddressByApi($params)
+    {
+        if ($params['source'] == BaseConstService::ORDER_SOURCE_3) {
+            $this->fillAnotherAddress($params);
+        } else {
+            if($params['type'] == BaseConstService::ORDER_TYPE_2){
+                $params = $this->getAddressService()->changePlaceAndSecondPlace($params);
+            }
+            $this->fillAnotherAddress($params);
+        }
+        return $params;
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function fillAnotherAddress($params)
+    {
+        if ($params['type'] == BaseConstService::ORDER_TYPE_2) {
+            $newData = $this->getAddressService()->secondPlaceToPlace($params);
+            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+            $params = $this->getAddressService()->warehouseToPlace($newData, $params);
+        } elseif ($params['type'] == BaseConstService::ORDER_TYPE_1) {
+            $newData = $params;
+            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+            $params = $this->getAddressService()->warehouseToSecondPlace($newData, $params);
+        }
         return $params;
     }
 
@@ -826,7 +855,7 @@ class OrderService extends BaseService
             ];
             $packageList = $params['package_list'];
             foreach ($packageList as $k => $v) {
-                $packageList[$k]=Arr::except($v,['created_at','updated_at','merchant_id','order_no','status','stage','type','id']);
+                $packageList[$k] = Arr::except($v, ['created_at', 'updated_at', 'merchant_id', 'order_no', 'status', 'stage', 'type', 'id']);
                 $packageList[$k]['order_no'] = $params['order_no'];
                 $packageList[$k]['merchant_id'] = auth()->user()->id;
                 $packageList[$k]['execution_date'] = $params['execution_date'];
@@ -845,7 +874,7 @@ class OrderService extends BaseService
         if (!empty($params['material_list'])) {
             $materialList = $params['material_list'];
             foreach ($materialList as $k => $v) {
-                $materialList[$k]=Arr::except($v,['created_at','updated_at','merchant_id','expect_quantity','actual_quantity','tracking_order_no','id']);
+                $materialList[$k] = Arr::except($v, ['created_at', 'updated_at', 'merchant_id', 'expect_quantity', 'actual_quantity', 'tracking_order_no', 'id']);
                 $materialList[$k]['order_no'] = $params['order_no'];
                 $materialList[$k]['merchant_id'] = auth()->user()->id;
                 $materialList[$k]['execution_date'] = $params['execution_date'];
