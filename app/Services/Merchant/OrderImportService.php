@@ -189,6 +189,38 @@ class OrderImportService extends BaseService
                 $error[$v] = $validator->errors()->first($v);
             }
         }
+        if ($data['place_country'] !== 'NL') {
+            if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
+                if (empty($data['place_street'])) {
+                    $error['place_street'] = __('街道 是必填项');
+                }
+                if (empty($data['place_city'])) {
+                    $error['place_city'] = __('城市 是必填项');
+                }
+            }
+            if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+                if (empty($data['second_place_street'])) {
+                    $error['second_place_street'] = __('街道 是必填项');
+                }
+                if (empty($data['second_place_city'])) {
+                    $error['second_place_city'] = __('城市 是必填项');
+                }
+            }
+            if ($data['type'] == BaseConstService::ORDER_TYPE_3) {
+                if (empty($data['place_street'])) {
+                    $error['place_street'] = __('街道 是必填项');
+                }
+                if (empty($data['place_city'])) {
+                    $error['place_city'] = __('城市 是必填项');
+                }
+                if (empty($data['second_place_street'])) {
+                    $error['second_place_street'] = __('街道 是必填项');
+                }
+                if (empty($data['second_place_city'])) {
+                    $error['second_place_city'] = __('城市 是必填项');
+                }
+            }
+        }
         //填充地址(若邮编是纯数字，则认为是比利时邮编)
         $country = CompanyTrait::getCountry();
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['place_post_code'])) {
