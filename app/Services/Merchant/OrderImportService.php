@@ -189,6 +189,14 @@ class OrderImportService extends BaseService
                 $error[$v] = $validator->errors()->first($v);
             }
         }
+        //填充地址(若邮编是纯数字，则认为是比利时邮编)
+        $country = CompanyTrait::getCountry();
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['place_post_code'])) {
+            $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+        }
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($data['place_post_code']) == 5) {
+            $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+        }
         if (in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3]) && $data['place_country'] !== 'NL') {
             if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
                 if (empty($data['place_street'])) {
@@ -208,14 +216,6 @@ class OrderImportService extends BaseService
                     $error['second_place_city'] = __('城市 是必填项');
                 }
             }
-        }
-        //填充地址(若邮编是纯数字，则认为是比利时邮编)
-        $country = CompanyTrait::getCountry();
-        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['place_post_code'])) {
-            $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
-        }
-        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($data['place_post_code']) == 5) {
-            $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         //包裹材料验证
         if (empty($data['package_no_1']) && empty($data['material_code_1'])) {
