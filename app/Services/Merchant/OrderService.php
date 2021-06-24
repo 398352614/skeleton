@@ -801,7 +801,7 @@ class OrderService extends BaseService
         if (!empty($params['source']) && $params['source'] == BaseConstService::ORDER_SOURCE_3) {
             if ($params['type'] == BaseConstService::ORDER_TYPE_2) {
                 $params = $this->getAddressService()->changePlaceAndSecondPlace($params);
-                $params['execution_date']=$params['second_execution_date'];
+                $params['execution_date'] = $params['second_execution_date'];
                 unset($params['second_execution_date']);
             }
             $newData = $params;
@@ -861,7 +861,7 @@ class OrderService extends BaseService
         if (!empty($params['material_list'])) {
             $materialList = $params['material_list'];
             foreach ($materialList as $k => $v) {
-                $materialList[$k] = Arr::except($v, ['created_at', 'updated_at', 'merchant_id', 'expect_quantity', 'actual_quantity', 'tracking_order_no', 'id']);
+                $materialList[$k] = Arr::except($v, ['price', 'created_at', 'updated_at', 'merchant_id', 'expect_quantity', 'actual_quantity', 'tracking_order_no', 'id']);
                 $materialList[$k]['order_no'] = $params['order_no'];
                 $materialList[$k]['merchant_id'] = auth()->user()->id;
                 $materialList[$k]['execution_date'] = $params['execution_date'];
