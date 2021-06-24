@@ -457,14 +457,30 @@ class AddressService extends BaseService
             $data['place_country'] = CompanyTrait::getCountry();
         }
         //如果没传经纬度，就通过第三方API获取经纬度
+        $address=[
+            'place_country',
+            'place_post_code',
+            'place_house_number',
+            'place_city',
+            'place_street',
+            'place_district',
+            'place_province',
+            'place_lon',
+            'place_lat',
+        ];
         if (empty($data['place_lon']) || empty($data['place_lat'])) {
-            try {
-                $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
-                $data['place_lon'] = $info['lon'] ?? '';
-                $data['place_lat'] = $info['lat'] ?? '';
-            } catch (BusinessLogicException $e) {
-                $status = BaseConstService::NO;
-                $error['log'] = __($e->getMessage(), $e->replace);
+            foreach ($address as $v){
+                if(empty($data[$v])){
+                    try {
+                        $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
+                        $data['place_lon'] = $info['lon'] ?? '';
+                        $data['place_lat'] = $info['lat'] ?? '';
+                    } catch (BusinessLogicException $e) {
+                        $status = BaseConstService::NO;
+                        $error['log'] = __($e->getMessage(), $e->replace);
+                    }
+                    break;
+                }
             }
             $data['place_country'] = $data['place_country'] ?? CompanyTrait::getCountry();
             $data['place_post_code'] = $data['place_post_code'] ?? $info['post_code'];
