@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Company;
+use App\Models\CompanyConfig;
 use App\Models\Country;
 use App\Models\MapConfig;
 use App\Traits\ConstTranslateTrait;
@@ -54,7 +55,7 @@ class CacheCompany extends Command
             if (!empty($companyId)) {
                 $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name']);
                 $company = Company::query()->where('id', $companyId)->first();
-                $companyConfig = !empty($company->companyConfig) ? Arr::only($company->companyConfig->getAttributes(), ['address_template_id', 'stock_exception_verify', 'line_rule', 'show_type', 'weight_unit','weight_unit_symbol', 'currency_unit', 'currency_unit_symbol', 'volume_unit', 'volume_unit_symbol','weight_unit_name', 'currency_unit_name', 'volume_unit_name', 'map']) : [];
+                $companyConfig = CompanyConfig::query()->where('company_id', $companyId)->first();
                 if(!empty($companyConfig['weight_unit'])){
                     $companyConfig['weight_unit_symbol']=ConstTranslateTrait::weightUnitTypeSymbol($companyConfig['weight_unit']);
                 }
@@ -82,15 +83,7 @@ class CacheCompany extends Command
             $companyList = collect(Company::query()->get())->map(function ($company) use ($countryList, $mapConfigList) {
                 /**@var \App\Models\Company $company */
                 $companyConfig = !empty($company->companyConfig) ? $company->companyConfig->getAttributes() : [];
-                if(!empty($companyConfig['weight_unit'])){
-                    $companyConfig['weight_unit_symbol']=ConstTranslateTrait::weightUnitTypeSymbol($companyConfig['weight_unit']);
-                }
-                if(!empty($companyConfig['currency_unit'])){
-                    $companyConfig['currency_unit_symbol']=ConstTranslateTrait::currencyUnitTypeSymbol($companyConfig['currency_unit']);
-                }
-                if(!empty($companyConfig['volume_unit'])){
-                    $companyConfig['volume_unit_symbol']=ConstTranslateTrait::volumeUnitTypeSymbol($companyConfig['volume_unit']);
-                }
+
                 $company = $company->getAttributes();
                 return collect(array_merge(
                     Arr::only($company, ['id', 'name', 'company_code']),
