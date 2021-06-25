@@ -742,14 +742,7 @@ class OrderService extends BaseService
                 $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
             }
         }
-        if (in_array($params['type'], [BaseConstService::ORDER_TYPE_2, BaseConstService::ORDER_TYPE_3])) {
-            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['second_place_post_code'])) {
-                $params['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
-            }
-            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['second_place_post_code']) == 5) {
-                $params['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
-            }
-        }
+
         //验证包裹列表
         if (!empty($params['package_list'])) {
             $this->getPackageService()->check($params['package_list'], $orderNo);
