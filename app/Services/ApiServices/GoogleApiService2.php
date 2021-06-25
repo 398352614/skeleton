@@ -203,7 +203,7 @@ class GoogleApiService2
         $to = is_array($to) ? implode('|', array_filter($to)) : $to;
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
         $url = $url . $query;
-        Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'get', ['url' => $url]);
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'get', ['url' => $url]);
         if (config('tms.true_app_env') == 'develop') {
             $options = [
                 'proxy' => [
