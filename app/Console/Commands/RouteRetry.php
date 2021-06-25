@@ -53,7 +53,9 @@ class RouteRetry extends Command
             return;
         }
         $totalRouteRetryList = collect($totalRouteRetryList)->groupBy('tour_no')->toArray();
-        Log::channel('roll')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. 'totalRouteRetryList', $totalRouteRetryList);
+        if(!empty($totalRouteRetryList)){
+            Log::channel('roll')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. 'totalRouteRetryList', $totalRouteRetryList);
+        }
         foreach ($totalRouteRetryList as $tourNo => $routeRetryList) {
             $latestRouteRetry = collect(collect($routeRetryList)->sortByDesc('updated_at')->first())->toArray();
             if (empty($latestRouteRetry)) {
