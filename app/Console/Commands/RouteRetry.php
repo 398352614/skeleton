@@ -49,14 +49,17 @@ class RouteRetry extends Command
     public function handle()
     {
         $totalRouteRetryList = \App\Models\RouteRetry::query()->get();
-        if (empty($totalRouteRetryList)) {return;}
+        if (empty($totalRouteRetryList)) {
+            return;
+        }
         $totalRouteRetryList = collect($totalRouteRetryList)->groupBy('tour_no')->toArray();
-        Log::info('DATA', $totalRouteRetryList);
+        Log::channel('roll')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. 'totalRouteRetryList', $totalRouteRetryList);
         foreach ($totalRouteRetryList as $tourNo => $routeRetryList) {
             $latestRouteRetry = collect(collect($routeRetryList)->sortByDesc('updated_at')->first())->toArray();
-            if (empty($latestRouteRetry)) {return;}
+            if (empty($latestRouteRetry)) {
+                return;
+            }
             try {
-                Log::info(1, $latestRouteRetry);
                 $tourService = FactoryInstanceTrait::getInstance(TourService::class);
                 $tourService->routeRefresh($latestRouteRetry['tour_no']);
                 //成功则清空路线重试任务

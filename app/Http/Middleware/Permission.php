@@ -29,7 +29,7 @@ class Permission
         if (in_array($prefix, ['api/admin/common', 'api/admin/upload'])) return $next($request);
         $routeAs = $request->route()->getName();
         if (empty($routeAs) || ($routeAs === 'common')) return $next($request);
-        Log::info('route-as', ['route-as' => $routeAs]);
+        Log::channel('roll')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'route-as', [$routeAs]);
         $isAuth = auth()->user()->can($routeAs);
         if ($isAuth === false) {
             throw new BusinessLogicException('当前用户没有该权限,请按F5刷新页面');

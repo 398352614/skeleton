@@ -49,10 +49,10 @@ class AutoTranslate extends Command
      * Execute the console command.
      *
      * @return mixed
+     * @throws Exception
      */
     public function handle()
     {
-        Log::info('The translation begin.');
 //        try {
             foreach (array_keys(ConstTranslateTrait::$languageList) as $v) {
                 if ($v !== 'cn') {

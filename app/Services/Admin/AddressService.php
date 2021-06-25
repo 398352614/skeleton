@@ -299,9 +299,7 @@ class AddressService extends BaseService
         //文件读取
         $params['dir'] = 'addressTemplate';
         $params['path'] = $this->getUploadService()->fileUpload($params)['path'];
-        Log::info('begin-path', $params);
         $params['path'] = str_replace(config('app.url') . '/storage/admin/file', storage_path('app/public/admin/file'), $params['path']);
-        Log::info('end-path', $params);
         $row = collect($this->addressExcelImport($params['path'])[0])->whereNotNull('0')->toArray();
         $row[0] = array_filter($row[0]);
 

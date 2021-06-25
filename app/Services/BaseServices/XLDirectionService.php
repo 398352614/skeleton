@@ -34,6 +34,7 @@ class XLDirectionService
 
     /**
      * 获取线路
+     * @throws BusinessLogicException
      */
     public function GetRoute(array $data): array
     {
@@ -63,7 +64,7 @@ class XLDirectionService
         foreach ($resp['route'] as $key => $loc) {
             $res[] = $loc['name'];
         }
-        Log::info('请求回复', $resp);
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'resp', $resp);
         $batch = DB::table('batch')->where('batch_no', $resp['route'][1]['name'])->first();
         if (!$batch) {
             throw new BusinessLogicException('优化失败');

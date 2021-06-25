@@ -100,7 +100,7 @@ class RechargeService extends BaseService
         //请求第三方
         $curl = new CurlClient();
         $res = $curl->merchantPost($merchantApi, $data);
-        Log::info('返回值', $res ?? []);
+        Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['out_user_id']) || empty($res['data']['phone'] || empty($res['data']['email']))) {
             throw new BusinessLogicException('客户不存在，请检查客户编码是否正确');
         } else {
@@ -196,14 +196,12 @@ class RechargeService extends BaseService
             throw new BusinessLogicException('该货主未开启充值业务');
         }
         $res = $curl->merchantPost($merchant, $data);
-        Log::info('返回值', $res);
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', $res);
         /*        $res['data']['ret']=1;
                 $res['data']['transaction_number']=110;*/
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['transaction_number'])) {
             $row = parent::update(['id' => $info['id']], ['status' => BaseConstService::RECHARGE_STATUS_2]);
-            if ($row == false) {
-                Log::info('充值失败，充值记录失败', $res);
-            }
+
             throw new BusinessLogicException('充值失败');
         } elseif ($res['ret'] == 3) {
             throw new BusinessLogicException('充值请求已过期，请重新充值');
@@ -214,9 +212,6 @@ class RechargeService extends BaseService
                 'recharge_time' => now(),
                 'recharge_date' => Carbon::today()->format('Y-m-d'),
             ]));
-            if ($row == false) {
-                Log::info('充值成功，充值记录失败', $res);
-            }
             //充值统计
             $info = $info->toArray();
             $rechargeStatisticsId = $this->getRechargeStatisticsService()->rechargeStatistics($info);

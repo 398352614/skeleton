@@ -78,7 +78,7 @@ class PackagePickOut implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('入库分拣开始');
+        Log::channel('job')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '入库分拣开始');
         $columns = [
             'express_first_no',
             'order_no',
@@ -98,7 +98,7 @@ class PackagePickOut implements ShouldQueue
                 $this->postData($merchant['url'], $postData);
             }
         }
-        Log::info('入库分拣成功');
+        Log::channel('job')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '入库分拣成功');
         return true;
     }
 
@@ -128,11 +128,14 @@ class PackagePickOut implements ShouldQueue
             $res = $this->curl->post($url, $postData);
             if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
                 app('log')->info('send notify failure');
-                Log::info('货主通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
             }
-        } catch (\Exception $ex) {
-            Log::info(json_encode($postData, JSON_UNESCAPED_UNICODE));
-            Log::info('推送失败');
+            Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
+        } catch (\Exception $e) {
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
         }
     }
 }

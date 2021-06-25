@@ -78,8 +78,8 @@ class SendNotify2Merchant implements ShouldQueue
                 unset($dataList[config('TMS.fake_merchant_id')]);
             }
             $notifyType = $event->notifyType();
-            Log::info('notify-type:' . $notifyType);
-            Log::info('dataList:' . json_encode($dataList, JSON_UNESCAPED_UNICODE));
+            Log::channel('worker')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'notifyType', [$notifyType]);
+            Log::channel('worker')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'datalist', $dataList);
             if (empty($dataList)) return true;
             $merchantList = $this->getMerchantList(array_keys($dataList));
             if (empty($merchantList)) return true;
@@ -89,10 +89,18 @@ class SendNotify2Merchant implements ShouldQueue
                 list($pushStatus, $msg) = $this->postData($merchantList[$merchantId]['url'], $postData);
                 ThirdPartyLogService::storeAll($merchantId, $data, $notifyType, $event->getThirdPartyContent($pushStatus, $msg));
             }
-        } catch (\ErrorException $ex) {
-            Log::channel('job-daily')->error($ex->getMessage());
-        } catch (\Exception $ex) {
-            Log::channel('job-daily')->error($ex->getMessage());
+        } catch (BusinessLogicException $e) {
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
+        } catch (\Exception $e) {
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
         }
         return true;
     }
@@ -124,7 +132,7 @@ class SendNotify2Merchant implements ShouldQueue
         $res = $this->curl->post($url, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
-            Log::info('货主通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             return [false, $res['msg'] ?? '服务器内部错误'];
         }
         return [true, ''];
@@ -141,7 +149,7 @@ class SendNotify2Merchant implements ShouldQueue
         $res = $this->curl->merchantPost($merchant, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
-            Log::info('货主通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('发送失败');
         }
     }

@@ -59,8 +59,10 @@ class CurlClient
 
     public function post($url, $params, $next = 0, $auth = null)
     {
-        Log::info('post 请求url', ['url' => $url]);
-        Log::info('post 请求数据', $params);
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'post', [
+            'url' => $url,
+            'data' => $params,
+        ]);
         try {
             if ($auth) {
                 $response = $this->http->post($url, ['auth' => $auth, 'form_params' => $params]);
@@ -94,8 +96,10 @@ class CurlClient
 
     public function postJson($url, $params, $next = 0, $auth = null)
     {
-        Log::info('post-json 请求url', ['url' => $url]);
-        Log::info('post-json 请求数据', $params);
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'post', [
+            'url' => $url,
+            'data' => $params,
+        ]);
         try {
             //php 7.4兼容
             //https://cloud.tencent.com/developer/article/1489213

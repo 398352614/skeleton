@@ -122,7 +122,6 @@ class TenCentApiService
                 $tourData['expect_distance'] = $distance + $backElement['distance'];
                 $tourData['expect_time'] = $time + $backElement['duration'];
             }
-            Log::info('auto-tour-data', $tourData);
             Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
             throw new BusinessLogicException('线路自动更新失败');
@@ -178,7 +177,6 @@ class TenCentApiService
                 $tourData['expect_distance'] = $distance + $backElement['distance'];
                 $tourData['expect_time'] = $time + $backElement['duration'];
             }
-            Log::info('tour-data', $tourData);
             Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
             throw new BusinessLogicException('线路更新失败');
@@ -252,8 +250,7 @@ class TenCentApiService
         $url = $url . '?' . $query;
         $res = $this->client->get($url);
         if (!isset($res['status']) || ($res['status'] != 0)) {
-            Log::info('tencent-api请求url', ['url' => $url]);
-            Log::info('tencent-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('teCent-api请求报错');
         }
         return $res;

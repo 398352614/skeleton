@@ -1009,7 +1009,6 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('修改失败，请重新操作');
             }
             $data = array_merge($dbOrder, Arr::only($params, $columns));
-            Log::info('参数', $data);
             /******************************判断是否需要更换站点(取派日期+收货方地址 验证)***************************************/
             $trackingOrder = $this->getTrackingOrderService()->updateByOrder($data, BaseConstService::YES);
             $result = [

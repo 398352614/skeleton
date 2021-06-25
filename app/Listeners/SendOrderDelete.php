@@ -89,9 +89,13 @@ class SendOrderDelete implements ShouldQueue
                 'data' => $postData
             ]);
             ThirdPartyLogService::storeAll($merchantId, $postData, $event->notifyType(), $event->getThirdPartyContent($pushStatus, $msg));
-            Log::info('订单删除');
-        } catch (\Exception $ex) {
-            Log::channel('job-daily')->error($ex->getMessage());
+            Log::channel('worker')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '订单删除');
+        } catch (\Exception $e) {
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
         }
         return true;
     }
@@ -136,7 +140,7 @@ class SendOrderDelete implements ShouldQueue
         $res = $this->curl->post($url, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
-            Log::info('货主通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             return [false, $res['msg'] ?? '服务器内部错误'];
         }
         return [true, ''];
@@ -153,7 +157,7 @@ class SendOrderDelete implements ShouldQueue
         $res = $this->curl->merchantPost($merchant, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
             app('log')->info('send notify failure');
-            Log::info('货主通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('发送失败');
         }
     }

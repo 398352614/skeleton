@@ -54,7 +54,6 @@ class AssignBatch extends ATourNotify
         } else {
             $additionalPackageList = [];
         }
-        Log::info($additionalPackageList);
         $tourList = [];
         foreach ($batchList as $merchantId => $batch) {
             $batch['additional_package_list'] = $additionalPackageList[$merchantId] ?? [];

@@ -385,7 +385,7 @@ class TourService extends BaseService
             $outTrackingOrderIdList = explode_id_string($params['out_tracking_order_id_list']);
             $noOutTrackingOrderList = $this->getTrackingOrderService()->getList(['id' => ['in', $outTrackingOrderIdList], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2, 'status' => ['<>', BaseConstService::TRACKING_ORDER_STATUS_3]], ['order_no', 'tracking_order_no'], false);
             if ($noOutTrackingOrderList->isNotEmpty()) {
-                Log::info('no_out_tracking_order_list', $noOutTrackingOrderList->toArray());
+                Log::channel('info')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'noOutTrackingOrderList', $noOutTrackingOrderList);
                 throw new BusinessLogicException('订单已取消或已删除,不能出库,请先剔除', 5006, [], $noOutTrackingOrderList);
             }
         }
@@ -737,7 +737,6 @@ class TourService extends BaseService
         if (intval($batch['status'] !== BaseConstService::BATCH_DELIVERING)) {
             throw new BusinessLogicException('站点当前状态不能签收');
         }
-        Log::info('batch', $batch);
         if (!empty($params['additional_package_list']) && intval($params['pay_type']) == BaseConstService::BATCH_PAY_TYPE_4) {
             foreach ($params['additional_package_list'] as $v) {
                 if ($v['sticker_no'] !== '' || $v['delivery_charge'] == BaseConstService::YES) {
@@ -763,7 +762,6 @@ class TourService extends BaseService
         $orderStickerAmountList = $info['orderStickerAmount'];
         $totalDeliveryAmount = $info['totalDeliveryAmount'];
         $orderDeliveryAmountList = $info['orderDeliveryAmount'];
-        Log::info('订单下包裹提货费', $orderDeliveryAmountList);
         /****************************************2.处理站点下的顺带包裹************************************************/
         !empty($params['additional_package_list']) && $this->dealAdditionalPackageList($batch, $params['additional_package_list']);
         /****************************************2.处理站点下的所有订单************************************************/
@@ -1376,7 +1374,7 @@ class TourService extends BaseService
         $batchIds = collect($batchList)->pluck('id')->toArray();
         array_splice($batchIds, array_search($params['batch_id'], $batchIds), 1);
         array_push($batchIds, intval($params['batch_id']));
-        Log::info('站点排序', $batchIds);
+        Log::channel('info')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'batchIds', $batchIds);
         $this->updateBatchIndex(['tour_no' => $tour['tour_no'], 'batch_ids' => $batchIds]);
     }
 
@@ -1407,7 +1405,7 @@ class TourService extends BaseService
         $ingBatchIds = $batchList->whereIn('status', [BaseConstService::BATCH_DELIVERING, BaseConstService::BATCH_CANCEL])->sortBy('sort_id')->pluck('id')->toArray();
         array_splice($ingBatchIds, array_search($params['batch_id'], $ingBatchIds), 1);
         $batchIds = array_merge($assignedBatchIds, [intval($params['batch_id'])], $ingBatchIds);
-        Log::info('站点排序', $batchIds);
+        Log::channel('info')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'batchIds', $batchIds);
         $this->updateBatchIndex(['tour_no' => $tour['tour_no'], 'batch_ids' => $batchIds]);
     }
 

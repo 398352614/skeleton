@@ -80,7 +80,7 @@ trait LocationTrait
             try {
                 $client = new \GuzzleHttp\Client();
                 $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
-                Log::info('location-url', ['url' => $url]);
+                Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'get', ['url' => $url]);
                 $res = $client->request('GET', $url, [
                         'auth' =>
                             [
@@ -91,9 +91,13 @@ trait LocationTrait
                         'timeout' => 50
                     ]
                 );
-            } catch (\Exception $ex) {
-                Log::info('location-ex', ['message' => $ex->getMessage()]);
-                throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法根据邮编和门牌号码获取城市和地址信息，请稍后再尝试');
+            } catch (\Exception $e) {
+                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'message' => $e->getMessage()
+                ]);
+                throw new BusinessLogicException('可能由于网络问题，无法根据邮编和门牌号码获取城市和地址信息，请稍后再尝试');
             }
             $body = $res->getBody();
             $stringBody = (string)$body;
@@ -110,7 +114,7 @@ trait LocationTrait
                 'district' => $arrayBody['municipality'],//相当于是区
                 'street' => $arrayBody['street'],
                 'house_number' => $arrayBody['houseNumber'],
-                'post_code'=>$postCode,
+                'post_code' => $postCode,
                 'lat' => $arrayBody['latitude'],
                 'lon' => $arrayBody['longitude'],
             ];
@@ -135,22 +139,25 @@ trait LocationTrait
                 $client = new \GuzzleHttp\Client();
                 $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
                 $featureList = json_decode((string)($result->getBody()), TRUE)['features'];
-            } catch (\Exception $ex) {
-                Log::info($ex->getMessage());
+            } catch (\Exception $e) {
+                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'message' => $e->getMessage()
+                ]);
                 throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取具体信息，请稍后再尝试');
             }
             $count = count($featureList);
             if (($count == 0)/* || ($count > 3)*/) {
                 throw new \App\Exceptions\BusinessLogicException('国家，城市，街道，门牌号或邮编不正确，请仔细检查输入或联系客服');
             }
-            Log::info('返回值',$featureList);
             return [
                 'province' => $featureList[0]['properties']['state'] ?? '',
-                'city' => $featureList[0]['properties']['city']  ?? $city,
+                'city' => $featureList[0]['properties']['city'] ?? $city,
                 'district' => $featureList[0]['properties']['district'] ?? '',
-                'street' => $featureList[0]['properties']['street'] ??$street,
+                'street' => $featureList[0]['properties']['street'] ?? $street,
                 'house_number' => $houseNumber,
-                'post_code'=>$postCode,
+                'post_code' => $postCode,
                 'lon' => $featureList[0]['geometry']['coordinates'][0],
                 'lat' => $featureList[0]['geometry']['coordinates'][1],
             ];
@@ -175,13 +182,13 @@ trait LocationTrait
         //$url = 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=127689096,1321755151&fm=15&gp=0.jpg';
         $url = config('tms.map_url') . 'staticmap?size=640x640&maptype=roadmap' . $markers . '&key=' . config('tms.map_key');
 //        try {
-            if ((App::environment() === 'development') || (App::environment() === 'local')) {
-                $options = ['proxy' => ['http' => config('tms.vpn'), 'https' => config('tms.vpn')]];
-            } else {
-                $options = [];
-            }
-            $client = new \GuzzleHttp\Client();
-            $res = $client->request('GET', $url, $options);
+        if ((App::environment() === 'development') || (App::environment() === 'local')) {
+            $options = ['proxy' => ['http' => config('tms.vpn'), 'https' => config('tms.vpn')]];
+        } else {
+            $options = [];
+        }
+        $client = new \GuzzleHttp\Client();
+        $res = $client->request('GET', $url, $options);
 //        } catch (\Exception $ex) {
 //            throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取地图，请稍后再尝试');
 //        }

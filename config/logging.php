@@ -65,7 +65,7 @@ return [
 
         'job-daily' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/worker/job.log'),
+            'path' => storage_path('logs/job/job.log'),
             'level' => 'debug',
             'days' => 14,
             'permission' => 0664,
@@ -112,6 +112,36 @@ return [
             'driver' => 'monolog',
             'handler' => NullHandler::class,
         ],
+
+        'info' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/info/info.log'),
+            'level' => 'info',
+            'days' => 14,
+            'permission' => 0664,
+        ],
+
+        'api' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/api/api.log'),
+            'level' => 'info',
+            'days' => 14,
+            'permission' => 0664,
+        ],
+
+        'schedule' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/schedule.log'),
+            'level' => 'debug',
+        ],
+
+        'roll'=>[
+            'driver' => 'daily',
+            'path' => storage_path('logs/roll/roll.log'),
+            'level' => 'info',
+            'days' => 14,
+            'permission' => 0664,
+        ]
     ],
 
 ];

@@ -41,9 +41,10 @@ class GoogleApiDistanceService
         $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
         if (!empty($mapConfig)) {
             $this->key = $mapConfig->toArray()['google_key'];
-        }else{
-            $this->key ='';
-        }    }
+        } else {
+            $this->key = '';
+        }
+    }
 
     /**
      * 获取距离和时间
@@ -74,13 +75,10 @@ class GoogleApiDistanceService
         $body = $res->getBody();
         $stringBody = (string)$body;
         $res = json_decode($stringBody, TRUE);
-        Log::info('返回值', $res);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
-            Log::info('google-api请求url', ['url' => $url]);
-            Log::info('google-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('google-api请求报错');
         }
-        Log::info($res['rows'][0]['elements'][0]['distance']['value']);
         $distance = $res['rows'][0]['elements'][0]['distance']['value'];
         return $distance;
     }
@@ -103,7 +101,11 @@ class GoogleApiDistanceService
             $to = implode(',', [$order['place_lat'], $order['place_lon']]);
             $distance = $this->getDistance($this->url, $from, $to);
         } catch (\Exception $e) {
-            Log::info('报错' . $e->getMessage());
+            Log::channel('info')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
             throw new BusinessLogicException('可能由于网络原因，无法估算距离');
         }
         return $distance;

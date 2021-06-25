@@ -71,8 +71,7 @@ class TenCentApiDistanceService
         $url = $url . '?' . $query;
         $res = $this->client->get($url);
         if (!isset($res['status']) || ($res['status'] != 0)) {
-            Log::info('tencent-api请求url', ['url' => $url]);
-            Log::info('tencent-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('teCent-api请求报错');
         }
         $distance = $res['result']['rows'][0]['elements'][0]['distance'];

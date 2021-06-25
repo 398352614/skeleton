@@ -43,7 +43,6 @@ class AutoValidate extends Command
      */
     public function handle()
     {
-        Log::info('The translation begin.');
         try {
             $this->autoValidate();
             $this->info('The translation success.');

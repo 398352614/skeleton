@@ -47,11 +47,9 @@ class RestartQueue extends Command
     {
         try {
             $this->process->mustRun();
-            Log::info('The restart has been proceed successfully.');
-            $this->info('The restart has been proceed successfully.');
+            $this->info(now()->format('Y-m-d H:i:s ') . 'The restart has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
-            Log::info($exception->getMessage());
-            $this->error('The restart process has been failed.');
+            $this->error(now()->format('Y-m-d H:i:s ') . 'The restart process has been failed.');
         }
     }
 }

@@ -183,7 +183,7 @@ class TransportPriceService extends BaseService
         ];
         $row = TransportPriceOperation::query()->create($data);
         if ($row == false) {
-            Log::info('操作日志记录失败', $data);
+            Log::channel('info')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'data', $data);
         }
     }
 

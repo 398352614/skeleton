@@ -35,6 +35,12 @@ class BackupDatabase extends Command
     public function __construct()
     {
         parent::__construct();
+        if (!file_exists(storage_path('app/backup'))) {
+            $this->process = new Process(sprintf(
+                'mkdir %s',
+                storage_path('app/backup')
+            ));
+        }
         $this->process = new Process(sprintf(
             'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s | gzip > %s',
             config('database.connections.mysql.host'),
@@ -59,11 +65,9 @@ class BackupDatabase extends Command
     {
         try {
             $this->process->mustRun();
-            Log::info('The backup has been proceed successfully.');
-            $this->info('The backup has been proceed successfully.');
+            $this->info(now()->format('Y-m-d H:i:s ') . 'The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
-            Log::info($exception->getMessage());
-            $this->error('The backup process has been failed.');
+            $this->error(now()->format('Y-m-d H:i:s ') . 'The backup process has been failed.');
         }
     }
 }

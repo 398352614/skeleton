@@ -53,7 +53,7 @@ class AdminApiGuard implements Guard
     public function check()
     {
         $credentials = $this->request->all();
-        Log::info('request-data:' . json_encode($credentials, JSON_UNESCAPED_UNICODE));
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'credentials', $credentials);
         if (!$this->validate($credentials)) {
             throw new BusinessLogicException('缺少参数key,sign,timestamp或data');
         }

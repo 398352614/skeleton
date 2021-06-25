@@ -22,7 +22,6 @@ trait UpdateTourTimeAndDistanceTrait
             self::setTourLock($tour->tour_no, 1);
             $info = $this->LineInfo($tour->tour_no);
             if (empty($info['ret']) || (!empty($info['ret']) && ($info['ret'] == 0))) { // 返回错误的情况下直接返回
-                Log::info('更新动作失败,错误信息', $info ?? []);
                 self::setTourLock($tour->tour_no, 0);
                 return false;
             }
@@ -74,8 +73,6 @@ trait UpdateTourTimeAndDistanceTrait
                 $max_time = max($max_time, $res['time']);
                 $max_distance = max($max_distance, $res['distance']);
             }
-            Log::info(((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
-                || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]));
             // 只有未更新过的线路需要更新期望时间和距离
             if (
                 ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))

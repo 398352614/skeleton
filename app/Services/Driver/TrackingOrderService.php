@@ -64,7 +64,6 @@ class TrackingOrderService extends BaseService
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
         //运单轨迹-运单加入取件线路
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
-        Log::info('运单信息', $trackingOrder);
         //订单轨迹-运单中途创建
         if ($again == true) {
             OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_RESTART);

@@ -103,10 +103,7 @@ class GoogleApiService2
      */
     public function updateTour(Tour $tour, $nextCode, $driverLocation = [])
     {
-        Log::info(1);
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
-        Log::info('batch',collect($orderBatchs)->toArray());
-
         if (!collect($orderBatchs)->isEmpty()) {
             $orderBatchs = $orderBatchs->keyBy('batch_no')->map(function ($batch) {
                 return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon]);
@@ -131,7 +128,6 @@ class GoogleApiService2
                 }
                 /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
                 $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
-                Log::info('1', $backWarehouseElement[0][1]);
                 $backElement = $backWarehouseElement[0][1];
                 if ($backElement['status'] !== "ZERO_RESULTS") {
                     $tourData = [
@@ -139,26 +135,20 @@ class GoogleApiService2
                         'warehouse_expect_distance' => $distance + $backElement['distance']['value'],
                         'warehouse_expect_time' => $time + $backElement['duration']['value']
                     ];
-                    Log::info(((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0)));
-                    Log::info(in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3]));
                     // 只有未更新过的线路需要更新期望时间和距离
                     if (
                         ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
                         || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
                     ) {
-                        Log::info($backElement['distance']['value']);
                         $tourData['expect_distance'] = $distance + $backElement['distance']['value'];
                         $tourData['expect_time'] = $time + $backElement['duration']['value'];
                     }
-                    Log::info('tour-data', $tourData);
                     Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
                 }
             } catch (BusinessLogicException $exception) {
                 throw new BusinessLogicException('线路更新失败');
             }
         }
-        Log::info(2);
-
     }
 
     /**
@@ -213,7 +203,7 @@ class GoogleApiService2
         $to = is_array($to) ? implode('|', array_filter($to)) : $to;
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
         $url = $url . $query;
-        Log::info('路由' . $url);
+        Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'get', ['url' => $url]);
         if (config('tms.true_app_env') == 'develop') {
             $options = [
                 'proxy' => [
@@ -225,8 +215,7 @@ class GoogleApiService2
         }
         $res = $this->client->get($url, $options);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
-            Log::info('google-api请求url', ['url' => $url]);
-            Log::info('google-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('google-api请求报错');
         }
         return $res;
@@ -273,8 +262,7 @@ class GoogleApiService2
         }
         $res = $this->client->get($url, $options);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
-            Log::info('google-api请求url', ['url' => $url]);
-            Log::info('google-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('google-api请求报错');
         }
         return $res;

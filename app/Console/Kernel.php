@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Services\BaseConstService;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -26,8 +27,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('telescope:prune --hours=1')->daily()->onOneServer()->emailOutputTo(config('tms.admin_email'));
-        $schedule->command('db:backup')->dailyAt('1:00')->onOneServer()->emailOutputTo(config('tms.admin_email'));
-        $schedule->command('route:retry')->cron('*/'.BaseConstService::ROUTE_RETRY_INTERVAL_TIME.' * * * *')->onOneServer();
+        $schedule->command('db:backup')->dailyAt('1:00')->onOneServer()->emailOutputTo(config('tms.admin_email'))->appendOutputTo(storage_path('logs/schedule.log'));
+        $schedule->command('route:retry')->cron('*/' . BaseConstService::ROUTE_RETRY_INTERVAL_TIME . ' * * * *')->onOneServer();
+        $schedule->command('restart:queue')->appendOutputTo(storage_path('logs/schedule.log'))->monthly()->onOneServer();
     }
 
     /**

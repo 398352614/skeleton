@@ -69,10 +69,9 @@ class OutWarehouse implements ShouldQueue
     {
         /****************************************2.触发司机出库****************************************************/
         $tour = Tour::query()->where('tour_no', $this->tour_no)->first()->toArray();
-        Log::info('tour:' . json_encode($tour));
         $batchList = Batch::query()->where('tour_no', $this->tour_no)->where('status', BaseConstService::BATCH_DELIVERING)->get()->toArray();
         event(new \App\Events\TourNotify\OutWarehouse($tour, $batchList, $this->trackingOrderList));
-        Log::info('出库成功');
+        Log::channel('job')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '出库成功');
         return true;
     }
 }

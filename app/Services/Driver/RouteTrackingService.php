@@ -39,7 +39,6 @@ class RouteTrackingService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('采集位置失败');
         }
-        Log::info('route-tracking-tour-no', ['tour_no' => $tour->tour_no]);
     }
 
     /**
@@ -95,7 +94,6 @@ class RouteTrackingService extends BaseService
                 throw new BusinessLogicException('操作失败');
             }
         }
-        Log::info('route-tracking-tour-no', ['tour_no' => $tracking['tour_no']]);
         return '';
     }
 }

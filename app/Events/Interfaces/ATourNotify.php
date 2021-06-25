@@ -33,8 +33,8 @@ abstract class ATourNotify
     public static $tourFields = ['line_name', 'tour_no', 'execution_date', 'expect_distance', 'expect_time', 'driver_id', 'driver_name', 'driver_phone', 'car_id', 'car_no'];
 
     public static $batchFields = [
-        'tour_no', 'batch_no', 'place_fullname', 'place_phone', 'place_country','place_province', 'place_post_code', 'place_house_number',
-        'place_city','place_district', 'place_street', 'place_address', 'expect_arrive_time', 'expect_time', 'expect_distance', 'signature', 'cancel_remark',
+        'tour_no', 'batch_no', 'place_fullname', 'place_phone', 'place_country', 'place_province', 'place_post_code', 'place_house_number',
+        'place_city', 'place_district', 'place_street', 'place_address', 'expect_arrive_time', 'expect_time', 'expect_distance', 'signature', 'cancel_remark',
         'pay_type', 'pay_picture', 'status', 'auth_fullname', 'auth_birth_date'
     ];
 
@@ -56,8 +56,8 @@ abstract class ATourNotify
         !empty($trackingOrderList) && $this->trackingOrderList = collect($trackingOrderList)->map(function ($order) {
             return Arr::only($order, self::$trackingOrderFields);
         })->toArray();
-        $this->type = $this->notifyType();
-        Log::info('notify-type:' . $this->notifyType());
+        $notifyType = $this->notifyType();
+        Log::channel('job')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'notifyType', [$notifyType]);
     }
 
     /**
@@ -105,14 +105,12 @@ abstract class ATourNotify
                 $package = array_merge($package, $dbPackageList[$package['express_first_no']]);
             }
             $packageList = array_create_group_index($packageList, 'order_no');
-            Log::info('package_list', $packageList);
         }
         //获取材料
         $materialList = [];
         if ($materialFill === true) {
             $materialList = TrackingOrderMaterial::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get(['order_no', 'name', 'code', 'out_order_no', 'expect_quantity', 'actual_quantity'])->toArray();
             $materialList = array_create_group_index($materialList, 'order_no');
-            Log::info('material_list', $materialList);
         }
         //将包裹材料组装至运单下
         $this->trackingOrderList = collect($this->trackingOrderList)->map(function ($trackingOrder) use ($packageFill, $materialFill, $packageList, $materialList, $orderList) {

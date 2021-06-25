@@ -74,7 +74,6 @@ class TransportPriceService extends BaseService
      */
     public function priceCount($data, $transportPriceId = null)
     {
-        Log::info('脚手架2', $data);
         //预设为0
         $data['starting_price'] = $data['settlement_amount'] = $data['package_settlement_amount'] = $data['count_settlement_amount'] = 0.00;
         if (!empty($data['package_list'])) {
@@ -90,7 +89,6 @@ class TransportPriceService extends BaseService
             return $data;
         }
         $transportPrice = $this->show();
-        Log::info('脚手架1', $transportPrice);
         $data['transport_price_id'] = $transportPriceId;
         $data['transport_price_type'] = $transportPrice['type'];
         if ($transportPrice['status'] == BaseConstService::ON) {

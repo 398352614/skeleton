@@ -21,7 +21,6 @@ trait CompanyTrait
     public static function getCountry()
     {
         $company = self::getCompany();
-        Log::info($company['country']);
         return $company['country'] ?? '';
     }
 
