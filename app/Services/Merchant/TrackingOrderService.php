@@ -262,9 +262,7 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('操作失败，请重新操作');
         }
         $trackingOrder=$trackingOrder->getAttributes();
-        $trackingOrder1 = parent::getInfo(['id' => $trackingOrder['id']], '*', false)->toArray();
-        Log::debug('order', $trackingOrder);
-        Log::debug('order1', $trackingOrder1);
+
         /*****************************************运单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
         $trackingOrder = $this->fillBatchTourInfo($trackingOrder, $batch, $tour);
