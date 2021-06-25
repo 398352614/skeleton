@@ -47,7 +47,7 @@ class BusinessLogicException extends Exception
      */
     public function report()
     {
-        Log::error('错误', ['message' => $this->message, 'code' => $this->code]);
+        Log::channel('info')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException',['message' => $this->message, 'code' => $this->code]);
     }
 
     /**

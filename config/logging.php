@@ -55,7 +55,7 @@ return [
             'permission' => 0664,
         ],
 
-        'worker-daily' => [
+        'worker' => [
             'driver' => 'daily',
             'path' => storage_path('logs/worker/worker.log'),
             'level' => 'debug',
@@ -63,7 +63,7 @@ return [
             'permission' => 0664,
         ],
 
-        'job-daily' => [
+        'job' => [
             'driver' => 'daily',
             'path' => storage_path('logs/job/job.log'),
             'level' => 'debug',
