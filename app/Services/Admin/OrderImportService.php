@@ -19,6 +19,7 @@ use App\Models\Package;
 use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Services\CommonService;
+use App\Traits\AddressTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
@@ -34,7 +35,7 @@ use WebSocket\Base;
 
 class OrderImportService extends BaseService
 {
-    use ExportTrait, ImportTrait;
+    use ExportTrait, ImportTrait, AddressTrait;
 
     public function __construct(OrderImportLog $orderImportLog)
     {
@@ -485,26 +486,13 @@ class OrderImportService extends BaseService
      * 格式化新增数据
      * @param $data
      * @return mixed
+     * @throws BusinessLogicException
      */
     public function form($data)
     {
         $data['package_list'] = [];
         $data['material_list'] = [];
-        if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
-            unset(
-                $data['second_place_fullname'],
-                $data['second_place_phone'],
-                $data['second_place_province'],
-                $data['second_place_city'],
-                $data['second_place_district'],
-                $data['second_place_street'],
-                $data['second_place_house_number'],
-                $data['second_place_post_code'],
-                $data['second_place_lat'],
-                $data['second_place_lon'],
-                $data['second_execution_date'],
-            );
-        } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+        if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
             $data['place_fullname'] = $data['second_place_fullname'] ?? '';
             $data['place_phone'] = $data['second_place_phone'] ?? '';
             $data['place_province'] = $data['second_place_province'] ?? '';
@@ -515,21 +503,12 @@ class OrderImportService extends BaseService
             $data['place_post_code'] = $data['second_place_post_code'];
             $data['place_lat'] = $data['second_place_lat'] ?? '';
             $data['place_lon'] = $data['second_place_lon'] ?? '';
+            $data['place_address'] = $data['second_place_address'] ?? '';
             $data['execution_date'] = $data['second_execution_date'];
-            unset(
-                $data['second_place_fullname'],
-                $data['second_place_phone'],
-                $data['second_place_province'],
-                $data['second_place_city'],
-                $data['second_place_district'],
-                $data['second_place_street'],
-                $data['second_place_house_number'],
-                $data['second_place_post_code'],
-                $data['second_place_lat'],
-                $data['second_place_lon'],
-                $data['second_execution_date'],
-            );
         }
+        $newData=$data;
+        $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+        $data = $this->warehouseToSecondPlace($newData, $data);
         for ($j = 0; $j < 5; $j++) {
             if (!empty($data['package_no_' . ($j + 1)])) {
                 $data['package_list'][$j]['name'] = $data['package_name_' . ($j + 1)] ?? '';
@@ -570,8 +549,8 @@ class OrderImportService extends BaseService
         }
         $data = Arr::only($data, [
             "create_date", "type", "merchant_id", "out_user_id", "out_order_no",
-            "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date",
-            "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat",
+            "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date", "place_address",
+            "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat", "second_place_address",
             "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
 
