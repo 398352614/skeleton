@@ -328,4 +328,14 @@ class OrderController extends OrderBaseController
         return $this->service->orderBillPrint($this->data['id_list']);
     }
 
+    /**
+     * 批量导出
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function orderExcelExport()
+    {
+        return $this->service->orderExcelExport();
+    }
+
 }

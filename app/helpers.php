@@ -176,12 +176,18 @@ if (!function_exists('array_only_fields_sort')) {
     function array_only_fields_sort($data, $fields)
     {
         $newData = [];
-        if (collect($data)->has($fields)) {
-            foreach ($fields as $v) {
-                $newData[$v] = $data[$v];
+        $params = 2;
+        foreach ($fields as $v) {
+            if (empty($data[$v])) {
+                $params = 1;
             }
-        } else {
+        }
+        if ($params == 1) {
             $newData = \Illuminate\Support\Arr::only($data, $fields);
+        } else {
+            foreach ($fields as $v) {
+                $newData[$v] = $data[$v] ?? '';
+            }
         }
         return $newData;
     }
@@ -260,16 +266,16 @@ if (!function_exists('formatBytes')) {
     /**
      * 转换字节大小
      * @param $bytes
-     * @param  int  $precision
+     * @param int $precision
      * @return string
      */
     function formatBytes($bytes, $precision = 2): string
     {
         $units = array('B', 'KB', 'MB', 'GB', 'TB');
 
-        $bytes  = max($bytes, 0);
-        $pow    = floor(($bytes ? log($bytes) : 0) / log(1024));
-        $pow    = min($pow, count($units) - 1);
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
 
         // Uncomment one of the following alternatives
         // $bytes /= pow(1024, $pow);

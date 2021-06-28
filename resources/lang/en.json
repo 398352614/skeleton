@@ -16,7 +16,6 @@
     "司机从仓库出发": "The driver has left the warehouse",
     "司机返回仓库": "The driver has returned back the warehouse",
     "货主通知成功返回": "",
-    "外部订单号已存在": "External order number already exists",
     "已存在仓库，不能删除国家": "The warehouse already exists, the country cannot be deleted",
     "开始更新线路,线路标识为:": "Start to update the route, the route ID is:",
     "更新线路完成,线路标识为:": "Route update is completed, and the identification is as follows:",
