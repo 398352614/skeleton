@@ -769,7 +769,7 @@ class OrderService extends BaseService
             $dbOrder = parent::getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
             if (!empty($dbOrder)) {
                 if (auth()->user()->getAttribute('is_api') == true) {
-                    throw new BusinessLogicException('货号已存在', 1005, [], [
+                    throw new BusinessLogicException('外部订单号已存在', 1005, [], [
                         'order_no' => $dbOrder['order_no'],
                         'out_order_no' => $dbOrder['out_order_no'] ?? '',
                         'batch_no' => '',
@@ -779,7 +779,7 @@ class OrderService extends BaseService
                         'second_execution_date' => $dbOrder->second_execution_date ?? null
                     ]);
                 } else {
-                    throw new BusinessLogicException('货号已存在');
+                    throw new BusinessLogicException('外部订单号已存在');
                 }
             }
         }

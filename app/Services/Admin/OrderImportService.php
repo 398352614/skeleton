@@ -222,7 +222,7 @@ class OrderImportService extends BaseService
             !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
             $dbOrder = $this->getOrderService()->getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
             if (!empty($dbOrder)) {
-                $list['error']['out_order_no'] = __('货号已存在');
+                $list['error']['out_order_no'] = __('外部订单号已存在');
             }
         }
 
