@@ -633,14 +633,14 @@
             "type": "String",
             "optional": false,
             "field": "order_no",
-            "description": "<p>[必填] 订单号</p>"
+            "description": "<p>订单号</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "execution_date",
-            "description": "<p>取派日期</p>"
+            "description": "<p>[必填] 取派日期</p>"
           },
           {
             "group": "Parameter",
@@ -780,14 +780,14 @@
             "type": "String",
             "optional": false,
             "field": "place_fullname",
-            "description": "<p>发件人姓名</p>"
+            "description": "<p>[必填] 发件人姓名</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "place_phone",
-            "description": "<p>发件人电话</p>"
+            "description": "<p>[必填] 发件人电话</p>"
           },
           {
             "group": "Parameter",
@@ -808,14 +808,14 @@
             "type": "String",
             "optional": false,
             "field": "place_post_code",
-            "description": "<p>发件人邮编</p>"
+            "description": "<p>[必填] 发件人邮编</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "optional": false,
             "field": "place_house_number",
-            "description": "<p>发件人门牌号</p>"
+            "description": "<p>[必填] 发件人门牌号</p>"
           },
           {
             "group": "Parameter",
@@ -920,7 +920,7 @@
             "type": "String",
             "optional": false,
             "field": "package_list.express_first_no",
-            "description": "<p>快递单号1</p>"
+            "description": "<p>[必填] 快递单号1</p>"
           },
           {
             "group": "Parameter",
@@ -969,7 +969,7 @@
             "type": "String",
             "optional": false,
             "field": "package_list.expect_quantity",
-            "description": "<p>预计数量</p>"
+            "description": "<p>[必填] 预计数量</p>"
           },
           {
             "group": "Parameter",
@@ -1067,7 +1067,7 @@
             "type": "String",
             "optional": false,
             "field": "material_list.code",
-            "description": "<p>材料代码</p>"
+            "description": "<p>[必填] 材料代码</p>"
           },
           {
             "group": "Parameter",
@@ -1249,7 +1249,7 @@
             "type": "String",
             "optional": false,
             "field": "order_no",
-            "description": "<p>[必填] 订单号</p>"
+            "description": "<p>订单号</p>"
           },
           {
             "group": "Parameter",
@@ -1263,7 +1263,7 @@
             "type": "String",
             "optional": false,
             "field": "second_execution_date",
-            "description": "<p>[必填]取派日期。若订单类型为取派件，则此项必填。</p>"
+            "description": "<p>取派日期。若订单类型为取派件，则此项必填。</p>"
           },
           {
             "group": "Parameter",
@@ -1410,7 +1410,7 @@
             "type": "String",
             "optional": false,
             "field": "place_fullname",
-            "description": "<p>发件人姓名</p>"
+            "description": "<p>[必填] 发件人姓名</p>"
           },
           {
             "group": "Parameter",
@@ -1424,7 +1424,7 @@
             "type": "String",
             "optional": false,
             "field": "place_country",
-            "description": "<p>[必填]  发件人国家</p>"
+            "description": "<p>发件人国家</p>"
           },
           {
             "group": "Parameter",
@@ -1599,7 +1599,7 @@
             "type": "String",
             "optional": false,
             "field": "package_list.expect_quantity",
-            "description": "<p>预计数量</p>"
+            "description": "<p>[必填] 预计数量</p>"
           },
           {
             "group": "Parameter",
@@ -1711,7 +1711,7 @@
             "type": "String",
             "optional": false,
             "field": "material_list.expect_quantity",
-            "description": "<p>预计数量</p>"
+            "description": "<p>[必填] 预计数量</p>"
           },
           {
             "group": "Parameter",
