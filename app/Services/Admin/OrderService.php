@@ -618,6 +618,7 @@ class OrderService extends BaseService
         }
         //若邮编是纯数字，则认为是比利时邮编
         $country = CompanyTrait::getCountry();
+        $params['place_country'] = $country;
         if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
             $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
         }
@@ -759,11 +760,11 @@ class OrderService extends BaseService
                 throw new BusinessLogicException('订单包裹新增失败！');
             }
         }
-        $materialList=[];
+        $materialList = [];
         //若材料存在,则新增材料列表
         if (!empty($params['material_list'])) {
             foreach ($params['material_list'] as $k => $v) {
-                $materialList[$k]=Arr::only($v,['name', 'code', 'out_order_no','weight','size','unit_price', 'expect_quantity', 'remark']);
+                $materialList[$k] = Arr::only($v, ['name', 'code', 'out_order_no', 'weight', 'size', 'unit_price', 'expect_quantity', 'remark']);
                 $materialList[$k]['order_no'] = $params['order_no'];
                 $materialList[$k]['merchant_id'] = $params['merchant_id'];
                 $materialList[$k]['execution_date'] = $params['execution_date'];
