@@ -734,7 +734,8 @@ class OrderService extends BaseService
         }
         //若邮编是纯数字，则认为是比利时邮编
         $country = CompanyTrait::getCountry();
-        $params['place_country'] = $country;
+        !empty($params['place_country']) && $params['place_country'] = $country;
+        !empty($params['second_place_country']) && $params['second_place_country'] = $country;
         if (in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])) {
             if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
                 $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
