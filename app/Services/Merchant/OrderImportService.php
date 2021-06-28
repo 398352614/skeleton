@@ -504,7 +504,7 @@ class OrderImportService extends BaseService
                 $data['material_list'][$j]['size'] = $data['material_size_' . ($j + 1)] ?? 1;
                 $data['material_list'][$j]['type'] = $data['material_type_' . ($j + 1)] ?? null;
                 $data['material_list'][$j]['pack_type'] = $data['material_pack_type_' . ($j + 1)] ?? null;
-                $data['material_list'][$j]['price'] = $data['material_price_' . ($j + 1)] ?? 0;
+                $data['material_list'][$j]['unit_price'] = $data['material_price_' . ($j + 1)] ?? 0;
                 $data['material_list'][$j]['remark'] = $data['material_remark_' . ($j + 1)] ?? '';
                 $data['material_list'][$j]['out_order_no'] = $data['material_out_order_no_' . ($j + 1)] ?? '';
                 $data['material_list'] = array_values($data['material_list']);
