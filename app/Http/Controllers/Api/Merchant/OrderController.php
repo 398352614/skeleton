@@ -325,7 +325,7 @@ class OrderController extends OrderBaseController
      */
     public function orderBillPrint()
     {
-        return $this->service->orderBillPrint($this->data);
+        return $this->service->orderBillPrint($this->data['id_list']);
     }
 
 }

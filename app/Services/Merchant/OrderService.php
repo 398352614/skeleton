@@ -1306,7 +1306,7 @@ class OrderService extends BaseService
     public function printData($idList)
     {
         $newOrderList = [];
-        $orderList = parent::getList(['id' => ['in', explode_id_string($idList)]], ['*'], false)->toArray();
+        $orderList = parent::getList(['id' => ['in', explode_id_string($idList)], 'merchant_id' => ['<>', 0]], ['*'], false)->toArray();
         if (empty($orderList)) {
             throw new BusinessLogicException('订单不存在');
         }
