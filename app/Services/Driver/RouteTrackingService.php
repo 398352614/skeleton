@@ -84,9 +84,6 @@ class RouteTrackingService extends BaseService
             abs($tracking['lat'] - $firstTracking['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE) {
             $stopTime = $firstTracking['stop_time'] + abs($tracking['time'] - $firstTracking['time']);
             $row = parent::update(['id' => $firstTracking['id']], ['stop_time' => $stopTime, 'time' => $tracking['time']]);
-            if ($row == false) {
-                throw new BusinessLogicException('操作失败');
-            }
         } else {
             $tracking['tour_driver_event_id'] = null;
             $row = $this->create($tracking);
