@@ -40,27 +40,28 @@ class GoogleApiService2
     {
         $this->client = new CurlClient;
         $this->url = config('tms.map_url');
+        $this->key = config('tms.map_key');
 
-        $company = auth('admin')->user();
-        if (empty($company)) {
-            $company = auth('merchant')->user();
-        }
-        if (empty($company)) {
-            $company = auth('driver')->user();
-        }
-        if (empty(($company))) {
-            $company = auth()->user();
-        }
-        if (empty($company)) {
-            throw new BusinessLogicException('公司不存在');
-        }
-        $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
-        if (!empty($mapConfig)) {
-            $this->key = $mapConfig->toArray()['google_key'];
-        } else {
-            Log::info('备用Key');
-            $this->key = config('tms.map_url');
-        }
+//        $company = auth('admin')->user();
+//        if (empty($company)) {
+//            $company = auth('merchant')->user();
+//        }
+//        if (empty($company)) {
+//            $company = auth('driver')->user();
+//        }
+//        if (empty(($company))) {
+//            $company = auth()->user();
+//        }
+//        if (empty($company)) {
+//            throw new BusinessLogicException('公司不存在');
+//        }
+//        $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
+//        if (!empty($mapConfig)) {
+//            $this->key = $mapConfig->toArray()['google_key'];
+//        } else {
+//            Log::info('备用Key');
+//            $this->key = config('tms.map_key');
+//        }
         Log::info($this->key);
     }
 
