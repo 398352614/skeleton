@@ -139,7 +139,7 @@ class SendOrderDelete implements ShouldQueue
     {
         $res = $this->curl->post($url, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
-            app('log')->info('send notify failure');
+            Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '请求失败');
             Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             return [false, $res['msg'] ?? '服务器内部错误'];
         }
@@ -156,7 +156,7 @@ class SendOrderDelete implements ShouldQueue
     {
         $res = $this->curl->merchantPost($merchant, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
-            app('log')->info('send notify failure');
+            Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '请求失败');
             Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('发送失败');
         }

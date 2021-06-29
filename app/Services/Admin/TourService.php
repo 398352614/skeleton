@@ -663,9 +663,7 @@ class TourService extends BaseService
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
         // set_time_limit(240);
-
-        app('log')->info('更新线路传入的参数为:', $data);
-
+        Log::channel('info')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. '更新线路传入的参数', $data);
         $tour = Tour::where('tour_no', $data['tour_no'])->firstOrFail();
 
         throw_if(
@@ -713,6 +711,8 @@ class TourService extends BaseService
 
     /**
      * 处理计算时间和距离的回调
+     * @throws BusinessLogicException
+     * @throws \Throwable
      */
     public function dealCallback()
     {
@@ -724,22 +724,19 @@ class TourService extends BaseService
         $tourLog = TourLog::where('tour_no', $this->formData['line_code'])->where('status', BaseConstService::TOUR_LOG_PENDING)->where('action', $this->formData['type'])->first();
         // app('log')->info('日志的时间戳为:' . $lineLog->timestamp . '当天开始的时间戳为:' . strtotime(date("Y-m-d")));
         if (time() - $tourLog->created_at->timestamp > 3600 * 24 || $tourLog->created_at->timestamp < strtotime(date("Y-m-d"))) { // 标记为异常日志
-            app('log')->info('异常的线路日志为:' . $this->formData['line_code']);
             $tourLog->update(['status' => BaseConstService::TOUR_LOG_ERROR]);
             self::setTourLock($this->formData['line_code'], 0);
             throw new BusinessLogicException('更新时间已超时');
         }
 
-        $info = $this->apiClient->LineInfo($this->formData['line_code']);
+        $info = $this->apiClient->lineInfo($this->formData['line_code']);
         if (!$info || $info['ret'] == 0) { // 返回错误的情况下直接返回
-            app('log')->info('更新动作失败,错误信息为:' . $info['msg']);
             self::setTourLock($this->formData['line_code'], 0);
             return '已知道该次更新失败';
         }
         $data = $info['data'];
 
-        app('log')->info('开始更新线路,线路标识为:' . $this->formData['line_code']);
-        app('log')->info('api返回的结果为:', $info);
+
 
         TourLog::where('tour_no', $this->formData['line_code'])->where('action', $this->formData['type'])->update(['status' => BaseConstService::TOUR_LOG_COMPLETE]); // 日志标记为已完成
         $tour = Tour::where('tour_no', $this->formData['line_code'])->first();
@@ -762,7 +759,6 @@ class TourService extends BaseService
         }
         $tour->lave_distance = $max_distance;
 
-        app('log')->info('更新线路完成,线路标识为:' . $this->formData['line_code']);
         //取消锁
         self::setTourLock($this->formData['line_code'], 0);
         return '更新完成';

@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class Handler extends ExceptionHandler
@@ -46,7 +47,7 @@ class Handler extends ExceptionHandler
             //企业微信报错
             $body = $exception->getMessage() . ' in ' . $exception->getFile() . ':' . $exception->getLine();
             (new MessageService())->reportToWechat($body);
-            app('log')->info('报错时参数' . json_encode(request()->input()));
+            Log::channel('info')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. '报错时参数', request()->input());
         }
         parent::report($exception);
     }

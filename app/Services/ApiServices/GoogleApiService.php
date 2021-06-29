@@ -115,7 +115,7 @@ class GoogleApiService
     /**
      * 获取线路信息
      */
-    public function LineInfo($lineCode)
+    public function lineInfo($lineCode)
     {
         $api = '/api/line-info';
 
@@ -129,7 +129,7 @@ class GoogleApiService
     /**
      * 获取线路信息
      */
-    public function LineInfo2($lineCode)
+    public function lineInfo2($lineCode)
     {
         $api = '/api/line-info';
 

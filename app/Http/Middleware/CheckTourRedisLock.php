@@ -17,13 +17,13 @@ class CheckTourRedisLock
      * @param \Closure $next
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \Exception
      */
     public function handle($request, Closure $next)
     {
         if (!$request->tour_no) {
             throw new BusinessLogicException('未传入取件线路编号');
         }
-        app('log')->debug('经过中间件,当前的 :tour_no 为:' . ($request->tour_no ?? ''));
         if (self::getTourLock($request->tour_no)) {
             throw new BusinessLogicException('当前取件线路已锁定,请稍后操作');
         }

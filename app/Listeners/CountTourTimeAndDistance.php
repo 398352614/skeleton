@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\AfterTourInit;
 use App\Services\ApiServices\GoogleApiService;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class CountTourTimeAndDistance implements ShouldQueue
 {
@@ -31,11 +32,9 @@ class CountTourTimeAndDistance implements ShouldQueue
      */
     public function handle($event)
     {
-
-        app('log')->info('初始化tour出发事件进入此处');
+        Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '初始化线路');
         $tour = $event->tour; // 获取事件对应的线路
-        app('log')->info('线路标识为:' . $tour->tour_no);
         $res = $this->apiClient->InitTour($tour);
-        app('log')->info('初始化tour的返回结果为:', $res);
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . '初始化线路返回结果',$res);
     }
 }

@@ -40,7 +40,7 @@ class XLDirectionService
     {
         //传入的数据必须是由 code,latitude,longitude 三个元素组成的数组构成的二维数组
         $locSeq = [];
-        app('log')->debug('获取优化线路传递的参数为:', $data ?? []);
+        Log::channel('api')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. '获取优化线路传递的参数为', $data ?? []);
         foreach ($data as $key => $loc) {
             $temp = [];
             $temp['name'] = $loc['batch_no'];
@@ -51,11 +51,17 @@ class XLDirectionService
         return $this->getTour($locSeq);
     }
 
+    /**
+     * @param array $locSeq
+     * @return array
+     * @throws BusinessLogicException
+     */
     public function getTour(array $locSeq): array
     {
         $resp = $this->curl->post(self::BASE_URL . 'tour/', ['locations' => $locSeq], 0);
         if (!$resp || !$resp['feasible']) {
-            app('log')->info('线路规划失败或者不可靠');
+            Log::channel('api')->notice(__CLASS__ .'.'. __FUNCTION__ .'.'. '线路规划失败或者不可靠');
+            Log::channel('api')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. 'res', $resp);
             return [];
         }
 

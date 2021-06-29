@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class UpdateLineCountTime implements ShouldQueue
 {
@@ -67,7 +68,7 @@ class UpdateLineCountTime implements ShouldQueue
      */
     public function handle()
     {
-        app('log')->info('更新线路出发事件进入此处');
+        Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '更新线路开始');
         TourOptimizationService::getOpInstance($this->tour->company_id)->updateTour($this->tour, $this->nextBatchCode);
     }
 

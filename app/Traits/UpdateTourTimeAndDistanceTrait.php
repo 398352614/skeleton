@@ -13,6 +13,11 @@ trait UpdateTourTimeAndDistanceTrait
 {
     use TourRedisLockTrait;
 
+    /**
+     * @param $tour
+     * @return bool
+     * @throws BusinessLogicException
+     */
     public function updateTourTimeAndDistance($tour): bool
     {
         if (self::getTourLock($tour->tour_no) == 1) {
@@ -20,15 +25,14 @@ trait UpdateTourTimeAndDistanceTrait
         }
         try {
             self::setTourLock($tour->tour_no, 1);
-            $info = $this->LineInfo($tour->tour_no);
+            $info = $this->lineInfo($tour->tour_no);
             if (empty($info['ret']) || (!empty($info['ret']) && ($info['ret'] == 0))) { // 返回错误的情况下直接返回
                 self::setTourLock($tour->tour_no, 0);
                 return false;
             }
             $data = $info['data'];
 
-            app('log')->info('开始更新线路,线路标识为:' . $tour->tour_no);
-            app('log')->info('api返回的结果为:', $info);
+            Log::channel('info')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. '返回值', $data);
 
             TourLog::where('tour_no', $tour->tour_no)->where('action', $tour->tour_no)->update(['status' => BaseConstService::TOUR_LOG_COMPLETE]); // 日志标记为已完成
             $tour = Tour::where('tour_no', $tour->tour_no)->first();
@@ -83,15 +87,16 @@ trait UpdateTourTimeAndDistanceTrait
                 $tour->save();
             }
             $tour->lave_distance = $max_distance;
-
-            app('log')->info('更新线路完成,线路标识为:' . $tour->tour_no);
+            Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '更新线路完成');
             self::setTourLock($tour->tour_no, 0);
             return true;
         } catch (\Exception $e) {
             self::setTourLock($tour->tour_no, 0);
-            app('log')->info('updateTourTimeAndDistance错误-----:' . $e->getFile());
-            app('log')->info('updateTourTimeAndDistance错误-----:' . $e->getLine());
-            app('log')->info('updateTourTimeAndDistance错误-----:' . $e->getMessage());
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
             throw new BusinessLogicException('更新线路信息失败，请稍后重试');
         }
     }
