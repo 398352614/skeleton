@@ -32,11 +32,34 @@ class GoogleApiService2
      */
     protected $client;
 
+    /**
+     * GoogleApiService2 constructor.
+     * @throws BusinessLogicException
+     */
     public function __construct()
     {
         $this->client = new CurlClient;
         $this->url = config('tms.map_url');
-        $this->key = config('tms.map_key');
+
+        $company = auth('admin')->user();
+        if (empty($company)) {
+            $company = auth('merchant')->user();
+        }
+        if (empty($company)) {
+            $company = auth('driver')->user();
+        }
+        if (empty(($company))) {
+            $company = auth()->user();
+        }
+        if (empty($company)) {
+            throw new BusinessLogicException('公司不存在');
+        }
+        $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
+        if (!empty($mapConfig)) {
+            $this->key = $mapConfig->toArray()['google_key'];
+        } else {
+            $this->key = config('tms.map_url');
+        }
     }
 
     /**
@@ -105,7 +128,7 @@ class GoogleApiService2
     {
         Log::info(1);
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
-        Log::info('batch',collect($orderBatchs)->toArray());
+        Log::info('batch', collect($orderBatchs)->toArray());
 
         if (!collect($orderBatchs)->isEmpty()) {
             $orderBatchs = $orderBatchs->keyBy('batch_no')->map(function ($batch) {
