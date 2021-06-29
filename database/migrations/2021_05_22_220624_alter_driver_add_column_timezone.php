@@ -14,7 +14,7 @@ class AlterDriverAddColumnTimezone extends Migration
     public function up()
     {
         Schema::table('driver', function (Blueprint $table) {
-            $table->string('timezone')->default(null)->nullable()->after('warehouse_id')->comment('时区');
+            $table->string('timezone')->default(null)->nullable()->after('company_id')->comment('时区');
         });
     }
 
