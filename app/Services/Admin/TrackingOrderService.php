@@ -228,6 +228,8 @@ class TrackingOrderService extends BaseService
             if (!$trackingOrderList->isEmpty()) {
                 $trackingOrderList = $trackingOrderList->pluck('tracking_order_no')->toArray();
                 $this->query->whereIn('tracking_order_no', $trackingOrderList);
+            }else{
+                return [];
             }
         }
         $list = parent::getPageList();
