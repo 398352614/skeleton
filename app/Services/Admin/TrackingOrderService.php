@@ -26,6 +26,7 @@ use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
 use App\Services\PackageTrailService;
 use App\Services\TrackingOrderTrailService;
+use App\Traits\AddressTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
@@ -43,7 +44,7 @@ use Illuminate\Support\Facades\Validator;
  */
 class TrackingOrderService extends BaseService
 {
-    use ExportTrait;
+    use ExportTrait,AddressTrait;
 
     public $filterRules = [
         'type' => ['=', 'type'],
@@ -228,6 +229,8 @@ class TrackingOrderService extends BaseService
             if (!$trackingOrderList->isEmpty()) {
                 $trackingOrderList = $trackingOrderList->pluck('tracking_order_no')->toArray();
                 $this->query->whereIn('tracking_order_no', $trackingOrderList);
+            }else{
+                return [];
             }
         }
         $list = parent::getPageList();
@@ -744,16 +747,8 @@ class TrackingOrderService extends BaseService
             $params = $dbOrder->toArray();
             $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
             if ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3) {
-                $address = [
-                    'place_country' => $dbOrder['second_place_country'], 'place_fullname' => $dbOrder['second_place_fullname'],
-                    'place_phone' => $dbOrder['second_place_phone'], 'place_post_code' => $dbOrder['second_place_post_code'],
-                    'place_house_number' => $dbOrder['second_place_house_number'], 'place_city' => $dbOrder['second_place_city'],
-                    'place_street' => $dbOrder['second_place_street'], 'place_address' => $dbOrder['second_place_address'],
-                    'place_lat' => $dbOrder['second_place_lat'], 'place_lon' => $dbOrder['second_place_lon'],
-                    'execution_date' => $dbOrder['second_execution_date'],
-                    'type' => BaseConstService::TRACKING_ORDER_TYPE_2
-                ];
-                $params = array_merge($params, $address);
+                $params=$this->secondPlaceToPlace($dbOrder,$params);
+                $params['type']=BaseConstService::TRACKING_ORDER_TYPE_2;
             }
 //            $params = Arr::only($params, ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat', 'type']);
 //            $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);

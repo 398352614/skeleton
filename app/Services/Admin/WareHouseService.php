@@ -110,6 +110,7 @@ class WareHouseService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('网点修改失败，请重新操作');
         }
+        $this->getDriverService()->update(['warehouse_id'=>$id],['warehouse_name'=>$data['name']]);
         return;
 //        //增加，更新线路的网点ID
 //        $this->getLineService()->updateWarehouse($dbData['id'], $lineIdList);

@@ -66,13 +66,13 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         //订单统计
         Route::get('/count', 'OrderController@ordercount');
         //查询初始化
-        Route::get('/initIndex', 'OrderController@initIndex');
+//        Route::get('/initIndex', 'OrderController@initIndex');
         //列表查询
         Route::get('/', 'OrderController@index');
         //获取详情
         Route::get('/{id}', 'OrderController@show');
         //新增初始化
-        Route::get('/initStore', 'OrderController@initStore');
+//        Route::get('/initStore', 'OrderController@initStore');
         //新增
         Route::post('/', 'OrderController@store');
         //修改
@@ -101,6 +101,8 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::put('/{id}/assign-batch', 'OrderController@assignToBatch');
         //从站点移除
         Route::delete('/{id}/remove-batch', 'OrderController@removeFromBatch');
+        //表格导出
+        Route::get('/excel', 'OrderController@orderExcelExport')->name('order.index');
         //批量打印面单
         Route::get('/bill', 'OrderController@orderBillPrint')->name('order.print');
         //获取网点

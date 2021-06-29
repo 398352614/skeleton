@@ -153,6 +153,7 @@ return [
     */
 
     'attributes' => [
+        'merchant'=>'cargo owner',
         'time' => 'time',
         'country' => 'country',
         'cn_name' => 'cn name',
@@ -203,8 +204,8 @@ return [
         'warehouse_lat' => 'warehouse lat',
         'house_number' => 'house number',
         'deal_remark' => 'deal remark',
-        'car_no' => 'car no',
-        'outgoing_time' => 'outgoing time',
+        'car_no' => 'license plate No.',
+        'outgoing_time' => 'date of manufacture',
         'car_brand_id' => 'car brand id',
         'car_model_id' => 'car model id',
         'ownership_type' => 'ownership type',

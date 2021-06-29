@@ -490,6 +490,21 @@ Route::prefix('order')->group(function () {
 //    Route::put('/{id}/end', 'OrderController@end');
 
     /**
+     * @api {get} /merchant/order/excel 订单导出
+     * @apiName 订单导出
+     * @apiGroup 05order
+     * @apiVersion 1.0.0
+     * @apiUse auth
+     * @apiParam {String} begin_date 开始日期
+     * @apiParam {String} end_date 结束日期
+     * @apiSuccess {Number} code    状态码，200：请求成功
+     * @apiSuccess {String} msg   提示信息
+     * @apiSuccess {Object} data    下载链接
+     * @apiSuccessExample {json} Success-Response:
+     * {"code":200,"data":{"name":"66f6181bcb4cff4cd38fbc804a036db6.xlsx","path":"tms-api.test\/storage\/admin\/excel\/3\/order\/66f6181bcb4cff4cd38fbc804a036db6.xlsx"},"msg":"successful"}
+     */
+
+    /**
      * @api {get} /merchant/order/{id}/get-date 通过订单获取可选日期
      * @apiName 通过订单获取可选日期
      * @apiGroup 05order

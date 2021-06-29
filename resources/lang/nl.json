@@ -285,7 +285,7 @@
     "表格格式不正确，请使用正确的模板导入": "Het formaat van de tabel is niet correct, gebruik de juiste sjabloon om te importeren",
     "导入订单数量不得超过100个": "Het aantal ingevoerde bestellingen mag niet hoger zijn dan 100",
     "订单中必须存在一个包裹或一种材料": "Er moet een pakket of een materiaal in de volgorde",
-    "货号已存在": "Extern bestelnummer bestaat al",
+    "外部订单号已存在": "Extern bestelnummer bestaat al",
     "网点不存在": "Het pakhuis bestaat niet.",
     "冷冻": "bevriezing",
     "风房": "Wind house",

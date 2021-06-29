@@ -199,7 +199,7 @@ class PackageTrailService extends \App\Services\Admin\BaseService
                 $content = sprintf("您的包裹在[%s]进行装车处理，操作员：[%s]", auth()->user()->warehouse_name, $params['load_operator']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_OUT:
-                $content = sprintf("您的包裹在[%s]已装车，正在发往[%s]，操作员：[%s]", $params['warehouse_name'], $params['next_warehouse_name'], $params['driver_name']);
+                $content = sprintf("您的包裹在[%s]已装车，正在发往[%s]，操作员：[%s]", auth()->user()->warehouse_name, $params['next_warehouse_name'], $params['driver_name']);
                 break;
             case BaseConstService::PACKAGE_TRAIL_IN:
                 $content = sprintf("您的包裹到达[%s]，操作员：[%s]", auth()->user()->warehouse_name, auth()->user()->fullname);

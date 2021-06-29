@@ -38,16 +38,14 @@ class DriverService extends BaseService
      */
     public function updateById($id, $data)
     {
-        if (empty($data['warehouse_id'])) {
-            $warehouse = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->id, 'parent' => 0], ['*'], false);
-        } else {
+        if (!empty($data['warehouse_id'])) {
             $warehouse = $this->getWareHouseService()->getInfo(['id' => $data['warehouse_id']], ['*'], false);
-        }
-        if (empty($warehouse)) {
-            throw new BusinessLogicException('网点不存在');
+            if (empty($warehouse)) {
+                throw new BusinessLogicException('网点不存在');
+            }
+            $data['warehouse_name'] = $warehouse['name'];
         }
         $data = Arr::except($data, 'password');
-        $data['warehouse_name'] = $warehouse['name'];
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');

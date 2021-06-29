@@ -734,6 +734,8 @@ class OrderService extends BaseService
         }
         //若邮编是纯数字，则认为是比利时邮编
         $country = CompanyTrait::getCountry();
+        $params['place_country'] = $country;
+        $params['second_place_country'] = $country;
         if (in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])) {
             if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
                 $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
@@ -769,7 +771,7 @@ class OrderService extends BaseService
             $dbOrder = parent::getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
             if (!empty($dbOrder)) {
                 if (auth()->user()->getAttribute('is_api') == true) {
-                    throw new BusinessLogicException('货号已存在', 1005, [], [
+                    throw new BusinessLogicException('外部订单号已存在', 1005, [], [
                         'order_no' => $dbOrder['order_no'],
                         'out_order_no' => $dbOrder['out_order_no'] ?? '',
                         'batch_no' => '',
@@ -779,7 +781,7 @@ class OrderService extends BaseService
                         'second_execution_date' => $dbOrder->second_execution_date ?? null
                     ]);
                 } else {
-                    throw new BusinessLogicException('货号已存在');
+                    throw new BusinessLogicException('外部订单号已存在');
                 }
             }
         }
@@ -1303,7 +1305,7 @@ class OrderService extends BaseService
     public function printData($idList)
     {
         $newOrderList = [];
-        $orderList = parent::getList(['id' => ['in', explode_id_string($idList)]], ['*'], false)->toArray();
+        $orderList = parent::getList(['id' => ['in', explode_id_string($idList)], 'merchant_id' => ['<>', 0]], ['*'], false)->toArray();
         if (empty($orderList)) {
             throw new BusinessLogicException('订单不存在');
         }
@@ -1634,6 +1636,81 @@ class OrderService extends BaseService
             }
             $this->getStockService()->update(['order_no' => $order['order_no'], 'expiration_status' => BaseConstService::EXPIRATION_STATUS_2], ['expiration_status' => BaseConstService::EXPIRATION_STATUS_3]);
         }
+    }
+
+    /**
+     * 订单导出
+     * @param $id_list
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function orderExcelExport()
+    {
+        $orderList = $this->setFilter()->getList();
+        //特殊处理
+        if ($orderList->isEmpty()) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $packageList = $this->getPackageService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
+        $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderList->pluck('order_no')->toArray()]]);
+        $orderList = $orderList->toArray(request());
+        $packageIsExist = !empty($packageList);
+        $materialIsExist = !empty($materialList);
+        unset($packageList);
+        unset($materialList);
+        foreach ($orderList as $k => $v) {
+            $orderList[$k]['merchant_name'] = $v['merchant_id_name'];
+            $orderList[$k]['status'] = $v['status_name'];
+            $orderList[$k]['type'] = $v['type_name'];
+            $orderList[$k]['sticker_amount'] = $v['sticker_amount'] ?? 0.00;
+            $orderList[$k]['replace_amount'] = $v['replace_amount'] ?? 0.00;
+            $orderList[$k]['settlement_amount'] = $v['settlement_amount'] ?? 0.00;
+            if ($packageIsExist) {
+                $list = $this->getPackageService()->query->where('order_no', $v['order_no'])->pluck('express_first_no')->toArray();
+                $orderList[$k]['package_name'] = implode(',', $list);
+                $orderList[$k]['package_quantity'] = count($list);
+            } else {
+                $orderList[$k]['package_name'] = [];
+                $orderList[$k]['package_quantity'] = 0;
+            }
+            if ($materialIsExist) {
+                $list = $this->getMaterialService()->query->where('order_no', $v['order_no'])->get();
+                $orderList[$k]['material_name'] = implode(',', collect($list)->pluck('code')->toArray());
+                $orderList[$k]['material_quantity'] = collect($list)->sum('expect_quantity');
+            } else {
+                $orderList[$k]['material_name'] = [];
+                $orderList[$k]['material_quantity'] = 0;
+            }
+            if ($v['type'] == BaseConstService::ORDER_TYPE_2) {
+                $orderList[$k]['receiver_post_code'] = $orderList[$k]['place_post_code'];
+                $orderList[$k]['receiver_house_number'] = $orderList[$k]['place_house_number'];
+                $orderList[$k]['receiver_execution_date'] = $orderList[$k]['execution_date'];
+                $orderList[$k]['sender_post_code'] = $orderList[$k]['sender_house_number'] = $orderList[$k]['sender_execution_date'] = '';
+            } elseif ($v['type'] == BaseConstService::ORDER_TYPE_1) {
+                $orderList[$k]['sender_post_code'] = $orderList[$k]['place_post_code'];
+                $orderList[$k]['sender_house_number'] = $orderList[$k]['place_house_number'];
+                $orderList[$k]['sender_execution_date'] = $orderList[$k]['execution_date'];
+                $orderList[$k]['receiver_post_code'] = $orderList[$k]['receiver_house_number'] = $orderList[$k]['receiver_execution_date'] = '';
+            } elseif ($v['type'] == BaseConstService::ORDER_TYPE_3) {
+                $orderList[$k]['receiver_post_code'] = $orderList[$k]['second_place_post_code'];
+                $orderList[$k]['receiver_house_number'] = $orderList[$k]['second_place_house_number'];
+                $orderList[$k]['receiver_execution_date'] = $orderList[$k]['second_execution_date'];
+
+                $orderList[$k]['sender_post_code'] = $orderList[$k]['place_post_code'];
+                $orderList[$k]['sender_house_number'] = $orderList[$k]['place_house_number'];
+                $orderList[$k]['sender_execution_date'] = $orderList[$k]['execution_date'];
+            }
+        }
+        $cellData = [];
+        foreach ($orderList as $v) {
+            $cellData[] = array_only_fields_sort($v, $this->headings);
+        }
+        if (empty($cellData)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $dir = 'orderOut';
+        $name = date('YmdHis') . auth()->user()->id;
+        return $this->excelExport($name, $this->headings, $cellData, $dir);
     }
 
 }

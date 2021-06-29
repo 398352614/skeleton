@@ -622,6 +622,8 @@ class TourService extends BaseService
 
     /**
      * 此处要求batchIds 为有序,并且已完成或者异常的 batch 在前方,未完成的 batch 在后方
+     * @param $batchIds
+     * @return Batch
      * @throws BusinessLogicException
      */
     public function getNextBatchAndUpdateIndex($batchIds): Batch

@@ -46,9 +46,9 @@ use Illuminate\Support\Facades\Route;
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiDescription 订单新增有两种模式，当类型为取件或者派件时，只需要填写取派日期execution_date和地址(以'place_'为前缀的字段)，当类型为取派件时，第二取派日期second_execution_date和第二地址(以'second_place_'为前缀的字段)也需要填写，第二用户地址为派件地址，另一个为取件。
- * @apiParam {String} order_no[必填] 订单号
+ * @apiParam {String} order_no 订单号
  * @apiParam {String} execution_date [必填]取派日期。
- * @apiParam {String} second_execution_date [必填]取派日期。若订单类型为取派件，则此项必填。
+ * @apiParam {String} second_execution_date 取派日期。若订单类型为取派件，则此项必填。
  * @apiParam {String} create_date 开单日期
  * @apiParam {String} out_order_no 外部订单号
  * @apiParam {String} mask_code 掩码
@@ -69,9 +69,9 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {String} second_place_city 收件人城市
  * @apiParam {String} second_place_street 收件人街道
  * @apiParam {String} second_place_address 收件人详细地址
- * @apiParam {String} place_fullname 发件人姓名
+ * @apiParam {String} place_fullname[必填] 发件人姓名
  * @apiParam {String} place_phone[必填]  发件人电话
- * @apiParam {String} place_country[必填]  发件人国家
+ * @apiParam {String} place_country  发件人国家
  * @apiParam {String} place_province 发件人省份
  * @apiParam {String} place_post_code[必填] 发件人邮编
  * @apiParam {String} place_house_number[必填] 发件人门牌号
@@ -96,7 +96,7 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {String} package_list.weight 重量
  * @apiParam {String} package_list.size 重量
  * @apiParam {String} package_list.actual_weight 实际重量
- * @apiParam {String} package_list.expect_quantity 预计数量
+ * @apiParam {String} package_list.expect_quantity[必填] 预计数量
  * @apiParam {String} package_list.actual_quantity 实际数量
  * @apiParam {String} package_list.sticker_no 贴单号
  * @apiParam {String} package_list.settlement_amount 结算金额
@@ -112,7 +112,7 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {String} material_list.name 材料名称
  * @apiParam {String} material_list.code[必填] 材料代码
  * @apiParam {String} material_list.out_order_no 外部标识
- * @apiParam {String} material_list.expect_quantity 预计数量
+ * @apiParam {String} material_list.expect_quantity[必填] 预计数量
  * @apiParam {String} material_list.actual_quantity 实际数量
  * @apiParam {String} material_list.pack_type 包装类型
  * @apiParam {String} material_list.type 类型
@@ -288,8 +288,8 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiDescription 只有待受理的订单才能进行修改。
- * @apiParam {String} order_no[必填] 订单号
- * @apiParam {String} execution_date 取派日期
+ * @apiParam {String} order_no 订单号
+ * @apiParam {String} execution_date[必填] 取派日期
  * @apiParam {String} second_execution_date 取派日期
  * @apiParam {String} create_date 开单日期
  * @apiParam {String} out_order_no 外部订单号
@@ -309,12 +309,12 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiParam {String} second_place_city 收件人城市
  * @apiParam {String} second_place_street 收件人街道
  * @apiParam {String} second_place_address 收件人详细地址
- * @apiParam {String} place_fullname 发件人姓名
- * @apiParam {String} place_phone 发件人电话
+ * @apiParam {String} place_fullname[必填] 发件人姓名
+ * @apiParam {String} place_phone[必填] 发件人电话
  * @apiParam {String} place_country 发件人国家
  * @apiParam {String} place_province 发件人省份
- * @apiParam {String} place_post_code 发件人邮编
- * @apiParam {String} place_house_number 发件人门牌号
+ * @apiParam {String} place_post_code[必填] 发件人邮编
+ * @apiParam {String} place_house_number[必填] 发件人门牌号
  * @apiParam {String} place_city 发件人城市
  * @apiParam {String} place_district 发件人区县
  * @apiParam {String} place_street 发件人街道
@@ -329,14 +329,14 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiParam {Object} package_list 包裹列表
  * @apiParam {String} package_list.expiration_date 有效日期
  * @apiParam {String} package_list.name 包裹名称
- * @apiParam {String} package_list.express_first_no 快递单号1
+ * @apiParam {String} package_list.express_first_no[必填] 快递单号1
  * @apiParam {String} package_list.express_second_no 快递单号2
  * @apiParam {String} package_list.feature_logo 特性标志
  * @apiParam {String} package_list.out_order_no 外部标识
  * @apiParam {String} package_list.weight 重量
  * @apiParam {String} package_list.size 重量
  * @apiParam {String} package_list.actual_weight 实际重量
- * @apiParam {String} package_list.expect_quantity 预计数量
+ * @apiParam {String} package_list.expect_quantity[必填] 预计数量
  * @apiParam {String} package_list.actual_quantity 实际数量
  * @apiParam {String} package_list.sticker_no 贴单号
  * @apiParam {String} package_list.settlement_amount 结算金额
@@ -350,7 +350,7 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiParam {Object} material_list 材料列表
  * @apiParam {String} material_list.execution_date 取派日期
  * @apiParam {String} material_list.name 材料名称
- * @apiParam {String} material_list.code 材料代码
+ * @apiParam {String} material_list.code[必填] 材料代码
  * @apiParam {String} material_list.out_order_no 外部标识
  * @apiParam {String} material_list.expect_quantity 预计数量
  * @apiParam {String} material_list.actual_quantity 实际数量

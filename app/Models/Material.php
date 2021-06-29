@@ -61,7 +61,7 @@ class Material extends BaseModel
         'remark',
         'weight',
         'size',
-        'price',
+        'unit_price',
         'created_at',
         'updated_at'
     ];
