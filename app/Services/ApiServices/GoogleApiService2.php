@@ -58,6 +58,7 @@ class GoogleApiService2
         if (!empty($mapConfig)) {
             $this->key = $mapConfig->toArray()['google_key'];
         } else {
+            Log::info('备用Key');
             $this->key = config('tms.map_url');
         }
     }
