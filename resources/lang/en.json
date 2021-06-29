@@ -2439,7 +2439,6 @@
     "运单从取件线路[%s]移除": "Waybill removed from pickup line",
     "运单分配司机，司机姓名[%s]，联系方式[%s]": "Driver assigned by waybill, driver's name [%s] and contact information [%s]",
     "客户不在家": "The customer is not at home",
-    "其他原因": "Other reasons"
-
-,"¥":"¥"
+    "其他原因": "Other reasons",
+    "¥": "¥"
 }
