@@ -189,7 +189,7 @@ class OrderService extends BaseService
     {
         $dbOrder = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($dbOrder)) {
-            throw new BusinessLogicException('订单不存在！');
+            throw new BusinessLogicException('订单不存在');
         }
         $dbOrder['package_list'] = $this->getPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['material_list'] = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
@@ -207,7 +207,7 @@ class OrderService extends BaseService
     {
         $dbOrder = parent::getInfo(['id' => $id], ['*'], false);
         if (empty($dbOrder)) {
-            throw new BusinessLogicException('订单不存在！');
+            throw new BusinessLogicException('订单不存在');
         }
         $dbTrackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $dbOrder->order_no], ['*'], false);
         foreach ($dbTrackingOrder as $k => $v) {
@@ -979,17 +979,17 @@ class OrderService extends BaseService
         $this->getTrackingOrderService()->destroyByOrderNo($dbOrder['order_no']);
         $rowCount = parent::updateById($id, ['tracking_order_no' => '', 'status' => BaseConstService::ORDER_STATUS_5]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //材料清除运单信息
         $rowCount = $this->getMaterialService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '']);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         //包裹清除运单信息
         $rowCount = $this->getPackageService()->update(['order_no' => $dbOrder['order_no']], ['tracking_order_no' => '', 'status' => BaseConstService::PACKAGE_STATUS_5]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         return 'true';
     }

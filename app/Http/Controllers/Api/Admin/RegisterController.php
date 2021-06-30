@@ -406,7 +406,7 @@ class RegisterController extends BaseController
             'amount' => 7.00
         ]);
         if ($fee === false) {
-            throw new BusinessLogicException('费用初始化失败');
+            throw new BusinessLogicException('初始化费用失败');
         }
         $fee = Fee::create([
             'company_id' => $company->id,
@@ -415,7 +415,7 @@ class RegisterController extends BaseController
             'amount' => 10.00
         ]);
         if ($fee === false) {
-            throw new BusinessLogicException('费用初始化失败');
+            throw new BusinessLogicException('初始化费用失败');
         }
     }
 
@@ -633,7 +633,7 @@ class RegisterController extends BaseController
             'scheduling_rule' => BaseConstService::SCHEDULING_TYPE_1
         ]);
         if ($fee === false) {
-            throw new BusinessLogicException('费用初始化失败');
+            throw new BusinessLogicException('初始化费用失败');
         }
     }
 

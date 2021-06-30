@@ -91,13 +91,13 @@ class MerchantService extends BaseService
         $params['password'] = Hash::make($params['password'] ?? BaseConstService::INITIAL_PASSWORD);
         $merchant = parent::create($params);
         if ($merchant === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
+            throw new BusinessLogicException('新增失败，请重新操作');
         }
         //生成用户编码
         $id = $merchant->getAttribute('id');
         $rowCount = parent::updateById($id, ['code' => sprintf("%05s", $id)]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
+            throw new BusinessLogicException('新增失败，请重新操作');
         }
         $rowCount = MerchantGroup::query()->where('id', $params['merchant_group_id'])->increment('count');
         if ($rowCount === false) {

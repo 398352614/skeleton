@@ -44,7 +44,7 @@ class TestService extends BaseService
     {
         $rowCount = parent::create($params);
         if ($rowCount === false) {
-            throw new BusinessLogicException('测试数据新增失败');
+            throw new BusinessLogicException('新增失败');
         }
     }
 
@@ -61,7 +61,7 @@ class TestService extends BaseService
             'name' => $data['name']
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('测试数据修改失败');
+            throw new BusinessLogicException('修改失败');
         }
     }
 

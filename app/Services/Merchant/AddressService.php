@@ -103,7 +103,7 @@ class AddressService extends BaseService
         $this->check($params);
         $rowCount = parent::create($params);
         if ($rowCount === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
+            throw new BusinessLogicException('新增失败，请重新操作');
         }
     }
 

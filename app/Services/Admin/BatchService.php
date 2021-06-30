@@ -402,7 +402,7 @@ class BatchService extends BaseService
         $info = $info->toArray();
         $line = $this->getLineService()->getInfo(['id' => $info['line_id']], ['*'], false);
         if (empty($line)) {
-            throw new BusinessLogicException('路线不存在');
+            throw new BusinessLogicException('线路不存在');
         }
         $line = $line->toArray();
         $info['execution_date'] = $params['execution_date'];

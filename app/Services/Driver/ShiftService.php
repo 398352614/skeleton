@@ -603,20 +603,20 @@ class ShiftService extends BaseService
             'begin_time' => now()
         ]);
         if ($row == false) {
-            throw new BusinessLogicException('出车失败1');
+            throw new BusinessLogicException('出车失败');
         }
         $trackingPackageList = $this->getTrackingPackageService()->getList(['shift_no' => $shift['shift_no']], ['*'], false);
         if ($trackingPackageList->isNotEmpty()) {
             $row = $this->getTrackingPackageService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::TRACKING_PACKAGE_STATUS_4]);
             if ($row == false) {
-                throw new BusinessLogicException('出车失败2');
+                throw new BusinessLogicException('出车失败');
             }
         }
         $bag = $this->getBagService()->getList(['shift_no' => $shift['shift_no']], ['*'], false);
         if ($bag->isNotEmpty()) {
             $row = $this->getBagService()->update(['shift_no' => $shift['shift_no']], ['status' => BaseConstService::BAG_STATUS_2]);
             if ($row == false) {
-                throw new BusinessLogicException('出车失败3');
+                throw new BusinessLogicException('出车失败');
             }
         }
         //包裹出库

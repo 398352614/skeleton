@@ -99,7 +99,7 @@ class BaseLineService extends BaseService
         $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
-            throw new BusinessLogicException('网点不存在！');
+            throw new BusinessLogicException('网点不存在');
         }
     }
 

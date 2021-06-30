@@ -124,7 +124,7 @@ class TransportPriceService extends BaseService
         $this->check($params);
         $transportPrice = parent::create($params);
         if ($transportPrice === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
+            throw new BusinessLogicException('新增失败，请重新操作');
         }
         $id = $transportPrice->getAttribute('id');
         $this->insertDetailsAll($id, $params);
@@ -383,7 +383,7 @@ class TransportPriceService extends BaseService
             data_fill($params, 'km_list.*.transport_price_id', $id);
             $rowCount = $this->kilometresChargingModel->insertAll($params['km_list']);
             if ($rowCount === false) {
-                throw new BusinessLogicException('新增失败,请重新操作');
+                throw new BusinessLogicException('新增失败，请重新操作');
             }
         }
         //重量计费
@@ -391,7 +391,7 @@ class TransportPriceService extends BaseService
             data_fill($params, 'weight_list.*.transport_price_id', $id);
             $rowCount = $this->weightChargingModel->insertAll($params['weight_list']);
             if ($rowCount === false) {
-                throw new BusinessLogicException('新增失败,请重新操作');
+                throw new BusinessLogicException('新增失败，请重新操作');
             }
         }
         //特殊时段计费
@@ -399,7 +399,7 @@ class TransportPriceService extends BaseService
             data_fill($params, 'special_time_list.*.transport_price_id', $id);
             $rowCount = $this->specialTimeChargingModel->insertAll($params['special_time_list']);
             if ($rowCount === false) {
-                throw new BusinessLogicException('新增失败,请重新操作');
+                throw new BusinessLogicException('新增失败，请重新操作');
             }
         }
     }

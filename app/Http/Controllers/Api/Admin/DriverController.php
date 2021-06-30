@@ -213,7 +213,7 @@ class DriverController extends BaseController
 
         throw_unless(
             $this->service->count(['id' => $id]),
-            new BusinessLogicException('司机不存在或者不属于当前公司')
+            new BusinessLogicException('司机不存在')
         );
 
         $rowCount = $this->service->updateById($id, $data);

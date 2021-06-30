@@ -68,7 +68,7 @@ class MerchantGroupService extends BaseService
         $this->check($params);
         $merchantGroup = parent::create($params);
         if ($merchantGroup === false) {
-            throw new BusinessLogicException('新增失败,请重新操作');
+            throw new BusinessLogicException('新增失败，请重新操作');
         }
         $merchantGroupId = $merchantGroup->getAttribute('id');
         //新增货主所有线路范围
@@ -172,7 +172,7 @@ class MerchantGroupService extends BaseService
         }
         $rowCount = parent::updateById($id, Arr::only($params, ['additional_status', 'advance_days', 'appointment_days', 'delay_time', 'pickup_count', 'pie_count']));
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败,请重新操作');
+            throw new BusinessLogicException('操作失败，请重新操作');
         }
         $this->addFeeConfigList($id, $params);
         return;
