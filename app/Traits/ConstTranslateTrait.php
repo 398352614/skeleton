@@ -891,6 +891,7 @@ trait ConstTranslateTrait
         BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL => '取件失败',//取件失败
         BaseConstService::PACKAGE_TRAIL_PIE_CANCEL => '派件失败',//派件失败
         BaseConstService::PACKAGE_TRAIL_DELETED => '已取消',//回收站
+        BaseConstService::PACKAGE_TRAIL_AGAIN => '继续派送'
     ];
 
     public static $orderReceiptTypeList = [

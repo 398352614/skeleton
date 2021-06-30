@@ -464,6 +464,8 @@ class BaseConstService
     const PACKAGE_TRAIL_PICKUP_CANCEL = 13;//取件失败
     const PACKAGE_TRAIL_PIE_CANCEL = 14;//派件失败
     const PACKAGE_TRAIL_DELETED = 15;//回收站
+    const PACKAGE_TRAIL_AGAIN = 16;//继续派送
+
 
     //通知类型
     const NOTIFY_OUT_WAREHOUSE = 'out-warehouse';       //出库通知
