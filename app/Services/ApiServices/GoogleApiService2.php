@@ -105,7 +105,7 @@ class GoogleApiService2
         }
         $batchNos = (new XLDirectionService())->GetRoute(array_merge([$driverLoc], $batchs));
         if (empty($batchNos)) {
-            throw new BusinessLogicException('优化线路失败');
+            throw new BusinessLogicException('线路优化失败');
         }
         $nextBatch = null;
         foreach ($batchNos as $k => $batchNo) {

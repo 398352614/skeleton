@@ -44,7 +44,7 @@ abstract class ATourNotify
 
     public function __construct($tour, $batch, $batchList, $trackingOrderList)
     {
-        //取件线路
+        //线路任务
         $this->tour = Arr::only($tour, self::$tourFields);
         //站点
         !empty($batch) && $this->batch = Arr::only($batch, self::$batchFields);

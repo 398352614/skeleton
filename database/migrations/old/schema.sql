@@ -24,7 +24,7 @@ CREATE TABLE `batch`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `company_id` int(11) NOT NULL COMMENT '公司ID',
   `batch_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '站点编号',
-  `tour_no` varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '取件线路编号',
+  `tour_no` varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '线路任务编号',
   `line_id` int(11) NULL DEFAULT NULL COMMENT '线路ID',
   `line_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '线路名称',
   `execution_date` date NULL DEFAULT NULL COMMENT '取派日期',
@@ -309,7 +309,7 @@ DROP TABLE IF EXISTS `driver_tour_trail`;
 CREATE TABLE `driver_tour_trail`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `company_id` int(11) NULL DEFAULT NULL COMMENT '公司ID',
-  `tour_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '取件线路编号',
+  `tour_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '线路任务编号',
   `driver_id` int(11) NULL DEFAULT NULL COMMENT '司机ID',
   `lon` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '经度',
   `lat` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '纬度',
@@ -477,7 +477,7 @@ DROP TABLE IF EXISTS `material`;
 CREATE TABLE `material`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `company_id` int(11) NULL DEFAULT NULL COMMENT '公司ID',
-  `tour_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '取件线路编号',
+  `tour_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '线路任务编号',
   `batch_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '站点编号',
   `order_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '订单编号',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '材料名称',
@@ -601,7 +601,7 @@ CREATE TABLE `order`  (
   `order_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '订单号',
   `execution_date` date NULL DEFAULT NULL COMMENT '取件/派件 日期',
   `batch_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '站点编号',
-  `tour_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '取件线路编号',
+  `tour_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '线路任务编号',
   `out_order_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '货号',
   `express_first_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '快递单号1',
   `express_second_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '快递单号2',
@@ -754,7 +754,7 @@ DROP TABLE IF EXISTS `package`;
 CREATE TABLE `package`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `company_id` int(11) NULL DEFAULT NULL COMMENT '公司ID',
-  `tour_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '取件线路编号',
+  `tour_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '线路任务编号',
   `batch_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '站点编号',
   `order_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '订单编号',
   `type` tinyint(4) NULL DEFAULT 1 COMMENT '类型1-取2-派',
@@ -943,7 +943,7 @@ DROP TABLE IF EXISTS `tour`;
 CREATE TABLE `tour`  (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `tour_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '取件线路编号',
+  `tour_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '线路任务编号',
   `line_id` int(11) NULL DEFAULT NULL COMMENT '线路ID',
   `line_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '线路名',
   `execution_date` date NULL DEFAULT NULL COMMENT '取派日期',
@@ -1044,7 +1044,7 @@ DROP TABLE IF EXISTS `tour_material`;
 CREATE TABLE `tour_material`  (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `company_id` int(11) NULL DEFAULT NULL COMMENT '公司ID',
-  `tour_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '取件线路编号',
+  `tour_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '线路任务编号',
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '材料名称',
   `code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT '' COMMENT '材料代码',
   `expect_quantity` smallint(6) NULL DEFAULT 0 COMMENT '预计数量',

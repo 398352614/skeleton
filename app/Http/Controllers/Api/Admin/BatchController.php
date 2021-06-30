@@ -73,7 +73,7 @@ class BatchController extends BaseController
     }
 
     /**
-     * 获取取件线路列表
+     * 获取线路任务列表
      * @param $id
      * @return array
      * @throws BusinessLogicException
@@ -84,7 +84,7 @@ class BatchController extends BaseController
     }
 
     /**
-     * 分配站点至取件线路
+     * 分配站点至线路任务
      * @param $id
      * @return string
      * @throws BusinessLogicException
@@ -95,7 +95,7 @@ class BatchController extends BaseController
     }
 
     /**
-     * 批量分配站点至取件线路
+     * 批量分配站点至线路任务
      * @return string
      * @throws BusinessLogicException
      */

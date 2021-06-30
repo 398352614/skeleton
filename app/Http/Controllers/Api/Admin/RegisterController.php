@@ -83,7 +83,7 @@ class RegisterController extends BaseController
                 //'phone' => $data['phone'],
             ]);
             if ($company === false) {
-                throw new BusinessLogicException('企业注册失败');
+                throw new BusinessLogicException('公司注册失败');
             }
             $warehouse = $this->addWarehouse($company, $data);
             $employee = $this->addEmployee($company, $data, $warehouse);//初始化管理员帐户

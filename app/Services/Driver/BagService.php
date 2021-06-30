@@ -97,7 +97,7 @@ class BagService extends BaseService
     public function destroy($id)
     {
         $bag = parent::getInfo(['id' => $id], ['*'], false);
-        if ($bag === false) {
+        if (empty($bag)) {
             throw new BusinessLogicException('袋号不存在');
         }
         if ($bag['status'] !== BaseConstService::BAG_STATUS_1) {

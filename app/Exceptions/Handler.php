@@ -44,7 +44,7 @@ class Handler extends ExceptionHandler
     public function report(Exception $exception)
     {
         if (($exception->getCode() == 0) && $this->shouldReport($exception)) {
-            //企业微信报错
+            //公司微信报错
             $body = $exception->getMessage() . ' in ' . $exception->getFile() . ':' . $exception->getLine();
             (new MessageService())->reportToWechat($body);
             Log::channel('info')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. '报错时参数', request()->input());

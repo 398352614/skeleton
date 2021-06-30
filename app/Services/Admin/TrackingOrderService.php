@@ -295,13 +295,13 @@ class TrackingOrderService extends BaseService
         //$this->record($trackingOrder);
         //重新统计站点金额
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
-        //重新统计取件线路金额
+        //重新统计线路任务金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         //运单轨迹-运单创建
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_CREATED);
         //运单轨迹-运单加入站点
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
-        //运单轨迹-运单加入取件线路
+        //运单轨迹-运单加入线路任务
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
         //订单轨迹-订单创建
         if ($again == true) {
@@ -474,7 +474,7 @@ class TrackingOrderService extends BaseService
             $this->getBatchService()->removeTrackingOrder($dbTrackingOrder);
             //重新统计站点金额
             !empty($dbTrackingOrder['batch_no']) && $this->getBatchService()->reCountAmountByNo($dbTrackingOrder['batch_no']);
-            //重新统计取件线路金额
+            //重新统计线路任务金额
             !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
         }
         $rowCount = parent::update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['batch_no' => '', 'tour_no' => '', 'line_id' => null, 'line_name' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_7]);
@@ -531,13 +531,13 @@ class TrackingOrderService extends BaseService
             $this->getBatchService()->removeTrackingOrder($dbTrackingOrder);
             //重新统计站点金额
             $this->getBatchService()->reCountAmountByNo($dbTrackingOrder['batch_no']);
-            //重新统计取件线路金额
+            //重新统计线路任务金额
             !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
         }
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line, $batchNo, $tour, $isAddOrder);
         //重新统计站点金额
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
-        //重新统计取件线路金额
+        //重新统计线路任务金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         if ($isFillTrackingOrder === true) {
             $this->fillBatchTourInfo($trackingOrder, $batch, $tour, true);
@@ -658,7 +658,7 @@ class TrackingOrderService extends BaseService
         if (empty($dbTrackingOrder['batch_no'])) {
             return;
         }
-        //运单移除站点和取件线路信息
+        //运单移除站点和线路任务信息
         $rowCount = parent::updateById($id, ['line_id' => null, 'line_name' => '', 'tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败，请重新操作');
@@ -676,7 +676,7 @@ class TrackingOrderService extends BaseService
         $this->getBatchService()->removeTrackingOrder($dbTrackingOrder);
         //重新统计站点金额
         !empty($dbTrackingOrder['batch_no']) && $this->getBatchService()->reCountAmountByNo($dbTrackingOrder['batch_no']);
-        //重新统计取件线路金额
+        //重新统计线路任务金额
         !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
 
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH, $dbTrackingOrder);
@@ -704,17 +704,17 @@ class TrackingOrderService extends BaseService
         });
         $trackingOrderNoList = array_column($dbTrackingOrderList, 'order_no');
         $where = ['order_no' => ['in', $trackingOrderNoList]];
-        //运单移除站点和取件线路信息
+        //运单移除站点和线路任务信息
         $rowCount = parent::update($where, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败，请重新操作');
         }
-        //材料移除取件线路信息
+        //材料移除线路任务信息
         $rowCount = $this->getTrackingOrderMaterialService()->update($where, ['tour_no' => '', 'batch_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败，请重新操作');
         }
-        //包裹移除取件线路信息
+        //包裹移除线路任务信息
         $rowCount = $this->getTrackingOrderPackageService()->update($where, ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败，请重新操作');
@@ -723,7 +723,7 @@ class TrackingOrderService extends BaseService
             $this->getBatchService()->removeTrackingOrder($dbTrackingOrder);
             //重新统计站点金额
             !empty($dbTrackingOrder['batch_no']) && $this->getBatchService()->reCountAmountByNo($dbTrackingOrder['batch_no']);
-            //重新统计取件线路金额
+            //重新统计线路任务金额
             !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
         }
         TrackingOrderTrailService::storeAllByTrackingOrderList($dbTrackingOrderList, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH);
@@ -818,7 +818,7 @@ class TrackingOrderService extends BaseService
 
 
     /**
-     * 批量运单分配至指定取件线路
+     * 批量运单分配至指定线路任务
      * @param $params
      * @throws BusinessLogicException
      */
@@ -826,16 +826,16 @@ class TrackingOrderService extends BaseService
     {
         list($trackingOrderIdList, $tourNo) = [$params['tracking_order_id_list'], $params['tour_no']];
         /******************************************1.获取数据**********************************************************/
-        //获取取件线路信息
+        //获取线路任务信息
         $tour = $this->getTourService()->getInfoLock(['tour_no' => $tourNo, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['*'], false);
         if (empty($tour)) {
-            throw new BusinessLogicException('取件线路当前状态不能操作');
+            throw new BusinessLogicException('线路任务当前状态不能操作');
         }
         $tourModel = $tour;
         $tour = $tour->toArray();
         //获取线路信息
         list($dbTrackingOrderList, $lineId) = $this->getAddTrackingOrderList($trackingOrderIdList, $tour['execution_date']);
-        //判断当前线路ID是否是取件线路ID
+        //判断当前线路ID是否是线路任务ID
 //        if (intval($lineId) != intval($tour['line_id'])) {
 //            throw new BusinessLogicException('当前线路已更换，请刷新');
 //        }
@@ -853,13 +853,13 @@ class TrackingOrderService extends BaseService
         if ($tour['status'] == BaseConstService::TOUR_STATUS_4) {
             $materialCount = $this->getMaterialService()->count(['order_no' => ['in', array_column($dbTrackingOrderList, 'order_no')]]);
             if ($materialCount > 0) {
-                throw new BusinessLogicException('当前取件线路正在派送中，取件运单加单不能包含材料');
+                throw new BusinessLogicException('当前线路任务正在派送中，取件运单加单不能包含材料');
             }
         }
 //        if ($tour['expect_pickup_quantity'] + $count > $line['pickup_max_count']) {
 //            throw new BusinessLogicException('取件数量超过线路取件运单最大值');
 //        }
-        //获取取件线路的站点列表
+        //获取线路任务的站点列表
         $dbBatchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['id', 'tour_no', 'place_fullname'], false);
         /*******************************************2.加单*************************************************************/
         foreach ($dbTrackingOrderList as $dbTrackingOrder) {

@@ -26,7 +26,7 @@ trait HasCompanyId
             return $companyID;
         } else {
             $id = self::getUuidFromHeader();
-            throw_unless($id, new BusinessLogicException('不存在的公司'));
+            throw_unless($id, new BusinessLogicException('公司不存在'));
             return $id;
         }
     }

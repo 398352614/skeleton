@@ -229,7 +229,7 @@ Route::prefix('order')->group(function () {
      * @apiSuccess {String} data.material_list.id 材料ID
      * @apiSuccess {String} data.material_list.company_id 公司ID
      * @apiSuccess {String} data.material_list.merchant_id 商户ID
-     * @apiSuccess {String} data.material_list.tour_no 取件线路编号
+     * @apiSuccess {String} data.material_list.tour_no 线路任务编号
      * @apiSuccess {String} data.material_list.batch_no 站点编号
      * @apiSuccess {String} data.material_list.tracking_order_no 运单号
      * @apiSuccess {String} data.material_list.order_no 订单编号

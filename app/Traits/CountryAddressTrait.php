@@ -45,7 +45,7 @@ trait CountryAddressTrait
                 $arrayBody = json_decode($stringBody, TRUE);
                 $version = $arrayBody["version"];
             } catch (ClientException $e) {
-                throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取国家信息，请稍后尝试');
+                throw new \App\Exceptions\BusinessLogicException('由于网络问题，无法获取国家信息，请稍后尝试');
             }
 
             //2.根据版本号请求PCD
@@ -53,7 +53,7 @@ trait CountryAddressTrait
             try {
                 $res = $client->request('GET', $url, ['http_errors' => false]);
             } catch (ClientException $e) {
-                throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取国家信息，请稍后尝试');
+                throw new \App\Exceptions\BusinessLogicException('由于网络问题，无法获取国家信息，请稍后尝试');
             }
             if ($res->getStatusCode() !== 200) {
                 throw new \App\Exceptions\BusinessLogicException('系统无相关国家信息');
@@ -121,7 +121,7 @@ trait CountryAddressTrait
             try {
                 $res = $client->request('GET', $url, ['http_errors' => false]);
             } catch (ClientException $e) {
-                throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取国家信息，请稍后尝试');
+                throw new \App\Exceptions\BusinessLogicException('由于网络问题，无法获取国家信息，请稍后尝试');
             }
             if ($res->getStatusCode() !== 200) {
                 throw new \App\Exceptions\BusinessLogicException('系统无相关国家信息');

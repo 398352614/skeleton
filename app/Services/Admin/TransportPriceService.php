@@ -216,7 +216,7 @@ class TransportPriceService extends BaseService
         //公里计费
         if (!empty($params['km'])) {
             if (empty($info['km_list'])) {
-                throw new BusinessLogicException('当前运价没有公里计费列表');
+                throw new BusinessLogicException('当前运价没有配置公里计费规则');
             }
             $km = Arr::first($info['km_list'], function ($km, $key) use ($params) {
                 if (($km['start'] <= $params['km']) && ($km['end'] >= $params['km'])) {
@@ -232,7 +232,7 @@ class TransportPriceService extends BaseService
         //重量计费
         if (!empty($params['weight'])) {
             if (empty($info['weight_list'])) {
-                throw new BusinessLogicException('当前运价没有重量计费列表');
+                throw new BusinessLogicException('当前运价没有配置重量计费规则');
             }
             $weight = Arr::first($info['weight_list'], function ($weight, $key) use ($params) {
                 if (($weight['start'] <= $params['weight']) && ($weight['end'] >= $params['weight'])) {
@@ -248,7 +248,7 @@ class TransportPriceService extends BaseService
         //特殊时段计费
         if (!empty($params['special_time'])) {
             if (empty($info['special_time_list'])) {
-                throw new BusinessLogicException('当前运价没有特殊时段计费列表');
+                throw new BusinessLogicException('当前运价没有配置特殊时段计费规则');
             }
             $startDay = '1970-01-02';
             $special = strtotime($startDay . $params['special_time']);

@@ -981,7 +981,7 @@ class OrderService extends BaseService
         if (!empty($dbTrackingOrder)) {
             $dbTrackingOrder = $dbTrackingOrder->toArray();
             if (intval($dbOrder['source']) === BaseConstService::ORDER_SOURCE_3 && !in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2])) {
-                throw new BusinessLogicException('该状态的第三方订单不能修改');
+                throw new BusinessLogicException('第三方订单不能修改');
             }
             $columns = [
                 'place_fullname',
@@ -1509,7 +1509,7 @@ class OrderService extends BaseService
         }
         $tour = $this->getTrackingOrderService()->getInfo(['tour_no' => $trackingOrder['tour_no']], ['*'], false);
         if (empty($tour)) {
-            throw new BusinessLogicException('取件线路不存在');
+            throw new BusinessLogicException('线路任务不存在');
         }
         $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $tour['tour_no']], ['lon', 'lat'], false, ['id' => 'desc']) ?? [];
         $batch = $this->getBatchService()->getInfo(['batch_no' => $trackingOrder['batch_no']], ['*'], false) ?? [];

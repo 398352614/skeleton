@@ -14,7 +14,7 @@ class AlterMerchantAlterColumns extends Migration
     public function up()
     {
         Schema::table('merchant', function (Blueprint $table) {
-            $table->string('short_name')->default('')->nullable()->comment('企业简称')->after('name')->change();
+            $table->string('short_name')->default('')->nullable()->comment('公司简称')->after('name')->change();
             $table->string('invoice_title')->default('')->nullable()->comment('发票抬头')->after('avatar')->change();
             $table->string('taxpayer_code')->default('')->nullable()->comment('纳税人识别码')->after('invoice_title')->change();
             $table->string('bank')->default('')->nullable()->comment('开户行')->after('taxpayer_code')->change();

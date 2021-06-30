@@ -47,7 +47,7 @@ class CarModelService extends BaseService
     {
         $brand = $this->getCarBrandService()->getInfo(['id' => $params['brand_id']], ['id'], false);
         if (empty($brand)) {
-            throw new BusinessLogicException('车辆品牌不存在');
+            throw new BusinessLogicException('所属品牌不存在');
         }
     }
 }

@@ -108,7 +108,7 @@ class AuthController extends Controller
     }
 
     /**
-     * 获取企业配置信息
+     * 获取公司配置信息
      * @param $companyId
      * @return array
      * @throws BusinessLogicException

@@ -14,9 +14,9 @@ class AlterCompanyTable extends Migration
     public function up()
     {
         Schema::table('company', function (Blueprint $table) {
-            $table->string('web_site')->nullable()->comment('企业网址');
+            $table->string('web_site')->nullable()->comment('公司网址');
             $table->string('system_name')->nullable()->comment('系统名称');
-            $table->string('logo_url')->nullable()->comment('企业Logo');
+            $table->string('logo_url')->nullable()->comment('公司Logo');
             $table->string('login_logo_url')->nullable()->comment('登录页Logo');
         });
     }

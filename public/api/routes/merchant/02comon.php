@@ -59,9 +59,9 @@ Route::put('/timezone', 'AuthController@updateTimezone');
  * @apiSuccess {String} data.lon    经度
  * @apiSuccess {String} data.created_at    创建时间
  * @apiSuccess {String} data.updated_at    修改时间
- * @apiSuccess {String} data.web_site    企业网址
+ * @apiSuccess {String} data.web_site    公司网址
  * @apiSuccess {String} data.system_name    系统名称
- * @apiSuccess {String} data.logo_url    企业Logo
+ * @apiSuccess {String} data.logo_url    公司Logo
  * @apiSuccess {String} data.login_logo_url    登录页Logo
  * @apiSuccess {String} data.country_name    国家名称
  *

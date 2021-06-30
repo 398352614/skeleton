@@ -290,9 +290,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}/remove-batch', 'TrackingOrderController@removeFromBatch')->name('tracking-order.remove-batch');
         //批量运单从站点移除
         Route::delete('/remove-batch', 'TrackingOrderController@removeListFromBatch')->name('tracking-order.remove-batch');
-        //获取可加单取件线路
+        //获取可加单线路任务
         Route::get('/get-tour', 'TourController@getAddOrderPageList')->name('tracking-order.assign-tour');
-        //批量运单分配至指定取件线路
+        //批量运单分配至指定线路任务
         Route::put('/assign-tour', 'TrackingOrderController@assignListTour')->name('tracking-order.assign-tour');
         //批量打印
         Route::get('/print', 'TrackingOrderController@orderPrintAll')->name('tracking-order.print');
@@ -451,11 +451,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/get-date', 'BatchController@getDateList')->name('batch.assign-tour');
         //根据线路规则获取线路
         Route::get('/get-line', 'BatchController@getLineList')->name('batch.assign-tour');
-        //获取取件线路列表
+        //获取线路任务列表
         Route::get('/{id}/get-tour', 'BatchController@getTourList')->name('batch.assign-tour');
-        //分配站点至取件线路
+        //分配站点至线路任务
         Route::put('/{id}/assign-tour', 'BatchController@assignToTour')->name('batch.assign-tour');
-        //批量分配站点至取件线路
+        //批量分配站点至线路任务
         Route::put('/assign-tour', 'BatchController@assignListToTour')->name('batch.assign-tour');
         //移除站点
         Route::delete('/{id}/remove', 'BatchController@removeFromTour')->name('batch.remove');
@@ -502,7 +502,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/plan-excel', 'TourController@planExport')->name('tour.intelligent-scheduling');
         //获取可分配日期
         Route::get('/{id}/get-date', 'TourController@getLineDate')->name('tour.assign');
-        //获取可加入的取件线路列表
+        //获取可加入的线路任务列表
         Route::get('/by-line', 'TourController@getListJoinByLineId')->name('tour.assign');
         //分配线路
         Route::put('/{id}/assign', 'TourController@assignTourToTour')->name('tour.assign');
@@ -514,7 +514,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/batchPng', 'TourController@batchPng');
     });
 
-    //取件线路-司机
+    //线路任务-司机
     Route::prefix('tour-driver')->group(function () {
         Route::get('/{tour_no}', 'TourDriverController@getListByTourNo');
     });

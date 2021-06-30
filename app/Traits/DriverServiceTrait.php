@@ -249,7 +249,7 @@ Trait DriverServiceTrait
     }
 
     /**
-     * 取件线路服务
+     * 线路任务服务
      * @return TourService
      */
     public function getTourService()

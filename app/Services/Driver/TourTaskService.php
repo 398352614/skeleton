@@ -242,7 +242,7 @@ class TourTaskService extends BaseService
         $tour = $this->query->where('tour_no', $params['tour_no'])->where('driver_id', '<>', 0)
             ->orWhere('tour_no', $params['tour_no'])->WhereNull('driver_id')->first();
         if (empty($tour)) {
-            throw new BusinessLogicException('取件线路不存在');
+            throw new BusinessLogicException('线路任务不存在');
         }
         $tour = $tour->toArray();
         //获取所有运单列表
@@ -263,7 +263,7 @@ class TourTaskService extends BaseService
     }
 
     /**
-     * 获取所有取件线路所有信息
+     * 获取所有线路任务所有信息
      * @return array|\Illuminate\Database\Eloquent\Collection
      * @throws BusinessLogicException
      */

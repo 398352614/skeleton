@@ -290,7 +290,7 @@ class OrderService extends BaseService
         $batchNoList = array_column($trackingOrderList, 'batch_no');
         $batchList = $this->getBatchService()->getList(['batch_no' => ['in', $batchNoList]], ['*'], false)->toArray();
         $batchList = array_create_index($batchList, 'batch_no');
-        //获取取件线路列表
+        //获取线路任务列表
         $tourNoList = array_column($trackingOrderList, 'tour_no');
         $tourList = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false)->toArray();
         $tourList = array_create_index($tourList, 'tour_no');

@@ -140,7 +140,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 取件线路 服务
+     * 线路任务 服务
      * @return TourService
      */
     public function getTourService()

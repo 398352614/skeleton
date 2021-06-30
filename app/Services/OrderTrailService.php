@@ -57,7 +57,7 @@ class OrderTrailService extends BaseService
     }
 
     /**
-     * 按取件线路批量新增
+     * 按线路任务批量新增
      * @param $tour
      * @param int $action
      * @param null $params

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Log;
 class UpdateLineCountTime
 {
     /**
-     * 更新取件线路
+     * 更新线路任务
      *
      * @param AfterTourUpdated $event
      * @throws BusinessLogicException

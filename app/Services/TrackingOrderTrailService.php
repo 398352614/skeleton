@@ -81,11 +81,11 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
             case BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH:             //移除站点
                 $content = sprintf("运单从站点[%s]中移除", $params['batch_no']);
                 break;
-            case BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR:                //加入取件线路
-                $content = sprintf("运单加入取件线路[%s]", $params['tour_no']);
+            case BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR:                //加入线路任务
+                $content = sprintf("运单加入线路任务[%s]", $params['tour_no']);
                 break;
-            case BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR:              //加入取件线路
-                $content = sprintf("运单从取件线路[%s]移除", $params['tour_no']);
+            case BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR:              //加入线路任务
+                $content = sprintf("运单从线路任务[%s]移除", $params['tour_no']);
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_ASSIGN_DRIVER:            // 已分配司机
                 $content = sprintf("运单分配司机，司机姓名[%s]，联系方式[%s]", $params['driver_name'], $params['driver_phone']);

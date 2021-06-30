@@ -104,7 +104,7 @@ class BaseConstService
     const TRACKING_ORDER_NO_TYPE = 'tracking_order';
     //站点编号类型
     const BATCH_NO_TYPE = 'batch';
-    //取件线路编号类型
+    //线路任务编号类型
     const TOUR_NO_TYPE = 'tour';
     //站点异常编号类型
     const BATCH_EXCEPTION_NO_TYPE = 'batch_exception';
@@ -239,7 +239,7 @@ class BaseConstService
     const ORDER_NATURE_2 = 2;
     const ORDER_NATURE_3 = 3;
 
-    //线路规划 是否新增取件线路 1-是2-否
+    //线路规划 是否新增线路任务 1-是2-否
     const IS_INCREMENT_1 = 1;
     const IS_INCREMENT_2 = 2;
 
@@ -247,14 +247,14 @@ class BaseConstService
     const TRACKING_ORDER_OR_BATCH_1 = 1;
     const TRACKING_ORDER_OR_BATCH_2 = 2;
 
-    //取件线路状态状态：1-待分配2-已分配-3-待出库4-取派中5-取派完成
+    //线路任务状态状态：1-待分配2-已分配-3-待出库4-取派中5-取派完成
     const TOUR_STATUS_1 = 1;
     const TOUR_STATUS_2 = 2;
     const TOUR_STATUS_3 = 3;
     const TOUR_STATUS_4 = 4;
     const TOUR_STATUS_5 = 5;
 
-    //取件线路面向用户状态：1-未取派2-取派中-3-取派完成
+    //线路任务面向用户状态：1-未取派2-取派中-3-取派完成
     const MERCHANT_TOUR_STATUS_1 = 1;
     const MERCHANT_TOUR_STATUS_2 = 2;
     const MERCHANT_TOUR_STATUS_3 = 3;
@@ -427,8 +427,8 @@ class BaseConstService
 
     /**
      * order_trail 订单轨迹常量
-     * 1-订单创建 2-加入站点 3-加入取件线路 4-已分配司机 5-加入网点 6-待出库 7-配送中 8-已签收
-     * 9-取消取派 10-取消司机分配 11-取消待出库 12-移除站点 13-移除取件线路 14-订单删除
+     * 1-订单创建 2-加入站点 3-加入线路任务 4-已分配司机 5-加入网点 6-待出库 7-配送中 8-已签收
+     * 9-取消取派 10-取消司机分配 11-取消待出库 12-移除站点 13-移除线路任务 14-订单删除
      */
     const TRACKING_ORDER_TRAIL_CREATED = 1;
     const TRACKING_ORDER_TRAIL_JOIN_BATCH = 2;

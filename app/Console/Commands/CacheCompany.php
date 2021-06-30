@@ -51,7 +51,7 @@ class CacheCompany extends Command
         //获取配置
         $rootKey = config('tms.cache_prefix.company');
         $tag = config('tms.cache_tags.company');
-        //1.若只缓存一个企业
+        //1.若只缓存一个公司
         if (!empty($companyId)) {
             $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name'])->toArray();
             $company = Company::query()->where('id', $companyId)->first()->toArray();
@@ -78,7 +78,7 @@ class CacheCompany extends Command
             $this->info('cache company successful');
             return;
         }
-        //2.缓存所有企业
+        //2.缓存所有公司
         $countryList = collect(Country::query()->get(['company_id', 'short', 'en_name', 'cn_name']))->unique('company_id')->keyBy('company_id')->toArray();
         $mapConfigList = collect(Country::query()->get())->unique('company_id')->keyBy('company_id')->toArray();
         $companyList = collect(Company::query()->get())->map(function ($company) use ($countryList, $mapConfigList) {

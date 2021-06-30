@@ -117,7 +117,7 @@ class PackageService extends BaseService
         $expressFirstNoList = array_column($packageList, 'express_first_no');
         if (count($expressFirstNoList) !== count(array_unique($expressFirstNoList))) {
             $repeatExpressFirstNoList = implode(',', array_diff_assoc($expressFirstNoList, array_unique($expressFirstNoList)));
-            throw new BusinessLogicException('快递单号[:express_no]有重复！不能添加订单', 1000, ['express_no' => $repeatExpressFirstNoList]);
+            throw new BusinessLogicException('快递单号1[:express_no]有重复！不能添加订单', 1000, ['express_no' => $repeatExpressFirstNoList]);
         }
         //存在快递单号2,则验证
         $expressSecondNoList = array_filter(array_column($packageList, 'express_second_no'));

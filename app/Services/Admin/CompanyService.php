@@ -33,9 +33,6 @@ class CompanyService extends BaseService
             $where['id'] = ['<>', auth()->user()->company_id];
         }
         $info = parent::getInfo($where, ['*'], false);
-        if (!empty($info)) {
-            throw new BusinessLogicException('公司名称已存在');
-        }
         $rowCount = $this->query->updateOrCreate(
                 [
                     'id' => auth()->user()->company_id,

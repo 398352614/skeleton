@@ -331,7 +331,7 @@ return [
     ],
 
     "tour" => [
-        "tour_no" => "取件线路编号",
+        "tour_no" => "线路任务编号",
         "line_name" => "线路名称",
         "driver_name" => "司机姓名",
         "execution_date" => "取派日期",
@@ -412,7 +412,7 @@ return [
         'execution_date' => '取派日期',
         'driver_name' => '派送司机',
         'batch_no' => '站点编号',
-        'tour_no' => '取件线路编号',
+        'tour_no' => '线路任务编号',
         'line_name' => '线路名称',
         'created_at' => '创建时间',
     ],

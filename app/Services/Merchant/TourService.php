@@ -92,7 +92,7 @@ class TourService extends BaseService
     }
 
     /**
-     * 站点加入取件线路
+     * 站点加入线路任务
      * @param $batch
      * @param $line
      * @param $order
@@ -103,14 +103,14 @@ class TourService extends BaseService
     public function join($batch, $line, $order, $tour = [])
     {
         $tour = !empty($tour) ? $tour : $this->getTourInfo($batch, $line);
-        //加入取件线路
+        //加入线路任务
         $quantity = (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $tour = !empty($tour) ? $this->joinExistTour($tour, $quantity) : $this->joinNewTour($batch, $line, $quantity);
         return $tour;
     }
 
     /**
-     * 加入新的取件线路
+     * 加入新的线路任务
      * @param $line
      * @param $batch
      * @param $quantity
@@ -147,14 +147,14 @@ class TourService extends BaseService
             ], $quantity)
         );
         if ($tour === false) {
-            throw new BusinessLogicException('站点加入取件线路失败，请重新操作');
+            throw new BusinessLogicException('站点加入线路任务失败，请重新操作');
         }
         return $tour->getOriginal();
     }
 
 
     /**
-     * 加入已存在取件线路
+     * 加入已存在线路任务
      * @param $tour
      * @param $quantity
      * @return mixed
@@ -168,7 +168,7 @@ class TourService extends BaseService
         ];
         $rowCount = parent::updateById($tour['id'], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点加入取件线路失败，请重新操作');
+            throw new BusinessLogicException('站点加入线路任务失败，请重新操作');
         }
         $tour = array_merge($tour, $data);
         return $tour;
@@ -199,7 +199,7 @@ class TourService extends BaseService
 
 
     /**
-     * 获取取件线路信息
+     * 获取线路任务信息
      * @param $batch
      * @param $line
      * @param $isLock
@@ -213,7 +213,7 @@ class TourService extends BaseService
         if (!empty($tourNo)) {
             $this->query->where('tour_no', '=', $tourNo);
         }
-        //若不存在取件线路或者超过最大订单量,则新建取件线路
+        //若不存在线路任务或者超过最大订单量,则新建线路任务
         if ((intval($batch['expect_pickup_quantity']) > 0) && ($isAssign == false)) {
             $this->query->where(DB::raw('expect_pickup_quantity+' . 1), '<=', $line['pickup_max_count']);
         }
@@ -359,7 +359,7 @@ class TourService extends BaseService
 
             throw_unless(
                 $batchNos,
-                new BusinessLogicException('优化线路失败')
+                new BusinessLogicException('线路优化失败')
             );
         }
 
@@ -437,12 +437,12 @@ class TourService extends BaseService
     {
         $info = parent::getInfo(['id' => $id, 'status' => ['in', [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_5]]], ['*'], true);
         if (empty($info)) {
-            throw new BusinessLogicException('该取件线路不在取派中，无法进行追踪');
+            throw new BusinessLogicException('该线路任务不在取派中，无法进行追踪');
         }
         //通过订单查询站点编号
         $batchNoList = $this->getOrderService()->query->whereNotNull('batch_no')->where('tour_no', $info['tour_no'])->pluck('batch_no')->toArray();
         if (empty($batchNoList)) {
-            throw new BusinessLogicException('该取件线路不在取派中，无法进行追踪');
+            throw new BusinessLogicException('该线路任务不在取派中，无法进行追踪');
         }
         $info['batchs'] = $this->getBatchService()->getList(['batch_no' => ['in', $batchNoList]], ['*'], true)->toArray(request()) ?? [];
         $info['batchs'] = collect($info['batchs'])->sortBy('sort_id')->all();

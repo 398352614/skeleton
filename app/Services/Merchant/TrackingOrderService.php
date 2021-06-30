@@ -274,13 +274,13 @@ class TrackingOrderService extends BaseService
         //$this->record($trackingOrder);
         //重新统计站点金额
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
-        //重新统计取件线路金额
+        //重新统计线路任务金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         //运单轨迹-运单创建
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_CREATED);
         //运单轨迹-运单加入站点
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
-        //运单轨迹-运单加入取件线路
+        //运单轨迹-运单加入线路任务
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
         //订单轨迹-订单创建
         OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
@@ -536,7 +536,7 @@ class TrackingOrderService extends BaseService
      */
     public function dealMaterialList($dbTrackingOrder, $dbMaterialList, $materialList)
     {
-        //若运单是取派中,则需要处理取件线路中对应材料数量
+        //若运单是取派中,则需要处理线路任务中对应材料数量
         if (intval($dbTrackingOrder['status']) === BaseConstService::TRACKING_ORDER_STATUS_4) {
             foreach ($dbMaterialList as $dbMaterial) {
                 $dbTourMaterial = $this->tourMaterialModel->newQuery()->where('tour_no', $dbTrackingOrder['tour_no'])->where('code', $dbMaterial['code'])->first();
@@ -630,7 +630,7 @@ class TrackingOrderService extends BaseService
             $this->getBatchService()->removeTrackingOrder($dbTrackingOrder);
             //重新统计站点金额
             !empty($dbTrackingOrder['batch_no']) && $this->getBatchService()->reCountAmountByNo($dbTrackingOrder['batch_no']);
-            //重新统计取件线路金额
+            //重新统计线路任务金额
             !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
         }
         $rowCount = parent::update(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['batch_no' => '', 'tour_no' => '', 'line_id' => null, 'line_name' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_7]);
@@ -688,13 +688,13 @@ class TrackingOrderService extends BaseService
             $this->getBatchService()->removeTrackingOrder($dbTrackingOrder);
             //重新统计站点金额
             $this->getBatchService()->reCountAmountByNo($dbTrackingOrder['batch_no']);
-            //重新统计取件线路金额
+            //重新统计线路任务金额
             !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
         }
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line, $batchNo, $tour, $isAddOrder);
         //重新统计站点金额
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
-        //重新统计取件线路金额
+        //重新统计线路任务金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         if ($isFillTrackingOrder === true) {
             $this->fillBatchTourInfo($trackingOrder, $batch, $tour, $isUpdateOrder);
@@ -800,7 +800,7 @@ class TrackingOrderService extends BaseService
         if (empty($dbTrackingOrder['batch_no'])) {
             return;
         }
-        //运单移除站点和取件线路信息
+        //运单移除站点和线路任务信息
         $rowCount = parent::updateById($id, ['line_id' => null, 'line_name' => '', 'tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败，请重新操作');
@@ -818,7 +818,7 @@ class TrackingOrderService extends BaseService
         $this->getBatchService()->removeTrackingOrder($dbTrackingOrder);
         //重新统计站点金额
         !empty($dbTrackingOrder['batch_no']) && $this->getBatchService()->reCountAmountByNo($dbTrackingOrder['batch_no']);
-        //重新统计取件线路金额
+        //重新统计线路任务金额
         !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
 
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH, $dbTrackingOrder);
@@ -846,17 +846,17 @@ class TrackingOrderService extends BaseService
         });
         $trackingOrderNoList = array_column($dbTrackingOrderList, 'order_no');
         $where = ['order_no' => ['in', $trackingOrderNoList]];
-        //运单移除站点和取件线路信息
+        //运单移除站点和线路任务信息
         $rowCount = parent::update($where, ['tour_no' => '', 'batch_no' => '', 'driver_id' => null, 'driver_name' => '', 'driver_phone' => '', 'car_id' => null, 'car_no' => null, 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败，请重新操作');
         }
-        //材料移除取件线路信息
+        //材料移除线路任务信息
         $rowCount = $this->getTrackingOrderMaterialService()->update($where, ['tour_no' => '', 'batch_no' => '']);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败，请重新操作');
         }
-        //包裹移除取件线路信息
+        //包裹移除线路任务信息
         $rowCount = $this->getTrackingOrderPackageService()->update($where, ['tour_no' => '', 'batch_no' => '', 'status' => BaseConstService::TRACKING_ORDER_STATUS_1]);
         if ($rowCount === false) {
             throw new BusinessLogicException('移除失败，请重新操作');
@@ -865,7 +865,7 @@ class TrackingOrderService extends BaseService
             $this->getBatchService()->removeTrackingOrder($dbTrackingOrder);
             //重新统计站点金额
             !empty($dbTrackingOrder['batch_no']) && $this->getBatchService()->reCountAmountByNo($dbTrackingOrder['batch_no']);
-            //重新统计取件线路金额
+            //重新统计线路任务金额
             !empty($dbTrackingOrder['tour_no']) && $this->getTourService()->reCountAmountByNo($dbTrackingOrder['tour_no']);
         }
         TrackingOrderTrailService::storeAllByTrackingOrderList($dbTrackingOrderList, BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH);

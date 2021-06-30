@@ -121,7 +121,7 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         if (intval($stockException['status']) !== BaseConstService::STOCK_EXCEPTION_STATUS_1) {
-            throw new BusinessLogicException('异常已处理或被拒绝');
+            throw new BusinessLogicException('异常已处理，请勿重复处理');
         }
         $rowCount = parent::updateById($stockException['id'], [
             'deal_remark' => __('调整为取件成功'),
@@ -198,7 +198,7 @@ class StockExceptionService extends BaseService
                 //重新统计站点金额
                 $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
             }
-            //更新取件线路
+            //更新线路任务
             $tour = $this->getTourService()->getInfoLock(['tour_no' => $trackingOrder['tour_no']], ['*'], false);
             if (!empty($tour)) {
                 $tourData = [
@@ -207,9 +207,9 @@ class StockExceptionService extends BaseService
                 ];
                 $rowCount = $this->getTourService()->update(['tour_no' => $trackingOrder['tour_no']], $tourData);
                 if ($rowCount === false) {
-                    throw new BusinessLogicException('取件线路处理失败，请重新操作');
+                    throw new BusinessLogicException('线路任务处理失败，请重新操作');
                 }
-                //重新统计取件线路金额
+                //重新统计线路任务金额
                 $this->getTourService()->reCountAmountByNo($tour['tour_no']);
             }
         }

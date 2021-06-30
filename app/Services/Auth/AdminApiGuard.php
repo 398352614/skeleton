@@ -75,7 +75,7 @@ class AdminApiGuard implements Guard
     {
         $employee = (new Employee())->newQuery()->where('company_id', '=', $adminApi->company_id)->first();
         if (empty($employee)) {
-            throw new BusinessLogicException('企业不存在');
+            throw new BusinessLogicException('公司不存在');
         }
         $employee->is_api = true;
         $this->user = $employee;

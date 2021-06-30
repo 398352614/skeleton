@@ -127,7 +127,7 @@ class DriverService extends BaseService
     public function getPageList()
     {
         $date = null;
-        //如果查询条件中有取件线路，1查询取派日期，2查到这个取派日期的所有取件线路，3把已经在其他取件线路的司机排除。就是这条取件线路可选的司机。
+        //如果查询条件中有线路任务，1查询取派日期，2查到这个取派日期的所有线路任务，3把已经在其他线路任务的司机排除。就是这条线路任务可选的司机。
         if (!empty($this->formData['tour_no'])) {
             $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
             if (!empty($tour)) {

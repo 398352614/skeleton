@@ -1,6 +1,6 @@
 <?php
 /**
- * 企业微信推送
+ * 公司微信推送
  * User: long
  * Date: 2020/9/4
  * Time: 14:13
@@ -14,7 +14,7 @@ use EasyWeChat\Kernel\Messages\NewsItem;
 class MessageService
 {
     /**
-     * 企业微信推送
+     * 公司微信推送
      * @param string $body
      */
     public function reportToWechat($body = '')

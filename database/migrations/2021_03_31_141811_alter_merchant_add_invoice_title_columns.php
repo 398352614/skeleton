@@ -14,7 +14,7 @@ class AlterMerchantAddInvoiceTitleColumns extends Migration
     public function up()
     {
         Schema::table('merchant', function (Blueprint $table) {
-            $table->integer('short_name')->default(0)->nullable()->comment('企业简称')->after('name');
+            $table->integer('short_name')->default(0)->nullable()->comment('公司简称')->after('name');
             $table->tinyInteger('invoice_title')->default(1)->nullable()->comment('发票抬头')->after('avatar');
             $table->date('taxpayer_code')->default(null)->nullable()->comment('纳税人识别码')->after('invoice_title');
             $table->date('bank')->default(null)->nullable()->comment('开户行')->after('taxpayer_code');

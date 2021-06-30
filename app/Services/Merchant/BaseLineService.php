@@ -116,7 +116,7 @@ class BaseLineService extends BaseService
         $lineRange = $this->getLineRange($info, $merchantAlone);
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (empty($line)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
         if (intval($line['status']) === BaseConstService::OFF) {
@@ -143,7 +143,7 @@ class BaseLineService extends BaseService
         $this->deadlineCheck($info, $line);
         //判断预约日期是否在可预约日期范围内
         $this->appointmentDayCheck($info, $line);
-        //若不是新增取件线路，则当前取件线路必须再最大订单量内
+        //若不是新增线路任务，则当前线路任务必须再最大订单量内
         $this->maxCheck($info, $line, $orderOrBatch);
         //最小订单量检验
         $this->minCheck($info, $line, $orderOrBatch);
@@ -182,7 +182,7 @@ class BaseLineService extends BaseService
             $lineRange = $this->getLineRangeByArea($coordinate, $info['execution_date']);
         }
         if (empty($lineRange)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         if (!empty($lineRange['is_alone']) && (intval($lineRange['is_alone']) == BaseConstService::YES)) {
             $lineRange['merchant_id'] = $info['merchant_id'];
@@ -372,7 +372,7 @@ class BaseLineService extends BaseService
         asort($dateList);
         $dateList = array_values($dateList);
         if (empty($dateList)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         return $dateList ?? [];
     }
@@ -653,7 +653,7 @@ class BaseLineService extends BaseService
         $lineRange = $this->getLineRange($info, BaseConstService::NO);
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (empty($line)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
         if (intval($line['status']) === BaseConstService::OFF) {

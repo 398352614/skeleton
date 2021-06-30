@@ -17,7 +17,7 @@ class CreateTrackingOrderMaterialTable extends Migration
             $table->integerIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
             $table->integer('merchant_id')->default(null)->nullable()->comment('货主ID');
-            $table->string('tour_no', 50)->default('')->nullable()->comment('取件线路编号');
+            $table->string('tour_no', 50)->default('')->nullable()->comment('线路任务编号');
             $table->string('batch_no', 50)->default('')->nullable()->comment('站点编号');
             $table->string('tracking_order_no', 50)->default('')->nullable()->comment('运单号');
             $table->tinyInteger('type')->default(1)->nullable()->comment('运单类型1-取件2-派件');

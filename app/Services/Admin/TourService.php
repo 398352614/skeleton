@@ -135,7 +135,7 @@ class TourService extends BaseService
     }
 
     /**
-     * 获取可加单的取件线路列表
+     * 获取可加单的线路任务列表
      * @param $data
      * @return array|mixed
      * @throws BusinessLogicException
@@ -153,7 +153,7 @@ class TourService extends BaseService
     }
 
     /**
-     * 取件线路查询
+     * 线路任务查询
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getPageList()
@@ -210,7 +210,7 @@ class TourService extends BaseService
     public function assignDriver($id, $params)
     {
         $tour = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::TOUR_STATUS_1, false);
-        //查看当前司机是否已被分配给其他取件线路
+        //查看当前司机是否已被分配给其他线路任务
         $otherTour = parent::getInfo(['id' => ['<>', $id], 'driver_id' => $params['driver_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
         if (!empty($otherTour)) {
             throw new BusinessLogicException('当前司机已被分配，请选择其他司机');
@@ -218,10 +218,13 @@ class TourService extends BaseService
         //获取司机
         $driver = $this->getDriverService()->getInfo(['id' => $params['driver_id'], 'is_locked' => BaseConstService::DRIVER_TO_NORMAL], ['*'], false);
         if (empty($driver)) {
-            throw new BusinessLogicException('司机不存在或已被锁定');
+            throw new BusinessLogicException('司机不存在');
         }
         $driver = $driver->toArray();
-        //取件线路分配 由于取件线路,站点,运单的已分配状态都为2,所以只需取一个状态即可(ORDER_STATUS_2,BATCH_ASSIGNED,TOUR_STATUS_2)
+        if ($driver['is_locked'] == BaseConstService::DRIVER_TO_LOCK) {
+            throw new BusinessLogicException('司机已被锁定');
+        }
+        //线路任务分配 由于线路任务,站点,运单的已分配状态都为2,所以只需取一个状态即可(ORDER_STATUS_2,BATCH_ASSIGNED,TOUR_STATUS_2)
         $rowCount = $this->assignOrCancelAssignAll($tour, ['driver_id' => $driver['id'], 'driver_name' => $driver['fullname'], 'driver_phone' => $driver['phone'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_2]);
         if ($rowCount === false) {
             throw new BusinessLogicException('司机分配失败，请重新操作');
@@ -257,7 +260,7 @@ class TourService extends BaseService
     public function assignCar($id, $params)
     {
         $tour = $this->getInfoOfStatus(['id' => $id], true, [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3], false);
-        //查看当前车辆是否已被分配给其他取件线路
+        //查看当前车辆是否已被分配给其他线路任务
         $otherTour = parent::getInfo(['id' => ['<>', $id], 'car_id' => $params['car_id'], 'execution_date' => $tour['execution_date'], 'status' => ['<>', BaseConstService::TOUR_STATUS_5]], ['*'], false);
         if (!empty($otherTour)) {
             throw new BusinessLogicException('当前车辆已被分配，请选择其他车辆');
@@ -265,10 +268,13 @@ class TourService extends BaseService
         //获取车辆
         $car = $this->getCarService()->getInfo(['id' => $params['car_id'], 'is_locked' => BaseConstService::CAR_TO_NORMAL], ['*'], false);
         if (empty($car)) {
-            throw new BusinessLogicException('车辆不存在或已被锁定');
+            throw new BusinessLogicException('车辆不存在');
         }
         //分配
         $car = $car->toArray();
+        if($car['is_locked'] =BaseConstService::CAR_TO_LOCK){
+            throw new BusinessLogicException('车辆已被锁定');
+        }
         $rowCount = $this->assignOrCancelAssignAll($tour, ['car_id' => $car['id'], 'car_no' => $car['car_no']]);
         if ($rowCount === false) {
             throw new BusinessLogicException('车辆分配失败，请重新操作');
@@ -291,14 +297,14 @@ class TourService extends BaseService
 
 
     /**
-     * 分配或取消分配司机或车辆到取件线路-站点-运单
+     * 分配或取消分配司机或车辆到线路任务-站点-运单
      * @param $tour
      * @param $data
      * @return bool
      */
     private function assignOrCancelAssignAll($tour, $data)
     {
-        //取件线路
+        //线路任务
         $rowCount = parent::updateById($tour['id'], $data);
         if ($rowCount === false) return false;
         //站点
@@ -321,10 +327,10 @@ class TourService extends BaseService
     public function unlock($id)
     {
         $tour = $this->getInfoOfStatus(['id' => $id], true, BaseConstService::TOUR_STATUS_3, false);
-        //取件线路 处理
+        //线路任务 处理
         $rowCount = parent::updateById($id, ['status' => BaseConstService::TOUR_STATUS_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('取件线路取消锁定失败，请重新操作');
+            throw new BusinessLogicException('线路任务取消锁定失败，请重新操作');
         }
         //站点 处理
         $rowCount = $this->getBatchService()->update(['tour_no' => $tour['tour_no'], 'status' => BaseConstService::BATCH_WAIT_OUT], ['status' => BaseConstService::BATCH_ASSIGNED]);
@@ -346,7 +352,7 @@ class TourService extends BaseService
 
 
     /**
-     * 站点加入取件线路
+     * 站点加入线路任务
      * @param $batch
      * @param $line
      * @param $order
@@ -357,14 +363,14 @@ class TourService extends BaseService
     public function join($batch, $line, $order, $tour = [])
     {
         $tour = !empty($tour) ? $tour : $this->getTourInfo($batch, $line);
-        //加入取件线路
+        //加入线路任务
         $quantity = (intval($order['type']) === BaseConstService::TRACKING_ORDER_TYPE_1) ? ['expect_pickup_quantity' => 1] : ['expect_pie_quantity' => 1];
         $tour = !empty($tour) ? $this->joinExistTour($tour, $quantity) : $this->joinNewTour($batch, $line, $quantity);
         return $tour;
     }
 
     /**
-     * 加入新的取件线路
+     * 加入新的线路任务
      * @param $line
      * @param $batch
      * @param $quantity
@@ -401,14 +407,14 @@ class TourService extends BaseService
             ], $quantity)
         );
         if ($tour === false) {
-            throw new BusinessLogicException('站点加入取件线路失败，请重新操作');
+            throw new BusinessLogicException('站点加入线路任务失败，请重新操作');
         }
         return $tour->getOriginal();
     }
 
 
     /**
-     * 加入已存在取件线路
+     * 加入已存在线路任务
      * @param $tour
      * @param $quantity
      * @return mixed
@@ -422,7 +428,7 @@ class TourService extends BaseService
         ];
         $rowCount = parent::updateById($tour['id'], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点加入取件线路失败，请重新操作');
+            throw new BusinessLogicException('站点加入线路任务失败，请重新操作');
         }
         $tour = array_merge($tour, $data);
         return $tour;
@@ -481,7 +487,7 @@ class TourService extends BaseService
     }
 
     /**
-     * 通过站点,获取可分配的取件线路
+     * 通过站点,获取可分配的线路任务
      * @param $batch
      * @param $line
      * @return array
@@ -546,7 +552,7 @@ class TourService extends BaseService
 
 
     /**
-     * 分配站点至取件线路
+     * 分配站点至线路任务
      * @param $batch
      * @param $line
      * @param $params
@@ -560,10 +566,10 @@ class TourService extends BaseService
         }
         $tour = $this->getTourInfo($batch, $line, true, $params['tour_no'] ?? '', true);
         if (!empty($params['tour_no']) && empty($tour)) {
-            throw new BusinessLogicException('当前指定取件线路不符合当前站点');
+            throw new BusinessLogicException('当前指定线路任务不符合当前站点');
         }
         $quantity = ['expect_pickup_quantity' => $batch['expect_pickup_quantity'], 'expect_pie_quantity' => $batch['expect_pie_quantity']];
-        //若存在取件线路，判断当前取件线路中是否已存在相同站点,若存在，则合并
+        //若存在线路任务，判断当前线路任务中是否已存在相同站点,若存在，则合并
         if (!empty($tour)) {
             $batch = $this->getBatchService()->mergeTwoBatch($tour, $batch);
             $tour = $this->joinExistTour($tour, $quantity);
@@ -574,7 +580,7 @@ class TourService extends BaseService
     }
 
     /**
-     * 获取取件线路信息
+     * 获取线路任务信息
      * @param $batch
      * @param $line
      * @param $isLock
@@ -589,7 +595,7 @@ class TourService extends BaseService
         if (!empty($tourNo)) {
             $this->query->where('tour_no', '=', $tourNo);
         }
-        //若不存在取件线路或者超过最大运单量,则新建取件线路
+        //若不存在线路任务或者超过最大运单量,则新建线路任务
         if ((intval($batch['expect_pickup_quantity']) > 0) && (($isAssign == false) || ($isAddOrder == false))) {
             $this->query->where(DB::raw('expect_pickup_quantity+' . 1), '<=', $line['pickup_max_count']);
         }
@@ -694,7 +700,7 @@ class TourService extends BaseService
         // set_time_limit(240);
         $tour = Tour::where('tour_no', $data['tour_no'])->firstOrFail();
         if ($tour->status == BaseConstService::TOUR_STATUS_5) {
-            throw new BusinessLogicException('取件线路已完成，不能优化');
+            throw new BusinessLogicException('线路任务已完成，不能优化');
         }
         $this->getApiTimesService()->timesCount('directions_times', $tour->company_id);
         TourLog::create([
@@ -835,7 +841,7 @@ class TourService extends BaseService
     }
 
     /**
-     * 通过线路ID 获取可加入的取件线路列表
+     * 通过线路ID 获取可加入的线路任务列表
      * @param $lineId
      * @return array
      */
@@ -935,7 +941,7 @@ class TourService extends BaseService
     }
 
     /**
-     * 导出取件线路
+     * 导出线路任务
      * @param $id
      * @return mixed
      * @throws BusinessLogicException

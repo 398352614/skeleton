@@ -121,9 +121,13 @@ class MerchantGroupService extends BaseService
      */
     private function check(&$params, $id = null)
     {
-        $transportPrice = $this->getTransportPriceService()->getInfo(['id' => $params['transport_price_id'], 'status' => BaseConstService::ON], ['*'], false);
+        $transportPrice = $this->getTransportPriceService()->getInfo(['id' => $params['transport_price_id']], ['*'], false);
         if (empty($transportPrice)) {
-            throw new BusinessLogicException('运价不存在或已被禁用');
+            throw new BusinessLogicException('运价不存在');
+        }
+        $transportPrice=$transportPrice->toArray();
+        if($transportPrice['status'] == BaseConstService::NO){
+            throw new BusinessLogicException('运价已被禁用');
         }
         //若设置当前为默认的,则原来默认的设置为否
         if (intval($params['is_default']) === 1) {

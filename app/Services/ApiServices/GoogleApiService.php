@@ -221,7 +221,7 @@ class GoogleApiService
         if (!$bool) {
             throw new BusinessLogicException('更新线路失败，请稍后重试');
         }
-        Log::channel('info')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '取件线路预计耗时和里程更新成功');
+        Log::channel('info')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '线路任务预计耗时和里程更新成功');
     }
 
 
@@ -258,7 +258,7 @@ class GoogleApiService
         app('log')->debug('整合后的数据为:', array_merge([$driverLoc], $batchs->toArray()));
         $batchNos = (new XLDirectionService())->GetRoute(array_merge([$driverLoc], $batchs->toArray()));
         if (empty($batchNos)) {
-            throw new BusinessLogicException('优化线路失败');
+            throw new BusinessLogicException('线路优化失败');
         }
         app('log')->info('当前返回的值为:' . json_encode($batchNos));
         $nextBatch = null;

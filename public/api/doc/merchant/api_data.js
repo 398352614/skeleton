@@ -671,7 +671,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "data.web_site",
-            "description": "<p>企业网址</p>"
+            "description": "<p>公司网址</p>"
           },
           {
             "group": "Success 200",
@@ -685,7 +685,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "data.logo_url",
-            "description": "<p>企业Logo</p>"
+            "description": "<p>公司Logo</p>"
           },
           {
             "group": "Success 200",
@@ -5476,7 +5476,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "data.material_list.tour_no",
-            "description": "<p>取件线路编号</p>"
+            "description": "<p>线路任务编号</p>"
           },
           {
             "group": "Success 200",

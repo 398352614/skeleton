@@ -124,7 +124,7 @@ class TenCentApiService
             }
             Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
-            throw new BusinessLogicException('线路自动更新失败');
+            throw new BusinessLogicException('线路更新失败');
         }
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         return $res;

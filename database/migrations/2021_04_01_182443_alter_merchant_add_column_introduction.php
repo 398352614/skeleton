@@ -14,7 +14,7 @@ class AlterMerchantAddColumnIntroduction extends Migration
     public function up()
     {
         Schema::table('merchant', function (Blueprint $table) {
-            $table->text('introduction')->default(null)->nullable()->comment('企业介绍')->after('short_name');
+            $table->text('introduction')->default(null)->nullable()->comment('公司介绍')->after('short_name');
         });
     }
 

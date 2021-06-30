@@ -69,7 +69,7 @@ class ReportService extends BaseService
         //获取站点数量
         $info['expect_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no']]);
         $info['actual_batch_count'] = $this->getBatchService()->count(['tour_no' => $info['tour_no'], 'status' => BaseConstService::BATCH_CHECKOUT]);
-        //组装取件线路站点信息
+        //组装线路任务站点信息
         if (!$info['actual_time'] == 0) {
             $warehouseActualTimeHuman = CarbonInterval::second($info['actual_time'])->cascade()->forHumans();
         } else {
@@ -115,15 +115,15 @@ class ReportService extends BaseService
             $warehouseInfo['warehouse_actual_arrive_time'] = $info['end_time'];
             $warehouseInfo['warehouse_actual_time_human'] = $warehouseInfo['warehouse_actual_time'];
         }
-        //获取当前取件线路上的所有运单
+        //获取当前线路任务上的所有运单
         $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $info['tour_no']], ['tracking_order_no', 'order_no', 'tour_no', 'batch_no'], false)->toArray();
         $orderNoList = array_column($trackingOrderList, 'order_no');
         $trackingOrderList = array_create_index($trackingOrderList, 'order_no');
         //获取订单列表
         $orderList = $this->getOrderService()->getList(['order_no' => ['in', $orderNoList]], ['id', 'type', 'out_user_id', 'order_no', 'out_order_no', 'status', 'special_remark', 'remark', 'settlement_amount', 'replace_amount', 'sticker_amount', 'delivery_amount'], false)->toArray();
-        //获取当前取件线路上的所有包裹
+        //获取当前线路任务上的所有包裹
         $packageList = $this->getTrackingOrderPackageService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
-        //获取当前取件线路上的所有材料
+        //获取当前线路任务上的所有材料
         $materialList = $this->getTrackingOrderMaterialService()->getList(['tour_no' => $info['tour_no']], ['*'], false)->toArray();
         //获取站点的取件材料汇总
         $tourMaterialList = $this->getTourMaterialList($info, $materialList);
@@ -205,7 +205,7 @@ class ReportService extends BaseService
         $info['api_settlement_amount'] = $info['api_replace_amount'] = $info['api_sticker_amount'] = $info['api_delivery_amount'] = $info['api_total_amount'] = 0;
         foreach ($batchList as $k => $v) {
             $batchList[$k]['actual_total_amount'] = number_format_simple(round(($v['actual_settlement_amount'] + $v['actual_replace_amount'] + $v['sticker_amount'] + $v['delivery_amount']), 2), 2);
-            //更新取件线路统计
+            //更新线路任务统计
             if ($v['pay_type'] == BaseConstService::BATCH_PAY_TYPE_1) {
                 $info['cash_settlement_amount'] += floatval($v['actual_settlement_amount']);
                 $info['cash_replace_amount'] += floatval($v['actual_replace_amount']);

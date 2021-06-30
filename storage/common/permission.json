@@ -1497,7 +1497,7 @@
     {
         "id": 130,
         "parent_id": 320,
-        "name": "企业信息配置",
+        "name": "公司信息配置",
         "route": "",
         "route_as": "",
         "level": 4,
@@ -3646,7 +3646,7 @@
     {
         "id": 320,
         "parent_id": 303,
-        "name": "企业信息",
+        "name": "公司信息",
         "route": "",
         "route_as": "",
         "level": 3,

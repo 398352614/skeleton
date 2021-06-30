@@ -1,6 +1,6 @@
 
 ALTER TABLE batch MODIFY `batch_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '站点编号';
-ALTER TABLE batch MODIFY `tour_no` varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '取件线路编号';
+ALTER TABLE batch MODIFY `tour_no` varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '线路任务编号';
 ALTER TABLE batch MODIFY `line_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '线路名称';
 ALTER TABLE batch MODIFY `sticker_amount` decimal(8, 2) NULL DEFAULT 0.00 COMMENT '贴单费用';
 ALTER TABLE batch MODIFY `replace_amount` decimal(16, 2) NULL DEFAULT 0.00 COMMENT '代收货款';
@@ -25,7 +25,7 @@ ALTER TABLE memorandum MODIFY `content` varchar(250) CHARACTER SET utf8mb4 COLLA
 
 ALTER TABLE `order` MODIFY `order_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '订单号';
 ALTER TABLE `order` MODIFY `batch_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '站点编号';
-ALTER TABLE `order` MODIFY `tour_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '取件线路编号';
+ALTER TABLE `order` MODIFY `tour_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '线路任务编号';
 ALTER TABLE `order` MODIFY `out_order_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '货号';
 ALTER TABLE `order` MODIFY `express_first_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '快递单号1';
 ALTER TABLE `order` MODIFY `express_second_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '快递单号2';
@@ -67,7 +67,7 @@ ALTER TABLE `special_time_charging` MODIFY `price` decimal(8, 2) NULL DEFAULT 0.
 
 ALTER TABLE order_trail MODIFY `content` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '内容';
 
-ALTER TABLE tour MODIFY `tour_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '取件线路编号';
+ALTER TABLE tour MODIFY `tour_no` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '线路任务编号';
 ALTER TABLE tour MODIFY `line_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '线路名';
 ALTER TABLE tour MODIFY `begin_signature` varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '出库签名';
 ALTER TABLE tour MODIFY `begin_signature_remark` varchar(250) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '出库备注';

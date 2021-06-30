@@ -58,7 +58,7 @@ class FixTrackingOrder extends Command
                 $table->string('order_no', 50)->default('')->nullable()->comment('订单号');
                 $table->string('tracking_order_no', 50)->default('')->nullable()->comment('运单号');
                 $table->string('batch_no', 50)->default('')->nullable()->comment('站点编号');
-                $table->string('tour_no', 50)->default('')->nullable()->comment('取件线路编号');
+                $table->string('tour_no', 50)->default('')->nullable()->comment('线路任务编号');
                 $table->tinyInteger('type')->default(1)->nullable()->comment('运单类型1-取2-派');
                 $table->date('execution_date')->default(null)->nullable()->comment('取派日期');
                 $table->string('warehouse_fullname', 50)->default('')->nullable()->comment('发件人姓名');

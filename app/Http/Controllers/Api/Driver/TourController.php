@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 取件线路 操作
+ * 线路任务 操作
  * User: long
  * Date: 2019/12/30
  * Time: 11:54
@@ -194,7 +194,7 @@ class TourController extends BaseController
     }
 
     /**
-     * 获取取件线路统计数据
+     * 获取线路任务统计数据
      * @param $id
      * @return array|Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
@@ -238,7 +238,7 @@ class TourController extends BaseController
     }
 
     /**
-     * 获取线路及取件线路列表
+     * 获取线路及线路任务列表
      * @return array
      */
     public function getTourList()

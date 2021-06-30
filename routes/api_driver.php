@@ -59,7 +59,7 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::delete('/{id}', 'MemorandumController@destroy');
     });
 
-    //取件线路任务 管理
+    //线路任务任务 管理
     Route::prefix('tour-task')->group(function () {
         //列表查询
         Route::get('/', 'TourTaskController@index');
@@ -107,13 +107,13 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     Route::prefix('order')->group(function () {
         //获取线路
         Route::get('/get-line', 'LineController@index');
-        //获取取件线路
+        //获取线路任务
         Route::get('/get-tour', 'TourController@getTourList');
         //获取订单及包裹
         Route::get('/', 'TourTaskController@getTrackingOrderList');
     });
 
-    //取件线路 管理
+    //线路任务 管理
     Route::prefix('tour')->group(function () {
         //更改线路任务顺序 -- 手动优化
         Route::post('/update-batch-index', 'TourController@updateBatchIndex')->middleware('checktourredislock');
@@ -149,7 +149,7 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::put('/{id}/checkBatchSign', 'TourController@checkBatchSign');
         //站点 签收
         Route::put('/{id}/batchSign', 'TourController@batchSign');
-        //获取取件线路统计数据
+        //获取线路任务统计数据
         Route::get('/{id}/getTotalInfo', 'TourController@getTotalInfo');
         //司机入库
         Route::put('/{id}/inWarehouse', 'TourController@inWarehouse');

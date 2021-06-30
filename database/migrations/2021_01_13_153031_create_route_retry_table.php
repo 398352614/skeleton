@@ -16,7 +16,7 @@ class CreateRouteRetryTable extends Migration
         Schema::create('route_retry', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->string('company_id')->default('')->nullable()->comment('公司ID');
-            $table->string('tour_no')->default('')->nullable()->comment('取件线路编号');
+            $table->string('tour_no')->default('')->nullable()->comment('线路任务编号');
             $table->json('data')->default('')->nullable()->comment('参数');
             $table->tinyInteger('retry_times' )->default(0)->nullable()->comment('重试次数');
 

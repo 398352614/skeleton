@@ -97,7 +97,7 @@ trait LocationTrait
                     'line' => $e->getLine(),
                     'message' => $e->getMessage()
                 ]);
-                throw new BusinessLogicException('可能由于网络问题，无法根据邮编和门牌号码获取城市和地址信息，请稍后再尝试');
+                throw new BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
             }
             $body = $res->getBody();
             $stringBody = (string)$body;
@@ -145,11 +145,11 @@ trait LocationTrait
                     'line' => $e->getLine(),
                     'message' => $e->getMessage()
                 ]);
-                throw new \App\Exceptions\BusinessLogicException('可能由于网络问题，无法获取具体信息，请稍后再尝试');
+                throw new \App\Exceptions\BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
             }
             $count = count($featureList);
             if (($count == 0)/* || ($count > 3)*/) {
-                throw new \App\Exceptions\BusinessLogicException('国家，城市，街道，门牌号或邮编不正确，请仔细检查输入或联系客服');
+                throw new \App\Exceptions\BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
             }
             return [
                 'province' => $featureList[0]['properties']['state'] ?? '',

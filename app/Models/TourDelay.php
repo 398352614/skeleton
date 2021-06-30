@@ -6,7 +6,7 @@ use App\Traits\ConstTranslateTrait;
 use Carbon\CarbonInterval;
 
 /**
- * 取件线路材料表
+ * 线路任务材料表
  * Class Employee
  * @package App\Models
  */

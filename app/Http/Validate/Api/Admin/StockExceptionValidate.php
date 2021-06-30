@@ -1,6 +1,6 @@
 <?php
 /**
- * 取件线路 验证类
+ * 线路任务 验证类
  * Created by PhpStorm
  * User: long
  * Date: 2019/12/16

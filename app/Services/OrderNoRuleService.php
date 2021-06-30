@@ -146,13 +146,13 @@ class OrderNoRuleService extends BaseService
 
 
     /**
-     * 创建取件线路编号
+     * 创建线路任务编号
      * @return string
      * @throws BusinessLogicException
      */
     public function createTourNo()
     {
-        return $this->createNoBase(BaseConstService::TOUR_NO_TYPE, '取件线路单号规则不存在或已被禁用，请先联系后台管理员');
+        return $this->createNoBase(BaseConstService::TOUR_NO_TYPE, '线路任务单号规则不存在或已被禁用，请先联系后台管理员');
     }
 
     /**

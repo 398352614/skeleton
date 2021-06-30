@@ -183,7 +183,7 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_NO_TYPE => '订单编号规则',
         BaseConstService::TRACKING_ORDER_NO_TYPE => '运单单号规则',
         BaseConstService::BATCH_NO_TYPE => '站点编号规则',
-        BaseConstService::TOUR_NO_TYPE => '取件线路编号规则',
+        BaseConstService::TOUR_NO_TYPE => '线路任务编号规则',
         BaseConstService::RECHARGE_NO_TYPE => '充值单号规则',
         BaseConstService::BATCH_EXCEPTION_NO_TYPE => '站点异常编号规则',
         BaseConstService::STOCK_EXCEPTION_NO_TYPE => '入库异常编号规则',
@@ -549,14 +549,14 @@ trait ConstTranslateTrait
     //管理员端 图片目录
     public static $adminImageDirList = [
         BaseConstService::ADMIN_IMAGE_DRIVER_DIR => '司机图片目录',
-        BaseConstService::ADMIN_IMAGE_TOUR_DIR => '取件线路图片目录',
+        BaseConstService::ADMIN_IMAGE_TOUR_DIR => '线路任务图片目录',
         BaseConstService::ADMIN_IMAGE_CANCEL_DIR => '取消取派图片目录',
         BaseConstService::ADMIN_IMAGE_MERCHANT_DIR => '货主图片目录',
     ];
 
     //司机端 图片目录
     public static $driverImageDirList = [
-        BaseConstService::DRIVER_IMAGE_TOUR_DIR => '取件线路图片目录'
+        BaseConstService::DRIVER_IMAGE_TOUR_DIR => '线路任务图片目录'
     ];
 
     //管理员端 文件目录
@@ -572,17 +572,17 @@ trait ConstTranslateTrait
 
     //管理员端 表格目录
     public static $adminExcelDirList = [
-        BaseConstService::ADMIN_EXCEL_TOUR_DIR => '取件线路表格目录',
+        BaseConstService::ADMIN_EXCEL_TOUR_DIR => '线路任务表格目录',
     ];
 
     //管理员端 文档目录
     public static $adminTxtDirList = [
-        BaseConstService::ADMIN_TXT_TOUR_DIR => '取件线路文件目录',
+        BaseConstService::ADMIN_TXT_TOUR_DIR => '线路任务文件目录',
     ];
 
     //司机端 文件目录
     public static $driverFileDirList = [
-        BaseConstService::DRIVER_FILE_TOUR_DIR => '取件线路文件目录'
+        BaseConstService::DRIVER_FILE_TOUR_DIR => '线路任务文件目录'
     ];
 
     //货主类型
@@ -659,7 +659,7 @@ trait ConstTranslateTrait
     public static $languageList = [
         BaseConstService::CN => '汉语',
         BaseConstService::EN => '英语',
-        BaseConstService::NL => '荷兰语',
+//        BaseConstService::NL => '荷兰语',
     ];
 
     public static $merchantAdditionalStatusList = [

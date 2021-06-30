@@ -189,7 +189,7 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
 //        //获取详情
 //        Route::get('/{id}', 'MaterialController@show');
 //    });
-//    //取件线路
+//    //线路任务
 //    Route::prefix('tour')->group(function () {
 //        //列表查询
 //        Route::get('/', 'TourController@index')->name('tour.index');

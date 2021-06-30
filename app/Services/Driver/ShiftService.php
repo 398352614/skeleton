@@ -222,7 +222,7 @@ class ShiftService extends BaseService
         } elseif (!empty($bag) && !empty($trackingPackage)) {
             //同时存在时，不带is_bag参数报错。5007错误通知手持端加上is_bag参数重新请求
             if (empty($data['is_bag'])) {
-                throw new BusinessLogicException('包裹号和袋号同时存在', 5007);
+                throw new BusinessLogicException('包裹号和袋号同时存在，请进行选择', 5007);
             } elseif ($data['is_bag'] == BaseConstService::YES) {
                 //is_bag为1时取袋
                 $info = $this->loadBag($bag, $shift, $data['ignore_rule']);
@@ -445,7 +445,7 @@ class ShiftService extends BaseService
         } else {
             //同时存在时，不带is_bag参数报错。5007错误通知手持端加上is_bag参数重新请求
             if (empty($data['is_bag'])) {
-                throw new BusinessLogicException('包裹号和袋号同时存在', 5007);
+                throw new BusinessLogicException('包裹号和袋号同时存在，请进行选择', 5007);
             } elseif ($data['is_bag'] == BaseConstService::YES) {
                 //is_bag为1时取袋
                 $info = $this->unloadBag($bag, $shift);
