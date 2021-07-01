@@ -47,7 +47,7 @@ class GoogleApiDistanceService
             throw new BusinessLogicException('公司不存在');
         }
         $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
-        if (!empty($mapConfig)) {
+        if (!empty($mapConfig) && !empty($mapConfig['google_key'])) {
             $this->key = $mapConfig->toArray()['google_key'];
         } else {
             Log::info('备用Key');
