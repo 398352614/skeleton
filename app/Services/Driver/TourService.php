@@ -170,7 +170,7 @@ class TourService extends BaseService
             throw new BusinessLogicException('线路任务不存在');
         }
         $tour = $tour->toArray();
-        if (in_array($tour['status'], [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])) {
+        if (!in_array($tour['status'], [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])) {
             throw new BusinessLogicException('线路任务当前状态不允许分配车辆');
         }
         //查看当前车辆是否已被分配给其他线路任务(由于model会自动加上driver_id条件,所以此处不用model)
