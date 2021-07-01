@@ -90,6 +90,8 @@ trait LocationTrait
                         'timeout' => 50
                     ]
                 );
+                Log::debug(config('thirdParty.location_api_key'));
+                Log::debug(config('thirdParty.location_api_secret'));
                 Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', collect($res)->toArray());
             } catch (\Exception $e) {
                 Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
