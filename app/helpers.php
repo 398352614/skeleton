@@ -175,7 +175,6 @@ if (!function_exists('array_only_fields_sort')) {
      */
     function array_only_fields_sort($data, $fields)
     {
-        dd($data,$fields);
         $newData = [];
         $params = 2;
         foreach ($fields as $v) {
