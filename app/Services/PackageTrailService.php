@@ -82,9 +82,8 @@ class PackageTrailService extends \App\Services\Admin\BaseService
     public static function storeByTrackingOrderList(array $packageList, int $action, $params = null)
     {
         $data = [];
-        foreach ($packageList as $k=>$v)
-        {
-            if(!is_array($v) && !is_object($v)){
+        foreach ($packageList as $k => $v) {
+            if (!is_array($v) && !is_object($v)) {
                 $packageList = [$packageList];
             }
             break;
@@ -132,7 +131,9 @@ class PackageTrailService extends \App\Services\Admin\BaseService
             case BaseConstService::PACKAGE_TRAIL_ALLOCATE:
                 $content = sprintf("您的包裹在[%s]进行入库处理，操作员：[%s]", auth()->user()->warehouse_name, $params['operator']);
                 break;
-
+            case BaseConstService::PACKAGE_TRAIL_AGAIN:
+                $content = sprintf("继续取派");
+                break;
             default:
                 $content = '未定义的状态';
                 break;
@@ -165,9 +166,8 @@ class PackageTrailService extends \App\Services\Admin\BaseService
     public static function storeByTrackingPackageList($packageList, $action, $params = null)
     {
         $data = [];
-        foreach ($packageList as $k=>$v)
-        {
-            if(!is_array($v) && !is_object($v)){
+        foreach ($packageList as $k => $v) {
+            if (!is_array($v) && !is_object($v)) {
                 $packageList = [$packageList];
                 dd($packageList);
             }
