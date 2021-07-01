@@ -32,9 +32,10 @@ class GoogleApiDistanceService
      */
     public function __construct()
     {
-        $this->client = new CurlClient;
+        $this->client = new \GuzzleHttp\Client();
         $this->url = config('tms.map_url');
         $this->key = config('tms.map_key');
+
         $company = auth('admin')->user();
         if (empty($company)) {
             $company = auth('merchant')->user();
