@@ -118,7 +118,6 @@ return [
             'path' => storage_path('logs/info/info.log'),
             'level' => 'info',
             'days' => 14,
-            'permission' => 0664,
         ],
 
         'api' => [
@@ -126,7 +125,6 @@ return [
             'path' => storage_path('logs/api/api.log'),
             'level' => 'info',
             'days' => 14,
-            'permission' => 0664,
         ],
 
         'schedule' => [
@@ -140,7 +138,6 @@ return [
             'path' => storage_path('logs/roll/roll.log'),
             'level' => 'info',
             'days' => 14,
-            'permission' => 0664,
         ]
     ],
 
