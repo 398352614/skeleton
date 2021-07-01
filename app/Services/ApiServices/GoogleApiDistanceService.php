@@ -7,7 +7,6 @@ namespace App\Services\ApiServices;
 use App\Exceptions\BusinessLogicException;
 use App\Models\MapConfig;
 use App\Services\BaseConstService;
-use App\Services\CurlClient;
 use App\Traits\CompanyTrait;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
@@ -21,9 +20,7 @@ class GoogleApiDistanceService
 
     public $times = 5;
 
-    /**
-     * @var CurlClient
-     */
+
     protected $client;
 
     /**
@@ -32,7 +29,7 @@ class GoogleApiDistanceService
      */
     public function __construct()
     {
-        $this->client = new CurlClient;
+        $this->client = new \GuzzleHttp\Client();
         $this->url = config('tms.map_url');
         $this->key = config('tms.map_key');
 
