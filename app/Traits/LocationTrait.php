@@ -90,6 +90,7 @@ trait LocationTrait
                         'timeout' => 50
                     ]
                 );
+                Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', collect($res)->toArray());
             } catch (\Exception $e) {
                 Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
                     'file' => $e->getFile(),
