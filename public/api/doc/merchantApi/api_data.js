@@ -123,7 +123,7 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/merchant/order-out-status",
+    "url": "/merchant_api/order-out-status",
     "title": "允许出库",
     "name": "允许出库",
     "group": "01order",
@@ -194,13 +194,13 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order-out-status"
+        "url": "https://dev-tms.nle-tech.com/api/merchant_api/order-out-status"
       }
     ]
   },
   {
     "type": "post",
-    "url": "/merchant/cancel-all-order",
+    "url": "/merchant_api/cancel-all-order",
     "title": "取消预约",
     "name": "删除订单",
     "group": "01order",
@@ -271,13 +271,13 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/cancel-all-order"
+        "url": "https://dev-tms.nle-tech.com/api/merchant_api/cancel-all-order"
       }
     ]
   },
   {
     "type": "post",
-    "url": "/merchant/order/order-dispatch-info",
+    "url": "/merchant_api/order-dispatch-info",
     "title": "物流查询",
     "name": "物流查询",
     "group": "01order",
@@ -417,13 +417,13 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/order-dispatch-info"
+        "url": "https://dev-tms.nle-tech.com/api/merchant_api/order-dispatch-info"
       }
     ]
   },
   {
     "type": "post",
-    "url": "/merchant/order/end-order",
+    "url": "/merchant_api/end-order",
     "title": "终止派送",
     "name": "终止派送",
     "group": "01order",
@@ -480,13 +480,13 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/end-order"
+        "url": "https://dev-tms.nle-tech.com/api/merchant_api/end-order"
       }
     ]
   },
   {
     "type": "post",
-    "url": "/merchant/order/again-order",
+    "url": "/merchant_api/again-order",
     "title": "继续派送",
     "name": "继续派送",
     "group": "01order",
@@ -613,7 +613,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant/order/again-order"
+        "url": "https://dev-tms.nle-tech.com/api/merchant_api/again-order"
       }
     ]
   },

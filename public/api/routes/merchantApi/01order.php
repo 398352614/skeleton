@@ -142,7 +142,7 @@ Route::post('cancel-order', 'OrderController@destroy');//删除订单
 Route::post('order-update-address', 'OrderController@updateAddressDate');//修改订单地址日期
 
 /**
- * @api {post} /merchant/cancel-all-order 取消预约
+ * @api {post} /merchant_api/cancel-all-order 取消预约
  * @apiName 删除订单
  * @apiGroup 01order
  * @apiVersion 1.0.0
@@ -161,7 +161,7 @@ Route::post('order-update-address', 'OrderController@updateAddressDate');//修�
 Route::post('cancel-all-order', 'OrderController@destroyAll');//批量删除订单
 
 /**
- * @api {post} /merchant/order-out-status 允许出库
+ * @api {post} /merchant_api/order-out-status 允许出库
  * @apiName 允许出库
  * @apiGroup 01order
  * @apiVersion 1.0.0
@@ -201,7 +201,7 @@ Route::post('post-code-date-list', 'LineController@getDateListByPostCode');//获
 
 
 /**
- * @api {post} /merchant/order/order-dispatch-info 物流查询
+ * @api {post} /merchant_api/order-dispatch-info 物流查询
  * @apiName 物流查询
  * @apiGroup 01order
  * @apiVersion 1.0.0
@@ -235,7 +235,7 @@ Route::post('update-order-item-list', 'OrderController@updateItemList');//修改
 Route::post('/again-order-info', 'OrderController@getAgainInfo');//获取继续派送(再次取派)信息
 
 /**
- * @api {post} /merchant/order/again-order 继续派送
+ * @api {post} /merchant_api/again-order 继续派送
  * @apiName 继续派送
  * @apiGroup 01order
  * @apiVersion 1.0.0
@@ -263,7 +263,7 @@ Route::post('/again-order-info', 'OrderController@getAgainInfo');//获取继续�
 Route::post('/again-order', 'OrderController@again'); //继续派送(再次取派)
 
 /**
- * @api {post} /merchant/order/end-order 终止派送
+ * @api {post} /merchant_api/end-order 终止派送
  * @apiName 终止派送
  * @apiGroup 01order
  * @apiVersion 1.0.0
