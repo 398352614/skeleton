@@ -126,9 +126,12 @@ class AuthController extends Controller
 
     private function getWarehouse($warehouseId)
     {
-        $warehouse = Warehouse::query()->where('id', $warehouseId)->first()->toArray();
-        $warehouse = Arr::only($warehouse, ['id', 'name', 'is_center']);
-        return $warehouse;
+        $data = [];
+        $warehouse = Warehouse::query()->where('id', $warehouseId)->first();
+        if (!empty($warehouse)) {
+            $data = Arr::only($warehouse->toArray(), ['id', 'name', 'is_center']);
+        }
+        return $data;
     }
 
     /**
@@ -269,10 +272,10 @@ class AuthController extends Controller
     public function updateTimezone(Request $request)
     {
         $data = $request->all();
-        if(empty($data['timezone'])){
+        if (empty($data['timezone'])) {
             throw new BusinessLogicException('时区 必填');
         }
-        $res =DB::table('driver')->where('id', auth()->user()->id)->update(['timezone' => $data['timezone']]);
+        $res = DB::table('driver')->where('id', auth()->user()->id)->update(['timezone' => $data['timezone']]);
         return success();
     }
 }
