@@ -32,7 +32,7 @@ class GoogleApiDistanceService
      */
     public function __construct()
     {
-        $this->client = new \GuzzleHttp\Client();
+        $this->client = new CurlClient;
         $this->url = config('tms.map_url');
         $this->key = config('tms.map_key');
 
@@ -43,7 +43,7 @@ class GoogleApiDistanceService
         if (empty($company)) {
             $company = auth('driver')->user();
         }
-        if (empty(($company))) {
+        if (empty($company)) {
             $company = auth()->user();
         }
         if (empty($company)) {

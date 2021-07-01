@@ -49,7 +49,7 @@ class GoogleApiService2
         if (empty($company)) {
             $company = auth('driver')->user();
         }
-        if (empty(($company))) {
+        if (empty($company)) {
             $company = auth()->user();
         }
         if (empty($company)) {
