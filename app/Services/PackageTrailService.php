@@ -97,7 +97,6 @@ class PackageTrailService extends \App\Services\Admin\BaseService
 
     public static function trackingOrderStatusChangeCreateTrail(array $package, int $action, $params = [], $list = false)
     {
-        Log::debug('轨迹', $params);
         if (!empty($params['cancel_type'])) {
             $cancel = ConstTranslateTrait::batchCancelTypeList($params['cancel_type']);
         } else {
