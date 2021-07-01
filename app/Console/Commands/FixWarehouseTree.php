@@ -36,6 +36,7 @@ class FixWarehouseTree extends Command
      * Execute the console command.
      *
      * @return void
+     * @throws \Throwable
      */
     public function handle()
     {
