@@ -112,7 +112,7 @@ class DriverService extends BaseService
 
         $rowCount = parent::create($driver);
         if ($rowCount === false) {
-            throw new BusinessLogicException('新增司机失败');
+            throw new BusinessLogicException('司机新增失败');
         }
     }
 

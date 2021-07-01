@@ -14,7 +14,7 @@ return array(
     //200成功
     //500失败
 
-    //程序错误0-语法错误1-基础功能2-服务器错误
+    //1程序错误0-语法错误1-基础功能2-服务器错误
     "类不存在" => 1001,
     "方法不存在" => 1002,
     "方法未定义" => 1003,
@@ -23,8 +23,10 @@ return array(
     "没有对应目录" => 1102,
 
     "系统繁忙，请稍后重试" => 1101,
+    "文档上传失败，请重新操作" => "Failed to upload file, please try again",
+    "文件上传失败，请重新操作" => "Failed to upload file, please try again",
 
-    //权限认证0-底层1-注册2-登录3-登出4-权限5-权限组
+    //2权限认证0-底层1-注册2-登录3-登出4-权限5-权限组
     "用户认证失败" => 2001,
     "验证码发送失败" => 2002,
     "路由已存在" => 2003,
@@ -50,7 +52,7 @@ return array(
     "超级管理员只能在管理员组" => 2503,
     "管理员组权限不允许操作" => 2504,
 
-    //第三方接口0-地图1-经纬度2-国家3-货主
+    //3第三方接口0-地图1-经纬度2-国家3-货主
     "不存在的动作" => 3001,
     "可能由于网络原因，无法估算距离" => 3002,
     "优化失败" => 3003,
@@ -73,16 +75,16 @@ return array(
     "发送失败" => 3309,
     "缺少参数key,sign,timestamp或data" => 3310,
 
-    //表单验证0-验证1数据存在2-数据不存在3-非法参数4-外键约束
-    "邮编范围:post_range_1与:post_range_2存在重叠,无法添加" => "Postcode range :post_range_1 and :post_range_2 duplicated, cannot add",
-    "材料代码-外部标识[:code]有重复！不能添加订单" => "Material code - external mark [:code] is duplicated! Cannot add order",
-    "材料有重复，请先合并" => "Material is duplicated, please combine first",
-    "快递单号1[:express_no]有重复！不能添加订单" => "Express order No. 1[:express_no] is duplicated! Cannot add order",
-    "快递单号2[:express_no]有重复！不能添加订单" => "Express order No. 2[:express_no] is duplicated! Cannot add order",
-    "快递单号1[:express_no]已存在在快递单号2中" => "Express order No. 1 [:express_no] already exists in express order No. 2",
-    "公里区间有重叠" => "Kilometer interval is duplicated",
-    "重量区间有重叠" => "Weight interval is duplicated",
-    "时间段有重叠" => "Time slot is duplicated",
+    //4表单验证0-普通验证1-数据存在2-数据不存在3-非法参数4-外键约束
+    "邮编范围:post_range_1与:post_range_2存在重叠,无法添加" => 4101,
+    "材料代码-外部标识[:code]有重复！不能添加订单" => 4102,
+    "材料有重复，请先合并" => 4103,
+    "快递单号1[:express_no]有重复！不能添加订单" => 4104,
+    "快递单号2[:express_no]有重复！不能添加订单" => 4105,
+    "快递单号1[:express_no]已存在在快递单号2中" => 4106,
+    "公里区间有重叠" => 4107,
+    "重量区间有重叠" => 4108,
+    "时间段有重叠" => 4109,
     "前缀与其他用户重复，请更改前缀" => "Prefix duplicated with other user, please change it",
     "区域[:i]和区域[:j]有重叠" => "area [:i] and area [:j] duplicated",
 
@@ -281,8 +283,10 @@ return array(
     //状态错误
     "车辆已被锁定" => "Vehicle doesn’t exist or has been locked",
     "司机已被锁定" => "This driver doesn’t exist or is locked",
+    "当前线路任务已锁定，请稍后操作" => "Current pick-up route has been locked, please try again later",
 
     "运价已被禁用" => "Freight rate doesn’t exist or is disabled",
+    "当前线路[:line]已被禁用" => "Current route [:line] disabled",
 
     "线路任务当前状态不允许分配车辆" => "Pick-up route doesn’t exist or vehicle assignment is not allowed in the current status",
     "线路任务当前状态不允许装货" => "Loading is not allowed for the pick-up route in the current status",
@@ -290,63 +294,68 @@ return array(
     "线路任务当前状态不允许出库" => "Warehouse-out is not allowed for the pick-up route in the current status",
     "线路任务当前状态不允许上报异常" => "Exception report is not allowed for the pick-up route in the current status",
     "线路任务当前状态不允许站点取消取派" => "Site is not allowed to cancel the pick-up for pick-up route in the current status",
+    "线路任务当前状态不允许站点签收" => "Acceptance signature by the site is not allowed for the pick-up route in the current status",
+    "线路任务当前状态不允许回网点" => "Return to outstation is not allowed for the pick-up route in the current status",
+    "当前线路任务还有未完成站点，请先处理" => "The current pick-up route has unfinished sites, please complete first",
+    "当前线路任务正在派送中，取件订单加单不能包含材料" => "Current pick-up route is under delivery, and the order addition of the pick-up order cannot contain materials",
+
+    "站点当前状态不能取消取派" => "Pick-up cancellation is not allowed for the site in the current status",
+    "站点当前状态不能签收" => "Acceptance signature not allowed for the site in the current status",
+    "站点当前状态不能上报异常" => "Site doesn’t support exception report in its current status",
+    "当前站点不属于当前线路任务" => "Current site is not on current pick-up route",
+    "当前站点为[:status],无法进行此操作" => "No operation for current site in [:status] status",
+
 
     "当前状态不能处理异常" => "Exception cannot be processed in the current status",
 
     "订单已取消或已删除，不能出库，请先剔除" => "Order canceled or deleted, warehouse-out not supported, please remove it first",
+    "订单为[:order_no],运单为[:tracking_order_no]不可出库" => "Order [:order_no], waybill is [:tracking_order_no], warehouse-out not supported",
+    "订单正在[:status_name],不能修改日期" => "Order is [:status_name], cannot modify the date",
 
     "货主ID为[:id]已分配" => "Cargo owner ID [:id] assigned",
     "当前司机已被分配，请选择其他司机" => "This driver has already been assigned, please select another one",
     "当前车辆已被分配，请选择其他车辆" => "Current vehicle has already been assigned, please select another one",
 
-    "站点当前状态不能取消取派" => "Pick-up cancellation is not allowed for the site in the current status",
-    "线路任务当前状态不允许站点签收" => "Acceptance signature by the site is not allowed for the pick-up route in the current status",
-    "站点当前状态不能签收" => "Acceptance signature not allowed for the site in the current status",
-    "线路任务当前状态不允许回网点" => "Return to outstation is not allowed for the pick-up route in the current status",
-    "当前线路任务还有未完成站点，请先处理" => "The current pick-up route has unfinished sites, please complete first",
-    "当前正在使用该线路，不能操作" => "This route is in use and cannot be operated",
+    "货主未开启顺带包裹服务" => "Cargo owner disabled on-the-way parcel service",
+    "该货主未开启充值业务" => "This cargo owner disabled recharge",
+    "当前订单不支持再次派送，请联系管理员" => "Current order doesn’t support delivery, please contact an administrator",
+    "当前订单不支持再次派送，请刷新后再操作" => "Current order doesn’t support delivery, please refresh and try it again",
+    "订单处于中转过程，无法再次生成运单" => "Order in transition, cannot generate waybill again",
+
+    "当前正在使用该线路，不能删除" => "This route is in use and cannot be operated",
     "该状态无法进行此操作" => "Cannot do this operation in this status",
-    "该线路任务不在取派中，无法进行追踪" => "This pick-up route is not being delivered and cannot be tracked",
-    "当前线路任务已锁定,请稍后操作" => "Current pick-up route has been locked, please try again later",
-    "当前线路[:line]已被禁用" => "Current route [:line] disabled",
     "请先确认出库" => "Please confirm warehouse-out first",
-    "站点当前状态不能上报异常" => "Site doesn’t support exception report in its current status",
-    "当前站点不属于当前线路任务" => "Current site is not on current pick-up route",
     "线路任务当前状态不能操作" => "Pick-up route cannot operate in the current status",
-    "当前线路任务正在派送中，取件订单加单不能包含材料" => "Current pick-up route is under delivery, and the order addition of the pick-up order cannot contain materials",
     "仍有未完成的任务，无法删除" => "Still has an unfinished task, failed to delete",
     "此站点已被跳过，请先恢复站点" => "This site was skipped, please restore the site first",
     "当前订单状态是[:status_name]，不能操作" => "Current order status is [:status_name], cannot change",
-    "货主未开启顺带包裹服务" => "Cargo owner disabled on-the-way parcel service",
-    "该货主未开启充值业务" => "This cargo owner disabled recharge",
+
     "该充值已审核,请勿重复审核" => "Recharge reviewed, please don’t review again",
     "线路任务已完成，不能优化" => "Completed pick-up route couldn’t be optimized",
     "该设备已绑定司机[:driver_name]" => "This device is bound with driver [:driver_name]",
     "正在进行线路任务，请先解绑设备" => "Route is in use, please unbind the device first",
     "线路未出库，无法进行现金充值" => "Route is not warehouse-out, cash recharge disabled",
     "只有已完成的订单才能无效化" => "Only completed orders can be invalid",
-    "当前订单不支持再次派送，请联系管理员" => "Current order doesn’t support delivery, please contact an administrator",
-    "当前订单不支持再次派送，请刷新后再操作" => "Current order doesn’t support delivery, please refresh and try it again",
+
     "运单状态为[:status_name],不能修改派送信息" => "Waybill status is [:status_name], delivery info couldn’t be modified",
     "运单状态为[:status_name],不能操作" => "Waybill status is [:status_name], operation disabled",
-    "所有运单的当前状态不能操作，只允许待分配或已分配状态的运单操作" => "All waybills couldn’t operate in the current status, except for waybills to be assigned or already assigned",
     "运单[:order_no]的当前状态不能操作,只允许待分配或已分配状态的运单操作" => "Waybill [:order_no] couldn’t operate in the current status, except for waybills to be assigned or already assigned",
     "运单[:order_no]的不是待分配或已分配状态，不能操作" => "Waybill [:order_no] not waiting to be assigned or already assigned, cannot do this",
-    "当前包裹状态为[:status_name],不能分拣入库" => "Current parcel status is [:status_name], pick and place in warehouse not supported",
+    "运单的当前状态不能操作，只允许待分配或已分配状态的运单操作" => "All waybills couldn’t operate in the current status, except for waybills to be assigned or already assigned",
     "运单[:tracking_order_no]不可出库" => "Waybill [:tracking_order_no] warehouse-out not supported",
-    "订单为[:order_no],运单为[:tracking_order_no]不可出库" => "Order [:order_no], waybill is [:tracking_order_no], warehouse-out not supported",
-    "运输未开始，暂无物流信息" => "Transportation has not started, no logistics info",
-    "订单正在[:status_name],不能修改日期" => "Order is [:status_name], cannot modify the date",
-    "当前状态不能处理异常或异常已处理" => "Current status couldn’t process exception, or exception processed",
-    "该包裹当前状态不允许上报异常" => "Exception report not supported for parcel in current status",
-    "包裹已入库，当前线路[:route_name]，派送日期[:execution_date]" => "Parcel put in warehouse, current route [:route_name], delivery date [:execution_date]",
     "当前运单正在[:status_name]" => "Current waybill is [:status_name]",
-    "当前站点为[:status],无法进行此操作" => "No operation for current site in [:status] status",
+
+    "该线路任务不在取派中，无法进行追踪" => "This pick-up route is not being delivered and cannot be tracked",
+    "运输未开始，暂无物流信息" => "Transportation has not started, no logistics info",
+    "当前状态不能处理异常或异常已处理" => "Current status couldn’t process exception, or exception processed",
     "订单[:order_no]未生成运单，无法打印面单" => "Order [:order_no] doesn’t generate a waybill, the parcel sheet couldn’t be printed",
     "该记录已经作废" => "This record has been voided",
     "网点未配置仓配一体，无法选择该网点" => "Outstation doesn’t set W&D integration and is not available for selection",
-    "订单处于中转过程，无法再次生成运单" => "Order in transition, cannot generate waybill again",
     "只有未发车的袋号才能删除" => "Only the package No. of available vehicles can be deleted",
+
+    "当前包裹状态为[:status_name],不能分拣入库" => "Current parcel status is [:status_name], pick and place in warehouse not supported",
+    "该包裹当前状态不允许上报异常" => "Exception report not supported for parcel in current status",
+    "包裹已入库，当前线路[:route_name]，派送日期[:execution_date]" => "Parcel put in warehouse, current route [:route_name], delivery date [:execution_date]",
     "包裹阶段错误" => "Parcel stage error",
     "包裹状态错误" => "Parcel status error",
     "包裹已装袋，请勿重复扫描" => "Parcel is packed, don’t scan it again",
@@ -354,78 +363,84 @@ return array(
     "只有未发车的车次才能删除" => "Only the schedule of available vehicles can be deleted",
 
     //新增失败
+
+
     "最小订单量新增失败" => "Failed to add minimum order amount",
-    "订单费用新增失败！" => "Failed to add order fee!",
-    "生成转运单失败" => "Failed to generate transhipment waybill",
+    "订单费用新增失败" => "Failed to add order fee!",
+    "转运单新增失败" => "Failed to generate transhipment waybill",
     "订单新增失败" => "Failed to add order",
-    "单号生成失败，请重新操作" => "Failed to generate order No., please try again",
-    "上报异常失败，请重新操作" => "Exception report failed, please try again",
     "国家新增失败" => "Failed to add country",
-    "新建员工失败" => "Failed to create employee",
+    "员工新增失败" => "Failed to create employee",
     "订单包裹新增失败！" => "Failed to add order parcel!",
     "订单材料新增失败！" => "Failed to add order material!",
     "备忘录新增失败" => "Failed to add memo",
-    "文档上传失败，请重新操作" => "Failed to upload file, please try again",
-    "初始化运价失败" => "Failed to initialize freight rate",
     "线路新增失败" => "Failed to add route",
+    "材料新增失败" => "Failed to add material",
+    "司机新增失败" => "Failed to add driver",
+    "线路范围新增失败" => "Failed to add route range",
+
+    "单号生成失败，请重新操作" => "Failed to generate order No., please try again",
+    "上报异常失败，请重新操作" => "Exception report failed, please try again",
+    "充值失败" => "Failed to recharge",
     "采集位置失败" => "Failed to get location",
-    "文件上传失败，请重新操作" => "Failed to upload file, please try again",
     "新增失败，请重新操作" => "Failed to add, please try again",
     "公司注册失败" => "Enterprise registration failed",
+
+    "初始化运价失败" => "Failed to initialize freight rate",
     "初始化货主组失败" => "Failed to initialize cargo owner",
     "初始化货主失败" => "Failed to initialize cargo owner",
     "初始化货主API失败" => "Failed to initialize cargo owner API",
     "初始化费用失败" => "Failed to initialize fee",
     "初始化权限组失败" => "Failed to initialize permission group",
-    "材料新增失败" => "Failed to add material",
-    "新增司机失败" => "Failed to add driver",
-    "线路范围新增失败" => "Failed to add route range",
-    "充值失败" => "Failed to recharge",
 
     //删除失败
-    "车辆删除失败" => "Failed to delete vehicle",
-    "站点取消锁定失败，请重新操作" => "Failed to lock site cancellation, please try again",
     "无法删除自己" => "Can’t delete yourself",
+
+    "车辆删除失败" => "Failed to delete vehicle",
     "员工删除失败" => "Failed to delete employee",
-    "删除失败，请重新操作" => "Failed to delete, please try again",
     "备忘录删除失败" => "Failed to delete memo",
     "线路删除失败" => "Failed to delete route",
-    "删除失败" => "deletion failed",
-    "移除失败，请重新操作" => "Failed to remove, please try again",
-    "网点删除失败，请重新操作" => "Failed to delete outstation, please try again",
     "司机删除失败" => "Failed to delete driver",
     "线路范围删除失败" => "Failed to delete route range",
+
+    "网点删除失败，请重新操作" => "Failed to delete outstation, please try again",
     "删除失败,订单[:order_no]删除失败,原因[:exception_info]" => "Failed to delete, failed to delete order [:order_no], reason [:exception_info]",
     "批量删除失败,订单[:order_no]删除失败,原因-[:exception_info]" => "Failed to delete in batches, order [:order_no] deletion failed, reason - [:exception_info]",
 
+    "删除失败，请重新操作" => "Failed to delete, please try again",
+    "删除失败" => "deletion failed",
+    "移除失败，请重新操作" => "Failed to remove, please try again",
+
+
     //修改失败
+    "修改失败" => "modification failed",
+    "修改车辆失败" => "Failed to modify vehicle",
+    "修改失败，请重新操作" => "Failed to modify, please try again",
+    "修改员工失败" => "Failed to modify employee",
+    "线路修改失败" => "Failed to modify route",
+    "网点修改失败，请重新操作" => "Failed to modify outstation, please try again",
+    "运单修改失败" => "Failed to modify waybill",
+
     "表格导出失败，请重新操作" => "Failed to export form, please try again",
     "图片获取失败，请重新操作" => "Failed to get picture, please try again",
-    "修改失败" => "modification failed",
-    "操作失败" => "Operation failed",
     "图片上传失败，请重新操作" => "Failed to upload picture, please try again",
     "处理失败，请重新操作" => "Processing failed, please try again",
-    "修改车辆失败" => "Failed to modify vehicle",
     "司机分配失败，请重新操作" => "Failed to assign driver, please try again",
     "司机取消分配失败，请重新操作" => "Failed to cancel driver assignment, please try again",
     "备注失败，请重新操作" => "Notes failed, please try again",
     "车辆分配失败，请重新操作" => "Failed to assign vehicle, please try again",
     "更新到达时间失败，请重新操作" => "Failed to update arrival time, please try again",
     "站点加入线路任务失败，请重新操作" => "The site failed to add pick-up route, please try again!",
-    "修改失败，请重新操作" => "Failed to modify, please try again",
     "订单加入站点失败" => "Order failed to add to site",
-    "修改员工失败" => "Failed to modify employee",
     "修改员工密码失败" => "Failed to modify employee password",
     "取件移除站点失败，请重新操作" => "Failed to remove pick-up site, please try again",
     "备忘录修改失败" => "Failed to modify memo",
-    "线路修改失败" => "Failed to modify route",
     "更新线路信息失败，请稍后重试" => "Failed to update route info, please try again",
     "更新线路失败，请稍后重试" => "Failed to update route, please try again",
     "金额统计失败" => "Failed to count amount",
     "更新线路失败" => "Failed to update route",
     "订单加入站点失败!" => "Order failed to add site!",
     "材料处理失败" => "failed to process material",
-    "网点修改失败，请重新操作" => "Failed to modify outstation, please try again",
     "批量设置运价失败" => "Failed to set freight rate in batches",
     "线路范围修改失败" => "Failed to modify route range",
     "纳入当日充值统计失败" => "Failed to include recharging statistics on the day",
@@ -438,7 +453,6 @@ return array(
     "运单加入站点失败!" => "Failed to add waybill to site!",
     "站点移除运单失败，请重新操作" => "Site failed to remove waybill, please try again",
     "取件移除运单失败，请重新操作" => "Failed to remove pick-up waybill, please try again",
-    "运单修改失败" => "Failed to modify waybill",
     "包裹处理失败，请重新操作" => "Failed to process parcel, please try again",
     "运单处理失败，请重新操作" => "Failed to process waybill, please try again",
     "运单包裹处理失败，请重新操作" => "Failed to process waybill parcel, please try again",
@@ -462,6 +476,7 @@ return array(
     "当前状态是[:status_name]，不能操作" => "Current status is [:status_name], cannot change",
     "运单取消锁定失败，请重新操作" => "Failed to cancel waybill lock, please try again",
     "运单锁定失败，请重新操作" => "Failed to lock waybill, please try again",
+    "站点取消锁定失败，请重新操作" => "Failed to lock site cancellation, please try again",
 
-
+    //操作
 );

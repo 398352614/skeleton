@@ -272,7 +272,7 @@ class TourService extends BaseService
         }
         //分配
         $car = $car->toArray();
-        if($car['is_locked'] =BaseConstService::CAR_TO_LOCK){
+        if ($car['is_locked'] == BaseConstService::CAR_TO_LOCK) {
             throw new BusinessLogicException('车辆已被锁定');
         }
         $rowCount = $this->assignOrCancelAssignAll($tour, ['car_id' => $car['id'], 'car_no' => $car['car_no']]);
@@ -648,7 +648,7 @@ class TourService extends BaseService
                     $first = true; // 找到了下一个目的地
                 }
             }
-            if(!empty($tempbatch)){
+            if (!empty($tempbatch)) {
                 $tempbatch->update(['sort_id' => $key + 1]);
             }
         }
@@ -669,7 +669,7 @@ class TourService extends BaseService
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
         // set_time_limit(240);
-        Log::channel('info')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. '更新线路传入的参数', $data);
+        Log::channel('info')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '更新线路传入的参数', $data);
         $tour = Tour::where('tour_no', $data['tour_no'])->firstOrFail();
 
         throw_if(
@@ -741,7 +741,6 @@ class TourService extends BaseService
             return '已知道该次更新失败';
         }
         $data = $info['data'];
-
 
 
         TourLog::where('tour_no', $this->formData['line_code'])->where('action', $this->formData['type'])->update(['status' => BaseConstService::TOUR_LOG_COMPLETE]); // 日志标记为已完成

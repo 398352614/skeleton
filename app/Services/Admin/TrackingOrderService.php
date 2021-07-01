@@ -694,7 +694,7 @@ class TrackingOrderService extends BaseService
         $idList = explode_id_string($idList);
         $dbTrackingOrderList = parent::getList(['id' => ['in', $idList]], ['*'], false)->toArray();
         if (empty($dbTrackingOrderList)) {
-            throw new BusinessLogicException('所有运单的当前状态不能操作，只允许待分配或已分配状态的运单操作');
+            throw new BusinessLogicException('运单的当前状态不能操作，只允许待分配或已分配状态的运单操作');
         }
         $statusList = [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2];
         $dbTrackingOrderList = Arr::where($dbTrackingOrderList, function ($order) use ($statusList) {

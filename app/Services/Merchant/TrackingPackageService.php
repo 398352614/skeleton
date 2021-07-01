@@ -75,7 +75,7 @@ class TrackingPackageService extends BaseService
             //如果本网点为其他分拨中心的网点，则生成长途中国转转运单
             return $this->getStockService()->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
         } else {
-            throw new BusinessLogicException('生成转运单失败');
+            throw new BusinessLogicException('转运单新增失败');
         }
     }
 }

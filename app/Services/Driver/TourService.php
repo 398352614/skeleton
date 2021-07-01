@@ -191,7 +191,7 @@ class TourService extends BaseService
         }
         //分配
         $car = $car->toArray();
-        if($car['is_locked'] =BaseConstService::CAR_TO_LOCK){
+        if ($car['is_locked'] == BaseConstService::CAR_TO_LOCK) {
             throw new BusinessLogicException('车辆已被锁定');
         }
         $rowCount = $this->updateTourAll($tour, ['car_id' => $car['id'], 'car_no' => $car['car_no']]);

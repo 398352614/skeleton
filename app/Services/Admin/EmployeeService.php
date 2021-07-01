@@ -85,7 +85,7 @@ class EmployeeService extends BaseService
         $role = Role::findById($data['role_id']);
         $employee = parent::create($data);
         if ($employee === false) {
-            throw new BusinessLogicException('新建员工失败');
+            throw new BusinessLogicException('员工新增失败');
         }
         //员工添加权限组
         $employee->syncRoles($role);

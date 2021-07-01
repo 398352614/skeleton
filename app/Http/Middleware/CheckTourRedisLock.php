@@ -25,7 +25,7 @@ class CheckTourRedisLock
             throw new BusinessLogicException('未传入线路任务编号');
         }
         if (self::getTourLock($request->tour_no)) {
-            throw new BusinessLogicException('当前线路任务已锁定,请稍后操作');
+            throw new BusinessLogicException('当前线路任务已锁定，请稍后操作');
         }
         try {
             $response = $next($request);

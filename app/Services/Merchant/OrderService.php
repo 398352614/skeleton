@@ -908,7 +908,7 @@ class OrderService extends BaseService
             }
             $rowCount = $this->getOrderAmountService()->insertAll($dataList);
             if ($rowCount === false) {
-                throw new BusinessLogicException('订单费用新增失败！');
+                throw new BusinessLogicException('订单费用新增失败');
             }
         }
     }
