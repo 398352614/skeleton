@@ -870,7 +870,7 @@ class OrderService extends BaseService
         if (!empty($params['material_list'])) {
             $materialList = $params['material_list'];
             foreach ($materialList as $k => $v) {
-                $materialList[$k] = Arr::except($v, ['price', 'created_at', 'updated_at', 'merchant_id', 'expect_quantity', 'actual_quantity', 'tracking_order_no', 'id']);
+                $materialList[$k] = Arr::except($v, ['price', 'created_at', 'updated_at', 'merchant_id', 'tracking_order_no', 'id']);
                 $materialList[$k]['order_no'] = $params['order_no'];
                 $materialList[$k]['merchant_id'] = auth()->user()->id;
                 $materialList[$k]['execution_date'] = $params['execution_date'];
