@@ -60,7 +60,6 @@ trait LocationTrait
      */
     private static function getLocationDetail($country, $city, $street, $houseNumber, $postCode)
     {
-        Log::info('country', ['country' => $country]);
         return ($country === 'NL') ? self::getLocationDetailFirst($country, $houseNumber, $postCode) : self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode);
     }
 
