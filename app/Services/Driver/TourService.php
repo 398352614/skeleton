@@ -675,6 +675,7 @@ class TourService extends BaseService
         }
         //包裹轨迹
         $packageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $batch['batch_no']], ['*'], false);
+        Log::debug('站点', $batch);
         $pickupPackageList = $packageList->where('type', BaseConstService::PACKAGE_TYPE_1);
         if ($pickupPackageList->isNotEmpty()) {
             PackageTrailService::storeByTrackingOrderList($pickupPackageList->toArray(), BaseConstService::PACKAGE_TRAIL_PICKUP_CANCEL, $batch);
