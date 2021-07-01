@@ -52,7 +52,7 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => 'debug',
             'days' => 14,
-            'permission' => 0664,
+            'permission' => 0666,
         ],
 
         'worker' => [
@@ -60,7 +60,7 @@ return [
             'path' => storage_path('logs/worker/worker.log'),
             'level' => 'debug',
             'days' => 14,
-            'permission' => 0664,
+            'permission' => 0666,
         ],
 
         'job' => [
@@ -68,7 +68,7 @@ return [
             'path' => storage_path('logs/job/job.log'),
             'level' => 'debug',
             'days' => 14,
-            'permission' => 0664,
+            'permission' => 0666,
         ],
 
         'slack' => [
@@ -118,6 +118,7 @@ return [
             'path' => storage_path('logs/info/info.log'),
             'level' => 'info',
             'days' => 14,
+            'permission' => 0666,
         ],
 
         'api' => [
@@ -125,6 +126,7 @@ return [
             'path' => storage_path('logs/api/api.log'),
             'level' => 'info',
             'days' => 14,
+            'permission' => 0666,
         ],
 
         'schedule' => [
@@ -138,6 +140,7 @@ return [
             'path' => storage_path('logs/roll/roll.log'),
             'level' => 'info',
             'days' => 14,
+            'permission' => 0666,
         ]
     ],
 
