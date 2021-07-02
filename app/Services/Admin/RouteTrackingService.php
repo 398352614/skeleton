@@ -146,7 +146,7 @@ class RouteTrackingService extends BaseService
      */
     public function index()
     {
-
+        $info=[];
         if (!empty($this->formData['driver_name']) && $this->formData['is_online'] == BaseConstService::YES) {
             $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4, 'driver_name' => ['=', $this->formData['driver_name']]], ['*'], false)->toArray();
             for ($i = 0, $j = count($info); $i < $j; $i++) {
@@ -201,6 +201,9 @@ class RouteTrackingService extends BaseService
                 $info[$k]['driver_phone'] = $v['phone'];
                 $info[$k]['car_no'] = $info[$k]['id'] = $info[$k]['lat'] = $info[$k]['lon'] = $info[$k]['line_name'] = $info[$k]['time'] = $info[$k]['tour_no'] = '';
             }
+        }
+        if (empty($info)) {
+            throw new BusinessLogicException('暂无车辆信息');
         }
         return $info;
     }
