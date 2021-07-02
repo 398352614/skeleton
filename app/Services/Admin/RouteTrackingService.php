@@ -147,7 +147,7 @@ class RouteTrackingService extends BaseService
     public function index()
     {
         if (!empty($this->formData['driver_name'])) {
-            $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4, 'driver_name' => ['like', $this->formData['driver_name']]], ['*'], false)->toArray();
+            $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4, 'driver_name' => ['=', $this->formData['driver_name']]], ['*'], false)->toArray();
         } else {
             $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4], ['*'], false)->toArray();
         }
