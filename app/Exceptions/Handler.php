@@ -47,7 +47,6 @@ class Handler extends ExceptionHandler
             //公司微信报错
             $body = $exception->getMessage() . ' in ' . $exception->getFile() . ':' . $exception->getLine();
             (new MessageService())->reportToWechat($body);
-            Log::channel('info')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. '报错时参数', request()->input());
         }
         parent::report($exception);
     }

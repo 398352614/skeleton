@@ -147,7 +147,7 @@ class EmployeeService extends BaseService
         ]);
 
         if ($res === false) {
-            throw new BusinessLogicException('修改员工密码失败');
+            throw new BusinessLogicException('员工密码修改失败');
         }
 
         return $res;

@@ -623,17 +623,17 @@ class TourService extends BaseService
         ];
         $rowCount = $this->getBatchExceptionService()->create($data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败，请重新操作');
+            throw new BusinessLogicException('异常上报失败，请重新操作');
         }
         //站点异常
         $rowCount = $this->getBatchService()->updateById($batch['id'], ['exception_label' => BaseConstService::ORDER_EXCEPTION_LABEL_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败，请重新操作');
+            throw new BusinessLogicException('异常上报失败，请重新操作');
         }
         //运单异常
         $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $batch['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_2]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败，请重新操作');
+            throw new BusinessLogicException('异常上报失败，请重新操作');
         }
     }
 

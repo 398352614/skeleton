@@ -23,8 +23,7 @@ return array(
     "没有对应目录" => 1102,
 
     "系统繁忙，请稍后重试" => 1101,
-    "文档上传失败，请重新操作" => "Failed to upload file, please try again",
-    "文件上传失败，请重新操作" => "Failed to upload file, please try again",
+
 
     //2权限认证0-底层1-注册2-登录3-登出4-权限5-权限组
     "用户认证失败" => 2001,
@@ -281,6 +280,7 @@ return array(
 
 
     //状态错误
+    "状态错误" => "Status error",
     "车辆已被锁定" => "Vehicle doesn’t exist or has been locked",
     "司机已被锁定" => "This driver doesn’t exist or is locked",
     "当前线路任务已锁定，请稍后操作" => "Current pick-up route has been locked, please try again later",
@@ -379,12 +379,8 @@ return array(
     "司机新增失败" => "Failed to add driver",
     "线路范围新增失败" => "Failed to add route range",
 
-    "单号生成失败，请重新操作" => "Failed to generate order No., please try again",
-    "上报异常失败，请重新操作" => "Exception report failed, please try again",
-    "充值失败" => "Failed to recharge",
-    "采集位置失败" => "Failed to get location",
+
     "新增失败，请重新操作" => "Failed to add, please try again",
-    "公司注册失败" => "Enterprise registration failed",
 
     "初始化运价失败" => "Failed to initialize freight rate",
     "初始化货主组失败" => "Failed to initialize cargo owner",
@@ -420,19 +416,33 @@ return array(
     "线路修改失败" => "Failed to modify route",
     "网点修改失败，请重新操作" => "Failed to modify outstation, please try again",
     "运单修改失败" => "Failed to modify waybill",
+    "员工密码修改失败" => "Failed to modify employee password",
 
+    "公司注册失败" => "Enterprise registration failed",
+    "单号生成失败，请重新操作" => "Failed to generate order No., please try again",
+    "异常上报失败，请重新操作" => "Exception report failed, please try again",
+    "异常处理失败，请重新操作" => "Processing failed, please try again",
+    "充值失败" => "Failed to recharge",
+    "采集位置失败" => "Failed to get location",
+
+    "文档上传失败，请重新操作" => "Failed to upload file, please try again",
+    "文件上传失败，请重新操作" => "Failed to upload file, please try again",
     "表格导出失败，请重新操作" => "Failed to export form, please try again",
     "图片获取失败，请重新操作" => "Failed to get picture, please try again",
     "图片上传失败，请重新操作" => "Failed to upload picture, please try again",
-    "处理失败，请重新操作" => "Processing failed, please try again",
+
     "司机分配失败，请重新操作" => "Failed to assign driver, please try again",
     "司机取消分配失败，请重新操作" => "Failed to cancel driver assignment, please try again",
+
     "备注失败，请重新操作" => "Notes failed, please try again",
+
     "车辆分配失败，请重新操作" => "Failed to assign vehicle, please try again",
+
     "更新到达时间失败，请重新操作" => "Failed to update arrival time, please try again",
+
     "站点加入线路任务失败，请重新操作" => "The site failed to add pick-up route, please try again!",
+
     "订单加入站点失败" => "Order failed to add to site",
-    "修改员工密码失败" => "Failed to modify employee password",
     "取件移除站点失败，请重新操作" => "Failed to remove pick-up site, please try again",
     "备忘录修改失败" => "Failed to modify memo",
     "更新线路信息失败，请稍后重试" => "Failed to update route info, please try again",
@@ -450,23 +460,27 @@ return array(
     "延迟失败" => "Delay failed",
     "延迟处理失败" => "Delay processing failed",
     "延迟记录失败" => "Delay record failed",
+
     "运单加入站点失败!" => "Failed to add waybill to site!",
     "站点移除运单失败，请重新操作" => "Site failed to remove waybill, please try again",
     "取件移除运单失败，请重新操作" => "Failed to remove pick-up waybill, please try again",
+
     "包裹处理失败，请重新操作" => "Failed to process parcel, please try again",
     "运单处理失败，请重新操作" => "Failed to process waybill, please try again",
     "运单包裹处理失败，请重新操作" => "Failed to process waybill parcel, please try again",
     "订单处理失败，请重新操作" => "Failed to process order, please try again",
     "站点处理失败，请重新操作" => "Failed to process site, please try again",
     "线路任务处理失败，请重新操作" => "Failed to process pick-up route, please try again",
-    "站点顺序调整失败,请重新操作" => "Failed to adjust site sequence, please try again",
+
+    "站点顺序调整失败，请重新操作" => "Failed to adjust site sequence, please try again",
     "重复扫描" => "duplicate scan",
     "出车失败" => "Vehicle departure failed 1",
     "到车失败" => "vehicle arrival failed",
-    "状态错误" => "Status error",
+
     "站点锁定失败，请重新操作" => "Failed to lock site, please try again",
     "线路任务锁定失败，请重新操作" => "Failed to lock pick-up route, please try again",
     "线路任务取消锁定失败，请重新操作" => "Failed to lock pick-up route cancellation, please try again",
+
     "出库失败" => "Warehouse-out failed",
     "取消取派失败，请重新操作" => "Failed to cancel pick-up, please try again",
     "签收失败" => "Acceptance signature failed",

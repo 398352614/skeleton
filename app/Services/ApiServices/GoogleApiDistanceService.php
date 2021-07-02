@@ -50,10 +50,8 @@ class GoogleApiDistanceService
         if (!empty($mapConfig) && !empty($mapConfig['google_key'])) {
             $this->key = $mapConfig->toArray()['google_key'];
         } else {
-            Log::info('备用Key');
             $this->key = config('tms.map_key');
         }
-        Log::info($this->key);
     }
 
     /**
@@ -71,7 +69,6 @@ class GoogleApiDistanceService
         $to = is_array($to) ? implode(';', array_filter($to)) : $to;
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
         $url = $url . $query;
-        Log::info('路由' . $url);
         if (config('tms.true_app_env') == 'develop') {
             $options = [
                 'proxy' => [

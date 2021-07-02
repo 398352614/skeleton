@@ -66,7 +66,7 @@ class BatchExceptionService extends BaseService
             'deal_time' => Carbon::now()
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('处理失败，请重新操作');
+            throw new BusinessLogicException('异常处理失败，请重新操作');
         }
         //获取是否还有相同站点存在异常未处理的情况,若不存在,则更新站点异常标签和更新订单异常标签
         $dbInfo = parent::getInfo(['batch_no' => $info['batch_no'], 'status' => BaseConstService::BATCH_EXCEPTION_1], ['id'], false);
@@ -75,13 +75,13 @@ class BatchExceptionService extends BaseService
         //更新站点异常状态(异常->正常)
         $rowCount = $this->getBatchService()->update(['batch_no' => $info['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_1]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('处理失败，请重新操作');
+            throw new BusinessLogicException('异常处理失败，请重新操作');
         }
 
         //更新订单异常状态(异常->正常)
         $rowCount = $this->getTrackingOrderService()->update(['batch_no' => $info['batch_no']], ['exception_label' => BaseConstService::BATCH_EXCEPTION_LABEL_1]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('处理失败，请重新操作');
+            throw new BusinessLogicException('异常处理失败，请重新操作');
         }
     }
 }

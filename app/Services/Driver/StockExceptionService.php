@@ -100,7 +100,7 @@ class StockExceptionService extends BaseService
         $rowCount = $this->getStockExceptionService()->create($data);
         $stockException = $rowCount->getAttributes();
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败，请重新操作');
+            throw new BusinessLogicException('异常上报失败，请重新操作');
         }
         if (empty(CompanyTrait::getCompany()['stock_exception_verify']) || CompanyTrait::getCompany()['stock_exception_verify'] == BaseConstService::STOCK_EXCEPTION_VERIFY_2) {
             return $this->autoDeal($stockException,$params['ignore_rule'] ?? null);
@@ -130,7 +130,7 @@ class StockExceptionService extends BaseService
             'status' => BaseConstService::STOCK_EXCEPTION_STATUS_2,
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('处理失败，请重新操作');
+            throw new BusinessLogicException('异常处理失败，请重新操作');
         }
         //订单取消取派的情况，回取派中
         $statusList['order'] = BaseConstService::ORDER_STATUS_2;
@@ -167,7 +167,7 @@ class StockExceptionService extends BaseService
         //更新运单
         $rowCount = $this->getTrackingOrderService()->update(['tracking_order_no' => $stockException['tracking_order_no']], ['status' => $statusList['tracking_order']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('运单处理失败，请重新操作');
+            throw new BusinessLogicException('异常处理失败，请重新操作');
         }
         $trackingOrder = $this->getTrackingOrderService()->getInfoLock(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
         if (!empty($trackingOrder)) {

@@ -707,7 +707,7 @@ class BatchService extends BaseService
             }
             $rowCount = parent::update(['id' => $batch['id']], ['sort_id' => $key + 1]);
             if ($rowCount === false) {
-                throw new BusinessLogicException('站点顺序调整失败,请重新操作');
+                throw new BusinessLogicException('站点顺序调整失败，请重新操作');
             }
         }
         if (empty($nextBatchNo)) return 'true';

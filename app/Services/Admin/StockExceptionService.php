@@ -91,7 +91,7 @@ class StockExceptionService extends BaseService
             'status' => $params['status'],
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('处理失败，请重新操作');
+            throw new BusinessLogicException('异常处理失败，请重新操作');
         }
         //后续处理
         $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
