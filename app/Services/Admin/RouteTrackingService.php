@@ -203,7 +203,7 @@ class RouteTrackingService extends BaseService
             }
         }
         if (empty($info)) {
-            throw new BusinessLogicException('暂无车辆信息');
+            return [];
         }
         return $info;
     }
