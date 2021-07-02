@@ -29,17 +29,17 @@ class RouteTrackingService extends BaseService
      */
     public function show()
     {
-        $tour = null;
+        $info = null;
         if (!empty($this->formData['driver_id'])) {
-            $tour = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
+            $info = Tour::query()->where('driver_id', $this->formData['driver_id'])->first();
         } else {
-            $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
+            $info = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
         }
-        if (!$tour) {
+        if (!$info) {
             throw new BusinessLogicException('没找到相关进行中的线路');
         }
         //获取轨迹
-        $routeTrackingList = parent::getList(['tour_no' => $tour['tour_no']], ['*'], true);
+        $routeTrackingList = parent::getList(['tour_no' => $info['tour_no']], ['*'], true);
         if (empty($routeTrackingList)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -49,7 +49,7 @@ class RouteTrackingService extends BaseService
             $routeTrackingList[$k] = $this->makeStopEvent($v);
         }
         //获取事件
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], true)->all();
+        $batchList = $this->getBatchService()->getList(['tour_no' => $info['tour_no']], ['*'], true)->all();
         $batchList = collect($batchList)->sortBy('sort_id')->all();
         $batchList = array_values($batchList);
         foreach ($batchList as $k => $v) {
@@ -58,39 +58,39 @@ class RouteTrackingService extends BaseService
             $batchList[$k] = array_only_fields_sort($batchList[$k], ['batch_no', 'place_fullname', 'place_address', 'place_lon', 'place_lat', 'expect_arrive_time', 'actual_arrive_time', 'sort_id']);
             $batchList[$k]['event'] = [];
         }
-        $tourEventList = $this->getTourDriverService()->getList(['tour_no' => $tour['tour_no']]);
-        if (empty($tourEventList)) {
+        $infoEventList = $this->getTourDriverService()->getList(['tour_no' => $info['tour_no']]);
+        if (empty($infoEventList)) {
             throw new BusinessLogicException('数据不存在');
         }
         foreach ($batchList as $k => $v) {
-            $tourEvent = $tourEventList->where('batch_no', $v['batch_no'])->all();
-            if (!empty($tourEvent)) {
-                $batchList[$k]['event'] = array_merge($batchList[$k]['event'], $tourEvent);
+            $infoEvent = $infoEventList->where('batch_no', $v['batch_no'])->all();
+            if (!empty($infoEvent)) {
+                $batchList[$k]['event'] = array_merge($batchList[$k]['event'], $infoEvent);
             }
         }
         $batchList = collect($batchList)->whereNotNull('event')->where('event', '<>', [])->sortBy('actual_arrive_time')->all();
-        $info = TourDriverEvent::query()->where('tour_no', $tour['tour_no'])->get()->toArray();
+        $info = TourDriverEvent::query()->where('tour_no', $info['tour_no'])->get()->toArray();
         //插入出库事件
         $out = [[
-            'place_lon' => $tour['warehouse_lon'],
-            'place_lat' => $tour['warehouse_lat'],
-            'place_fullname' => $tour['warehouse_name'],
+            'place_lon' => $info['warehouse_lon'],
+            'place_lat' => $info['warehouse_lat'],
+            'place_fullname' => $info['warehouse_name'],
             'event' => [collect($info)->sortBy('id')->first()
             ]]];
         $batchList = array_merge($out, array_values($batchList));
         //插入入库事件
-        if ($tour['status'] == 5) {
+        if ($info['status'] == 5) {
             $in = [[
-                'place_lon' => $tour['warehouse_lon'],
-                'place_lat' => $tour['warehouse_lat'],
-                'place_fullname' => $tour['warehouse_name'],
+                'place_lon' => $info['warehouse_lon'],
+                'place_lat' => $info['warehouse_lat'],
+                'place_fullname' => $info['warehouse_name'],
                 'event' => [
                     collect($info)->sortByDesc('id')->first()]
             ]];
             $batchList = array_merge(array_values($batchList), $in);
         }
-        if (!empty($tour->driver)) {
-            $driver = Arr::only($tour->driver->toArray(), ['id', 'email', 'fullname', 'phone']);
+        if (!empty($info->driver)) {
+            $driver = Arr::only($info->driver->toArray(), ['id', 'email', 'fullname', 'phone']);
         } else {
             $driver = ['id' => '', 'email' => '', 'fullname' => '', 'phone' => ''];
         }
@@ -162,6 +162,62 @@ class RouteTrackingService extends BaseService
             $info[$i]['time'] = $data[$i][0]['time_human'] ?? '';
         }
         if ($this->formData['is_online'] == BaseConstService::NO) {
+            $notOnlineDriver = collect($info)->pluck('driver_id')->toArray();
+            unset($info);
+            $driver = $this->getDriverService()->query->whereNotIn('id', $notOnlineDriver)->get();
+            foreach ($driver as $k => $v) {
+                $info[$k]['driver_id'] = $v['id'];
+                $info[$k]['driver_name'] = $v['fullname'];
+                $info[$k]['driver_phone'] = $v['phone'];
+                $info[$k]['car_no'] = $info[$k]['id'] = $info[$k]['lat'] = $info[$k]['lon'] = $info[$k]['line_name'] = $info[$k]['time'] = $info[$k]['tour_no'] = '';
+            }
+        }
+
+        if (!empty($this->formData['driver_name']) && $this->formData['is_online'] == BaseConstService::YES) {
+            $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4, 'driver_name' => ['=', $this->formData['driver_name']]], ['*'], false)->toArray();
+            for ($i = 0, $j = count($info); $i < $j; $i++) {
+                $info[$i] = Arr::only($info[$i], ['id', 'driver_id', 'driver_name', 'driver_phone', 'car_no', 'line_name', 'tour_no']);
+                $data[$i] = parent::getList(['tour_no' => $info[$i]['tour_no']], ['*'], false, [], ['time' => 'desc'])->toArray();
+                $info[$i]['lon'] = $data[$i][0]['lon'] ?? '';
+                $info[$i]['lat'] = $data[$i][0]['lat'] ?? '';
+                $info[$i]['time'] = $data[$i][0]['time_human'] ?? '';
+            }
+        } elseif (empty($this->formData['driver_name']) && $this->formData['is_online'] == BaseConstService::YES) {
+            $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4, 'driver_name' => ['=', $this->formData['driver_name']]], ['*'], false)->toArray();
+            for ($i = 0, $j = count($info); $i < $j; $i++) {
+                $info[$i] = Arr::only($info[$i], ['id', 'driver_id', 'driver_name', 'driver_phone', 'car_no', 'line_name', 'tour_no']);
+                $data[$i] = parent::getList(['tour_no' => $info[$i]['tour_no']], ['*'], false, [], ['time' => 'desc'])->toArray();
+                $info[$i]['lon'] = $data[$i][0]['lon'] ?? '';
+                $info[$i]['lat'] = $data[$i][0]['lat'] ?? '';
+                $info[$i]['time'] = $data[$i][0]['time_human'] ?? '';
+            }
+        } elseif (!empty($this->formData['driver_name']) && $this->formData['is_online'] == BaseConstService::NO) {
+            $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4], ['*'], false)->toArray();
+            for ($i = 0, $j = count($info); $i < $j; $i++) {
+                $info[$i] = Arr::only($info[$i], ['id', 'driver_id', 'driver_name', 'driver_phone', 'car_no', 'line_name', 'tour_no']);
+                $data[$i] = parent::getList(['tour_no' => $info[$i]['tour_no']], ['*'], false, [], ['time' => 'desc'])->toArray();
+                $info[$i]['lon'] = $data[$i][0]['lon'] ?? '';
+                $info[$i]['lat'] = $data[$i][0]['lat'] ?? '';
+                $info[$i]['time'] = $data[$i][0]['time_human'] ?? '';
+            }
+            $notOnlineDriver = collect($info)->pluck('driver_id')->toArray();
+            unset($info);
+            $driver = $this->getDriverService()->query->where('driver_name',$this->formData['driver_name'])->whereNotIn('id', $notOnlineDriver)->get();
+            foreach ($driver as $k => $v) {
+                $info[$k]['driver_id'] = $v['id'];
+                $info[$k]['driver_name'] = $v['fullname'];
+                $info[$k]['driver_phone'] = $v['phone'];
+                $info[$k]['car_no'] = $info[$k]['id'] = $info[$k]['lat'] = $info[$k]['lon'] = $info[$k]['line_name'] = $info[$k]['time'] = $info[$k]['tour_no'] = '';
+            }
+        } else {
+            $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4], ['*'], false)->toArray();
+            for ($i = 0, $j = count($info); $i < $j; $i++) {
+                $info[$i] = Arr::only($info[$i], ['id', 'driver_id', 'driver_name', 'driver_phone', 'car_no', 'line_name', 'tour_no']);
+                $data[$i] = parent::getList(['tour_no' => $info[$i]['tour_no']], ['*'], false, [], ['time' => 'desc'])->toArray();
+                $info[$i]['lon'] = $data[$i][0]['lon'] ?? '';
+                $info[$i]['lat'] = $data[$i][0]['lat'] ?? '';
+                $info[$i]['time'] = $data[$i][0]['time_human'] ?? '';
+            }
             $notOnlineDriver = collect($info)->pluck('driver_id')->toArray();
             unset($info);
             $driver = $this->getDriverService()->query->whereNotIn('id', $notOnlineDriver)->get();
