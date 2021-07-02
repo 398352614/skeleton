@@ -176,7 +176,7 @@ class RouteTrackingService extends BaseService
             }
             $notOnlineDriver = collect($info)->pluck('driver_id')->toArray();
             unset($info);
-            $driver = $this->getDriverService()->query->where('driver_name',$this->formData['fullname'])->whereNotIn('id', $notOnlineDriver)->get();
+            $driver = $this->getDriverService()->query->where('fullname',$this->formData['driver_name'])->whereNotIn('id', $notOnlineDriver)->get();
             foreach ($driver as $k => $v) {
                 $info[$k]['driver_id'] = $v['id'];
                 $info[$k]['driver_name'] = $v['fullname'];
