@@ -788,6 +788,7 @@ class OrderService extends BaseService
         //运价计算
         $params = $this->fillAnotherAddressByApi($params);
         $params = $this->fillAddress($params);
+        $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
         if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
             $params['distance'] = 1000;
         } else {
