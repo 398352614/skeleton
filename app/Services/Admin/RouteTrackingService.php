@@ -146,32 +146,6 @@ class RouteTrackingService extends BaseService
      */
     public function index()
     {
-        if (!empty($this->formData['driver_name'])) {
-            $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4, 'driver_name' => ['like', $this->formData['driver_name']]], ['*'], false)->toArray();
-        } else {
-            $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4], ['*'], false)->toArray();
-        }
-        if (empty($info) && $this->formData['is_online'] == BaseConstService::YES) {
-            throw new BusinessLogicException('暂无车辆信息');
-        }
-        for ($i = 0, $j = count($info); $i < $j; $i++) {
-            $info[$i] = Arr::only($info[$i], ['id', 'driver_id', 'driver_name', 'driver_phone', 'car_no', 'line_name', 'tour_no']);
-            $data[$i] = parent::getList(['tour_no' => $info[$i]['tour_no']], ['*'], false, [], ['time' => 'desc'])->toArray();
-            $info[$i]['lon'] = $data[$i][0]['lon'] ?? '';
-            $info[$i]['lat'] = $data[$i][0]['lat'] ?? '';
-            $info[$i]['time'] = $data[$i][0]['time_human'] ?? '';
-        }
-        if ($this->formData['is_online'] == BaseConstService::NO) {
-            $notOnlineDriver = collect($info)->pluck('driver_id')->toArray();
-            unset($info);
-            $driver = $this->getDriverService()->query->whereNotIn('id', $notOnlineDriver)->get();
-            foreach ($driver as $k => $v) {
-                $info[$k]['driver_id'] = $v['id'];
-                $info[$k]['driver_name'] = $v['fullname'];
-                $info[$k]['driver_phone'] = $v['phone'];
-                $info[$k]['car_no'] = $info[$k]['id'] = $info[$k]['lat'] = $info[$k]['lon'] = $info[$k]['line_name'] = $info[$k]['time'] = $info[$k]['tour_no'] = '';
-            }
-        }
 
         if (!empty($this->formData['driver_name']) && $this->formData['is_online'] == BaseConstService::YES) {
             $info = $this->getTourService()->getList(['status' => BaseConstService::TOUR_STATUS_4, 'driver_name' => ['=', $this->formData['driver_name']]], ['*'], false)->toArray();
