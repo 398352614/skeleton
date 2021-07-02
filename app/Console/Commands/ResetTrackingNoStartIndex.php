@@ -15,7 +15,7 @@ class ResetTrackingNoStartIndex extends Command
      *
      * @var string
      */
-    protected $signature = 'tracking-no-index:reset';
+    protected $signature = 'reset:tracking-no-index';
 
     /**
      * The console command description.

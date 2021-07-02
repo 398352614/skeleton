@@ -8,14 +8,14 @@ use App\Models\MapConfig;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;
 
-class initMapConfig extends Command
+class InitMapConfig extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'map-config:init';
+    protected $signature = 'init:map-config';
 
     /**
      * The console command description.

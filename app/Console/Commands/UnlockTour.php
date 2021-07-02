@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Traits\TourRedisLockTrait;
 use Illuminate\Console\Command;
 
-class UnlockTourOp extends Command
+class UnlockTour extends Command
 {
     use TourRedisLockTrait;
     /**

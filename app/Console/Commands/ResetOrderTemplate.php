@@ -8,7 +8,7 @@ use App\Services\BaseConstService;
 use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Console\Command;
 
-class resetOrderTemplate extends Command
+class ResetOrderTemplate extends Command
 {
     /**
      * The name and signature of the console command.

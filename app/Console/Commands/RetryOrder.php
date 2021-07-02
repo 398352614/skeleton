@@ -7,14 +7,14 @@ use App\Models\Order;
 use App\Models\Tour;
 use Illuminate\Console\Command;
 
-class Repush extends Command
+class RetryOrder extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'repush {--order_no= : order_no}{--tour_no= : tour_no}';
+    protected $signature = 'retry:order {--order_no= : order_no}{--tour_no= : tour_no}';
 
     /**
      * The console command description.

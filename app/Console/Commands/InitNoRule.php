@@ -15,7 +15,7 @@ class InitNoRule extends Command
      *
      * @var string
      */
-    protected $signature = 'no-rule:init';
+    protected $signature = 'init:no-rule';
 
     /**
      * The console command description.

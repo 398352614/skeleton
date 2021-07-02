@@ -19,7 +19,7 @@ class CreateOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'order:create
+    protected $signature = 'create:order
                                             {--times= : times}
                                             {--type= : type}
                                             {--merchant_id= : merchant id}

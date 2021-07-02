@@ -8,14 +8,14 @@ use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
 use Illuminate\Console\Command;
 
-class initFee extends Command
+class InitFee extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'fee:init';
+    protected $signature = 'init:fee';
 
     /**
      * The console command description.

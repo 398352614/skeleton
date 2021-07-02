@@ -24,7 +24,7 @@ class InitTrackingOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'tracking-order:init';
+    protected $signature = 'init:tracking-order';
 
     /**
      * The console command description.

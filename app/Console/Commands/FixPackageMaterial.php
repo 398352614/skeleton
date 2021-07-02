@@ -6,14 +6,14 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\Process\Process;
 
-class FigureOutPackageMaterial extends Command
+class FixPackageMaterial extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'figure-out:package-material';
+    protected $signature = 'fix:package-material';
 
     /**
      * The console command description.

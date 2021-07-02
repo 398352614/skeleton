@@ -18,7 +18,7 @@ class InitOrderTemplate extends Command
      *
      * @var string
      */
-    protected $signature = 'order-template:init';
+    protected $signature = 'init:order-template';
 
     /**
      * The console command description.

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
-class initPermission extends Command
+class InitPermission extends Command
 {
     use PermissionTrait;
 
@@ -20,7 +20,7 @@ class initPermission extends Command
      * mode=1为重置修改，否则为增量修改
      * @var string
      */
-    protected $signature = 'permission:init {--mode= : mode} {--id= : company id}';
+    protected $signature = 'init:permission {--mode= : mode} {--id= : company id}';
 
     /**
      * The console command description.

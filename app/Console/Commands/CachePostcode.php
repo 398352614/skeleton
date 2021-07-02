@@ -14,7 +14,7 @@ class CachePostcode extends Command
      *
      * @var string
      */
-    protected $signature = 'postcode:cache';
+    protected $signature = 'cache:postcode';
 
     /**
      * The console command description.

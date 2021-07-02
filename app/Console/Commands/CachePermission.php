@@ -13,7 +13,7 @@ class CachePermission extends Command
      *
      * @var string
      */
-    protected $signature = 'permission:cache';
+    protected $signature = 'cache:permission';
 
     /**
      * The console command description.

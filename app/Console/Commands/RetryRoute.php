@@ -15,14 +15,14 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
-class RouteRetry extends Command
+class RetryRoute extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'route:retry';
+    protected $signature = 'retry:route';
 
     /**
      * The console command description.

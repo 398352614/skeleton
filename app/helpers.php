@@ -179,7 +179,6 @@ if (!function_exists('array_only_fields_sort')) {
         $params = 2;
         foreach ($fields as $v) {
             if (!array_key_exists($v, $data)) {
-                dd($v);
                 $params = 1;
             }
         }

@@ -13,7 +13,7 @@ class CacheAddressTemplate extends Command
      *
      * @var string
      */
-    protected $signature = 'address-template:cache';
+    protected $signature = 'cache:address-template';
 
     /**
      * The console command description.

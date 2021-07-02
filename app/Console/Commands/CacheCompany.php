@@ -18,7 +18,7 @@ class CacheCompany extends Command
      *
      * @var string
      */
-    protected $signature = 'company:cache
+    protected $signature = 'cache:company
                                             {--company_id= : company id}';
 
     /**

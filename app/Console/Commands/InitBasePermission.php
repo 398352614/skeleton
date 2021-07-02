@@ -12,9 +12,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
-class BasePermissionInit extends Command
+class InitBasePermission extends Command
 {
-    protected $signature = 'base-permission:init {--id= : company id}';
+    protected $signature = 'init:base-permission {--id= : company id}';
 
     protected $description = 'Base permission init';
 
