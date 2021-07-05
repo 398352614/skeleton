@@ -25,6 +25,7 @@ trait LocationTrait
      * @return mixed
      * @throws \App\Exceptions\BusinessLogicException
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function getLocation($country, $city, $street, $houseNumber, $postCode)
     {
@@ -222,6 +223,7 @@ trait LocationTrait
                 $addressResult[$y] = $v['short_name'];
             }
         }
+        dd($addressResult);
         return [
             'country' => $addressResult['country'] ?? $address['country'],
             'city' => $addressResult['locality'] ?? $address['locality'],
