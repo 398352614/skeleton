@@ -54,7 +54,7 @@ class CompanyService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
         return 'true';
     }
 

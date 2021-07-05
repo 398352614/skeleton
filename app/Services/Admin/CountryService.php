@@ -82,7 +82,7 @@ class CountryService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('国家新增失败');
         }
-        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
     }
 
     /**
@@ -112,6 +112,6 @@ class CountryService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('删除失败，请重新操作');
         }
-        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
     }
 }

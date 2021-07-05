@@ -23,8 +23,8 @@ class InitBasePermission extends Command
 
         try {
             $command = empty($this->option('id'))
-                ? 'permission:init'
-                : 'permission:init --id=' . $this->option('id');
+                ? 'init:permission'
+                : 'init:permission --id=' . $this->option('id');
 
             DB::table('permissions')->delete();
 

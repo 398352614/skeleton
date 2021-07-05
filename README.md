@@ -145,11 +145,11 @@ php artisan migrate
 #### 3.4 缓存初始化
 地址模板缓存  
 ```OrderService
-php artisan address-template:cache
+php artisan cache:address-template
 ```
 邮编缓存
 ```
-php artisan postcode:cache
+php artisan cache:postcode
 ```
 #### 3.5 配置supervisor
 由于某些原因，supervisor并未以容器的形式进行管控，而是在php-cli容器中进行了安装，仅此需要解决supervisor配置问题，每次重启后均需重新配置。
@@ -304,11 +304,11 @@ php artisan unlock:tour {tour_no}
 #### 1.3 重新缓存permission表
 执行
 ```
-php artisan permission:cache
+php artisan cache:permission
 ```
 #### 1.4 初始化权限
 
 ``` php
-php artisan permission:init
+php artisan init:permission
 ```
 

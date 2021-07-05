@@ -38,6 +38,6 @@ class AddressTemplateSeeder extends Seeder
             ['template' => json_encode($address1, JSON_UNESCAPED_UNICODE), 'created_at' => $now, 'updated_at' => $now],
             ['template' => json_encode($address2, JSON_UNESCAPED_UNICODE), 'created_at' => $now, 'updated_at' => $now]
         ]);
-        \Illuminate\Support\Facades\Artisan::call('address-template:cache');
+        \Illuminate\Support\Facades\Artisan::call('cache:address-template');
     }
 }

@@ -50,7 +50,7 @@ class CompanyConfigService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败');
         }
-        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
     }
 
     /**
@@ -72,7 +72,7 @@ class CompanyConfigService extends BaseService
             'currency_unit' => $data['currency_unit'],
             'volume_unit' => $data['volume_unit'],
         ]);
-        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
     }
 
     /**
@@ -97,6 +97,6 @@ class CompanyConfigService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('更新失败');
         }
-        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
     }
 }

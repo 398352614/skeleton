@@ -36,7 +36,7 @@ trait CompanyTrait
         $companyId = $companyId ?? auth()->user()->company_id;
         $company = Cache::tags($tag)->get($rootKey . $companyId);
         if (empty($company)) {
-            Artisan::call('company:cache --company_id=' . $companyId);
+            Artisan::call('cache:company --company_id=' . $companyId);
             $company = Cache::tags($tag)->get($rootKey . $companyId);
         }
         return $company;
