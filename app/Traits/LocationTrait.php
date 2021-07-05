@@ -215,8 +215,8 @@ trait LocationTrait
             ]);
             throw new BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
         }
-        $count = count($result);
-        if (empty($count) || count($count['results']) == 0) {
+        if (empty($result) || count($result['results']) == 0) {
+            Log::info('res',$result);
             throw new BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
         }
         $addressComponents = collect($result[0]['address_components']);
