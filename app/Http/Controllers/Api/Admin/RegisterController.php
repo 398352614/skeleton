@@ -101,7 +101,7 @@ class RegisterController extends BaseController
             $this->addOrderDefaultConfig($company); //添加订单默认配置
             $this->addMapConfig($company); //添加订单默认配置
             $this->addCompanyConfig($company); //添加公司配置
-            Artisan::call('company:cache');
+            Artisan::call('cache:company');
             return 'true';
         });
     }
