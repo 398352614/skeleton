@@ -639,7 +639,8 @@ class OrderService extends BaseService
      */
     public function end($id)
     {
-        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
+        $dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_2]);
+        //$dbOrder = parent::getInfoOfStatus(['id' => $id], true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
         $this->getTrackingOrderService()->end($dbOrder['tracking_order_no'] ?? '');
         $rowCount = parent::updateById($id, ['status' => BaseConstService::ORDER_STATUS_4]);
         $this->stockUpdate($dbOrder);

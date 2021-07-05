@@ -85,6 +85,7 @@ class RegisterController extends BaseController
             if ($company === false) {
                 throw new BusinessLogicException('公司注册失败');
             }
+            //创建国家
             $warehouse = $this->addWarehouse($company, $data);
             $employee = $this->addEmployee($company, $data, $warehouse);//初始化管理员帐户
             $role = $this->addRole($company);//初始化权限组
