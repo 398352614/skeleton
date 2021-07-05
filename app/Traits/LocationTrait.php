@@ -151,7 +151,7 @@ trait LocationTrait
             $url = sprintf('%s?%s', config('thirdParty.location_api_another'), http_build_query(['q' => $country . '+' . $city . '+' . $street . '+' . $houseNumber . '+' . $postCode]));
             try {
                 $client = new \GuzzleHttp\Client();
-                $result = $client->request('GET', $url, ['http_errors' => false]);
+                $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
                 $featureList = json_decode((string)($result->getBody()), TRUE)['features'];
             } catch (\Exception $e) {
                 Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
@@ -194,9 +194,14 @@ trait LocationTrait
         }
         $data = substr($data, 0, -1);
         $url = config('tms.map_url') . 'geocode/json?components=' . $data . '&key=' . config('tms.geocode_key');
+        if ((App::environment() === 'development') || (App::environment() === 'local')) {
+            $options = ['proxy' => ['http' => config('tms.vpn'), 'https' => config('tms.vpn')]];
+        } else {
+            $options = [];
+        }
         try {
             $client = new \GuzzleHttp\Client();
-            $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
+            $result = $client->request('GET', $url, array_merge($options, ['http_errors' => false]));
             $result = json_decode((string)($result->getBody()), TRUE);
         } catch (\Exception $e) {
             Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
