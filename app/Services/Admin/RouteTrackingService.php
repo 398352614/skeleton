@@ -69,13 +69,13 @@ class RouteTrackingService extends BaseService
             }
         }
         $batchList = collect($batchList)->whereNotNull('event')->where('event', '<>', [])->sortBy('actual_arrive_time')->all();
-        $info = TourDriverEvent::query()->where('tour_no', $info['tour_no'])->get()->toArray();
+        $tourEvent = TourDriverEvent::query()->where('tour_no', $info['tour_no'])->get()->toArray();
         //插入出库事件
         $out = [[
             'place_lon' => $info['warehouse_lon'],
             'place_lat' => $info['warehouse_lat'],
             'place_fullname' => $info['warehouse_name'],
-            'event' => [collect($info)->sortBy('id')->first()
+            'event' => [collect($tourEvent)->sortBy('id')->first()
             ]]];
         $batchList = array_merge($out, array_values($batchList));
         //插入入库事件
@@ -85,7 +85,7 @@ class RouteTrackingService extends BaseService
                 'place_lat' => $info['warehouse_lat'],
                 'place_fullname' => $info['warehouse_name'],
                 'event' => [
-                    collect($info)->sortByDesc('id')->first()]
+                    collect($tourEvent)->sortByDesc('id')->first()]
             ]];
             $batchList = array_merge(array_values($batchList), $in);
         }
