@@ -189,7 +189,6 @@ trait LocationTrait
      */
     private static function getLocationDetailThird($address)
     {
-        Log::info('address',$address);
         $data = '';
         foreach ($address as $k => $v) {
             if (!empty($address)) {
@@ -198,6 +197,9 @@ trait LocationTrait
         }
         $data = substr($data, 0, -1);
         $url = config('tms.map_url') . 'geocode/json?components=' . $data . '&key=' . config('tms.geocode_key');
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'get', [
+            'url' => $url,
+        ]);
         if ((App::environment() === 'development') || (App::environment() === 'local')) {
             $options = ['proxy' => ['http' => config('tms.vpn'), 'https' => config('tms.vpn')]];
         } else {
