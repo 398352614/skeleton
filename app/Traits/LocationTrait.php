@@ -223,7 +223,6 @@ trait LocationTrait
                 $addressResult[$y] = $v['short_name'];
             }
         }
-        dd($addressResult);
         return [
             'country' => $addressResult['country'] ?? $address['country'],
             'city' => $addressResult['locality'] ?? $address['locality'],
