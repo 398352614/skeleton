@@ -18,6 +18,7 @@ return [
     'baidu_key' => env('BAIDU_KEY'),
     'baidu_url' => env('BAIDU_URL'),
 
+    'geocode_key' => env('GEOCODE_KEY'),
     //谷歌地图API
     'api_url' => env('API_URL'),
     'api_key' => env('API_KEY'),

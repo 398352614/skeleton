@@ -57,10 +57,22 @@ trait LocationTrait
      * @param $houseNumberAddition
      * @return array|\Closure
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private static function getLocationDetail($country, $city, $street, $houseNumber, $postCode)
     {
-        return ($country === 'NL') ? self::getLocationDetailFirst($country, $houseNumber, $postCode) : self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode);
+        //凹成谷歌要的数据
+        $address = [
+            'country' => $country,
+            //'administrative_area_level_1'=>$province,
+            'locality' => $city,//administrative_area_level_2
+            //'administrative_area_level_3' => $district,
+            'route' => $street,
+            'street_number' => $houseNumber,
+            'postal_code' => $postCode,
+            //'room'=>$roomNumber,
+        ];
+        return ($country === 'NL') ? self::getLocationDetailFirst($country, $houseNumber, $postCode) : self::getLocationDetailThird($address);
     }
 
     /**
@@ -166,6 +178,55 @@ trait LocationTrait
         };
     }
 
+    /**
+     * @param $address
+     * @return array
+     * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    private static function getLocationDetailThird($address)
+    {
+        $data = '';
+        foreach ($address as $k => $v) {
+            if (!empty($address)) {
+                $data = $data . $k . ':' . $v . '|';
+            }
+        }
+        $data = substr($data, 0, -1);
+        $url = config('tms.map_url') . 'geocode/json?components=' . $data . '&key=' . config('tms.geocode_key');
+        try {
+            $client = new \GuzzleHttp\Client();
+            $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
+            $result = json_decode((string)($result->getBody()), TRUE);
+        } catch (\Exception $e) {
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
+            throw new BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
+        }
+        $count = count($result);
+        if (($count == 0)/* || ($count > 3)*/) {
+            throw new BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
+        }
+        $addressComponents = collect($result[0]['address_components']);
+        $addressResult = [];
+        foreach ($addressComponents as $k => $v) {
+            foreach ($v['types'] as $x => $y) {
+                $addressResult[$y] = $v['short_name'];
+            }
+        }
+        return [
+            'country' => $addressResult['country'] ?? $address['country'],
+            'city' => $addressResult['locality'] ?? $address['locality'],
+            'street' => $addressResult['route'] ?? $address['route'],
+            'house_number' => $addressResult['street_number'] ?? $address['street_number'],
+            'post_code' => $addressResult['postal_code'] ?? $address['postal_code'],
+            'lon' => $result[0]['geometry']['location']['lng'],
+            'lat' => $result[0]['geometry']['location']['lat'],
+        ];
+    }
 
     /**
      * 获取站点地图
