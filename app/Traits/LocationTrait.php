@@ -189,6 +189,7 @@ trait LocationTrait
      */
     private static function getLocationDetailThird($address)
     {
+        Log::info('address',$address);
         $data = '';
         foreach ($address as $k => $v) {
             if (!empty($address)) {
