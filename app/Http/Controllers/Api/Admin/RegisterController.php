@@ -32,6 +32,7 @@ use App\Services\BaseConstService;
 use App\Traits\PermissionTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -100,7 +101,7 @@ class RegisterController extends BaseController
             $this->addOrderDefaultConfig($company); //添加订单默认配置
             $this->addMapConfig($company); //添加订单默认配置
             $this->addCompanyConfig($company); //添加公司配置
-
+            Artisan::call('company:cache');
             return 'true';
         });
     }
