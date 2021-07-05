@@ -26,7 +26,10 @@ class BackupDatabase extends Command
      * @var Process
      */
     private $process;
-
+    /**
+     * @var Process
+     */
+    private $process1;
     /**
      * Create a new command instance.
      *
@@ -36,7 +39,7 @@ class BackupDatabase extends Command
     {
         parent::__construct();
         if (!file_exists(storage_path('app/backup'))) {
-            $this->process = new Process(sprintf(
+            $this->process1 = new Process(sprintf(
                 'mkdir %s',
                 storage_path('app/backup')
             ));
@@ -64,6 +67,7 @@ class BackupDatabase extends Command
     public function handle()
     {
         try {
+            $this->process1->mustRun();
             $this->process->mustRun();
             $this->info(now()->format('Y-m-d H:i:s ') . 'The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
