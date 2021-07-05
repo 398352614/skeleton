@@ -44,6 +44,7 @@ class BackupDatabase extends Command
                 storage_path('app/backup')
             ));
         }
+
         $this->process = new Process(sprintf(
             'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s | gzip > %s',
             config('database.connections.mysql.host'),
@@ -67,7 +68,9 @@ class BackupDatabase extends Command
     public function handle()
     {
         try {
-            $this->process1->mustRun();
+            if(!empty($this->process1)){
+                $this->process1->mustRun();
+            }
             $this->process->mustRun();
             $this->info(now()->format('Y-m-d H:i:s ') . 'The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
