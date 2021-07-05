@@ -67,6 +67,7 @@ class BackupDatabase extends Command
             $this->process->mustRun();
             $this->info(now()->format('Y-m-d H:i:s ') . 'The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
+            Log::channel('schedule')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. 'exception',collect($exception)->toArray());
             $this->error(now()->format('Y-m-d H:i:s ') . 'The backup process has been failed.');
         }
     }
