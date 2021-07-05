@@ -17,6 +17,7 @@ use App\Traits\LocationTrait;
 use App\Traits\PostcodeTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 
 class CommonService
 {
@@ -26,10 +27,12 @@ class CommonService
      * @param $params
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getLocation($params)
     {
         empty($params['country']) && $params['country'] = CompanyTrait::getCountry();
+        Log::info(CompanyTrait::getCountry());
         if($params['post_code'] > 9999){
             $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }

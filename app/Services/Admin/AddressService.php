@@ -420,6 +420,7 @@ class AddressService extends BaseService
      * @param $params
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function importCheckByList($params)
     {
@@ -435,6 +436,7 @@ class AddressService extends BaseService
      * @param $data
      * @return array
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function importCheck($data)
     {

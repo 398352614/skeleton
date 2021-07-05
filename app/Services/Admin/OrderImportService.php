@@ -337,6 +337,7 @@ class OrderImportService extends BaseService
      * @param $data
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function fillPlaceAddress($data)
     {
