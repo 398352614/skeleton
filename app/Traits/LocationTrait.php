@@ -151,7 +151,7 @@ trait LocationTrait
             $url = sprintf('%s?%s', config('thirdParty.location_api_another'), http_build_query(['q' => $country . '+' . $city . '+' . $street . '+' . $houseNumber . '+' . $postCode]));
             try {
                 $client = new \GuzzleHttp\Client();
-                $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
+                $result = $client->request('GET', $url, ['http_errors' => false]);
                 $featureList = json_decode((string)($result->getBody()), TRUE)['features'];
             } catch (\Exception $e) {
                 Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
