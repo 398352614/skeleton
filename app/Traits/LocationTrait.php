@@ -202,7 +202,7 @@ trait LocationTrait
         try {
             $client = new \GuzzleHttp\Client();
             $result = $client->request('GET', $url, array_merge($options, ['http_errors' => false]));
-            $result = json_decode((string)($result->getBody()), TRUE);
+            $result = json_decode((string)($result->getBody()), TRUE)['results'];
         } catch (\Exception $e) {
             Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
                 'file' => $e->getFile(),
