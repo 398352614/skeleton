@@ -44,7 +44,7 @@ use Illuminate\Support\Facades\Validator;
  */
 class TrackingOrderService extends BaseService
 {
-    use ExportTrait,AddressTrait;
+    use ExportTrait, AddressTrait;
 
     public $filterRules = [
         'type' => ['=', 'type'],
@@ -228,10 +228,10 @@ class TrackingOrderService extends BaseService
             $trackingOrderList = $this->getTrackingOrderService()->getList(['place_post_code' => ['like', $this->formData['post_code']]]);
             if (!$trackingOrderList->isEmpty()) {
                 $trackingOrderList = $trackingOrderList->pluck('tracking_order_no')->toArray();
-                $this->query->whereIn('tracking_order_no', $trackingOrderList);
-            }else{
-                return [];
+            } else {
+                $trackingOrderList = [];
             }
+            $this->query->whereIn('tracking_order_no', $trackingOrderList);
         }
         $list = parent::getPageList();
         foreach ($list as &$trackingOrder) {
@@ -306,10 +306,10 @@ class TrackingOrderService extends BaseService
         //订单轨迹-订单创建
         if ($again == true) {
             OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_RESTART);
-            PackageTrailService::storeByTrackingOrder($trackingOrder,BaseConstService::PACKAGE_TRAIL_AGAIN,null);
+            PackageTrailService::storeByTrackingOrder($trackingOrder, BaseConstService::PACKAGE_TRAIL_AGAIN, null);
         } else {
             OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_CREATED);
-            PackageTrailService::storeByTrackingOrder($trackingOrder,BaseConstService::PACKAGE_TRAIL_CREATED,null);
+            PackageTrailService::storeByTrackingOrder($trackingOrder, BaseConstService::PACKAGE_TRAIL_CREATED, null);
         }
         //包裹轨迹
         return $tour;
@@ -493,7 +493,7 @@ class TrackingOrderService extends BaseService
             throw new BusinessLogicException('操作失败，请重新操作');
         }
         OrderTrailService::orderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::ORDER_TRAIL_DELETE);
-        PackageTrailService::storeByTrackingOrder($dbTrackingOrder, BaseConstService::PACKAGE_TRAIL_DELETED,null);
+        PackageTrailService::storeByTrackingOrder($dbTrackingOrder, BaseConstService::PACKAGE_TRAIL_DELETED, null);
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($dbTrackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_DELETE);
     }
 
@@ -748,8 +748,8 @@ class TrackingOrderService extends BaseService
             $params = $dbOrder->toArray();
             $params['type'] = $this->getTypeByOrderType($dbOrder['type']);
             if ($dbOrder['type'] == BaseConstService::ORDER_TYPE_3) {
-                $params=$this->secondPlaceToPlace($dbOrder,$params);
-                $params['type']=BaseConstService::TRACKING_ORDER_TYPE_2;
+                $params = $this->secondPlaceToPlace($dbOrder, $params);
+                $params['type'] = BaseConstService::TRACKING_ORDER_TYPE_2;
             }
 //            $params = Arr::only($params, ['company_id', 'merchant_id', 'execution_date', 'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat', 'type']);
 //            $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
