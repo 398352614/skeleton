@@ -37,6 +37,8 @@ class BaseConstService
     const BATCH_CANCEL_TYPE_2 = 2;
     const BATCH_CANCEL_TYPE_3 = 3;
 
+    const METHOD_GET = 1;
+    const METHOD_POST = 2;
 
     //邮编国家
     const POSTCODE_COUNTRY_BE = 'BE';
@@ -46,6 +48,9 @@ class BaseConstService
     //是否
     const YES = 1;
     const NO = 2;
+
+    const CONTENT_TYPE_JSON = 1;
+    const CONTENT_TYPE_FORM_DATA = 2;
 
     //支付方1-货主2-客户
     const FEE_PAYER_1 = 1;

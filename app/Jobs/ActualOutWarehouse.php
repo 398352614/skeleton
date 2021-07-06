@@ -95,11 +95,7 @@ class ActualOutWarehouse implements ShouldQueue
                     $tourService->autoOpTour(['tour_no' => $this->tour_no]);
                 }
             } catch (BusinessLogicException $e) {
-                Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'message' => $e->getMessage()
-                ]);
+                Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', ['message' => $e->getMessage()]);
             }
             Log::channel('job')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '确认出库成功');
         } catch (\Exception $e) {

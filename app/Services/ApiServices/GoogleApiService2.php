@@ -62,7 +62,6 @@ class GoogleApiService2
             Log::info('备用Key');
             $this->key = config('tms.map_key');
         }
-        Log::info($this->key);
     }
 
     /**

@@ -77,11 +77,7 @@ class UpdateTour implements ShouldQueue
             $tourService = FactoryInstanceTrait::getInstance(TourService::class);
             $tourService->updateBatchIndex(['tour_no' => $this->tour_no, 'batch_ids' => $this->batch_ids]);
         } catch (BusinessLogicException $e) {
-            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'message' => $e->getMessage()
-            ]);
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', ['message' => $e->getMessage()]);
         } catch (\Exception $e) {
             Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),

@@ -126,6 +126,7 @@ use Illuminate\Support\Facades\App;
  * @method static batchCancelTypeList($args = null)
  * @method static orderControlModeList($args = null)
  * @method static packageFeatureList($args = null)
+ * @method static method($args = null)
  *
  */
 trait ConstTranslateTrait
@@ -980,6 +981,11 @@ trait ConstTranslateTrait
         BaseConstService:: BATCH_CANCEL_TYPE_1 => "客户不在家",
         BaseConstService:: BATCH_CANCEL_TYPE_2 => "另约时间",
         BaseConstService:: BATCH_CANCEL_TYPE_3 => "其他原因"
+    ];
+
+    public static $method = [
+        BaseConstService::METHOD_GET => "get请求",
+        BaseConstService::METHOD_POST => "post请求",
     ];
 
     public static $schedulingTypeTips = [

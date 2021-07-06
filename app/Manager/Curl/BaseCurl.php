@@ -9,9 +9,10 @@
 
 namespace App\Services;
 
-use App\Hash\MerchantApi;
+use App\Exceptions\BusinessLogicException;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use Psr\Http\Message\MessageInterface;
 
 class BaseCurl
 {
@@ -21,191 +22,197 @@ class BaseCurl
 
     protected $key;
 
+    protected $method;
+
     protected $options = [];
+
+    protected $data;
 
     protected $headers = [
         'verify' => false
     ];
 
+
     public $times = 5;
 
-    public function __construct()
+    /**
+     * BaseCurl constructor.
+     * @param $method
+     * @param $url
+     * @param $data
+     * @param array $headers
+     * @param array $options
+     * @param array $auth
+     * @param int $needProxy
+     * @param int $times
+     * @param int $contentType
+     * @throws BusinessLogicException
+     */
+    public function __construct($method, $url, $data, $headers = [], $options = [], $auth = [], $needProxy = BaseConstService::NO, $times = 1, $contentType = BaseConstService::CONTENT_TYPE_JSON)
     {
+        $this->validate($method, $url, $data);
+        $this->options = $options;
+        $this->url = $url;
+        $this->data = $data;
+        $this->method = $method;
+        $this->headers = $headers;
+        $this->times = $times;
+        $this->setAuth($auth)->setHeaders($this->headers);
+        if ($needProxy == BaseConstService::YES) {
+            $this->setProxy();
+        }
+        $this->setData($contentType);
         $this->http = new Client($this->options);
+        if($method == BaseConstService::METHOD_GET){
+            return $this->get();
+        }elseif ($method == BaseConstService::METHOD_POST){
+            return $this->post();
+        }
     }
 
-    public function setMethod($url, $params, $method)
+    /**
+     * 设置数据类型
+     * @param $contentType
+     * @throws BusinessLogicException
+     */
+    public function setData($contentType)
     {
-        if ($method == 'post') {
-            $responseData = $this->post($url, $params);
-        } elseif ($method == 'get') {
-            $responseData = $this->get($url . '?' . http_build_query($params));
-        } else {
-            return false;
+        if ($this->method == BaseConstService::METHOD_POST) {
+            if ($contentType == BaseConstService::CONTENT_TYPE_FORM_DATA) {
+                $this->options[] = ['form_params' => $this->data];
+            } elseif ($contentType == BaseConstService::CONTENT_TYPE_JSON) {
+                $this->options[] = ['json' => $this->data];
+            } else {
+                throw new BusinessLogicException('数据类型未定义');
+            }
         }
-        return $responseData;
+    }
+
+    /**
+     * @param $method
+     * @param $url
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    public function validate($method, $url, $data)
+    {
+        if (!in_array($method, [BaseConstService::METHOD_GET, BaseConstService::METHOD_POST])) {
+            throw new BusinessLogicException('方法未定义');
+        }
+        if (empty($url)) {
+            throw new BusinessLogicException('路由为空');
+        }
+        if (empty($data)) {
+            throw new BusinessLogicException('请求数据为空');
+        }
+        if ($method == BaseConstService::METHOD_GET || !is_string($data)) {
+            throw new BusinessLogicException('请组装好get请求参数');
+        }
+    }
+
+    public function setProxy()
+    {
+        $this->options[] = [
+            'proxy' => [
+                'http' => config('tms.http_proxy'),
+                'https' => config('tms.https_proxy')
+            ]];
+        return $this;
     }
 
     /**
      * 自定义头部
      * @param $headers
+     * @return BaseCurl
      */
     public function setHeaders($headers)
     {
-        $this->http = new Client(['headers' => $headers, 'verify' => false]);
+        $this->options[] = [
+            'headers' => $headers];
+        return $this;
     }
 
     /**
      * 自定义头部
-     * @param $headers
+     * @param $auth
+     * @return BaseCurl
      */
     public function setAuth($auth)
     {
         $credentials = base64_encode($auth[0] . ':' . $auth[1]);
-
-        $this->http = new Client(['headers' => [
-            'Authorization' => 'Basic ' . $credentials,
-        ], 'verify' => false]);
+        $this->headers[] = [
+            'Authorization' => 'Basic ' . $credentials
+        ];
+        return $this;
     }
 
-    public function post($url, $params, $next = 0, $auth = null)
+    /**
+     * post请求
+     * @return mixed|null
+     * @throws BusinessLogicException
+     */
+    public function post()
     {
         Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'post', [
-            'url' => $url,
-            'data' => $params,
+            'url' => $this->url,
+            'data' => $this->data,
         ]);
         try {
-            if ($auth) {
-                $response = $this->http->post($url, ['auth' => $auth, 'form_params' => $params]);
-            } else {
-                $response = $this->http->post($url, ['form_params' => $params]);
-            }
-        } catch (\Exception $e) {
-            if ($next >= 2) {
-                Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '多次请求出错，不再请求');
-                return null;
-            }
-            $next++;
-            app("log")->error($e->getMessage());
-            app("log")->error($e->getTraceAsString());
-            return $this->post($url, $params, $next);
-        }
-        if ($response->getStatusCode() == 200) {
-            $bodyData = $response->getBody();
-            $responseData = json_decode((string)$bodyData, true);
-            if (!$responseData) {
-                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '返回不是json数组');
-                return null;
-            }
-            return $responseData;
-        } else {
-            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '状态码非200');
-            return null;
-        }
-    }
-
-    public function postJson($url, $params, $next = 0, $auth = null)
-    {
-        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'post', [
-            'url' => $url,
-            'data' => $params,
-        ]);
-        try {
-            //php 7.4兼容
-            //https://cloud.tencent.com/developer/article/1489213
-            stream_context_set_default(
-                [
-                    'ssl' => [
-                        'verify_host' => false,
-                        'verify_peer' => false,
-                        'verify_peer_name' => false
-                    ]
-                ]
-            );
-            if ($auth) {
-                $response = $this->http->post($url, ['auth' => $auth, 'json' => $params]);
-            } else {
-                $response = $this->http->post($url, ['json' => $params]);
-            }
+            $res = $this->http->post($this->url, $this->options);
+            return $this->response($res);
         } catch (\Exception $e) {
             Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'message' => $e->getMessage()
             ]);
-            if ($next >= 2) {
-                Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '多次请求出错，不再请求');
-                return null;
-            }
-            $next++;
-            Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '请求失败，重新推送');
-            return $this->postJson($url, $params, $next, $auth);
-        }
-        if ($response->getStatusCode() == 200) {
-            $bodyData = $response->getBody();
-            $responseData = json_decode((string)$bodyData, true);
-            if (!$responseData) {
-                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '返回不是json数组');
-                return null;
-            }
-            return $responseData;
-        } else {
-            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '状态码非200');
-            return null;
+            throw new BusinessLogicException('请求第三方错误');
         }
     }
 
     /**
-     * 货主接口请求
-     * @param $merchant
-     * @param $params
-     * @param $type
-     * @param int $next
-     * @param null $auth
+     * get请求
      * @return mixed|null
+     * @throws BusinessLogicException
      */
-    public function merchantPost($merchant, $params, $next = 0, $auth = null)
+    public function get()
     {
-        $data = array_merge($params,
-            [
-                'key' => $merchant['key'],
-                'time' => time(),
-                'sign' => (new MerchantApi())->make($merchant['secret'], $params['data'] ?? []),
-            ]);
-        return $this->postJson($merchant['url'], $data, $next, $auth);
-    }
-
-    public function get($url, $options = [])
-    {
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'get', [
+            'url' => $this->url,
+            'data' => $this->data,
+        ]);
         try {
-            //php 7.4兼容
-            //https://cloud.tencent.com/developer/article/1489213
-            stream_context_set_default(
-                [
-                    'ssl' => [
-                        'verify_host' => false,
-                        'verify_peer' => false,
-                        'verify_peer_name' => false
-                    ]
-                ]
-            );
-            $res = $this->http->request('GET', $url, $options);
-            // app('log')->info('测试 url'.$url);
+            $res = $this->http->get($this->url . $this->data, $this->options);
+            return $this->response($res);
         } catch (\Exception $e) {
             Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
                 'message' => $e->getMessage()
             ]);
-            return null;
+            throw new BusinessLogicException('请求第三方错误');
         }
+    }
 
-        if ($res->getStatusCode() == 200) {
-            $bodyData = $res->getBody();
-            $responseData = json_decode((string)$bodyData, true);
-            return $responseData;
-        } else {
-            return null;
-        }
+    /**
+     * 返回值检查
+     * @param $res MessageInterface
+     * @return mixed|null
+     */
+    public function response($res)
+    {
+        $bodyData = $res->getBody();
+        $res = json_decode((string)$bodyData, true);
+//        if ($res->getStatusCode() == 200) {
+//            if (!$res) {
+//                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '返回不是json数组');
+//                return null;
+//            }
+//            return $res;
+//        } else {
+//            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '状态码非200');
+//            return null;
+//        }
+        return $res;
     }
 }

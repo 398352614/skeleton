@@ -108,7 +108,7 @@ trait LocationTrait
                 Log::debug(config('thirdParty.location_api_secret'));
                 Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', collect($res)->toArray());
             } catch (\Exception $e) {
-                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
+                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                     'message' => $e->getMessage()
@@ -156,7 +156,7 @@ trait LocationTrait
                 $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
                 $featureList = json_decode((string)($result->getBody()), TRUE)['features'];
             } catch (\Exception $e) {
-                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
+                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                     'message' => $e->getMessage()
@@ -208,7 +208,7 @@ trait LocationTrait
                 $result = $client->request('GET', $url, array_merge($options, ['http_errors' => false]));
                 $result = json_decode((string)($result->getBody()), TRUE)['results'];
             } catch (\Exception $e) {
-                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', [
+                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                     'message' => $e->getMessage()
