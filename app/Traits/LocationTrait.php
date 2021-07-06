@@ -226,6 +226,8 @@ trait LocationTrait
                 }
             }
             return [
+                'district' => $addressResult['administrative_area_level_4'] ?? '',//相当于是区
+                'province' => $addressResult['administrative_area_level_1'] ?? '',//相当于是区
                 'country' => $addressResult['country'] ?? $address['country'],
                 'city' => $addressResult['locality'] ?? $address['locality'],
                 'street' => $addressResult['route'] ?? $address['route'],
