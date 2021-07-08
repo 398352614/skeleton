@@ -42,7 +42,7 @@ class ThirdPartyLogService extends BaseService
         }
         $data = parent::getList(['order_no' => $order->order_no], ['*'], false)->toArray();
         foreach ($data as $k => $v) {
-            $data['content'] = __($data['content']);
+            $data[$k]['content'] = __($v['content']);
         }
     }
 
