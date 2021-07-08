@@ -2001,5 +2001,5 @@
     "已新增运单[:content],未新增站点": "New waybill [: content], no new site",
     "已追加[:count]个站点,收件人[:fullname],请前往站点列表手动调度派送顺序": "[: count] sites have been appended to [: fullname]. Please go to the site list to schedule the delivery order manually",
     "继续取派": "Go on with the pie",
-    "分割线收": "******************************************************************************************",
+    "分割线收": "******************************************************************************************"
 }
