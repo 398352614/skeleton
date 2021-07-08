@@ -15,6 +15,29 @@ if (!function_exists('isJson')) {
     }
 }
 
+if (!function_exists('str_replace_limit')) {
+
+    function str_replace_limit($search, $replace, $subject, $limit = -1)
+    {
+
+        if (is_array($search)) {
+
+            foreach ($search as $k => $v) {
+
+                $search[$k] = '`' . preg_quote($search[$k], '`') . '`';
+
+            }
+
+        } else {
+
+            $search = '`' . preg_quote($search, '`') . '`';
+
+        }
+
+        return preg_replace($search, $replace, $subject, $limit);
+
+    }
+}
 
 if (!function_exists('failed')) {
     /**

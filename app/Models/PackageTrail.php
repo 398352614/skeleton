@@ -75,10 +75,9 @@ class PackageTrail extends BaseModel
     {
         if (preg_match_all('/(?<=\[)[^]]+/', $value, $params)) {
             for ($i = 0, $j = count($params[0]); $i < $j; $i++) {
-                $k = 1;
-                $data['params' . ($i + 1)] = $params[0][$i];
-                $value = str_replace($data['params' . ($i + 1)], ':params' . ($i + 1), $value, $k);
-            }
+                    $data['params' . ($i + 1)] = $params[0][$i];
+                    $value = str_replace_limit($data['params' . ($i + 1)], ':params' . ($i + 1), $value, 1);
+                }
             return !empty($value) ? __($value, $data) : null;
         } else {
             return !empty($value) ? __($value) : null;
