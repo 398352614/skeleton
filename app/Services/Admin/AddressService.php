@@ -480,6 +480,10 @@ class AddressService extends BaseService
             $data['place_province'] = empty($data['place_province']) ? $info['province'] : $data['place_province'];
             $data['place_lon'] = empty($data['place_lon']) ? $info['lon'] : $data['place_lon'];
             $data['place_lat'] = empty($data['place_lat']) ? $info['lat'] : $data['place_lat'];
+            $info = $this->getInfoByUnique($data);
+            if (empty($info)) {
+                $this->create($info);
+            }
         } catch (BusinessLogicException $e) {
             $status = BaseConstService::NO;
             $error['log'] = __($e->getMessage(), $e->replace);
