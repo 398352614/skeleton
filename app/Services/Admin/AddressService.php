@@ -403,6 +403,7 @@ class AddressService extends BaseService
 
         $cellData = [];
         foreach ($data as $v) {
+            $v=collect($v)->toArray();
             $cellData[] = array_only_fields_sort($v, $this->exportExcelHeader);
         }
         if (empty($cellData)) {
