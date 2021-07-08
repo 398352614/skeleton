@@ -44,6 +44,7 @@ class ThirdPartyLogService extends BaseService
         foreach ($data as $k => $v) {
             $data[$k]['content'] = __($v['content']);
         }
+        return $data;
     }
 
 
