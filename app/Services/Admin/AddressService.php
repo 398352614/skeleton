@@ -478,8 +478,8 @@ class AddressService extends BaseService
             $data['place_street'] = empty($data['place_street']) ? $info['street'] : $data['place_street'];
             $data['place_district'] = empty($data['place_district']) ? $info['district'] : $data['place_district'];
             $data['place_province'] = empty($data['place_province']) ? $info['province'] : $data['place_province'];
-            $data['place_lon'] = $data['place_lon'] ?? $info['lon'];
-            $data['place_lat'] = $data['place_lat'] ?? $info['lat'];
+            $data['place_lon'] = empty($data['place_lon']) ? $info['lon'] : $data['place_lon'];
+            $data['place_lat'] = empty($data['place_lat']) ? $info['lat'] : $data['place_lat'];
         } catch (BusinessLogicException $e) {
             $status = BaseConstService::NO;
             $error['log'] = __($e->getMessage(), $e->replace);
