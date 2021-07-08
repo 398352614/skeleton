@@ -66,6 +66,7 @@ class RoleService extends BaseService
         }, self::getPermissionList());
         foreach ($permissionList as &$permission) {
             $permission['is_auth'] = (in_array($permission['id'], $permissionIdList)) ? 1 : 2;
+            $permission['name'] = __($permission['name']);
         }
         return TreeService::makeTree($permissionList);
     }
