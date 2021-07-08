@@ -482,7 +482,7 @@ class AddressService extends BaseService
             $data['place_lat'] = empty($data['place_lat']) ? $info['lat'] : $data['place_lat'];
             $info = $this->getInfoByUnique($data);
             if (empty($info)) {
-                $this->create($info);
+                $this->create($data);
             }
         } catch (BusinessLogicException $e) {
             $status = BaseConstService::NO;
