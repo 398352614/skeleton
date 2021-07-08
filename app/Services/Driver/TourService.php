@@ -614,7 +614,7 @@ class TourService extends BaseService
             'batch_exception_no' => $batchExceptionNo,
             'batch_no' => $batch['batch_no'],
             'fullname' => $batch['place_fullname'],
-            'source' => __('司机来源'),
+            'source' => '司机来源',
             'stage' => $params['stage'],
             'type' => $params['type'],
             'remark' => $params['exception_remark'],

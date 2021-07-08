@@ -35,11 +35,11 @@ class BatchExceptionService extends BaseService
      */
     public function show($id)
     {
-        $info = parent::getInfo(['id' => $id], ['*'], false);
+        $info = parent::getInfo(['id' => $id], ['*'], true);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
-        return $info->toArray();
+        return $info;
     }
 
     /**
