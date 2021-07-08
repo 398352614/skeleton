@@ -647,6 +647,7 @@
     "取件中": "Being picked up",
     "取件成功，等待派件": "Pick up successful, waiting for delivery",
     "取件成功，派件中": "Pick up successful, being delivered",
+    "[:params1]已取件成功": "[:params1] pick up successful",
     "公司ID": "Company ID",
     "货主ID": "Cargo owner ID",
     "客户单号": "Customer order No.",
