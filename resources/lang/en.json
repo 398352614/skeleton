@@ -1877,7 +1877,7 @@
     "前缀长度不得超过总长度": "The prefix length must not exceed the total length",
     "下单成功": "Checkout success ",
     "取件中，[:params1]，电话：[:params2]": "In retrieval, [:params1], Tel: [:params2]",
-    "您的包裹交给[:params1],正在派送途中联系电话：[:params1]": "Your package is delivered to: [:params1], on the way to delivery, contact number: [:params2]",
+    "您的包裹交给[:params1],正在派送途中联系电话：[:params2]": "Your package is delivered to: [:params1], on the way to delivery, contact number: [:params2]",
     "您的包裹已签收，如有疑问请电联快递员[:params1]，电话：[:params2]": "Your package has been signed in. If you have any questions, please call the courier at [:params1], Tel: [:params2]",
     "您的包裹取件被取消，原因：[:params1]。如有疑问请电联快递员[:params2]，电话：[:params1]": "Your package pickup was cancelled for the following reason: [:params1]. If you have any questions, please contact the courier of ITU at [:params1] telephone number: [:params2]",
     "您的包裹派件被取消，原因：[:params1]。如有疑问请电联快递员[:params2]，电话：[:params1]": "Your package delivery was cancelled for the following reason: [:params2]. If you have any questions, please contact the courier of ITU at [:params1] telephone number: [:params1]",
