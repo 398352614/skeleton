@@ -515,6 +515,7 @@ class OrderImportService extends BaseService
             $newData = $this->getAddressService()->secondPlaceToPlace($data);
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
             $data = $this->getAddressService()->warehouseToPlace($newData, $data);
+            $data=$this->getAddressService()->changePlaceAndSecondPlace($data);
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_1) {
             $newData = $data;
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
