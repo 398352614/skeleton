@@ -320,7 +320,7 @@ class AddressService extends BaseService
         $newRow = array_values($newRow);
         $data = [];
         for ($i = 2; $i < count($newRow); $i++) {
-            $data[$i-2] = collect($this->importExcelHeader)->combine($newRow[$i])->toArray();
+            $data[$i - 2] = collect($this->importExcelHeader)->combine($newRow[$i])->toArray();
         }
         //数据处理
         $countryNameList = array_unique(collect($data)->pluck('place_country')->toArray());
@@ -453,11 +453,11 @@ class AddressService extends BaseService
         }
         //判断是否唯一
         $this->uniqueCheck($data);
-        if(empty($data['place_country'])){
+        if (empty($data['place_country'])) {
             $data['place_country'] = CompanyTrait::getCountry();
         }
         //如果没传经纬度，就通过第三方API获取经纬度
-        $address=[
+        $address = [
             'place_country',
             'place_post_code',
             'place_house_number',
@@ -468,27 +468,21 @@ class AddressService extends BaseService
             'place_lon',
             'place_lat',
         ];
-        if (empty($data['place_lon']) || empty($data['place_lat'])) {
-            foreach ($address as $v){
-                if(empty($data[$v])){
-                    try {
-                        $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
-                        $data['place_country'] = $data['place_country'] ?? CompanyTrait::getCountry();
-                        $data['place_post_code'] = $data['place_post_code'] ?? $info['post_code'];
-                        $data['place_house_number'] = $data['place_house_number'] ?? $info['house_number'];
-                        $data['place_city'] = empty($data['place_city']) ? $info['city'] : $data['place_city'];
-                        $data['place_street'] = empty($data['place_street']) ? $info['street'] : $data['place_street'];
-                        $data['place_district'] = empty($data['place_district']) ? $info['district'] : $data['place_district'];
-                        $data['place_province'] = empty($data['place_province']) ? $info['province'] : $data['place_province'];
-                        $data['place_lon'] = $data['place_lon'] ?? $info['lon'];
-                        $data['place_lat'] = $data['place_lat'] ?? $info['lat'];
-                    } catch (BusinessLogicException $e) {
-                        $status = BaseConstService::NO;
-                        $error['log'] = __($e->getMessage(), $e->replace);
-                    }
-                    break;
-                }
-            }
+        try {
+            $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
+            Log::info('info', $info);
+            $data['place_country'] = $data['place_country'] ?? CompanyTrait::getCountry();
+            $data['place_post_code'] = $data['place_post_code'] ?? $info['post_code'];
+            $data['place_house_number'] = $data['place_house_number'] ?? $info['house_number'];
+            $data['place_city'] = empty($data['place_city']) ? $info['city'] : $data['place_city'];
+            $data['place_street'] = empty($data['place_street']) ? $info['street'] : $data['place_street'];
+            $data['place_district'] = empty($data['place_district']) ? $info['district'] : $data['place_district'];
+            $data['place_province'] = empty($data['place_province']) ? $info['province'] : $data['place_province'];
+            $data['place_lon'] = $data['place_lon'] ?? $info['lon'];
+            $data['place_lat'] = $data['place_lat'] ?? $info['lat'];
+        } catch (BusinessLogicException $e) {
+            $status = BaseConstService::NO;
+            $error['log'] = __($e->getMessage(), $e->replace);
         }
         return ['status' => $status, 'error' => $error, 'data' => $data];
     }
