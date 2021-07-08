@@ -202,8 +202,11 @@ class StockService extends BaseService
     {
         $data = parent::getPageList();
         $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $data->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id');
+        $packageList = $this->getPackageService()->getList(['express_first_no' => ['in', $data->pluck('express_first_no')->toArray()]], ['*'], false)->keyBy('express_first_no');
         foreach ($data as $k => $v) {
             $data[$k]['warehouse_name'] = $warehouseList[$v['warehouse_id']]['name'] ?? '';
+            $data[$k]['weight'] = $packageList[$v['express_first_no']]['weight'] ?? '';
+            $data[$k]['create_date'] = Carbon::create($v['created_at'])->format('Y-m-d') ?? '';
         }
         return $data;
     }

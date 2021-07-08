@@ -10,6 +10,7 @@ namespace App\Services\Admin;
 
 use App\Http\Resources\Api\Admin\StockOutResource;
 use App\Models\StockOutLog;
+use Illuminate\Support\Carbon;
 
 class StockOutLogService extends BaseService
 {
@@ -37,9 +38,12 @@ class StockOutLogService extends BaseService
     public function getPageList()
     {
         $data = parent::getPageList();
-        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in',$data->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id');
+        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $data->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id');
+        $packageList = $this->getPackageService()->getList(['express_first_no' => ['in', $data->pluck('express_first_no')->toArray()]], ['*'], false)->keyBy('express_first_no');
         foreach ($data as $k => $v) {
             $data[$k]['warehouse_name'] = $warehouseList[$v['warehouse_id']]['name'] ?? '';
+            $data[$k]['weight'] = $packageList[$v['express_first_no']]['weight'] ?? '';
+            $data[$k]['create_date'] = Carbon::create($v['created_at'])->format('Y-m-d') ?? '';
         }
         return $data;
     }
