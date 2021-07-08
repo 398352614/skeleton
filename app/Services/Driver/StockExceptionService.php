@@ -94,7 +94,7 @@ class StockExceptionService extends BaseService
             'express_first_no' => $package['express_first_no'],
             'driver_id' => $trackingOrder['driver_id'],
             'driver_name' => $trackingOrder['driver_name'],
-            'remark' => __('取件失败，无法入库'),
+            'remark' => '取件失败，无法入库',
             'status' => BaseConstService::STOCK_EXCEPTION_STATUS_1,
         ];
         $rowCount = $this->getStockExceptionService()->create($data);
