@@ -183,6 +183,9 @@ class OrderImportService extends BaseService
         $data['settlement_type'] = auth()->user()->settlement_type;
         $error = [];
         $validate = new OrderImportValidate;
+        foreach ($validate->message as $k => $v) {
+            $validate->message[$k] = __($v);
+        }
         $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, $validate->message));
         if ($validator->fails()) {
             $key = $validator->errors()->keys();
@@ -249,7 +252,7 @@ class OrderImportService extends BaseService
                 $data = $this->getAddressService()->warehouseToSecondPlace($newData, $data);
             }
         } catch (BusinessLogicException $e) {
-            $error['log'] = $e->getMessage();
+            $error['log'] = __($e->getMessage());
         }
         //若存在货号,则判断是否存在已预约的订单号
         if (!empty($data['out_order_no'])) {

@@ -169,7 +169,6 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         foreach ($packageList as $k => $v) {
             if (!is_array($v) && !is_object($v)) {
                 $packageList = [$packageList];
-                dd($packageList);
             }
             break;
         }
