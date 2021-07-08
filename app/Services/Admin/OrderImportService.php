@@ -181,7 +181,7 @@ class OrderImportService extends BaseService
     {
         $error = [];
         $validate = new OrderImportValidate;
-        $validator = Validator::make($data, $validate->rules, __(array_merge(BaseValidate::$baseMessage, $validate->message)));
+        $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, __($validate->message)));
         if ($validator->fails()) {
             $key = $validator->errors()->keys();
             foreach ($key as $v) {
