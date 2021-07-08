@@ -23,7 +23,7 @@ class BatchExceptionResource extends JsonResource
             'driver_name' => $this->driver_name,
             'type' => $this->type,
             'type_name' => $this->type_name,
-            'remark' => $this->remark,
+            'remark' => __($this->remark),
             'deal_name' => $this->deal_name,
             'deal_time' => $this->deal_time
         ];
