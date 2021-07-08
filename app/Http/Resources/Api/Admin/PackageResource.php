@@ -51,7 +51,8 @@ class PackageResource extends JsonResource
             'next_warehouse_name' => $this->next_warehouse_name,
             'shift_no' => $this->shift_no,
             'bag_no' => $this->bag_no,
-            'stage_status_name' => $this->stage_status_name
+            'stage_status_name' => $this->stage_status_name,
+            'feature_logo'=>__($this->feature_logo),
         ];
     }
 }
