@@ -181,7 +181,10 @@ class OrderImportService extends BaseService
     {
         $error = [];
         $validate = new OrderImportValidate;
-        $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage, __($validate->message)));
+        foreach ($validate->message as $k => $v) {
+            $validate->message[$k] = __($v);
+        }
+        $validator = Validator::make($data, $validate->rules, array_merge(BaseValidate::$baseMessage,$validate->message));
         if ($validator->fails()) {
             $key = $validator->errors()->keys();
             foreach ($key as $v) {
@@ -515,7 +518,7 @@ class OrderImportService extends BaseService
             $newData = $this->getAddressService()->secondPlaceToPlace($data);
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
             $data = $this->getAddressService()->warehouseToPlace($newData, $data);
-            $data=$this->getAddressService()->changePlaceAndSecondPlace($data);
+            $data = $this->getAddressService()->changePlaceAndSecondPlace($data);
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_1) {
             $newData = $data;
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
