@@ -35,7 +35,7 @@ class EmployeeService extends BaseService
             $eRoleList = DB::table($modelHasRolesTable)->where('role_id', $this->formData['role_id'])->paginate($this->per_page);
             $employeeIdList = $eRoleList->pluck('employee_id')->toArray();
         }
-        if (!empty($employeeIdList)) $this->filters['id'] = ['in', $employeeIdList];
+        $this->filters['id'] = ['in', $employeeIdList];
         $list = parent::getPageList();
         $warehouseIdList = $list->pluck('warehouse_id')->unique()->toArray();
         $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $warehouseIdList]], ['*'], false)->keyBy('id');
