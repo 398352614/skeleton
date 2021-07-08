@@ -66,7 +66,7 @@ class BaseLineService extends BaseService
     {
         $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'status']));
         if ($rowCount === false) {
-            throw new BusinessLogicException('线路修改失败');
+            throw new BusinessLogicException('修改失败');
         }
     }
 
@@ -84,7 +84,7 @@ class BaseLineService extends BaseService
         //删除线路
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('线路删除失败');
+            throw new BusinessLogicException('删除失败');
         }
     }
 

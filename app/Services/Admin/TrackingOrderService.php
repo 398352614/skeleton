@@ -350,7 +350,7 @@ class TrackingOrderService extends BaseService
         if (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
             $rowCount = parent::updateById($dbTrackingOrder['id'], $trackingOrder);
             if ($rowCount === false) {
-                throw new BusinessLogicException('运单修改失败');
+                throw new BusinessLogicException('修改失败');
             }
             //删除原运单包裹和材料
             $rowCount = $this->getTrackingOrderPackageService()->delete(['tracking_order_no' => $trackingOrder['tracking_order_no']]);

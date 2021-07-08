@@ -142,6 +142,7 @@ class OrderImportService extends BaseService
      * @param $params
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function importCheck($params)
     {
@@ -174,6 +175,7 @@ class OrderImportService extends BaseService
      * @param $data
      * @return array
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function check($data)
     {
@@ -296,6 +298,7 @@ class OrderImportService extends BaseService
      * @param $data
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function fillAddress($data)
     {
@@ -369,6 +372,7 @@ class OrderImportService extends BaseService
      * @param $data
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function fillSecondPlaceAddress($data)
     {
@@ -507,9 +511,16 @@ class OrderImportService extends BaseService
             $data['place_address'] = $data['second_place_address'] ?? '';
             $data['execution_date'] = $data['second_execution_date'];
         }
-        $newData=$data;
-        $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-        $data = $this->warehouseToSecondPlace($newData, $data);
+        if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
+            $newData = $this->getAddressService()->secondPlaceToPlace($data);
+            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+            $data = $this->getAddressService()->warehouseToPlace($newData, $data);
+        } elseif ($data['type'] == BaseConstService::ORDER_TYPE_1) {
+            $newData = $data;
+            $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+            $data = $this->getAddressService()->warehouseToSecondPlace($newData, $data);
+        }
+
         for ($j = 0; $j < 5; $j++) {
             if (!empty($data['package_no_' . ($j + 1)])) {
                 $data['package_list'][$j]['name'] = $data['package_name_' . ($j + 1)] ?? '';

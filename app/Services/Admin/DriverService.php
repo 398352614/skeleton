@@ -67,7 +67,7 @@ class DriverService extends BaseService
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('司机删除失败');
+            throw new BusinessLogicException('删除失败');
         }
     }
 
@@ -112,7 +112,7 @@ class DriverService extends BaseService
 
         $rowCount = parent::create($driver);
         if ($rowCount === false) {
-            throw new BusinessLogicException('司机新增失败');
+            throw new BusinessLogicException('新增失败');
         }
     }
 

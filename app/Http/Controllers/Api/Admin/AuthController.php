@@ -106,7 +106,7 @@ class AuthController extends Controller
     {
         auth('admin')->logout();
 
-        return '注销成功！';
+        return __('注销成功');
     }
 
     /**

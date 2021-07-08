@@ -151,7 +151,7 @@ class BatchService extends BaseService
         $batchNo = $this->getOrderNoRuleService()->createBatchNo();
         $batch = parent::create($this->fillData($order, $line, $batchNo));
         if ($batch === false) {
-            throw new BusinessLogicException('订单加入站点失败!');
+            throw new BusinessLogicException('订单加入站点失败');
         }
         $batch = $batch->getOriginal();
         return $batch;
@@ -173,7 +173,7 @@ class BatchService extends BaseService
         ];
         $rowCount = parent::updateById($batch['id'], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('订单加入站点失败!');
+            throw new BusinessLogicException('订单加入站点失败');
         }
         $batch = array_merge($batch->toArray(), $data);
         return $batch;

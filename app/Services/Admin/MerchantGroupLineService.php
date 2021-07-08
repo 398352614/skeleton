@@ -55,7 +55,7 @@ class MerchantGroupLineService extends BaseService
         }
         $rowCount = parent::insertAll($data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('最小订单量新增失败');
+            throw new BusinessLogicException('新增失败');
         }
     }
 

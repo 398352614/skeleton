@@ -80,7 +80,7 @@ class CountryService extends BaseService
         }
         $rowCount = parent::create($country);
         if ($rowCount === false) {
-            throw new BusinessLogicException('国家新增失败');
+            throw new BusinessLogicException('新增失败');
         }
         Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
     }

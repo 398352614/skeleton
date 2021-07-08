@@ -59,6 +59,7 @@ class OrderImportController extends BaseController
      * 导入检查
      * @return array
      * @throws \App\Exceptions\BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function importCheck()
     {

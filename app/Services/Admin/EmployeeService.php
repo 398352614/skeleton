@@ -85,7 +85,7 @@ class EmployeeService extends BaseService
         $role = Role::findById($data['role_id']);
         $employee = parent::create($data);
         if ($employee === false) {
-            throw new BusinessLogicException('员工新增失败');
+            throw new BusinessLogicException('新增失败');
         }
         //员工添加权限组
         $employee->syncRoles($role);
@@ -109,7 +109,7 @@ class EmployeeService extends BaseService
         }
         $rowCount = $employee->update($data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('修改员工失败');
+            throw new BusinessLogicException('修改失败');
         }
         $employee->syncRoles($role);
     }
@@ -147,7 +147,7 @@ class EmployeeService extends BaseService
         ]);
 
         if ($res === false) {
-            throw new BusinessLogicException('员工密码修改失败');
+            throw new BusinessLogicException('修改失败');
         }
 
         return $res;
@@ -165,13 +165,13 @@ class EmployeeService extends BaseService
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('员工删除失败');
+            throw new BusinessLogicException('删除失败');
         }
         //删除员工权限
         $modelHasRolesTable = config('permission.table_names.model_has_roles');
         $rowCount = DB::table($modelHasRolesTable)->where('employee_id', $id)->delete();
         if ($rowCount === false) {
-            throw new BusinessLogicException('员工删除失败');
+            throw new BusinessLogicException('删除失败');
         }
     }
 

@@ -452,7 +452,7 @@ class TourService extends BaseService
             $rowCount = parent::updateById($info['id'], $data);
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('取件移除运单失败，请重新操作');
+            throw new BusinessLogicException('线路任务移除运单失败，请重新操作');
         }
     }
 
@@ -481,7 +481,7 @@ class TourService extends BaseService
             $rowCount = parent::updateById($info['id'], $data);
         }
         if ($rowCount === false) {
-            throw new BusinessLogicException('取件移除站点失败，请重新操作');
+            throw new BusinessLogicException('线路任务移除站点失败，请重新操作');
         }
         return $info;
     }

@@ -326,7 +326,7 @@ class TrackingOrderService extends BaseService
         if (in_array($dbTrackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_1, BaseConstService::TRACKING_ORDER_STATUS_2, BaseConstService::TRACKING_ORDER_STATUS_3, BaseConstService::TRACKING_ORDER_STATUS_4])) {
             $rowCount = parent::updateById($dbTrackingOrder['id'], $trackingOrder);
             if ($rowCount === false) {
-                throw new BusinessLogicException('运单修改失败');
+                throw new BusinessLogicException('修改失败');
             }
             //删除原运单包裹和材料
             $rowCount = $this->getTrackingOrderPackageService()->delete(['tracking_order_no' => $trackingOrder['tracking_order_no']]);
@@ -544,7 +544,7 @@ class TrackingOrderService extends BaseService
                     $diffExpectQuantity = $dbTourMaterial->expect_quantity - $dbMaterial['expect_quantity'];
                     $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $diffExpectQuantity]);
                     if ($rowCount === false) {
-                        throw new BusinessLogicException('材料处理失败');
+                        throw new BusinessLogicException('材料处理失败，请重新操作');
                     }
                 }
             }
@@ -561,13 +561,13 @@ class TrackingOrderService extends BaseService
                     $rowCount = $this->tourMaterialModel->newQuery()->where('id', $dbTourMaterial->id)->update(['expect_quantity' => $dbTourMaterial->expect_quantity + $material['expect_quantity']]);
                 }
                 if ($rowCount === false) {
-                    throw new BusinessLogicException('材料处理失败');
+                    throw new BusinessLogicException('材料处理失败，请重新操作');
                 }
             }
             //删除预计数量为0的取件材料
             $rowCount = $this->tourMaterialModel->newQuery()->where('tour_no', $dbTrackingOrder['tour_no'])->where('expect_quantity', 0)->delete();
             if ($rowCount === false) {
-                throw new BusinessLogicException('材料处理失败');
+                throw new BusinessLogicException('材料处理失败，请重新操作');
             }
         };
         $rowCount = $this->getMaterialService()->update(['order_no' => $dbTrackingOrder['order_no']], ['batch_no' => $dbTrackingOrder['batch_no'], 'tour_no' => $dbTrackingOrder['tour_no']]);

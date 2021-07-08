@@ -44,7 +44,7 @@ class MemorandumService extends BaseService
         $params['create_date']=today()->format('Y-m-d');
         $rowCount = parent::create($params);
         if ($rowCount === false) {
-            throw new BusinessLogicException('备忘录新增失败');
+            throw new BusinessLogicException('新增失败');
         }
     }
 
@@ -59,7 +59,7 @@ class MemorandumService extends BaseService
     {
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('备忘录修改失败');
+            throw new BusinessLogicException('修改失败');
         }
     }
 
@@ -72,7 +72,7 @@ class MemorandumService extends BaseService
     {
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('备忘录删除失败');
+            throw new BusinessLogicException('删除失败');
         }
     }
 

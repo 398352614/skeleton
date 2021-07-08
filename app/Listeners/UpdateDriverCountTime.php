@@ -93,7 +93,7 @@ class UpdateDriverCountTime implements ShouldQueue
             ]);
             //计入路线重推
             $this->repush($tour, $driverLocation, $nextBatchNo, $queue);
-            throw new BusinessLogicException('更新线路失败');
+            throw new BusinessLogicException('线路任务更新失败');
         }
         return;
     }

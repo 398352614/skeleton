@@ -97,7 +97,7 @@ trait UpdateTourTimeAndDistanceTrait
                 'line' => $e->getLine(),
                 'message' => $e->getMessage()
             ]);
-            throw new BusinessLogicException('更新线路信息失败，请稍后重试');
+            throw new BusinessLogicException('线路任务更新失败，请稍后重试');
         }
     }
 }

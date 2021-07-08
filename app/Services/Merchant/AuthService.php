@@ -127,7 +127,7 @@ class AuthService extends BaseService
     {
         auth('merchant')->logout();
 
-        return '注销成功！';
+        return __('注销成功');
     }
 
     /**

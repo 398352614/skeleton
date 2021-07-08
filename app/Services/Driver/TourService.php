@@ -357,7 +357,7 @@ class TourService extends BaseService
         })->toArray();
         $rowCount = $this->tourMaterialModel->insertAll($materialList);
         if ($rowCount === false) {
-            throw new BusinessLogicException('材料新增失败');
+            throw new BusinessLogicException('新增失败');
         }
     }
 
@@ -538,7 +538,7 @@ class TourService extends BaseService
         }
         $rowCount = $this->getBatchService()->updateById($batch['id'], ['actual_arrive_time' => $now, 'actual_time' => $actualTime, 'actual_distance' => $batch['expect_distance']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('更新到达时间失败，请重新操作');
+            throw new BusinessLogicException('线路任务更新失败，请稍后重试');
         }
         TourTrait::afterBatchArrived($tour, $batch);
         $specialRemarkList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'tracking_order_no', 'order_no', 'special_remark'], false);
@@ -906,14 +906,14 @@ class TourService extends BaseService
             $actualQuantity = intval($material['actual_quantity']);
             $rowCount = $this->getTrackingOrderMaterialService()->update(['id' => $material['id']], ['actual_quantity' => $actualQuantity]);
             if ($rowCount === false) {
-                throw new BusinessLogicException('材料处理失败');
+                throw new BusinessLogicException('材料处理失败，请重新操作');
             };
             $rowCount = $this->tourMaterialModel->newQuery()
                 ->where('tour_no', '=', $tour['tour_no'])
                 ->where('code', '=', $dbMaterialList[$material['id']]['code'])
                 ->update(['finish_quantity' => DB::raw("finish_quantity+$actualQuantity"), 'surplus_quantity' => DB::raw("surplus_quantity-$actualQuantity")]);
             if ($rowCount === false) {
-                throw new BusinessLogicException('材料处理失败');
+                throw new BusinessLogicException('材料处理失败，请重新操作');
             }
         }
     }
@@ -1442,7 +1442,7 @@ class TourService extends BaseService
                 'expect_time' => $batch['expect_time'] + $params['delay_time'] * 60
             ]);
             if ($row == false) {
-                throw new BusinessLogicException('延迟失败');
+                throw new BusinessLogicException('操作失败');
             }
         }
         //线路任务处理

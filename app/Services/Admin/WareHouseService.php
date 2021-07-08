@@ -250,7 +250,7 @@ class WareHouseService extends BaseService
         }
         $row = parent::delete(['id' => $id]);
         if ($row === false) {
-            throw new BusinessLogicException('网点删除失败，请重新操作');
+            throw new BusinessLogicException('删除失败，请重新操作');
         }
         $parentWarehouse = parent::getInfo(['id' => $warehouse['parent']], ['*'], false);
         $row = $this->getLineService()->update(['warehouse_id' => $id], ['warehouse_id' => $parentWarehouse['id']]);
