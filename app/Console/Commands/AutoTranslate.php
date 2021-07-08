@@ -54,12 +54,12 @@ class AutoTranslate extends Command
     public function handle()
     {
 //        try {
-            foreach (array_keys(ConstTranslateTrait::$languageList) as $v) {
-                if ($v !== 'cn') {
-                    $this->phpToText($v);
-                }
+        foreach (array_keys(ConstTranslateTrait::$languageList) as $v) {
+            if ($v !== 'cn') {
+                $this->phpToText($v);
             }
-            $this->info('The translation success.');
+        }
+        $this->info('The translation success.');
 //        } catch (Exception $e) {
 //            $this->info('The translation fail:' . $e->getMessage());
 //        }
@@ -92,7 +92,7 @@ class AutoTranslate extends Command
             $json = '';
             $oldJson = file_get_contents('resources/lang/' . $language . '.json');
             for ($i = 0, $j = count($result); $i < $j; $i++) {
-                $json .= '"' . $result[$i]['src'] . '":"' . $result[$i]['dst'] . '",' . "\n";
+                $json .= '"' . $result[$i]['src'] . '":"' . ucfirst($result[$i]['dst']) . '",' . "\n";
             }
             $json = Str::replaceLast(',', '', $json);
             $oldJson = str_replace('}', '', $oldJson);

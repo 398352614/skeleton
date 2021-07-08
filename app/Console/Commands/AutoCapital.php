@@ -61,10 +61,24 @@ class AutoCapital extends Command
         $params = file_get_contents('resources/lang/en.json');
         $params = collect(json_decode($params))->toArray();
         foreach ($params as $k => $v) {
-            $params[$k]= str_replace();
+            $params[$k] = ucfirst($v);
         }
 
-        return;
+        $json='{'."\n";
+        foreach ($params as $k => $v) {
+            $json .= '"' . $k . '":"' . $v . '",' . "\n";
+        }
+        $json=$json.'}';
+        return file_put_contents('resources/lang/en1.json', $json);
+
+
+        $oldJson = file_get_contents('resources/lang/en.json');
+        for ($i = 0, $j = count($params); $i < $j; $i++) {
+            $json .= '"' . $params[$i] . '":"' . $params[$i] . '",' . "\n";
+        }
+        $json = Str::replaceLast(',', '', $json);
+        $oldJson = str_replace('}', '', $oldJson);
+        $oldJson = $oldJson . ',' . $json . '}';
 
         $data = [];
         $row = [];
