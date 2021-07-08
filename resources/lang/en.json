@@ -1882,7 +1882,7 @@
     "您的包裹已签收，如有疑问请电联快递员[:params1]，电话：[:params2]": "Your package has been signed in. If you have any questions, please call the courier at [:params1], Tel: [:params2]",
     "您的包裹取件被取消，原因：[:params1]。如有疑问请电联快递员[:params2]，电话：[:params1]": "Your package pickup was cancelled for the following reason: [:params1]. If you have any questions, please contact the courier of ITU at [:params1] telephone number: [:params2]",
     "您的包裹派件被取消，原因：[:params1]。如有疑问请电联快递员[:params2]，电话：[:params1]": "Your package delivery was cancelled for the following reason: [:params2]. If you have any questions, please contact the courier of ITU at [:params1] telephone number: [:params1]",
-    "您的包裹在[:params1]进行入库处理，操作员：[:params2]": "Your package will be put into storage at the location of [:params1], operator: [:params2]",
+    "您的包裹在[:params1]进行入库处理，操作员：[:params2]": "1",
     "您的包裹在[:params1]进行装袋处理，操作员：[:params2]": "Your package will be bagged at the location of [:params1], operator: [:params2]",
     "您的包裹在[:params1]进行装车处理，操作员：[:params2]": "Your package will be loaded at [:params1], operator: [:params2]",
     "您的包裹在[:params1]已装车，正在发往[:params2]，操作员：[:params3]": "Your package has been loaded on at [:params1] and is being sent to at [:params2], operator: [:params3]",
