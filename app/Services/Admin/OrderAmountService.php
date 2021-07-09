@@ -34,6 +34,7 @@ class OrderAmountService extends BaseService
         foreach ($data as $k => $v) {
             $data[$k]['level'] = __($data[$k]['level']);
         }
+        return $data;
     }
 
     /**
