@@ -45,10 +45,10 @@ class OrderAmountService extends BaseService
     public function show($id)
     {
         $info = parent::getInfo(['id' => $id], ['*'], false);
-        $info['level'] = __($info['level']);
         if (empty($info)) {
             throw new BusinessLogicException('数据不存在');
         }
+        $info['level'] = __($info['level']);
         return $info;
     }
 
