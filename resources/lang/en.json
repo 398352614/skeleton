@@ -1,8 +1,5 @@
 {
     ":code -- :quantity 个": ":code--:quantity",
-    "€": "EUR",
-    "￥": "CNY",
-    "$": "USD",
     "第:line行：": "Line: ",
     "1-是，2-否": "1-Yes,2-No",
     "1-取件，2-派件": "1-Pick-up,2-Delivery",
