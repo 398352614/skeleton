@@ -117,9 +117,9 @@ class OrderImportService extends BaseService
                 $newRow[] = $v;
             }
         }
-//        if ($newRow !== $firstHeadings || array_diff($row[1], $secondHeadings) !== []) {
-//            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
-//        }
+        if ($newRow !== $firstHeadings || array_diff($row[1], $secondHeadings) !== []) {
+            throw new BusinessLogicException('表格格式不正确，请使用正确的模板导入');
+        }
         if (count($row) < 3) {
             throw new BusinessLogicException('模板内无有效数据');
         }
