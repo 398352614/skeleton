@@ -411,13 +411,13 @@ class OrderImportService extends BaseService
             $data[$i - 2] = collect($headings)->combine($row[$i])->toArray();
         }
         //数据处理
-        $orderTypeList = array_flip(__(ConstTranslateTrait::orderTypeList()));
-        $orderSettlementList = array_flip(__(ConstTranslateTrait::orderSettlementTypeList()));
-        $controlModeList = array_flip(__(ConstTranslateTrait::orderControlModeList()));
-        $receiptTypeList = array_flip(__(ConstTranslateTrait::orderReceiptTypeList()));
-        $packageFeatureList = array_flip(__(ConstTranslateTrait::packageFeatureList()));
-        $materialTypeList = array_flip(__(ConstTranslateTrait::materialTypeList()));
-        $materialPackTypeList = array_flip(__(ConstTranslateTrait::materialPackTypeList()));
+        $orderTypeList = array_flip(ConstTranslateTrait::orderTypeList());
+        $orderSettlementList = array_flip(ConstTranslateTrait::orderSettlementTypeList());
+        $controlModeList = array_flip(ConstTranslateTrait::orderControlModeList());
+        $receiptTypeList = array_flip(ConstTranslateTrait::orderReceiptTypeList());
+        $packageFeatureList = array_flip(ConstTranslateTrait::packageFeatureList());
+        $materialTypeList = array_flip(ConstTranslateTrait::materialTypeList());
+        $materialPackTypeList = array_flip(ConstTranslateTrait::materialPackTypeList());
         for ($i = 0; $i < count($data); $i++) {
             //反向翻译
             $data[$i]['merchant_id'] = Merchant::query()->where('name', $data[$i]['merchant'])->first()['id'] ?? $data[$i]['merchant'];
