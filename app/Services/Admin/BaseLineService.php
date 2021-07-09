@@ -134,7 +134,7 @@ class BaseLineService extends BaseService
         }
         $params['warehouse_id'] = $rootWarehouse->toArray()['id'];
         $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
-        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
+        if (!empty($params['item_list']) && CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
             foreach ($params['item_list'] as $k => $v) {
                 if ($v['post_code_start'] > 9999 || $v['post_code_end'] > 9999) {
                     $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
