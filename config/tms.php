@@ -54,5 +54,6 @@ return [
     'tcp_merchant_id' => env('TCP_MERCHANT_ID'),
     'http_proxy' => env('VPN_HTTP_PROXY'),
     'https_proxy' => env('VPN_HTTPS_PROXY'),
-    'post_code_de' => env('POST_CODE_DE')
+    'post_code_de' => env('POST_CODE_DE'),
+    'db_backup'=>env('DB_BACKUP')
 ];

@@ -356,16 +356,18 @@ class OrderImportService extends BaseService
                 $data['place_house_number'] ?? '',
                 $data['place_post_code'] ?? ''
             );
-            $data['place_province'] = $info['province'];
-            $data['place_city'] = $info['city'];
-            $data['place_district'] = $info['district'];
-            $data['place_street'] = $info['street'];
-            $data['place_house_number'] = $info['house_number'];
-            $data['place_post_code'] = $info['post_code'];
-            $data['place_lat'] = $info['lat'];
-            $data['place_lon'] = $info['lon'];
-        } else {
-            $data = array_merge($data, collect($address)->toArray());
+            $data['place_city'] = empty($data['place_city']) ? $info['city'] : $data['place_city'];
+            $data['place_street'] = empty($data['place_street']) ? $info['street'] : $data['place_street'];
+            $data['place_district'] = empty($data['place_district']) ? $info['district'] : $data['place_district'];
+            $data['place_province'] = empty($data['place_province']) ? $info['province'] : $data['place_province'];
+            $data['place_house_number'] = empty($data['place_house_number']) ? $info['house_number'] : $data['place_house_number'];
+            $data['place_post_code'] = empty($data['place_post_code']) ? $info['post_code'] : $data['place_post_code'];
+            $data['place_lat'] = empty($data['place_lat']) ? $info['lat'] : $data['place_lat'];
+            $data['place_lon'] = empty($data['place_lon']) ? $info['lon'] : $data['place_lon'];
+            if($data['place_country'] == 'NL'){
+                $data['place_city'] = $info['city'];
+                $data['place_street'] = $info['street'];
+            }
         }
         return $data;
     }
