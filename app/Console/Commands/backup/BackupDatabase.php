@@ -3,6 +3,7 @@
 namespace App\Console\Commands\backup;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -44,7 +45,6 @@ class BackupDatabase extends Command
                 storage_path('app/backup')
             ));
         }
-
         $this->process = new Process(sprintf(
             'mysqldump -h%s -u%s -p%s %s --ignore-table=%s --ignore-table=%s --ignore-table=%s | gzip > %s',
             config('database.connections.mysql.host'),
@@ -74,8 +74,6 @@ class BackupDatabase extends Command
             $this->process->mustRun();
             $this->info(now()->format('Y-m-d H:i:s ') . 'The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
-            dd($exception);
-            Log::channel('schedule')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. 'exception',collect($exception)->toArray());
             $this->error(now()->format('Y-m-d H:i:s ') . 'The backup process has been failed.');
         }
     }

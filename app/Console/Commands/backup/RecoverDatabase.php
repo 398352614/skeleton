@@ -3,6 +3,7 @@
 namespace App\Console\Commands\backup;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -37,15 +38,19 @@ class RecoverDatabase extends Command
      */
     public function __construct()
     {
+
+
+
         parent::__construct();
-        $this->process = new Process(sprintf(
-            'mysql -h%s -u%s -p%s %s < %s',
-            config('database.connections.mysql.host'),
-            config('database.connections.mysql.username'),
-            config('database.connections.mysql.password'),
-            config('database.connections.mysql.database'),
-            config('tms.db_backup')
-        ));
+
+//        $this->process = new Process(sprintf(
+//            'mysql -h%s -u%s -p%s %s < %s',
+//            config('database.connections.mysql.host'),
+//            config('database.connections.mysql.username'),
+//            config('database.connections.mysql.password'),
+//            config('database.connections.mysql.database'),
+//            config('tms.db_backup')
+//        ));
 //        $this->process = new Process(sprintf(
 //            'gunzip -c %s > %s|mysql -h%s -u%s -p%s %s < %s',
 //            config('tms.db_backup').'.gz',
@@ -65,17 +70,20 @@ class RecoverDatabase extends Command
      */
     public function handle()
     {
-        try {
-            if(file_exists(storage_path('app/backup/backup.sql.gz'))){
-                $this->process->mustRun();
-                $this->info(now()->format('Y-m-d H:i:s ') . 'The recover has been proceed successfully.');
-            }else{
-                $this->info(now()->format('Y-m-d H:i:s ') . 'The recover does mot exist.');
-            }
-        } catch (ProcessFailedException $exception) {
-            dd($exception);
-            Log::channel('schedule')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. 'exception',collect($exception)->toArray());
-            $this->error(now()->format('Y-m-d H:i:s ') . 'The recover process has been failed.');
-        }
+        DB::unprepared(file_get_contents(config('tms.db_backup')));
+
+//        try {
+//            if(file_exists(storage_path('app/backup/backup.sql.gz'))){
+//                DB::unprepared(file_get_contents(config('tms.db_backup')));
+//                $this->info(now()->format('Y-m-d H:i:s ') . 'The recover has been proceed successfully.');
+//            }else{
+//                $this->info(now()->format('Y-m-d H:i:s ') . 'The recover does mot exist.');
+//            }
+//        } catch (ProcessFailedException $exception) {
+//            Log::channel('schedule')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. 'exception',collect($exception)->toArray());
+//            $this->error(now()->format('Y-m-d H:i:s ') . 'The recover process has been failed.');
+//        }catch (\Exception $exception){
+//            Log::channel('schedule')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. 'exception',collect($exception)->toArray());
+//        }
     }
 }
