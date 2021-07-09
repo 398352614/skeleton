@@ -302,6 +302,8 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
             'B' => 20,
             'C' => 15,
             'F' => 15,
+            'L'=>15,
+            'S'=>15,
             'M' => 15,
             'E' => 15,
             'AD' => 15,
