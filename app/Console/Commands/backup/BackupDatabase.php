@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\backup;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -56,7 +56,7 @@ class BackupDatabase extends Command
             config('database.connections.mysql.database') . '.telescope_entries_tags',
             config('database.connections.mysql.database') . '.telescope_monitoring',
 
-            storage_path('app/backup/backup.sql.gz')
+            config('tms.db_backup').'.gz'
         ));
     }
 
@@ -74,6 +74,7 @@ class BackupDatabase extends Command
             $this->process->mustRun();
             $this->info(now()->format('Y-m-d H:i:s ') . 'The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
+            dd($exception);
             Log::channel('schedule')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. 'exception',collect($exception)->toArray());
             $this->error(now()->format('Y-m-d H:i:s ') . 'The backup process has been failed.');
         }
