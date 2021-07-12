@@ -260,8 +260,10 @@ class OrderImportService extends BaseService
             //运价计算
             if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
                 $data['distance'] = 1000;
-            } else {
-                $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($newData ?? $data);
+            } elseif($data['type'] == BaseConstService::ORDER_TYPE_2) {
+                $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($newData);
+            }else{
+                $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($data);
             }
             $data = $this->getTransportPriceService()->priceCount($data);
             //费用总计
