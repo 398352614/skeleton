@@ -28,7 +28,6 @@ use App\Traits\LocationTrait;
 use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use mysql_xdevapi\Exception;
@@ -211,10 +210,10 @@ class OrderImportService extends BaseService
         if (empty($data['package_no_1']) && empty($data['material_code_1'])) {
             $error['log'] = __('订单中必须存在一个包裹或一种货物');
         }
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
+        if (CompanyTrait::getAddressTemplateId() == 1 && empty($data['place_address']) && $data['type'] !=BaseConstService::ORDER_TYPE_2) {
             $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['second_place_address'])) {
+        if (CompanyTrait::getAddressTemplateId() == 1 && empty($data['second_place_address']) && $data['type'] !=BaseConstService::ORDER_TYPE_1) {
             $data['second_place_address'] = CommonService::addressFieldsSortCombine($data, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
         }
         //填充地址
@@ -258,14 +257,12 @@ class OrderImportService extends BaseService
                 $newData = array_merge($data, $address);
                 $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
             }
-            Log::info('newData',$newData);
-            Log::info('Data',$newData);
             //运价计算
             if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
                 $data['distance'] = 1000;
-            } elseif($data['type'] == BaseConstService::ORDER_TYPE_2) {
+            } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
                 $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($newData);
-            }else{
+            } else {
                 $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($data);
             }
             $data = $this->getTransportPriceService()->priceCount($data);
@@ -369,10 +366,13 @@ class OrderImportService extends BaseService
             $data['place_post_code'] = empty($data['place_post_code']) ? $info['post_code'] : $data['place_post_code'];
             $data['place_lat'] = empty($data['place_lat']) ? $info['lat'] : $data['place_lat'];
             $data['place_lon'] = empty($data['place_lon']) ? $info['lon'] : $data['place_lon'];
-            if($data['place_country'] == 'NL'){
+            if ($data['place_country'] == 'NL') {
                 $data['place_city'] = $info['city'];
                 $data['place_street'] = $info['street'];
             }
+        } else {
+            $data['place_lon'] = $address['place_lon'];
+            $data['place_lat'] = $address['place_lat'];
         }
         return $data;
     }
