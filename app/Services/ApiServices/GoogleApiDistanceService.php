@@ -65,6 +65,7 @@ class GoogleApiDistanceService
      */
     protected function getDistance($url, $from, $to)
     {
+        Log::info($to);
         $from = is_array($from) ? implode(';', array_filter($from)) : $from;
         $to = is_array($to) ? implode(';', array_filter($to)) : $to;
         $query = "distancematrix/json?origins={$from}&destinations={$to}&key={$this->key}";
