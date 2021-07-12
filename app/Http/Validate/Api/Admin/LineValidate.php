@@ -51,7 +51,7 @@ class LineValidate extends BaseValidate
         'place_lon' => 'required|string|max:50',
         'place_lat' => 'required|string|max:50',
         'second_place_fullname' => 'required|string|max:50',
-        'second_place_phone' => 'nullable|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'second_place_phone' => 'nullable|string|max:20|regex:/^[0-9]([0-9- ])*[0-9]$/',
         'second_place_province' => 'nullable|string|max:50',
         'second_place_post_code' => 'required|string|max:50',
         'second_place_house_number' => 'required|string|max:50',

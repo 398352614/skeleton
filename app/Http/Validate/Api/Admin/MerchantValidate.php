@@ -26,7 +26,7 @@ class MerchantValidate extends BaseValidate
         'settlement_type' => 'required|integer|in:1,2,3',
         'merchant_group_id' => 'required|integer',
         'contacter' => 'required|string|max:50',
-        'phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'phone' => 'required|string|max:20|regex:/^[0-9]([0-9- ])*[0-9]$/',
         'address' => 'nullable|string|max:250',
         'avatar' => 'nullable|string|max:250',
         'status' => 'required|integer|in:1,2',
