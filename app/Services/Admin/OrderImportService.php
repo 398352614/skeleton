@@ -28,6 +28,7 @@ use App\Traits\LocationTrait;
 use Doctrine\DBAL\Driver\OCI8\Driver;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use mysql_xdevapi\Exception;
@@ -257,6 +258,8 @@ class OrderImportService extends BaseService
                 $newData = array_merge($data, $address);
                 $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
             }
+            Log::info('newData',$newData);
+            Log::info('Data',$newData);
             //运价计算
             if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
                 $data['distance'] = 1000;
