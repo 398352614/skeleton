@@ -1092,7 +1092,7 @@ class OrderService extends BaseService
     public function updatePhoneDateByApi($id, $data)
     {
         $this->request->validate([
-            'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+            'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9- ])*[0-9]$/',
             'execution_date' => 'required_without:place_phone|date|after_or_equal:today'
         ]);
         $dbOrder = $this->getInfoByIdOfStatus($id, true, [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2]);
@@ -1122,7 +1122,7 @@ class OrderService extends BaseService
         $params['order_no_list'] = explode(',', $params['order_no_list']);
         $this->request->validate([
             'order_no_list' => 'required',
-            'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+            'place_phone' => 'required_without:execution_date|string|max:20|regex:/^[0-9]([0-9- ])*[0-9]$/',
             'execution_date' => 'required_without:place_phone|date|after_or_equal:today'
         ]);
         $dbOrderList = parent::getList(['order_no' => ['in', $params['order_no_list']]], ['*'], false);
