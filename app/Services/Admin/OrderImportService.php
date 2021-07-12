@@ -261,7 +261,7 @@ class OrderImportService extends BaseService
             if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
                 $data['distance'] = 1000;
             } else {
-                $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($data);
+                $data['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($newData);
             }
             $data = $this->getTransportPriceService()->priceCount($data);
             //费用总计
