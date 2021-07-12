@@ -104,12 +104,20 @@ class GoogleApiDistanceService
     public function getDistanceByOrder($order)
     {
         try {
-            if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
-                $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
-            } else {
+            //导入填充,手动录入派件反向
+            if(empty($order['place_lat']) || empty($order['place_lon'])){
                 $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
+                $to = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
+            }elseif (empty($order['second_place_lat']) || empty($order['second_place_lon'])){
+                $from = implode(',', [$order['place_lat'], $order['place_lon']]);
+                $to = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
+            }elseif ($order['type'] == BaseConstService::ORDER_TYPE_2){
+                $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
+                $to = implode(',', [$order['place_lat'], $order['place_lon']]);
+            }else{
+                $from = implode(',', [$order['place_lat'], $order['place_lon']]);
+                $to = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
             }
-            $to = implode(',', [$order['place_lat'], $order['place_lon']]);
             $distance = $this->getDistance($this->url, $from, $to);
         } catch (\Exception $e) {
             Log::channel('info')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
