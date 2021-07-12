@@ -79,6 +79,10 @@ class GoogleApiDistanceService
             $options = [];
         }
         $res = $this->client->request('GET', $url, $options);
+        Log::info('request',[
+            'res'=>$res,
+            'url'=>$url,
+        ]);
         $body = $res->getBody();
         $stringBody = (string)$body;
         $res = json_decode($stringBody, TRUE);
