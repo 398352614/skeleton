@@ -1434,8 +1434,6 @@
     "上滑加载更多": "Swipe up to load more",
     "加载中...": "Loading...",
     "松开加载更多": "Release to load more",
-    "共%1$s站点": "Total %1$s sites",
-    "取件 %1$s 派件 %2$s": "Pick-up %1$s delivery %2$s",
     "任务详情": "Task details",
     "取件信息": "Pick-up info",
     "站点编号": "Site No.",
@@ -2063,7 +2061,7 @@
     "往来单位": "Current unit",
     "货主组": "Cargo owner group",
     "配置管理": "Configuration management",
-    "公司信息配置": "Company information configuration",
+    "企业信息配置": "Company information configuration",
     "网点地址设置": "Network address setting",
     "员工": "Staff",
     "员工管理": "Staff management",
@@ -2135,10 +2133,11 @@
     "设备管理": "Device management",
     "假期配置": "Holiday allocation",
     "入库配置": "Warehousing configuration",
-    "公司信息": "Company information",
+    "企业信息": "Company information",
     "邮件配置": "Mail configuration",
     "地图引擎": "Map engine",
     "计量单位": "Unit of measurement",
     "测试流程": "Test process",
-    "测试": "Test"
+    "测试": "Test",
+    "API对接":"API"
 }

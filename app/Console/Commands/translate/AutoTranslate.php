@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\translate;
 
 
 use App\Traits\ConstTranslateTrait;

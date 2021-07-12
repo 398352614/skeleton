@@ -94,8 +94,8 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
                 $cell = 'A1:' . $endColumn . $endRow;
 
                 //设置行高
-                $event->sheet->getDelegate()->getRowDimension(1)->setRowHeight(32);
-                $event->sheet->getDelegate()->getRowDimension(2)->setRowHeight(24);
+                $event->sheet->getDelegate()->getRowDimension(1)->setRowHeight(48);
+                $event->sheet->getDelegate()->getRowDimension(2)->setRowHeight(48);
                 //设置单元格内容自动转行
                 $event->sheet->getDelegate()->getStyle($cell)->getAlignment()->setWrapText(TRUE);
                 // 设置单元格内容水平靠右
@@ -299,6 +299,12 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
     public function columnWidths(): array
     {
         return [
+            'B' => 20,
+            'C' => 15,
+            'F' => 15,
+            'L'=>15,
+            'S'=>15,
+            'M' => 15,
             'E' => 15,
             'AD' => 15,
             'AQ' => 15,

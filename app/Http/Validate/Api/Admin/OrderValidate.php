@@ -35,7 +35,7 @@ class OrderValidate extends BaseValidate
         'replace_amount' => 'nullable|numeric|gte:0',
         'delivery' => 'nullable|integer|in:1,2',
         'place_fullname' => 'required|string|max:50',
-        'place_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'place_phone' => 'required|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
         'place_province' => 'nullable|string|max:50',
         'place_post_code' => 'required|string|max:50',
         'place_house_number' => 'required|string|max:50',
