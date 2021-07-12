@@ -20,7 +20,7 @@ class AddressTemplateSeeder extends Seeder
         //地址模板1
         $address1 = [
             'fullname' => 'required|string|max:50',
-            'phone' => 'required|string|max:20|regex:/^[0-9]([0-9- ])*[0-9]$/',
+            'phone' => 'required|string|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
             'post_code' => 'required|string|max:50',
             'house_number' => 'required|string|max:50',
             'city' => 'required|string|max:50',
@@ -30,7 +30,7 @@ class AddressTemplateSeeder extends Seeder
         //地址模板2
         $address2 = [
             'fullname' => 'required|string|max:50',
-            'phone' => 'required|string|max:20|regex:/^[0-9]([0-9- ])*[0-9]$/',
+            'phone' => 'required|string|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
             'address' => 'required|string|max:250',
             'alternate_address' => 'nullable|string|max:250',
         ];

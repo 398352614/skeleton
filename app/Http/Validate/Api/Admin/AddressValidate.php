@@ -14,7 +14,7 @@ class AddressValidate extends BaseValidate
     public $rules = [
         'type' => 'required|string|in:1,2',
         'place_fullname' => 'required|string|max:50',
-        'place_phone' => 'required|string|max:20|regex:/^[0-9]([0-9- ])*[0-9]$/',
+        'place_phone' => 'required|string|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
         'place_country' => 'nullable|string|max:20',
         'place_province' => 'nullable|string|max:50',
         'place_post_code' => 'required|string|max:50',
