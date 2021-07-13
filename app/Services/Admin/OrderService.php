@@ -166,17 +166,17 @@ class OrderService extends BaseService
             $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
             $list[$k]['tracking_order_status'] = 0;
             $list[$k]['tracking_order_status_name'] = '';
-            $trackingOrder = $trackingOrderList->where('order_no', $v['order_no'])->toArray();
+            $trackingOrder = $trackingOrderList->where('order_no', $v['order_no'])->sortByDesc('id')->toArray();
             $list[$k]['tracking_order_count'] = count($trackingOrder);
             if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
                 $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
                 $list[$k]['tracking_order_status'] = $trackingOrder[0]['status'];
+                if ($list[$k]['status'] == BaseConstService::ORDER_STATUS_2 && $trackingOrder[0]['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
+                    $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
+                }
             } elseif ($list[$k]['status'] !== BaseConstService::ORDER_STATUS_5) {
                 $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
                 $list[$k]['tracking_order_status_name'] = __('运单未创建');
-            }
-            if ($list[$k]['status'] == BaseConstService::ORDER_STATUS_2 && !empty($trackingOrder[0]['status']) && $trackingOrder[0]['status'] == BaseConstService::TRACKING_ORDER_STATUS_6) {
-                $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
             }
         }
         return $list;
