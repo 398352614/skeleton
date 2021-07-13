@@ -166,8 +166,8 @@ class OrderService extends BaseService
             $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
             $list[$k]['tracking_order_status'] = 0;
             $list[$k]['tracking_order_status_name'] = '';
-            $trackingOrder = $trackingOrderList->where('order_no', $v['order_no']);
-            $list[$k]['tracking_order_count'] = $trackingOrder->count();
+            $trackingOrder = $trackingOrderList->where('order_no', $v['order_no'])->toArray();
+            $list[$k]['tracking_order_count'] = count($trackingOrder);
             if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
                 $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
                 $list[$k]['tracking_order_status'] = $trackingOrder[0]['status'];
