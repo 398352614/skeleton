@@ -160,7 +160,7 @@ class OrderService extends BaseService
         }
         $list = parent::getPageList();
 
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $list->pluck('order_no')->toArray()]], ['id', 'type', 'status'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $list->pluck('order_no')->toArray()]], ['*'], false);
 
         foreach ($list as $k => $v) {
             $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
