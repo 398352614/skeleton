@@ -234,9 +234,14 @@ class TrackingOrderService extends BaseService
             $this->query->whereIn('tracking_order_no', $trackingOrderList);
         }
         $list = parent::getPageList();
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $list->pluck('merchant_id')->toArray()]], ['*'], false);
         foreach ($list as &$trackingOrder) {
             $batchException = $this->getBatchExceptionService()->getInfo(['batch_no' => $trackingOrder['batch_no']], ['id', 'batch_no', 'stage'], false, ['created_at' => 'desc']);
             $trackingOrder['exception_stage_name'] = !empty($batchException) ? ConstTranslateTrait::batchExceptionStageList($batchException['stage']) : __('正常');
+            $merchant = $merchantList->where('id', $trackingOrder['merchant_id'])->first();
+            if (!empty($merchant)) {
+                $trackingOrder['merchant_id_name'] = $merchant['name'];
+            }
         }
         return $list;
     }
@@ -247,6 +252,10 @@ class TrackingOrderService extends BaseService
         if (empty($dbTrackingOrder)) return [];
         $dbTrackingOrder['package_list'] = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['*'], false)->toArray();
         $dbTrackingOrder['material_list'] = $this->getTrackingOrderMaterialService()->getList(['tracking_order_no' => $dbTrackingOrder['tracking_order_no']], ['*'], false)->toArray();
+        $merchant = $this->getMerchantService()->getInfo(['id' => $dbTrackingOrder['merchant_id']], ['*'], false);
+        if(!empty($merchant)){
+            $dbTrackingOrder['merchant_id_name'] = $merchant['name'];
+        }
         return $dbTrackingOrder;
     }
 
