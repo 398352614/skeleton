@@ -185,10 +185,10 @@ class Order extends BaseModel
     }
 
 
-    public function merchant()
-    {
-        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
-    }
+//    public function merchant()
+//    {
+//        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+//    }
 
     public function getShortAttribute()
     {
