@@ -159,12 +159,15 @@ class OrderService extends BaseService
             }
         }
         $list = parent::getPageList();
+
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $list->pluck('order_no')->toArray()]], ['id', 'type', 'status'], false);
+
         foreach ($list as $k => $v) {
-            $list[$k]['tracking_order_count'] = $this->getTrackingOrderService()->count(['order_no' => $v['order_no']]);
             $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
             $list[$k]['tracking_order_status'] = 0;
             $list[$k]['tracking_order_status_name'] = '';
-            $trackingOrder = $this->getTrackingOrderService()->getList(['order_no' => $v['order_no']], ['id', 'type', 'status'], false, [], ['id' => 'desc']);
+            $trackingOrder = $trackingOrderList->where('order_no', $v['order_no']);
+            $list[$k]['tracking_order_count'] = $trackingOrder->count();
             if (!empty($trackingOrder) && !empty($trackingOrder[0])) {
                 $list[$k]['tracking_order_status_name'] = __($trackingOrder[0]->type_name) . '-' . __($trackingOrder[0]->status_name);
                 $list[$k]['tracking_order_status'] = $trackingOrder[0]['status'];
@@ -339,7 +342,7 @@ class OrderService extends BaseService
             }
         } catch (BusinessLogicException $e) {
             Log::channel('info')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', ['message' => $e->getMessage()]);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             Log::channel('info')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
