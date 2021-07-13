@@ -31,6 +31,7 @@ class BackupDatabase extends Command
      * @var Process
      */
     private $process1;
+
     /**
      * Create a new command instance.
      *
@@ -56,7 +57,7 @@ class BackupDatabase extends Command
             config('database.connections.mysql.database') . '.telescope_entries_tags',
             config('database.connections.mysql.database') . '.telescope_monitoring',
 
-            config('tms.db_backup').'.gz'
+            config('tms.db_backup') . '.gz'
         ));
     }
 
@@ -68,13 +69,13 @@ class BackupDatabase extends Command
     public function handle()
     {
         try {
-            if(!empty($this->process1)){
+            if (!empty($this->process1)) {
                 $this->process1->mustRun();
             }
             $this->process->mustRun();
-            $this->info(now()->format('Y-m-d H:i:s ') . 'The backup has been proceed successfully.');
+            $this->info(config('tms.app_url') . now()->format('Y-m-d H:i:s ') . 'The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
-            $this->error(now()->format('Y-m-d H:i:s ') . 'The backup process has been failed.');
+            $this->error(config('tms.app_url') . now()->format('Y-m-d H:i:s ') . 'The backup process has been failed.');
         }
     }
 }
