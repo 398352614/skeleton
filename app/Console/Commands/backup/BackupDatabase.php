@@ -75,7 +75,7 @@ class BackupDatabase extends Command
             $this->process->mustRun();
             $this->info(config('tms.app_url') . now()->format('Y-m-d H:i:s ') . 'The backup has been proceed successfully.');
         } catch (ProcessFailedException $exception) {
-            $this->error(config('tms.app_url') . now()->format('Y-m-d H:i:s ') . 'The backup process has been failed.');
+            $this->error(config('tms.app_url') . now()->format('Y-m-d H:i:s ') . 'The backup process has been failed.'.json_encode($exception));
         }
     }
 }
