@@ -140,17 +140,17 @@ class TrackingOrder extends BaseModel
         return empty($this->out_status) ? null : ConstTranslateTrait::outStatusList($this->out_status);
     }
 
-    public function getMerchantIdNameAttribute()
-    {
-        if (empty($this->merchant) || empty($this->merchant_id)) return '';
-        return $this->merchant->name;
-    }
+//    public function getMerchantIdNameAttribute()
+//    {
+//        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+//        return $this->merchant->name;
+//    }
 
 
-    public function merchant()
-    {
-        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
-    }
+//    public function merchant()
+//    {
+//        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+//    }
 
     /**
      * 获取关联查询构造器
