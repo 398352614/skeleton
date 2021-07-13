@@ -114,7 +114,7 @@ class TrackingOrder extends BaseModel
         'status_name',
         'out_status_name',
         'type_name',
-        'merchant_id_name',
+//        'merchant_id_name',
         'country_name',
     ];
 
