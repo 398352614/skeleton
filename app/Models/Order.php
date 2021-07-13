@@ -172,17 +172,17 @@ class Order extends BaseModel
         return empty($this->exception_label) ? null : ConstTranslateTrait::orderExceptionLabelList($this->exception_label);
     }
 
-    public function getMerchantIdNameAttribute()
-    {
-        if (empty($this->merchant) || empty($this->merchant_id)) return '';
-        return $this->merchant->name;
-    }
+//    public function getMerchantIdNameAttribute()
+//    {
+//        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+//        return $this->merchant->name;
+//    }
 
-    public function getMerchantIdCodeAttribute()
-    {
-        if (empty($this->merchant) || empty($this->merchant_id)) return '';
-        return $this->merchant->code;
-    }
+//    public function getMerchantIdCodeAttribute()
+//    {
+//        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+//        return $this->merchant->code;
+//    }
 
 
 //    public function merchant()
