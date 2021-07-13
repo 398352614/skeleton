@@ -161,6 +161,7 @@ class OrderService extends BaseService
         $list = parent::getPageList();
 
         $trackingOrderList = $this->getTrackingOrderService()->getList(['order_no' => ['in', $list->pluck('order_no')->toArray()]], ['*'], false);
+        $merchantList = $this->getMerchantService()->getList(['id' => ['in', $list->pluck('merchant_id')->toArray()]], ['*'], false);
 
         foreach ($list as $k => $v) {
             $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_1;
@@ -177,6 +178,11 @@ class OrderService extends BaseService
             } elseif ($list[$k]['status'] !== BaseConstService::ORDER_STATUS_5) {
                 $list[$k]['exception_label'] = BaseConstService::BATCH_EXCEPTION_LABEL_2;
                 $list[$k]['tracking_order_status_name'] = __('运单未创建');
+            }
+            $merchant = $merchantList->where('id', $v['merchant_id'])->first();
+            if (!empty($merchant)) {
+                $list[$k]['merchant_id_name'] = $merchant['name'];
+                $list[$k]['merchant_id_code'] = $merchant['code'];
             }
         }
         return $list;
