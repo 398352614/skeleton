@@ -409,19 +409,22 @@ class AddressService extends BaseService
     public function showByApi(array $data)
     {
         $where = [];
-        $array = ['country', 'post_code', 'house_number', 'city', 'street', 'province', 'strict'];
+        $array = ['place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_province', 'place_district'];
         foreach ($array as $k => $v) {
             if (!empty($data[$v])) {
-                $where['place_'.$v] = $data[$v];
+                $where[$v] = $data[$v];
             } else {
                 $data[$v] = '';
             }
         }
         $address = parent::getInfo($where, ['*'], false)->toArray();
         if (empty($address)) {
-            $address = LocationTrait::getLocation($data['country'], $data['city'], $data['street'], $data['house_number'], $data['post_code']);
+            $address = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
+            foreach ($address as $k => $v) {
+                $address['place_' . $k] = $v;
+            }
         }
-        $address = Arr::only($address, ['country', 'city', 'street', 'house_number', 'post_code', 'province', 'district', 'lon', 'lat']);
+        $address = Arr::only($address, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code', 'place_province', 'place_district', 'place_lon', 'place_lat']);
         return $address;
     }
 }
