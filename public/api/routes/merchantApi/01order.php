@@ -374,3 +374,31 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiSuccessExample {json} Success-Response:
  * {"code":200,"data":[],"msg":"successful"}
  */
+
+/**
+ * @api {post} /merchant_api/location 查询地理信息
+ * @apiName 获取地址
+ * @apiGroup 01order
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {String} place_country[必填] 国家
+ * @apiParam {String} place_province 省份
+ * @apiParam {String} place_city 城市
+ * @apiParam {String} place_district 区县
+ * @apiParam {String} place_post_code 邮编
+ * @apiParam {String} place_street 街道
+ * @apiParam {String} place_house_number 门牌号
+ *
+ * @apiSuccess {Number} code    状态码，200：请求成功
+ * @apiSuccess {String} msg   提示信息
+ * @apiSuccess {Object} data    返回数据
+ * @apiSuccess {String} data.place_country    国家
+ * @apiSuccess {String} data.place_province    省份
+ * @apiSuccess {String} data.place_city    城市
+ * @apiSuccess {String} data.place_district    区县
+ * @apiSuccess {String} data.place_street    街道
+ * @apiSuccess {String} data.place_house_number    门牌号
+
+ * @apiSuccessExample {json} Success-Response:
+ * {"code":200,"data":{"place_country":"NL","place_province":"","place_post_code":"1086ZK","place_house_number":"46","place_city":"Amsterdam","place_district":"","place_street":"Cornelis Zillesenlaan","place_lon":"4.98113818","place_lat":"52.36200569"},"msg":"successful"}
+ */

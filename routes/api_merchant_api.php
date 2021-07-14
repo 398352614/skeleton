@@ -44,5 +44,5 @@ Route::namespace('Api\Merchant')->middleware(['auth:merchant_api'])->group(funct
     Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//修改派送日期
     Route::post('/get-all-line-range', 'LineController@getAllLineRange');//获取所有邮编
     Route::post('/order-update', 'OrderController@updateById');//修改订单
-
+    Route::post('/location', 'AddressController@showByApi');//查询地址
 });

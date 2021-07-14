@@ -619,6 +619,152 @@ define({ "api": [
   },
   {
     "type": "post",
+    "url": "/merchant_api/location",
+    "title": "查询地理信息",
+    "name": "获取地址",
+    "group": "01order",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_country",
+            "description": "<p>[必填] 国家</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_province",
+            "description": "<p>省份</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_city",
+            "description": "<p>城市</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_district",
+            "description": "<p>区县</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_post_code",
+            "description": "<p>邮编</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_street",
+            "description": "<p>街道</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "place_house_number",
+            "description": "<p>门牌号</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "code",
+            "description": "<p>状态码，200：请求成功</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "msg",
+            "description": "<p>提示信息</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>返回数据</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_country",
+            "description": "<p>国家</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_province",
+            "description": "<p>省份</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_city",
+            "description": "<p>城市</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_district",
+            "description": "<p>区县</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_street",
+            "description": "<p>街道</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_house_number",
+            "description": "<p>门牌号</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"code\":200,\"data\":{\"place_country\":\"NL\",\"place_province\":\"\",\"place_post_code\":\"1086ZK\",\"place_house_number\":\"46\",\"place_city\":\"Amsterdam\",\"place_district\":\"\",\"place_street\":\"Cornelis Zillesenlaan\",\"place_lon\":\"4.98113818\",\"place_lat\":\"52.36200569\"},\"msg\":\"successful\"}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantApi/01order.php",
+    "groupTitle": "接口使用方法",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/merchant_api/location"
+      }
+    ]
+  },
+  {
+    "type": "post",
     "url": "/merchant_api/order-update",
     "title": "订单修改",
     "name": "订单修改",
