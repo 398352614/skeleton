@@ -2113,5 +2113,144 @@ define({ "api": [
         "url": "https://dev-tms.nle-tech.com/api/merchant_api/post-code-date-list"
       }
     ]
+  },
+  {
+    "type": "post",
+    "url": "/assign-batch",
+    "title": "状态转变",
+    "name": "签收",
+    "group": "02order",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n    }",
+          "type": "json"
+        }
+      ]
+    },
+    "description": "<p>地址栏仅为请求类型，不是真实的推送地址。推送地址由第三方提供，所有的推送都会推送到该地址，但数据格式会由于类型不同而不同。对于请求返回，仅验证返回值中ret是否为1，1表示推送成功。如果返回值中没有ret或者不需要第三方推送记录，那么TMS将不会解析推送后的返回值。</p>",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "type",
+            "description": "<p>类型:签收assign-batch，出库out-warehouse</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.order_no",
+            "description": "<p>订单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.out_order_no",
+            "description": "<p>外部订单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.order_status",
+            "description": "<p>订单状态1-待受理2-运输中3-已完成4-已失败5回收站</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list",
+            "description": "<p>包裹列表</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.express_first_no",
+            "description": "<p>包裹号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.out_order_no",
+            "description": "<p>外部包裹号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.stage",
+            "description": "<p>包裹阶段1-取件2-派件3-中转</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "data.package_list.status",
+            "description": "<p>包裹状态分为两种，是包裹阶段的细分过程，其中取件和派件都有以下状态：1-待受理2-已接单3-已装货4-在途5-已签收6-取消7-回收站。中转包裹则为以下状态：1-待装袋2-待装车3-待发车4-运输中5-已到车6-已卸货7-已拆袋</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Param-Response:",
+          "content": "{\"type\":\"assign-batch\",\"data\":[{\"out_order_no\":\"ERP0001\",\"order_no\":\"TMS0001\",\"order_status\":4,\"package_list\":[{\"express_first_no\":\"TMSPA001\",\"out_order_no\":\"ERPPA001\",\"package_status\":4,\"package_stage\":1}]}]}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "optional": false,
+            "field": "ret",
+            "description": "<p>状态码，1:成功</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\"ret\":1}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/merchantApi/02push.php",
+    "groupTitle": "推送通知",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms.nle-tech.com/api/assign-batch"
+      }
+    ]
   }
 ] });
