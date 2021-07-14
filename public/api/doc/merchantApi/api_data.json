@@ -744,6 +744,20 @@
             "optional": false,
             "field": "data.place_house_number",
             "description": "<p>门牌号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_lon",
+            "description": "<p>经度</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "data.place_lat",
+            "description": "<p>纬度</p>"
           }
         ]
       },
