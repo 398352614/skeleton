@@ -199,7 +199,7 @@ trait LocationTrait
                 'url' => $url,
             ]);
             if ((App::environment() === 'development') || (App::environment() === 'local')) {
-                $options = ['proxy' => ['http' => config('tms.vpn'), 'https' => config('tms.vpn')]];
+                $options = ['proxy' => ['http' => config('tms.http_proxy'), 'https' => config('tms.https_proxy')]];
             } else {
                 $options = [];
             }
@@ -222,7 +222,7 @@ trait LocationTrait
             $addressResult = [];
             foreach ($addressComponents as $k => $v) {
                 foreach ($v['types'] as $x => $y) {
-                    $addressResult[$y] = $v['short_name'];
+                    $addressResult[$y] = $v['long_name'];
                 }
             }
             return [

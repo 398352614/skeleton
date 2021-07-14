@@ -164,6 +164,8 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::get('/dictionary', 'CommonController@dictionary');
         //获取所有线路范围
         Route::get('/line-range', 'LineController@getAllLineRange');
+        //获取具体地址经纬度
+        Route::post('/location', 'AddressController@showByApi');
     });
 
     //    //运单管理

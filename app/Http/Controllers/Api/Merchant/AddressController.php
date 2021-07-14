@@ -23,25 +23,6 @@ class AddressController extends BaseController
         parent::__construct($service, $exceptMethods);
     }
 
-    /**
-     * @api {post | get} /admin/api/action 名称
-     * @apiGroup 分组名称
-     * @apiName 名称
-     * @apiPermission admin
-     * @apiVersion 1.0.0
-     * @apiDescription 接口描述
-     * @apiHeader {String} Authorization 请求token
-     * @apiParam {String} $param1  参数说明
-     * @apiSuccess {Number} ret    状态码，1：请求成功
-     * @apiSuccess {String} msg   提示信息
-     * @apiSuccess {Object} data    返回数据
-     * @apiSampleRequest off
-     * @apiSuccessExample {json} Success-Response:
-     * {"ret":1,"msg":"","data":[]}
-     *
-     * @apiErrorExample {json} Error-Response:
-     * {"ret":0,"msg":"提错提示"}
-     */
     public function index()
     {
         return $this->service->getPageList();
@@ -87,4 +68,16 @@ class AddressController extends BaseController
     {
         return $this->service->destroy($id);
     }
+
+    /**
+     * 查询地址
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|mixed|object|null
+     * @throws \App\Exceptions\BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function showByApi()
+    {
+        return $this->service->showByApi($this->data);
+    }
+
 }

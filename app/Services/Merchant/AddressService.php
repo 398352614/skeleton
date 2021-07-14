@@ -14,6 +14,7 @@ use App\Http\Resources\Api\Merchant\AddressResource;
 use App\Models\Address;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
+use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 
 class AddressService extends BaseService
@@ -397,5 +398,30 @@ class AddressService extends BaseService
             unset($data[$v]);
         }
         return $data;
+    }
+
+    /**
+     * @param array $data
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|mixed|object|null
+     * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function showByApi(array $data)
+    {
+        $where = [];
+        $array = ['country', 'post_code', 'house_number', 'city', 'street', 'province', 'strict'];
+        foreach ($array as $k => $v) {
+            if (!empty($data[$v])) {
+                $where['place_'.$v] = $data[$v];
+            } else {
+                $data[$v] = '';
+            }
+        }
+        $address = parent::getInfo($where, ['*'], false);
+        if (empty($address)) {
+            $address = LocationTrait::getLocation($data['country'], $data['city'], $data['street'], $data['house_number'], $data['post_code']);
+        }
+        $address = Arr::only($address, ['country', 'city', 'street', 'house_number', 'post_code', 'province', 'district', 'lon', 'lat']);
+        return $address;
     }
 }

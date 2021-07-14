@@ -32,7 +32,6 @@ class CommonService
     public function getLocation($params)
     {
         empty($params['country']) && $params['country'] = CompanyTrait::getCountry();
-        Log::info(CompanyTrait::getCountry());
         if($params['post_code'] > 9999){
             $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }
