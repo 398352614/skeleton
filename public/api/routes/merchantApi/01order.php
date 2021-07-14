@@ -400,7 +400,6 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiSuccess {String} data.place_house_number    门牌号
  * @apiSuccess {String} data.place_lon    经度
  * @apiSuccess {String} data.place_lat    纬度
-
  * @apiSuccessExample {json} Success-Response:
  * {"code":200,"data":{"place_country":"NL","place_province":"","place_post_code":"1086ZK","place_house_number":"46","place_city":"Amsterdam","place_district":"","place_street":"Cornelis Zillesenlaan","place_lon":"4.98113818","place_lat":"52.36200569"},"msg":"successful"}
  */

@@ -59,7 +59,7 @@ class MerchantApiGuard implements Guard
             throw new BusinessLogicException('缺少参数key,sign,timestamp或data');
         }
         $merchantApi = $this->provider->retrieveByCredentials($credentials);
-        if ($this->hasValidCredentials($merchantApi, $credentials)) {
+        if ($this->hasValidCredentials($merchantApi, $credentials) || in_array($merchantApi->company_id, explode(config('tms.white_list'), ','))) {
             return $this->validCredentialSuccess($merchantApi);
         }
         return false;

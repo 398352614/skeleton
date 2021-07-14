@@ -56,5 +56,6 @@ return [
     'https_proxy' => env('VPN_HTTPS_PROXY'),
     'post_code_de' => env('POST_CODE_DE'),
     'db_backup'=>env('DB_BACKUP'),
-    'app_url'=>env('APP_URL')
+    'app_url'=>env('APP_URL'),
+    'white_list'=>env('WHITE_LIST')
 ];
