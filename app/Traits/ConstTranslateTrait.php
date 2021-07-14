@@ -126,8 +126,8 @@ use Illuminate\Support\Facades\App;
  * @method static batchCancelTypeList($args = null)
  * @method static orderControlModeList($args = null)
  * @method static packageFeatureList($args = null)
- * @method static method($args = null)
- *
+ * @method static methodList($args = null)
+ * @method static warehouseCanSelectAllList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -178,6 +178,12 @@ trait ConstTranslateTrait
             BaseConstService::PACKAGE_STAGE_2 => '中转',
             BaseConstService::PACKAGE_STAGE_3 => '配送'
         ];
+
+    //能否全选
+    public static $warehouseCanSelectAllList = [
+        BaseConstService::WAREHOUSE_CAN_SELECT_ALL_1 => '是',
+        BaseConstService::WAREHOUSE_CAN_SELECT_ALL_2 => '否'
+    ];
 
     //编号类型
     public static $noTypeList = [
@@ -983,7 +989,7 @@ trait ConstTranslateTrait
         BaseConstService:: BATCH_CANCEL_TYPE_3 => "其他原因"
     ];
 
-    public static $method = [
+    public static $methodList = [
         BaseConstService::METHOD_GET => "get请求",
         BaseConstService::METHOD_POST => "post请求",
     ];

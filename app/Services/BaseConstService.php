@@ -862,4 +862,9 @@ class BaseConstService
     const PACKAGE_STAGE_1 = 1;
     const PACKAGE_STAGE_2 = 2;
     const PACKAGE_STAGE_3 = 3;
+
+    //是否能全选1-是2-否
+    const WAREHOUSE_CAN_SELECT_ALL_1 = 1;
+    const WAREHOUSE_CAN_SELECT_ALL_2 = 2;
+
 }

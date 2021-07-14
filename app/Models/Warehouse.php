@@ -58,6 +58,7 @@ class Warehouse extends BaseModel
         'name',
         'type',
         'is_center',
+        'can_select_all',
         'acceptance_type',
         'line_ids',
         'fullname',
@@ -78,6 +79,7 @@ class Warehouse extends BaseModel
         'parent',
         'created_at',
         'updated_at',
+        'can_select_all'
     ];
 
     /**
@@ -124,6 +126,11 @@ class Warehouse extends BaseModel
     public function getIsCenterNameAttribute()
     {
         return empty($this->is_center) ? null : ConstTranslateTrait::warehouseIsCenterTypeList($this->is_center);
+    }
+
+    public function getCanSelectAllNameAttribute()
+    {
+        return empty($this->can_select_all) ? null : ConstTranslateTrait::warehouseCanSelectAllList($this->can_select_all);
     }
 
 }

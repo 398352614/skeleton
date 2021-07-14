@@ -14,7 +14,7 @@ use App\Http\Validate\BaseValidate;
 class WareHouseValidate extends BaseValidate
 {
     public $customAttributes = [
-        'code'=>'网点编码'
+        'code' => '网点编码'
     ];
 
 
@@ -23,6 +23,7 @@ class WareHouseValidate extends BaseValidate
         'code' => 'required|string|max:50|uniqueIgnore:warehouse,id,company_id',
         'type' => 'nullable|integer|in:1,2',
         'is_center' => 'required|integer|in:1,2',
+        'can_select_all' => 'nullable|integer|in:1,2',
         'acceptance_type' => 'nullable|string',
         'line_ids' => 'nullable|text',
         'fullname' => 'nullable|string|max:50',
@@ -45,12 +46,12 @@ class WareHouseValidate extends BaseValidate
 
     public $scene = [
         'store' => [
-            'name', 'code','type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar',
-            'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat', 'parent'
+            'name', 'code', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar',
+            'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat', 'parent','can_select_all'
         ],
         'update' => [
-            'name', 'code','type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar',
-            'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat', 'parent'
+            'name', 'code', 'type', 'is_center', 'acceptance_type', 'fullname', 'company_name', 'phone', 'email', 'avatar',
+            'phone', 'country', 'post_code', 'house_number', 'city', 'street', 'address', 'lon', 'lat', 'parent','can_select_all'
         ],
     ];
 }

@@ -129,7 +129,7 @@ class AuthController extends Controller
         $data = [];
         $warehouse = Warehouse::query()->where('id', $warehouseId)->first();
         if (!empty($warehouse)) {
-            $data = Arr::only($warehouse->toArray(), ['id', 'name', 'is_center']);
+            $data = Arr::only($warehouse->toArray(), ['id', 'name', 'is_center','can_select_all']);
         }
         return $data;
     }
