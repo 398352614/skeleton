@@ -423,6 +423,8 @@ class AddressService extends BaseService
             foreach ($array as $k => $v) {
                 $address[$v] = $info[str_replace('place_', '', $v)];
             }
+        }else{
+            $address=collect($address)->toArray();
         }
         $address = Arr::only($address, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code', 'place_province', 'place_district', 'place_lon', 'place_lat']);
         return $address;
