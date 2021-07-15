@@ -904,6 +904,13 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
+            "field": "place_province",
+            "description": "<p>收件人省份</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
             "field": "second_place_post_code",
             "description": "<p>收件人邮编</p>"
           },
@@ -955,13 +962,6 @@
             "optional": false,
             "field": "place_country",
             "description": "<p>发件人国家</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "place_province",
-            "description": "<p>发件人省份</p>"
           },
           {
             "group": "Parameter",
@@ -1522,6 +1522,13 @@
             "optional": false,
             "field": "second_place_country",
             "description": "<p>收件人国家</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_province",
+            "description": "<p>收件人省份</p>"
           },
           {
             "group": "Parameter",

@@ -63,6 +63,7 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {String} second_place_fullname 收件人姓名
  * @apiParam {String} second_place_phone 收件人电话
  * @apiParam {String} second_place_country 收件人国家
+ * @apiParam {String} second_place_province 收件人省份
  * @apiParam {String} second_place_country_name 收件人国家名称
  * @apiParam {String} second_place_post_code 收件人邮编
  * @apiParam {String} second_place_house_number 收件人门牌号
@@ -304,6 +305,7 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiParam {String} second_place_fullname 收件人姓名
  * @apiParam {String} second_place_phone 收件人电话
  * @apiParam {String} second_place_country 收件人国家
+ * @apiParam {String} place_province 收件人省份
  * @apiParam {String} second_place_post_code 收件人邮编
  * @apiParam {String} second_place_house_number 收件人门牌号
  * @apiParam {String} second_place_city 收件人城市
