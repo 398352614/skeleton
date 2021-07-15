@@ -2220,7 +2220,7 @@
       "examples": [
         {
           "title": "Param-Response:",
-          "content": "{\"type\":\"assign-batch\",\"data\":[{\"out_order_no\":\"ERP0001\",\"order_no\":\"TMS0001\",\"order_status\":4,\"package_list\":[{\"express_first_no\":\"TMSPA001\",\"out_order_no\":\"ERPPA001\",\"package_status\":4,\"package_stage\":1}]}]}",
+          "content": "{\"type\":\"assign-batch\",\"data\":[{\"order_no\":\"TMS0001\",\"out_order_no\":\"ERP0001\",\"order_status\":4,\"package_list\":[{\"express_first_no\":\"TMSPA001\",\"out_order_no\":\"ERPPA001\",\"package_status\":4,\"package_stage\":1}]}]}",
           "type": "json"
         }
       ]
