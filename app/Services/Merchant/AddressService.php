@@ -417,11 +417,11 @@ class AddressService extends BaseService
                 $data[$v] = '';
             }
         }
-        $address = parent::getInfo($where, ['*'], false)->toArray();
+        $address = parent::getInfo($where, ['*'], false);
         if (empty($address)) {
             $address = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
-            foreach ($address as $k => $v) {
-                $address['place_' . $k] = $v;
+            foreach ($array as $k => $v) {
+                $address['place_' . $v] = $address[str_replace('place_', '', $v)];
             }
         }
         $address = Arr::only($address, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code', 'place_province', 'place_district', 'place_lon', 'place_lat']);

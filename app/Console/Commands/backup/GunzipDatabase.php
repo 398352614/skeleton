@@ -56,7 +56,6 @@ class GunzipDatabase extends Command
                 $this->info(now()->format('Y-m-d H:i:s ') . 'The gunzip does mot exist.');
             }
         } catch (ProcessFailedException $exception) {
-            dd($exception);
             Log::channel('schedule')->error(__CLASS__ .'.'. __FUNCTION__ .'.'. 'exception',collect($exception)->toArray());
             $this->error(now()->format('Y-m-d H:i:s ') . 'The gunzip process has been failed.');
         }
