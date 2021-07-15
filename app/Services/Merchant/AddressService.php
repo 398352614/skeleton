@@ -418,6 +418,7 @@ class AddressService extends BaseService
             }
         }
         $address = parent::getInfo($where, ['*'], false);
+        dd($address);
         if (empty($address)) {
             $address = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
             foreach ($array as $k => $v) {
