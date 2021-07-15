@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 /**
  * @api {post} /push 状态转变
- * @apiName 签收
+ * @apiName 状态转变
  * @apiGroup 02order
  * @apiHeader {string} language 语言cn-中文en-英文。
  * @apiHeaderExample {json} Header-Example:
@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {String} data
  * @apiParam {String} data.order_no 订单号
  * @apiParam {String} data.out_order_no 外部订单号
- * @apiParam {String} data.order_status 订单状态1-待受理2-运输中3-已完成4-已失败5回收站
+ * @apiParam {String} data.order_status 订单状态1-待受理2-运输中3-已完成4-失败5回收站
  * @apiParam {String} data.package_list 包裹列表
  * @apiParam {String} data.package_list.express_first_no 包裹号
  * @apiParam {String} data.package_list.out_order_no 外部包裹号

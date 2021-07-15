@@ -25,7 +25,7 @@ define({ "api": [
         }
       ]
     },
-    "description": "<p>加密方式示例文件，暂时仅提供php版本，如有需要请联系技术人员。</p>",
+    "description": "<p>加密方式示例文件，暂时仅提供php版本，如有需要请联系技术人员。所有第三方的请求都会进行验证，所有的推送也遵循该加密规则，建议对推送进行解密时同样进行验证。</p>",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -2118,7 +2118,7 @@ define({ "api": [
     "type": "post",
     "url": "/push",
     "title": "状态转变",
-    "name": "签收",
+    "name": "状态转变",
     "group": "02order",
     "header": {
       "fields": {
@@ -2178,7 +2178,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "data.order_status",
-            "description": "<p>订单状态1-待受理2-运输中3-已完成4-已失败5回收站</p>"
+            "description": "<p>订单状态1-待受理2-运输中3-已完成4-失败5回收站</p>"
           },
           {
             "group": "Parameter",
