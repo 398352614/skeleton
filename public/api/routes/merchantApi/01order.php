@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
  * {
  *       "language": "en"
  *     }
- * @apiDescription 加密方式示例文件，暂时仅提供php版本，如有需要请联系技术人员。
+ * @apiDescription 加密方式示例文件，暂时仅提供php版本，如有需要请联系技术人员。所有第三方的请求都会进行验证，所有的推送也遵循该加密规则，建议对推送进行解密时同样进行验证。
  * @apiVersion 1.0.0
  * @apiParam {String} key[必填]  秘钥：从管理员端新增货主时，会自动生成一个key，在资料管理-API对接管理中，可查询对应key，用以确认货主身份。
  * @apiParam {String} sign[必填]  签名：sgin是以secret和data以一定加密方式形成的签名，每次请求都会验证key和sign以验证数据可靠。key或sign任一项不正确，请求都将被拒绝。从管理员端新增货主时，会自动生成一个secret，在资料管理-API对接管理中，可查询对应secret。sign的生成规则为：1，平铺data内的数组，生成一个字符串；2，将1的结果与secret连接起来；3，对2的结果其进行url编码；4，将3的结果全部转化为大写。
