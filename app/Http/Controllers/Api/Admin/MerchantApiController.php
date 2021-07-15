@@ -8,7 +8,7 @@ use App\Services\Admin\MerchantApiService;
 use Illuminate\Support\Arr;
 
 /**
- * 商户api
+ * 货主api
  * Class OrderController
  * @package App\Http\Controllers\Api\Admin
  * @property MerchantApiService $service

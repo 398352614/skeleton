@@ -31,6 +31,10 @@ class MaterialResource extends JsonResource
             'remark' => $this->remark,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
+            'type'=>$this->type,
+            'type_name'=>$this->type_name,
+            'pack_type'=>$this->pack_type,
+            'pack_type_name'=>$this->pack_type_name
         ];
     }
 }

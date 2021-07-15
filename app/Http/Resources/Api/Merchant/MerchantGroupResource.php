@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户组列表
+ * 货主组列表
  * Created by PhpStorm
  * User: long
  * Date: 2019/12/20

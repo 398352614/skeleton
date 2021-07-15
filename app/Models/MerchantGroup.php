@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 商户组表
+ * 货主组表
  * Class Employee
  * @package App\Models
  */

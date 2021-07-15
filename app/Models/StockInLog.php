@@ -45,6 +45,7 @@ class StockInLog extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'warehouse_id',
         'line_id',
         'line_name',
         'order_no',

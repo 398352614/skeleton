@@ -26,7 +26,6 @@ class DeviceService extends BaseService
     public $filterRules = [
         'number' => ['like', 'keyword'],
         'driver_id' => ['=', 'driver_id'],
-        'driver_name' => ['like', 'driver_name']
     ];
 
     public function __construct(Device $model)
@@ -50,6 +49,18 @@ class DeviceService extends BaseService
         $device = $device->toArray();
         unset($device['driver']);
         return $device;
+    }
+
+    public function getPageList()
+    {
+        if (!empty($this->formData['driver_name'])) {
+            $driverList = $this->getDriverService()->getList(['fullname' => $this->formData['driver_name']]);
+            if (!empty($driverList)) {
+                $driverIdList = $driverList->pluck('id')->toArray();
+                $this->query->whereIn('driver_id', $driverIdList);;
+            }
+        }
+        return parent::getPageList();
     }
 
     public function getDriverPageList()

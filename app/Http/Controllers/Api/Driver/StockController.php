@@ -26,11 +26,11 @@ class StockController extends BaseController
     }
 
     /**
-     * 包裹分拣入库
+     * 包裹分拨
      * @throws BusinessLogicException
      */
-    public function packagePickOut()
+    public function allocate()
     {
-        return $this->service->packagePickOut($this->data['express_first_no']);
+        return $this->service->allocate($this->data['express_first_no'], $this->data['ignore_rule']);
     }
 }

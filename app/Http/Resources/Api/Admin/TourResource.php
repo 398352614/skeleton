@@ -63,8 +63,9 @@ class TourResource extends JsonResource
             'delivery_amount' => $this->delivery_amount,
             'replace_amount' => $this->replace_amount,
             'remark' => $this->remark,
+            'is_dispatch' => $this->is_dispatch,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
-        ], GisService::corTransfer(['warehouse_lon'=>$this->warehouse_lon,'warehouse_lat'=>$this->warehouse_lat]));
+        ], GisService::corTransfer(['warehouse_lon' => $this->warehouse_lon, 'warehouse_lat' => $this->warehouse_lat]));
     }
 }

@@ -16,7 +16,7 @@ class CreateMerchantLineRangeTable extends Migration
         Schema::create('merchant_line_range', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
-            $table->integer('merchant_id')->default(0)->nullable()->comment('商户ID');
+            $table->integer('merchant_id')->default(0)->nullable()->comment('货主ID');
             $table->integer('line_id')->default(null)->nullable()->comment('线路ID');
             $table->integer('post_code_start')->default(null)->nullable()->comment('开始邮编');
             $table->integer('post_code_end')->default(null)->nullable()->comment('结束邮编');

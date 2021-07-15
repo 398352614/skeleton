@@ -39,6 +39,7 @@ class LineService extends BaseLineService
      */
     public function getCurrentDate($params, $merchantId)
     {
+        $params['merchant_id'] =$merchantId;
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_AREA) {
             throw new BusinessLogicException('没有合适日期');
         }
@@ -60,6 +61,7 @@ class LineService extends BaseLineService
                     if ($now == $params['execution_date']) continue;
                     $this->appointmentDayCheck($params, $line);
                     $this->maxCheck($params, $line, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
+                    $this->minCheck($params, $line, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
                     //取最近日期
                     if (empty($executionDate) || Carbon::parse($executionDate . ' 00:00:00')->gt($params['execution_date'] . ' 00:00:00')) {
                         $executionDate = $params['execution_date'];

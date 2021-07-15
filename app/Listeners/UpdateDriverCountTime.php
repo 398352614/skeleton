@@ -78,33 +78,22 @@ class UpdateDriverCountTime implements ShouldQueue
             $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
             $service->timesCount('actual_distance_times', $tour->company_id);
             //清空路线重试任务
-            $row = RouteRetry::query()->where('123', $tour['tour_no'])->delete();
+            $row = RouteRetry::query()->where('tour_no', $tour['tour_no'])->delete();
             if ($row == true) {
-                Log::info('线路重试任务已清空');
+                Log::channel('roll')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '线路重试任务已清空');
             } else {
-                Log::info('线路重试任务清空失败');
+                Log::channel('roll')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '线路重试任务清空失败');
             }
-            Log::info('司机位置和各站点预计耗时和里程更新成功');
-        } catch (\Exception $ex) {
-            //计入路线重推
-            $row = RouteRetry::query()->create([
-                'company_id' => $tour->company_id,
-                'tour_no' => $tour->tour_no,
-                'retry_times' => 0,
-                'data' => json_encode([
-                    'tour' => $tour,
-                    'driver_location' => $driverLocation,
-                    'next_batch_no' => $nextBatchNo,
-                    'queue' => $queue
-                ])
+            Log::channel('worker')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '司机位置和各站点预计耗时和里程更新成功');
+        } catch (\Exception $e) {
+            Log::channel('work')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
             ]);
-            if ($row == false) {
-                Log::info('计入路线重推失败');
-            }
-            Log::channel('job-daily')->error('更新线路失败:' . $ex->getFile());
-            Log::channel('job-daily')->error('更新线路失败:' . $ex->getLine());
-            Log::channel('job-daily')->error('更新线路失败:' . $ex->getMessage());
-            throw new BusinessLogicException('更新线路失败');
+            //计入路线重推
+            $this->repush($tour, $driverLocation, $nextBatchNo, $queue);
+            throw new BusinessLogicException('线路任务更新失败');
         }
         return;
     }
@@ -118,5 +107,23 @@ class UpdateDriverCountTime implements ShouldQueue
     public function shouldQueue(AfterDriverLocationUpdated $event)
     {
         return ($event->queue === true);
+    }
+
+    public function repush($tour, $driverLocation, $nextBatchNo, $queue)
+    {
+        $row = RouteRetry::query()->create([
+            'company_id' => $tour->company_id,
+            'tour_no' => $tour->tour_no,
+            'retry_times' => 0,
+            'data' => json_encode([
+                'tour' => $tour,
+                'driver_location' => $driverLocation,
+                'next_batch_no' => $nextBatchNo,
+                'queue' => $queue
+            ])
+        ]);
+        if ($row == false) {
+            Log::channel('roll')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '计入路线重推失败');
+        }
     }
 }

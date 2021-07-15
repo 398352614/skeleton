@@ -79,7 +79,7 @@ class SendPackageInfo implements ShouldQueue
      */
     public function handle()
     {
-        Log::info('包裹重量转发开始');
+        Log::channel('job')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '包裹重量转发开始');
         $columns = [
             'weight',
             'express_first_no',
@@ -108,12 +108,12 @@ class SendPackageInfo implements ShouldQueue
                 $this->postData($merchantList[$merchantId]['url'], $postData);
             }
         }
-        Log::info('包裹重量转发成功');
+        Log::channel('job')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '包裹重量转发成功');
         return true;
     }
 
     /**
-     * 获取商户信息
+     * 获取货主信息
      * @param $merchantIdList
      * @return array
      */
@@ -138,12 +138,15 @@ class SendPackageInfo implements ShouldQueue
         try {
             $res = $this->curl->post($url, $postData);
             if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
-                app('log')->info('send notify failure');
-                Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+                Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '请求失败');
+                Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             }
-        } catch (\Exception $ex) {
-            Log::info(json_encode($postData, JSON_UNESCAPED_UNICODE));
-            Log::info('推送失败');
+        } catch (\Exception $e) {
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
         }
     }
 
@@ -157,8 +160,8 @@ class SendPackageInfo implements ShouldQueue
     {
         $res = $this->curl->merchantPost($merchant, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
-            app('log')->info('send notify failure');
-            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '请求失败');
+            Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('发送失败');
         }
     }

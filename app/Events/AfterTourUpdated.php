@@ -20,16 +20,20 @@ class AfterTourUpdated
 
     public $nextBatch;
 
+    public $queue;
+
     /**
      * Create a new event instance.
      *
      * @param Tour $tour
      * @param $nextBatch
+     * @param $queue
      */
-    public function __construct(Tour $tour, $nextBatch)
+    public function __construct(Tour $tour, $nextBatch, $queue = false)
     {
         $this->tour = $tour;
         $this->nextBatch = $nextBatch;
+        $this->queue = $queue;
     }
 
     /**

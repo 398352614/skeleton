@@ -10,10 +10,12 @@ namespace App\Services\ApiServices;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
+use App\Models\MapConfig;
 use App\Models\Tour;
 use App\Services\Admin\ApiTimesService;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use App\Traits\CompanyTrait;
 use App\Traits\FactoryInstanceTrait;
 use Illuminate\Support\Facades\Log;
 
@@ -36,11 +38,23 @@ class TenCentApiService
 
     public function __construct()
     {
+        $company = auth('admin')->user();
+        if (empty($company)) {
+            $company = auth('merchant')->user();
+        }
+        if (empty($company)) {
+            $company = auth('driver')->user();
+        }
         $this->client = new CurlClient;
         $this->url = config('tms.tencent_api_url');
         $this->distance_url = config('tms.tencent_distance_matrix_api_url');
-        $this->key = config('tms.tencent_api_key');
-    }
+        //$this->key = CompanyTrait::getCompany(auth()->user()->company_id)['map_config']['tencent_key'];
+        $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
+        if (!empty($mapConfig)) {
+            $this->key = $mapConfig->toArray()['tencent_key'];
+        }else{
+            $this->key ='';
+        }    }
 
     /**
      * 自动更新tour
@@ -51,7 +65,7 @@ class TenCentApiService
      */
     public function autoUpdateTour(Tour $tour)
     {
-        /***********************@**********1.获取仓库到所有站点的距离和时间********************************************/
+        /***********************@**********1.获取网点到所有站点的距离和时间********************************************/
         //获取并更新站点
         $keyIndex = 1;
         if ($tour->status != BaseConstService::TOUR_STATUS_4) { // 未取派的情况下,所有 batch 都是未取派的
@@ -91,7 +105,7 @@ class TenCentApiService
                 Batch::query()->where('batch_no', $batchs[$res['result']['optimal_order'][$key] - 1]['batch_no'])->update($data);
                 $keyIndex++;
             }
-            /*********************************2.获取最后一个站点到仓库的距离和时间*****************************************/
+            /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
             $lastPointIndex = last($res['result']['optimal_order']);
             $backWarehouseElement = $this->distanceMatrix([$batchs[$lastPointIndex - 1]['location'], $tour->driver_location]);
             $backElement = $backWarehouseElement[0][1];
@@ -108,10 +122,9 @@ class TenCentApiService
                 $tourData['expect_distance'] = $distance + $backElement['distance'];
                 $tourData['expect_time'] = $time + $backElement['duration'];
             }
-            Log::info('auto-tour-data', $tourData);
             Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
-            throw new BusinessLogicException('线路自动更新失败');
+            throw new BusinessLogicException('线路更新失败');
         }
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         return $res;
@@ -148,7 +161,7 @@ class TenCentApiService
                 ]);
                 $key++;
             }
-            /*********************************2.获取最后一个站点到仓库的距离和时间*****************************************/
+            /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
             $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
             $backElement = $backWarehouseElement[0][1];
             $tourData = [
@@ -164,7 +177,6 @@ class TenCentApiService
                 $tourData['expect_distance'] = $distance + $backElement['distance'];
                 $tourData['expect_time'] = $time + $backElement['duration'];
             }
-            Log::info('tour-data', $tourData);
             Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
         } catch (BusinessLogicException $exception) {
             throw new BusinessLogicException('线路更新失败');
@@ -238,8 +250,7 @@ class TenCentApiService
         $url = $url . '?' . $query;
         $res = $this->client->get($url);
         if (!isset($res['status']) || ($res['status'] != 0)) {
-            Log::info('tencent-api请求url', ['url' => $url]);
-            Log::info('tencent-api请求报错:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('teCent-api请求报错');
         }
         return $res;

@@ -17,7 +17,7 @@ class AlterLineAddColumns extends Migration
             $table->dropColumn('order_max_count');
             $table->smallInteger('pickup_max_count')->default(1)->nullable()->after('warehouse_id')->comment('取件最大订单量');
             $table->smallInteger('pie_max_count')->default(1)->nullable()->after('pickup_max_count')->comment('派件最大订单量');
-            $table->tinyInteger('is_increment')->default(1)->nullable()->after('pie_max_count')->comment('是否新增取件线路1-是2-否');
+            $table->tinyInteger('is_increment')->default(1)->nullable()->after('pie_max_count')->comment('是否新增线路任务1-是2-否');
             $table->time('order_deadline')->default('23:59:59')->nullable()->after('is_increment')->comment('当天下单截止时间');
             $table->smallInteger('appointment_days')->default(30)->nullable()->after('order_deadline')->comment('可预约天数');
         });

@@ -14,8 +14,11 @@ use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use Carbon\Carbon;
+use Doctrine\DBAL\Exception;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 class LineService extends BaseLineService
 {
@@ -61,10 +64,12 @@ class LineService extends BaseLineService
         if (empty($lineIdList)) return $list;
         //获取线路范围列表
         $lineRangeList = $this->getLineRangeService()->getAllLineRange($lineIdList);
+        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $list->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id');
         if (empty($lineRangeList)) return $list;
         foreach ($list as &$line) {
             $line['line_range'] = $lineRangeList[$line['id']]['line_range'];
             $line['work_day_list'] = array_values(array_unique($lineRangeList[$line['id']]['work_day_list']));
+            $line['warehouse_name'] = $warehouseList[$line['warehouse_id']]['name'];
         }
         return $list;
     }
@@ -93,7 +98,13 @@ class LineService extends BaseLineService
                 return $item['post_code_start'] . $item['post_code_end'];
             })->toArray();
             $info['work_day_list'] = implode(',', array_values(array_unique(array_column($lineRangeList->toArray(), 'schedule'))));
-        };
+        }
+        $merchantGroupCountList = $this->getMerchantGroupLineService()->getList(['line_id' => $id], ['merchant_group_id', 'pickup_min_count', 'pie_min_count'], false);
+        $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantGroupCountList->pluck('merchant_group_id')->toArray()]], ['*'], false);
+        foreach ($merchantGroupCountList as $k => $v) {
+            $merchantGroupCountList[$k]['merchant_group_name'] = $merchantGroupList->where('id', $v['merchant_group_id'])->first()['name'] ?? '';
+        }
+        $info['merchant_group_count_list'] = $merchantGroupCountList ?? [];
         return $info;
 
     }
@@ -105,18 +116,34 @@ class LineService extends BaseLineService
      */
     public function postcodeStore($params)
     {
+        $rootWarehouse = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->company_id, 'parent' => 0], ['*'], false);
+        $params['warehouse_id'] = $rootWarehouse['id'];
         //基础验证
         $this->check($params);
         //邮编范围验证
         $this->getLineRangeService()->checkRange($params['item_list'], $params['country'], $params['work_day_list']);
+        //货主组最小订单量验证
+        $this->getMerchantGroupLineService()->checkCount($params, $params['merchant_group_count_list']);
         //新增
         $lineId = $this->store($params);
         //邮编范围批量新增
         $this->getLineRangeService()->storeAll($lineId, $params['item_list'], $params['country'], $params['work_day_list']);
+        //最小订单量批量新增
+        $this->getMerchantGroupLineService()->storeAll($lineId, $params['merchant_group_count_list']);
+        //更新网点
+        if ($rootWarehouse['line_ids'] == '') {
+            $lineIds = $lineId;
+        } else {
+            $lineIds = $rootWarehouse['line_ids'] . ',' . $lineId;
+        }
+        $row = $this->getWareHouseService()->update(['id' => $rootWarehouse['id']], ['line_ids' => $lineIds]);
+        if ($row == false) {
+            throw new BusinessLogicException('更新失败');
+        }
     }
 
     /**
-     * 新增商户所有线路范围
+     * 新增货主所有线路范围
      * @param $merchantGroupId
      * @throws BusinessLogicException
      */
@@ -149,17 +176,25 @@ class LineService extends BaseLineService
         }
         //基础验证
         $this->check($data, $info->toArray());
+        //货主组最小订单量验证
+        $this->getMerchantGroupLineService()->checkCount($data, $data['merchant_group_count_list']);
         //邮编范围验证
         $this->getLineRangeService()->checkRange($data['item_list'], $data['country'], $data['work_day_list'], $id);
+        unset($data['warehouse_id']);
         //修改
         $this->updateById($id, $data);
-        //删除原来线路范围
+        //删除并新增线路范围
         $rowCount = $this->getLineRangeService()->delete(['line_id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围修改失败');
         }
-        //批量新增
         $this->getLineRangeService()->storeAll($id, $data['item_list'], $data['country'], $data['work_day_list']);
+        //删除并新增最小订单量
+        $rowCount = $this->getMerchantGroupLineService()->delete(['line_id' => $id]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('线路范围修改失败');
+        }
+        $this->getMerchantGroupLineService()->storeAll($info['id'], $data['merchant_group_count_list']);
     }
 
     /**
@@ -179,11 +214,16 @@ class LineService extends BaseLineService
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围删除失败');
         }
-        //删除商户线路范围
+        //删除货主线路范围
         $rowCount = $this->getMerchantGroupLineRangeService()->delete(['line_id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
+        //更新网点
+        $rootWarehouse = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->company_id, 'parent' => 0], ['*'], false);
+        $lineIds = str_replace($id, '', $rootWarehouse['line_ids']);
+        $lineIds = str_replace(',,', ',', $lineIds);
+        $this->getWareHouseService()->update(['id' => $rootWarehouse['id']], ['line_ids' => $lineIds]);
     }
 
     /**
@@ -299,5 +339,297 @@ class LineService extends BaseLineService
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围删除失败');
         }
+    }
+
+    /**
+     * 通过网点ID获取线路列表
+     * @param $ids
+     * @return Collection
+     */
+    public function getPageListByIds($ids)
+    {
+        $this->query->whereIn('id', $ids);
+//        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
+        return $this->postcodeIndex();
+//        } else {
+//            return $this->areaIndex(2);
+//        }
+    }
+
+    /**
+     * 通过网点ID获取线路列表
+     * @param $warehouseId
+     * @return Collection
+     */
+    public function getPageListByWarehouse($warehouseId)
+    {
+        $this->query->where('warehouse_id', $warehouseId);
+//        if (CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
+        unset($this->formData);
+        return $this->postcodeIndex();
+//        } else {
+//            return $this->areaIndex(2);
+//        }
+    }
+
+    /**
+     * 批量修改线路的网点ID
+     * @param $warehouseId
+     * @param $lineIdList
+     * @throws BusinessLogicException
+     */
+    public function updateWarehouse($warehouseId, $lineIdList)
+    {
+        if (empty($lineIdList) || array_values($lineIdList) == ['']) {
+            return;
+        }
+        $row = parent::update(['id' => ['in', $lineIdList]], ['warehouse_id' => $warehouseId]);
+        if ($row == false) {
+            throw new BusinessLogicException('更新线路所属网点失败');
+        }
+    }
+
+    /**
+     * 测试
+     * @param $data
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function test($data)
+    {
+        $pickupWarehouse = $this->getWareHouseByAddress($this->pickupAddress($data));
+        $pickupWarehouseList = [$pickupWarehouse];
+        $this->centerCheck($pickupWarehouseList, $pickupWarehouse, BaseConstService::ORDER_TYPE_1);
+        $pieWarehouse = $this->getWareHouseByAddress($this->pieAddress($data));
+        $pieWarehouseList = [$pieWarehouse];
+        $this->centerCheck($pieWarehouseList, $pieWarehouse, BaseConstService::ORDER_TYPE_2);
+        if ($pickupWarehouse['id'] == $pieWarehouse['id']) {
+            $pickupWarehouse['type'] = 3;
+            $data = array_values(array_filter(array_merge(
+                [$this->formAddress($this->pickupAddress($data))],
+                [$pickupWarehouse],
+                [$this->formAddress($this->pieAddress($data))]
+            )));
+        }else{
+            $data = array_values(array_filter(array_merge(
+                [$this->formAddress($this->pickupAddress($data))],
+                $pickupWarehouseList,
+                array_reverse($pieWarehouseList),
+                [$this->formAddress($this->pieAddress($data))]
+            )));
+        }
+        $data = $this->formTest($data);
+        return $data;
+    }
+
+    /**
+     * 取件路径
+     * @param $data
+     * @return array
+     */
+    public function pickupAddress($data)
+    {
+        if (empty($data['place_country'])) {
+            $data['place_country'] = CompanyTrait::getCompany()['country'];
+        }
+        return [
+            'type' => BaseConstService::TRACKING_ORDER_TYPE_1,
+            'place_fullname' => $data['place_fullname'],
+            'place_phone' => $data['place_phone'],
+            'place_country' => $data['place_country'],
+            'place_province' => $data['place_province'] ?? '',
+            'place_post_code' => $data['place_post_code'],
+            'place_house_number' => $data['place_house_number'],
+            'place_city' => $data['place_city'],
+            'place_district' => $data['place_district'] ?? '',
+            'place_street' => $data['place_street'],
+            'place_address' => $data['place_address'],
+            'place_lat' => $data['place_lat'],
+            'place_lon' => $data['place_lon'],
+            'execution_date' => $data['execution_date']
+        ];
+    }
+
+    /**
+     * 派件路径
+     * @param $data
+     * @return array
+     */
+    public function pieAddress($data)
+    {
+        return [
+            'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
+            'place_fullname' => $data['second_place_fullname'],
+            'place_phone' => $data['second_place_phone'],
+            'place_country' => $data['second_place_country'],
+            'place_province' => $data['second_place_province'] ?? '',
+            'place_post_code' => $data['second_place_post_code'],
+            'place_house_number' => $data['second_place_house_number'],
+            'place_city' => $data['second_place_city'],
+            'place_district' => $data['second_place_district'] ?? '',
+            'place_street' => $data['second_place_street'],
+            'place_address' => $data['second_place_address'],
+            'place_lat' => $data['second_place_lat'],
+            'place_lon' => $data['second_place_lon'],
+            'execution_date' => $data['second_execution_date']
+        ];
+    }
+
+    public function formAddress($data)
+    {
+        return [
+            'type' => $data['type'],
+            'name' => $data['place_fullname'],
+            'is_center' => 3
+        ];
+    }
+
+    /**
+     * 获取订单的取件网点
+     * @param $order
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getPickupWarehouseByOrder($order)
+    {
+        return $this->getWareHouseByAddress($this->pickupAddress($order));
+    }
+
+    /**
+     * 获取订单的派件网点
+     * @param $order
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getPieWarehouseByOrder($order)
+    {
+        return $this->getWareHouseByAddress($this->pieAddress($order));
+    }
+
+    /**
+     * 通过地址获取网点
+     * @param $data
+     * @return array|Builder|Model|object|null
+     * @throws BusinessLogicException
+     */
+    public function getWareHouseByAddress($data)
+    {
+        $line = $this->getBaseLineService()->getInfoByRule($data);
+        //获取网点
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
+        if (empty($warehouse)) {
+            throw new BusinessLogicException('网点不存在');
+        }
+        $warehouse = collect($warehouse)->toArray();
+        $warehouse['type'] = $data['type'];
+        return $warehouse;
+    }
+
+    /**
+     * 回溯上级节点，直至遇到分拨中心
+     * @param $warehouse
+     * @param $data
+     * @param $type
+     * @return array
+     */
+    public function centerCheck(&$data, $warehouse, $type)
+    {
+        $warehouse['type'] = $type;
+        if ($warehouse['is_center'] == BaseConstService::NO && $warehouse['parent'] !== 0) {
+            $parentWarehouse = $this->getWareHouseService()->getInfo(['id' => $warehouse['parent']], ['*'], false);
+            $data[] = Arr::only($parentWarehouse->toArray(), ['name', 'is_center', 'type']);
+            return $this->centerCheck($data, $parentWarehouse, $type);
+        }
+    }
+
+    public function formTest(array $data)
+    {
+        for ($i = 0, $j = count($data) - 1; $i < $j; $i++) {
+            if ($data[$i]['name'] == $data[$i + 1]['name']) {
+                $data[$i + 1]['type'] = BaseConstService::ORDER_TYPE_3;
+                unset($data[$i]);
+            }
+        }
+        $data = array_values($data);
+        //类型1分拨3-寄件人，类型2分拨3-收件人，类型1分拨2-网点取件，类型2分拨2-网点派件，类型3分拨2-网点取件/派件，其他-分拨中心
+        for ($i = 0, $j = count($data); $i < $j; $i++) {
+            if ($data[$i]['type'] == BaseConstService::ORDER_TYPE_1 &&
+                $data[$i]['is_center'] == 3
+            ) {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_1;
+            } elseif ($data[$i]['type'] == BaseConstService::ORDER_TYPE_2 &&
+                $data[$i]['is_center'] == 3
+            ) {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_5;
+            } elseif ($data[$i]['type'] == BaseConstService::ORDER_TYPE_1 &&
+                $data[$i]['is_center'] == BaseConstService::WAREHOUSE_IS_CENTER_2
+            ) {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_2;
+            } elseif ($data[$i]['type'] == BaseConstService::ORDER_TYPE_2 &&
+                $data[$i]['is_center'] == BaseConstService::WAREHOUSE_IS_CENTER_2
+            ) {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_4;
+            } elseif ($data[$i]['type'] == BaseConstService::ORDER_TYPE_3 &&
+                $data[$i]['is_center'] == BaseConstService::WAREHOUSE_IS_CENTER_2
+            ) {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_6;
+            } else {
+                $data[$i]['status'] = BaseConstService::LINE_TEST_STATUS_3;
+            }
+            $data[$i] = Arr::only($data[$i], ['type', 'name', 'is_center', 'status']);
+        }
+        $array = [1 => '分拨中心', 2 => '网点', 3 => '客户地址'];
+        foreach ($data as $k => $v) {
+            $data[$k]['status_name'] = ConstTranslateTrait::lineTestStatusList($v['status']);
+            $data[$k]['is_center_name'] = $array[$v['is_center']];
+        }
+        return $data;
+    }
+
+    /**
+     * 获取最近的日期
+     * @param $params
+     * @param $merchantId
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getCurrentDate($params, $merchantId)
+    {
+        if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_AREA) {
+            throw new BusinessLogicException('没有合适日期');
+        }
+        $lineRangeList = parent::getLineRangeListByPostcode($params['place_post_code'], $merchantId);
+        $executionDate = null;
+        $newLine = null;
+        foreach ($lineRangeList as $lineRange) {
+            $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
+            if (empty($line) || ($line->status == BaseConstService::OFF)) {
+                continue;
+            }
+            $line = $line->toArray();
+            $date = $this->getFirstWeekDate($lineRange);
+            $now = \Illuminate\Support\Carbon::today()->format('Y-m-d');
+            for ($k = 0, $l = $line['appointment_days'] - $date; $k < $l; $k = $k + 7) {
+                $params['execution_date'] = Carbon::today()->addDays($date + $k)->format('Y-m-d');
+                try {
+                    //若是今天，则不需要
+                    if ($now == $params['execution_date']) continue;
+                    $this->appointmentDayCheck($params, $line);
+                    $this->maxCheck($params, $line, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
+                    //取最近日期
+                    if (empty($executionDate) || Carbon::parse($executionDate . ' 00:00:00')->gt($params['execution_date'] . ' 00:00:00')) {
+                        $executionDate = $params['execution_date'];
+                        $newLine = $line;
+                    }
+                    break;
+                } catch (BusinessLogicException $e) {
+                    continue;
+                }
+            }
+        }
+        if (empty($executionDate)) {
+            throw new BusinessLogicException('没有合适日期');
+        }
+        return [$executionDate, $newLine];
     }
 }

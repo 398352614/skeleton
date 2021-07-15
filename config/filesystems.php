@@ -127,7 +127,7 @@ return [
             'visibility' => 'public',
         ],
 
-        //商户端-文件
+        //货主端-文件
         'merchant_file_public' => [
             'driver' => 'local',
             'root' => storage_path('app/public/merchant/file'),
@@ -136,7 +136,7 @@ return [
         ],
 
 
-        //商户端-文件
+        //货主端-文件
         'merchant_image_public' => [
             'driver' => 'local',
             'root' => storage_path('app/public/merchant/images'),

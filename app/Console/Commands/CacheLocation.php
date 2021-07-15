@@ -12,7 +12,7 @@ class CacheLocation extends Command
      *
      * @var string
      */
-    protected $signature = 'location:cache
+    protected $signature = 'cache:location
                                             {country : the country}
                                             {city : the city}
                                             {street : the street}

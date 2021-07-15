@@ -141,4 +141,9 @@ class LineController extends BaseController
     {
         return $this->service->statusByList($this->data);
     }
+
+    public function test()
+    {
+        return $this->service->test($this->data);
+    }
 }

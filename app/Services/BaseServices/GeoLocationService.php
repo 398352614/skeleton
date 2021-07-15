@@ -4,6 +4,7 @@ namespace App\Services\BaseServices;
 
 use App\Exceptions\BusinessLogicException;
 use App\Services\CurlClient;
+use Illuminate\Support\Facades\Log;
 
 /**
  * 地理位置反编码 -- 位置转经纬度
@@ -43,8 +44,7 @@ class GeoLocationService
     public function getCodeUseString(string $key): ?array
     {
         $res = $this->curl->get(self::EU_BASE_URL . $key);
-
-        app('log')->debug('查询地址返回的结果为:', $res ?? []);
+        Log::channel('api')->info(__CLASS__ .'.'. __FUNCTION__ .'.'. 'res', $res);
 
         if (!$res || count($res['features']) === 0) {
             return null;

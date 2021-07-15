@@ -75,7 +75,7 @@ class SendOrderCancel implements ShouldQueue
     public function handle(OrderCancel $event)
     {
         try {
-            //获取商户ID
+            //获取货主ID
             $merchantId = $this->getMerchantIdByOrderNo($event->order_no);
             if (empty($merchantId)) return true;
             //获取推送url
@@ -88,15 +88,19 @@ class SendOrderCancel implements ShouldQueue
                 'data' => $postData
             ]);
             ThirdPartyLogService::storeAll($merchantId, $postData, $event->notifyType(), $event->getThirdPartyContent($pushStatus, $msg));
-            Log::info('订单取消');
-        } catch (\Exception $ex) {
-            Log::channel('job-daily')->error($ex->getMessage());
+            Log::channel('worker')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '订单取消');
+        } catch (\Exception $e) {
+            Log::channel('worker')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
         }
         return true;
     }
 
     /**
-     * 通过单号 获取商户ID
+     * 通过单号 获取货主ID
      * @param $orderNo
      * @return mixed|null
      */
@@ -108,7 +112,7 @@ class SendOrderCancel implements ShouldQueue
     }
 
     /**
-     * 通过商户ID 获取url
+     * 通过货主ID 获取url
      * @param $merchantId
      * @return mixed|null
      */
@@ -134,8 +138,8 @@ class SendOrderCancel implements ShouldQueue
     {
         $res = $this->curl->post($url, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
-            app('log')->info('send notify failure');
-            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '请求失败');
+            Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             return [false, $res['msg'] ?? '服务器内部错误'];
         }
         return [true, ''];
@@ -151,8 +155,8 @@ class SendOrderCancel implements ShouldQueue
     {
         $res = $this->curl->merchantPost($merchant, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
-            app('log')->info('send notify failure');
-            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '请求失败');
+            Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('发送失败');
         }
     }

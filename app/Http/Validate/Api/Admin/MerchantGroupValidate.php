@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户组 验证类
+ * 货主组 验证类
  * Created by PhpStorm
  * User: long
  * Date: 2019/12/16

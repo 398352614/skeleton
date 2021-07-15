@@ -4,10 +4,9 @@
 namespace App\Console\Commands;
 
 
-use App\Exceptions\BusinessLogicException;
-use App\Traits\ConstTranslateTrait;
-use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -25,13 +24,7 @@ class AutoCode extends Command
      *
      * @var string
      */
-    protected $description = 'auto translate';
-
-    protected $id;
-
-    protected $key;
-
-    protected $url;
+    protected $description = 'auto code';
 
     /**
      * Create a new command instance.
@@ -50,218 +43,76 @@ class AutoCode extends Command
      */
     public function handle()
     {
-        Log::info('The code begin.');
         try {
-            $this->code();
+            $this->autoCode();
             $this->info('The code success.');
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $this->info('The code fail:' . $e->getMessage());
         }
         return;
     }
 
-    /**
-     * 修改en.json文件
-     * @return string
-     * @throws Exception
-     */
-    public function code()
+    public function autoCode()
     {
-        $txt = '';
-        $path = app_path(); // 需要转换的文件路径。
-        $toPath = base_path('storage/common/code.json');  // 最终要放到的位置。
-        $stringArr = $this->get_filenamesbydir($path);
-        foreach ($stringArr as $name => $content) {
-            $txt = $txt . PHP_EOL . $name . PHP_EOL . PHP_EOL . $content;
-        }
-        $newException = $this->findException($txt);
-        $codeJson = (array)json_decode(file_get_contents('storage/common/code.json'));
-        $oldException = array_keys($codeJson, true);
-        $diffException = array_values(array_diff($newException, $oldException));
-        $json = '';
-        $oldExceptionNo = end($codeJson);
-        for ($i = 0, $j = count($diffException); $i < $j; $i++) {
-            $json .= '"' . $diffException[$i] . '":' . ($oldExceptionNo + $i) . ',' . "\n";
-        }
-        $oldJson = file_get_contents('storage/common/code.json');
-        $json = Str::replaceLast(',', '', $json);
-        $oldJson = str_replace('}', '', $oldJson);
-        $oldJson = $oldJson . ',' . $json . '}';
-        $row = file_put_contents($toPath, $oldJson);
-        if (!empty($row)) {
-            return 'success';
-        }
-        return 'fail';
-    }
-
-    /**
-     * 递归获取文件
-     * @param $path
-     * @param $files
-     * @param $stringArr
-     */
-    public function get_allfiles($path, &$files, &$stringArr)
-    {
-        if (is_dir($path)) {
-            $dp = dir($path);
-            while ($file = $dp->read()) {
-                if ($file !== "." && $file !== "..") {
-                    $this->get_allfiles($path . "/" . $file, $files, $stringArr);
-                }
-            }
-            $dp->close();
-        }
-        if (is_file($path)) {
-            $files[] = $path;
-            $stringArr[$path] = file_get_contents($path);
-        }
-    }
-
-    /**
-     * 获取文件夹下所有文件
-     * @param $dir
-     * @return array
-     */
-    public function get_filenamesbydir($dir)
-    {
-        $files = $stringArr = array();
-        $this->get_allfiles($dir, $files, $stringArr);
-        return $stringArr;
-    }
-
-
-    /**
-     * 找到抛错
-     * @param $txt
-     * @return array
-     */
-    public function findException($txt)
-    {
-        $array = [];
-        //preg_match_all("/\"[\x7f-\xff](.*)\"/", $txt, $x);
-
-        preg_match_all("/BusinessLogicException\('[\x7f-\xff](.*)'/U", $txt, $x);
-        foreach (array_unique($x[0]) as $v) {
-            $v = str_replace("BusinessLogicException('", '', $v);
-            $v = str_replace("'", '', $v);
-            $array[] = $v;
-        }
-        return $array;
-    }
-
-    /**
-     * 翻译
-     * @param string $txt
-     * @param $language
-     * @return array
-     * @throws Exception
-     */
-    public function translate(string $txt, $language)
-    {
-        $info = $this->translateApi($txt, 'zh', $language);
-        if (!empty($info['error_code'])) {
-            if ($info['error_code'] == 58000) {
-                throw new Exception('IP不对');
-            }
-            throw new Exception('API错误码:' . $info['error_code']);
-        }
-
-        return $info['trans_result'];
-    }
-
-    /**
-     * 翻译入口
-     * @param $query
-     * @param $from
-     * @param $to
-     * @return bool|int|mixed|string
-     */
-    public function translateApi($query, $from, $to)
-    {
-        $args = array(
-            'q' => $query,
-            'appid' => $this->id,
-            'salt' => rand(10000, 99999),
-            'from' => $from,
-            'to' => $to,
-
-        );
-        $args['sign'] = $this->buildSign($query, $this->id, $args['salt'], $this->key);
-        $ret = $this->call($this->url, $args);
-        $ret = json_decode($ret, true);
-        return $ret;
-    }
-
-    //加密
-    public function buildSign($query, $appID, $salt, $secKey)
-    {
-        $str = $appID . $query . $salt . $secKey;
-        return md5($str);
-    }
-
-    //发起网络请求
-    public function call($url, $args = null, $method = "post", $timeout = 10, $headers = array())
-    {
-        $ret = false;
-        $i = 0;
-        while ($ret === false) {
-            if ($i > 1)
-                break;
-            if ($i > 0) {
-                sleep(1);
-            }
-            $ret = $this->callOnce($url, $args, $method, false, $timeout, $headers);
-            $i++;
-        }
-        return $ret;
-    }
-
-    public function callOnce($url, $args = null, $method = "post", $withCookie = false, $timeout = 10, $headers = array())
-    {
-        $ch = curl_init();
-        if ($method == "post") {
-            $data = $this->convert($args);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($ch, CURLOPT_POST, 1);
-        } else {
-            $data = $this->convert($args);
-            if ($data) {
-                if (stripos($url, "?") > 0) {
-                    $url .= "&$data";
-                } else {
-                    $url .= "?$data";
-                }
-            }
-        }
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        if (!empty($headers)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        }
-        if ($withCookie) {
-            curl_setopt($ch, CURLOPT_COOKIEJAR, $_COOKIE);
-        }
-        $r = curl_exec($ch);
-        curl_close($ch);
-        return $r;
-    }
-
-    public function convert(&$args)
-    {
+        //1,正则匹配项目内所有文件以"throw new BusinessException('"开头，以"')"结尾的语句。
+        //2,格式处理
+        //3,写入文件
         $data = '';
-        if (is_array($args)) {
-            foreach ($args as $key => $val) {
-                if (is_array($val)) {
-                    foreach ($val as $k => $v) {
-                        $data .= $key . '[' . $k . ']=' . rawurlencode($v) . '&';
-                    }
-                } else {
-                    $data .= "$key=" . rawurlencode($val) . "&";
-                }
-            }
-            return trim($data, "&");
+        $params = file_get_contents('resources/lang/en.json');
+        $params = collect(json_decode($params))->toArray();
+        foreach ($params as $k => $v) {
+            $data .= '"' . $k . '"=>"' . $v . '",'. "\n";
         }
-        return $args;
+        $oldJson = Str::replaceLast('];', '', file_get_contents('app/Exceptions/ErrorCode.php'));
+        $oldJson = Str::replaceLast(']', '', $oldJson);
+        $oldJson = $oldJson . $data . ']' . "\n" . '];';
+        file_put_contents('app/Exceptions/ErrorCode.php', $oldJson);
+        return;
+
+        $data = [];
+        $row = [];
+        $json = '';
+        $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
+        foreach ($tables as $k => $v) {
+            $row = array_merge($row, DB::select("SHOW FULL COLUMNS FROM `{$v}`"));
+        }
+        foreach ($row as $k => $v) {
+            $v = collect($v)->toArray();
+            $data[$v['Field']] = $v['Comment'];
+        }
+        foreach ($data as $k => $v) {
+            $data[$k] = explode('1-', $v)[0];
+        }
+        $array = include base_path('resources/lang/cn/validation.php');
+        $attributes = $array['attributes'];
+        $key = array_keys($attributes);
+        $result = Arr::except($data, $key);
+        if (!empty($result)) {
+            foreach ($result as $k => $v) {
+                $json .= '"' . $k . '"=>"' . $v . '",' . "\n";
+            }
+            $oldJson = Str::replaceLast('];', '', file_get_contents('resources/lang/cn/validation.php'));
+            $oldJson = Str::replaceLast(']', '', $oldJson);
+            $oldJson = $oldJson . $json . ']' . "\n" . '];';
+            file_put_contents('resources/lang/cn/validation.php', $oldJson);
+
+
+        }
+        $json = '';
+        $params = [];
+        $array = include base_path('resources/lang/en/validation.php');
+        $diff = Arr::except($data, array_keys($array['attributes']));
+        if (!empty($diff)) {
+            foreach ($diff as $k => $v) {
+                $params[$k] = str_replace('_', ' ', $k);
+            }
+            foreach ($params as $k => $v) {
+                $json .= '"' . $k . '"=>"' . $v . '",' . "\n";
+            }
+            $oldJson = Str::replaceLast('];', '', file_get_contents('resources/lang/en/validation.php'));
+            $oldJson = Str::replaceLast(']', '', $oldJson);
+            $oldJson = $oldJson . $json . ']' . "\n" . '];';
+            file_put_contents('resources/lang/en/validation.php', $oldJson);
+        }
     }
 }

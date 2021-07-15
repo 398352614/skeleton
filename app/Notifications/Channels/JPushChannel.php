@@ -6,7 +6,7 @@
  * Time: 14:22
  */
 
-namespace App\Channels\Notifications;
+namespace App\Notifications\Channels;
 
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
@@ -32,17 +32,18 @@ class JPushChannel
     {
         /**@var JPushClient $push */
         $push = $notification->toJPush($notifiable, $this->client->push());
-        try {
-            $push->send();
-        } catch (\JPush\Exceptions\APIConnectionException $e) {
-            Log::error('j-push-connection', ['message' => $e->getMessage()]);
-            exit;
-        } catch (\JPush\Exceptions\APIRequestException $e) {
-            Log::error('j-push-request', ['message' => $e->getMessage()]);
-            exit;
-        } catch (\Exception $e) {
-            Log::error('j-push-exception', ['message' => $e->getMessage()]);
-            exit;
-        }
+        $push->send();
+//        try {
+//            $push->send();
+//        } catch (\JPush\Exceptions\APIConnectionException $e) {
+//            Log::error('j-push-connection', ['message' => $e->getMessage()]);
+//            exit;
+//        } catch (\JPush\Exceptions\APIRequestException $e) {
+//            Log::error('j-push-request', ['message' => $e->getMessage()]);
+//            exit;
+//        } catch (\Exception $e) {
+//            Log::error('j-push-exception', ['message' => $e->getMessage()]);
+//            exit;
+//        }
     }
 }

@@ -40,7 +40,11 @@ class ThirdPartyLogService extends BaseService
         if (empty($order)) {
             throw new BusinessLogicException('订单不存在');
         }
-        return parent::getList(['order_no' => $order->order_no], ['*'], false)->toArray();
+        $data = parent::getList(['order_no' => $order->order_no], ['*'], false)->toArray();
+        foreach ($data as $k => $v) {
+            $data[$k]['content'] = __($v['content']);
+        }
+        return $data;
     }
 
 

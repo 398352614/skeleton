@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 库存表
  * Class Employee
@@ -45,12 +47,15 @@ class Stock extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'warehouse_id',
         'line_id',
         'line_name',
         'order_no',
         'tracking_order_no',
         'express_first_no',
         'execution_date',
+        'expiration_date',
+        'expiration_status',
         'weight',
         'operator',
         'operator_id',
@@ -68,7 +73,7 @@ class Stock extends BaseModel
     ];
 
     protected $appends = [
-
+        'expiration_status_name'
     ];
 
     /**
@@ -78,4 +83,8 @@ class Stock extends BaseModel
      */
     protected $dates = [];
 
+    public function getExpirationStatusNameAttribute()
+    {
+        return (empty($this->expiration_status) ) ? null : ConstTranslateTrait::expirationStatusList($this->expiration_status);
+    }
 }

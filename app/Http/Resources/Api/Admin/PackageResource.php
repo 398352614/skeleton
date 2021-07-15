@@ -37,9 +37,22 @@ class PackageResource extends JsonResource
             'express_first_no' => $this->express_first_no,
             'express_second_no' => $this->express_second_no,
             'status' => $this->status,
-            'status_name' => $this->status_name,
+            'status_name' => $this->true_status_name,
+            'stage' => $this->stage,
+            'stage_name' => $this->stage_name,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
+            'expiration_date' => $this->expiration_date,
+            'second_execution_date' => $this->second_execution_date,
+            'stock_in_time' => $this->stock_in_time,
+            'warehouse_id' => $this->warehouse_id,
+            'next_warehouse_id' => $this->next_warehouse_id,
+            'warehouse_name' => $this->warehouse_name,
+            'next_warehouse_name' => $this->next_warehouse_name,
+            'shift_no' => $this->shift_no,
+            'bag_no' => $this->bag_no,
+            'stage_status_name' => $this->stage_status_name,
+            'feature_logo'=>__($this->feature_logo),
         ];
     }
 }

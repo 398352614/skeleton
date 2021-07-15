@@ -54,12 +54,12 @@ class MerchantApiGuard implements Guard
     public function check()
     {
         $credentials = $this->request->all();
-        Log::info('request-data:' . json_encode($credentials, JSON_UNESCAPED_UNICODE));
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'credentials', $credentials);
         if (!$this->validate($credentials)) {
             throw new BusinessLogicException('缺少参数key,sign,timestamp或data');
         }
         $merchantApi = $this->provider->retrieveByCredentials($credentials);
-        if ($this->hasValidCredentials($merchantApi, $credentials)) {
+        if ($this->hasValidCredentials($merchantApi, $credentials) || in_array($merchantApi->company_id, explode(config('tms.white_list'), ','))) {
             return $this->validCredentialSuccess($merchantApi);
         }
         return false;
@@ -75,11 +75,11 @@ class MerchantApiGuard implements Guard
     private function validCredentialSuccess($merchantApi)
     {
         if (intval($merchantApi->status) != BaseConstService::YES) {
-            throw new BusinessLogicException('当前商户没有API对接权限');
+            throw new BusinessLogicException('当前货主没有API对接权限');
         }
         $merchant = (new Merchant())->newQuery()->where('id', '=', $merchantApi->merchant_id)->first();
         if (empty($merchant)) {
-            throw new BusinessLogicException('商户不存在');
+            throw new BusinessLogicException('货主不存在');
         }
         $merchant->is_api = true;
         $this->user = $merchant;

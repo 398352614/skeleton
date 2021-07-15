@@ -66,7 +66,7 @@ trait CountryTrait
             $country = Arr::first($countryList, function ($country, $key) use ($name) {
                 return in_array($name, [$country['cn_name'], $country['en_name']]);
             }, '');
-            $newNameList[$name] = $country['short'];
+            $newNameList[$name] = $country['short'] ?? $name;
         }
         return $newNameList;
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\TransportPriceService;
+use App\Services\BaseConstService;
 
 /**
  * 运价管理
@@ -64,7 +65,12 @@ class TransportPriceController extends BaseController
      */
     public function status($id)
     {
-        return $this->service->status($id, $this->data);
+        $this->service->status($id, $this->data);
+        if ($this->data['status'] == BaseConstService::ON) {
+            $this->service->operationLog($id, BaseConstService::OPERATION_STATUS_ON);
+        } else {
+            $this->service->operationLog($id, BaseConstService::OPERATION_STATUS_OFF);
+        }
     }
 
     /**
@@ -78,5 +84,24 @@ class TransportPriceController extends BaseController
         return $this->service->getPriceResult($id, $this->data);
     }
 
+    /**
+     * 计算运费
+     * @param $id
+     * @return array|void
+     * @throws BusinessLogicException
+     */
+    public function priceCount($id)
+    {
+        return $this->service->priceCount($this->data, $id);
+    }
 
+    /**
+     * 查询日志
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function operationLogIndex($id)
+    {
+        return $this->service->operationLogIndex($id);
+    }
 }

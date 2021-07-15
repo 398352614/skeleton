@@ -22,8 +22,10 @@ class FeeResource extends JsonResource
             'level' => $this->level,
             'status' => $this->status,
             'status_name' => $this->status_name,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s')
+            'is_valuable'=>$this->is_valuable,
+            'payer'=>$this->payer,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at
         ];
     }
 }

@@ -94,16 +94,16 @@ class StockExceptionService extends BaseService
             'express_first_no' => $package['express_first_no'],
             'driver_id' => $trackingOrder['driver_id'],
             'driver_name' => $trackingOrder['driver_name'],
-            'remark' => __('取件失败，无法入库'),
+            'remark' => '取件失败，无法入库',
             'status' => BaseConstService::STOCK_EXCEPTION_STATUS_1,
         ];
         $rowCount = $this->getStockExceptionService()->create($data);
         $stockException = $rowCount->getAttributes();
         if ($rowCount === false) {
-            throw new BusinessLogicException('上报异常失败，请重新操作');
+            throw new BusinessLogicException('异常上报失败，请重新操作');
         }
         if (empty(CompanyTrait::getCompany()['stock_exception_verify']) || CompanyTrait::getCompany()['stock_exception_verify'] == BaseConstService::STOCK_EXCEPTION_VERIFY_2) {
-            return $this->autoDeal($stockException);
+            return $this->autoDeal($stockException,$params['ignore_rule'] ?? null);
         }
 
     }
@@ -111,16 +111,17 @@ class StockExceptionService extends BaseService
     /**
      * 自动处理
      * @param $stockException
+     * @param $ignoreRule
      * @return array
      * @throws BusinessLogicException
      */
-    public function autoDeal($stockException)
+    public function autoDeal($stockException,$ignoreRule)
     {
         if (empty($stockException)) {
             throw new BusinessLogicException('数据不存在');
         }
         if (intval($stockException['status']) !== BaseConstService::STOCK_EXCEPTION_STATUS_1) {
-            throw new BusinessLogicException('异常已处理或被拒绝');
+            throw new BusinessLogicException('异常已处理，请勿重复处理');
         }
         $rowCount = parent::updateById($stockException['id'], [
             'deal_remark' => __('调整为取件成功'),
@@ -129,7 +130,7 @@ class StockExceptionService extends BaseService
             'status' => BaseConstService::STOCK_EXCEPTION_STATUS_2,
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('处理失败，请重新操作');
+            throw new BusinessLogicException('异常处理失败，请重新操作');
         }
         //订单取消取派的情况，回取派中
         $statusList['order'] = BaseConstService::ORDER_STATUS_2;
@@ -143,7 +144,7 @@ class StockExceptionService extends BaseService
             throw new BusinessLogicException('订单不存在');
         }
         $this->getOrderService()->synchronizeStatusList($order['id'],true);
-        return $this->getStockService()->packagePickOut($stockException['express_first_no']);
+        return $this->getStockService()->allocate($stockException['express_first_no'],$ignoreRule);
     }
 
     /**
@@ -166,7 +167,7 @@ class StockExceptionService extends BaseService
         //更新运单
         $rowCount = $this->getTrackingOrderService()->update(['tracking_order_no' => $stockException['tracking_order_no']], ['status' => $statusList['tracking_order']]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('运单处理失败，请重新操作');
+            throw new BusinessLogicException('异常处理失败，请重新操作');
         }
         $trackingOrder = $this->getTrackingOrderService()->getInfoLock(['tracking_order_no' => $stockException['tracking_order_no']], ['*'], false);
         if (!empty($trackingOrder)) {
@@ -197,7 +198,7 @@ class StockExceptionService extends BaseService
                 //重新统计站点金额
                 $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
             }
-            //更新取件线路
+            //更新线路任务
             $tour = $this->getTourService()->getInfoLock(['tour_no' => $trackingOrder['tour_no']], ['*'], false);
             if (!empty($tour)) {
                 $tourData = [
@@ -206,9 +207,9 @@ class StockExceptionService extends BaseService
                 ];
                 $rowCount = $this->getTourService()->update(['tour_no' => $trackingOrder['tour_no']], $tourData);
                 if ($rowCount === false) {
-                    throw new BusinessLogicException('取件线路处理失败，请重新操作');
+                    throw new BusinessLogicException('线路任务处理失败，请重新操作');
                 }
-                //重新统计取件线路金额
+                //重新统计线路任务金额
                 $this->getTourService()->reCountAmountByNo($tour['tour_no']);
             }
         }

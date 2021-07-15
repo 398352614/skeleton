@@ -15,7 +15,7 @@ class DriverResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'                            =>$this->id,
+            'id'                            => $this->id,
             'email'                         => $this->email,
             'fullname'                      => $this->fullname,
             'gender'                        => $this->gender,
@@ -24,7 +24,7 @@ class DriverResource extends JsonResource
             'duty_paragraph'                => $this->duty_paragraph,
             'address'                       => $this->address,
             'country'                       => $this->country,
-            'country_name'                   => $this->country_name,
+            'country_name'                  => $this->country_name,
             'lisence_number'                => $this->lisence_number,
             'lisence_valid_date'            => !empty($this->lisence_valid_date) ? (string)$this->lisence_valid_date : null,
             'lisence_type'                  => $this->lisence_type,
@@ -38,8 +38,12 @@ class DriverResource extends JsonResource
             'bic'                           => $this->bic,
             'crop_type'                     => $this->crop_type,
             'is_locked'                     => $this->is_locked,
-            'is_locked_name'                =>$this->is_locked_name,
-            'created_at'                    =>(string)$this->created_at
+            'is_locked_name'                => $this->is_locked_name,
+            'created_at'                    => (string)$this->created_at,
+            'type'                          => $this->type,
+            'type_name'                     => $this->resource->getType($this->type),
+            'warehouse_id'                     => $this->warehouse_id,
+            'warehouse_name'                     => $this->warehouse_name
         ];
     }
 }

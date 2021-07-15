@@ -20,32 +20,35 @@ class OrderValidate extends BaseValidate
     public $rules = [
         'batch_no' => 'nullable|string|max:50',
         'out_group_order_no' => 'nullable|string|max:50',
-        'out_order_no' => 'nullable|string|max:50',
+        'out_order_no' => 'nullable|max:50',
         'execution_date' => 'nullable|date|after_or_equal:today',
         'second_execution_date' => 'nullable|date|after_or_equal:today',
-        'list_mode' => 'sometimes|required|in:1,2',
         'type' => 'required|integer|in:1,2,3',
-        'out_user_id' => 'nullable|integer',
+        'out_user_id' => 'nullable',
         'mask_code' => 'nullable|string|max:50',
         'nature' => 'nullable|integer|in:1,2,3,4,5',
-        'settlement_type' => 'required|in:1,2',
-        'settlement_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
+        'settlement_type' => 'required|in:1,2,3,4,5',
+        'settlement_amount' => 'nullable|numeric|gte:0',
         'replace_amount' => 'nullable|numeric|gte:0',
         'delivery' => 'nullable|integer|in:1,2',
         'place_fullname' => 'required|string|max:50',
-        'place_phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'place_phone' => 'required|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
+        'place_province' => 'nullable|string|max:50',
         'place_post_code' => 'required|string|max:50',
         'place_house_number' => 'required|string|max:50',
         'place_city' => 'required|string|max:50',
+        'place_district' => 'nullable|string|max:50',
         'place_street' => 'required|string|max:50',
         'place_address' => 'checkAddress|nullable|string|max:250',
         'place_lon' => 'nullable|string|max:50',
         'place_lat' => 'nullable|string|max:50',
         'second_place_fullname' => 'required_if:type,3|string|max:50',
-        'second_place_phone' => 'required_if:type,3|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'second_place_phone' => 'required_if:type,3|string|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
+        'second_place_province' => 'nullable|string|max:50',
         'second_place_post_code' => 'required_if:type,3|string|max:50',
         'second_place_house_number' => 'required_if:type,3|string|max:50',
         'second_place_city' => 'required_if:type,3|string|max:50',
+        'second_place_district' => 'nullable|string|max:50',
         'second_place_street' => 'required_if:type,3|string|max:50',
         'second_place_address' => 'checkAddress|nullable|string|max:250',
         'second_place_lon' => 'nullable|string|max:50',
@@ -62,6 +65,7 @@ class OrderValidate extends BaseValidate
         'package_list.*.express_first_no' => 'required_with:package_list|string|max:50|regex:/^[0-9a-zA-Z]([0-9a-zA-Z-])*[0-9a-zA-Z]$/',
         'package_list.*.express_second_no' => 'nullable|string|max:50',
         'package_list.*.is_auth' => 'sometimes|integer|in:1,2',
+        'package_list.*.expiration_date'=>'nullable|date|',
         //材料列表
         'material_list.*.name' => 'nullable|string|max:50',
         'material_list.*.code' => 'required_with:material_list|string|max:50',
@@ -71,6 +75,9 @@ class OrderValidate extends BaseValidate
 
         'order_no' => 'nullable|string|max:50',
         'order_no_list' => 'required|string',
+
+        'amount_list.*.expect_amount' => 'required_with:amount_list|gte:0',
+        'amount_list.*.type' => 'required_with:amount_list|integer|in:1,2,3,4,5,6,7,8,9,10,11',
     ];
 
     public $scene = [
@@ -86,9 +93,10 @@ class OrderValidate extends BaseValidate
             //备注
             'special_remark', 'remark',
             //包裹列表
-            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
+            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no','package_list.*.expiration_date',
             //材料列表
-            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
+            'amount_list.*.expect_amount','amount_list.*.type',
         ],
         'update' => [
             'merchant_id', 'execution_date', 'second_execution_date', 'mask_code',
@@ -102,9 +110,10 @@ class OrderValidate extends BaseValidate
             //备注
             'special_remark', 'remark',
             //包裹列表
-            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no',
+            'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no','package_list.*.expiration_date',
             //材料列表
-            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark'
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
+            'amount_list.*.expect_amount','amount_list.*.type',
         ],
         'updateSecondDate' => ['second_execution_date'],
         'updateAddressDate' => ['place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street','order_no','execution_date'],

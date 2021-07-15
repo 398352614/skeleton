@@ -14,6 +14,7 @@ use App\Models\Order;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Traits\ConstTranslateTrait;
+use Doctrine\DBAL\Driver\OCI8\Driver;
 
 class OrderService extends BaseService
 {
@@ -245,7 +246,7 @@ class OrderService extends BaseService
         }
         $trackingOrder = $trackingOrder->toArray();
         //2.当运单存在时，若运单不是取派完成或者取派失败,则表示已存在取派的运单
-        if (!in_array($trackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])) {
+        if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 && !in_array($trackingOrder['status'], [BaseConstService::TRACKING_ORDER_STATUS_5, BaseConstService::TRACKING_ORDER_STATUS_6])) {
             return null;
         }
         //3.当运单存在时，若运单为取派失败,则新增取派失败的运单
@@ -289,7 +290,7 @@ class OrderService extends BaseService
         $batchNoList = array_column($trackingOrderList, 'batch_no');
         $batchList = $this->getBatchService()->getList(['batch_no' => ['in', $batchNoList]], ['*'], false)->toArray();
         $batchList = array_create_index($batchList, 'batch_no');
-        //获取取件线路列表
+        //获取线路任务列表
         $tourNoList = array_column($trackingOrderList, 'tour_no');
         $tourList = $this->getTourService()->getList(['tour_no' => ['in', $tourNoList]], ['*'], false)->toArray();
         $tourList = array_create_index($tourList, 'tour_no');

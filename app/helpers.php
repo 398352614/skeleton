@@ -1,5 +1,7 @@
 <?php
 
+use App\Exceptions\BusinessLogicException;
+
 if (!function_exists('isJson')) {
     /**
      * 判断字符串是否是json
@@ -13,6 +15,29 @@ if (!function_exists('isJson')) {
     }
 }
 
+if (!function_exists('str_replace_limit')) {
+
+    function str_replace_limit($search, $replace, $subject, $limit = -1)
+    {
+
+        if (is_array($search)) {
+
+            foreach ($search as $k => $v) {
+
+                $search[$k] = '`' . preg_quote($search[$k], '`') . '`';
+
+            }
+
+        } else {
+
+            $search = '`' . preg_quote($search, '`') . '`';
+
+        }
+
+        return preg_replace($search, $replace, $subject, $limit);
+
+    }
+}
 
 if (!function_exists('failed')) {
     /**
@@ -39,7 +64,6 @@ if (!function_exists('success')) {
         return \App\Traits\ResponseTrait::response(200, $data, $message);
     }
 }
-
 
 if (!function_exists('array_create_group_index')) {
     /**
@@ -175,12 +199,18 @@ if (!function_exists('array_only_fields_sort')) {
     function array_only_fields_sort($data, $fields)
     {
         $newData = [];
-        if (collect($data)->has($fields)) {
-            foreach ($fields as $v) {
-                $newData[$v] = $data[$v];
+        $params = 2;
+        foreach ($fields as $v) {
+            if (!array_key_exists($v, $data)) {
+                $params = 1;
             }
-        } else {
+        }
+        if ($params == 1) {
             $newData = \Illuminate\Support\Arr::only($data, $fields);
+        } else {
+            foreach ($fields as $v) {
+                $newData[$v] = $data[$v] ?? '';
+            }
         }
         return $newData;
     }
@@ -236,5 +266,44 @@ if (!function_exists('have_special_char')) {
             }
         }
         return false;
+    }
+}
+
+if (!function_exists('number_format_simple')) {
+
+    /** 判断是否有表情字符
+     * @param $number
+     * @param int $decimals
+     * @param string $dec_point
+     * @param string $thousands_sep
+     * @return bool
+     */
+    function number_format_simple($number, $decimals = 2, $dec_point = '.', $thousands_sep = '')
+    {
+        return number_format($number, $decimals, $dec_point, $thousands_sep);
+    }
+}
+
+
+if (!function_exists('formatBytes')) {
+    /**
+     * 转换字节大小
+     * @param $bytes
+     * @param int $precision
+     * @return string
+     */
+    function formatBytes($bytes, $precision = 2): string
+    {
+        $units = array('B', 'KB', 'MB', 'GB', 'TB');
+
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+
+        // Uncomment one of the following alternatives
+        // $bytes /= pow(1024, $pow);
+        // $bytes /= (1 << (10 * $pow));
+
+        return round($bytes, $precision) . $units[$pow];
     }
 }

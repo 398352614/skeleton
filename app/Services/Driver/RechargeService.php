@@ -9,6 +9,7 @@ use App\Models\MerchantApi;
 use App\Models\Recharge;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -37,8 +38,21 @@ class RechargeService extends BaseService
      */
     public function getPageList()
     {
+        if (!empty($this->formData['recharge_statistics_status'])) {
+            $rechargeStatisticsList = $this->getRechargeStatisticsService()->getList(['driver_id' => auth()->user()->id], ['*'], false);
+            $tourList = $rechargeStatisticsList->where('status', $this->formData['recharge_statistics_status'])->pluck('tour_no')->toArray();
+            $this->query->whereIn('tour_no', $tourList);
+        }
         $this->query->where('company_id', auth()->user()->company_id)->where('driver_id', auth()->user()->id)->where(['status' => BaseConstService::RECHARGE_STATUS_3])->orderByDesc('updated_at');
-        return parent::getPageList();
+        $data = parent::getPageList();
+        foreach ($data as $k => $v) {
+            $rechargeStatistics = $this->getRechargeStatisticsService()->getInfo(['id' => $v['recharge_statistics_id']], ['*'], false);
+            if (!empty($rechargeStatistics)) {
+                $data[$k]['recharge_statistics_status'] = $rechargeStatistics->toArray()['status'];
+                $data[$k]['recharge_statistics_status_name'] = ConstTranslateTrait::rechargeStatisticsStatusList($data[$k]['recharge_statistics_status']);
+            }
+        }
+        return $data;
     }
 
     /**
@@ -66,18 +80,18 @@ class RechargeService extends BaseService
     {
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id'], 'status' => BaseConstService::RECHARGE_STATUS_1], ['*'], false);
         if (empty($merchant)) {
-            throw new BusinessLogicException('该商户未开启充值业务');
+            throw new BusinessLogicException('该货主未开启充值业务');
         }
         $merchantApi = MerchantApi::query()->where('merchant_id', $params['merchant_id'])->where('recharge_status', BaseConstService::MERCHANT_RECHARGE_STATUS_1)->first();
         if (empty($merchantApi['url']) || empty($merchantApi['secret']) || empty($merchantApi['key'])) {
-            throw new BusinessLogicException('该商户未开启充值业务');
+            throw new BusinessLogicException('该货主未开启充值业务');
         }
         $tour = $this->getTourService()->getInfo(['driver_id' => auth()->user()->id, 'status' => BaseConstService::TOUR_STATUS_4], ['*'], false);
-        if(empty($tour)){
+        if (empty($tour)) {
             throw new BusinessLogicException('线路未出库，无法进行现金充值');
         }
-        $trackingOrderList=$this->getTrackingOrderService()->getList(['tour_no'=>$tour['tour_no']],['*'],false);
-        if($trackingOrderList->isEmpty()){
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['*'], false);
+        if ($trackingOrderList->isEmpty()) {
             throw new BusinessLogicException('数据不存在');
         }
         $params = Arr::only($params, ['merchant_id', 'out_user_name']);
@@ -86,7 +100,7 @@ class RechargeService extends BaseService
         //请求第三方
         $curl = new CurlClient();
         $res = $curl->merchantPost($merchantApi, $data);
-        Log::info('返回值', $res ?? []);
+        Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['out_user_id']) || empty($res['data']['phone'] || empty($res['data']['email']))) {
             throw new BusinessLogicException('客户不存在，请检查客户编码是否正确');
         } else {
@@ -98,10 +112,11 @@ class RechargeService extends BaseService
             $params['out_user_phone'] = $res['data']['phone'];
             $params['recharge_date'] = Carbon::today()->format('Y-m-d');
             $params['driver_verify_status'] = BaseConstService::RECHARGE_DRIVER_VERIFY_STATUS_1;
-            $params['tour_no']=$tour['tour_no'];
-            $params['execution_date']=$tour['execution_date'];
-            $params['line_id']=$tour['line_id'];
-            $params['line_name']=$tour['line_name'];
+            $params['tour_no'] = $tour['tour_no'];
+            $params['execution_date'] = $tour['execution_date'];
+            $params['line_id'] = $tour['line_id'];
+            $params['line_name'] = $tour['line_name'];
+            $params = Arr::except($params, 'verify_date');
             $row = parent::create($params);
             if ($row == false) {
                 throw new BusinessLogicException('拉取第三方用户信息失败');
@@ -131,11 +146,11 @@ class RechargeService extends BaseService
             throw new BusinessLogicException('充值已完成，请勿重复充值');
         }
         if ($params['verify_phone_end'] !== substr($info['out_user_phone'], -4)) {
-            throw new BusinessLogicException('手机尾号验证失败，请重新输入');
+            throw new BusinessLogicException('验证失败');
         }
         $row = parent::update(['recharge_no' => $params['recharge_no']], ['status' => BaseConstService::MERCHANT_RECHARGE_STATUS_2]);
         if ($row == false) {
-            throw new BusinessLogicException('验证操作失败');
+            throw new BusinessLogicException('验证失败');
         }
         return;
     }
@@ -174,21 +189,19 @@ class RechargeService extends BaseService
         $curl = new CurlClient();
         $merchant = MerchantApi::query()->where('merchant_id', $params['merchant_id'])->where('recharge_status', BaseConstService::MERCHANT_RECHARGE_STATUS_1)->first();
         if (empty($merchant)) {
-            throw new BusinessLogicException('该商户未开启充值业务');
+            throw new BusinessLogicException('该货主未开启充值业务');
         }
         $merchantApi = MerchantApi::query()->where('merchant_id', $params['merchant_id'])->where('recharge_status', BaseConstService::MERCHANT_RECHARGE_STATUS_1)->first();
         if (empty($merchantApi['url']) || empty($merchantApi['secret']) || empty($merchantApi['key'])) {
-            throw new BusinessLogicException('该商户未开启充值业务');
+            throw new BusinessLogicException('该货主未开启充值业务');
         }
         $res = $curl->merchantPost($merchant, $data);
-        Log::info('返回值', $res);
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', $res);
         /*        $res['data']['ret']=1;
                 $res['data']['transaction_number']=110;*/
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1) || empty($res['data']) || empty($res['data']['transaction_number'])) {
             $row = parent::update(['id' => $info['id']], ['status' => BaseConstService::RECHARGE_STATUS_2]);
-            if ($row == false) {
-                Log::info('充值失败，充值记录失败', $res);
-            }
+
             throw new BusinessLogicException('充值失败');
         } elseif ($res['ret'] == 3) {
             throw new BusinessLogicException('充值请求已过期，请重新充值');
@@ -199,9 +212,6 @@ class RechargeService extends BaseService
                 'recharge_time' => now(),
                 'recharge_date' => Carbon::today()->format('Y-m-d'),
             ]));
-            if ($row == false) {
-                Log::info('充值成功，充值记录失败', $res);
-            }
             //充值统计
             $info = $info->toArray();
             $rechargeStatisticsId = $this->getRechargeStatisticsService()->rechargeStatistics($info);

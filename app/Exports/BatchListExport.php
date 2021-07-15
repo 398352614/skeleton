@@ -14,17 +14,17 @@ use Maatwebsite\Excel\Events\AfterSheet;
 // 设置工作䈬名称
 // 在工作表流程结束时会引发事件
 
-class BatchListExport implements FromArray, WithTitle, WithEvents, WithStrictNullComparison,WithHeadings
+class BatchListExport implements FromArray, WithTitle, WithEvents, WithStrictNullComparison, WithHeadings
 {
     private $data;
     private $tour_no;
     protected $headings;
 
-    public function __construct($tour_no,$data,$headings)
+    public function __construct($tour_no, $data, $headings)
     {
-        $this->data =$data;
-        $this->tour_no =$tour_no;
-        $this->headings =$headings;
+        $this->data = $data;
+        $this->tour_no = $tour_no;
+        $this->headings = $headings;
     }
 
     public function array(): array
@@ -36,8 +36,8 @@ class BatchListExport implements FromArray, WithTitle, WithEvents, WithStrictNul
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function(AfterSheet $event) {
-                    // 合并单元格
+            AfterSheet::class => function (AfterSheet $event) {
+                // 合并单元格
                 //$event->sheet->getDelegate()->setMergeCells(['A1:O1', 'A2:C2', 'D2:O2']);
                 // 冻结窗格
                 //$event->sheet->getDelegate()->freezePane('A1');
@@ -48,7 +48,7 @@ class BatchListExport implements FromArray, WithTitle, WithEvents, WithStrictNul
                 //设置单元格内容垂直居中
                 $event->sheet->getDelegate()->getStyle('A1:L100')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                 // 定义列宽度
-                $widths = ['A' => 5, 'B' => 15, 'C' => 15,'D'=>15,'E'=>25,'F'=>15,'G'=>15,'H'=>10,'I'=>10,'J'=>10,'K'=>15,'L'=>15];
+                $widths = ['A' => 5, 'B' => 15, 'C' => 15, 'D' => 15, 'E' => 25, 'F' => 15, 'G' => 15, 'H' => 10, 'I' => 10, 'J' => 10, 'K' => 15, 'L' => 15];
                 foreach ($widths as $k => $v) {
                     $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                 }

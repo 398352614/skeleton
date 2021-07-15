@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Api\Merchant;
 
 use App\Http\Controllers\BaseController;
-use App\Services\OrderTrailService;
-use App\Services\TrackingOrderTrailService;
+use App\Services\Merchant\OrderTrailService;
 
 /**
  * Class OrderTrailController
@@ -14,16 +13,23 @@ use App\Services\TrackingOrderTrailService;
 class OrderTrailController extends BaseController
 {
     /**
-     * @var TrackingOrderTrailService
+     * @var OrderTrailService
      */
     public $service;
 
+    /**
+     * OrderTrailController constructor.
+     * @param OrderTrailService $service
+     */
     public function __construct(OrderTrailService $service)
     {
-        $this->service = $service;
+        parent::__construct($service);
     }
 
     /**
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @throws \App\Exceptions\BusinessLogicException
      * @api {GET}  api/admin/ order-trail 管理员端:车辆列表
      * @apiName index
      * @apiGroup admin-car
@@ -39,8 +45,8 @@ class OrderTrailController extends BaseController
      *  "data":{}
      * }
      */
-    public function index($orderNo)
+    public function show($id)
     {
-        return $this->service->index($orderNo);
+        return $this->service->show($id);
     }
 }

@@ -46,11 +46,42 @@ class CompanyConfigController extends BaseController
 
     /**
      * 更新
-     * @param $params
      * @throws BusinessLogicException
      */
     public function update()
     {
         return $this->service->createOrUpdate($this->data);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function unit_show()
+    {
+        return $this->service->getUnitConfig();
+    }
+
+    /**
+     * @return int
+     */
+    public function unit_update()
+    {
+        return $this->service->setUnitConfig($this->data);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function rule_show()
+    {
+        return $this->service->getRuleConfig();
+    }
+
+    /**
+     * @return int
+     */
+    public function rule_update()
+    {
+        return $this->service->setRuleConfig($this->data);
     }
 }

@@ -83,7 +83,7 @@ class HolidayController extends BaseController
     }
 
     /**
-     * 新增商户列表
+     * 新增货主列表
      * @param $id
      * @throws \App\Exceptions\BusinessLogicException
      */
@@ -93,7 +93,7 @@ class HolidayController extends BaseController
     }
 
     /**
-     * 删除商户
+     * 删除货主
      * @param $id
      * @throws \App\Exceptions\BusinessLogicException
      */

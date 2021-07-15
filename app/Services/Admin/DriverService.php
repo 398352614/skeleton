@@ -16,7 +16,8 @@ class DriverService extends BaseService
     public $filterRules = [
         'status' => ['=', 'status'],
         'email' => ['=', 'email'],
-        'phone' => ['=', 'phone']
+        'phone' => ['=', 'phone'],
+        'fullname' => ['like', 'fullname']
     ];
 
     public function __construct(Driver $driver)
@@ -37,6 +38,13 @@ class DriverService extends BaseService
      */
     public function updateById($id, $data)
     {
+        if (!empty($data['warehouse_id'])) {
+            $warehouse = $this->getWareHouseService()->getInfo(['id' => $data['warehouse_id']], ['*'], false);
+            if (empty($warehouse)) {
+                throw new BusinessLogicException('网点不存在');
+            }
+            $data['warehouse_name'] = $warehouse['name'];
+        }
         $data = Arr::except($data, 'password');
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
@@ -51,15 +59,15 @@ class DriverService extends BaseService
      */
     public function destroy($id)
     {
-        $tourList = $this->getTourService()->getList(['driver_id' => $id],['*'],false)->toArray();
-        foreach ($tourList as $v){
+        $tourList = $this->getTourService()->getList(['driver_id' => $id], ['*'], false)->toArray();
+        foreach ($tourList as $v) {
             if (in_array($v['status'], [BaseConstService::TOUR_STATUS_4, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_2])) {
                 throw new BusinessLogicException('仍有未完成的任务，无法删除');
             }
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('司机删除失败');
+            throw new BusinessLogicException('删除失败');
         }
     }
 
@@ -69,8 +77,16 @@ class DriverService extends BaseService
      */
     public function driverRegister()
     {
+        if (empty($this->formData['warehouse_id'])) {
+            $warehouse = $this->getWareHouseService()->getInfo(['company_id' => auth()->user()->id, 'parent' => 0], ['*'], false);
+            if (empty($warehouse)) {
+                throw new BusinessLogicException('网点不存在');
+            }
+        }
         $driver = [
             'email' => $this->formData['email'],
+            'warehouse_id' => $this->formData['warehouse_id'],
+            'warehouse_name' => $warehouse['name'] ?? '',
             'password' => Hash::make($this->formData['password']),
             'fullname' => $this->formData['fullname'],
             'gender' => $this->formData['gender'],
@@ -80,7 +96,7 @@ class DriverService extends BaseService
             'address' => $this->formData['address'] ?? '',
             'country' => CompanyTrait::getCountry(),
             'lisence_number' => $this->formData['lisence_number'] ?? '',
-            'lisence_valid_date' => $this->formData['lisence_valid_date'] ?? null,
+            'lisence_valid_date' => empty($this->formData['lisence_valid_date']) ? null : $this->formData['lisence_valid_date'],
             'lisence_type' => $this->formData['lisence_type'] ?? null,
             'lisence_material' => $this->formData['lisence_material'] ?? '',
             'lisence_material_name' => $this->formData['lisence_material_name'] ?? '',
@@ -90,12 +106,13 @@ class DriverService extends BaseService
             'bank_name' => $this->formData['bank_name'] ?? '',
             'iban' => $this->formData['iban'] ?? '',
             'bic' => $this->formData['bic'] ?? '',
+            'type' => $this->formData['type'] ?? '',
             // 'crop_type'             => $this->formData['crop_type'],
         ];
 
         $rowCount = parent::create($driver);
         if ($rowCount === false) {
-            throw new BusinessLogicException('司机新增失败');
+            throw new BusinessLogicException('新增失败');
         }
     }
 
@@ -109,19 +126,25 @@ class DriverService extends BaseService
 
     public function getPageList()
     {
+        $date = null;
+        //如果查询条件中有线路任务，1查询取派日期，2查到这个取派日期的所有线路任务，3把已经在其他线路任务的司机排除。就是这条线路任务可选的司机。
         if (!empty($this->formData['tour_no'])) {
-            $date = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
-            if(empty($date)){
-                $date=$date->toArray()['execution_date'];
-            }else{
-                $date='';
+            $tour = Tour::query()->where('tour_no', $this->formData['tour_no'])->first();
+            if (!empty($tour)) {
+                $date = $tour->toArray()['execution_date'];
             }
-            $info = Tour::query()->where('execution_date', $date)->where('status', '<>', BaseConstService::TOUR_STATUS_5)->whereNotNull('driver_id')->pluck('driver_id')->toArray();
-            if (!empty($info)) {
-                $this->query->whereNotIn('id', $info);
+            $driverIdList = Tour::query()->where('execution_date', $date)->where('status', '<>', BaseConstService::TOUR_STATUS_5)->whereNotNull('driver_id')->pluck('driver_id')->toArray();
+            if (!empty($driverIdList)) {
+                $this->query->whereNotIn('id', $driverIdList);
             }
             $this->query->where('is_locked', '=', BaseConstService::DRIVER_TO_NORMAL);
         }
-        return parent::getPageList();
+        $this->query->orderByDesc('id');
+        $data = parent::getPageList();
+        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $data->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id')->toArray();
+        foreach ($data as $k => $v) {
+            $data[$k]['warehouse_name'] = $warehouseList[$v['warehouse_id']]['name'] ?? '';
+        }
+        return $data;
     }
 }

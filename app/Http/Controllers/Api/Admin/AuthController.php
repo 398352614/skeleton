@@ -42,12 +42,27 @@ class AuthController extends Controller
             throw new BusinessLogicException('用户名或密码错误！');
         }
 
-        if (auth('admin')->user()->forbid_login === 1) {
+        if (auth('admin')->user()->forbid_login == 1) {
             auth('admin')->logout();
 
             throw new BusinessLogicException('账户已被禁用，请联系管理员！');
         }
         return $this->respondWithToken($token);
+    }
+
+    public function validation()
+    {
+        $validate = [];
+        $cnValidate = include base_path('resources/lang/cn/validation.php');
+        $cnValidate = array_flip($cnValidate['attributes']);
+        $enValidate = include base_path('resources/lang/en/validation.php');
+        $enValidate = $enValidate['attributes'];
+        foreach ($cnValidate as $k => $v) {
+            $validate[$k] = $enValidate[$v] ?? $v;
+        }
+        $translate = file_get_contents(base_path('resources/lang/en.json'));
+        $translate = collect(json_decode($translate))->toArray();
+        return array_merge($translate, $validate);
     }
 
     /**
@@ -91,7 +106,7 @@ class AuthController extends Controller
     {
         auth('admin')->logout();
 
-        return '注销成功！';
+        return __('注销成功');
     }
 
     /**
@@ -202,6 +217,25 @@ class AuthController extends Controller
         auth('admin')->refresh(true);
         if ($res) {
             auth('admin')->logout();
+        }
+        return success();
+    }
+
+    /**
+     * 修改时区
+     * @param Request $request
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function updateTimezone(Request $request)
+    {
+        $data = $request->all();
+        if (empty($data['timezone'])) {
+            throw new BusinessLogicException('时区 必填');
+        }
+        $res = Employee::query()->where('id', auth()->user()->id)->update(['timezone' => $data['timezone']]);
+        if ($res == false) {
+            throw new BusinessLogicException('切换时区失败');
         }
         return success();
     }

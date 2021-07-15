@@ -13,7 +13,7 @@ class FillTrackingOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'tracking-order:fill';
+    protected $signature = 'fill:tracking-order';
 
     /**
      * The console command description.

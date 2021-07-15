@@ -2,6 +2,8 @@
 
 namespace App\Exports;
 
+use App\Models\Merchant;
+use App\Traits\ConstTranslateTrait;
 use App\Traits\FactoryInstanceTrait;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -90,7 +92,6 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                 }
                 //设置字体大小
                 $event->sheet->getDelegate()->getStyle('A1:' . $endColumn . '1')->getFont()->setSize(12);
-
                 /*********************************订单导入模板*****************************/
                 if ($this->title === 'template') {
                     //冻结单元格
@@ -105,8 +106,8 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     $event->sheet->getDelegate()->getStyle('H1:H102')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
                     $event->sheet->getDelegate()->getStyle('I1:I102')->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
                     //$countryList=implode(',',collect(self::getInstance(CommonService::class)->getCountryList())->pluck('name')->toArray());
-                    $typeList = implode(',', [__('取件'), __('派件')]);
-                    $settlementList = implode(',', [__('寄付'), __('到付')]);
+                    $typeList = implode(',', [__('提货'), __('配送')]);
+                    $settlementList = implode(',', [__('现付'), __('回单付'), __('周结'), __('月结'), __('免费')]);
                     $deliveryList = implode(',', [__('是'), __('否')]);
                     $itemList = implode(',', [__('包裹'), __('材料')]);
                     for ($i = 0; $i < 100; $i++) {
@@ -306,18 +307,18 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     $column = [
                         'A' => 15,
                         'B' => 10,
-                        'C' => 10,
+                        'C' => 15,
                         'D' => 15,
                         'E' => 10,
                         'F' => 10,
                         'G' => 15,
                         'H' => 10,
-                        'I' => 5,
+                        'I' => 10,
                         'J' => 10,
                         'K' => 10,
                         'L' => 5,
                         'M' => 10,
-                        'N' => 15,
+                        'N' => 20,
                         'O' => 5,
                         'P' => 15,
                         'Q' => 5,
@@ -328,6 +329,27 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     ];
                     foreach ($column as $k => $v) {
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
+                    }
+                }
+                if ($this->type === 'addressExcelExport') {
+                    //下拉
+                    $arrayList = [
+                        'A' => implode(',', array_values(ConstTranslateTrait::addressTypeList())),
+                    ];
+                    foreach ($arrayList as $k => $v) {
+                        for ($i = 0; $i < 200; $i++) {
+                            $event->sheet->getDelegate()->getcell($k . ($i + 2))->getDataValidation()->setType(DataValidation::TYPE_LIST)
+                                ->setErrorStyle(DataValidation::STYLE_INFORMATION)
+                                ->setAllowBlank(true)
+                                ->setShowInputMessage(true)
+                                ->setShowErrorMessage(true)
+                                ->setShowDropDown(true)
+                                ->setErrorTitle(__('输入的值有误'))
+                                ->setError(__('输入的值有误'))
+                                ->setPromptTitle('')
+                                ->setPrompt('')
+                                ->setFormula1('"' . $v . '"');
+                        }
                     }
                 }
             }

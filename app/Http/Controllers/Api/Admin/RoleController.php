@@ -20,11 +20,19 @@ use App\Services\Admin\RoleService;
  */
 class RoleController extends BaseController
 {
+    /**
+     * RoleController constructor.
+     * @param  RoleService  $service
+     * @param  array  $exceptMethods
+     */
     public function __construct(RoleService $service, $exceptMethods = [])
     {
         parent::__construct($service, $exceptMethods);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function index()
     {
         return $this->service->getPageList();
@@ -47,7 +55,6 @@ class RoleController extends BaseController
 
     /**
      * 新增
-     * @param $params
      * @throws BusinessLogicException
      */
     public function store()

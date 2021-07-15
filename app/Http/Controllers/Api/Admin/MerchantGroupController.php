@@ -7,7 +7,7 @@ use App\Http\Controllers\BaseController;
 use App\Services\Admin\MerchantGroupService;
 
 /**
- * 商户组 列表
+ * 货主组 列表
  * Class OrderController
  * @package App\Http\Controllers\Api\Admin
  * @property MerchantGroupService $service

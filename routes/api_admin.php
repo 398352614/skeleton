@@ -30,6 +30,8 @@ Route::namespace('Api\Admin')->group(function () {
     Route::get('/tour/callback', 'TourController@callback');
     // 取消 redis 锁
     Route::get('/tour/unlock-redis', 'TourController@unlockRedis');
+    // 翻译
+    Route::get('/translate', 'AuthController@validation');
 });
 
 //认证
@@ -42,6 +44,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::put('my-password', 'AuthController@updatePassword');
     //获取当前用户权限
     Route::get('/permission', 'AuthController@getPermission');
+    //切换时区
+    Route::put('/timezone', 'AuthController@updateTimezone');
 
     //主页统计
     Route::prefix('statistics')->group(function () {
@@ -57,15 +61,22 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/last-month', 'HomeController@lastMonthCount')->name('statistics.home');
         //时间段统计
         Route::get('/period', 'HomeController@periodCount')->name('statistics.home');
-        //商户统计详情
+        //货主统计详情
         Route::get('/merchant', 'HomeController@merchantCount')->name('statistics.home');
-        //商户统计概览
+        //货主统计概览
         Route::get('/merchant-total', 'HomeController@merchantTotalCount')->name('statistics.home');
-    });
-
-    //订单管理
-    Route::prefix('order-import')->group(function () {
-
+        //今日概览
+        Route::get('/today-overview', 'HomeController@todayOverview')->name('statistics.home');
+        //任务结果概览
+        Route::get('/result-overview', 'HomeController@resultOverview')->name('statistics.home');
+        //订单分析
+        Route::get('/order-analysis', 'HomeController@orderAnalysis')->name('statistics.home');
+        //获取快捷方式列表
+        Route::get('/short-cut', 'HomeController@getShortCut')->name('statistics.home');
+        //预约任务
+        Route::get('/reservation', 'HomeController@reservation')->name('statistics.home');
+        //流程图
+        Route::get('/flow', 'HomeController@flow')->name('statistics.home');
     });
 
     //订单管理
@@ -85,18 +96,20 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //模板导出
         Route::get('/template', 'OrderImportController@templateExport')->name('order.template-export');
         //批量导入
-        Route::post('/import', 'OrderController@import')->name('order.import-list');
+        Route::post('/import', 'OrderImportController@import')->name('order.import-list');
         //批量新增
-        Route::post('/list', 'OrderController@storeByList')->name('order.store-list');
+        Route::post('/list', 'OrderImportController@storeByList')->name('order.store-list');
         //获取订单的运单列表
         Route::get('/{id}/tracking-order', 'OrderController@getTrackingOrderList')->name('order.index');
+        //获取订单的运单轨迹列表
+        Route::get('/{id}/tracking-order-trail', 'OrderController@getTrackingOrderTrailList')->name('order.tracking-order-trail');
         //订单轨迹
         Route::get('/{order_no}/trail', 'OrderTrailController@index')->name('order.trail');
         //修改
         Route::put('/{id}', 'OrderController@update')->name('order.update');
-        //获取再次取派信息
+        //获取继续派送(再次取派)信息
         Route::get('/{id}/again-info', 'OrderController@getAgainInfo')->name('order.again');
-        //再次取派
+        //继续派送(再次取派)
         Route::put('/{id}/again', 'OrderController@again')->name('order.again');
         //终止派送
         Route::put('/{id}/end', 'OrderController@end')->name('order.end');
@@ -106,6 +119,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/list', 'OrderController@destroyAll')->name('order.destroy');
         //批量打印
         Route::get('/pdf', 'OrderController@orderPrintAll')->name('order.print');
+        //批量打印面单
+        Route::get('/bill', 'OrderController@orderBillPrint')->name('order.print');
         //订单导出表格
         Route::get('/excel', 'OrderController@orderExport')->name('order.export');
         //同步订单状态列表
@@ -114,6 +129,68 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/third-party-log', 'ThirdPartyLogController@index')->name('order.third-party-log');
         //无效化已完成订单（用以新增同号订单）
         Route::get('/{id}/neutralize', 'OrderController@neutralize')->name('order.neutralize');
+        //运价估算
+        Route::post('/price-count', 'OrderController@priceCount')->name('order.price-count');
+        //获取网点
+        Route::get('/warehouse', 'OrderController@getWarehouse')->name('order.store');
+        //通过地址获取可分配的路线日期列表
+        Route::get('/get-date', 'OrderController@getAbleDateListByAddress');
+    });
+
+    //订单客服
+    Route::prefix('order-customer')->group(function () {
+        //客服记录列表
+        Route::get('/', 'OrderCustomerRecordController@list')->name('order.customer');
+        //客服记录新增
+        Route::post('/', 'OrderCustomerRecordController@store')->name('order.create-customer');
+        //客服记录删除
+        Route::delete('/{id}', 'OrderCustomerRecordController@delete')->name('order.delete-customer');
+    });
+
+    //订单导入
+    Route::prefix('order-import')->group(function () {
+        //获取模板
+        Route::get('/template', 'OrderImportController@templateExport')->name('order.import-list');
+        //导入
+        Route::post('/', 'OrderImportController@import')->name('order.import-list');
+        //检查
+        Route::post('/check', 'OrderImportController@importCheck')->name('order.import-list');
+        //批量新增
+        Route::post('/list', 'OrderImportController@createByList')->name('order.import-list');
+    });
+
+    //订单回单
+    Route::prefix('order-receipt')->group(function () {
+        //回单列表
+        Route::get('/', 'OrderReceiptController@list')->name('order.receipt');
+        //回单新增
+        Route::post('/', 'OrderReceiptController@store')->name('order.create-receipt');
+        //回单更新
+        Route::put('/{id}', 'OrderReceiptController@update')->name('order.update-receipt');
+        //回单删除
+        Route::delete('/{id}', 'OrderReceiptController@delete')->name('order.delete-receipt');
+    });
+
+    //订单默认配置
+    Route::prefix('order-config')->group(function () {
+        //获取配置
+        Route::get('/', 'OrderDefaultConfigController@detail')->name('order-default-config.show');
+        //更新配置
+        Route::put('/', 'OrderDefaultConfigController@update')->name('order-default-config.update');
+    });
+
+    //订单费用管理
+    Route::prefix('order-amount')->group(function () {
+        //查询
+        Route::get('/', 'OrderAmountController@index')->name('order.index');
+        //详情
+        Route::get('/{id}', 'OrderAmountController@show')->name('order.index');
+        //新增
+        Route::post('/', 'OrderAmountController@store')->name('order.index');
+        //修改
+        Route::put('/{id}', 'OrderAmountController@update')->name('order.index');
+        //删除
+        Route::delete('/{id}', 'OrderAmountController@destroy')->name('order.index');
     });
 
     //物流查询
@@ -122,6 +199,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/order/{order_no}', 'OrderTrailController@index')->name('trail.index');
         //列表查询
         Route::get('/tracking-order/{tracking_order_no}', 'TrackingOrderTrailController@index')->name('trail.index');
+        //列表查询
+        Route::get('/package/{express_first_no}', 'PackageTrailController@index')->name('trail.index');
     });
 
     //订单轨迹管理
@@ -134,6 +213,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     Route::prefix('tracking-order-trail')->group(function () {
         //列表查询
         Route::get('/{tracking_order_no}', 'TrackingOrderTrailController@index')->name('tracking-order-trail.index');
+        //列表新增
+        Route::post('/{tracking_order_no}', 'TrackingOrderTrailController@store')->name('order.tracking-order-trail-store');
+        //列表查询
+        Route::delete('/{id}', 'TrackingOrderTrailController@destroy')->name('order.tracking-order-trail-destroy');
     });
 
     Route::prefix('package')->group(function () {
@@ -143,6 +226,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'PackageController@show')->name('package.show');
         //填充包裹信息
         Route::put('fill-package', 'PackageController@fillWeightInfo');
+    });
+
+    Route::prefix('package-trail')->group(function () {
+        //列表查询
+        Route::get('/', 'PackageTrailController@index')->name('package.index');
     });
 
     //库存管理
@@ -202,9 +290,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}/remove-batch', 'TrackingOrderController@removeFromBatch')->name('tracking-order.remove-batch');
         //批量运单从站点移除
         Route::delete('/remove-batch', 'TrackingOrderController@removeListFromBatch')->name('tracking-order.remove-batch');
-        //获取可加单取件线路
+        //获取可加单线路任务
         Route::get('/get-tour', 'TourController@getAddOrderPageList')->name('tracking-order.assign-tour');
-        //批量运单分配至指定取件线路
+        //批量运单分配至指定线路任务
         Route::put('/assign-tour', 'TrackingOrderController@assignListTour')->name('tracking-order.assign-tour');
         //批量打印
         Route::get('/print', 'TrackingOrderController@orderPrintAll')->name('tracking-order.print');
@@ -269,10 +357,66 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
 
     //智能管车
     Route::prefix('car-management')->group(function () {
-        //todo 车辆追踪
+        //车辆追踪
         Route::get('/track', 'RouteTrackingController@show')->name('car-management.index');
-        //todo 所有车辆追踪
+        //所有车辆追踪
         Route::get('/all-track', 'RouteTrackingController@index')->name('car-management.index');
+    });
+
+    //车辆事故
+    Route::prefix('car-accident')->group(function () {
+        //车辆事故列表
+        Route::get('/', 'CarAccidentController@index')->name('car-accident.index');
+        //车辆事故新增
+        Route::post('/', 'CarAccidentController@store')->name('car-accident.store');
+        //车辆事故详情
+        Route::get('/{id}', 'CarAccidentController@detail')->name('car-accident.detail');
+        //车辆事故更新
+        Route::put('/{id}', 'CarAccidentController@update')->name('car-accident.update');
+        //批量删除
+        Route::delete('/list', 'CarAccidentController@destroyAll')->name('car-accident.destroy');
+    });
+
+    //车辆维护
+    Route::prefix('car-maintain')->group(function () {
+        //车辆维护列表
+        Route::get('/', 'CarMaintainController@index')->name('car-maintain.index');
+        //车辆维护新增
+        Route::post('/', 'CarMaintainController@store')->name('car-maintain.store');
+        //车辆维护详情
+        Route::get('/{id}', 'CarMaintainController@detail')->name('car-maintain.detail');
+        //车辆维护更新
+        Route::put('/{id}', 'CarMaintainController@update')->name('car-maintain.update');
+        //维护数据导出
+        Route::get('/export', 'CarMaintainController@export')->name('car-maintain.export');
+        //批量删除
+        Route::delete('/list', 'CarMaintainController@destroyAll')->name('car-maintain.destroy');
+        //批量收票
+        Route::put('/ticket', 'CarMaintainController@ticketAll')->name('car-maintain.ticket');
+    });
+
+    //备品管理
+    Route::prefix('spare-parts')->group(function () {
+        //备品列表
+        Route::get('/', 'SparePartsController@index')->name('spare-parts.index');
+        //备品新增
+        Route::post('/', 'SparePartsController@store')->name('spare-parts.store');
+        //备品修改
+        Route::put('/{id}', 'SparePartsController@update')->name('spare-parts.update');
+        //备品删除
+        Route::delete('/{id}', 'SparePartsController@delete')->name('spare-parts.delete');
+        //新增初始化
+        Route::get('/init', 'SparePartsController@init')->name('spare-parts.init');
+        //库存列表
+        Route::get('/stock', 'SparePartsStockController@index')->name('spare-parts.stock');
+        //新增入库
+        Route::post('/stock', 'SparePartsStockController@store')->name('spare-parts.createStock');
+        //领用记录
+        Route::get('/record', 'SparePartsRecordController@index')->name('spare-parts.record');
+        //备品领取
+        Route::post('/record', 'SparePartsRecordController@store')->name('spare-parts.createRecord');
+        //领取作废
+        Route::put('/record/{id}', 'SparePartsRecordController@invalid')->name('spare-parts.invalid');
     });
 
     //设备管理
@@ -307,11 +451,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/get-date', 'BatchController@getDateList')->name('batch.assign-tour');
         //根据线路规则获取线路
         Route::get('/get-line', 'BatchController@getLineList')->name('batch.assign-tour');
-        //获取取件线路列表
+        //获取线路任务列表
         Route::get('/{id}/get-tour', 'BatchController@getTourList')->name('batch.assign-tour');
-        //分配站点至取件线路
+        //分配站点至线路任务
         Route::put('/{id}/assign-tour', 'BatchController@assignToTour')->name('batch.assign-tour');
-        //批量分配站点至取件线路
+        //批量分配站点至线路任务
         Route::put('/assign-tour', 'BatchController@assignListToTour')->name('batch.assign-tour');
         //移除站点
         Route::delete('/{id}/remove', 'BatchController@removeFromTour')->name('batch.remove');
@@ -358,7 +502,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}/plan-excel', 'TourController@planExport')->name('tour.intelligent-scheduling');
         //获取可分配日期
         Route::get('/{id}/get-date', 'TourController@getLineDate')->name('tour.assign');
-        //获取可加入的取件线路列表
+        //获取可加入的线路任务列表
         Route::get('/by-line', 'TourController@getListJoinByLineId')->name('tour.assign');
         //分配线路
         Route::put('/{id}/assign', 'TourController@assignTourToTour')->name('tour.assign');
@@ -366,10 +510,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/track', 'RouteTrackingController@show')->name('tour.track');
         //线路追踪
         Route::get('/all-track', 'RouteTrackingController@index')->name('tour.track');
-
+        //导出站点地图
+        Route::get('/{id}/batchPng', 'TourController@batchPng');
     });
 
-    //todo 取件线路-司机
+    //线路任务-司机
     Route::prefix('tour-driver')->group(function () {
         Route::get('/{tour_no}', 'TourDriverController@getListByTourNo');
     });
@@ -407,9 +552,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'LineController@postcodeDestroy')->name('line.post-code-destroy');
         //导入
         Route::post('/import', 'LineController@postcodeLineImport')->name('line.post-code-import');
-        //商户线路范围详情
+        //货主线路范围详情
         Route::get('/{id}/merchant-group-line-range', 'MerchantGroupLineRangeController@show')->name('line.post-code-merchant-config');
-        //商户线路范围修改
+        //货主线路范围修改
         Route::put('/{id}/merchant-group-line-range', 'MerchantGroupLineRangeController@createOrUpdate')->name('line.post-code-merchant-config');
         /****************************************区域线路**************************************/
         //列表查询
@@ -426,9 +571,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //批量修改状态
         Route::put('/status', 'LineController@statusByList')->name('line.status');
 
+        //流程测试
+        Route::get('/test', 'LineController@test')->name('line.test');
     });
 
-    //仓库管理
+    //网点管理
     Route::prefix('warehouse')->group(function () {
         //列表查询
         Route::get('/', 'WareHouseController@index')->name('warehouse.index');
@@ -440,6 +587,22 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'WareHouseController@update')->name('warehouse.update');
         //删除
         Route::delete('/{id}', 'WareHouseController@destroy')->name('warehouse.destroy');
+        //树节点
+        Route::get('/tree', 'WareHouseController@tree')->name('warehouse.index');
+        //移动节点
+        Route::put('/{id}/move/{parent}', 'WareHouseController@move')->name('warehouse.index');
+        //查看线路
+        Route::get('/{id}/line', 'WareHouseController@getLineList')->name('warehouse.index');
+        //查看可选线路
+        Route::get('/{id}/all-line', 'WareHouseController@getAbleLineList')->name('warehouse.index');
+        //加入线路
+        Route::post('/{id}/line', 'WareHouseController@addLineList')->name('warehouse.index');
+        //移除线路
+        Route::delete('/{id}/all-line', 'WareHouseController@removeLineList')->name('warehouse.index');
+        //新增线路
+        Route::post('/{id}/line', 'WareHouseController@addLineList')->name('warehouse.update');
+        //删除线路
+        Route::delete('/{id}/line', 'WareHouseController@removeLineList')->name('warehouse.update');
     });
 
     //公司信息
@@ -456,6 +619,19 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/address-template', 'CompanyConfigController@getAddressTemplateList')->name('company-config.show');
         //修改
         Route::put('/update', 'CompanyConfigController@update')->name('company-config.update');
+        //计量单位设置
+        Route::get('/unit', 'CompanyConfigController@unit_show')->name('company-config.unit');
+        Route::put('/unit', 'CompanyConfigController@unit_update')->name('company-config.unit');
+        //调度规则
+        Route::get('/rule', 'CompanyConfigController@rule_show')->name('company-config.rule');
+        Route::put('/rule', 'CompanyConfigController@rule_update')->name('company-config.rule');
+    });
+
+    Route::prefix('special-scenes-config')->group(function () {
+        //获取详情
+        Route::get('/show', 'CompanyConfigController@show')->name('special-scenes-config.show');
+        //修改
+        Route::put('/update', 'CompanyConfigController@update')->name('special-scenes-config.update');
     });
 
     //员工管理
@@ -472,6 +648,8 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'EmployeeController@destroy')->name('employees.destroy');
         //禁止登录
         Route::put('/{id}/forbid-login/{enabled}', 'EmployeeController@setLogin')->name('employees.set-login');
+        //批量启用禁用
+        Route::put('/forbid-login', 'EmployeeController@setLoginByList')->name('employees.set-login');
         //修改员工密码
         Route::put('/{id}/password', 'EmployeeController@resetPassword')->name('employees.reset-password');
     });
@@ -535,6 +713,16 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'AddressController@update')->name('address.update');
         //删除
         Route::delete('/{id}', 'AddressController@destroy')->name('address.destroy');
+        //导入模板
+        Route::get('/excel-template', 'AddressController@excelTemplate')->name('address.import');
+        //导入
+        Route::post('/excel', 'AddressController@import')->name('address.import');
+        //批量新增
+        Route::post('/list', 'AddressController@storeByList')->name('address.import');
+        //检查
+        Route::post('/excel-check', 'AddressController@importCheckByList')->name('address.import');
+        //导出
+        Route::get('/excel', 'AddressController@excelExport')->name('address.export');
     });
 
     //国家管理
@@ -567,12 +755,14 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/driver', 'DriverController@index');
         //获取权限组列表
         Route::get('/role', 'RoleController@index');
-        //获取仓库列表
+        //获取网点列表
         Route::get('/warehouse', 'WareHouseController@index');
         //获取车辆列表
         Route::get('/car', 'CarController@index');
         //获取运价列表
         Route::get('/transport-price', 'TransportPriceController@index')->name('transport-price.index');
+        //获取地址列表
+        Route::get('/get-address', 'AddressController@index');
     });
 
     //上传接口
@@ -585,7 +775,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('file-dir', 'UploadController@getFileDirList');
         //下载
         Route::post('file-download', 'UploadController@fileDownload');
-
+        //文件上传
         Route::post('file', 'UploadController@fileUpload');
     });
 
@@ -594,7 +784,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('route', 'RouteTrackingController@route')->name('route-tracking.route');
     });
 
-    //商户管理
+    //货主管理
     Route::prefix('merchant')->group(function () {
         //列表查询
         Route::get('/', 'MerchantController@index')->name('merchant.index');
@@ -607,16 +797,16 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //修改
         Route::put('/{id}', 'MerchantController@update')->name('merchant.update');
         //修改密码
-        Route::put('/{id}/update-password', 'MerchantController@updatePassword')->name('merchant.update-password');
+        Route::put('/{id}/password', 'MerchantController@updatePassword')->name('merchant.update-password');
         //启用/禁用
         Route::put('/{id}/status', 'MerchantController@status')->name('merchant.status');
         //批量启用禁用
         Route::put('/status', 'MerchantController@statusByList')->name('merchant.status');
-        //商户导出
+        //货主导出
         Route::get('/excel', 'MerchantController@excel')->name('merchant.excel');
     });
 
-    //商户授权API管理
+    //货主授权API管理
     Route::prefix('merchant-api')->group(function () {
         //列表查询
         Route::get('/', 'MerchantApiController@index')->name('merchant-api.index');
@@ -632,7 +822,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}/status', 'MerchantApiController@status')->name('merchant-api.status');
     });
 
-    //商户组管理
+    //货主组管理
     Route::prefix('merchant-group')->group(function () {
         //列表查询
         Route::get('/', 'MerchantGroupController@index')->name('merchant-group.index');
@@ -668,8 +858,10 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/{id}', 'TransportPriceController@update')->name('transport-price.update');
         //启用/禁用
         Route::put('/{id}/status', 'TransportPriceController@status')->name('transport-price.status');
-        //价格测试
-        Route::get('/{id}/test', 'TransportPriceController@getPriceResult')->name('transport-price.test');
+        //运价估算
+        Route::post('/{id}/test', 'TransportPriceController@priceCount')->name('transport-price.test');
+        //运价操作日志
+        Route::get('/{id}/log', 'TransportPriceController@operationLogIndex')->name('transport-price.log');
     });
 
     Route::prefix('version')->group(function () {
@@ -720,6 +912,18 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::put('/update', 'PrintTemplateController@update')->name('print-template.update');
     });
 
+    //订单打印模板
+    Route::prefix('order-bill-template')->group(function () {
+        //初始化
+        Route::get('/', 'OrderTemplateController@index')->name('print-template.show');
+        //详情
+        Route::get('/{id}', 'OrderTemplateController@show')->name('print-template.show');
+        //修改
+        Route::put('/{id}', 'OrderTemplateController@update')->name('print-template.update');
+        //设置默认
+        Route::put('/{id}/default', 'OrderTemplateController@changeDefault')->name('print-template.update');
+    });
+
     //费用管理
     Route::prefix('fee')->group(function () {
         //列表查询
@@ -750,9 +954,9 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::delete('/{id}', 'HolidayController@destroy')->name('holiday.destroy');
         //启用/禁用
         Route::put('/{id}/status', 'HolidayController@status')->name('holiday.status');
-        //获取商户列表
+        //获取货主列表
         Route::get('/merchant', 'HolidayController@merchantIndex')->name('holiday.merchant-index');
-        //新增商户列表
+        //新增货主列表
         Route::post('/{id}/merchant', 'HolidayController@storeMerchantList')->name('holiday.merchant-store');
 
         Route::delete('/{id}/merchant', 'HolidayController@destroyMerchant')->name('holiday.merchant-destroy');
@@ -793,5 +997,61 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'stockExceptionController@show')->name('stock-exception.index');
         //审核
         Route::put('/{id}/deal', 'stockExceptionController@deal')->name('stock-exception.deal');
+    });
+
+    //地图配置
+    Route::prefix('map-config')->group(function () {
+        //详情
+        Route::get('/', 'MapConfigController@show')->name('holiday.update');
+        //修改
+        Route::put('/', 'MapConfigController@update')->name('holiday.update');
+    });
+
+    //邮件模板
+    Route::prefix('email-template')->group(function () {
+        //列表
+        Route::get('/', 'EmailTemplateController@index')->name('email-template.index');
+        //新增
+        Route::post('/', 'EmailTemplateController@store')->name('email-template.store');
+        //详情
+        Route::get('/{id}', 'EmailTemplateController@detail')->name('email-template.detail');
+        //修改
+        Route::put('/{id}', 'EmailTemplateController@update')->name('email-template.update');
+        //删除
+        Route::delete('/{id}', 'EmailTemplateController@destroy')->name('email-template.destroy');
+    });
+
+    //袋号管理
+    Route::prefix('bag')->group(function () {
+        //列表
+        Route::get('/', 'BagController@index')->name('bag.index');
+        //新增（扫描）
+        Route::post('/', 'BagController@store')->name('bag.store');
+        //详情
+        Route::get('/{id}', 'BagController@show')->name('bag.show');
+        //修改（扫描）
+        Route::put('/{id}', 'BagController@update')->name('bag.update');
+        //删除
+        Route::delete('/{id}', 'BagController@destroy')->name('bag.destroy');
+    });
+
+    //车次管理
+    Route::prefix('shift')->group(function () {
+        //列表
+        Route::get('/', 'BagController@index')->name('bag.index');
+        //新增（扫描）
+        Route::post('/', 'BagController@store')->name('bag.store');
+        //详情
+        Route::get('/{id}', 'BagController@show')->name('bag.show');
+        //修改（扫描）
+        Route::put('/{id}', 'BagController@update')->name('bag.update');
+        //删除
+        Route::delete('/{id}', 'BagController@destroy')->name('bag.destroy');
+    });
+
+    //转运单管理
+    Route::prefix('tracking-package')->group(function () {
+        //列表
+        Route::get('/', 'TrackingPackageController@index');
     });
 });

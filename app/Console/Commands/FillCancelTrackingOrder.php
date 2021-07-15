@@ -22,7 +22,7 @@ class FillCancelTrackingOrder extends Command
      *
      * @var string
      */
-    protected $signature = 'cancel-tracking-order:fill';
+    protected $signature = 'fill:cancel-tracking-order';
 
     /**
      * The console command description.

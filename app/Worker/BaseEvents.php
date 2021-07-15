@@ -120,14 +120,14 @@ class BaseEvents
     }
 
     /**
-     * 推送企业
+     * 推送公司
      * @param $client
      * @param $guard
      * @param $data
      */
     private static function pushCompany($client, $guard, $data)
     {
-        //推送数据至企业的司机组
+        //推送数据至公司的司机组
         $group = self::getCompanyGroup($guard, $client['company_id']);
         Gateway::sendToGroup($group, $data);
         //若存在不在线的,则保存进数据库
@@ -187,7 +187,7 @@ class BaseEvents
     }
 
     /**
-     * 推送消息至企业内所有司机
+     * 推送消息至公司内所有司机
      * @param $client
      * @param $data
      */
@@ -219,7 +219,7 @@ class BaseEvents
 
 
     /**
-     * 推送消息至企业内所有管理员
+     * 推送消息至公司内所有管理员
      * @param $clientId
      * @param $data
      */
@@ -297,7 +297,7 @@ class BaseEvents
         ];
         $rowCount = self::$db->table('worker')->insert($insertData);
         if ($rowCount === false) {
-            Log::channel('worker-daily')->info('fail-insert-data:' . json_encode($insertData, JSON_UNESCAPED_UNICODE));
+            Log::channel('worker')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'insertData' . $insertData);
         }
     }
 

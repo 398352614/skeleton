@@ -92,7 +92,7 @@ return [
     */
 
     'ignore_paths' => [
-        '/api/merchant_api/order-dispatch-info'
+        'api/merchant_api/order-dispatch-info'
     ],
 
     'ignore_commands' => [
@@ -111,7 +111,7 @@ return [
     */
 
     'watchers' => [
-        Watchers\CacheWatcher::class => env('TELESCOPE_CACHE_WATCHER', true),
+        //Watchers\CacheWatcher::class => env('TELESCOPE_CACHE_WATCHER', true),
 
         Watchers\CommandWatcher::class => [
             'enabled' => env('TELESCOPE_COMMAND_WATCHER', true),
@@ -143,7 +143,7 @@ return [
             'slow' => 100,
         ],
 
-        Watchers\RedisWatcher::class => env('TELESCOPE_REDIS_WATCHER', true),
+        //Watchers\RedisWatcher::class => env('TELESCOPE_REDIS_WATCHER', true),
 
         Watchers\RequestWatcher::class => [
             'enabled' => env('TELESCOPE_REQUEST_WATCHER', true),

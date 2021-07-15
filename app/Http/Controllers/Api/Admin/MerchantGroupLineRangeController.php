@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户线路范围 接口
+ * 货主线路范围 接口
  * User: long
  * Date: 2020/6/22
  * Time: 14:05
@@ -13,7 +13,7 @@ use App\Http\Controllers\BaseController;
 use App\Services\Admin\MerchantGroupLineRangeService;
 
 /**
- * 商户组线路范围
+ * 货主组线路范围
  * Class FeeController
  * @package App\Http\Controllers\Api\Admin
  * @property MerchantGroupLineRangeService $service

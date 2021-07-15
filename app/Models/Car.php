@@ -52,6 +52,9 @@ class Car extends BaseModel
         'outgoing_time',
         'car_brand_id',
         'car_model_id',
+        'car_length',
+        'car_model_type',
+        'gps_device_number',
         'ownership_type',
         'insurance_company',
         'insurance_type',
@@ -134,5 +137,22 @@ class Car extends BaseModel
         return empty($this->repair) ? null : ConstTranslateTrait::carRepairList($this->repair);
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getCarLength($value): string
+    {
+        return empty($value) ? '' : ConstTranslateTrait::carLengthTypeList($value);
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getCarModelType($value): string
+    {
+        return empty($value) ? '' : ConstTranslateTrait::carModelTypeList($value);
+    }
 }
 

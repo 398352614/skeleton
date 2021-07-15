@@ -19,7 +19,7 @@ class Events extends BaseEvents
     public static function onWorkerStart($businessWorker)
     {
         self::init();
-        Log::channel('worker-daily')->info('WorkerStart');
+        Log::channel('worker')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . 'WorkerStart');
     }
 
 
@@ -40,13 +40,17 @@ class Events extends BaseEvents
                 if (!empty($user)) {
                     self::setUser($clientId, $auth, $guard, $user);
                     self::send($clientId);
-                    Log::channel('worker-daily')->info('连接clientId' . $clientId);
+                    Log::channel('worker')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'clientId', [$clientId]);
                     return;
                 };
             }
             Gateway::closeClient($clientId);
-        } catch (\Exception $ex) {
-            Log::channel('worker-daily')->info($ex->getMessage());
+        } catch (\Exception $e) {
+            Log::channel('work')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
         }
         return;
     }
@@ -70,8 +74,12 @@ class Events extends BaseEvents
             //执行业务
             list($type, $data, $toId) = [$message['type'], json_encode($message['data'] ?? [], JSON_UNESCAPED_UNICODE), $message['to_id'] ?? null];
             is_null($toId) ? self::$type(Gateway::getSession($clientId), $data) : self::$type(Gateway::getSession($clientId), $data, $toId);
-        } catch (\Exception $ex) {
-            Log::channel('worker-daily')->info($ex->getMessage());
+        } catch (\Exception $e) {
+            Log::channel('work')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
         }
         return;
     }
@@ -79,7 +87,7 @@ class Events extends BaseEvents
 
     public static function onClose($clientId)
     {
-        Log::channel('worker-daily')->info('关闭clientId' . $clientId);
+        Log::channel('worker')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'closeClientId', [$clientId]);
     }
 
 }

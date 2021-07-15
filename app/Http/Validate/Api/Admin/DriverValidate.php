@@ -27,7 +27,7 @@ class DriverValidate extends BaseValidate
         'fullname'                      => 'required|string|max:50|uniqueIgnore:driver,id,company_id',
         'gender'                        => 'nullable|string|max:10',
         'birthday'                      => 'nullable|date|date_format:Y-m-d',
-        'phone'                         => 'required|string|max:20|uniqueIgnore:driver,id|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'phone'                         => 'required|string|max:20|uniqueIgnore:driver,id|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
         'duty_paragraph'                => 'nullable|string|max:50',
         'address'                       => 'nullable|string|max:50',
         'country'                       => 'nullable|string|max:100',
@@ -44,6 +44,9 @@ class DriverValidate extends BaseValidate
         'bic'                           => 'nullable|string|max:100',
         'crop_type'                     => 'required|integer|in:1,2',
         'is_locked'                     => 'required|integer|in:1,2',
+        'type'                          => 'required|integer|in:1,2,3,4',
+        'warehouse_id'                  => 'nullable|integer'
+
     ];
     public $scene = [
         //注册
@@ -69,6 +72,8 @@ class DriverValidate extends BaseValidate
             'bank_name',
             'iban',
             'bic',
+            'type',
+            'warehouse_id'
             // 'crop_type',
         ],
         'update'             => [
@@ -90,6 +95,8 @@ class DriverValidate extends BaseValidate
             'bank_name',
             'iban',
             'bic',
+            'type',
+            'warehouse_id'
             // 'crop_type',
         ],
         'resetPassword' => ['new_password','confirm_new_password'],

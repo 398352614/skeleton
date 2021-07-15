@@ -17,7 +17,7 @@ class CreateTourDelayTable extends Migration
             $table->integerIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
 
-            $table->string('tour_no', 250)->default('')->nullable()->comment('取件线路编号');
+            $table->string('tour_no', 250)->default('')->nullable()->comment('线路任务编号');
             $table->date('execution_date')->default(null)->nullable()->comment('取派日期');
             $table->integer('line_id')->default(null)->nullable()->comment('线路ID');
             $table->string('line_name',50)->default('')->nullable()->comment('线路名称');

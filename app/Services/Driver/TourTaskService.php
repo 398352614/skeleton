@@ -27,7 +27,8 @@ class TourTaskService extends BaseService
 {
     public $filterRules = [
         'execution_date' => ['=', 'execution_date'],
-        'status' => ['=', 'status']
+        'status' => ['=', 'status'],
+        'tour_no' => ['like', 'tour_no']
     ];
 
     public $orderBy = [
@@ -48,6 +49,17 @@ class TourTaskService extends BaseService
      */
     public function getPageList()
     {
+        if (!empty($this->formData['sort_by']) && !empty($this->formData['sort'])) {
+            if ($this->formData['sort_by'] == 'execution_date' && $this->formData['sort'] == BaseConstService::YES) {
+                $this->query->orderByDesc('execution_date');
+            } elseif ($this->formData['sort_by'] == 'execution_date' && $this->formData['sort'] == BaseConstService::NO) {
+                $this->query->orderBy('execution_date');
+            } elseif ($this->formData['sort_by'] == 'end_time' && $this->formData['sort'] == BaseConstService::YES) {
+                $this->query->orderByDesc('end_time');
+            } elseif ($this->formData['sort_by'] == 'end_time' && $this->formData['sort'] == BaseConstService::NO) {
+                $this->query->orderBy('end_time');
+            }
+        }
         //若状态为1000,则表示当前任务
         if (!empty($this->filters['status'][1]) && (intval($this->filters['status'][1]) === 1000)) {
             $this->filters['status'] = ['in', [BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]];
@@ -137,7 +149,7 @@ class TourTaskService extends BaseService
         $tour['batch_list'] = $batchList;
         $tour['tracking_order_list'] = $trackingOrderList;
         $tour['material_list'] = $materialList;
-        $tour['actual_total_amount'] = number_format(round($tour['sticker_amount'] + $tour['delivery_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'], 2), 2);
+        $tour['actual_total_amount'] = number_format_simple(round($tour['sticker_amount'] + $tour['delivery_amount'] + $tour['actual_replace_amount'] + $tour['actual_settlement_amount'], 2), 2);
         //$tour['package_list'] = $packageList;
         $tour['expect_pickup_package_quantity'] = $expectPickupPackageQuantity;
         $tour['actual_pickup_package_quantity'] = $actualPickupPackageQuantity;
@@ -183,7 +195,7 @@ class TourTaskService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $tour = $tour->toArray();
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark', 'place_post_code', 'place_house_number'], false);
         return $trackingOrderList;
     }
 
@@ -200,7 +212,7 @@ class TourTaskService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $batch = $batch->toArray();
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'special_remark' => ['<>', null]], ['id', 'order_no', 'tracking_order_no', 'special_remark', 'place_post_code', 'place_house_number'], false);
         return $trackingOrderList;
     }
 
@@ -221,18 +233,24 @@ class TourTaskService extends BaseService
 
     /**
      * 获取运单列表
-     * @param $id
+     * @param $params
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
      */
-    public function getTrackingOrderList($id)
+    public function getTrackingOrderList($params)
     {
-        $tour = parent::getInfo(['id' => $id], ['tour_no'], false);
+        $tour = $this->query->where('tour_no', $params['tour_no'])->where('driver_id', '<>', 0)
+            ->orWhere('tour_no', $params['tour_no'])->WhereNull('driver_id')->first();
         if (empty($tour)) {
-            throw new BusinessLogicException('取件线路不存在');
+            throw new BusinessLogicException('线路任务不存在');
         }
+        $tour = $tour->toArray();
         //获取所有运单列表
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour->tour_no], ['order_no', 'tracking_order_no'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tour_no' => $tour['tour_no']], ['order_no', 'tracking_order_no'], false);
+        if (empty($trackingOrderList)) {
+            throw new BusinessLogicException('运单不存在');
+        }
+        $trackingOrderList = $trackingOrderList->toArray();
         //获取所有包裹列表
         $packageList = $this->getTrackingOrderPackageService()->getList(['tracking_order_no' => ['in', array_column($trackingOrderList, 'tracking_order_no')]], ['order_no', 'express_first_no', 'feature_logo']);
         $packageList = array_create_group_index($packageList, 'order_no');
@@ -245,7 +263,7 @@ class TourTaskService extends BaseService
     }
 
     /**
-     * 获取所有取件线路所有信息
+     * 获取所有线路任务所有信息
      * @return array|\Illuminate\Database\Eloquent\Collection
      * @throws BusinessLogicException
      */
@@ -269,7 +287,7 @@ class TourTaskService extends BaseService
             $authPackage = collect($tour['tracking_order_list'])->pluck('package_list')->where('batch_no', $y['batch_no'])->where('status', BaseConstService::BATCH_DELIVERING)->where('is_auth', BaseConstService::IS_AUTH_1)->first();
             $tour['batch_list'][$x]['is_auth'] = !empty($authPackage) ? BaseConstService::IS_AUTH_1 : BaseConstService::IS_AUTH_2;
             $tour['batch_list'][$x]['tour_id'] = $tour['id'];
-            $tour['batch_list'][$x]['actual_total_amount'] = number_format(round($tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['delivery_amount'] + $tour['batch_list'][$x]['actual_replace_amount'] + $tour['batch_list'][$x]['actual_settlement_amount'], 2), 2);
+            $tour['batch_list'][$x]['actual_total_amount'] = number_format_simple(round($tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['delivery_amount'] + $tour['batch_list'][$x]['actual_replace_amount'] + $tour['batch_list'][$x]['actual_settlement_amount'], 2), 2);
             if ($tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['sticker_amount'] + $tour['batch_list'][$x]['settlement_amount'] + $tour['batch_list'][$x]['delivery_amount'] == 0) {
                 $tour['batch_list'][$x]['no_need_to_pay'] = BaseConstService::YES;
             } else {

@@ -16,7 +16,7 @@ class CreateOrderTrailTable extends Migration
         Schema::create('tracking_order_trail', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
-            $table->integer('merchant_id')->default(null)->nullable()->comment('商户ID');
+            $table->integer('merchant_id')->default(null)->nullable()->comment('货主ID');
             $table->string('order_no')->default('')->nullable()->comment('订单号');
             $table->string('tracking_order_no')->default('')->nullable()->comment('订单号');
             $table->string('content')->default('')->nullable()->comment('内容');

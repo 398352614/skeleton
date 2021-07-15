@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use Location\Formatter\Coordinate\DecimalDegrees;
 
 class BaseLineService extends BaseService
 {
@@ -64,7 +66,7 @@ class BaseLineService extends BaseService
     {
         $rowCount = parent::updateById($id, Arr::only($data, ['name', 'country', 'can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'status']));
         if ($rowCount === false) {
-            throw new BusinessLogicException('线路修改失败');
+            throw new BusinessLogicException('修改失败');
         }
     }
 
@@ -77,12 +79,12 @@ class BaseLineService extends BaseService
     {
         $tour = $this->getTourService()->getInfo(['line_id' => $id, 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3, BaseConstService::TOUR_STATUS_4]]], ['id'], false);
         if (!empty($tour)) {
-            throw new BusinessLogicException('当前正在使用该线路，不能操作');
+            throw new BusinessLogicException('当前正在使用该线路，不能删除');
         }
         //删除线路
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('线路删除失败');
+            throw new BusinessLogicException('删除失败');
         }
     }
 
@@ -126,10 +128,19 @@ class BaseLineService extends BaseService
      */
     public function check(&$params, $dbInfo = [])
     {
+        $rootWarehouse = $this->getWareHouseService()->getInfo(['parent' => 0], ['*'], false);
+        if (empty($rootWarehouse)) {
+            throw new BusinessLogicException('网点不存在');
+        }
+        $params['warehouse_id'] = $rootWarehouse->toArray()['id'];
         $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
-        $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
-        if (empty($warehouse)) {
-            throw new BusinessLogicException('仓库不存在！');
+        if (!empty($params['item_list']) && CompanyTrait::getLineRule() == BaseConstService::LINE_RULE_POST_CODE) {
+            foreach ($params['item_list'] as $k => $v) {
+                if ($v['post_code_start'] > 9999 || $v['post_code_end'] > 9999) {
+                    $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+                    break;
+                }
+            }
         }
     }
 
@@ -161,7 +172,7 @@ class BaseLineService extends BaseService
         if (empty($data)) {
             throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
-        //用于站点和取件线路分配,不受线路规则限制
+        //用于站点和线路任务分配,不受线路规则限制
         //$this->checkRule($info, $line, BaseConstService::ORDER_OR_BATCH_2, false);
         return $line;
     }
@@ -208,7 +219,7 @@ class BaseLineService extends BaseService
         $lineRange = $this->getLineRange($info, $merchantAlone);
         $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
         if (empty($line)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         $line = $line->toArray();
         if (intval($line['status']) === BaseConstService::OFF) {
@@ -218,6 +229,26 @@ class BaseLineService extends BaseService
         $this->checkRule($info, $line, $orderOrBatch);
         if ($merchantAlone == BaseConstService::YES) {
             $line['range_merchant_id'] = $lineRange['range_merchant_id'];
+        }
+        return $line;
+    }
+
+    /**
+     * 获取线路信息
+     * @param $info
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getInfoByRuleWithoutCheck($info)
+    {
+        $lineRange = $this->getLineRange($info, BaseConstService::NO);
+        $line = parent::getInfo(['id' => $lineRange['line_id']], ['*'], false);
+        if (empty($line)) {
+            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
+        }
+        $line = $line->toArray();
+        if (intval($line['status']) === BaseConstService::OFF) {
+            throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);
         }
         return $line;
     }
@@ -238,8 +269,10 @@ class BaseLineService extends BaseService
         }
         //判断预约日期是否在可预约日期范围内
         $this->appointmentDayCheck($info, $line);
-        //若不是新增取件线路，则当前取件线路必须再最大订单量内
+        //若不是新增线路任务，则当前线路任务必须再最大订单量内
         $this->maxCheck($info, $line, $orderOrBatch);
+        //最小订单量检验
+        $this->minCheck($info, $line, $orderOrBatch);
     }
 
     /**
@@ -307,7 +340,7 @@ class BaseLineService extends BaseService
             $lineRange = $this->getLineRangeByArea($coordinate, $info['execution_date']);
         }
         if (empty($lineRange)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         if (!empty($lineRange['is_alone']) && (intval($lineRange['is_alone']) == BaseConstService::YES)) {
             $lineRange['merchant_id'] = $info['merchant_id'];
@@ -344,7 +377,13 @@ class BaseLineService extends BaseService
     private function getMerchantGroupLineRangeByPostcode($postCode, $executionDate, $merchantId = null)
     {
         //若邮编是纯数字，则认为是比利时邮编
-        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
+        $country = CompanyTrait::getCountry();
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
+            $country = BaseConstService::POSTCODE_COUNTRY_BE;
+        }
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5) {
+            $country = BaseConstService::POSTCODE_COUNTRY_DE;
+        }
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
@@ -352,7 +391,7 @@ class BaseLineService extends BaseService
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);
-        //若存在商户ID，则加
+        //若存在货主ID，则加
         if (!empty($merchantId)) {
             $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId], ['id', 'merchant_group_id'], false);
             if (empty($merchant)) return [];
@@ -373,7 +412,13 @@ class BaseLineService extends BaseService
     private function getLineRangeByPostcode($postCode, $executionDate)
     {
         //若邮编是纯数字，则认为是比利时邮编
-        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
+        $country = CompanyTrait::getCountry();
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
+            $country = BaseConstService::POSTCODE_COUNTRY_BE;
+        }
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5) {
+            $country = BaseConstService::POSTCODE_COUNTRY_DE;
+        }
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
@@ -396,7 +441,13 @@ class BaseLineService extends BaseService
     public function getLineRangeListByPostcode($postCode, $merchantId = null)
     {
         //若邮编是纯数字，则认为是比利时邮编
-        $country = post_code_be($postCode) ? BaseConstService::POSTCODE_COUNTRY_BE : CompanyTrait::getCountry();
+        $country = CompanyTrait::getCountry();
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($postCode)) {
+            $country = BaseConstService::POSTCODE_COUNTRY_BE;
+        }
+        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($postCode) == 5) {
+            $country = BaseConstService::POSTCODE_COUNTRY_DE;
+        }
         //获取邮编数字部分
         $postCode = explode_post_code($postCode);
         //获取线路范围
@@ -404,7 +455,7 @@ class BaseLineService extends BaseService
             ->where('post_code_start', '<=', $postCode)
             ->where('post_code_end', '>=', $postCode)
             ->where('country', $country);
-        //若存在商户ID，则加
+        //若存在货主ID，则加
         if (!empty($merchantId)) {
             $merchant = $this->getMerchantService()->getInfo(['id' => $merchantId], ['id', 'merchant_group_id'], false);
             if (empty($merchant)) return [];
@@ -481,7 +532,7 @@ class BaseLineService extends BaseService
         asort($dateList);
         $dateList = array_values($dateList);
         if (empty($dateList)) {
-            throw new BusinessLogicException('当前订单没有合适的线路，请先联系管理员');
+            throw new BusinessLogicException('当前没有合适的线路，请先联系管理员');
         }
         return $dateList ?? [];
     }
@@ -511,6 +562,7 @@ class BaseLineService extends BaseService
                     }
                     $this->appointmentDayCheck($params, $line);
                     $this->maxCheck($params, $line, $orderOrBatch);
+                    $this->minCheck($params, $line, $orderOrBatch);
                 } catch (BusinessLogicException $e) {
                     continue;
                 }
@@ -525,7 +577,7 @@ class BaseLineService extends BaseService
      * @param $lineRange
      * @return int
      */
-    private function getFirstWeekDate($lineRange)
+    public function getFirstWeekDate($lineRange)
     {
         if ($lineRange['schedule'] === 0) {
             $lineRange['schedule'] = 7;
@@ -564,7 +616,7 @@ class BaseLineService extends BaseService
      * @param $orderOrBatch
      * @throws BusinessLogicException
      */
-    private function maxCheck($params, $line, $orderOrBatch)
+    public function maxCheck($params, $line, $orderOrBatch)
     {
         if ($line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
             if ($orderOrBatch === 2) {
@@ -578,13 +630,99 @@ class BaseLineService extends BaseService
     }
 
     /**
+     * 最小订单量验证
+     * @param $params
+     * @param $line
+     * @param $orderOrBatch
+     * @throws BusinessLogicException
+     */
+    private function minCheck($params, $line, $orderOrBatch)
+    {
+        if (!empty($params['merchant_id'])) {
+            $status = [
+                BaseConstService::TRACKING_ORDER_STATUS_1,
+                BaseConstService::TRACKING_ORDER_STATUS_2,
+                BaseConstService::TRACKING_ORDER_STATUS_3,
+                BaseConstService::TRACKING_ORDER_STATUS_4,
+                BaseConstService::TRACKING_ORDER_STATUS_5
+            ];
+            $merchantGroupLineList = $this->getMerchantGroupLineService()->getList(['line_id' => $line['id']], ['*'], false);
+            if (!empty($merchantGroupLineList) && $line['is_increment'] === BaseConstService::IS_INCREMENT_2) {
+                $merchantGroupLineList = $merchantGroupLineList->toArray();
+                $mixPickupCount = 0;
+                $mixPieCount = 0;
+                //只有超过本身最小订单量再进行判断
+                $merchantGroupId = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
+                if (empty($merchantGroupId)) {
+                    throw new BusinessLogicException('商户组不存在');
+                } else {
+                    $merchantGroupId = $merchantGroupId->toArray()['merchant_group_id'];
+                }
+                $merchantIdList = $this->getMerchantService()->getlist(['merchant_group_id' => $merchantGroupId], ['*'], false)->pluck(['id'])->toArray();
+                $pickupCount = $this->getTrackingOrderservice()->count(['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date'],
+                    'status' => ['in', $status], 'type' => BaseConstService::TRACKING_ORDER_TYPE_1]);
+                $pieCount = $this->getTrackingOrderservice()->count(['line_id' => $line['id'], 'merchant_id' => ['in', $merchantIdList], 'execution_date' => $params['execution_date'],
+                    'status' => ['in', $status], 'type' => BaseConstService::TRACKING_ORDER_TYPE_2]);
+                $merchantGroupLine = collect($merchantGroupLineList)->where('merchant_group_id', $merchantGroupId)->first();
+                if (empty($merchantGroupLine)) {
+                    $merchantGroupLine['pickup_min_count'] = $merchantGroupLine['pie_min_count'] = 0;
+                }
+                if (($params['type'] == BaseConstService::TRACKING_ORDER_TYPE_1 && $pickupCount + 1 > $merchantGroupLine['pickup_min_count']) ||
+                    ($params['type'] == BaseConstService::TRACKING_ORDER_TYPE_2 && $pieCount + 1 > $merchantGroupLine['pie_min_count'])) {
+                    foreach ($merchantGroupLineList as $k => $v) {
+                        $merchantIdList = $this->getMerchantService()->getList(['merchant_group_id' => $v['merchant_group_id']], ['*'], false)->pluck('id')->toArray();
+                        $count[$k]['pickup_count'] = $this->getTrackingOrderservice()->count([
+                            'line_id' => $line['id'],
+                            'type' => BaseConstService::TRACKING_ORDER_TYPE_1,
+                            'merchant_id' => ['in', $merchantIdList],
+                            'execution_date' => $params['execution_date'],
+                            'status' => ['in', $status]]);
+                        $count[$k]['pie_count'] = $this->getTrackingOrderservice()->count([
+                            'line_id' => $line['id'],
+                            'type' => BaseConstService::TRACKING_ORDER_TYPE_2,
+                            'merchant_id' => ['in', $merchantIdList],
+                            'execution_date' => $params['execution_date'],
+                            'status' => ['in', $status]]);
+                        //各货主组混合订单量等于=各货主组预计订单量-最小订单量
+                        if ($count[$k]['pickup_count'] > $v['pickup_min_count']) {
+                            $mixPickupCount = $mixPickupCount + $count[$k]['pickup_count'] - $v['pickup_min_count'];
+                        }
+                        if ($count[$k]['pie_count'] > $v['pie_min_count']) {
+                            $mixPieCount = $mixPieCount + $count[$k]['pie_count'] - $v['pie_min_count'];
+                        }
+                    }
+                    //如果各货主组混合订单量之和大于最大订单量减去各货主组最小订单量之和，则报错。
+                    if ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::TRACKING_ORDER_TYPE_1 &&
+                        $mixPickupCount + 1 > $line['pickup_max_count'] - collect($merchantGroupLineList)->sum('pickup_min_count')) {
+                        throw new BusinessLogicException('当前线路的其他货主还未到达取件最小订单量，该货主无法添加订单');
+                    }
+                    if ($orderOrBatch === 1 && intval($params['type']) === BaseConstService::TRACKING_ORDER_TYPE_2 &&
+                        $mixPieCount + 1 > $line['pie_max_count'] - collect($merchantGroupLineList)->sum('pie_min_count')) {
+                        throw new BusinessLogicException('当前线路的其他货主还未到达派件最小订单量，该货主无法添加订单');
+                    }
+                    if ($orderOrBatch === 2 &&
+                        (
+                            $mixPickupCount + intval($params['expect_pickup_quantity']) > $line['pickup_max_count'] - collect($merchantGroupLineList)->sum('pickup_min_count') ||
+                            $mixPieCount + intval($params['expect_pie_quantity']) > $line['pie_max_count'] - collect($merchantGroupLineList)->sum('pie_min_count')
+                        )
+                    ) {
+                        throw new BusinessLogicException('当前线路的其他货主还未到达取件最小订单量，该货主无法添加订单');
+                    }
+                }
+            }
+        }
+        return;
+
+    }
+
+    /**
      * 截至日期检查
      * @param $info
      * @param $line
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function appointmentDayCheck($info, $line)
+    public function appointmentDayCheck($info, $line)
     {
         //判断预约日期是否在可预约日期范围内
         if (Carbon::today()->addDays($line['appointment_days'])->lt($info['execution_date'] . ' 00:00:00')) {
@@ -600,7 +738,7 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function pickupMaxCheck($info, $line)
+    public function pickupMaxCheck($info, $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 1);
         if (1 + intval($orderCount['pickup_count']) > intval($line['pickup_max_count'])) {
@@ -616,7 +754,7 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function pieMaxCheck($info, $line)
+    public function pieMaxCheck($info, $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 2);
         if (1 + intval($orderCount['pie_count']) > intval($line['pie_max_count'])) {
@@ -632,7 +770,7 @@ class BaseLineService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    private function maxBatchCheck(array $info, array $line)
+    private function maxBatchCheck($info, $line)
     {
         $orderCount = $this->getTourService()->sumOrderCount($info, $line, 3);
         if (intval($info['expect_pickup_quantity']) > 0) {

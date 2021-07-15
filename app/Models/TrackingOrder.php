@@ -63,9 +63,11 @@ class TrackingOrder extends BaseModel
         'warehouse_fullname',
         'warehouse_phone',
         'warehouse_country',
+        'warehouse_province',
         'warehouse_post_code',
         'warehouse_house_number',
         'warehouse_city',
+        'warehouse_district',
         'warehouse_street',
         'warehouse_address',
         'warehouse_lon',
@@ -73,9 +75,11 @@ class TrackingOrder extends BaseModel
         'place_fullname',
         'place_phone',
         'place_country',
+        'place_province',
         'place_post_code',
         'place_house_number',
         'place_city',
+        'place_district',
         'place_street',
         'place_address',
         'place_lon',
@@ -110,7 +114,7 @@ class TrackingOrder extends BaseModel
         'status_name',
         'out_status_name',
         'type_name',
-        'merchant_id_name',
+//        'merchant_id_name',
         'country_name',
     ];
 
@@ -136,17 +140,17 @@ class TrackingOrder extends BaseModel
         return empty($this->out_status) ? null : ConstTranslateTrait::outStatusList($this->out_status);
     }
 
-    public function getMerchantIdNameAttribute()
-    {
-        if (empty($this->merchant) || empty($this->merchant_id)) return '';
-        return $this->merchant->name;
-    }
+//    public function getMerchantIdNameAttribute()
+//    {
+//        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+//        return $this->merchant->name;
+//    }
 
 
-    public function merchant()
-    {
-        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
-    }
+//    public function merchant()
+//    {
+//        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+//    }
 
     /**
      * 获取关联查询构造器

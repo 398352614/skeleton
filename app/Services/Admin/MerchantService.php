@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户列表 服务
+ * 货主列表 服务
  * User: long
  * Date: 2019/12/24
  * Time: 20:06
@@ -33,7 +33,7 @@ class MerchantService extends BaseService
         'status' => ['=', 'status'],
         'code' => ['like', 'code'],
         'name' => ['like', 'name'],
-        'email' => ['like', 'email']
+        'email' => ['like', 'email'],
     ];
 
     protected $headings = [
@@ -88,7 +88,7 @@ class MerchantService extends BaseService
     public function store($params)
     {
         $this->check($params);
-        $params['password'] = Hash::make(BaseConstService::INITIAL_PASSWORD);
+        $params['password'] = Hash::make($params['password'] ?? BaseConstService::INITIAL_PASSWORD);
         $merchant = parent::create($params);
         if ($merchant === false) {
             throw new BusinessLogicException('新增失败，请重新操作');
@@ -121,7 +121,7 @@ class MerchantService extends BaseService
             throw new BusinessLogicException('修改失败，请重新操作');
         }
         $info = $info->toArray();
-        //若修改了商户组,则调整成员
+        //若修改了货主组,则调整成员
         if (intval($info['merchant_group_id']) !== intval($data['merchant_group_id'])) {
             MerchantGroup::query()->where('id', $info['merchant_group_id'])->decrement('count');
             MerchantGroup::query()->where('id', $data['merchant_group_id'])->increment('count');
@@ -135,9 +135,20 @@ class MerchantService extends BaseService
      */
     public function check(&$params)
     {
+        if (!empty($params['warehouse_id'])) {
+            $warehouse = $this->getWareHouseService()->getInfo(['id' => $params['warehouse_id']], ['*'], false);
+            if (empty($warehouse)) {
+                throw new BusinessLogicException('网点不存在');
+            }
+            if (strstr($warehouse['acceptance_type'], strval(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3)) == false) {
+                throw new BusinessLogicException('网点未配置仓配一体，无法选择该网点');
+            }
+        }else{
+            unset($params['warehouse_id']);
+        }
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $params['merchant_group_id']], ['*'], false);
         if (empty($merchantGroup)) {
-            throw new BusinessLogicException('商户组不存在');
+            throw new BusinessLogicException('货主组不存在');
         }
         $params['country'] = CompanyTrait::getCountry();
     }
@@ -206,7 +217,7 @@ class MerchantService extends BaseService
     }
 
     /**
-     * 获取商户列表
+     * 获取货主列表
      * @param $where
      * @return mixed
      */

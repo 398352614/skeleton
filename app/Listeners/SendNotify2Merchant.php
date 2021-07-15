@@ -76,8 +76,8 @@ class SendNotify2Merchant implements ShouldQueue
             $dataList2 = $event->getDataList2();
             $dataList3 = $event->getDataList3();
             $notifyType = $event->notifyType();
-            Log::info('notify-type:' . $notifyType);
-            Log::info('dataList:' . json_encode($dataList, JSON_UNESCAPED_UNICODE));
+            Log::channel('worker')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'notifyType', [$notifyType]);
+            Log::channel('worker')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'datalist', $dataList);
             if (empty($dataList)) return true;
             $merchantList = $this->getMerchantList(array_keys($dataList));
             if (empty($merchantList)) return true;
@@ -94,16 +94,20 @@ class SendNotify2Merchant implements ShouldQueue
                 list($pushStatus, $msg) = $this->postData($merchantList[$merchantId]['url'], $postData);
                 ThirdPartyLogService::storeAll($merchantId, $data, $notifyType, $event->getThirdPartyContent($pushStatus, $msg));
             }
-        } catch (\ErrorException $ex) {
-            Log::channel('job-daily')->error($ex->getMessage());
-        } catch (\Exception $ex) {
-            Log::channel('job-daily')->error($ex->getMessage());
+        } catch (BusinessLogicException $e) {
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', ['message' => $e->getMessage()]);
+        } catch (\Exception $e) {
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
         }
         return true;
     }
 
     /**
-     * 获取商户信息
+     * 获取货主信息
      * @param $merchantIdList
      * @return array
      */
@@ -128,8 +132,8 @@ class SendNotify2Merchant implements ShouldQueue
     {
         $res = $this->curl->post($url, $postData);
         if (empty($res) || empty($res['ret']) || (intval($res['ret']) != 1)) {
-            app('log')->info('send notify failure');
-            Log::info('商户通知失败:' . json_encode($res, JSON_UNESCAPED_UNICODE));
+            Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '请求失败');
+            Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             return [false, $res['msg'] ?? '服务器内部错误'];
         }
         return [true, ''];

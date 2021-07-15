@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户API 服务
+ * 货主API 服务
  * User: long
  * Date: 2019/12/24
  * Time: 20:06
@@ -48,12 +48,11 @@ class MerchantApiService extends BaseService
             }
             if (!empty($this->formData['name'])) {
                 $where['name'] = $this->formData['name'];
-                $merchantList = $this->getMerchantService()->getList($where, ['*'], false);
-
             }
-            if (!empty($merchantList)) {
-                $this->query->whereIn('merchant_id', $merchantList->pluck('id')->toArray());
-            }
+            $merchantList = $this->getMerchantService()->getList($where, ['*'], false);
+        }
+        if (!empty($merchantList)) {
+            $this->query->whereIn('merchant_id', $merchantList->pluck('id')->toArray());
         }
         $list = parent::getPageList();
         foreach ($list as &$merchantApi) {
@@ -73,11 +72,11 @@ class MerchantApiService extends BaseService
     {
         $merchant = $this->getMerchantService()->getInfo(['id' => $params['merchant_id']], ['*'], false);
         if (empty($merchant)) {
-            throw new BusinessLogicException('商户不存在');
+            throw new BusinessLogicException('货主不存在');
         }
         $dbMerchantApi = parent::getInfo(['merchant_id' => $params['merchant_id']], ['id'], false);
         if (!empty($dbMerchantApi)) {
-            throw new BusinessLogicException('当前商户已创建API对接信息');
+            throw new BusinessLogicException('当前货主已创建API对接信息');
         }
         //生成授权api
         $merchantApi = parent::create([

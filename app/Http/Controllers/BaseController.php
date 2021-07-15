@@ -23,6 +23,11 @@ class BaseController extends Controller
 
     protected $data;
 
+    /**
+     * BaseController constructor.
+     * @param  BaseService  $service
+     * @param  array  $exceptMethods
+     */
     public function __construct(BaseService $service, $exceptMethods = [])
     {
         $this->service = new TransactionService($service, $exceptMethods);
@@ -42,6 +47,9 @@ class BaseController extends Controller
         return call_user_func_array([$this, $method], $parameters);
     }
 
+    /**
+     * @param $parameters
+     */
     public function beforeAction($parameters)
     {
         $this->data = Request::all();

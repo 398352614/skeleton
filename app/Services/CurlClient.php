@@ -29,7 +29,6 @@ class CurlClient
         } elseif ($method == 'get') {
             $responseData = $this->get($url . '?' . http_build_query($params));
         } else {
-            app('log')->info('接口' . $url . '未知的请求方式' . $method);
             return false;
         }
         return $responseData;
@@ -59,8 +58,10 @@ class CurlClient
 
     public function post($url, $params, $next = 0, $auth = null)
     {
-        Log::info('post 请求url', ['url' => $url]);
-        Log::info('post 请求数据', $params);
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'post', [
+            'url' => $url,
+            'data' => $params,
+        ]);
         try {
             if ($auth) {
                 $response = $this->http->post($url, ['auth' => $auth, 'form_params' => $params]);
@@ -69,11 +70,10 @@ class CurlClient
             }
         } catch (\Exception $e) {
             if ($next >= 2) {
-                app('log')->info('多次请求出错，不再请求');
+                Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '多次请求出错，不再请求');
                 return null;
             }
             $next++;
-            app('log')->info('请求地址' . $url . '出错，重新推送,参数', $params);
             app("log")->error($e->getMessage());
             app("log")->error($e->getTraceAsString());
             return $this->post($url, $params, $next);
@@ -82,20 +82,22 @@ class CurlClient
             $bodyData = $response->getBody();
             $responseData = json_decode((string)$bodyData, true);
             if (!$responseData) {
-                app('log')->info('请求地址' . $url . '返回不是json数组' . $bodyData . ',参数', $params);
+                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '返回不是json数组');
                 return null;
             }
             return $responseData;
         } else {
-            app('log')->info('请求地址' . $url . '失败', $params);
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '状态码非200');
             return null;
         }
     }
 
     public function postJson($url, $params, $next = 0, $auth = null)
     {
-        Log::info('post-json 请求url', ['url' => $url]);
-        Log::info('post-json 请求数据', $params);
+        Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'post', [
+            'url' => $url,
+            'data' => $params,
+        ]);
         try {
             //php 7.4兼容
             //https://cloud.tencent.com/developer/article/1489213
@@ -114,32 +116,35 @@ class CurlClient
                 $response = $this->http->post($url, ['json' => $params]);
             }
         } catch (\Exception $e) {
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
             if ($next >= 2) {
-                app('log')->info('多次请求出错，不再请求');
+                Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '多次请求出错，不再请求');
                 return null;
             }
             $next++;
-            app('log')->info('请求地址' . $url . '出错，重新推送,参数', $params);
-            app("log")->error($e->getMessage());
-            app("log")->error($e->getTraceAsString());
+            Log::channel('api')->notice(__CLASS__ . '.' . __FUNCTION__ . '.' . '请求失败，重新推送');
             return $this->postJson($url, $params, $next, $auth);
         }
         if ($response->getStatusCode() == 200) {
             $bodyData = $response->getBody();
             $responseData = json_decode((string)$bodyData, true);
             if (!$responseData) {
-                app('log')->info('请求地址' . $url . '返回不是json数组' . $bodyData . ',参数', $params);
+                Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '返回不是json数组');
                 return null;
             }
             return $responseData;
         } else {
-            app('log')->info('请求地址' . $url . '失败', $params);
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . '状态码非200');
             return null;
         }
     }
 
     /**
-     * 商户接口请求
+     * 货主接口请求
      * @param $merchant
      * @param $params
      * @param $type
@@ -158,7 +163,7 @@ class CurlClient
         return $this->postJson($merchant['url'], $data, $next, $auth);
     }
 
-    public function get($url)
+    public function get($url, $options = [])
     {
         try {
             //php 7.4兼容
@@ -172,12 +177,14 @@ class CurlClient
                     ]
                 ]
             );
-            $res = $this->http->request('GET', $url);
+            $res = $this->http->request('GET', $url, $options);
             // app('log')->info('测试 url'.$url);
         } catch (\Exception $e) {
-            app('log')->info('请求地址' . $url . '出错');
-            app('log')->error('错误信息为：' . $e->getMessage());
-            app("log")->error($e->getTraceAsString());
+            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
             return null;
         }
 

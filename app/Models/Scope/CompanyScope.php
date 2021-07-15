@@ -9,6 +9,7 @@ namespace App\Models\Scope;
 use App\Models\AdditionalPackage;
 use App\Models\AddressTemplate;
 use App\Models\ApiTimes;
+use App\Models\Bag;
 use App\Models\Batch;
 use App\Models\BatchException;
 use App\Models\Car;
@@ -27,14 +28,18 @@ use App\Models\KilometresCharging;
 use App\Models\Line;
 use App\Models\LineArea;
 use App\Models\LineRange;
+use App\Models\MapConfig;
 use App\Models\Material;
 use App\Models\Merchant;
 use App\Models\MerchantApi;
 use App\Models\MerchantGroup;
+use App\Models\MerchantGroupLine;
 use App\Models\MerchantGroupLineRange;
 use App\Models\MerchantRecharge;
 use App\Models\Order;
+use App\Models\OrderAmount;
 use App\Models\OrderNoRule;
+use App\Models\OrderTemplate;
 use App\Models\OrderTrail;
 use App\Models\Package;
 use App\Models\PackageNoRule;
@@ -42,6 +47,7 @@ use App\Models\Permission;
 use App\Models\Recharge;
 use App\Models\Role;
 use App\Models\RouteTracking;
+use App\Models\Shift;
 use App\Models\SpecialTimeCharging;
 use App\Models\Stock;
 use App\Models\StockException;
@@ -56,9 +62,11 @@ use App\Models\TrackingOrder;
 use App\Models\TrackingOrderMaterial;
 use App\Models\TrackingOrderPackage;
 use App\Models\TrackingOrderTrail;
+use App\Models\TrackingPackage;
 use App\Models\TransportPrice;
 use App\Models\Warehouse;
 use App\Models\WeightCharging;
+use App\Services\Admin\BaseLineService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
@@ -114,6 +122,7 @@ class CompanyScope implements Scope
                 && (!($model instanceof TrackingOrderPackage))
                 && (!($model instanceof Batch))
                 && (!($model instanceof TourMaterial))
+                && (!($model instanceof MerchantGroupLine))
                 && (!($model instanceof TourDelay))
                 && (!($model instanceof Merchant))
                 && (!($model instanceof TourLog))
@@ -138,6 +147,10 @@ class CompanyScope implements Scope
                 && (!($model instanceof PackageNoRule))
                 && (!($model instanceof StockException))
                 && (!($model instanceof MerchantGroup))
+                && (!($model instanceof MapConfig))
+                && (!($model instanceof Bag))
+                && (!($model instanceof Shift))
+                && (!($model instanceof TrackingPackage))
                 && (!in_array('driver_id', $whereColumns))
                 && (!Str::contains($sql, "IFNULL(driver_id,0) <> -1"))
             ) {
@@ -150,7 +163,12 @@ class CompanyScope implements Scope
             $builder->whereRaw($model->getTable() . '.company_id' . '=' . $user->company_id);
             if (!($model instanceof Batch)
                 && !($model instanceof CompanyConfig)
+                && !($model instanceof BaseLineService)
+                && !($model instanceof Stock)
+                && !($model instanceof MerchantGroupLine)
                 && !($model instanceof Tour)
+                && !($model instanceof OrderAmount)
+                && !($model instanceof OrderTrail)
                 && !($model instanceof Line)
                 && !($model instanceof LineRange)
                 && !($model instanceof LineArea)
@@ -166,6 +184,7 @@ class CompanyScope implements Scope
                 && !($model instanceof Package)
                 && !($model instanceof Material)
                 && !($model instanceof OrderNoRule)
+                && !($model instanceof OrderTemplate)
                 && !($model instanceof Warehouse)
                 && !($model instanceof OrderTrail)
                 && !($model instanceof TrackingOrderTrail)
@@ -176,6 +195,7 @@ class CompanyScope implements Scope
                 && !($model instanceof HolidayDate)
                 && (!($model instanceof MerchantGroup))
                 && !($model instanceof MerchantGroupLineRange)
+                && (!($model instanceof MapConfig))
                 && (!in_array('merchant_id', $whereColumns))
             ) {
                 $builder->whereRaw($model->getTable() . '.merchant_id' . '=' . $user->id);

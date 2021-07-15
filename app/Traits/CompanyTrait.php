@@ -1,6 +1,6 @@
 <?php
 /**
- * 企业
+ * 公司
  * User: long
  * Date: 2020/5/20
  * Time: 14:42
@@ -15,18 +15,17 @@ use Illuminate\Support\Facades\Log;
 trait CompanyTrait
 {
     /**
-     * 获取企业选择的国家
+     * 获取公司选择的国家
      * @return mixed|string
      */
     public static function getCountry()
     {
         $company = self::getCompany();
-        Log::info($company['country']);
         return $company['country'] ?? '';
     }
 
     /**
-     * 获取企业信息
+     * 获取公司信息
      * @param $companyId
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      */
@@ -37,7 +36,7 @@ trait CompanyTrait
         $companyId = $companyId ?? auth()->user()->company_id;
         $company = Cache::tags($tag)->get($rootKey . $companyId);
         if (empty($company)) {
-            Artisan::call('company:cache --company_id=' . $companyId);
+            Artisan::call('cache:company --company_id=' . $companyId);
             $company = Cache::tags($tag)->get($rootKey . $companyId);
         }
         return $company;

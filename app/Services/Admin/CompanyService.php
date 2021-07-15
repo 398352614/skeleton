@@ -33,25 +33,28 @@ class CompanyService extends BaseService
             $where['id'] = ['<>', auth()->user()->company_id];
         }
         $info = parent::getInfo($where, ['*'], false);
-        if (!empty($info)) {
-            throw new BusinessLogicException('公司名称已存在');
-        }
         $rowCount = $this->query->updateOrCreate(
                 [
                     'id' => auth()->user()->company_id,
                 ],
                 [
-                    'name' => $data['name'] ?? '',
-                    'contacts' => $data['contacts'] ?? '',
-                    'phone' => $data['phone'] ?? '',
-                    'country' => $data['country'] ?? '',
-                    'address' => $data['address'] ?? '',
+                    'name'              => $data['name'] ?? '',
+                    'contacts'          => $data['contacts'] ?? '',
+                    'phone'             => $data['phone'] ?? '',
+                    'country'           => $data['country'] ?? '',
+                    'address'           => $data['address'] ?? '',
+                    'lon'               => $data['lon'] ?? '',
+                    'lat'               => $data['lat'] ?? '',
+                    'web_site'          => $data['web_site'] ?? '',
+                    'system_name'       => $data['system_name'] ?? '',
+                    'logo_url'          => $data['logo_url'] ?? '',
+                    'login_logo_url'    => $data['login_logo_url'] ?? '',
                 ]
             ) !== 0;
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
         return 'true';
     }
 

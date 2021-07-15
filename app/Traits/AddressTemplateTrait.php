@@ -28,7 +28,7 @@ trait AddressTemplateTrait
         }
         $addressTemplate = Cache::tags($tag)->get($rootKey . $company['address_template_id']);
         if (empty($addressTemplate)) {
-            Artisan::call('address-template:cache');
+            Artisan::call('cache:address-template');
             $addressTemplate = Cache::tags($tag)->get($rootKey . $company['address_template_id']);
         }
         return json_decode($addressTemplate['template'], true);

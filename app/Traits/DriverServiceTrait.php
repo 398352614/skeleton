@@ -2,7 +2,13 @@
 
 namespace App\Traits;
 
+use App\Services\Driver\BagService;
+use App\Services\Driver\BaseLineService;
+use App\Services\Driver\BaseWarehouseService;
+use App\Services\Driver\MemorandumService;
+use App\Services\Driver\MerchantGroupLineService;
 use App\Services\Driver\MerchantGroupService;
+use App\Services\Driver\ShiftService;
 use App\Services\Driver\StockExceptionService;
 use App\Services\Driver\AdditionalPackageService;
 use App\Services\Driver\BatchExceptionService;
@@ -28,6 +34,7 @@ use App\Services\Driver\TourTaskService;
 use App\Services\Driver\TrackingOrderMaterialService;
 use App\Services\Driver\TrackingOrderPackageService;
 use App\Services\Driver\TrackingOrderService;
+use App\Services\Driver\TrackingPackageService;
 use App\Services\Driver\WareHouseService;
 use App\Services\OrderNoRuleService;
 use App\Services\PackageNoRuleService;
@@ -42,6 +49,14 @@ Trait DriverServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * @return MerchantGroupLineService
+     */
+    public function getMerchantGroupLineService()
+    {
+        return self::getInstance(MerchantGroupLineService::class);
     }
 
     /**
@@ -142,6 +157,32 @@ Trait DriverServiceTrait
         return self::getInstance(TrackingOrderService::class);
     }
 
+    /**
+     * 转运单 服务
+     * @return TrackingPackageService
+     */
+    public function getTrackingPackageService()
+    {
+        return self::getInstance(TrackingPackageService::class);
+    }
+
+    /**
+     * 袋号 服务
+     * @return BagService
+     */
+    public function getBagService()
+    {
+        return self::getInstance(BagService::class);
+    }
+
+    /**
+     * 车次 服务
+     * @return ShiftService
+     */
+    public function getShiftService()
+    {
+        return self::getInstance(ShiftService::class);
+    }
 
     /**
      * 运单包裹表
@@ -208,12 +249,21 @@ Trait DriverServiceTrait
     }
 
     /**
-     * 取件线路服务
+     * 线路任务服务
      * @return TourService
      */
     public function getTourService()
     {
         return self::getInstance(TourService::class);
+    }
+
+    /**
+     * 备忘录服务
+     * @return MemorandumService
+     */
+    public function getMemorandumService()
+    {
+        return self::getInstance(MemorandumService::class);
     }
 
 
@@ -246,7 +296,7 @@ Trait DriverServiceTrait
     }
 
     /**
-     * 商户线路范围 服务
+     * 货主线路范围 服务
      * @return MerchantGroupLineRangeService
      */
     public function getMerchantGroupLineRangeService()
@@ -264,12 +314,21 @@ Trait DriverServiceTrait
     }
 
     /**
-     * 仓库 服务
+     * 网点 服务
      * @return WareHouseService
      */
     public function getWareHouseService()
     {
         return self::getInstance(WareHouseService::class);
+    }
+
+    /**
+     * 网点基础服务
+     * @return BaseWarehouseService
+     */
+    public function getBaseWarehouseService()
+    {
+        return self::getInstance(BaseWarehouseService::class);
     }
 
     /**
@@ -292,11 +351,20 @@ Trait DriverServiceTrait
     }
 
     /**
-     * 获取商户组
+     * 货主组 服务
      * @return StockExceptionService
      */
     public function getMerchantGroupService()
     {
         return self::getInstance(MerchantGroupService::class);
+    }
+
+    /**
+     * 基础线路 服务
+     * @return BaseLineService
+     */
+    public function getBaseLineService()
+    {
+        return self::getInstance(BaseLineService::class);
     }
 }

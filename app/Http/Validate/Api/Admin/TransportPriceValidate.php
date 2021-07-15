@@ -20,7 +20,7 @@ class TransportPriceValidate extends BaseValidate
 
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:transport_price,id',
-        'starting_price' => 'required|numeric|gte:0',
+        'starting_price' => 'nullable|numeric|gte:0',
         'remark' => 'nullable|string|max:250',
         'status' => 'required|integer|in:1,2',
         //公里计费列表
@@ -38,7 +38,10 @@ class TransportPriceValidate extends BaseValidate
         //运价计算
         'km' => 'nullable|integer|gte:0',
         'weight' => 'nullable|integer|gte:0',
-        'special_time' => 'nullable|date_format:H:i:s'
+        'special_time' => 'nullable|date_format:H:i:s',
+        'distance'=>'required|integer|gte:0',
+        'type'=>'required|integer|in:1,2',
+        'package_list.*.weight'=>'required_with:package_list|string|gte:0',
     ];
 
     public $scene = [
@@ -46,17 +49,20 @@ class TransportPriceValidate extends BaseValidate
             'name', 'starting_price', 'remark', 'status',
             'km_list', 'km_list.*.start', 'km_list.*.end', 'km_list.*.price',
             'weight_list', 'weight_list.*.start', 'weight_list.*.end', 'weight_list.*.price',
-            'special_time_list', 'special_time_list.*.start', 'special_time_list.*.end', 'special_time_list.*.price',
+            'special_time_list', 'special_time_list.*.start', 'special_time_list.*.end', 'special_time_list.*.price','type'
         ],
         'update' => [
             'name', 'starting_price', 'remark', 'status',
             'km_list', 'km_list.*.start', 'km_list.*.end', 'km_list.*.price',
             'weight_list', 'weight_list.*.start', 'weight_list.*.end', 'weight_list.*.price',
-            'special_time_list', 'special_time_list.*.start', 'special_time_list.*.end', 'special_time_list.*.price',
+            'special_time_list', 'special_time_list.*.start', 'special_time_list.*.end', 'special_time_list.*.price','type'
         ],
         'getPriceResult' => [
             'km', 'weight', 'special_time'
         ],
+        'priceCount'=>[
+            'distance','package_list','package_list.*.weight'
+        ]
     ];
 }
 

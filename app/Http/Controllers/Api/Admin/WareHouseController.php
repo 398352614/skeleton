@@ -1,6 +1,6 @@
 <?php
 /**
- * 仓库管理
+ * 网点管理
  * User: long
  * Date: 2019/12/25
  * Time: 15:16
@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\WareHouseService;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class WarehouseController
@@ -19,11 +20,18 @@ use App\Services\Admin\WareHouseService;
  */
 class WareHouseController extends BaseController
 {
+    /**
+     * WareHouseController constructor.
+     * @param WareHouseService $service
+     */
     public function __construct(WareHouseService $service)
     {
         parent::__construct($service);
     }
 
+    /**
+     * @return Collection
+     */
     public function index()
     {
         return $this->service->getPageList();
@@ -39,7 +47,6 @@ class WareHouseController extends BaseController
     {
         return $this->service->show($id);
     }
-
 
     /**
      * 新增
@@ -62,6 +69,26 @@ class WareHouseController extends BaseController
     }
 
     /**
+     * 批量新增线路
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function addLineList($id)
+    {
+        return $this->service->addLineList($id, $this->data);
+    }
+
+    /**
+     * 批量移除线路
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function removeLineList($id)
+    {
+        return $this->service->removeLineList($id, $this->data);
+    }
+
+    /**
      * 删除
      * @param $id
      * @throws BusinessLogicException
@@ -70,4 +97,64 @@ class WareHouseController extends BaseController
     {
         return $this->service->destroy($id);
     }
+
+    /**
+     * 树节点
+     * @return array|mixed
+     */
+    public function tree()
+    {
+        return $this->service->getTree();
+    }
+
+    /**
+     * @param int $id
+     * @param int $parent
+     */
+    public function move(int $id, int $parent)
+    {
+        $this->service->moveNode($id, $parent);
+    }
+
+    /**
+     * 获取网点下的线路列表
+     * @param $id
+     * @return Collection
+     * @throws BusinessLogicException
+     */
+    public function getLineList($id)
+    {
+        return $this->service->getLineList($id);
+    }
+
+    /**
+     * 获取网点可选的线路列表
+     * @param $id
+     * @return Collection
+     * @throws BusinessLogicException
+     */
+    public function getAbleLineList($id)
+    {
+        return $this->service->getAbleLineList($id);
+    }
+
+//    /**
+//     * 删除
+//     * @param $id
+//     * @throws BusinessLogicException
+//     */
+//    public function addLine($id)
+//    {
+//        return $this->service->addLine($id,$this->data);
+//    }
+
+//    /**
+//     * 删除
+//     * @param $id
+//     * @throws BusinessLogicException
+//     */
+//    public function removeLine($id)
+//    {
+//        return $this->service->removeLine($id,$this->data);
+//    }
 }

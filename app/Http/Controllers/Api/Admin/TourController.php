@@ -23,7 +23,7 @@ class TourController extends BaseController
     }
 
     /**
-     * 通过线路ID 获取可加入的取件线路列表
+     * 通过线路ID 获取可加入的线路任务列表
      * @return array
      */
     public function getListJoinByLineId()
@@ -32,7 +32,7 @@ class TourController extends BaseController
     }
 
     /**
-     * 获取可加单的取件线路列表
+     * 获取可加单的线路任务列表
      * @return array|mixed
      * @throws \App\Exceptions\BusinessLogicException
      */
@@ -275,4 +275,11 @@ class TourController extends BaseController
     {
         return $this->service->planExport($id);
     }
+
+
+    public function batchPng($id)
+    {
+        return $this->service->batchPng($id);
+    }
+
 }

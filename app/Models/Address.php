@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
+
 /**
  * 收货方 表
  * Class Employee
@@ -49,15 +51,19 @@ class Address extends BaseModel
         'merchant_id',
         'place_phone',
         'place_country',
+        'place_province',
         'place_post_code',
         'place_house_number',
         'place_city',
+        'place_district',
         'place_street',
         'place_address',
         'place_lon',
         'place_lat',
         'created_at',
         'updated_at',
+        'unique_code',
+        'type'
     ];
 
     /**
@@ -72,6 +78,7 @@ class Address extends BaseModel
     protected $appends = [
         'merchant_id_name',
         'short',
+        'type_name',
         'place_country_name',
     ];
 
@@ -91,6 +98,11 @@ class Address extends BaseModel
     public function merchant()
     {
         return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+    }
+
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::addressTypeList($this->type);
     }
 
     public function getShortAttribute()

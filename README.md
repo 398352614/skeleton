@@ -1,6 +1,9 @@
 # NLE-TMS后端技术文档
-[toc]
-## 一、项目介绍
+[1.项目介绍](#1)  
+[2.项目部署](#2)  
+[3.初始化项目](#3)   
+
+<h2 id='1'> 一、项目介绍 </h2>
 ### 1. 概述
   TMS全称Transportation Management System，即运输管理系统。TMS是恩尔伊科技公司重要开发运营项目之一，主要承接荷兰快递公司的快递业务以及欧亚商城的送货业务。  
 ### 2. 技术介绍
@@ -19,11 +22,11 @@ laravel版本：6.18.27
 ### 4. 相关材料
   
 正式服管理员端地址：[https://tms-admin.eutechne.com](https://tms-admin.eutechne.com)  
-正式服商户端地址：[https://tms-business.eutechne.com](https://tms-business.eutechne.com)  
+正式服货主端地址：[https://tms-business.eutechne.com](https://tms-business.eutechne.com)  
 开发服管理员端地址：[https://dev-tms-admin.nle-tech.com](https://dev-tms-admin.nle-tech.com)  
-开发服商户端地址：[https://dev-tms-business.nle-tech.com](https://dev-tms-business.nle-tech.com)  
+开发服货主端地址：[https://dev-tms-business.nle-tech.com](https://dev-tms-business.nle-tech.com)  
   
-## 二、项目部署
+<h2 id='2'> 项目部署 </h2>  
 ### 1.搭建环境
 #### 1.1 安装docker
 Docker 是一个开源的应用容器引擎，可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。本项目的开发服，正式服均是由docker搭建环境。开发服与正式服的服务器均是CentOS系统，首先通过相关教程将Docker安装至服务器。  
@@ -70,18 +73,19 @@ tms_dev_env_redis_1
 按顺序分别为定时任务，数据库，服务器，php命令行，php扩展，数据库网页版，缓存。其中还有supervisor及wkhtmltopdf安装在php-cli的虚拟容器中，因为某些原因并未单独拿出来作为容器管理。
 
 ### 2. 项目部署与维护
-该项目利用github进行代码管理，放置在nle-tech的仓库中，其中正式服分支为deploy，开发服分支为develop。  
+该项目利用github进行代码管理，放置在nle-tech的网点中，其中正式服分支为deploy，开发服分支为develop。  
 #### 2.1 安装git
 访问git官网下载git。  
 下载地址：[https://git-scm.com/downloads](https://git-scm.com/downloads)
 #### 2.2 从github上下载项目工程
- github仓库地址：[https://github.com/nletech/tms-api](https://github.com/nletech/tms-api)
+ github网点地址：[https://github.com/nletech/tms-api](https://github.com/nletech/tms-api)
 通过克隆，下载到服务器上。
+注意：应在docker环境文件夹同层新建www文件夹，再在www文件夹内git clone克隆项目代码。  
 ```gitexclude
 git clone https://github.com/nletech/tms-api/tree/deploy;
 ```
 #### 2.3 更新
-以开发服为例，在本地克隆后，在项目目录下，对代码进行了任何更改，可首先将代码上传到开发服仓库上。
+以开发服为例，在本地克隆后，在项目目录下，对代码进行了任何更改，可首先将代码上传到开发服网点上。
 ```
 git push 
 ```
@@ -93,7 +97,7 @@ git pull
 ````gitexclude
 docker-compose exec php-cli bash
 cd api
-php aritsan migrate
+php artisan migrate
 ````
 如果有更改队列任务，还需进入容器，执行以下命令重启队列。
 ```gitexclude
@@ -102,13 +106,13 @@ cd api
 supervisorctl restart all
 ```
 
-### 3. 初始化项目
+### 2. 初始化项目
 #### 3.1 nginx配置
 在服务器上/etc/nginx/conf.d/文件夹中，新建.conf配置文件，在service下加上以下配置：  
 ```
 client_max_body_size 50M;
 client_body_buffer_size 1024M;
-```
+```  
 #### 3.2 框架初始化
 在根目录下，根据.env.example编写.env文件。  
 生成APP秘钥。  
@@ -123,6 +127,13 @@ composer 自我更新
 ```gitexclude
 composer selfupdate
 ```
+
+替换文件已解决php版本字符问题，文件在docker根目录下。
+原因是7.4版本php不支持花括号{}取数组元素，只支持中括号[]取数组元素。因此需要将环境文件夹根目录下的DNS1D.php文件复制并覆盖以下文件。
+```
+tms-api/www/api/vendor/milon/barcode/src/Milon/Barcode/DNS1D.php
+```
+
 composer 安装依赖
 ```gitexclude
 composer install
@@ -133,16 +144,12 @@ php artisan migrate
 ```
 #### 3.4 缓存初始化
 地址模板缓存  
-```
-php artisan address-template:cache
+```OrderService
+php artisan cache:address-template
 ```
 邮编缓存
 ```
-php artisan postcode:cache
-```
-国家缓存
-```
-php aritsan country:cache
+php artisan cache:postcode
 ```
 #### 3.5 配置supervisor
 由于某些原因，supervisor并未以容器的形式进行管控，而是在php-cli容器中进行了安装，仅此需要解决supervisor配置问题，每次重启后均需重新配置。
@@ -152,14 +159,28 @@ docker-compose exec php-cli bash
 cd api
 sudo supervisord -c /etc/supervisor/supervisord.conf
 ```
+
+#### 3.6 基础权限表  
+手动导入permission表  
+
+#### 3.7 导入地址模板  
+```$php
+php artisan db:seed --class=AddressTemplateSeeder
+```
+
+#### 3.8 打印模板上传
+打印模板并未存在git上，需要在本地上传至服务器的公共目录，然后移动至/app/tms/www/api/storage/app/public/admin/print_template。
+标准模板带包裹二维码，重命名为1.png，通用模板不带包裹二维码，重命名为2.png。
+
+
 ## 三、使用说明
 ### 1. 项目连接
 #### 1.1 内部连接
-TMS项目后端与管理员端，商户端，司机端进行连接，其中管理员端与商户端为网页端，司机端为安卓端。  
+TMS项目后端与管理员端，货主端，司机端进行连接，其中管理员端与货主端为网页端，司机端为安卓端。  
 开发服管理员端接口地址：[https://dev-tms.nle-tech.com/api/admin](https://dev-tms.nle-tech.com/api/admin)  
 正式服管理员端接口地址：[https://tms-admin.eutechne.com/api/admin](https://tms-admin.eutechne.com/api/admin)  
-开发服商户端接口地址：[https://dev-tms.nle-tech.com/api/merchant](https://dev-tms.nle-tech.com/api/merchant)  
-正式服商户端接口地址：[https://tms-admin.eutechne.com/api/merchant](https://tms-admin.eutechne.com/api/merchant)  
+开发服货主端接口地址：[https://dev-tms.nle-tech.com/api/merchant](https://dev-tms.nle-tech.com/api/merchant)  
+正式服货主端接口地址：[https://tms-admin.eutechne.com/api/merchant](https://tms-admin.eutechne.com/api/merchant)  
 开发服司机端接口地址：[https://dev-tms.nle-tech.com/api/driver](https://dev-tms.nle-tech.com/api/driver)  
 正式服司机端接口地址：[https://tms-admin.eutechne.com/api/driver](https://tms-admin.eutechne.com/api/driver)  
 #### 1.2 业务外部连接
@@ -184,29 +205,29 @@ postcode.nl网站API地址：[https://api.postcode.nl/rest](https://api.postcode
 百度翻译文档：[https://api.fanyi.baidu.com/doc/21](https://api.fanyi.baidu.com/doc/21)
 
 ### 2. 业务流程
-本系统为SaaS平台，服务对象为运输公司、物流公司，服务内容主要为货物运输配套功能。可对接上游电商系统，也可直接面向普通个人客户。管理员端的主要功能为财务管理，公司管理，订单管理，出车管理，车队管理，配置管理。商户端主要功能为订单管理，配置管理。司机端主要功能为，任务管理，备忘录管理，第三方服务管理，包裹复核管理。管理员端是业务处理的枢纽，权限为最高权限，商户端主要为订单入口，司机端主要负责运输业务实现。
+本系统为SaaS平台，服务对象为运输公司、物流公司，服务内容主要为货物运输配套功能。可对接上游电商系统，也可直接面向普通个人客户。管理员端的主要功能为财务管理，公司管理，订单管理，出车管理，车队管理，配置管理。货主端主要功能为订单管理，配置管理。司机端主要功能为，任务管理，备忘录管理，第三方服务管理，包裹复核管理。管理员端是业务处理的枢纽，权限为最高权限，货主端主要为订单入口，司机端主要负责运输业务实现。
 #### 2.1 新建公司
 在登录页面点击注册，通过简单的信息填写便可以新建一个公司账号，但此时账号是无法进行实际使用。此时登录后会直接跳转到配置页面，在配置完整之前，其他功能是无法使用的。
 #### 2.2 配置线路
 在出车管理中，对线路进行配置，线路有较多参数，通过这些参数调整，可以控制订单自动分配线路的流向。分配好的订单会以运单的形式，成为整个系统的核心。
 #### 2.3 配置车队
-在车队管理中，新建司机和车辆，只有分配了司机与车辆的取件线路才能进行出车作业。司机端暂时没有注册功能，在管理员端注册好司机后，司机就可以在司机端登录了。
-#### 2.4 新建商户或客户
-在公司管理中，新建商户或客户，只有新建了商户或者客户后，才能以其为来源进行新增订单。
+在车队管理中，新建司机和车辆，只有分配了司机与车辆的线路任务才能进行出车作业。司机端暂时没有注册功能，在管理员端注册好司机后，司机就可以在司机端登录了。
+#### 2.4 新建货主或客户
+在公司管理中，新建货主或客户，只有新建了货主或者客户后，才能以其为来源进行新增订单。
 #### 2.5 新增订单
-订单既可以通过商户端，也可以通过API或者手动添加。对于商户或者客户来说，订单是他们对于这个系统的唯一使用凭证。通过订单类型，可分为取件订单，派件订单，取派订单，不同的订单会生成不同的运单，在系统内部实际上是通过操作运单来进行作业的。取件订单会生成一个取件运单，派件订单会生成一个派件运单，取派订单会生成一个取件订单与一个派件订单。
-#### 2.6 分配取件线路
-进入取件线路管理，为取件线路分配司机和车辆，然后进入智能优化界面，自动优化或者手动优化线路，这样司机端就能获得一个系统给出的最优路径。智能优化功能是基于谷歌地图，腾讯地图API做的，本系统只根据业务进行了调用封装。
+订单既可以通过货主端，也可以通过API或者手动添加。对于货主或者客户来说，订单是他们对于这个系统的唯一使用凭证。通过订单类型，可分为取件订单，派件订单，取派订单，不同的订单会生成不同的运单，在系统内部实际上是通过操作运单来进行作业的。取件订单会生成一个取件运单，派件订单会生成一个派件运单，取派订单会生成一个取件订单与一个派件订单。
+#### 2.6 分配线路任务
+进入线路任务管理，为线路任务分配司机和车辆，然后进入智能优化界面，自动优化或者手动优化线路，这样司机端就能获得一个系统给出的最优路径。智能优化功能是基于谷歌地图，腾讯地图API做的，本系统只根据业务进行了调用封装。
 #### 2.7 司机出库
 在管理员端新增司机后，司机便可以通过新增使用的账户密码登录司机端，登录司机端后可以选择需要派送的线路任务，进行出库操作。出库时需要扫描包裹二维码或者手动输入包裹号，包裹号在订单新增时就会输入。
 #### 2.8 站点签收
-站点的定义是同一个目的地，同一个客户，同一取派日期，同一条取件线路下的运单集合，是系统内的虚拟概念，层级高低依次为线路，线路任务，站点，运单。司机只要选择好客户签收的包裹，如有支付，执行支付流程，然后让客户统一签名即可完成签收。
+站点的定义是同一个目的地，同一个客户，同一取派日期，同一条线路任务下的运单集合，是系统内的虚拟概念，层级高低依次为线路，线路任务，站点，运单。司机只要选择好客户签收的包裹，如有支付，执行支付流程，然后让客户统一签名即可完成签收。
 #### 2.9 司机入库
-所有站点取送完成后，需要进行入库操作，仓库对取回的包裹进行核实，然后统一签名即可完成入库。司机入库后，既完成了整个系统的主流程。
+所有站点取送完成后，需要进行入库操作，网点对取回的包裹进行核实，然后统一签名即可完成入库。司机入库后，既完成了整个系统的主流程。
 
 
 ### 3. 自定义命令
-在Laravel框架下，拥有便利的自定义artisan命令。在项目目录下的app/Console/Commonds文目录内，存放有所有的自定义aritsan命令，其中可用的有以下命令。  
+在Laravel框架下，拥有便利的自定义artisan命令。在项目目录下的app/Console/Commands文目录内，存放有所有的自定义artisan命令，其中可用的有以下命令。  
 #### 3.1 抛错自动翻译
 ```
 php artisan translate
@@ -237,11 +258,11 @@ php artisan repush {--order_no= : order_no} {--tour_no= : tour_no}
 php artisan test:guzzle {url}
 ```
 该命令需要在app/Console/Commands/TestGuzzle.php中按格式填构建请求数据，然后填写所需第三方Url，此命令适用于所有第三方推送。  
-#### 3.7 解锁取件线路的操作锁定
+#### 3.7 解锁线路任务的操作锁定
 ```
 php artisan unlock:tour {tour_no}
 ```
-如果智能调度时出现“当前 tour 正在操作中,请稍后操作”报错，可使用该命令对取件线路进行解锁。  
+如果智能调度时出现“当前 tour 正在操作中,请稍后操作”报错，可使用该命令对线路任务进行解锁。  
 
 ### 4 代码规范
 #### 4.1 命名
@@ -276,4 +297,18 @@ php artisan unlock:tour {tour_no}
 在service目录下，有一个BaseService作为基类，该类中存有较为通用的方法。其他所有service类都继承这个基类，又根据业务需求分别拥有特殊方法。并且，可以通过复写基类中的方法对其通用方法进行定制。既可以减少代码重复性，又不缺乏灵活性。除了service，其他所有的类都可以以此方法构建通用基类，提高代码复用率。如果某一类service除了BaseService外，仍然有较多相同代码，可以在BaseService与Serice之间再加一层通用类，例如由于按区域分配订单与按邮编分配订单这两个服务，拥有部分共同的处理步骤，所以在AreaService与BaseService之间，新建BaseLineService。
 ##### 4.3.3 上传文件目录结构
 用户上传的文件在app/public/storage目录下，根据不同端分为admin，driver，merchant三个文件夹，在此之下再根据文件类型分文件夹，例如，barcode，excel，flie等。结构形如app/public/storage/admin/excel。一般情况下不要改变该结构，不要在文件类型目录下再建更多子目录，那样做的话会难以管理。
+
+## 附录：
+### 1 新增权限
+#### 1.1 新增permission表数据，注意要保持树状结构，并且注意类型，1为菜单，2为按钮，并将路由别名告知前端，前端通过路由别名进行隐藏显示操作。
+#### 1.3 重新缓存permission表
+执行
+```
+php artisan cache:permission
+```
+#### 1.4 初始化权限
+
+``` php
+php artisan init:permission
+```
 

@@ -15,11 +15,14 @@ use App\Events\TourDriver\BatchDepart;
 use App\Events\TourDriver\OutWarehouse;
 use App\Jobs\ActualOutWarehouse;
 use App\Models\Batch;
+use App\Models\PackageTrail;
 use App\Models\Tour;
 use App\Models\TrackingOrder;
 use App\Services\BaseConstService;
 use App\Services\OrderTrailService;
+use App\Services\PackageTrailService;
 use App\Services\TrackingOrderTrailService;
+use phpseclib3\Math\BigInteger\Engines\BCMath\Base;
 
 trait TourTrait
 {
@@ -31,6 +34,15 @@ trait TourTrait
         $trackingOrderList = TrackingOrder::query()->select(['*'])->where('tour_no', $tour['tour_no'])->whereNotIn('tracking_order_no', array_column($cancelTrackingOrderList, 'tracking_order_no'))->get()->toArray();
         !empty($trackingOrderList) && TrackingOrderTrailService::storeAllByTrackingOrderList($trackingOrderList, BaseConstService::TRACKING_ORDER_TRAIL_DELIVERING);
         !empty($trackingOrderList) && OrderTrailService::storeAllByOrderList($trackingOrderList, BaseConstService::ORDER_TRAIL_START);
+        if(!empty($trackingOrderList)){
+            foreach ($trackingOrderList as $k=>$v){
+                if($v['type'] == BaseConstService::TRACKING_ORDER_TYPE_1){
+                    PackageTrailService::storeByTrackingOrder($v,BaseConstService::PACKAGE_TRAIL_PICKUP,$tour);
+                }else{
+                    PackageTrailService::storeByTrackingOrder($v, BaseConstService::PACKAGE_TRAIL_PIE,$tour);
+                }
+            }
+        }
         //触发司机出库1
         event(new OutWarehouse($tour));
         //出库通知
@@ -61,7 +73,7 @@ trait TourTrait
         TrackingOrderTrailService::storeAllByTrackingOrderList($trackingOrderList, BaseConstService::TRACKING_ORDER_TRAIL_CANCEL_DELIVER);
         OrderTrailService::storeAllByOrderList($trackingOrderList, BaseConstService::ORDER_TRAIL_FAIL);
         //取消取派通知
-            event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $trackingOrderList));
+        event(new \App\Events\TourNotify\CancelBatch($tour, $batch, $trackingOrderList));
         //处理站点
         self::dealBatchEvent($tour, $batch);
     }
@@ -83,18 +95,17 @@ trait TourTrait
         }
         unset($groupOrderList);
         //签收通知
-            event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $trackingOrderList));
+        event(new \App\Events\TourNotify\AssignBatch($tour, $batch, $trackingOrderList));
         //处理站点
         self::dealBatchEvent($tour, $batch);
     }
 
     public static function afterBackWarehouse($tour)
     {
-        $trackingOrderList = TrackingOrder::query()->select(['*'])->where('tour_no', $tour['tour_no'])->get()->toArray();
-        $batchList = Batch::query()->where('tour_no', $tour['tour_no'])->whereIn('status', [BaseConstService::BATCH_CANCEL, BaseConstService::BATCH_CHECKOUT])->get()->toArray();
-        //触发返回仓库
+        //触发返回网点
         event(new BackWarehouse($tour));
-            event(new \App\Events\TourNotify\BackWarehouse($tour, $batchList, $trackingOrderList));
+
+        event(new \App\Events\TourNotify\BackWarehouse($tour));
     }
 
 
@@ -118,7 +129,7 @@ trait TourTrait
 
     public static function getNextBatch($tourNo)
     {
-        return $nextBatch = Batch::query()->where('tour_no', $tourNo)->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first();
+        return $nextBatch = Batch::query()->where('tour_no', $tourNo)->where('status', BaseConstService::BATCH_DELIVERING)->orderBy('sort_id', 'asc')->first(['batch_no', 'expect_arrive_time', 'expect_time', 'expect_distance']);
     }
 
 }

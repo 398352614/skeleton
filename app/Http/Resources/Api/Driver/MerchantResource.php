@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户列表
+ * 货主列表
  * Created by PhpStorm
  * User: long
  * Date: 2019/12/20
@@ -19,16 +19,17 @@ class MerchantResource extends JsonResource
         return [
             'id' => $this->id,
             'company_id' => $this->company_id,
+            'code' => $this->code,
             'type' => $this->type,
             'type_name' => $this->type_name,
             'name' => $this->name,
+            'short_name' => $this->short_name,
             'email' => $this->email,
             'country' => $this->country,
             'settlement_type' => $this->settlement_type,
             'settlement_type_name' => $this->settlement_type_name,
             'merchant_group_id' => $this->merchant_group_id,
             'merchant_group_name' => $this->merchantGroup->name,
-            'additional_status' => $this->additional_status,
             'contacter' => $this->contacter,
             'phone' => $this->phone,
             'address' => $this->address,
@@ -36,6 +37,14 @@ class MerchantResource extends JsonResource
             'status' => $this->status,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
+            'invoice_title'=>$this->invoice_title,
+            'taxpayer_code'=>$this->taxpayer_code,
+            'bank'=>$this->bank,
+            'bank_account'=>$this->bank_account,
+            'invoice_address'=>$this->invoice_address,
+            'invoice_email'=>$this->invoice_email,
+            'introduction'=>$this->introduction,
+            'warehouse_id'=>$this->warehouse_id
         ];
     }
 

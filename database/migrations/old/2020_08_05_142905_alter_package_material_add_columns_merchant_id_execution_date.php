@@ -14,12 +14,12 @@ class AlterPackageMaterialAddColumnsMerchantIdExecutionDate extends Migration
     public function up()
     {
         Schema::table('package', function (Blueprint $table) {
-            $table->integer('merchant_id')->default(null)->nullable()->after('company_id')->comment('商户ID');
+            $table->integer('merchant_id')->default(null)->nullable()->after('company_id')->comment('货主ID');
             $table->date('execution_date')->default(null)->nullable()->after('order_no')->comment('取派日期');
             $table->index('merchant_id', 'merchant_id');
         });
         Schema::table('material', function (Blueprint $table) {
-            $table->integer('merchant_id')->default(null)->nullable()->after('company_id')->comment('商户ID');
+            $table->integer('merchant_id')->default(null)->nullable()->after('company_id')->comment('货主ID');
             $table->date('execution_date')->default(null)->nullable()->after('order_no')->comment('取派日期');
             $table->index('merchant_id', 'merchant_id');
         });

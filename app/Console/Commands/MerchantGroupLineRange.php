@@ -13,7 +13,7 @@ class MerchantGroupLineRange extends Command
      *
      * @var string
      */
-    protected $signature = 'merchantGroupLineRange:init';
+    protected $signature = 'init:merchantGroupLineRange';
 
     /**
      * The console command description.

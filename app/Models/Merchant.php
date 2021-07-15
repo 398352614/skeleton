@@ -7,7 +7,7 @@ use App\Traits\CountryTrait;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
- * 商户表
+ * 货主表
  * Class Employee
  * @package App\Models
  */
@@ -52,6 +52,10 @@ class Merchant extends Authenticatable implements JWTSubject
         'code',
         'type',
         'name',
+        'below_warehouse',
+        'warehouse_id',
+        'short_name',
+        'introduction',
         'email',
         'password',
         'country',
@@ -61,9 +65,15 @@ class Merchant extends Authenticatable implements JWTSubject
         'phone',
         'address',
         'avatar',
+        'invoice_title',
+        'taxpayer_code',
+        'bank',
+        'bank_account',
+        'invoice_address',
+        'invoice_email',
         'status',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     /**

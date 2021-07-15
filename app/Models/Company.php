@@ -49,6 +49,12 @@ class Company extends BaseModel
         'phone',
         'country',
         'address',
+        'lon',
+        'lat',
+        'web_site',
+        'system_name',
+        'logo_url',
+        'login_logo_url',
         'created_at',
         'updated_at'
     ];

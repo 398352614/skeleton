@@ -18,13 +18,12 @@ class HomeController extends BaseController
     }
 
     /**
-     * 主页（默认显示今天总数和这周每日完成订单数）
+     * 今日概览
      * @return array
-     * @throws \App\Exceptions\BusinessLogicException
      */
-    public function home()
+    public function todayOverview()
     {
-        return $this->service->home();
+        return $this->service->todayOverview();
     }
 
     /**
@@ -40,7 +39,7 @@ class HomeController extends BaseController
     /**
      * 上周数据
      * @return array
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws \Exception
      */
     public function lastWeekCount()
     {
@@ -50,7 +49,7 @@ class HomeController extends BaseController
     /**
      * 此月数据
      * @return array
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws \Exception
      */
     public function thisMonthCount()
     {
@@ -60,7 +59,7 @@ class HomeController extends BaseController
     /**
      * 上月数据
      * @return array
-     * @throws \App\Exceptions\BusinessLogicException
+     * @throws \Exception
      */
     public function lastMonthCount()
     {
@@ -70,7 +69,6 @@ class HomeController extends BaseController
     /**
      * 时间段订单统计
      * @return array
-     * @throws \App\Exceptions\BusinessLogicException
      */
     public function periodCount()
     {
@@ -79,10 +77,10 @@ class HomeController extends BaseController
 
     /**
      * 总计统计
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function all()
+    public function trail()
     {
-        return $this->service->all();
+        return $this->service->trail();
     }
 }

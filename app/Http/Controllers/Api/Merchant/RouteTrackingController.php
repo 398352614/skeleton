@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class RouteTrackingController extends BaseController
 {
+    /**
+     * RouteTrackingController constructor.
+     * @param RouteTrackingService $service
+     */
     public function __construct(RouteTrackingService $service)
     {
         parent::__construct($service);
@@ -33,7 +37,7 @@ class RouteTrackingController extends BaseController
      *  "data":{}
      * }
      */
-    public function show(Request $request)
+    public function show()
     {
         return $this->service->show();
     }

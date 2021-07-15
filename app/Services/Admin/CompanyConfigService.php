@@ -50,6 +50,53 @@ class CompanyConfigService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object
+     */
+    public function getUnitConfig()
+    {
+        return $this->query->select(['weight_unit', 'currency_unit', 'volume_unit'])->first();
+    }
+
+    /**
+     * @param array $data
+     * @return int
+     */
+    public function setUnitConfig(array $data)
+    {
+        $this->update(['company_id' => auth()->user()->company_id], [
+            'weight_unit' => $data['weight_unit'],
+            'currency_unit' => $data['currency_unit'],
+            'volume_unit' => $data['volume_unit'],
+        ]);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function getRuleConfig()
+    {
+        return $this->query->select(['line_rule', 'scheduling_rule'])->first();
+    }
+
+    /**
+     * @param array $data
+     * @return void
+     * @throws BusinessLogicException
+     */
+    public function setRuleConfig(array $data)
+    {
+        $row = $this->update(['company_id' => auth()->user()->company_id], [
+            'line_rule' => $data['line_rule'],
+            'scheduling_rule' => $data['scheduling_rule']
+        ]);
+        if ($row == false) {
+            throw new BusinessLogicException('更新失败');
+        }
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
     }
 }

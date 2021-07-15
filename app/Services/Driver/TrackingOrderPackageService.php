@@ -16,4 +16,5 @@ class TrackingOrderPackageService extends BaseService
     {
         parent::__construct($trackingOrderPackage, $resource, $infoResource);
     }
+
 }

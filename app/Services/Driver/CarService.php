@@ -23,6 +23,11 @@ class CarService extends BaseService
     }
 
 
+    /**
+     * 获取可选车次
+     * @return \Illuminate\Database\Eloquent\Collection
+     * @throws BusinessLogicException
+     */
     public function getPageList()
     {
         if (!empty($this->formData['tour_no'])) {
@@ -30,16 +35,31 @@ class CarService extends BaseService
             if (empty($tour)) {
                 throw new BusinessLogicException('数据不存在');
             }
-            $carIdList = DB::table('tour')
+            $tourCarIdList = DB::table('tour')
                 ->where('company_id', auth()->user()->company_id)
                 ->where('driver_id', '<>', null)
                 ->where('car_id', '<>', null)
                 ->where('execution_date', $tour['execution_date'])
                 ->where('status', '<>', BaseConstService::TOUR_STATUS_5)
                 ->pluck('car_id')->toArray();
-            if (!empty($carIdList)) {
-                $this->query->whereNotIn('id', $carIdList);
-            }
+        }else{
+            $tourCarIdList = DB::table('tour')
+                ->where('company_id', auth()->user()->company_id)
+                ->where('driver_id', '<>', null)
+                ->where('car_id', '<>', null)
+                ->where('execution_date', today()->format('Y-m-d'))
+                ->where('status', '<>', BaseConstService::TOUR_STATUS_5)
+                ->pluck('car_id')->toArray();
+        }
+        $shiftCarIdList = DB::table('shift')
+            ->where('company_id', auth()->user()->company_id)
+            ->where('driver_id', '<>', null)
+            ->where('car_id', '<>', null)
+            ->where('status', '<>', BaseConstService::SHIFT_STATUS_4)
+            ->pluck('car_id')->toArray();
+        $carIdList = array_merge($tourCarIdList, $shiftCarIdList);
+        if (!empty($carIdList)) {
+            $this->query->whereNotIn('id', $carIdList);
         }
         $this->query->where('is_locked', '=', BaseConstService::DRIVER_TO_NORMAL);
         return parent::getPageList();

@@ -61,6 +61,9 @@ class Order extends BaseModel
         'out_user_id',
         'nature',
         'settlement_type',
+        'distance',
+        'starting_price',
+        'count_settlement_amount',
         'settlement_amount',
         'replace_amount',
         'delivery',
@@ -72,9 +75,11 @@ class Order extends BaseModel
         'second_place_fullname',
         'second_place_phone',
         'second_place_country',
+        'second_place_province',
         'second_place_post_code',
         'second_place_house_number',
         'second_place_city',
+        'second_place_district',
         'second_place_street',
         'second_place_address',
         'second_place_lon',
@@ -82,9 +87,11 @@ class Order extends BaseModel
         'place_fullname',
         'place_phone',
         'place_country',
+        'place_province',
         'place_post_code',
         'place_house_number',
         'place_city',
+        'place_district',
         'place_street',
         'place_address',
         'place_lon',
@@ -97,6 +104,14 @@ class Order extends BaseModel
         'out_status',
         'created_at',
         'updated_at',
+        'transport_price_type',
+        'transport_price_id',
+        'expect_total_amount',
+        'actual_total_amount',
+        'receipt_type',
+        'receipt_count',
+        'create_date',
+        'transport_mode',
     ];
 
     /**
@@ -113,13 +128,15 @@ class Order extends BaseModel
         'out_status_name',
         'exception_label_name',
         'type_name',
-        'merchant_id_name',
-        'merchant_id_code',
+//        'merchant_id_name',
+//        'merchant_id_code',
         'place_country_name',
         'second_place_country_name',
         'country_name',
         'settlement_type_name',
-        'source_name'
+        'source_name',
+        'transport_price_type_name',
+        'receipt_type_name'
     ];
 
     /**
@@ -155,23 +172,23 @@ class Order extends BaseModel
         return empty($this->exception_label) ? null : ConstTranslateTrait::orderExceptionLabelList($this->exception_label);
     }
 
-    public function getMerchantIdNameAttribute()
-    {
-        if (empty($this->merchant) || empty($this->merchant_id)) return '';
-        return $this->merchant->name;
-    }
+//    public function getMerchantIdNameAttribute()
+//    {
+//        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+//        return $this->merchant->name;
+//    }
 
-    public function getMerchantIdCodeAttribute()
-    {
-        if (empty($this->merchant) || empty($this->merchant_id)) return '';
-        return $this->merchant->code;
-    }
+//    public function getMerchantIdCodeAttribute()
+//    {
+//        if (empty($this->merchant) || empty($this->merchant_id)) return '';
+//        return $this->merchant->code;
+//    }
 
 
-    public function merchant()
-    {
-        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
-    }
+//    public function merchant()
+//    {
+//        return $this->belongsTo(Merchant::class, 'merchant_id', 'id');
+//    }
 
     public function getShortAttribute()
     {
@@ -186,5 +203,25 @@ class Order extends BaseModel
     public function getSettlementTypeNameAttribute()
     {
         return empty($this->settlement_type) ? null : ConstTranslateTrait::orderSettlementTypeList($this->settlement_type);
+    }
+
+    public function getTransportPriceTypeNameAttribute()
+    {
+        return empty($this->transport_price_type) ? null : ConstTranslateTrait::transportPriceTypeList($this->transport_price_type);
+    }
+
+    public function getTransportModeNameAttribute()
+    {
+        return empty($this->transport_mode) ? null : ConstTranslateTrait::orderTransportModeList($this->transport_mode);
+    }
+
+    public function getOriginTypeNameAttribute()
+    {
+        return empty($this->origin_type) ? null : ConstTranslateTrait::orderOriginTypeList($this->origin_type);
+    }
+
+    public function getReceiptTypeNameAttribute()
+    {
+        return empty($this->receipt_type) ? null : ConstTranslateTrait::orderReceiptTypeList($this->receipt_type);
     }
 }

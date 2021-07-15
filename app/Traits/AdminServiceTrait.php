@@ -7,9 +7,11 @@ use App\Services\Admin\AddressService;
 use App\Services\Admin\AddressTemplateService;
 use App\Services\Admin\ApiTimesService;
 use App\Services\Admin\BaseLineService;
+use App\Services\Admin\BaseWarehouseService;
 use App\Services\Admin\BatchExceptionService;
 use App\Services\Admin\BatchService;
 use App\Services\Admin\CarBrandService;
+use App\Services\Admin\CarMaintainDetailService;
 use App\Services\Admin\CarService;
 use App\Services\Admin\CompanyService;
 use App\Services\Admin\DriverService;
@@ -21,15 +23,20 @@ use App\Services\Admin\LineService;
 use App\Services\Admin\MaterialService;
 use App\Services\Admin\MerchantApiService;
 use App\Services\Admin\MerchantGroupLineRangeService;
+use App\Services\Admin\MerchantGroupLineService;
 use App\Services\Admin\MerchantGroupService;
 use App\Services\Admin\MerchantRechargeService;
 use App\Services\Admin\MerchantService;
+use App\Services\Admin\OrderAmountService;
+use App\Services\Admin\OrderDefaultConfigService;
 use App\Services\Admin\OrderService;
+use App\Services\Admin\OrderTemplateService;
 use App\Services\Admin\PackageService;
 use App\Services\Admin\PrintTemplateService;
 use App\Services\Admin\RechargeService;
 use App\Services\Admin\RechargeStatisticsService;
 use App\Services\Admin\RoleService;
+use App\Services\Admin\SparePartsStockService;
 use App\Services\Admin\StockExceptionService;
 use App\Services\Admin\StockInLogService;
 use App\Services\Admin\StockOutLogService;
@@ -42,20 +49,26 @@ use App\Services\Admin\TrackingOrderService;
 use App\Services\Admin\TransportPriceService;
 use App\Services\Admin\UploadService;
 use App\Services\Admin\WareHouseService;
+use App\Services\ApiServices\GoogleApiService;
+use App\Services\Admin\TrackingPackageService;
 use App\Services\OrderNoRuleService;
 use App\Services\PackageNoRuleService;
+use App\Services\TrackingOrderTrailService;
 
 trait AdminServiceTrait
 {
     use FactoryInstanceTrait;
 
+    /**
+     * @return mixed
+     */
     public function getCompanyService()
     {
         return self::getInstance(CompanyService::class);
     }
 
     /**
-     * 商户服务
+     * 货主服务
      * @return MerchantService
      */
     public function getMerchantService()
@@ -127,7 +140,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 取件线路 服务
+     * 线路任务 服务
      * @return TourService
      */
     public function getTourService()
@@ -142,6 +155,15 @@ trait AdminServiceTrait
     public function getOrderService()
     {
         return self::getInstance(OrderService::class);
+    }
+
+    /**
+     * 基础网点 服务
+     * @return BaseWarehouseService
+     */
+    public function getBaseWarehouseService()
+    {
+        return self::getInstance(BaseWarehouseService::class);
     }
 
     /**
@@ -163,6 +185,15 @@ trait AdminServiceTrait
     }
 
     /**
+     * 订单费用 服务
+     * @return OrderAmountService
+     */
+    public function getOrderAmountService()
+    {
+        return self::getInstance(OrderAmountService::class);
+    }
+
+    /**
      * 站点 服务
      * @return BatchService
      */
@@ -178,6 +209,24 @@ trait AdminServiceTrait
     public function getTrackingOrderService()
     {
         return self::getInstance(TrackingOrderService::class);
+    }
+
+    /**
+     * 转运单 服务
+     * @return TrackingPackageService
+     */
+    public function getTrackingPackageService()
+    {
+        return self::getInstance(TrackingPackageService::class);
+    }
+
+    /**
+     * 订单模板 服务
+     * @return OrderTemplateService
+     */
+    public function getOrderTemplateService()
+    {
+        return self::getInstance(OrderTemplateService::class);
     }
 
     /**
@@ -199,6 +248,15 @@ trait AdminServiceTrait
     }
 
     /**
+     * 运单轨迹 服务
+     * @return TrackingOrderTrailService
+     */
+    public function getTrackingOrderTrailService()
+    {
+        return self::getInstance(TrackingOrderTrailService::class);
+    }
+
+    /**
      * 商组线路范围 服务
      * @return MerchantGroupLineRangeService
      */
@@ -208,7 +266,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 仓库 服务
+     * 网点 服务
      * @return WareHouseService
      */
     public function getWareHouseService()
@@ -282,7 +340,7 @@ trait AdminServiceTrait
 
     /**
      * 上传服务
-     * @return mixed
+     * @return UploadService
      */
     public function getUploadService()
     {
@@ -299,7 +357,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户api 服务
+     * 货主api 服务
      * @return MerchantApiService
      */
     public function getMerchantApiService()
@@ -308,7 +366,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户充值api 服务
+     * 货主充值api 服务
      * @return MerchantRechargeService
      */
     public function getMerchantRechargeService()
@@ -317,7 +375,7 @@ trait AdminServiceTrait
     }
 
     /**
-     * 商户组管理 服务
+     * 货主组管理 服务
      * @return MerchantGroupService
      */
     public function getMerchantGroupService()
@@ -353,6 +411,7 @@ trait AdminServiceTrait
     }
 
     /**
+     * 充值服务
      * @return RechargeService
      */
     public function getRechargeService()
@@ -360,6 +419,10 @@ trait AdminServiceTrait
         return self::getInstance(RechargeService::class);
     }
 
+    /**
+     * 地址 服务
+     * @return AddressService
+     */
     public function getAddressService()
     {
         return self::getInstance(AddressService::class);
@@ -417,5 +480,41 @@ trait AdminServiceTrait
     public function getStockExceptionService()
     {
         return self::getInstance(StockExceptionService::class);
+    }
+
+    /**
+     * 获取谷歌服务
+     * @return GoogleApiService
+     */
+    public function getGoogleApiService()
+    {
+        return self::getInstance(GoogleApiService::class);
+    }
+
+    /**
+     * 货主组线路服务
+     * @return MerchantGroupLineService
+     */
+    public function getMerchantGroupLineService()
+    {
+        return self::getInstance(MerchantGroupLineService::class);
+    }
+
+    /**
+     * 获得车辆维修详情 Service
+     * @return CarMaintainDetailService
+     */
+    public function getCarMaintainDetailService()
+    {
+        return self::getInstance(CarMaintainDetailService::class);
+    }
+
+    /**
+     * 获取备品库存 Service
+     * @return SparePartsStockService
+     */
+    public function getSparePartsStockService()
+    {
+        return self::getInstance(SparePartsStockService::class);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\ConstTranslateTrait;
+use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
@@ -12,6 +13,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class Driver extends Authenticatable implements JWTSubject
 {
+    use Notifiable;
     /**
      * The table associated with the model.
      *
@@ -47,6 +49,9 @@ class Driver extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'company_id',
+        'warehouse_id',
+        'warehouse_name',
+        'timezone',
         'email',
         'encrypt',
         'password',
@@ -72,6 +77,7 @@ class Driver extends Authenticatable implements JWTSubject
         'crop_type',
         'created_at',
         'updated_at',
+        'type'
     ];
 
     /**
@@ -113,8 +119,20 @@ class Driver extends Authenticatable implements JWTSubject
         ];
     }
 
+    /**
+     * @return null
+     */
     public function getIsLockedNameAttribute()
     {
         return empty($this->is_locked) ? null : ConstTranslateTrait::driverStatusList($this->is_locked);
+    }
+
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getType($value)
+    {
+        return empty($value) ? '' : ConstTranslateTrait::driverTypeList($value);
     }
 }

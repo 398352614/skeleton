@@ -36,5 +36,6 @@ Route::namespace('Api')->group(function () {
         Route::get('/getPath', 'TestController@getPath');
         Route::post('/push-test', 'TestController@testPush');         //自动优化线路
         Route::get('/auth-tree', 'TestController@authTree');
+        Route::get('/j-push-notify', 'TestController@jPushNotify');
     });
 });

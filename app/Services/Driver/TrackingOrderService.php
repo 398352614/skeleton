@@ -56,15 +56,14 @@ class TrackingOrderService extends BaseService
         $this->addAllItemList($orderNo, $trackingOrder);
         //重新统计站点金额
         $this->getBatchService()->reCountAmountByNo($batch['batch_no']);
-        //重新统计取件线路金额
+        //重新统计线路任务金额
         $this->getTourService()->reCountAmountByNo($tour['tour_no']);
         //运单轨迹-运单创建
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_CREATED);
         //运单轨迹-运单加入站点
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_BATCH, $batch);
-        //运单轨迹-运单加入取件线路
+        //运单轨迹-运单加入线路任务
         TrackingOrderTrailService::trackingOrderStatusChangeCreateTrail($trackingOrder, BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR, $tour);
-        Log::info('运单信息', $trackingOrder);
         //订单轨迹-运单中途创建
         if ($again == true) {
             OrderTrailService::orderStatusChangeCreateTrail($trackingOrder, BaseConstService::ORDER_TRAIL_RESTART);
@@ -100,7 +99,7 @@ class TrackingOrderService extends BaseService
 
 
     /**
-     * 填充仓库信息
+     * 填充网点信息
      * @param $params
      * @param $merchantAlone
      * @params $line
@@ -111,14 +110,14 @@ class TrackingOrderService extends BaseService
     {
         //获取线路
         empty($line) && $line = $this->getLineService()->getInfoByRule($params, BaseConstService::TRACKING_ORDER_OR_BATCH_1, $merchantAlone);
-        //获取仓库
+        //获取网点
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $line['warehouse_id']], ['*'], false);
         if (empty($warehouse)) {
-            throw new BusinessLogicException('仓库不存在');
+            throw new BusinessLogicException('网点不存在');
         }
         //填充发件人信息
         $params = array_merge($params, [
-            'warehouse_fullname' => $warehouse['fullname'],
+            'warehouse_fullname' => $warehouse['name'],
             'warehouse_phone' => $warehouse['phone'],
             'warehouse_country' => $warehouse['country'],
             'warehouse_post_code' => $warehouse['post_code'],

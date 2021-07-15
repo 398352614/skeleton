@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户 验证类
+ * 货主 验证类
  * Created by PhpStorm
  * User: long
  * Date: 2019/12/16
@@ -26,12 +26,15 @@ class MerchantValidate extends BaseValidate
         'settlement_type' => 'required|integer|in:1,2,3',
         'merchant_group_id' => 'required|integer',
         'contacter' => 'required|string|max:50',
-        'phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'address' => 'required|string|max:250',
+        'phone' => 'required|string|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
+        'address' => 'nullable|string|max:250',
         'avatar' => 'nullable|string|max:250',
         'status' => 'required|integer|in:1,2',
         'password' => 'required|string|max:100',
+        'warehouse_id' => 'required_if:below_warehouse,1|integer',
+        'introduction' => 'nullable|string|',
         'confirm_password' => 'required|string|same:password',
+        'below_warehouse' => 'required|integer|in:1,2',
     ];
 
     public $scene = [
@@ -47,6 +50,8 @@ class MerchantValidate extends BaseValidate
             'address',
             'avatar',
             'status',
+            'warehouse_id',
+            'below_warehouse'
         ],
         'update' => [
             'type',
@@ -60,6 +65,8 @@ class MerchantValidate extends BaseValidate
             'address',
             'avatar',
             'status',
+            'warehouse_id',
+            'below_warehouse'
         ],
         'updatePassword' => [
             'password', 'confirm_password'

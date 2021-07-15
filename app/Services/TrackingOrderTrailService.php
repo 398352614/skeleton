@@ -24,6 +24,21 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
         parent::__construct($trackingOrderTrail, TrackingOrderTrailResource::class, TrackingOrderTrailResource::class);
     }
 
+    /**
+     * 手动新增
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function store($params)
+    {
+        $params['operator'] = auth()->user()->fullname;
+        $row = parent::create($params);
+        if ($row == false) {
+            throw new BusinessLogicException('新增失败');
+        }
+
+    }
+
     public static function storeByTour($tour, int $action)
     {
         $trackingOrderList = TrackingOrder::query()->select(self::$selectFields)->where('tour_no', $tour['tour_no'])->get()->toArray();
@@ -52,7 +67,7 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
         dispatch(new AddData('tracking-order-trail', $data));
     }
 
-    public static function trackingOrderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [],$list=false)
+    public static function trackingOrderStatusChangeCreateTrail(array $trackingOrder, int $action, $params = [], $list = false)
     {
         //根据不同的类型生成不同的content
         $content = '';
@@ -66,11 +81,11 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
             case BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_BATCH:             //移除站点
                 $content = sprintf("运单从站点[%s]中移除", $params['batch_no']);
                 break;
-            case BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR:                //加入取件线路
-                $content = sprintf("运单加入取件线路[%s]", $params['tour_no']);
+            case BaseConstService::TRACKING_ORDER_TRAIL_JOIN_TOUR:                //加入线路任务
+                $content = sprintf("运单加入线路任务[%s]", $params['tour_no']);
                 break;
-            case BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR:              //加入取件线路
-                $content = sprintf("运单从取件线路[%s]移除", $params['tour_no']);
+            case BaseConstService::TRACKING_ORDER_TRAIL_REMOVE_TOUR:              //加入线路任务
+                $content = sprintf("运单从线路任务[%s]移除", $params['tour_no']);
                 break;
             case BaseConstService::TRACKING_ORDER_TRAIL_ASSIGN_DRIVER:            // 已分配司机
                 $content = sprintf("运单分配司机，司机姓名[%s]，联系方式[%s]", $params['driver_name'], $params['driver_phone']);
@@ -110,6 +125,7 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
             'tracking_order_no' => $trackingOrder['tracking_order_no'],
             'order_no' => $trackingOrder['order_no'],
             'merchant_id' => $trackingOrder['merchant_id'],
+            'type' => $action,
             'content' => $content,
             'created_at' => $now,
             'updated_at' => $now
@@ -129,7 +145,7 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
      */
     public function index($trackingOrderNo)
     {
-        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no'=> $trackingOrderNo],['*'],false);
+        $trackingOrder = $this->getTrackingOrderService()->getInfo(['tracking_order_no' => $trackingOrderNo], ['*'], false);
         if (empty($trackingOrder)) {
             throw new BusinessLogicException('数据不存在');
         }
@@ -142,5 +158,18 @@ class TrackingOrderTrailService extends \App\Services\Admin\BaseService
     public function create($data)
     {
         return parent::create($data);
+    }
+
+    /**
+     * 删除
+     * @param $id
+     * @throws BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        $rowCount = parent::delete(['id' => $id]);
+        if ($rowCount === false) {
+            throw new BusinessLogicException('删除失败，请重新操作');
+        }
     }
 }

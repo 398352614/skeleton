@@ -28,9 +28,9 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(JPushClient::class, function ($app) {
             $options = [
-                $app->config->get('j-push.key'),
-                $app->config->get('j-push.secret'),
-                $app->config->get('j-push.log')
+                $app->config->get('jpush.key'),
+                $app->config->get('jpush.secret'),
+                $app->config->get('jpush.log')
             ];
             return new JPushClient(...$options);
         });
@@ -87,13 +87,6 @@ class AppServiceProvider extends ServiceProvider
         JWTGuard::macro('setUserNull', function () {
             $this->user = null;
             return null;
-        });
-
-        // 添加 JPush 驱动
-        $this->app->extend(ChannelManager::class, function ($manager) {
-            $manager->extend('jpush', function ($app) {
-                return $app->make(JPushChannel::class);
-            });
         });
 
         if (Str::startsWith(env('APP_URL'), 'https')) {

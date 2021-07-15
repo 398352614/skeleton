@@ -20,20 +20,69 @@ class BaseConstService
     const MATERIAL = 'MATERIAL';
     const BATCH_EXCEPTION = 'BE';
     const STOCK_EXCEPTION = 'SE';
-    const RECHARGE = '';
+    const RECHARGE = 'RC';
+    const CAR_ACCIDENT = 'CA';
+    const CAR_MAINTAIN = 'CM';
+    const SPARE_PARTS = 'SP';
+    const TRACKING_PACKAGE = 'TP';
+    const BAG = 'BAG';
+    const SHIFT = 'SHIFT';
+
+    const SHIFT_LOAD_TYPE_1 = 1;
+    const SHIFT_LOAD_TYPE_2 = 2;
 
     const CANCEL_TIMES = 3;
 
+    const BATCH_CANCEL_TYPE_1 = 1;
+    const BATCH_CANCEL_TYPE_2 = 2;
+    const BATCH_CANCEL_TYPE_3 = 3;
+
+    const METHOD_GET = 1;
+    const METHOD_POST = 2;
+
     //邮编国家
     const POSTCODE_COUNTRY_BE = 'BE';
+    const POSTCODE_COUNTRY_NL = 'NL';
+    const POSTCODE_COUNTRY_DE = 'DE';
 
     //是否
     const YES = 1;
     const NO = 2;
 
+    const CONTENT_TYPE_JSON = 1;
+    const CONTENT_TYPE_FORM_DATA = 2;
+
+    //支付方1-货主2-客户
+    const FEE_PAYER_1 = 1;
+    const FEE_PAYER_2 = 2;
+
     //权限类型1-菜单2-按钮
     const PERMISSION_TYPE_1 = 1;
     const PERMISSION_TYPE_2 = 2;
+
+    //快捷方式,值与数据库权限表一致
+    const SHORT_CUT_ORDER_STORE = 'order.store';
+    const SHORT_CUT_ORDER_INDEX = 'order.index';
+    const SHORT_CUT_LINE_POST_CODE_INDEX = 'line.post-code-index';
+    const SHORT_CUT_TRACKING_INDEX = 'tracking-order.index';
+    const SHORT_CUT_BATCH_INDEX = 'batch.index';
+    const SHORT_CUT_TOUR_INDEX = 'tour.index';
+    const SHORT_CUT_TOUR_DISPATCH = 'tour.intelligent-scheduling';
+
+    //流程图
+    const FLOW_ORDER_STORE = 'order.store';
+    const FLOW_MERCHANT_API_INDEX = 'merchant-api.index';
+    const FLOW_ORDER_INDEX = 'order.index';
+    const FLOW_PACKAGE_INDEX = 'package.index';
+    const FLOW_MATERIAL_INDEX = 'material.index';
+    const FLOW_TRACKING_ORDER_INDEX = 'tracking-order.index';
+    const FLOW_BATCH_INDEX = 'batch.index';
+    const FLOW_TOUR_INDEX = 'tour.index';
+    const FLOW_TOUR_INTELLIGENT_SCHEDULING = 'tour.intelligent-scheduling';
+    const FLOW_DRIVER_INDEX = 'driver.index';
+    const FLOW_CAR_INDEX = 'car.index';
+    const FLOW_CAR_MANAGEMENT_INDEX = 'car-management.index';
+
 
     //是否需要验证
     const IS_AUTH_1 = 1;
@@ -60,7 +109,7 @@ class BaseConstService
     const TRACKING_ORDER_NO_TYPE = 'tracking_order';
     //站点编号类型
     const BATCH_NO_TYPE = 'batch';
-    //取件线路编号类型
+    //线路任务编号类型
     const TOUR_NO_TYPE = 'tour';
     //站点异常编号类型
     const BATCH_EXCEPTION_NO_TYPE = 'batch_exception';
@@ -68,6 +117,16 @@ class BaseConstService
     const STOCK_EXCEPTION_NO_TYPE = 'stock_exception';
     //充值单号类型
     const RECHARGE_NO_TYPE = 'recharge';
+    //事故处理编号类型
+    const CAR_ACCIDENT_NO_TYPE = 'accident';
+    //车辆维护流水号
+    const CAR_MAINTAIN_NO_TYPE = 'maintain';
+    //转运单号
+    const TRACKING_PACKAGE_NO_TYPE = 'tracking_package';
+    //袋号
+    const BAG_NO_TYPE = 'bag';
+    //车次号
+    const SHIFT_NO_TYPE = 'shift';
 
     //初始密码
     const INITIAL_PASSWORD = '12345678';
@@ -110,19 +169,20 @@ class BaseConstService
     const SATURDAY = 6;
     const SUNDAY = 0;
 
-    //临时处理 正式服-商户ID(有用到，请勿删除)
+    //临时处理 正式服-货主ID(有用到，请勿删除)
     const ERP_MERCHANT_ID_1 = 7;
     const SHOP_MERCHANT_ID_2 = 8;
 
-    //临时处理 开发服-商户ID(有用到，请勿删除)
+    //临时处理 开发服-货主ID(有用到，请勿删除)
     const ERP_MERCHANT_ID_2 = 65;
     const SHOP_MERCHANT_ID_1 = 3;
 
-    //订单类型1-取2-派3-取派
+    //订单类型1-取2-派3-取派4-取派
     const ORDER_TYPE_0 = 0;
     const ORDER_TYPE_1 = 1;
     const ORDER_TYPE_2 = 2;
     const ORDER_TYPE_3 = 3;
+    const ORDER_TYPE_4 = 4;
 
     //订单出库状态1-可出库2-不可出库
     const OUT_STATUS_1 = 1;
@@ -136,6 +196,9 @@ class BaseConstService
     //订单结算方式1-寄付2-到付
     const ORDER_SETTLEMENT_TYPE_1 = 1;
     const ORDER_SETTLEMENT_TYPE_2 = 2;
+    const ORDER_SETTLEMENT_TYPE_3 = 3;
+    const ORDER_SETTLEMENT_TYPE_4 = 4;
+    const ORDER_SETTLEMENT_TYPE_5 = 5;
 
     //运单类型1-取2-派
     const TRACKING_ORDER_TYPE_0 = 0;
@@ -179,8 +242,9 @@ class BaseConstService
     //订单性质1-包裹2-材料
     const ORDER_NATURE_1 = 1;
     const ORDER_NATURE_2 = 2;
+    const ORDER_NATURE_3 = 3;
 
-    //线路规划 是否新增取件线路 1-是2-否
+    //线路规划 是否新增线路任务 1-是2-否
     const IS_INCREMENT_1 = 1;
     const IS_INCREMENT_2 = 2;
 
@@ -188,14 +252,14 @@ class BaseConstService
     const TRACKING_ORDER_OR_BATCH_1 = 1;
     const TRACKING_ORDER_OR_BATCH_2 = 2;
 
-    //取件线路状态状态：1-待分配2-已分配-3-待出库4-取派中5-取派完成
+    //线路任务状态状态：1-待分配2-已分配-3-待出库4-取派中5-取派完成
     const TOUR_STATUS_1 = 1;
     const TOUR_STATUS_2 = 2;
     const TOUR_STATUS_3 = 3;
     const TOUR_STATUS_4 = 4;
     const TOUR_STATUS_5 = 5;
 
-    //取件线路面向用户状态：1-未取派2-取派中-3-取派完成
+    //线路任务面向用户状态：1-未取派2-取派中-3-取派完成
     const MERCHANT_TOUR_STATUS_1 = 1;
     const MERCHANT_TOUR_STATUS_2 = 2;
     const MERCHANT_TOUR_STATUS_3 = 3;
@@ -257,10 +321,6 @@ class BaseConstService
     const BATCH_PAY_TYPE_3 = 3;
     const BATCH_PAY_TYPE_4 = 4;
 
-    //driver 司机合作类型
-    const DRIVER_HIRE = 1;
-    const DRIVER_CONTRACTOR = 2;
-
     //driver 司机状态
     const DRIVER_TO_NORMAL = 1;
     const DRIVER_TO_LOCK = 2;
@@ -287,6 +347,42 @@ class BaseConstService
     const CAR_OWNER_SHIP_TYPE_1 = 1;
     const CAR_OWNER_SHIP_TYPE_2 = 2;
     const CAR_OWNER_SHIP_TYPE_3 = 3;
+    const CAR_OWNER_SHIP_TYPE_4 = 4;
+
+    //车辆长度
+    const CAR_LENGTH_TYPE_1 = 1;
+    const CAR_LENGTH_TYPE_2 = 2;
+    const CAR_LENGTH_TYPE_3 = 3;
+    const CAR_LENGTH_TYPE_4 = 4;
+    const CAR_LENGTH_TYPE_5 = 5;
+    const CAR_LENGTH_TYPE_6 = 6;
+    const CAR_LENGTH_TYPE_7 = 7;
+    const CAR_LENGTH_TYPE_8 = 8;
+    const CAR_LENGTH_TYPE_9 = 9;
+    const CAR_LENGTH_TYPE_10 = 10;
+    const CAR_LENGTH_TYPE_11 = 11;
+    const CAR_LENGTH_TYPE_12 = 12;
+    const CAR_LENGTH_TYPE_13 = 13;
+    const CAR_LENGTH_TYPE_14 = 14;
+    const CAR_LENGTH_TYPE_15 = 15;
+    const CAR_LENGTH_TYPE_16 = 16;
+    const CAR_LENGTH_TYPE_17 = 17;
+    const CAR_LENGTH_TYPE_18 = 18;
+
+    //车辆车型
+    const CAR_MODEL_TYPE_1 = 1;
+    const CAR_MODEL_TYPE_2 = 2;
+    const CAR_MODEL_TYPE_3 = 3;
+    const CAR_MODEL_TYPE_4 = 4;
+    const CAR_MODEL_TYPE_5 = 5;
+    const CAR_MODEL_TYPE_6 = 6;
+    const CAR_MODEL_TYPE_7 = 7;
+    const CAR_MODEL_TYPE_8 = 8;
+    const CAR_MODEL_TYPE_9 = 9;
+    const CAR_MODEL_TYPE_10 = 10;
+    const CAR_MODEL_TYPE_11 = 11;
+    const CAR_MODEL_TYPE_12 = 12;
+    const CAR_MODEL_TYPE_13 = 13;
 
     //修理自理1-是2-否
     const CAR_REPAIR_1 = 1;
@@ -312,6 +408,7 @@ class BaseConstService
     const ADMIN_FILE_APK_DIR = 'package';
     const ADMIN_FILE_TEMPLATE_DIR = 'template';
     const ADMIN_FILE_LINE_DIR = 'line';
+    const ADMIN_FILE_ADDRESS_TEMPLATE_DIR = 'addressTemplate';
 
     //司机端 文件目录
     const DRIVER_FILE_TOUR_DIR = 'tour';
@@ -331,11 +428,12 @@ class BaseConstService
     const ORDER_TRAIL_UPDATE = 8;
     const ORDER_TRAIL_CLOSED = 9;
     const ORDER_TRAIL_DELETE = 10;
+    const ORDER_TRAIL_ALL_FINISH = 11;
 
     /**
      * order_trail 订单轨迹常量
-     * 1-订单创建 2-加入站点 3-加入取件线路 4-已分配司机 5-加入网点 6-待出库 7-配送中 8-已签收
-     * 9-取消取派 10-取消司机分配 11-取消待出库 12-移除站点 13-移除取件线路 14-订单删除
+     * 1-订单创建 2-加入站点 3-加入线路任务 4-已分配司机 5-加入网点 6-待出库 7-配送中 8-已签收
+     * 9-取消取派 10-取消司机分配 11-取消待出库 12-移除站点 13-移除线路任务 14-订单删除
      */
     const TRACKING_ORDER_TRAIL_CREATED = 1;
     const TRACKING_ORDER_TRAIL_JOIN_BATCH = 2;
@@ -351,6 +449,28 @@ class BaseConstService
     const TRACKING_ORDER_TRAIL_REMOVE_BATCH = 12;
     const TRACKING_ORDER_TRAIL_REMOVE_TOUR = 13;
     const TRACKING_ORDER_TRAIL_DELETE = 14;
+    const TRACKING_ORDER_TRAIL_CUSTOMER = 15;
+
+    /**
+     * package_trail 包裹轨迹常量
+     */
+    const PACKAGE_TRAIL_CREATED = 1;//包裹创建
+    const PACKAGE_TRAIL_PICKUP = 2;//取件中
+    const PACKAGE_TRAIL_PICKUP_DONE = 3;//取件完成
+    const PACKAGE_TRAIL_ALLOCATE = 4;//入库分拣
+    const PACKAGE_TRAIL_PACK = 5;//装袋
+    const PACKAGE_TRAIL_LOAD = 6;//装车
+    const PACKAGE_TRAIL_OUT = 7;//发车
+    const PACKAGE_TRAIL_IN = 8;//到车
+    const PACKAGE_TRAIL_UNLOAD = 9;//卸车
+    const PACKAGE_TRAIL_UNPACK = 10;//拆袋
+    const PACKAGE_TRAIL_PIE = 11;//派件中
+    const PACKAGE_TRAIL_PIE_DONE = 12;//派件完成
+    const PACKAGE_TRAIL_PICKUP_CANCEL = 13;//取件失败
+    const PACKAGE_TRAIL_PIE_CANCEL = 14;//派件失败
+    const PACKAGE_TRAIL_DELETED = 15;//回收站
+    const PACKAGE_TRAIL_AGAIN = 16;//继续派送
+
 
     //通知类型
     const NOTIFY_OUT_WAREHOUSE = 'out-warehouse';       //出库通知
@@ -359,7 +479,7 @@ class BaseConstService
     const NOTIFY_ARRIVED_BATCH = 'arrive-batch';        //到达站点通知
     const NOTIFY_ASSIGN_BATCH = 'assign-batch';         //签收站点通知
     const NOTIFY_CANCEL_BATCH = 'assign-batch';         //取消派送站点通知(也叫签收)
-    const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回仓库通知
+    const NOTIFY_BACK_WAREHOUSE = 'back-warehouse';     //返回网点通知
     const NOTIFY_ORDER_EXECUTION_DATE_UPDATE = 'update-execution-date'; //修改取派日期通知
     const NOTIFY_ORDER_CANCEL = 'cancel-order';     //订单取消通知
     const NOTIFY_ORDER_DELETE = 'delete-order';     //订单删除通知
@@ -370,25 +490,41 @@ class BaseConstService
     const NOTIFY_PACKAGE_INFO = 'package-info';   //发送包裹信息
     const NOTIFY_PACKAGE_PICK_OUT = 'package-pick-out';   //包裹入库分拣
 
+    //push类型
+    const PUSH_TOUR_ADD_ORDER = 'add_tracking_order';   //线路加单
+    const PUSH_CANCEL_BATCH = 'cancel-batch';           //站点取消取派
 
-    //商户类型
+
+    //货主类型
     const MERCHANT_TYPE_1 = 1;
     const MERCHANT_TYPE_2 = 2;
 
-    //商户支付方式
+    //货主支付方式
     const MERCHANT_SETTLEMENT_TYPE_1 = 1;
     const MERCHANT_SETTLEMENT_TYPE_2 = 2;
     const MERCHANT_SETTLEMENT_TYPE_3 = 3;
 
-    //商户状态
+    //货主状态
     const MERCHANT_STATUS_1 = 1;
     const MERCHANT_STATUS_2 = 2;
+
+    //商户订单类型
+    const MERCHANT_ORDER_TYPE_1 = 1;
+    const MERCHANT_ORDER_TYPE_2 = 2;
+    const MERCHANT_ORDER_TYPE_3 = 3;
+
 
     //司机事件1-司机出库2-司机到达站点3-司机从站点出发4-司机回仓
     const DRIVER_EVENT_OUT_WAREHOUSE = 1;
     const DRIVER_EVENT_BATCH_ARRIVED = 2;
     const DRIVER_EVENT_BATCH_DEPART = 3;
     const DRIVER_EVENT_BACK_WAREHOUSE = 4;
+
+    //司机类型
+    const DRIVER_TYPE_1 = 1;
+    const DRIVER_TYPE_2 = 2;
+    const DRIVER_TYPE_3 = 3;
+    const DRIVER_TYPE_4 = 4;
 
     //展示方式1-全部展示2-按线路规则展示
     const ALL_SHOW = 1;
@@ -404,11 +540,15 @@ class BaseConstService
     const RECHARGE_STATUS_2 = 2;
     const RECHARGE_STATUS_3 = 3;
 
+    //充值入账状态
+    const RECHARGE_STATISTICS_STATUS_1 = 1;
+    const RECHARGE_STATISTICS_STATUS_2 = 2;
+
     //审核状态
     const RECHARGE_VERIFY_STATUS_1 = 1;
     const RECHARGE_VERIFY_STATUS_2 = 2;
 
-    //商户充值API状态
+    //货主充值API状态
     const MERCHANT_RECHARGE_STATUS_1 = 1;
     const MERCHANT_RECHARGE_STATUS_2 = 2;
 
@@ -433,7 +573,7 @@ class BaseConstService
     const EN = 'en';
     const NL = 'nl';
 
-    //商户端顺带功能状态
+    //货主端顺带功能状态
     const MERCHANT_ADDITIONAL_STATUS_1 = 1;
     const MERCHANT_ADDITIONAL_STATUS_2 = 2;
 
@@ -447,12 +587,13 @@ class BaseConstService
     const PACKAGE_TYPE_1 = 1;
     const PACKAGE_TYPE_2 = 2;
     const PACKAGE_TYPE_3 = 3;
+    const PACKAGE_TYPE_4 = 4;
 
-    //包裹仓库类型1-入库2-出库
+    //包裹网点类型1-入库2-出库
     const WAREHOUSE_PACKAGE_TYPE_1 = 1;
     const WAREHOUSE_PACKAGE_TYPE_2 = 2;
 
-    //商户端订单物流类型
+    //货主端订单物流类型
     const TRACK_STATUS_1 = 1;
     const TRACK_STATUS_2 = 2;
     const TRACK_STATUS_3 = 3;
@@ -476,4 +617,256 @@ class BaseConstService
     const ROUTE_RETRY_MAX_TIMES = 3;
     //线路重推间隔时间(分钟)
     const ROUTE_RETRY_INTERVAL_TIME = 1;
+
+    //固定值法
+    const ONLY_START_PRICE = 3;
+
+    //操作类型
+    const OPERATION_STORE = 1;
+    const OPERATION_UPDATE = 2;
+    const OPERATION_DESTROY = 3;
+    const OPERATION_STATUS_ON = 4;
+    const OPERATION_STATUS_OFF = 5;
+
+    //运价类型
+    const TRANSPORT_PRICE_TYPE_1 = 1;
+    const TRANSPORT_PRICE_TYPE_2 = 2;
+
+    //无限
+    const INFINITY = 999999999;
+
+    //超期状态
+    const EXPIRATION_STATUS_1 = 1;
+    const EXPIRATION_STATUS_2 = 2;
+    const EXPIRATION_STATUS_3 = 3;
+
+    //维保类型:1-保养2-维修
+    const MAINTAIN_TYPE_1 = 1;
+    const MAINTAIN_TYPE_2 = 2;
+
+    //是否收票:1-是2-否
+    const IS_TICKET_1 = 1;
+    const IS_TICKET_2 = 2;
+
+    //处理方式：1-保险2-公司赔付
+    const CAR_ACCIDENT_DEAL_TYPE_1 = 1;
+    const CAR_ACCIDENT_DEAL_TYPE_2 = 2;
+
+    //主被动,责任方：1-主动2-被动
+    const CAR_ACCIDENT_DUTY_TYPE_1 = 1;
+    const CAR_ACCIDENT_DUTY_TYPE_2 = 2;
+
+    //保险是否赔付：1-是2-否
+    const CAR_ACCIDENT_INS_PAY_TYPE_1 = 1;
+    const CAR_ACCIDENT_INS_PAY_TYPE_2 = 2;
+
+    //订单目的地模式1-省市区2-省市3-市区4-邮编
+    const ORDER_TEMPLATE_DESTINATION_MODE_1 = 1;
+    const ORDER_TEMPLATE_DESTINATION_MODE_2 = 2;
+    const ORDER_TEMPLATE_DESTINATION_MODE_3 = 3;
+    const ORDER_TEMPLATE_DESTINATION_MODE_4 = 4;
+
+    //订单模板1-模板一2-模板二
+    const ORDER_TEMPLATE_TYPE_1 = 1;
+    const ORDER_TEMPLATE_TYPE_2 = 2;
+
+    //备品单位
+    const SPARE_PARTS_UNIT_TYPE_1 = 1;
+    const SPARE_PARTS_UNIT_TYPE_2 = 2;
+    const SPARE_PARTS_UNIT_TYPE_3 = 3;
+    const SPARE_PARTS_UNIT_TYPE_4 = 4;
+    const SPARE_PARTS_UNIT_TYPE_5 = 5;
+    const SPARE_PARTS_UNIT_TYPE_6 = 6;
+    const SPARE_PARTS_UNIT_TYPE_7 = 7;
+    const SPARE_PARTS_UNIT_TYPE_8 = 8;
+    const SPARE_PARTS_UNIT_TYPE_9 = 9;
+    const SPARE_PARTS_UNIT_TYPE_10 = 10;
+    const SPARE_PARTS_UNIT_TYPE_11 = 11;
+
+    //领取状态:1-正常2-已作废
+    const SPARE_PARTS_RECORD_TYPE_1 = 1;
+    const SPARE_PARTS_RECORD_TYPE_2 = 2;
+
+    //运输方式
+    const ORDER_TRANSPORT_MODE_1 = 1;
+    const ORDER_TRANSPORT_MODE_2 = 2;
+
+    //订单始发地
+    const ORDER_ORIGIN_TYPE_1 = 1;
+    const ORDER_ORIGIN_TYPE_2 = 2;
+
+    //材料类型
+    const MATERIAL_TYPE_1 = 1;
+    const MATERIAL_TYPE_2 = 2;
+    const MATERIAL_TYPE_3 = 3;
+    const MATERIAL_TYPE_4 = 4;
+    const MATERIAL_TYPE_5 = 5;
+    const MATERIAL_TYPE_6 = 6;
+    const MATERIAL_TYPE_7 = 7;
+    const MATERIAL_TYPE_8 = 8;
+    const MATERIAL_TYPE_9 = 9;
+    const MATERIAL_TYPE_10 = 10;
+
+    //材料包装
+    const MATERIAL_PACK_TYPE_1 = 1;
+    const MATERIAL_PACK_TYPE_2 = 2;
+    const MATERIAL_PACK_TYPE_3 = 3;
+    const MATERIAL_PACK_TYPE_4 = 4;
+    const MATERIAL_PACK_TYPE_5 = 5;
+    const MATERIAL_PACK_TYPE_6 = 6;
+    const MATERIAL_PACK_TYPE_7 = 7;
+    const MATERIAL_PACK_TYPE_8 = 8;
+    const MATERIAL_PACK_TYPE_9 = 9;
+    const MATERIAL_PACK_TYPE_10 = 10;
+    const MATERIAL_PACK_TYPE_11 = 11;
+    const MATERIAL_PACK_TYPE_12 = 12;
+
+    //包裹特性
+    const PACKAGE_FEATURE_1 = 1;
+    const PACKAGE_FEATURE_2 = 2;
+    const PACKAGE_FEATURE_3 = 3;
+    const PACKAGE_FEATURE_4 = 4;
+
+    //控货方式
+    const ORDER_CONTROL_MODE_1 = 1;
+    const ORDER_CONTROL_MODE_2 = 2;
+
+    //费用类型
+    const ORDER_AMOUNT_TYPE_1 = 1;
+    const ORDER_AMOUNT_TYPE_2 = 2;
+    const ORDER_AMOUNT_TYPE_3 = 3;
+    const ORDER_AMOUNT_TYPE_4 = 4;
+    const ORDER_AMOUNT_TYPE_5 = 5;
+    const ORDER_AMOUNT_TYPE_6 = 6;
+    const ORDER_AMOUNT_TYPE_7 = 7;
+    const ORDER_AMOUNT_TYPE_8 = 8;
+    const ORDER_AMOUNT_TYPE_9 = 9;
+    const ORDER_AMOUNT_TYPE_10 = 10;
+    const ORDER_AMOUNT_TYPE_11 = 11;
+
+    //支付状态
+    const ORDER_AMOUNT_STATUS_1 = 1;
+    const ORDER_AMOUNT_STATUS_2 = 2;
+    const ORDER_AMOUNT_STATUS_3 = 3;
+    const ORDER_AMOUNT_STATUS_4 = 4;
+    const ORDER_AMOUNT_STATUS_5 = 5;
+
+    //订单回单要求
+    const ORDER_RECEIPT_TYPE_1 = 1;
+
+    //地址类型
+    const ADDRESS_TYPE_1 = 1;
+    const ADDRESS_TYPE_2 = 2;
+
+    //地图前端类型
+    const MAP_CONFIG_FRONT_TYPE_1 = 1;
+    const MAP_CONFIG_FRONT_TYPE_2 = 2;
+    const MAP_CONFIG_FRONT_TYPE_3 = 3;
+
+    //地图后端类型
+    const MAP_CONFIG_BACK_TYPE_1 = 1;
+    const MAP_CONFIG_BACK_TYPE_2 = 2;
+    const MAP_CONFIG_BACK_TYPE_3 = 3;
+
+    //地图手持端类型
+    const MAP_CONFIG_MOBILE_TYPE_1 = 1;
+    const MAP_CONFIG_MOBILE_TYPE_2 = 2;
+    const MAP_CONFIG_MOBILE_TYPE_3 = 3;
+
+    const CREATED_TIME = '创建时间';
+    const BEGIN_TIME = '发车时间';
+    const SIGN_TIME = '签收时间';
+
+    const ORDER_TEMPLATE_IS_DEFAULT_1 = 1;
+    const ORDER_TEMPLATE_IS_DEFAULT_2 = 2;
+
+    //重量单位
+    const WEIGHT_UNIT_TYPE_1 = 1;
+    const WEIGHT_UNIT_TYPE_2 = 2;
+
+    //货币单位
+    const CURRENCY_UNIT_TYPE_1 = 1;
+    const CURRENCY_UNIT_TYPE_2 = 2;
+    const CURRENCY_UNIT_TYPE_3 = 3;
+
+    //体积单位
+    const VOLUME_UNIT_TYPE_1 = 1;
+    const VOLUME_UNIT_TYPE_2 = 2;
+
+    //调度规则
+    const SCHEDULING_TYPE_1 = 1;
+    const SCHEDULING_TYPE_2 = 2;
+
+    const WAREHOUSE_TYPE_1 = 1;
+    const WAREHOUSE_TYPE_2 = 2;
+
+    const WAREHOUSE_ACCEPTANCE_TYPE_1 = 1;
+    const WAREHOUSE_ACCEPTANCE_TYPE_2 = 2;
+    const WAREHOUSE_ACCEPTANCE_TYPE_3 = 3;
+
+    const WAREHOUSE_IS_CENTER_1 = 1;
+    const WAREHOUSE_IS_CENTER_2 = 2;
+
+    //邮件模板类型
+    const EMAIL_TEMPLATE_TYPE_1 = 1;
+    const EMAIL_TEMPLATE_TYPE_2 = 2;
+    const EMAIL_TEMPLATE_TYPE_3 = 3;
+
+    //邮件模板状态
+    const EMAIL_TEMPLATE_STATUS_1 = 1;
+    const EMAIL_TEMPLATE_STATUS_2 = 2;
+
+    //线路测试状态
+    const LINE_TEST_STATUS_1 = 1;
+    const LINE_TEST_STATUS_2 = 2;
+    const LINE_TEST_STATUS_3 = 3;
+    const LINE_TEST_STATUS_4 = 4;
+    const LINE_TEST_STATUS_5 = 5;
+    const LINE_TEST_STATUS_6 = 6;
+
+    //禁止登录1-禁止2-不禁止
+    const EMPLOYEE_FORBID_LOGIN_1 = 1;
+    const EMPLOYEE_FORBID_LOGIN_2 = 0;
+
+    //包裹转运状态1-待装袋2-待装车3-待发车4-运输中5-已到车6-已卸货7-已拆袋
+    const TRACKING_PACKAGE_STATUS_1 = 1;
+    const TRACKING_PACKAGE_STATUS_2 = 2;
+    const TRACKING_PACKAGE_STATUS_3 = 3;
+    const TRACKING_PACKAGE_STATUS_4 = 4;
+    const TRACKING_PACKAGE_STATUS_5 = 5;
+    const TRACKING_PACKAGE_STATUS_6 = 6;
+    const TRACKING_PACKAGE_STATUS_7 = 7;
+
+    //袋号状态1-未发车2-已发车3-已到车4-未拆袋5-已拆袋
+    const BAG_STATUS_1 = 1;
+    const BAG_STATUS_2 = 2;
+    const BAG_STATUS_3 = 3;
+    const BAG_STATUS_4 = 4;
+    const BAG_STATUS_5 = 5;
+
+
+    //车次状态1-待发车2-运输中3-已到车4-已卸货
+    const SHIFT_STATUS_1 = 1;
+    const SHIFT_STATUS_2 = 2;
+    const SHIFT_STATUS_3 = 3;
+    const SHIFT_STATUS_4 = 4;
+
+    //转运单类型1-分拨2-中转3-派送
+    const TRACKING_PACKAGE_TYPE_1 = 1;
+    const TRACKING_PACKAGE_TYPE_2 = 2;
+    const TRACKING_PACKAGE_TYPE_3 = 3;
+
+    //转运单类型1-长途2-短途
+    const TRACKING_PACKAGE_DISTANCE_TYPE_1 = 1;
+    const TRACKING_PACKAGE_DISTANCE_TYPE_2 = 2;
+
+    //包裹阶段1-取件2-中转3-派件
+    const PACKAGE_STAGE_1 = 1;
+    const PACKAGE_STAGE_2 = 2;
+    const PACKAGE_STAGE_3 = 3;
+
+    //是否能全选1-是2-否
+    const WAREHOUSE_CAN_SELECT_ALL_1 = 1;
+    const WAREHOUSE_CAN_SELECT_ALL_2 = 2;
+
 }

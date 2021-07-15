@@ -38,18 +38,26 @@ class OrderTrailService extends BaseService
      */
     public function index($orderNo)
     {
-        $order = $this->getOrderService()->getInfo(['order_no'=> $orderNo],['*'],false);
+        $order = $this->getOrderService()->getInfo(['order_no' => $orderNo], ['*'], false);
         if (empty($order)) {
             throw new BusinessLogicException('数据不存在');
         }
         $order['order_trail_list'] = parent::getList(['order_no' => $orderNo], ['*'], false);
+        if (app('request')->header('language') == 'en') {
+            foreach ($order['order_trail_list'] as $x => $y) {
+                $content = $y['content'];
+                $content = str_replace('取件', 'Pick-up', $content);
+                $content = str_replace('派件', 'Delivery', $content);
+                $order['order_trail_list'][$x]['content'] = $content;
+            }
+        }
         $order['package_list'] = $this->getPackageService()->getList(['order_no' => $orderNo], ['*'], false);
         $order['material_list'] = $this->getMaterialService()->getList(['order_no' => $orderNo], ['*'], false);
         return $order;
     }
 
     /**
-     * 按取件线路批量新增
+     * 按线路任务批量新增
      * @param $tour
      * @param int $action
      * @param null $params
@@ -96,25 +104,25 @@ class OrderTrailService extends BaseService
                 $content = sprintf("订单创建成功，订单号[%s]，生成运单号[%s]", $trackingOrder['order_no'], $trackingOrder['tracking_order_no']);
                 break;
             case BaseConstService::ORDER_TRAIL_LOCK:               // 订单锁定
-                $content = sprintf("订单[%s]准备中，货品已锁定", $type[$trackingOrder['type']]);
+                $content = sprintf("订单[%s]准备中，货品已锁定", __($type[$trackingOrder['type']]));
                 break;
             case BaseConstService::ORDER_TRAIL_UNLOCK:               // 订单解锁
-                $content = sprintf("订单[%s]货品解锁", $type[$trackingOrder['type']]);
+                $content = sprintf("订单[%s]货品解锁", __($type[$trackingOrder['type']]));
                 break;
             case BaseConstService::ORDER_TRAIL_START:             //订单开始
-                $content = sprintf("订单[%s]开始", $type[$trackingOrder['type']]);
+                $content = sprintf("订单[%s]开始", __($type[$trackingOrder['type']]));
                 break;
             case BaseConstService::ORDER_TRAIL_FINISH:                //订单完成
-                $content = sprintf("订单[%s]完成", $type[$trackingOrder['type']]);
+                $content = sprintf("订单[%s]完成", __($type[$trackingOrder['type']]));
                 break;
             case BaseConstService::ORDER_TRAIL_FAIL:            // 订单失败
-                $content = sprintf("订单[%s]失败", $type[$trackingOrder['type']]);
+                $content = sprintf("订单[%s]失败",__( $type[$trackingOrder['type']]));
                 break;
             case BaseConstService::ORDER_TRAIL_RESTART:     // 订单重启
-                $content = sprintf("订单[%s]运单创建，生成运单号[%s]，日期[%s]", $type[$trackingOrder['type']], $trackingOrder['tracking_order_no'], $trackingOrder['execution_date']);
+                $content = sprintf("订单[%s]运单创建，生成运单号[%s]，日期[%s]", __($type[$trackingOrder['type']]), $trackingOrder['tracking_order_no'], $trackingOrder['execution_date']);
                 break;
             case BaseConstService::ORDER_TRAIL_UPDATE:          // 订单修改
-                $content = sprintf("订单[%s]日期修改，日期从[%s]更变为[%s]", $type[$trackingOrder['type']], $params['execution_date'], $trackingOrder['execution_date']);
+                $content = sprintf("订单[%s]日期修改，日期从[%s]更变为[%s]", __($type[$trackingOrder['type']]), $params['execution_date'], $trackingOrder['execution_date']);
                 break;
             case BaseConstService::ORDER_TRAIL_CLOSED:                     // 订单关闭
                 $content = '订单关闭';
@@ -132,6 +140,7 @@ class OrderTrailService extends BaseService
             'order_no' => $trackingOrder['order_no'],
             'merchant_id' => $trackingOrder['merchant_id'],
             'content' => $content,
+            'type' => $action,
             'created_at' => $now,
             'updated_at' => $now
         ];
@@ -141,5 +150,13 @@ class OrderTrailService extends BaseService
         } else {
             return $data;
         }
+    }
+
+    public function merchantHome()
+    {
+        $this->formData['per_page'] = 5;
+        $this->orderBy = ['id' => 'desc'];
+        $this->query->whereIn('type', [BaseConstService::ORDER_TRAIL_START, BaseConstService::ORDER_TRAIL_FINISH]);
+        return parent::getPageList();
     }
 }

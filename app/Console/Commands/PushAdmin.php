@@ -14,7 +14,7 @@ class PushAdmin extends Command
      *
      * @var string
      */
-    protected $signature = 'admin:push {id : the admin u_id} {type : the push type}';
+    protected $signature = 'push:admin {id : the admin u_id} {type : the push type}';
 
     /**
      * The console command description.

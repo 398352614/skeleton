@@ -47,7 +47,7 @@ class EventServiceProvider extends ServiceProvider
         AfterTourUpdated::class => [
             UpdateLineCountTime::class,
         ],
-        /*********************************取件线路-司机****************************************/
+        /*********************************线路任务-司机****************************************/
         //司机出库
         OutWarehouse::class => [
             TourDriver::class,
@@ -64,7 +64,7 @@ class EventServiceProvider extends ServiceProvider
         BackWarehouse::class => [
             TourDriver::class,
         ],
-        /*********************************取件线路消息通知****************************************/
+        /*********************************线路任务消息通知****************************************/
         \App\Events\TourNotify\OutWarehouse::class => [
             SendNotify2Merchant::class
         ],

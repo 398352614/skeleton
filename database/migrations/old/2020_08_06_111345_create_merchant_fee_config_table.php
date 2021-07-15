@@ -16,7 +16,7 @@ class CreateMerchantFeeConfigTable extends Migration
         Schema::create('merchant_fee_config', function (Blueprint $table) {
             $table->integerIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
-            $table->integer('merchant_id')->default(null)->nullable()->comment('商户ID');
+            $table->integer('merchant_id')->default(null)->nullable()->comment('货主ID');
             $table->string('fee_code', 50)->default('')->nullable()->comment('费用编码');
             $table->dateTime('created_at')->default(null)->nullable()->comment('创建时间');
             $table->dateTime('updated_at')->default(null)->nullable()->comment('修改时间');

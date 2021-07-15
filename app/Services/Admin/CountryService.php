@@ -80,9 +80,9 @@ class CountryService extends BaseService
         }
         $rowCount = parent::create($country);
         if ($rowCount === false) {
-            throw new BusinessLogicException('国家新增失败');
+            throw new BusinessLogicException('新增失败');
         }
-        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
     }
 
     /**
@@ -102,7 +102,7 @@ class CountryService extends BaseService
         }
         $warehouse = $this->getWareHouseService()->getInfo([], ['id'], false);
         if (!empty($warehouse)) {
-            throw new BusinessLogicException('已存在仓库，不能删除国家');
+            throw new BusinessLogicException('已存在网点，不能删除国家');
         }
         $line = $this->getLineService()->getInfo([], ['id'], false);
         if (!empty($line)) {
@@ -112,6 +112,6 @@ class CountryService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('删除失败，请重新操作');
         }
-        Artisan::call('company:cache --company_id=' . auth()->user()->company_id);
+        Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
     }
 }

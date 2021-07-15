@@ -44,7 +44,12 @@ class CarModelController extends BaseController
         return $this->service->store($this->data);
     }
 
-    public function getAll($id){
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function getAll($id)
+    {
         return $this->service->getAll($id);
 
     }

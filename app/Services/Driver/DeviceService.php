@@ -46,7 +46,7 @@ class DeviceService extends BaseService
         }
         //2.如果设备存在,则绑定
         if (!empty($device->driver_id)) {
-            throw new BusinessLogicException('此设备已绑定司机[:driver_name]，请先解绑', 1000, ['driver_name' => $device->driver_id_name]);
+            throw new BusinessLogicException('该设备已绑定司机[:driver_name]', 1000, ['driver_name' => $device->driver_id_name]);
         }
         $rowCount = parent::updateById($device->id, ['driver_id' => auth()->user()->id]);
         if ($rowCount === false) {

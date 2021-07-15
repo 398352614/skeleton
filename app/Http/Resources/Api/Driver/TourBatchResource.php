@@ -1,6 +1,6 @@
 <?php
 /**
- * 司机端 - 取件线路中的站点列表
+ * 司机端 - 线路任务中的站点列表
  */
 
 namespace App\Http\Resources\Api\Driver;

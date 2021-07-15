@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Resources\Api\BaseResource;
 use App\Models\BaseModel;
 use App\Models\OrderNoRule;
 use App\Traits\FactoryInstanceTrait;
@@ -28,7 +29,7 @@ class BaseService
     public $query;
 
     /**
-     * @var BaseModel
+     * @var BaseModel|Builder
      */
     public $model;
 
@@ -54,8 +55,14 @@ class BaseService
      */
     public $filterRules = [];
 
+    /**
+     * @var array
+     */
     public $orderBy = [];
 
+    /**
+     * @var int
+     */
     public $per_page = 10;
 
     /**
@@ -65,6 +72,9 @@ class BaseService
 
     public function __construct(Model $model, $resource = null, $infoResource = null)
     {
+        if (empty($resource)) {
+            $resource = $infoResource = BaseResource::class;
+        }
         $this->model = $model;
         $this->query = $this->model::query();
         $this->resource = $resource;
@@ -72,19 +82,54 @@ class BaseService
         $this->request = request();
         $this->formData = $this->request->all();
         $this->setFilterRules();
+        $this->initOrderBy();
     }
 
+    /**
+     *
+     */
+    protected function initOrderBy()
+    {
+        $fillAble = $this->model->getFillable();
+
+        $orderBy = $this->request->get('order_by');
+
+        if (empty($orderBy)) {
+            return;
+        }
+
+        $orderBy = explode(',', $orderBy);
+
+        foreach ($orderBy as $item) {
+            [$key, $sort] = explode('=', $item);
+
+            if (!in_array($sort, ['asc', 'desc'])) {
+                continue;
+            }
+
+            if (!in_array($key, $fillAble)) {
+                continue;
+            }
+
+            $this->orderBy[$key] = $sort;
+        }
+    }
 
     /**
      * @return $this
      */
     public function setFilter()
     {
-        if ($this->filters)
+        if ($this->filters) {
             static::buildQuery($this->query, $this->filters);
+        }
+
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function setFilterRules()
     {
         foreach ($this->filterRules as $k => $v) {
@@ -102,6 +147,7 @@ class BaseService
                 }
             }
         }
+
         return true;
     }
 
@@ -115,6 +161,7 @@ class BaseService
                 $this->query->orderBy($key, $value);
             }
         }
+
         return $this;
     }
 
@@ -124,6 +171,7 @@ class BaseService
     public function getPaginate()
     {
         $this->per_page = $this->request->input('per_page', 200);
+
         return $this->query->paginate($this->per_page);
     }
 
@@ -135,13 +183,16 @@ class BaseService
         if ($this->request->input('per_page')) {
             $this->request->validate([
                 'page' => 'integer',
-                'per_page' => 'integer|in:10,20,50,100,200',
+                'per_page' => 'integer|in:5,10,20,50,100,200',
             ]);
         }
+
         return true;
     }
 
-
+    /**
+     * @return $this
+     */
     protected function locked()
     {
         if ($this->model instanceof OrderNoRule) {
@@ -149,6 +200,7 @@ class BaseService
         } else {
             $this->query->sharedLock();
         }
+
         return $this;
     }
 
@@ -170,7 +222,13 @@ class BaseService
      * @param array $orderFields
      * @return array|Builder[]|Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getListLock($where = [], $selectFields = ['*'], $isResource = true, $groupFields = [], $orderFields = [])
+    public function getListLock(
+        $where = [],
+        $selectFields = ['*'],
+        $isResource = true,
+        $groupFields = [],
+        $orderFields = []
+    )
     {
         return $this->locked()->getList($where, $selectFields, $isResource, $groupFields, $orderFields);
     }
@@ -185,7 +243,13 @@ class BaseService
      * @param $orderFields
      * @return Builder[]|Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function getList($where = [], $selectFields = ['*'], $isResource = true, $groupFields = [], $orderFields = [])
+    public function getList(
+        $where = [],
+        $selectFields = ['*'],
+        $isResource = true,
+        $groupFields = [],
+        $orderFields = []
+    )
     {
         if (!empty($where)) {
             SearchTrait::buildQuery($this->query, $where);
@@ -205,6 +269,7 @@ class BaseService
             $data = $this->query->get($selectFields);
         }
         $this->query = $this->model::query();
+
         return $data;
     }
 
@@ -232,6 +297,7 @@ class BaseService
         if (empty($data)) {
             return null;
         }
+
         return $this->locked()->getInfo($where, $selectFields, $isResource, $orderFields);
     }
 
@@ -256,18 +322,21 @@ class BaseService
         $data = $this->query->first($selectFields);
         if (empty($data)) {
             $this->query = $this->model::query();
+
             return [];
         };
         if ($isResource) {
             $data = $this->infoResource::make($data)->toArray(request());
         }
         $this->query = $this->model::query();
+
         return $data;
     }
 
     public function create($data)
     {
         $this->query = $this->model::query();
+
         return $this->query->create(Arr::only($data, $this->model->getFillable()));
     }
 
@@ -288,6 +357,7 @@ class BaseService
             $data['company_id'] = auth()->user()->company_id;
         }
         $data['created_at'] = $data['updated_at'] = now();
+
         return $this->query->insertGetId($data);
     }
 
@@ -303,6 +373,7 @@ class BaseService
         SearchTrait::buildQuery($this->query, $where);
         $rowCount = $this->query->update(Arr::only($data, $this->model->getFillable()));
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -316,8 +387,10 @@ class BaseService
     {
         $this->query = $this->model::query();
         $query = $this->query->findOrFail($id);
-        $rowCount = $query->update(Arr::only($data, Arr::except($this->model->getFillable(), ['company_id', 'order_no', 'batch_no', 'tour_no'])));
+        $rowCount = $query->update(Arr::only($data,
+            Arr::except($this->model->getFillable(), ['updated_at', 'created_at', 'company_id', 'order_no', 'batch_no', 'tour_no', 'parent'])));
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -334,6 +407,7 @@ class BaseService
         $query = $this->query->findOrFail($id);
         $rowCount = $query->increment($field, $data[$field], Arr::except($data, $data[$field]));
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -350,6 +424,7 @@ class BaseService
         SearchTrait::buildQuery($this->query, $where);
         $rowCount = $this->query->increment($field, $data[$field], Arr::except($data, $data[$field]));
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -367,6 +442,7 @@ class BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
+
         return 'true';
     }
 
@@ -377,6 +453,7 @@ class BaseService
         SearchTrait::buildQuery($this->query, $where);
         $rowCount = $this->query->delete();
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -397,6 +474,7 @@ class BaseService
         }
         $rowCount = $this->delete(['id' => ['in', $idList]]);
         $this->query = $this->model::query();
+
         return $rowCount;
     }
 
@@ -408,6 +486,7 @@ class BaseService
         }
         $count = $this->query->count();
         $this->query = $this->model::query();
+
         return empty($count) ? 0 : $count;
     }
 
@@ -418,6 +497,7 @@ class BaseService
         }
         $sum = $this->query->sum($field);
         $this->query = $this->model::query();
+
         return !empty($sum) ? $sum : 0;
     }
 
@@ -439,9 +519,19 @@ class BaseService
         if (!in_array(intval($info['status']), Arr::wrap($status))) {
             throw new BusinessLogicException('当前状态是[:status_name]，不能操作', 1000, ['status_name' => $info['status_name']]);
         }
+
         return $isToArray ? $info->toArray() : $info;
     }
 
+    /**
+     * @param array $where
+     * @param array $data
+     * @return Builder|Model
+     */
+    public function updateOrCreate(array $where, array $data)
+    {
+        return $this->query->updateOrCreate($where, $data);
+    }
 
     /**
      * @param $name
@@ -461,7 +551,7 @@ class BaseService
                 }
             }
             return FactoryInstanceTrait::getInstance($className, $arguments);
-        };
+        }
         throw new BusinessLogicException('方法不存在');
     }
 }

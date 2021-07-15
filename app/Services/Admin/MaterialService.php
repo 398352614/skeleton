@@ -22,6 +22,7 @@ class MaterialService extends BaseService
         'order_no' => ['like', 'order_no'],
         'code,order_no,out_order_no' => ['like', 'keyword'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
+        'code'=>['like','code']
     ];
 
     /**
@@ -89,6 +90,4 @@ class MaterialService extends BaseService
             throw new BusinessLogicException('材料代码-外部标识[:code]有重复！不能添加订单', 1000, ['code' => $repeatUniqueCodeList]);
         }
     }
-
-
 }

@@ -112,6 +112,7 @@ class TourController extends BaseController
 
     /**
      * @throws \App\Exceptions\BusinessLogicException
+     * @throws \Throwable
      * @api {GET}  api/admin/tour/callback 管理员端:服务端回调更新完成
      * @apiName callback
      * @apiGroup admin

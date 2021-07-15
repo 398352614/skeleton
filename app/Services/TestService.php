@@ -10,9 +10,13 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
+use App\Models\Driver;
 use App\Models\Permission;
 use App\Models\Test;
+use App\Models\Tour;
+use App\Notifications\OrderChange;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Notification;
 
 class TestService extends BaseService
 {
@@ -40,7 +44,7 @@ class TestService extends BaseService
     {
         $rowCount = parent::create($params);
         if ($rowCount === false) {
-            throw new BusinessLogicException('测试数据新增失败');
+            throw new BusinessLogicException('新增失败');
         }
     }
 
@@ -57,7 +61,7 @@ class TestService extends BaseService
             'name' => $data['name']
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('测试数据修改失败');
+            throw new BusinessLogicException('修改失败');
         }
     }
 
@@ -87,6 +91,11 @@ class TestService extends BaseService
             'permission_list' => $permissionList,
             'menu_list' => $menuList
         ];
+    }
+
+    public function jPushNotify()
+    {
+        Notification::send(Driver::where('id', 1)->firstOrFail(), new OrderChange('order-change', '订单修改推送', ['order_no' => 'test_001', 'merchant_id' => 1, 'remark' => '订单推送']));
     }
 
 }

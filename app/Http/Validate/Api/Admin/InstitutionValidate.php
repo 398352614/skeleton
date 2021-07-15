@@ -15,7 +15,7 @@ class InstitutionValidate extends BaseValidate
         'name' => 'required|string|max:50',
         'country' => 'sometimes|nullable|string|max:50',
         'contacts' => 'sometimes|nullable|string|max:20',
-        'phone' => 'sometimes|nullable|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
+        'phone' => 'sometimes|nullable|string|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
         'address' => 'sometimes|nullable|string|max:250',
         'parent_id' => 'required|integer',
     ];

@@ -41,9 +41,9 @@ class BatchService extends BaseService
         }
         /*******************************若存在相同站点,则直接加入站点,否则新建站点*************************************/
         $batch = !empty($batch) ? $this->joinExistBatch($trackingOrder, $batch) : $this->joinNewBatch($trackingOrder, $line);
-        /**************************************站点加入取件线路********************************************************/
+        /**************************************站点加入线路任务********************************************************/
         $tour = $this->getTourService()->join($batch, $line, $trackingOrder, $tour);
-        /***********************************************填充取件线路编号************************************************/
+        /***********************************************填充线路任务编号************************************************/
         $this->fillTourInfo($batch, $line, $tour);
         return [$batch, $tour];
     }
@@ -176,9 +176,11 @@ class BatchService extends BaseService
             'place_fullname' => $order['place_fullname'],
             'place_phone' => $order['place_phone'],
             'place_country' => $order['place_country'],
+            'place_province' => $order['place_province'] ?? '',
             'place_post_code' => $order['place_post_code'],
             'place_house_number' => $order['place_house_number'],
             'place_city' => $order['place_city'],
+            'place_district' => $order['place_district'] ?? '',
             'place_street' => $order['place_street'],
             'place_address' => $order['place_address'],
             'place_lon' => $order['place_lon'],
@@ -196,7 +198,7 @@ class BatchService extends BaseService
     }
 
     /**
-     * 填充站点信息和取件线路信息
+     * 填充站点信息和线路任务信息
      * @param $batch
      * @param $line
      * @param $tour
@@ -218,7 +220,7 @@ class BatchService extends BaseService
         ];
         $rowCount = parent::update(['id' => $batch['id'], 'driver_id' => ['all', null]], $data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('站点加入取件线路失败，请重新操作');
+            throw new BusinessLogicException('站点加入线路任务失败，请重新操作');
         }
         $batch = array_merge($batch, $data);
     }
@@ -230,9 +232,13 @@ class BatchService extends BaseService
      */
     public function reCountAmountByNo($batchNo)
     {
-        //$totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['batch_no' => $batchNo, 'driver_id' => ['all', null]]);
-        //$totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['batch_no' => $batchNo, 'driver_id' => ['all', null]]);
-        $totalReplaceAmount = $totalSettlementAmount = 0.00;
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batchNo], ['*'], false);
+        if ($trackingOrderList->isEmpty()) {
+            $totalReplaceAmount = $totalSettlementAmount = 0;
+        } else {
+            $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['tracking_order_no' => ['in', $trackingOrderList->pluck('tracking_order_no')->toArray()]]);
+            $totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['tracking_order_no' => ['in', $trackingOrderList->pluck('tracking_order_no')->toArray()]]);
+        }
         $rowCount = parent::update(['batch_no' => $batchNo, 'driver_id' => ['all', null]], ['replace_amount' => $totalReplaceAmount, 'settlement_amount' => $totalSettlementAmount]);
         if ($rowCount === false) {
             throw new BusinessLogicException('金额统计失败');

@@ -10,7 +10,7 @@ use App\Services\Admin\MerchantRechargeService;
 use Illuminate\Support\Arr;
 
 /**
- * 商户充值api
+ * 货主充值api
  * Class OrderController
  * @package App\Http\Controllers\Api\Admin
  * @property MerchantRechargeService $service

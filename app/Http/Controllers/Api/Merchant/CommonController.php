@@ -29,6 +29,7 @@ class CommonController
      * @param Request $request
      * @return mixed
      * @throws \App\Exceptions\BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getLocation(Request $request)
     {

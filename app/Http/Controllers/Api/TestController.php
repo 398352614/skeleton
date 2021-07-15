@@ -91,7 +91,18 @@ class TestController extends BaseController
      */
     public function store()
     {
-        return $this->service->create($this->data);
+        //return $this->service->create($this->data);
+
+        $data = explode(':', $this->data['list']);
+        $newData = '';
+        for ($i = 0, $j = count($data); $i < $j; $i++) {
+            if ($i % 2 == 0) {
+                $newData = $newData . $data[$i] . ':';
+            } else {
+                $newData = $newData . $data[$i] . ',';
+            }
+        }
+        return $newData;
     }
 
     /**
@@ -140,6 +151,11 @@ class TestController extends BaseController
     public function authTree()
     {
         return $this->service->authTree();
+    }
+
+    public function jPushNotify()
+    {
+        return $this->service->jPushNotify();
     }
 
 

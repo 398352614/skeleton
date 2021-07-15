@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Driver;
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Services\Driver\RouteTrackingService;
+use Illuminate\Support\Facades\Redis;
 
 /**
  * Class RouteTrackingController

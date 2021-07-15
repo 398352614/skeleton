@@ -10,6 +10,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\LineRange;
+use http\Exception\BadConversionException;
 use Illuminate\Support\Facades\DB;
 
 class LineRangeService extends BaseService
@@ -67,7 +68,7 @@ class LineRangeService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围新增失败');
         }
-        //删除商户线路范围
+        //删除货主线路范围
         $this->getMerchantGroupLineRangeService()->storeRangeList($lineId, $rangeList, $workdayList, $country);
     }
 
@@ -83,10 +84,25 @@ class LineRangeService extends BaseService
      */
     public function checkRange($rangeList, $country, $workdayList, $id = null)
     {
+        $DEList = 0;
+        $NLList = 0;
         if (empty($rangeList)) {
             throw new BusinessLogicException('邮编范围不能为空');
         }
         $length = count($rangeList);
+        $startList = collect($rangeList)->pluck('post_code_start')->toArray();
+        $endList = collect($rangeList)->pluck('post_code_end')->toArray();
+        $list = array_merge($startList, $endList);
+        foreach ($list as $k => $v) {
+            if ($v > 9999) {
+                $DEList = $DEList + 1;
+            } else {
+                $NLList = $NLList + 1;
+            }
+            if ($DEList > 0 & $NLList > 0) {
+                throw new BusinessLogicException('您选择的邮编范围跨越多个国家，暂不支持多国家线路');
+            }
+        }
         for ($i = 0; $i <= $length - 1; $i++) {
             for ($j = $i + 1; $j <= $length - 1; $j++) {
                 if (max($rangeList[$i]['post_code_start'], $rangeList[$j]['post_code_start']) <= min($rangeList[$i]['post_code_end'], $rangeList[$j]['post_code_end'])) {
@@ -97,7 +113,7 @@ class LineRangeService extends BaseService
         //当前是否已存在邮编
         foreach ($rangeList as $range) {
             if ($this->checkIfPostcodeIntervalOverlap($range['post_code_start'], $range['post_code_end'], $country, $workdayList, $id)) {
-                throw new BusinessLogicException("邮编:post_code_start到:post_code_end已存在", 1000, ['post_code_start' => $range['post_code_start'], 'post_code_end' => $range['post_code_end']]);
+                throw new BusinessLogicException("邮编[:post_code_start]到[:post_code_end]已存在", 1000, ['post_code_start' => $range['post_code_start'], 'post_code_end' => $range['post_code_end']]);
             }
         }
     }

@@ -25,7 +25,7 @@ trait PermissionTrait
         $tag = config('tms.cache_tags.permission');
         $permissionList = Cache::tags($tag)->get('permission_list');
         if (empty($permissionList)) {
-            Artisan::call('permission:cache');
+            Artisan::call('cache:permission');
             $permissionList = Cache::tags($tag)->get('permission_list');
         }
         return $permissionList;

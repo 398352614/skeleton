@@ -13,11 +13,12 @@ class MemorandumValidate extends BaseValidate
 
     public $rules = [
         'content' => 'required|string|max:250',
+        'image_list' => 'nullable|string'
     ];
 
     public $scene = [
-        'store' => ['content'],
-        'update' => ['content'],
+        'store' => ['content','image_list'],
+        'update' => ['content','image_list'],
     ];
 }
 

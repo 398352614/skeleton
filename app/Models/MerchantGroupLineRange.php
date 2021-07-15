@@ -3,7 +3,7 @@
 namespace App\Models;
 
 /**
- * 商户线路范围表
+ * 货主线路范围表
  * Class Employee
  * @package App\Models
  */

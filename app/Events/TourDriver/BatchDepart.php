@@ -59,7 +59,7 @@ class BatchDepart implements ITourDriver
      */
     public function getContent(): string
     {
-        return '从[' . $this->batch['place_fullname'] . ']客户家离开';
+        return __('从[:params]客户家离开', [':params' => $this->batch['place_fullname']]);
     }
 
     public function getAddress(): string
@@ -67,8 +67,10 @@ class BatchDepart implements ITourDriver
         $address = [
             'place_street' => $this->batch['place_street'],
             'place_house_number' => $this->batch['place_house_number'],
+            'place_district' => $this->batch['place_district'],
             'place_city' => $this->batch['place_city'],
             'place_post_code' => $this->batch['place_post_code'],
+            'place_province' => $this->batch['place_province'],
             'place_country' => $this->batch['place_country']
         ];
         $address = implode(' ', $address);

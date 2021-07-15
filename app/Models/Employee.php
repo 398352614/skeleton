@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ConstTranslateTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -75,6 +76,10 @@ class Employee extends Authenticatable implements JWTSubject
         'remark',
         'forbid_login',
         'is_admin',
+        'warehouse_id',
+        'address',
+        'avatar',
+        'timezone',
         'created_at',
         'updated_at',
     ];
@@ -125,6 +130,10 @@ class Employee extends Authenticatable implements JWTSubject
         ];
     }
 
+    protected $appends = [
+        'forbid_login_name',
+    ];
+
     public function institution()
     {
         return $this->belongsTo(Institution::class);
@@ -134,4 +143,10 @@ class Employee extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(CompanyConfig::class, 'company_id', 'company_id');
     }
+
+    public function getForbidLoginNameAttribute()
+    {
+        return ConstTranslateTrait::employeeForbidLoginList($this->forbid_login);
+    }
+
 }

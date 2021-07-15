@@ -12,7 +12,7 @@ class CreateRole extends Command
      *
      * @var string
      */
-    protected $signature = 'role:create
+    protected $signature = 'create:role
                                         {--company_id= : company id}
                                         {--name= : name}';
 

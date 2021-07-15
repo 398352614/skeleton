@@ -24,7 +24,6 @@ Route::namespace('Api\Driver')->middleware([])->group(function () {
     Route::put('password-reset', 'AuthController@resetPassword');
     Route::post('password-reset/apply', 'AuthController@applyOfReset');
     Route::get('/version', 'VersionController@check');//版本检查
-
 });
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +36,14 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     Route::get('me', 'AuthController@me');
     Route::put('refresh', 'AuthController@refresh');
     Route::put('my-password', 'AuthController@updatePassword');
+    //切换时区
+    Route::put('/timezone', 'AuthController@updateTimezone');
+    //主页统计
+    Route::prefix('statistics')->group(function () {
+        //主页
+        Route::get('/', 'HomeController@home')->name('statistics.home');
+
+    });
 
     //备忘录管理
     Route::prefix('memorandum')->group(function () {
@@ -52,7 +59,7 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::delete('/{id}', 'MemorandumController@destroy');
     });
 
-    //取件线路任务 管理
+    //线路任务任务 管理
     Route::prefix('tour-task')->group(function () {
         //列表查询
         Route::get('/', 'TourTaskController@index');
@@ -100,13 +107,13 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     Route::prefix('order')->group(function () {
         //获取线路
         Route::get('/get-line', 'LineController@index');
-        //获取取件线路
+        //获取线路任务
         Route::get('/get-tour', 'TourController@getTourList');
         //获取订单及包裹
-        Route::get('/', 'TourTaskController@getOrderList');
+        Route::get('/', 'TourTaskController@getTrackingOrderList');
     });
 
-    //取件线路 管理
+    //线路任务 管理
     Route::prefix('tour')->group(function () {
         //更改线路任务顺序 -- 手动优化
         Route::post('/update-batch-index', 'TourController@updateBatchIndex')->middleware('checktourredislock');
@@ -142,7 +149,7 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::put('/{id}/checkBatchSign', 'TourController@checkBatchSign');
         //站点 签收
         Route::put('/{id}/batchSign', 'TourController@batchSign');
-        //获取取件线路统计数据
+        //获取线路任务统计数据
         Route::get('/{id}/getTotalInfo', 'TourController@getTotalInfo');
         //司机入库
         Route::put('/{id}/inWarehouse', 'TourController@inWarehouse');
@@ -155,7 +162,14 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
     //库存管理
     Route::prefix('stock')->group(function () {
         //包裹分拣入库
-        Route::put('/package-pick-out', 'StockController@packagePickOut');
+        Route::put('/package-pick-out', 'StockController@allocate');
+
+    });
+
+    //库存管理
+    Route::prefix('stock-in-log')->group(function () {
+        //包裹分拣入库
+        Route::get('/', 'StockInLogController@index');
     });
 
     //上传接口
@@ -184,9 +198,9 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::get('getAllFeeList', 'FeeController@getAllFeeList');
     });
 
-    //商户管理
+    //货主管理
     Route::prefix('merchant')->group(function () {
-        //获取所有商户
+        //获取所有货主
         Route::get('/', 'MerchantController@index');
     });
 
@@ -218,4 +232,66 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         //上报
         Route::post('/', 'stockExceptionController@store');
     });
+
+    //袋号管理
+    Route::prefix('bag')->group(function () {
+        //列表
+        Route::get('/', 'BagController@index');
+        //新增（扫描）
+        Route::post('/', 'BagController@store');
+        //详情
+        Route::get('/{id}', 'BagController@show');
+        //删除
+        Route::delete('/{id}', 'BagController@destroy');
+        //包裹装袋扫描
+        Route::post('/{id}/pack', 'BagController@packPackage');
+        //移除包裹
+        Route::delete('/{id}/pack', 'BagController@removePackage');
+        //包裹拆袋扫描
+        Route::post('/{id}/unpack', 'BagController@unpackPackage');
+    });
+
+    //车次管理
+    Route::prefix('shift')->group(function () {
+        //列表
+        Route::get('/', 'ShiftController@index');
+        //新增（扫描）
+        Route::post('/', 'ShiftController@store');
+        //详情
+        Route::get('/{id}', 'ShiftController@show');
+        //修改（扫描）
+        Route::put('/{id}', 'ShiftController@update');
+        //删除
+        Route::delete('/{id}', 'ShiftController@destroy');
+        //更换车辆
+        Route::put('/{id}/changeCar', 'ShiftController@changeCar');
+        //装车
+        Route::post('/{id}/load', 'ShiftController@loadItem');
+        //移除内容物
+        Route::delete('/{id}/load', 'ShiftController@removeItem');
+        //卸车
+        Route::post('/{id}/unload', 'ShiftController@unloadItem');
+        //批量卸车
+        Route::post('/{id}/unloadList', 'ShiftController@unloadItemList');
+        //司机出库
+        Route::put('/{id}/outWarehouse', 'ShiftController@outWarehouse');
+        //司机入库
+        Route::put('/{id}/inWarehouse', 'ShiftController@inWarehouse');
+    });
+
+    //仓库管理
+    Route::prefix('warehouse')->group(function () {
+        //列表
+        Route::get('/', 'WarehouseController@index');
+        //列表
+        Route::get('/home', 'WarehouseController@home');
+    });
+
+    //转运单管理
+    Route::prefix('tracking-package')->group(function () {
+        //列表
+        Route::get('/', 'TrackingPackageController@index');
+    });
+
+
 });

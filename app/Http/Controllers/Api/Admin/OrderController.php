@@ -64,6 +64,16 @@ class OrderController extends BaseController
     }
 
     /**
+     * 获取订单的运单轨迹列表
+     * @param $id
+     * @return array
+     */
+    public function getTrackingOrderTrailList($id)
+    {
+        return $this->service->getTrackingOrderTrailList($id);
+    }
+
+    /**
      * 订单统计
      * @return array
      * @throws BusinessLogicException
@@ -85,6 +95,16 @@ class OrderController extends BaseController
     public function store()
     {
         return $this->service->store($this->data);
+    }
+
+    /**
+     * 通过地址获取可选日期
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getAbleDateListByAddress()
+    {
+        return $this->service->getAbleDateListByAddress($this->data);
     }
 
     /**
@@ -141,7 +161,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * 获取再次取派信息
+     * 获取继续派送(再次取派)信息
      * @param $id
      * @return array|Builder|Model|object|null
      * @throws BusinessLogicException
@@ -152,7 +172,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * 再次取派
+     * 继续派送(再次取派)
      * @param $id
      * @return bool
      * @throws BusinessLogicException
@@ -185,6 +205,17 @@ class OrderController extends BaseController
     }
 
     /**
+     * 批量打印2
+     * @return mixed
+     * @throws BusinessLogicException
+     * @throws \Throwable
+     */
+    public function orderBillPrint()
+    {
+        return $this->service->orderBillPrint($this->data['id_list']);
+    }
+
+    /**
      * 同步订单状态列表
      */
     public function synchronizeStatusList()
@@ -207,7 +238,28 @@ class OrderController extends BaseController
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function neutralize($id){
+    public function neutralize($id)
+    {
         return $this->service->neutralize($id);
+    }
+
+    /**
+     * 运价估算
+     * @return array|void
+     * @throws BusinessLogicException
+     */
+    public function priceCount()
+    {
+        return $this->service->priceCount($this->data);
+    }
+
+    /**
+     * 获取网点
+     * @return array
+     * @throws BusinessLogicException
+     */
+    public function getWarehouse()
+    {
+        return $this->service->getWareHouse($this->data);
     }
 }

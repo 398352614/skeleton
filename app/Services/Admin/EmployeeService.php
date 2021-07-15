@@ -6,7 +6,9 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Resources\Api\Admin\EmployeeResource;
 use App\Models\Employee;
 use App\Models\Role;
+use App\Services\BaseConstService;
 use App\Traits\HasLoginControlTrait;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class EmployeeService extends BaseService
@@ -16,6 +18,7 @@ class EmployeeService extends BaseService
     public $filterRules = [
         'email' => ['like', 'email'],
         'fullname' => ['like', 'fullname'],
+        'warehouse_id' => ['=', 'warehouse_id']
     ];
 
     public function __construct(Employee $employee)
@@ -31,14 +34,17 @@ class EmployeeService extends BaseService
             $modelHasRolesTable = config('permission.table_names.model_has_roles');
             $eRoleList = DB::table($modelHasRolesTable)->where('role_id', $this->formData['role_id'])->paginate($this->per_page);
             $employeeIdList = $eRoleList->pluck('employee_id')->toArray();
+            $this->filters['id'] = ['in', $employeeIdList];
         }
-        if (!empty($employeeIdList)) $this->filters['id'] = ['in', $employeeIdList];
         $list = parent::getPageList();
+        $warehouseIdList = $list->pluck('warehouse_id')->unique()->toArray();
+        $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $warehouseIdList]], ['*'], false)->keyBy('id');
         if (empty($list)) return $list;
         foreach ($list as &$employee) {
             $role = $this->getEmployeeRole($employee->id);
             $employee['role_id'] = $role['id'] ?? null;
             $employee['role_id_name'] = $role['name'] ?? '';
+            $employee['warehouse_name'] = $warehouseList[$employee['warehouse_id']]['name'] ?? '';
         }
         return $list;
     }
@@ -50,6 +56,8 @@ class EmployeeService extends BaseService
         $role = $this->getEmployeeRole($employee['id']);
         $employee['role_id'] = $role['id'] ?? null;
         $employee['role_id_name'] = $role['name'] ?? '';
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $employee['warehouse_id']],['*'],false);
+        $employee['warehouse_name'] = $warehouse['name'] ?? '';
         return $employee;
     }
 
@@ -73,19 +81,11 @@ class EmployeeService extends BaseService
      */
     public function store(array $data)
     {
+        $data = $this->check($data);
         $role = Role::findById($data['role_id']);
-        $employee = parent::create(
-            [
-                'fullname' => $data['fullname'],
-                'username' => $data['username'],
-                'email' => $data['email'],
-                'phone' => $data['phone'] ?? '',
-                'remark' => $data['remark'] ?? '',
-                'password' => bcrypt($data['password']),
-            ]
-        );
+        $employee = parent::create($data);
         if ($employee === false) {
-            throw new BusinessLogicException('员工新增失败');
+            throw new BusinessLogicException('新增失败');
         }
         //员工添加权限组
         $employee->syncRoles($role);
@@ -100,23 +100,33 @@ class EmployeeService extends BaseService
      */
     public function updateById($id, $data)
     {
+        $data = $this->check($data);
         $role = Role::findById($data['role_id']);
         $employee = $this->model::findOrFail($id);
         $adminRoleId = $this->getRoleService()->getAdminRoleId();
         if (($employee->is_admin == 1) && $adminRoleId != $data['role_id']) {
             throw new BusinessLogicException('超级管理员只能在管理员组');
         }
-        $rowCount = $employee->update([
-            'fullname' => $data['fullname'],
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'phone' => $data['phone'] ?? '',
-            'remark' => $data['remark'] ?? ''
-        ]);
+        $rowCount = $employee->update($data);
         if ($rowCount === false) {
-            throw new BusinessLogicException('员工修改失败');
+            throw new BusinessLogicException('修改失败');
         }
         $employee->syncRoles($role);
+    }
+
+    /**
+     * @param $data
+     * @return
+     * @throws BusinessLogicException
+     */
+    public function check($data)
+    {
+        $warehouse = $this->getWareHouseService()->getInfo(['id' => $data['warehouse_id']], ['*'], false);
+        if (empty($warehouse)) {
+            throw new BusinessLogicException('网点不存在');
+        }
+        unset($data['password']);
+        return $data;
     }
 
     /**
@@ -137,7 +147,7 @@ class EmployeeService extends BaseService
         ]);
 
         if ($res === false) {
-            throw new BusinessLogicException('修改员工密码失败');
+            throw new BusinessLogicException('修改失败');
         }
 
         return $res;
@@ -155,13 +165,13 @@ class EmployeeService extends BaseService
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('员工删除失败');
+            throw new BusinessLogicException('删除失败');
         }
         //删除员工权限
         $modelHasRolesTable = config('permission.table_names.model_has_roles');
         $rowCount = DB::table($modelHasRolesTable)->where('employee_id', $id)->delete();
         if ($rowCount === false) {
-            throw new BusinessLogicException('员工删除失败');
+            throw new BusinessLogicException('删除失败');
         }
     }
 
@@ -174,5 +184,18 @@ class EmployeeService extends BaseService
         $companyId = auth()->user()->company_id;
         $adminEmployee = $this->model->newQuery()->where('company_id', $companyId)->where('is_admin', 1)->first();
         return $adminEmployee->id ?? null;
+    }
+
+    /**
+     * 批量修改状态
+     * @param $data
+     */
+    public function setLoginByList($data)
+    {
+        $idList = explode_id_string($data['id_list']);
+        if ($data['status'] == BaseConstService::NO) {
+            $data['status'] = false;
+        }
+        $this->forbidLogin($idList, $data['status']);
     }
 }

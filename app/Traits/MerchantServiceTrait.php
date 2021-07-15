@@ -2,6 +2,14 @@
 
 namespace App\Traits;
 
+use App\Services\Merchant\BaseLineService;
+use App\Services\Merchant\BaseWarehouseService;
+use App\Services\Merchant\OrderAmountService;
+use App\Services\Merchant\OrderDefaultConfigService;
+use App\Services\Merchant\OrderTemplateService;
+use App\Services\Merchant\OrderTrailService;
+use App\Services\Merchant\StockService;
+use App\Services\Merchant\TrackingPackageService;
 use App\Services\Merchant\AddressService;
 use App\Services\Merchant\BatchExceptionService;
 use App\Services\Merchant\BatchService;
@@ -11,6 +19,7 @@ use App\Services\Merchant\LineAreaService;
 use App\Services\Merchant\LineRangeService;
 use App\Services\Merchant\LineService;
 use App\Services\Merchant\MaterialService;
+use App\Services\Merchant\MerchantGroupLineService;
 use App\Services\Merchant\MerchantGroupService;
 use App\Services\Merchant\MerchantGroupLineRangeService;
 use App\Services\Merchant\MerchantService;
@@ -22,6 +31,7 @@ use App\Services\Merchant\TourService;
 use App\Services\Merchant\TrackingOrderMaterialService;
 use App\Services\Merchant\TrackingOrderPackageService;
 use App\Services\Merchant\TrackingOrderService;
+use App\Services\Merchant\TransportPriceService;
 use App\Services\Merchant\UploadService;
 use App\Services\Merchant\WareHouseService;
 use App\Services\OrderNoRuleService;
@@ -32,12 +42,66 @@ Trait MerchantServiceTrait
     use FactoryInstanceTrait;
 
     /**
+     * 基础网点 服务
+     * @return BaseWarehouseService
+     */
+    public function getBaseWarehouseService()
+    {
+        return self::getInstance(BaseWarehouseService::class);
+
+    }
+
+    /**
+     * @return BaseLineService
+     */
+    public function getBaseLineService()
+    {
+        return self::getInstance(BaseLineService::class);
+    }
+    /**
+     * 订单模板 服务
+     * @return OrderTemplateService
+     */
+    public function getOrderTemplateService()
+    {
+        return self::getInstance(OrderTemplateService::class);
+
+    }
+
+    /**
+     * 库存 服务
+     * @return StockService
+     */
+    public function getStockService()
+    {
+        return self::getInstance(StockService::class);
+    }
+
+    /**
      * 商家 服务
      * @return MerchantService
      */
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * 订单轨迹 服务
+     * @return OrderTrailService
+     */
+    public function getOrderTrailService()
+    {
+        return self::getInstance(OrderTrailService::class);
+    }
+
+    /**
+     * 中转单 服务
+     * @return TrackingPackageService
+     */
+    public function getTrackingPackageService()
+    {
+        return self::getInstance(TrackingPackageService::class);
     }
 
     /**
@@ -50,7 +114,7 @@ Trait MerchantServiceTrait
     }
 
     /**
-     * 商户线路范围 服务
+     * 货主线路范围 服务
      * @return MerchantGroupLineRangeService
      */
     public function getMerchantGroupLineRangeService()
@@ -68,7 +132,7 @@ Trait MerchantServiceTrait
     }
 
     /**
-     * 仓库 服务
+     * 网点 服务
      * @return WareHouseService
      */
     public function getWareHouseService()
@@ -77,7 +141,7 @@ Trait MerchantServiceTrait
     }
 
     /**
-     * 取件线路 服务
+     * 线路任务 服务
      * @return TourService
      */
     public function getTourService()
@@ -112,6 +176,14 @@ Trait MerchantServiceTrait
         return self::getInstance(TrackingOrderService::class);
     }
 
+    /**
+     * 订单费用
+     * @return OrderAmountService
+     */
+    public function getOrderAmountService()
+    {
+        return self::getInstance(OrderAmountService::class);
+    }
 
     /**
      * 运单包裹表
@@ -157,6 +229,15 @@ Trait MerchantServiceTrait
     public function getMaterialService()
     {
         return self::getInstance(MaterialService::class);
+    }
+
+    /**
+     * 订单默认配置 服务
+     * @return OrderDefaultConfigService
+     */
+    public function getOrderDefaultConfigService()
+    {
+        return self::getInstance(OrderDefaultConfigService::class);
     }
 
     /**
@@ -223,7 +304,7 @@ Trait MerchantServiceTrait
     }
 
     /**
-     * 商户组 服务
+     * 货主组 服务
      * @return MerchantGroupService
      */
     public function getMerchantGroupService()
@@ -247,5 +328,23 @@ Trait MerchantServiceTrait
     public function getPackageNoRuleService()
     {
         return self::getInstance(PackageNoRuleService::class);
+    }
+
+    /**
+     * 运价方案 服务
+     * @return TransportPriceService
+     */
+    public function getTransportPriceService()
+    {
+        return self::getInstance(TransportPriceService::class);
+    }
+
+    /**
+     * 货主组线路 服务
+     * @return MerchantGroupLineService
+     */
+    public function getMerchantGroupLineService()
+    {
+        return self::getInstance(MerchantGroupLineService::class);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户API 验证类
+ * 货主API 验证类
  * Created by PhpStorm
  * User: long
  * Date: 2019/12/16

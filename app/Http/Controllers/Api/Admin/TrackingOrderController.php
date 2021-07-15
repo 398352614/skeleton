@@ -119,7 +119,7 @@ class TrackingOrderController extends BaseController
     }
 
     /**
-     * 批量运单分配至取件线路
+     * 批量运单分配至线路任务
      * @throws BusinessLogicException
      * @throws \WebSocket\BadOpcodeException
      */

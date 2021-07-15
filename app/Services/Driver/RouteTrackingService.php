@@ -39,7 +39,6 @@ class RouteTrackingService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('采集位置失败');
         }
-        Log::info('route-tracking-tour-no', ['tour_no' => $tour->tour_no]);
     }
 
     /**
@@ -85,17 +84,13 @@ class RouteTrackingService extends BaseService
             abs($tracking['lat'] - $firstTracking['lat']) < BaseConstService::LOCATION_DISTANCE_RANGE) {
             $stopTime = $firstTracking['stop_time'] + abs($tracking['time'] - $firstTracking['time']);
             $row = parent::update(['id' => $firstTracking['id']], ['stop_time' => $stopTime, 'time' => $tracking['time']]);
-            if ($row == false) {
-                throw new BusinessLogicException('操作失败，请重新操作');
-            }
         } else {
             $tracking['tour_driver_event_id'] = null;
             $row = $this->create($tracking);
             if ($row == false) {
-                throw new BusinessLogicException('操作失败，请重新操作');
+                throw new BusinessLogicException('操作失败');
             }
         }
-        Log::info('route-tracking-tour-no', ['tour_no' => $tracking['tour_no']]);
         return '';
     }
 }

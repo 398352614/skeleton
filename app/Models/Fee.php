@@ -51,6 +51,8 @@ class Fee extends BaseModel
         'amount',
         'level',
         'status',
+        'is_valuable',
+        'payer',
         'created_at',
         'updated_at',
     ];

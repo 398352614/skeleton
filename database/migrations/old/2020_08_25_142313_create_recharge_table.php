@@ -16,7 +16,7 @@ class CreateRechargeTable extends Migration
         Schema::create('recharge', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
-            $table->integer('merchant_id')->default(null)->nullable()->comment('商户ID');
+            $table->integer('merchant_id')->default(null)->nullable()->comment('货主ID');
             $table->string('recharge_no', 50)->default('')->nullable()->comment('充值单号');
             $table->string('transaction_number', 50)->default('')->nullable()->comment('外部充值单号');
             $table->string('out_user_id', 250)->default('')->nullable()->comment('外部用户ID');

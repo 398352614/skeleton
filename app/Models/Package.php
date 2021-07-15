@@ -51,6 +51,8 @@ class Package extends BaseModel
         'tracking_order_no',
         'order_no',
         'execution_date',
+        'expiration_date',
+        'expiration_status',
         'second_execution_date',
         'type',
         'name',
@@ -59,16 +61,21 @@ class Package extends BaseModel
         'feature_logo',
         'out_order_no',
         'weight',
+        'actual_weight',
         'expect_quantity',
         'actual_quantity',
         'status',
+        'stage',
         'sticker_no',
+        'settlement_amount',
+        'count_settlement_amount',
         'sticker_amount',
         'delivery_amount',
         'remark',
         'is_auth',
         'auth_fullname',
         'auth_birth_date',
+        'stage_name',
         'created_at',
         'updated_at'
     ];
@@ -97,11 +104,16 @@ class Package extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return (empty($this->status)  || ($this->status >= 6)) ? null : ConstTranslateTrait::packageStatusList($this->status);
+        return (empty($this->status) || ($this->status >= 6)) ? null : ConstTranslateTrait::packageStatusList($this->status);
     }
 
     public function getTypeNameAttribute()
     {
-        return empty($this->type) ? null : ConstTranslateTrait::orderTypeList($this->type);
+        return empty($this->type) ? null : ConstTranslateTrait::packageTypeList($this->type);
+    }
+
+    public function getStageNameAttribute()
+    {
+        return empty($this->stage) ? null : ConstTranslateTrait::packageStageList($this->stage);
     }
 }

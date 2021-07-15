@@ -79,9 +79,9 @@ class TourTaskController extends BaseController
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function getTrackingOrderList($id)
+    public function getTrackingOrderList()
     {
-        return $this->service->getTrackingOrderList($id);
+        return $this->service->getTrackingOrderList($this->data);
     }
 
     /**

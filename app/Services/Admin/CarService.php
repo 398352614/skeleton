@@ -17,6 +17,7 @@ class CarService extends BaseService
 
     public $filterRules = [
         'status' => ['=', 'status'],
+        'car_no' => ['like', 'car_no']
     ];
 
     public $headings = [
@@ -40,6 +41,8 @@ class CarService extends BaseService
         $data['car_owner_ship_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carOwnerShipTypeList);
         $data['car_fuel_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carFuelTypeList);
         $data['car_transmission_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carTransmissionList);
+        $data['car_length_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carLengthTypeList);
+        $data['car_model_type_list'] = ConstTranslateTrait::formatList(ConstTranslateTrait::$carModelTypeList);
         return $data;
     }
 
@@ -50,8 +53,11 @@ class CarService extends BaseService
         return $this->create([
             'car_no' => $this->formData['car_no'],
             'outgoing_time' => $this->formData['outgoing_time'] ?? null,
-            'car_brand_id' => $this->formData['car_brand_id'],
-            'car_model_id' => $this->formData['car_model_id'],
+            'car_brand_id' => $this->formData['car_brand_id'] ?? null,
+            'car_model_id' => $this->formData['car_model_id'] ?? null,
+            'car_model_type' => $this->formData['car_model_type'] ?? null,
+            'car_length' => $this->formData['car_length'] ?? null,
+            'gps_device_number' => $this->formData['gps_device_number'] ?? '',
             'ownership_type' => $this->formData['ownership_type'] ?? 1,
             'insurance_company' => $this->formData['insurance_company'] ?? '',
             'insurance_type' => $this->formData['insurance_type'] ?? '',
@@ -79,6 +85,9 @@ class CarService extends BaseService
             'outgoing_time' => $this->formData['outgoing_time'],
             'car_brand_id' => $this->formData['car_brand_id'],
             'car_model_id' => $this->formData['car_model_id'],
+            'car_model_type' => $this->formData['car_model_type'] ?? null,
+            'car_length' => $this->formData['car_length'] ?? null,
+            'gps_device_number' => $this->formData['gps_device_number'] ?? '',
             'ownership_type' => $this->formData['ownership_type'],
             'insurance_company' => $this->formData['insurance_company'],
             'insurance_type' => $this->formData['insurance_type'],
@@ -93,7 +102,7 @@ class CarService extends BaseService
             'relate_material_list' => !empty($this->formData['relate_material_list']) ? $this->formData['relate_material_list'] : null,
         ]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('车辆修改失败');
+            throw new BusinessLogicException('修改失败');
         }
     }
 
@@ -107,7 +116,7 @@ class CarService extends BaseService
     {
         $rowCount = parent::updateById($id, ['is_locked' => $isLocked]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('操作失败，请重新操作');
+            throw new BusinessLogicException('操作失败');
         }
     }
 
@@ -126,7 +135,7 @@ class CarService extends BaseService
         }
         $rowCount = parent::delete(['id' => $id]);
         if ($rowCount === false) {
-            throw new BusinessLogicException('车辆删除失败');
+            throw new BusinessLogicException('删除失败');
         }
     }
 

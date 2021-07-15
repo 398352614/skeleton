@@ -9,6 +9,7 @@ use App\Models\MerchantApi;
 use App\Models\Package;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
+use App\Traits\ConstTranslateTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -29,7 +30,8 @@ class PackageService extends BaseService
         'express_first_no,order_no,out_order_no' => ['like', 'keyword'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'express_first_no' => ['like', 'express_first_no'],
-        'out_order_no' => ['like', 'out_order_no']
+        'out_order_no' => ['like', 'out_order_no'],
+        'stage' => ['=', 'stage']
     ];
 
     /**
@@ -45,8 +47,48 @@ class PackageService extends BaseService
             $orderList = $this->getOrderService()->getList(['merchant_id' => $this->formData['merchant_id']], ['*'], false);
             $this->query->whereIn('order_no', $orderList)->where('order_no', 'like', $this->formData['order_no']);
         }
-        $this->query->orderByDesc('updated_at');
-        return parent::getPageList();
+        $this->query->orderByDesc('id');
+        $data = parent::getPageList();
+        $expressFirstNoList = $data->pluck('express_first_no')->toArray();
+        $trackingOrderPackageList = $this->getTrackingOrderPackageService()->getList(['express_first_no' => ['in', $expressFirstNoList]], ['*'], false);
+        $trackingPackageList = $this->getTrackingPackageService()->getList(['express_first_no' => ['in', $expressFirstNoList]], ['*'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['tracking_order_no' => ['in', $data->pluck('tracking_order_no')->toArray()]], ['*'], false);
+
+        foreach ($data as $k => $v) {
+            $stockInLog = $this->getStockService()->getInfo(['express_first_no' => $v['express_first_no']], ['*'], false, ['id' => 'asc']);
+            if ($v['stage'] == BaseConstService::PACKAGE_STAGE_2) {
+                $trackingPackage = $trackingPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->first->toArray();
+                if (!empty($trackingPackage)) {
+                    $data[$k]['warehouse_id'] = $trackingPackage['warehouse_id'];
+                    $data[$k]['next_warehouse_id'] = $trackingPackage['next_warehouse_id'];
+                    $data[$k]['warehouse_name'] = $trackingPackage['warehouse_name'];
+                    $data[$k]['next_warehouse_name'] = $trackingPackage['next_warehouse_name'];
+                    $data[$k]['shift_no'] = $trackingPackage['shift_no'];
+                    $data[$k]['bag_no'] = $trackingPackage['bag_no'];
+                    $data[$k]['status'] = $trackingPackage['status'];
+                    $data[$k]['true_status_name'] = ConstTranslateTrait::trackingPackageStatusList($trackingPackage['status']);
+                }
+            } else {
+                $trackingOrderPackage = $trackingOrderPackageList->where('express_first_no', $v['express_first_no'])->sortByDesc('id')->first->toArray();
+                if (!empty($trackingOrderPackage)) {
+                    if ($trackingOrderPackage['type'] == BaseConstService::TRACKING_ORDER_TYPE_1) {
+                        $data[$k]['next_warehouse_name'] = $trackingOrderList->where('tracking_order_no', $v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
+                    } else {
+                        $data[$k]['warehouse_name'] = $trackingOrderList->where('tracking_order_no', $v['tracking_order_no'])->first()['warehouse_fullname'] ?? null;
+                    }
+                    $data[$k]['status'] = $trackingOrderPackage['status'] ?? null;
+                    $data[$k]['true_status_name'] = ConstTranslateTrait::trackingOrderStatusList($trackingOrderPackage['status']);
+                }
+                if ($v['stage'] == BaseConstService::PACKAGE_STAGE_3 && $v['type'] == BaseConstService::PACKAGE_TYPE_2) {
+                    $data[$k]['second_execution_date'] = $v['execution_date'];
+                } elseif ($v['stage'] == BaseConstService::PACKAGE_STAGE_1) {
+                    $data[$k]['second_execution_date'] = null;
+                }
+            }
+            $data[$k]['stock_in_time'] = $stockInLog['created_at'] ?? null;
+            $data[$k]['stage_status_name'] = $data[$k]['stage_name'] . '-' . $data[$k]['true_status_name'];
+        }
+        return $data;
     }
 
     /**
@@ -75,7 +117,7 @@ class PackageService extends BaseService
         $expressFirstNoList = array_column($packageList, 'express_first_no');
         if (count($expressFirstNoList) !== count(array_unique($expressFirstNoList))) {
             $repeatExpressFirstNoList = implode(',', array_diff_assoc($expressFirstNoList, array_unique($expressFirstNoList)));
-            throw new BusinessLogicException('快递单号[:express_no]有重复！不能添加订单', 1000, ['express_no' => $repeatExpressFirstNoList]);
+            throw new BusinessLogicException('快递单号1[:express_no]有重复！不能添加订单', 1000, ['express_no' => $repeatExpressFirstNoList]);
         }
         //存在快递单号2,则验证
         $expressSecondNoList = array_filter(array_column($packageList, 'express_second_no'));
@@ -162,8 +204,14 @@ class PackageService extends BaseService
         return !empty($result) ? $result->toArray() : [];
     }
 
+    /**
+     * 填充包裹重量
+     * @param $packageList
+     * @throws BusinessLogicException
+     */
     public function fillWeightInfo($packageList)
     {
+        //todo 更新重量
         dispatch(new SendPackageInfo($packageList));
     }
 }

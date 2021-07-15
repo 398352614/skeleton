@@ -1,6 +1,6 @@
 <?php
 /**
- * 取件线路 验证类
+ * 线路任务 验证类
  * Created by PhpStorm
  * User: long
  * Date: 2019/12/16
@@ -27,6 +27,7 @@ class TourValidate extends BaseValidate
         'tour_no' => 'required|string',
         'year' => 'required|integer',
         'month' => 'required|integer|lte:12',
+        'tracking_order_id_list' => 'required|string|checkIdList:20',
     ];
 
     public $scene = [
@@ -36,7 +37,7 @@ class TourValidate extends BaseValidate
         'getLineDate' => ['line_id'],
         'assignTourToTour' => ['execution_date', 'line_id', 'tour_no'],
         'getListJoinByLineId' => ['line_id', 'execution_date'],
-        'batchExport'=>['year','month'],
+        'batchExport' => ['year', 'month'],
     ];
 
     public $message = [

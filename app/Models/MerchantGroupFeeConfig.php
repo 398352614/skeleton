@@ -3,7 +3,7 @@
 namespace App\Models;
 
 /**
- * 商户组费用配置 表
+ * 货主组费用配置 表
  * Class Employee
  * @package App\Models
  */

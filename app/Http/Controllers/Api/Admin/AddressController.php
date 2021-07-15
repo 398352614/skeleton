@@ -69,4 +69,51 @@ class AddressController extends BaseController
     {
         return $this->service->destroy($id);
     }
+
+    /**
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function excelExport()
+    {
+        return $this->service->export($this->data['id_list']);
+    }
+
+    /**
+     * 导入
+     * @return array
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function import()
+    {
+        return $this->service->import($this->data);
+    }
+
+    /**
+     * 获取模板
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function excelTemplate()
+    {
+        return $this->service->excelTemplate();
+    }
+
+    /**
+     * 导入检查
+     * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function importCheckByList()
+    {
+        return $this->service->importCheckByList($this->data);
+    }
+
+    /**
+     * 批量新增
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function storeByList()
+    {
+        return $this->service->createByList($this->data);
+    }
 }

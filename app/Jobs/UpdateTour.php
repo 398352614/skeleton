@@ -65,6 +65,7 @@ class UpdateTour implements ShouldQueue
 
     /**
      *
+     * @throws \Throwable
      */
     public function handle()
     {
@@ -72,12 +73,17 @@ class UpdateTour implements ShouldQueue
             $tour = DB::table('tour')->where('tour_no', $this->tour_no)->first();
             $company = CompanyTrait::getCompany($tour->company_id);
             request()->headers->set('X-Uuid', $company['company_code']);
+            /** @var  TourService $tourService */
             $tourService = FactoryInstanceTrait::getInstance(TourService::class);
             $tourService->updateBatchIndex(['tour_no' => $this->tour_no, 'batch_ids' => $this->batch_ids]);
         } catch (BusinessLogicException $e) {
-            Log::info('更新线路失败:' . $e->getMessage());
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'BusinessLogicException', ['message' => $e->getMessage()]);
         } catch (\Exception $e) {
-            Log::info('程序错误:' . $e->getMessage());
+            Log::channel('job')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'Exception', [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'message' => $e->getMessage()
+            ]);
         }
     }
 }

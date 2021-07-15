@@ -14,7 +14,7 @@ class AlterAdditionalPackageAddColumns extends Migration
     public function up()
     {
         Schema::table('additional_package', function (Blueprint $table) {
-            $table->string('tour_no',250)->default(null)->nullable()->after('merchant_id')->comment('取件线路编号');
+            $table->string('tour_no',250)->default(null)->nullable()->after('merchant_id')->comment('线路任务编号');
             $table->integer('line_id')->default(null)->nullable()->after('package_no')->comment('线路ID');
             $table->string('line_name',250)->default('')->nullable()->after('line_id')->comment('线路名称');
             $table->string('sticker_no',250)->default(null)->nullable()->after('execution_date')->comment('贴单号');

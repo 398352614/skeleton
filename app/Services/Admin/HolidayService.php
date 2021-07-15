@@ -111,7 +111,7 @@ class HolidayService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('删除失败');
         }
-        //删除商户-放假
+        //删除货主-放假
         $rowCount = $this->merchantHoliday->newQuery()->where('holiday_id', $id)->delete();
         if ($rowCount === false) {
             throw new BusinessLogicException('删除失败');
@@ -136,7 +136,7 @@ class HolidayService extends BaseService
     }
 
     /**
-     * 获取商户列表
+     * 获取货主列表
      * @return array|mixed
      */
     public function merchantIndex()
@@ -146,7 +146,7 @@ class HolidayService extends BaseService
     }
 
     /**
-     * 新增商户列表
+     * 新增货主列表
      * @param $id
      * @param $merchantIdList
      * @throws BusinessLogicException
@@ -160,20 +160,20 @@ class HolidayService extends BaseService
         $merchantIdList = explode_id_string($merchantIdList);
         $merchantHoliday = $this->merchantHoliday->newQuery()->whereIn('merchant_id', $merchantIdList)->first();
         if (!empty($merchantHoliday)) {
-            throw new BusinessLogicException('商户ID为[:id]已分配', 1000, ['id' => $merchantHoliday->merchant_id]);
+            throw new BusinessLogicException('货主ID为[:id]已分配', 1000, ['id' => $merchantHoliday->merchant_id]);
         }
         $merchantList = $this->getMerchantService()->getList(['id' => ['in', $merchantIdList]], ['id'], false)->keyBy('id')->toArray();
         $noMerchantId = Arr::first($merchantIdList, function ($merchantId) use ($merchantList) {
             return empty($merchantList[$merchantId]);
         });
         if (!empty($noMerchantId)) {
-            throw new BusinessLogicException('ID为[:id]的商户不存在', 1000, ['id' => $noMerchantId]);
+            throw new BusinessLogicException('ID为[:id]的货主不存在', 1000, ['id' => $noMerchantId]);
         }
         $merchantHolidayList = [];
         foreach ($merchantIdList as $merchantId) {
             $merchantHolidayList[] = ['merchant_id' => $merchantId, 'holiday_id' => $id];
         }
-        //新增商户列表
+        //新增货主列表
         $rowCount = $this->merchantHoliday->insertAll($merchantHolidayList);
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败');
@@ -181,7 +181,7 @@ class HolidayService extends BaseService
     }
 
     /**
-     * 删除商户
+     * 删除货主
      * @param $id
      * @param $merchantId
      * @throws BusinessLogicException

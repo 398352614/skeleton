@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户线路范围 服务
+ * 货主线路范围 服务
  * User: long
  * Date: 2020/8/13
  * Time: 13:46
@@ -21,7 +21,7 @@ class MerchantGroupLineRangeService extends BaseService
     }
 
     /**
-     * 获取商户线路服务范围
+     * 获取货主线路服务范围
      * @param $id
      * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
      * @throws BusinessLogicException
@@ -46,7 +46,7 @@ class MerchantGroupLineRangeService extends BaseService
             ];
             return $detailLineRangeList;
         })->toArray();
-        /*******************************************3.获取商户线路范围*************************************************/
+        /*******************************************3.获取货主线路范围*************************************************/
         $merchantGroupLineRangeList = parent::getList(['line_id' => $id], ['*'], false)->toArray();
         $merchantGroupIdList = array_unique(array_column($merchantGroupLineRangeList, 'merchant_group_id'));
         $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantGroupIdList]], ['id', 'name'], false)->toArray();
@@ -84,7 +84,7 @@ class MerchantGroupLineRangeService extends BaseService
         if (empty($line)) {
             throw new BusinessLogicException('数据不存在');
         }
-        //获取商户列表
+        //获取货主列表
         $merchantGroupIdList = array_unique(array_column($merchantGroupLineRangeList, 'merchant_group_id'));
         $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantGroupIdList]], ['id', 'name'], false)->toArray();
         $merchantGroupList = array_create_index($merchantGroupList, 'id');
@@ -116,12 +116,12 @@ class MerchantGroupLineRangeService extends BaseService
         })->toArray();
         $merchantGroupLineRangeList = array_values($merchantGroupLineRangeList);
 
-        //删除线路的商户线路范围
+        //删除线路的货主线路范围
         $rowCount = parent::delete(['line_id' => $id]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        //新增线路的商户线路范围
+        //新增线路的货主线路范围
         foreach ($merchantGroupLineRangeList as $merchantGroupLineRange) {
             $workdayList = explode(',', $merchantGroupLineRange['workday_list']);
             $newList = [];
@@ -148,12 +148,12 @@ class MerchantGroupLineRangeService extends BaseService
      */
     public function storeRangeList($lineId, $rangeList, $workdayList, $country)
     {
-        //删除商户线路范围-不在取派日期中的
+        //删除货主线路范围-不在取派日期中的
         $rowCount = parent::delete(['line_id' => $lineId, 'schedule' => ['not in', $workdayList]]);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        //删除商户线路范围-不在邮编范围内的
+        //删除货主线路范围-不在邮编范围内的
         $postCodeRangeList = [];
         foreach ($rangeList as $key => $range) {
             $postCodeRangeList[] = $range['post_code_start'] . '-' . $range['post_code_end'];
@@ -184,7 +184,7 @@ class MerchantGroupLineRangeService extends BaseService
                 throw new BusinessLogicException('操作失败，请重新操作');
             }
         }
-        //新增新的邮编的所有商户范围
+        //新增新的邮编的所有货主范围
         $merchantPostCodeRangeList = [];
         $merchantGroupLineRangeList = parent::getList(['line_id' => $lineId], ['post_code_start', 'post_code_end'], false, ['post_code_start', 'post_code_end']);
         foreach ($merchantGroupLineRangeList as $merchantGroupLineRange) {

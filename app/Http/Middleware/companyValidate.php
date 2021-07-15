@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 
 
 use App\Exceptions\BusinessLogicException;
+use App\Models\MapConfig;
 use App\Traits\CompanyTrait;
 use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
@@ -22,17 +23,17 @@ class companyValidate extends Middleware
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function handle($request, Closure $next,... $guards)
+    public function handle($request, Closure $next, ...$guards)
     {
-        if($guards[0] === 'admin'){
-            $info=str_replace('App\\Http\\Controllers\\Api\\Admin\\','',$request->route()->getActionName());
-            $this->companyValidate($info,$this->adminExcept);
-        }elseif ($guards[0] === 'merchant'){
-            $info=str_replace('App\\Http\\Controllers\\Api\\Merchant\\','',$request->route()->getActionName());
-            $this->companyValidate($info,$this->merchantExcept);
-        }elseif ($guards[0] === 'driver'){
-            $info=str_replace('App\\Http\\Controllers\\Api\\Driver\\','',$request->route()->getActionName());
-            $this->companyValidate($info,$this->driverExcept);
+        if ($guards[0] === 'admin') {
+            $info = str_replace('App\\Http\\Controllers\\Api\\Admin\\', '', $request->route()->getActionName());
+            $this->companyValidate($info, $this->adminExcept);
+        } elseif ($guards[0] === 'merchant') {
+            $info = str_replace('App\\Http\\Controllers\\Api\\Merchant\\', '', $request->route()->getActionName());
+            $this->companyValidate($info, $this->merchantExcept);
+        } elseif ($guards[0] === 'driver') {
+            $info = str_replace('App\\Http\\Controllers\\Api\\Driver\\', '', $request->route()->getActionName());
+            $this->companyValidate($info, $this->driverExcept);
         }
         return $next($request);
     }
@@ -43,16 +44,27 @@ class companyValidate extends Middleware
      * @param $except
      * @throws BusinessLogicException
      */
-    private function companyValidate($info,$except){
-        if(!in_array($info,$except)){
-            $arr=[
+    private function companyValidate($info, $except)
+    {
+        if (!in_array($info, $except)) {
+            $arr = [
                 'line_rule',
                 'address_template_id',
                 'country'
             ];
-            if(!Arr::has(self::getCompany(auth()->user()->company_id),$arr)){
-                throw new BusinessLogicException('请先联系管理员到配置管理，填写高级配置内容');
-            }
+//            if (!Arr::has(self::getCompany(auth()->user()->company_id), $arr)) {
+//                throw new BusinessLogicException('请先联系管理员到配置管理，填写高级配置内容');
+//            }
+//            $mapConfig = MapConfig::query()->where('company_id', auth()->user()->company_id)->first();
+//            if (empty($mapConfig) ||
+//                (
+//                    empty($mapConfig->toArray()['google_key']) &&
+//                    empty($mapConfig->toArray()['tencent_key']) &&
+//                    empty($mapConfig->toArray()['baidu_key'])
+//                )
+//            ) {
+//                throw new BusinessLogicException('请先联系管理员到配置管理，填写高级配置内容');
+//            }
         }
     }
 

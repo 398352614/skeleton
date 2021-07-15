@@ -1,6 +1,6 @@
 <?php
 /**
- * 商户 验证类
+ * 货主 验证类
  * Created by PhpStorm
  * User: long
  * Date: 2019/12/16
@@ -21,14 +21,14 @@ class MerchantValidate extends BaseValidate
 
     public $rules = [
         'type' => 'required|integer|in:1,2',
-        'name' => 'required|string|max:100',
+        'name' => 'required|string|max:50',
         'email' => 'required|string|max:50',
         'country' => 'nullable|string|max:50',
         'settlement_type' => 'required|integer|in:1,2,3',
         'merchant_group_id' => 'required|integer',
         'contacter' => 'required|string|max:50',
-        'phone' => 'required|string|max:20|regex:/^[0-9]([0-9-])*[0-9]$/',
-        'address' => 'required|string|max:250',
+        'phone' => 'required|string|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
+        'address' => 'required|string|max:50',
         'avatar' => 'required|string|max:250',
         'status' => 'required|integer|in:1,2',
         'additional_status' => 'required|integer|in:1,2',

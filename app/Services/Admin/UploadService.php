@@ -63,7 +63,7 @@ class UploadService
 
     /**
      * 获取唯一名称
-     * @param $file
+     * @param  UploadedFile  $file
      * @return string
      */
     private function makeRuleName(UploadedFile $file)
@@ -108,18 +108,27 @@ class UploadService
     public function imageUpload($params)
     {
         $subPath = $this->getImageDir($params['dir']);
-        $params['name'] = $this->makeRuleName($params['image']);
+
+        /** @var UploadedFile $image */
+        $image = $params['image'];
+
+        $params['name'] = $this->makeRuleName($image);
+
         try {
-            $rowCount = $this->imageDisk->putFileAs($subPath, $params['image'], $params['name']);
+            $rowCount = $this->imageDisk->putFileAs($subPath, $image, $params['name']);
         } catch (\Exception $ex) {
             throw new BusinessLogicException('图片上传失败，请重新操作');
         }
+
         if ($rowCount === false) {
             throw new BusinessLogicException('图片上传失败，请重新操作');
         }
+
         return [
             'name' => $params['name'],
-            'path' => $this->imageDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name'])
+            'path' => $this->imageDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name']),
+            'size' => $image->getSize(),
+            'type' => $image->getClientOriginalExtension()
         ];
     }
 
@@ -129,8 +138,7 @@ class UploadService
      */
     public function getImageDirList()
     {
-        $data = ConstTranslateTrait::formatList(ConstTranslateTrait::$adminImageDirList);
-        return $data;
+        return ConstTranslateTrait::formatList(ConstTranslateTrait::$adminImageDirList);
     }
 
 
@@ -143,27 +151,39 @@ class UploadService
     public function fileUpload($params)
     {
         $subPath = $this->getFileDir($params['dir']);
-        $params['name'] = $this->makeRuleName($params['file']);
+        /** @var UploadedFile $file */
+        $file = $params['file'];
+
+        $params['name'] = $this->makeRuleName($file);
+
         if ($params['dir'] === 'package') {
             $params['name'] = date('YmdHis') . '.apk';
         }
         if ($params['dir'] === 'template') {
             $params['name'] = 'order_import_template.xlsx';
         }
+        if ($params['dir'] === 'addressTemplate') {
+            $params['name'] = 'address_import_template.xlsx';
+        }
         if ($params['dir'] === 'line') {
             $params['name'] = 'line.csv';
         }
+
         try {
-            $rowCount = $this->fileDisk->putFileAs($subPath, $params['file'], $params['name']);
+            $rowCount = $this->fileDisk->putFileAs($subPath, $file, $params['name']);
         } catch (\Exception $ex) {
             throw new BusinessLogicException('文件上传失败，请重新操作');
         }
+
         if ($rowCount === false) {
             throw new BusinessLogicException('文件上传失败，请重新操作');
         }
+
         return [
             'name' => $params['name'],
-            'path' => $this->fileDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name'])
+            'path' => $this->fileDisk->url($subPath . DIRECTORY_SEPARATOR . $params['name']),
+            'size' => $file->getSize(),
+            'type' => $file->getClientOriginalExtension()
         ];
     }
 
@@ -173,8 +193,7 @@ class UploadService
      */
     public function getFileDirList()
     {
-        $data = ConstTranslateTrait::formatList(ConstTranslateTrait::$adminFileDirList);
-        return $data;
+        return ConstTranslateTrait::formatList(ConstTranslateTrait::$adminFileDirList);
     }
 
 }
