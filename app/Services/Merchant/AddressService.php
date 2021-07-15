@@ -421,10 +421,9 @@ class AddressService extends BaseService
         if (empty($address)) {
             $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
             foreach ($array as $k => $v) {
-                $address['place_' . $v] = $info[str_replace('place_', '', $v)];
+                $address[$v] = $info[str_replace('place_', '', $v)];
             }
         }
-        dd($address);
         $address = Arr::only($address, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code', 'place_province', 'place_district', 'place_lon', 'place_lat']);
         return $address;
     }
