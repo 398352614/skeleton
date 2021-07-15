@@ -95,7 +95,12 @@ abstract class ATourNotify2
         $orderList = Order::query()->whereIn('order_no', $orderNoList)->get(['order_no', 'out_order_no', DB::raw('type as order_type'), DB::raw('status as order_status')])->toArray();
         $orderList = array_create_index($orderList, 'order_no');
         //获取包裹
-        $packageList = TrackingOrderPackage::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get(['name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity', DB::raw('type as tracking_type'), DB::raw('status as tracking_status'), 'sticker_no', 'sticker_amount', DB::raw('IFNULL(delivery_amount,0.00) as delivery_amount'), DB::raw('IF(IFNULL(delivery_amount,0.00)=0.00,0,1) as delivery_count'), 'is_auth', 'auth_fullname', 'auth_birth_date'])->toArray();
+        $packageList = TrackingOrderPackage::query()->whereIn('tracking_order_no', $trackingOrderNoList)->get([
+            'name', 'order_no', 'express_first_no', 'express_second_no', 'out_order_no', 'expect_quantity', 'actual_quantity','sticker_no', 'sticker_amount', 'is_auth', 'auth_fullname', 'auth_birth_date',
+            DB::raw('type as tracking_type'),
+            DB::raw('status as tracking_status'),
+            DB::raw('IFNULL(delivery_amount,0.00) as delivery_amount'),
+            DB::raw('IF(IFNULL(delivery_amount,0.00)=0.00,0,1) as delivery_count')])->toArray();
         $dbPackageList = Package::query()->whereIn('express_first_no', array_column($packageList, 'express_first_no'))->get(['status', 'type', 'express_first_no'])->toArray();
         $dbPackageList = array_create_index($dbPackageList, 'express_first_no');
         foreach ($packageList as &$package) {

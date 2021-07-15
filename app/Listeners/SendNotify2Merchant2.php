@@ -5,8 +5,8 @@ namespace App\Listeners;
 use App\Events\Interfaces\ATourNotify;
 use App\Events\Interfaces\ATourNotify2;
 use App\Exceptions\BusinessLogicException;
-use App\Http\Resources\api\MerchantApi\NotifyResource;
-use App\Http\Resources\api\NotifyInfoResource;
+use App\Http\Resources\api\MerchantApi\OrderResource;
+use App\Http\Resources\api\MerchantApi\OrderInfoResource;
 use App\Models\MerchantApi;
 use App\Services\BaseConstService;
 use App\Services\CurlClient;
@@ -85,9 +85,9 @@ class SendNotify2Merchant2 implements ShouldQueue
             foreach ($dataList as $merchantId => $data) {
                 //根据推送模式组合数据,默认详细模式
                 if (!empty($merchantList[$merchantId]['push_mode']) && $merchantList[$merchantId]['push_mode'] == BaseConstService::SIMPLE_PUSH_MODE) {
-                    $data = NotifyResource::make($data)->toArray(request());
+                    $data = OrderResource::make($data)->toArray(request());
                 } else {
-                    $data = NotifyResource::make($data)->toArray(request());
+                    $data = OrderInfoResource::make($data)->toArray(request());
                 }
                 $postData = ['type' => $notifyType, 'data' => $data];
                 if (empty($merchantList[$merchantId]['url'])) continue;
