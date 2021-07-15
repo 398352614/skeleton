@@ -46,7 +46,6 @@ use Illuminate\Support\Facades\Route;
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiDescription 订单新增有两种模式，当类型为取件或者派件时，只需要填写取派日期execution_date和地址(以'place_'为前缀的字段)，当类型为取派件时，第二取派日期second_execution_date和第二地址(以'second_place_'为前缀的字段)也需要填写，第二用户地址为派件地址，另一个为取件。
- * @apiParam {String} order_no 订单号
  * @apiParam {String} execution_date [必填]取派日期。
  * @apiParam {String} second_execution_date 取派日期。若订单类型为取派件，则此项必填。
  * @apiParam {String} create_date 开单日期
@@ -132,6 +131,8 @@ use Illuminate\Support\Facades\Route;
  * @apiSuccess {String} data.id    ID
  * @apiSuccess {String} data.order_no    订单号
  * @apiSuccess {String} data.out_order_no    外部订单号
+ * @apiParamExample {json} Success-Response:
+ * {"execution_date":"2021-06-10","out_order_no":"","create_date":"2021-06-09","mask_code":"","out_user_id":"12036","nature":1,"settlement_type":0,"settlement_amount":"10.00","replace_amount":"0.00","second_place_fullname":"EVA","second_place_phone":"636985217","second_place_country":"","second_place_country_name":null,"second_place_post_code":"9746TN","second_place_house_number":"3-91","second_place_city":"","second_place_street":"","second_place_address":"9746TN 3-91","place_fullname":"test","place_phone":"123654789","place_country":"NL","place_country_name":"荷兰","place_province":"","place_post_code":"1183GT","place_house_number":"1","place_city":"","place_district":"","place_street":"","place_address":"1 1183GT","special_remark":"","remark":"","unique_code":"","package_list":[{"order_no":"SMAAAEL0001","execution_date":"2021-06-10","second_execution_date":"2021-06-10","expiration_date":null,"expiration_status":1,"type":3,"name":"","express_first_no":"10181","express_second_no":"","feature_logo":"","feature":1,"out_order_no":"","weight":"0.00","size":1,"actual_weight":"","expect_quantity":1,"actual_quantity":0,"sticker_no":"","settlement_amount":"0.00","count_settlement_amount":"0.00","sticker_amount":null,"delivery_amount":null,"remark":"","is_auth":2,"auth_fullname":"","auth_birth_date":null}],"material_list":[{"execution_date":"2021-06-10","name":"","code":"102","out_order_no":"","expect_quantity":1,"actual_quantity":0,"pack_type":1,"type":1,"weight":"1.00","size":"1.00","unit_price":"1.00","remark":""}],"amount_list":[{"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":0,"remark":""}]}
  * @apiSuccessExample {json} Success-Response:
  * {"code":200,"data":{"id":4207,"order_no":"SMAAAEM0001","out_order_no":"DEVV21904566802"},"msg":"successful"}
  */
@@ -375,6 +376,9 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiSuccess {String} data.out_order_no    外部订单号
  * @apiSuccessExample {json} Success-Response:
  * {"code":200,"data":[],"msg":"successful"}
+ * @apiParamExample {json} Success-Response:
+ * {"order_no":"TMS001","execution_date":"2021-06-10","out_order_no":"","create_date":"2021-06-09","mask_code":"","out_user_id":"12036","nature":1,"settlement_type":0,"settlement_amount":"10.00","replace_amount":"0.00","second_place_fullname":"EVA","second_place_phone":"636985217","second_place_country":"","second_place_country_name":null,"second_place_post_code":"9746TN","second_place_house_number":"3-91","second_place_city":"","second_place_street":"","second_place_address":"9746TN 3-91","place_fullname":"test","place_phone":"123654789","place_country":"NL","place_country_name":"荷兰","place_province":"","place_post_code":"1183GT","place_house_number":"1","place_city":"","place_district":"","place_street":"","place_address":"1 1183GT","special_remark":"","remark":"","unique_code":"","package_list":[{"order_no":"SMAAAEL0001","execution_date":"2021-06-10","second_execution_date":"2021-06-10","expiration_date":null,"expiration_status":1,"type":3,"name":"","express_first_no":"10181","express_second_no":"","feature_logo":"","feature":1,"out_order_no":"","weight":"0.00","size":1,"actual_weight":"","expect_quantity":1,"actual_quantity":0,"sticker_no":"","settlement_amount":"0.00","count_settlement_amount":"0.00","sticker_amount":null,"delivery_amount":null,"remark":"","is_auth":2,"auth_fullname":"","auth_birth_date":null}],"material_list":[{"execution_date":"2021-06-10","name":"","code":"102","out_order_no":"","expect_quantity":1,"actual_quantity":0,"pack_type":1,"type":1,"weight":"1.00","size":"1.00","unit_price":"1.00","remark":""}],"amount_list":[{"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":0,"remark":""}]}
+
  */
 
 /**
