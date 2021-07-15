@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
  * {
  *       "language": "en"
  *     }
- * @apiDescription 地址栏仅为请求类型，不是真实的推送地址。推送地址由第三方提供，所有的推送都会推送到该地址，但数据格式会由于类型不同而不同。对于请求返回，仅验证返回值中ret是否为1，1表示推送成功。如果返回值中没有ret或者不需要第三方推送记录，那么TMS将不会解析推送后的返回值。
+ * @apiDescription 地址栏仅为请求类型，不是真实的推送地址。推送地址由第三方提供，所有的推送都会推送到第三方提供的地址。目前仅提供简略模式，只推送状态不推送相关数据。对于请求返回，仅验证返回值中ret是否为1，1表示推送成功。如果返回值中没有ret或者不需要第三方推送记录，那么TMS将不会解析推送后的返回值。
  * @apiVersion 1.0.0
  * @apiParam {String} type 类型:签收assign-batch，出库out-warehouse
  * @apiParam {String} data
