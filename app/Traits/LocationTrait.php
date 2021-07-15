@@ -74,6 +74,7 @@ trait LocationTrait
             'postal_code' => $postCode,
             //'room'=>$roomNumber,
         ];
+        dd(self::getLocationDetailFirst($country, $houseNumber, $postCode));
         return ($country === 'NL') ? self::getLocationDetailFirst($country, $houseNumber, $postCode) : self::getLocationDetailThird($address);
     }
 
