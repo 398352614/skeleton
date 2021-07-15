@@ -125,7 +125,7 @@ trait LocationTrait
                 throw new BusinessLogicException('邮编或门牌号码不正确，请仔细检查输入或联系客服');
             }
             return [
-                'country' => $arrayBody['country'],
+                'country' => $country,
                 'province' => $arrayBody['province'],
                 'city' => $arrayBody['city'],
                 'district' => $arrayBody['municipality'],//相当于是区
