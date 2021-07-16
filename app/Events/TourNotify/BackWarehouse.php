@@ -20,9 +20,9 @@ class BackWarehouse extends ATourNotify
      * @param $batchList
      * @param $trackingOrderList
      */
-    public function __construct($tour, $batchList, $trackingOrderList)
+    public function __construct($tour)
     {
-        parent::__construct($tour, [], $batchList, $trackingOrderList);
+        parent::__construct($tour, [], [], []);
     }
 
 
