@@ -62,7 +62,7 @@ class MerchantApiGuard implements Guard
         if(empty($merchantApi)){
             throw new BusinessLogicException('用户不存在');
         }
-        if ($this->hasValidCredentials($merchantApi, $credentials) || in_array($merchantApi->company_id, explode(config('tms.white_list'), ','))) {
+        if ($this->hasValidCredentials($merchantApi, $credentials) || in_array($merchantApi->company_id, explode( ',',config('tms.white_list')))) {
             return $this->validCredentialSuccess($merchantApi);
         }
         return false;
