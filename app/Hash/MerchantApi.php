@@ -22,7 +22,6 @@ class MerchantApi extends AbstractHasher implements HasherContract
         $query = $this->dotParams($options, []);
         $str = join('&', $query);
         $sign = strtoupper(md5(urldecode($str . $value)));
-//        Log::info('sign;' . $sign);
         return $sign;
     }
 

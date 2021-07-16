@@ -11,21 +11,21 @@ use Illuminate\Support\Facades\Route;
  */
 
 /**
- * @api {post} /assign-batch 状态转变
- * @apiName 签收
+ * @api {post} /push 状态转变
+ * @apiName 状态转变
  * @apiGroup 02order
  * @apiHeader {string} language 语言cn-中文en-英文。
  * @apiHeaderExample {json} Header-Example:
  * {
  *       "language": "en"
  *     }
- * @apiDescription 地址栏仅为请求类型，不是真实的推送地址。推送地址由第三方提供，所有的推送都会推送到第三方提供的地址。目前仅提供简略模式，只推送状态不推送相关数据。对于请求返回，仅验证返回值中ret是否为1，1表示推送成功。如果返回值中没有ret或者不需要第三方推送记录，那么TMS将不会解析推送后的返回值。
+ * @apiDescription 地址栏不是真实的推送地址。推送地址由第三方提供，在红兔TMS管理员端-资料管理-API对接管理中可自行配置。目前仅提供简略模式，只推送状态不推送相关数据。对于请求返回，仅验证返回值中ret是否为1，1表示推送成功。如果返回值中没有ret或者不需要第三方推送记录，那么TMS将不会解析推送后的返回值。
  * @apiVersion 1.0.0
  * @apiParam {String} type 类型:签收assign-batch，出库out-warehouse
  * @apiParam {String} data
  * @apiParam {String} data.order_no 订单号
  * @apiParam {String} data.out_order_no 外部订单号
- * @apiParam {String} data.order_status 订单状态1-待受理2-运输中3-已完成4-已失败5回收站
+ * @apiParam {String} data.order_status 订单状态1-待受理2-运输中3-已完成4-失败5回收站
  * @apiParam {String} data.package_list 包裹列表
  * @apiParam {String} data.package_list.express_first_no 包裹号
  * @apiParam {String} data.package_list.out_order_no 外部包裹号

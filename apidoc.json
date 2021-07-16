@@ -1,6 +1,6 @@
 {
-    "url": "https://dev-tms.nle-tech.com/api",
-    "sampleUrl": "https://dev-tms.nle-tech.com/api",
+    "url": "https://api.rrtms.com/api",
+    "sampleUrl": "https://api.rrtms.com/api",
     "title": "红兔TMS 接口文档",
     "name": "红兔TMS API文档",
     "version": "1.0.0",

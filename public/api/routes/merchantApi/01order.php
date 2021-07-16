@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Route;
  * {
  *       "language": "en"
  *     }
- * @apiDescription 加密方式示例文件，暂时仅提供php版本，如有需要请联系技术人员。
+ * @apiDescription 加密方式示例文件，暂时仅提供php版本，如有需要请联系技术人员。所有第三方的请求都会进行验证，所有的推送也遵循该加密规则，建议对推送进行解密时同样进行验证。
  * @apiVersion 1.0.0
  * @apiParam {String} key[必填]  秘钥：从管理员端新增货主时，会自动生成一个key，在资料管理-API对接管理中，可查询对应key，用以确认货主身份。
  * @apiParam {String} sign[必填]  签名：sgin是以secret和data以一定加密方式形成的签名，每次请求都会验证key和sign以验证数据可靠。key或sign任一项不正确，请求都将被拒绝。从管理员端新增货主时，会自动生成一个secret，在资料管理-API对接管理中，可查询对应secret。sign的生成规则为：1，平铺data内的数组，生成一个字符串；2，将1的结果与secret连接起来；3，对2的结果其进行url编码；4，将3的结果全部转化为大写。
@@ -46,7 +46,6 @@ use Illuminate\Support\Facades\Route;
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiDescription 订单新增有两种模式，当类型为取件或者派件时，只需要填写取派日期execution_date和地址(以'place_'为前缀的字段)，当类型为取派件时，第二取派日期second_execution_date和第二地址(以'second_place_'为前缀的字段)也需要填写，第二用户地址为派件地址，另一个为取件。
- * @apiParam {String} order_no 订单号
  * @apiParam {String} execution_date [必填]取派日期。
  * @apiParam {String} second_execution_date 取派日期。若订单类型为取派件，则此项必填。
  * @apiParam {String} create_date 开单日期
@@ -63,6 +62,7 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {String} second_place_fullname 收件人姓名
  * @apiParam {String} second_place_phone 收件人电话
  * @apiParam {String} second_place_country 收件人国家
+ * @apiParam {String} second_place_province 收件人省份
  * @apiParam {String} second_place_country_name 收件人国家名称
  * @apiParam {String} second_place_post_code 收件人邮编
  * @apiParam {String} second_place_house_number 收件人门牌号
@@ -125,13 +125,15 @@ use Illuminate\Support\Facades\Route;
  * @apiParam {String} amount_list.actual_amount 实际金额
  * @apiParam {String} amount_list.type 运费类型
  * @apiParam {String} amount_list.remark 备注
+ * @apiParamExample {json} Param-Response::
+ * {"execution_date":"2021-06-10","out_order_no":"","create_date":"2021-06-09","mask_code":"","out_user_id":"12036","nature":1,"settlement_type":0,"settlement_amount":"10.00","replace_amount":"0.00","second_place_fullname":"EVA","second_place_phone":"636985217","second_place_country":"","second_place_country_name":null,"second_place_post_code":"9746TN","second_place_house_number":"3-91","second_place_city":"","second_place_street":"","second_place_address":"9746TN 3-91","place_fullname":"test","place_phone":"123654789","place_country":"NL","place_country_name":"荷兰","place_province":"","place_post_code":"1183GT","place_house_number":"1","place_city":"","place_district":"","place_street":"","place_address":"1 1183GT","special_remark":"","remark":"","unique_code":"","package_list":[{"order_no":"SMAAAEL0001","execution_date":"2021-06-10","second_execution_date":"2021-06-10","expiration_date":null,"expiration_status":1,"type":3,"name":"","express_first_no":"10181","express_second_no":"","feature_logo":"","feature":1,"out_order_no":"","weight":"0.00","size":1,"actual_weight":"","expect_quantity":1,"actual_quantity":0,"sticker_no":"","settlement_amount":"0.00","count_settlement_amount":"0.00","sticker_amount":null,"delivery_amount":null,"remark":"","is_auth":2,"auth_fullname":"","auth_birth_date":null}],"material_list":[{"execution_date":"2021-06-10","name":"","code":"102","out_order_no":"","expect_quantity":1,"actual_quantity":0,"pack_type":1,"type":1,"weight":"1.00","size":"1.00","unit_price":"1.00","remark":""}],"amount_list":[{"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":0,"remark":""}]}
  * @apiSuccess {Number} code    状态码，200：请求成功
  * @apiSuccess {String} msg   提示信息
  * @apiSuccess {Object} data    返回数据
  * @apiSuccess {String} data.id    ID
  * @apiSuccess {String} data.order_no    订单号
  * @apiSuccess {String} data.out_order_no    外部订单号
- * @apiSuccessExample {json} Success-Response:
+  * @apiSuccessExample {json} Success-Response:
  * {"code":200,"data":{"id":4207,"order_no":"SMAAAEM0001","out_order_no":"DEVV21904566802"},"msg":"successful"}
  */
 //新增
@@ -304,6 +306,7 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiParam {String} second_place_fullname 收件人姓名
  * @apiParam {String} second_place_phone 收件人电话
  * @apiParam {String} second_place_country 收件人国家
+ * @apiParam {String} place_province 收件人省份
  * @apiParam {String} second_place_post_code 收件人邮编
  * @apiParam {String} second_place_house_number 收件人门牌号
  * @apiParam {String} second_place_city 收件人城市
@@ -365,6 +368,8 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiParam {String} amount_list.actual_amount 实际金额
  * @apiParam {String} amount_list.type 运费类型
  * @apiParam {String} amount_list.remark 备注
+ * @apiParamExample {json} Param-Response::
+ * {"order_no":"TMS001","execution_date":"2021-06-10","out_order_no":"","create_date":"2021-06-09","mask_code":"","out_user_id":"12036","nature":1,"settlement_type":0,"settlement_amount":"10.00","replace_amount":"0.00","second_place_fullname":"EVA","second_place_phone":"636985217","second_place_country":"","second_place_country_name":null,"second_place_post_code":"9746TN","second_place_house_number":"3-91","second_place_city":"","second_place_street":"","second_place_address":"9746TN 3-91","place_fullname":"test","place_phone":"123654789","place_country":"NL","place_country_name":"荷兰","place_province":"","place_post_code":"1183GT","place_house_number":"1","place_city":"","place_district":"","place_street":"","place_address":"1 1183GT","special_remark":"","remark":"","unique_code":"","package_list":[{"order_no":"SMAAAEL0001","execution_date":"2021-06-10","second_execution_date":"2021-06-10","expiration_date":null,"expiration_status":1,"type":3,"name":"","express_first_no":"10181","express_second_no":"","feature_logo":"","feature":1,"out_order_no":"","weight":"0.00","size":1,"actual_weight":"","expect_quantity":1,"actual_quantity":0,"sticker_no":"","settlement_amount":"0.00","count_settlement_amount":"0.00","sticker_amount":null,"delivery_amount":null,"remark":"","is_auth":2,"auth_fullname":"","auth_birth_date":null}],"material_list":[{"execution_date":"2021-06-10","name":"","code":"102","out_order_no":"","expect_quantity":1,"actual_quantity":0,"pack_type":1,"type":1,"weight":"1.00","size":"1.00","unit_price":"1.00","remark":""}],"amount_list":[{"order_no":"SMAAAEL0001","expect_amount":"0.00","actual_amount":"0.00","type":0,"remark":""}]}
  * @apiSuccess {Number} code    状态码，200：请求成功
  * @apiSuccess {String} msg   提示信息
  * @apiSuccess {Object} data    返回数据
@@ -373,6 +378,7 @@ Route::post('/order-update-second-date', 'OrderController@updateSecondDate');//�
  * @apiSuccess {String} data.out_order_no    外部订单号
  * @apiSuccessExample {json} Success-Response:
  * {"code":200,"data":[],"msg":"successful"}
+
  */
 
 /**

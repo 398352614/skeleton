@@ -25,7 +25,7 @@ define({ "api": [
         }
       ]
     },
-    "description": "<p>加密方式示例文件，暂时仅提供php版本，如有需要请联系技术人员。</p>",
+    "description": "<p>加密方式示例文件，暂时仅提供php版本，如有需要请联系技术人员。所有第三方的请求都会进行验证，所有的推送也遵循该加密规则，建议对推送进行解密时同样进行验证。</p>",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -117,7 +117,7 @@ define({ "api": [
     "groupTitle": "全局说明",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant_api"
+        "url": "https://api.rrtms.com/api/merchant_api"
       }
     ]
   },
@@ -194,7 +194,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant_api/order-out-status"
+        "url": "https://api.rrtms.com/api/merchant_api/order-out-status"
       }
     ]
   },
@@ -271,7 +271,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant_api/cancel-all-order"
+        "url": "https://api.rrtms.com/api/merchant_api/cancel-all-order"
       }
     ]
   },
@@ -417,7 +417,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant_api/order-dispatch-info"
+        "url": "https://api.rrtms.com/api/merchant_api/order-dispatch-info"
       }
     ]
   },
@@ -480,7 +480,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant_api/end-order"
+        "url": "https://api.rrtms.com/api/merchant_api/end-order"
       }
     ]
   },
@@ -613,7 +613,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant_api/again-order"
+        "url": "https://api.rrtms.com/api/merchant_api/again-order"
       }
     ]
   },
@@ -773,7 +773,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant_api/location"
+        "url": "https://api.rrtms.com/api/merchant_api/location"
       }
     ]
   },
@@ -904,6 +904,13 @@ define({ "api": [
             "group": "Parameter",
             "type": "String",
             "optional": false,
+            "field": "place_province",
+            "description": "<p>收件人省份</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
             "field": "second_place_post_code",
             "description": "<p>收件人邮编</p>"
           },
@@ -955,13 +962,6 @@ define({ "api": [
             "optional": false,
             "field": "place_country",
             "description": "<p>发件人国家</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "place_province",
-            "description": "<p>发件人省份</p>"
           },
           {
             "group": "Parameter",
@@ -1328,7 +1328,14 @@ define({ "api": [
             "description": "<p>备注</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Param-Response::",
+          "content": "{\"order_no\":\"TMS001\",\"execution_date\":\"2021-06-10\",\"out_order_no\":\"\",\"create_date\":\"2021-06-09\",\"mask_code\":\"\",\"out_user_id\":\"12036\",\"nature\":1,\"settlement_type\":0,\"settlement_amount\":\"10.00\",\"replace_amount\":\"0.00\",\"second_place_fullname\":\"EVA\",\"second_place_phone\":\"636985217\",\"second_place_country\":\"\",\"second_place_country_name\":null,\"second_place_post_code\":\"9746TN\",\"second_place_house_number\":\"3-91\",\"second_place_city\":\"\",\"second_place_street\":\"\",\"second_place_address\":\"9746TN 3-91\",\"place_fullname\":\"test\",\"place_phone\":\"123654789\",\"place_country\":\"NL\",\"place_country_name\":\"荷兰\",\"place_province\":\"\",\"place_post_code\":\"1183GT\",\"place_house_number\":\"1\",\"place_city\":\"\",\"place_district\":\"\",\"place_street\":\"\",\"place_address\":\"1 1183GT\",\"special_remark\":\"\",\"remark\":\"\",\"unique_code\":\"\",\"package_list\":[{\"order_no\":\"SMAAAEL0001\",\"execution_date\":\"2021-06-10\",\"second_execution_date\":\"2021-06-10\",\"expiration_date\":null,\"expiration_status\":1,\"type\":3,\"name\":\"\",\"express_first_no\":\"10181\",\"express_second_no\":\"\",\"feature_logo\":\"\",\"feature\":1,\"out_order_no\":\"\",\"weight\":\"0.00\",\"size\":1,\"actual_weight\":\"\",\"expect_quantity\":1,\"actual_quantity\":0,\"sticker_no\":\"\",\"settlement_amount\":\"0.00\",\"count_settlement_amount\":\"0.00\",\"sticker_amount\":null,\"delivery_amount\":null,\"remark\":\"\",\"is_auth\":2,\"auth_fullname\":\"\",\"auth_birth_date\":null}],\"material_list\":[{\"execution_date\":\"2021-06-10\",\"name\":\"\",\"code\":\"102\",\"out_order_no\":\"\",\"expect_quantity\":1,\"actual_quantity\":0,\"pack_type\":1,\"type\":1,\"weight\":\"1.00\",\"size\":\"1.00\",\"unit_price\":\"1.00\",\"remark\":\"\"}],\"amount_list\":[{\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":0,\"remark\":\"\"}]}",
+          "type": "json"
+        }
+      ]
     },
     "success": {
       "fields": {
@@ -1389,7 +1396,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant_api/order-update"
+        "url": "https://api.rrtms.com/api/merchant_api/order-update"
       }
     ]
   },
@@ -1404,13 +1411,6 @@ define({ "api": [
     "parameter": {
       "fields": {
         "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "optional": false,
-            "field": "order_no",
-            "description": "<p>订单号</p>"
-          },
           {
             "group": "Parameter",
             "type": "String",
@@ -1522,6 +1522,13 @@ define({ "api": [
             "optional": false,
             "field": "second_place_country",
             "description": "<p>收件人国家</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "second_place_province",
+            "description": "<p>收件人省份</p>"
           },
           {
             "group": "Parameter",
@@ -1958,7 +1965,14 @@ define({ "api": [
             "description": "<p>备注</p>"
           }
         ]
-      }
+      },
+      "examples": [
+        {
+          "title": "Param-Response::",
+          "content": "{\"execution_date\":\"2021-06-10\",\"out_order_no\":\"\",\"create_date\":\"2021-06-09\",\"mask_code\":\"\",\"out_user_id\":\"12036\",\"nature\":1,\"settlement_type\":0,\"settlement_amount\":\"10.00\",\"replace_amount\":\"0.00\",\"second_place_fullname\":\"EVA\",\"second_place_phone\":\"636985217\",\"second_place_country\":\"\",\"second_place_country_name\":null,\"second_place_post_code\":\"9746TN\",\"second_place_house_number\":\"3-91\",\"second_place_city\":\"\",\"second_place_street\":\"\",\"second_place_address\":\"9746TN 3-91\",\"place_fullname\":\"test\",\"place_phone\":\"123654789\",\"place_country\":\"NL\",\"place_country_name\":\"荷兰\",\"place_province\":\"\",\"place_post_code\":\"1183GT\",\"place_house_number\":\"1\",\"place_city\":\"\",\"place_district\":\"\",\"place_street\":\"\",\"place_address\":\"1 1183GT\",\"special_remark\":\"\",\"remark\":\"\",\"unique_code\":\"\",\"package_list\":[{\"order_no\":\"SMAAAEL0001\",\"execution_date\":\"2021-06-10\",\"second_execution_date\":\"2021-06-10\",\"expiration_date\":null,\"expiration_status\":1,\"type\":3,\"name\":\"\",\"express_first_no\":\"10181\",\"express_second_no\":\"\",\"feature_logo\":\"\",\"feature\":1,\"out_order_no\":\"\",\"weight\":\"0.00\",\"size\":1,\"actual_weight\":\"\",\"expect_quantity\":1,\"actual_quantity\":0,\"sticker_no\":\"\",\"settlement_amount\":\"0.00\",\"count_settlement_amount\":\"0.00\",\"sticker_amount\":null,\"delivery_amount\":null,\"remark\":\"\",\"is_auth\":2,\"auth_fullname\":\"\",\"auth_birth_date\":null}],\"material_list\":[{\"execution_date\":\"2021-06-10\",\"name\":\"\",\"code\":\"102\",\"out_order_no\":\"\",\"expect_quantity\":1,\"actual_quantity\":0,\"pack_type\":1,\"type\":1,\"weight\":\"1.00\",\"size\":\"1.00\",\"unit_price\":\"1.00\",\"remark\":\"\"}],\"amount_list\":[{\"order_no\":\"SMAAAEL0001\",\"expect_amount\":\"0.00\",\"actual_amount\":\"0.00\",\"type\":0,\"remark\":\"\"}]}",
+          "type": "json"
+        }
+      ]
     },
     "success": {
       "fields": {
@@ -2019,7 +2033,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant_api/order"
+        "url": "https://api.rrtms.com/api/merchant_api/order"
       }
     ]
   },
@@ -2110,15 +2124,15 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/merchant_api/post-code-date-list"
+        "url": "https://api.rrtms.com/api/merchant_api/post-code-date-list"
       }
     ]
   },
   {
     "type": "post",
-    "url": "/assign-batch",
+    "url": "/push",
     "title": "状态转变",
-    "name": "签收",
+    "name": "状态转变",
     "group": "02order",
     "header": {
       "fields": {
@@ -2140,7 +2154,7 @@ define({ "api": [
         }
       ]
     },
-    "description": "<p>地址栏仅为请求类型，不是真实的推送地址。推送地址由第三方提供，所有的推送都会推送到第三方提供的地址。目前仅提供简略模式，只推送状态不推送相关数据。对于请求返回，仅验证返回值中ret是否为1，1表示推送成功。如果返回值中没有ret或者不需要第三方推送记录，那么TMS将不会解析推送后的返回值。</p>",
+    "description": "<p>地址栏不是真实的推送地址。推送地址由第三方提供，在红兔TMS管理员端-资料管理-API对接管理中可自行配置。目前仅提供简略模式，只推送状态不推送相关数据。对于请求返回，仅验证返回值中ret是否为1，1表示推送成功。如果返回值中没有ret或者不需要第三方推送记录，那么TMS将不会解析推送后的返回值。</p>",
     "version": "1.0.0",
     "parameter": {
       "fields": {
@@ -2178,7 +2192,7 @@ define({ "api": [
             "type": "String",
             "optional": false,
             "field": "data.order_status",
-            "description": "<p>订单状态1-待受理2-运输中3-已完成4-已失败5回收站</p>"
+            "description": "<p>订单状态1-待受理2-运输中3-已完成4-失败5回收站</p>"
           },
           {
             "group": "Parameter",
@@ -2249,7 +2263,7 @@ define({ "api": [
     "groupTitle": "推送通知",
     "sampleRequest": [
       {
-        "url": "https://dev-tms.nle-tech.com/api/assign-batch"
+        "url": "https://api.rrtms.com/api/push"
       }
     ]
   }
