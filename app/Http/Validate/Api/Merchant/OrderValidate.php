@@ -132,7 +132,6 @@ class OrderValidate extends BaseValidate
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark']
     ];
     public $message = [
-        'settlement_amount.required_if' => '当结算方式为到付时,:attribute字段必填',
     ];
 }
 
