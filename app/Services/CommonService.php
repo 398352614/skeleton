@@ -33,6 +33,9 @@ class CommonService
         if($params['post_code'] > 9999){
             $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }
+        if ($params['country'] == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['post_code'])) {
+            $params['country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+        }
         return LocationTrait::getLocation($params['country'], $params['city'] ?? '', $params['street'] ?? '', $params['house_number'], $params['post_code']);
     }
 
