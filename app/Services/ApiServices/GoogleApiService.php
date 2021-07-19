@@ -81,7 +81,7 @@ class GoogleApiService
 
         app('log')->info('初始化线路传送给 api 端的参数为:', $params);
 
-        $res = $this->client->postJson($this->url . $api . $this->makeSign(now()->timestamp - 7 * 3600), $params);
+        $res = $this->client->postJson($this->url . $api . $this->makeSign(now()->timestamp - 6 * 3600), $params);
         FactoryInstanceTrait::getInstance(ApiTimesService::class)->timesCount('api_distance_times', $tour->company_id);
         return $res;
     }
