@@ -90,8 +90,7 @@ class GoogleApiDistanceService
             $distance = $this->getDistance($this->url, $from, $to);
         } catch (\Exception $e) {
             Log::info('报错' . $e->getMessage());
-            throw new BusinessLogicException('可能由于网络原因，无法估算距离');
         }
-        return $distance;
+//        return $distance ?? 0;
     }
 }

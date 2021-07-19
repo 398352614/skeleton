@@ -603,9 +603,16 @@ class OrderService extends BaseService
         $params = array_merge(array_fill_keys($fields, ''), $params);
         //获取经纬度
         if (empty($params['place_lat']) || empty($params['place_lon'])) {
-            $location = LocationTrait::getLocation($params['place_country'], $params['place_city'], $params['place_street'], $params['place_house_number'], $params['place_post_code']);
-            $params['place_lat'] = $location['lat'];
-            $params['place_lon'] = $location['lon'];
+            $location = $this->getAddressService()->getInfo(['place_country' => $params['place_country'], 'place_city' => $params['place_city'], 'place_street' => $params['place_street'], 'place_house_number' => $params['place_house_number'], 'place_post_code' => $params['place_post_code']], ['*'], false);
+            dd($location);
+            if (empty($location)) {
+                $location = LocationTrait::getLocation($params['place_country'], $params['place_city'], $params['place_street'], $params['place_house_number'], $params['place_post_code']);
+                $params['place_lat'] = $location['lat'];
+                $params['place_lon'] = $location['lon'];
+            }else{
+                $params['place_lat'] = $location['place_lat'];
+                $params['place_lon'] = $location['place_lon'];
+            }
         }
         if (empty($params['place_lat']) || empty($params['place_lon'])) {
             throw new BusinessLogicException('地址不正确，请重新选择地址');
