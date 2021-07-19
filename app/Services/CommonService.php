@@ -18,6 +18,7 @@ use App\Traits\LocationTrait;
 use App\Traits\PostcodeTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 
 class CommonService
 {
@@ -37,8 +38,8 @@ class CommonService
         if ($params['country'] == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['post_code'])) {
             $params['country'] = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        $address = Address::query()->where('place_country', $params['country'])->where('place_house_number',$params['house_number'])->where('place_post_code', $params['post_code'])->first();
-        if (!empty($address)) {
+        $address = DB::table('address')->where('place_country', $params['country'])->where('place_house_number', $params['house_number'])->where('place_post_code', $params['post_code'])->first();
+        if (!empty($address) && CompanyTrait::getCountry() == BaseConstService::POSTCODE_COUNTRY_NL) {
             $address = collect($address)->toArray();
             $data = [
                 'country' => $address['place_country'],
