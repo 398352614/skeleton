@@ -37,7 +37,7 @@ class CommonService
         if ($params['country'] == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['post_code'])) {
             $params['country'] = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        $address = Address::query()->where('place_country', $params['country'])->where('place_post_code', $params['post_code'])->first();
+        $address = Address::query()->where('place_country', $params['country'])->where('place_house_number',$params['house_number'])->where('place_post_code', $params['post_code'])->first();
         if (!empty($address)) {
             $address = collect($address)->toArray();
             $data = [
