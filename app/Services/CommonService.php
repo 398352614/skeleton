@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use App\Exceptions\BusinessLogicException;
+use App\Models\Address;
 use App\Models\Country;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
@@ -30,13 +31,27 @@ class CommonService
     public function getLocation($params)
     {
         empty($params['country']) && $params['country'] = CompanyTrait::getCountry();
-        if($params['post_code'] > 9999){
+        if ($params['post_code'] > 9999) {
             $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
         }
         if ($params['country'] == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['post_code'])) {
             $params['country'] = BaseConstService::POSTCODE_COUNTRY_BE;
         }
-        return LocationTrait::getLocation($params['country'], $params['city'] ?? '', $params['street'] ?? '', $params['house_number'], $params['post_code']);
+        $address = Address::query()->where('place_country', $params['country'])->where('place_post_code', $params['post_code'])->first();
+        if (!empty($address)) {
+            $address = collect($address)->toArray();
+            $data = [
+                'country' => $address['place_country'],
+                'city' => $address['place_city'],
+                'street' => $address['place_street'],
+                'house_number' => $address['place_house_number'],
+                'lat' => $address['place_lat'],
+                'lon' => $address['place_lon'],
+            ];
+        } else {
+            $data = LocationTrait::getLocation($params['country'], $params['city'] ?? '', $params['street'] ?? '', $params['house_number'], $params['post_code']);
+        }
+        return $data;
     }
 
     /**
@@ -94,7 +109,7 @@ class CommonService
 
     public function dictionary()
     {
-        $data=[];
+        $data = [];
         $reflection = new \ReflectionClass(ConstTranslateTrait::class);
         $result = collect($reflection->getProperties())->pluck('name')->toArray();
         foreach ($result as $k => $v) {
