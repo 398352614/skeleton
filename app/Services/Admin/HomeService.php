@@ -221,7 +221,7 @@ class HomeService extends BaseService
         }
         if (empty($params['end_date'])) {
             throw new BusinessLogicException('请选择结束时间');
-        }
+        }h
         $orderList = parent::getList([
             'merchant_id' => $merchantId,
             'status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]],
