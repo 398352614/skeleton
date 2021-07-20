@@ -20,6 +20,7 @@ class FeeResource extends JsonResource
             'code' => $this->code,
             'amount' => $this->amount,
             'level' => $this->level,
+            'level_name' => $this->level_name,
             'status' => $this->status,
             'status_name' => $this->status_name,
             'is_valuable'=>$this->is_valuable,
