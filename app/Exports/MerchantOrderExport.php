@@ -91,8 +91,8 @@ class MerchantOrderExport implements FromArray, WithTitle, WithEvents, WithStric
                 $cell = 'A1:' . $endColumn . $endRow;
 
                 //设置行高
-                $event->sheet->getDelegate()->getRowDimension(1)->setRowHeight(32);
-                $event->sheet->getDelegate()->getRowDimension(2)->setRowHeight(24);
+                $event->sheet->getDelegate()->getRowDimension(1)->setRowHeight(48);
+                $event->sheet->getDelegate()->getRowDimension(2)->setRowHeight(48);
                 //设置单元格内容自动转行
                 $event->sheet->getDelegate()->getStyle($cell)->getAlignment()->setWrapText(TRUE);
                 // 设置单元格内容水平靠右
