@@ -180,7 +180,7 @@ return [
             "type" => "*Type",
             'merchant' => "*Merchant",
             'out_user_id' => "Out user id",
-            'out_order_no' => "Out order no",
+            'out_order_no' => "Out order number",
 
             "place_fullname" => "*Fullname",
             "place_phone" => "*Phone",
@@ -337,7 +337,7 @@ return [
         [
             "type" => "*Type",
             'out_user_id' => "Out user id",
-            'out_order_no' => "Out order no",
+            'out_order_no' => "Out order number",
             "special_remark" => "Special remark",
 
             "place_fullname" => "*Fullname",
