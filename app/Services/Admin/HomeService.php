@@ -196,6 +196,7 @@ class HomeService extends BaseService
             $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
             $day = $day->addDay();
         }
+        Log::info(4);
         $data[] = [
             'merchant_name' => '总计',
             'graph' => array_values($periodInfo),
@@ -214,6 +215,7 @@ class HomeService extends BaseService
      */
     public function periodCountByMerchant($params, $merchantId)
     {
+        dd($params);
         $periodInfo = [];
         if (empty($params['begin_date'])) {
             throw new BusinessLogicException('请选择开始时间');
@@ -221,13 +223,12 @@ class HomeService extends BaseService
         if (empty($params['end_date'])) {
             throw new BusinessLogicException('请选择结束时间');
         }
-        $orderList = collect(parent::getList(['merchant_id' => $merchantId, 'status' => ['in', [ BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_3]]], ['execution_date'], false));
-        dd(1);
+        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['in', [ BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_3]]], ['execution_date'], false);
         $day = Carbon::create($params['begin_date']);
         $endDay = Carbon::create($params['end_date']);
         for ($i = 1; $day->lte($endDay); $i++) {
             $date = $day->format('Y-m-d');
-            $orderCount = $orderList->where('execution_date', $date)->count();
+            $orderCount = collect($orderList)->where('execution_date', $date)->count();
             $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
             $day = $day->addDay();
         }
