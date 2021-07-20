@@ -747,7 +747,9 @@ class OrderService extends BaseService
                 $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
             }
         }
-
+        if (empty($params['package_list']) && empty($params['material_list'])) {
+            throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
+        }
         //验证包裹列表
         if (!empty($params['package_list'])) {
             $this->getPackageService()->check($params['package_list'], $orderNo);
