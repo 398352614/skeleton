@@ -183,6 +183,7 @@ class HomeService extends BaseService
         $data = [];
         $periodInfo = [];
         $merchantList = $this->getMerchantService()->getList([],['name'],false);
+        dd(2);
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
             Log::info(2);
