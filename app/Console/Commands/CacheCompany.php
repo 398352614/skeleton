@@ -61,7 +61,7 @@ class CacheCompany extends Command
                 $country = $country->toArray();
             }
             $company = DB::table('company')->where('id', $companyId)->first();
-
+            $company=collect($company)->toArray();
             $companyConfig = CompanyConfig::query()->where('company_id', $companyId)->first()->toArray();
             if (!empty($companyConfig['weight_unit'])) {
                 $companyConfig['weight_unit_symbol'] = ConstTranslateTrait::weightUnitTypeSymbol($companyConfig['weight_unit']);
