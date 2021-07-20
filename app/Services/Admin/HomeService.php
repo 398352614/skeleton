@@ -183,12 +183,12 @@ class HomeService extends BaseService
         $data = [];
         $periodInfo = [];
         $merchantList = $this->getMerchantService()->getList([],['name'],false);
-        dd(2);
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
             Log::info(2);
             $data[$k]['graph'] = $this->periodCountByMerchant($params, $v['id']);
         }
+        dd(2);
         Log::info(3);
         $orderList = parent::getList(['status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]]], ['execution_date'], false);
         //总计
