@@ -227,7 +227,6 @@ class HomeService extends BaseService
             'status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]],
             'execution_date' => ['between', [$params['begin_date'], $params['end_date']]],
         ], ['execution_date'], false);
-        dd($orderList);
         $day = Carbon::create($params['begin_date']);
         $endDay = Carbon::create($params['end_date']);
         for ($i = 1; $day->lte($endDay); $i++) {
