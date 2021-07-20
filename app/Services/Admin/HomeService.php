@@ -232,10 +232,10 @@ class HomeService extends BaseService
         for ($i = 1; $day->lte($endDay); $i++) {
             $date = $day->format('Y-m-d');
             $orderCount = count($orderList[$date]);
-            dd($orderList,$orderCount);
             $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
             $day = $day->addDay();
         }
+        dd($periodInfo);
         return array_values($periodInfo);
     }
 
