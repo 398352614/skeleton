@@ -179,17 +179,13 @@ class HomeService extends BaseService
      */
     public function periodCount($params)
     {
-        Log::info(1);
         $data = [];
         $periodInfo = [];
         $merchantList = $this->getMerchantService()->getList([],['name'],false);
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
-            Log::info(2);
             $data[$k]['graph'] = $this->periodCountByMerchant($params, $v['id']);
         }
-        dd(2);
-        Log::info(3);
         $orderList = parent::getList(['status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]]], ['execution_date'], false);
         //总计
         $day = Carbon::create($params['begin_date']);
@@ -200,7 +196,6 @@ class HomeService extends BaseService
             $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
             $day = $day->addDay();
         }
-        Log::info(4);
         $data[] = [
             'merchant_name' => '总计',
             'graph' => array_values($periodInfo),
@@ -226,12 +221,13 @@ class HomeService extends BaseService
         if (empty($params['end_date'])) {
             throw new BusinessLogicException('请选择结束时间');
         }
-        $orderList = parent::getList(['merchant_id' => $merchantId, 'status' => ['in', [ BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_3]]], ['execution_date'], false);
+        $orderList = collect(parent::getList(['merchant_id' => $merchantId, 'status' => ['in', [ BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2,BaseConstService::ORDER_STATUS_3]]], ['execution_date'], false));
+        dd(1);
         $day = Carbon::create($params['begin_date']);
         $endDay = Carbon::create($params['end_date']);
         for ($i = 1; $day->lte($endDay); $i++) {
             $date = $day->format('Y-m-d');
-            $orderCount = collect($orderList)->where('execution_date', $date)->count();
+            $orderCount = $orderList->where('execution_date', $date)->count();
             $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
             $day = $day->addDay();
         }
