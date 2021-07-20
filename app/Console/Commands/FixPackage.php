@@ -51,10 +51,10 @@ class FixPackage extends Command
             $packageList = DB::table('package')->get()->toArray();
             $this->info(1);
 
-            $trackingOrderList = DB::table('tracking_order')->whereIn('order_no', collect($packageList)->pluck('order_no')->toArray())->get();
+            $trackingOrderList = DB::table('tracking_order')->get();
         $this->info(2);
 
-        $trackingPackageList = DB::table('tracking_package')->whereIn('order_no', collect($packageList)->pluck('order_no')->toArray())->get();
+        $trackingPackageList = DB::table('tracking_package')->get();
         $this->info(3);
 
         $count = count($packageList);
