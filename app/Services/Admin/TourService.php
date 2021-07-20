@@ -634,6 +634,9 @@ class TourService extends BaseService
      */
     public function getNextBatchAndUpdateIndex($batchIds): Batch
     {
+        if(count($batchIds) ==1){
+            return Batch::where('id', collect($batchIds)->first())->first();
+        }
         $first = false;
         foreach ($batchIds as $key => $batchId) {
             $tempbatch = Batch::where('id', $batchId)->first();
