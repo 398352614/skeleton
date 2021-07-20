@@ -226,13 +226,13 @@ class HomeService extends BaseService
             'merchant_id' => $merchantId,
             'status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]],
             'execution_date' => ['between', [$params['begin_date'], $params['end_date']]],
-        ], ['execution_date'], false);
-        dd($orderList->toArray());
+        ], ['execution_date'], false)->groupBy('execution_date');
         $day = Carbon::create($params['begin_date']);
         $endDay = Carbon::create($params['end_date']);
         for ($i = 1; $day->lte($endDay); $i++) {
             $date = $day->format('Y-m-d');
-            $orderCount = collect($orderList)->where('execution_date', $date)->count();
+            $orderCount = count($orderList[$date]);
+            dd($orderList,$orderCount);
             $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
             $day = $day->addDay();
         }
