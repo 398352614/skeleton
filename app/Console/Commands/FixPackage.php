@@ -52,11 +52,13 @@ class FixPackage extends Command
 //                        $packageList->where('express_first_no',$v->express_first_no)->first()->order_no]);
 //            }
             $packageList = DB::table('package')->get()->toArray();
+            $trackingOrderList = DB::table('tracking_order')->whereIn('order_no', collect($packageList)->pluck('order_no')->toArray())->get();
+            $trackingPackageList=DB::table('tracking_package')->whereIn('order_no', collect($packageList)->pluck('order_no')->toArray())->get();
             $count = count($packageList);
             foreach ($packageList as $k => $v) {
                 if ($v->stage == null || $this->option('full') == 1) {
-                    $trackingOrder = DB::table('tracking_order')->where('order_no', $v->order_no)->orderByDesc('id')->first();
-                    $trackingPackage = DB::table('tracking_package')->where('order_no', $v->order_no)->orderByDesc('id')->first();
+                    $trackingOrder = $trackingOrderList->where('order_no',$v->order_no)->sortByDesc('id')->first();
+                    $trackingPackage = $trackingPackageList->where('order_no',$v->order_no)->sortByDesc('id')->first();
                     if (empty($trackingPackage) && !empty($trackingOrder)) {
                         //大条件：只有运单
                         if ($trackingOrder->type == BaseConstService::TRACKING_PACKAGE_TYPE_1) {
