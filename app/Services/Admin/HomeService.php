@@ -235,7 +235,6 @@ class HomeService extends BaseService
             $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
             $day = $day->addDay();
         }
-        dd($periodInfo);
         return array_values($periodInfo);
     }
 
