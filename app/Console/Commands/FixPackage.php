@@ -48,21 +48,18 @@ class FixPackage extends Command
 //                    ->update(['order_no'=>
 //                        $packageList->where('express_first_no',$v->express_first_no)->first()->order_no]);
 //            }
-            $packageList = DB::table('package')->get()->toArray();
-            $this->info(1);
-
-            $trackingOrderList = DB::table('tracking_order')->get();
-        $this->info(2);
-
+        $packageList = DB::table('package')->get()->toArray();
+        $trackingOrderList = DB::table('tracking_order')->get();
         $trackingPackageList = DB::table('tracking_package')->get();
-        $this->info(3);
-
+        $orderList = DB::table('order')->get();
         $count = count($packageList);
-            $this->info($count);
-            foreach ($packageList as $k => $v) {
-                if ($v->stage == null || $this->option('full') == 1) {
-                    $trackingOrder = $trackingOrderList->where('order_no', $v->order_no)->sortByDesc('id')->first();
-                    $trackingPackage = $trackingPackageList->where('order_no', $v->order_no)->sortByDesc('id')->first();
+        $this->info($count);
+        foreach ($packageList as $k => $v) {
+            if ($v->stage == null || $this->option('full') == 1) {
+                $order = $orderList->where('order_no', $v->order_no)->sortByDesc('id')->first();
+                $trackingOrder = $trackingOrderList->where('order_no', $v->order_no)->sortByDesc('id')->first();
+                $trackingPackage = $trackingPackageList->where('order_no', $v->order_no)->sortByDesc('id')->first();
+                if ($order['status'] !== BaseConstService::ORDER_STATUS_5) {
                     if (empty($trackingPackage) && !empty($trackingOrder)) {
                         //大条件：只有运单
                         if ($trackingOrder->type == BaseConstService::TRACKING_PACKAGE_TYPE_1) {
@@ -89,11 +86,12 @@ class FixPackage extends Command
                             DB::table('package')->where('express_first_no', $v->express_first_no)->update(['stage' => BaseConstService::PACKAGE_STAGE_2]);
                             $this->info('fix:' . ($k + 1) . '/' . $count);
                         }
-                    } else {
-                        $this->info('fix fail:' . $v->express_first_no . '包裹阶段空');
                     }
+                } else {
+                    $this->info('fix fail:' . $v->express_first_no . '包裹阶段空');
                 }
             }
+        }
 //        } catch (\Exception $e) {
 //            $this->info('fix fail:' . $e);
 //        }

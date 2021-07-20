@@ -28,6 +28,7 @@ class ReportService extends BaseService
         'driver_name' => ['like', 'driver_name'],
         'driver_id' => ['=', 'driver_id'],
         'tour_no' => ['like', 'tour_no'],
+        'car_no' => ['like', 'car_no'],
         'status' => ['=', 'status'],
         'line_name' => ['like', 'line_name'],
         'line_name,driver_name' => ['like', 'key_word'],
