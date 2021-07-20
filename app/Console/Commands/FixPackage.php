@@ -59,7 +59,7 @@ class FixPackage extends Command
                 $order = $orderList->where('order_no', $v->order_no)->sortByDesc('id')->first();
                 $trackingOrder = $trackingOrderList->where('order_no', $v->order_no)->sortByDesc('id')->first();
                 $trackingPackage = $trackingPackageList->where('order_no', $v->order_no)->sortByDesc('id')->first();
-                if ($order['status'] !== BaseConstService::ORDER_STATUS_5) {
+                if ($order->status !== BaseConstService::ORDER_STATUS_5) {
                     if (empty($trackingPackage) && !empty($trackingOrder)) {
                         //大条件：只有运单
                         if ($trackingOrder->type == BaseConstService::TRACKING_PACKAGE_TYPE_1) {
