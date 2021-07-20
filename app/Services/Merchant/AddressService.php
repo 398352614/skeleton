@@ -156,6 +156,7 @@ class AddressService extends BaseService
      */
     public function check(&$data, $id = null)
     {
+        $data['merchant_id'] = auth()->user()->id;
         if (auth()->user()->company_id !== 'NL') {
             if (empty($data['place_city'])) {
                 throw new BusinessLogicException('城市是必填的');
@@ -183,10 +184,6 @@ class AddressService extends BaseService
 
         $data['place_country'] = !empty($dbInfo['place_country']) ? $dbInfo['place_country'] : CompanyTrait::getCountry();
         //验证商家是否存在
-        $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id']], ['id', 'country'], false);
-        if (empty($merchant)) {
-            throw new BusinessLogicException('货主不存在，请重新选择货主');
-        }
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
             $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
