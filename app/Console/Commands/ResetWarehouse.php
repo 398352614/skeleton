@@ -61,6 +61,7 @@ class ResetWarehouse extends Command
                         'parent' => 0
                     ]);
                 }
+                Line::query()->where('company_id', $company['id'])->update(['warehouse_id' => $warehouse['id']]);
                 Employee::query()->where('company_id', $company['id'])->update(['warehouse_id' => $warehouse['id']]);
                 $rootWarehouse = Warehouse::query()->where('company_id', $company['id'])->where('parent', '=', 0)->first()->toArray();
                 $lineIds = Line::query()->where('warehouse_id', $rootWarehouse['id'])->pluck('id')->toArray();
