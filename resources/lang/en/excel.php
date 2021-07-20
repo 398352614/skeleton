@@ -115,7 +115,7 @@ return [
 
 
     "trackingOrderOut" => [
-        'tracking_order_no' => '运单号',
+        'tracking_order_no' => 'tracking order number',
         'type' => 'Type',
         'order_no' => 'Order No',
         'merchant_name' => 'Merchant',
@@ -133,7 +133,7 @@ return [
     ],
 
     "orderOut" => [
-        'order_no' => 'Order No',
+        'order_no' => 'Order number',
         'merchant_id' => 'Merchant ID',
         'type' => 'Type',
         'merchant_name' => 'Merchant Name',
@@ -346,7 +346,7 @@ return [
             "place_house_number" => "*House number",
             "place_city" => "*City",
             "place_street" => "*Street",
-            "execution_date" => "**Execution date",
+            "execution_date" => "*Execution date",
 
 
             "second_place_fullname" => "*Fullname",
