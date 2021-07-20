@@ -74,7 +74,7 @@ class HomeController extends BaseController
      */
     public function periodCount()
     {
-        ini_set('memory_limit', '128M');
+        ini_set('memory_limit', '1280M');
         return $this->service->periodCount($this->data);
     }
 
