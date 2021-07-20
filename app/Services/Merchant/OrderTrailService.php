@@ -32,7 +32,17 @@ class OrderTrailService extends BaseService
         $this->formData['per_page'] = 5;
         $this->orderBy = ['id' => 'desc'];
         $this->query->whereIn('type', [BaseConstService::ORDER_TRAIL_START, BaseConstService::ORDER_TRAIL_FINISH]);
-        return parent::getPageList();
+        $data = parent::getPageList();
+        if (app('request')->header('language') == 'en') {
+            foreach ($data as $x => $y) {
+                $content = $y['content'];
+                $content = str_replace('取件', 'Pick-up', $content);
+                $content = str_replace('派件', 'Delivery', $content);
+                $data[$x]['content'] = $content;
+            }
+        }
+        return $data;
+
     }
 
     public function show($id)
@@ -66,7 +76,7 @@ class OrderTrailService extends BaseService
                     $a = 0;
                 }
             }
-            $order['trail_list']=array_reverse(collect($list)->toArray());
+            $order['trail_list'] = array_reverse(collect($list)->toArray());
             return $order;
         }
 
