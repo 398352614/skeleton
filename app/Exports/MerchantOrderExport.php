@@ -293,7 +293,7 @@ class MerchantOrderExport implements FromArray, WithTitle, WithEvents, WithStric
             'C' => 15,
             'X' => 15,
             'K' => 15,
-            'L' => 15,
+            'R' => 15,
             'AD' => 15,
             'AJ' => 15,
             'AP' => 15,
