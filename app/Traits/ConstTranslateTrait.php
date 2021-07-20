@@ -129,6 +129,8 @@ use Illuminate\Support\Facades\App;
  * @method static packageFeatureList($args = null)
  * @method static methodList($args = null)
  * @method static warehouseCanSelectAllList($args = null)
+ * @method static feeLevelList($args = null)
+ * $feeLevelList
  */
 trait ConstTranslateTrait
 {

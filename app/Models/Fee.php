@@ -67,7 +67,8 @@ class Fee extends BaseModel
     ];
 
     protected $appends = [
-        'status_name'
+        'status_name',
+        'level_name'
     ];
 
     /**
@@ -80,5 +81,10 @@ class Fee extends BaseModel
     public function getStatusNameAttribute()
     {
         return empty($this->status) ? null : ConstTranslateTrait::merchantStatusList($this->status);
+    }
+
+    public function getLevelNameAttribute()
+    {
+        return empty($this->level) ? null : ConstTranslateTrait::feeLevelList($this->level);
     }
 }
