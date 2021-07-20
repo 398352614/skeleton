@@ -196,11 +196,11 @@ class HomeService extends BaseService
             $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
             $day = $day->addDay();
         }
-        Log::info(4);
         $data[] = [
             'merchant_name' => '总计',
             'graph' => array_values($periodInfo),
         ];
+        unset($day, $endDay);
         return $data;
     }
 
