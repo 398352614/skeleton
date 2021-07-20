@@ -10,6 +10,7 @@ use App\Traits\ConstTranslateTrait;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class CacheCompany extends Command
 {
@@ -59,7 +60,7 @@ class CacheCompany extends Command
             } else {
                 $country = $country->toArray();
             }
-            $company = Company::query()->where('id', $companyId)->first()->toArray();
+            $company = DB::table('company')->where('id', $companyId)->first()->toArray();
 
             $companyConfig = CompanyConfig::query()->where('company_id', $companyId)->first()->toArray();
             if (!empty($companyConfig['weight_unit'])) {
