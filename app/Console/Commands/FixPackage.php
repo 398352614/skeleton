@@ -52,6 +52,7 @@ class FixPackage extends Command
             $trackingOrderList = DB::table('tracking_order')->whereIn('order_no', collect($packageList)->pluck('order_no')->toArray())->get();
             $trackingPackageList=DB::table('tracking_package')->whereIn('order_no', collect($packageList)->pluck('order_no')->toArray())->get();
             $count = count($packageList);
+            $this->info( $count);
             foreach ($packageList as $k => $v) {
                 if ($v->stage == null || $this->option('full') == 1) {
                     $trackingOrder = $trackingOrderList->where('order_no',$v->order_no)->sortByDesc('id')->first();
