@@ -60,7 +60,7 @@ class CacheCompany extends Command
             } else {
                 $country = $country->toArray();
             }
-            $company = DB::table('company')->where('id', $companyId)->first()->toArray();
+            $company = DB::table('company')->where('id', $companyId)->first();
 
             $companyConfig = CompanyConfig::query()->where('company_id', $companyId)->first()->toArray();
             if (!empty($companyConfig['weight_unit'])) {
