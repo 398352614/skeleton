@@ -11,14 +11,14 @@ use App\Services\BaseConstService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class FixWarehouse extends Command
+class ResetWarehouse extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'fix:warehouse';
+    protected $signature = 'reset:warehouse';
 
     /**
      * The console command description.
@@ -46,6 +46,7 @@ class FixWarehouse extends Command
     {
         $this->info('fix begin');
         try {
+            Warehouse::query()->delete();
             //给每个公司新增一个根网点
             $companyList = Company::query()->get()->toArray();
             foreach ($companyList as $company) {
