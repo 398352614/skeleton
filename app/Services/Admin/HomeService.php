@@ -10,6 +10,7 @@ use App\Traits\ConstTranslateTrait;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use WebSocket\Base;
 
 class HomeService extends BaseService
@@ -178,13 +179,16 @@ class HomeService extends BaseService
      */
     public function periodCount($params)
     {
+        Log::info(1);
         $data = [];
         $periodInfo = [];
         $merchantList = $this->getMerchantService()->getList([],['name'],false);
         foreach ($merchantList as $k => $v) {
             $data[$k]['merchant_name'] = $v['name'];
+            Log::info(2);
             $data[$k]['graph'] = $this->periodCountByMerchant($params, $v['id']);
         }
+        Log::info(3);
         $orderList = parent::getList(['status' => ['in', [BaseConstService::ORDER_STATUS_1, BaseConstService::ORDER_STATUS_2, BaseConstService::ORDER_STATUS_3]]], ['execution_date'], false);
         //总计
         $day = Carbon::create($params['begin_date']);
@@ -195,7 +199,7 @@ class HomeService extends BaseService
             $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
             $day = $day->addDay();
         }
-
+        Log::info(4);
         $data[] = [
             'merchant_name' => '总计',
             'graph' => array_values($periodInfo),
