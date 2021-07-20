@@ -87,8 +87,6 @@ class FixPackage extends Command
                             $this->info('fix:' . ($k + 1) . '/' . $count);
                         }
                     }
-                } else {
-                    $this->info('fix fail:' . $v->express_first_no . '包裹阶段空');
                 }
             }
         }
