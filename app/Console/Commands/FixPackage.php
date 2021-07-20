@@ -42,21 +42,27 @@ class FixPackage extends Command
     public function handle()
     {
         $this->info('begin:' . now());
-        try {
+//        try {
 //            foreach ($trackingPackageList as $k=>$v) {
 //                DB::table('tracking_package')->where('express_first_no',$v->express_first_no)
 //                    ->update(['order_no'=>
 //                        $packageList->where('express_first_no',$v->express_first_no)->first()->order_no]);
 //            }
             $packageList = DB::table('package')->get()->toArray();
+            $this->info(1);
+
             $trackingOrderList = DB::table('tracking_order')->whereIn('order_no', collect($packageList)->pluck('order_no')->toArray())->get();
-            $trackingPackageList=DB::table('tracking_package')->whereIn('order_no', collect($packageList)->pluck('order_no')->toArray())->get();
-            $count = count($packageList);
-            $this->info( $count);
+        $this->info(2);
+
+        $trackingPackageList = DB::table('tracking_package')->whereIn('order_no', collect($packageList)->pluck('order_no')->toArray())->get();
+        $this->info(3);
+
+        $count = count($packageList);
+            $this->info($count);
             foreach ($packageList as $k => $v) {
                 if ($v->stage == null || $this->option('full') == 1) {
-                    $trackingOrder = $trackingOrderList->where('order_no',$v->order_no)->sortByDesc('id')->first();
-                    $trackingPackage = $trackingPackageList->where('order_no',$v->order_no)->sortByDesc('id')->first();
+                    $trackingOrder = $trackingOrderList->where('order_no', $v->order_no)->sortByDesc('id')->first();
+                    $trackingPackage = $trackingPackageList->where('order_no', $v->order_no)->sortByDesc('id')->first();
                     if (empty($trackingPackage) && !empty($trackingOrder)) {
                         //大条件：只有运单
                         if ($trackingOrder->type == BaseConstService::TRACKING_PACKAGE_TYPE_1) {
@@ -88,9 +94,9 @@ class FixPackage extends Command
                     }
                 }
             }
-        } catch (\Exception $e) {
-            $this->info('fix fail:' . $e);
-        }
+//        } catch (\Exception $e) {
+//            $this->info('fix fail:' . $e);
+//        }
         $this->info('fix end:' . now());
     }
 }
