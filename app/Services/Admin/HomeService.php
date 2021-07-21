@@ -231,7 +231,7 @@ class HomeService extends BaseService
         $endDay = Carbon::create($params['end_date']);
         for ($i = 1; $day->lte($endDay); $i++) {
             $date = $day->format('Y-m-d');
-            $orderCount = count($orderList[$date]);
+            $orderCount = count($orderList[$date] ?? []);
             $periodInfo[$i] = ['date' => $date, 'order' => $orderCount];
             $day = $day->addDay();
         }
