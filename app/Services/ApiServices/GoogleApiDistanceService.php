@@ -32,16 +32,31 @@ class GoogleApiDistanceService
         $this->client = new \GuzzleHttp\Client();
         $this->url = config('tms.map_url');
         $this->key = config('tms.map_key');
+        $company = auth()->user();
 
-        $company = auth('admin')->user();
-        if (empty($company)) {
-            $company = auth('merchant')->user();
+        try {
+            if (empty($company)) {
+                $company = auth('merchant')->user() ?? null;
+            }
+        } catch (\Exception $e) {
         }
-        if (empty($company)) {
-            $company = auth('driver')->user();
+        try {
+            if (empty($company)) {
+                $company = auth('driver')->user() ?? null;
+            }
+        } catch (\Exception $e) {
         }
-        if (empty($company)) {
-            $company = auth()->user();
+        try {
+            if (empty($company)) {
+                $company = auth('admin')->user() ?? null;
+            }
+        } catch (\Exception $e) {
+        }
+        try {
+            if (empty($company)) {
+                $company = auth()->user() ?? null;
+            }
+        } catch (\Exception $e) {
         }
         if (empty($company)) {
             throw new BusinessLogicException('公司不存在');
@@ -80,9 +95,9 @@ class GoogleApiDistanceService
             $options = [];
         }
         $res = $this->client->request('GET', $url, $options);
-        Log::info('request',[
-            'res'=>$res,
-            'url'=>$url,
+        Log::info('request', [
+            'res' => $res,
+            'url' => $url,
         ]);
         $body = $res->getBody();
         $stringBody = (string)$body;
@@ -106,16 +121,16 @@ class GoogleApiDistanceService
     {
         try {
             //导入填充,手动录入派件反向
-            if(empty($order['place_lat']) || empty($order['place_lon'])){
+            if (empty($order['place_lat']) || empty($order['place_lon'])) {
                 $from = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
                 $to = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
-            }elseif (empty($order['second_place_lat']) || empty($order['second_place_lon'])){
+            } elseif (empty($order['second_place_lat']) || empty($order['second_place_lon'])) {
                 $from = implode(',', [$order['place_lat'], $order['place_lon']]);
                 $to = implode(',', [$order['warehouse_lat'], $order['warehouse_lon']]);
-            }elseif ($order['type'] == BaseConstService::ORDER_TYPE_2){
+            } elseif ($order['type'] == BaseConstService::ORDER_TYPE_2) {
                 $from = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
                 $to = implode(',', [$order['place_lat'], $order['place_lon']]);
-            }else{
+            } else {
                 $from = implode(',', [$order['place_lat'], $order['place_lon']]);
                 $to = implode(',', [$order['second_place_lat'], $order['second_place_lon']]);
             }
