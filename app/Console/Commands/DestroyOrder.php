@@ -41,7 +41,7 @@ class DestroyOrder extends Command
     {
         $array=['order','package','material','batch','tour','batch_exception','order_amount','order_customer_record','order_receipt','order_trail','package_trail',
             'stock','stock_exception','stock_in_log','stock_out_log','route_tracking','tour_delay','tour_driver_event','tour_material','tracking_order','tracking_order_material',
-            'tracking_order_package','tracking_order_trail',''];
+            'tracking_order_package','tracking_order_trail'];
         foreach ($array as $v){
             DB::table($v)->truncate();
             $this->info($v.'truncate successful');
