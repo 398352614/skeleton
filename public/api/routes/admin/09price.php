@@ -52,7 +52,7 @@ use Illuminate\Support\Facades\Route;
  * 55additionalRule顺带规则
  * 54warehouseConfig网点配置
  * 55company企业管理
- * 56
+ * 56emailTemplate邮件模板
  */
 
 /**

@@ -34,6 +34,7 @@ class OrderValidate extends BaseValidate
         'actual_total_amount' => 'nullable|required_if:settlement_type,2|numeric|gte:0',
         'replace_amount' => 'nullable|numeric|gte:0',
         'delivery' => 'nullable|integer|in:1,2',
+        'place_country' => 'required|string|max:50',
         'place_fullname' => 'required|string|max:50',
         'place_phone' => 'required|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
         'place_province' => 'nullable|string|max:50',
@@ -45,6 +46,7 @@ class OrderValidate extends BaseValidate
         'place_address' => 'checkAddress|nullable|string|max:250',
         'place_lon' => 'required_unless:type,2|string|max:50',
         'place_lat' => 'required_unless:type,2|string|max:50',
+        'second_place_country' => 'required_if:type,3|string|max:50',
         'second_place_fullname' => 'required_if:type,3|string|max:50',
         'second_place_phone' => 'required_if:type,3|string|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
         'second_place_province' => 'nullable|string|max:50',
@@ -93,34 +95,34 @@ class OrderValidate extends BaseValidate
             'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'expect_total_amount', 'actual_amount',
             //发货人信息
             'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
-            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
+            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat', 'second_place_country',
             //收货人信息
             'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number',
-            'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',
+            'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat', 'place_country',
             //备注
             'special_remark', 'remark',
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
-            'receipt_type', 'receipt_count', 'create_date','amount_list.*.expect_amount','amount_list.*.type'
+            'receipt_type', 'receipt_count', 'create_date', 'amount_list.*.expect_amount', 'amount_list.*.type'
         ],
         'update' => [
             'merchant_id', 'execution_date', 'second_execution_date', 'expect_total_amount', 'actual_amount',
             'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery',
             //发货人信息
             'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
-            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
+            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat', 'second_place_country',
             //收货人信息
             'place_fullname', 'place_phone', 'place_post_code', 'place_house_number',
-            'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',
+            'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat', 'place_country',
             //备注
             'special_remark', 'remark',
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
             'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark',
-            'receipt_type', 'receipt_count', 'create_date','amount_list.*.expect_amount','amount_list.*.type'
+            'receipt_type', 'receipt_count', 'create_date', 'amount_list.*.expect_amount', 'amount_list.*.type'
         ],
         'again' => [
             'execution_date',
@@ -136,18 +138,18 @@ class OrderValidate extends BaseValidate
             'out_order_no', 'mask_code', 'list_mode', 'type', 'out_user_id', 'nature', 'settlement_type', 'settlement_amount', 'replace_amount', 'delivery', 'expect_total_amount', 'actual_amount',
             //发货人信息
             'second_place_fullname', 'second_place_phone', 'second_place_country', 'second_place_post_code', 'second_place_house_number',
-            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat',
+            'second_place_city', 'second_place_street', 'second_place_address', 'second_place_lon', 'second_place_lat', 'second_place_country',
             //收货人信息
             'place_fullname', 'place_phone', 'place_country', 'place_post_code', 'place_house_number',
-            'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat',
+            'place_city', 'place_street', 'place_address', 'place_lon', 'place_lat', 'place_country',
             //备注
             'special_remark', 'remark',
             //包裹列表
             'package_list.*.name', 'package_list.*.weight', 'package_list.*.expect_quantity', 'package_list.*.remark', 'package_list.*.out_order_no', 'package_list.*.express_first_no', 'package_list.*.express_second_no', 'package_list.*.expiration_date',
             //材料列表
-            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark','amount_list.*.expect_amount','amount_list.*.type'
+            'material_list.*.name', 'material_list.*.code', 'material_list.*.out_order_no', 'material_list.*.expect_quantity', 'material_list.*.remark', 'amount_list.*.expect_amount', 'amount_list.*.type'
         ],
-        'getWareHouse' => 'place_post_code', 'execution_date', 'type', 'merchant_id'
+        'getWareHouse' => 'place_country', 'place_post_code', 'execution_date', 'type', 'merchant_id'
     ];
 
     public $message = [

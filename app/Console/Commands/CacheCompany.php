@@ -54,12 +54,12 @@ class CacheCompany extends Command
         $tag = config('tms.cache_tags.company');
         //1.若只缓存一个公司
         if (!empty($companyId)) {
-            $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name']);
-            if (empty($country)) {
-                return;
-            } else {
-                $country = $country->toArray();
-            }
+//            $country = Country::query()->where('company_id', $companyId)->first(['short', 'en_name', 'cn_name']);
+//            if (empty($country)) {
+//                return;
+//            } else {
+//                $country = $country->toArray();
+//            }
             $company = DB::table('company')->where('id', $companyId)->first();
             $company=collect($company)->toArray();
             $companyConfig = CompanyConfig::query()->where('company_id', $companyId)->first()->toArray();
@@ -75,7 +75,7 @@ class CacheCompany extends Command
             $mapConfig = MapConfig::query()->where('company_id', $companyId)->first();
             $company = array_merge(
                 $companyConfig,
-                ['country' => $country['short'] ?? '', 'country_en_name' => $country['en_name'] ?? '', 'country_cn_name' => $country['cn_name'] ?? ''],
+//                ['country' => $country['short'] ?? '', 'country_en_name' => $country['en_name'] ?? '', 'country_cn_name' => $country['cn_name'] ?? ''],
                 Arr::only($company, ['id', 'name', 'company_code'])
             //, ['map_config' => $mapConfig]
             );
@@ -85,19 +85,19 @@ class CacheCompany extends Command
             return;
         }
         //2.缓存所有公司
-        $countryList = collect(Country::query()->get(['company_id', 'short', 'en_name', 'cn_name']))->unique('company_id')->keyBy('company_id')->toArray();
+//        $countryList = collect(Country::query()->get(['company_id', 'short', 'en_name', 'cn_name']))->unique('company_id')->keyBy('company_id')->toArray();
         $mapConfigList = collect(Country::query()->get())->unique('company_id')->keyBy('company_id')->toArray();
-        $companyList = collect(Company::query()->get())->map(function ($company) use ($countryList, $mapConfigList) {
+        $companyList = collect(Company::query()->get())->map(function ($company) use ( $mapConfigList) {
             /**@var \App\Models\Company $company */
             $companyConfig = !empty($company->companyConfig) ? $company->companyConfig->getAttributes() : [];
             $company = $company->getAttributes();
             return collect(array_merge(
                 $companyConfig,
                 //['map_config'=>$mapConfigList[$company['id']]],
-                ['country' => $countryList[$company['id']]['short'] ?? '',
-                    'country_en_name' => $countryList[$company['id']]['en_name'] ?? '',
-                    'country_cn_name' => $countryList[$company['id']]['cn_name'] ?? '',
-                ],
+//                ['country' => $countryList[$company['id']]['short'] ?? '',
+//                    'country_en_name' => $countryList[$company['id']]['en_name'] ?? '',
+//                    'country_cn_name' => $countryList[$company['id']]['cn_name'] ?? '',
+//                ],
                 Arr::only($company, ['id', 'name', 'company_code'])
             ));
         })->toArray();

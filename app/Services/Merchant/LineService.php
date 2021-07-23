@@ -39,7 +39,7 @@ class LineService extends BaseLineService
         } else {
             $type = intval($params['type']);
         }
-        $lineRangeList = parent::getLineRangeListByPostcode($postCode, auth()->user()->id);
+        $lineRangeList = parent::getLineRangeListByPostcode($postCode, $params['place_country'], auth()->user()->id);
         $dateList = parent::getScheduleListByLineRangeList(['type' => $type], $lineRangeList, BaseConstService::TRACKING_ORDER_OR_BATCH_1);
         return $dateList;
     }
@@ -50,9 +50,8 @@ class LineService extends BaseLineService
             return '';
         }
         $allLineRange = $this->getLineRangeService()->getList(['company_id' => auth()->user()->company_id], ['*'], false);
-        foreach ($allLineRange as $k=>$v)
-        {
-            $allLineRange[$k]=array_only_fields_sort($v,['id', 'post_code_start', 'post_code_end', 'schedule']);
+        foreach ($allLineRange as $k => $v) {
+            $allLineRange[$k] = array_only_fields_sort($v, ['id', 'post_code_start', 'post_code_end', 'schedule']);
         }
         return $allLineRange;
     }

@@ -130,7 +130,7 @@ use Illuminate\Support\Facades\App;
  * @method static methodList($args = null)
  * @method static warehouseCanSelectAllList($args = null)
  * @method static feeLevelList($args = null)
- * $feeLevelList
+ * @method static postcodeTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -219,6 +219,11 @@ trait ConstTranslateTrait
     public static $shiftLoadTypeList = [
         BaseConstService::SHIFT_LOAD_TYPE_1 => '包裹单号',
         BaseConstService::SHIFT_LOAD_TYPE_2 => '袋号',
+    ];
+
+    public static $postcodeTypeList = [
+        BaseConstService::POSTCODE_TYPE_1 => '邮编范围',
+        BaseConstService::POSTCODE_TYPE_2 => '单个邮编',
     ];
 
     //快捷方式列表

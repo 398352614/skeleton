@@ -28,6 +28,8 @@ class BaseConstService
     const BAG = 'BAG';
     const SHIFT = 'SHIFT';
 
+    const POSTCODE_TYPE_1 = 1;
+    const POSTCODE_TYPE_2 = 2;
     const SHIFT_LOAD_TYPE_1 = 1;
     const SHIFT_LOAD_TYPE_2 = 2;
 

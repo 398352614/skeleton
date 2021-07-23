@@ -13,6 +13,7 @@ use App\Models\Line;
 use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\CountryTrait;
 use Carbon\Carbon;
 use Doctrine\DBAL\Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -93,7 +94,8 @@ class LineService extends BaseLineService
             $info['work_day_list'] = '';
         } else {
             $info['line_range'] = $lineRangeList->map(function ($lineRange, $key) {
-                return collect($lineRange)->only(['post_code_start', 'post_code_end']);
+                $lineRange['country_name'] = CountryTrait::getCountryName($lineRange['country']);
+                return collect($lineRange)->only(['country','country_name', 'post_code_start', 'post_code_end']);
             })->unique(function ($item) {
                 return $item['post_code_start'] . $item['post_code_end'];
             })->toArray();
@@ -121,13 +123,13 @@ class LineService extends BaseLineService
         //基础验证
         $this->check($params);
         //邮编范围验证
-        $this->getLineRangeService()->checkRange($params['item_list'], $params['country'], $params['work_day_list']);
+        $this->getLineRangeService()->checkRange($params['item_list'], $params['work_day_list']);
         //货主组最小订单量验证
         $this->getMerchantGroupLineService()->checkCount($params, $params['merchant_group_count_list']);
         //新增
         $lineId = $this->store($params);
         //邮编范围批量新增
-        $this->getLineRangeService()->storeAll($lineId, $params['item_list'], $params['country'], $params['work_day_list']);
+        $this->getLineRangeService()->storeAll($lineId, $params['item_list'], $params['work_day_list']);
         //最小订单量批量新增
         $this->getMerchantGroupLineService()->storeAll($lineId, $params['merchant_group_count_list']);
         //更新网点
@@ -175,11 +177,11 @@ class LineService extends BaseLineService
             throw new BusinessLogicException('线路不存在');
         }
         //基础验证
-        $this->check($data, $info->toArray());
+        $this->check($data);
         //货主组最小订单量验证
         $this->getMerchantGroupLineService()->checkCount($data, $data['merchant_group_count_list']);
         //邮编范围验证
-        $this->getLineRangeService()->checkRange($data['item_list'], $data['country'], $data['work_day_list'], $id);
+        $this->getLineRangeService()->checkRange($data['item_list'], $data['work_day_list'], $id);
         unset($data['warehouse_id']);
         //修改
         $this->updateById($id, $data);
@@ -188,7 +190,7 @@ class LineService extends BaseLineService
         if ($rowCount === false) {
             throw new BusinessLogicException('线路范围修改失败');
         }
-        $this->getLineRangeService()->storeAll($id, $data['item_list'], $data['country'], $data['work_day_list']);
+        $this->getLineRangeService()->storeAll($id, $data['item_list'], $data['work_day_list']);
         //删除并新增最小订单量
         $rowCount = $this->getMerchantGroupLineService()->delete(['line_id' => $id]);
         if ($rowCount === false) {
@@ -307,7 +309,7 @@ class LineService extends BaseLineService
             throw new BusinessLogicException('线路不存在');
         }
         //基础验证
-        $this->check($data, $info->toArray());
+        $this->check($data);
         //区域范围验证
         $this->getLineAreaService()->checkArea($data['coordinate_list'], $data['country'], $id);
         //修改
@@ -410,7 +412,7 @@ class LineService extends BaseLineService
                 [$pickupWarehouse],
                 [$this->formAddress($this->pieAddress($data))]
             )));
-        }else{
+        } else {
             $data = array_values(array_filter(array_merge(
                 [$this->formAddress($this->pickupAddress($data))],
                 $pickupWarehouseList,
@@ -429,9 +431,6 @@ class LineService extends BaseLineService
      */
     public function pickupAddress($data)
     {
-        if (empty($data['place_country'])) {
-            $data['place_country'] = CompanyTrait::getCompany()['country'];
-        }
         return [
             'type' => BaseConstService::TRACKING_ORDER_TYPE_1,
             'place_fullname' => $data['place_fullname'],
@@ -598,7 +597,7 @@ class LineService extends BaseLineService
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_AREA) {
             throw new BusinessLogicException('没有合适日期');
         }
-        $lineRangeList = parent::getLineRangeListByPostcode($params['place_post_code'], $merchantId);
+        $lineRangeList = parent::getLineRangeListByPostcode($params['place_post_code'], $params['country'], $merchantId);
         $executionDate = null;
         $newLine = null;
         foreach ($lineRangeList as $lineRange) {

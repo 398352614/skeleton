@@ -103,7 +103,7 @@ class WareHouseService extends BaseService
 //        }
         //不修改line_ids
 //                $this->check($dbData, $lineIdList);
-        $this->fillData($data, $dbData->toArray());
+        $this->fillData($data);
         unset($data['created_at'], $data['updated_at']);
         $data['line_ids'] = $dbData['line_ids'];
         $rowCount = parent::updateById($id, $data);
@@ -211,10 +211,9 @@ class WareHouseService extends BaseService
      * @param $params
      * @param $dbInfo
      */
-    private function fillData(&$params, $dbInfo = [])
+    private function fillData(&$params)
     {
         //填充地址
-        $params['country'] = !empty($dbInfo['country']) ? $dbInfo['country'] : CompanyTrait::getCountry();
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['address'])) {
             $params['address'] = CommonService::addressFieldsSortCombine($params, ['country', 'city', 'street', 'house_number', 'post_code']);
         }

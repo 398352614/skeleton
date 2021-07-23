@@ -204,7 +204,7 @@ class OrderService extends BaseService
         $dbOrder['material_list'] = $this->getMaterialService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $dbOrder['amount_list'] = $this->getOrderAmountService()->getList(['order_no' => $dbOrder['order_no']], ['*'], false);
         $merchant = $this->getMerchantService()->getInfo(['id' => $dbOrder['merchant_id']], ['*'], false);
-        if(!empty($merchant)){
+        if (!empty($merchant)) {
             $dbOrder['merchant_id_name'] = $merchant['name'];
             $dbOrder['merchant_id_code'] = $merchant['code'];
         }
@@ -620,6 +620,15 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        //验证国家
+        $countryList = $this->getCountryService()->getList([], ['*'], false)->pluck('short')->toArray();
+        if (empty($countryList)) {
+            throw new BusinessLogicException('请先配置国家');
+        }
+        if ((!empty($params['place_country']) && !in_array($params['place_country'], $countryList))
+            || (!empty($params['second_place_country']) && !in_array($params['second_place_country'], $countryList))) {
+            throw new BusinessLogicException('国家不存在');
+        }
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         $fields = ['place_fullname', 'place_phone',
             'place_country', 'place_province', 'place_city', 'place_district',
@@ -637,15 +646,15 @@ class OrderService extends BaseService
             throw new BusinessLogicException('货主不存在');
         }
         //若邮编是纯数字，则认为是比利时邮编
-        $country = CompanyTrait::getCountry();
-        $params['place_country'] = $country;
-        $params['second_place_country'] = $country;
-        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
-            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
-        }
-        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5) {
-            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
-        }
+//        $country = CompanyTrait::getCountry();
+////        $params['place_country'] = $country;
+////        $params['second_place_country'] = $country;
+////        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
+////            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+////        }
+////        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5) {
+////            $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+////        }
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
@@ -693,6 +702,7 @@ class OrderService extends BaseService
             $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
         }
         $params = $this->getTransportPriceService()->priceCount($params);
+
         //验证取件网点及派件网点是否承接取件/派件
 //        if ($merchant['below_warehouse'] == BaseConstService::YES) {
 //            $belowWarehouse = $this->getWareHouseService()->getInfo(['id' => $merchant['warehouse_id']], ['*'], false);

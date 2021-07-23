@@ -19,6 +19,7 @@ class CommonValidate extends BaseValidate
 
 
     public $rules = [
+        'country' => 'required|string|max:50',
         'post_code' => 'required|string|max:50',
         'house_number' => 'required|string|max:50',
         'city' => 'nullable|string|max:50',

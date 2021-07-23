@@ -18,7 +18,8 @@ class CountryResource extends JsonResource
             'id' => $this->id,
             'company_id' => $this->company_id,
             'short' => $this->short,
-            'name' => $this->name
+            'name' => $this->name,
+            'is_default' => $this->is_default
         ];
     }
 }

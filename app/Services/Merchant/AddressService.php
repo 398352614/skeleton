@@ -151,7 +151,7 @@ class AddressService extends BaseService
     /**
      * 验证
      * @param $data
-     * @param array $dbInfo
+     * @param null $id
      * @throws BusinessLogicException
      */
     public function check(&$data, $id = null)
@@ -181,13 +181,10 @@ class AddressService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
         }
-
-        $data['place_country'] = !empty($dbInfo['place_country']) ? $dbInfo['place_country'] : CompanyTrait::getCountry();
         //验证商家是否存在
         if ((CompanyTrait::getAddressTemplateId() == 1) || empty($data['place_address'])) {
             $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
-
         $this->uniqueCheck($data, $id);
 
     }

@@ -96,7 +96,7 @@ class StockService extends BaseService
         $executionDate = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['execution_date'] : $order['second_execution_date'];
         if (empty($executionDate) || Carbon::today()->gte($executionDate . ' 00:00:00')) {
             $placeCode = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_post_code'] : $order['second_place_post_code'];
-            list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
+            list($executionDate, $line) = $this->getLineService()->getCurrentDate(['country' => $order['place_country'], 'place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
         }
         //有效期验证,未超期的自动生成派件运单
         if (!empty($package['expiration_date']) && $executionDate > $package['expiration_date']) {

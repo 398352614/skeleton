@@ -57,8 +57,8 @@ class OrderImportService extends BaseService
         ],
         [
             "type", "out_user_id", "out_order_no", "special_remark",
-            "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
-            "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
+            "place_fullname", "place_phone", "place_country", "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
+            "second_place_fullname", "second_place_phone", "second_place_country", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
             "package_no_1", "package_name_1", "package_weight_1", "package_feature_1", "package_remark_1", "package_expiration_date_1",
             "package_no_2", "package_name_2", "package_weight_2", "package_feature_2", "package_remark_2", "package_expiration_date_2",
             "package_no_3", "package_name_3", "package_weight_3", "package_feature_3", "package_remark_3", "package_expiration_date_3",
@@ -191,24 +191,6 @@ class OrderImportService extends BaseService
             $key = $validator->errors()->keys();
             foreach ($key as $v) {
                 $error[$v] = $validator->errors()->first($v);
-            }
-        }
-        //填充地址(若邮编是纯数字，则认为是比利时邮编)
-        $country = CompanyTrait::getCountry();
-        if (in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])) {
-            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['place_post_code'])) {
-                $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
-            }
-            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($data['place_post_code']) == 5) {
-                $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
-            }
-        }
-        if (in_array($data['type'], [BaseConstService::ORDER_TYPE_2, BaseConstService::ORDER_TYPE_3])) {
-            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['second_place_post_code'])) {
-                $data['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
-            }
-            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($data['second_place_post_code']) == 5) {
-                $data['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
             }
         }
         if (in_array($data['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3]) && (empty($data['place_country']) || $data['place_country'] !== 'NL')) {
@@ -344,6 +326,7 @@ class OrderImportService extends BaseService
      * @param $data
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function fillPlaceAddress($data)
     {
@@ -364,7 +347,7 @@ class OrderImportService extends BaseService
             $data['place_post_code'] = empty($data['place_post_code']) ? $info['post_code'] : $data['place_post_code'];
             $data['place_lat'] = empty($data['place_lat']) ? $info['lat'] : $data['place_lat'];
             $data['place_lon'] = empty($data['place_lon']) ? $info['lon'] : $data['place_lon'];
-            if($data['place_country'] == 'NL'){
+            if ($data['place_country'] == 'NL') {
                 $data['place_city'] = $info['city'];
                 $data['place_street'] = $info['street'];
             }
@@ -377,6 +360,7 @@ class OrderImportService extends BaseService
      * @param $data
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function fillSecondPlaceAddress($data)
     {
@@ -429,8 +413,6 @@ class OrderImportService extends BaseService
             is_numeric($data[$i]['execution_date']) && $data[$i]['execution_date'] = date('Y-m-d', ($data[$i]['execution_date'] - 25569) * 24 * 3600);
             is_numeric($data[$i]['second_execution_date']) && $data[$i]['second_execution_date'] = date('Y-m-d', ($data[$i]['second_execution_date'] - 25569) * 24 * 3600);
             $data[$i] = array_map('strval', $data[$i]);
-            empty($data[$i]['place_country']) && $data[$i]['place_country'] = CompanyTrait::getCountry();//填充收件人国家
-            ($data[$i]['type'] != BaseConstService::ORDER_TYPE_1 && empty($data[$i]['second_place_country'])) && $data[$i]['second_place_country'] = CompanyTrait::getCountry();//填充收件人国家
         }
         return $data;
     }

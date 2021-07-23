@@ -446,7 +446,7 @@ class OrderService extends BaseService
         $address = $this->getAddressService()->getInfoByUnique($data);
         if (empty($address)) {
             $info = LocationTrait::getLocation(
-                $data['place_country'] ?? auth()->user()->country,
+                $data['place_country'],
                 $data['place_city'] ?? '',
                 $data['place_street'] ?? '',
                 $data['place_house_number'] ?? '',
@@ -735,18 +735,6 @@ class OrderService extends BaseService
         if (empty($merchant)) {
             throw new BusinessLogicException('货主不存在');
         }
-        //若邮编是纯数字，则认为是比利时邮编
-        $country = CompanyTrait::getCountry();
-        $params['place_country'] = $country;
-        $params['second_place_country'] = $country;
-        if (in_array($params['type'], [BaseConstService::ORDER_TYPE_1, BaseConstService::ORDER_TYPE_3])) {
-            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['place_post_code'])) {
-                $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
-            }
-            if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($params['place_post_code']) == 5) {
-                $params['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
-            }
-        }
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
@@ -974,6 +962,7 @@ class OrderService extends BaseService
      * @param $params
      * @return array
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updateAddressDate($id, $params)
     {

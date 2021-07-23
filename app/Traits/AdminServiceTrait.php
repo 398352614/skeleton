@@ -14,6 +14,7 @@ use App\Services\Admin\CarBrandService;
 use App\Services\Admin\CarMaintainDetailService;
 use App\Services\Admin\CarService;
 use App\Services\Admin\CompanyService;
+use App\Services\Admin\CountryService;
 use App\Services\Admin\DriverService;
 use App\Services\Admin\EmployeeService;
 use App\Services\Admin\FeeService;
@@ -74,6 +75,15 @@ trait AdminServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * 国家 服务
+     * @return CountryService
+     */
+    public function getCountryService()
+    {
+        return self::getInstance(CountryService::class);
     }
 
     /**

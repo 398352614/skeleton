@@ -63,8 +63,8 @@ class OrderImportService extends BaseService
         ],
         [
             "create_date", "type", "merchant", "out_user_id", "out_order_no",
-            "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
-            "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
+            "place_fullname", "place_phone","place_country",  "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
+            "second_place_fullname", "second_place_phone", "second_place_country", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
             "amount_1", "amount_2", "amount_3", "amount_4", "amount_5", "amount_6", "amount_7", "amount_8", "amount_9", "amount_10", "amount_11",
             "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
@@ -196,16 +196,7 @@ class OrderImportService extends BaseService
         if (empty($merchant)) {
             $error['merchant_id'] = __('货主不存在');
         }
-        //填充地址(若邮编是纯数字，则认为是比利时邮编)
-        $country = CompanyTrait::getCountry();
-        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($data['place_post_code'])) {
-            $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
-            $data['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_BE;
-        }
-        if ($country == BaseConstService::POSTCODE_COUNTRY_NL && Str::length($data['place_post_code']) == 5) {
-            $data['place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
-            $data['second_place_country'] = BaseConstService::POSTCODE_COUNTRY_DE;
-        }
+
         //包裹材料验证
         if (empty($data['package_no_1']) && empty($data['material_code_1'])) {
             $error['log'] = __('订单中必须存在一个包裹或一种货物');
@@ -462,8 +453,6 @@ class OrderImportService extends BaseService
             is_numeric($data[$i]['create_date']) && $data[$i]['create_date'] = date('Y-m-d', ($data[$i]['create_date'] - 25569) * 24 * 3600);
             is_numeric($data[$i]['second_execution_date']) && $data[$i]['second_execution_date'] = date('Y-m-d', ($data[$i]['second_execution_date'] - 25569) * 24 * 3600);
             $data[$i] = array_map('strval', $data[$i]);
-            empty($data[$i]['place_country']) && $data[$i]['place_country'] = CompanyTrait::getCountry();//填充收件人国家
-            ($data[$i]['type'] != BaseConstService::ORDER_TYPE_1 && empty($data[$i]['second_place_country'])) && $data[$i]['second_place_country'] = CompanyTrait::getCountry();//填充收件人国家
         }
         return $data;
     }

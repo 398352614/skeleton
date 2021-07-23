@@ -192,6 +192,11 @@ class AddressService extends BaseService
      */
     public function check(&$data, $id = null)
     {
+        //验证国家
+        $country = $this->getCountryService()->getInfo(['short' => $data['place_country']], ['*'], false);
+        if (empty($country)) {
+            throw new BusinessLogicException('国家不存在');
+        }
         if (auth()->user()->company_id !== 'NL') {
             if (empty($data['place_city'])) {
                 throw new BusinessLogicException('城市是必填的');
@@ -216,8 +221,7 @@ class AddressService extends BaseService
                 throw new BusinessLogicException('数据不存在');
             }
         }
-
-        $data['place_country'] = !empty($dbInfo['place_country']) ? $dbInfo['place_country'] : CompanyTrait::getCountry();
+//        $data['place_country'] = !empty($dbInfo['place_country']) ? $dbInfo['place_country'] : CompanyTrait::getCountry();
         //验证商家是否存在
         $merchant = $this->getMerchantService()->getInfo(['id' => $data['merchant_id']], ['id', 'country'], false);
         if (empty($merchant)) {
@@ -366,7 +370,6 @@ class AddressService extends BaseService
         for ($i = 0; $i < count($list); $i++) {
             $list[$i] = $this->form($list[$i]);
             $list[$i]['merchant_id'] = $params['merchant_id'];
-            empty($list[$i]['place_country']) && $list[$i]['place_country'] = CompanyTrait::getCountry();
             try {
                 $this->store($list[$i]);
             } catch (BusinessLogicException $e) {
@@ -454,9 +457,7 @@ class AddressService extends BaseService
         }
         //判断是否唯一
         $this->uniqueCheck($data);
-        if (empty($data['place_country'])) {
-            $data['place_country'] = CompanyTrait::getCountry();
-        }
+
         //如果没传经纬度，就通过第三方API获取经纬度
         $address = [
             'place_country',
@@ -472,7 +473,6 @@ class AddressService extends BaseService
         try {
             $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
             Log::info('info', $info);
-            $data['place_country'] = $data['place_country'] ?? CompanyTrait::getCountry();
 //            $data['place_post_code'] = $data['place_post_code'] ?? $info['post_code'];
 //            $data['place_house_number'] = $data['place_house_number'] ?? $info['house_number'];
 //            $data['place_city'] = empty($data['place_city']) ? $info['city'] : $data['place_city'];

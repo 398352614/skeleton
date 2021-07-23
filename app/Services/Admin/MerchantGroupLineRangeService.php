@@ -143,10 +143,9 @@ class MerchantGroupLineRangeService extends BaseService
      * @param $lineId
      * @param $rangeList
      * @param $workdayList
-     * @param $country
      * @throws BusinessLogicException
      */
-    public function storeRangeList($lineId, $rangeList, $workdayList, $country)
+    public function storeRangeList($lineId, $rangeList, $workdayList)
     {
         //删除货主线路范围-不在取派日期中的
         $rowCount = parent::delete(['line_id' => $lineId, 'schedule' => ['not in', $workdayList]]);
@@ -156,9 +155,9 @@ class MerchantGroupLineRangeService extends BaseService
         //删除货主线路范围-不在邮编范围内的
         $postCodeRangeList = [];
         foreach ($rangeList as $key => $range) {
-            $postCodeRangeList[] = $range['post_code_start'] . '-' . $range['post_code_end'];
+            $postCodeRangeList[] = $range['country'] . '-' . $range['post_code_start'] . '-' . $range['post_code_end'];
         }
-        $rowCount = $this->model->newQuery()->where('line_id', $lineId)->whereNotIn(DB::raw("CONCAT(post_code_start,'-',post_code_end)"), $postCodeRangeList)->delete();
+        $rowCount = $this->model->newQuery()->where('line_id', $lineId)->whereNotIn(DB::raw("CONCAT(country,'-',post_code_start,'-',post_code_end)"), $postCodeRangeList)->delete();
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
@@ -168,7 +167,7 @@ class MerchantGroupLineRangeService extends BaseService
         $diffWorkdayList = array_diff($workdayList, $dbWorkdayList);
         if (!empty($diffWorkdayList)) {
             $merchantGroupLineRangeList = collect($merchantGroupLineRangeList)->groupBy(function ($merchantGroupLineRange) {
-                return $merchantGroupLineRange['post_code_start'] . '-' . $merchantGroupLineRange['post_code_end'];
+                return $merchantGroupLineRange['country'] . '-' . $merchantGroupLineRange['post_code_start'] . '-' . $merchantGroupLineRange['post_code_end'];
             })->map(function ($detailMerchantGroupLineRangeList) {
                 $detailMerchantGroupLineRangeList = $detailMerchantGroupLineRangeList->toArray();
                 return collect(Arr::only($detailMerchantGroupLineRangeList[0], ['merchant_group_id', 'line_id', 'post_code_start', 'post_code_end', 'country', 'is_alone']));
@@ -188,7 +187,7 @@ class MerchantGroupLineRangeService extends BaseService
         $merchantPostCodeRangeList = [];
         $merchantGroupLineRangeList = parent::getList(['line_id' => $lineId], ['post_code_start', 'post_code_end'], false, ['post_code_start', 'post_code_end']);
         foreach ($merchantGroupLineRangeList as $merchantGroupLineRange) {
-            $merchantPostCodeRangeList[] = $merchantGroupLineRange['post_code_start'] . '-' . $merchantGroupLineRange['post_code_end'];
+            $merchantPostCodeRangeList[] = $merchantGroupLineRange['country'] . '-' . $merchantGroupLineRange['post_code_start'] . '-' . $merchantGroupLineRange['post_code_end'];
         }
         $diffPostCodeRangeList = array_diff($postCodeRangeList, $merchantPostCodeRangeList);
         if (empty($diffPostCodeRangeList)) return;
@@ -197,7 +196,7 @@ class MerchantGroupLineRangeService extends BaseService
         $insetRangeList = [];
         foreach ($merchantGroupList as $merchantGroup) {
             foreach ($diffPostCodeRangeList as $postCodeRange) {
-                list($postCodeStart, $postCodeEnd) = explode('-', $postCodeRange);
+                list($country, $postCodeStart, $postCodeEnd) = explode('-', $postCodeRange);
                 foreach ($workdayList as $schedule) {
                     $insetRangeList[] = [
                         'merchant_group_id' => $merchantGroup['id'],

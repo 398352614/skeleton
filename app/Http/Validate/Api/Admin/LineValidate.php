@@ -34,8 +34,9 @@ class LineValidate extends BaseValidate
         'id_list' => 'required|string|checkIdList:100',
         'date' => 'required|date',
         //邮编列表
-        'item_list.*.post_code_start' => 'required|integer|between:1000,99999',
-        'item_list.*.post_code_end' => 'required|integer|between:1000,99999|gte:item_list.*.post_code_start',
+        'item_list.*.type' => 'required|integer|in:1,2',
+        'item_list.*.post_code_start' => 'required|integer',
+        'item_list.*.post_code_end' => 'nullable|integer|gte:item_list.*.post_code_start',
         'coordinate_list' => 'required',
         //区域列表
         'coordinate_list.*.*.lat' => 'required|string|max:30',
@@ -69,11 +70,11 @@ class LineValidate extends BaseValidate
         /*****************************************************邮编*****************************************************/
         'postcodeStore' => [
             'name', 'country', 'can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'work_days_list',
-            'item_list.*.post_code_start', 'item_list.*.post_code_end', 'status'
+            'item_list.*.type', 'item_list.*.post_code_start', 'item_list.*.post_code_end', 'status'
         ],
         'postcodeUpdate' => [
             'name', 'country', 'can_skip_batch', 'warehouse_id', 'pickup_max_count', 'pie_max_count', 'is_increment', 'order_deadline', 'appointment_days', 'remark', 'work_days_list',
-            'item_list.*.post_code_start', 'item_list.*.post_code_end', 'status'
+            'item_list.*.type', 'item_list.*.post_code_start', 'item_list.*.post_code_end', 'status'
         ],
         /*****************************************************区域*****************************************************/
         'areaIndex' => ['is_get_area'],

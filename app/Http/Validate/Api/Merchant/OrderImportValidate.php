@@ -18,7 +18,7 @@ class OrderImportValidate extends BaseValidate
         'out_order_no' => 'nullable|string|max:50|uniqueIgnore:order,id',
         'place_fullname' => 'required_unless:type,2|string|max:50',
         'place_phone' => 'required_unless:type,2|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
-        'place_country' => 'nullable|string|max:20',
+        'place_country' => 'required_unless:type,2|string|max:20',
         'place_post_code' => 'required_unless:type,2|string|max:50',
         'place_house_number' => 'required_unless:type,2|max:50',
         "place_city" => 'nullable|string|max:50',
@@ -27,7 +27,7 @@ class OrderImportValidate extends BaseValidate
 
         'second_place_fullname' => 'required_unless:type,1|string|max:50',
         'second_place_phone' => 'required_unless:type,1|string|max:20|regex:/^[0-9 ]([0-9- ])*[0-9 ]$/',
-        'second_place_country' => 'nullable|string|max:20',
+        'second_place_country' => 'required_unless:type,1|string|max:20',
         'second_place_post_code' => 'required_unless:type,1|string|max:50',
         'second_place_house_number' => 'required_unless:type,1|max:50',
         "second_place_city" => 'nullable|string|max:50',

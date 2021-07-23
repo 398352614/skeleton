@@ -47,6 +47,7 @@ class Country extends BaseModel
         'cn_name',
         'en_name',
         'tel',
+        'is_default',
         'create_at',
         'updated_at'
     ];

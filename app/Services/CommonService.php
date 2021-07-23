@@ -31,10 +31,6 @@ class CommonService
      */
     public function getLocation($params)
     {
-        empty($params['country']) && $params['country'] = CompanyTrait::getCountry();
-        if($params['post_code'] > 9999){
-            $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
-        }
         return LocationTrait::getLocation($params['country'], $params['city'] ?? '', $params['street'] ?? '', $params['house_number'], $params['post_code']);
     }
 
@@ -63,7 +59,7 @@ class CommonService
 
     public function getCountryAddress($country)
     {
-        return CountryAddressTrait::getCountry($country);
+//        return CountryAddressTrait::getCountry($country);
     }
 
     public function getPostcode(array $all)
@@ -81,7 +77,7 @@ class CommonService
     public static function addressFieldsSortCombine($data, $fields)
     {
         $countryKey = Arr::first($fields, function ($keyValue) {
-            return in_array($keyValue, ['country', 'place_country', 'second_place_country']);
+            return in_array($keyValue, ['warehouse_country', 'country', 'place_country', 'second_place_country']);
         });
         if (!empty($countryKey) && !empty($data[$countryKey]) && (app()->getLocale() == 'cn') && ($data[$countryKey] == 'CN')) {
             $data[$countryKey] = '中国';
@@ -93,7 +89,7 @@ class CommonService
 
     public function dictionary()
     {
-        $data=[];
+        $data = [];
         $reflection = new \ReflectionClass(ConstTranslateTrait::class);
         $result = collect($reflection->getProperties())->pluck('name')->toArray();
         foreach ($result as $k => $v) {

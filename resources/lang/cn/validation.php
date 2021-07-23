@@ -179,6 +179,9 @@ return [
             'in' => '选定的 是否提货字段 是无效的',
             'integer' => '是否提货字段必须是数字'
         ],
+        'item_list.1.post_code_end' => [
+            'gte' => '结束邮编不能小于起始邮编'
+        ],
         //材料列表
         'material_list.*.order_no' => [
             'required_with' => '材料所属订单号是必须的',
@@ -599,7 +602,7 @@ return [
         "attached_document" => "附件",
         "company_code" => "公司代码",
         "show_type" => "展示方式",
-        "short" => "简称",
+        "short" => "国家",
         "tel" => "区号",
         "messager" => "通讯标志",
         "encrypt" => "盐值",

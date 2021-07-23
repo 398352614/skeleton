@@ -150,7 +150,6 @@ class MerchantService extends BaseService
         if (empty($merchantGroup)) {
             throw new BusinessLogicException('货主组不存在');
         }
-        $params['country'] = CompanyTrait::getCountry();
     }
 
     /**

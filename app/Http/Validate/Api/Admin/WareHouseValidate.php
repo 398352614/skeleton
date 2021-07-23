@@ -31,7 +31,7 @@ class WareHouseValidate extends BaseValidate
         'phone' => 'nullable|string|max:20',
         'email' => 'nullable|string|max:250',
         'avatar' => 'nullable|string|max:250',
-        'country' => 'nullable|string|max:50',
+        'country' => 'required|string|max:50',
         'province' => 'nullable|string|max:50',
         'city' => 'required|string|max:50',
         'district' => 'required|string|max:50',
