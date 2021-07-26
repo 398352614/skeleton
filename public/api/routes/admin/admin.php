@@ -13465,8 +13465,8 @@
  */
 
 /**
- * @api {get} /admin/statistics/period 本月统计
- * @apiName 本月统计
+ * @api {get} /admin/statistics/period 时间段统计
+ * @apiName 时间段统计
  * @apiGroup 14
  * @apiVersion 1.0.0
  * @apiUse auth
@@ -13728,57 +13728,6 @@
  * "tracking_order": 1
  * }
  * ],
- * "msg": "successful"
- * }
- */
-
-/**
- * @api {get} /admin/statistics 总体统计
- * @apiName 总体统计
- * @apiGroup 14
- * @apiVersion 1.0.0
- * @apiUse auth
- * @apiSuccess {string} code
- * @apiSuccess {string} data
- * @apiSuccess {string} data.preparing_order 待取派订单
- * @apiSuccess {string} data.preparing_batch 待取派站点
- * @apiSuccess {string} data.preparing_tour 待取派任务
- * @apiSuccess {string} data.tour 任务
- * @apiSuccess {string} data.taking_tour 进行中任务
- * @apiSuccess {string} data.done_tour 已完成任务
- * @apiSuccess {string} data.exception_batch 异常站点
- * @apiSuccess {string} data.exception_tracking_order 异常运单
- * @apiSuccess {string} data.tracking_order 运单
- * @apiSuccess {string} data.exception_package 异常包裹
- * @apiSuccess {string} data.package 包裹
- * @apiSuccess {string} data.order 订单
- * @apiSuccess {string} data.pickup_order 取件订单
- * @apiSuccess {string} data.pie_order 派件订单
- * @apiSuccess {string} msg
- * @apiSuccess {string} data.pickup_pie_order 取派订单
- * @apiSuccess {string} data.batch 站点
- * @apiSuccess {string} data.month_order 本月累计完成订单
- * @apiSuccessExample {json} Success-Response:
- * {
- * "code": 200,
- * "data": {
- * "preparing_order": 0,
- * "preparing_batch": 0,
- * "preparing_tour": 0,
- * "tour": 0,
- * "taking_tour": 0,
- * "done_tour": 0,
- * "exception_batch": 0,
- * "batch": 0,
- * "exception_tracking_order": 0,
- * "tracking_order": 0,
- * "exception_package": 0,
- * "package": 0,
- * "rder": 0,
- * "pickup_order": 0,
- * "pie_order": 0,
- * "pickup_pie_order": 0
- * },
  * "msg": "successful"
  * }
  */

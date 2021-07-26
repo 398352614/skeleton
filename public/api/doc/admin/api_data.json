@@ -29590,11 +29590,31 @@
   },
   {
     "type": "get",
-    "url": "/admin/statistics",
-    "title": "总体统计",
-    "name": "总体统计",
+    "url": "/admin/statistics/period",
+    "title": "时间段统计",
+    "name": "时间段统计",
     "group": "14",
     "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "begin_date",
+            "description": "<p>起始时间</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "end_date",
+            "description": "<p>终止时间</p>"
+          }
+        ]
+      }
+    },
     "success": {
       "fields": {
         "Success 200": [
@@ -29616,99 +29636,29 @@
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.preparing_order",
-            "description": "<p>待取派订单</p>"
+            "field": "data.merchant_name",
+            "description": "<p>货主名</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.preparing_batch",
-            "description": "<p>待取派站点</p>"
+            "field": "data.graph",
+            "description": ""
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.preparing_tour",
-            "description": "<p>待取派任务</p>"
+            "field": "data.graph.date",
+            "description": "<p>日期</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.tour",
-            "description": "<p>任务</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.taking_tour",
-            "description": "<p>进行中任务</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.done_tour",
-            "description": "<p>已完成任务</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.exception_batch",
-            "description": "<p>异常站点</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.exception_tracking_order",
-            "description": "<p>异常运单</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.tracking_order",
-            "description": "<p>运单</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.exception_package",
-            "description": "<p>异常包裹</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.package",
-            "description": "<p>包裹</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.order",
+            "field": "data.graph.order",
             "description": "<p>订单</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.pickup_order",
-            "description": "<p>取件订单</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.pie_order",
-            "description": "<p>派件订单</p>"
           },
           {
             "group": "Success 200",
@@ -29716,34 +29666,13 @@
             "optional": false,
             "field": "msg",
             "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.pickup_pie_order",
-            "description": "<p>取派订单</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.batch",
-            "description": "<p>站点</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.month_order",
-            "description": "<p>本月累计完成订单</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "{\n\"code\": 200,\n\"data\": {\n\"preparing_order\": 0,\n\"preparing_batch\": 0,\n\"preparing_tour\": 0,\n\"tour\": 0,\n\"taking_tour\": 0,\n\"done_tour\": 0,\n\"exception_batch\": 0,\n\"batch\": 0,\n\"exception_tracking_order\": 0,\n\"tracking_order\": 0,\n\"exception_package\": 0,\n\"package\": 0,\n\"rder\": 0,\n\"pickup_order\": 0,\n\"pie_order\": 0,\n\"pickup_pie_order\": 0\n},\n\"msg\": \"successful\"\n}",
+          "content": "{\n\"code\": 200,\n\"data\": [\n{\n\"merchant_name\": \"test\",\n\"graph\": [\n{\n\"date\": \"2020-09-14\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-15\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-16\",\n\"order\": 0\n}\n]\n},\n{\n\"merchant_name\": \"test-test\",\n\"graph\": [\n{\n\"date\": \"2020-09-11\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-12\",\n\"order\": 1\n},\n{\n\"date\": \"2020-09-13\",\n\"order\": 0\n}\n]\n},\n{\n\"merchant_name\": \"货主122222333\",\n\"graph\": [\n{\n\"date\": \"2020-09-08\",\n\"order\": 4\n},\n{\n\"date\": \"2020-09-09\",\n\"order\": 16\n},\n{\n\"date\": \"2020-09-10\",\n\"order\": 17\n}\n]\n},\n{\n\"merchant_name\": \"货主asd\",\n\"graph\": [\n{\n\"date\": \"2020-09-05\",\n\"order\": 29\n},\n{\n\"date\": \"2020-09-06\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-07\",\n\"order\": 0\n}\n]\n},\n{\n\"merchant_name\": \"测试\",\n\"graph\": [\n{\n\"date\": \"2020-09-02\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-03\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-04\",\n\"order\": 0\n}\n]\n}\n],\n\"msg\": \"successful\"\n}",
           "type": "json"
         }
       ]
@@ -29752,7 +29681,7 @@
     "groupTitle": "主页",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/admin/statistics"
+        "url": "https://dev-tms-api.nle-tech.com/api/admin/statistics/period"
       }
     ],
     "header": {
@@ -29961,130 +29890,6 @@
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/admin/statistics/this-mouth"
-      }
-    ],
-    "header": {
-      "fields": {
-        "Header": [
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "language",
-            "description": "<p>语言cn-中文en-英文。</p>"
-          },
-          {
-            "group": "Header",
-            "type": "string",
-            "optional": false,
-            "field": "Authorization",
-            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Header-Example:",
-          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
-          "type": "json"
-        }
-      ]
-    }
-  },
-  {
-    "type": "get",
-    "url": "/admin/statistics/period",
-    "title": "本月统计",
-    "name": "本月统计",
-    "group": "14",
-    "version": "1.0.0",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "begin_date",
-            "description": "<p>起始时间</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "end_date",
-            "description": "<p>终止时间</p>"
-          }
-        ]
-      }
-    },
-    "success": {
-      "fields": {
-        "Success 200": [
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "code",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.merchant_name",
-            "description": "<p>货主名</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.graph",
-            "description": ""
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.graph.date",
-            "description": "<p>日期</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "data.graph.order",
-            "description": "<p>订单</p>"
-          },
-          {
-            "group": "Success 200",
-            "type": "string",
-            "optional": false,
-            "field": "msg",
-            "description": ""
-          }
-        ]
-      },
-      "examples": [
-        {
-          "title": "Success-Response:",
-          "content": "{\n\"code\": 200,\n\"data\": [\n{\n\"merchant_name\": \"test\",\n\"graph\": [\n{\n\"date\": \"2020-09-14\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-15\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-16\",\n\"order\": 0\n}\n]\n},\n{\n\"merchant_name\": \"test-test\",\n\"graph\": [\n{\n\"date\": \"2020-09-11\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-12\",\n\"order\": 1\n},\n{\n\"date\": \"2020-09-13\",\n\"order\": 0\n}\n]\n},\n{\n\"merchant_name\": \"货主122222333\",\n\"graph\": [\n{\n\"date\": \"2020-09-08\",\n\"order\": 4\n},\n{\n\"date\": \"2020-09-09\",\n\"order\": 16\n},\n{\n\"date\": \"2020-09-10\",\n\"order\": 17\n}\n]\n},\n{\n\"merchant_name\": \"货主asd\",\n\"graph\": [\n{\n\"date\": \"2020-09-05\",\n\"order\": 29\n},\n{\n\"date\": \"2020-09-06\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-07\",\n\"order\": 0\n}\n]\n},\n{\n\"merchant_name\": \"测试\",\n\"graph\": [\n{\n\"date\": \"2020-09-02\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-03\",\n\"order\": 0\n},\n{\n\"date\": \"2020-09-04\",\n\"order\": 0\n}\n]\n}\n],\n\"msg\": \"successful\"\n}",
-          "type": "json"
-        }
-      ]
-    },
-    "filename": "public/api/routes/admin/admin.php",
-    "groupTitle": "主页",
-    "sampleRequest": [
-      {
-        "url": "https://dev-tms-api.nle-tech.com/api/admin/statistics/period"
       }
     ],
     "header": {
