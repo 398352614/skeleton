@@ -117,7 +117,7 @@ define({ "api": [
     "groupTitle": "全局说明",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_api"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_api"
       }
     ]
   },
@@ -194,7 +194,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_api/order-out-status"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_api/order-out-status"
       }
     ]
   },
@@ -271,7 +271,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_api/cancel-all-order"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_api/cancel-all-order"
       }
     ]
   },
@@ -417,7 +417,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_api/order-dispatch-info"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_api/order-dispatch-info"
       }
     ]
   },
@@ -480,7 +480,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_api/end-order"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_api/end-order"
       }
     ]
   },
@@ -613,7 +613,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_api/again-order"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_api/again-order"
       }
     ]
   },
@@ -773,7 +773,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_api/location"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_api/location"
       }
     ]
   },
@@ -1396,7 +1396,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_api/order-update"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_api/order-update"
       }
     ]
   },
@@ -2033,7 +2033,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_api/order"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_api/order"
       }
     ]
   },
@@ -2124,7 +2124,7 @@ define({ "api": [
     "groupTitle": "接口使用方法",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/merchant_api/post-code-date-list"
+        "url": "https://dev-tms-api.nle-tech.com/api/merchant_api/post-code-date-list"
       }
     ]
   },
@@ -2263,7 +2263,7 @@ define({ "api": [
     "groupTitle": "推送通知",
     "sampleRequest": [
       {
-        "url": "https://api.rrtms.com/api/push"
+        "url": "https://dev-tms-api.nle-tech.com/api/push"
       }
     ]
   }

@@ -93,9 +93,16 @@ class LineService extends BaseLineService
             $info['line_range'] = [];
             $info['work_day_list'] = '';
         } else {
+            foreach ($lineRangeList as $k => $v) {
+                if ($lineRangeList[$k]['post_code_start'] == $lineRangeList[$k]['post_code_end']) {
+                    $lineRangeList[$k]['type'] = BaseConstService::POSTCODE_TYPE_2;
+                } else {
+                    $lineRangeList[$k]['type'] = BaseConstService::POSTCODE_TYPE_1;
+                }
+            }
             $info['line_range'] = $lineRangeList->map(function ($lineRange, $key) {
                 $lineRange['country_name'] = CountryTrait::getCountryName($lineRange['country']);
-                return collect($lineRange)->only(['country','country_name', 'post_code_start', 'post_code_end']);
+                return collect($lineRange)->only(['type', 'country', 'country_name', 'post_code_start', 'post_code_end']);
             })->unique(function ($item) {
                 return $item['post_code_start'] . $item['post_code_end'];
             })->toArray();
