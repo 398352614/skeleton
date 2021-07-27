@@ -25185,8 +25185,8 @@
  */
 
 /**
- * @api {put} /admin/map-config 订单设置修改
- * @apiName 订单设置修改
+ * @api {put} /admin/map-config 地图引擎修改
+ * @apiName 地图引擎修改
  * @apiGroup 49
  * @apiVersion 1.0.0
  * @apiUse auth
@@ -25209,8 +25209,8 @@
  */
 
 /**
- * @api {get} /admin/map-config 订单设置详情
- * @apiName 订单设置详情
+ * @api {get} /admin/map-config 地图引擎详情
+ * @apiName 地图引擎详情
  * @apiGroup 49
  * @apiVersion 1.0.0
  * @apiUse auth
