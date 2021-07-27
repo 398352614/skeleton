@@ -19,7 +19,7 @@ class TourOptimizationService
     {
         $company = CompanyTrait::getCompany($companyId);
         if (!empty($company['map']) && ($company['map'] == 'google')) {
-            return self::getInstance(GoogleApiService::class);
+            return self::getInstance(GoogleApiService2::class);
         } else {
             return self::getInstance(TenCentApiService::class);
         }
