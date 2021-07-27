@@ -68,4 +68,15 @@ class AddressController extends BaseController
     {
         return $this->service->destroy($id);
     }
+
+    /**
+     * 查询地址
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|mixed|object|null
+     * @throws \App\Exceptions\BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function showByApi()
+    {
+        return $this->service->showByApi($this->data);
+    }
 }

@@ -13,6 +13,7 @@ use App\Http\Resources\Api\Merchant\AddressResource;
 use App\Models\Address;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
+use App\Traits\LocationTrait;
 use Illuminate\Support\Arr;
 
 class AddressService extends BaseService
@@ -136,5 +137,34 @@ class AddressService extends BaseService
         }
     }
 
+    /**
+     * @param array $data
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|mixed|object|null
+     * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function showByApi(array $data)
+    {
+        $where = [];
+        $array = ['place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_province', 'place_district'];
+        foreach ($array as $k => $v) {
+            if (!empty($data[$v])) {
+                $where[$v] = $data[$v];
+            } else {
+                $data[$v] = '';
+            }
+        }
+        $address = parent::getInfo($where, ['*'], false);
+        if (empty($address)) {
+            $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
+            foreach ($array as $k => $v) {
+                $address[$v] = $info[str_replace('place_', '', $v)];
+            }
+        } else {
+            $address = collect($address)->toArray();
+        }
+        $address = Arr::only($address, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code', 'place_province', 'place_district', 'place_lon', 'place_lat']);
+        return $address;
+    }
 
 }
