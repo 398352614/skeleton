@@ -42,6 +42,7 @@ class LineRangeService extends BaseService
                 }
                 $array[] = $y['post_code_start'] . '-' . $y['post_code_end'] . ';';
             }
+            $result[$key] .= "\n";
         }
         $newList = [];
         $list = array_create_group_index($list, 'line_id');
