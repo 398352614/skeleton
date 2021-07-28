@@ -31,7 +31,7 @@ class GoogleApiService2
      * GoogleApiService2 constructor.
      * @throws BusinessLogicException
      */
-    public function __construct($company)
+    public function __construct()
     {
         $this->client = new CurlClient;
         $this->url = config('tms.map_url');
