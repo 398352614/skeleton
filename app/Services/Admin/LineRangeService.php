@@ -30,20 +30,20 @@ class LineRangeService extends BaseService
      */
     public function getAllLineRange($lineIdList)
     {
-        $result=[];
+        $result = [];
         $list = parent::getList(['line_id' => ['in', $lineIdList]], ['*'], false)->toArray();
         if (empty($list)) return [];
         $listByCountry = collect($list)->groupBy('country')->toArray();
         foreach ($listByCountry as $key => $lineRange) {
-            $result[$key] = CountryTrait::getCountryName($key).':';
+            $result[$key] = CountryTrait::getCountryName($key) . ':';
             foreach ($lineRange as $x => $y) {
-                $result[$key] .= $y['post_code_start'] . '-' . $y['post_code_end'].';';
+                $result[$key] .= $y['post_code_start'] . '-' . $y['post_code_end'] . ';';
             }
         }
         $newList = [];
         $list = array_create_group_index($list, 'line_id');
         foreach ($list as $key => $lineList) {
-            $newList[$key]['line_range'] =array_values($result);
+            $newList[$key]['line_range'] = array_unique(array_values($result));
             $newList[$key]['work_day_list'] = array_column($lineList, 'schedule');
         }
         return $newList;
