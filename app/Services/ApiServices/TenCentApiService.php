@@ -34,7 +34,7 @@ class TenCentApiService
      */
     protected $client;
 
-    public function __construct($companyId)
+    public function __construct($company)
     {
         $this->client = new CurlClient;
         $this->url = config('tms.tencent_api_url');
