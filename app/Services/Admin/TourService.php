@@ -40,6 +40,7 @@ class TourService extends BaseService
     public $directionClient;
 
     public $filterRules = [
+        'car_no' => ['=', 'car_no'],
         'status' => ['=', 'status'],
         'execution_date' => ['between', ['begin_date', 'end_date']],
         'line_name' => ['like', 'line_name'],
@@ -634,7 +635,7 @@ class TourService extends BaseService
      */
     public function getNextBatchAndUpdateIndex($batchIds): Batch
     {
-        if(count($batchIds) ==1){
+        if (count($batchIds) == 1) {
             return Batch::where('id', collect($batchIds)->first())->first();
         }
         $first = false;
