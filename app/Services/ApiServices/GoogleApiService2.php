@@ -31,24 +31,12 @@ class GoogleApiService2
      * GoogleApiService2 constructor.
      * @throws BusinessLogicException
      */
-    public function __construct()
+    public function __construct($companyId)
     {
         $this->client = new CurlClient;
         $this->url = config('tms.map_url');
         $this->key = config('tms.map_key');
-//        $company = auth('admin')->user();
-//        if (empty($company)) {
-//            $company = auth('merchant')->user();
-//        }
-//        if (empty($company)) {
-//            $company = auth('driver')->user();
-//        }
-//        if (empty($company)) {
-//            $company = auth()->user();
-//        }
-//        if (empty($company)) {
-//            throw new BusinessLogicException('公司不存在');
-//        }
+
 //        $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
 //        if (!empty($mapConfig) && !empty($mapConfig['google_key'])) {
 //            $this->key = $mapConfig->toArray()['google_key'];
