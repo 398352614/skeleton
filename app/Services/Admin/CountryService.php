@@ -104,24 +104,26 @@ class CountryService extends BaseService
     public function destroy($id)
     {
         $country = parent::getInfo(['id' => $id], ['*'], false);
-        $order = $this->getOrderService()->getList(['place_country' => $country['short']], ['id'], false)->toArray();
-        if (!empty($order)) {
-            throw new BusinessLogicException('系统中已维护该国家，不能删除');
-            //throw new BusinessLogicException('已存在订单，不能删除国家');
-        }
-        $place = $this->getAddressService()->getInfo(['place_country' => $country['short']], ['id'], false);
-        if (!empty($place)) {
-            throw new BusinessLogicException('系统中已维护该国家，不能删除');
-            //throw new BusinessLogicException('已存在收件人，不能删除国家');
-        }
-        $warehouse = $this->getWareHouseService()->getInfo(['country' => $country['short']], ['id'], false);
-        if (!empty($warehouse)) {
-            throw new BusinessLogicException('系统中已维护该国家，不能删除');
-            //throw new BusinessLogicException('已存在网点，不能删除国家');
-        }
-        $rowCount = parent::delete(['id' => $id]);
-        if ($rowCount === false) {
-            throw new BusinessLogicException('删除失败，请重新操作');
+        if(!empty($country)){
+            $order = $this->getOrderService()->getList(['place_country' => $country['short']], ['id'], false)->toArray();
+            if (!empty($order)) {
+                throw new BusinessLogicException('系统中已维护该国家，不能删除');
+                //throw new BusinessLogicException('已存在订单，不能删除国家');
+            }
+            $place = $this->getAddressService()->getInfo(['place_country' => $country['short']], ['id'], false);
+            if (!empty($place)) {
+                throw new BusinessLogicException('系统中已维护该国家，不能删除');
+                //throw new BusinessLogicException('已存在收件人，不能删除国家');
+            }
+            $warehouse = $this->getWareHouseService()->getInfo(['country' => $country['short']], ['id'], false);
+            if (!empty($warehouse)) {
+                throw new BusinessLogicException('系统中已维护该国家，不能删除');
+                //throw new BusinessLogicException('已存在网点，不能删除国家');
+            }
+            $rowCount = parent::delete(['id' => $id]);
+            if ($rowCount === false) {
+                throw new BusinessLogicException('删除失败，请重新操作');
+            }
         }
         Artisan::call('cache:company --company_id=' . auth()->user()->company_id);
     }
