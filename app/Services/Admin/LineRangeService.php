@@ -35,7 +35,7 @@ class LineRangeService extends BaseService
         if (empty($list)) return [];
         $listByCountry = collect($list)->groupBy('country')->toArray();
         foreach ($listByCountry as $key => $lineRange) {
-            $result[$key] = "\n" . CountryTrait::getCountryName($key) . ':';
+            $result[$key] = CountryTrait::getCountryName($key) . ':';
             foreach ($lineRange as $x => $y) {
                 if (!in_array($y['post_code_start'] . '-' . $y['post_code_end'] . ';', $array)) {
                     $result[$key] .= $y['post_code_start'] . '-' . $y['post_code_end'] . ';';
