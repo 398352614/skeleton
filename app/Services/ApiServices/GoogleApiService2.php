@@ -116,10 +116,10 @@ class GoogleApiService2
                 return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon]);
             })->toArray();
             if (empty($driverLocation)) {
-                if ($nextCode == 1) {
+                $preBatch = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL])->orderBy('sort_id', 'desc')->first();
+                if(empty($preBatch)){
                     $wayPointList[] = $tour->warehouse_lat . ',' . $tour->warehouse_lon;
-                } else {
-                    $preBatch = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL])->orderBy('sort_id', 'desc')->first();
+                }else{
                     $wayPointList[] = $preBatch['place_lat'] . ',' . $preBatch['place_lon'];
                 }
             } else {
@@ -238,7 +238,6 @@ class GoogleApiService2
         }
         $res = $this->client->get($url, $options);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
-            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('google-api请求报错');
         }
         return $res;
@@ -296,7 +295,6 @@ class GoogleApiService2
         unset($wayPointList[0]);
         array_pop($wayPointList);
         $wayPointList = array_values($wayPointList);
-        $wayPoints = implode('|', $wayPointList);
         $query = "directions/json?origin={$origin}&destination={$destination}&key={$this->key}";
         if (!empty($wayPointList)) {
             $wayPoints = implode('|', $wayPointList);
