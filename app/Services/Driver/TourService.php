@@ -1199,6 +1199,7 @@ class TourService extends BaseService
      */
     public function updateBatchIndex($params)
     {
+        $params['batch_ids']=array_values($params['batch_ids']);
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
         set_time_limit(240);
