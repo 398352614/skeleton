@@ -1193,13 +1193,16 @@ class TourService extends BaseService
     /**
      * 更新批次配送顺序
      * @param $params
+     * @param int $value
      * @return string
      * @throws BusinessLogicException
      * @throws Throwable
      */
-    public function updateBatchIndex($params)
+    public function updateBatchIndex($params, $value = BaseConstService::NO)
     {
-        $params['batch_ids']=array_values($params['batch_ids']);
+        if($value == BaseConstService::YES){
+            $params['batch_ids'] = array_values($params['batch_ids']);
+        }
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
         set_time_limit(240);
