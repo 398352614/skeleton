@@ -1201,7 +1201,7 @@ class TourService extends BaseService
     public function updateBatchIndex($params, $value = BaseConstService::NO)
     {
         Log::info('1',$params['batch_ids']);
-        if($value == BaseConstService::YES){
+        if($value == BaseConstService::YES && (is_object($params['batch_ids']))){
             $params['batch_ids'] = json_decode($params['batch_ids'],true);
         }
         // * @apiParam {String}   batch_ids                  有序的批次数组
