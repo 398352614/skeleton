@@ -61,7 +61,7 @@ class GoogleApiService2
         if ($tour->status != BaseConstService::TOUR_STATUS_4) { // 未取派的情况下,所有 batch 都是未取派的
             $orderBatchs = $tour->batchs;
         } else {
-            $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->get()->sortByDesc('sort_id'); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
+            $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->get()->sortBy('sort_id'); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
             foreach ($preBatchs as $preBatch) {
                 $preBatch->update(['sort_id' => $keyIndex]);
                 $keyIndex++;
@@ -117,9 +117,9 @@ class GoogleApiService2
             })->toArray();
             if (empty($driverLocation)) {
                 $preBatch = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL])->orderBy('sort_id', 'desc')->first();
-                if(empty($preBatch)){
+                if (empty($preBatch)) {
                     $wayPointList[] = $tour->warehouse_lat . ',' . $tour->warehouse_lon;
-                }else{
+                } else {
                     $wayPointList[] = $preBatch['place_lat'] . ',' . $preBatch['place_lon'];
                 }
             } else {
