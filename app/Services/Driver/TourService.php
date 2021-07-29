@@ -1202,7 +1202,7 @@ class TourService extends BaseService
     {
         Log::info('1',$params['batch_ids']);
         if($value == BaseConstService::YES){
-            $params['batch_ids'] = array_values($params['batch_ids']);
+            $params['batch_ids'] = json_decode($params['batch_ids'],true);
         }
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
