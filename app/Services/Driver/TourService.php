@@ -1200,13 +1200,14 @@ class TourService extends BaseService
      */
     public function updateBatchIndex($params, $value = BaseConstService::NO)
     {
+        Log::info('1',$params['batch_ids']);
         if($value == BaseConstService::YES){
             $params['batch_ids'] = array_values($params['batch_ids']);
         }
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
         set_time_limit(240);
-
+        Log::info('2',$params['batch_ids']);
         app('log')->info('更新线路传入的参数为:', $params);
 
         $tour = Tour::where('tour_no', $params['tour_no'])->firstOrFail();
