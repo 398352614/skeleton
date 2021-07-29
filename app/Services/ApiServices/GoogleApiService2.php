@@ -90,7 +90,7 @@ class GoogleApiService2
         }
         $nextBatch = null;
         foreach ($batchNos as $k => $batchNo) {
-            Batch::where('batch_no', $batchNo)->update(['sort_id' => $key + $k]);
+            Batch::where('batch_no', $batchNo)->update(['sort_id' => $keyIndex + $k]);
             if (!$nextBatch) {
                 $nextBatch = Batch::where('batch_no', $batchNo)->first();
             }
