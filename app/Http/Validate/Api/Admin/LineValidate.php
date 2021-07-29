@@ -35,6 +35,7 @@ class LineValidate extends BaseValidate
         'date' => 'required|date',
         //邮编列表
         'item_list.*.type' => 'required|integer|in:1,2',
+        'item_list.*.country' => 'required|string',
         'item_list.*.post_code_start' => 'required|integer',
         'item_list.*.post_code_end' => 'nullable|integer|gte:item_list.*.post_code_start',
         'coordinate_list' => 'required',
