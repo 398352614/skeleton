@@ -20,7 +20,7 @@ class InitBasePermission extends Command
      * mode=1为重置修改，否则为增量修改
      * @var string
      */
-    protected $signature = 'init:base-permission';
+    protected $signature = 'init:permission {--mode= : mode} {--id= : company id}';
 
     /**
      * The console command description.
