@@ -93,7 +93,7 @@ class InitBasePermission extends Command
     public static function getPermissionList()
     {
         $tag = config('tms.cache_tags.permission');
-        Artisan::call('cache:permission');
+        Artisan::call('permission:cache');
         $permissionList = Cache::tags($tag)->get('permission_list');
         return collect($permissionList)->pluck('id')->toArray();
     }
