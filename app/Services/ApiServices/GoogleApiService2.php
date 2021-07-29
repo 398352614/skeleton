@@ -116,14 +116,19 @@ class GoogleApiService2
                 return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon]);
             })->toArray();
             if (empty($driverLocation)) {
-                $driverLocation = ['latitude' => $tour->warehouse_lat, 'longitude' => $tour->warehouse_lon];
+                if ($nextCode == 1) {
+                    $wayPointList[] = $tour->warehouse_lat . ',' . $tour->warehouse_lon;
+                } else {
+                    $preBatch = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL])->orderBy('sort_id', 'desc')->first();
+                    $wayPointList[] = $preBatch['place_lat'] . ',' . $preBatch['place_lon'];
+                }
+            } else {
+                $wayPointList[] = $driverLocation['latitude'] . ',' . $driverLocation['longitude'];
             }
-            $wayPointList[] = $driverLocation['latitude'] . ',' . $driverLocation['longitude'];
             foreach ($orderBatchs as $k => $v) {
                 $wayPointList[] = $v['place_lat'] . ',' . $v['place_lon'];
             }
-            $wayPointList[] = $driverLocation['latitude'] . ',' . $driverLocation['longitude'];
-            $distance = $time = 0;
+            $wayPointList[] = $tour->warehouse_lat . ',' . $tour->warehouse_lon;
             $nowTime = time();
             $key = 0;
             $res = $this->getDistance2($wayPointList);
