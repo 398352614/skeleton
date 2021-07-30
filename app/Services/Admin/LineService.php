@@ -60,6 +60,7 @@ class LineService extends BaseLineService
             }
         }
         $this->filters['rule'] = ['=', BaseConstService::LINE_RULE_POST_CODE];
+        $this->query->orderByDesc('id');
         $list = parent::getPageList();
         $lineIdList = array_column($list->all(), 'id');
         if (empty($lineIdList)) return $list;

@@ -96,7 +96,6 @@ class LineRangeService extends BaseService
         if (empty($rangeList)) {
             throw new BusinessLogicException('邮编范围不能为空');
         }
-        $countryList = [];
         //单邮编赋值为范围
         foreach ($rangeList as $k => $v) {
             if ($v['type'] == BaseConstService::POSTCODE_TYPE_1) {
