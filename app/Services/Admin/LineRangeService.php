@@ -30,24 +30,33 @@ class LineRangeService extends BaseService
      */
     public function getAllLineRange($lineIdList)
     {
-        $result = $array = [];
+        $newList = [];
+        $result = [];
+        $schedule = [];
         $list = parent::getList(['line_id' => ['in', $lineIdList]], ['*'], false)->toArray();
         if (empty($list)) return [];
-        $listByCountry = collect($list)->groupBy('country')->toArray();
-        foreach ($listByCountry as $key => $lineRange) {
-            $result[$key] = CountryTrait::getCountryName($key) . ':';
-            foreach ($lineRange as $x => $y) {
-                if (!in_array($y['post_code_start'] . '-' . $y['post_code_end'] . ';', $array)) {
-                    $result[$key] .= $y['post_code_start'] . '-' . $y['post_code_end'] . ';';
-                }
-                $array[] = $y['post_code_start'] . '-' . $y['post_code_end'] . ';';
-            }
-        }
-        $newList = [];
         $list = array_create_group_index($list, 'line_id');
-        foreach ($list as $key => $lineList) {
-            $newList[$key]['line_range'] = array_values($result);
-            $newList[$key]['work_day_list'] = array_column($lineList, 'schedule');
+        foreach ($list as $lineId => $listByLine) {
+
+            $listByLineByCountry = collect($listByLine)->groupBy('country')->toArray();
+            foreach ($listByLineByCountry as $country => $lineRange) {
+                $array = [];
+                $result[$lineId]['line_range'][$country] = CountryTrait::getCountryName($country) . ':';
+                $result[$lineId]['work_day_list'] = [];
+                $schedule = [];
+                foreach ($lineRange as $k => $v) {
+                    if (!in_array($v['post_code_start'] . '-' . $v['post_code_end'] . ';', $array)) {
+                        $result[$lineId]['line_range'][$country] .= $v['post_code_start'] . '-' . $v['post_code_end'] . ';';
+                    }
+                    $array[] = $v['post_code_start'] . '-' . $v['post_code_end'] . ';';
+                    if (!in_array($v['schedule'], $schedule)) {
+                        $result[$lineId]['work_day_list'][] = $v['schedule'];
+                    }
+                    $schedule[] = $v['schedule'];
+                }
+            }
+            $newList[$lineId]['line_range'] = array_values($result[$lineId]['line_range']);
+            $newList[$lineId]['work_day_list'] = array_values($result[$lineId]['work_day_list']);
         }
         return $newList;
     }
