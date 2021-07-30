@@ -108,10 +108,6 @@ class LineRangeService extends BaseService
                 }
             } else {
                 $rangeList[$k]['post_code_end'] = $rangeList[$k]['post_code_start'];
-                if (in_array($v['country'], $countryList)) {
-                    throw new BusinessLogicException('请将相同国家的精准邮编放在同一行');
-                }
-                $countryList[] = $v['country'];
             }
         }
         $newRangeList = collect($rangeList)->groupBy('country')->toArray();
