@@ -665,6 +665,8 @@ class TourService extends BaseService
 
     /**
      * 更新批次配送顺序
+     * @param $data
+     * @return string
      * @throws BusinessLogicException
      * @throws \Throwable
      */

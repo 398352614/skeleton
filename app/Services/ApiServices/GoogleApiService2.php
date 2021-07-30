@@ -10,21 +10,16 @@ namespace App\Services\ApiServices;
 
 use App\Exceptions\BusinessLogicException;
 use App\Models\Batch;
-use App\Models\MapConfig;
 use App\Models\Tour;
-use App\Services\Admin\ApiTimesService;
 use App\Services\BaseConstService;
 use App\Services\BaseServices\XLDirectionService;
 use App\Services\CurlClient;
-use App\Traits\CompanyTrait;
-use App\Traits\FactoryInstanceTrait;
 use Illuminate\Support\Facades\Log;
 
 class GoogleApiService2
 {
     const MAX_POINTS = 25;
     protected $url;
-    protected $distance_url;
     protected $key;
     protected $secret;
     /**
@@ -42,26 +37,13 @@ class GoogleApiService2
         $this->url = config('tms.map_url');
         $this->key = config('tms.map_key');
 
-        $company = auth('admin')->user();
-        if (empty($company)) {
-            $company = auth('merchant')->user();
-        }
-        if (empty($company)) {
-            $company = auth('driver')->user();
-        }
-        if (empty($company)) {
-            $company = auth()->user();
-        }
-        if (empty($company)) {
-            throw new BusinessLogicException('公司不存在');
-        }
-        $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
-        if (!empty($mapConfig) && !empty($mapConfig['google_key'])) {
-            $this->key = $mapConfig->toArray()['google_key'];
-        } else {
-            Log::info('备用Key');
-            $this->key = config('tms.map_key');
-        }
+//        $mapConfig = MapConfig::query()->where('company_id', $company->company_id)->first();
+//        if (!empty($mapConfig) && !empty($mapConfig['google_key'])) {
+//            $this->key = $mapConfig->toArray()['google_key'];
+//        } else {
+//            Log::info('备用Key');
+        $this->key = config('tms.map_key');
+//        }
     }
 
     /**
@@ -79,7 +61,7 @@ class GoogleApiService2
         if ($tour->status != BaseConstService::TOUR_STATUS_4) { // 未取派的情况下,所有 batch 都是未取派的
             $orderBatchs = $tour->batchs;
         } else {
-            $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->get()->sortByDesc('sort_id'); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
+            $preBatchs = $tour->batchs()->where('status', '<>', BaseConstService::BATCH_DELIVERING)->get()->sortBy('sort_id'); // 已完成的包裹排序值放前面并不影响 -- 此处不包括未开始的
             foreach ($preBatchs as $preBatch) {
                 $preBatch->update(['sort_id' => $keyIndex]);
                 $keyIndex++;
@@ -108,7 +90,7 @@ class GoogleApiService2
         }
         $nextBatch = null;
         foreach ($batchNos as $k => $batchNo) {
-            Batch::where('batch_no', $batchNo)->update(['sort_id' => $key + $k]);
+            Batch::where('batch_no', $batchNo)->update(['sort_id' => $keyIndex + $k]);
             if (!$nextBatch) {
                 $nextBatch = Batch::where('batch_no', $batchNo)->first();
             }
@@ -134,45 +116,61 @@ class GoogleApiService2
                 return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon]);
             })->toArray();
             if (empty($driverLocation)) {
-                $driverLocation = ['latitude' => $tour->warehouse_lat, 'longitude' => $tour->warehouse_lon];
-            }
-            try {
-                $res = $this->distanceMatrix(array_merge([$driverLocation], array_values($orderBatchs)));
-                $distance = $time = 0;
-                $nowTime = time();
-                $key = 0;
-                foreach ($orderBatchs as $batchNo => $batch) {
-                    $distance += $res[$key][$key + 1]['distance']['value'];
-                    $time += $res[$key][$key + 1]['duration']['value'];
-                    Batch::query()->where('batch_no', $batchNo)->update([
-                        'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time),
-                        'expect_distance' => $distance,
-                        'expect_time' => $time
-                    ]);
-                    $key++;
+                $preBatch = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL])->orderBy('sort_id', 'desc')->first();
+                if (empty($preBatch)) {
+                    $wayPointList[] = $tour->warehouse_lat . ',' . $tour->warehouse_lon;
+                } else {
+                    $wayPointList[] = $preBatch['place_lat'] . ',' . $preBatch['place_lon'];
                 }
-                /*********************************2.获取最后一个站点到网点的距离和时间*****************************************/
-                $backWarehouseElement = $this->distanceMatrix([last($orderBatchs), $tour->driver_location]);
-                $backElement = $backWarehouseElement[0][1];
-                if ($backElement['status'] !== "ZERO_RESULTS") {
-                    $tourData = [
-                        'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $time + $backElement['duration']['value']),
-                        'warehouse_expect_distance' => $distance + $backElement['distance']['value'],
-                        'warehouse_expect_time' => $time + $backElement['duration']['value']
-                    ];
-                    // 只有未更新过的线路需要更新期望时间和距离
-                    if (
-                        ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
-                        || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
-                    ) {
-                        $tourData['expect_distance'] = $distance + $backElement['distance']['value'];
-                        $tourData['expect_time'] = $time + $backElement['duration']['value'];
-                    }
-                    Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
-                }
-            } catch (BusinessLogicException $exception) {
-                throw new BusinessLogicException('线路更新失败');
+            } else {
+                $wayPointList[] = $driverLocation['latitude'] . ',' . $driverLocation['longitude'];
             }
+            foreach ($orderBatchs as $k => $v) {
+                $wayPointList[] = $v['place_lat'] . ',' . $v['place_lon'];
+            }
+            $wayPointList[] = $tour->warehouse_lat . ',' . $tour->warehouse_lon;
+            $nowTime = time();
+            $key = 0;
+            $res = $this->getDistance2($wayPointList);
+            $totalDistance = $totalTime = 0;
+            foreach ($res as $k => $v) {
+                $totalDistance += $v['distance'];
+                $totalTime += $v['time'];
+            }
+            $inWarehouse = array_pop($res);
+            //更新站点
+            $arriveTime = 0;
+            foreach ($orderBatchs as $batchNo => $batch) {
+                $distance = $res[$key]['distance'];
+                $time = $res[$key]['time'];
+                $arriveTime += $time;
+                Batch::query()->where('batch_no', $batchNo)->update([
+                    'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $arriveTime),
+                    'expect_distance' => $distance,
+                    'expect_time' => $time
+                ]);
+                $key++;
+            }
+            //更新回仓距时距和总时距
+            $tourData = [
+                'warehouse_expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $totalTime),
+                'warehouse_expect_distance' => $inWarehouse['distance'],
+                'warehouse_expect_time' => $inWarehouse['time']
+            ];
+
+            if (
+                ((intval($tour->status) == BaseConstService::TOUR_STATUS_4) && ($tour->expect_time == 0))
+                || in_array(intval($tour->status), [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2, BaseConstService::TOUR_STATUS_3])
+            ) {
+                $tourData['expect_distance'] = $totalDistance;
+                $tourData['expect_time'] = $totalTime;
+            }
+            Tour::query()->where('tour_no', $tour->tour_no)->update($tourData);
+
+
+//            } catch (BusinessLogicException $exception) {
+//                throw new BusinessLogicException('线路更新失败');
+//            }
         }
     }
 
@@ -240,7 +238,6 @@ class GoogleApiService2
         }
         $res = $this->client->get($url, $options);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
-            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('google-api请求报错');
         }
         return $res;
@@ -262,20 +259,48 @@ class GoogleApiService2
 
     /**
      * 获取最优顺序
-     * @param $url
-     * @param $origin
      * @param $wayPointList
      * @return mixed|null
      * @throws BusinessLogicException
      */
-    protected function getSort($url, $origin, $wayPointList)
+    protected function getDistance2($wayPointList)
     {
-        $wayPoints = '';
-        foreach ($wayPointList as $v) {
-            $wayPoints = $wayPoints . '|' . $v;
+        foreach ($wayPointList as &$point) {
+            $point = is_array($point) ? implode(',', $point) : $point;
         }
-        $query = "directions/json?origin={$origin}&waypoints=optimize:true{$wayPoints}&destination={$origin}&key={$this->key}";
-        $url = $url . $query;
+        $groupPoints = array_chunk($wayPointList, self::MAX_POINTS);
+        $res = [];
+        foreach ($groupPoints as $k => $v) {
+            if ($k > 0) {
+                $array = array_merge([last($groupPoints[$k - 1])], $v);
+            } else {
+                $array = $v;
+            }
+            $res = array_merge($res, $this->getDistanceByGroup($array));
+        }
+        return $res;
+    }
+
+    /**
+     * 分组求距离
+     * @param $wayPointList
+     * @return mixed
+     * @throws BusinessLogicException
+     */
+    public function getDistanceByGroup($wayPointList)
+    {
+        //["5.55,6,66","5.56,6,56","5,55,6,66"]
+        $origin = $wayPointList[0];
+        $destination = $wayPointList[count($wayPointList) - 1];
+        unset($wayPointList[0]);
+        array_pop($wayPointList);
+        $wayPointList = array_values($wayPointList);
+        $query = "directions/json?origin={$origin}&destination={$destination}&key={$this->key}";
+        if (!empty($wayPointList)) {
+            $wayPoints = implode('|', $wayPointList);
+            $query .= "&waypoints={$wayPoints}";
+        }
+        $url = $this->url . $query;
         if (config('tms.true_app_env') == 'develop') {
             $options = [
                 'proxy' => [
@@ -287,9 +312,15 @@ class GoogleApiService2
         }
         $res = $this->client->get($url, $options);
         if (!isset($res['status']) || ($res['status'] != 'OK')) {
-            Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('google-api请求报错');
         }
-        return $res;
+        $result = [];
+        foreach ($res['routes'][0]['legs'] as $k => $v) {
+            $result[] = [
+                'distance' => $v['distance']['value'],
+                'time' => $v['duration']['value']
+            ];
+        }
+        return $result;
     }
 }
