@@ -53,6 +53,7 @@ class LineRangeService extends BaseService
                     }
                     $schedule[] = $v['schedule'];
                 }
+                $result[$lineId]['line_range'][$country].="\n";
             }
             $newList[$lineId]['line_range'] = array_values($result[$lineId]['line_range']);
             $newList[$lineId]['work_day_list'] = array_values($result[$lineId]['work_day_list']);

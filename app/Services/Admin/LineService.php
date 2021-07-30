@@ -69,7 +69,7 @@ class LineService extends BaseLineService
         $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $list->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id');
         if (empty($lineRangeList)) return $list;
         foreach ($list as &$line) {
-            $line['line_range'] = $lineRangeList[$line['id']]['line_range']."\n";
+            $line['line_range'] = $lineRangeList[$line['id']]['line_range'];
             $line['work_day_list'] = array_values(array_unique($lineRangeList[$line['id']]['work_day_list']));
             $line['warehouse_name'] = $warehouseList[$line['warehouse_id']]['name'];
         }
