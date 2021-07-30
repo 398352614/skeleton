@@ -32,7 +32,6 @@ class LineRangeService extends BaseService
     {
         $newList = [];
         $result = [];
-        $schedule = [];
         $list = parent::getList(['line_id' => ['in', $lineIdList]], ['*'], false)->toArray();
         if (empty($list)) return [];
         $list = array_create_group_index($list, 'line_id');
