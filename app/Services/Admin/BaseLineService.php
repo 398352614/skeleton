@@ -357,7 +357,7 @@ class BaseLineService extends BaseService
     public function getLineRangeList($params)
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_POST_CODE) {
-            $lineRangeList = $this->getLineRangeListByPostcode($params['place_post_code'], $params['country'], $params['merchant_id'] ?? null);
+            $lineRangeList = $this->getLineRangeListByPostcode($params['place_post_code'], $params['place_country'], $params['merchant_id'] ?? null);
         } else {
             $coordinate = ['lat' => $params['lat'] ?? $params['place_lat'], 'lon' => $params['lon'] ?? $params['place_lon']];
             $lineRangeList = $this->getLineRangeListByArea($coordinate);
