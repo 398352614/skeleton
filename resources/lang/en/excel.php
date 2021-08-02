@@ -186,6 +186,8 @@ return [
             "place_phone" => "*Phone",
             "place_post_code" => "*Post Code",
             "place_house_number" => "*House number",
+            "place_country" => "*Country",
+
             "place_city" => "*City",
             "place_street" => "*Street",
             "execution_date" => "*Execution date",

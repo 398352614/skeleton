@@ -56,6 +56,7 @@ return [
 
             "place_fullname" => "*发件人",
             "place_phone" => "*电话",
+            "place_country" => "*国家",
             "place_post_code" => "*邮编",
             "place_house_number" => "*门牌号",
             "place_city" => "*城市",
