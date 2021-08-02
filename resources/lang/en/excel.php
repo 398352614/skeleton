@@ -195,6 +195,7 @@ return [
 
             "second_place_fullname" => "*Fullname",
             "second_place_phone" => "*Phone",
+            "second_place_country" => "*Country",
             "second_place_post_code" => "*Post Code",
             "second_place_house_number" => "*House number",
             "second_place_city" => "*City",
