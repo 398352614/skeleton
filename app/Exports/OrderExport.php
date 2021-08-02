@@ -2,8 +2,10 @@
 
 namespace App\Exports;
 
+use App\Models\Country;
 use App\Models\Merchant;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\CountryTrait;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -73,21 +75,21 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
             AfterSheet::class => function (AfterSheet $event) {
                 //合并单元格
                 $event->sheet->getDelegate()->mergeCells('A1:E1');
-                $event->sheet->getDelegate()->mergeCells('F1:L1');
-                $event->sheet->getDelegate()->mergeCells('M1:S1');
-                $event->sheet->getDelegate()->mergeCells('T1:AD1');
-                $event->sheet->getDelegate()->mergeCells('AE1:AF1');
-                $event->sheet->getDelegate()->mergeCells('AG1:AK1');
-                $event->sheet->getDelegate()->mergeCells('AL1:AR1');
-                $event->sheet->getDelegate()->mergeCells('AS1:AY1');
-                $event->sheet->getDelegate()->mergeCells('AZ1:BF1');
-                $event->sheet->getDelegate()->mergeCells('BG1:BM1');
-                $event->sheet->getDelegate()->mergeCells('BN1:BT1');
-                $event->sheet->getDelegate()->mergeCells('BU1:CD1');
-                $event->sheet->getDelegate()->mergeCells('CE1:CN1');
-                $event->sheet->getDelegate()->mergeCells('CO1:CX1');
-                $event->sheet->getDelegate()->mergeCells('CY1:DH1');
-                $event->sheet->getDelegate()->mergeCells('DI1:DR1');
+                $event->sheet->getDelegate()->mergeCells('F1:M1');
+                $event->sheet->getDelegate()->mergeCells('N1:U1');
+                $event->sheet->getDelegate()->mergeCells('V1:AF1');
+                $event->sheet->getDelegate()->mergeCells('AG1:AH1');
+                $event->sheet->getDelegate()->mergeCells('AI1:AM1');
+                $event->sheet->getDelegate()->mergeCells('AN1:AT1');
+                $event->sheet->getDelegate()->mergeCells('AU1:BA1');
+                $event->sheet->getDelegate()->mergeCells('BB1:BH1');
+                $event->sheet->getDelegate()->mergeCells('BI1:BO1');
+                $event->sheet->getDelegate()->mergeCells('BP1:BV1');
+                $event->sheet->getDelegate()->mergeCells('BW1:CF1');
+                $event->sheet->getDelegate()->mergeCells('CG1:CP1');
+                $event->sheet->getDelegate()->mergeCells('CQ1:CZ1');
+                $event->sheet->getDelegate()->mergeCells('DA1:DJ1');
+                $event->sheet->getDelegate()->mergeCells('DK1:DT1');
 
                 $endColumn = $event->sheet->getDelegate()->getHighestColumn();
                 $endRow = $event->sheet->getDelegate()->getHighestRow();
@@ -111,19 +113,19 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
                 //冻结单元格
                 $event->sheet->getDelegate()->freezePane('A3');
                 //设置日期格式
-                $date = ['A', 'L', 'S', 'AQ', 'AX', 'BE', 'BL', 'BS'];
+                $date = ['A', 'M', 'U', 'AS', 'AZ', 'BG', 'BN', 'BU'];
                 foreach ($date as $k => $v) {
                     $event->sheet->getDelegate()->getStyle($v . '3:' . $v . '200')->getNumberFormat()
                         ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_YYYYMMDD);
                 }
                 //设置金额格式
-                $decimal = ['T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE',
-                    'AN', 'AU', 'BB', 'BI', 'BP',
-                    'BX', 'BY', 'CB',
-                    'CG', 'CH', 'CL',
-                    'CR', 'CS', 'CV',
-                    'DB', 'DC', 'DF',
-                    'DL', 'DM', 'DP'];
+                $decimal = ['V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG',
+                    'AP', 'AW', 'BD', 'BK', 'BR',
+                    'BZ', 'CA', 'CD',
+                    'CI', 'CJ', 'CN',
+                    'CT', 'CW', 'CX',
+                    'DD', 'DE', 'DH',
+                    'DN', 'DO', 'DR'];
                 foreach ($decimal as $k => $v) {
                     $event->sheet->getDelegate()->getStyle($v . '3:' . $v . '200')->getNumberFormat()
                         ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
@@ -131,14 +133,16 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
 
                 //设置字体颜色
                 $event->sheet->getDelegate()->getStyle('A2:C2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-                $event->sheet->getDelegate()->getStyle('F2:S2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-                $event->sheet->getDelegate()->getStyle('AL2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-                $event->sheet->getDelegate()->getStyle('BU2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-
+                $event->sheet->getDelegate()->getStyle('F2:U2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                $event->sheet->getDelegate()->getStyle('AN2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                $event->sheet->getDelegate()->getStyle('BW2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
                 //下拉
                 $arrayList = [
                     'B' => implode(',', array_values(ConstTranslateTrait::orderTypeList())),
                     'C' => implode(',', Merchant::query()->get()->pluck('name')->toArray()),
+                    'H' => implode(',', CountryTrait::getCountryNameList()),
+                    'P' => implode(',', CountryTrait::getCountryNameList()),
+
                     'AG' => implode(',', array_values(ConstTranslateTrait::orderControlModeList())),
                     'AH' => implode(',', array_values(ConstTranslateTrait::orderReceiptTypeList())),
                     'AF' => implode(',', array_values(ConstTranslateTrait::orderSettlementTypeList())),
@@ -302,29 +306,15 @@ class OrderExport implements FromArray, WithTitle, WithEvents, WithStrictNullCom
             'B' => 20,
             'C' => 15,
             'F' => 15,
-            'L'=>15,
-            'S'=>15,
+            'N' => 15,
             'M' => 15,
-            'E' => 15,
-            'AD' => 15,
-            'AQ' => 15,
-            'AX' => 15,
-            'BE' => 15,
-            'BN' => 15,
-            'BS' => 15,
-
-            'T' => 15,
             'U' => 15,
-            'V' => 15,
-            'W' => 15,
-            'X' => 15,
-            'Y' => 15,
-            'Z' => 15,
-            'AA' => 15,
-            'AB' => 15,
-            'AC' => 15,
-            'AE' => 15,
-
+            'E' => 15,
+            'AS' => 15,
+            'AZ' => 15,
+            'BG' => 15,
+            'BN' => 15,
+            'BU' => 15,
         ];
     }
 

@@ -186,7 +186,7 @@ return [
             "place_phone" => "*Phone",
             "place_post_code" => "*Post Code",
             "place_house_number" => "*House number",
-            "place_country" => "*Country",
+            "place_country_name" => "*Country",
 
             "place_city" => "*City",
             "place_street" => "*Street",
@@ -195,7 +195,7 @@ return [
 
             "second_place_fullname" => "*Fullname",
             "second_place_phone" => "*Phone",
-            "second_place_country" => "*Country",
+            "second_place_country_name" => "*Country",
             "second_place_post_code" => "*Post Code",
             "second_place_house_number" => "*House number",
             "second_place_city" => "*City",

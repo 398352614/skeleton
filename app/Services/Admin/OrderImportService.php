@@ -22,6 +22,7 @@ use App\Services\CommonService;
 use App\Traits\AddressTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\CountryTrait;
 use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
@@ -31,6 +32,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use mysql_xdevapi\Exception;
+use PHPUnit\Framework\Constraint\Count;
 use WebSocket\Base;
 
 class OrderImportService extends BaseService
@@ -45,8 +47,8 @@ class OrderImportService extends BaseService
     public static $headings = [
         [
             "base", "", "", "", "",
-            "sender", "", "", "", "", "", "",
-            "receiver", "", "", "", "", "", "",
+            "sender", "", "", "", "", "", "", "",
+            "receiver", "", "", "", "", "", "", "",
             "amount", "", "", "", "", "", "", "", "", "", "",
             "settlement", "",
             "other", "", "", "", "",
@@ -63,8 +65,8 @@ class OrderImportService extends BaseService
         ],
         [
             "create_date", "type", "merchant", "out_user_id", "out_order_no",
-            "place_fullname", "place_phone","place_country",  "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
-            "second_place_fullname", "second_place_phone", "second_place_country", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
+            "place_fullname", "place_phone", "place_country_name", "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
+            "second_place_fullname", "second_place_phone", "second_place_country_name", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
             "amount_1", "amount_2", "amount_3", "amount_4", "amount_5", "amount_6", "amount_7", "amount_8", "amount_9", "amount_10", "amount_11",
             "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
@@ -201,10 +203,10 @@ class OrderImportService extends BaseService
         if (empty($data['package_no_1']) && empty($data['material_code_1'])) {
             $error['log'] = __('订单中必须存在一个包裹或一种货物');
         }
-        if (CompanyTrait::getAddressTemplateId() == 1 && empty($data['place_address']) && $data['type'] !=BaseConstService::ORDER_TYPE_2) {
+        if (CompanyTrait::getAddressTemplateId() == 1 && empty($data['place_address']) && $data['type'] != BaseConstService::ORDER_TYPE_2) {
             $data['place_address'] = CommonService::addressFieldsSortCombine($data, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
         }
-        if (CompanyTrait::getAddressTemplateId() == 1 && empty($data['second_place_address']) && $data['type'] !=BaseConstService::ORDER_TYPE_1) {
+        if (CompanyTrait::getAddressTemplateId() == 1 && empty($data['second_place_address']) && $data['type'] != BaseConstService::ORDER_TYPE_1) {
             $data['second_place_address'] = CommonService::addressFieldsSortCombine($data, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
         }
         //填充地址
@@ -417,6 +419,8 @@ class OrderImportService extends BaseService
         for ($i = 0; $i < count($data); $i++) {
             //反向翻译
             $data[$i]['merchant_id'] = Merchant::query()->where('name', $data[$i]['merchant'])->first()['id'] ?? $data[$i]['merchant'];
+            $data[$i]['place_country'] = CountryTrait::getShort($data[$i]['place_country_name']) ?? $data[$i]['place_country_name'];
+            $data[$i]['second_place_country'] = CountryTrait::getShort($data[$i]['second_place_country_name']) ??  $data[$i]['second_place_country_name'];
             if (!empty($data[$i]['type'])) {
                 $data[$i]['type_name'] = $data[$i]['type'];
                 $data[$i]['type'] = $orderTypeList[$data[$i]['type']];
@@ -499,6 +503,7 @@ class OrderImportService extends BaseService
         if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
             $data['place_fullname'] = $data['second_place_fullname'] ?? '';
             $data['place_phone'] = $data['second_place_phone'] ?? '';
+            $data['place_country'] = $data['second_place_country'] ?? '';
             $data['place_province'] = $data['second_place_province'] ?? '';
             $data['place_city'] = $data['second_place_city'];
             $data['place_district'] = $data['second_place_district'] ?? '';
@@ -561,7 +566,7 @@ class OrderImportService extends BaseService
         }
         $data = Arr::only($data, [
             "create_date", "type", "merchant_id", "out_user_id", "out_order_no",
-            "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date", "place_address",
+            "place_fullname", "place_phone","place_country", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date", "place_address",
             "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat", "second_place_address",
             "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",

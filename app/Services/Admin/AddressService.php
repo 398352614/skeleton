@@ -505,6 +505,7 @@ class AddressService extends BaseService
     public $address = [
         "fullname",
         "phone",
+        "country",
         "post_code",
         "house_number",
         "city",
@@ -519,6 +520,7 @@ class AddressService extends BaseService
     public $place = [
         "place_fullname",
         "place_phone",
+        "place_country",
         "place_post_code",
         "place_house_number",
         "place_city",
@@ -533,6 +535,7 @@ class AddressService extends BaseService
     public $secondPlace = [
         "second_place_fullname",
         "second_place_phone",
+        "second_place_country",
         "second_place_post_code",
         "second_place_house_number",
         "second_place_city",
@@ -547,6 +550,7 @@ class AddressService extends BaseService
     public $warehouse = [
         "warehouse_fullname",
         "warehouse_phone",
+        "warehouse_country",
         "warehouse_post_code",
         "warehouse_house_number",
         "warehouse_city",

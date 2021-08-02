@@ -8,6 +8,7 @@
 
 namespace App\Traits;
 
+use App\Models\Country;
 use Illuminate\Support\Arr;
 
 trait CountryTrait
@@ -51,6 +52,34 @@ trait CountryTrait
         $value = $countryList[$short][$locate . '_name'] ?? $short;
         unset($countryList);
         return $value;
+    }
+
+    /**
+     * @param $countryName
+     * @return mixed
+     */
+    public static function getShort($countryName)
+    {
+        $countryList = self::getCountryList();
+        $locate = (\Illuminate\Support\Facades\App::getLocale() !== 'cn') ? 'en' : 'cn';
+        $value = collect(array_values($countryList))->where($locate . '_name', $countryName)->first();
+        if (!empty($value)) {
+            $short = $value['short'];
+        } else {
+            $short = $countryName;
+        }
+        return $short;
+    }
+
+    /**
+     * 获取所有国家名
+     * @return array
+     */
+    public static function getCountryNameList()
+    {
+        $countryList = Country::query()->where('company_id', auth()->user()->company_id)->orderBy('id')->get();
+        $locate = (\Illuminate\Support\Facades\App::getLocale() !== 'cn') ? 'en' : 'cn';
+        return $countryList->pluck($locate . '_name')->toArray();
     }
 
     /**
