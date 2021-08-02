@@ -7542,6 +7542,13 @@
             "group": "Parameter",
             "type": "string",
             "optional": false,
+            "field": "place_country",
+            "description": "<p>国家</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
             "field": "type",
             "description": "<p>取派类型1-取2-派</p>"
           },
@@ -65551,8 +65558,8 @@
   {
     "type": "put",
     "url": "/admin/map-config",
-    "title": "订单设置修改",
-    "name": "订单设置修改",
+    "title": "地图引擎修改",
+    "name": "地图引擎修改",
     "group": "49",
     "version": "1.0.0",
     "parameter": {
@@ -65682,8 +65689,8 @@
   {
     "type": "get",
     "url": "/admin/map-config",
-    "title": "订单设置详情",
-    "name": "订单设置详情",
+    "title": "地图引擎详情",
+    "name": "地图引擎详情",
     "group": "49",
     "version": "1.0.0",
     "success": {

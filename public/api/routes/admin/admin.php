@@ -4420,6 +4420,7 @@
  * @apiUse auth
  * @apiParam {string} place_post_code 邮编
  * @apiParam {string} execution_date 取派日期
+ * @apiParam {string} place_country 国家
  * @apiParam {string} type 取派类型1-取2-派
  * @apiParam {string} merchant_id 货主ID
  * @apiSuccess {string} code
