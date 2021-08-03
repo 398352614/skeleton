@@ -345,6 +345,8 @@ return [
 
             "place_fullname" => "*Fullname",
             "place_phone" => "*Phone",
+            "place_country_name" => "*Country",
+
             "place_post_code" => "*Post Code",
             "place_house_number" => "*House number",
             "place_city" => "*City",
@@ -354,6 +356,8 @@ return [
 
             "second_place_fullname" => "*Fullname",
             "second_place_phone" => "*Phone",
+            "second_place_country_name" => "*Country",
+
             "second_place_post_code" => "*Post Code",
             "second_place_house_number" => "*House number",
             "second_place_city" => "*City",

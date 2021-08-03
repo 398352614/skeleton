@@ -21,6 +21,7 @@ use App\Services\BaseConstService;
 use App\Services\CommonService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\CountryTrait;
 use App\Traits\ExportTrait;
 use App\Traits\ImportTrait;
 use App\Traits\LocationTrait;
@@ -42,8 +43,8 @@ class OrderImportService extends BaseService
         [
             "base",
             "other", "", "",
-            "sender", "", "", "", "", "", "",
-            "receiver", "", "", "", "", "", "",
+            "sender", "", "", "", "", "", "", "",
+            "receiver", "", "", "", "", "", "", "",
             "package_1", "", "", "", "", "",
             "package_2", "", "", "", "", "",
             "package_3", "", "", "", "", "",
@@ -141,6 +142,7 @@ class OrderImportService extends BaseService
      * @param $params
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function importCheck($params)
     {
@@ -176,6 +178,7 @@ class OrderImportService extends BaseService
      * @param $data
      * @return array
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function check($data)
     {
@@ -307,6 +310,7 @@ class OrderImportService extends BaseService
      * @param $data
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function fillAddress($data)
     {
@@ -390,6 +394,7 @@ class OrderImportService extends BaseService
         $materialPackTypeList = array_flip(ConstTranslateTrait::materialPackTypeList());
         for ($i = 0; $i < count($data); $i++) {
             //反向翻译
+            $data[$i]['place_country'] = CountryTrait::getShort($data[$i]['place_country_name']) ?? $data[$i]['place_country_name'];
             if (!empty($data[$i]['type'])) {
                 $data[$i]['type_name'] = $data[$i]['type'];
                 $data[$i]['type'] = $merchantOrderTypeList[$data[$i]['type']];

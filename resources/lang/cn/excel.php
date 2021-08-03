@@ -216,6 +216,7 @@ return [
 
             "place_fullname" => "*发件人",
             "place_phone" => "*电话",
+            "place_country_name" => "*国家",
             "place_post_code" => "*邮编",
             "place_house_number" => "*门牌号",
             "place_city" => "*城市",
@@ -225,6 +226,7 @@ return [
 
             "second_place_fullname" => "*收件人",
             "second_place_phone" => "*电话",
+            "second_place_country_name" => "*国家",
             "second_place_post_code" => "*邮编",
             "second_place_house_number" => "*门牌号",
             "second_place_city" => "*城市",

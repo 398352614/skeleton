@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Merchant;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\CountryTrait;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -73,18 +74,18 @@ class MerchantOrderExport implements FromArray, WithTitle, WithEvents, WithStric
             AfterSheet::class => function (AfterSheet $event) {
                 //合并单元格
                 $event->sheet->getDelegate()->mergeCells('B1:D1');
-                $event->sheet->getDelegate()->mergeCells('E1:K1');
-                $event->sheet->getDelegate()->mergeCells('L1:R1');
-                $event->sheet->getDelegate()->mergeCells('S1:X1');
-                $event->sheet->getDelegate()->mergeCells('Y1:AD1');
-                $event->sheet->getDelegate()->mergeCells('AE1:AJ1');
-                $event->sheet->getDelegate()->mergeCells('AK1:AP1');
-                $event->sheet->getDelegate()->mergeCells('AQ1:AV1');
-                $event->sheet->getDelegate()->mergeCells('AW1:BE1');
-                $event->sheet->getDelegate()->mergeCells('BF1:BN1');
-                $event->sheet->getDelegate()->mergeCells('BO1:BW1');
-                $event->sheet->getDelegate()->mergeCells('BX1:CF1');
-                $event->sheet->getDelegate()->mergeCells('CG1:CO1');
+                $event->sheet->getDelegate()->mergeCells('E1:L1');
+                $event->sheet->getDelegate()->mergeCells('M1:T1');
+                $event->sheet->getDelegate()->mergeCells('U1:Z1');
+                $event->sheet->getDelegate()->mergeCells('AA1:AF1');
+                $event->sheet->getDelegate()->mergeCells('AG1:AL1');
+                $event->sheet->getDelegate()->mergeCells('AM1:AR1');
+                $event->sheet->getDelegate()->mergeCells('AS1:AX1');
+                $event->sheet->getDelegate()->mergeCells('AY1:BG1');
+                $event->sheet->getDelegate()->mergeCells('BH1:BP1');
+                $event->sheet->getDelegate()->mergeCells('BQ1:BY1');
+                $event->sheet->getDelegate()->mergeCells('BZ1:CH1');
+                $event->sheet->getDelegate()->mergeCells('CI1:CQ1');
 
                 $endColumn = $event->sheet->getDelegate()->getHighestColumn();
                 $endRow = $event->sheet->getDelegate()->getHighestRow();
@@ -108,17 +109,15 @@ class MerchantOrderExport implements FromArray, WithTitle, WithEvents, WithStric
                 //冻结单元格
                 $event->sheet->getDelegate()->freezePane('A3');
                 //设置日期格式
-                $date = ['A', 'K', 'R', 'X', 'AD', 'AJ', 'AP', 'AV'];
+                $date = ['A', 'L', 'T', 'Z', 'AF', 'AL', 'AR', 'AW'];
                 foreach ($date as $k => $v) {
                     $event->sheet->getDelegate()->getStyle($v . '3:' . $v . '200')->getNumberFormat()
                         ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_YYYYMMDD);
                 }
                 //设置金额格式
                 $decimal = [
-                    'U', 'AA', 'AG', 'AM', 'AZ',
-                    'BI', 'BJ', 'BM',
-                    'BZ', 'CA', 'CE',
-                    'CJ', 'CK', 'CN',
+                    'W', 'AI', 'AO', 'AU', 'AC',
+                    'BB', 'BC', 'BK', 'BT', 'BU', 'CC', 'CD', 'CL', 'CM',
                 ];
                 foreach ($decimal as $k => $v) {
                     $event->sheet->getDelegate()->getStyle($v . '3:' . $v . '200')->getNumberFormat()
@@ -127,13 +126,14 @@ class MerchantOrderExport implements FromArray, WithTitle, WithEvents, WithStric
 
                 //设置字体颜色
                 $event->sheet->getDelegate()->getStyle('A2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-                $event->sheet->getDelegate()->getStyle('E2:S2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
-                $event->sheet->getDelegate()->getStyle('AW2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                $event->sheet->getDelegate()->getStyle('E2:U2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+                $event->sheet->getDelegate()->getStyle('AY2')->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
 
                 //下拉
                 $arrayList = [
                     'A' => implode(',', array_values(ConstTranslateTrait::merchantOrderTypeList())),
-
+                    'G' => implode(',', CountryTrait::getCountryNameList()),
+                    'O' => implode(',', CountryTrait::getCountryNameList()),
                     'V' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
                     'AB' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
                     'AH' => implode(',', array_values(ConstTranslateTrait::packageFeatureList())),
@@ -290,14 +290,13 @@ class MerchantOrderExport implements FromArray, WithTitle, WithEvents, WithStric
     public function columnWidths(): array
     {
         return [
-            'C' => 15,
-            'X' => 15,
-            'K' => 15,
-            'R' => 15,
-            'AD' => 15,
-            'AJ' => 15,
-            'AP' => 15,
-            'AV' => 15,
+            'L' => 15,
+            'T' => 15,
+            'Z' => 15,
+            'AF' => 15,
+            'AL' => 15,
+            'AR' => 15,
+            'AX' => 15,
         ];
     }
 
