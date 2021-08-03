@@ -58,8 +58,8 @@ class OrderImportService extends BaseService
         ],
         [
             "type", "out_user_id", "out_order_no", "special_remark",
-            "place_fullname", "place_phone", "place_country", "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
-            "second_place_fullname", "second_place_phone", "second_place_country", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
+            "place_fullname", "place_phone", "place_country_name", "place_post_code", "place_house_number", "place_city", "place_street", "execution_date",
+            "second_place_fullname", "second_place_phone", "second_place_country_name", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date",
             "package_no_1", "package_name_1", "package_weight_1", "package_feature_1", "package_remark_1", "package_expiration_date_1",
             "package_no_2", "package_name_2", "package_weight_2", "package_feature_2", "package_remark_2", "package_expiration_date_2",
             "package_no_3", "package_name_3", "package_weight_3", "package_feature_3", "package_remark_3", "package_expiration_date_3",
