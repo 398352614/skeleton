@@ -49,7 +49,8 @@ class UpdateWarehouseVersion extends Command
             'fix:driver',
             'fix:package',
             'fix:address',
-            'fix:stock'
+            'fix:stock',
+            'cache:destroy'
         ];
         foreach ($array as $k => $v) {
             $this->info($v . ' start');
