@@ -395,6 +395,7 @@ class OrderImportService extends BaseService
         for ($i = 0; $i < count($data); $i++) {
             //反向翻译
             $data[$i]['place_country'] = CountryTrait::getShort($data[$i]['place_country_name']) ?? $data[$i]['place_country_name'];
+            $data[$i]['second_place_country'] = CountryTrait::getShort($data[$i]['place_country_name']) ?? $data[$i]['second_place_country_name'];
             if (!empty($data[$i]['type'])) {
                 $data[$i]['type_name'] = $data[$i]['type'];
                 $data[$i]['type'] = $merchantOrderTypeList[$data[$i]['type']];
