@@ -395,7 +395,7 @@ class OrderImportService extends BaseService
         for ($i = 0; $i < count($data); $i++) {
             //反向翻译
             $data[$i]['place_country'] = CountryTrait::getShort($data[$i]['place_country_name']) ?? $data[$i]['place_country_name'];
-            $data[$i]['second_place_country'] = CountryTrait::getShort($data[$i]['place_country_name']) ?? $data[$i]['second_place_country_name'];
+            $data[$i]['second_place_country'] = CountryTrait::getShort($data[$i]['second_place_country_name']) ?? $data[$i]['second_place_country_name'];
             if (!empty($data[$i]['type'])) {
                 $data[$i]['type_name'] = $data[$i]['type'];
                 $data[$i]['type'] = $merchantOrderTypeList[$data[$i]['type']];
@@ -511,8 +511,8 @@ class OrderImportService extends BaseService
         }
         $data = Arr::only($data, [
             "type", "out_user_id", "out_order_no",
-            "place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date",
-            "second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat",
+            "place_fullname", "place_phone", "place_country","place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date",
+            "second_place_fullname", "second_place_phone","second_place_country", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat",
             "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
 
