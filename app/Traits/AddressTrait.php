@@ -6,7 +6,7 @@ namespace App\Traits;
 
 Trait AddressTrait
 {
-    public $address = [
+    public static $address = [
         "fullname",
         "phone",
         "post_code",
@@ -20,7 +20,7 @@ Trait AddressTrait
         "address"
     ];
 
-    public $place = [
+    public static $place = [
         "place_fullname",
         "place_phone",
         "place_post_code",
@@ -34,7 +34,7 @@ Trait AddressTrait
         "place_address"
     ];
 
-    public $secondPlace = [
+    public static $secondPlace = [
         "second_place_fullname",
         "second_place_phone",
         "second_place_post_code",
@@ -48,7 +48,7 @@ Trait AddressTrait
         "second_place_address"
     ];
 
-    public $warehouse = [
+    public static $warehouse = [
         "warehouse_fullname",
         "warehouse_phone",
         "warehouse_post_code",
@@ -68,16 +68,16 @@ Trait AddressTrait
      * @param array $to
      * @return mixed
      */
-    public function placeToSecondPlace($from, $to = [])
+    public static function placeToSecondPlace($from, $to = [])
     {
         if ($to == []) {
             $data = $from;
-            foreach ($this->place as $k => $v) {
+            foreach (self::$place as $k => $v) {
                 $data['second_' . $v] = $from[$v] ?? '';
             }
         } else {
             $data = $to;
-            foreach ($this->place as $k => $v) {
+            foreach (self::$place as $k => $v) {
                 $data['second_' . $v] = $from[$v] ?? '';
             }
         }
@@ -90,16 +90,16 @@ Trait AddressTrait
      * @param array $to
      * @return mixed
      */
-    public function secondPlaceToPlace($from, $to = [])
+    public static function secondPlaceToPlace($from, $to = [])
     {
         if ($to == []) {
             $data = $from;
-            foreach ($this->place as $k => $v) {
+            foreach (self::$place as $k => $v) {
                 $data[$v] = $from['second_' . $v] ?? '';
             }
         } else {
             $data = $to;
-            foreach ($this->place as $k => $v) {
+            foreach (self::$place as $k => $v) {
                 $data[$v] = $from['second_' . $v] ?? '';
             }
         }
@@ -112,16 +112,16 @@ Trait AddressTrait
      * @param array $to
      * @return mixed
      */
-    public function warehouseToPlace($from, $to = [])
+    public static function warehouseToPlace($from, $to = [])
     {
         if ($to == []) {
             $data = $from;
-            foreach ($this->address as $k => $v) {
+            foreach (self::$address as $k => $v) {
                 $data['place_' . $v] = $from['warehouse_' . $v] ?? '';
             }
         } else {
             $data = $to;
-            foreach ($this->address as $k => $v) {
+            foreach (self::$address as $k => $v) {
                 $data['place_' . $v] = $from['warehouse_' . $v] ?? '';
             }
         }
@@ -134,16 +134,16 @@ Trait AddressTrait
      * @param array $to
      * @return mixed
      */
-    public function warehouseToSecondPlace($from, $to = [])
+    public static function warehouseToSecondPlace($from, $to = [])
     {
         if ($to == []) {
             $data = $from;
-            foreach ($this->address as $k => $v) {
+            foreach (self::$address as $k => $v) {
                 $data['second_place_' . $v] = $from['warehouse_' . $v] ?? '';
             }
         } else {
             $data = $to;
-            foreach ($this->address as $k => $v) {
+            foreach (self::$address as $k => $v) {
                 $data['second_place_' . $v] = $from['warehouse_' . $v] ?? '';
             }
         }
@@ -156,10 +156,10 @@ Trait AddressTrait
      * @param array $to
      * @return mixed
      */
-    public function warehouseToWarehouse($from, $to)
+    public static function warehouseToWarehouse($from, $to)
     {
         $data = $to;
-        foreach ($this->warehouse as $k => $v) {
+        foreach (self::$warehouse as $k => $v) {
             $data[$v] = $from[$v] ?? '';
         }
         return $data;
@@ -170,10 +170,10 @@ Trait AddressTrait
      * @param $data
      * @return mixed
      */
-    public function changePlaceAndSecondPlace($data)
+    public static function changePlaceAndSecondPlace($data)
     {
         $params = [];
-        foreach ($this->place as $k => $v) {
+        foreach (self::$place as $k => $v) {
             $params[$v] = $data['second_' . $v] ?? '';
             $data['second_' . $v] = $data[$v] ?? '';
             $data[$v] = $params[$v] ?? '';
@@ -181,17 +181,17 @@ Trait AddressTrait
         return $data;
     }
 
-    public function unsetPlace($data)
+    public static function unsetPlace($data)
     {
-        foreach ($this->place as $k => $v) {
+        foreach (self::$place as $k => $v) {
             unset($data[$v]);
         }
         return $data;
     }
 
-    public function unsetSecondPlace(array $data)
+    public static function unsetSecondPlace(array $data)
     {
-        foreach ($this->secondPlace as $k => $v) {
+        foreach (self::$secondPlace as $k => $v) {
             unset($data[$v]);
         }
         return $data;

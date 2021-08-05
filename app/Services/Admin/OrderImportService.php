@@ -516,14 +516,14 @@ class OrderImportService extends BaseService
             $data['execution_date'] = $data['second_execution_date'];
         }
         if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
-            $newData = $this->getAddressService()->secondPlaceToPlace($data);
+            $newData = AddressTrait::secondPlaceToPlace($data);
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-            $data = $this->getAddressService()->warehouseToPlace($newData, $data);
-            $data = $this->getAddressService()->changePlaceAndSecondPlace($data);
+            $data = AddressTrait::warehouseToPlace($newData, $data);
+            $data = AddressTrait::changePlaceAndSecondPlace($data);
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_1) {
             $newData = $data;
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-            $data = $this->getAddressService()->warehouseToSecondPlace($newData, $data);
+            $data = AddressTrait::warehouseToSecondPlace($newData, $data);
         }
 
         for ($j = 0; $j < 5; $j++) {

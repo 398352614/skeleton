@@ -19,6 +19,7 @@ use App\Models\Package;
 use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Services\CommonService;
+use App\Traits\AddressTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
@@ -228,13 +229,13 @@ class OrderImportService extends BaseService
             }
             //取件，派件运单填充仓库
             if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
-                $newData = $this->getAddressService()->secondPlaceToPlace($data);
+                $newData = AddressTrait::secondPlaceToPlace($data);
                 $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-                $data = $this->getAddressService()->warehouseToPlace($newData, $data);
+                $data = AddressTrait::warehouseToPlace($newData, $data);
             } elseif ($data['type'] == BaseConstService::ORDER_TYPE_1) {
                 $newData = $data;
                 $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-                $data = $this->getAddressService()->warehouseToSecondPlace($newData, $data);
+                $data = AddressTrait::warehouseToSecondPlace($newData, $data);
             }
         } catch (BusinessLogicException $e) {
             $error['log'] = __($e->getMessage());
@@ -297,10 +298,10 @@ class OrderImportService extends BaseService
             "warehouse_lon",
             "warehouse_lat"]);
         if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
-            $data = $this->getAddressService()->unsetSecondPlace($data);
+            $data = AddressTrait::unsetSecondPlace($data);
         }
         if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
-            $data = $this->getAddressService()->unsetPlace($data);
+            $data = AddressTrait::unsetPlace($data);
         }
         return ['status' => $status, 'error' => $error, 'data' => $data];
     }
@@ -368,9 +369,9 @@ class OrderImportService extends BaseService
      */
     public function fillSecondPlaceAddress($data)
     {
-        $newData = $this->getAddressService()->secondPlaceToPlace($data);
+        $newData = AddressTrait::secondPlaceToPlace($data);
         $newData = $this->fillPlaceAddress($newData);
-        $data = $this->getAddressService()->placeToSecondPlace($newData, $data);
+        $data = AddressTrait::placeToSecondPlace($newData, $data);
         return $data;
     }
 
@@ -462,13 +463,13 @@ class OrderImportService extends BaseService
     {
         //取件，派件运单填充仓库
         if ($data['type'] == BaseConstService::ORDER_TYPE_2) {
-            $newData = $this->getAddressService()->secondPlaceToPlace($data);
+            $newData = AddressTrait::secondPlaceToPlace($data);
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-            $data = $this->getAddressService()->warehouseToPlace($newData, $data);
+            $data = AddressTrait::warehouseToPlace($newData, $data);
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_1) {
             $newData = $data;
             $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-            $data = $this->getAddressService()->warehouseToSecondPlace($newData, $data);
+            $data = AddressTrait::warehouseToSecondPlace($newData, $data);
         }
         $data['package_list'] = [];
         $data['material_list'] = [];

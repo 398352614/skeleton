@@ -26,6 +26,7 @@ use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Services\CommonService;
 use App\Services\OrderTrailService;
+use App\Traits\AddressTrait;
 use App\Traits\BarcodeTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
@@ -398,6 +399,7 @@ class OrderService extends BaseService
      * @param $data
      * @return mixed
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function fillAddress($data)
     {
@@ -475,9 +477,9 @@ class OrderService extends BaseService
      */
     public function fillSecondPlaceAddress($data)
     {
-        $newData = $this->getAddressService()->secondPlaceToPlace($data);
+        $newData = AddressTrait::secondPlaceToPlace($data);
         $newData = $this->fillPlaceAddress($newData);
-        $data = $this->getAddressService()->placeToSecondPlace($newData, $data);
+        $data = AddressTrait::placeToSecondPlace($newData, $data);
         return $data;
     }
 
@@ -713,71 +715,32 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
-        if (auth()->user()->getAttribute('is_api') == true) {
+        //屏蔽非法参数
+        unset($params['created_at'], $params['updated_at'], $params['status'], $params['id']);
+        //填充开单日期
+        if (auth()->user()->is_api == true) {
             $params['create_date'] = today()->format('Y-m-d');
         }
-        $params['merchant_id'] = auth()->user()->id;
-        unset($params['created_at'], $params['updated_at'], $params['status'], $params['id']);
-        !empty($params['place_post_code']) && $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
-        !empty($params['second_place_post_code']) && $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
-        $fields = ['place_fullname', 'place_phone',
-            'place_country', 'place_province', 'place_city', 'place_district',
-            'place_post_code', 'place_street', 'place_house_number',
-            'place_address'];
-        foreach ($fields as $v) {
-            array_key_exists($v, $params) && $params[$v] = trim($params[$v]);
-        }
-        //获取经纬度
-        $fields = ['place_house_number', 'place_city', 'place_street'];
-        $params = array_merge(array_fill_keys($fields, ''), $params);
         //检验货主
+        $params['merchant_id'] = auth()->user()->id;
         $merchant = $this->getMerchantService()->getInfo(['id' => auth()->user()->id, 'status' => BaseConstService::MERCHANT_STATUS_1], ['*'], false);
         if (empty($merchant)) {
             throw new BusinessLogicException('货主不存在');
         }
+        //去除空格
+        $params = $this->trimAddress($params);
+        //包裹材料验证
         if (empty($params['package_list']) && empty($params['material_list'])) {
             throw new BusinessLogicException('订单中必须存在一个包裹或一种材料');
         }
-        //验证包裹列表
-        if (!empty($params['package_list'])) {
-            $this->getPackageService()->check($params['package_list'], $orderNo);
-            //有效日日期不得早于取派日期
-            foreach ($params['package_list'] as $k => $v) {
-                if (!empty($v['expiration_date']) && $v['expiration_date'] < $params['execution_date']) {
-                    throw new BusinessLogicException('有效日期不得小于取派日期');
-                }
-            }
-        }
-        //验证材料列表
+        //包裹验证
+        $this->packageCheck($params, $orderNo);
+        //材料验证
         !empty($params['material_list']) && $this->getMaterialService()->checkAllUnique($params['material_list']);
         //填充地址
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
-            $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
-        }
-        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['second_place_address'])) {
-            $params['second_place_address'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
-        }
-        //若存在货号,则判断是否存在已预约的订单号
-        if (!empty($params['out_order_no'])) {
-            $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
-            !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
-            $dbOrder = parent::getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
-            if (!empty($dbOrder)) {
-                if (auth()->user()->getAttribute('is_api') == true) {
-                    throw new BusinessLogicException('外部订单号已存在', 1005, [], [
-                        'order_no' => $dbOrder['order_no'],
-                        'out_order_no' => $dbOrder['out_order_no'] ?? '',
-                        'batch_no' => '',
-                        'tour_no' => '',
-                        'line' => ['line_id' => null, 'line_name' => ''],
-                        'execution_date' => $dbOrder->execution_date,
-                        'second_execution_date' => $dbOrder->second_execution_date ?? null
-                    ]);
-                } else {
-                    throw new BusinessLogicException('外部订单号已存在');
-                }
-            }
-        }
+        $params = $this->fillCombineAddress($params);
+        //外部订单号验证
+        $this->outOrderNoCheck($params);
         //运价计算
         $params = $this->fillAnotherAddressByApi($params);
         $params = $this->fillAddress($params);
@@ -792,27 +755,115 @@ class OrderService extends BaseService
     }
 
     /**
+     * 拼接地址
+     * @param $params
+     * @return
+     */
+    public function fillCombineAddress($params)
+    {
+        //填充地址
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['place_address'])) {
+            $params['place_address'] = CommonService::addressFieldsSortCombine($params, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code']);
+        }
+        if ((CompanyTrait::getAddressTemplateId() == 1) || empty($params['second_place_address'])) {
+            $params['second_place_address'] = CommonService::addressFieldsSortCombine($params, ['second_place_country', 'second_place_city', 'second_place_street', 'second_place_house_number', 'second_place_post_code']);
+        }
+        return $params;
+    }
+
+    /**
+     * 地址参数去除空格
+     * @param $params
+     * @return array
+     */
+    public function trimAddress($params)
+    {
+        !empty($params['place_post_code']) && $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
+        !empty($params['second_place_post_code']) && $params['second_place_post_code'] = str_replace(' ', '', $params['second_place_post_code']);
+        $fields = ['place_fullname', 'place_phone',
+            'place_country', 'place_province', 'place_city', 'place_district',
+            'place_post_code', 'place_street', 'place_house_number',
+            'place_address'];
+        foreach ($fields as $v) {
+            array_key_exists($v, $params) && $params[$v] = trim($params[$v]);
+        }
+        //获取经纬度
+        $fields = ['place_house_number', 'place_city', 'place_street'];
+        return array_merge(array_fill_keys($fields, ''), $params);
+    }
+
+    /**
+     * @param $params
+     * @throws BusinessLogicException
+     */
+    public function outOrderNoCheck($params)
+    {
+        //若存在货号,则判断是否存在已预约的订单号
+        if (!empty($params['out_order_no'])) {
+            $where = ['out_order_no' => $params['out_order_no'], 'status' => ['not in', [BaseConstService::ORDER_STATUS_4, BaseConstService::TRACKING_ORDER_STATUS_5]]];
+            !empty($orderNo) && $where['order_no'] = ['<>', $orderNo];
+            $dbOrder = parent::getInfo($where, ['id', 'order_no', 'out_order_no', 'status'], false);
+            if (!empty($dbOrder)) {
+                if (auth()->user()->is_api == true) {
+                    throw new BusinessLogicException('外部订单号已存在', 1005, [], [
+                        'order_no' => $dbOrder['order_no'],
+                        'out_order_no' => $dbOrder['out_order_no'] ?? '',
+                        'batch_no' => '',
+                        'tour_no' => '',
+                        'line' => ['line_id' => null, 'line_name' => ''],
+                        'execution_date' => $dbOrder->execution_date,
+                        'second_execution_date' => $dbOrder->second_execution_date ?? null
+                    ]);
+                } else {
+                    throw new BusinessLogicException('外部订单号已存在');
+                }
+            }
+        }
+    }
+
+    /**
+     * 包裹验证
+     * @param $params
+     * @param $orderNo
+     * @throws BusinessLogicException
+     */
+    public function packageCheck($params, $orderNo)
+    {
+        if (!empty($params['package_list'])) {
+            $this->getPackageService()->check($params['package_list'], $orderNo);
+            //有效日日期不得早于取派日期
+            foreach ($params['package_list'] as $k => $v) {
+                if (!empty($v['expiration_date']) && $v['expiration_date'] < $params['execution_date']) {
+                    throw new BusinessLogicException('有效日期不得小于取派日期');
+                }
+            }
+        }
+    }
+
+
+    /**
      * 填充另一个地址
      * @param $params
      * @return mixed
      * @throws BusinessLogicException
      */
-    public function fillAnotherAddressByApi($params)
+    public
+    function fillAnotherAddressByApi($params)
     {
         if ($params['type'] != BaseConstService::ORDER_TYPE_3) {
             if (!empty($params['source']) && $params['source'] == BaseConstService::ORDER_SOURCE_3) {
                 if ($params['type'] == BaseConstService::ORDER_TYPE_2) {
-                    $params = $this->getAddressService()->changePlaceAndSecondPlace($params);
+                    $params = AddressTrait::changePlaceAndSecondPlace($params);
                     $params['execution_date'] = $params['second_execution_date'];
                     unset($params['second_execution_date']);
                 }
                 $newData = $params;
                 $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-                $params = $this->getAddressService()->warehouseToSecondPlace($newData, $params);
+                $params = AddressTrait::warehouseToSecondPlace($newData, $params);
             } else {
                 $newData = $params;
                 $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-                $params = $this->getAddressService()->warehouseToSecondPlace($newData, $params);
+                $params = AddressTrait::warehouseToSecondPlace($newData, $params);
             }
         }
         return $params;
