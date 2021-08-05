@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Imports;
+namespace App\Manager\ExcelImport;
 
 use Maatwebsite\Excel\Concerns\ToArray;
 

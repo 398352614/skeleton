@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Exports;
+namespace App\Manager\ExcelExport;
 
-use App\Models\Merchant;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\FactoryInstanceTrait;
 use Maatwebsite\Excel\Concerns\FromArray;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports;
+namespace App\Manager\ExcelExport;
 
 use App\Traits\FactoryInstanceTrait;
 use Maatwebsite\Excel\Concerns\FromArray;

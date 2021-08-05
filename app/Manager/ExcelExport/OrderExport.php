@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exports;
+namespace App\Manager\ExcelExport;
 
 use App\Models\Country;
 use App\Models\Merchant;
