@@ -63,15 +63,15 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         if ($exception instanceof ModelNotFoundException) {
-            return response()->json($this->responseFormat(1000, '', '数据不存在'));
+            return response()->json($this->responseFormat(4201, '', '数据不存在'));
         }
 
         if ($exception instanceof AuthenticationException) {
-            return response()->json($this->responseFormat(10401, '', '用户认证失败'));
+            return response()->json($this->responseFormat(2001, '', '用户认证失败'));
         }
 
         if ($exception instanceof TokenExpiredException) {
-            return response()->json($this->responseFormat(10401, '', '用户认证失败'));
+            return response()->json($this->responseFormat(2001, '', '用户认证失败'));
         }
 
         return parent::render($request, $exception);

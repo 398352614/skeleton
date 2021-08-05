@@ -61,58 +61,12 @@ class AutoCode extends Command
         $params = file_get_contents('resources/lang/en.json');
         $params = collect(json_decode($params))->toArray();
         foreach ($params as $k => $v) {
-            $data .= '"' . $k . '"=>"' . $v . '",'. "\n";
+            $data .= '"' . $k . '"=>"' . $v . '",' . "\n";
         }
         $oldJson = Str::replaceLast('];', '', file_get_contents('app/Exceptions/ErrorCode.php'));
         $oldJson = Str::replaceLast(']', '', $oldJson);
         $oldJson = $oldJson . $data . ']' . "\n" . '];';
         file_put_contents('app/Exceptions/ErrorCode.php', $oldJson);
-        return;
 
-        $data = [];
-        $row = [];
-        $json = '';
-        $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
-        foreach ($tables as $k => $v) {
-            $row = array_merge($row, DB::select("SHOW FULL COLUMNS FROM `{$v}`"));
-        }
-        foreach ($row as $k => $v) {
-            $v = collect($v)->toArray();
-            $data[$v['Field']] = $v['Comment'];
-        }
-        foreach ($data as $k => $v) {
-            $data[$k] = explode('1-', $v)[0];
-        }
-        $array = include base_path('resources/lang/cn/validation.php');
-        $attributes = $array['attributes'];
-        $key = array_keys($attributes);
-        $result = Arr::except($data, $key);
-        if (!empty($result)) {
-            foreach ($result as $k => $v) {
-                $json .= '"' . $k . '"=>"' . $v . '",' . "\n";
-            }
-            $oldJson = Str::replaceLast('];', '', file_get_contents('resources/lang/cn/validation.php'));
-            $oldJson = Str::replaceLast(']', '', $oldJson);
-            $oldJson = $oldJson . $json . ']' . "\n" . '];';
-            file_put_contents('resources/lang/cn/validation.php', $oldJson);
-
-
-        }
-        $json = '';
-        $params = [];
-        $array = include base_path('resources/lang/en/validation.php');
-        $diff = Arr::except($data, array_keys($array['attributes']));
-        if (!empty($diff)) {
-            foreach ($diff as $k => $v) {
-                $params[$k] = str_replace('_', ' ', $k);
-            }
-            foreach ($params as $k => $v) {
-                $json .= '"' . $k . '"=>"' . $v . '",' . "\n";
-            }
-            $oldJson = Str::replaceLast('];', '', file_get_contents('resources/lang/en/validation.php'));
-            $oldJson = Str::replaceLast(']', '', $oldJson);
-            $oldJson = $oldJson . $json . ']' . "\n" . '];';
-            file_put_contents('resources/lang/en/validation.php', $oldJson);
-        }
     }
 }
