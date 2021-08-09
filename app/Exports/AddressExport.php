@@ -21,7 +21,7 @@ use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 // 设置工作䈬名称
 // 在工作表流程结束时会引发事件
 
-class AddressExport implements FromArray, WithTitle, WithEvents, WithStrictNullComparison, WithHeadings, WithColumnWidths
+class AddressExport implements FromArray, WithTitle, WithEvents, WithStrictNullComparison, WithHeadings
 {
     protected $data;
     protected $title;
@@ -117,4 +117,5 @@ class AddressExport implements FromArray, WithTitle, WithEvents, WithStrictNullC
             }
         ];
     }
+
 }
