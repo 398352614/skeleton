@@ -107,6 +107,7 @@ class LineService extends BaseLineService
             })->unique(function ($item) {
                 return $item['post_code_start'] . $item['post_code_end'];
             })->toArray();
+            $info['line_range'] = array_values($info['line_range']);
             $info['work_day_list'] = implode(',', array_values(array_unique(array_column($lineRangeList->toArray(), 'schedule'))));
         }
         $merchantGroupCountList = $this->getMerchantGroupLineService()->getList(['line_id' => $id], ['merchant_group_id', 'pickup_min_count', 'pie_min_count'], false);
