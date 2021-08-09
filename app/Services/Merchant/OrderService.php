@@ -309,6 +309,7 @@ class OrderService extends BaseService
      * @param $orderSource
      * @return array
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function store($params, $orderSource = BaseConstService::ORDER_SOURCE_1)
     {
@@ -454,10 +455,11 @@ class OrderService extends BaseService
                 $data['place_house_number'] ?? '',
                 $data['place_post_code'] ?? ''
             );
-            AddressTrait::addressToPlace($info, $data);
+            $data = AddressTrait::addressToPlace($info, $data);
         } else {
             $data = array_merge($data, $address->toArray());
         }
+        dd($data);
         return $data;
     }
 
