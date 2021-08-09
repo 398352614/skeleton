@@ -454,14 +454,7 @@ class OrderService extends BaseService
                 $data['place_house_number'] ?? '',
                 $data['place_post_code'] ?? ''
             );
-            $data['place_province'] = $info['province'];
-            $data['place_city'] = $info['city'];
-            $data['place_district'] = $info['district'];
-            $data['place_street'] = $info['street'];
-            $data['place_house_number'] = $info['house_number'];
-            $data['place_post_code'] = $info['post_code'];
-            $data['place_lat'] = $info['lat'];
-            $data['place_lon'] = $info['lon'];
+            AddressTrait::addressToPlace($info, $data);
         } else {
             $data = array_merge($data, $address->toArray());
         }

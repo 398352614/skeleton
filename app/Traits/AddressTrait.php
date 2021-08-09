@@ -166,6 +166,21 @@ Trait AddressTrait
     }
 
     /**
+     * 位置转地址
+     * @param $from
+     * @param $to
+     * @return mixed
+     */
+    public static function addressToPlace($from, $to)
+    {
+        $data = $to;
+        foreach (self::$address as $k => $v) {
+            $data['place' . $v] = $from[$v] ?? '';
+        }
+        return $data;
+    }
+
+    /**
      * 互换地址和第二地址
      * @param $data
      * @return mixed
