@@ -27,6 +27,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 /**
  * Class TrackingOrderService
@@ -108,6 +109,12 @@ class TrackingOrderService extends BaseService
      */
     public function getAbleDateListByAddress($params)
     {
+        //兼容
+        if ($params['place_country'] == 'NL' && post_code_be($params['place_post_code'])) {
+            $params['place_country'] = 'BE';
+        } elseif ($params['place_country'] == 'NL' && Str::length($params['place_post_code']) == 5) {
+            $params['place_country'] = 'DE';
+        }
         $this->validate($params);
         $data = $this->getLineService()->getScheduleList($params);
         return $data;
@@ -261,7 +268,7 @@ class TrackingOrderService extends BaseService
         if ($trackingOrder == false) {
             throw new BusinessLogicException('操作失败，请重新操作');
         }
-        $trackingOrder=$trackingOrder->getAttributes();
+        $trackingOrder = $trackingOrder->getAttributes();
 
         /*****************************************运单加入站点*********************************************************/
         list($batch, $tour) = $this->getBatchService()->join($trackingOrder, $line);
