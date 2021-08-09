@@ -69,7 +69,7 @@ trait ExportTrait
                 $rowCount = Excel::store(new OrderExport($data, $headings, $name, $dir), $path);
             }elseif ($dir == 'merchantOrder') {
                 $rowCount = Excel::store(new MerchantOrderExport($data, $headings, $name, $dir), $path);
-            }elseif ($dir == 'addressTemplate') {
+            }elseif ($dir == 'addressExcelExport') {
                 $rowCount = Excel::store(new AddressExport($data, $headings, $name, $dir), $path);
             } else {
                 $rowCount = Excel::store(new BaseExport($data, $headings, $name, $dir), $path);
