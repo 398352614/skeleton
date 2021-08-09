@@ -181,6 +181,7 @@ Trait AddressTrait
         foreach (self::$address as $k => $v) {
             $data['place_' . $v] = $from[$v] ?? $to['place_' . $v];
         }
+        $data['place_country']=$to['place_country'];
         return $data;
     }
 

@@ -711,6 +711,12 @@ class OrderService extends BaseService
      */
     private function check(&$params, $orderNo = null)
     {
+        //兼容
+        if ($params['place_country'] == 'NL' && post_code_be($params['place_post_code'])) {
+            $params['place_country'] = 'BE';
+        } elseif ($params['place_country'] == 'NL' && Str::length($params['place_post_code']) == 5) {
+            $params['place_country'] = 'DE';
+        }
         //屏蔽非法参数
         unset($params['created_at'], $params['updated_at'], $params['status'], $params['id']);
         //填充开单日期

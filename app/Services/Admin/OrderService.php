@@ -629,6 +629,12 @@ class OrderService extends BaseService
             || (!empty($params['second_place_country']) && !in_array($params['second_place_country'], $countryList))) {
             throw new BusinessLogicException('国家不存在');
         }
+        //兼容
+        if ($params['place_country'] == 'NL' && post_code_be($params['place_post_code'])) {
+            $params['place_country'] = 'BE';
+        } elseif ($params['place_country'] == 'NL' && Str::length($params['place_post_code']) == 5) {
+            $params['place_country'] = 'DE';
+        }
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
         $fields = ['place_fullname', 'place_phone',
             'place_country', 'place_province', 'place_city', 'place_district',
