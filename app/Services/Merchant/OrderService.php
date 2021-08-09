@@ -459,7 +459,6 @@ class OrderService extends BaseService
         } else {
             $data = array_merge($data, $address->toArray());
         }
-        dd($data);
         return $data;
     }
 
