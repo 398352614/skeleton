@@ -842,8 +842,7 @@ class OrderService extends BaseService
      * @return mixed
      * @throws BusinessLogicException
      */
-    public
-    function fillAnotherAddressByApi($params)
+    public function fillAnotherAddressByApi($params)
     {
         if ($params['type'] != BaseConstService::ORDER_TYPE_3) {
             if (!empty($params['source']) && $params['source'] == BaseConstService::ORDER_SOURCE_3) {
@@ -851,10 +850,14 @@ class OrderService extends BaseService
                     $params = AddressTrait::changePlaceAndSecondPlace($params);
                     $params['execution_date'] = $params['second_execution_date'];
                     unset($params['second_execution_date']);
+                    $newData = $params;
+                    $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+                    $params = AddressTrait::warehouseToPlace($newData, $params);
+                }else{
+                    $newData = $params;
+                    $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
+                    $params = AddressTrait::warehouseToSecondPlace($newData, $params);
                 }
-                $newData = $params;
-                $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
-                $params = AddressTrait::warehouseToSecondPlace($newData, $params);
             } else {
                 $newData = $params;
                 $this->getTrackingOrderService()->fillWarehouseInfo($newData, BaseConstService::NO);
