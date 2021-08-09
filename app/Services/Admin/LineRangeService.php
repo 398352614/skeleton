@@ -12,7 +12,6 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\LineRange;
 use App\Services\BaseConstService;
 use App\Traits\CountryTrait;
-use http\Exception\BadConversionException;
 use Illuminate\Support\Facades\DB;
 use WebSocket\Base;
 
