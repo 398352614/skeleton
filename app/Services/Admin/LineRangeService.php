@@ -50,10 +50,11 @@ class LineRangeService extends BaseService
                         if (!in_array($v['post_code_start'] . '-' . $v['post_code_end'] . ';', $array)) {
                             $result[$lineId]['line_range'][$country] .= $v['post_code_start'] . '-' . $v['post_code_end'] . ';';
                         }
+                        $array[] = $v['post_code_start'] . '-' . $v['post_code_end'] . ';';
                     } else {
                         $result[$lineId]['line_range'][$country] .= $v['post_code_start'] . ';';
+                        $array[] = $v['post_code_start'] . ';';
                     }
-                    $array[] = $v['post_code_start'] . '-' . $v['post_code_end'] . ';';
                     $schedule[] = $v['schedule'];
                 }
                 $result[$lineId]['line_range'][$country] .= "\n";
