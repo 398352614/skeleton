@@ -347,6 +347,7 @@ class BaseLineService extends BaseService
                 $dateList = array_merge($dateList, $this->checkRuleForDate($params, $lineRangeList[$i], $orderOrBatch));
             }
         }
+        $dateList=array_unique($dateList);
         asort($dateList);
         $dateList = array_values($dateList);
         if (empty($dateList)) {
