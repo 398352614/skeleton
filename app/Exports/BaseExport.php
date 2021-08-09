@@ -332,28 +332,6 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                         $event->sheet->getDelegate()->getColumnDimension($k)->setWidth($v);
                     }
                 }
-                if ($this->type === 'addressExcelExport') {
-                    //下拉
-                    $arrayList = [
-                        'A' => implode(',', array_values(ConstTranslateTrait::addressTypeList())),
-                        'D' => implode(',', CountryTrait::getCountryNameList()),
-                    ];
-                    foreach ($arrayList as $k => $v) {
-                        for ($i = 0; $i < 200; $i++) {
-                            $event->sheet->getDelegate()->getcell($k . ($i + 3))->getDataValidation()->setType(DataValidation::TYPE_LIST)
-                                ->setErrorStyle(DataValidation::STYLE_INFORMATION)
-                                ->setAllowBlank(true)
-                                ->setShowInputMessage(true)
-                                ->setShowErrorMessage(true)
-                                ->setShowDropDown(true)
-                                ->setErrorTitle(__('输入的值有误'))
-                                ->setError(__('输入的值有误'))
-                                ->setPromptTitle('')
-                                ->setPrompt('')
-                                ->setFormula1('"' . $v . '"');
-                        }
-                    }
-                }
             }
         ];
     }
