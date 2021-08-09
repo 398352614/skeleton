@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Merchant;
 use App\Traits\ConstTranslateTrait;
+use App\Traits\CountryTrait;
 use App\Traits\FactoryInstanceTrait;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -335,6 +336,7 @@ class BaseExport implements FromArray, WithTitle, WithEvents, WithStrictNullComp
                     //下拉
                     $arrayList = [
                         'A' => implode(',', array_values(ConstTranslateTrait::addressTypeList())),
+                        'D' => implode(',', CountryTrait::getCountryNameList()),
                     ];
                     foreach ($arrayList as $k => $v) {
                         for ($i = 0; $i < 200; $i++) {
