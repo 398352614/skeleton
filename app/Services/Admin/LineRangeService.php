@@ -43,10 +43,6 @@ class LineRangeService extends BaseService
                 $result[$lineId]['work_day_list'] = [];
                 $schedule = [];
                 foreach ($lineRange as $k => $v) {
-                    if (!in_array($v['post_code_start'] . '-' . $v['post_code_end'] . ';', $array)) {
-                        $result[$lineId]['line_range'][$country] .= $v['post_code_start'] . '-' . $v['post_code_end'] . ';';
-                    }
-                    $array[] = $v['post_code_start'] . '-' . $v['post_code_end'] . ';';
                     if (!in_array($v['schedule'], $schedule)) {
                         $result[$lineId]['work_day_list'][] = $v['schedule'];
                     }
@@ -59,6 +55,7 @@ class LineRangeService extends BaseService
                             $result[$lineId]['line_range'][$country] .= $v['post_code_start'] . ';';
                         }
                     }
+                    $array[] = $v['post_code_start'] . '-' . $v['post_code_end'] . ';';
                     $schedule[] = $v['schedule'];
                 }
                 $result[$lineId]['line_range'][$country] .= "\n";
