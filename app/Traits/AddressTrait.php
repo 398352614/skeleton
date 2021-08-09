@@ -179,7 +179,7 @@ Trait AddressTrait
     {
         $data = $to;
         foreach (self::$address as $k => $v) {
-            $data['place_' . $v] = $from[$v] ?? '';
+            $data['place_' . $v] = $from[$v] ?? $to['place_' . $v];
         }
         return $data;
     }
