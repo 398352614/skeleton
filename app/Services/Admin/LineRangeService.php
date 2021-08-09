@@ -51,9 +51,18 @@ class LineRangeService extends BaseService
                     if (!in_array($v['schedule'], $schedule)) {
                         $result[$lineId]['work_day_list'][] = $v['schedule'];
                     }
+                    if ($v['type'] == BaseConstService::POSTCODE_TYPE_1) {
+                        if (!in_array($v['post_code_start'] . '-' . $v['post_code_end'] . ';', $array)) {
+                            $result[$lineId]['line_range'][$country] .= $v['post_code_start'] . '-' . $v['post_code_end'] . ';';
+                        }
+                    } elseif ($v['type'] == BaseConstService::POSTCODE_TYPE_2) {
+                        if (!in_array($v['post_code_start'] . '-' . $v['post_code_end'] . ';', $array)) {
+                            $result[$lineId]['line_range'][$country] .= $v['post_code_start'] . ';';
+                        }
+                    }
                     $schedule[] = $v['schedule'];
                 }
-                $result[$lineId]['line_range'][$country].="\n";
+                $result[$lineId]['line_range'][$country] .= "\n";
             }
             $newList[$lineId]['line_range'] = array_values($result[$lineId]['line_range']);
             $newList[$lineId]['work_day_list'] = array_values($result[$lineId]['work_day_list']);
