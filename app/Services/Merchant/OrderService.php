@@ -403,8 +403,8 @@ class OrderService extends BaseService
      */
     public function fillAddress($data)
     {
-        $place = ["place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat"];
-        $secondPlace = ["second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat"];
+        $place = AddressTrait::$place;
+        $secondPlace = AddressTrait::$secondPlace;
         if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
             foreach ($place as $k => $v) {
                 if (empty($data[$v])) {
@@ -694,6 +694,7 @@ class OrderService extends BaseService
      * @param $order
      * @return array|void
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function priceCount($order)
     {
@@ -712,6 +713,7 @@ class OrderService extends BaseService
      * @param $orderNo
      * @return array|void
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function check(&$params, $orderNo = null)
     {

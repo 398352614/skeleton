@@ -164,6 +164,7 @@ class WareHouseService extends BaseService
     }
 
     /**
+     * 移除线路
      * @param $id
      * @param $params
      * @throws BusinessLogicException
