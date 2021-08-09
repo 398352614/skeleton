@@ -53,9 +53,10 @@ class Authenticate extends Middleware
      * @return void
      *
      * @throws \Illuminate\Auth\AuthenticationException
+     * @throws BusinessLogicException
      */
     protected function unauthenticated($request, array $guards)
     {
-        throw new BusinessLogicException('用户认证失败', 10401);
+        throw new BusinessLogicException('用户认证失败', 2001);
     }
 }
