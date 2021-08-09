@@ -311,6 +311,7 @@ class OrderController extends OrderBaseController
      * 运价估算
      * @return array|void
      * @throws BusinessLogicException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function priceCount()
     {

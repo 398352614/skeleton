@@ -12,6 +12,7 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Line;
 use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
+use Illuminate\Support\Str;
 
 class LineService extends BaseLineService
 {
@@ -30,6 +31,12 @@ class LineService extends BaseLineService
     {
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_AREA) {
             return [];
+        }
+        //兼容
+        if ($params['place_country'] == 'NL' && post_code_be($params['place_post_code'])) {
+            $params['place_country'] = 'BE';
+        } elseif ($params['place_country'] == 'NL' && Str::length($params['place_post_code']) == 5) {
+            $params['place_country'] = 'DE';
         }
         $postCode = $params['place_post_code'];
         if (empty($params['type'])) {
