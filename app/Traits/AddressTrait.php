@@ -170,7 +170,7 @@ Trait AddressTrait
     }
 
     /**
-     * 位置转地址
+     * 位置转地址（仅供getLocation）
      * @param $from
      * @param $to
      * @return mixed
@@ -181,7 +181,7 @@ Trait AddressTrait
         foreach (self::$address as $k => $v) {
             $data['place_' . $v] = $from[$v] ?? $to['place_' . $v];
         }
-        $data['place_country']=$to['place_country'];
+        $data['place_country'] = $to['place_country'];
         return $data;
     }
 
