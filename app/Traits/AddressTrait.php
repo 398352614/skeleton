@@ -164,7 +164,9 @@ Trait AddressTrait
     {
         $data = $to;
         foreach (self::$address as $k => $v) {
-            $data['place_' . $v] = $from[$v] ?? $to['place_' . $v];
+            if(!empty($from[$v])){
+                $data['place_' . $v] = $from[$v];
+            }
         }
         $data['place_country'] = $to['place_country'];
         return $data;
