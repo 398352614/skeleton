@@ -76,13 +76,12 @@ Trait AddressTrait
     {
         if ($to == []) {
             $data = $from;
-            foreach (self::$place as $k => $v) {
-                $data['second_' . $v] = $from[$v] ?? '';
-            }
         } else {
             $data = $to;
-            foreach (self::$place as $k => $v) {
-                $data['second_' . $v] = $from[$v] ?? '';
+        }
+        foreach (self::$place as $k => $v) {
+            if (!empty($from[$v])) {
+                $data['second_' . $v] = $from[$v];
             }
         }
         return $data;
@@ -98,13 +97,12 @@ Trait AddressTrait
     {
         if ($to == []) {
             $data = $from;
-            foreach (self::$place as $k => $v) {
-                $data[$v] = $from['second_' . $v] ?? '';
-            }
         } else {
             $data = $to;
-            foreach (self::$place as $k => $v) {
-                $data[$v] = $from['second_' . $v] ?? '';
+        }
+        foreach (self::$place as $k => $v) {
+            if (!empty($from['second_' . $v])) {
+                $data[$v] = $from['second_' . $v];
             }
         }
         return $data;
@@ -120,13 +118,12 @@ Trait AddressTrait
     {
         if ($to == []) {
             $data = $from;
-            foreach (self::$address as $k => $v) {
-                $data['place_' . $v] = $from['warehouse_' . $v] ?? '';
-            }
         } else {
             $data = $to;
-            foreach (self::$address as $k => $v) {
-                $data['place_' . $v] = $from['warehouse_' . $v] ?? '';
+        }
+        foreach (self::$address as $k => $v) {
+            if (!empty($from['warehouse_' . $v])) {
+                $data['place_' . $v] = $from['warehouse_' . $v];
             }
         }
         return $data;
@@ -142,13 +139,12 @@ Trait AddressTrait
     {
         if ($to == []) {
             $data = $from;
-            foreach (self::$address as $k => $v) {
-                $data['second_place_' . $v] = $from['warehouse_' . $v] ?? '';
-            }
         } else {
             $data = $to;
-            foreach (self::$address as $k => $v) {
-                $data['second_place_' . $v] = $from['warehouse_' . $v] ?? '';
+        }
+        foreach (self::$address as $k => $v) {
+            if (!empty($from['warehouse_' . $v])) {
+                $data['second_place_' . $v] = $from['warehouse_' . $v];
             }
         }
         return $data;
@@ -164,7 +160,7 @@ Trait AddressTrait
     {
         $data = $to;
         foreach (self::$address as $k => $v) {
-            if(!empty($from[$v])){
+            if (!empty($from[$v])) {
                 $data['place_' . $v] = $from[$v];
             }
         }
@@ -182,7 +178,9 @@ Trait AddressTrait
     {
         $data = $to;
         foreach (self::$address as $k => $v) {
-            $data[$v] = $from['place_' . $v] ?? $to[$v];
+            if (!empty($from[$v])) {
+                $data[$v] = $from['place_' . $v];
+            }
         }
         return $data;
     }
@@ -197,7 +195,9 @@ Trait AddressTrait
     {
         $data = $to;
         foreach (self::$address as $k => $v) {
-            $data[$v] = $from['second_place_' . $v] ?? $to[$v];
+            if (!empty($from[$v])) {
+                $data[$v] = $from['second_place_' . $v];
+            }
         }
         return $data;
     }
@@ -212,7 +212,9 @@ Trait AddressTrait
     {
         $data = $to;
         foreach (self::$address as $k => $v) {
-            $data[$v] = $from['warehouse_' . $v] ?? $to[$v];
+            if (!empty($from[$v])) {
+                $data[$v] = $from['warehouse_' . $v];
+            }
         }
         return $data;
     }
