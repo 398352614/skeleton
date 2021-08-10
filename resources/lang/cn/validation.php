@@ -116,6 +116,12 @@ return [
         'place_lat' => [
             'required' => '系统无法获取该地址的位置信息',
         ],
+        'place_street'=>[
+            'required_unless' => '街道是必须的',
+        ],
+        'place_city'=>[
+            'required_unless' => '城市是必须的',
+        ],
         //包裹列表
         'package_list.*.id' => [
             'required_with' => '包裹ID是必须的',

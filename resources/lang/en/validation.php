@@ -139,6 +139,12 @@ return [
         'new_password' => [
             'different' => 'The new password cannot be the same as the original password.',
         ],
+        'place_street'=>[
+            'required_unless' => 'Street is necessary',
+        ],
+        'place_city'=>[
+            'required_unless' => 'Country is necessary',
+        ],
     ],
 
     /*

@@ -34,6 +34,5 @@ class AddressImportValidate extends BaseValidate
         'place_address' => 'nullable|string|max:50',
     ];
     public $message = [
-
     ];
 }
