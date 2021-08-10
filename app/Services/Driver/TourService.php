@@ -1197,10 +1197,10 @@ class TourService extends BaseService
         $data = Arr::only($params, ['end_signature', 'end_signature_remark']);
         $data = Arr::add($data, 'end_time', now());
         $actualTime = strtotime($data['end_time']) - strtotime($tour['begin_time']);
-//        $car = $this->getCarService()->getInfo(['car_no' => $tour['car_no']], ['*'], false);
-//        if (empty($car)) {
-//            throw new BusinessLogicException('车辆不存在');
-//        }
+        $car = $this->getCarService()->getInfo(['id' => $tour['car_id']], ['*'], false);
+        if (empty($car)) {
+            throw new BusinessLogicException('车辆不存在');
+        }
 //        if ($params['end_distance'] < $car['distance']) {
 //            throw new BusinessLogicException('出库里程数小于该车上次入库里程数，请重新填写');
 //        }
