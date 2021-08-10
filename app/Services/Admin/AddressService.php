@@ -460,7 +460,7 @@ class AddressService extends BaseService
         try {
             $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
             Log::info('info', $info);
-            AddressTrait::addressToPlace($info,$data);
+            $data = AddressTrait::addressToPlace($info, $data);
         } catch (BusinessLogicException $e) {
             $status = BaseConstService::NO;
             $error['log'] = __($e->getMessage(), $e->replace);
