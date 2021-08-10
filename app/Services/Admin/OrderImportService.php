@@ -153,6 +153,7 @@ class OrderImportService extends BaseService
         $material = [];
         $list = json_decode($params['list'], true);
         for ($i = 0, $j = count($list); $i < $j; $i++) {
+            $list[$i]['place_country'] = CountryTrait::getShort($list[$i]['place_country_name']) ?? $list[$i]['place_country_name'];
             $list[$i] = $this->check($list[$i]);
             for ($k = 0; $k < 5; $k++) {
                 if ($list[$i]['data']['package_no_' . ($k + 1)]) {
