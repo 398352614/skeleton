@@ -142,6 +142,9 @@ class DriverService extends BaseService
         $this->query->orderByDesc('id');
         $data = parent::getPageList();
         $warehouseList = $this->getWareHouseService()->getList(['id' => ['in', $data->pluck('warehouse_id')->toArray()]], ['*'], false)->keyBy('id')->toArray();
+        foreach ($data as $k => $v) {
+            $data[$k]['warehouse_name'] = $warehouseList[$v['warehouse_id']]['name'] ?? $data[$k]['warehouse_name'];
+        }
         return $data;
     }
 }
