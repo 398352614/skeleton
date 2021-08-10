@@ -155,21 +155,6 @@ Trait AddressTrait
     }
 
     /**
-     * 仓库转仓库
-     * @param $from
-     * @param array $to
-     * @return mixed
-     */
-    public static function warehouseToWarehouse($from, $to)
-    {
-        $data = $to;
-        foreach (self::$warehouse as $k => $v) {
-            $data[$v] = $from[$v] ?? '';
-        }
-        return $data;
-    }
-
-    /**
      * 位置转地址（仅供getLocation）
      * @param $from
      * @param $to
@@ -182,6 +167,51 @@ Trait AddressTrait
             $data['place_' . $v] = $from[$v] ?? $to['place_' . $v];
         }
         $data['place_country'] = $to['place_country'];
+        return $data;
+    }
+
+    /**
+     * 地址转位置
+     * @param $from
+     * @param $to
+     * @return mixed
+     */
+    public static function placeToAddress($from, $to)
+    {
+        $data = $to;
+        foreach (self::$address as $k => $v) {
+            $data[$v] = $from['place_' . $v] ?? $to[$v];
+        }
+        return $data;
+    }
+
+    /**
+     * 第二地址转位置
+     * @param $from
+     * @param $to
+     * @return mixed
+     */
+    public static function secondPlaceToAddress($from, $to)
+    {
+        $data = $to;
+        foreach (self::$address as $k => $v) {
+            $data[$v] = $from['second_place_' . $v] ?? $to[$v];
+        }
+        return $data;
+    }
+
+    /**
+     * 仓库转位置
+     * @param $from
+     * @param $to
+     * @return mixed
+     */
+    public static function warehouseToAddress($from, $to)
+    {
+        $data = $to;
+        foreach (self::$address as $k => $v) {
+            $data[$v] = $from['warehouse_' . $v] ?? $to[$v];
+        }
         return $data;
     }
 

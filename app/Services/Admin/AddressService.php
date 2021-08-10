@@ -15,6 +15,7 @@ use App\Http\Validate\BaseValidate;
 use App\Models\Address;
 use App\Services\BaseConstService;
 use App\Services\CommonService;
+use App\Traits\AddressTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\CountryTrait;
@@ -208,10 +209,7 @@ class AddressService extends BaseService
         if (empty($data['place_lon']) || empty($data['place_lat'])) {
             throw new BusinessLogicException('地址无法定位，请选择其他地址');
         }
-        $fields = ['place_fullname', 'place_phone',
-            'place_country', 'place_province', 'place_city', 'place_district',
-            'place_post_code', 'place_street', 'place_house_number',
-            'place_address'];
+        $fields = AddressTrait::$place;
         foreach ($fields as $v) {
             array_key_exists($v, $data) && $data[$v] = trim($data[$v]);
         }
@@ -459,36 +457,10 @@ class AddressService extends BaseService
         $this->uniqueCheck($data);
 
         //如果没传经纬度，就通过第三方API获取经纬度
-        $address = [
-            'place_country',
-            'place_post_code',
-            'place_house_number',
-            'place_city',
-            'place_street',
-            'place_district',
-            'place_province',
-            'place_lon',
-            'place_lat',
-        ];
         try {
             $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
             Log::info('info', $info);
-//            $data['place_post_code'] = $data['place_post_code'] ?? $info['post_code'];
-//            $data['place_house_number'] = $data['place_house_number'] ?? $info['house_number'];
-//            $data['place_city'] = empty($data['place_city']) ? $info['city'] : $data['place_city'];
-//            $data['place_street'] = empty($data['place_street']) ? $info['street'] : $data['place_street'];
-//            $data['place_district'] = empty($data['place_district']) ? $info['district'] : $data['place_district'];
-//            $data['place_province'] = empty($data['place_province']) ? $info['province'] : $data['place_province'];
-//            $data['place_lon'] = empty($data['place_lon']) ? $info['lon'] : $data['place_lon'];
-//            $data['place_lat'] = empty($data['place_lat']) ? $info['lat'] : $data['place_lat'];
-            $data['place_post_code'] = $info['post_code'];
-            $data['place_house_number'] = $info['house_number'];
-            $data['place_city'] = $info['city'];
-            $data['place_street'] = $info['street'];
-            $data['place_district'] = $info['district'];
-            $data['place_province'] = $info['province'];
-            $data['place_lon'] = $info['lon'];
-            $data['place_lat'] = $info['lat'];
+            AddressTrait::addressToPlace($info,$data);
         } catch (BusinessLogicException $e) {
             $status = BaseConstService::NO;
             $error['log'] = __($e->getMessage(), $e->replace);

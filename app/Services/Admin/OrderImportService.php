@@ -300,8 +300,8 @@ class OrderImportService extends BaseService
      */
     public function fillAddress($data)
     {
-        $place = ["place_fullname", "place_phone", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat"];
-        $secondPlace = ["second_place_fullname", "second_place_phone", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat"];
+        $place = AddressTrait::$place;
+        $secondPlace = AddressTrait::$secondPlace;
         if ($data['type'] == BaseConstService::ORDER_TYPE_1) {
             foreach ($place as $k => $v) {
                 if (empty($data[$v])) {
@@ -567,7 +567,7 @@ class OrderImportService extends BaseService
         $data = Arr::only($data, [
             "create_date", "type", "merchant_id", "out_user_id", "out_order_no",
             "place_fullname", "place_phone", "place_country", "place_post_code", "place_house_number", "place_city", "place_street", "place_lon", "place_lat", "execution_date", "place_address",
-            "second_place_fullname", "second_place_phone","second_place_country", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat", "second_place_address",
+            "second_place_fullname", "second_place_phone", "second_place_country", "second_place_post_code", "second_place_house_number", "second_place_city", "second_place_street", "second_execution_date", "second_place_lon", "second_place_lat", "second_place_address",
             "settlement_amount", "settlement_type",
             "control_mode", "receipt_type", "receipt_count", "special_remark", "mask_code",
 

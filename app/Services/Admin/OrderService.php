@@ -22,6 +22,7 @@ use App\Services\ApiServices\TourOptimizationService;
 use App\Services\BaseConstService;
 use App\Services\CommonService;
 use App\Services\OrderTrailService;
+use App\Traits\AddressTrait;
 use App\Traits\BarcodeTrait;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
@@ -636,10 +637,7 @@ class OrderService extends BaseService
             $params['place_country'] = 'DE';
         }
         $params['place_post_code'] = str_replace(' ', '', $params['place_post_code']);
-        $fields = ['place_fullname', 'place_phone',
-            'place_country', 'place_province', 'place_city', 'place_district',
-            'place_post_code', 'place_street', 'place_house_number',
-            'place_address'];
+        $fields = AddressTrait::$place;
         foreach ($fields as $v) {
             array_key_exists($v, $params) && $params[$v] = trim($params[$v]);
         }
@@ -1119,62 +1117,21 @@ class OrderService extends BaseService
         $materialList = $this->getMaterialService()->getList(['order_no' => ['in', $orderNoList]], ['order_no', 'expect_quantity', 'code'], false)->toArray();
         $materialList = array_create_group_index($materialList, 'order_no');
         foreach ($orderList as $k => $v) {
-            $newOrderList[$k]['order_no'] = $v['order_no'];
-            $newOrderList[$k]['mask_code'] = $v['mask_code'];
-            $newOrderList[$k]['sender']['fullname'] = $v['place_fullname'];
-            $newOrderList[$k]['sender']['phone'] = $v['place_phone'];
-            $newOrderList[$k]['sender']['country'] = $v['place_country'];
-            $newOrderList[$k]['sender']['province'] = $v['place_province'];
-            $newOrderList[$k]['sender']['city'] = $v['place_city'];
-            $newOrderList[$k]['sender']['district'] = $v['place_district'];
-            $newOrderList[$k]['sender']['post_code'] = $v['place_post_code'];
-            $newOrderList[$k]['sender']['street'] = $v['place_street'];
-            $newOrderList[$k]['sender']['house_number'] = $v['place_house_number'];
-            $newOrderList[$k]['sender']['address'] = $v['place_address'];
-
-            $newOrderList[$k]['receiver']['fullname'] = $v['second_place_fullname'];
-            $newOrderList[$k]['receiver']['phone'] = $v['second_place_phone'];
-            $newOrderList[$k]['receiver']['country'] = $v['second_place_country'];
-            $newOrderList[$k]['receiver']['province'] = $v['second_place_province'];
-            $newOrderList[$k]['receiver']['city'] = $v['second_place_city'];
-            $newOrderList[$k]['receiver']['district'] = $v['second_place_district'];
-            $newOrderList[$k]['receiver']['post_code'] = $v['second_place_post_code'];
-            $newOrderList[$k]['receiver']['street'] = $v['second_place_street'];
-            $newOrderList[$k]['receiver']['house_number'] = $v['second_place_house_number'];
-            $newOrderList[$k]['receiver']['address'] = $v['second_place_address'];
-
-            if ($v['type'] !== BaseConstService::ORDER_TYPE_3) {
-                $newOrderList[$k]['destination']['country'] = $v['place_country'];
-                $newOrderList[$k]['destination']['province'] = $v['place_province'];
-                $newOrderList[$k]['destination']['city'] = $v['place_city'];
-                $newOrderList[$k]['destination']['district'] = $v['place_district'];
-                $newOrderList[$k]['destination']['post_code'] = $v['place_post_code'];
-                $newOrderList[$k]['destination']['street'] = $v['place_street'];
-                $newOrderList[$k]['destination']['house_number'] = $v['place_house_number'];
-                $newOrderList[$k]['destination']['address'] = $v['place_address'];
-            } else {
-                $newOrderList[$k]['destination']['country'] = $v['second_place_country'];
-                $newOrderList[$k]['destination']['province'] = $v['second_place_province'];
-                $newOrderList[$k]['destination']['city'] = $v['second_place_city'];
-                $newOrderList[$k]['destination']['district'] = $v['second_place_district'];
-                $newOrderList[$k]['destination']['post_code'] = $v['second_place_post_code'];
-                $newOrderList[$k]['destination']['street'] = $v['second_place_street'];
-                $newOrderList[$k]['destination']['house_number'] = $v['second_place_house_number'];
-                $newOrderList[$k]['destination']['address'] = $v['second_place_address'];
-            }
             $newOrderList[$k]['tracking_order'] = $this->getTrackingOrderService()->getInfo(['order_no' => $v['order_no']], ['*'], false, ['created_at' => 'desc']);
             if (empty($newOrderList)) {
                 throw new BusinessLogicException('订单[:order_no]未生成运单，无法打印面单', 1000, ['order_no' => $v['order_no']]);
             }
-            $newOrderList[$k]['tracking_order'] = $newOrderList[$k]['tracking_order']->toArray();
-            $newOrderList[$k]['warehouse']['country'] = $newOrderList[$k]['tracking_order']['warehouse_country'];
-            $newOrderList[$k]['warehouse']['province'] = $newOrderList[$k]['tracking_order']['warehouse_province'];
-            $newOrderList[$k]['warehouse']['city'] = $newOrderList[$k]['tracking_order']['warehouse_city'];
-            $newOrderList[$k]['warehouse']['district'] = $newOrderList[$k]['tracking_order']['warehouse_district'];
-            $newOrderList[$k]['warehouse']['post_code'] = $newOrderList[$k]['tracking_order']['warehouse_post_code'];
-            $newOrderList[$k]['warehouse']['street'] = $newOrderList[$k]['tracking_order']['warehouse_street'];
-            $newOrderList[$k]['warehouse']['house_number'] = $newOrderList[$k]['tracking_order']['warehouse_house_number'];
-            $newOrderList[$k]['warehouse']['address'] = $newOrderList[$k]['tracking_order']['warehouse_address'];
+            $newOrderList[$k]['order_no'] = $v['order_no'];
+            $newOrderList[$k]['mask_code'] = $v['mask_code'];
+            AddressTrait::placeToAddress($v, $newOrderList[$k]['sender']);
+            AddressTrait::secondPlaceToAddress($v, $newOrderList[$k]['receiver']);
+            AddressTrait::warehouseToAddress($newOrderList[$k]['tracking_order'], $newOrderList[$k]['warehouse']);
+            if ($v['type'] !== BaseConstService::ORDER_TYPE_3) {
+                AddressTrait::placeToAddress($v, $newOrderList[$k]['destination']);
+            } else {
+                AddressTrait::secondPlaceToAddress($v, $newOrderList[$k]['destination']);
+            }
+            unset($newOrderList[$k]['destination']['fullname'], $newOrderList[$k]['destination']['phone'], $newOrderList[$k]['warehouse']['fullname'], $newOrderList[$k]['warehouse']['phone']);
             //第三方填充仓库
             if ($v['type'] == BaseConstService::ORDER_TYPE_1 && empty($newOrderList[$k]['receiver']['fullname'])) {
                 $newOrderList[$k]['receiver'] = $newOrderList[$k]['warehouse'];
