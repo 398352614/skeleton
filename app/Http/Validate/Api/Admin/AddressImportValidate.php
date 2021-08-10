@@ -28,9 +28,9 @@ class AddressImportValidate extends BaseValidate
         'place_province' => 'nullable|string|max:50',
         'place_post_code' => 'required|string|max:50',
         'place_house_number' => 'required|max:50',
-        'place_city' => 'nullable|string|max:50',
+        'place_city' => 'required_unless:place_country,NL|string|max:50',
         'place_district' => 'nullable|string|max:50',
-        'place_street' => 'nullable|string|max:50',
+        'place_street' => 'required_unless:place_country,NL|string|max:50',
         'place_address' => 'nullable|string|max:50',
     ];
     public $message = [
