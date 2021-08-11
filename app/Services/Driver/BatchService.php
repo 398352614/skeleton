@@ -146,8 +146,13 @@ class BatchService extends BaseService
     {
         //锁定站点
         $batch = parent::getInfoLock(['id' => $batch['id'], 'driver_id' => ['all', null]], ['*'], false);
+        if(empty($batch)){
+            throw new BusinessLogicException('数据被占用，请稍后操作');
+        }
         $data = (intval($trackingOrder['type']) === 1) ? [
-            'expect_pickup_quantity' => intval($batch['expect_pickup_quantity']) + 1] : ['expect_pie_quantity' => intval($batch['expect_pie_quantity']) + 1
+            'expect_pickup_quantity' => intval($batch['expect_pickup_quantity']) + 1
+        ] : [
+            'expect_pie_quantity' => intval($batch['expect_pie_quantity']) + 1
         ];
         $rowCount = parent::update(['id' => $batch['id'], 'driver_id' => ['all', null]], $data);
         if ($rowCount === false) {

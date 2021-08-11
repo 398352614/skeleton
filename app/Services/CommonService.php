@@ -12,12 +12,11 @@ use App\Exceptions\BusinessLogicException;
 use App\Models\Country;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
-use App\Traits\CountryAddressTrait;
 use App\Traits\LocationTrait;
 use App\Traits\PostcodeTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 class CommonService
 {
@@ -31,7 +30,28 @@ class CommonService
      */
     public function getLocation($params)
     {
-        return LocationTrait::getLocation($params['country'], $params['city'] ?? '', $params['street'] ?? '', $params['house_number'], $params['post_code']);
+        empty($params['country']) && $params['country'] = CompanyTrait::getCountry();
+        if ($params['post_code'] > 9999) {
+            $params['country'] = BaseConstService::POSTCODE_COUNTRY_DE;
+        }
+        if ($params['country'] == BaseConstService::POSTCODE_COUNTRY_NL && post_code_be($params['post_code'])) {
+            $params['country'] = BaseConstService::POSTCODE_COUNTRY_BE;
+        }
+        $address = DB::table('address')->where('place_country', $params['country'])->where('place_house_number', $params['house_number'])->where('place_post_code', $params['post_code'])->first();
+        if (!empty($address) && CompanyTrait::getCountry() == BaseConstService::POSTCODE_COUNTRY_NL) {
+            $address = collect($address)->toArray();
+            $data = [
+                'country' => $address['place_country'],
+                'city' => $address['place_city'],
+                'street' => $address['place_street'],
+                'house_number' => $address['place_house_number'],
+                'lat' => $address['place_lat'],
+                'lon' => $address['place_lon'],
+            ];
+        } else {
+            $data = LocationTrait::getLocation($params['country'], $params['city'] ?? '', $params['street'] ?? '', $params['house_number'], $params['post_code']);
+        }
+        return $data;
     }
 
     /**

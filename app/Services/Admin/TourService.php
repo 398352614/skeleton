@@ -597,10 +597,10 @@ class TourService extends BaseService
             $this->query->where('tour_no', '=', $tourNo);
         }
         //若不存在线路任务或者超过最大运单量,则新建线路任务
-        if ((intval($batch['expect_pickup_quantity']) > 0) && (($isAssign == false) || ($isAddOrder == false))) {
+        if ((intval($batch['expect_pickup_quantity']) > 0) && (($isAssign == false) && ($isAddOrder == false))) {
             $this->query->where(DB::raw('expect_pickup_quantity+' . 1), '<=', $line['pickup_max_count']);
         }
-        if ((intval($batch['expect_pie_quantity']) > 0) && (($isAssign == false) || ($isAddOrder == false))) {
+        if ((intval($batch['expect_pie_quantity']) > 0) && ($isAssign == false) && ($isAddOrder == false)) {
             $this->query->where(DB::raw('expect_pie_quantity+' . 1), '<=', $line['pie_max_count']);
         }
         $where = ['line_id' => $line['id'], 'execution_date' => $batch['execution_date'], 'status' => ['in', [BaseConstService::TOUR_STATUS_1, BaseConstService::TOUR_STATUS_2]]];
@@ -795,7 +795,11 @@ class TourService extends BaseService
             }
             $batchList = $batchList->toArray();
             $batch = collect($batchList)->sortByDesc('actual_arrive_time')->first();
-            $info['warehouse_actual_time'] = strtotime($info['end_time']) - strtotime($batch['actual_arrive_time']);
+            if(!empty($batch['actual_arrive_time'])){
+                $info['warehouse_actual_time'] = strtotime($info['end_time']) - strtotime($batch['actual_arrive_time']);
+            }else{
+                $info['warehouse_actual_time'] = strtotime($info['end_time']);
+            }
             if (!$info['warehouse_actual_time'] == 0) {
                 $warehouseActualTimeHuman = CarbonInterval::second($info['warehouse_actual_time'])->cascade()->forHumans();
             } else {
@@ -1131,6 +1135,7 @@ class TourService extends BaseService
         $batchList = array_merge($batchList, $ingBatchList);
         if ($onlyId == true) {
             $batchList = array_column($batchList, 'id');
+            $batchList = array_values($batchList);
         }
         return $batchList;
     }

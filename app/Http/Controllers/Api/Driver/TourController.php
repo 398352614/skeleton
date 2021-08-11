@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api\Driver;
 
 use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
+use App\Services\BaseConstService;
 use App\Services\Driver\TourService;
 use App\Traits\TourTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -234,7 +235,7 @@ class TourController extends BaseController
      */
     public function updateBatchIndex()
     {
-        return $this->service->updateBatchIndex($this->data);
+        return $this->service->updateBatchIndex($this->data,BaseConstService::YES);
     }
 
     /**

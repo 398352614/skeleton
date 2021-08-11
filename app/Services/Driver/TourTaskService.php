@@ -96,7 +96,7 @@ class TourTaskService extends BaseService
         //获取站点数量
         $tour['batch_count'] = $this->getBatchService()->count(['tour_no' => $tour['tour_no']]);
         //获取所有站点
-        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'asc', 'created_at' => 'asc']);
+        $batchList = $this->getBatchService()->getList(['tour_no' => $tour['tour_no']], ['*'], false, [], ['sort_id' => 'desc', 'created_at' => 'desc']);
         //顺带包裹信息
         $additionalPackageList = AdditionalPackage::query()->whereIn('batch_no', $batchList->pluck('batch_no')->toArray())->get();
         if (!empty($additionalPackageList)) {

@@ -201,7 +201,7 @@ class AddressService extends BaseService
             throw new BusinessLogicException('删除失败，请重新操作');
         }
     }
-    
+
 
     /**
      * @param array $data
@@ -212,24 +212,25 @@ class AddressService extends BaseService
     public function showByApi(array $data)
     {
         $where = [];
-        $array = ['place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_province', 'place_district'];
+        $array = ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code', 'place_province', 'place_district', 'place_lon', 'place_lat'];
         foreach ($array as $k => $v) {
             if (!empty($data[$v])) {
                 $where[$v] = $data[$v];
             } else {
-                $data[$v] = '';
+                $where[$v] = '';
             }
         }
         $address = parent::getInfo($where, ['*'], false);
         if (empty($address)) {
-            $info = LocationTrait::getLocation($data['place_country'], $data['place_city'], $data['place_street'], $data['place_house_number'], $data['place_post_code']);
+            $info = LocationTrait::getLocation($where['place_country'], $where['place_city'], $where['place_street'], $where['place_house_number'], $where['place_post_code']);
             foreach ($array as $k => $v) {
                 $address[$v] = $info[str_replace('place_', '', $v)];
             }
-        }else{
-            $address=collect($address)->toArray();
+        } else {
+            $address = collect($address)->toArray();
         }
         $address = Arr::only($address, ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code', 'place_province', 'place_district', 'place_lon', 'place_lat']);
         return $address;
     }
+
 }

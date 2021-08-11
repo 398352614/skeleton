@@ -71,7 +71,7 @@ class TourValidate extends BaseValidate
         'additional_package_list.*.package_no' => 'required_with:additional_package_list|string|max:50',
         'additional_package_list.*.merchant_id' => 'required_with:additional_package_list|integer',
         'additional_package_list.*.sticker_no' => 'nullable|string|max:250',
-        'additional_package_list.*.delivery_charge' => 'required_with:additional_package_list|integer|in:1,2',
+        'additional_package_list.*.delivery_charge' => 'nullable|integer|in:1,2',
         //跳过
         'is_skipped' => 'required|integer|in:1,2',
 
