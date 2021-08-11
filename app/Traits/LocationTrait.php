@@ -59,7 +59,6 @@ trait LocationTrait
      * @param $houseNumberAddition
      * @return array|\Closure
      * @throws BusinessLogicException
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private static function getLocationDetail($country, $city, $street, $houseNumber, $postCode)
     {
@@ -74,7 +73,23 @@ trait LocationTrait
             'postal_code' => $postCode,
             //'room'=>$roomNumber,
         ];
-        return self::getLocationDetailThird($address);
+        $address2 = [
+            'country' => $country,
+            'street_number' => $houseNumber,
+            'postal_code' => $postCode,
+            'locality' => '',//administrative_area_level_2
+            'route' => '',
+        ];
+        if ($country === 'NL') {
+            $data = self::getLocationDetailFirst($country, $houseNumber, $postCode);
+            if (empty(collect($data)->toArray()['country'])) {
+                return self::getLocationDetailThird($address2);
+            } else {
+                return $data;
+            }
+        } else {
+            return self::getLocationDetailThird($address);
+        }
     }
 
     /**
@@ -191,7 +206,7 @@ trait LocationTrait
         return function () use ($address) {
             $data = '';
             foreach ($address as $k => $v) {
-                if (!empty($address)) {
+                if (!empty($v)) {
                     $data = $data . $k . ':' . $v . '|';
                 }
             }
