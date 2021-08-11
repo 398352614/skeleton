@@ -146,7 +146,7 @@ class AddressService extends BaseService
     public function showByApi(array $data)
     {
         $where = [];
-        $array = ['place_country', 'place_post_code', 'place_house_number', 'place_city', 'place_street', 'place_province', 'place_district'];
+        $array = ['place_country', 'place_city', 'place_street', 'place_house_number', 'place_post_code', 'place_province', 'place_district', 'place_lon', 'place_lat'];
         foreach ($array as $k => $v) {
             if (!empty($data[$v])) {
                 $where[$v] = $data[$v];
