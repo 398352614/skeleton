@@ -56,8 +56,8 @@ class FixCompanyConfig extends Command
                     'map' => 'google',
                     'scheduling_rule' => BaseConstService::SCHEDULING_TYPE_1
                 ]);
+                $this->info($k);
             }
-
         }
         $this->info('fix company config successful!');
     }
