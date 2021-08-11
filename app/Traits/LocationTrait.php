@@ -138,7 +138,7 @@ trait LocationTrait
         return function () use ($address) {
             $data = '';
             foreach ($address as $k => $v) {
-                if (!empty($address)) {
+                if (!empty($v)) {
                     $data = $data . $k . ':' . $v . '|';
                 }
             }
