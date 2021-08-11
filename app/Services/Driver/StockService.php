@@ -170,7 +170,8 @@ class StockService extends BaseService
         //若日期为空则自动拉取最近可选日期
         if (empty($executionDate) || Carbon::today()->gte($executionDate . ' 00:00:00')) {
             $placeCode = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_post_code'] : $order['second_place_post_code'];
-            list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
+            $placeCountry = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_country'] : $order['second_place_country'];
+            list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'place_country' => $placeCountry, 'type' => $type], $order['merchant_id']);
         }
         //有效期验证,未超期的自动生成派件运单
         if (!empty($package['expiration_date']) && $executionDate > $package['expiration_date']) {
@@ -198,7 +199,8 @@ class StockService extends BaseService
                 DB::rollBack();
                 if ($e->getCode() == 5010) {
                     $placeCode = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_post_code'] : $order['second_place_post_code'];
-                    list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'type' => $type], $order['merchant_id']);
+                    $placeCountry = ($order['type'] == BaseConstService::ORDER_TYPE_2) ? $order['place_country'] : $order['second_place_country'];
+                    list($executionDate, $line) = $this->getLineService()->getCurrentDate(['place_post_code' => $placeCode, 'place_country' => $placeCountry, 'type' => $type], $order['merchant_id']);
                     $tour = $this->getTrackingOrderService()->store($trackingOrder, $order['order_no'], $line, true);
                 } else {
                     throw $e;
