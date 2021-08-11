@@ -41,10 +41,9 @@ class FixCompanyConfig extends Command
      */
     public function handle()
     {
-        $data = [];
         $companyList = Company::query()->get(['*'])->toArray();
         foreach ($companyList as $k => $company) {
-            if (empty(CompanyConfig::query()->where('company_id', $company['company_id'])->get())) {
+            if (empty(CompanyConfig::query()->where('company_id', $company['id'])->get())) {
                 CompanyConfig::create([
                     'company_id' => $company['id'],
                     'line_rule' => BaseConstService::LINE_RULE_POST_CODE,
