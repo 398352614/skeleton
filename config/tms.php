@@ -48,8 +48,9 @@ return [
     'old_company_id' => env('OLD_COMPANY_ID'),
     'admin_email' => env('ADMIN_EMAIL'),
     'true_app_env' => env('TRUE_APP_ENV'),
-    'tcp_merchant_id'=>env('TCP_MERCHANT_ID'),
-    'http_proxy'=>env('VPN_HTTP_PROXY'),
-    'https_proxy'=>env('VPN_HTTPS_PROXY'),
-    'post_code_de'=>env('POST_CODE_DE')
+    'tcp_merchant_id' => env('TCP_MERCHANT_ID'),
+    'http_proxy' => env('VPN_HTTP_PROXY'),
+    'https_proxy' => env('VPN_HTTPS_PROXY'),
+    'post_code_de' => env('POST_CODE_DE'),
+    'geocode_key' => env('GEOCODE_KEY')
 ];
