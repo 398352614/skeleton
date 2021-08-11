@@ -73,7 +73,7 @@ trait LocationTrait
             //'room'=>$roomNumber,
         ];
         Log::info('country', ['country' => $country]);
-        return ($country === 'NL') ? self::getLocationDetailFirst($country, $houseNumber, $postCode) : self::getLocationDetailThird($address);
+        return self::getLocationDetailThird($address);
     }
 
     /**
