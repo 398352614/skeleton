@@ -57,10 +57,8 @@ class StockService extends BaseService
             $this->check($package, $order, $type);
         }
         $warehouse = $this->getWareHouseService()->getInfo(['id' => $warehouseId], ['*'], false)->toArray();
-        $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
-        $pickupCenter = $this->getBaseWarehouseService()->getCenter($pickupWarehouse);
         if ($warehouseId == $pieWarehouse['id']) {
             //如果本网点为该包裹的派件网点，则生成派件运单进行派送
             return $this->createTrackingOrder($package, $order, $type);
@@ -70,12 +68,21 @@ class StockService extends BaseService
         } elseif ($warehouse['is_center'] == BaseConstService::YES) {
             //如果本网点为其他分拨中心，则生成中转转运单
             return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
-        } elseif ($pieWarehouse['id'] == $pickupWarehouse['id']) {
-            //如果本网点为同分拨中心的网点，则生成短途中转转运单
-            return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2, BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_1);
         } else {
-            //如果本网点为其他分拨中心的网点，则生成长途中国转转运单
-            return $this->createTrackingPackage($package, $warehouse, $pickupCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
+            try {
+                $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
+                $pickupCenter = $this->getBaseWarehouseService()->getCenter($pickupWarehouse);
+            } catch (BusinessLogicException $e) {
+                //兼容手动移动的包裹
+                $pickupCenter = $this->getBaseWarehouseService()->getCenter($warehouse);
+            }
+            if (!empty($pickupWarehouse) && $pieWarehouse['id'] == $pickupWarehouse['id']) {
+                //如果本网点为同分拨中心的网点，则生成短途中转转运单
+                return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2, BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_1);
+            } else {
+                //如果本网点为其他分拨中心的网点，则生成长途中国转转运单
+                return $this->createTrackingPackage($package, $warehouse, $pickupCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
+            }
         }
     }
 
