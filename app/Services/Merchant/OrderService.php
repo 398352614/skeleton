@@ -414,7 +414,7 @@ class OrderService extends BaseService
                 }
             }
         } elseif ($data['type'] == BaseConstService::ORDER_TYPE_2) {
-            foreach ($secondPlace as $k => $v) {
+            foreach ($place as $k => $v) {
                 if (empty($data[$v])) {
                     $data = $this->fillPlaceAddress($data);
                     break;
