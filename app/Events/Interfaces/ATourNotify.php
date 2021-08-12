@@ -122,6 +122,7 @@ abstract class ATourNotify
             $trackingOrder['delivery_count'] = !empty($packageList[$trackingOrder['order_no']]) ? array_sum(array_column($packageList[$trackingOrder['order_no']], 'delivery_count')) : 0;
             return collect($trackingOrder);
         })->toArray();
+        Log::info('是否包含包裹' . $packageFill);
         unset($packageList, $materialList, $orderList);
         return $trackingOrderList;
     }
