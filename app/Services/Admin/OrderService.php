@@ -946,7 +946,7 @@ class OrderService extends BaseService
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
-        $rowCount = $this->getTrackingOrderService()->update(['order_no'=> $dbInfo['order_no']], Arr::only($data, $columns));
+        $rowCount = $this->getTrackingOrderService()->update(['order_no' => $dbInfo['order_no']], Arr::only($data, $columns));
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
@@ -1127,13 +1127,14 @@ class OrderService extends BaseService
             }
             $newOrderList[$k]['order_no'] = $v['order_no'];
             $newOrderList[$k]['mask_code'] = $v['mask_code'];
-            AddressTrait::placeToAddress($v, $newOrderList[$k]['sender']);
-            AddressTrait::secondPlaceToAddress($v, $newOrderList[$k]['receiver']);
-            AddressTrait::warehouseToAddress($newOrderList[$k]['tracking_order'], $newOrderList[$k]['warehouse']);
+            $newOrderList[$k]['sender'] = $newOrderList[$k]['receiver'] = $newOrderList[$k]['warehouse'] = $newOrderList[$k]['destination'] = [];
+            $newOrderList[$k]['sender'] = AddressTrait::placeToAddress($v, $newOrderList[$k]['sender']);
+            $newOrderList[$k]['receiver'] = AddressTrait::secondPlaceToAddress($v, $newOrderList[$k]['receiver']);
+            $newOrderList[$k]['warehouse'] = AddressTrait::warehouseToAddress($newOrderList[$k]['tracking_order'], $newOrderList[$k]['warehouse']);
             if ($v['type'] !== BaseConstService::ORDER_TYPE_3) {
-                AddressTrait::placeToAddress($v, $newOrderList[$k]['destination']);
+                $newOrderList[$k]['destination'] = AddressTrait::placeToAddress($v, $newOrderList[$k]['destination']);
             } else {
-                AddressTrait::secondPlaceToAddress($v, $newOrderList[$k]['destination']);
+                $newOrderList[$k]['destination'] = AddressTrait::secondPlaceToAddress($v, $newOrderList[$k]['destination']);
             }
             unset($newOrderList[$k]['destination']['fullname'], $newOrderList[$k]['destination']['phone'], $newOrderList[$k]['warehouse']['fullname'], $newOrderList[$k]['warehouse']['phone']);
             //第三方填充仓库
