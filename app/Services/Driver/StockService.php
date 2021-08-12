@@ -121,9 +121,12 @@ class StockService extends BaseService
         $warehouse = $this->getWareHouseService()->getInfo(['id' => auth()->user()->warehouse_id], ['*'], false)->toArray();
         $pieWarehouse = $this->getBaseWarehouseService()->getPieWarehouseByOrder($order);
         $pieCenter = $this->getBaseWarehouseService()->getCenter($pieWarehouse);
-        $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
-        $pickupCenter = $this->getBaseWarehouseService()->getCenter($pickupWarehouse);
-        if ($package['stage'] == BaseConstService::PACKAGE_STAGE_1 && $pickupWarehouse['id'] !== $warehouse['id'] && $ignoreRule == BaseConstService::NO) {
+        try {
+            $pickupWarehouse = $this->getBaseWarehouseService()->getPickupWarehouseByOrder($order);
+        } catch (BusinessLogicException $e) {
+            $pickupWarehouse = '';
+        }
+        if ($package['stage'] == BaseConstService::PACKAGE_STAGE_1 && !empty($pickupWarehouse) && $pickupWarehouse['id'] !== $warehouse['id'] && $ignoreRule == BaseConstService::NO) {
             throw new BusinessLogicException('该包裹不应在此网点入库', 5008);
         }
         if (auth()->user()->warehouse_id == $pieWarehouse['id']) {
@@ -144,12 +147,20 @@ class StockService extends BaseService
             } elseif ($warehouse['is_center'] == BaseConstService::YES || $warehouse['parent'] == 0) {
                 //如果本网点为其他分拨中心，则生成中转转运单
                 return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
-            } elseif ($pieWarehouse['id'] == $pickupWarehouse['id']) {
-                //如果本网点为同分拨中心的网点，则生成短途中转转运单
-                return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2, BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_2);
             } else {
-                //如果本网点为其他分拨中心的网点，则生成长途中国转转运单
-                return $this->createTrackingPackage($package, $warehouse, $pickupCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
+                if (!empty($pickupWarehouse)) {
+                    $pickupCenter = $this->getBaseWarehouseService()->getCenter($pickupWarehouse);
+                } else {
+                    $pickupCenter = $this->getBaseWarehouseService()->getCenter($warehouse);
+
+                }
+                if (!empty($pickupWarehouse) && $pieWarehouse['id'] == $pickupWarehouse['id']) {
+                    //如果本网点为同分拨中心的网点，则生成短途中转转运单
+                    return $this->createTrackingPackage($package, $warehouse, $pieCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2, BaseConstService::TRACKING_PACKAGE_DISTANCE_TYPE_1);
+                } else {
+                    //如果本网点为其他分拨中心的网点，则生成长途中国转转运单
+                    return $this->createTrackingPackage($package, $warehouse, $pickupCenter, BaseConstService::TRACKING_PACKAGE_TYPE_2);
+                }
             }
         }
     }
