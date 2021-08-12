@@ -29,8 +29,19 @@ trait LocationTrait
      */
     public static function getLocation($country, $city, $street, $houseNumber, $postCode)
     {
+        $address2 = [
+            'country' => $country,
+            'street_number' => $houseNumber,
+            'postal_code' => $postCode,
+            'locality' => '',//administrative_area_level_2
+            'route' => '',
+        ];
         $key = sprintf("%s:%s-%s-%s", 'location', $country, $postCode, $houseNumber);
-        $value = Cache::rememberForever($key, self::getLocationDetail($country, $city, $street, $houseNumber, $postCode));
+        try {
+            $value = Cache::rememberForever($key, self::getLocationDetail($country, $city, $street, $houseNumber, $postCode));
+        } catch (BusinessLogicException $e) {
+            $value = Cache::rememberForever($key, self::getLocationDetailThird($address2));
+        }
         return $value;
     }
 
@@ -73,20 +84,8 @@ trait LocationTrait
             'postal_code' => $postCode,
             //'room'=>$roomNumber,
         ];
-        $address2 = [
-            'country' => $country,
-            'street_number' => $houseNumber,
-            'postal_code' => $postCode,
-            'locality' => '',//administrative_area_level_2
-            'route' => '',
-        ];
         if ($country === 'NL') {
-            $data = self::getLocationDetailFirst($country, $houseNumber, $postCode);
-            if (empty(collect($data)->toArray()['country'])) {
-                return self::getLocationDetailThird($address2);
-            } else {
-                return $data;
-            }
+            return self::getLocationDetailFirst($country, $houseNumber, $postCode);
         } else {
             return self::getLocationDetailThird($address);
         }
@@ -184,7 +183,7 @@ trait LocationTrait
                 throw new \App\Exceptions\BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
             }
             return [
-                'country'=>$featureList[0]['properties']['country'],
+                'country' => $featureList[0]['properties']['country'],
                 'province' => $featureList[0]['properties']['state'] ?? '',
                 'city' => $featureList[0]['properties']['city'] ?? $city,
                 'district' => $featureList[0]['properties']['district'] ?? '',
