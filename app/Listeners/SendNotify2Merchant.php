@@ -82,6 +82,7 @@ class SendNotify2Merchant implements ShouldQueue
             $merchantList = $this->getMerchantList(array_keys($dataList));
             if (empty($merchantList)) return true;
             foreach ($merchantList as $merchantId => $merchant) {
+                Log::info($merchant['push_mode']);
                 if ($merchant['push_mode'] == BaseConstService::DETAIL_PUSH_MODE) {
                     $data = $dataList2[$merchantId];
                 } elseif ($merchant['push_mode'] == BaseConstService::SIMPLE_PUSH_MODE) {
