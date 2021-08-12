@@ -1136,7 +1136,6 @@ class OrderService extends BaseService
             } else {
                 $newOrderList[$k]['destination'] = AddressTrait::secondPlaceToAddress($v, $newOrderList[$k]['destination']);
             }
-            unset($newOrderList[$k]['destination']['fullname'], $newOrderList[$k]['destination']['phone'], $newOrderList[$k]['warehouse']['fullname'], $newOrderList[$k]['warehouse']['phone']);
             //第三方填充仓库
             if ($v['type'] == BaseConstService::ORDER_TYPE_1 && empty($newOrderList[$k]['receiver']['fullname'])) {
                 $newOrderList[$k]['receiver'] = $newOrderList[$k]['warehouse'];

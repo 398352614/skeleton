@@ -188,7 +188,7 @@ Trait AddressTrait
     {
         $data = $to;
         foreach (self::$address as $k => $v) {
-            if (!empty($from[$v])) {
+            if (!empty($from['place_' . $v])) {
                 $data[$v] = $from['place_' . $v];
             }elseif (empty($data[$v])) {
                 $data[$v] = '';
@@ -207,7 +207,7 @@ Trait AddressTrait
     {
         $data = $to;
         foreach (self::$address as $k => $v) {
-            if (!empty($from[$v])) {
+            if (!empty($from['second_place_' . $v])) {
                 $data[$v] = $from['second_place_' . $v];
             }elseif (empty($data[$v])) {
                 $data[$v] = '';
@@ -226,7 +226,7 @@ Trait AddressTrait
     {
         $data = $to;
         foreach (self::$address as $k => $v) {
-            if (!empty($from[$v])) {
+            if (!empty($from['warehouse_' . $v])) {
                 $data[$v] = $from['warehouse_' . $v];
             }elseif (empty($data[$v])) {
                 $data[$v] = '';
