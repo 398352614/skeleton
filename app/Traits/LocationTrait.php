@@ -25,7 +25,6 @@ trait LocationTrait
      * @return mixed
      * @throws \App\Exceptions\BusinessLogicException
      * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public static function getLocation($country, $city, $street, $houseNumber, $postCode)
     {

@@ -67,7 +67,7 @@ class OrderValidate extends BaseValidate
         'package_list.*.expect_quantity' => 'required_with:package_list|integer|gte:0',
         'package_list.*.remark' => 'nullable|string|max:250',
         'package_list.*.out_order_no' => 'nullable|string|max:50',
-        'package_list.*.express_first_no' => 'required_with:package_list|string|max:50|regex:/^[0-9a-zA-Z]([0-9a-zA-Z])*[0-9a-zA-Z]$/',
+        'package_list.*.express_first_no' => 'required_with:package_list|string|max:50|regex:/^[0-9a-zA-Z-]([0-9a-zA-Z-])*[0-9a-zA-Z-]$/',
         'package_list.*.express_second_no' => 'nullable|string|max:50',
         'package_list.*.is_auth' => 'sometimes|integer|in:1,2',
         'package_list.*.expiration_date' => 'nullable|date|',
