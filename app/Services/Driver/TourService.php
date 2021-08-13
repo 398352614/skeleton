@@ -556,7 +556,7 @@ class TourService extends BaseService
     public function getBatchInfo($id, $params)
     {
         list($tour, $batch) = $this->checkBatch($id, $params);
-        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'tracking_order_no', 'order_no', 'mask_code', 'type', 'batch_no', 'status'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no']], ['id', 'tracking_order_no', 'out_user_id', 'order_no', 'mask_code', 'type', 'batch_no', 'status'], false);
         $trackingOrderList = collect($trackingOrderList)->map(function ($trackingOrder, $key) {
             /**@var TrackingOrder $trackingOrder */
             return collect(Arr::add($trackingOrder->toArray(), 'status_name', $trackingOrder->status_name));
@@ -1229,9 +1229,9 @@ class TourService extends BaseService
      */
     public function updateBatchIndex($params, $value = BaseConstService::NO)
     {
-        Log::info('1',$params['batch_ids']);
-        if($value == BaseConstService::YES && (is_object($params['batch_ids']))){
-            $params['batch_ids'] = json_decode($params['batch_ids'],true);
+        Log::info('1', $params['batch_ids']);
+        if ($value == BaseConstService::YES && (is_object($params['batch_ids']))) {
+            $params['batch_ids'] = json_decode($params['batch_ids'], true);
         }
         // * @apiParam {String}   batch_ids                  有序的批次数组
         // * @apiParam {String}   tour_no                    在途编号
