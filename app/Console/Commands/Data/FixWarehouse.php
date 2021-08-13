@@ -18,7 +18,7 @@ class FixWarehouse extends Command
      *
      * @var string
      */
-    protected $signature = 'reset:warehouse';
+    protected $signature = 'fix:warehouse';
 
     /**
      * The console command description.
