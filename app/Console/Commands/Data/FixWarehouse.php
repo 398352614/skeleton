@@ -11,7 +11,7 @@ use App\Services\BaseConstService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class ResetWarehouse extends Command
+class FixWarehouse extends Command
 {
     /**
      * The name and signature of the console command.
@@ -46,7 +46,6 @@ class ResetWarehouse extends Command
     {
         $this->info('fix begin');
         try {
-            Warehouse::query()->truncate();
             //给每个公司新增一个根网点
             $companyList = Company::query()->get()->toArray();
             foreach ($companyList as $company) {

@@ -55,6 +55,7 @@ class OrderAgainResource extends JsonResource
             'tracking_order_type_name' => $this->tracking_order_type_name,
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
+            'type' => $this->type
         ];
     }
 }
