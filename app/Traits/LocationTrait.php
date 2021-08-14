@@ -240,6 +240,9 @@ trait LocationTrait
                     $addressResult[$y] = $v['long_name'];
                 }
             }
+            if(empty($addressResult['route'])){
+                throw new BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
+            }
             return [
                 'district' => $addressResult['administrative_area_level_4'] ?? '',//相当于是区
                 'province' => $addressResult['administrative_area_level_1'] ?? '',//相当于是区
