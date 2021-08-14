@@ -131,6 +131,7 @@ trait LocationTrait
             $body = $res->getBody();
             $stringBody = (string)$body;
             $arrayBody = json_decode($stringBody, TRUE);
+            Log::info('res',$res);
             if ($res->getStatusCode() !== 200) {
                 throw new \App\Exceptions\BusinessLogicException('邮编或门牌号码不正确，请仔细检查输入或联系客服');
             }
