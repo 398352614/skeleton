@@ -33,7 +33,7 @@ trait LocationTrait
             'street_number' => $houseNumber,
             'postal_code' => $postCode,
             'locality' => '',//administrative_area_level_2
-            'route' => '',
+            'route' => $street,
         ];
         $key = sprintf("%s:%s-%s-%s", 'location', $country, $postCode, $houseNumber);
         try {
@@ -244,8 +244,8 @@ trait LocationTrait
                 'district' => $addressResult['administrative_area_level_4'] ?? '',//相当于是区
                 'province' => $addressResult['administrative_area_level_1'] ?? '',//相当于是区
                 'country' => $addressResult['country'] ?? $address['country'],
-                'city' => $addressResult['locality'] ?? $address['city'],
-                'street' => $addressResult['route'] ?? $address['street'],
+                'city' => $addressResult['locality'] ?? $address['locality'],
+                'street' => $addressResult['route'] ?? $address['route'],
                 'house_number' => $addressResult['street_number'] ?? $address['street_number'],
                 'post_code' => $addressResult['postal_code'] ?? $address['post_code'],
                 'lon' => $result[0]['geometry']['location']['lng'],
