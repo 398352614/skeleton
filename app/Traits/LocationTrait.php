@@ -105,7 +105,7 @@ trait LocationTrait
         return function () use ($country, $houseNumber, $postCode, $houseNumberAddition) {
             try {
                 $client = new \GuzzleHttp\Client();
-                $url = sprintf("%s/addresses/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
+                $url = sprintf("%s/%s/%s/%s", config('thirdParty.location_api'), $postCode, $houseNumber, $houseNumberAddition);
                 Log::channel('api')->info(__CLASS__ . '.' . __FUNCTION__ . '.' . 'get', ['url' => $url]);
                 $res = $client->request('GET', $url, [
                         'auth' =>
