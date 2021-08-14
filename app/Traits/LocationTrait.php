@@ -126,16 +126,16 @@ trait LocationTrait
                     'line' => $e->getLine(),
                     'message' => $e->getMessage()
                 ]);
-                throw new BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
+                throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             $body = $res->getBody();
             $stringBody = (string)$body;
             $arrayBody = json_decode($stringBody, TRUE);
             if ($res->getStatusCode() !== 200) {
-                throw new \App\Exceptions\BusinessLogicException('邮编或门牌号码不正确，请仔细检查输入或联系客服');
+                throw new \App\Exceptions\BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             if (empty($arrayBody['latitude']) || empty($arrayBody['longitude'])) {
-                throw new BusinessLogicException('邮编或门牌号码不正确，请仔细检查输入或联系客服');
+                throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             return [
                 'country' => $country,
@@ -175,11 +175,11 @@ trait LocationTrait
                     'line' => $e->getLine(),
                     'message' => $e->getMessage()
                 ]);
-                throw new \App\Exceptions\BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
+                throw new \App\Exceptions\BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             $count = count($featureList);
             if (($count == 0)/* || ($count > 3)*/) {
-                throw new \App\Exceptions\BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
+                throw new \App\Exceptions\BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             return [
                 'country' => $featureList[0]['properties']['country'],
@@ -228,10 +228,10 @@ trait LocationTrait
                     'line' => $e->getLine(),
                     'message' => $e->getMessage()
                 ]);
-                throw new BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
+                throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             if (empty($result) || count($result) == 0) {
-                throw new BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
+                throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             $addressComponents = collect($result[0]['address_components']);
             $addressResult = [];
@@ -241,7 +241,7 @@ trait LocationTrait
                 }
             }
             if(empty($addressResult['route'])){
-                throw new BusinessLogicException('由于网络问题，无法根据地址信息获取真实位置，请稍后再尝试');
+                throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             return [
                 'district' => $addressResult['administrative_area_level_4'] ?? '',//相当于是区
