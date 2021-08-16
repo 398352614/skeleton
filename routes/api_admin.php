@@ -614,7 +614,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
     //公司配置
     Route::prefix('company-config')->group(function () {
         //获取详情
-        Route::get('/show', 'CompanyConfigController@show')->name('company-config.show');
+        Route::get('/show', 'CompanyConfigController@show');
         //获取地址模板列表
         Route::get('/address-template', 'CompanyConfigController@getAddressTemplateList')->name('company-config.show');
         //修改
