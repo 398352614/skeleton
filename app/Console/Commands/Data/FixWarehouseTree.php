@@ -65,7 +65,7 @@ class FixWarehouseTree extends Command
                 ->update(['parent' => $v]);
         }
 
-        Warehouse::deleteRedundancies();
+//        Warehouse::deleteRedundancies();
 
         $warehouses = Warehouse::all();
 
