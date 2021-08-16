@@ -59,7 +59,7 @@ class BatchDepart implements ITourDriver
      */
     public function getContent(): string
     {
-        return __('从[:params]客户家离开', [':params' => $this->batch['place_fullname']]);
+        return __('从[:params]客户家离开', ['params' => $this->batch['place_fullname']]);
     }
 
     public function getAddress(): string
