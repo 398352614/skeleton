@@ -250,7 +250,7 @@ class TourService extends BaseService
             if (!empty($cancelTrackingOrderIdList)) {
                 $cancelTrackingOrderList = $this->getTrackingOrderService()->getList(['id' => ['in', $cancelTrackingOrderIdList]], ['*'], false)->toArray();
                 //更换运单包裹状态
-                $rowCount = $this->getTrackingOrderPackageService()->update(['tour_no' => $tour['tour_no'], 'tracking_order_no' => ['in', array_column($cancelTrackingOrderList, 'tracking_order_no'), 'status' => BaseConstService::TRACKING_ORDER_STATUS_3]], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
+                $rowCount = $this->getTrackingOrderPackageService()->update(['tour_no' => $tour['tour_no'], 'tracking_order_no' => ['in', array_column($cancelTrackingOrderList, 'tracking_order_no')], 'status' => BaseConstService::TRACKING_ORDER_STATUS_3], ['status' => BaseConstService::TRACKING_ORDER_STATUS_6, 'batch_no' => '', 'tour_no' => '']);
                 if ($rowCount === false) {
                     throw new BusinessLogicException('出库失败');
                 }
