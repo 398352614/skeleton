@@ -45,6 +45,7 @@ class UpdateWarehouseVersion extends Command
             'init:order-template',
             'reset:order-template',
             'fix:warehouse',
+            'fix:warehouse-tree',
             'fix:company-config-unit',
             'fix:driver',
             'fix:package',
