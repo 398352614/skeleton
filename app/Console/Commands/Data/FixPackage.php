@@ -4,6 +4,7 @@
 namespace App\Console\Commands\Data;
 
 
+use App\Models\Package;
 use App\Services\BaseConstService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -48,25 +49,28 @@ class FixPackage extends Command
 //                    ->update(['order_no'=>
 //                        $packageList->where('express_first_no',$v->express_first_no)->first()->order_no]);
 //            }
-        $packageList = DB::table('package')->get()->toArray();
-        $trackingOrderList = DB::table('tracking_order')->get();
-        $count = count($packageList);
-        foreach ($packageList as $k => $v) {
-            if (($v->stage == null && $v->status !== BaseConstService::PACKAGE_STATUS_5) || $this->option('full') == 1) {
-                $trackingOrder = $trackingOrderList->where('order_no', $v->order_no)->sortByDesc('id')->first();
-                if (!empty($trackingOrder)) {
-                    //大条件：只有运单
-                    if ($trackingOrder->type == BaseConstService::TRACKING_PACKAGE_TYPE_1) {
-                        //小条件：运单为取件，则包裹阶段为取件
-                        DB::table('package')->where('express_first_no', $v->express_first_no)->update(['stage' => BaseConstService::PACKAGE_STAGE_1]);
-                    } elseif ($trackingOrder->type == BaseConstService::TRACKING_PACKAGE_TYPE_2) {
-                        //小条件：运单为派件，则包裹阶段为取件
-                        DB::table('package')->where('express_first_no', $v->express_first_no)->update(['stage' => BaseConstService::PACKAGE_STAGE_3]);
-                    }
-                }
-                $this->info('fix:' . ($k + 1) . '/' . $count);
-            }
-        }
+//        $packageList = DB::table('package')->get()->toArray();
+//        $trackingOrderList = DB::table('tracking_order')->get();
+//        $count = count($packageList);
+//        foreach ($packageList as $k => $v) {
+//            if (($v->stage == null && $v->status !== BaseConstService::PACKAGE_STATUS_5) || $this->option('full') == 1) {
+//                $trackingOrder = $trackingOrderList->where('order_no', $v->order_no)->sortByDesc('id')->first();
+//                if (!empty($trackingOrder)) {
+//                    //大条件：只有运单
+//                    if ($trackingOrder->type == BaseConstService::TRACKING_PACKAGE_TYPE_1) {
+//                        //小条件：运单为取件，则包裹阶段为取件
+//                        DB::table('package')->where('express_first_no', $v->express_first_no)->update(['stage' => BaseConstService::PACKAGE_STAGE_1]);
+//                    } elseif ($trackingOrder->type == BaseConstService::TRACKING_PACKAGE_TYPE_2) {
+//                        //小条件：运单为派件，则包裹阶段为取件
+//                        DB::table('package')->where('express_first_no', $v->express_first_no)->update(['stage' => BaseConstService::PACKAGE_STAGE_3]);
+//                    }
+//                }
+//                $this->info('fix:' . ($k + 1) . '/' . $count);
+//            }
+//        }
+        Package::query()->where('status', '<>', BaseConstService::PACKAGE_STATUS_5)->where('type', BaseConstService::PACKAGE_TYPE_1)->update(['stage' => BaseConstService::PACKAGE_STAGE_1]);
+        Package::query()->where('status', '<>', BaseConstService::PACKAGE_STATUS_5)->where('type', BaseConstService::PACKAGE_TYPE_2)->update(['stage' => BaseConstService::PACKAGE_STAGE_3]);
+
 
 //        $packageList = DB::table('package')->get()->toArray();
 //        $trackingOrderList = DB::table('tracking_order')->get();
