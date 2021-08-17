@@ -30,7 +30,13 @@ trait ExportTrait
         if (is_array($headings[0])) {
             for ($i = 0, $j = count($headings); $i < $j; $i++) {
                 foreach ($headings[$i] as $k => $v) {
-                    $headings[$i][$k] = __('excel.' . $dir . '.' . $i . '.' . $v);
+                    if ($dir == 'plan') {
+                        if (in_array($v, array_keys(__('excel.' . $dir)))) {
+                            $headings[$i][$k] = __('excel.' . $dir . '.' . $v);
+                        }
+                    } else {
+                        $headings[$i][$k] = __('excel.' . $dir . '.' . $i . '.' . $v);
+                    }
                     if ($dir == 'order') {
                         $headings[$i][$k] = $headings[$i][$k] . $this->getUnit($v);
                     }
@@ -67,7 +73,7 @@ trait ExportTrait
                 $rowCount = Excel::store(new PlanExport($data, $headings, $name, $dir, $params), $path);
             } elseif ($dir == 'order') {
                 $rowCount = Excel::store(new OrderExport($data, $headings, $name, $dir), $path);
-            }elseif ($dir == 'merchantOrder') {
+            } elseif ($dir == 'merchantOrder') {
                 $rowCount = Excel::store(new MerchantOrderExport($data, $headings, $name, $dir), $path);
             }elseif ($dir == 'addressExcelExport') {
                 $rowCount = Excel::store(new AddressExport($data, $headings, $name, $dir), $path);
@@ -148,11 +154,11 @@ trait ExportTrait
             "material_size_5",
         ];
         if (in_array($heading, $currency)) {
-            $unit = '('.ConstTranslateTrait::currencyUnitTypeSymbol(CompanyTrait::getCompany()['currency_unit']).')';
+            $unit = '(' . ConstTranslateTrait::currencyUnitTypeSymbol(CompanyTrait::getCompany()['currency_unit']) . ')';
         } elseif (in_array($heading, $weight)) {
-            $unit = '('.ConstTranslateTrait::weightUnitTypeSymbol(CompanyTrait::getCompany()['weight_unit']).')';
+            $unit = '(' . ConstTranslateTrait::weightUnitTypeSymbol(CompanyTrait::getCompany()['weight_unit']) . ')';
         } elseif (in_array($heading, $volume)) {
-            $unit = '('.ConstTranslateTrait::volumeUnitTypeSymbol(CompanyTrait::getCompany()['volume_unit']).')';
+            $unit = '(' . ConstTranslateTrait::volumeUnitTypeSymbol(CompanyTrait::getCompany()['volume_unit']) . ')';
         } else {
             $unit = '';
         }
