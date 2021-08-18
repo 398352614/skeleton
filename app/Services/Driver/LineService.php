@@ -39,11 +39,11 @@ class LineService extends BaseLineService
      */
     public function getCurrentDate($params, $merchantId)
     {
-        $params['merchant_id'] =$merchantId;
+        $params['merchant_id'] = $merchantId;
         if (CompanyTrait::getLineRule() === BaseConstService::LINE_RULE_AREA) {
             throw new BusinessLogicException('没有合适日期');
         }
-        $lineRangeList = parent::getLineRangeListByPostcode($params['place_post_code'],$params['place_country'],  $merchantId);
+        $lineRangeList = parent::getLineRangeListByPostcode($params['place_post_code'], $params['place_country'], $merchantId);
         $executionDate = null;
         $newLine = null;
         foreach ($lineRangeList as $lineRange) {
