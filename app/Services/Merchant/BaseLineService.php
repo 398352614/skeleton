@@ -122,7 +122,9 @@ class BaseLineService extends BaseService
             throw new BusinessLogicException('当前线路[:line]已被禁用', 1000, ['line' => $line['name']]);
         }
         //验证规则
-        $this->checkRule($info, $line, $orderOrBatch);
+        if(!empty($info['execution_date'])){
+            $this->checkRule($info, $line, $orderOrBatch);
+        }
         if ($merchantAlone == BaseConstService::YES) {
             $line['range_merchant_id'] = $lineRange['range_merchant_id'];
         }
@@ -143,11 +145,9 @@ class BaseLineService extends BaseService
         //判断预约日期是否在可预约日期范围内
         $this->appointmentDayCheck($info, $line);
         //若不是新增线路任务，则当前线路任务必须再最大订单量内
-        if(!empty($info['execution_date'])){
-            $this->maxCheck($info, $line, $orderOrBatch);
-            //最小订单量检验
-            $this->minCheck($info, $line, $orderOrBatch);
-        }
+        $this->maxCheck($info, $line, $orderOrBatch);
+        //最小订单量检验
+        $this->minCheck($info, $line, $orderOrBatch);
     }
 
     /**
