@@ -143,9 +143,11 @@ class BaseLineService extends BaseService
         //判断预约日期是否在可预约日期范围内
         $this->appointmentDayCheck($info, $line);
         //若不是新增线路任务，则当前线路任务必须再最大订单量内
-        $this->maxCheck($info, $line, $orderOrBatch);
-        //最小订单量检验
-        $this->minCheck($info, $line, $orderOrBatch);
+        if(!empty($info['execution_date'])){
+            $this->maxCheck($info, $line, $orderOrBatch);
+            //最小订单量检验
+            $this->minCheck($info, $line, $orderOrBatch);
+        }
     }
 
     /**
