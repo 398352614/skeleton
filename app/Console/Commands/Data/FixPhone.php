@@ -40,9 +40,10 @@ class FixPhone extends Command
     public function handle()
     {
         $orderNoList = [
-            "TMS0006149856", "TMS0006149855", "TMS0006149854", "TMS0006149853",
-            "TMS0006149851", "TMS0006149850", "TMS0006149849", "TMS0006149847",
-            "TMS0006149846", "TMS0006149845", "TMS0006149844", "TMS0006149843", "TMS0006149842", "TMS0006149841"
+            "TMS0006149856",
+//            "TMS0006149855", "TMS0006149854", "TMS0006149853",
+//            "TMS0006149851", "TMS0006149850", "TMS0006149849", "TMS0006149847",
+//            "TMS0006149846", "TMS0006149845", "TMS0006149844", "TMS0006149843", "TMS0006149842", "TMS0006149841"
         ];
         $orderList = DB::table('order')->whereIn('order_no', $orderNoList)->get();
         $trackingOrderList = DB::table('tracking_order')->whereIn('order_no', $orderNoList)->get();
