@@ -144,11 +144,24 @@ class GoogleApiService2
                 $distance = $res[$key]['distance'];
                 $time = $res[$key]['time'];
                 $arriveTime += $time;
-                Batch::query()->where('batch_no', $batchNo)->update([
+                $data=[
                     'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $arriveTime),
                     'expect_distance' => $distance,
                     'expect_time' => $time
-                ]);
+                ];
+                //更新出库预计
+                if ($tour['actual_out_status'] == BaseConstService::YES && $batch['status'] == BaseConstService::BATCH_DELIVERING) {
+                    if (empty($batch['out_expect_arrive_time'])) {
+                        $data['out_expect_arrive_time'] = date('Y-m-d H:i:s', time() + $res['time']);
+                    }
+                    if (empty($batch['out_expect_distance'])) {
+                        $data['out_expect_distance'] = $res['distance'];
+                    }
+                    if (empty($batch['out_expect_time'])) {
+                        $data['out_expect_time'] = $res['time'];
+                    }
+                }
+                Batch::query()->where('batch_no', $batchNo)->update($data);
                 $key++;
             }
             //更新回仓距时距和总时距
