@@ -163,9 +163,9 @@ trait LocationTrait
      */
     private static function getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode)
     {
-        list($houseNumber, $houseNumberAddition) = self::splitHouseNumber($houseNumber);
-        return function () use ($country, $city, $street, $houseNumber, $postCode) {
-            $url = urldecode(sprintf('%s?%s', config('thirdParty.location_api_another'), http_build_query(['q' => $country . '+' . $city . '+' . $street . '+' . $houseNumber . '+' . $postCode])));
+        return function () use ($houseNumber, $country, $city, $street, $postCode) {
+            list($newHouseNumber, $houseNumberAddition) = self::splitHouseNumber($houseNumber);
+            $url = urldecode(sprintf('%s?%s', config('thirdParty.location_api_another'), http_build_query(['q' => $country . '+' . $city . '+' . $street . '+' . $newHouseNumber . '+' . $postCode])));
             try {
                 $client = new \GuzzleHttp\Client();
                 $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
