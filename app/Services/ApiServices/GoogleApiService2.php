@@ -152,7 +152,7 @@ class GoogleApiService2
                 //更新出库预计
                 if ($tour['actual_out_status'] == BaseConstService::YES && $batch['status'] == BaseConstService::BATCH_DELIVERING) {
                     if (empty($batch['out_expect_arrive_time'])) {
-                        $data['out_expect_arrive_time'] = date('Y-m-d H:i:s', time() + $time);
+                        $data['out_expect_arrive_time'] = date('Y-m-d H:i:s', $nowTime + $arriveTime);
                     }
                     if (empty($batch['out_expect_distance'])) {
                         $data['out_expect_distance'] = $distance;
