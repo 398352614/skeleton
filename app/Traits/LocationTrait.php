@@ -83,10 +83,10 @@ trait LocationTrait
             'postal_code' => $postCode,
             //'room'=>$roomNumber,
         ];
-        if (in_array($country, ['NL', 'DE', 'BE'])) {
+        if ($country == 'NL') {
             return self::getLocationDetailFirst($country, $houseNumber, $postCode);
         } else {
-            return self::getLocationDetailThird($address);
+            return self::getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode);
         }
     }
 
