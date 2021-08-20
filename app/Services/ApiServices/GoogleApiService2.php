@@ -113,7 +113,7 @@ class GoogleApiService2
         $orderBatchs = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_WAIT_ASSIGN, BaseConstService::BATCH_ASSIGNED, BaseConstService::BATCH_WAIT_OUT, BaseConstService::BATCH_DELIVERING])->orderBy('sort_id', 'asc')->get();
         if (!collect($orderBatchs)->isEmpty()) {
             $orderBatchs = $orderBatchs->keyBy('batch_no')->map(function ($batch) {
-                return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon]);
+                return collect(['place_lat' => $batch->place_lat, 'place_lon' => $batch->place_lon, '$status' => $batch['status']]);
             })->toArray();
             if (empty($driverLocation)) {
                 $preBatch = Batch::where('tour_no', $tour->tour_no)->whereIn('status', [BaseConstService::BATCH_CHECKOUT, BaseConstService::BATCH_CANCEL])->orderBy('sort_id', 'desc')->first();
@@ -144,11 +144,24 @@ class GoogleApiService2
                 $distance = $res[$key]['distance'];
                 $time = $res[$key]['time'];
                 $arriveTime += $time;
-                Batch::query()->where('batch_no', $batchNo)->update([
+                $data = [
                     'expect_arrive_time' => date('Y-m-d H:i:s', $nowTime + $arriveTime),
                     'expect_distance' => $distance,
                     'expect_time' => $time
-                ]);
+                ];
+                //更新出库预计
+                if ($tour['actual_out_status'] == BaseConstService::YES && $batch['status'] == BaseConstService::BATCH_DELIVERING) {
+                    if (empty($batch['out_expect_arrive_time'])) {
+                        $data['out_expect_arrive_time'] = date('Y-m-d H:i:s', time() + $time);
+                    }
+                    if (empty($batch['out_expect_distance'])) {
+                        $data['out_expect_distance'] = $distance;
+                    }
+                    if (empty($batch['out_expect_time'])) {
+                        $data['out_expect_time'] = $time;
+                    }
+                }
+                Batch::query()->where('batch_no', $batchNo)->update($data);
                 $key++;
             }
             //更新回仓距时距和总时距
