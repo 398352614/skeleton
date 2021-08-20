@@ -83,7 +83,7 @@ trait LocationTrait
             'postal_code' => $postCode,
             //'room'=>$roomNumber,
         ];
-        if ($country === 'NL') {
+        if (in_array($country, ['NL', 'DE', 'BE'])) {
             return self::getLocationDetailFirst($country, $houseNumber, $postCode);
         } else {
             return self::getLocationDetailThird($address);
@@ -240,7 +240,7 @@ trait LocationTrait
                     $addressResult[$y] = $v['long_name'];
                 }
             }
-            if(empty($addressResult['route'])){
+            if (empty($addressResult['route'])) {
                 throw new BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             return [
