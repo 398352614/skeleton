@@ -165,6 +165,7 @@ trait LocationTrait
     {
         return function () use ($country, $city, $street, $houseNumber, $postCode) {
             $url = sprintf('%s?%s', config('thirdParty.location_api_another'), http_build_query(['q' => $country . '+' . $city . '+' . $street . '+' . $houseNumber . '+' . $postCode]));
+            Log::info($url);
             try {
                 $client = new \GuzzleHttp\Client();
                 $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
