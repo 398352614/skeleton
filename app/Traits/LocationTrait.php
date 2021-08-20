@@ -163,9 +163,9 @@ trait LocationTrait
      */
     private static function getLocationDetailSecond($country, $city, $street, $houseNumber, $postCode)
     {
+        list($houseNumber, $houseNumberAddition) = self::splitHouseNumber($houseNumber);
         return function () use ($country, $city, $street, $houseNumber, $postCode) {
-            $url = sprintf('%s?%s', config('thirdParty.location_api_another'), http_build_query(['q' => $country . '+' . $city . '+' . $street . '+' . $houseNumber . '+' . $postCode]));
-            Log::info($url);
+            $url = urldecode(sprintf('%s?%s', config('thirdParty.location_api_another'), http_build_query(['q' => $country . '+' . $city . '+' . $street . '+' . $houseNumber . '+' . $postCode])));
             try {
                 $client = new \GuzzleHttp\Client();
                 $result = $client->request('GET', $url, ['http_errors' => false, 'timeout' => 10]);
@@ -183,7 +183,7 @@ trait LocationTrait
                 throw new \App\Exceptions\BusinessLogicException('无法根据地址信息获取真实位置，请检查地址是否存在，或稍后再尝试');
             }
             return [
-                'country' => $featureList[0]['properties']['country'],
+                'country' => $featureList[0]['properties']['country'] ?? $country,
                 'province' => $featureList[0]['properties']['state'] ?? '',
                 'city' => $featureList[0]['properties']['city'] ?? $city,
                 'district' => $featureList[0]['properties']['district'] ?? '',
