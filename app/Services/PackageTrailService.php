@@ -67,10 +67,9 @@ class PackageTrailService extends \App\Services\Admin\BaseService
         !empty($trackingPackageList) && self::storeByTrackingPackageList($trackingPackageList, $action, $shift);
     }
 
-    public static function storeByTrackingOrder($trackingOrderList, int $action, $params = null)
+    public static function storeByTrackingOrder($trackingOrder, int $action, $params = null)
     {
-        Log::info(2,collect($trackingOrderList)->toArray());
-        $trackingOrderPackageList = TrackingOrderPackage::query()->select(self::$trackingOrderPackageFields)->whereIn('tracking_order_no', collect($trackingOrderList)->pluck('tracking_order_no')->toArray())->get()->toArray();
+        $trackingOrderPackageList = TrackingOrderPackage::query()->select(self::$trackingOrderPackageFields)->whereIn('tracking_order_no', collect($trackingOrder)->toArray()['tracking_order_no'])->get()->toArray();
         !empty($trackingOrderPackageList) && self::storeByTrackingOrderList($trackingOrderPackageList, $action, $params);
     }
 
