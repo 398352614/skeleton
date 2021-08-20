@@ -69,14 +69,11 @@ class UpdateDriverCountTime implements ShouldQueue
             $nextBatchNo = $event->nextBatchNo;
             $queue = $event->queue;
             TourOptimizationService::getOpInstance($tour->company_id)->updateDriverLocation($tour, $driverLocation, $nextBatchNo, $queue);
-            $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
-            $service->timesCount('distance_times', $tour->company_id);
             //通知下一个站点事件
             if ($event->notifyNextBatch == true) {
                 event(new NextBatch($tour->toArray(), ['batch_no' => $nextBatchNo]));
             }
-            $service = FactoryInstanceTrait::getInstance(ApiTimesService::class);
-            $service->timesCount('actual_distance_times', $tour->company_id);
+
             //清空路线重试任务
             $row = RouteRetry::query()->where('tour_no', $tour['tour_no'])->delete();
             if ($row == true) {
