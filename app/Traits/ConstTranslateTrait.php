@@ -139,6 +139,8 @@ use Illuminate\Support\Facades\App;
  * @method static ledgerPayTypeList($args = null)
  * @method static userTypeList($args = null)
  * @method static payTypeList($args = null)
+ * @method static billVerifyStatusList($args = null)
+ * @method static billStatusList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -1122,6 +1124,18 @@ trait ConstTranslateTrait
         BaseConstService::BILL_PAY_TIMING_2 => '下单时',
         BaseConstService::BILL_PAY_TIMING_3 => '取件完成时',
         BaseConstService::BILL_PAY_TIMING_4 => '派件完成时',
+    ];
+
+    public static $billVerifyStatusList = [
+        BaseConstService::BILL_VERIFY_STATUS_1 => '未审核',
+        BaseConstService::BILL_VERIFY_STATUS_2 => '已审核',
+        BaseConstService::BILL_VERIFY_STATUS_3 => '拒绝',
+    ];
+
+    public static $billStatusList = [
+        BaseConstService::BILL_STATUS_1 => '未支付',
+        BaseConstService::BILL_STATUS_2 => '已支付',
+        BaseConstService::BILL_STATUS_3 => '取消',
     ];
 
     /**
