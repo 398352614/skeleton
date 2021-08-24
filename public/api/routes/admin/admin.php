@@ -25488,9 +25488,10 @@
  * @apiSuccess {string} data.code 货主编号
  * @apiSuccess {string} data.credit 信用额度
  * @apiSuccess {string} data.status 状态1-限制2-不限制
- * @apiSuccess {string} data.phone 手机号
- * @apiSuccess {string} data.email 邮箱
- * @apiSuccess {string} data.merchant_group_name 货主组名称
+ * @apiSuccess {string} data.operator_name 操作人名称
+ * @apiSuccess {string} data.operator_id 操作人ID
+ * @apiSuccess {string} data.operator_type 操作人类型
+ * @apiSuccess {string} data.created_at 创建时间
  * @apiSuccessExample {json} Success-Response:
  * {
  * "code": 200,

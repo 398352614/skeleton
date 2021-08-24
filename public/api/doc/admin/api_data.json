@@ -66568,7 +66568,7 @@
             "type": "string",
             "optional": false,
             "field": "id",
-            "description": "<p>账簿ID</p>"
+            "description": "<p>财务账户ID</p>"
           },
           {
             "group": "Parameter",
@@ -66671,7 +66671,7 @@
             "type": "string",
             "optional": false,
             "field": "id",
-            "description": "<p>账簿ID</p>"
+            "description": "<p>财务账户ID</p>"
           }
         ]
       }
@@ -66732,22 +66732,29 @@
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.phone",
-            "description": "<p>手机号</p>"
+            "field": "data.operator_name",
+            "description": "<p>操作人名称</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.email",
-            "description": "<p>邮箱</p>"
+            "field": "data.operator_id",
+            "description": "<p>操作人ID</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.merchant_group_name",
-            "description": "<p>货主组名称</p>"
+            "field": "data.operator_type",
+            "description": "<p>操作人类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.created_at",
+            "description": "<p>创建时间</p>"
           }
         ]
       },
