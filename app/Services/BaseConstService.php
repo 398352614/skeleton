@@ -883,6 +883,12 @@ class BaseConstService
     const USER_DRIVER = 4;
     const USER_CUSTOMER = 5;
 
+    const LEDGER_PAY_TYPE_1 = 1;
+    const LEDGER_PAY_TYPE_2 = 2;
+    const LEDGER_PAY_TYPE_3 = 3;
+    const LEDGER_PAY_TYPE_4 = 4;
+
+
     //结算方式1-单结2-日结3-周结4-月结
     const PAY_TYPE_1 = 1;
     const PAY_TYPE_2 = 2;

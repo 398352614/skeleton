@@ -136,9 +136,9 @@ use Illuminate\Support\Facades\App;
  * @method static billModeList($args = null)
  * @method static ledgerStatusList($args = null)
  * @method static ledgerVerifyTypeList($args = null)
- * @method static payTypeList($args = null)
+ * @method static ledgerPayTypeList($args = null)
  * @method static userTypeList($args = null)
-
+ * @method static payTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -1076,12 +1076,20 @@ trait ConstTranslateTrait
         BaseConstService::USER_CUSTOMER => '客户',
     ];
 
-    //支付方式
+    //结算方式
+    public static $ledgerPayTypeList = [
+        BaseConstService::LEDGER_PAY_TYPE_1 => '单结',
+        BaseConstService::LEDGER_PAY_TYPE_2 => '日结',
+        BaseConstService::LEDGER_PAY_TYPE_3 => '周结',
+        BaseConstService::LEDGER_PAY_TYPE_4 => '月结',
+    ];
+
+    //支付方式1-银行转账2-支票3-现金4-余额
     public static $payTypeList = [
-        BaseConstService::PAY_TYPE_1 => '单结',
-        BaseConstService::PAY_TYPE_2 => '日结',
-        BaseConstService::PAY_TYPE_3 => '周结',
-        BaseConstService::PAY_TYPE_4 => '月结',
+        BaseConstService::PAY_TYPE_1 => '银行转账',
+        BaseConstService::PAY_TYPE_2 => '支票',
+        BaseConstService::PAY_TYPE_3 => '现金',
+        BaseConstService::PAY_TYPE_4 => '余额',
     ];
 
     public static $ledgerVerifyTypeList = [
