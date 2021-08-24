@@ -15,7 +15,7 @@ class BagController extends BaseController
 {
     public $service;
 
-    public function __construct(BagService $service)
+    public function __construct(\App\Services\Driver\BagService $service)
     {
         parent::__construct($service);
     }

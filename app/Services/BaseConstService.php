@@ -27,6 +27,8 @@ class BaseConstService
     const TRACKING_PACKAGE = 'TP';
     const BAG = 'BAG';
     const SHIFT = 'SHIFT';
+    const BILL = 'BILL';
+    const BILL_VERIFY = 'BV';
 
     const POSTCODE_TYPE_1 = 1;
     const POSTCODE_TYPE_2 = 2;
@@ -129,7 +131,10 @@ class BaseConstService
     const BAG_NO_TYPE = 'bag';
     //车次号
     const SHIFT_NO_TYPE = 'shift';
-
+    //账单编号
+    const BILL_NO_TYPE = 'bill';
+    //账单审核编号
+    const BILL_VERIFY_NO_TYPE = 'bill_verify';
     //初始密码
     const INITIAL_PASSWORD = '12345678';
 
@@ -871,4 +876,40 @@ class BaseConstService
     const WAREHOUSE_CAN_SELECT_ALL_1 = 1;
     const WAREHOUSE_CAN_SELECT_ALL_2 = 2;
 
+    //用户类型1-公司2-后台3-货主4-司机5-客户
+    const USER_COMPANY = 1;
+    const USER_ADMIN = 2;
+    const USER_MERCHANT = 3;
+    const USER_DRIVER = 4;
+    const USER_CUSTOMER = 5;
+
+    //结算方式1-单结2-日结3-周结4-月结
+    const PAY_TYPE_1 = 1;
+    const PAY_TYPE_2 = 2;
+    const PAY_TYPE_3 = 3;
+    const PAY_TYPE_4 = 4;
+
+    //账目审核方式1-自动审核2-手动审核
+    const LEDGER_VERIFY_TYPE_1 = 1;
+    const LEDGER_VERIFY_TYPE_2 = 2;
+
+    //状态1-无限透支2-有限透支
+    const LEDGER_STATUS_1 = 1;
+    const LEDGER_STATUS_2 = 2;
+
+    //账单模式1-充值扣款2-运费支付
+    const BILL_MODE_1 = 1;
+    const BILL_MODE_2 = 2;
+
+    //账单产生时机
+    const BILL_CREATE_TIMING_1 = 1;
+    const BILL_CREATE_TIMING_2 = 2;
+    const BILL_CREATE_TIMING_3 = 3;
+    const BILL_CREATE_TIMING_4 = 4;
+
+    //账单支付时机
+    const BILL_PAY_TIMING_1 = 1;
+    const BILL_PAY_TIMING_2 = 2;
+    const BILL_PAY_TIMING_3 = 3;
+    const BILL_PAY_TIMING_4 = 4;
 }

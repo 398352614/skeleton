@@ -1054,4 +1054,34 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表
         Route::get('/', 'TrackingPackageController@index');
     });
+
+    //账目
+    Route::prefix('ledger')->group(function () {
+        //列表
+        Route::get('/', 'LedgerController@index')->name('ledger.index');
+        //修改
+        Route::post('/{id}', 'LedgerController@update')->name('ledger.update');
+        //日志
+        Route::post('/{id}/log', 'LedgerController@log')->name('ledger.update');
+    });
+
+    //账单
+    Route::prefix('bill')->group(function () {
+        //列表
+        Route::get('/', 'BillController@index')->name('bill.index');
+        //充值
+        Route::post('/merchant-recharge', 'BillController@recharge')->name('bill.recharge');
+    });
+
+    //账单
+    Route::prefix('bill-verify')->group(function () {
+        //列表
+        Route::get('/', 'BillVerifyController@index')->name('bill.index');
+        //手动创建审核单
+        Route::post('/', 'BillVerifyController@store')->name('bill.store');
+        //修改审核单
+        Route::put('/{id}', 'BillVerifyController@update')->name('bill.update');
+        //审核
+        Route::post('/{id}/verify', 'BillVerifyController@update')->name('bill.update');
+    });
 });

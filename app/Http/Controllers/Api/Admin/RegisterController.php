@@ -9,11 +9,13 @@ use App\Exceptions\BusinessLogicException;
 use App\Http\Controllers\BaseController;
 use App\Mail\SendRegisterCode;
 use App\Mail\SendResetCode;
+use App\Models\Bill;
 use App\Models\Company;
 use App\Models\CompanyConfig;
 use App\Models\Employee;
 use App\Models\Fee;
 use App\Models\KilometresCharging;
+use App\Models\Ledger;
 use App\Models\MapConfig;
 use App\Models\Merchant;
 use App\Models\MerchantApi;
@@ -96,6 +98,8 @@ class RegisterController extends BaseController
             $merchantGroup = $this->addMerchantGroup($company, $transportPrice);//初始化货主组
             $merchant = $this->addMerchant($company, $merchantGroup, $warehouse);//初始化货主API
             $this->addMerchantApi($company, $merchant);//初始化货主API
+            $this->addLedgerOfMerchant($company, $merchant);//初始化货主账单
+
             $this->addFee($company);//添加费用
             $this->addOrderTemplate($company);//添加打印模板
             $this->addOrderDefaultConfig($company); //添加订单默认配置
@@ -636,6 +640,29 @@ class RegisterController extends BaseController
         ]);
         if ($fee === false) {
             throw new BusinessLogicException('初始化费用失败');
+        }
+    }
+
+    /**
+     * @param $company
+     * @param $merchant
+     * @throws BusinessLogicException
+     */
+    public function addLedgerOfMerchant($company, $merchant)
+    {
+        $merchant = Ledger::create([
+            'company_id' => $company['id'],
+            'user_id' => $merchant['id'],
+            'user_type' => BaseConstService::USER_MERCHANT,
+            'balance' => 0,
+            'credit' => 0,
+            'create_date'=>today()->format('Y-m-d'),
+            'pay_type' => BaseConstService::PAY_TYPE_1,
+            'verify_type' => BaseConstService::LEDGER_VERIFY_TYPE_1,
+            'status' => BaseConstService::LEDGER_STATUS_1,
+        ]);
+        if ($merchant === false) {
+            throw new BusinessLogicException('初始化货主账目失败');
         }
     }
 

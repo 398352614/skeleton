@@ -131,6 +131,14 @@ use Illuminate\Support\Facades\App;
  * @method static warehouseCanSelectAllList($args = null)
  * @method static feeLevelList($args = null)
  * @method static postcodeTypeList($args = null)
+ * @method static billPayTimingList($args = null)
+ * @method static billCreateTimingList($args = null)
+ * @method static billModeList($args = null)
+ * @method static ledgerStatusList($args = null)
+ * @method static ledgerVerifyTypeList($args = null)
+ * @method static payTypeList($args = null)
+ * @method static userTypeList($args = null)
+
  */
 trait ConstTranslateTrait
 {
@@ -1057,6 +1065,55 @@ trait ConstTranslateTrait
     public static $employeeForbidLoginList = [
         BaseConstService::EMPLOYEE_FORBID_LOGIN_1 => '禁用',
         BaseConstService::EMPLOYEE_FORBID_LOGIN_2 => '启用',
+    ];
+
+    //用户类型
+    public static $userTypeList = [
+        BaseConstService::USER_COMPANY => '公司',
+        BaseConstService::USER_ADMIN => '后台',
+        BaseConstService::USER_MERCHANT => '货主',
+        BaseConstService::USER_DRIVER => '司机',
+        BaseConstService::USER_CUSTOMER => '客户',
+    ];
+
+    //支付方式
+    public static $payTypeList = [
+        BaseConstService::PAY_TYPE_1 => '单结',
+        BaseConstService::PAY_TYPE_2 => '日结',
+        BaseConstService::PAY_TYPE_3 => '周结',
+        BaseConstService::PAY_TYPE_4 => '月结',
+    ];
+
+    public static $ledgerVerifyTypeList = [
+        BaseConstService::LEDGER_VERIFY_TYPE_1 => '自动审核',
+        BaseConstService::LEDGER_VERIFY_TYPE_2 => '手动审核',
+
+    ];
+
+    public static $ledgerStatusList = [
+        BaseConstService::LEDGER_STATUS_1 => '无限透支',
+        BaseConstService::LEDGER_STATUS_2 => '有限透支',
+    ];
+
+    public static $billModeList = [
+        BaseConstService::BILL_MODE_1 => '充值扣款',
+        BaseConstService::BILL_MODE_2 => '运费支付',
+    ];
+
+    //支付方式
+    public static $billCreateTimingList = [
+        BaseConstService::BILL_CREATE_TIMING_1 => '手动',
+        BaseConstService::BILL_CREATE_TIMING_2 => '下单时',
+        BaseConstService::BILL_CREATE_TIMING_3 => '取件完成时',
+        BaseConstService::BILL_CREATE_TIMING_4 => '派件完成时',
+    ];
+
+    //支付方式
+    public static $billPayTimingList = [
+        BaseConstService::BILL_PAY_TIMING_1 => '手动',
+        BaseConstService::BILL_PAY_TIMING_2 => '下单时',
+        BaseConstService::BILL_PAY_TIMING_3 => '取件完成时',
+        BaseConstService::BILL_PAY_TIMING_4 => '派件完成时',
     ];
 
     /**

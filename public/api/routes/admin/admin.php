@@ -165,6 +165,28 @@
 /**
  * @apiDefine 51 包裹物流管理
  */
+
+/**
+ * @apiDefine 52 财务账户管理
+ */
+
+/**
+ * @apiDefine 53 账单管理
+ */
+
+/**
+ * @apiDefine 54 财务流水管理
+ */
+
+/**
+ * @apiDefine 54 财务审核管理
+ */
+
+/**
+ * @apiDefine 56 财务核对管理
+ */
+
+
 /**
  * @api {post} /admin/login 登录
  * @apiName 登录
@@ -13028,9 +13050,6 @@
  */
 
 
-
-
-
 /**
  * @api {get} /admin/statistics/last-week 上周统计
  * @apiName 上周统计
@@ -25382,6 +25401,230 @@
  * "type_name": null
  * },
  * "msg": "successful"
+ * }
+ */
+
+/**
+ * @apiDefine 52 财务账户管理
+ */
+
+/**
+ * @apiDefine 53 账单管理
+ */
+
+/**
+ * @apiDefine 54 财务流水管理
+ */
+
+/**
+ * @apiDefine 55 财务审核管理
+ */
+
+/**
+ * @apiDefine 56 财务核对管理
+ */
+
+/**
+ * @api {get} /admin/ledger 财务账户查询
+ * @apiName 分户账簿查询
+ * @apiGroup 52
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} begin_date 起始时间
+ * @apiParam {string} end_date 截止时间
+ * @apiParam {string} code 货主编号
+ * @apiParam {string} code 货主组
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccess {string} data.name 货主名称
+ * @apiSuccess {string} data.code 货主编号
+ * @apiSuccess {string} data.credit 信用额度
+ * @apiSuccess {string} data.balance 账户余额
+ * @apiSuccess {string} data.status 状态1-限制2-不限制
+ * @apiSuccess {string} data.phone 手机号
+ * @apiSuccess {string} data.email 邮箱
+ * @apiSuccess {string} data.merchant_group_name 货主组名称
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+
+/**
+ * @api {post} /admin/ledger/{id} 财务账户修改
+ * @apiName 分户账簿修改
+ * @apiGroup 52
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} id 账簿ID
+ * @apiParam {string} credit 额度
+ * @apiParam {string} data.credit 信用额度
+ * @apiParam {string} data.status 状态1-限制2-不限制
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+
+/**
+ * @api {get} /admin/ledger/{id}/log 财务账户修改记录
+ * @apiName 分户账簿修改记录
+ * @apiGroup 52
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} id 账簿ID
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccess {string} data.name 货主名称
+ * @apiSuccess {string} data.code 货主编号
+ * @apiSuccess {string} data.credit 信用额度
+ * @apiSuccess {string} data.status 状态1-限制2-不限制
+ * @apiSuccess {string} data.phone 手机号
+ * @apiSuccess {string} data.email 邮箱
+ * @apiSuccess {string} data.merchant_group_name 货主组名称
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+
+/**
+ * @api {get} /admin/bill 账单查询
+ * @apiName 账单查询
+ * @apiGroup 53
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} begin_date 起始时间
+ * @apiParam {string} end_date 截止时间
+ * @apiParam {string} code 货主编号
+ * @apiParam {string} verify_status 审核状态1-未审核2-已审核3-取消
+ * @apiParam {string} mode 交易类型1-账号充值2-运费支付
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccess {string} data.name 货主名称
+ * @apiSuccess {string} data.code 货主编号
+ * @apiSuccess {string} data.pay_type 支付类型1-银行转账2-支票3-现金4-余额
+ * @apiSuccess {string} data.mode 交易类型1-账号充值2-运费支付
+ * @apiSuccess {string} data.object_no 系统编号
+ * @apiSuccess {string} data.object_type 系统编号类型1-订单2-包裹
+ * @apiSuccess {string} data.expect_amount 预计金额
+ * @apiSuccess {string} data.actual_amount 实际金额
+ * @apiSuccess {string} data.pay_type_name 支付类型名称
+ * @apiSuccess {string} data.mode_name 交易类型名称
+ * @apiSuccess {string} data.status 状态1-未支付2-已支付3-已取消
+ * @apiSuccess {string} data.verify_status 审核状态1-未审核2-已审核3-拒绝
+ * @apiSuccess {string} data.merchant_group_name 货主组名称
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+
+/**
+ * @api {post} /admin/bill/merchant-recharge 货主充值开单
+ * @apiName 货主充值开单
+ * @apiGroup 53
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} merchant_id 货主ID
+ * @apiParam {string} pay_type 支付方式1-银行转账2-支票3-现金4-余额
+ * @apiParam {string} expect_amount 充值金额
+ * @apiParam {string} remark 备注
+ * @apiParam {string} picture_list 图片列表
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+
+/**
+ * @api {get} /admin/bill-verify 账单审核查询
+ * @apiName 账单查询
+ * @apiGroup 55
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} begin_date 起始时间
+ * @apiParam {string} end_date 截止时间
+ * @apiParam {string} code 货主编号
+ * @apiParam {string} verify_status 审核状态1-未审核2-已审核3-取消
+ * @apiParam {string} data.mode 交易类型1-账号充值2-运费支付
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccess {string} data.name 货主名称
+ * @apiSuccess {string} data.code 货主编号
+ * @apiSuccess {string} data.pay_type 支付类型1-银行转账2-支票3-现金4-余额
+ * @apiSuccess {string} data.mode 交易类型1-账号充值2-运费支付
+ * @apiSuccess {string} data.object_no 系统编号
+ * @apiSuccess {string} data.object_type 系统编号类型1-订单2-包裹
+ * @apiSuccess {string} data.expect_amount 预计金额
+ * @apiSuccess {string} data.actual_amount 实际金额
+ * @apiSuccess {string} data.pay_type_name 支付类型名称
+ * @apiSuccess {string} data.mode_name 交易类型名称
+ * @apiSuccess {string} data.status 状态1-未支付2-已支付3-已取消
+ * @apiSuccess {string} data.verify_status 审核状态1-未审核2-已审核3-拒绝
+ * @apiSuccess {string} data.merchant_group_name 货主组名称
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+
+/**
+ * @api {post} /admin/bill-verify 创建审核
+ * @apiName 手动创建账单审核
+ * @apiGroup 55
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {object} bill_list 账单列表
+ * @apiParam {string} bill_list.bill_no 账单编号
+ *
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+
+/**
+ * @api {post} /admin/bill-verify/{id}/verify 账单审核
+ * @apiName 账单审核
+ * @apiGroup 55
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {object} id 账单审核ID
+ * @apiParam {string} bill_list 账单列表
+ * @apiParam {string} bill_list.bill_no 账单编号
+ * @apiParam {string} bill_list.actual_amount 实际金额
+ * @apiParam {string} remark 备注
+ * @apiParam {string} picture_list 图片列表
+ *
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
  * }
  */
 

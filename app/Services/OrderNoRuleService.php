@@ -295,4 +295,24 @@ class OrderNoRuleService extends BaseService
 //        return $orderNo;
 //    }
 
+
+    /**
+     * 创建账单编号
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function createBillNo()
+    {
+        return $this->createNoBase(BaseConstService::BILL_NO_TYPE, '账单编号规则不存在或已被禁用，请先联系后台管理员');
+    }
+
+    /**
+     * 创建账单编号
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function createBillVerifyNo()
+    {
+        return $this->createNoBase(BaseConstService::BILL_VERIFY_NO_TYPE, '账单编号规则不存在或已被禁用，请先联系后台管理员');
+    }
 }
