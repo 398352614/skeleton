@@ -25433,7 +25433,7 @@
  * @apiParam {string} begin_date 起始时间
  * @apiParam {string} end_date 截止时间
  * @apiParam {string} code 货主编号
- * @apiParam {string} code 货主组
+ * @apiParam {string} merchant_group_id 货主组ID
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
@@ -25444,6 +25444,8 @@
  * @apiSuccess {string} data.status 状态1-限制2-不限制
  * @apiSuccess {string} data.phone 手机号
  * @apiSuccess {string} data.email 邮箱
+ * @apiSuccess {string} data.create_date 注册日期
+ * @apiSuccess {string} data.merchant_group_id 货主组ID
  * @apiSuccess {string} data.merchant_group_name 货主组名称
  * @apiSuccessExample {json} Success-Response:
  * {
@@ -25458,10 +25460,9 @@
  * @apiGroup 52
  * @apiVersion 1.0.0
  * @apiUse auth
- * @apiParam {string} id 账簿ID
+ * @apiParam {string} id 财务账户ID
  * @apiParam {string} credit 额度
- * @apiParam {string} data.credit 信用额度
- * @apiParam {string} data.status 状态1-限制2-不限制
+ * @apiParam {string} status 状态1-限制2-不限制
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
@@ -25479,7 +25480,7 @@
  * @apiGroup 52
  * @apiVersion 1.0.0
  * @apiUse auth
- * @apiParam {string} id 账簿ID
+ * @apiParam {string} id 财务账户ID
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
@@ -25511,8 +25512,15 @@
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
- * @apiSuccess {string} data.name 货主名称
- * @apiSuccess {string} data.code 货主编号
+ * @apiSuccess {string} data.payer_type 付款方类型
+ * @apiSuccess {string} data.payer_id 付款方ID
+ * @apiSuccess {string} data.payer_name 付款方名称
+ * @apiSuccess {string} data.payee_type 收款方类型
+ * @apiSuccess {string} data.payee_id 收款方ID
+ * @apiSuccess {string} data.payee_name 收款方名称
+ * @apiSuccess {string} data.operator_type 经办人类型
+ * @apiSuccess {string} data.operator_id 经办人ID
+ * @apiSuccess {string} data.operator_name 经办人名称
  * @apiSuccess {string} data.pay_type 支付类型1-银行转账2-支票3-现金4-余额
  * @apiSuccess {string} data.mode 交易类型1-账号充值2-运费支付
  * @apiSuccess {string} data.object_no 系统编号
@@ -25522,6 +25530,7 @@
  * @apiSuccess {string} data.pay_type_name 支付类型名称
  * @apiSuccess {string} data.mode_name 交易类型名称
  * @apiSuccess {string} data.status 状态1-未支付2-已支付3-已取消
+ * @apiSuccess {string} data.verify_no 审核编号
  * @apiSuccess {string} data.verify_status 审核状态1-未审核2-已审核3-拒绝
  * @apiSuccess {string} data.merchant_group_name 货主组名称
  * @apiSuccessExample {json} Success-Response:

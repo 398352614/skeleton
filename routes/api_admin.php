@@ -1070,18 +1070,18 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表
         Route::get('/', 'BillController@index')->name('bill.index');
         //充值
-        Route::post('/merchant-recharge', 'BillController@recharge')->name('bill.recharge');
+        Route::post('/merchant-recharge', 'BillController@recharge')->name('bill.merchant_recharge');
     });
 
     //账单
     Route::prefix('bill-verify')->group(function () {
         //列表
-        Route::get('/', 'BillVerifyController@index')->name('bill.index');
+        Route::get('/', 'BillVerifyController@index')->name('bill-verify.index');
         //手动创建审核单
-        Route::post('/', 'BillVerifyController@store')->name('bill.store');
+        Route::post('/', 'BillVerifyController@store')->name('bill-verify.store');
         //修改审核单
-        Route::put('/{id}', 'BillVerifyController@update')->name('bill.update');
+        Route::put('/{id}', 'BillVerifyController@update')->name('bill-verify.update');
         //审核
-        Route::post('/{id}/verify', 'BillVerifyController@update')->name('bill.update');
+        Route::post('/{id}/verify', 'BillVerifyController@verify')->name('bill-verify.verify');
     });
 });

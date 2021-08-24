@@ -66581,14 +66581,7 @@ define({ "api": [
             "group": "Parameter",
             "type": "string",
             "optional": false,
-            "field": "data.credit",
-            "description": "<p>信用额度</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "data.status",
+            "field": "status",
             "description": "<p>状态1-限制2-不限制</p>"
           }
         ]
@@ -66831,6 +66824,13 @@ define({ "api": [
             "optional": false,
             "field": "code",
             "description": "<p>货主编号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "merchant_group_id",
+            "description": "<p>货主组ID</p>"
           }
         ]
       }
@@ -66907,6 +66907,20 @@ define({ "api": [
             "optional": false,
             "field": "data.email",
             "description": "<p>邮箱</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.create_date",
+            "description": "<p>注册日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.merchant_group_id",
+            "description": "<p>货主组ID</p>"
           },
           {
             "group": "Success 200",
@@ -67036,15 +67050,64 @@ define({ "api": [
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.name",
-            "description": "<p>货主名称</p>"
+            "field": "data.payer_type",
+            "description": "<p>付款方类型</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.code",
-            "description": "<p>货主编号</p>"
+            "field": "data.payer_id",
+            "description": "<p>付款方ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.payer_name",
+            "description": "<p>付款方名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.payee_type",
+            "description": "<p>收款方类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.payee_id",
+            "description": "<p>收款方ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.payee_name",
+            "description": "<p>收款方名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_type",
+            "description": "<p>经办人类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_id",
+            "description": "<p>经办人ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.operator_name",
+            "description": "<p>经办人名称</p>"
           },
           {
             "group": "Success 200",
@@ -67108,6 +67171,13 @@ define({ "api": [
             "optional": false,
             "field": "data.status",
             "description": "<p>状态1-未支付2-已支付3-已取消</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.verify_no",
+            "description": "<p>审核编号</p>"
           },
           {
             "group": "Success 200",
@@ -67288,7 +67358,7 @@ define({ "api": [
   {
     "type": "post",
     "url": "/admin/bill-verify",
-    "title": "手动创建账单审核",
+    "title": "创建审核",
     "name": "手动创建账单审核",
     "group": "55",
     "version": "1.0.0",
@@ -67383,7 +67453,7 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/admin/bill-verify/{id}",
+    "url": "/admin/bill-verify/{id}/verify",
     "title": "账单审核",
     "name": "账单审核",
     "group": "55",
@@ -67474,7 +67544,7 @@ define({ "api": [
     "groupTitle": "财务审核管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/admin/bill-verify/{id}"
+        "url": "https://dev-tms-api.nle-tech.com/api/admin/bill-verify/{id}/verify"
       }
     ],
     "header": {
