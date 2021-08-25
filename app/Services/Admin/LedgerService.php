@@ -108,11 +108,12 @@ class LedgerService extends BaseService
     public function getPageList()
     {
         if (!empty($this->formData['user_type']) && $this->formData['user_type'] == BaseConstService::USER_MERCHANT) {
+            $where = [];
             if (!empty($this->formData['code'])) {
-                $where = ['code' => $this->formData['code']];
+                $where['code'] = $this->formData['code'];
             }
             if (!empty($this->formData['merchant_group_id'])) {
-                $where = ['merchant_group_id' => $this->formData['merchant_group_id']];
+                $where ['merchant_group_id'] = $this->formData['merchant_group_id'];
             }
             if (!empty($where)) {
                 $merchantList = $this->getMerchantService()->getList($where, ['*'], false);
