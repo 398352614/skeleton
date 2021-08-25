@@ -66870,7 +66870,7 @@
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.name",
+            "field": "data.user_name",
             "description": "<p>货主名称</p>"
           },
           {

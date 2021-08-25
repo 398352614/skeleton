@@ -126,6 +126,9 @@ class LedgerService extends BaseService
             $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantList->pluck('merchant_group_id')->toArray()]], ['*'], false);
             foreach ($data as $k => $v) {
                 $merchant = $merchantList->where('id', $v['user_id'])->first();
+                $data[$k]['name'] = $merchant['name'];
+                $data[$k]['phone'] = $merchant['phone'];
+                $data[$k]['email'] = $merchant['email'];
                 $data[$k]['code'] = $merchant['code'];
                 $data[$k]['merchant_group_name'] = $merchantGroupList->where('id', $merchant['merchant_group_id'])->first()['name'];
             }

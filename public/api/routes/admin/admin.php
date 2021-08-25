@@ -25437,7 +25437,7 @@
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
- * @apiSuccess {string} data.name 货主名称
+ * @apiSuccess {string} data.user_name 货主名称
  * @apiSuccess {string} data.code 货主编号
  * @apiSuccess {string} data.credit 信用额度
  * @apiSuccess {string} data.balance 账户余额
