@@ -24,7 +24,8 @@ class BillValidate extends BaseValidate
         'actual_amount' => 'nullable|numeric|gte:0',
         'status' => 'required|integer|in:1,2,3,',
         'verify_status' => 'required|string|in:1,2,3',
-        'payer_id' => 'required|integer',
+//        'payer_id' => 'required|integer',
+        'merchant_id' => 'required|integer',
         'payer_type' => 'required|string|in:1,2,3,4,5',
         'payer_name' => 'nullable|string',
         'payee_id' => 'required|integer',
@@ -55,7 +56,7 @@ class BillValidate extends BaseValidate
             'operator_name', 'create_timing', 'pay_timing'
         ],
         'merchantRecharge' => [
-            'payer_id',
+            'merchant_id',
             'pay_type',
             'expect_amount',
             'object_no',
