@@ -55,7 +55,7 @@ class LedgerLogService extends BaseService
         unset($data['created_at'], $data['updated_at'], $data['id']);
         $user = UserTrait::get($data['user_id'], $data['user_type']);
         $data['user_name'] = $user['name'];
-        $data['user_code'] = $user['code'] ?? '';
+        $data['user_code'] = $user['code'];
         $data['operator_id'] = auth()->user()->id;
         $data['operator_type'] = BaseConstService::USER_ADMIN;
         $data['operator_name'] = auth()->user()->username;

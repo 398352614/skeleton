@@ -49,6 +49,7 @@ class Ledger extends BaseModel
         'company_id',
         'user_id',
         'user_type',
+        'user_code',
         'balance',
         'credit',
         'create_date',
