@@ -86,11 +86,19 @@ class LedgerService extends BaseService
      */
     public function updateById($id, $data)
     {
+        $dbData = parent::getInfo(['id' => $id], ['*'], false);
+        if (empty($dbData)) {
+            throw new BusinessLogicException('数据不存在');
+        } else {
+            $dbData = $dbData->toArray();
+        }
         $data = Arr::only($data, 'credit');
         $rowCount = parent::updateById($id, $data);
         if ($rowCount === false) {
             throw new BusinessLogicException('修改失败，请重新操作');
         }
+        $data = array_merge($dbData, $data);
+        $this->getLedgerLogService()->log($data);
     }
 
 
@@ -99,7 +107,7 @@ class LedgerService extends BaseService
      */
     public function getPageList()
     {
-        if ($this->formData['user_type'] == BaseConstService::USER_MERCHANT) {
+        if (!empty($this->formData['user_type']) && $this->formData['user_type'] == BaseConstService::USER_MERCHANT) {
             if (!empty($this->formData['code'])) {
                 $where = ['code' => $this->formData['code']];
             }
@@ -113,15 +121,41 @@ class LedgerService extends BaseService
                 $data = parent::getPageList();
             } else {
                 $data = parent::getPageList();
-                $merchantList = $this->getMerchantService()->getList('id', $data->pluck('user_id')->toArray());
+                $merchantList = $this->getMerchantService()->getList(['id' => ['in', $data->pluck('user_id')->toArray()]], ['*'], false);
             }
             $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantList->pluck('merchant_group_id')->toArray()]], ['*'], false);
             foreach ($data as $k => $v) {
-                $merchant = Arr::only($merchantList->where('id', $v['user_id'])->first(), ['code', 'merchant_group_id']);
-                $data[$k] = array_merge($v, $merchant['code']);
+                $merchant = $merchantList->where('id', $v['user_id'])->first();
+                $data[$k]['code'] = $merchant['code'];
                 $data[$k]['merchant_group_name'] = $merchantGroupList->where('id', $merchant['merchant_group_id'])->first()['name'];
             }
             return $data;
+        } else {
+            return parent::getPageList();
+        }
+    }
+
+    public function log($id)
+    {
+        return $this->getLedgerLogService()->getList(['ledger_id' => $id], ['*'], false);
+    }
+
+    /**
+     * @param int $payerType
+     * @param $payeeId
+     * @param $expectAmount
+     * @throws BusinessLogicException
+     */
+    public function recharge(int $payerType, $payeeId, $expectAmount)
+    {
+        $data = parent::getInfoLock(['user_type' => $payerType, 'user_id' => $payeeId], ['*'], false);
+        if (empty($data)) {
+            throw new BusinessLogicException('账户不存在');
+        }
+        $balance = $data['balance'] + $expectAmount;
+        $row = parent::updateById($data['id'], ['balance' => $balance]);
+        if ($row == false) {
+            throw new BusinessLogicException('操作失败');
         }
     }
 

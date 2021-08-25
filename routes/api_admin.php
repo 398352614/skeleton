@@ -1062,7 +1062,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //修改
         Route::post('/{id}', 'LedgerController@update')->name('ledger.update');
         //日志
-        Route::post('/{id}/log', 'LedgerController@log')->name('ledger.update');
+        Route::get('/{id}/log', 'LedgerController@log')->name('ledger.update');
     });
 
     //账单
@@ -1070,7 +1070,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //列表
         Route::get('/', 'BillController@index')->name('bill.index');
         //充值
-        Route::post('/merchant-recharge', 'BillController@recharge')->name('bill.merchant_recharge');
+        Route::post('/merchant-recharge', 'BillController@merchantRecharge')->name('bill.merchant-recharge');
     });
 
     //账单

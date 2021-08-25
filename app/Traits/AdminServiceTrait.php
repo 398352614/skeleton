@@ -18,6 +18,8 @@ use App\Services\Admin\CountryService;
 use App\Services\Admin\DriverService;
 use App\Services\Admin\EmployeeService;
 use App\Services\Admin\FeeService;
+use App\Services\Admin\LedgerLogService;
+use App\Services\Admin\LedgerService;
 use App\Services\Admin\LineAreaService;
 use App\Services\Admin\LineRangeService;
 use App\Services\Admin\LineService;
@@ -61,7 +63,7 @@ trait AdminServiceTrait
     use FactoryInstanceTrait;
 
     /**
-     * @return mixed
+     * @return CompanyService
      */
     public function getCompanyService()
     {
@@ -391,6 +393,22 @@ trait AdminServiceTrait
     public function getMerchantGroupService()
     {
         return self::getInstance(MerchantGroupService::class);
+    }
+
+    /**
+     * @return LedgerLogService
+     */
+    public function getLedgerLogService()
+    {
+        return self::getInstance(LedgerLogService::class);
+    }
+
+    /**
+     * @return LedgerService
+     */
+    public function getLedgerService()
+    {
+        return self::getInstance(LedgerService::class);
     }
 
     /**

@@ -47,6 +47,7 @@ class Bill extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'bill_no',
         'verify_no',
         'object_type',//
         'object_no',

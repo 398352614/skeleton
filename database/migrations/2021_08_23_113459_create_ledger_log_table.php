@@ -17,6 +17,7 @@ class CreateLedgerLogTable extends Migration
             $table->bigIncrements('id');
 
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
+            $table->integer('ledger_id')->default(null)->nullable()->comment('财务账户ID');
             $table->integer('user_id')->default(null)->nullable()->comment('用户ID');
             $table->tinyInteger('user_type')->default(3)->nullable()->comment('用户类型1-公司2-后台3-货主4-司机5-客户');
             $table->string('user_name')->default(null)->nullable()->comment('用户名称');

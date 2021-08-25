@@ -212,6 +212,8 @@ trait ConstTranslateTrait
         BaseConstService::TRACKING_PACKAGE_NO_TYPE => '转运单号规则',
         BaseConstService::BAG_NO_TYPE => '袋号规则',
         BaseConstService::SHIFT_NO_TYPE => '车辆维护流水号规则',
+        BaseConstService::BILL_NO_TYPE => '账单规则',
+        BaseConstService::BILL_VERIFY_NO_TYPE => '账单验证规则',
     ];
 
     //快捷方式列表

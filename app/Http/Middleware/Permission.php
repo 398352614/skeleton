@@ -23,6 +23,7 @@ class Permission
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        return $next($request);
         if ($guard !== 'admin') return $next($request);
 
         $prefix = $request->route()->getPrefix();

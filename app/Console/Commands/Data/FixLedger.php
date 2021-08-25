@@ -18,7 +18,7 @@ class FixLedger extends Command
      *
      * @var string
      */
-    protected $signature = 'fix:leger';
+    protected $signature = 'fix:ledger';
 
     /**
      * The console command description.

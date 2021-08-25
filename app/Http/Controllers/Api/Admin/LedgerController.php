@@ -60,9 +60,9 @@ class LedgerController extends BaseController
         return $this->service->updateById($id, $this->data);
     }
 
-    public function log()
+    public function log($id)
     {
-
+        return $this->service->log($id);
     }
 
     /**

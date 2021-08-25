@@ -81,12 +81,12 @@ class Ledger extends BaseModel
 
     public function getPayTypeNameAttribute()
     {
-        return empty($this->payType) ? null : ConstTranslateTrait::payTypeList($this->payType);
+        return empty($this->pay_type) ? null : ConstTranslateTrait::payTypeList($this->pay_type);
     }
 
-    public function getVerifyNameAttribute()
+    public function getVerifyTypeNameAttribute()
     {
-        return empty($this->verifyType) ? null : ConstTranslateTrait::ledgerVerifyTypeList($this->verifyType);
+        return empty($this->verify_type) ? null : ConstTranslateTrait::ledgerVerifyTypeList($this->verify_type);
     }
 
 

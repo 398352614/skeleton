@@ -47,6 +47,7 @@ class LedgerLog extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'ledger_id',
         'user_id',
         'user_type',
         'user_name',
