@@ -94,6 +94,7 @@ class BillService extends BaseService
         $data['create_Date'] = today()->format('Y-m-d');
         $data['actual_amount'] = 0;
         $data['payer_type'] = BaseConstService::USER_MERCHANT;
+        $data['payer_id'] = $data['merchant_id'];
         $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
         $data['payee_id'] = auth()->user()->company_id;
         $data['payee_type'] = BaseConstService::USER_COMPANY;
