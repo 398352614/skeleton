@@ -9,6 +9,7 @@
 namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
+use App\Http\Controllers\Api\Admin\RegisterController;
 use App\Http\Resources\Api\Admin\MerchantResource;
 use App\Models\Merchant;
 use App\Models\MerchantGroup;
@@ -16,6 +17,7 @@ use App\Services\BaseConstService;
 use App\Traits\CompanyTrait;
 use App\Traits\ConstTranslateTrait;
 use App\Traits\ExportTrait;
+use App\Traits\FactoryInstanceTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 
@@ -96,6 +98,8 @@ class MerchantService extends BaseService
         //生成用户编码
         $id = $merchant->getAttribute('id');
         $rowCount = parent::updateById($id, ['code' => sprintf("%05s", $id)]);
+        $class = FactoryInstanceTrait::getInstance(RegisterController::class);
+        $class->addLedgerOfMerchant(CompanyTrait::getCompany(), $merchant);
         if ($rowCount === false) {
             throw new BusinessLogicException('新增失败，请重新操作');
         }
@@ -143,7 +147,7 @@ class MerchantService extends BaseService
             if (strstr($warehouse['acceptance_type'], strval(BaseConstService::WAREHOUSE_ACCEPTANCE_TYPE_3)) == false) {
                 throw new BusinessLogicException('网点未配置仓配一体，无法选择该网点');
             }
-        }else{
+        } else {
             unset($params['warehouse_id']);
         }
         $merchantGroup = $this->getMerchantGroupService()->getInfo(['id' => $params['merchant_group_id']], ['*'], false);
