@@ -11,16 +11,17 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\BaseController;
 use App\Services\Admin\BillService;
+use App\Services\Admin\JournalService;
 use App\Services\Admin\LedgerService;
 
 /**
  * Class AddressController
  * @package App\Http\Controllers\Api\Admin
- * @property BillService $service
+ * @property JournalService $service
  */
-class BillController extends BaseController
+class JournalController extends BaseController
 {
-    public function __construct(BillService $service, $exceptMethods = [])
+    public function __construct(JournalService $service, $exceptMethods = [])
     {
         parent::__construct($service, $exceptMethods);
     }
@@ -31,17 +32,10 @@ class BillController extends BaseController
     }
 
     /**
-     * 充值
      * @throws \App\Exceptions\BusinessLogicException
      */
-    public function merchantRecharge()
+    public function store()
     {
-        return $this->service->merchantRecharge($this->data);
+        return $this->service->store($this->data);
     }
-
-    public function update($id)
-    {
-        return $this->service->update($id,$this->data);
-    }
-
 }

@@ -25638,3 +25638,41 @@
  * }
  */
 
+/**
+ * @api {post} /admin/journal 账单流水查询
+ * @apiName 账单流水查询
+ * @apiGroup 54
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} begin_date 起始时间
+ * @apiParam {string} end_date 截止时间
+ * @apiParam {string} code 货主编号
+ * @apiParam {string} mode 交易类型1-账户充值2-运输费用
+ *
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccess {string} data.payer_type 付款方类型
+ * @apiSuccess {string} data.payer_id 付款方ID
+ * @apiSuccess {string} data.payer_name 付款方名称
+ * @apiSuccess {string} data.payee_type 收款方类型
+ * @apiSuccess {string} data.payee_id 收款方ID
+ * @apiSuccess {string} data.payee_name 收款方名称
+ * @apiSuccess {string} data.operator_type 经办人类型
+ * @apiSuccess {string} data.operator_id 经办人ID
+ * @apiSuccess {string} data.operator_name 经办人名称
+ * @apiSuccess {string} data.pay_type 支付类型1-银行转账2-支票3-现金4-余额
+ * @apiSuccess {string} data.mode 交易类型1-账号充值2-运费支付
+ * @apiSuccess {string} data.object_no 系统编号
+ * @apiSuccess {string} data.object_type 系统编号类型1-订单2-包裹
+ * @apiSuccess {string} data.actual_amount 实际金额
+ * @apiSuccess {string} data.pay_type_name 支付类型名称
+ * @apiSuccess {string} data.mode_name 交易类型名称
+ * @apiSuccess {string} data.merchant_group_name 货主组名称
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+

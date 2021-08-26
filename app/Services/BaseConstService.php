@@ -29,7 +29,7 @@ class BaseConstService
     const SHIFT = 'SHIFT';
     const BILL = 'BILL';
     const BILL_VERIFY = 'BV';
-
+    const JOURNAL = 'JOURNAL';
     const POSTCODE_TYPE_1 = 1;
     const POSTCODE_TYPE_2 = 2;
     const SHIFT_LOAD_TYPE_1 = 1;
@@ -138,6 +138,7 @@ class BaseConstService
     //初始密码
     const INITIAL_PASSWORD = '12345678';
 
+    const JOURNAL_NO_TYPE = 'journal';
     //费用编码
     const STICKER = 'STICKER';
     const DELIVERY = 'DELIVERY';

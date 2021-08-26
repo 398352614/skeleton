@@ -141,6 +141,8 @@ use Illuminate\Support\Facades\App;
  * @method static payTypeList($args = null)
  * @method static billVerifyStatusList($args = null)
  * @method static billStatusList($args = null)
+ * @method static rechargePayTypeList($args = null)
+ *
  */
 trait ConstTranslateTrait
 {
@@ -214,6 +216,7 @@ trait ConstTranslateTrait
         BaseConstService::SHIFT_NO_TYPE => '车辆维护流水号规则',
         BaseConstService::BILL_NO_TYPE => '账单规则',
         BaseConstService::BILL_VERIFY_NO_TYPE => '账单验证规则',
+        BaseConstService::JOURNAL_NO_TYPE => '流水号规则',
     ];
 
     //快捷方式列表
@@ -1094,6 +1097,13 @@ trait ConstTranslateTrait
         BaseConstService::PAY_TYPE_2 => '支票',
         BaseConstService::PAY_TYPE_3 => '现金',
         BaseConstService::PAY_TYPE_4 => '余额',
+    ];
+
+    //充值支付方式1-银行转账2-支票3-现金4-余额
+    public static $rechargePayTypeList = [
+        BaseConstService::PAY_TYPE_1 => '银行转账',
+        BaseConstService::PAY_TYPE_2 => '支票',
+        BaseConstService::PAY_TYPE_3 => '现金'
     ];
 
     public static $ledgerVerifyTypeList = [

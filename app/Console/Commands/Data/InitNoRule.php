@@ -61,6 +61,7 @@ class InitNoRule extends Command
             BaseConstService::SHIFT_NO_TYPE => BaseConstService::SHIFT,
             BaseConstService::BILL_NO_TYPE => BaseConstService::BILL,
             BaseConstService::BILL_VERIFY_NO_TYPE => BaseConstService::BILL_VERIFY,
+            BaseConstService::JOURNAL_NO_TYPE => BaseConstService::JOURNAL,
         ];
         foreach ($companyList as $company) {
             foreach (ConstTranslateTrait::$noTypeList as $k => $v) {

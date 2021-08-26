@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Models\Journal;
 use App\Services\Admin\AdditionalPackageService;
 use App\Services\Admin\AddressService;
 use App\Services\Admin\AddressTemplateService;
@@ -18,6 +19,7 @@ use App\Services\Admin\CountryService;
 use App\Services\Admin\DriverService;
 use App\Services\Admin\EmployeeService;
 use App\Services\Admin\FeeService;
+use App\Services\Admin\JournalService;
 use App\Services\Admin\LedgerLogService;
 use App\Services\Admin\LedgerService;
 use App\Services\Admin\LineAreaService;
@@ -31,7 +33,6 @@ use App\Services\Admin\MerchantGroupService;
 use App\Services\Admin\MerchantRechargeService;
 use App\Services\Admin\MerchantService;
 use App\Services\Admin\OrderAmountService;
-use App\Services\Admin\OrderDefaultConfigService;
 use App\Services\Admin\OrderService;
 use App\Services\Admin\OrderTemplateService;
 use App\Services\Admin\PackageService;
@@ -77,6 +78,14 @@ trait AdminServiceTrait
     public function getMerchantService()
     {
         return self::getInstance(MerchantService::class);
+    }
+
+    /**
+     * @return JournalService
+     */
+    public function getJournalService()
+    {
+        return self::getInstance(JournalService::class);
     }
 
     /**

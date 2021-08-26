@@ -5,11 +5,11 @@ namespace App\Models;
 use App\Traits\ConstTranslateTrait;
 
 /**
- * 货主余额
+ * 流水
  * Class Employee
  * @package App\Models
  */
-class Bill extends BaseModel
+class Journal extends BaseModel
 {
     /**
      *
@@ -17,7 +17,7 @@ class Bill extends BaseModel
      *
      * @var string
      */
-    protected $table = 'bill';
+    protected $table = 'journal';
 
     /**
      * The primary key for the model.
@@ -47,6 +47,7 @@ class Bill extends BaseModel
      */
     protected $fillable = [
         'company_id',
+        'journal_no',
         'bill_no',
         'verify_no',
         'object_type',//
@@ -57,10 +58,7 @@ class Bill extends BaseModel
         'mode',//
         'type',//
         'create_date',
-        'expect_amount',
         'actual_amount',
-        'status',//
-        'verify_status',//
         'payer_id',
         'payer_type',//
         'payer_name',
@@ -70,8 +68,6 @@ class Bill extends BaseModel
         'operator_id',
         'operator_type',//
         'operator_name',
-        'create_timing',//
-        'pay_timing',//
         'created_at',
         'updated_at',
     ];
@@ -84,15 +80,11 @@ class Bill extends BaseModel
     protected $hidden = [
         'mode_name',
         'type_name',
-        'create_timing_name',
-        'pay_timing_name',
         'object_type_name',
         'pay_type_name',
         'payer_type_name',
         'payee_type_name',
         'operator_type_name',
-        'status_name',
-        'verify_status_name',
     ];
 
     protected $appends = [
@@ -133,10 +125,11 @@ class Bill extends BaseModel
         return empty($this->mode) ? null : ConstTranslateTrait::billModeList($this->mode);
     }
 
-    public function getTypeNameAttribute()
-    {
-        return empty($this->type) ? null : ConstTranslateTrait::billTypeList($this->type);
-    }
+    //type是自定义的
+//    public function getTypeNameAttribute()
+//    {
+//        return empty($this->type) ? null : ConstTranslateTrait::billTypeList($this->type);
+//    }
 
     public function getCreateTimingNameAttribute()
     {

@@ -315,4 +315,13 @@ class OrderNoRuleService extends BaseService
     {
         return $this->createNoBase(BaseConstService::BILL_VERIFY_NO_TYPE, '账单编号规则不存在或已被禁用，请先联系后台管理员');
     }
+
+    /**
+     * @return string
+     * @throws BusinessLogicException
+     */
+    public function createJournalNo()
+    {
+        return $this->createNoBase(BaseConstService::JOURNAL_NO_TYPE, '流水号规则不存在或已被禁用，请先联系后台管理员');
+    }
 }

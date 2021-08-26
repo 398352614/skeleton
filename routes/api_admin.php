@@ -1084,4 +1084,11 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //审核
         Route::post('/{id}/verify', 'BillVerifyController@verify')->name('bill-verify.verify');
     });
+
+    //流水
+    Route::prefix('journal')->group(function () {
+        //列表
+        Route::get('/', 'JournalController@index')->name('journal.index');
+
+    });
 });

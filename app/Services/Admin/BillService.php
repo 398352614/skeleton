@@ -52,6 +52,8 @@ class BillService extends BaseService
         if ($bill === false) {
             throw new BusinessLogicException('订单新增失败');
         }
+        $this->getJournalService()->record($params);
+
     }
 
     public function getPageList()
@@ -128,4 +130,22 @@ class BillService extends BaseService
         $this->store($data);
     }
 
+    /**
+     * @param $id
+     * @param $data
+     * @return int|void
+     * @throws BusinessLogicException
+     */
+    public function update($id, $data)
+    {
+        $dbData = parent::getInfoLock(['id' => $id], ['*'], false);
+        if (empty($dbData)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        $data = Arr::only($data, 'actual_amount');
+        $row = parent::update(['id' => $id], $data);
+        if ($row == false) {
+            throw new BusinessLogicException('修改失败');
+        }
+    }
 }
