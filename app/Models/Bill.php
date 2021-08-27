@@ -82,8 +82,11 @@ class Bill extends BaseModel
      * @var array
      */
     protected $hidden = [
+
+    ];
+
+    protected $appends = [
         'mode_name',
-        'type_name',
         'create_timing_name',
         'pay_timing_name',
         'object_type_name',
@@ -95,12 +98,14 @@ class Bill extends BaseModel
         'verify_status_name',
     ];
 
-    protected $appends = [
-    ];
-
     public function getStatusNameAttribute()
     {
         return empty($this->status) ? null : ConstTranslateTrait::billStatusList($this->status);
+    }
+
+    public function getObjectTypeNameAttribute()
+    {
+        return empty($this->object_type) ? null : ConstTranslateTrait::billObjectTypeList($this->object_type);
     }
 
     public function getPayTypeNameAttribute()
@@ -133,10 +138,10 @@ class Bill extends BaseModel
         return empty($this->mode) ? null : ConstTranslateTrait::billModeList($this->mode);
     }
 
-    public function getTypeNameAttribute()
-    {
-        return empty($this->type) ? null : ConstTranslateTrait::billTypeList($this->type);
-    }
+//    public function getTypeNameAttribute()
+//    {
+//        return empty($this->type) ? null : ConstTranslateTrait::billTypeList($this->type);
+//    }
 
     public function getCreateTimingNameAttribute()
     {

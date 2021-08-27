@@ -53,6 +53,9 @@ class BaseConstService
     const YES = 1;
     const NO = 2;
 
+    const BILL_OBJECT_TYPE_1 = 1;
+    const BILL_OBJECT_TYPE_2 = 2;
+
     const CONTENT_TYPE_JSON = 1;
     const CONTENT_TYPE_FORM_DATA = 2;
 

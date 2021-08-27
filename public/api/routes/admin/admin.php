@@ -25669,6 +25669,7 @@
  * @apiSuccess {string} data.pay_type_name 支付类型名称
  * @apiSuccess {string} data.mode_name 交易类型名称
  * @apiSuccess {string} data.merchant_group_name 货主组名称
+ * @apiSuccess {string} data.code 货主编号
  * @apiSuccessExample {json} Success-Response:
  * {
  * "code": 200,

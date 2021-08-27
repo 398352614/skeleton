@@ -58,32 +58,36 @@ class BillService extends BaseService
 
     public function getPageList()
     {
-//        if ($this->formData['user_type'] == BaseConstService::USER_MERCHANT) {
-        if (!empty($this->formData['code'])) {
-            $where = ['code' => $this->formData['code']];
-        }
-        if (!empty($this->formData['merchant_group_id'])) {
-            $where = ['merchant_group_id' => $this->formData['merchant_group_id']];
-        }
-        if (!empty($where)) {
-            $merchantList = $this->getMerchantService()->getList($where, ['*'], false);
-            $this->query->whereIn('payer_id', $merchantList->pluck('id')->toArray());
-            $this->query->orderByDesc('id');
-            $data = parent::getPageList();
+        if ((!empty($this->formData['user_type']) && $this->formData['user_type'] == BaseConstService::USER_MERCHANT) || empty($this->formData['user_type'])) {
+            $where = [];
+            if (!empty($this->formData['code'])) {
+                $where['code'] = $this->formData['code'];
+            }
+            if (!empty($this->formData['merchant_group_id'])) {
+                $where ['merchant_group_id'] = $this->formData['merchant_group_id'];
+            }
+            if (!empty($where)) {
+                $merchantList = $this->getMerchantService()->getList($where, ['*'], false);
+                $this->query->whereIn('payer_id', $merchantList->pluck('id')->toArray());
+                $this->query->orderByDesc('id');
+                $data = parent::getPageList();
+
+            } else {
+                $data = parent::getPageList();
+                $merchantList = $this->getMerchantService()->getList(['id' => ['in', $data->pluck('payer_id')->toArray()]], ['*'], false);
+            }
+            $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantList->pluck('merchant_group_id')->toArray()]], ['*'], false);
+            foreach ($data as $k => $v) {
+                $merchant = $merchantList->where('id', $v['payer_id'])->first();
+                if (!empty($merchant)) {
+                    $data[$k]['code'] = $merchant['code'];
+                    $data[$k]['merchant_group_name'] = $merchantGroupList->where('id', $merchant['merchant_group_id'])->first()['name'];
+                }
+            }
         } else {
             $data = parent::getPageList();
-            $merchantList = $this->getMerchantService()->getList(['id' => ['in', $data->pluck('user_id')->toArray()]], ['*'], false);
-        }
-        $merchantGroupList = $this->getMerchantGroupService()->getList(['id' => ['in', $merchantList->pluck('merchant_group_id')->toArray()]], ['*'], false);
-        foreach ($data as $k => $v) {
-            $merchant = $merchantList->where('id', $v['user_id'])->first();
-            if (!empty($merchant)) {
-                $data[$k] = array_merge($v, $merchant['code']);
-                $data[$k]['merchant_group_name'] = $merchantGroupList->where('id', $merchant['merchant_group_id'])->first()['name'];
-            }
         }
         return $data;
-//        }
     }
 
     /**
@@ -104,7 +108,7 @@ class BillService extends BaseService
         $data['operator_id'] = auth()->user()->id;
         $data['operator_type'] = BaseConstService::USER_ADMIN;
         $data['operator_name'] = auth()->user()->username;
-        $data['crate_timing'] = BaseConstService::BILL_CREATE_TIMING_1;
+        $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_1;
         $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_1;
         self::store($data);
         $this->getLedgerService()->recharge($data['payer_type'], $data['payer_id'], $data['expect_amount']);

@@ -142,6 +142,7 @@ use Illuminate\Support\Facades\App;
  * @method static billVerifyStatusList($args = null)
  * @method static billStatusList($args = null)
  * @method static rechargePayTypeList($args = null)
+ * @method static billObjectTypeList($args = null)
  *
  */
 trait ConstTranslateTrait
@@ -150,6 +151,11 @@ trait ConstTranslateTrait
     public static $statusList = [
         BaseConstService::YES => '是',
         BaseConstService::NO => '否'
+    ];
+
+    public static $billObjectTypeList=[
+        BaseConstService::BILL_OBJECT_TYPE_1 => '订单',
+        BaseConstService::BILL_OBJECT_TYPE_2 => '包裹'
     ];
 
     //包裹转运状态1-待装袋2-待装车3-待发车4-运输中5-已到车6-已卸货7-已拆袋
