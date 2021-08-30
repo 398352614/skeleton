@@ -24,6 +24,7 @@ class CreateBillVerifyTable extends Migration
             $table->decimal('actual_amount')->default(0)->nullable()->comment('实付金额');
             $table->string('remark')->default(null)->nullable()->comment('备注');
             $table->string('picture_list')->default('')->nullable()->comment('图片');
+            $table->dateTime('verify_time')->default(null)->nullable()->comment('审核时间');
 
             $table->integer('operator_id')->default(null)->nullable()->comment('操作人ID');
             $table->tinyInteger('operator_type')->default(null)->nullable()->comment('操作人类型1-公司2-后台3-货主4-司机5-客户');

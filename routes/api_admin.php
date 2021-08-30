@@ -1072,7 +1072,7 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         //充值
         Route::post('/merchant-recharge', 'BillController@merchantRecharge')->name('bill.merchant-recharge');
         //列表
-        Route::post('/{id}', 'BillController@verify')->name('bill.verify');
+        Route::post('/{id}/verify', 'BillController@verify')->name('bill.verify');
         //列表
         Route::get('/{id}', 'BillController@show')->name('bill.show');
     });

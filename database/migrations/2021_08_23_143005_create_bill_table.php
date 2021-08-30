@@ -31,6 +31,7 @@ class CreateBillTable extends Migration
             $table->date('create_date')->default(null)->nullable()->comment('创建日期');
             $table->decimal('expect_amount')->default(0)->nullable()->comment('应付金额');
             $table->decimal('actual_amount')->default(0)->nullable()->comment('实付金额');
+            $table->dateTime('verify_time')->default(null)->nullable()->comment('审核时间');
 
 
             $table->integer('payer_id')->default(null)->nullable()->comment('付款方ID');

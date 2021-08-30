@@ -177,7 +177,7 @@ class BillService extends BaseService
         if ($dbData['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_3) {
             throw new BusinessLogicException('账单已拒绝，无法再次审核');
         }
-        if ($data['actual_amount'] >$dbData['expect_amount']) {
+        if ($data['actual_amount'] > $dbData['expect_amount']) {
             throw new BusinessLogicException('实际金额不能大于预计金额');
         }
         $row = parent::update(['id' => $id], [
