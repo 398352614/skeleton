@@ -37,6 +37,7 @@ class LedgerService extends BaseService
         'user_type' => ['=', 'user_type'],
     ];
 
+    public $orderBy = ['id'=>'desc'];
 
     /**
      * AddressService constructor.

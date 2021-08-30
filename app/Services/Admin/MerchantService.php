@@ -30,7 +30,7 @@ class MerchantService extends BaseService
     use ExportTrait;
 
     public $filterRules = [
-        'code,name,email' => ['like', 'keyword'],
+        'code,name,email,phone' => ['like', 'keyword'],
         'merchant_group_id' => ['=', 'merchant_group_id'],
         'status' => ['=', 'status'],
         'code' => ['like', 'code'],
