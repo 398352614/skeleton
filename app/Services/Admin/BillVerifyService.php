@@ -10,7 +10,7 @@ namespace App\Services\Admin;
 
 use App\Exceptions\BusinessLogicException;
 
-use App\Models\Bill;
+use App\Models\BillVerify;
 use App\Models\Ledger;
 use App\Services\BaseConstService;
 use Illuminate\Support\Arr;
@@ -32,9 +32,9 @@ class BillVerifyService extends BaseService
 
     /**
      * AddressService constructor.
-     * @param Bill $model
+     * @param BillVerify $model
      */
-    public function __construct(Bill $model)
+    public function __construct(BillVerify $model)
     {
         parent::__construct($model);
     }
