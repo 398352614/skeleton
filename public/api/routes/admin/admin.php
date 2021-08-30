@@ -25543,7 +25543,7 @@
 
 /**
  * @api {get} /admin/bill/{id} 账单详情
- * @apiName 账单查询
+ * @apiName 账单详情
  * @apiGroup 53
  * @apiVersion 1.0.0
  * @apiUse auth
@@ -25622,7 +25622,7 @@
 
 /**
  * @api {get} /admin/bill-verify 账单合计查询
- * @apiName 账单查询
+ * @apiName 账单合计查询
  * @apiGroup 55
  * @apiVersion 1.0.0
  * @apiUse auth
