@@ -165,6 +165,9 @@ class BillService extends BaseService
      */
     public function verify($id, $data)
     {
+        if ($data['status'] == BaseConstService::BILL_VERIFY_STATUS_1) {
+            throw new BusinessLogicException('参数非法');
+        }
         $dbData = parent::getInfoLock(['id' => $id], ['*'], false);
         if (empty($dbData)) {
             throw new BusinessLogicException('数据不存在');

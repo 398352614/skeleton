@@ -75,6 +75,10 @@ class BillValidate extends BaseValidate
             'remark',
             'picture_list'
         ],
+        'verify'=>[
+            'actual_amount',
+            'verify_status'
+        ]
     ];
 
     public $message = [

@@ -25542,6 +25542,44 @@
  */
 
 /**
+ * @api {get} /admin/bill/{id} 账单详情
+ * @apiName 账单查询
+ * @apiGroup 53
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} id 账单ID
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccess {string} data.payer_type 付款方类型
+ * @apiSuccess {string} data.payer_id 付款方ID
+ * @apiSuccess {string} data.payer_name 付款方名称
+ * @apiSuccess {string} data.payee_type 收款方类型
+ * @apiSuccess {string} data.payee_id 收款方ID
+ * @apiSuccess {string} data.payee_name 收款方名称
+ * @apiSuccess {string} data.operator_type 经办人类型
+ * @apiSuccess {string} data.operator_id 经办人ID
+ * @apiSuccess {string} data.operator_name 经办人名称
+ * @apiSuccess {string} data.pay_type 支付类型1-银行转账2-支票3-现金4-余额
+ * @apiSuccess {string} data.mode 交易类型1-账号充值2-运费支付
+ * @apiSuccess {string} data.object_no 系统编号
+ * @apiSuccess {string} data.object_type 系统编号类型1-订单2-包裹
+ * @apiSuccess {string} data.expect_amount 预计金额
+ * @apiSuccess {string} data.actual_amount 实际金额
+ * @apiSuccess {string} data.pay_type_name 支付类型名称
+ * @apiSuccess {string} data.mode_name 交易类型名称
+ * @apiSuccess {string} data.status 状态1-未支付2-已支付3-已取消
+ * @apiSuccess {string} data.verify_no 审核编号
+ * @apiSuccess {string} data.verify_status 审核状态1-未审核2-已审核3-拒绝
+ * @apiSuccess {string} data.merchant_group_name 货主组名称
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+
+/**
  * @api {post} /admin/bill/merchant-recharge 货主充值开单
  * @apiName 货主充值开单
  * @apiGroup 53
@@ -25565,15 +25603,12 @@
 /**
  * @api {post} /admin/bill/{id}/verify 账单审核
  * @apiName 账单审核
- * @apiGroup 55
+ * @apiGroup 53
  * @apiVersion 1.0.0
  * @apiUse auth
  * @apiParam {string} id 账单审核ID
  * @apiParam {string} actual_amount 实际金额
- * @apiParam {string} bill_list.bill_no 账单编号
- * @apiParam {string} bill_list.actual_amount 实际金额
- * @apiParam {string} remark 备注
- * @apiParam {string} picture_list 图片列表
+ * @apiParam {string} verify_status 验证状态2-已审核3-拒绝
  *
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
