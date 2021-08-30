@@ -11,6 +11,7 @@ use App\Services\Admin\BaseLineService;
 use App\Services\Admin\BaseWarehouseService;
 use App\Services\Admin\BatchExceptionService;
 use App\Services\Admin\BatchService;
+use App\Services\Admin\BillVerifyService;
 use App\Services\Admin\CarBrandService;
 use App\Services\Admin\CarMaintainDetailService;
 use App\Services\Admin\CarService;
@@ -418,6 +419,14 @@ trait AdminServiceTrait
     public function getLedgerService()
     {
         return self::getInstance(LedgerService::class);
+    }
+
+    /**
+     * @return BillVerifyService
+     */
+    public function getBillVerifyService()
+    {
+        return self::getInstance(BillVerifyService::class);
     }
 
     /**

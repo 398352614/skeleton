@@ -48,6 +48,7 @@ class BillService extends BaseService
     public function store($params)
     {
         $params['bill_no'] = $this->getOrderNoRuleService()->createBillNo();
+        $params['create_date'] = today()->format('Y-m-d');
         $bill = parent::create($params);
         if ($bill === false) {
             throw new BusinessLogicException('订单新增失败');
@@ -155,5 +156,36 @@ class BillService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('修改失败');
         }
+    }
+
+    /**
+     * @param $id
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    public function verify($id, $data)
+    {
+        $dbData = parent::getInfoLock(['id' => $id], ['*'], false);
+        if (empty($dbData)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if ($dbData['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
+            throw new BusinessLogicException('账单已审核，无需再次审核');
+        }
+        if ($dbData['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_3) {
+            throw new BusinessLogicException('账单已拒绝，无法再次审核');
+        }
+        $row = parent::update(['id' => $id], [
+            'actual_amount' => $data['actual_amount'],
+            'verify_status' => $data['verify_status']
+        ]);
+        if ($row == false) {
+            throw new BusinessLogicException('操作失败');
+        }
+    }
+
+    public function show($id)
+    {
+        return parent::getInfo(['id' => $id], ['*'], false);
     }
 }

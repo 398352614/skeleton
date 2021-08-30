@@ -25563,7 +25563,30 @@
  */
 
 /**
- * @api {get} /admin/bill-verify 账单审核查询
+ * @api {post} /admin/bill/{id}/verify 账单审核
+ * @apiName 账单审核
+ * @apiGroup 55
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} id 账单审核ID
+ * @apiParam {string} actual_amount 实际金额
+ * @apiParam {string} bill_list.bill_no 账单编号
+ * @apiParam {string} bill_list.actual_amount 实际金额
+ * @apiParam {string} remark 备注
+ * @apiParam {string} picture_list 图片列表
+ *
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+
+/**
+ * @api {get} /admin/bill-verify 账单合计查询
  * @apiName 账单查询
  * @apiGroup 55
  * @apiVersion 1.0.0
@@ -25597,7 +25620,7 @@
  */
 
 /**
- * @api {post} /admin/bill-verify 创建审核
+ * @api {post} /admin/bill-verify 创建账单合计
  * @apiName 手动创建账单审核
  * @apiGroup 55
  * @apiVersion 1.0.0
@@ -25616,7 +25639,7 @@
  */
 
 /**
- * @api {post} /admin/bill-verify/{id}/verify 账单审核
+ * @api {post} /admin/bill-verify/{id}/verify 账单合计审核
  * @apiName 账单审核
  * @apiGroup 55
  * @apiVersion 1.0.0

@@ -39,9 +39,33 @@ class BillController extends BaseController
         return $this->service->merchantRecharge($this->data);
     }
 
-    public function update($id)
+//    /**
+//     * @param $id
+//     * @return int|void
+//     * @throws \App\Exceptions\BusinessLogicException
+//     */
+//    public function update($id)
+//    {
+//        return $this->service->update($id,$this->data);
+//    }
+
+    /**
+     * 审核
+     * @param $id
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function verify($id)
     {
-        return $this->service->update($id,$this->data);
+        return $this->service->verify($id,$this->data);
     }
 
+    /**
+     * 查看详情
+     * @param $id
+     * @return array|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model|object|null
+     */
+    public function show($id)
+    {
+        return $this->service->show($id);
+    }
 }
