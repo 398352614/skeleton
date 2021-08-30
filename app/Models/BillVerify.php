@@ -57,6 +57,7 @@ class BillVerify extends BaseModel
         'operator_id',
         'operator_type',
         'operator_name',
+        'verify_time',
         'created_at',
         'updated_at',
     ];

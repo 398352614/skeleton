@@ -72,6 +72,7 @@ class Bill extends BaseModel
         'operator_name',
         'create_timing',//
         'pay_timing',//
+        'verify_time',
         'created_at',
         'updated_at',
     ];

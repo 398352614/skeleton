@@ -1124,8 +1124,8 @@ trait ConstTranslateTrait
     ];
 
     public static $billModeList = [
-        BaseConstService::BILL_MODE_1 => '充值扣款',
-        BaseConstService::BILL_MODE_2 => '运费支付',
+        BaseConstService::BILL_MODE_1 => '账户充值',
+        BaseConstService::BILL_MODE_2 => '订单支付',
     ];
 
     //支付方式
