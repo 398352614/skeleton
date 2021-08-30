@@ -151,7 +151,7 @@ class LedgerService extends BaseService
 
     public function log($id)
     {
-        return $this->getLedgerLogService()->getList(['ledger_id' => $id], ['*'], false);
+        return $this->getLedgerLogService()->getList(['ledger_id' => $id], ['*'], false, [], ['id' => 'desc']);
     }
 
     /**
