@@ -116,7 +116,6 @@ class BillService extends BaseService
         $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_1;
         $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_1;
         self::store($data);
-        $this->getLedgerService()->recharge($data['payer_type'], $data['payer_id'], $data['expect_amount']);
     }
 
     /**
@@ -185,6 +184,8 @@ class BillService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
+        $this->getLedgerService()->recharge($dbData['payer_type'], $dbData['payer_id'], $data['actual_amount']);
+
     }
 
     public function show($id)
