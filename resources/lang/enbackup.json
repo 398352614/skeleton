@@ -455,7 +455,7 @@
     "顺带包裹格式不正确": "On-the-way parcel format incorrect",
     "当前线路已更换，请刷新": "Current route updated, please refresh",
     "当前时间不在该运价范围内": "Time is not within the freight rate range",
-    "实际金额不能大于充值金额": "Actual amount shall not be greater than the recharge amount",
+    "实际金额不能大于预计金额": "Actual amount shall not be greater than the recharge amount",
     "充值请求已过期，请重新充值": "Recharge request expired, please try again",
     "请按优化的站点顺序进行派送，或手动跳过之前的站点": "Please deliver by optimized site sequence, or manually skip the previous sites",
     "字母规则不正确? format,": "Letter rule error? format,",

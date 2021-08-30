@@ -71,7 +71,7 @@ class RechargeStatisticsService extends BaseService
             throw new BusinessLogicException('当日充值未完结，请次日审核');
         }
         if (floatval($params['verify_recharge_amount']) > floatval($info['total_recharge_amount'])) {
-            throw new BusinessLogicException('实际金额不能大于充值金额');
+            throw new BusinessLogicException('实际金额不能大于预计金额');
         }
         if ($info['status'] == BaseConstService::RECHARGE_VERIFY_STATUS_2) {
             throw new BusinessLogicException('该充值已审核,请勿重复审核');

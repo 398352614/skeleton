@@ -288,7 +288,7 @@ trait ConstCodeTrait
         BaseCodeService::SERVER_BUSY => '未设置打印模板，请联系管理员设置打印模板',
         BaseCodeService::SERVER_BUSY => '只有已完成的订单才能无效化',
         BaseCodeService::SERVER_BUSY => '当日充值未完结，请次日审核',
-        BaseCodeService::SERVER_BUSY => '实际金额不能大于充值金额',
+        BaseCodeService::SERVER_BUSY => '实际金额不能大于预计金额',
         BaseCodeService::SERVER_BUSY => '该充值已审核,请勿重复审核',
         BaseCodeService::SERVER_BUSY => '异常已处理',
         BaseCodeService::SERVER_BUSY => '当前司机已被分配，请选择其他司机',
