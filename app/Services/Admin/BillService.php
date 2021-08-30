@@ -56,6 +56,10 @@ class BillService extends BaseService
 
     }
 
+    /**
+     * 查询
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getPageList()
     {
         if ((!empty($this->formData['user_type']) && $this->formData['user_type'] == BaseConstService::USER_MERCHANT) || empty($this->formData['user_type'])) {
