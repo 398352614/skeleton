@@ -210,7 +210,11 @@ class BaseService
      */
     public function getPageList()
     {
-        return $this->resource::collection($this->setFilter()->setOrderBy()->getPaginate());
+        if (array_key_exists('per_page',$this->formData) && $this->formData['per_page'] == 0) {
+            return $this->resource::collection($this->setFilter()->setOrderBy()->getList());
+        } else {
+            return $this->resource::collection($this->setFilter()->setOrderBy()->getPaginate());
+        }
     }
 
     /**
