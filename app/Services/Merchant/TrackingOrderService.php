@@ -961,7 +961,9 @@ class TrackingOrderService extends BaseService
         if (empty($batch)) {
             throw new BusinessLogicException('数据不存在');
         }
-        $count = $this->getBatchService()->count(['tour_no' => $batch['tour_no'], 'merchant_id' => ['<>', -1], 'status' => BaseConstService::BATCH_DELIVERING, 'sort_id' => ['<', $batch['sort_id']]]);
+        $batchList = $this->getBatchService()->getList(['tour_no' => $batch['tour_no'], 'merchant_id' => ['<>', -1], 'status' => BaseConstService::BATCH_DELIVERING, 'sort_id' => ['<', $batch['sort_id']]], ['*'], false);
+        $count = count($batchList);
+        $expectDistance = $batchList->sum('expect_distance') + $batch['expect_distance'];
         //处理预计耗时
         if (!empty($batch->expect_arrive_time)) {
             $expectTime = strtotime($batch->expect_arrive_time) - time();
@@ -975,7 +977,7 @@ class TrackingOrderService extends BaseService
             $routeTracking['lat'] = $routeTracking['warehouse_lat'];
         }
         return [
-            'expect_distance' => $batch['expect_distance'] ?? 0,
+            'expect_distance' => $expectDistance,
             'actual_distance' => $batch['actual_distance'] ?? 0,
             'expect_time' => ($expectTime >= 0) ? $expectTime : 0,
             'actual_time' => $batch['actual_time'] ?? 0,

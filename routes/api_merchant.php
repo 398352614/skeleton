@@ -168,6 +168,9 @@ Route::namespace('Api\Merchant')->middleware(['companyValidate:merchant', 'auth:
         Route::post('/location', 'AddressController@showByApi');
     });
 
+    Route::post('order-dispatch-info', 'OrderController@getOrderDispatchInfo');//派送情况
+
+
     //    //运单管理
 //    Route::prefix('tracking-order')->group(function () {
 //        //查询初始化
