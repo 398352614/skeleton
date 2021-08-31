@@ -1560,7 +1560,9 @@ class OrderService extends BaseService
         }
         $routeTracking = $this->getRouteTrackingService()->getInfo(['tour_no' => $tour['tour_no']], ['lon', 'lat'], false, ['id' => 'desc']) ?? [];
         $batch = $this->getBatchService()->getInfo(['batch_no' => $trackingOrder['batch_no']], ['*'], false) ?? [];
-        $count = $this->getBatchService()->query->where('merchant_id', '<>', -1)->where('tour_no', $tour['tour_no'])->where('status', '=', BaseConstService::BATCH_DELIVERING)->where('sort_id', '<', $batch['sort_id'])->count();
+        $batchList = $this->getBatchService()->getList(['tour_no' => $batch['tour_no'], 'merchant_id' => ['<>', -1], 'status' => BaseConstService::BATCH_DELIVERING, 'sort_id' => ['<', $batch['sort_id']]], ['*'], false);
+        $count = count($batchList);
+        $expectDistance = $batchList->sum('expect_distance') + $batch['expect_distance'];
         $status = '';
         if ($order['type'] == BaseConstService::ORDER_TYPE_3) {
             if ($trackingOrder['type'] == BaseConstService::TRACKING_ORDER_TYPE_2) {
@@ -1596,7 +1598,7 @@ class OrderService extends BaseService
             'car_no' => $tour['car_no'],
             'tour_no' => $tour['tour_no'],
 
-            'expect_distance' => $batch['expect_distance'] ?? 0,
+            'expect_distance' => $expectDistance,
             'expect_arrive_time' => $batch['expect_arrive_time'] ?? '',
             'actual_arrive_time' => $batch['actual_arrive_time'] ?? '',
             'rest_batch' => $count,
