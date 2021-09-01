@@ -66984,8 +66984,8 @@ define({ "api": [
   {
     "type": "post",
     "url": "/admin/bill/{id}/verify",
-    "title": "账单审核",
-    "name": "账单审核",
+    "title": "账单对账",
+    "name": "账单对账",
     "group": "53",
     "version": "1.0.0",
     "parameter": {
@@ -66996,7 +66996,7 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "id",
-            "description": "<p>账单审核ID</p>"
+            "description": "<p>账单对账ID</p>"
           },
           {
             "group": "Parameter",
@@ -67010,7 +67010,7 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "verify_status",
-            "description": "<p>验证状态2-已审核3-拒绝</p>"
+            "description": "<p>验证状态2-已对账3-拒绝</p>"
           }
         ]
       }
@@ -67120,7 +67120,7 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "verify_status",
-            "description": "<p>审核状态1-未审核2-已审核3-取消</p>"
+            "description": "<p>对账状态1-未对账2-已对账3-取消</p>"
           },
           {
             "group": "Parameter",
@@ -67167,6 +67167,13 @@ define({ "api": [
             "group": "Success 200",
             "type": "string",
             "optional": false,
+            "field": "data.payer_type_name",
+            "description": "<p>付款方类型名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
             "field": "data.payer_id",
             "description": "<p>付款方ID</p>"
           },
@@ -67183,6 +67190,13 @@ define({ "api": [
             "optional": false,
             "field": "data.payee_type",
             "description": "<p>收款方类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.payee_type_name",
+            "description": "<p>收款方类型名称</p>"
           },
           {
             "group": "Success 200",
@@ -67224,7 +67238,7 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "data.pay_type",
-            "description": "<p>支付类型1-银行转账2-支票3-现金4-余额</p>"
+            "description": "<p>付款方式1-银行转账2-支票3-现金4-余额</p>"
           },
           {
             "group": "Success 200",
@@ -67252,14 +67266,21 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "data.expect_amount",
-            "description": "<p>预计金额</p>"
+            "description": "<p>费用</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
             "field": "data.actual_amount",
-            "description": "<p>实际金额</p>"
+            "description": "<p>已支付费用</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.rest_amount",
+            "description": "<p>已支付费用</p>"
           },
           {
             "group": "Success 200",
@@ -67273,28 +67294,28 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "data.mode_name",
-            "description": "<p>交易类型名称</p>"
+            "description": "<p>费用类型名称</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
             "field": "data.status",
-            "description": "<p>状态1-未支付2-已支付3-已取消</p>"
+            "description": "<p>支付状态1-未支付2-已支付3-已取消</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
             "field": "data.verify_no",
-            "description": "<p>审核编号</p>"
+            "description": "<p>对账编号</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
             "field": "data.verify_status",
-            "description": "<p>审核状态1-未审核2-已审核3-拒绝</p>"
+            "description": "<p>对账状态1-未对账2-已对账3-拒绝</p>"
           },
           {
             "group": "Success 200",
@@ -67523,14 +67544,14 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "data.verify_no",
-            "description": "<p>审核编号</p>"
+            "description": "<p>对账编号</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
             "field": "data.verify_status",
-            "description": "<p>审核状态1-未审核2-已审核3-拒绝</p>"
+            "description": "<p>对账状态1-未对账2-已对账3-拒绝</p>"
           },
           {
             "group": "Success 200",
@@ -67702,7 +67723,7 @@ define({ "api": [
     }
   },
   {
-    "type": "post",
+    "type": "get",
     "url": "/admin/journal",
     "title": "账单流水查询",
     "name": "账单流水查询",
@@ -67941,7 +67962,7 @@ define({ "api": [
     "type": "post",
     "url": "/admin/bill-verify",
     "title": "创建账单合计",
-    "name": "手动创建账单审核",
+    "name": "手动创建账单对账",
     "group": "55",
     "version": "1.0.0",
     "parameter": {
@@ -68069,7 +68090,7 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "verify_status",
-            "description": "<p>审核状态1-未审核2-已审核3-取消</p>"
+            "description": "<p>对账状态1-未对账2-已对账3-取消</p>"
           },
           {
             "group": "Parameter",
@@ -68187,7 +68208,7 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "data.verify_status",
-            "description": "<p>审核状态1-未审核2-已审核3-拒绝</p>"
+            "description": "<p>对账状态1-未对账2-已对账3-拒绝</p>"
           },
           {
             "group": "Success 200",
@@ -68242,10 +68263,260 @@ define({ "api": [
     }
   },
   {
+    "type": "get",
+    "url": "/admin/bill-verify/{id}",
+    "title": "账单合计详情",
+    "name": "账单合计详情",
+    "group": "55",
+    "version": "1.0.0",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "id",
+            "description": "<p>账单合计ID</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "code",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "msg",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data",
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.name",
+            "description": "<p>货主名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.code",
+            "description": "<p>货主编号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.pay_type",
+            "description": "<p>支付类型1-银行转账2-支票3-现金4-余额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.mode",
+            "description": "<p>交易类型1-账号充值2-运费支付</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.object_no",
+            "description": "<p>系统编号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.object_type",
+            "description": "<p>系统编号类型1-订单2-包裹</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.expect_amount",
+            "description": "<p>预计金额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.actual_amount",
+            "description": "<p>实际金额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.pay_type_name",
+            "description": "<p>支付类型名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.mode_name",
+            "description": "<p>交易类型名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.status",
+            "description": "<p>状态1-未支付2-已支付3-已取消</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.verify_status",
+            "description": "<p>对账状态1-未对账2-已对账3-拒绝</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.merchant_group_name",
+            "description": "<p>货主组名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "object",
+            "optional": false,
+            "field": "data.bill_list",
+            "description": "<p>账单列表</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.bill_list.create_date",
+            "description": "<p>录单日期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.bill_list.object_no",
+            "description": "<p>系统编号</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.bill_list.payer_name",
+            "description": "<p>付款方名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.bill_list.pay_type",
+            "description": "<p>付款方式</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.bill_list.pay_type_name",
+            "description": "<p>付款方式名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.bill_list.expect_amount",
+            "description": "<p>预计金额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.bill_list.actual_amount",
+            "description": "<p>实际金额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.bill_list.rest_amount",
+            "description": "<p>未交金额</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.bill_list.status",
+            "description": "<p>对账状态</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "{\n\"code\": 200,\n\"data\": {\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "public/api/routes/admin/admin.php",
+    "groupTitle": "财务审核管理",
+    "sampleRequest": [
+      {
+        "url": "https://dev-tms-api.nle-tech.com/api/admin/bill-verify/{id}"
+      }
+    ],
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "language",
+            "description": "<p>语言cn-中文en-英文。</p>"
+          },
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "Authorization",
+            "description": "<p>[必填]令牌，以bearer加空格加令牌为格式。</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n      \"language\": \"en\"\n      \"Authorization\": \"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9kZXYtdG1zLm5sZS10ZWNoLmNvbTo0NDNcL2FwaVwvYWRtaW5cL2xvZ2luIiwiaWF0IjoxNTkxMjU4NDAzLCJleHAiOjE1OTI0NjgwMDMsIm5iZiI6MTU5MTI1ODQwMywianRpIjoidGV2MG1hQlM1T0lDVm5JRCIsInN1YiI6NjEsInBydiI6IjMyOTYzYTYwNmMyZjE3MWYxYzE0MzMxZTc2OTc2NmNkNTkxMmVkMTUiLCJyb2xlIjoiZW1wbG95ZWUifQ.8NVjy4OyITV3Cu3k3m_BwNc5Yqf2Ld-ibRQ7r9Q82kw\"\n    }",
+          "type": "json"
+        }
+      ]
+    }
+  },
+  {
     "type": "post",
     "url": "/admin/bill-verify/{id}/verify",
-    "title": "账单合计审核",
-    "name": "账单审核",
+    "title": "账单合计对账",
+    "name": "账单对账",
     "group": "55",
     "version": "1.0.0",
     "parameter": {
@@ -68256,7 +68527,7 @@ define({ "api": [
             "type": "object",
             "optional": false,
             "field": "id",
-            "description": "<p>账单审核ID</p>"
+            "description": "<p>账单对账ID</p>"
           },
           {
             "group": "Parameter",
