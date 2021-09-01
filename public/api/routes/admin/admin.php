@@ -179,12 +179,17 @@
  */
 
 /**
- * @apiDefine 54 财务审核管理
+ * @apiDefine 55 对账单管理
  */
 
 /**
- * @apiDefine 56 财务核对管理
+ * @apiDefine 56 司机交账
  */
+
+/**
+ * @apiDefine 57 代收货款
+ */
+
 
 
 /**
@@ -25417,11 +25422,15 @@
  */
 
 /**
- * @apiDefine 55 财务审核管理
+ * @apiDefine 55 对账单管理
  */
 
 /**
- * @apiDefine 56 财务核对管理
+ * @apiDefine 56 司机交账
+ */
+
+/**
+ * @apiDefine 57 代收货款
  */
 
 /**
@@ -25630,8 +25639,8 @@
  */
 
 /**
- * @api {get} /admin/bill-verify 账单合计查询
- * @apiName 账单合计查询
+ * @api {get} /admin/bill-verify 对账单查询
+ * @apiName 对账单查询
  * @apiGroup 55
  * @apiVersion 1.0.0
  * @apiUse auth
@@ -25664,17 +25673,18 @@
  */
 
 /**
- * @api {get} /admin/bill-verify/{id} 账单合计详情
- * @apiName 账单合计详情
+ * @api {get} /admin/bill-verify/{id} 对账单详情
+ * @apiName 对账单详情
  * @apiGroup 55
  * @apiVersion 1.0.0
  * @apiUse auth
- * @apiParam {string} id 账单合计ID
+ * @apiParam {string} id 对账单ID
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
- * @apiSuccess {string} data.name 货主名称
- * @apiSuccess {string} data.code 货主编号
+ * @apiSuccess {string} data.verify_no 对账单号
+ * @apiSuccess {string} data.begin_date 开始账期
+ * @apiSuccess {string} data.end_date 结束账期
  * @apiSuccess {string} data.pay_type 支付类型1-银行转账2-支票3-现金4-余额
  * @apiSuccess {string} data.mode 交易类型1-账号充值2-运费支付
  * @apiSuccess {string} data.object_no 系统编号
@@ -25704,8 +25714,8 @@
  */
 
 /**
- * @api {post} /admin/bill-verify 创建账单合计
- * @apiName 手动创建账单对账
+ * @api {post} /admin/bill-verify 新建对账单
+ * @apiName 新建对账单
  * @apiGroup 55
  * @apiVersion 1.0.0
  * @apiUse auth
@@ -25723,8 +25733,8 @@
  */
 
 /**
- * @api {post} /admin/bill-verify/{id}/verify 账单合计对账
- * @apiName 账单对账
+ * @api {post} /admin/bill-verify/{id}/verify 对账单对账
+ * @apiName 对账单对账
  * @apiGroup 55
  * @apiVersion 1.0.0
  * @apiUse auth

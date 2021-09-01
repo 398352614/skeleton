@@ -46,4 +46,24 @@ class BillVerifyController extends BaseController
     {
         return $this->service->verify($id, $this->data);
     }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function show($id)
+    {
+        return $this->service->show($id);
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws \App\Exceptions\BusinessLogicException
+     */
+    public function destroy($id)
+    {
+        return $this->service->destroy($id);
+    }
 }

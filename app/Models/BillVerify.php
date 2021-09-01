@@ -68,13 +68,20 @@ class BillVerify extends BaseModel
      * @var array
      */
     protected $hidden = [
-        'pay_type_name',
-        'operator_type_name',
-        'status_name',
+
     ];
 
     protected $appends = [
+        'pay_type_name',
+        'operator_type_name',
+        'status_name',
+        'rest_amount',
     ];
+
+    public function getRestAmountAttribute()
+    {
+        return number_format($this->expect_amount-$this->actual—actual_amount,2);
+    }
 
     public function getStatusNameAttribute()
     {

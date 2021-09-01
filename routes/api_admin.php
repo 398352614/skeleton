@@ -1077,16 +1077,20 @@ Route::namespace('Api\Admin')->middleware(['companyValidate:admin', 'auth:admin'
         Route::get('/{id}', 'BillController@show')->name('bill.show');
     });
 
-    //账单
+    //对账单
     Route::prefix('bill-verify')->group(function () {
         //列表
         Route::get('/', 'BillVerifyController@index')->name('bill-verify.index');
-        //手动创建审核单
+        //详情
+        Route::get('/{id}', 'BillVerifyController@show')->name('bill-verify.index');
+        //新增
         Route::post('/', 'BillVerifyController@store')->name('bill-verify.store');
-        //修改审核单
-        Route::put('/{id}', 'BillVerifyController@update')->name('bill-verify.update');
+//        //修改审核单
+//        Route::put('/{id}', 'BillVerifyController@updateById')->name('bill-verify.update');
         //审核
         Route::post('/{id}/verify', 'BillVerifyController@verify')->name('bill-verify.verify');
+        //删除
+        Route::delete('/{id}', 'BillVerifyController@destroy')->name('bill-verify.destroy');
     });
 
     //流水

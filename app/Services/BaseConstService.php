@@ -555,6 +555,11 @@ class BaseConstService
     const RECHARGE_STATISTICS_STATUS_1 = 1;
     const RECHARGE_STATISTICS_STATUS_2 = 2;
 
+    //充值审核状态1-未审核2-已审核3-拒绝
+    const RECHARGE_BILL_VERIFY_STATUS_1=1;
+    const RECHARGE_BILL_VERIFY_STATUS_2=2;
+    const RECHARGE_BILL_VERIFY_STATUS_3=3;
+
     //审核状态
     const RECHARGE_VERIFY_STATUS_1 = 1;
     const RECHARGE_VERIFY_STATUS_2 = 2;
@@ -563,7 +568,7 @@ class BaseConstService
     const MERCHANT_RECHARGE_STATUS_1 = 1;
     const MERCHANT_RECHARGE_STATUS_2 = 2;
 
-    //充值审核状态
+    //审核状态
     const VERIFY_STATUS_1 = 1;
     const VERIFY_STATUS_2 = 2;
 

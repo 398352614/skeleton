@@ -217,7 +217,7 @@ class BillService extends BaseService
      * @return int|void
      * @throws BusinessLogicException
      */
-    public function update($id, $data)
+    public function updateById($id, $data)
     {
         $dbData = parent::getInfoLock(['id' => $id], ['*'], false);
         if (empty($dbData)) {
