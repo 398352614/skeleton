@@ -67128,6 +67128,34 @@
             "optional": false,
             "field": "mode",
             "description": "<p>交易类型1-账号充值2-运费支付</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "status",
+            "description": "<p>支付状态1-未支付2-已支付3-已取消</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "bill_no",
+            "description": "<p>账单单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "verify_no",
+            "description": "<p>对账单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "object_no",
+            "description": "<p>系统编号</p>"
           }
         ]
       }

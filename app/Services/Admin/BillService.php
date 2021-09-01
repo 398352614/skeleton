@@ -28,7 +28,11 @@ class BillService extends BaseService
         'create_date' => ['between', ['begin_date', 'end_date']],
         'user_type' => ['=', 'user_type'],
         'verify_status' => ['=', 'verify_status'],
-        'mode' => ['=', 'mode']
+        'mode' => ['=', 'mode'],
+        'object_no' => ['like', 'object_no'],
+        'bill_no' => ['like', 'bill_no'],
+        'verify_no' => ['like', 'verify_no'],
+        'status' => ['=', 'status']
     ];
 
 
@@ -127,7 +131,7 @@ class BillService extends BaseService
      * @param $order
      * @throws BusinessLogicException
      */
-    public function orderStore($data, $fee,$order)
+    public function orderStore($data, $fee, $order)
     {
         unset($data['actual_amount']);
         $data['mode'] = BaseConstService::BILL_MODE_2;

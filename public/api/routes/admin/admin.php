@@ -25510,6 +25510,11 @@
  * @apiParam {string} code 货主编号
  * @apiParam {string} verify_status 对账状态1-未对账2-已对账3-取消
  * @apiParam {string} mode 交易类型1-账号充值2-运费支付
+ * @apiParam {string} status 支付状态1-未支付2-已支付3-已取消
+ * @apiParam {string} bill_no 账单单号
+ * @apiParam {string} verify_no 对账单号
+ * @apiParam {string} object_no 系统编号
+
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data
