@@ -813,7 +813,7 @@ class OrderService extends BaseService
     }
 
     /**
-     * 添加货物列表
+     * 添加费用列表
      * @param $params
      * @throws BusinessLogicException
      */
@@ -826,7 +826,7 @@ class OrderService extends BaseService
                 $dataList[$k]['order_no'] = $params['order_no'];
                 $dataList[$k]['expect_amount'] = $v['expect_amount'];
                 $dataList[$k]['actual_amount'] = 0.00;
-                $dataList[$k]['type'] = $v['type'];
+                $dataList[$k]['type'] = $v['type'] ?? 1;
                 $dataList[$k]['remark'] = '';
                 $dataList[$k]['status'] = BaseConstService::ORDER_AMOUNT_STATUS_2;
                 if (!empty($v['in_total'])) {
@@ -839,6 +839,18 @@ class OrderService extends BaseService
             if ($rowCount === false) {
                 throw new BusinessLogicException('新增失败');
             }
+        }
+        $feeList = $this->getFeeService()->getList(['id' => ['in', collect($params['amount_list'])->pluck('fee_id')->toArray()]], ['*'], false);
+        foreach ($params['amount_list'] as $k => $v) {
+            $fee = $feeList->where('id', $v['fee_id'] ?? 0)->first();
+            if (empty($fee)) {
+//                throw new BusinessLogicException('费用不存在');
+                $fee = [];
+            } else {
+                $fee = $fee->toArray();
+            }
+            $v['number'] = $k;
+            $this->getBillService()->orderStore($v, $fee, $params);
         }
     }
 

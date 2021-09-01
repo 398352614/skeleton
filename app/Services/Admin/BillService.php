@@ -41,7 +41,7 @@ class BillService extends BaseService
         parent::__construct($model);
     }
 
-    public $orderBy=['id'=>'desc'];
+    public $orderBy = ['id' => 'desc'];
 
     /**
      * @param $params
@@ -117,7 +117,74 @@ class BillService extends BaseService
         $data['operator_name'] = auth()->user()->username;
         $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_1;
         $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_1;
+        $data['status'] = BaseConstService::BILL_STATUS_2;
         self::store($data);
+    }
+
+    /**
+     * @param $data
+     * @param $fee
+     * @param $order
+     * @throws BusinessLogicException
+     */
+    public function orderStore($data, $fee,$order)
+    {
+        unset($data['actual_amount']);
+        $data['mode'] = BaseConstService::BILL_MODE_2;
+        $data['create_Date'] = today()->format('Y-m-d');
+        $data['actual_amount'] = 0;
+        $data['payer_type'] = $fee['payer_type'] ?? BaseConstService::USER_MERCHANT;
+        if ($data['payer_type'] == BaseConstService::USER_MERCHANT) {
+            $data['payer_id'] = $order['merchant_id'];
+            $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
+        }
+        $data['payee_type'] = $fee['payee_type'] ?? BaseConstService::USER_COMPANY;
+        if ($data['payee_type'] == BaseConstService::USER_COMPANY) {
+            $data['payee_id'] = auth()->user()->company_id;
+            $data['payee_name'] = $this->getCompanyService()->getInfo(['id' => auth()->user()->id], ['*'], false)->toArray()['name'] ?? '';
+        }
+        $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
+        $data['object_no'] = $order['order_no'];
+        $data['pay_type'] = $fee['pay_type'] ?? BaseConstService::PAY_TYPE_1;
+        $data['type'] = $fee['type'] ?? $data['number'];
+        $data['operator_id'] = auth()->user()->id;
+        $data['operator_type'] = BaseConstService::USER_ADMIN;
+        $data['operator_name'] = auth()->user()->username;
+        $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_1;
+        $data['pay_timing'] = BaseConstService::BILL_PAY_TIMING_1;
+        $data['status'] = BaseConstService::BILL_STATUS_1;
+        self::store($data);
+    }
+
+    /**
+     * @param $data
+     * @param $user
+     * @throws BusinessLogicException
+     * pay_type,actual_amount,status
+     */
+    public function pay($data, $user)
+    {
+        $dbData = parent::getInfoLock(['bill_no' => $data['bill_no']], ['*'], false);
+        if (empty($dbData)) {
+            throw new BusinessLogicException('数据不存在');
+        }
+        if ($dbData['status'] !== BaseConstService::BILL_STATUS_1) {
+            throw new BusinessLogicException('状态错误');
+        }
+        if ($data['status'] == BaseConstService::BILL_STATUS_1) {
+            throw new BusinessLogicException('非法参数');
+        }
+        $row = parent::update(['id' => $dbData['id']], [
+            'actual_amount' => $data['actual_amount'] ?? 0,
+            'status' => $data['status'],
+            'operator_type' => $user['user_type'],
+            'operator_id' => $user['id'],
+            'operator_name' => $user['name'],
+            'pay_type' => $data['pay_type']
+        ]);
+        if ($row == false) {
+            throw new BusinessLogicException('支付失败');
+        }
     }
 
     /**

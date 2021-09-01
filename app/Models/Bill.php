@@ -97,7 +97,13 @@ class Bill extends BaseModel
         'operator_type_name',
         'status_name',
         'verify_status_name',
+        'rest_amount',
     ];
+
+    public function getRestAmountAttribute()
+    {
+        return number_format($this->expect_amount-$this->actual—actual_amount,2);
+    }
 
     public function getStatusNameAttribute()
     {

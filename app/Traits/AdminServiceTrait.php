@@ -11,6 +11,7 @@ use App\Services\Admin\BaseLineService;
 use App\Services\Admin\BaseWarehouseService;
 use App\Services\Admin\BatchExceptionService;
 use App\Services\Admin\BatchService;
+use App\Services\Admin\BillService;
 use App\Services\Admin\BillVerifyService;
 use App\Services\Admin\CarBrandService;
 use App\Services\Admin\CarMaintainDetailService;
@@ -56,6 +57,7 @@ use App\Services\Admin\UploadService;
 use App\Services\Admin\WareHouseService;
 use App\Services\ApiServices\GoogleApiService;
 use App\Services\Admin\TrackingPackageService;
+use App\Services\BaseConstService;
 use App\Services\OrderNoRuleService;
 use App\Services\PackageNoRuleService;
 use App\Services\TrackingOrderTrailService;
@@ -215,6 +217,14 @@ trait AdminServiceTrait
         return self::getInstance(OrderAmountService::class);
     }
 
+    /**
+     * 获取账单服务
+     * @return BillService
+     */
+    public function getBillService()
+    {
+        return self::getInstance(BillService::class);
+    }
     /**
      * 站点 服务
      * @return BatchService
