@@ -83,7 +83,7 @@ class Journal extends BaseModel
 
     protected $appends = [
         'mode_name',
-        'type_name',
+//        'type_name',
         'object_type_name',
         'pay_type_name',
         'payer_type_name',
