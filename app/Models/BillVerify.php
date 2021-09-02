@@ -53,6 +53,7 @@ class BillVerify extends BaseModel
         'expect_amount',
         'actual_amount',
         'remark',
+        'create_date',
         'picture_list',
         'operator_id',
         'operator_type',

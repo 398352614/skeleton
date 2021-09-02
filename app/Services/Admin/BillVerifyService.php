@@ -50,6 +50,7 @@ class BillVerifyService extends BaseService
     public function store($params)
     {
         $params['verify_no'] = $this->getOrderNoRuleService()->createBillVerifyNo();
+        $params['create_date'] = today()->format('Y-m-d');
         $totalExpectAmount = 0;
         if (!empty($params['bill_list'])) {
             $billList = $this->getBillService()->getList(['bill_no' => ['in', collect($params['bill_list'])->pluck('bill_no')->toArray()]], ['*'], false);
