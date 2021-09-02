@@ -25648,7 +25648,11 @@
  * @apiParam {string} end_date 截止时间
  * @apiParam {string} code 货主编号
  * @apiParam {string} status 对账状态1-未对账2-已对账3-取消
- * @apiParam {string} data.mode 交易类型1-账号充值2-运费支付
+ * @apiParam {string} mode 交易类型1-账号充值2-运费支付
+ * @apiParam {string} payer_name 付款方名称
+ * @apiParam {string} verify_no 对账单号
+ * @apiParam {string} pay_type 支付方式1-银行转账2-支票3-现金4-余额
+ *
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
  * @apiSuccess {string} data

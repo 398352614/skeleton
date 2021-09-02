@@ -28,6 +28,8 @@ class BillVerifyService extends BaseService
         'verify_status' => ['=', 'verify_status'],
         'mode' => ['=', 'mode'],
         'status' => ['=', 'status'],
+        'verify_no' => ['like', 'verify_no'],
+        'pay_type' => ['=', 'pay_type']
     ];
 
 
@@ -73,6 +75,12 @@ class BillVerifyService extends BaseService
 
     public function getPageList()
     {
+        if (!empty($this->formData['payer_name'])) {
+            $billList = $this->getBillService()->getList(['payer_name' => ['like', $this->formData['payer_name']], 'verify_no' => ['<>', null]], ['*'], false);
+            if (!empty($billList)) {
+                $this->query->whereIn('verify_no', $billList->pluck('verify_no')->toArray());
+            }
+        }
         $data = parent::getPageList();
         foreach ($data as $k => $v) {
             $bill = $this->getBillService()->getInfo(['verify_no' => $v['verify_no']], ['*'], false);
