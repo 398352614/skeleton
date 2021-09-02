@@ -25761,6 +25761,7 @@
  * @apiParam {string} bill_list.actual_amount 实际金额
  * @apiParam {string} remark 备注
  * @apiParam {string} picture_list 图片列表
+ * @apiParam {string} status 状态2-已对账
  *
  * @apiSuccess {string} code
  * @apiSuccess {string} msg

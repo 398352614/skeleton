@@ -68126,6 +68126,13 @@ define({ "api": [
             "optional": false,
             "field": "picture_list",
             "description": "<p>图片列表</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "status",
+            "description": "<p>状态2-已对账</p>"
           }
         ]
       }
