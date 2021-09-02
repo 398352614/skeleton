@@ -67988,9 +67988,9 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/admin/bill-verify",
-    "title": "创建账单合计",
-    "name": "手动创建账单对账",
+    "url": "/admin/bill-verify/{id}/verify",
+    "title": "对账单对账",
+    "name": "对账单对账",
     "group": "55",
     "version": "1.0.0",
     "parameter": {
@@ -67999,6 +67999,13 @@ define({ "api": [
           {
             "group": "Parameter",
             "type": "object",
+            "optional": false,
+            "field": "id",
+            "description": "<p>账单对账ID</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
             "optional": false,
             "field": "bill_list",
             "description": "<p>账单列表</p>"
@@ -68009,6 +68016,27 @@ define({ "api": [
             "optional": false,
             "field": "bill_list.bill_no",
             "description": "<p>账单编号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "bill_list.actual_amount",
+            "description": "<p>实际金额</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "remark",
+            "description": "<p>备注</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "picture_list",
+            "description": "<p>图片列表</p>"
           }
         ]
       }
@@ -68048,10 +68076,10 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/admin/admin.php",
-    "groupTitle": "财务审核管理",
+    "groupTitle": "对账单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/admin/bill-verify"
+        "url": "https://dev-tms-api.nle-tech.com/api/admin/bill-verify/{id}/verify"
       }
     ],
     "header": {
@@ -68085,8 +68113,8 @@ define({ "api": [
   {
     "type": "get",
     "url": "/admin/bill-verify",
-    "title": "账单合计查询",
-    "name": "账单合计查询",
+    "title": "对账单查询",
+    "name": "对账单查询",
     "group": "55",
     "version": "1.0.0",
     "parameter": {
@@ -68256,7 +68284,7 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/admin/admin.php",
-    "groupTitle": "财务审核管理",
+    "groupTitle": "对账单管理",
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/admin/bill-verify"
@@ -68293,8 +68321,8 @@ define({ "api": [
   {
     "type": "get",
     "url": "/admin/bill-verify/{id}",
-    "title": "账单合计详情",
-    "name": "账单合计详情",
+    "title": "对账单详情",
+    "name": "对账单详情",
     "group": "55",
     "version": "1.0.0",
     "parameter": {
@@ -68305,7 +68333,7 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "id",
-            "description": "<p>账单合计ID</p>"
+            "description": "<p>对账单ID</p>"
           }
         ]
       }
@@ -68338,15 +68366,22 @@ define({ "api": [
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.name",
-            "description": "<p>货主名称</p>"
+            "field": "data.verify_no",
+            "description": "<p>对账单号</p>"
           },
           {
             "group": "Success 200",
             "type": "string",
             "optional": false,
-            "field": "data.code",
-            "description": "<p>货主编号</p>"
+            "field": "data.begin_date",
+            "description": "<p>开始账期</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.end_date",
+            "description": "<p>结束账期</p>"
           },
           {
             "group": "Success 200",
@@ -68506,7 +68541,7 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/admin/admin.php",
-    "groupTitle": "财务审核管理",
+    "groupTitle": "对账单管理",
     "sampleRequest": [
       {
         "url": "https://dev-tms-api.nle-tech.com/api/admin/bill-verify/{id}"
@@ -68542,9 +68577,9 @@ define({ "api": [
   },
   {
     "type": "post",
-    "url": "/admin/bill-verify/{id}/verify",
-    "title": "账单合计对账",
-    "name": "账单对账",
+    "url": "/admin/bill-verify",
+    "title": "新建对账单",
+    "name": "新建对账单",
     "group": "55",
     "version": "1.0.0",
     "parameter": {
@@ -68553,13 +68588,6 @@ define({ "api": [
           {
             "group": "Parameter",
             "type": "object",
-            "optional": false,
-            "field": "id",
-            "description": "<p>账单对账ID</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
             "optional": false,
             "field": "bill_list",
             "description": "<p>账单列表</p>"
@@ -68570,27 +68598,6 @@ define({ "api": [
             "optional": false,
             "field": "bill_list.bill_no",
             "description": "<p>账单编号</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "bill_list.actual_amount",
-            "description": "<p>实际金额</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "remark",
-            "description": "<p>备注</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "string",
-            "optional": false,
-            "field": "picture_list",
-            "description": "<p>图片列表</p>"
           }
         ]
       }
@@ -68630,10 +68637,10 @@ define({ "api": [
       ]
     },
     "filename": "public/api/routes/admin/admin.php",
-    "groupTitle": "财务审核管理",
+    "groupTitle": "对账单管理",
     "sampleRequest": [
       {
-        "url": "https://dev-tms-api.nle-tech.com/api/admin/bill-verify/{id}/verify"
+        "url": "https://dev-tms-api.nle-tech.com/api/admin/bill-verify"
       }
     ],
     "header": {

@@ -25714,8 +25714,8 @@
  */
 
 /**
- * @api {post} /admin/bill-verify 新建对账单
- * @apiName 新建对账单
+ * @api {post} /admin/bill-verify 对账单新建
+ * @apiName 对账单新建
  * @apiGroup 55
  * @apiVersion 1.0.0
  * @apiUse auth
