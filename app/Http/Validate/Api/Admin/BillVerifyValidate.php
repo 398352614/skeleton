@@ -35,7 +35,9 @@ class BillVerifyValidate extends BaseValidate
         'operator_type' => 'required|string|in:1,2,3,4,5',//
         'operator_name' => 'nullable|string',
         'bill_list'=>'required',
-        'bill_list.*.bill_no'=>'required|string'
+        'bill_list.*.bill_no'=>'required|string',
+        'bill_list.*.pay_type'=>'required|string'
+
     ];
 
     public $scene = [
@@ -47,7 +49,8 @@ class BillVerifyValidate extends BaseValidate
         'verify' => [
             'actual_amount',
             'status',
-            'pay_type'
+            'bill_list',
+            'bill_list.*.pay_type'
         ]
     ];
 
