@@ -54,7 +54,7 @@ class BillVerifyService extends BaseService
         if ($dbBillList->isEmpty()) {
             throw new BusinessLogicException('所选账单不存在');
         }
-        if($dbBillList->pluck('verify_no')->toArray() == [null]){
+        if ($dbBillList->pluck('verify_no')->toArray() == [null]) {
             throw new BusinessLogicException('所选账单已生成对账单');
         }
         $params['verify_no'] = $this->getOrderNoRuleService()->createBillVerifyNo();
@@ -125,6 +125,7 @@ class BillVerifyService extends BaseService
         $row = parent::update(['id' => $id], [
             'actual_amount' => $data['actual_amount'],
             'remark' => $data['remark'],
+            'pay_type' => $data['pay_type'],
             'picture_list' => $data['picture_list'],
             'operator_type' => BaseConstService::USER_ADMIN,
             'operator_id' => auth()->user()->id,
