@@ -157,7 +157,7 @@ class BillVerifyService extends BaseService
             foreach ($data['bill_list'] as $k => $v) {
                 $totalAmount += $v['actual_amount'] ?? 0;
             }
-            if ($data['actual_amount'] !== $totalAmount) {
+            if (!empty($data['actual_amount']) && $data['actual_amount'] !== $totalAmount) {
                 throw new BusinessLogicException('合计错误');
             }
         }
