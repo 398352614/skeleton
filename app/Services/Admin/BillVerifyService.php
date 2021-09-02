@@ -123,7 +123,7 @@ class BillVerifyService extends BaseService
 //        }
         $this->verifyCheck($data);
         $row = parent::update(['id' => $id], [
-            'actual_amount' => $data['actual_amount'],
+            'actual_amount' => $data['actual_amount'] ?? $info['expect_amount'],
             'remark' => $data['remark'],
             'pay_type' => $data['pay_type'],
             'picture_list' => $data['picture_list'],
@@ -136,13 +136,19 @@ class BillVerifyService extends BaseService
         if ($row == false) {
             throw new BusinessLogicException('操作失败');
         }
-        $this->getBillService()->update(['verify_no' => $info['verify_no']], [
-            'operator_type' => BaseConstService::USER_ADMIN,
-            'operator_id' => auth()->user()->id,
-            'operator_name' => auth()->user()->username,
-            'verify_status' => $data['status'],
-            'verify_time' => now(),
-        ]);
+        $billList = $this->getBillService()->getList(['verify_no' => $info['verify_no']], ['*'], false);
+        if (!empty($billList)) {
+            foreach ($billList as $k => $v) {
+                $this->getBillService()->update(['verify_no' => $info['verify_no']], [
+                    'operator_type' => BaseConstService::USER_ADMIN,
+                    'operator_id' => auth()->user()->id,
+                    'operator_name' => auth()->user()->username,
+                    'verify_status' => $data['status'],
+                    'verify_time' => now(),
+                    'actual_amount' => $v['expect_amount']
+                ]);
+            }
+        }
     }
 
     /**
@@ -194,6 +200,9 @@ class BillVerifyService extends BaseService
     {
         $info = parent::getInfoLock(['id' => $id], ['*'], false);
         if (!empty($info)) {
+            if ($info['status'] == BaseConstService::VERIFY_STATUS_2) {
+                throw new BusinessLogicException('已对账的订单无法删除');
+            }
             $row = parent::delete(['id' => $id]);
             if ($row == false) {
                 throw new BusinessLogicException('删除失败');
