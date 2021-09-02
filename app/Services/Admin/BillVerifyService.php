@@ -49,6 +49,14 @@ class BillVerifyService extends BaseService
      */
     public function store($params)
     {
+        $billNoList = collect($params['bill_list'])->pluck('bill_no')->toArray();
+        $dbBillList = $this->getBillService()->getList(['bill_no' => ['in', $billNoList]], ['*'], false);
+        if ($dbBillList->isEmpty()) {
+            throw new BusinessLogicException('所选账单不存在');
+        }
+        if($dbBillList->pluck('verify_no')->toArray() == [null]){
+            throw new BusinessLogicException('所选账单已生成对账单');
+        }
         $params['verify_no'] = $this->getOrderNoRuleService()->createBillVerifyNo();
         $params['create_date'] = today()->format('Y-m-d');
         $totalExpectAmount = 0;
