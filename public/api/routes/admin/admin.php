@@ -25647,7 +25647,7 @@
  * @apiParam {string} begin_date 起始时间
  * @apiParam {string} end_date 截止时间
  * @apiParam {string} code 货主编号
- * @apiParam {string} verify_status 对账状态1-未对账2-已对账3-取消
+ * @apiParam {string} status 对账状态1-未对账2-已对账3-取消
  * @apiParam {string} data.mode 交易类型1-账号充值2-运费支付
  * @apiSuccess {string} code
  * @apiSuccess {string} msg
@@ -25665,6 +25665,10 @@
  * @apiSuccess {string} data.status 状态1-未支付2-已支付3-已取消
  * @apiSuccess {string} data.verify_status 对账状态1-未对账2-已对账3-拒绝
  * @apiSuccess {string} data.merchant_group_name 货主组名称
+ * @apiSuccess {string} data.payer_type 付款方类型
+ * @apiSuccess {string} data.payer_type 付款方类型名称
+ * @apiSuccess {string} data.payer_id 付款方ID
+ * @apiSuccess {string} data.payer_name 付款方名称
  * @apiSuccessExample {json} Success-Response:
  * {
  * "code": 200,

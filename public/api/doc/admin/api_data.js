@@ -68337,7 +68337,7 @@ define({ "api": [
             "group": "Parameter",
             "type": "string",
             "optional": false,
-            "field": "verify_status",
+            "field": "status",
             "description": "<p>对账状态1-未对账2-已对账3-取消</p>"
           },
           {
@@ -68464,6 +68464,27 @@ define({ "api": [
             "optional": false,
             "field": "data.merchant_group_name",
             "description": "<p>货主组名称</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.payer_type",
+            "description": "<p>付款方类型</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.payer_id",
+            "description": "<p>付款方ID</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "string",
+            "optional": false,
+            "field": "data.payer_name",
+            "description": "<p>付款方名称</p>"
           }
         ]
       },

@@ -26,7 +26,8 @@ class BillVerifyService extends BaseService
         'create_date' => ['between', ['begin_date', 'end_date']],
         'user_type' => ['=', 'user_type'],
         'verify_status' => ['=', 'verify_status'],
-        'mode' => ['=', 'mode']
+        'mode' => ['=', 'mode'],
+        'status' => ['=', 'status'],
     ];
 
 
