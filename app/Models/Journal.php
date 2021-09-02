@@ -106,6 +106,11 @@ class Journal extends BaseModel
         return empty($this->verify_status) ? null : ConstTranslateTrait::billVerifyStatusList($this->verify_status);
     }
 
+    public function getObjectTypeNameAttribute()
+    {
+        return empty($this->object_type) ? null : ConstTranslateTrait::billObjectTypeList($this->object_type);
+    }
+
     public function getOperatorTypeNameAttribute()
     {
         return empty($this->operator_type) ? null : ConstTranslateTrait::userTypeList($this->operator_type);
