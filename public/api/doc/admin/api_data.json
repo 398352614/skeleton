@@ -68344,8 +68344,29 @@
             "group": "Parameter",
             "type": "string",
             "optional": false,
-            "field": "data.mode",
+            "field": "mode",
             "description": "<p>交易类型1-账号充值2-运费支付</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "payer_name",
+            "description": "<p>付款方名称</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "verify_no",
+            "description": "<p>对账单号</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "optional": false,
+            "field": "pay_type",
+            "description": "<p>支付方式1-银行转账2-支票3-现金4-余额</p>"
           }
         ]
       }
