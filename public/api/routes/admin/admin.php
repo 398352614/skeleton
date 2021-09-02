@@ -25733,6 +25733,23 @@
  */
 
 /**
+ * @api {delete} /admin/bill-verify/{id} 对账单删除
+ * @apiName 对账单删除
+ * @apiGroup 55
+ * @apiVersion 1.0.0
+ * @apiUse auth
+ * @apiParam {string} id 账单列表
+ * @apiSuccess {string} code
+ * @apiSuccess {string} msg
+ * @apiSuccess {string} data
+ * @apiSuccessExample {json} Success-Response:
+ * {
+ * "code": 200,
+ * "data": {
+ * }
+ */
+
+/**
  * @api {post} /admin/bill-verify/{id}/verify 对账单对账
  * @apiName 对账单对账
  * @apiGroup 55
