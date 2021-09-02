@@ -78,6 +78,10 @@ class Journal extends BaseModel
      * @var array
      */
     protected $hidden = [
+
+    ];
+
+    protected $appends = [
         'mode_name',
         'type_name',
         'object_type_name',
@@ -85,9 +89,6 @@ class Journal extends BaseModel
         'payer_type_name',
         'payee_type_name',
         'operator_type_name',
-    ];
-
-    protected $appends = [
     ];
 
     public function getStatusNameAttribute()
