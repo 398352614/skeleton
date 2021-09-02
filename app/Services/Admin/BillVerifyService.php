@@ -124,9 +124,9 @@ class BillVerifyService extends BaseService
         $this->verifyCheck($data);
         $row = parent::update(['id' => $id], [
             'actual_amount' => $data['actual_amount'] ?? $info['expect_amount'],
-            'remark' => $data['remark'],
+            'remark' => $data['remark'] ?? '',
             'pay_type' => $data['pay_type'],
-            'picture_list' => $data['picture_list'],
+            'picture_list' => $data['picture_list'] ?? '',
             'operator_type' => BaseConstService::USER_ADMIN,
             'operator_id' => auth()->user()->id,
             'operator_name' => auth()->user()->username,

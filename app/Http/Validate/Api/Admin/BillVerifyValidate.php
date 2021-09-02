@@ -46,7 +46,8 @@ class BillVerifyValidate extends BaseValidate
 
         'verify' => [
             'actual_amount',
-            'status'
+            'status',
+            'pay_type'
         ]
     ];
 
