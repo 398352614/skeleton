@@ -686,8 +686,8 @@ trait ConstTranslateTrait
     ];
 
     public static $verifyStatusList = [
-        BaseConstService::VERIFY_STATUS_1 => '未审核',
-        BaseConstService::VERIFY_STATUS_2 => '已审核',
+        BaseConstService::VERIFY_STATUS_1 => '未对账',
+        BaseConstService::VERIFY_STATUS_2 => '已对账',
     ];
 
     public static $isSkippedList = [
