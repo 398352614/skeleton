@@ -167,9 +167,12 @@ class BillVerifyService extends BaseService
             throw new BusinessLogicException('数据不存在');
         }
         $info['bill_list'] = $this->getBillService()->getList(['verify_no' => $info['verify_no']], ['*'], false);
-        $info['begin_date'] = min($info['bill_list']->pluck('create_date')->toArray());
-        $info['end_date'] = max($info['bill_list']->pluck('create_date')->toArray());
-        $info['payer_name'] = $info['bill_list'][0]['payer_name'];
+        if ($info['bill_list']->isNotEmpty()) {
+            $dataList = $info['bill_list']->pluck('create_date')->toArray();
+            $info['begin_date'] = min($dataList);
+            $info['end_date'] = max($dataList);
+            $info['payer_name'] = $info['bill_list'][0]['payer_name'];
+        }
         return $info;
     }
 
