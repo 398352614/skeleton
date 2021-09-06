@@ -8,6 +8,7 @@ namespace App\Traits;
 use App\Exceptions\BusinessLogicException;
 use App\Exports\AddressExport;
 use App\Exports\BaseExport;
+use App\Exports\BillVerifyExport;
 use App\Exports\MerchantOrderExport;
 use App\Exports\OrderExport;
 use App\Exports\PlanExport;
@@ -77,6 +78,8 @@ trait ExportTrait
                 $rowCount = Excel::store(new MerchantOrderExport($data, $headings, $name, $dir), $path);
             }elseif ($dir == 'addressExcelExport') {
                 $rowCount = Excel::store(new AddressExport($data, $headings, $name, $dir), $path);
+            }elseif ($dir == 'billVerify') {
+                $rowCount = Excel::store(new BillVerifyExport($data, $headings, $name, $dir), $path);
             } else {
                 $rowCount = Excel::store(new BaseExport($data, $headings, $name, $dir), $path);
             }

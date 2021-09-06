@@ -32,6 +32,9 @@ class JournalService extends BaseService
         'mode' => ['=', 'mode']
     ];
 
+    public $orderBy = [
+        'id' => 'desc'
+    ];
 
     /**
      * AddressService constructor.
@@ -57,6 +60,14 @@ class JournalService extends BaseService
 
     public function getPageList()
     {
+        if (!empty($this->formData['code'])) {
+            $where['code'] = $this->formData['code'];
+        }
+        if (!empty($where)) {
+            $merchantList = $this->getMerchantService()->getList($where, ['*'], false);
+            $this->query->whereIn('payer_id', $merchantList->pluck('id')->toArray());
+            $this->query->orderByDesc('id');
+        }
         $data = parent::getPageList();
         foreach ($data as $k => $v) {
             $user = UserTrait::get($v['payer_id'], $v['payer_type']);

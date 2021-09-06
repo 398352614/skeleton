@@ -218,4 +218,9 @@ class BillVerifyService extends BaseService
 
     }
 
+    public function detailExport()
+    {
+        $list=self::getPageList();
+    }
+
 }

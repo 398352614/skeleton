@@ -59,8 +59,6 @@ class BillService extends BaseService
         if ($bill === false) {
             throw new BusinessLogicException('订单新增失败');
         }
-        $this->getJournalService()->record($params);
-
     }
 
     /**
@@ -275,8 +273,7 @@ class BillService extends BaseService
         } elseif ($data['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_1) {
             throw new BusinessLogicException('参数非法');
         }
-
-
+        $this->getJournalService()->record($data);
     }
 
     public function show($id)
