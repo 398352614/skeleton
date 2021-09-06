@@ -49,7 +49,6 @@ class Journal extends BaseModel
         'company_id',
         'journal_no',
         'bill_no',
-        'verify_no',
         'object_type',//
         'object_no',
         'remark',
