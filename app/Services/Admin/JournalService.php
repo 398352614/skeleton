@@ -71,8 +71,10 @@ class JournalService extends BaseService
         $data = parent::getPageList();
         foreach ($data as $k => $v) {
             $user = UserTrait::get($v['payer_id'], $v['payer_type']);
-            $data[$k]['code'] = $user['code'] ?? '';
-            $data[$k]['merchant_group_name'] = $this->getMerchantGroupService()->getInfo(['id' => $user['merchant_group_id']], ['*'], false)['name'] ?? '';
+            if(!empty($user)){
+                $data[$k]['code'] = $user['code'];
+                $data[$k]['merchant_group_name'] = $this->getMerchantGroupService()->getInfo(['id' => $user['merchant_group_id']], ['*'], false)['name'] ?? '';
+            }
         }
         return $data;
     }
