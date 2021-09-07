@@ -273,7 +273,9 @@ class BillService extends BaseService
         } elseif ($data['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_1) {
             throw new BusinessLogicException('参数非法');
         }
-        $this->getJournalService()->record(array_merge(collect($dbData)->toArray(),$data));
+        if ($data['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
+            $this->getJournalService()->record(array_merge(collect($dbData)->toArray(), $data));
+        }
     }
 
     public function show($id)
