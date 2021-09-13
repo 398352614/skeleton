@@ -143,7 +143,7 @@ class BillService extends BaseService
         $data['payee_type'] = $fee['payee_type'] ?? BaseConstService::USER_COMPANY;
         if ($data['payee_type'] == BaseConstService::USER_COMPANY) {
             $data['payee_id'] = auth()->user()->company_id;
-            $data['payee_name'] = $this->getCompanyService()->getInfo(['id' => auth()->user()->id], ['*'], false)->toArray()['name'] ?? '';
+            $data['payee_name'] = $this->getCompanyService()->getInfo(['id' => auth()->user()->id], ['*'], false)['name'] ?? '';
         }
         $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
         $data['object_no'] = $order['order_no'];
