@@ -100,7 +100,7 @@ class RegisterController extends BaseController
             $this->addMerchantApi($company, $merchant);//初始化货主API
             $this->addLedgerOfMerchant($company, $merchant);//初始化货主账单
 
-            $this->addFee($company);//添加费用
+//            $this->addFee($company);//添加费用
             $this->addOrderTemplate($company);//添加打印模板
             $this->addOrderDefaultConfig($company); //添加订单默认配置
             $this->addMapConfig($company); //添加订单默认配置
@@ -371,6 +371,8 @@ class RegisterController extends BaseController
         if ($merchant === false) {
             throw new BusinessLogicException('初始化货主失败');
         }
+        $id = $merchant->getAttribute('id');
+        Merchant::query()->where('id',$id)->update(['code' => sprintf("%05s", $id)]);
         return $merchant;
     }
 
