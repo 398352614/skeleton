@@ -138,12 +138,15 @@ use Illuminate\Support\Facades\App;
  * @method static ledgerVerifyTypeList($args = null)
  * @method static ledgerPayTypeList($args = null)
  * @method static userTypeList($args = null)
+ * @method static feePayerTypeList($args = null)
  * @method static payTypeList($args = null)
  * @method static billVerifyStatusList($args = null)
  * @method static billStatusList($args = null)
  * @method static rechargePayTypeList($args = null)
  * @method static billObjectTypeList($args = null)
- *
+ * @method static billTypeList($args = null)
+ * @method static feePayTypeList($args = null)
+ * @method static feePayeeTypeList($args = null)
  */
 trait ConstTranslateTrait
 {
@@ -153,9 +156,14 @@ trait ConstTranslateTrait
         BaseConstService::NO => '否'
     ];
 
-    public static $billObjectTypeList=[
+    public static $billObjectTypeList = [
         BaseConstService::BILL_OBJECT_TYPE_1 => '订单',
         BaseConstService::BILL_OBJECT_TYPE_2 => '包裹'
+    ];
+
+    public static $billTypeList = [
+        BaseConstService::BILL_TYPE_1 => '运费',
+        BaseConstService::BILL_TYPE_2 => '增值费'
     ];
 
     //包裹转运状态1-待装袋2-待装车3-待发车4-运输中5-已到车6-已卸货7-已拆袋
@@ -261,6 +269,11 @@ trait ConstTranslateTrait
         BaseConstService::FLOW_DRIVER_INDEX => '司机管理',
         BaseConstService::FLOW_CAR_INDEX => '车辆管理',
         BaseConstService::FLOW_CAR_MANAGEMENT_INDEX => '智能管车'
+    ];
+
+    public static $feePayTypeList=[
+        BaseConstService::FEE_PAY_TYPE_1=>'系统结算',
+        BaseConstService::FEE_PAY_TYPE_2=>'现场结算',
     ];
 
     //快捷方式路由列表(前端需要)
@@ -431,10 +444,9 @@ trait ConstTranslateTrait
 
     //支付方式1-现金支付2-银行卡支付
     public static $batchPayTypeList = [
-        BaseConstService::BATCH_PAY_TYPE_1 => '现金支付',
-        BaseConstService::BATCH_PAY_TYPE_2 => '银行卡支付',
-        BaseConstService::BATCH_PAY_TYPE_3 => '第三方支付',
-        BaseConstService::BATCH_PAY_TYPE_4 => '无需支付',
+        BaseConstService::BATCH_PAY_TYPE_1 => '银行转账',
+        BaseConstService::BATCH_PAY_TYPE_2 => '支票',
+        BaseConstService::BATCH_PAY_TYPE_3 => '现金',
     ];
 
     //站点异常标签1-正常2-异常
@@ -639,7 +651,8 @@ trait ConstTranslateTrait
     public static $merchantSettlementTypeList = [
         BaseConstService::MERCHANT_SETTLEMENT_TYPE_1 => '票结',
         BaseConstService::MERCHANT_SETTLEMENT_TYPE_2 => '日结',
-        BaseConstService::MERCHANT_SETTLEMENT_TYPE_3 => '月结',
+        BaseConstService::MERCHANT_SETTLEMENT_TYPE_3 => '周结',
+        BaseConstService::MERCHANT_SETTLEMENT_TYPE_4 => '月结',
 
     ];
 
@@ -1084,9 +1097,21 @@ trait ConstTranslateTrait
     public static $userTypeList = [
         BaseConstService::USER_COMPANY => '公司',
         BaseConstService::USER_ADMIN => '后台',
-        BaseConstService::USER_MERCHANT => '货主',
         BaseConstService::USER_DRIVER => '司机',
-        BaseConstService::USER_CUSTOMER => '客户',
+        BaseConstService::USER_MERCHANT => '货主',
+        BaseConstService::USER_SENDER => '寄方',
+        BaseConstService::USER_RECEIVER => '收方',
+    ];
+
+    public static $feePayerTypeList = [
+        BaseConstService::FEE_PAYER_TYPE_4 => '货主',
+        BaseConstService::FEE_PAYER_TYPE_5 => '寄方',
+        BaseConstService::FEE_PAYER_TYPE_6 => '收方',
+    ];
+
+    public static $feePayeeTypeList = [
+        BaseConstService::FEE_PAYEE_TYPE_1 => '公司',
+        BaseConstService::FEE_PAYEE_TYPE_7 => '司机->公司',
     ];
 
     //结算方式
@@ -1130,18 +1155,15 @@ trait ConstTranslateTrait
 
     //支付方式
     public static $billCreateTimingList = [
-        BaseConstService::BILL_CREATE_TIMING_1 => '手动',
-        BaseConstService::BILL_CREATE_TIMING_2 => '下单时',
-        BaseConstService::BILL_CREATE_TIMING_3 => '取件完成时',
-        BaseConstService::BILL_CREATE_TIMING_4 => '派件完成时',
+        BaseConstService::BILL_CREATE_TIMING_1 => '下单时',
+        BaseConstService::BILL_CREATE_TIMING_2 => '手动',
     ];
 
     //支付方式
     public static $billPayTimingList = [
-        BaseConstService::BILL_PAY_TIMING_1 => '手动',
-        BaseConstService::BILL_PAY_TIMING_2 => '下单时',
-        BaseConstService::BILL_PAY_TIMING_3 => '取件完成时',
-        BaseConstService::BILL_PAY_TIMING_4 => '派件完成时',
+        BaseConstService::BILL_PAY_TIMING_1 => '下单时',
+        BaseConstService::BILL_PAY_TIMING_2 => '取件时',
+        BaseConstService::BILL_PAY_TIMING_3 => '派件时',
     ];
 
     public static $billVerifyStatusList = [

@@ -52,6 +52,10 @@ class TransportPrice extends BaseModel
         'type',
         'remark',
         'status',
+        'pay_type',
+        'payer_type',
+        'payee_type',
+        'pay_timing',
         'created_at',
         'updated_at'
     ];
@@ -65,15 +69,6 @@ class TransportPrice extends BaseModel
 
     ];
 
-    protected $appends = [
-        'type_name'
-    ];
-
-    public function getTypeNameAttribute()
-    {
-        return empty($this->type) ? null : ConstTranslateTrait::transportPriceTypeList($this->type);
-    }
-
     /**
      * The attributes that should be mutated to dates.
      *
@@ -81,5 +76,36 @@ class TransportPrice extends BaseModel
      */
     protected $dates = [];
 
+    protected $appends = [
+        'type_name',
+        'pay_timing',
+        'pay_type_name',
+        'payer_type_name',
+        'payee_type_name',
+    ];
 
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::transportPriceTypeList($this->type);
+    }
+
+    public function getPayTimingNameAttribute()
+    {
+        return empty($this->pay_timing) ? null : ConstTranslateTrait::billPayTimingList($this->pay_timing);
+    }
+
+    public function getPayTypeNameAttribute()
+    {
+        return empty($this->pay_type) ? null : ConstTranslateTrait::payTypeList($this->pay_type);
+    }
+
+    public function getPayerTypeNameAttribute()
+    {
+        return empty($this->payer_type) ? null : ConstTranslateTrait::feePayerTypeList($this->payer_type);
+    }
+
+    public function getPayeeTypeNameAttribute()
+    {
+        return empty($this->payee_type) ? null : ConstTranslateTrait::userTypeList($this->payee_type);
+    }
 }

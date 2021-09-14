@@ -26,7 +26,7 @@ class FeeService
         SearchTrait::buildQuery($query, $where);
         $fee = $query->first();
         if (empty($fee)) {
-            throw new BusinessLogicException('费用不存在');
+            return 0;
         }
         return floatval($fee->amount);
     }

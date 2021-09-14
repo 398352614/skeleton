@@ -18,7 +18,7 @@ class CreateLedgerTable extends Migration
 
             $table->integer('company_id')->default(null)->nullable()->comment('公司ID');
             $table->integer('user_id')->default(null)->nullable()->comment('用户ID');
-            $table->tinyInteger('user_type')->default(3)->nullable()->comment('用户类型1-公司2-后台3-货主4-司机5-客户');
+            $table->tinyInteger('user_type')->default(3)->nullable()->comment('用户类型1-公司2-后台3-司机4-货主5-客户');
             $table->decimal('balance')->default(0)->nullable()->comment('余额');
             $table->decimal('credit')->default(0)->nullable()->comment('信用额度');
             $table->date('create_date')->default(null)->nullable()->comment('创建日期');

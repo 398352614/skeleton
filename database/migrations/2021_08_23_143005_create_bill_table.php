@@ -27,21 +27,22 @@ class CreateBillTable extends Migration
             $table->string('picture_list')->default('')->nullable()->comment('图片');
             $table->tinyInteger('pay_type')->default(null)->nullable()->comment('支付方式1-银行转账2-支票3-现金4-余额');
             $table->tinyInteger('mode')->default(null)->nullable()->comment('类型1-充值扣款2-运费支付');
-            $table->tinyInteger('type')->default(null)->nullable()->comment('详细类型');
+            $table->tinyInteger('type')->default(null)->nullable()->comment('详细类型1-运费2-增值费');
             $table->date('create_date')->default(null)->nullable()->comment('创建日期');
             $table->decimal('expect_amount')->default(0)->nullable()->comment('应付金额');
             $table->decimal('actual_amount')->default(0)->nullable()->comment('实付金额');
             $table->dateTime('verify_time')->default(null)->nullable()->comment('审核时间');
-
+            $table->integer('fee_id')->default(null)->nullable()->comment('费用ID');
+            $table->string('fee_name')->default(null)->nullable()->comment('费用名称');
 
             $table->integer('payer_id')->default(null)->nullable()->comment('付款方ID');
-            $table->tinyInteger('payer_type')->default(null)->nullable()->comment('付款方类型1-公司2-后台3-货主4-司机5-客户');
+            $table->tinyInteger('payer_type')->default(null)->nullable()->comment('付款方类型1-公司2-后台3-货主4-司机5-发件人6-收件人');
             $table->string('payer_name')->default(null)->nullable()->comment('付款方名称');
             $table->integer('payee_id')->default(null)->nullable()->comment('收款方ID');
-            $table->tinyInteger('payee_type')->default(null)->nullable()->comment('收款方类型1-公司2-后台3-货主4-司机5-客户');
+            $table->tinyInteger('payee_type')->default(null)->nullable()->comment('收款方类型1-公司2-后台3-货主4-司机5-发件人6-收件人');
             $table->string('payee_name')->default(null)->nullable()->comment('收款方名称');
             $table->integer('operator_id')->default(null)->nullable()->comment('操作人ID');
-            $table->tinyInteger('operator_type')->default(null)->nullable()->comment('操作人类型1-公司2-后台3-货主4-司机5-客户');
+            $table->tinyInteger('operator_type')->default(null)->nullable()->comment('操作人类型1-公司2-后台3-货主4-司机5-发件人6-收件人');
             $table->string('operator_name')->default('')->nullable()->comment('操作人名称');
 
             $table->tinyInteger('create_timing')->default(null)->nullable()->comment('产生时机1-手动2-下单时3-取货完成时4-派送完成时');

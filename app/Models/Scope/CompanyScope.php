@@ -12,6 +12,8 @@ use App\Models\ApiTimes;
 use App\Models\Bag;
 use App\Models\Batch;
 use App\Models\BatchException;
+use App\Models\Bill;
+use App\Models\BillVerify;
 use App\Models\Car;
 use App\Models\CarBrand;
 use App\Models\CarModel;
@@ -110,6 +112,9 @@ class CompanyScope implements Scope
             //车辆模型和司机无关
             if ((!($model instanceof Car))
                 && (!($model instanceof Driver))
+                && (!($model instanceof Bill))
+                && (!($model instanceof BillVerify))
+
                 && (!($model instanceof AdditionalPackage))
                 && (!($model instanceof MerchantApi))
                 && (!($model instanceof MerchantRecharge))

@@ -56,12 +56,16 @@ class BaseConstService
     const BILL_OBJECT_TYPE_1 = 1;
     const BILL_OBJECT_TYPE_2 = 2;
 
+    //账单类型1-运费2-增值费
+    const BILL_TYPE_1 = 1;
+    const BILL_TYPE_2 = 2;
+
     const CONTENT_TYPE_JSON = 1;
     const CONTENT_TYPE_FORM_DATA = 2;
 
     //支付方1-货主2-客户
-    const FEE_PAYER_1 = 1;
-    const FEE_PAYER_2 = 2;
+//    const FEE_PAYER_1 = 1;
+//    const FEE_PAYER_2 = 2;
 
     //权限类型1-菜单2-按钮
     const PERMISSION_TYPE_1 = 1;
@@ -90,7 +94,8 @@ class BaseConstService
     const FLOW_CAR_INDEX = 'car.index';
     const FLOW_CAR_MANAGEMENT_INDEX = 'car-management.index';
 
-
+    const FEE_PAY_TYPE_1 = 1;
+    const FEE_PAY_TYPE_2 = 2;
     //是否需要验证
     const IS_AUTH_1 = 1;
     const IS_AUTH_2 = 2;
@@ -330,7 +335,6 @@ class BaseConstService
     const BATCH_PAY_TYPE_1 = 1;
     const BATCH_PAY_TYPE_2 = 2;
     const BATCH_PAY_TYPE_3 = 3;
-    const BATCH_PAY_TYPE_4 = 4;
 
     //driver 司机状态
     const DRIVER_TO_NORMAL = 1;
@@ -514,6 +518,7 @@ class BaseConstService
     const MERCHANT_SETTLEMENT_TYPE_1 = 1;
     const MERCHANT_SETTLEMENT_TYPE_2 = 2;
     const MERCHANT_SETTLEMENT_TYPE_3 = 3;
+    const MERCHANT_SETTLEMENT_TYPE_4 = 4;
 
     //货主状态
     const MERCHANT_STATUS_1 = 1;
@@ -556,9 +561,9 @@ class BaseConstService
     const RECHARGE_STATISTICS_STATUS_2 = 2;
 
     //充值审核状态1-未审核2-已审核3-拒绝
-    const RECHARGE_BILL_VERIFY_STATUS_1=1;
-    const RECHARGE_BILL_VERIFY_STATUS_2=2;
-    const RECHARGE_BILL_VERIFY_STATUS_3=3;
+    const RECHARGE_BILL_VERIFY_STATUS_1 = 1;
+    const RECHARGE_BILL_VERIFY_STATUS_2 = 2;
+    const RECHARGE_BILL_VERIFY_STATUS_3 = 3;
 
     //审核状态
     const RECHARGE_VERIFY_STATUS_1 = 1;
@@ -885,12 +890,22 @@ class BaseConstService
     const WAREHOUSE_CAN_SELECT_ALL_1 = 1;
     const WAREHOUSE_CAN_SELECT_ALL_2 = 2;
 
-    //用户类型1-公司2-后台3-货主4-司机5-客户
+    //用户类型1-公司2-后台3-司机4-货主5-寄方6-收方
     const USER_COMPANY = 1;
     const USER_ADMIN = 2;
-    const USER_MERCHANT = 3;
-    const USER_DRIVER = 4;
-    const USER_CUSTOMER = 5;
+    const USER_DRIVER = 3;
+    const USER_MERCHANT = 4;
+    const USER_SENDER = 5;
+    const USER_RECEIVER = 6;
+
+    //费用支付方1-货主2-寄方3-收方
+    const FEE_PAYER_TYPE_4 = 4;
+    const FEE_PAYER_TYPE_5 = 5;
+    const FEE_PAYER_TYPE_6 = 6;
+
+    //费用收款方1-公司2-司机转公司
+    const FEE_PAYEE_TYPE_1 = 1;
+    const FEE_PAYEE_TYPE_7 = 7;
 
     const LEDGER_PAY_TYPE_1 = 1;
     const LEDGER_PAY_TYPE_2 = 2;
@@ -919,14 +934,11 @@ class BaseConstService
     //账单产生时机
     const BILL_CREATE_TIMING_1 = 1;
     const BILL_CREATE_TIMING_2 = 2;
-    const BILL_CREATE_TIMING_3 = 3;
-    const BILL_CREATE_TIMING_4 = 4;
 
     //账单支付时机
     const BILL_PAY_TIMING_1 = 1;
     const BILL_PAY_TIMING_2 = 2;
     const BILL_PAY_TIMING_3 = 3;
-    const BILL_PAY_TIMING_4 = 4;
 
     //账单审核状态
     const BILL_VERIFY_STATUS_1 = 1;

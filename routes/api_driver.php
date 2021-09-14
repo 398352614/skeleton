@@ -292,5 +292,9 @@ Route::namespace('Api\Driver')->middleware(['companyValidate:driver', 'auth:driv
         Route::get('/', 'TrackingPackageController@index');
     });
 
-
+    //公共接口
+    Route::prefix('common')->group(function () {
+        //字典
+        Route::get('/dictionary', 'CommonController@dictionary');
+    });
 });

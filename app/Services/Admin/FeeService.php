@@ -46,6 +46,13 @@ class FeeService extends BaseService
     {
         $params['is_valuable'] = BaseConstService::YES;
         $params['level'] = BaseConstService::FEE_LEVEL_2;
+        if ($params['payer_type'] == BaseConstService::FEE_PAYER_TYPE_4) {
+            $params['pay_type'] = BaseConstService::FEE_PAY_TYPE_1;
+            $params['payee_type'] = BaseConstService::FEE_PAYEE_TYPE_1;
+        } elseif (in_array($params['payer_type'], [BaseConstService::FEE_PAYER_TYPE_5, BaseConstService::FEE_PAYER_TYPE_6])) {
+            $params['pay_type'] = BaseConstService::FEE_PAY_TYPE_2;
+            $params['payee_type'] = BaseConstService::FEE_PAYEE_TYPE_7;
+        }
         $rowCount = parent::create($params);
         if ($rowCount === false) {
             throw new BusinessLogicException('操作失败，请重新操作');
@@ -98,7 +105,15 @@ class FeeService extends BaseService
         return 'true';
     }
 
-    public function getPageList(){
+    public function getPageList()
+    {
+        if (!empty($this->formData['order_type'])) {
+            if ($this->formData['order_type'] == BaseConstService::ORDER_TYPE_1) {
+                $this->query->where('payer_type', '<>', BaseConstService::FEE_PAYER_TYPE_6);
+            } elseif ($this->formData['order_type'] == BaseConstService::ORDER_TYPE_2) {
+                $this->query->where('payer_type', '<>', BaseConstService::FEE_PAYER_TYPE_5);
+            }
+        }
         $this->query->orderBy('level')->orderBy('created_at');
         $data = parent::getPageList();
         return $data;

@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\Driver;
 use App\Models\Employee;
+use App\Models\Fee;
 use App\Models\Warehouse;
 use App\Services\BaseConstService;
 use App\Services\FeeService;
@@ -103,8 +104,9 @@ class AuthController extends Controller
             'expires_in' => auth('driver')->factory()->getTTL() * 60,
             'company_config' => $this->getCompanyConfig(auth('driver')->user()->company_id),
             'warehouse' => $this->getWarehouse(auth('driver')->user()->warehouse_id),
-            'is_bind' => $this->isBindDevice(auth('driver')->user()->id)
-        ];
+            'is_bind' => $this->isBindDevice(auth('driver')->user()->id),
+//            'fee_config' => $this->getFeeConfig(auth('driver')->user()->company_id),
+            'old_fee' => (auth('driver')->user()->company_id == config('tms.old_company_id')) ? BaseConstService::YES : BaseConstService::NO];
     }
 
     /**
@@ -129,9 +131,15 @@ class AuthController extends Controller
         $data = [];
         $warehouse = Warehouse::query()->where('id', $warehouseId)->first();
         if (!empty($warehouse)) {
-            $data = Arr::only($warehouse->toArray(), ['id', 'name', 'is_center','can_select_all']);
+            $data = Arr::only($warehouse->toArray(), ['id', 'name', 'is_center', 'can_select_all']);
         }
         return $data;
+    }
+
+    private function getFeeConfig($companyId)
+    {
+        $fee = Fee::query()->where('company_id', $companyId)->where('level', BaseConstService::FEE_LEVEL_2)->where('status', BaseConstService::BILL_STATUS_1)->get();
+        return $fee;
     }
 
     /**

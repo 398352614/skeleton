@@ -49,10 +49,14 @@ class Fee extends BaseModel
         'name',
         'code',
         'amount',
+        'object_type',
         'level',
         'status',
         'is_valuable',
-        'payer',
+        'pay_type',
+        'payer_type',
+        'payee_type',
+        'pay_timing',
         'created_at',
         'updated_at',
     ];
@@ -68,7 +72,12 @@ class Fee extends BaseModel
 
     protected $appends = [
         'status_name',
-        'level_name'
+        'level_name',
+        'pay_timing_name',
+        'object_type_name',
+        'pay_type_name',
+        'payer_type_name',
+        'payee_type_name',
     ];
 
     /**
@@ -87,4 +96,31 @@ class Fee extends BaseModel
     {
         return empty($this->level) ? null : ConstTranslateTrait::feeLevelList($this->level);
     }
+
+    public function getPayTimingNameAttribute()
+    {
+        return empty($this->pay_timing) ? null : ConstTranslateTrait::billPayTimingList($this->pay_timing);
+    }
+
+    public function getPayTypeNameAttribute()
+    {
+        return empty($this->pay_type) ? null : ConstTranslateTrait::payTypeList($this->pay_type);
+    }
+
+    public function getPayerTypeNameAttribute()
+    {
+        return empty($this->payer_type) ? null : ConstTranslateTrait::feePayerTypeList($this->payer_type);
+    }
+
+    public function getPayeeTypeNameAttribute()
+    {
+        return empty($this->payee_type) ? null : ConstTranslateTrait::userTypeList($this->payee_type);
+    }
+
+    public function getObjectTypeNameAttribute()
+    {
+        return empty($this->object_type) ? null : ConstTranslateTrait::billObjectTypeList($this->object_type);
+    }
+
+
 }

@@ -649,6 +649,7 @@ class OrderService extends BaseService
         if (empty($merchant)) {
             throw new BusinessLogicException('货主不存在');
         }
+        $params['settlement_type'] = $merchant['settlement_type'];
         //若邮编是纯数字，则认为是比利时邮编
 //        $country = CompanyTrait::getCountry();
 ////        $params['place_country'] = $country;
@@ -700,12 +701,7 @@ class OrderService extends BaseService
         }
         //运价计算
         $this->getTrackingOrderService()->fillWarehouseInfo($params, BaseConstService::NO);
-        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
-            $params['distance'] = 1000;
-        } else {
-            $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
-        }
-        $params = $this->getTransportPriceService()->priceCount($params);
+
 
         //验证取件网点及派件网点是否承接取件/派件
 //        if ($merchant['below_warehouse'] == BaseConstService::YES) {
@@ -819,38 +815,62 @@ class OrderService extends BaseService
      */
     private function addAmountList($params)
     {
-        $dataList = [];
-        //若存在包裹列表,则新增包裹列表
-        if (!empty($params['amount_list'])) {
-            foreach ($params['amount_list'] as $k => $v) {
-                $dataList[$k]['order_no'] = $params['order_no'];
-                $dataList[$k]['expect_amount'] = $v['expect_amount'];
-                $dataList[$k]['actual_amount'] = 0.00;
-                $dataList[$k]['type'] = $v['type'] ?? 1;
-                $dataList[$k]['remark'] = '';
-                $dataList[$k]['status'] = BaseConstService::ORDER_AMOUNT_STATUS_2;
-                if (!empty($v['in_total'])) {
-                    $dataList[$k]['in_total'] = $v['in_total'];
-                } else {
-                    $dataList[$k]['in_total'] = BaseConstService::YES;
+        if (config('tms.true_app_env') == 'develop' || empty(config('tms.true_app_env'))) {
+            $params['distance'] = 1000;
+        } else {
+            $params['distance'] = TourOptimizationService::getDistanceInstance(auth()->user()->company_id)->getDistanceByOrder($params);
+        }
+        $params = $this->getTransportPriceService()->priceCount($params);        //若存在包裹列表,则新增包裹列表
+//        if (!empty($params['amount_list'])) {
+//            foreach ($params['amount_list'] as $k => $v) {
+//                $dataList[$k]['order_no'] = $params['order_no'];
+//                $dataList[$k]['expect_amount'] = $v['expect_amount'];
+//                $dataList[$k]['actual_amount'] = 0.00;
+//                $dataList[$k]['type'] = $v['type'] ?? 1;
+//                $dataList[$k]['remark'] = '';
+//                $dataList[$k]['status'] = BaseConstService::ORDER_AMOUNT_STATUS_2;
+//                if (!empty($v['in_total'])) {
+//                    $dataList[$k]['in_total'] = $v['in_total'];
+//                } else {
+//                    $dataList[$k]['in_total'] = BaseConstService::YES;
+//                }
+//            }
+//            $rowCount = $this->getOrderAmountService()->insertAll($dataList);
+//            if ($rowCount === false) {
+//                throw new BusinessLogicException('新增失败');
+//            }
+//        }
+        if ($params['settlement_amount'] == 0) {
+            $transportPrice = $this->getTransportPriceService()->getInfo(['id' => $params['transport_price_id'], ['*'], false], ['*'], false);
+            if (empty($transportPrice)) {
+                throw new BusinessLogicException('费用不存在');
+            } elseif ($transportPrice['status'] == BaseConstService::NO) {
+                throw new BusinessLogicException('费用已禁用');
+            } else {
+                $transportPrice = $transportPrice->toArray();
+                if ($transportPrice['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
+                    $this->getBillService()->storeByTransportPrice($params, $transportPrice, BaseConstService::BILL_VERIFY_STATUS_2);
+                } elseif ($transportPrice['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) {
+                    $this->getBillService()->storeByTransportPrice($params, $transportPrice);
                 }
             }
-            $rowCount = $this->getOrderAmountService()->insertAll($dataList);
-            if ($rowCount === false) {
-                throw new BusinessLogicException('新增失败');
-            }
         }
-        $feeList = $this->getFeeService()->getList(['id' => ['in', collect($params['amount_list'])->pluck('fee_id')->toArray()]], ['*'], false);
-        foreach ($params['amount_list'] as $k => $v) {
+        $feeList = $this->getFeeService()->getList(['id' => ['in', collect($params['bill_list'])->pluck('fee_id')->toArray()]], ['*'], false);
+        foreach ($params['bill_list'] as $k => $v) {
             $fee = $feeList->where('id', $v['fee_id'] ?? 0)->first();
             if (empty($fee)) {
-//                throw new BusinessLogicException('费用不存在');
-                $fee = [];
+                throw new BusinessLogicException('费用不存在');
+            } elseif ($fee['status'] == BaseConstService::NO) {
+                throw new BusinessLogicException('费用已禁用');
             } else {
                 $fee = $fee->toArray();
+                $v['number'] = $k;
+                if ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
+                    $this->getBillService()->orderStore($v, $fee, $params, BaseConstService::BILL_VERIFY_STATUS_2);
+                } elseif ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) {
+                    $this->getBillService()->orderStore($v, $fee, $params);
+                }
             }
-            $v['number'] = $k;
-            $this->getBillService()->orderStore($v, $fee, $params);
         }
     }
 

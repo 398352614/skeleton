@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Services\Driver\BagService;
 use App\Services\Driver\BaseLineService;
 use App\Services\Driver\BaseWarehouseService;
+use App\Services\Driver\BillService;
 use App\Services\Driver\MemorandumService;
 use App\Services\Driver\MerchantGroupLineService;
 use App\Services\Driver\MerchantGroupService;
@@ -93,6 +94,14 @@ Trait DriverServiceTrait
     public function getOrderNoRuleService()
     {
         return self::getInstance(OrderNoRuleService::class);
+    }
+
+    /**
+     * @return BillService
+     */
+    public function getBillService()
+    {
+        return self::getInstance(BillService::class);
     }
 
     /**

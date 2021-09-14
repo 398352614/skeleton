@@ -75,6 +75,8 @@ class Bill extends BaseModel
         'verify_time',
         'created_at',
         'updated_at',
+        'fee_id',
+        'fee_name'
     ];
 
     /**
@@ -98,6 +100,7 @@ class Bill extends BaseModel
         'status_name',
         'verify_status_name',
         'rest_amount',
+        'type_name'
     ];
 
     public function getRestAmountAttribute()
@@ -145,10 +148,10 @@ class Bill extends BaseModel
         return empty($this->mode) ? null : ConstTranslateTrait::billModeList($this->mode);
     }
 
-//    public function getTypeNameAttribute()
-//    {
-//        return empty($this->type) ? null : ConstTranslateTrait::billTypeList($this->type);
-//    }
+    public function getTypeNameAttribute()
+    {
+        return empty($this->type) ? null : ConstTranslateTrait::billTypeList($this->type);
+    }
 
     public function getCreateTimingNameAttribute()
     {

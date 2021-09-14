@@ -6,7 +6,7 @@
  * Time: 13:41
  */
 
-namespace App\Services\Admin;
+namespace App\Services\Driver;
 
 use App\Exceptions\BusinessLogicException;
 
@@ -123,45 +123,6 @@ class BillService extends BaseService
         self::store($data);
     }
 
-    /**
-     * @param $data
-     * @param $fee
-     * @param $order
-     * @param int $status
-     * @throws BusinessLogicException
-     */
-    public function orderStore($data, $fee, $order, $status = BaseConstService::BILL_VERIFY_STATUS_1)
-    {
-        $data['type'] = BaseConstService::BILL_TYPE_2;
-        $data['fee_id'] = $fee['id'];
-        $data['fee_name'] = $fee['name'];
-        $data['mode'] = BaseConstService::BILL_MODE_2;
-        $data['create_Date'] = today()->format('Y-m-d');
-        $data['actual_amount'] = 0;
-        $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_1;
-        $data['pay_timing'] = $fee['pay_timing'];
-        $data['payer_type'] = $fee['payer_type'] ?? BaseConstService::USER_MERCHANT;
-        if ($data['payer_type'] == BaseConstService::USER_MERCHANT) {
-            $data['payer_id'] = $order['merchant_id'];
-            $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
-        }
-        $data['payee_type'] = $fee['payee_type'] ?? BaseConstService::USER_COMPANY;
-        if ($data['payee_type'] == BaseConstService::USER_COMPANY) {
-            $data['payee_id'] = auth()->user()->company_id;
-            $data['payee_name'] = $this->getCompanyService()->getInfo(['id' => auth()->user()->id], ['*'], false)['name'] ?? '';
-        } elseif ($data['payee_type'] == BaseConstService::FEE_PAYEE_TYPE_7) {
-            $data['payee_type'] = BaseConstService::USER_DRIVER;
-        }
-        $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
-        $data['object_no'] = $order['order_no'];
-        $data['pay_type'] = $fee['pay_type'] ?? BaseConstService::PAY_TYPE_1;
-        $data['operator_id'] = auth()->user()->id;
-        $data['operator_type'] = BaseConstService::USER_ADMIN;
-        $data['operator_name'] = auth()->user()->username;
-
-        $data['status'] = $status;
-        self::store($data);
-    }
 
     /**
      * @param $data
@@ -233,55 +194,6 @@ class BillService extends BaseService
         }
     }
 
-    /**
-     * @param $id
-     * @param $data
-     * @throws BusinessLogicException
-     */
-    public function verify($id, $data)
-    {
-
-        $dbData = parent::getInfoLock(['id' => $id], ['*'], false);
-        if (empty($dbData)) {
-            throw new BusinessLogicException('数据不存在');
-        }
-        if ($dbData['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
-            throw new BusinessLogicException('账单已审核，无需再次审核');
-        }
-        if ($dbData['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_3) {
-            throw new BusinessLogicException('账单已拒绝，无法再次审核');
-        }
-        if ($data['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
-            if (empty($data['actual_amount'])) {
-                throw new BusinessLogicException('实际金额不能为空');
-            }
-            if ($data['actual_amount'] > $dbData['expect_amount']) {
-                throw new BusinessLogicException('实际金额不能大于预计金额');
-            }
-            $row = parent::update(['id' => $id], [
-                'actual_amount' => $data['actual_amount'] ?? 0,
-                'verify_status' => $data['verify_status'],
-                'verify_time' => now()
-            ]);
-            if ($row == false) {
-                throw new BusinessLogicException('操作失败');
-            }
-            $this->getLedgerService()->recharge($dbData['payer_type'], $dbData['payer_id'], $data['actual_amount']);
-        } elseif ($data['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_3) {
-            $row = parent::update(['id' => $id], [
-                'verify_status' => $data['verify_status'],
-                'verify_time' => now()
-            ]);
-            if ($row == false) {
-                throw new BusinessLogicException('操作失败');
-            }
-        } elseif ($data['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_1) {
-            throw new BusinessLogicException('参数非法');
-        }
-        if ($data['verify_status'] == BaseConstService::BILL_VERIFY_STATUS_2) {
-            $this->getJournalService()->record(array_merge(collect($dbData)->toArray(), $data));
-        }
-    }
 
     public function show($id)
     {
@@ -297,33 +209,107 @@ class BillService extends BaseService
         return $data;
     }
 
-    public function storeByTransportPrice($data, $transportPrice, $status = BaseConstService::BILL_VERIFY_STATUS_2)
+    /**
+     * 通过主体获取账单
+     * @param $info
+     * @return array|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function getByObject($info)
     {
-        $data['expect_amount'] = $data['settlement_amount'];
-        $data['type'] = BaseConstService::BILL_TYPE_1;
-        $data['fee_id'] = $transportPrice['id'];
-        $data['fee_name'] = __('运费');
-        $data['mode'] = BaseConstService::BILL_MODE_2;
-        $data['create_Date'] = today()->format('Y-m-d');
-        $data['actual_amount'] = 0;
-        if ($transportPrice['payer_type'] == BaseConstService::USER_MERCHANT) {
-            $data['payer_id'] = $data['merchant_id'];
-            $data['payer_name'] = UserTrait::get($data['payer_id'], BaseConstService::USER_MERCHANT)['name'];
+        $data = [];
+        if (key_exists('package_no', $info)) {
+            $data = parent::getList(['object_no' => $info['package_no'], 'type' => BaseConstService::BILL_OBJECT_TYPE_2], ['*'], false);
+        } elseif (key_exists('order_no', $info)) {
+            $packageList = $this->getTrackingOrderPackageService()->getList(['order_no' => $info['order_no']], ['*'], false);
+            $data = array_merge(
+                parent::getList([
+                    'object_no' => $info['order_no'],
+                    'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
+                    'type' => BaseConstService::BILL_OBJECT_TYPE_2
+                ], ['*'], false),
+                parent::getList([
+                    'object_no' => ['in', $packageList->pluck('first_press_no')->toArray()],
+                    'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
+                    'type' => BaseConstService::BILL_OBJECT_TYPE_2
+                ], ['*'], false)
+            );
+        } elseif (key_exists('batch_no', $info)) {
+            $packageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $info['batch_no']], ['*'], false);
+            $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false);
+            $data = array_merge(
+                parent::getList([
+                    'object_no' => $info['batch_no'],
+                    'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
+                    'type' => BaseConstService::BILL_OBJECT_TYPE_2
+                ], ['*'], false)->toArray() ?? [],
+                parent::getList([
+                    'object_no' => ['in', $packageList->pluck('express_first_no')->toArray()],
+                    'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
+                    'type' => BaseConstService::BILL_OBJECT_TYPE_2
+                ], ['*'], false)->toArray() ?? [],
+                parent::getList(['object_no' => ['in', $trackingOrderList->pluck('order_no')->toArray()],
+                    'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
+                    'type' => BaseConstService::BILL_OBJECT_TYPE_2
+                ], ['*'], false)->toArray() ?? []
+            );
         }
-        if ($transportPrice['payee_type'] == BaseConstService::USER_COMPANY) {
-            $data['payee_id'] = auth()->user()->company_id;
-            $data['payee_name'] = $this->getCompanyService()->getInfo(['id' => auth()->user()->id], ['*'], false)->toArray()['name'] ?? '';
-        } elseif ($data['payee_type'] == BaseConstService::FEE_PAYEE_TYPE_7) {
-            $data['payee_type'] = BaseConstService::USER_DRIVER;
+        return $data;
+    }
+
+    public function getListByBatch($info)
+    {
+        $packageList = $this->getTrackingOrderPackageService()->getList(['batch_no' => $info['batch_no']], ['*'], false);
+        $trackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $info['batch_no']], ['*'], false);
+        $data = array_merge(
+            parent::getList([
+                'object_no' => $info['batch_no'],
+                'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
+                'type' => BaseConstService::BILL_TYPE_2
+            ], ['*'], false)->toArray() ?? [],
+            parent::getList([
+                'object_no' => ['in', $packageList->pluck('express_first_no')->toArray()],
+                'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
+                'type' => BaseConstService::BILL_TYPE_2
+            ], ['*'], false)->toArray() ?? [],
+            parent::getList(['object_no' => ['in', $trackingOrderList->pluck('order_no')->toArray()],
+                'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
+                'type' => BaseConstService::BILL_TYPE_2
+            ], ['*'], false)->toArray() ?? [],
+            parent::getList(['object_no' => ['in', $trackingOrderList->where('type',BaseConstService::TRACKING_ORDER_TYPE_1)->pluck('order_no')->toArray()],
+                'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
+                'type' => BaseConstService::BILL_TYPE_1,
+                'payer_type' => BaseConstService::FEE_PAYER_TYPE_5
+            ], ['*'], false)->toArray() ?? [],
+            parent::getList(['object_no' => ['in', $trackingOrderList->where('type',BaseConstService::TRACKING_ORDER_TYPE_2)->pluck('order_no')->toArray()],
+                'status' => ['in', [BaseConstService::BILL_STATUS_1, BaseConstService::BILL_STATUS_2]],
+                'type' => BaseConstService::BILL_TYPE_1,
+                'payer_type' => BaseConstService::FEE_PAYER_TYPE_6
+            ], ['*'], false)->toArray() ?? [],
+        );
+        $data = collect($data)->groupBy('fee_id')->toArray();
+        $newData = [];
+        $newData[0]['fee_id'] = 0;
+        $newData[0]['expect_amount'] = 0;
+        $newData[0]['actual_amount'] = 0;
+        foreach ($data as $k => $v) {
+            $newData[$k]['fee_id'] = $k;
+            $newData[$k]['expect_amount'] = 0;
+            $newData[$k]['actual_amount'] = 0;
+            foreach ($v as $x => $y) {
+                $newData[$k]['expect_amount'] += $y['expect_amount'];
+                $newData[$k]['actual_amount'] += $y['actual_amount'];
+                $newData[$k]['fee_name'] = $y['fee_name'];
+            }
+            $newData[0]['expect_amount'] += $newData[$k]['expect_amount'];
+            $newData[0]['actual_amount'] += $newData[$k]['actual_amount'];
+            $newData[$k]['expect_amount'] = number_format($newData[$k]['expect_amount'], 2);
+            $newData[$k]['actual_amount'] = number_format($newData[$k]['actual_amount'], 2);
         }
-        $data['object_type'] = BaseConstService::BILL_OBJECT_TYPE_1;
-        $data['object_no'] = $data['order_no'];
-        $data['pay_type'] = $transportPrice['pay_type'] ?? BaseConstService::PAY_TYPE_1;
-        $data['operator_id'] = auth()->user()->id;
-        $data['operator_type'] = BaseConstService::USER_ADMIN;
-        $data['operator_name'] = auth()->user()->username;
-        $data['create_timing'] = BaseConstService::BILL_CREATE_TIMING_2;
-        $data['status'] = $status;
-        self::store($data);
+        $newData[0]['expect_amount'] = number_format($newData[0]['expect_amount'], 2);
+        $newData[0]['actual_amount'] = number_format($newData[0]['actual_amount'], 2);
+        $newData[0]['fee_name'] = __('总计');
+        asort($newData);
+        $newData = array_values($newData);
+        return $newData;
     }
 }

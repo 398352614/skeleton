@@ -3780,9 +3780,12 @@
  * @apiParam {string} material_list.weight 材料重量
  * @apiParam {string} material_list.size 材料体积
  * @apiParam {string} material_list.unit_price 材料单价
- * @apiParam {string} amount_list 费用列表
- * @apiParam {string} amount_list.type 费用类型
- * @apiParam {string} amount_list.expect_amount 费用金额
+ * @apiParam {string} amount_list 费用列表（弃用）
+ * @apiParam {string} amount_list.type 费用类型（弃用）
+ * @apiParam {string} amount_list.expect_amount 费用金额（弃用）
+ * @apiParam {string} bill_list 费用列表
+ * @apiParam {string} bill_list.fee_id 费用ID
+ * @apiParam {string} bill_list.expect_amount 费用金额
  * @apiParam {string} create_date 开单日期
  * @apiSuccess {string} code
  * @apiSuccess {string} data

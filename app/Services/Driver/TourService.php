@@ -590,6 +590,8 @@ class TourService extends BaseService
         $batch['additional_package_list'] = $additionalPackageList ?? [];
         $batch['tracking_order_list'] = $trackingOrderList;
         $batch['material_list'] = $materialList;
+        $billList = $this->getBillService()->getListByBatch($batch);
+        $batch['bill_list'] = $billList;
         return $batch;
     }
 
@@ -648,6 +650,9 @@ class TourService extends BaseService
     public function batchCancel($id, $params)
     {
         list($tour, $batch) = $this->checkBatchLock($id, $params);
+//        if (!empty($params['bill_list'])) {
+//            $this->billCheck($tour, $batch, $params['bill_list']);
+//        }
         if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_4) {
             throw new BusinessLogicException('线路任务当前状态不允许站点取消取派');
         }
@@ -683,6 +688,7 @@ class TourService extends BaseService
         if ($piePackageList->isNotEmpty()) {
             PackageTrailService::storeByTrackingOrderList($piePackageList->toArray(), BaseConstService::PACKAGE_TRAIL_PIE_CANCEL, array_merge($batch, $data));
         }
+        $this->dealBillList($batch,BaseConstService::BILL_STATUS_3);
         $this->getOrderService()->batchCancel($batch['batch_no']);
         return [$tour, $batch, $cancelTrackingOrderList];
     }
@@ -697,6 +703,9 @@ class TourService extends BaseService
     public function checkBatchSign($id, $params)
     {
         list($tour, $batch) = $this->checkBatchLock($id, $params);
+//        if (!empty($params['bill_list'])) {
+//            $this->billCheck($tour, $batch, $params['bill_list']);
+//        }
         $stickerAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::STICKER]);
         $deliveryAmount = FeeService::getFeeAmount(['company_id' => auth()->user()->company_id, 'code' => BaseConstService::DELIVERY]);
         //贴单费统计
@@ -717,12 +726,14 @@ class TourService extends BaseService
         $totalReplaceAmount = $this->getOrderService()->sum('replace_amount', ['order_no' => ['in', $orderNoList]]);
         //运费统计
         $totalSettlementAmount = $this->getOrderService()->sum('settlement_amount', ['order_no' => ['in', $orderNoList]]);
+        $billList = $this->getBillService()->getListByBatch($batch);
         return [
             'total_sticker_amount' => number_format_simple($totalStickerAmount, 2),
             'total_delivery_amount' => number_format_simple($totalDeliveryAmount, 2),
             'total_replace_amount' => number_format_simple($totalReplaceAmount, 2),
             'total_settlement_amount' => number_format_simple($totalSettlementAmount, 2),
             'total_amount' => number_format_simple($totalStickerAmount + $totalReplaceAmount + $totalSettlementAmount + $totalDeliveryAmount, 2),
+            'bill_list' => $billList
         ];
     }
 
@@ -736,6 +747,9 @@ class TourService extends BaseService
     public function batchSign($id, $params)
     {
         list($tour, $batch, $dbMaterialList) = $this->checkBatchLock($id, $params);
+//        if (!empty($params['bill_list'])) {
+//            $this->billCheck($tour, $batch, $params['bill_list']);
+//        }
         if (intval($tour['status']) !== BaseConstService::TOUR_STATUS_4) {
             throw new BusinessLogicException('线路任务当前状态不允许站点签收');
         }
@@ -762,6 +776,10 @@ class TourService extends BaseService
         }
         /*******************************************1.处理站点下的材料*************************************************/
         !empty($params['material_list']) && $this->dealMaterialList($tour, $params['material_list'], $dbMaterialList);
+
+        /*******************************************1.处理站点下的账单*************************************************/
+        $this->dealBillList($batch,BaseConstService::BILL_STATUS_2);
+
         /*******************************************2.处理站点下的包裹*************************************************/
         $info = $this->dealPackageList($batch, $params);
         $totalStickerAmount = $info['totalStickerAmount'];
@@ -1609,6 +1627,44 @@ class TourService extends BaseService
             $arrCount['pie_count'] = parent::sum('expect_pie_quantity', ['line_id' => $line['id'], 'execution_date' => $info['execution_date'], 'driver_id' => ['all', null]]);
         }
         return $arrCount;
+    }
+
+    public function dealBillList($batch, $status)
+    {
+        $dbBillList = $this->getBillService()->getByObject($batch);
+        foreach ($dbBillList as $k => $v) {
+            $this->getBillService()->update(['id' => $v['id']], [
+                'actual_amount' => $v['expect_amount'],
+                'status' => $status
+            ]);
+        }
+    }
+
+    /**
+     * 账单验证
+     * @param $tour
+     * @param $batch
+     * @param $data
+     * @throws BusinessLogicException
+     */
+    public function billCheck($tour, $batch, $data)
+    {
+        $dbBillList = $this->getBillService()->getList(['bill_no' => collect($data)->pluck('bill_no')->toArray()], ['*'], false);
+        $dbTrackingOrderList = $this->getTrackingOrderService()->getList(['batch_no' => $batch['batch_no'], 'status' => BaseConstService::TRACKING_ORDER_STATUS_4], ['*'], false);
+        $orderNoList = $dbTrackingOrderList->pluck('order_no')->toArray();
+        foreach ($data as $k => $v) {
+            $dbBill = $dbBillList->where('bill_no', $v['bill_no'])->first();
+            if (empty($dbBill)) {
+                throw new BusinessLogicException('账单不存在');
+            }
+            if ($dbBill['object_type'] == BaseConstService::BILL_OBJECT_TYPE_1 && !in_array($dbBill['object_no'], $orderNoList)) {
+                throw new BusinessLogicException('账单不对应');
+            }
+            if ($v['actual_amount'] > $dbBill['expect_amount']) {
+                throw new BusinessLogicException('实际金额不能大于预计金额');
+            }
+        }
+
     }
 
 
