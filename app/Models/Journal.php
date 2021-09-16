@@ -92,7 +92,7 @@ class Journal extends BaseModel
 
     public function getStatusNameAttribute()
     {
-        return empty($this->status) ? null : ConstTranslateTrait::billStatusList($this->status);
+        return empty($this->status) ? null : ConstTranslateTrait::statusList($this->status);
     }
 
     public function getPayTypeNameAttribute()
