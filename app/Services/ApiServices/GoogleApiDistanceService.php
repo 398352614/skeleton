@@ -106,7 +106,6 @@ class GoogleApiDistanceService
             Log::channel('api')->error(__CLASS__ . '.' . __FUNCTION__ . '.' . 'res', [$res]);
             throw new BusinessLogicException('google-api请求报错');
         }
-        Log::info('res',$res);
         $distance = $res['rows'][0]['elements'][0]['distance']['value'];
         return $distance;
     }
