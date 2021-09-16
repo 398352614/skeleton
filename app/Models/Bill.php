@@ -150,7 +150,15 @@ class Bill extends BaseModel
 
     public function getTypeNameAttribute()
     {
-        return empty($this->type) ? null : ConstTranslateTrait::billTypeList($this->type);
+        if(empty($this->type)){
+            return null;
+        }else{
+            if($this->type<3){
+                return ConstTranslateTrait::billTypeList($this->type);
+            }else{
+                return null;
+            }
+        }
     }
 
     public function getCreateTimingNameAttribute()
