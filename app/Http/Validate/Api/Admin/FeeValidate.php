@@ -22,7 +22,7 @@ class FeeValidate extends BaseValidate
 
     public $rules = [
         'name' => 'required|string|max:50|uniqueIgnore:fee,id,company_id',
-        'code' => 'required|string|max:50|uniqueIgnore:fee,id,company_id|regex:/[A-Z]+/',
+        'code' => 'nullable|string|max:50|uniqueIgnore:fee,id,company_id|regex:/[A-Z]+/',
         'amount' => 'required|numeric|gte:0',
         'status' => 'required|integer|in:1,2',
         'is_valuable' => 'nullable|integer|in:1,2',
