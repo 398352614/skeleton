@@ -855,23 +855,26 @@ class OrderService extends BaseService
                 }
             }
         }
-        $feeList = $this->getFeeService()->getList(['id' => ['in', collect($params['bill_list'])->pluck('fee_id')->toArray()]], ['*'], false);
-        foreach ($params['bill_list'] as $k => $v) {
-            $fee = $feeList->where('id', $v['fee_id'] ?? 0)->first();
-            if (empty($fee)) {
-                throw new BusinessLogicException('费用不存在');
-            } elseif ($fee['status'] == BaseConstService::NO) {
-                throw new BusinessLogicException('费用已禁用');
-            } else {
-                $fee = $fee->toArray();
-                $v['number'] = $k;
-                if ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
-                    $this->getBillService()->orderStore($v, $fee, $params, BaseConstService::BILL_VERIFY_STATUS_2);
-                } elseif ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) {
-                    $this->getBillService()->orderStore($v, $fee, $params);
+        if (!empty($params['bill_list'])) {
+            $feeList = $this->getFeeService()->getList(['id' => ['in', collect($params['bill_list'])->pluck('fee_id')->toArray()]], ['*'], false);
+            foreach ($params['bill_list'] as $k => $v) {
+                $fee = $feeList->where('id', $v['fee_id'] ?? 0)->first();
+                if (empty($fee)) {
+                    throw new BusinessLogicException('费用不存在');
+                } elseif ($fee['status'] == BaseConstService::NO) {
+                    throw new BusinessLogicException('费用已禁用');
+                } else {
+                    $fee = $fee->toArray();
+                    $v['number'] = $k;
+                    if ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_1) {
+                        $this->getBillService()->orderStore($v, $fee, $params, BaseConstService::BILL_VERIFY_STATUS_2);
+                    } elseif ($fee['pay_timing'] == BaseConstService::BILL_PAY_TIMING_2) {
+                        $this->getBillService()->orderStore($v, $fee, $params);
+                    }
                 }
             }
         }
+
     }
 
     /**
