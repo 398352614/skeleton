@@ -78,7 +78,7 @@ class TransportPrice extends BaseModel
 
     protected $appends = [
         'type_name',
-        'pay_timing',
+        'pay_timing_name',
         'pay_type_name',
         'payer_type_name',
         'payee_type_name',
