@@ -103,7 +103,6 @@ use Illuminate\Support\Facades\App;
  * @method static mapConfigBackTypeList($args = null)
  * @method static mapConfigFrontTypeList($args = null)
  * @method static orderTemplateIsDefaultList($args = null)
- * @method static feePayerList($args = null)
  * @method static weightUnitTypeList($args = null)
  * @method static weightUnitTypeSymbol($args = null)
  * @method static currencyUnitTypeList($args = null)
@@ -983,10 +982,7 @@ trait ConstTranslateTrait
         BaseConstService::ORDER_TEMPLATE_IS_DEFAULT_2 => '非默认',
     ];
 
-    public static $feePayerList = [
-        BaseConstService::FEE_PAYER_1 => 1,
-        BaseConstService::FEE_PAYER_2 => 2
-    ];
+
 
     //重量单位
     publiC static $weightUnitTypeList = [
@@ -1167,8 +1163,8 @@ trait ConstTranslateTrait
     ];
 
     public static $billVerifyStatusList = [
-        BaseConstService::BILL_VERIFY_STATUS_1 => '未审核',
-        BaseConstService::BILL_VERIFY_STATUS_2 => '已审核',
+        BaseConstService::BILL_VERIFY_STATUS_1 => '未对账',
+        BaseConstService::BILL_VERIFY_STATUS_2 => '已对账',
         BaseConstService::BILL_VERIFY_STATUS_3 => '拒绝',
     ];
 
