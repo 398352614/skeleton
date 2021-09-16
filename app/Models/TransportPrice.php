@@ -101,8 +101,15 @@ class TransportPrice extends BaseModel
 
     public function getPayerTypeNameAttribute()
     {
-        return empty($this->payer_type) ? null : ConstTranslateTrait::feePayerTypeList($this->payer_type);
-    }
+        if (empty($this->payer_type)) {
+            return null;
+        } else {
+            if ($this->payer_type > 3) {
+                return ConstTranslateTrait::feePayerTypeList($this->payer_type);
+            } else {
+                return null;
+            }
+        }    }
 
     public function getPayeeTypeNameAttribute()
     {
